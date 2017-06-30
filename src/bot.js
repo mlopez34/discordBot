@@ -20,31 +20,76 @@ client.on('ready', function(err) {
 });
 
 var usersCookieCount = {};
-var sfGame = {}
+
+function commandIs(str, msg){
+    console.log(msg.content.toLowerCase())
+    return msg.content.toLowerCase().startsWith("!" + str);
+}
 
 client.on('message', function(message){
-    var args = message.content.split(" ");
+    var args = message.content.split(/[ ]+/);
     console.log(args);
-    if(args[0] === "!test"){
-        
-    }
     
-    if(args[0] === "!grab"){
-        if (!usersCookieCount[message.author.username])
-        {
-            usersCookieCount[message.author.username] = 1
-            message.reply(" now has " + usersCookieCount[message.author.username] + " tacos")
-        }else{
-            getSinglePuppy('Tyler', function(err, res){
-                if (err){
-                    console.log(err);
+    if(commandIs("thank", message)){
+        console.log("asdf");
+        getUserProfileData("shakyranew", function(err, thankResponse) {
+            if(err){
+                console.log("in error : " + err.code);
+                // user doesn't exist ?
+                if(err.code === 0){
+                    console.log("in here");
+                    // create new user
+                    var now = new Date();
+                    var threedaysAgo = new Date();
+                    threedaysAgo = new Date(threedaysAgo.setHours(threedaysAgo.getHours() - 72));
+                    var userData = {
+                        discordId: "shakyranew",
+                        tacos: 1,
+                        birthdate: "2001-10-05",
+                        lastthanktime: now,
+                        lastbaketime: threedaysAgo,
+                        lastwelcometime: threedaysAgo,
+                        lastsorrytime: threedaysAgo,
+                        lastscavangetime: threedaysAgo
+
+                    }
+                    createUserProfile(userData, function(err, createUserResponse){
+                        if (err){
+                            console.log(err);
+                            // cant create user RIP
+                        }
+                        else{
+                            message.reply( " you now have " + 1 + " taco! :taco:");
+                        }
+                    }) 
                 }
-                else{
-                    message.reply(" now has " + usersCookieCount[message.author.username] + " " + JSON.stringify(res))
+            }else{
+                // check against thank timestamp and if 6 hours have passed
+                var now = new Date();
+                var sixHoursAgo = new Date();
+                sixHoursAgo = new Date(sixHoursAgo.setHours(sixHoursAgo.getHours() - 6));
+                console.log("now: " + now);
+                console.log("sixHoursAgo: " + sixHoursAgo);
+                console.log("timestamp: " + thankResponse.data.lastthanktime);
+                if ( sixHoursAgo > thankResponse.data.lastthanktime ){
+                    // six hours have passed - update the user to have 1 more taco
+                    updateUserTacosThank("shakyra2346", 1, function(err, updateResponse) {
+                        if (err){
+                            console.log(err);
+                        }
+                        else{
+                            // send message that the user has 1 more taco
+                            message.reply( " you now have " + (thankResponse.data.tacos + 1) + " tacos! :taco:");
+                        }
+                    })
+                }else{
+                    // six hours have not passed, tell the user they need to wait 
+                    message.reply( " you are being too thankful!");
                 }
-            })
-        }
-        
+                
+                //message.reply(JSON.stringify(thankResponse));
+            }
+        });
     }
 
     if (args[0] === "!give" ){
@@ -80,7 +125,7 @@ client.on('message', function(message){
         }
     }
 
-    if (args[0] === "!test"){
+    if (args[0] === "!asdf"){
         let data = {
             name: "test",
             breed: "something",
@@ -105,15 +150,14 @@ client.on('message', function(message){
 });
 
 
-function getSinglePuppy(data, cb) {
-  var pupID = data;
-  db.one('select * from "public"."pups" where name = $1', pupID)
+function getUserProfileData(discordId, cb) {
+  db.one('select * from "public"."userprofiledev" where discordId = $1', discordId)
     .then(function (data) {
       console.log(data);
       cb(null, {
           status: 'success',
           data: data,
-          message: 'Retrieved ONE puppy'
+          message: 'Retrieved ONE user'
         });
     })
     .catch(function (err) {
@@ -122,12 +166,12 @@ function getSinglePuppy(data, cb) {
     });
 }
 
-function createPuppy(data, cb) {
-  db.none('insert into pups(name, breed, age, sex)' +
-      'values(${name}, ${breed}, ${age}, ${sex})',
+function createUserProfile(data, cb) {
+  db.none('insert into "public"."userprofiledev"(discordId, tacos, birthdate, lastthanktime, lastsorrytime, lastbaketime, lastwelcometime, lastscavangetime)' +
+      'values(${discordId}, ${tacos}, ${birthdate}, ${lastthanktime},  ${lastsorrytime}, ${lastbaketime}, ${lastwelcometime}, ${lastscavangetime})',
     data)
     .then(function () {
-      cb({
+      cb(null, {
           status: 'success',
           message: 'Inserted one puppy'
         });
@@ -138,18 +182,19 @@ function createPuppy(data, cb) {
 }
 
 
-function updatePuppy(data, cb) {
-  db.none('update pups set name=$1, breed=$2, age=$3, sex=$4 where id=$5',
-    [data.name, data.breed, data.age,
-      data.sex, data.id])
+function updateUserTacosThank(userId, tacos, cb) {
+    var lastThank = new Date();
+    console.log("new last thank: " + lastThank);
+    db.none('update "public"."userprofiledev" set tacos=tacos+$1, lastthanktime=$3 where discordid=$2',
+    [tacos, userId, lastThank])
     .then(function () {
-      cb({
-          status: 'success',
-          message: 'Updated puppy'
+    cb(null, {
+        status: 'success',
+        message: 'added tacos'
         });
     })
     .catch(function (err) {
-      cb(err);
+        cb(err);
     });
 }
 
