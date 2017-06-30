@@ -27,6 +27,7 @@ function commandIs(str, msg){
 }
 
 client.on('message', function(message){
+    console.log(message.author.id); // id of the user that created the message
     var args = message.content.split(/[ ]+/);
     console.log(args);
     
@@ -92,63 +93,7 @@ client.on('message', function(message){
         });
     }
 
-    if (args[0] === "!give" ){
-        if (args[1] != undefined){
-            if (!usersCookieCount[message.author.username])
-            {
-                message.reply(" You have no Tacos, fuck off");
-            }else if(usersCookieCount[message.author.username] == 0){
-                message.reply(" You have no Tacos, fuck off");
-            }
-            else{
-                let data = {
-                    name: "tony",
-                    breed: "coolGuy",
-                    age: 8,
-                    sex: "female"
-                }
-                createPuppy(data, function(err, res){
-                    if (err){
-                        console.log(err);
-                    }
-                    else{
-                        console.log(res);
-                        message.reply(JSON.stringify(res));
-                    }
-                })
-                usersCookieCount[message.author.username] = usersCookieCount[message.author.username] - 1
-                // give +1 to other person
-                // 
-                message.reply(" is giving a Taco to " + args[1]);
-            }
-            
-        }
-    }
-
-    if (args[0] === "!asdf"){
-        let data = {
-            name: "test",
-            breed: "something",
-            age: 100,
-            sex: "male", 
-            id: 3
-        };
-        updatePuppy(data, function(err, res){
-            if (err){
-                console.log(err);
-            }
-            else{
-                console.log(res);
-            }
-        })
-    }
-
-    if (args[0] === "!sfvotes"){
-        // make a list of all the current votes
-    }
-    
 });
-
 
 function getUserProfileData(discordId, cb) {
   db.one('select * from "public"."userprofiledev" where discordId = $1', discordId)
@@ -180,7 +125,6 @@ function createUserProfile(data, cb) {
       cb(err);
     });
 }
-
 
 function updateUserTacosThank(userId, tacos, cb) {
     var lastThank = new Date();
