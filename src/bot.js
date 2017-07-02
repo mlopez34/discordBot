@@ -30,11 +30,14 @@ client.on('message', function(message){
     console.log(args);
 
     // commands
-    if(commandIs("thank", message)){
+    if( commandIs("thank", message )){
         thankCommand(message);
     }
-    else if(commandIs("sorry", message)){
+    else if( commandIs("sorry", message )){
         sorryCommand(message);
+    }
+    else if( commandIs("help", message )){
+        helpCommand();
     }
 });
 
@@ -107,6 +110,10 @@ function thankCommand(message){
     }
 }
 
+function helpCommand(){
+
+}
+
 function sorryCommand(message){
     // say sorry to somebody every 2 hours
 }
@@ -157,7 +164,6 @@ function updateUserTacosThank(userId, tacos, cb) {
         cb(err);
     });
 }
-
 
 client.login('');
 
