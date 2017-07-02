@@ -1,5 +1,5 @@
+'use strict'
 var promise = require('bluebird');
-
 var options = {
   // Initialization Options
   promiseLib: promise
@@ -19,8 +19,6 @@ client.on('ready', function(err) {
     console.log('The bot is online');  
 });
 
-var usersCookieCount = {};
-
 function commandIs(str, msg){
     console.log(msg.content.toLowerCase())
     return msg.content.toLowerCase().startsWith("!" + str);
@@ -30,21 +28,37 @@ client.on('message', function(message){
     console.log(message.author.id); // id of the user that created the message
     var args = message.content.split(/[ ]+/);
     console.log(args);
-    
+
+    // commands
     if(commandIs("thank", message)){
-        console.log("asdf");
-        getUserProfileData("shakyranew", function(err, thankResponse) {
+        thankCommand(message);
+    }
+    else if(commandIs("sorry", message)){
+        sorryCommand(message);
+    }
+});
+
+function thankCommand(message){
+    var discordUserId = message.author.id;
+    var users  = message.mentions.users;
+    var mentionedId;
+    users.forEach(function(user){
+        console.log(user.id);
+        mentionedId = user.id;
+    })
+    // check the user mentioned someone, and the user is not the same user
+    if ( message.mentions.users.size > 0 && discordUserId != mentionedId ){
+        getUserProfileData( discordUserId, function(err, thankResponse) {
             if(err){
                 console.log("in error : " + err.code);
-                // user doesn't exist ?
+                // user doesn't exist
                 if(err.code === 0){
-                    console.log("in here");
                     // create new user
                     var now = new Date();
                     var threedaysAgo = new Date();
                     threedaysAgo = new Date(threedaysAgo.setHours(threedaysAgo.getHours() - 72));
                     var userData = {
-                        discordId: "shakyranew",
+                        discordId: discordUserId,
                         tacos: 1,
                         birthdate: "2001-10-05",
                         lastthanktime: now,
@@ -52,12 +66,10 @@ client.on('message', function(message){
                         lastwelcometime: threedaysAgo,
                         lastsorrytime: threedaysAgo,
                         lastscavangetime: threedaysAgo
-
                     }
                     createUserProfile(userData, function(err, createUserResponse){
                         if (err){
-                            console.log(err);
-                            // cant create user RIP
+                            console.log(err); // cant create user RIP
                         }
                         else{
                             message.reply( " you now have " + 1 + " taco! :taco:");
@@ -67,14 +79,14 @@ client.on('message', function(message){
             }else{
                 // check against thank timestamp and if 6 hours have passed
                 var now = new Date();
-                var sixHoursAgo = new Date();
-                sixHoursAgo = new Date(sixHoursAgo.setHours(sixHoursAgo.getHours() - 6));
-                console.log("now: " + now);
-                console.log("sixHoursAgo: " + sixHoursAgo);
-                console.log("timestamp: " + thankResponse.data.lastthanktime);
-                if ( sixHoursAgo > thankResponse.data.lastthanktime ){
+                var twoHoursAgo = new Date();
+                twoHoursAgo = new Date(twoHoursAgo.setHours(twoHoursAgo.getHours() - 2));
+                //console.log("now: " + now);
+                //console.log("twoHoursAgo: " + twoHoursAgo);
+                //console.log("timestamp: " + thankResponse.data.lastthanktime);
+                if ( twoHoursAgo > thankResponse.data.lastthanktime ){
                     // six hours have passed - update the user to have 1 more taco
-                    updateUserTacosThank("shakyra2346", 1, function(err, updateResponse) {
+                    updateUserTacosThank(discordUserId, 1, function(err, updateResponse) {
                         if (err){
                             console.log(err);
                         }
@@ -87,18 +99,22 @@ client.on('message', function(message){
                     // six hours have not passed, tell the user they need to wait 
                     message.reply( " you are being too thankful!");
                 }
-                
-                //message.reply(JSON.stringify(thankResponse));
             }
         });
     }
+    else{
+        message.reply( " you must mention a user or a user that isn't you whom you want to thank!");
+    }
+}
 
-});
+function sorryCommand(message){
+    // say sorry to somebody every 2 hours
+}
 
 function getUserProfileData(discordId, cb) {
   db.one('select * from "public"."userprofiledev" where discordId = $1', discordId)
     .then(function (data) {
-      console.log(data);
+      //console.log(data);
       cb(null, {
           status: 'success',
           data: data,
@@ -128,7 +144,7 @@ function createUserProfile(data, cb) {
 
 function updateUserTacosThank(userId, tacos, cb) {
     var lastThank = new Date();
-    console.log("new last thank: " + lastThank);
+    //console.log("new last thank: " + lastThank);
     db.none('update "public"."userprofiledev" set tacos=tacos+$1, lastthanktime=$3 where discordid=$2',
     [tacos, userId, lastThank])
     .then(function () {
