@@ -112,7 +112,72 @@ function thankCommand(message){
 }
 
 function sorryCommand(message){
-    // say sorry to somebody every 2 hours
+    // say sorry to somebody every 6 hours
+    var discordUserId = message.author.id;
+    var users  = message.mentions.users;
+    var mentionedId;
+    users.forEach(function(user){
+        console.log(user.id);
+        mentionedId = user.id;
+    })
+
+    if ( message.mentions.users.size > 0 && discordUserId != mentionedId ){
+        getUserProfileData( discordUserId, function(err, sorryResponse) {
+            if(err){
+                console.log("in error : " + err.code);
+                // user doesn't exist
+                if(err.code === 0){
+                    // create new user
+                    var now = new Date();
+                    var threedaysAgo = new Date();
+                    threedaysAgo = new Date(threedaysAgo.setHours(threedaysAgo.getHours() - 72));
+                    var userData = {
+                        discordId: discordUserId,
+                        tacos: 1,
+                        birthdate: "2001-10-05",
+                        lastthanktime: threedaysAgo,
+                        lastbaketime: threedaysAgo,
+                        lastwelcometime: threedaysAgo,
+                        lastsorrytime: now,
+                        lastscavangetime: threedaysAgo
+                    }
+                    createUserProfile(userData, function(err, createUserResponse){
+                        if (err){
+                            console.log(err); // cant create user RIP
+                        }
+                        else{
+                            message.reply( " you now have " + 1 + " taco! :taco:");
+                        }
+                    }) 
+                }
+            }
+            else{
+                // check six hours ago
+                var now = new Date();
+                var sixHoursAgo = new Date();
+                sixHoursAgo = new Date(sixHoursAgo.setHours(sixHoursAgo.getHours() - 6));
+
+                if ( sixHoursAgo > sorryResponse.data.lastsorrytime ){
+                    updateUserTacosSorry(discordUserId, 1, function(err, updateResponse) {
+                        if (err){
+                            console.log(err);
+                        }
+                        else{
+                            // send message that the user has 1 more taco
+                            message.reply( " you now have " + (sorryResponse.data.tacos + 1) + " tacos! :taco:");
+                        }
+                    })
+                }else{
+                    // six hours have not passed, tell the user they need to wait 
+                    message.reply( " you are being too sorryful!");
+                }
+            }
+        })
+    }
+    else{
+        message.reply( " you must mention a user or a user that isn't you whom you want to sorry!");
+    }
+
 }
 
 function helpCommand(message){
@@ -159,6 +224,22 @@ function createUserProfile(data, cb) {
 
 function updateUserTacosThank(userId, tacos, cb) {
     var query = 'update ' + config.profileTable + ' set tacos=tacos+$1, lastthanktime=$3 where discordid=$2'
+    var lastThank = new Date();
+    //console.log("new last thank: " + lastThank);
+    db.none(query, [tacos, userId, lastThank])
+    .then(function () {
+    cb(null, {
+        status: 'success',
+        message: 'added tacos'
+        });
+    })
+    .catch(function (err) {
+        cb(err);
+    });
+}
+
+function updateUserTacosSorry(userId, tacos, cb) {
+    var query = 'update ' + config.profileTable + ' set tacos=tacos+$1, lastsorrytime=$3 where discordid=$2'
     var lastThank = new Date();
     //console.log("new last thank: " + lastThank);
     db.none(query, [tacos, userId, lastThank])
