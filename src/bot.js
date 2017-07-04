@@ -4,9 +4,9 @@ var options = {
   // Initialization Options
   promiseLib: promise
 };
-
+var config = require("./config.js");
 var pgp = require('pg-promise')(options);
-var connectionString = '';
+var connectionString = config.database;
 var db = pgp(connectionString);
 
 const Discord = require("discord.js");
@@ -21,7 +21,7 @@ client.on('ready', function(err) {
 
 function commandIs(str, msg){
     console.log(msg.content.toLowerCase())
-    return msg.content.toLowerCase().startsWith("!" + str);
+    return msg.content.toLowerCase().startsWith(config.commandString + str);
 }
 
 client.on('message', function(message){
@@ -37,11 +37,12 @@ client.on('message', function(message){
         sorryCommand(message);
     }
     else if( commandIs("help", message )){
-        helpCommand();
+        helpCommand(message);
     }
 });
 
 function thankCommand(message){
+    
     var discordUserId = message.author.id;
     var users  = message.mentions.users;
     var mentionedId;
@@ -110,16 +111,23 @@ function thankCommand(message){
     }
 }
 
-function helpCommand(){
-
-}
-
 function sorryCommand(message){
     // say sorry to somebody every 2 hours
 }
 
+function helpCommand(message){
+    var commandsList = "List of commands \n "
+    var thank = "!thank @user - thank a user and get 1 taco! \n "
+    var sorry = "!sorry @user - say sorry to a user and get 1 taco! \n "
+    var welcome = "!welcome @user - welcome a user and get 2 tacos! \n "
+    var scavange = "!scavange - in progress "
+    var commandsList = "```" + commandsList + thank + sorry + welcome + scavange + "```";
+    message.channel.send(commandsList);
+}
+
 function getUserProfileData(discordId, cb) {
-  db.one('select * from "public"."userprofiledev" where discordId = $1', discordId)
+  var query = 'select * from ' + config.profileTable + ' where discordId = $1'
+  db.one(query, discordId)
     .then(function (data) {
       //console.log(data);
       cb(null, {
@@ -135,13 +143,13 @@ function getUserProfileData(discordId, cb) {
 }
 
 function createUserProfile(data, cb) {
-  db.none('insert into "public"."userprofiledev"(discordId, tacos, birthdate, lastthanktime, lastsorrytime, lastbaketime, lastwelcometime, lastscavangetime)' +
-      'values(${discordId}, ${tacos}, ${birthdate}, ${lastthanktime},  ${lastsorrytime}, ${lastbaketime}, ${lastwelcometime}, ${lastscavangetime})',
-    data)
+  var query = 'insert into '+ config.profileTable + '(discordId, tacos, birthdate, lastthanktime, lastsorrytime, lastbaketime, lastwelcometime, lastscavangetime)' +
+      'values(${discordId}, ${tacos}, ${birthdate}, ${lastthanktime},  ${lastsorrytime}, ${lastbaketime}, ${lastwelcometime}, ${lastscavangetime})'
+  db.none(query, data)
     .then(function () {
       cb(null, {
           status: 'success',
-          message: 'Inserted one puppy'
+          message: 'Inserted one user'
         });
     })
     .catch(function (err) {
@@ -150,10 +158,10 @@ function createUserProfile(data, cb) {
 }
 
 function updateUserTacosThank(userId, tacos, cb) {
+    var query = 'update ' + config.profileTable + ' set tacos=tacos+$1, lastthanktime=$3 where discordid=$2'
     var lastThank = new Date();
     //console.log("new last thank: " + lastThank);
-    db.none('update "public"."userprofiledev" set tacos=tacos+$1, lastthanktime=$3 where discordid=$2',
-    [tacos, userId, lastThank])
+    db.none(query, [tacos, userId, lastThank])
     .then(function () {
     cb(null, {
         status: 'success',
@@ -165,7 +173,7 @@ function updateUserTacosThank(userId, tacos, cb) {
     });
 }
 
-client.login('');
+client.login(config.discordClientLogin);
 
 
 
