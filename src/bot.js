@@ -12,6 +12,8 @@ var db = pgp(connectionString);
 const Discord = require("discord.js");
 const client = new Discord.Client();
 
+var BASE_TACO_COST = 50;
+
 client.on('ready', function(err) {
     if (err){
         console.log(err);
@@ -38,6 +40,12 @@ client.on('message', function(message){
     }
     else if( commandIs("help", message )){
         helpCommand(message);
+    }
+    else if( commandIs("buytree", message )){
+        buyTreeCommand(message);
+    }
+    else if( commandIs("harvest", message)){
+        harvestCommand(message);
     }
 });
 
@@ -180,6 +188,50 @@ function sorryCommand(message){
 
 }
 
+function buyTreeCommand(message){
+    // buy a tree for x number of tacos
+    var discordUserId = message.author.id
+
+    getUserProfileData( discordUserId, function(err, sorryResponse) {
+        if(err){
+            // user doesnt exist tell the user they should get some tacos
+            message.reply( " you can't afford a tree atm!");
+        }
+        else{
+            // if user has enough tacos to purchase the tree, add 1 tree, subtract x tacos
+            var userTacoTrees = 0;
+            if (sorryResponse.data.tacotrees && sorryResponse.data.tacotrees > -1){
+                userTacoTrees = sorryResponse.data.tacotrees;
+            }
+            console.log(sorryResponse.data.tacos);
+            var treeCost = BASE_TACO_COST + (userTacoTrees * 25);
+            if (sorryResponse.data.tacos > treeCost){
+                // purchaseTree
+                var tacosSpent = treeCost * -1
+                 purchaseTacoTree(discordUserId, tacosSpent, sorryResponse.data.tacotrees, function(err, data){
+                    if (err){
+                        console.log(err);
+                        // couldn't purchase tree
+                    }
+                    else{
+                        message.reply( " congratulations you have purchased a taco tree!");
+                    }
+                 })
+            }
+            else{
+                // can't afford tree
+                var treeCost = BASE_TACO_COST + (userTacoTrees * 25);
+                message.reply( " you can't afford a tree atm you need " + treeCost + " tacos!");
+            }
+        }
+    })
+}
+
+function harvestCommand(message){
+    // harvest tacos based on number of taco trees
+    
+}
+
 function helpCommand(message){
     var commandsList = "List of commands \n "
     var thank = "!thank @user - thank a user and get 1 taco! \n "
@@ -192,7 +244,7 @@ function helpCommand(message){
 
 function getUserProfileData(discordId, cb) {
   var query = 'select * from ' + config.profileTable + ' where discordId = $1'
-  db.one(query, discordId)
+  db.one(query, [discordId])
     .then(function (data) {
       //console.log(data);
       cb(null, {
@@ -252,6 +304,44 @@ function updateUserTacosSorry(userId, tacos, cb) {
     .catch(function (err) {
         cb(err);
     });
+}
+
+function purchaseTacoTree(userId, tacosSpent, currentTacoTrees, cb){
+    console.log(currentTacoTrees);
+    let tacoTree = 1;
+    if (currentTacoTrees){
+        var query = 'update ' + config.profileTable + ' set tacos=tacos+$1, tacotrees=tacotrees+$3 where discordid=$2'
+        console.log(query)
+        var lastThank = new Date();
+        //console.log("new last thank: " + lastThank);
+        db.none(query, [tacosSpent, userId, tacoTree])
+        .then(function () {
+        cb(null, {
+            status: 'success',
+            message: 'added taco tree'
+            });
+        })
+        .catch(function (err) {
+            cb(err);
+        });
+    }
+    else{
+        
+        var query = 'update ' + config.profileTable + ' set tacos=tacos+$1, tacotrees=$3 where discordid=$2'
+        console.log(query)
+        var lastThank = new Date();
+        //console.log("new last thank: " + lastThank);
+        db.none(query, [tacosSpent, userId, tacoTree])
+        .then(function () {
+        cb(null, {
+            status: 'success',
+            message: 'added taco tree'
+            });
+        })
+        .catch(function (err) {
+            cb(err);
+        });
+    }
 }
 
 client.login(config.discordClientLogin);
