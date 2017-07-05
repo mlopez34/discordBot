@@ -13,6 +13,7 @@ const Discord = require("discord.js");
 const client = new Discord.Client();
 
 var BASE_TACO_COST = 50;
+var BASE_TACO_HARVEST = 10;
 
 client.on('ready', function(err) {
     if (err){
@@ -229,7 +230,48 @@ function buyTreeCommand(message){
 
 function harvestCommand(message){
     // harvest tacos based on number of taco trees
-    
+    var discordUserId = message.author.id
+
+    getUserProfileData( discordUserId, function(err, harvestResponse) {
+        if(err){
+            // user doesnt exist, they cannot harvest
+            message.reply( " you can't harvest atm because you do not have taco trees!");
+        }
+        else{
+            // get number of trees the user has
+            // check lastharvest time
+            var now = new Date();
+            var threeDaysAgo = new Date();
+            threeDaysAgo = new Date(threeDaysAgo.setHours(threeDaysAgo.getHours() - 72));
+
+            if ( threeDaysAgo > harvestResponse.data.lastharvesttime ){
+                // able to harvest again
+                var userTacoTrees = 0;
+                if (harvestResponse.data.tacotrees && harvestResponse.data.tacotrees > -1){
+                    userTacoTrees = harvestResponse.data.tacotrees;
+                }
+                if (userTacoTrees > 0){
+                    // add tacos x10 of # of trees
+                    var tacosToHarvest = BASE_TACO_HARVEST * userTacoTrees;
+                    harvestTacos(discordUserId, tacosToHarvest, function(err, data){
+                        if (err){
+                            console.log(err);
+                            // something happened
+                        }
+                        else{
+                            message.reply( " you have harvested " + tacosToHarvest + " tacos!");
+                        }
+                    })
+                }
+                else{
+                    message.reply( " you do not have any trees to harvest!");
+                }
+            }
+            else{
+                message.reply( " you are being too harvestful!");
+            }
+        }
+    })
 }
 
 function helpCommand(message){
@@ -342,6 +384,23 @@ function purchaseTacoTree(userId, tacosSpent, currentTacoTrees, cb){
             cb(err);
         });
     }
+}
+
+function harvestTacos(userId, tacosToHarvest, cb){
+    // update tacos and lastharvest
+    var query = 'update ' + config.profileTable + ' set tacos=tacos+$1, lastharvesttime=$3 where discordid=$2'
+    var lastharvest = new Date();
+    //console.log("new last thank: " + lastThank);
+    db.none(query, [ tacosToHarvest, userId, lastharvest ])
+    .then(function () {
+    cb(null, {
+        status: 'success',
+        message: 'added tacos'
+        });
+    })
+    .catch(function (err) {
+        cb(err);
+    });
 }
 
 client.login(config.discordClientLogin);
