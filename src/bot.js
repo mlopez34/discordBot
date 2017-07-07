@@ -48,6 +48,9 @@ client.on('message', function(message){
     else if( commandIs("harvest", message)){
         harvestCommand(message);
     }
+    else if( commandIs("welcome", message)){
+        welcomeCommand(message);
+    }
 });
 
 function thankCommand(message){
@@ -274,6 +277,77 @@ function harvestCommand(message){
     })
 }
 
+function welcomeCommand(message){
+    // welcome a user to the server gain 2 tacos
+
+    var discordUserId = message.author.id;
+    var users  = message.mentions.users;
+    var mentionedId;
+    var mentionedUser;
+    console.log(users);
+    users.forEach(function(user){
+        console.log(user.id);
+        mentionedId = user.id;
+        mentionedUser = user.username
+    })
+    if (mentionedId == discordUserId){
+        message.channel.send(" you can't welcome yourself!")
+    }
+    else{
+        // check first that user exists, if user doesn't exist create user, then check if welcomed user exists
+        // if welcomed user exists set to true, if not then create the user and set to true
+        getUserProfileData( mentionedId, function(err, welcomeResponse) {
+            if(err){
+                // user doesnt exist, create their profile first
+                if(err.code === 0){
+                    var now = new Date();
+                    var threedaysAgo = new Date();
+                    threedaysAgo = new Date(threedaysAgo.setHours(threedaysAgo.getHours() - 72));
+                    var userData = {
+                        discordId: mentionedId,
+                        tacos: 1,
+                        tacotrees: 0,
+                        birthdate: "2001-10-05",
+                        lastthanktime: threedaysAgo,
+                        lastbaketime: threedaysAgo,
+                        lastwelcometime: threedaysAgo,
+                        lastsorrytime: threedaysAgo,
+                        lastscavangetime: threedaysAgo,
+                        lastharvesttime : threedaysAgo,
+                        welcomed: true
+                    }
+                    createUserProfile(userData, function(err, createResponse){
+                        if(err){
+                            console.log(err);
+                        }
+                        else{
+                            message.channel.send("welcome! " + mentionedUser + " you now have " + userData.tacos + " tacos!")
+                        }
+                    })
+                }
+            }
+            else{
+                // user exists, check if user has already been welcomed
+                if ( !welcomeResponse.data.welcomed ){
+                    updateUserTacosWelcome(mentionedId, 1, function(err, updateResponse) {
+                        if (err){
+                            console.log(err);
+                            message.reply( err );
+                        }
+                        else{
+                            // send message that the user has 1 more taco
+                            message.reply( " you now have " + (welcomeResponse.data.tacos + 1) + " tacos! :taco:");
+                        }
+                    })
+                }
+                else{
+                    message.reply( " the user has already been welcomed!");
+                }
+            }
+        }) 
+    }
+}
+
 function helpCommand(message){
     var commandsList = "List of commands \n "
     var thank = "!thank @user - thank a user and get 1 taco! \n "
@@ -344,6 +418,23 @@ function updateUserTacosSorry(userId, tacos, cb) {
         });
     })
     .catch(function (err) {
+        cb(err);
+    });
+}
+
+function updateUserTacosWelcome(userId, tacos, cb) {
+    var query = 'update ' + config.profileTable + ' set tacos=tacos+$1, welcomed=$3 where discordid=$2'
+    var welcomed = true;
+    //console.log("new last thank: " + lastThank);
+    db.none(query, [tacos, userId, welcomed])
+    .then(function () {
+    cb(null, {
+        status: 'success',
+        message: 'added tacos'
+        });
+    })
+    .catch(function (err) {
+        console.log(err);
         cb(err);
     });
 }
