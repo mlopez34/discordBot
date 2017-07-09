@@ -42,7 +42,7 @@ client.on('message', function(message){
     else if( commandIs("help", message )){
         helpCommand(message);
     }
-    else if( commandIs("buytree", message )){
+    else if( commandIs("buystand", message )){
         buyTreeCommand(message);
     }
     else if( commandIs("harvest", message)){
@@ -650,9 +650,44 @@ function profileBuilder(message, profileData){
     message.channel.send({embed});
 }
 
-function shopCommand(message){
-    
+function shopBuilder(message, shopData){
+    var welcomeMessage = "Hey " + message.author.username + "! Welcome to Bender's shop."
+    var tacoStandDescription = "Taco stands can be used to produce tacos based on the number of stands you have. \nYou can produce " + BASE_TACO_HARVEST + " per taco stand. \nThe cost of each additional stand will be higher - city tax bro. "
+    var treeCost = BASE_TACO_COST + (shopData.userTacoCost * 25) + " :taco:"
+    const embed = new Discord.RichEmbed()
+    .setColor(0x87CEFA)
+    .setTitle(welcomeMessage)
+    .setThumbnail()
+    .setDescription("Bender accepts Tacos as currency since he's a hungry guy :shrug:. Have a look around!")
+    .addField('Taco Stands', ":bus:", true)
+    .addField('Description', tacoStandDescription, true)
+    .addField('Cost', treeCost, true)
+    .addField('Command', "!buystand", true)
+    .setTimestamp()
+    message.channel.send({embed});
 }
+
+function shopCommand(message){
+    var discordUserId = message.author.id;
+    getUserProfileData( discordUserId, function(err, sorryResponse) {
+        if(err){
+            // user doesnt exist tell the user they should get some tacos
+            message.reply( " you can't afford a tree atm!");
+        }
+        else{
+            // if user has enough tacos to purchase the tree, add 1 tree, subtract x tacos
+            var shopData = {};
+            var userTacoTrees = 0;
+            if (sorryResponse.data.tacotrees && sorryResponse.data.tacotrees > -1){
+                userTacoTrees = sorryResponse.data.tacotrees;
+            }
+            shopData.userTacoCost = userTacoTrees;
+            shopBuilder(message, shopData);
+        }
+    })
+}
+
+// TODO: achievement logic, scavange logic, Inventory logic, mission logic, casino logic, combine logic
 
 function helpCommand(message){
     var commandsList = "List of commands \n "
@@ -662,9 +697,11 @@ function helpCommand(message){
     var welcome = "!welcome @user - welcome a user and get 2 tacos! \n "
     var cook = "!cook - cook some tacos! \n "
     var give = "!give @user number - give the mentioned user some number of tacos! \n "
+    var shop = "!shop - enter Bender's shop! \n "
     var harvest = "!harvest - harvest some tacos from your taco stands! \n "
+    var throwTaco = "!throw @user - throw a taco at the mentioned user \n "
     var scavange = "!scavange - in progress "
-    var commandsList = "```" + commandsList + profile + thank + sorry + welcome + cook + give + harvest + scavange + "```";
+    var commandsList = "```" + commandsList + profile + thank + sorry + welcome + cook + give + shop + harvest + throwTaco + scavange + "```";
     message.channel.send(commandsList);
 }
 
@@ -853,4 +890,3 @@ function harvestTacos(userId, tacosToHarvest, cb){
 }
 
 client.login(config.discordClientLogin);
-
