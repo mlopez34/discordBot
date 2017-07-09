@@ -60,9 +60,23 @@ client.on('message', function(message){
     else if (commandIs("profile", message)){
         profileCommand(message);
     }
+    else if(commandIs("tacos", message)){
+        tacosCommand(message);
+    }
+    else if(commandIs("stands", message)){
+        tacoStandsCommand(message);
+    }
+    else if(commandIs("throw", message)){
+        throwCommand(message);
+    }
+    else if(commandIs("shop", message)){
+        shopCommand(message);
+    }
+    /*
     else if (commandIs("scavange", message)){
         scavangeCommand(message);
     }
+    */
 });
 
 function thankCommand(message){
@@ -450,25 +464,157 @@ function cookCommand(message){
     })
 }
 
+function throwCommand(message){
+    console.log(message);
+    var discordUserId = message.author.id;
+    var users  = message.mentions.users;
+    var mentionedId;
+    var mentionedUser;
+    console.log(users);
+    users.forEach(function(user){
+        console.log(user.id);
+        mentionedId = user.id;
+        mentionedUser = user.username
+    })
+    // throw a taco at someone
+    if ( message.mentions.users.size > 0 && discordUserId != mentionedId){
+        // 
+        getUserProfileData( discordUserId, function(err, throwResponse) {
+            if(err){
+                // user doesnt exist, create their profile first
+                if(err.code === 0){
+                    // user doesn't exist
+                    message.reply( " you do not have any tacos to throw!");
+                }
+            }
+            else{
+                // user exists, subtract 1 taco 
+                console.log("asdfasfsd " + throwResponse.data.tacos)
+                if (throwResponse.data.tacos > 1){
+                    updateUserTacosThrow(discordUserId, -1, function(err, updateResponse) {
+                        if (err){
+                            console.log(err);
+                        }
+                        else{
+                            // send message that the user has 1 more taco
+                            message.reply( " threw a taco at " + mentionedUser + " :dizzy_face: :taco: :wave: :smiling_imp:");
+                        }
+                    })
+                }
+                else{
+                    message.reply( " you do not have any tacos to throw! ")
+                }
+            }
+        })
+    }
+}
+
 function profileCommand(message){
     console.log(message);
     var discordUserId = message.author.id;
+    var users  = message.mentions.users;
+    var mentionedId;
+    var mentionedUser;
+    var mentionedUserAvatarURL;
+    console.log(users);
+    users.forEach(function(user){
+        console.log(user.id);
+        mentionedId = user.id;
+        mentionedUser = user.username
+        mentionedUserAvatarURL = user.avatarURL;
+    })
+    if ( message.mentions.users.size > 0 ){
+        getUserProfileData( mentionedId, function(err, profileResponse) {
+            if(err){
+                // user doesnt exist, create their profile first
+                if(err.code === 0){
+                    // user doesn't exist
+                }
+            }
+            else{
+                var profileData = {}
+                profileData.userName = mentionedUser;
+                profileData.avatarURL = mentionedUserAvatarURL;
+                profileData.userTacos = profileResponse.data.tacos;
+                profileData.userTacoStands = profileResponse.data.tacotrees;
+                profileBuilder(message, profileData);
+            }
+        })
+    }
+    else{
+        getUserProfileData( discordUserId, function(err, profileResponse) {
+            if(err){
+                // user doesnt exist, create their profile first
+                if(err.code === 0){
+                    // user doesnt exist
+                }
+            }
+            else{
+                var profileData = {}
+                profileData.userName = message.author.username;
+                profileData.avatarURL = message.author.avatarURL;
+                profileData.userTacos = profileResponse.data.tacos;
+                profileData.userTacoStands = profileResponse.data.tacotrees;
+                profileBuilder(message, profileData);
+            }
+        })
+    }
+}
+
+function tacosCommand(message){
+    var discordUserId = message.author.id;
+
     getUserProfileData( discordUserId, function(err, profileResponse) {
         if(err){
             // user doesnt exist, create their profile first
             if(err.code === 0){
-
+                // user doesnt exist
             }
         }
         else{
             var profileData = {}
             profileData.userName = message.author.username;
-            profileData.avatarURL = message.author.avatarURL;
             profileData.userTacos = profileResponse.data.tacos;
-            profileData.userTacoStands = profileResponse.data.tacotrees;
-            profileBuilder(message, profileData);
+            tacoEmbedBuilder(message, profileData);
         }
     })
+}
+
+function tacoEmbedBuilder(message, profileData){
+    const embed = new Discord.RichEmbed()
+    .setAuthor(profileData.userName +"'s Tacos")
+    .setColor(0x00AE86)
+    .addField('Tacos  :taco:', profileData.userTacos, true)
+    .setFooter('use !give @user to give a user some tacos!')
+    message.channel.send({embed});
+}
+
+function tacoStandsCommand(message){
+    var discordUserId = message.author.id;
+
+    getUserProfileData( discordUserId, function(err, profileResponse) {
+        if(err){
+            // user doesnt exist, create their profile first
+            if(err.code === 0){
+                // user doesnt exist
+            }
+        }
+        else{
+            var profileData = {}
+            profileData.userName = message.author.username;
+            profileData.userTacoStands = profileResponse.data.tacotrees;
+            tacoStandsEmbedBuilder(message, profileData);
+        }
+    })
+}
+
+function tacoStandsEmbedBuilder(message, profileData){
+    const embed = new Discord.RichEmbed()
+    .setAuthor(profileData.userName +"'s Taco Stands")
+    .setColor(0x00AE86)
+    .addField('Taco Stands  :bus:', profileData.userTacoStands, true)
+
+    message.channel.send({embed});
 }
 
 function profileBuilder(message, profileData){
@@ -493,6 +639,7 @@ function profileBuilder(message, profileData){
     * Inline fields may not display as inline if the thumbnail and/or image is too big.
     */
     .addField('Taco Stands :bus:', profileData.userTacoStands, true)
+    .addField('Achievments: ', " :kaaba: ", true)
     /*
     * Blank field, useful to create some space.
     
@@ -501,6 +648,10 @@ function profileBuilder(message, profileData){
     */
 
     message.channel.send({embed});
+}
+
+function shopCommand(message){
+    
 }
 
 function helpCommand(message){
@@ -615,6 +766,22 @@ function updateUserTacosWelcome(userId, tacos, cb) {
 }
 
 function updateUserTacosGive(userId, tacoAmount, cb){
+    var query = 'update ' + config.profileTable + ' set tacos=tacos+$1 where discordid=$2'
+    //console.log("new last thank: " + lastThank);
+    db.none(query, [tacoAmount, userId])
+    .then(function () {
+    cb(null, {
+        status: 'success',
+        message: 'added tacos'
+        });
+    })
+    .catch(function (err) {
+        console.log(err);
+        cb(err);
+    });
+}
+
+function updateUserTacosThrow(userId, tacoAmount, cb){
     var query = 'update ' + config.profileTable + ' set tacos=tacos+$1 where discordid=$2'
     //console.log("new last thank: " + lastThank);
     db.none(query, [tacoAmount, userId])
