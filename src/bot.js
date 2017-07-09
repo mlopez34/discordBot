@@ -15,6 +15,7 @@ const client = new Discord.Client();
 var BASE_TACO_COST = 50;
 var BASE_TACO_HARVEST = 10;
 var BASE_TACO_COOK = 20;
+var PICKAXE_COST = 15;
 
 client.on('ready', function(err) {
     if (err){
@@ -654,6 +655,8 @@ function shopBuilder(message, shopData){
     var welcomeMessage = "Hey " + message.author.username + "! Welcome to Bender's shop."
     var tacoStandDescription = "Taco stands can be used to produce tacos based on the number of stands you have. \nYou can produce " + BASE_TACO_HARVEST + " per taco stand. \nThe cost of each additional stand will be higher - city tax bro. "
     var treeCost = BASE_TACO_COST + (shopData.userTacoCost * 25) + " :taco:"
+    var pickaxeDescription = "The pickaxe can be used to scavange. You never know what you will find in these lands ";
+    var pickaxeCost = PICKAXE_COST +" :taco:";
     const embed = new Discord.RichEmbed()
     .setColor(0x87CEFA)
     .setTitle(welcomeMessage)
@@ -663,6 +666,13 @@ function shopBuilder(message, shopData){
     .addField('Description', tacoStandDescription, true)
     .addField('Cost', treeCost, true)
     .addField('Command', "!buystand", true)
+
+    .addBlankField(true)
+    .addBlankField(false)
+    .addField('Pickaxe', ":pick:", true)
+    .addField('Description', pickaxeDescription, true)
+    .addField('Cost', pickaxeCost, true)
+    .addField('Command', "!buypickaxe", true)
     .setTimestamp()
     message.channel.send({embed});
 }
