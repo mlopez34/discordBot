@@ -51,6 +51,9 @@ client.on('message', function(message){
     else if( commandIs("welcome", message)){
         welcomeCommand(message);
     }
+    else if (commandIs("give", message)){
+        giveCommand(message, args[2]);
+    }
 });
 
 function thankCommand(message){
@@ -348,6 +351,65 @@ function welcomeCommand(message){
     }
 }
 
+function giveCommand(message, giveTacoAmount){
+    var discordUserId = message.author.id;
+    var users  = message.mentions.users;
+    var mentionedId;
+    var mentionedUser;
+    console.log("giveTacoAmount " + giveTacoAmount)
+    console.log(users);
+    users.forEach(function(user){
+        console.log(user.id);
+        mentionedId = user.id;
+        mentionedUser = user.username
+    })
+
+    // get user
+    if (mentionedId == discordUserId){
+        message.channel.send(" you can't give yourself taco!")
+    }
+    else{
+        getUserProfileData( discordUserId, function(err, giveResponse) {
+            if(err){
+                // user doesnt exist, create their profile first
+                if(err.code === 0){
+                    message.reply( " you have no tacos!");
+                }
+            }
+            else{
+                // check if user has enough tacos to give
+                if (giveResponse.data.tacos - giveTacoAmount >= 0 ){
+                    console.log("have enough");
+                    var negativeGiveTacoAmount = giveTacoAmount * -1
+                    updateUserTacosGive(discordUserId, negativeGiveTacoAmount, function(err, updateResponse) {
+                        if (err){
+                            console.log(err);
+                            message.reply( err );
+                        }
+                        else{
+                            // 
+                            updateUserTacosGive(mentionedId, giveTacoAmount, function(err, updateResponse) {
+                                if (err){
+                                    console.log(err);
+                                    message.reply( err );
+                                }
+                                else{
+                                    // send message that the user has 1 more taco
+                                    message.reply( " gifted " + giveTacoAmount + " tacos! :taco:");
+                                    
+                                }
+                            })
+                        }
+                    })
+                }
+                else{
+                    console.log('dont have enough tacos ')
+                }
+            }
+        })
+    }
+}
+
 function helpCommand(message){
     var commandsList = "List of commands \n "
     var thank = "!thank @user - thank a user and get 1 taco! \n "
@@ -427,6 +489,22 @@ function updateUserTacosWelcome(userId, tacos, cb) {
     var welcomed = true;
     //console.log("new last thank: " + lastThank);
     db.none(query, [tacos, userId, welcomed])
+    .then(function () {
+    cb(null, {
+        status: 'success',
+        message: 'added tacos'
+        });
+    })
+    .catch(function (err) {
+        console.log(err);
+        cb(err);
+    });
+}
+
+function updateUserTacosGive(userId, tacoAmount, cb){
+    var query = 'update ' + config.profileTable + ' set tacos=tacos+$1 where discordid=$2'
+    //console.log("new last thank: " + lastThank);
+    db.none(query, [tacoAmount, userId])
     .then(function () {
     cb(null, {
         status: 'success',
