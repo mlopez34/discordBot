@@ -16,12 +16,22 @@ var BASE_TACO_COST = 50;
 var BASE_TACO_HARVEST = 10;
 var BASE_TACO_COOK = 20;
 var PICKAXE_COST = 15;
+var BASE_INTERVAL = 5000;
+
+var tacoTuesdayEnabled = false;
 
 client.on('ready', function(err) {
     if (err){
         console.log(err);
     } 
-    console.log('The bot is online');  
+    console.log('The bot is online'); 
+    var channelName;
+    client.channels.forEach(function(channel){
+        if (channel.type == "text"){
+            channelName = channel;
+        }
+    })
+    //steal(channelName);
 });
 
 function commandIs(str, msg){
@@ -32,7 +42,19 @@ client.on('message', function(message){
     console.log(message.author.id); // id of the user that created the message
     var args = message.content.split(/[ ]+/);
     console.log(args);
-
+    // check if it is Taco Tueday
+    var dateUtc = new Date()
+    var weekday = dateUtc.getDay();
+    if (weekday == 2 && !tacoTuesdayEnabled){
+        // Taco Tuesday Has begun
+        // taco gains are doubled, Bender brings someone along to share his tacos on taco tuesday on every meal
+        // Bender's shop allows you to purchase a temporary mariachi band, the band can play music and make you dance
+        tacoTuesdayEnabled = true;
+        tacoTuesdayAnnouncement(message);
+    }
+    else{
+        // disable Taco Tuesday
+    }
     // commands
     if( commandIs("thank", message )){
         thankCommand(message);
@@ -72,6 +94,9 @@ client.on('message', function(message){
     }
     else if(commandIs("shop", message)){
         shopCommand(message);
+    }
+    else if(commandIs("buypickaxe", message)){
+        buyPickaxeCommand(message);
     }
     /*
     else if (commandIs("scavange", message)){
@@ -618,6 +643,11 @@ function tacoStandsEmbedBuilder(message, profileData){
     message.channel.send({embed});
 }
 
+function buyPickaxeCommand(message){
+    // purchase pickaxe
+}
+    
+
 function profileBuilder(message, profileData){
     const embed = new Discord.RichEmbed()
     //.setTitle('This is your title, it can hold 256 characters')
@@ -695,6 +725,30 @@ function shopCommand(message){
             shopBuilder(message, shopData);
         }
     })
+}
+
+function tacoTuesdayAnnouncement(message){
+    const embed = new Discord.RichEmbed()
+    .setTitle("Taco Tuesday time")
+    .setThumbnail("https://media.giphy.com/media/mIZ9rPeMKefm0/giphy.gif")
+    .setColor(0xFFAE86)
+    //.addField('Tacos  :taco:', profileData.userTacos, true)
+    //.setFooter('use !give @user to give a user some tacos!')
+    message.channel.send({embed});
+}
+
+function steal(channelName){
+    // steal random number of tacos, random user, random interval
+    // bender's meal time
+    // sometimes bender shares his meal with someone else
+    var channel = client.channels.get(channelName.id);
+    var interval = setTimeout (function(){ 
+        var tacos = Math.floor(Math.random() * 10)
+        channel.sendMessage("It is time for Bender's meal. :fork_knife_plate: "+ "placeholder has served Bender " + tacos + " tacos :taco: Thank's placeholder for keeping Bender well fed! " + BASE_INTERVAL/1000)
+        BASE_INTERVAL = BASE_INTERVAL * 2;
+        steal(channelName);
+    }, BASE_INTERVAL);
+
 }
 
 // TODO: achievement logic, scavange logic, Inventory logic, mission logic, casino logic, combine logic
