@@ -14,6 +14,7 @@ const client = new Discord.Client();
 
 var BASE_TACO_COST = 50;
 var BASE_TACO_HARVEST = 10;
+var BASE_TACO_COOK = 20;
 
 client.on('ready', function(err) {
     if (err){
@@ -23,7 +24,6 @@ client.on('ready', function(err) {
 });
 
 function commandIs(str, msg){
-    console.log(msg.content.toLowerCase())
     return msg.content.toLowerCase().startsWith(config.commandString + str);
 }
 
@@ -53,6 +53,15 @@ client.on('message', function(message){
     }
     else if (commandIs("give", message)){
         giveCommand(message, args[2]);
+    }
+    else if (commandIs("cook", message)){
+        cookCommand(message);
+    }
+    else if (commandIs("profile", message)){
+        profileCommand(message);
+    }
+    else if (commandIs("scavange", message)){
+        scavangeCommand(message);
     }
 });
 
@@ -363,7 +372,6 @@ function giveCommand(message, giveTacoAmount){
         mentionedId = user.id;
         mentionedUser = user.username
     })
-
     // get user
     if (mentionedId == discordUserId){
         message.channel.send(" you can't give yourself taco!")
@@ -410,13 +418,102 @@ function giveCommand(message, giveTacoAmount){
     }
 }
 
+function cookCommand(message){
+    var discordUserId = message.author.id;
+
+    getUserProfileData( discordUserId, function(err, cookResponse) {
+        if(err){
+            // user doesnt exist, they cannot harvest
+            message.reply( " you can't cook atm because you do not have taco trees!");
+        }
+        else{
+            // check six hours ago
+            var now = new Date();
+            var threeDaysAgo = new Date();
+            threeDaysAgo = new Date(threeDaysAgo.setHours(threeDaysAgo.getHours() - 72));
+
+            if ( threeDaysAgo > cookResponse.data.lastbaketime ){
+                updateUserTacosCook(discordUserId, BASE_TACO_COOK, function(err, updateResponse) {
+                    if (err){
+                        console.log(err);
+                    }
+                    else{
+                        // send message that the user has 1 more taco
+                        message.reply( " you now have " + (cookResponse.data.tacos + BASE_TACO_COOK) + " tacos! :taco:");
+                    }
+                })
+            }else{
+                // six hours have not passed, tell the user they need to wait 
+                message.reply( " you are being too sorryful!");
+            }
+        }
+    })
+}
+
+function profileCommand(message){
+    console.log(message);
+    var discordUserId = message.author.id;
+    getUserProfileData( discordUserId, function(err, profileResponse) {
+        if(err){
+            // user doesnt exist, create their profile first
+            if(err.code === 0){
+
+            }
+        }
+        else{
+            var profileData = {}
+            profileData.userName = message.author.username;
+            profileData.avatarURL = message.author.avatarURL;
+            profileData.userTacos = profileResponse.data.tacos;
+            profileData.userTacoStands = profileResponse.data.tacotrees;
+            profileBuilder(message, profileData);
+        }
+    })
+}
+
+function profileBuilder(message, profileData){
+    const embed = new Discord.RichEmbed()
+    //.setTitle('This is your title, it can hold 256 characters')
+    .setAuthor(profileData.userName +"'s profile")
+    /*
+    * Alternatively, use '#00AE86', [0, 174, 134] or an integer number.
+    */
+    .setColor(0x00AE86)
+    //.setDescription('This is the main body of text, it can hold 2048 characters.')
+    //.setFooter('This is the footer text, it can hold 2048 characters', 'http://i.imgur.com/w1vhFSR.png')
+    //.setImage(message.author.avatarURL)
+    .setThumbnail(profileData.avatarURL)
+    /*
+    * Takes a Date object, defaults to current date.
+    */
+    .setTimestamp()
+    .setURL('https://discord.js.org/#/docs/main/indev/class/RichEmbed')
+    .addField('Tacos  :taco:', profileData.userTacos, true)
+    /*
+    * Inline fields may not display as inline if the thumbnail and/or image is too big.
+    */
+    .addField('Taco Stands :bus:', profileData.userTacoStands, true)
+    /*
+    * Blank field, useful to create some space.
+    
+    .addBlankField(true)
+    .addField('Taco Stands', 3, true);
+    */
+
+    message.channel.send({embed});
+}
+
 function helpCommand(message){
     var commandsList = "List of commands \n "
+    var profile = "!profile - display user's profile \n "
     var thank = "!thank @user - thank a user and get 1 taco! \n "
     var sorry = "!sorry @user - say sorry to a user and get 1 taco! \n "
     var welcome = "!welcome @user - welcome a user and get 2 tacos! \n "
+    var cook = "!cook - cook some tacos! \n "
+    var give = "!give @user number - give the mentioned user some number of tacos! \n "
+    var harvest = "!harvest - harvest some tacos from your taco stands! \n "
     var scavange = "!scavange - in progress "
-    var commandsList = "```" + commandsList + thank + sorry + welcome + scavange + "```";
+    var commandsList = "```" + commandsList + profile + thank + sorry + welcome + cook + give + harvest + scavange + "```";
     message.channel.send(commandsList);
 }
 
@@ -473,6 +570,22 @@ function updateUserTacosSorry(userId, tacos, cb) {
     var lastThank = new Date();
     //console.log("new last thank: " + lastThank);
     db.none(query, [tacos, userId, lastThank])
+    .then(function () {
+    cb(null, {
+        status: 'success',
+        message: 'added tacos'
+        });
+    })
+    .catch(function (err) {
+        cb(err);
+    });
+}
+
+function updateUserTacosCook(userId, tacos, cb) {
+    var query = 'update ' + config.profileTable + ' set tacos=tacos+$1, lastbaketime=$3 where discordid=$2'
+    var lastCook = new Date();
+    //console.log("new last thank: " + lastThank);
+    db.none(query, [tacos, userId, lastCook])
     .then(function () {
     cb(null, {
         status: 'success',
@@ -574,34 +687,3 @@ function harvestTacos(userId, tacosToHarvest, cb){
 
 client.login(config.discordClientLogin);
 
-
-
-// const embed = new Discord.RichEmbed()
-//         .setTitle('This is your title, it can hold 256 characters')
-//         .setAuthor('Author Name', 'https://i.imgur.com/lm8s41J.png')
-//         /*
-//         * Alternatively, use '#00AE86', [0, 174, 134] or an integer number.
-//         */
-//         .setColor(0x00AE86)
-//         .setDescription('This is the main body of text, it can hold 2048 characters.')
-//         .setFooter('This is the footer text, it can hold 2048 characters', 'http://i.imgur.com/w1vhFSR.png')
-//         .setImage('http://i.imgur.com/yVpymuV.png')
-//         .setThumbnail('http://i.imgur.com/p2qNFag.png')
-//         /*
-//         * Takes a Date object, defaults to current date.
-//         */
-//         .setTimestamp()
-//         .setURL('https://discord.js.org/#/docs/main/indev/class/RichEmbed')
-//         .addField('This is a field title, it can hold 256 characters',
-//             'This is a field value, it can hold 2048 characters.')
-//         /*
-//         * Inline fields may not display as inline if the thumbnail and/or image is too big.
-//         */
-//         .addField('Inline Field', 'They can also be inline.', true)
-//         /*
-//         * Blank field, useful to create some space.
-//         */
-//         .addBlankField(true)
-//         .addField('Inline Field 3', 'You can have a maximum of 25 fields.', true);
-
-//         message.channel.send({embed});
