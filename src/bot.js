@@ -14,7 +14,7 @@ const client = new Discord.Client();
 
 var BASE_TACO_COST = 50;
 var BASE_TACO_HARVEST = 10;
-var BASE_TACO_COOK = 20;
+var BASE_TACO_COOK = 10;
 var PICKAXE_COST = 15;
 var BASE_INTERVAL = 5000;
 
@@ -66,7 +66,7 @@ client.on('message', function(message){
         helpCommand(message);
     }
     else if( commandIs("buystand", message )){
-        buyTreeCommand(message);
+        buyStandCommand(message);
     }
     else if( commandIs("harvest", message)){
         harvestCommand(message);
@@ -110,9 +110,12 @@ function thankCommand(message){
     var discordUserId = message.author.id;
     var users  = message.mentions.users;
     var mentionedId;
+    var mentionedUser;
+    console.log(users);
     users.forEach(function(user){
         console.log(user.id);
         mentionedId = user.id;
+        mentionedUser = user.username
     })
     // check the user mentioned someone, and the user is not the same user
     if ( message.mentions.users.size > 0 && discordUserId != mentionedId ){
@@ -140,7 +143,7 @@ function thankCommand(message){
                             console.log(err); // cant create user RIP
                         }
                         else{
-                            message.reply( " you now have " + 1 + " taco! :taco:");
+                            message.channel.send(message.author + " you thanked " + mentionedUser + ", they received a taco! :taco:");
                         }
                     }) 
                 }
@@ -154,24 +157,24 @@ function thankCommand(message){
                 //console.log("timestamp: " + thankResponse.data.lastthanktime);
                 if ( twoHoursAgo > thankResponse.data.lastthanktime ){
                     // six hours have passed - update the user to have 1 more taco
-                    updateUserTacosThank(discordUserId, 1, function(err, updateResponse) {
+                    updateUserTacosThank(mentionedId, 1, function(err, updateResponse) {
                         if (err){
                             console.log(err);
                         }
                         else{
                             // send message that the user has 1 more taco
-                            message.reply( " you now have " + (thankResponse.data.tacos + 1) + " tacos! :taco:");
+                            message.channel.send(message.author + " you thanked " + mentionedUser + ", they received a taco! :taco:");
                         }
                     })
                 }else{
                     // six hours have not passed, tell the user they need to wait 
-                    message.reply( " you are being too thankful!");
+                    message.channel.send(message.author + " you are being too thankful!");
                 }
             }
         });
     }
     else{
-        message.reply( " you must mention a user or a user that isn't you whom you want to thank!");
+        message.channel.send(message.author + " you must mention a user or a user that isn't you whom you want to thank!");
     }
 }
 
@@ -180,9 +183,12 @@ function sorryCommand(message){
     var discordUserId = message.author.id;
     var users  = message.mentions.users;
     var mentionedId;
+    var mentionedUser;
+    console.log(users);
     users.forEach(function(user){
         console.log(user.id);
         mentionedId = user.id;
+        mentionedUser = user.username
     })
 
     if ( message.mentions.users.size > 0 && discordUserId != mentionedId ){
@@ -210,7 +216,7 @@ function sorryCommand(message){
                             console.log(err); // cant create user RIP
                         }
                         else{
-                            message.reply( " you now have " + 1 + " taco! :taco:");
+                            message.channel.send(message.author + " apologized to " + mentionedUser + ", they received a taco! :taco:");
                         }
                     }) 
                 }
@@ -222,62 +228,62 @@ function sorryCommand(message){
                 sixHoursAgo = new Date(sixHoursAgo.setHours(sixHoursAgo.getHours() - 6));
 
                 if ( sixHoursAgo > sorryResponse.data.lastsorrytime ){
-                    updateUserTacosSorry(discordUserId, 1, function(err, updateResponse) {
+                    updateUserTacosSorry(mentionedId, 1, function(err, updateResponse) {
                         if (err){
                             console.log(err);
                         }
                         else{
                             // send message that the user has 1 more taco
-                            message.reply( " you now have " + (sorryResponse.data.tacos + 1) + " tacos! :taco:");
+                            message.channel.send(message.author + " apologized to " + mentionedUser + ", they received a taco! :taco:");
                         }
                     })
                 }else{
                     // six hours have not passed, tell the user they need to wait 
-                    message.reply( " you are being too sorryful!");
+                    message.channel.send(message.author + " you are being too sorryful!");
                 }
             }
         })
     }
     else{
-        message.reply( " you must mention a user or a user that isn't you whom you want to sorry!");
+        message.channel.send(message.author + " you must mention a user or a user that isn't you whom you want to apologize to!");
     }
 
 }
 
-function buyTreeCommand(message){
-    // buy a tree for x number of tacos
+function buyStandCommand(message){
+    // buy a stand for x number of tacos
     var discordUserId = message.author.id
 
     getUserProfileData( discordUserId, function(err, sorryResponse) {
         if(err){
             // user doesnt exist tell the user they should get some tacos
-            message.reply( " you can't afford a tree atm!");
+            message.channel.send(message.author + " you can't afford a stand atm!");
         }
         else{
-            // if user has enough tacos to purchase the tree, add 1 tree, subtract x tacos
+            // if user has enough tacos to purchase the stand, add 1 tree, subtract x tacos
             var userTacoTrees = 0;
             if (sorryResponse.data.tacotrees && sorryResponse.data.tacotrees > -1){
                 userTacoTrees = sorryResponse.data.tacotrees;
             }
             console.log(sorryResponse.data.tacos);
-            var treeCost = BASE_TACO_COST + (userTacoTrees * 25);
-            if (sorryResponse.data.tacos > treeCost){
-                // purchaseTree
-                var tacosSpent = treeCost * -1
+            var standCost = BASE_TACO_COST + (userTacoTrees * 25);
+            if (sorryResponse.data.tacos > standCost){
+                // purchaseStand
+                var tacosSpent = standCost * -1
                  purchaseTacoTree(discordUserId, tacosSpent, sorryResponse.data.tacotrees, function(err, data){
                     if (err){
                         console.log(err);
-                        // couldn't purchase tree
+                        // couldn't purchase stand
                     }
                     else{
-                        message.reply( " congratulations you have purchased a taco tree!");
+                        message.channel.send(message.author + " congratulations you have purchased a taco stand!");
                     }
                  })
             }
             else{
-                // can't afford tree
-                var treeCost = BASE_TACO_COST + (userTacoTrees * 25);
-                message.reply( " you can't afford a tree atm you need " + treeCost + " tacos!");
+                // can't afford stand
+                var standCost = BASE_TACO_COST + (userTacoTrees * 25);
+                message.channel.send(message.author + " you can't afford a stand , you need " + standCost + " tacos!");
             }
         }
     })
@@ -290,14 +296,14 @@ function harvestCommand(message){
     getUserProfileData( discordUserId, function(err, harvestResponse) {
         if(err){
             // user doesnt exist, they cannot harvest
-            message.reply( " you can't harvest atm because you do not have taco trees!");
+            message.channel.send(message.author + " you can't harvest atm because you do not have taco trees!");
         }
         else{
             // get number of trees the user has
             // check lastharvest time
             var now = new Date();
             var threeDaysAgo = new Date();
-            threeDaysAgo = new Date(threeDaysAgo.setHours(threeDaysAgo.getHours() - 72));
+            threeDaysAgo = new Date(threeDaysAgo.setHours(threeDaysAgo.getHours() - 24));
 
             if ( threeDaysAgo > harvestResponse.data.lastharvesttime ){
                 // able to harvest again
@@ -314,16 +320,16 @@ function harvestCommand(message){
                             // something happened
                         }
                         else{
-                            message.reply( " you have harvested " + tacosToHarvest + " tacos!");
+                            message.channel.send(message.author + " you have harvested " + tacosToHarvest + " tacos!");
                         }
                     })
                 }
                 else{
-                    message.reply( " you do not have any trees to harvest!");
+                    message.channel.send(message.author + " you do not have any trees to harvest!");
                 }
             }
             else{
-                message.reply( " you are being too harvestful!");
+                message.channel.send(message.author + " you are being too harvestful!");
             }
         }
     })
@@ -340,10 +346,10 @@ function welcomeCommand(message){
     users.forEach(function(user){
         console.log(user.id);
         mentionedId = user.id;
-        mentionedUser = user.username
+        mentionedUser = user
     })
     if (mentionedId == discordUserId){
-        message.channel.send(" you can't welcome yourself!")
+        message.channel.send(message.author +" you can't welcome yourself!")
     }
     else{
         // check first that user exists, if user doesn't exist create user, then check if welcomed user exists
@@ -388,12 +394,12 @@ function welcomeCommand(message){
                         }
                         else{
                             // send message that the user has 1 more taco
-                            message.reply( " you now have " + (welcomeResponse.data.tacos + 1) + " tacos! :taco:");
+                            message.channel.send(mentionedUser + "welcome! you now have " + (welcomeResponse.data.tacos + 1) + " tacos! :taco:");
                         }
                     })
                 }
                 else{
-                    message.reply( " the user has already been welcomed!");
+                    message.channel.send(message.author + " the user has already been welcomed!");
                 }
             }
         }) 
@@ -410,18 +416,18 @@ function giveCommand(message, giveTacoAmount){
     users.forEach(function(user){
         console.log(user.id);
         mentionedId = user.id;
-        mentionedUser = user.username
+        mentionedUser = user
     })
     // get user
     if (mentionedId == discordUserId){
-        message.channel.send(" you can't give yourself taco!")
+        message.channel.send(message.author + " you can't give yourself taco!")
     }
     else{
         getUserProfileData( discordUserId, function(err, giveResponse) {
             if(err){
                 // user doesnt exist, create their profile first
                 if(err.code === 0){
-                    message.reply( " you have no tacos!");
+                    message.channel.send(message.author + " you have no tacos!");
                 }
             }
             else{
@@ -432,18 +438,16 @@ function giveCommand(message, giveTacoAmount){
                     updateUserTacosGive(discordUserId, negativeGiveTacoAmount, function(err, updateResponse) {
                         if (err){
                             console.log(err);
-                            message.reply( err );
                         }
                         else{
                             // 
                             updateUserTacosGive(mentionedId, giveTacoAmount, function(err, updateResponse) {
                                 if (err){
                                     console.log(err);
-                                    message.reply( err );
                                 }
                                 else{
                                     // send message that the user has 1 more taco
-                                    message.reply( " gifted " + giveTacoAmount + " tacos! :taco:");
+                                    message.channel.send(message.author + " gifted " + mentionedUser + " " + giveTacoAmount + " tacos! :taco:");
                                     
                                 }
                             })
@@ -463,14 +467,15 @@ function cookCommand(message){
 
     getUserProfileData( discordUserId, function(err, cookResponse) {
         if(err){
-            // user doesnt exist, they cannot harvest
-            message.reply( " you can't cook atm because you do not have taco trees!");
+            // user doesnt exist, they cannot cook
+            // TODO: create user and add base_taco_cook
+            message.channel.send(message.author + " you can't cook atm because you do not have taco stands!");
         }
         else{
             // check six hours ago
             var now = new Date();
             var threeDaysAgo = new Date();
-            threeDaysAgo = new Date(threeDaysAgo.setHours(threeDaysAgo.getHours() - 72));
+            threeDaysAgo = new Date(threeDaysAgo.setHours(threeDaysAgo.getHours() - 24));
 
             if ( threeDaysAgo > cookResponse.data.lastbaketime ){
                 updateUserTacosCook(discordUserId, BASE_TACO_COOK, function(err, updateResponse) {
@@ -479,12 +484,12 @@ function cookCommand(message){
                     }
                     else{
                         // send message that the user has 1 more taco
-                        message.reply( " you now have " + (cookResponse.data.tacos + BASE_TACO_COOK) + " tacos! :taco:");
+                        message.channel.send(message.author + " cooked " + BASE_TACO_COOK + " tacos! you now have " + (cookResponse.data.tacos + BASE_TACO_COOK) + " tacos :taco:");
                     }
                 })
             }else{
                 // six hours have not passed, tell the user they need to wait 
-                message.reply( " you are being too sorryful!");
+                message.channel.send(message.author + " you cannot cook tacos for another x minutes!");
             }
         }
     })
@@ -494,13 +499,17 @@ function throwCommand(message){
     console.log(message);
     var discordUserId = message.author.id;
     var users  = message.mentions.users;
+    var userMentioned;
     var mentionedId;
     var mentionedUser;
+    var mentionedDiscriminator;
     console.log(users);
     users.forEach(function(user){
         console.log(user.id);
+        userMentioned = user;
         mentionedId = user.id;
         mentionedUser = user.username
+        mentionedDiscriminator = user.discriminator;
     })
     // throw a taco at someone
     if ( message.mentions.users.size > 0 && discordUserId != mentionedId){
@@ -510,7 +519,7 @@ function throwCommand(message){
                 // user doesnt exist, create their profile first
                 if(err.code === 0){
                     // user doesn't exist
-                    message.reply( " you do not have any tacos to throw!");
+                    message.reply(" you do not have any tacos to throw!");
                 }
             }
             else{
@@ -523,12 +532,12 @@ function throwCommand(message){
                         }
                         else{
                             // send message that the user has 1 more taco
-                            message.reply( " threw a taco at " + mentionedUser + " :dizzy_face: :taco: :wave: :smiling_imp:");
+                            message.channel.send(message.author + " threw a taco at " + userMentioned + " :dizzy_face: :taco: :wave: :smiling_imp:");
                         }
                     })
                 }
                 else{
-                    message.reply( " you do not have any tacos to throw! ")
+                    message.reply(" you do not have any tacos to throw! ")
                 }
             }
         })
@@ -712,7 +721,7 @@ function shopCommand(message){
     getUserProfileData( discordUserId, function(err, sorryResponse) {
         if(err){
             // user doesnt exist tell the user they should get some tacos
-            message.reply( " you can't afford a tree atm!");
+            message.reply( " you can't afford a stand atm!");
         }
         else{
             // if user has enough tacos to purchase the tree, add 1 tree, subtract x tacos
@@ -756,9 +765,9 @@ function steal(channelName){
 function helpCommand(message){
     var commandsList = "List of commands \n "
     var profile = "!profile - display user's profile \n "
-    var thank = "!thank @user - thank a user and get 1 taco! \n "
-    var sorry = "!sorry @user - say sorry to a user and get 1 taco! \n "
-    var welcome = "!welcome @user - welcome a user and get 2 tacos! \n "
+    var thank = "!thank @user - thank a user and they get 1 taco! \n "
+    var sorry = "!sorry @user - say sorry to a user and they get 1 taco! \n "
+    var welcome = "!welcome @user - welcome a user and they get 2 tacos! \n "
     var cook = "!cook - cook some tacos! \n "
     var give = "!give @user number - give the mentioned user some number of tacos! \n "
     var shop = "!shop - enter Bender's shop! \n "
