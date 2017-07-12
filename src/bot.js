@@ -133,13 +133,13 @@ function thankCommand(message){
                         tacos: 1,
                         birthdate: "2001-10-05",
                         lastthanktime: now,
-                        lastcook: threedaysAgo,
+                        lastcooktime: threedaysAgo,
                         lastsorrytime: threedaysAgo,
                         lastscavangetime: threedaysAgo,
                         tacostands: 0,
                         welcomed: false,
                         lastpreparetime: threedaysAgo,
-                        pickaxe: "basic",
+                        pickaxe: "none",
                         map: false,
                         phone: false
                     }
@@ -211,13 +211,13 @@ function sorryCommand(message){
                         tacos: 1,
                         birthdate: "2001-10-05",
                         lastthanktime: threedaysAgo,
-                        lastcook: threedaysAgo,
+                        lastcooktime: threedaysAgo,
                         lastsorrytime: now,
                         lastscavangetime: threedaysAgo,
                         tacostands: 0,
                         welcomed: false,
                         lastpreparetime: threedaysAgo,
-                        pickaxe: "basic",
+                        pickaxe: "none",
                         map: false,
                         phone: false
                     }
@@ -271,16 +271,16 @@ function buyStandCommand(message){
         }
         else{
             // if user has enough tacos to purchase the stand, add 1 tree, subtract x tacos
-            var userTacoTrees = 0;
-            if (sorryResponse.data.tacotrees && sorryResponse.data.tacotrees > -1){
-                userTacoTrees = sorryResponse.data.tacotrees;
+            var userTacoStands = 0;
+            if (sorryResponse.data.tacostands && sorryResponse.data.tacostands > -1){
+                userTacoStands = sorryResponse.data.tacostands;
             }
             console.log(sorryResponse.data.tacos);
-            var standCost = BASE_TACO_COST + (userTacoTrees * 25);
+            var standCost = BASE_TACO_COST + (userTacoStands * 25);
             if (sorryResponse.data.tacos > standCost){
                 // purchaseStand
                 var tacosSpent = standCost * -1
-                 purchaseTacoStand(discordUserId, tacosSpent, sorryResponse.data.tacotrees, function(err, data){
+                 purchaseTacoStand(discordUserId, tacosSpent, sorryResponse.data.tacostands, function(err, data){
                     if (err){
                         console.log(err);
                         // couldn't purchase stand
@@ -292,7 +292,7 @@ function buyStandCommand(message){
             }
             else{
                 // can't afford stand
-                var standCost = BASE_TACO_COST + (userTacoTrees * 25);
+                var standCost = BASE_TACO_COST + (userTacoStands * 25);
                 message.channel.send(message.author + " you can't afford a stand , you need " + standCost + " tacos!");
             }
         }
@@ -317,13 +317,13 @@ function harvestCommand(message){
 
             if ( threeDaysAgo > harvestResponse.data.lastpreparetime ){
                 // able to harvest again
-                var userTacoTrees = 0;
-                if (harvestResponse.data.tacotrees && harvestResponse.data.tacotrees > -1){
-                    userTacoTrees = harvestResponse.data.tacotrees;
+                var userTacoStands = 0;
+                if (harvestResponse.data.tacostands && harvestResponse.data.tacostands > -1){
+                    userTacoStands = harvestResponse.data.tacostands;
                 }
-                if (userTacoTrees > 0){
+                if (userTacoStands > 0){
                     // add tacos x10 of # of trees
-                    var tacosToHarvest = BASE_TACO_HARVEST * userTacoTrees;
+                    var tacosToHarvest = BASE_TACO_HARVEST * userTacoStands;
                     prepareTacos(discordUserId, tacosToHarvest, function(err, data){
                         if (err){
                             console.log(err);
@@ -377,13 +377,13 @@ function welcomeCommand(message){
                         tacos: 2,
                         birthdate: "2001-10-05",
                         lastthanktime: threedaysAgo,
-                        lastcook: threedaysAgo,
+                        lastcooktime: threedaysAgo,
                         lastsorrytime: threedaysAgo,
                         lastscavangetime: threedaysAgo,
                         tacostands: 0,
                         welcomed: false,
                         lastpreparetime: threedaysAgo,
-                        pickaxe: "basic",
+                        pickaxe: "none",
                         map: false,
                         phone: false
                     }
@@ -407,7 +407,7 @@ function welcomeCommand(message){
                         }
                         else{
                             // send message that the user has 1 more taco
-                            message.channel.send(mentionedUser + "welcome! you now have " + (welcomeResponse.data.tacos + 1) + " tacos! :taco:");
+                            message.channel.send(mentionedUser + "welcome! you now have " + (welcomeResponse.data.tacos + 2) + " tacos! :taco:");
                         }
                     })
                 }
@@ -466,13 +466,13 @@ function giveCommand(message, giveTacoAmount){
                                         tacos: giveTacoAmount,
                                         birthdate: "2001-10-05",
                                         lastthanktime: threedaysAgo,
-                                        lastcook: threedaysAgo,
+                                        lastcooktime: threedaysAgo,
                                         lastsorrytime: threedaysAgo,
                                         lastscavangetime: threedaysAgo,
                                         tacostands: 0,
                                         welcomed: false,
                                         lastpreparetime: threedaysAgo,
-                                        pickaxe: "basic",
+                                        pickaxe: "none",
                                         map: false,
                                         phone: false
                                     }
@@ -517,7 +517,7 @@ function cookCommand(message){
             var threeDaysAgo = new Date();
             threeDaysAgo = new Date(threeDaysAgo.setHours(threeDaysAgo.getHours() - 24));
 
-            if ( threeDaysAgo > cookResponse.data.lastbaketime ){
+            if ( threeDaysAgo > cookResponse.data.lastcooktime ){
                 updateUserTacosCook(discordUserId, BASE_TACO_COOK, function(err, updateResponse) {
                     if (err){
                         console.log(err);
@@ -611,7 +611,7 @@ function profileCommand(message){
                 profileData.userName = mentionedUser;
                 profileData.avatarURL = mentionedUserAvatarURL;
                 profileData.userTacos = profileResponse.data.tacos;
-                profileData.userTacoStands = profileResponse.data.tacotrees;
+                profileData.userTacoStands = profileResponse.data.tacostands ? profileResponse.data.tacostands : 0;
                 profileBuilder(message, profileData);
             }
         })
@@ -629,7 +629,7 @@ function profileCommand(message){
                 profileData.userName = message.author.username;
                 profileData.avatarURL = message.author.avatarURL;
                 profileData.userTacos = profileResponse.data.tacos;
-                profileData.userTacoStands = profileResponse.data.tacotrees;
+                profileData.userTacoStands = profileResponse.data.tacostands ? profileResponse.data.tacostands : 0;
                 profileBuilder(message, profileData);
             }
         })
@@ -677,7 +677,7 @@ function tacoStandsCommand(message){
         else{
             var profileData = {}
             profileData.userName = message.author.username;
-            profileData.userTacoStands = profileResponse.data.tacotrees;
+            profileData.userTacoStands = profileResponse.data.tacostands;
             tacoStandsEmbedBuilder(message, profileData);
         }
     })
@@ -704,7 +704,7 @@ function buyPickaxeCommand(message){
         else{
             if (pickaxeResponse.data.tacos > PICKAXE_COST){
                 // purchaseStand
-                var tacosSpent = PICKAXE_COST;
+                var tacosSpent = PICKAXE_COST * -1;
                 purchasePickAxe(discordUserId, tacosSpent, function(err, data){
                     if (err){
                         console.log(err);
@@ -789,11 +789,11 @@ function shopCommand(message){
         else{
             // if user has enough tacos to purchase the tree, add 1 tree, subtract x tacos
             var shopData = {};
-            var userTacoTrees = 0;
-            if (sorryResponse.data.tacotrees && sorryResponse.data.tacotrees > -1){
-                userTacoTrees = sorryResponse.data.tacotrees;
+            var userTacoStands = 0;
+            if (sorryResponse.data.tacostands && sorryResponse.data.tacostands > -1){
+                userTacoStands = sorryResponse.data.tacostands;
             }
-            shopData.userTacoCost = userTacoTrees;
+            shopData.userTacoCost = userTacoStands;
             shopBuilder(message, shopData);
         }
     })
@@ -859,8 +859,8 @@ function getUserProfileData(discordId, cb) {
 }
 
 function createUserProfile(data, cb) {
-  var query = 'insert into '+ config.profileTable + '(discordId, tacos, birthdate, lastthanktime, lastsorrytime, lastcooktime, lastscavangetime, tacostands, welcomed, lastpreparedtime, pickaxe, map, phone)' +
-      'values(${discordId}, ${tacos}, ${birthdate}, ${lastthanktime},  ${lastsorrytime}, ${lastcooktime}, ${lastscavangetime}, ${tacostands}, ${welcomed}, ${lastpreparedtime}, ${pickaxe}, ${map}, ${phone})'
+  var query = 'insert into '+ config.profileTable + '(discordId, tacos, birthdate, lastthanktime, lastsorrytime, lastcooktime, lastscavangetime, tacostands, welcomed, lastpreparetime, pickaxe, map, phone)' +
+      'values(${discordId}, ${tacos}, ${birthdate}, ${lastthanktime},  ${lastsorrytime}, ${lastcooktime}, ${lastscavangetime}, ${tacostands}, ${welcomed}, ${lastpreparetime}, ${pickaxe}, ${map}, ${phone})'
   db.none(query, data)
     .then(function () {
       cb(null, {
@@ -971,11 +971,11 @@ function updateUserTacosThrow(userId, tacoAmount, cb){
 }
 
 function purchasePickAxe(userId, tacosSpent, cb){
-    var query = 'update ' + config.profileTable + ' set tacos=tacos+$1, pickaxe=true where discordid=$2'
+    var query = 'update ' + config.profileTable + ' set tacos=tacos+$1, pickaxe=$3 where discordid=$2'
     console.log(query)
     var lastThank = new Date();
     //console.log("new last thank: " + lastThank);
-    db.none(query, [tacosSpent, userId])
+    db.none(query, [tacosSpent, userId, "basic"])
     .then(function () {
     cb(null, {
         status: 'success',
@@ -987,7 +987,7 @@ function purchasePickAxe(userId, tacosSpent, cb){
     });
 }
 
-function purchaseTacoStand(userId, tacosSpent, currentTacoStandss, cb){
+function purchaseTacoStand(userId, tacosSpent, currentTacoStands, cb){
     console.log(currentTacoStands);
     let tacoStand = 1;
     if (currentTacoStands){
