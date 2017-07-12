@@ -119,7 +119,7 @@ function thankCommand(message){
     })
     // check the user mentioned someone, and the user is not the same user
     if ( message.mentions.users.size > 0 && discordUserId != mentionedId ){
-        getUserProfileData( discordUserId, function(err, thankResponse) {
+        getUserProfileData( mentionedId, function(err, thankResponse) {
             if(err){
                 console.log("in error : " + err.code);
                 // user doesn't exist
@@ -129,14 +129,20 @@ function thankCommand(message){
                     var threedaysAgo = new Date();
                     threedaysAgo = new Date(threedaysAgo.setHours(threedaysAgo.getHours() - 72));
                     var userData = {
-                        discordId: discordUserId,
+                        discordId: mentionedId,
                         tacos: 1,
                         birthdate: "2001-10-05",
                         lastthanktime: now,
-                        lastbaketime: threedaysAgo,
+                        lastcook: threedaysAgo,
                         lastwelcometime: threedaysAgo,
                         lastsorrytime: threedaysAgo,
-                        lastscavangetime: threedaysAgo
+                        lastscavangetime: threedaysAgo,
+                        tacostands: 0,
+                        welcomed: false,
+                        lastharvesttime: threedaysAgo,
+                        pickaxe: "basic",
+                        map: false,
+                        phone: false
                     }
                     createUserProfile(userData, function(err, createUserResponse){
                         if (err){
@@ -192,7 +198,7 @@ function sorryCommand(message){
     })
 
     if ( message.mentions.users.size > 0 && discordUserId != mentionedId ){
-        getUserProfileData( discordUserId, function(err, sorryResponse) {
+        getUserProfileData( mentionedId, function(err, sorryResponse) {
             if(err){
                 console.log("in error : " + err.code);
                 // user doesn't exist
@@ -202,14 +208,20 @@ function sorryCommand(message){
                     var threedaysAgo = new Date();
                     threedaysAgo = new Date(threedaysAgo.setHours(threedaysAgo.getHours() - 72));
                     var userData = {
-                        discordId: discordUserId,
+                        discordId: mentionedId,
                         tacos: 1,
                         birthdate: "2001-10-05",
                         lastthanktime: threedaysAgo,
-                        lastbaketime: threedaysAgo,
+                        lastcook: threedaysAgo,
                         lastwelcometime: threedaysAgo,
                         lastsorrytime: now,
-                        lastscavangetime: threedaysAgo
+                        lastscavangetime: threedaysAgo,
+                        tacostands: 0,
+                        welcomed: false,
+                        lastharvesttime: threedaysAgo,
+                        pickaxe: "basic",
+                        map: false,
+                        phone: false
                     }
                     createUserProfile(userData, function(err, createUserResponse){
                         if (err){
@@ -362,17 +374,21 @@ function welcomeCommand(message){
                     var threedaysAgo = new Date();
                     threedaysAgo = new Date(threedaysAgo.setHours(threedaysAgo.getHours() - 72));
                     var userData = {
+
                         discordId: mentionedId,
-                        tacos: 1,
-                        tacotrees: 0,
+                        tacos: 2,
                         birthdate: "2001-10-05",
                         lastthanktime: threedaysAgo,
-                        lastbaketime: threedaysAgo,
+                        lastcook: threedaysAgo,
                         lastwelcometime: threedaysAgo,
                         lastsorrytime: threedaysAgo,
                         lastscavangetime: threedaysAgo,
-                        lastharvesttime : threedaysAgo,
-                        welcomed: true
+                        tacostands: 0,
+                        welcomed: false,
+                        lastharvesttime: threedaysAgo,
+                        pickaxe: "basic",
+                        map: false,
+                        phone: false
                     }
                     createUserProfile(userData, function(err, createResponse){
                         if(err){
@@ -444,6 +460,34 @@ function giveCommand(message, giveTacoAmount){
                             updateUserTacosGive(mentionedId, giveTacoAmount, function(err, updateResponse) {
                                 if (err){
                                     console.log(err);
+                                    var now = new Date();
+                                    var threedaysAgo = new Date();
+                                    threedaysAgo = new Date(threedaysAgo.setHours(threedaysAgo.getHours() - 72));
+                                    var userData = {
+
+                                        discordId: mentionedId,
+                                        tacos: giveTacoAmount,
+                                        birthdate: "2001-10-05",
+                                        lastthanktime: threedaysAgo,
+                                        lastcook: threedaysAgo,
+                                        lastwelcometime: threedaysAgo,
+                                        lastsorrytime: threedaysAgo,
+                                        lastscavangetime: threedaysAgo,
+                                        tacostands: 0,
+                                        welcomed: false,
+                                        lastharvesttime: threedaysAgo,
+                                        pickaxe: "basic",
+                                        map: false,
+                                        phone: false
+                                    }
+                                    createUserProfile(userData, function(err, createResponse){
+                                        if(err){
+                                            console.log(err);
+                                        }
+                                        else{
+                                            message.channel.send("welcome! " + mentionedUser + " you now have " + userData.tacos + " tacos!")
+                                        }
+                                    })
                                 }
                                 else{
                                     // send message that the user has 1 more taco
@@ -654,6 +698,29 @@ function tacoStandsEmbedBuilder(message, profileData){
 
 function buyPickaxeCommand(message){
     // purchase pickaxe
+    var discordUserId = message.author.id
+
+    getUserProfileData( discordUserId, function(err, pickaxeResponse) {
+        if(err){
+            // user doesnt exist tell the user they should get some tacos
+            message.channel.send(message.author + " you can't afford a stand atm!");
+        }
+        else{
+            if (pickaxeResponse.data.tacos > PICKAXE_COST){
+                // purchaseStand
+                var tacosSpent = PICKAXE_COST;
+                purchasePickAxe(discordUserId, tacosSpent, function(err, data){
+                    if (err){
+                        console.log(err);
+                        // couldn't purchase stand
+                    }
+                    else{
+                        message.channel.send(message.author + " congratulations you have purchased a pickaxe :pick:!");
+                    }
+                })
+            }
+        }
+    })
 }
     
 
@@ -903,6 +970,23 @@ function updateUserTacosThrow(userId, tacoAmount, cb){
     })
     .catch(function (err) {
         console.log(err);
+        cb(err);
+    });
+}
+
+function purchasePickAxe(userId, tacosSpent, cb){
+    var query = 'update ' + config.profileTable + ' set tacos=tacos+$1, pickaxe=true where discordid=$2'
+    console.log(query)
+    var lastThank = new Date();
+    //console.log("new last thank: " + lastThank);
+    db.none(query, [tacosSpent, userId])
+    .then(function () {
+    cb(null, {
+        status: 'success',
+        message: 'purchased pickaxe'
+        });
+    })
+    .catch(function (err) {
         cb(err);
     });
 }
