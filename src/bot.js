@@ -612,6 +612,11 @@ function profileCommand(message){
                 profileData.avatarURL = mentionedUserAvatarURL;
                 profileData.userTacos = profileResponse.data.tacos;
                 profileData.userTacoStands = profileResponse.data.tacostands ? profileResponse.data.tacostands : 0;
+                profileData.userItems = "none";
+                if (profileResponse.data.pickaxe == "basic"){
+                    
+                    profileData.userItems = "Pickaxe :pick: \n"
+                }
                 profileBuilder(message, profileData);
             }
         })
@@ -630,6 +635,11 @@ function profileCommand(message){
                 profileData.avatarURL = message.author.avatarURL;
                 profileData.userTacos = profileResponse.data.tacos;
                 profileData.userTacoStands = profileResponse.data.tacostands ? profileResponse.data.tacostands : 0;
+                profileData.userItems = "none";
+                if (profileResponse.data.pickaxe == "basic"){
+                    
+                    profileData.userItems = "Pickaxe :pick: \n"
+                }
                 profileBuilder(message, profileData);
             }
         })
@@ -702,18 +712,23 @@ function buyPickaxeCommand(message){
             message.channel.send(message.author + " you can't afford a stand atm!");
         }
         else{
-            if (pickaxeResponse.data.tacos > PICKAXE_COST){
-                // purchaseStand
-                var tacosSpent = PICKAXE_COST * -1;
-                purchasePickAxe(discordUserId, tacosSpent, function(err, data){
-                    if (err){
-                        console.log(err);
-                        // couldn't purchase stand
-                    }
-                    else{
-                        message.channel.send(message.author + " congratulations you have purchased a pickaxe :pick:!");
-                    }
-                })
+            if (pickaxeResponse.data.pickaxe == "none"){
+                if (pickaxeResponse.data.tacos > PICKAXE_COST){
+                    // purchaseStand
+                    var tacosSpent = PICKAXE_COST * -1;
+                    purchasePickAxe(discordUserId, tacosSpent, function(err, data){
+                        if (err){
+                            console.log(err);
+                            // couldn't purchase stand
+                        }
+                        else{
+                            message.channel.send(message.author + " congratulations you have purchased a pickaxe :pick:!");
+                        }
+                    })
+                }
+            }
+            else{
+                message.channel.send(message.author + " you already own the pickaxe selected");
             }
         }
     })
@@ -742,7 +757,9 @@ function profileBuilder(message, profileData){
     * Inline fields may not display as inline if the thumbnail and/or image is too big.
     */
     .addField('Taco Stands :bus:', profileData.userTacoStands, true)
-    .addField('Achievments: ', " :kaaba: ", true)
+    .addField('Achievements: ', " :kaaba: ", true)
+
+    .addField('Items :shopping_bags:', profileData.userItems, true)
     /*
     * Blank field, useful to create some space.
     
@@ -834,10 +851,10 @@ function helpCommand(message){
     var cook = "!cook - cook some tacos! \n "
     var give = "!give @user number - give the mentioned user some number of tacos! \n "
     var shop = "!shop - enter Bender's shop! \n "
-    var harvest = "!harvest - harvest some tacos from your taco stands! \n "
+    var prepare = "!prepare - prepare some tacos from your taco stands! \n "
     var throwTaco = "!throw @user - throw a taco at the mentioned user \n "
     var scavange = "!scavange - in progress "
-    var commandsList = "```" + commandsList + profile + thank + sorry + welcome + cook + give + shop + harvest + throwTaco + scavange + "```";
+    var commandsList = "```" + commandsList + profile + thank + sorry + welcome + cook + give + shop + prepare + throwTaco + scavange + "```";
     message.channel.send(commandsList);
 }
 
