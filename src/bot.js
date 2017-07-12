@@ -134,12 +134,11 @@ function thankCommand(message){
                         birthdate: "2001-10-05",
                         lastthanktime: now,
                         lastcook: threedaysAgo,
-                        lastwelcometime: threedaysAgo,
                         lastsorrytime: threedaysAgo,
                         lastscavangetime: threedaysAgo,
                         tacostands: 0,
                         welcomed: false,
-                        lastharvesttime: threedaysAgo,
+                        lastpreparetime: threedaysAgo,
                         pickaxe: "basic",
                         map: false,
                         phone: false
@@ -213,12 +212,11 @@ function sorryCommand(message){
                         birthdate: "2001-10-05",
                         lastthanktime: threedaysAgo,
                         lastcook: threedaysAgo,
-                        lastwelcometime: threedaysAgo,
                         lastsorrytime: now,
                         lastscavangetime: threedaysAgo,
                         tacostands: 0,
                         welcomed: false,
-                        lastharvesttime: threedaysAgo,
+                        lastpreparetime: threedaysAgo,
                         pickaxe: "basic",
                         map: false,
                         phone: false
@@ -282,7 +280,7 @@ function buyStandCommand(message){
             if (sorryResponse.data.tacos > standCost){
                 // purchaseStand
                 var tacosSpent = standCost * -1
-                 purchaseTacoTree(discordUserId, tacosSpent, sorryResponse.data.tacotrees, function(err, data){
+                 purchaseTacoStand(discordUserId, tacosSpent, sorryResponse.data.tacotrees, function(err, data){
                     if (err){
                         console.log(err);
                         // couldn't purchase stand
@@ -317,7 +315,7 @@ function harvestCommand(message){
             var threeDaysAgo = new Date();
             threeDaysAgo = new Date(threeDaysAgo.setHours(threeDaysAgo.getHours() - 24));
 
-            if ( threeDaysAgo > harvestResponse.data.lastharvesttime ){
+            if ( threeDaysAgo > harvestResponse.data.lastpreparetime ){
                 // able to harvest again
                 var userTacoTrees = 0;
                 if (harvestResponse.data.tacotrees && harvestResponse.data.tacotrees > -1){
@@ -326,7 +324,7 @@ function harvestCommand(message){
                 if (userTacoTrees > 0){
                     // add tacos x10 of # of trees
                     var tacosToHarvest = BASE_TACO_HARVEST * userTacoTrees;
-                    harvestTacos(discordUserId, tacosToHarvest, function(err, data){
+                    prepareTacos(discordUserId, tacosToHarvest, function(err, data){
                         if (err){
                             console.log(err);
                             // something happened
@@ -380,12 +378,11 @@ function welcomeCommand(message){
                         birthdate: "2001-10-05",
                         lastthanktime: threedaysAgo,
                         lastcook: threedaysAgo,
-                        lastwelcometime: threedaysAgo,
                         lastsorrytime: threedaysAgo,
                         lastscavangetime: threedaysAgo,
                         tacostands: 0,
                         welcomed: false,
-                        lastharvesttime: threedaysAgo,
+                        lastpreparetime: threedaysAgo,
                         pickaxe: "basic",
                         map: false,
                         phone: false
@@ -470,12 +467,11 @@ function giveCommand(message, giveTacoAmount){
                                         birthdate: "2001-10-05",
                                         lastthanktime: threedaysAgo,
                                         lastcook: threedaysAgo,
-                                        lastwelcometime: threedaysAgo,
                                         lastsorrytime: threedaysAgo,
                                         lastscavangetime: threedaysAgo,
                                         tacostands: 0,
                                         welcomed: false,
-                                        lastharvesttime: threedaysAgo,
+                                        lastpreparetime: threedaysAgo,
                                         pickaxe: "basic",
                                         map: false,
                                         phone: false
@@ -863,8 +859,8 @@ function getUserProfileData(discordId, cb) {
 }
 
 function createUserProfile(data, cb) {
-  var query = 'insert into '+ config.profileTable + '(discordId, tacos, birthdate, lastthanktime, lastsorrytime, lastbaketime, lastwelcometime, lastscavangetime)' +
-      'values(${discordId}, ${tacos}, ${birthdate}, ${lastthanktime},  ${lastsorrytime}, ${lastbaketime}, ${lastwelcometime}, ${lastscavangetime})'
+  var query = 'insert into '+ config.profileTable + '(discordId, tacos, birthdate, lastthanktime, lastsorrytime, lastcooktime, lastscavangetime, tacostands, welcomed, lastpreparedtime, pickaxe, map, phone)' +
+      'values(${discordId}, ${tacos}, ${birthdate}, ${lastthanktime},  ${lastsorrytime}, ${lastcooktime}, ${lastscavangetime}, ${tacostands}, ${welcomed}, ${lastpreparedtime}, ${pickaxe}, ${map}, ${phone})'
   db.none(query, data)
     .then(function () {
       cb(null, {
@@ -910,7 +906,7 @@ function updateUserTacosSorry(userId, tacos, cb) {
 }
 
 function updateUserTacosCook(userId, tacos, cb) {
-    var query = 'update ' + config.profileTable + ' set tacos=tacos+$1, lastbaketime=$3 where discordid=$2'
+    var query = 'update ' + config.profileTable + ' set tacos=tacos+$1, lastcooktime=$3 where discordid=$2'
     var lastCook = new Date();
     //console.log("new last thank: " + lastThank);
     db.none(query, [tacos, userId, lastCook])
@@ -991,19 +987,19 @@ function purchasePickAxe(userId, tacosSpent, cb){
     });
 }
 
-function purchaseTacoTree(userId, tacosSpent, currentTacoTrees, cb){
-    console.log(currentTacoTrees);
-    let tacoTree = 1;
-    if (currentTacoTrees){
-        var query = 'update ' + config.profileTable + ' set tacos=tacos+$1, tacotrees=tacotrees+$3 where discordid=$2'
+function purchaseTacoStand(userId, tacosSpent, currentTacoStandss, cb){
+    console.log(currentTacoStands);
+    let tacoStand = 1;
+    if (currentTacoStands){
+        var query = 'update ' + config.profileTable + ' set tacos=tacos+$1, tacostands=tacostands+$3 where discordid=$2'
         console.log(query)
         var lastThank = new Date();
         //console.log("new last thank: " + lastThank);
-        db.none(query, [tacosSpent, userId, tacoTree])
+        db.none(query, [tacosSpent, userId, tacoStand])
         .then(function () {
         cb(null, {
             status: 'success',
-            message: 'added taco tree'
+            message: 'added taco stand'
             });
         })
         .catch(function (err) {
@@ -1012,15 +1008,15 @@ function purchaseTacoTree(userId, tacosSpent, currentTacoTrees, cb){
     }
     else{
         
-        var query = 'update ' + config.profileTable + ' set tacos=tacos+$1, tacotrees=$3 where discordid=$2'
+        var query = 'update ' + config.profileTable + ' set tacos=tacos+$1, tacostands=$3 where discordid=$2'
         console.log(query)
         var lastThank = new Date();
         //console.log("new last thank: " + lastThank);
-        db.none(query, [tacosSpent, userId, tacoTree])
+        db.none(query, [tacosSpent, userId, tacoStand])
         .then(function () {
         cb(null, {
             status: 'success',
-            message: 'added taco tree'
+            message: 'added taco stand'
             });
         })
         .catch(function (err) {
@@ -1029,12 +1025,12 @@ function purchaseTacoTree(userId, tacosSpent, currentTacoTrees, cb){
     }
 }
 
-function harvestTacos(userId, tacosToHarvest, cb){
+function prepareTacos(userId, tacosToHarvest, cb){
     // update tacos and lastharvest
-    var query = 'update ' + config.profileTable + ' set tacos=tacos+$1, lastharvesttime=$3 where discordid=$2'
-    var lastharvest = new Date();
+    var query = 'update ' + config.profileTable + ' set tacos=tacos+$1, lastpreparetime=$3 where discordid=$2'
+    var lastprepare = new Date();
     //console.log("new last thank: " + lastThank);
-    db.none(query, [ tacosToHarvest, userId, lastharvest ])
+    db.none(query, [ tacosToHarvest, userId, lastprepare ])
     .then(function () {
     cb(null, {
         status: 'success',
