@@ -781,7 +781,7 @@ function profileBuilder(message, profileData){
 
 function shopBuilder(message, shopData){
     var welcomeMessage = "Hey " + message.author.username + "! Welcome to Bender's shop."
-    var tacoStandDescription = "Taco stands can be used to produce tacos based on the number of stands you have. \nYou can produce " + BASE_TACO_HARVEST + " per taco stand. \nThe cost of each additional stand will be higher - city tax bro. "
+    var tacoStandDescription = "Taco stands can be used to produce tacos based on the number of stands you have. \nYou can produce " + BASE_TACO_PREPARE + " per taco stand. \nThe cost of each additional stand will be higher - city tax bro. "
     var treeCost = BASE_TACO_COST + (shopData.userTacoCost * 25) + " :taco:"
     var pickaxeDescription = "The pickaxe can be used to scavange. You never know what you will find in these lands ";
     var pastaDescription = "Add a quote to your profile, after purchasing type !pasta quote - you will no longer be basic."
@@ -821,7 +821,7 @@ function shopCommand(message){
     getUserProfileData( discordUserId, function(err, sorryResponse) {
         if(err){
             // user doesnt exist tell the user they should get some tacos
-            message.reply( " you can't afford a stand atm!");
+            message.reply( " you can't afford a stand atm!" + err);
         }
         else{
             // if user has enough tacos to purchase the tree, add 1 tree, subtract x tacos
