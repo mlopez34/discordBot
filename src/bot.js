@@ -1,5 +1,6 @@
 'use strict'
 var promise = require('bluebird');
+var moment = require("moment");
 var options = {
   // Initialization Options
   promiseLib: promise
@@ -13,10 +14,11 @@ const Discord = require("discord.js");
 const client = new Discord.Client();
 
 var BASE_TACO_COST = 50;
-var BASE_TACO_HARVEST = 10;
+var BASE_TACO_PREPARE = 10;
 var BASE_TACO_COOK = 10;
 var PICKAXE_COST = 15;
 var BASE_INTERVAL = 5000;
+var PASTA_COST = 125
 
 var tacoTuesdayEnabled = false;
 
@@ -68,8 +70,8 @@ client.on('message', function(message){
     else if( commandIs("buystand", message )){
         buyStandCommand(message);
     }
-    else if( commandIs("harvest", message)){
-        harvestCommand(message);
+    else if( commandIs("prepare", message)){
+        prepareCommand(message);
     }
     else if( commandIs("welcome", message)){
         welcomeCommand(message);
@@ -97,6 +99,9 @@ client.on('message', function(message){
     }
     else if(commandIs("buypickaxe", message)){
         buyPickaxeCommand(message);
+    }
+    else if(commandIs("buypasta", message)){
+        buyPastaCommand(message);
     }
     /*
     else if (commandIs("scavange", message)){
@@ -173,7 +178,8 @@ function thankCommand(message){
                     })
                 }else{
                     // six hours have not passed, tell the user they need to wait 
-                    message.channel.send(message.author + " you are being too thankful!");
+                    var numberOfHours = getDateDifference(thankResponse.data.lastthanktime, now, 2);
+                    message.channel.send(message.author + " you are being too thankful! please wait `" + numberOfHours +"`");
                 }
             }
         });
@@ -249,7 +255,8 @@ function sorryCommand(message){
                     })
                 }else{
                     // six hours have not passed, tell the user they need to wait 
-                    message.channel.send(message.author + " you are being too sorryful!");
+                    var numberOfHours = getDateDifference(sorryResponse.data.lastthanktime, now, 6);
+                    message.channel.send(message.author + " you are being too sorryful! Please wait `" + numberOfHours +"`");
                 }
             }
         })
@@ -293,53 +300,54 @@ function buyStandCommand(message){
             else{
                 // can't afford stand
                 var standCost = BASE_TACO_COST + (userTacoStands * 25);
-                message.channel.send(message.author + " you can't afford a stand , you need " + standCost + " tacos!");
+                message.channel.send(message.author + " you can't afford a stand , you need `" + standCost + " tacos`!");
             }
         }
     })
 }
 
-function harvestCommand(message){
-    // harvest tacos based on number of taco trees
+function prepareCommand(message){
+    // prepare tacos based on number of taco trees
     var discordUserId = message.author.id
 
-    getUserProfileData( discordUserId, function(err, harvestResponse) {
+    getUserProfileData( discordUserId, function(err, prepareResponse) {
         if(err){
-            // user doesnt exist, they cannot harvest
-            message.channel.send(message.author + " you can't harvest atm because you do not have taco trees!");
+            // user doesnt exist, they cannot prepare
+            message.channel.send(message.author + " you can't prepare atm because you do not have taco stands!");
         }
         else{
             // get number of trees the user has
-            // check lastharvest time
+            // check lastprepare time
             var now = new Date();
             var threeDaysAgo = new Date();
-            threeDaysAgo = new Date(threeDaysAgo.setHours(threeDaysAgo.getHours() - 24));
+            threeDaysAgo = new Date(threeDaysAgo.setHours(threeDaysAgo.getHours() - 72));
 
-            if ( threeDaysAgo > harvestResponse.data.lastpreparetime ){
-                // able to harvest again
+            if ( threeDaysAgo > prepareResponse.data.lastpreparetime ){
+                // able to prepare again
                 var userTacoStands = 0;
-                if (harvestResponse.data.tacostands && harvestResponse.data.tacostands > -1){
-                    userTacoStands = harvestResponse.data.tacostands;
+                if (prepareResponse.data.tacostands && prepareResponse.data.tacostands > -1){
+                    userTacoStands = prepareResponse.data.tacostands;
                 }
                 if (userTacoStands > 0){
                     // add tacos x10 of # of trees
-                    var tacosToHarvest = BASE_TACO_HARVEST * userTacoStands;
-                    prepareTacos(discordUserId, tacosToHarvest, function(err, data){
+                    var tacosToPrepare = BASE_TACO_PREPARE * userTacoStands;
+                    prepareTacos(discordUserId, tacosToPrepare, function(err, data){
                         if (err){
                             console.log(err);
                             // something happened
                         }
                         else{
-                            message.channel.send(message.author + " you have harvested " + tacosToHarvest + " tacos!");
+                            message.channel.send(message.author + " you have prepared " + tacosToPrepare + " tacos!");
                         }
                     })
                 }
                 else{
-                    message.channel.send(message.author + " you do not have any trees to harvest!");
+                    message.channel.send(message.author + " you do not have any stands to prepare tacos with!");
                 }
             }
             else{
-                message.channel.send(message.author + " you are being too harvestful!");
+                var numberOfHours = getDateDifference(prepareResponse.data.lastthanktime, now, 24);
+                message.channel.send(message.author + " you ran out of ingredients! Please wait `" + numberOfHours + "`");
             }
         }
     })
@@ -529,7 +537,8 @@ function cookCommand(message){
                 })
             }else{
                 // six hours have not passed, tell the user they need to wait 
-                message.channel.send(message.author + " you cannot cook tacos for another x minutes!");
+                var numberOfHours = getDateDifference(cookResponse.data.lastthanktime, now, 24);
+                message.channel.send(message.author + " you cannot cook tacos currently, Please wait `" + numberOfHours + "`");
             }
         }
     })
@@ -775,12 +784,16 @@ function shopBuilder(message, shopData){
     var tacoStandDescription = "Taco stands can be used to produce tacos based on the number of stands you have. \nYou can produce " + BASE_TACO_HARVEST + " per taco stand. \nThe cost of each additional stand will be higher - city tax bro. "
     var treeCost = BASE_TACO_COST + (shopData.userTacoCost * 25) + " :taco:"
     var pickaxeDescription = "The pickaxe can be used to scavange. You never know what you will find in these lands ";
+    var pastaDescription = "Add a quote to your profile, after purchasing type !pasta quote - you will no longer be basic."
+    
     var pickaxeCost = PICKAXE_COST +" :taco:";
     const embed = new Discord.RichEmbed()
     .setColor(0x87CEFA)
     .setTitle(welcomeMessage)
     .setThumbnail()
     .setDescription("Bender accepts Tacos as currency since he's a hungry guy :shrug:. Have a look around!")
+    .addField('Your current tacos', shopData.userTacos + " :taco:", false)
+    .addBlankField(false)
     .addField('Taco Stands', ":bus:", true)
     .addField('Description', tacoStandDescription, true)
     .addField('Cost', treeCost, true)
@@ -792,6 +805,13 @@ function shopBuilder(message, shopData){
     .addField('Description', pickaxeDescription, true)
     .addField('Cost', pickaxeCost, true)
     .addField('Command', "!buypickaxe", true)
+
+    .addBlankField(true)
+    .addBlankField(false)
+    .addField('Pasta', ":spaghetti:", true)
+    .addField('Description', pastaDescription, true)
+    .addField('Cost', PASTA_COST + " :taco:", true)
+    .addField('Command', "!buyPasta", true)
     .setTimestamp()
     message.channel.send({embed});
 }
@@ -807,6 +827,8 @@ function shopCommand(message){
             // if user has enough tacos to purchase the tree, add 1 tree, subtract x tacos
             var shopData = {};
             var userTacoStands = 0;
+            var userTacos = sorryResponse.data.tacos;
+            shopData.userTacos = userTacos;
             if (sorryResponse.data.tacostands && sorryResponse.data.tacostands > -1){
                 userTacoStands = sorryResponse.data.tacostands;
             }
@@ -837,6 +859,42 @@ function steal(channelName){
         BASE_INTERVAL = BASE_INTERVAL * 2;
         steal(channelName);
     }, BASE_INTERVAL);
+
+}
+
+function getDateDifference(beforeDate, now, hoursDifference){
+    // get difference between now and beforeDate + hoursDifference 
+    
+    var afterDate = new Date(beforeDate.setHours(beforeDate.getHours() + hoursDifference));
+    var test = moment(afterDate);
+
+    var daysToAdd = test.diff(now, 'days');
+    var nowPlusDays = new Date(now.setHours(now.getHours() + (daysToAdd * 24) ));
+    var hoursToAdd =  test.diff(now, 'hours'); 
+    var nowPlusHours = new Date(now.setHours(now.getHours() + hoursToAdd));
+    var minutesToAdd = test.diff(nowPlusHours, 'minutes');
+    var nowPlusMinutes = new Date(nowPlusHours.setMinutes(nowPlusHours.getMinutes() + minutesToAdd));
+    var secondsToAdd = test.diff(nowPlusMinutes, 'seconds');
+    var nowPlusSeconds = new Date(nowPlusMinutes.setMinutes(nowPlusMinutes.getSeconds() + secondsToAdd));
+    
+    var dateDifferenceString = "";
+    if (daysToAdd > 0){
+        dateDifferenceString = dateDifferenceString + daysToAdd + " Days ";
+    }
+    if (hoursToAdd > 0){
+        dateDifferenceString = dateDifferenceString + hoursToAdd + " Hours ";
+    }
+    if (minutesToAdd > 0){
+        dateDifferenceString = dateDifferenceString + minutesToAdd + " Minutes ";
+    }
+    if (secondsToAdd > 0){
+        dateDifferenceString = dateDifferenceString + secondsToAdd + " Seconds ";
+    }
+    return dateDifferenceString;
+}
+
+function buyPastaCommand(message){
+    // purchase a quote for your profile
 
 }
 
