@@ -17,8 +17,23 @@ var BASE_TACO_COST = 50;
 var BASE_TACO_PREPARE = 10;
 var BASE_TACO_COOK = 10;
 var PICKAXE_COST = 15;
-var BASE_INTERVAL = 5000;
+var BASE_INTERVAL = 3600000;
 var PASTA_COST = 125
+
+var achievementsData = {
+    "Nice guy" : {
+        emoji : ":boy::skin-tone-2:",
+        description: "thank 25 users"
+    },
+    "Building an empire": {
+        emoji : ":chart_with_upwards_trend:",
+        description: "obtain 5 taco stands"
+    },
+    "Get a room": {
+        emoji : ":kiss:",
+        description: "give 150 tacos to one person at once"
+    }
+}
 
 var tacoTuesdayEnabled = false;
 
@@ -33,7 +48,7 @@ client.on('ready', function(err) {
             channelName = channel;
         }
     })
-    //steal(channelName);
+    steal(channelName);
 });
 
 function commandIs(str, msg){
@@ -101,7 +116,14 @@ client.on('message', function(message){
         buyPickaxeCommand(message);
     }
     else if(commandIs("buypasta", message)){
-        buyPastaCommand(message);
+        var pasta = "";
+        for (var arg in args){
+            if (arg > 0){
+                pasta = pasta.concat(args[arg] + " ");
+            }
+        }
+        console.log(pasta);
+        buyPastaCommand(message, pasta);
     }
     /*
     else if (commandIs("scavange", message)){
@@ -120,8 +142,9 @@ function thankCommand(message){
     users.forEach(function(user){
         console.log(user.id);
         mentionedId = user.id;
-        mentionedUser = user.username
+        mentionedUser = user
     })
+    
     // check the user mentioned someone, and the user is not the same user
     if ( message.mentions.users.size > 0 && discordUserId != mentionedId ){
         getUserProfileData( mentionedId, function(err, thankResponse) {
@@ -148,20 +171,22 @@ function thankCommand(message){
                         map: false,
                         phone: false
                     }
-                    createUserProfile(userData, function(err, createUserResponse){
+                    statisticsManage(discordUserId, "thankCount", 1, function(err, statSuccess){
                         if (err){
-                            console.log(err); // cant create user RIP
+                            console.log(err);
                         }
                         else{
-                            message.channel.send(message.author + " you thanked " + mentionedUser + ", they received a taco! :taco:");
+                            // check achievements??
                         }
-                    }) 
+                    })
                 }
             }else{
                 // check against thank timestamp and if 6 hours have passed
+                var achievements = thankResponse.data.achievements;
+                console.log(achievements);
                 var now = new Date();
                 var twoHoursAgo = new Date();
-                twoHoursAgo = new Date(twoHoursAgo.setHours(twoHoursAgo.getHours() - 2));
+                twoHoursAgo = new Date(twoHoursAgo.setHours(twoHoursAgo.getHours() - 0));
                 //console.log("now: " + now);
                 //console.log("twoHoursAgo: " + twoHoursAgo);
                 //console.log("timestamp: " + thankResponse.data.lastthanktime);
@@ -174,6 +199,20 @@ function thankCommand(message){
                         else{
                             // send message that the user has 1 more taco
                             message.channel.send(message.author + " you thanked " + mentionedUser + ", they received a taco! :taco:");
+                            //update statistic
+                            statisticsManage(discordUserId, "thankCount", 1, function(err, statSuccess){
+                                if (err){
+                                    console.log(err);
+                                }
+                                else{
+                                    console.log(statSuccess);
+                                    // check achievements??
+                                    var data = {}
+                                    data.achievements = achievements;
+                                    console.log(data);
+                                    checkForAchievements(discordUserId, data, message);
+                                }
+                            })
                         }
                     })
                 }else{
@@ -233,6 +272,14 @@ function sorryCommand(message){
                         }
                         else{
                             message.channel.send(message.author + " apologized to " + mentionedUser + ", they received a taco! :taco:");
+                            statisticsManage(discordUserId, "sorryCount", 1, function(err, statSuccess){
+                                if (err){
+                                    console.log(err);
+                                }
+                                else{
+                                    // check achievements??
+                                }
+                            })
                         }
                     }) 
                 }
@@ -251,6 +298,14 @@ function sorryCommand(message){
                         else{
                             // send message that the user has 1 more taco
                             message.channel.send(message.author + " apologized to " + mentionedUser + ", they received a taco! :taco:");
+                            statisticsManage(discordUserId, "sorryCount", 1, function(err, statSuccess){
+                                if (err){
+                                    console.log(err);
+                                }
+                                else{
+                                    // check achievements??
+                                }
+                            })
                         }
                     })
                 }else{
@@ -271,29 +326,38 @@ function buyStandCommand(message){
     // buy a stand for x number of tacos
     var discordUserId = message.author.id
 
-    getUserProfileData( discordUserId, function(err, sorryResponse) {
+    getUserProfileData( discordUserId, function(err, buyStandResponse) {
         if(err){
             // user doesnt exist tell the user they should get some tacos
             message.channel.send(message.author + " you can't afford a stand atm!");
         }
         else{
             // if user has enough tacos to purchase the stand, add 1 tree, subtract x tacos
+            var achievements = buyStandResponse.data.achievements;
             var userTacoStands = 0;
-            if (sorryResponse.data.tacostands && sorryResponse.data.tacostands > -1){
-                userTacoStands = sorryResponse.data.tacostands;
+            if (buyStandResponse.data.tacostands && buyStandResponse.data.tacostands > -1){
+                userTacoStands = buyStandResponse.data.tacostands;
             }
-            console.log(sorryResponse.data.tacos);
+            console.log(buyStandResponse.data.tacos);
             var standCost = BASE_TACO_COST + (userTacoStands * 25);
-            if (sorryResponse.data.tacos > standCost){
+            if (buyStandResponse.data.tacos >= standCost){
                 // purchaseStand
                 var tacosSpent = standCost * -1
-                 purchaseTacoStand(discordUserId, tacosSpent, sorryResponse.data.tacostands, function(err, data){
+                 purchaseTacoStand(discordUserId, tacosSpent, buyStandResponse.data.tacostands, function(err, data){
                     if (err){
                         console.log(err);
                         // couldn't purchase stand
                     }
                     else{
                         message.channel.send(message.author + " congratulations you have purchased a taco stand!");
+                        
+                        // check achievements??
+                        var data = {}
+                        data.achievements = achievements;
+                        data.tacostands = userTacoStands + 1;
+                        console.log(data);
+                        checkForAchievements(discordUserId, data, message);
+                            
                     }
                  })
             }
@@ -346,7 +410,7 @@ function prepareCommand(message){
                 }
             }
             else{
-                var numberOfHours = getDateDifference(prepareResponse.data.lastthanktime, now, 24);
+                var numberOfHours = getDateDifference(prepareResponse.data.lastpreparetime, now, 24);
                 message.channel.send(message.author + " you ran out of ingredients! Please wait `" + numberOfHours + "`");
             }
         }
@@ -400,7 +464,17 @@ function welcomeCommand(message){
                             console.log(err);
                         }
                         else{
-                            message.channel.send("welcome! " + mentionedUser + " you now have " + userData.tacos + " tacos!")
+                            if (mentionedUser.id){
+                                message.channel.send(" welcome! " + mentionedUser + " you now have " + userData.tacos + " tacos!")
+                                statisticsManage(discordUserId, "welcomeCount", 1, function(err, statSuccess){
+                                    if (err){
+                                        console.log(err);
+                                    }
+                                    else{
+                                        // check achievements??
+                                    }
+                                })
+                            }
                         }
                     })
                 }
@@ -415,7 +489,15 @@ function welcomeCommand(message){
                         }
                         else{
                             // send message that the user has 1 more taco
-                            message.channel.send(mentionedUser + "welcome! you now have " + (welcomeResponse.data.tacos + 2) + " tacos! :taco:");
+                            message.channel.send(mentionedUser + " welcome! you now have " + (welcomeResponse.data.tacos + 2) + " tacos! :taco:");
+                            statisticsManage(discordUserId, "welcomeCount", 1, function(err, statSuccess){
+                                if (err){
+                                    console.log(err);
+                                }
+                                else{
+                                    // check achievements??
+                                }
+                            })
                         }
                     })
                 }
@@ -446,13 +528,15 @@ function giveCommand(message, giveTacoAmount){
     else{
         getUserProfileData( discordUserId, function(err, giveResponse) {
             if(err){
-                // user doesnt exist, create their profile first
+                // user doesnt exist, 
+                // TODO: create their profile first
                 if(err.code === 0){
                     message.channel.send(message.author + " you have no tacos!");
                 }
             }
             else{
                 // check if user has enough tacos to give
+                var achievements = giveResponse.data.achievements;
                 if (giveResponse.data.tacos - giveTacoAmount >= 0 ){
                     console.log("have enough");
                     var negativeGiveTacoAmount = giveTacoAmount * -1
@@ -490,12 +574,33 @@ function giveCommand(message, giveTacoAmount){
                                         }
                                         else{
                                             message.channel.send("welcome! " + mentionedUser + " you now have " + userData.tacos + " tacos!")
+                                            statisticsManage(discordUserId, "giveCount", userData.tacos, function(err, statSuccess){
+                                                if (err){
+                                                    console.log(err);
+                                                }
+                                                else{
+                                                    // check achievements??
+                                                }
+                                            })
                                         }
                                     })
                                 }
                                 else{
                                     // send message that the user has 1 more taco
                                     message.channel.send(message.author + " gifted " + mentionedUser + " " + giveTacoAmount + " tacos! :taco:");
+                                    statisticsManage(discordUserId, "giveCount", giveTacoAmount, function(err, statSuccess){
+                                        if (err){
+                                            console.log(err);
+                                        }
+                                        else{
+                                            console.log(statSuccess);
+                                            // check achievements??
+                                            var data = {}
+                                            data.achievements = achievements;
+                                            console.log(data);
+                                            checkForAchievements(discordUserId, data, message);
+                                        }
+                                    })
                                     
                                 }
                             })
@@ -516,8 +621,33 @@ function cookCommand(message){
     getUserProfileData( discordUserId, function(err, cookResponse) {
         if(err){
             // user doesnt exist, they cannot cook
-            // TODO: create user and add base_taco_cook
-            message.channel.send(message.author + " you can't cook atm because you do not have taco stands!");
+            var now = new Date();
+            var threedaysAgo = new Date();
+            threedaysAgo = new Date(threedaysAgo.setHours(threedaysAgo.getHours() - 72));
+            var userData = {
+                discordId: mentionedId,
+                tacos: BASE_TACO_COOK,
+                birthdate: "2001-10-05",
+                lastthanktime: threedaysAgo,
+                lastcooktime: now,
+                lastsorrytime: threeDaysAgo,
+                lastscavangetime: threedaysAgo,
+                tacostands: 0,
+                welcomed: false,
+                lastpreparetime: threedaysAgo,
+                pickaxe: "none",
+                map: false,
+                phone: false
+            }
+            createUserProfile(userData, function(err, createUserResponse){
+                if (err){
+                    console.log(err); // cant create user RIP
+                }
+                else{
+                    message.author + " cooked " + BASE_TACO_COOK + " tacos! you now have " + BASE_TACO_COOK + " tacos :taco:"
+                }
+            }) 
+            //message.channel.send(message.author + " you can't cook atm because you do not have taco stands!");
         }
         else{
             // check six hours ago
@@ -537,7 +667,7 @@ function cookCommand(message){
                 })
             }else{
                 // six hours have not passed, tell the user they need to wait 
-                var numberOfHours = getDateDifference(cookResponse.data.lastthanktime, now, 24);
+                var numberOfHours = getDateDifference(cookResponse.data.lastcooktime, now, 24);
                 message.channel.send(message.author + " you cannot cook tacos currently, Please wait `" + numberOfHours + "`");
             }
         }
@@ -582,6 +712,22 @@ function throwCommand(message){
                         else{
                             // send message that the user has 1 more taco
                             message.channel.send(message.author + " threw a taco at " + userMentioned + " :dizzy_face: :taco: :wave: :smiling_imp:");
+                            statisticsManage(discordUserId, "thrownToCount", 1, function(err, statSuccess){
+                                if (err){
+                                    console.log(err);
+                                }
+                                else{
+                                    // check achievements??
+                                }
+                            })
+                            statisticsManage(mentionedId, "thrownAtCount", 1, function(err, statSuccess){
+                                if (err){
+                                    console.log(err);
+                                }
+                                else{
+                                    // check achievements??
+                                }
+                            })
                         }
                     })
                 }
@@ -622,6 +768,8 @@ function profileCommand(message){
                 profileData.userTacos = profileResponse.data.tacos;
                 profileData.userTacoStands = profileResponse.data.tacostands ? profileResponse.data.tacostands : 0;
                 profileData.userItems = "none";
+                profileData.pasta = profileResponse.data.pasta;
+                profileData.achievementString = achievementStringBuilder(profileResponse.data.achievements);
                 if (profileResponse.data.pickaxe == "basic"){
                     
                     profileData.userItems = "Pickaxe :pick: \n"
@@ -645,6 +793,8 @@ function profileCommand(message){
                 profileData.userTacos = profileResponse.data.tacos;
                 profileData.userTacoStands = profileResponse.data.tacostands ? profileResponse.data.tacostands : 0;
                 profileData.userItems = "none";
+                profileData.pasta = profileResponse.data.pasta;
+                profileData.achievementString = achievementStringBuilder(profileResponse.data.achievements);
                 if (profileResponse.data.pickaxe == "basic"){
                     
                     profileData.userItems = "Pickaxe :pick: \n"
@@ -722,7 +872,7 @@ function buyPickaxeCommand(message){
         }
         else{
             if (pickaxeResponse.data.pickaxe == "none"){
-                if (pickaxeResponse.data.tacos > PICKAXE_COST){
+                if (pickaxeResponse.data.tacos >= PICKAXE_COST){
                     // purchaseStand
                     var tacosSpent = PICKAXE_COST * -1;
                     purchasePickAxe(discordUserId, tacosSpent, function(err, data){
@@ -752,7 +902,7 @@ function profileBuilder(message, profileData){
     * Alternatively, use '#00AE86', [0, 174, 134] or an integer number.
     */
     .setColor(0x00AE86)
-    //.setDescription('This is the main body of text, it can hold 2048 characters.')
+    
     //.setFooter('This is the footer text, it can hold 2048 characters', 'http://i.imgur.com/w1vhFSR.png')
     //.setImage(message.author.avatarURL)
     .setThumbnail(profileData.avatarURL)
@@ -766,7 +916,7 @@ function profileBuilder(message, profileData){
     * Inline fields may not display as inline if the thumbnail and/or image is too big.
     */
     .addField('Taco Stands :bus:', profileData.userTacoStands, true)
-    .addField('Achievements: ', " :kaaba: ", true)
+    .addField('Achievements: ', profileData.achievementString, true)
 
     .addField('Items :shopping_bags:', profileData.userItems, true)
     /*
@@ -775,6 +925,9 @@ function profileBuilder(message, profileData){
     .addBlankField(true)
     .addField('Taco Stands', 3, true);
     */
+    if (profileData.pasta && profileData.pasta.length > 0){
+        embed.setDescription(profileData.pasta)
+    }
 
     message.channel.send({embed});
 }
@@ -855,12 +1008,22 @@ function steal(channelName){
     var channel = client.channels.get(channelName.id);
     var interval = setTimeout (function(){ 
         var tacos = Math.floor(Math.random() * 10)
-        channel.sendMessage("It is time for Bender's meal. :fork_knife_plate: "+ "placeholder has served Bender " + tacos + " tacos :taco: Thank's placeholder for keeping Bender well fed! " + BASE_INTERVAL/1000)
-        BASE_INTERVAL = BASE_INTERVAL * 2;
+        var bendersMeal = "It is time for Bender's meal. "+ "placeholder has served Bender " + tacos + " tacos :taco: Thank's placeholder for keeping Bender well fed! " + BASE_INTERVAL/1000
+        stealEmbedBuilder(channel, bendersMeal)
+        BASE_INTERVAL = BASE_INTERVAL; 
         steal(channelName);
     }, BASE_INTERVAL);
-
 }
+
+function stealEmbedBuilder(channel, bendersMeal){
+    const embed = new Discord.RichEmbed()
+    .setTitle("Bender's Meal")
+    .setThumbnail("http://www.hwdyk.com/q/images/futurama_s02e13_03.jpg")
+    .setColor(0xAAAE86)
+    .addField(bendersMeal, ":fork_knife_plate:", true)
+    channel.send({embed});
+}
+
 
 function getDateDifference(beforeDate, now, hoursDifference){
     // get difference between now and beforeDate + hoursDifference 
@@ -893,8 +1056,34 @@ function getDateDifference(beforeDate, now, hoursDifference){
     return dateDifferenceString;
 }
 
-function buyPastaCommand(message){
+function buyPastaCommand(message, pasta){
     // purchase a quote for your profile
+    var discordUserId = message.author.id
+    
+    getUserProfileData( discordUserId, function(err, pastaRespond) {
+        if(err){
+            // user doesnt exist tell the user they should get some tacos
+            message.channel.send(message.author + " you can't afford pasta currently!");
+        }
+        else{
+            if ( pastaRespond.data.tacos >= PASTA_COST && pasta.length > 0){
+                // user can buy the pasta, insert the pasta message into the user's pasta column
+                updateUserPasta( discordUserId, PASTA_COST * -1, pasta, function(err, pastaRespond) {
+                    if(err){
+                        message.channel.send(message.author + " could not purchase pasta!");
+                    }
+                    else{
+                        // user has updated their pasta
+                        message.channel.send(message.author + " you have purchased a new pasta :spaghetti:!");
+                    }
+                });
+            }
+            else{
+                message.channel.send(message.author + " you do not have enough tacos to purchase a pasta");
+            }
+
+        }
+    });
 
 }
 
@@ -1045,6 +1234,22 @@ function updateUserTacosThrow(userId, tacoAmount, cb){
     });
 }
 
+function updateUserPasta( userId, pastaTacoCost, pasta, cb){
+    var query = 'update ' + config.profileTable + ' set tacos=tacos+$1, pasta=$3 where discordid=$2'
+    //console.log("new last thank: " + lastThank);
+    db.none(query, [pastaTacoCost, userId, pasta])
+    .then(function () {
+    cb(null, {
+        status: 'success',
+        message: 'added tacos'
+        });
+    })
+    .catch(function (err) {
+        console.log(err);
+        cb(err);
+    });
+}
+
 function purchasePickAxe(userId, tacosSpent, cb){
     var query = 'update ' + config.profileTable + ' set tacos=tacos+$1, pickaxe=$3 where discordid=$2'
     console.log(query)
@@ -1100,12 +1305,12 @@ function purchaseTacoStand(userId, tacosSpent, currentTacoStands, cb){
     }
 }
 
-function prepareTacos(userId, tacosToHarvest, cb){
-    // update tacos and lastharvest
+function prepareTacos(userId, tacosToPrepare, cb){
+    // update tacos and lastprepare
     var query = 'update ' + config.profileTable + ' set tacos=tacos+$1, lastpreparetime=$3 where discordid=$2'
     var lastprepare = new Date();
     //console.log("new last thank: " + lastThank);
-    db.none(query, [ tacosToHarvest, userId, lastprepare ])
+    db.none(query, [ tacosToPrepare, userId, lastprepare ])
     .then(function () {
     cb(null, {
         status: 'success',
@@ -1115,6 +1320,305 @@ function prepareTacos(userId, tacosToHarvest, cb){
     .catch(function (err) {
         cb(err);
     });
+}
+
+function updateStatistics(userId, columnName, statisticCount, cb){
+    // update statistic
+    var query = 'update ' + config.statisticsTable + ' set ' + columnName + '=' + columnName + '+$1 where discordid=$2'
+    //console.log("new last thank: " + lastThank);
+    db.none(query, [ statisticCount, userId ])
+    .then(function () {
+    cb(null, {
+        status: 'success',
+        message: 'added statistic'
+        });
+    })
+    .catch(function (err) {
+        cb(err);
+    });
+}
+
+function createUserStatistics(userId, columnName, statisticCount, cb) {
+    var userStatistics = {
+        discordId: userId,
+        thankCount: 0,
+        sorryCount: 0,
+        welcomeCount: 0,
+        scavengeCount: 0,
+        thrownAtCount: 0,
+        thrownToCount: 0,
+        giveCount: 0
+    }
+  userStatistics[columnName] = statisticCount
+  var query = 'insert into '+ config.statisticsTable + '(discordId, thankCount, sorryCount, welcomeCount, scavengeCount, thrownAtCount, thrownToCount, giveCount)' +
+      'values(${discordId}, ${thankCount}, ${sorryCount}, ${welcomeCount},  ${scavengeCount}, ${thrownAtCount}, ${thrownToCount}, ${giveCount})'
+  db.none(query, userStatistics)
+    .then(function () {
+      cb(null, {
+          status: 'success',
+          message: 'Inserted one user'
+        });
+    })
+    .catch(function (err) {
+      cb(err);
+    });
+}
+
+function checkStatistics(discordId, cb){
+    var query = 'select * from ' + config.statisticsTable + ' where discordId = $1'
+    db.one(query, [discordId])
+    .then(function (data) {
+      //console.log(data);
+      cb(null, {
+          status: 'success',
+          data: data,
+          message: 'Retrieved ONE user'
+        });
+    })
+    .catch(function (err) {
+      console.log(err);
+      cb(err);
+    });
+}
+
+function statisticsManage(discordUserId, columnName, statisticCount, cb) { 
+    // if exists update otherwise create
+    checkStatistics(discordUserId, function(err, res){
+        if (err){
+            // user doesnt exist, create it
+            createUserStatistics(discordUserId, "thankCount", 1, function(err, statSuccess){
+                if (err){
+                    console.log(err);
+                }
+                else{
+                    // check achievements??
+                    cb(null, statSuccess)
+                }
+            })
+        }
+        else{
+            // update user
+            updateStatistics(discordUserId, columnName, statisticCount, function(err, statSuccess){
+                if (err){
+                    console.log(err);
+                }
+                else{
+                    // check achievements??
+                    cb(null, statSuccess)
+                }
+            })
+        }
+    })
+}
+
+function checkForAchievements(discordUserId, data, message){
+    // check for achievements by calling get on user statistics, or checking data
+    // check for all the possible achievements
+    checkStatistics(discordUserId, function(err, statistics){
+        if (err){
+            // cant find the user's statistics
+        }
+        else{
+            console.log(statistics);
+            // check for all possible achievments here (achievement logic goes here)
+
+            // statistics table achievements
+            if(statistics.data.thankcount && 
+               statistics.data.thankcount >= 25 && 
+               data.achievements.indexOf("Nice guy") == -1){
+
+                updateAchievements(discordUserId, "{Nice guy}", function(err, r){
+                    if (err){
+                        console.log(err);
+                    }
+                    {
+                        //console.log("achievment")
+                        message.channel.send(message.author + " you have earned the achievement " + "Nice guy!!!");
+                    }
+                })
+            }
+
+            if(statistics.data.sorrycount && 
+               statistics.data.sorrycount >= 12 && 
+               data.achievements.indexOf("Apologetic geek") == -1){
+
+                updateAchievements(discordUserId, "{Apologetic geek}", function(err, r){
+                    if (err){
+                        console.log(err);
+                    }
+                    {
+                        //console.log("achievment")
+                        message.channel.send(message.author + " you have earned the achievement " + "Apologetic geek!!!");
+                    }
+                })
+            }
+
+            if(statistics.data.welcomecount && 
+               statistics.data.welcomecount >= 5 && 
+               data.achievements.indexOf("Host") == -1){
+
+                updateAchievements(discordUserId, "{Host}", function(err, r){
+                    if (err){
+                        console.log(err);
+                    }
+                    {
+                        //console.log("achievment")
+                        message.channel.send(message.author + " you have earned the achievement " + "Host!!!");
+                    }
+                })
+            }
+
+            if(statistics.data.scavengecount && 
+               statistics.data.scavengecount >= 20 && 
+               data.achievements.indexOf("Adventure girl") == -1){
+
+                updateAchievements(discordUserId, "{Adventure girl}", function(err, r){
+                    if (err){
+                        console.log(err);
+                    }
+                    {
+                        //console.log("achievment")
+                        message.channel.send(message.author + " you have earned the achievement " + "Adventure girl!!!");
+                    }
+                })
+            }
+
+            if(statistics.data.thrownatcount && 
+               statistics.data.thrownatcount >= 100 && 
+               data.achievements.indexOf("Stripper") == -1){
+
+                updateAchievements(discordUserId, "{Stripper}", function(err, r){
+                    if (err){
+                        console.log(err);
+                    }
+                    {
+                        //console.log("achievment")
+                        message.channel.send(message.author + " you have earned the achievement " + "Stripper!!!");
+                    }
+                })
+            }
+
+            if(statistics.data.throwntocount && 
+               statistics.data.throwntocount >= 100 && 
+               data.achievements.indexOf("Make it rain") == -1){
+
+                updateAchievements(discordUserId, "{Make it rain}", function(err, r){
+                    if (err){
+                        console.log(err);
+                    }
+                    {
+                        //console.log("achievment")
+                        message.channel.send(message.author + " you have earned the achievement " + "Make it rain!!!");
+                    }
+                })
+            }
+
+            if(statistics.data.givecount && 
+               statistics.data.givecount >= 150 && 
+               data.achievements.indexOf("Get a room") == -1){
+
+                updateAchievements(discordUserId, "{Get a room}", function(err, r){
+                    if (err){
+                        console.log(err);
+                    }
+                    {
+                        //console.log("achievment")
+                        message.channel.send(message.author + " you have earned the achievement " + "Get a room!!!");
+                    }
+                })
+            }
+            console.log("here")
+            // data achievements
+            if(data.tacostands && 
+               data.tacostands >= 5 && 
+               data.achievements.indexOf("Building an empire") == -1){
+                console.log("here2");
+                updateAchievements(discordUserId, "{Building an empire}", function(err, r){
+                    if (err){
+                        console.log(err);
+                    }
+                    {
+                        console.log("here3");
+                        //console.log("achievment")
+                        message.channel.send(message.author + " you have earned the achievement " + "Building an empire!!!");
+                    }
+                })
+            }
+
+            if(data.tacos && 
+               data.tacos >= 500 && 
+               data.achievements.indexOf("Hoarder") == -1){
+
+                updateAchievements(discordUserId, "{Hoarder}", function(err, r){
+                    if (err){
+                        console.log(err);
+                    }
+                    {
+                        //console.log("achievment")
+                        message.channel.send(message.author + " you have earned the achievement " + "Hoarder!!!");
+                    }
+                })
+            }
+
+            if(data.cookcount && 
+               data.cookcount >= 7 && 
+               data.achievements.indexOf("Hand work") == -1){
+
+                updateAchievements(discordUserId, "{Hand work}", function(err, r){
+                    if (err){
+                        console.log(err);
+                    }
+                    {
+                        //console.log("achievment")
+                        message.channel.send(message.author + " you have earned the achievement " + "Hand work!!!");
+                    }
+                })
+            }
+
+            if(data.rarity && 
+               data.rarity == "Rare" && 
+               data.achievements.indexOf("Luck is on your side") == -1){
+
+                updateAchievements(discordUserId, "{Luck is on your side}", function(err, r){
+                    if (err){
+                        console.log(err);
+                    }
+                    {
+                        //console.log("achievment")
+                        message.channel.send(message.author + " you have earned the achievement " + "Luck is on your side!!!");
+                    }
+                })
+            }
+        }
+    })
+    
+}
+
+function updateAchievements(discordUserId, achievement, cb){
+    // update statistic
+    var query = 'update ' + config.profileTable + ' set achievements = achievements || $1 where discordid=$2'
+    //console.log("new last thank: " + lastThank);
+    db.none(query, [ achievement, discordUserId ])
+    .then(function () {
+    cb(null, {
+        status: 'success',
+        message: 'added statistic'
+        });
+    })
+    .catch(function (err) {
+        cb(err);
+    });
+}
+
+function achievementStringBuilder(achievements){
+    var achievementString = "";
+    for (var ach in achievements){
+        // append each achievmenet string
+        if (achievementsData[achievements[ach]]){
+            achievementString = achievementString + (achievementsData[achievements[ach]].emoji) + " " + achievements[ach] + " - " + achievementsData[achievements[ach]].description +  " \n"
+        }
+    }
+    return achievementString;
 }
 
 client.login(config.discordClientLogin);
