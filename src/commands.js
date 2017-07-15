@@ -977,20 +977,21 @@ module.exports.buyPastaCommand = function(message, pasta){
     });
 
 }
-// TODO: scavange logic, Inventory logic, mission logic, casino logic, combine logic
+// TODO: scavenge logic, Inventory logic, mission logic, casino logic, combine logic
 
 module.exports.helpCommand = function(message){
-    var commandsList = "List of commands \n "
-    var profile = "!profile - display user's profile \n "
-    var thank = "!thank @user - thank a user and they get 1 taco! \n "
-    var sorry = "!sorry @user - say sorry to a user and they get 1 taco! \n "
-    var welcome = "!welcome @user - welcome a user and they get 2 tacos! \n "
+    var commandsList = "List of commands \n ____________ \n "
+    var profile = "!profile  display users profile \n "
+    var thank = "!thank [user] - thank a user and they get 1 taco! \n "
+    var sorry = "!sorry [user] - say sorry to a user and they get 1 taco! \n "
+    var welcome = "!welcome [user] - welcome a user and they get 2 tacos! \n "
     var cook = "!cook - cook some tacos! \n "
-    var give = "!give @user number - give the mentioned user some number of tacos! \n "
-    var shop = "!shop - enter Bender's shop! \n "
+    var give = "!give user number - give the mentioned user some number of tacos! \n "
+    var shop = "!shop - enter Benders shop! \n "
     var prepare = "!prepare - prepare some tacos from your taco stands! \n "
-    var throwTaco = "!throw @user - throw a taco at the mentioned user \n "
-    var scavange = "!scavange - in progress "
-    var commandsList = "```" + commandsList + profile + thank + sorry + welcome + cook + give + shop + prepare + throwTaco + scavange + "```";
+    var throwTaco = "!throw [user] - throw a taco at the mentioned user \n "
+    var scavenge = "!scavenge - in progress "
+    //var commandsList = "```xl Uppercase lowercase 123 ```"
+    var commandsList = "```css\n" + commandsList + profile + thank + sorry + welcome + cook + give + shop + prepare + throwTaco + scavenge + "```";
     message.channel.send(commandsList);
 }
