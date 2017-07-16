@@ -10,7 +10,7 @@ var commands = require("./commands.js");
 const Discord = require("discord.js");
 const client = new Discord.Client();
 
-var BASE_INTERVAL = 5000;
+var BASE_INTERVAL = 360000;
 
 var tacoTuesdayEnabled = false;
 
@@ -151,7 +151,6 @@ function steal(channelName){
     }
     console.log("sharing with " + possibleUsersUsername[userToShareWithIndex].username )
 
-    // TODO: do not take and share with same person, check if last message started with "It is time for Bender's meal."
     // sharing
     if (sharing >= 8){
         var interval = setTimeout (function(){ 
