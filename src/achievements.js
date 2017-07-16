@@ -163,12 +163,10 @@ module.exports.checkForAchievements = function(discordUserId, data, message){
                     }
                 })
             }
-            console.log("here")
             
             if(data.tacostands && 
                data.tacostands >= 5 &&
                data.achievements.indexOf("Fidel Cashflow") == -1 ){
-                console.log("here2");
                 profileDB.updateAchievements(discordUserId, "{Fidel Cashflow}", function(err, r){
                     if (err){
                         console.log(err);

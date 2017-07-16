@@ -57,18 +57,7 @@ module.exports.thankCommand = function(message){
                         }
                         else{
                             // check achievements??
-                            profileDB.getUserProfileData( discordUserId, function(err, profileResponse) {
-                                if(err){
-
-                                }
-                                else{
-                                    var achievements = profileResponse.data.achievements;
-                                    var data = {}
-                                    data.achievements = achievements;
-                                    console.log(data);
-                                    achiev.checkForAchievements(discordUserId, data, message);
-                                }
-                            });
+                            getProfileForAchievement(discordUserId, message)
                         }
                     })
                 }
@@ -96,18 +85,7 @@ module.exports.thankCommand = function(message){
                                 }
                                 else{
                                     // check achievements??
-                                    profileDB.getUserProfileData( discordUserId, function(err, profileResponse) {
-                                        if(err){
-
-                                        }
-                                        else{
-                                            var achievements = profileResponse.data.achievements;
-                                            var data = {}
-                                            data.achievements = achievements;
-                                            console.log(data);
-                                            achiev.checkForAchievements(discordUserId, data, message);
-                                        }
-                                    });
+                                    getProfileForAchievement(discordUserId, message)
                                 }
                             })
                         }
@@ -175,18 +153,7 @@ module.exports.sorryCommand = function(message){
                                 }
                                 else{
                                     // check achievements??
-                                    profileDB.getUserProfileData( discordUserId, function(err, profileResponse) {
-                                        if(err){
-
-                                        }
-                                        else{
-                                            var achievements = profileResponse.data.achievements;
-                                            var data = {}
-                                            data.achievements = achievements;
-                                            console.log(data);
-                                            achiev.checkForAchievements(discordUserId, data, message);
-                                        }
-                                    });
+                                    getProfileForAchievement(discordUserId, message)
                                 }
                             })
                         }
@@ -214,18 +181,7 @@ module.exports.sorryCommand = function(message){
                                 }
                                 else{
                                     // check achievements??
-                                    profileDB.getUserProfileData( discordUserId, function(err, profileResponse) {
-                                        if(err){
-
-                                        }
-                                        else{
-                                            var achievements = profileResponse.data.achievements;
-                                            var data = {}
-                                            data.achievements = achievements;
-                                            console.log(data);
-                                            achiev.checkForAchievements(discordUserId, data, message);
-                                        }
-                                    });
+                                    getProfileForAchievement(discordUserId, message)
                                 }
                             })
                         }
@@ -395,18 +351,7 @@ module.exports.welcomeCommand = function(message){
                                     }
                                     else{
                                         // check achievements??
-                                        profileDB.getUserProfileData( discordUserId, function(err, profileResponse) {
-                                            if(err){
-
-                                            }
-                                            else{
-                                                var achievements = profileResponse.data.achievements;
-                                                var data = {}
-                                                data.achievements = achievements;
-                                                console.log(data);
-                                                achiev.checkForAchievements(discordUserId, data, message);
-                                            }
-                                        });
+                                        getProfileForAchievement(discordUserId, message)
                                     }
                                 })
                             }
@@ -431,18 +376,7 @@ module.exports.welcomeCommand = function(message){
                                 }
                                 else{
                                     // check achievements??
-                                    profileDB.getUserProfileData( discordUserId, function(err, profileResponse) {
-                                        if(err){
-                                            
-                                        }
-                                        else{
-                                            var achievements = profileResponse.data.achievements;
-                                            var data = {}
-                                            data.achievements = achievements;
-                                            console.log(data);
-                                            achiev.checkForAchievements(discordUserId, data, message);
-                                        }
-                                    });
+                                    getProfileForAchievement(discordUserId, message)
                                 }
                             })
                         }
@@ -1043,4 +977,19 @@ module.exports.helpCommand = function(message){
     //var commandsList = "```xl Uppercase lowercase 123 ```"
     var commandsList = "```css\n" + commandsList + profile + thank + sorry + welcome + cook + give + shop + prepare + throwTaco + scavenge + "```";
     message.channel.send(commandsList);
+}
+
+function getProfileForAchievement(discordUserId, message){
+    profileDB.getUserProfileData( discordUserId, function(err, profileResponse) {
+        if(err){
+
+        }
+        else{
+            var achievements = profileResponse.data.achievements;
+            var data = {}
+            data.achievements = achievements;
+            console.log(data);
+            achiev.checkForAchievements(discordUserId, data, message);
+        }
+    });
 }
