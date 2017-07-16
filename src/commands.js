@@ -57,20 +57,26 @@ module.exports.thankCommand = function(message){
                         }
                         else{
                             // check achievements??
-                            var data = {}
-                            data.achievements = achievements;
-                            console.log(data);
-                            achiev.checkForAchievements(discordUserId, data, message);
+                            profileDB.getUserProfileData( discordUserId, function(err, profileResponse) {
+                                if(err){
+
+                                }
+                                else{
+                                    var achievements = profileResponse.data.achievements;
+                                    var data = {}
+                                    data.achievements = achievements;
+                                    console.log(data);
+                                    achiev.checkForAchievements(discordUserId, data, message);
+                                }
+                            });
                         }
                     })
                 }
             }else{
                 // check against thank timestamp and if 6 hours have passed
-                var achievements = thankResponse.data.achievements;
-                console.log(achievements);
                 var now = new Date();
                 var twoHoursAgo = new Date();
-                twoHoursAgo = new Date(twoHoursAgo.setHours(twoHoursAgo.getHours() - 2));
+                twoHoursAgo = new Date(twoHoursAgo.setHours(twoHoursAgo.getHours() - 0));
                 //console.log("now: " + now);
                 //console.log("twoHoursAgo: " + twoHoursAgo);
                 //console.log("timestamp: " + thankResponse.data.lastthanktime);
@@ -90,10 +96,18 @@ module.exports.thankCommand = function(message){
                                 }
                                 else{
                                     // check achievements??
-                                    var data = {}
-                                    data.achievements = achievements;
-                                    console.log(data);
-                                    achiev.checkForAchievements(discordUserId, data, message);
+                                    profileDB.getUserProfileData( discordUserId, function(err, profileResponse) {
+                                        if(err){
+
+                                        }
+                                        else{
+                                            var achievements = profileResponse.data.achievements;
+                                            var data = {}
+                                            data.achievements = achievements;
+                                            console.log(data);
+                                            achiev.checkForAchievements(discordUserId, data, message);
+                                        }
+                                    });
                                 }
                             })
                         }
@@ -161,10 +175,18 @@ module.exports.sorryCommand = function(message){
                                 }
                                 else{
                                     // check achievements??
-                                    var data = {}
-                                    data.achievements = achievements;
-                                    console.log(data);
-                                    achiev.checkForAchievements(discordUserId, data, message);
+                                    profileDB.getUserProfileData( discordUserId, function(err, profileResponse) {
+                                        if(err){
+
+                                        }
+                                        else{
+                                            var achievements = profileResponse.data.achievements;
+                                            var data = {}
+                                            data.achievements = achievements;
+                                            console.log(data);
+                                            achiev.checkForAchievements(discordUserId, data, message);
+                                        }
+                                    });
                                 }
                             })
                         }
@@ -173,9 +195,10 @@ module.exports.sorryCommand = function(message){
             }
             else{
                 // check six hours ago
+                var achievements = sorryResponse.data.achievements;
                 var now = new Date();
                 var sixHoursAgo = new Date();
-                sixHoursAgo = new Date(sixHoursAgo.setHours(sixHoursAgo.getHours() - 6));
+                sixHoursAgo = new Date(sixHoursAgo.setHours(sixHoursAgo.getHours() - 0));
 
                 if ( sixHoursAgo > sorryResponse.data.lastsorrytime ){
                     profileDB.updateUserTacosSorry(mentionedId, 1, function(err, updateResponse) {
@@ -191,10 +214,18 @@ module.exports.sorryCommand = function(message){
                                 }
                                 else{
                                     // check achievements??
-                                    var data = {}
-                                    data.achievements = achievements;
-                                    console.log(data);
-                                    achiev.checkForAchievements(discordUserId, data, message);
+                                    profileDB.getUserProfileData( discordUserId, function(err, profileResponse) {
+                                        if(err){
+
+                                        }
+                                        else{
+                                            var achievements = profileResponse.data.achievements;
+                                            var data = {}
+                                            data.achievements = achievements;
+                                            console.log(data);
+                                            achiev.checkForAchievements(discordUserId, data, message);
+                                        }
+                                    });
                                 }
                             })
                         }
@@ -273,9 +304,10 @@ module.exports.prepareCommand = function (message){
         else{
             // get number of trees the user has
             // check lastprepare time
+            var achievements = prepareResponse.data.achievements;
             var now = new Date();
             var threeDaysAgo = new Date();
-            threeDaysAgo = new Date(threeDaysAgo.setHours(threeDaysAgo.getHours() - 24));
+            threeDaysAgo = new Date(threeDaysAgo.setHours(threeDaysAgo.getHours() - 0));
 
             if ( threeDaysAgo > prepareResponse.data.lastpreparetime ){
                 // able to prepare again
@@ -363,10 +395,18 @@ module.exports.welcomeCommand = function(message){
                                     }
                                     else{
                                         // check achievements??
-                                        var data = {}
-                                        data.achievements = achievements;
-                                        console.log(data);
-                                        achiev.checkForAchievements(discordUserId, data, message);
+                                        profileDB.getUserProfileData( discordUserId, function(err, profileResponse) {
+                                            if(err){
+
+                                            }
+                                            else{
+                                                var achievements = profileResponse.data.achievements;
+                                                var data = {}
+                                                data.achievements = achievements;
+                                                console.log(data);
+                                                achiev.checkForAchievements(discordUserId, data, message);
+                                            }
+                                        });
                                     }
                                 })
                             }
@@ -391,10 +431,18 @@ module.exports.welcomeCommand = function(message){
                                 }
                                 else{
                                     // check achievements??
-                                    var data = {}
-                                    data.achievements = achievements;
-                                    console.log(data);
-                                    achiev.checkForAchievements(discordUserId, data, message);
+                                    profileDB.getUserProfileData( discordUserId, function(err, profileResponse) {
+                                        if(err){
+                                            
+                                        }
+                                        else{
+                                            var achievements = profileResponse.data.achievements;
+                                            var data = {}
+                                            data.achievements = achievements;
+                                            console.log(data);
+                                            achiev.checkForAchievements(discordUserId, data, message);
+                                        }
+                                    });
                                 }
                             })
                         }
@@ -428,9 +476,8 @@ module.exports.giveCommand = function(message, giveTacoAmount){
         profileDB.getUserProfileData( discordUserId, function(err, giveResponse) {
             if(err){
                 // user doesnt exist, 
-                // TODO: create their profile first
                 if(err.code === 0){
-                    message.channel.send(message.author + " you have no tacos!");
+                    message.channel.send(message.author + " you have no tacos to give!");
                 }
             }
             else{
@@ -526,6 +573,7 @@ module.exports.cookCommand = function(message){
     profileDB.getUserProfileData( discordUserId, function(err, cookResponse) {
         if(err){
             // user doesnt exist, they cannot cook
+            var achievements = cookResponse.data.achievements;
             var now = new Date();
             var threedaysAgo = new Date();
             threedaysAgo = new Date(threedaysAgo.setHours(threedaysAgo.getHours() - 72));
@@ -558,13 +606,13 @@ module.exports.cookCommand = function(message){
                     achiev.checkForAchievements(discordUserId, data, message);
                 }
             }) 
-            //message.channel.send(message.author + " you can't cook atm because you do not have taco stands!");
         }
         else{
             // check six hours ago
+            var achievements = cookResponse.data.achievements;
             var now = new Date();
             var threeDaysAgo = new Date();
-            threeDaysAgo = new Date(threeDaysAgo.setHours(threeDaysAgo.getHours() - 24));
+            threeDaysAgo = new Date(threeDaysAgo.setHours(threeDaysAgo.getHours() - 0));
 
             if ( threeDaysAgo > cookResponse.data.lastcooktime ){
                 profileDB.updateUserTacosCook(discordUserId, BASE_TACO_COOK, function(err, updateResponse) {
@@ -620,6 +668,7 @@ module.exports.throwCommand = function(message){
             }
             else{
                 // user exists, subtract 1 taco 
+                var achievements = throwResponse.data.achievements;
                 console.log("asdfasfsd " + throwResponse.data.tacos)
                 if (throwResponse.data.tacos > 1){
                     profileDB.updateUserTacosThrow(discordUserId, -1, function(err, updateResponse) {
