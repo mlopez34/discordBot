@@ -280,7 +280,7 @@ module.exports.prepareCommand = function (message){
                             // something happened
                         }
                         else{
-                            message.channel.send(message.author + " you have prepared " + tacosToPrepare + " tacos!");
+                            message.channel.send(message.author + " you have prepared " + tacosToPrepare + " tacos :taco:!");
                         }
                     })
                 }

@@ -10,7 +10,7 @@ var commands = require("./commands.js");
 const Discord = require("discord.js");
 const client = new Discord.Client();
 
-var BASE_INTERVAL = 3600000;
+var BASE_INTERVAL = 5000;
 
 var tacoTuesdayEnabled = false;
 
@@ -124,14 +124,54 @@ function steal(channelName){
     // steal random number of tacos, random user, random interval
     // bender's meal time
     // sometimes bender shares his meal with someone else
+    // check for random user in channel
     var channel = client.channels.get(channelName.id);
-    var interval = setTimeout (function(){ 
-        var tacos = Math.floor(Math.random() * 10)
-        var bendersMeal = "It is time for Bender's meal. "+ "placeholder has served Bender " + tacos + " tacos :taco: Thank's placeholder for keeping Bender well fed! " + BASE_INTERVAL/1000
-        stealEmbedBuilder(channel, bendersMeal)
-        BASE_INTERVAL = BASE_INTERVAL; 
-        steal(channelName);
-    }, BASE_INTERVAL);
+    var possibleUsersUsername = [];
+    channel.members.forEach(function(member){
+        // possible users to take from and share with
+        if (!member.user.bot){
+            var user = member.user
+            console.log( user );
+            possibleUsersUsername.push( user );
+        }
+    });
+
+    // random the user based on array size
+    var userToTakeFromIndex = Math.floor(Math.random() * possibleUsersUsername.length);
+    console.log("taking from " + possibleUsersUsername[userToTakeFromIndex].username )
+    // random if bender is sharing half his meal
+    var sharing = Math.floor(Math.random() * 10)
+    console.log("sharing ? " + sharing )
+    // random the user bender will share with
+    var userToShareWithIndex = Math.floor(Math.random() * possibleUsersUsername.length);
+
+    while( userToShareWithIndex == userToTakeFromIndex){
+        // check for a different user until the indeces are not equal
+        userToShareWithIndex = Math.floor(Math.random() * possibleUsersUsername.length);
+    }
+    console.log("sharing with " + possibleUsersUsername[userToShareWithIndex].username )
+
+    // TODO: do not take and share with same person, check if last message started with "It is time for Bender's meal."
+    // sharing
+    if (sharing >= 8){
+        var interval = setTimeout (function(){ 
+            var tacos = Math.floor(Math.random() * 5) + 1
+            var bendersMeal = "It is time for Bender's meal. " + possibleUsersUsername[userToTakeFromIndex].username + " has served Bender " + tacos + " tacos :taco: and Bender decided to share his meal with " + possibleUsersUsername[userToShareWithIndex].username + ". Thank's " + possibleUsersUsername[userToTakeFromIndex].username + " for keeping Bender well fed! " + BASE_INTERVAL/1000
+            stealEmbedBuilder(channel, bendersMeal)
+            BASE_INTERVAL = BASE_INTERVAL; 
+            steal(channelName);
+        }, BASE_INTERVAL);
+    }
+    // not sharing
+    else{
+        var interval = setTimeout (function(){ 
+            var tacos = Math.floor(Math.random() * 5) + 1;
+            var bendersMeal = "It is time for Bender's meal. " + possibleUsersUsername[userToTakeFromIndex].username + " has served Bender " + tacos + " tacos :taco: Thank's " + possibleUsersUsername[userToTakeFromIndex].username + " for keeping Bender well fed! " + BASE_INTERVAL/1000
+            stealEmbedBuilder(channel, bendersMeal)
+            BASE_INTERVAL = BASE_INTERVAL; 
+            steal(channelName);
+        }, BASE_INTERVAL);
+    }
 }
 
 function stealEmbedBuilder(channel, bendersMeal){
