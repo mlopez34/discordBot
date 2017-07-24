@@ -993,3 +993,129 @@ function getProfileForAchievement(discordUserId, message){
         }
     });
 }
+
+module.exports.scavangeCommand = function (message){
+    // scavange every 3 hours
+    var discordUserId = message.author.id;
+    
+    // roll the number of items to get
+
+    var rolls = Math.floor(Math.random() * 100) + 1;
+    var rollsCount = 1;
+    // 25 + = 2, 80 + = 3, 95 + = 4, 98 + = 5
+    if (rolls > 98){
+        rollsCount = 5;
+    }
+    else if (rolls > 95){
+        rollsCount = 4;
+    }
+    else if (rolls > 80){
+        rollsCount = 3;
+    }
+    else if (rolls > 25){
+        rollsCount = 2;
+    }
+    else{
+        rollsCount = 1
+    }
+    console.log("FOUND THIS MANY ITEMS " + rollsCount)
+    
+    // get all the possible items from items DB
+    profileDB.getItemData(function(err, getItemResponse){
+        if (err){
+            console.log(err);
+        }
+        else{
+            var allItems = getItemResponse.data
+            var commonItems = [];
+            var uncommonItems = [];
+            var rareItems = [];
+            var ancientItems = [];
+            var artifactItems = [];
+            var mythItems = [];
+
+            for (var item in allItems){
+                if (allItems[item].itemraritycategory == "common"){
+                    commonItems.push(allItems[item]);
+                }
+                else if(allItems[item].itemraritycategory == "uncommon"){
+                    uncommonItems.push(allItems[item]);
+                }
+                else if(allItems[item].itemraritycategory == "rare"){
+                    rareItems.push(allItems[item]);
+                }
+                else if(allItems[item].itemraritycategory == "ancient"){
+                    ancientItems.push(allItems[item]);
+                }
+                else if(allItems[item].itemraritycategory == "artifact"){
+                    artifactItems.push(allItems[item]);
+                }
+                else if(allItems[item].itemraritycategory == "myth"){
+                    mythItems.push(allItems[item]);
+                }
+            }
+            // TODO: Add scavenge statistic
+            // roll rarity, roll item from rarity
+            var gotUncommon = false;
+            for (var i = 0; i < rollsCount; i++){
+                var rarityRoll = Math.floor(Math.random() * 10000) + 1;
+                var rarityString = "";
+                console.log(rarityRoll);
+                if (!gotUncommon && rollsCount > 4){
+                    // guaranteed rare +
+                    rarityRoll = Math.floor(Math.random() * 300) + 9700;
+                    gotUncommon = true;
+                }
+                else if(!gotUncommon && rollsCount > 3){
+                    // guaranteed uncommon +
+                    rarityRoll = Math.floor(Math.random() * 2000) + 8000;
+                    gotUncommon = true;
+                }
+                if (rarityRoll > 9995){
+                    rarityString = "artifact"
+                    var itemRoll = Math.floor(Math.random() * artifactItems.length);
+                    console.log(artifactItems[itemRoll]);
+                    message.channel.send(rarityRoll + message.author + " Found: " + JSON.stringify(artifactItems[itemRoll]));
+                }
+                else if(rarityRoll > 9950 && rarityRoll <= 9995){
+                    rarityString = "ancient"
+                    var itemRoll = Math.floor(Math.random() * ancientItems.length);
+                    console.log(ancientItems[itemRoll]);
+                    message.channel.send(rarityRoll + message.author + " Found: " + JSON.stringify(ancientItems[itemRoll]));
+                }
+                else if(rarityRoll > 9700 && rarityRoll <= 9950){
+                    rarityString = "rare"
+                    var itemRoll = Math.floor(Math.random() * rareItems.length);
+                    console.log(rareItems[itemRoll]);
+                    message.channel.send(rarityRoll + message.author + " Found: " + JSON.stringify(rareItems[itemRoll]));
+                }
+                else if (rarityRoll > 8000 && rarityRoll <= 9700){
+                    rarityString = "uncommon"
+                    var itemRoll = Math.floor(Math.random() * uncommonItems.length);
+                    console.log(uncommonItems[itemRoll]);
+                    message.channel.send(rarityRoll + message.author + " Found: " + JSON.stringify(uncommonItems[itemRoll]));
+                }
+                else {
+                    rarityString = "common"
+                    var itemRoll = Math.floor(Math.random() * commonItems.length);
+                    console.log(commonItems[itemRoll]);
+                    message.channel.send(rarityRoll + message.author + " Found: " + JSON.stringify(commonItems[itemRoll]));
+                }
+            }
+            
+        }
+    })
+    // TODO: store the item on the user's inventory
+}
+
+function scavengeEmbedBuilder(message, itemsScavenged){
+    /*
+    const embed = new Discord.RichEmbed()
+    .setAuthor(profileData.userName +"'s Tacos")
+    .setColor(0x00AE86)
+    .addField('Tacos  :taco:', profileData.userTacos, true)
+    .setFooter('use !give @user to give a user some tacos!')
+    message.channel.send({embed});
+    */
+}
+

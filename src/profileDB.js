@@ -300,3 +300,24 @@ module.exports.checkStatistics = function(discordId, cb){
       cb(err);
     });
 }
+
+// get items
+module.exports.getItemData = function(cb) {
+  var query = 'select * from ' + config.itemsTable
+  console.log(query);
+  db.query(query)
+    .then(function (data) {
+      //console.log(data);
+      cb(null, {
+          status: 'success',
+          data: data,
+          message: 'Retrieved All Items'
+        });
+    })
+    .catch(function (err) {
+      console.log(err);
+      cb(err);
+    });
+}
+
+// store items on user's inventory

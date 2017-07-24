@@ -10,7 +10,7 @@ var commands = require("./commands.js");
 const Discord = require("discord.js");
 const client = new Discord.Client();
 
-var BASE_INTERVAL = 360000;
+var BASE_INTERVAL = 3600000;
 
 var tacoTuesdayEnabled = false;
 
@@ -102,11 +102,10 @@ client.on('message', function(message){
         console.log(pasta);
         commands.buyPastaCommand(message, pasta);
     }
-    /*
-    else if (commandIs("scavange", message)){
-        scavangeCommand(message);
+    else if (commandIs("scavenge", message)){
+        commands.scavangeCommand(message);
     }
-    */
+    
 });
 
 
