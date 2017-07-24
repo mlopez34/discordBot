@@ -77,7 +77,7 @@ module.exports.thankCommand = function(message){
                         }
                         else{
                             // send message that the user has 1 more taco
-                            message.channel.send(message.author + " you thanked " + mentionedUser + ", they received a taco! :taco:");
+                            message.channel.send(message.author + " thanked " + mentionedUser + ", they received a taco! :taco:");
                             //update statistic
                             stats.statisticsManage(discordUserId, "thankCount", 1, function(err, statSuccess){
                                 if (err){
@@ -964,7 +964,7 @@ module.exports.buyPastaCommand = function(message, pasta){
 
 module.exports.helpCommand = function(message){
     var commandsList = "List of commands \n ____________ \n "
-    var profile = "!profile  display users profile \n "
+    var profile = "!profile - display users profile \n "
     var thank = "!thank [user] - thank a user and they get 1 taco! \n "
     var sorry = "!sorry [user] - say sorry to a user and they get 1 taco! \n "
     var welcome = "!welcome [user] - welcome a user and they get 2 tacos! \n "
@@ -1063,12 +1063,12 @@ module.exports.scavangeCommand = function (message){
                 console.log(rarityRoll);
                 if (!gotUncommon && rollsCount > 4){
                     // guaranteed rare +
-                    rarityRoll = Math.floor(Math.random() * 300) + 9700;
+                    rarityRoll = Math.floor(Math.random() * 220) + 9780;
                     gotUncommon = true;
                 }
                 else if(!gotUncommon && rollsCount > 3){
                     // guaranteed uncommon +
-                    rarityRoll = Math.floor(Math.random() * 2000) + 8000;
+                    rarityRoll = Math.floor(Math.random() * 1150) + 8850;
                     gotUncommon = true;
                 }
                 if (rarityRoll > 9995){
