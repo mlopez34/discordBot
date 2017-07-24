@@ -301,7 +301,7 @@ module.exports.checkStatistics = function(discordId, cb){
     });
 }
 
-// get items
+// get items from itemsTable
 module.exports.getItemData = function(cb) {
   var query = 'select * from ' + config.itemsTable
   console.log(query);
@@ -321,3 +321,63 @@ module.exports.getItemData = function(cb) {
 }
 
 // store items on user's inventory
+module.exports.addNewItemToUser = function(discordId, items, cb) {
+    var inventoryItems = [];
+    var itemobtaindate = new Date();
+    for (var item in items){
+        var inventoryItem = {
+            discordid: discordId,
+            itemid: items[item].id,
+            itemobtaindate: itemobtaindate
+        }
+        inventoryItems.push(inventoryItem);
+    }
+    
+    var values = new Inserts('${discordid}, ${itemid} ,${itemobtaindate}', inventoryItems); // using Inserts as a type;
+
+    db.none('INSERT INTO '  + config.inventoryTable + '(discordid, itemid, itemobtaindate) VALUES $1', values)
+    .then(function (data) {
+        cb(null, {
+            status: 'success',
+            data: data,
+            message: 'added Item to users inventory'
+        });
+    })
+    .catch(function (err) {
+        console.log(err);
+        cb(err);
+    }); 
+}
+
+// get user's inventory
+module.exports.getUserItems = function(discordId, cb) {
+  var query = 'select * from ' + config.inventoryTable + ' where discordId = $1'
+  console.log(query);
+  db.query(query, [discordId])
+    .then(function (data) {
+      cb(null, {
+          status: 'success',
+          data: data,
+          message: 'Retrieved All User Items'
+        });
+    })
+    .catch(function (err) {
+      console.log(err);
+      cb(err);
+    });
+}
+
+// Concatenates an array of objects or arrays of values, according to the template,
+// to use with insert queries. Can be used either as a class type or as a function.
+//
+// template = formatting template string
+// data = array of either objects or arrays of values
+function Inserts(template, data) {
+    if (!(this instanceof Inserts)) {
+        return new Inserts(template, data);
+    }
+    this._rawDBType = true;
+    this.formatDBType = function () {
+        return data.map(d=>'(' + pgp.as.format(template, d) + ')').join();
+    };
+}

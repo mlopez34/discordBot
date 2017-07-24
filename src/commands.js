@@ -982,7 +982,7 @@ module.exports.helpCommand = function(message){
 function getProfileForAchievement(discordUserId, message){
     profileDB.getUserProfileData( discordUserId, function(err, profileResponse) {
         if(err){
-
+            console.log(err);
         }
         else{
             var achievements = profileResponse.data.achievements;
@@ -999,7 +999,6 @@ module.exports.scavangeCommand = function (message){
     var discordUserId = message.author.id;
     
     // roll the number of items to get
-
     var rolls = Math.floor(Math.random() * 100) + 1;
     var rollsCount = 1;
     // 25 + = 2, 80 + = 3, 95 + = 4, 98 + = 5
@@ -1018,9 +1017,8 @@ module.exports.scavangeCommand = function (message){
     else{
         rollsCount = 1
     }
-    console.log("FOUND THIS MANY ITEMS " + rollsCount)
     
-    // get all the possible items from items DB
+    // get all the possible items from items DB - Bad implementation but idgaf
     profileDB.getItemData(function(err, getItemResponse){
         if (err){
             console.log(err);
@@ -1054,9 +1052,10 @@ module.exports.scavangeCommand = function (message){
                     mythItems.push(allItems[item]);
                 }
             }
-            // TODO: Add scavenge statistic
             // roll rarity, roll item from rarity
             var gotUncommon = false;
+            var itemsObtainedArray = [];
+
             for (var i = 0; i < rollsCount; i++){
                 var rarityRoll = Math.floor(Math.random() * 10000) + 1;
                 var rarityString = "";
@@ -1075,47 +1074,80 @@ module.exports.scavangeCommand = function (message){
                     rarityString = "artifact"
                     var itemRoll = Math.floor(Math.random() * artifactItems.length);
                     console.log(artifactItems[itemRoll]);
-                    message.channel.send(rarityRoll + message.author + " Found: " + JSON.stringify(artifactItems[itemRoll]));
+                    itemsObtainedArray.push(artifactItems[itemRoll]);
                 }
                 else if(rarityRoll > 9950 && rarityRoll <= 9995){
                     rarityString = "ancient"
                     var itemRoll = Math.floor(Math.random() * ancientItems.length);
                     console.log(ancientItems[itemRoll]);
-                    message.channel.send(rarityRoll + message.author + " Found: " + JSON.stringify(ancientItems[itemRoll]));
+                    itemsObtainedArray.push(ancientItems[itemRoll])
                 }
                 else if(rarityRoll > 9700 && rarityRoll <= 9950){
                     rarityString = "rare"
                     var itemRoll = Math.floor(Math.random() * rareItems.length);
                     console.log(rareItems[itemRoll]);
-                    message.channel.send(rarityRoll + message.author + " Found: " + JSON.stringify(rareItems[itemRoll]));
+                    itemsObtainedArray.push(rareItems[itemRoll]);
                 }
                 else if (rarityRoll > 8000 && rarityRoll <= 9700){
                     rarityString = "uncommon"
                     var itemRoll = Math.floor(Math.random() * uncommonItems.length);
                     console.log(uncommonItems[itemRoll]);
-                    message.channel.send(rarityRoll + message.author + " Found: " + JSON.stringify(uncommonItems[itemRoll]));
+                    itemsObtainedArray.push( uncommonItems[itemRoll] );
                 }
                 else {
                     rarityString = "common"
                     var itemRoll = Math.floor(Math.random() * commonItems.length);
                     console.log(commonItems[itemRoll]);
-                    message.channel.send(rarityRoll + message.author + " Found: " + JSON.stringify(commonItems[itemRoll]));
+                    itemsObtainedArray.push( commonItems[itemRoll] );
                 }
             }
-            
+            // send the items to be written all at once
+            addToUserInventory(discordUserId, itemsObtainedArray);
+
+            // send message of all items obtained
+            scavengeEmbedBuilder(message, itemsObtainedArray)
+            // add to statistics
+            profileDB.getUserProfileData( discordUserId, function(error, getUserResponse) {
+                if(error){
+                    console.log(error);
+                }
+                else{
+                    var achievements = getUserResponse.data.achievements;
+                    stats.statisticsManage(discordUserId, "scavengeCount", 1, function(err, statSuccess){
+                        if (err){
+                            console.log(err);
+                        }
+                        else{
+                            // check achievements
+                            var data = {}
+                            data.achievements = achievements;
+                            console.log(data);
+                            achiev.checkForAchievements(discordUserId, data, message);
+                        }
+                    })
+                }
+            })
         }
     })
-    // TODO: store the item on the user's inventory
 }
 
 function scavengeEmbedBuilder(message, itemsScavenged){
-    /*
-    const embed = new Discord.RichEmbed()
-    .setAuthor(profileData.userName +"'s Tacos")
-    .setColor(0x00AE86)
-    .addField('Tacos  :taco:', profileData.userTacos, true)
-    .setFooter('use !give @user to give a user some tacos!')
-    message.channel.send({embed});
-    */
+    // create a quoted message of all the items
+    var itemsMessage = " scavenged: \n"
+    for (var item in itemsScavenged){
+        itemsMessage = itemsMessage + " " + itemsScavenged[item].itemname + ", " + itemsScavenged[item].itemdescription + ", " +
+        itemsScavenged[item].itemslot + ", " +itemsScavenged[item].itemstatistics + ", " + itemsScavenged[item].itemraritycategory + " \n";
+    }
+    message.channel.send("```" + itemsMessage + "```");
 }
 
+function addToUserInventory(discordUserId, items){
+    profileDB.addNewItemToUser(discordUserId, items, function(itemError, itemAddResponse){
+        if (itemError){
+            console.log(itemError);
+        }
+        else{
+            console.log(itemAddResponse);
+        }
+    })
+}
