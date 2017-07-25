@@ -974,7 +974,7 @@ module.exports.helpCommand = function(message){
     var shop = "!shop - enter Benders shop! \n "
     var prepare = "!prepare - prepare some tacos from your taco stands! \n "
     var throwTaco = "!throw [user] - throw a taco at the mentioned user \n "
-    var scavenge = "!scavenge - in progress "
+    var scavenge = "!scavenge - use your pickaxe to find items "
     //var commandsList = "```xl Uppercase lowercase 123 ```"
     var commandsList = "```css\n" + commandsList + profile + thank + sorry + welcome + cook + give + shop + prepare + throwTaco + scavenge + "```";
     message.channel.send(commandsList);
