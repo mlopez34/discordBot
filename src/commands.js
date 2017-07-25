@@ -846,7 +846,7 @@ function shopBuilder(message, shopData){
     var tacoStandDescription = "Taco stands can be used to produce tacos based on the number of stands you have. \nYou can produce " + BASE_TACO_PREPARE + " per taco stand. \nThe cost of each additional stand will be higher - city tax bro. "
     var treeCost = BASE_TACO_COST + (shopData.userTacoCost * 25) + " :taco:"
     var pickaxeDescription = "The pickaxe can be used to scavange. You never know what you will find in these lands ";
-    var pastaDescription = "Add a quote to your profile, after purchasing type !pasta quote - you will no longer be basic."
+    var pastaDescription = "Add a quote to your profile, to purchase do: !buypasta [your pasta message]."
     
     var pickaxeCost = PICKAXE_COST +" :taco:";
     const embed = new Discord.RichEmbed()
@@ -961,7 +961,7 @@ module.exports.buyPastaCommand = function(message, pasta){
     });
 
 }
-// TODO: Inventory logic, mission logic, casino logic, combine logic
+// TODO: mission logic, casino logic, combine logic
 
 module.exports.helpCommand = function(message){
     var commandsList = "List of commands \n ____________ \n "
@@ -1200,7 +1200,6 @@ function scavengeEmbedBuilder(message, itemsScavenged){
         itemsMessage = itemsMessage + "**" + itemsScavenged[item].itemname + "** - " + itemsScavenged[item].itemdescription + ", " +
         itemsScavenged[item].itemslot + ", " +itemsScavenged[item].itemstatistics + ", " + itemsScavenged[item].itemraritycategory + " \n";
     }
-    //message.channel.send("```" + itemsMessage + "```");
 
     const embed = new Discord.RichEmbed()
     .setAuthor(message.author.username +"'s Scavenge ")
