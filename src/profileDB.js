@@ -320,6 +320,25 @@ module.exports.getItemData = function(cb) {
     });
 }
 
+// get specific item via id
+module.exports.getItemById = function(itemId) {
+  var query = 'select * from ' + config.itemsTable + ' where id =$1'
+  console.log(query, [itemId]);
+  db.one(query)
+    .then(function (data) {
+      //console.log(data);
+      promise.resolve({
+          status: 'success',
+          data: data,
+          message: 'Retrieved Item'
+        });
+    })
+    .catch(function (err) {
+      console.log(err);
+      promise.reject(err);
+    });
+}
+
 // store items on user's inventory
 module.exports.addNewItemToUser = function(discordId, items, cb) {
     var inventoryItems = [];

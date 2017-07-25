@@ -3,12 +3,13 @@ var achiev = require("./achievements.js");
 var profileDB = require("./profileDB.js");
 var stats = require("./statistics.js");
 const Discord = require("discord.js");
+var Promise = require('bluebird');
 
 var moment = require("moment");
 
 var BASE_TACO_COST = 50;
 var BASE_TACO_PREPARE = 10;
-var BASE_TACO_COOK = 10;
+var BASE_TACO_COOK = 2;
 var PICKAXE_COST = 35;
 var PASTA_COST = 125
 
@@ -960,7 +961,7 @@ module.exports.buyPastaCommand = function(message, pasta){
     });
 
 }
-// TODO: scavenge logic, Inventory logic, mission logic, casino logic, combine logic
+// TODO: Inventory logic, mission logic, casino logic, combine logic
 
 module.exports.helpCommand = function(message){
     var commandsList = "List of commands \n ____________ \n "
@@ -994,8 +995,69 @@ function getProfileForAchievement(discordUserId, message){
     });
 }
 
+module.exports.inventoryCommand = function(message){
+    // get all items for the discord id
+    var discordUserId = message.author.id;
+    profileDB.getUserItems(discordUserId, function(err, inventoryResponse){
+        if (err){
+            console.log(err);
+        }
+        else{
+            console.log(inventoryResponse.data);
+            // get all the data for each item
+            var itemsInInventoryCountMap = {};
+            var itemsMapbyId = {};
+            profileDB.getItemData(function(error, allItemsResponse){
+                //console.log(allItemsResponse.data);
+                for (var item in inventoryResponse.data){
+                    if (!itemsInInventoryCountMap[inventoryResponse.data[item].itemid]){
+                        // item hasnt been added to be counted, add it as 1
+                        itemsInInventoryCountMap[inventoryResponse.data[item].itemid] = 1;
+                    }
+                    else{
+                        itemsInInventoryCountMap[inventoryResponse.data[item].itemid] = itemsInInventoryCountMap[inventoryResponse.data[item].itemid] + 1
+                    }
+                }
+                console.log(itemsInInventoryCountMap);
+                for (var index in allItemsResponse.data){
+                    itemsMapbyId[allItemsResponse.data[index].id] = allItemsResponse.data[index];
+                }
+                inventoryEmbedBuilder(message, itemsInInventoryCountMap, itemsMapbyId);
+
+            })
+        }
+    })
+}
+
+function inventoryEmbedBuilder(message, itemsMap, allItems){
+    // create a field for each item and add the count
+    const embed = new Discord.RichEmbed()
+    var inventoryString = "";
+    for (var key in itemsMap) {
+        if (itemsMap.hasOwnProperty(key)) {
+            // 
+            console.log(key + " " + allItems[key].itemname)
+            var emoji = "";
+            if (allItems[key].itemraritycategory === "ancient"){
+                emoji = ":small_orange_diamond::small_orange_diamond: "
+            }
+            else if (allItems[key].itemraritycategory === "rare"){
+                emoji = ":small_orange_diamond: "
+            }
+            inventoryString = emoji + "**"+allItems[key].itemname + "** -- "+  itemsMap[key] +" -- "+ allItems[key].itemstatistics + " -- " + allItems[key].itemslot +"\n" + inventoryString;
+        }
+    }
+    embed
+    .addField("Item Name  | Count | Stats | Slot", inventoryString, true)
+    .setAuthor(message.author.username +"'s Inventory ")
+    .setDescription( ":left_luggage:" )
+    .setThumbnail(message.author.avatarURL)
+    .setColor(0x06e8e8)
+    message.channel.send({embed});
+}
+
 module.exports.scavangeCommand = function (message){
-    // scavange every 3 hours
+    // TODO: scavange every 3 hours
     var discordUserId = message.author.id;
     
     // roll the number of items to get
@@ -1133,12 +1195,20 @@ module.exports.scavangeCommand = function (message){
 
 function scavengeEmbedBuilder(message, itemsScavenged){
     // create a quoted message of all the items
-    var itemsMessage = " scavenged: \n"
+    var itemsMessage = ""
     for (var item in itemsScavenged){
-        itemsMessage = itemsMessage + " " + itemsScavenged[item].itemname + ", " + itemsScavenged[item].itemdescription + ", " +
+        itemsMessage = itemsMessage + "**" + itemsScavenged[item].itemname + "** - " + itemsScavenged[item].itemdescription + ", " +
         itemsScavenged[item].itemslot + ", " +itemsScavenged[item].itemstatistics + ", " + itemsScavenged[item].itemraritycategory + " \n";
     }
-    message.channel.send("```" + itemsMessage + "```");
+    //message.channel.send("```" + itemsMessage + "```");
+
+    const embed = new Discord.RichEmbed()
+    .setAuthor(message.author.username +"'s Scavenge ")
+    .addField("Items found:", itemsMessage, true)
+    .setDescription( ":pick:" )
+    .setThumbnail(message.author.avatarURL)
+    .setColor(0xbfa5ff)
+    message.channel.send({embed});
 }
 
 function addToUserInventory(discordUserId, items){

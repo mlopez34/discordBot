@@ -105,6 +105,9 @@ client.on('message', function(message){
     else if (commandIs("scavenge", message)){
         commands.scavangeCommand(message);
     }
+    else if (commandIs("inventory", message)){
+        commands.inventoryCommand(message);
+    }
     
 });
 
