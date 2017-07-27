@@ -64,11 +64,11 @@ module.exports.checkForAchievements = function(discordUserId, data, message){
         else{
             console.log(statistics);
             // check for all possible achievments here (achievement logic goes here)
-
+            console.log(data.achievements);
             // statistics table achievements
             if(statistics.data.thankcount && 
                statistics.data.thankcount >= 25 && 
-               data.achievements.indexOf("Nice guy") == -1){
+               (data.achievements === null || data.achievements.indexOf("Nice guy") == -1)){
 
                 profileDB.updateAchievements(discordUserId, "{Nice guy}", function(err, r){
                     if (err){
@@ -82,7 +82,7 @@ module.exports.checkForAchievements = function(discordUserId, data, message){
 
             if(statistics.data.sorrycount && 
                statistics.data.sorrycount >= 12 && 
-               data.achievements.indexOf("Apologetic geek") == -1){
+               (data.achievements === null || data.achievements.indexOf("Apologetic geek") == -1)){
 
                 profileDB.updateAchievements(discordUserId, "{Apologetic geek}", function(err, r){
                     if (err){
@@ -96,7 +96,7 @@ module.exports.checkForAchievements = function(discordUserId, data, message){
 
             if(statistics.data.welcomecount && 
                statistics.data.welcomecount >= 5 && 
-               data.achievements.indexOf("Host") == -1){
+               (data.achievements === null || data.achievements.indexOf("Host") == -1)){
 
                 profileDB.updateAchievements(discordUserId, "{Host}", function(err, r){
                     if (err){
@@ -110,7 +110,7 @@ module.exports.checkForAchievements = function(discordUserId, data, message){
 
             if(statistics.data.scavengecount && 
                statistics.data.scavengecount >= 20 && 
-               data.achievements.indexOf("Adventure girl") == -1){
+               (data.achievements === null || data.achievements.indexOf("Adventure girl") == -1)){
 
                 profileDB.updateAchievements(discordUserId, "{Adventure girl}", function(err, r){
                     if (err){
@@ -124,7 +124,7 @@ module.exports.checkForAchievements = function(discordUserId, data, message){
 
             if(statistics.data.thrownatcount && 
                statistics.data.thrownatcount >= 100 && 
-               data.achievements.indexOf("Stripper") == -1){
+               (data.achievements === null || data.achievements.indexOf("Stripper") == -1)){
 
                 profileDB.updateAchievements(discordUserId, "{Stripper}", function(err, r){
                     if (err){
@@ -138,7 +138,7 @@ module.exports.checkForAchievements = function(discordUserId, data, message){
 
             if(statistics.data.throwntocount && 
                statistics.data.throwntocount >= 100 && 
-               data.achievements.indexOf("Make it rain") == -1){
+               (data.achievements === null || data.achievements.indexOf("Make it rain") == -1)){
 
                 profileDB.updateAchievements(discordUserId, "{Make it rain}", function(err, r){
                     if (err){
@@ -152,7 +152,7 @@ module.exports.checkForAchievements = function(discordUserId, data, message){
             // data achievements
             if(data.givecount && 
                data.givecount >= 150 && 
-               data.achievements.indexOf("Get a room") == -1){
+               (data.achievements === null || data.achievements.indexOf("Get a room") == -1)){
 
                 profileDB.updateAchievements(discordUserId, "{Get a room}", function(err, r){
                     if (err){
@@ -166,7 +166,7 @@ module.exports.checkForAchievements = function(discordUserId, data, message){
             
             if(data.tacostands && 
                data.tacostands >= 5 &&
-               data.achievements.indexOf("Fidel Cashflow") == -1 ){
+               (data.achievements === null || data.achievements.indexOf("Fidel Cashflow") == -1 )){
                 profileDB.updateAchievements(discordUserId, "{Fidel Cashflow}", function(err, r){
                     if (err){
                         console.log(err);
@@ -179,7 +179,7 @@ module.exports.checkForAchievements = function(discordUserId, data, message){
 
             if(data.tacos && 
                data.tacos >= 500 && 
-               data.achievements.indexOf("Hoarder") == -1){
+               (data.achievements === null || data.achievements.indexOf("Hoarder") == -1)){
 
                 profileDB.updateAchievements(discordUserId, "{Hoarder}", function(err, r){
                     if (err){
@@ -193,7 +193,7 @@ module.exports.checkForAchievements = function(discordUserId, data, message){
 
             if(data.cookcount && 
                data.cookcount >= 7 && 
-               data.achievements.indexOf("Hand work") == -1){
+               (data.achievements === null || data.achievements.indexOf("Hand work") == -1)){
 
                 profileDB.updateAchievements(discordUserId, "{Hand work}", function(err, r){
                     if (err){
@@ -207,7 +207,7 @@ module.exports.checkForAchievements = function(discordUserId, data, message){
 
             if(data.rarity && 
                data.rarity == "Rare" && 
-               data.achievements.indexOf("Luck is on your side") == -1){
+               (data.achievements === null || data.achievements.indexOf("Luck is on your side") == -1)){
 
                 profileDB.updateAchievements(discordUserId, "{Luck is on your side}", function(err, r){
                     if (err){

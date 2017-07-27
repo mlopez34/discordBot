@@ -89,6 +89,22 @@ module.exports.updateUserTacosCook = function(userId, tacos, cb) {
     });
 }
 
+module.exports.updateLastScavengeTime = function(userId, cb) {
+    var query = 'update ' + config.profileTable + ' set lastscavangetime=$2 where discordid=$1'
+    var lastScavenge = new Date();
+    //console.log("new last thank: " + lastThank);
+    db.none(query, [userId, lastScavenge])
+    .then(function () {
+    cb(null, {
+        status: 'success',
+        message: 'updated lastscavengetime'
+        });
+    })
+    .catch(function (err) {
+        cb(err);
+    });
+}
+
 module.exports.updateUserTacosWelcome = function(userId, tacos, cb) {
     var query = 'update ' + config.profileTable + ' set tacos=tacos+$1, welcomed=$3 where discordid=$2'
     var welcomed = true;

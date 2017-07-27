@@ -256,7 +256,15 @@ module.exports.prepareCommand = function (message){
     profileDB.getUserProfileData( discordUserId, function(err, prepareResponse) {
         if(err){
             // user doesnt exist, they cannot prepare
-            message.channel.send(message.author + " you can't prepare atm because you do not have taco stands!");
+            var userData = initialUserProfile(discordUserId);
+            profileDB.createUserProfile(userData, function(error, createUserResponse){
+                if (error){
+                    console.log(error); // cant create user RIP
+                }
+                else{
+                    message.channel.send(message.author + " you can't prepare atm because you do not have taco stands!");
+                }
+            })
         }
         else{
             // get number of trees the user has
@@ -333,7 +341,7 @@ module.exports.welcomeCommand = function(message){
                         lastsorrytime: threedaysAgo,
                         lastscavangetime: threedaysAgo,
                         tacostands: 0,
-                        welcomed: false,
+                        welcomed: true,
                         lastpreparetime: threedaysAgo,
                         pickaxe: "none",
                         map: false,
@@ -420,46 +428,60 @@ module.exports.giveCommand = function(message, giveTacoAmount){
                 var achievements = giveResponse.data.achievements;
                 if (giveResponse.data.tacos - giveTacoAmount >= 0 ){
                     console.log("have enough");
-                    var negativeGiveTacoAmount = giveTacoAmount * -1
-                    profileDB.updateUserTacosGive(discordUserId, negativeGiveTacoAmount, function(err, updateResponse) {
-                        if (err){
-                            console.log(err);
+                    profileDB.getUserProfileData( mentionedId, function(mentionederr, giveMentionedResponse) {
+                        if(mentionederr){
+                            console.log(mentionederr);
+                            // create user and give them the number of tacos
+                            var now = new Date();
+                            var threedaysAgo = new Date();
+                            threedaysAgo = new Date(threedaysAgo.setHours(threedaysAgo.getHours() - 72));
+                            var userData = {
+
+                                discordId: mentionedId,
+                                tacos: 0,
+                                birthdate: "2001-10-05",
+                                lastthanktime: threedaysAgo,
+                                lastcooktime: threedaysAgo,
+                                lastsorrytime: threedaysAgo,
+                                lastscavangetime: threedaysAgo,
+                                tacostands: 0,
+                                welcomed: false,
+                                lastpreparetime: threedaysAgo,
+                                pickaxe: "none",
+                                map: false,
+                                phone: false
+                            }
+                            profileDB.createUserProfile(userData, function(createerr, createResponse){
+                                if(createerr){
+                                    console.log(createerr);
+                                }
+                                else{
+                                    console.log(createResponse);
+                                    exports.giveCommand(message, giveTacoAmount);
+                                }
+                            })
                         }
                         else{
-                            // 
-                            profileDB.updateUserTacosGive(mentionedId, giveTacoAmount, function(err, updateResponse) {
-                                if (err){
-                                    console.log(err);
-                                    var now = new Date();
-                                    var threedaysAgo = new Date();
-                                    threedaysAgo = new Date(threedaysAgo.setHours(threedaysAgo.getHours() - 72));
-                                    var userData = {
-
-                                        discordId: mentionedId,
-                                        tacos: giveTacoAmount,
-                                        birthdate: "2001-10-05",
-                                        lastthanktime: threedaysAgo,
-                                        lastcooktime: threedaysAgo,
-                                        lastsorrytime: threedaysAgo,
-                                        lastscavangetime: threedaysAgo,
-                                        tacostands: 0,
-                                        welcomed: false,
-                                        lastpreparetime: threedaysAgo,
-                                        pickaxe: "none",
-                                        map: false,
-                                        phone: false
-                                    }
-                                    profileDB.createUserProfile(userData, function(err, createResponse){
-                                        if(err){
-                                            console.log(err);
+                            var negativeGiveTacoAmount = giveTacoAmount * -1
+                            profileDB.updateUserTacosGive(discordUserId, negativeGiveTacoAmount, function(givererr, giverUpdateResponse) {
+                                if (givererr){
+                                    console.log(givererr);
+                                }
+                                else{
+                                    // 
+                                    profileDB.updateUserTacosGive(mentionedId, giveTacoAmount, function(receivererr, receiverUpdateResponse) {
+                                        if (receivererr){
+                                            console.log(receivererr);
                                         }
                                         else{
-                                            message.channel.send("welcome! " + mentionedUser + " you now have " + userData.tacos + " tacos!")
-                                            stats.statisticsManage(discordUserId, "giveCount", userData.tacos, function(err, statSuccess){
+                                            // send message that the user has gotten tacos
+                                            message.channel.send(message.author + " gifted " + mentionedUser + " " + giveTacoAmount + " tacos! :taco:");
+                                            stats.statisticsManage(discordUserId, "giveCount", giveTacoAmount, function(err, statSuccess){
                                                 if (err){
                                                     console.log(err);
                                                 }
                                                 else{
+                                                    console.log(statSuccess);
                                                     // check achievements??
                                                     var data = {}
                                                     data.achievements = achievements;
@@ -470,25 +492,6 @@ module.exports.giveCommand = function(message, giveTacoAmount){
                                             })
                                         }
                                     })
-                                }
-                                else{
-                                    // send message that the user has 1 more taco
-                                    message.channel.send(message.author + " gifted " + mentionedUser + " " + giveTacoAmount + " tacos! :taco:");
-                                    stats.statisticsManage(discordUserId, "giveCount", giveTacoAmount, function(err, statSuccess){
-                                        if (err){
-                                            console.log(err);
-                                        }
-                                        else{
-                                            console.log(statSuccess);
-                                            // check achievements??
-                                            var data = {}
-                                            data.achievements = achievements;
-                                            data.givecount = giveTacoAmount;
-                                            console.log(data);
-                                            achiev.checkForAchievements(discordUserId, data, message);
-                                        }
-                                    })
-                                    
                                 }
                             })
                         }
@@ -518,7 +521,7 @@ module.exports.cookCommand = function(message){
                 birthdate: "2001-10-05",
                 lastthanktime: threedaysAgo,
                 lastcooktime: now,
-                lastsorrytime: threeDaysAgo,
+                lastsorrytime: threedaysAgo,
                 lastscavangetime: threedaysAgo,
                 tacostands: 0,
                 welcomed: false,
@@ -666,9 +669,15 @@ module.exports.profileCommand = function(message){
         profileDB.getUserProfileData( mentionedId, function(err, profileResponse) {
             if(err){
                 // user doesnt exist, create their profile first
-                if(err.code === 0){
-                    // user doesn't exist
-                }
+                var userData = initialUserProfile(mentionedId);
+                profileDB.createUserProfile(userData, function(error, createUserResponse){
+                    if (error){
+                        console.log(error); // cant create user RIP
+                    }
+                    else{
+                        exports.profileCommand(message);
+                    }
+                })
             }
             else{
                 var profileData = {}
@@ -691,9 +700,16 @@ module.exports.profileCommand = function(message){
         profileDB.getUserProfileData( discordUserId, function(err, profileResponse) {
             if(err){
                 // user doesnt exist, create their profile first
-                if(err.code === 0){
-                    // user doesnt exist
-                }
+                var userData = initialUserProfile(discordUserId);
+                
+                profileDB.createUserProfile(userData, function(error, createUserResponse){
+                    if (error){
+                        console.log(error); // cant create user RIP
+                    }
+                    else{
+                        exports.profileCommand(message);
+                    }
+                })
             }
             else{
                 var profileData = {}
@@ -722,6 +738,15 @@ module.exports.tacosCommand = function(message){
             // user doesnt exist, create their profile first
             if(err.code === 0){
                 // user doesnt exist
+                var userData = initialUserProfile(discordUserId);
+                profileDB.createUserProfile(userData, function(error, createUserResponse){
+                    if (error){
+                        console.log(error); // cant create user RIP
+                    }
+                    else{
+                        exports.tacosCommand(message);
+                    }
+                })
             }
         }
         else{
@@ -750,6 +775,16 @@ module.exports.tacoStandsCommand = function(message){
             // user doesnt exist, create their profile first
             if(err.code === 0){
                 // user doesnt exist
+                var userData = initialUserProfile(discordUserId);
+
+                profileDB.createUserProfile(userData, function(error, createUserResponse){
+                    if (error){
+                        console.log(error); // cant create user RIP
+                    }
+                    else{
+                        exports.tacoStandsCommand(message);
+                    }
+                })
             }
         }
         else{
@@ -883,7 +918,15 @@ module.exports.shopCommand = function(message){
     profileDB.getUserProfileData( discordUserId, function(err, sorryResponse) {
         if(err){
             // user doesnt exist tell the user they should get some tacos
-            message.reply( " you can't afford a stand atm!" + err);
+            var userData = initialUserProfile(discordUserId);
+            profileDB.createUserProfile(userData, function(error, createUserResponse){
+                if (error){
+                    console.log(error); // cant create user RIP
+                }
+                else{
+                    exports.shopCommand(message);
+                }
+            })
         }
         else{
             // if user has enough tacos to purchase the tree, add 1 tree, subtract x tacos
@@ -1038,13 +1081,16 @@ function inventoryEmbedBuilder(message, itemsMap, allItems){
             // 
             console.log(key + " " + allItems[key].itemname)
             var emoji = "";
-            if (allItems[key].itemraritycategory === "ancient"){
+            if (allItems[key].itemraritycategory === "artifact"){
+                emoji = ":small_orange_diamond::small_orange_diamond::small_orange_diamond: "
+            }
+            else if (allItems[key].itemraritycategory === "ancient"){
                 emoji = ":small_orange_diamond::small_orange_diamond: "
             }
             else if (allItems[key].itemraritycategory === "rare"){
                 emoji = ":small_orange_diamond: "
             }
-            inventoryString = emoji + "**"+allItems[key].itemname + "** -- "+  itemsMap[key] +" -- "+ allItems[key].itemstatistics + " -- " + allItems[key].itemslot +"\n" + inventoryString;
+            inventoryString = emoji + "**"+allItems[key].itemname + "** - "+  itemsMap[key] +" - " + " - " + allItems[key].itemslot +"\n" + inventoryString;
         }
     }
     embed
@@ -1079,116 +1125,152 @@ module.exports.scavangeCommand = function (message){
     else{
         rollsCount = 1
     }
-    
-    // get all the possible items from items DB - Bad implementation but idgaf
-    profileDB.getItemData(function(err, getItemResponse){
-        if (err){
-            console.log(err);
-        }
-        else{
-            var allItems = getItemResponse.data
-            var commonItems = [];
-            var uncommonItems = [];
-            var rareItems = [];
-            var ancientItems = [];
-            var artifactItems = [];
-            var mythItems = [];
+    // only scavenge if the user has a pickaxe
+    profileDB.getUserProfileData( discordUserId, function(error, getUserResponse) {
+        if(error){
+            console.log(error);
+            // create user profile then send a message saying they need a pickaxe
+            var userData = initialUserProfile(discordUserId);
 
-            for (var item in allItems){
-                if (allItems[item].itemraritycategory == "common"){
-                    commonItems.push(allItems[item]);
-                }
-                else if(allItems[item].itemraritycategory == "uncommon"){
-                    uncommonItems.push(allItems[item]);
-                }
-                else if(allItems[item].itemraritycategory == "rare"){
-                    rareItems.push(allItems[item]);
-                }
-                else if(allItems[item].itemraritycategory == "ancient"){
-                    ancientItems.push(allItems[item]);
-                }
-                else if(allItems[item].itemraritycategory == "artifact"){
-                    artifactItems.push(allItems[item]);
-                }
-                else if(allItems[item].itemraritycategory == "myth"){
-                    mythItems.push(allItems[item]);
-                }
-            }
-            // roll rarity, roll item from rarity
-            var gotUncommon = false;
-            var itemsObtainedArray = [];
-
-            for (var i = 0; i < rollsCount; i++){
-                var rarityRoll = Math.floor(Math.random() * 10000) + 1;
-                var rarityString = "";
-                console.log(rarityRoll);
-                if (!gotUncommon && rollsCount > 4){
-                    // guaranteed rare +
-                    rarityRoll = Math.floor(Math.random() * 220) + 9780;
-                    gotUncommon = true;
-                }
-                else if(!gotUncommon && rollsCount > 3){
-                    // guaranteed uncommon +
-                    rarityRoll = Math.floor(Math.random() * 1150) + 8850;
-                    gotUncommon = true;
-                }
-                if (rarityRoll > 9995){
-                    rarityString = "artifact"
-                    var itemRoll = Math.floor(Math.random() * artifactItems.length);
-                    console.log(artifactItems[itemRoll]);
-                    itemsObtainedArray.push(artifactItems[itemRoll]);
-                }
-                else if(rarityRoll > 9950 && rarityRoll <= 9995){
-                    rarityString = "ancient"
-                    var itemRoll = Math.floor(Math.random() * ancientItems.length);
-                    console.log(ancientItems[itemRoll]);
-                    itemsObtainedArray.push(ancientItems[itemRoll])
-                }
-                else if(rarityRoll > 9700 && rarityRoll <= 9950){
-                    rarityString = "rare"
-                    var itemRoll = Math.floor(Math.random() * rareItems.length);
-                    console.log(rareItems[itemRoll]);
-                    itemsObtainedArray.push(rareItems[itemRoll]);
-                }
-                else if (rarityRoll > 8000 && rarityRoll <= 9700){
-                    rarityString = "uncommon"
-                    var itemRoll = Math.floor(Math.random() * uncommonItems.length);
-                    console.log(uncommonItems[itemRoll]);
-                    itemsObtainedArray.push( uncommonItems[itemRoll] );
-                }
-                else {
-                    rarityString = "common"
-                    var itemRoll = Math.floor(Math.random() * commonItems.length);
-                    console.log(commonItems[itemRoll]);
-                    itemsObtainedArray.push( commonItems[itemRoll] );
-                }
-            }
-            // send the items to be written all at once
-            addToUserInventory(discordUserId, itemsObtainedArray);
-
-            // send message of all items obtained
-            scavengeEmbedBuilder(message, itemsObtainedArray)
-            // add to statistics
-            profileDB.getUserProfileData( discordUserId, function(error, getUserResponse) {
-                if(error){
-                    console.log(error);
+            profileDB.createUserProfile(userData, function(error, createUserResponse){
+                if (error){
+                    console.log(error); // cant create user RIP
                 }
                 else{
-                    var achievements = getUserResponse.data.achievements;
-                    stats.statisticsManage(discordUserId, "scavengeCount", 1, function(err, statSuccess){
-                        if (err){
-                            console.log(err);
-                        }
-                        else{
-                            // check achievements
-                            var data = {}
-                            data.achievements = achievements;
-                            console.log(data);
-                            achiev.checkForAchievements(discordUserId, data, message);
-                        }
-                    })
+                    message.channel.send(message.author + " you need a pickaxe!");
                 }
             })
+        }
+        else if (getUserResponse.data.pickaxe && getUserResponse.data.pickaxe != "none"){
+            // get all the possible items from items DB - Bad implementation but idgaf
+
+            //check for more than 1 hours
+            var now = new Date();
+            var oneHourAgo = new Date();
+            oneHourAgo = new Date(oneHourAgo.setHours(oneHourAgo.getHours() - 1));
+            if ( oneHourAgo > getUserResponse.data.lastscavangetime ){
+                profileDB.getItemData(function(err, getItemResponse){
+                    if (err){
+                        console.log(err);
+                    }
+                    else{
+                        var allItems = getItemResponse.data
+                        var commonItems = [];
+                        var uncommonItems = [];
+                        var rareItems = [];
+                        var ancientItems = [];
+                        var artifactItems = [];
+                        var mythItems = [];
+
+                        for (var item in allItems){
+                            if (allItems[item].itemraritycategory == "common"){
+                                commonItems.push(allItems[item]);
+                            }
+                            else if(allItems[item].itemraritycategory == "uncommon"){
+                                uncommonItems.push(allItems[item]);
+                            }
+                            else if(allItems[item].itemraritycategory == "rare"){
+                                rareItems.push(allItems[item]);
+                            }
+                            else if(allItems[item].itemraritycategory == "ancient"){
+                                ancientItems.push(allItems[item]);
+                            }
+                            else if(allItems[item].itemraritycategory == "artifact"){
+                                artifactItems.push(allItems[item]);
+                            }
+                            else if(allItems[item].itemraritycategory == "myth"){
+                                mythItems.push(allItems[item]);
+                            }
+                        }
+                        // roll rarity, roll item from rarity
+                        var gotUncommon = false;
+                        var itemsObtainedArray = [];
+
+                        for (var i = 0; i < rollsCount; i++){
+                            var rarityRoll = Math.floor(Math.random() * 10000) + 1;
+                            var rarityString = "";
+                            console.log(rarityRoll);
+                            if (!gotUncommon && rollsCount > 4){
+                                // guaranteed rare +
+                                rarityRoll = Math.floor(Math.random() * 220) + 9780;
+                                gotUncommon = true;
+                            }
+                            else if(!gotUncommon && rollsCount > 3){
+                                // guaranteed uncommon +
+                                rarityRoll = Math.floor(Math.random() * 1150) + 8850;
+                                gotUncommon = true;
+                            }
+                            if (rarityRoll > 9995){
+                                rarityString = "artifact"
+                                var itemRoll = Math.floor(Math.random() * artifactItems.length);
+                                console.log(artifactItems[itemRoll]);
+                                itemsObtainedArray.push(artifactItems[itemRoll]);
+                            }
+                            else if(rarityRoll > 9950 && rarityRoll <= 9995){
+                                rarityString = "ancient"
+                                var itemRoll = Math.floor(Math.random() * ancientItems.length);
+                                console.log(ancientItems[itemRoll]);
+                                itemsObtainedArray.push(ancientItems[itemRoll])
+                            }
+                            else if(rarityRoll > 9700 && rarityRoll <= 9950){
+                                rarityString = "rare"
+                                var itemRoll = Math.floor(Math.random() * rareItems.length);
+                                console.log(rareItems[itemRoll]);
+                                itemsObtainedArray.push(rareItems[itemRoll]);
+                            }
+                            else if (rarityRoll > 8000 && rarityRoll <= 9700){
+                                rarityString = "uncommon"
+                                var itemRoll = Math.floor(Math.random() * uncommonItems.length);
+                                console.log(uncommonItems[itemRoll]);
+                                itemsObtainedArray.push( uncommonItems[itemRoll] );
+                            }
+                            else {
+                                rarityString = "common"
+                                var itemRoll = Math.floor(Math.random() * commonItems.length);
+                                console.log(commonItems[itemRoll]);
+                                itemsObtainedArray.push( commonItems[itemRoll] );
+                            }
+                        }
+                        // send the items to be written all at once
+                        addToUserInventory(discordUserId, itemsObtainedArray);
+
+                        // send message of all items obtained
+                        scavengeEmbedBuilder(message, itemsObtainedArray)
+                        // update lastscavengetime
+                        profileDB.updateLastScavengeTime(discordUserId, function(updateLSErr, updateLSres){
+                            if(updateLSErr){
+                                console.log(updateLSErr);
+                            }
+                            else{
+                                console.log(updateLSres);
+                            }
+                        })
+                        // add to statistics
+                        var achievements = getUserResponse.data.achievements;
+                        stats.statisticsManage(discordUserId, "scavengeCount", 1, function(err, statSuccess){
+                            if (err){
+                                console.log(err);
+                            }
+                            else{
+                                // check achievements
+                                var data = {}
+                                data.achievements = achievements;
+                                console.log(data);
+                                achiev.checkForAchievements(discordUserId, data, message);
+                            }
+                        })
+                    }
+                })
+            }
+            else{
+                // six hours have not passed, tell the user they need to wait 
+                var numberOfHours = getDateDifference(getUserResponse.data.lastscavangetime, now, 1);
+                message.channel.send(message.author + " you have scavenged too recently! please wait `" + numberOfHours +"`");
+                
+            }
+        }
+        else{
+            message.channel.send(message.author + " you need a pickaxe!");
         }
     })
 }
@@ -1219,4 +1301,26 @@ function addToUserInventory(discordUserId, items){
             console.log(itemAddResponse);
         }
     })
+}
+
+function initialUserProfile(discordUserId){
+    var now = new Date();
+    var threedaysAgo = new Date();
+    threedaysAgo = new Date(threedaysAgo.setHours(threedaysAgo.getHours() - 72));
+    var userData = {
+        discordId: discordUserId,
+        tacos: 0,
+        birthdate: "2001-10-05",
+        lastthanktime: threedaysAgo,
+        lastcooktime: now,
+        lastsorrytime: threedaysAgo,
+        lastscavangetime: threedaysAgo,
+        tacostands: 0,
+        welcomed: false,
+        lastpreparetime: threedaysAgo,
+        pickaxe: "none",
+        map: false,
+        phone: false
+    }
+    return userData;
 }
