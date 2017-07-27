@@ -7,7 +7,7 @@ var achievementsData = {
         emoji : ":boy::skin-tone-2:",
         description: "Thank 25 users"
     },
-    "Fidel Cashflow": {
+    "Fidel cashflow": {
         emoji : ":chart_with_upwards_trend:",
         description: "Obtain 5 taco stands"
     },
@@ -21,7 +21,7 @@ var achievementsData = {
     },
     "Adventure girl": {
         emoji : ":mag:",
-        description: "Buy a pickaxe & Scavange 20 times"
+        description: "Buy a pickaxe & scavenge 20 times"
     },
     "Hoarder": {
         emoji : ":moneybag:",
@@ -166,13 +166,13 @@ module.exports.checkForAchievements = function(discordUserId, data, message){
             
             if(data.tacostands && 
                data.tacostands >= 5 &&
-               (data.achievements === null || data.achievements.indexOf("Fidel Cashflow") == -1 )){
-                profileDB.updateAchievements(discordUserId, "{Fidel Cashflow}", function(err, r){
+               (data.achievements === null || data.achievements.indexOf("Fidel cashflow") == -1 )){
+                profileDB.updateAchievements(discordUserId, "{Fidel cashflow}", function(err, r){
                     if (err){
                         console.log(err);
                     }
                     {
-                        achievementEmbedBuilder(message, "Fidel Cashflow");
+                        achievementEmbedBuilder(message, "Fidel cashflow");
                     }
                 })
             }

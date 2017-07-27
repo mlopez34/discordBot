@@ -66,7 +66,7 @@ module.exports.thankCommand = function(message){
                 // check against thank timestamp and if 6 hours have passed
                 var now = new Date();
                 var twoHoursAgo = new Date();
-                twoHoursAgo = new Date(twoHoursAgo.setHours(twoHoursAgo.getHours() - 0));
+                twoHoursAgo = new Date(twoHoursAgo.setHours(twoHoursAgo.getHours() - 2));
                 //console.log("now: " + now);
                 //console.log("twoHoursAgo: " + twoHoursAgo);
                 //console.log("timestamp: " + thankResponse.data.lastthanktime);
@@ -94,13 +94,13 @@ module.exports.thankCommand = function(message){
                 }else{
                     // six hours have not passed, tell the user they need to wait 
                     var numberOfHours = getDateDifference(thankResponse.data.lastthanktime, now, 2);
-                    message.channel.send(message.author + " you are being too thankful! please wait `" + numberOfHours +"`");
+                    message.channel.send(message.author + " You are being too thankful! please wait `" + numberOfHours +"`");
                 }
             }
         });
     }
     else{
-        message.channel.send(message.author + " you must mention a user or a user that isn't you whom you want to thank!");
+        message.channel.send(message.author + " You must mention a user or a user that isn't you whom you want to thank!");
     }
 }
 
@@ -166,7 +166,7 @@ module.exports.sorryCommand = function(message){
                 var achievements = sorryResponse.data.achievements;
                 var now = new Date();
                 var sixHoursAgo = new Date();
-                sixHoursAgo = new Date(sixHoursAgo.setHours(sixHoursAgo.getHours() - 0));
+                sixHoursAgo = new Date(sixHoursAgo.setHours(sixHoursAgo.getHours() - 6));
 
                 if ( sixHoursAgo > sorryResponse.data.lastsorrytime ){
                     profileDB.updateUserTacosSorry(mentionedId, 1, function(err, updateResponse) {
@@ -190,13 +190,13 @@ module.exports.sorryCommand = function(message){
                 }else{
                     // six hours have not passed, tell the user they need to wait 
                     var numberOfHours = getDateDifference(sorryResponse.data.lastthanktime, now, 6);
-                    message.channel.send(message.author + " you are being too sorryful! Please wait `" + numberOfHours +"`");
+                    message.channel.send(message.author + " You are being too apologetic! Please wait `" + numberOfHours +"`");
                 }
             }
         })
     }
     else{
-        message.channel.send(message.author + " you must mention a user or a user that isn't you whom you want to apologize to!");
+        message.channel.send(message.author + " You must mention a user or a user that isn't you whom you want to apologize to!");
     }
 
 }
@@ -208,7 +208,7 @@ module.exports.buyStandCommand = function (message){
     profileDB.getUserProfileData( discordUserId, function(err, buyStandResponse) {
         if(err){
             // user doesnt exist tell the user they should get some tacos
-            message.channel.send(message.author + " you can't afford a stand atm!");
+            message.channel.send(message.author + " You can't afford a stand atm!");
         }
         else{
             // if user has enough tacos to purchase the stand, add 1 tree, subtract x tacos
@@ -228,7 +228,7 @@ module.exports.buyStandCommand = function (message){
                         // couldn't purchase stand
                     }
                     else{
-                        message.channel.send(message.author + " congratulations you have purchased a taco stand!");
+                        message.channel.send(message.author + " Congratulations!, you have purchased a taco stand! :bus:");
                         
                         // check achievements??
                         var data = {}
@@ -243,7 +243,7 @@ module.exports.buyStandCommand = function (message){
             else{
                 // can't afford stand
                 var standCost = BASE_TACO_COST + (userTacoStands * 25);
-                message.channel.send(message.author + " you can't afford a stand , you need `" + standCost + " tacos`!");
+                message.channel.send(message.author + " You can't afford a stand , you need `" + standCost + " tacos`!");
             }
         }
     })
@@ -262,7 +262,7 @@ module.exports.prepareCommand = function (message){
                     console.log(error); // cant create user RIP
                 }
                 else{
-                    message.channel.send(message.author + " you can't prepare atm because you do not have taco stands!");
+                    message.channel.send(message.author + " You can't prepare atm because you do not have taco stands!");
                 }
             })
         }
@@ -272,7 +272,7 @@ module.exports.prepareCommand = function (message){
             var achievements = prepareResponse.data.achievements;
             var now = new Date();
             var threeDaysAgo = new Date();
-            threeDaysAgo = new Date(threeDaysAgo.setHours(threeDaysAgo.getHours() - 0));
+            threeDaysAgo = new Date(threeDaysAgo.setHours(threeDaysAgo.getHours() - 48));
 
             if ( threeDaysAgo > prepareResponse.data.lastpreparetime ){
                 // able to prepare again
@@ -289,17 +289,17 @@ module.exports.prepareCommand = function (message){
                             // something happened
                         }
                         else{
-                            message.channel.send(message.author + " you have prepared " + tacosToPrepare + " tacos :taco:!");
+                            message.channel.send(message.author + " You have prepared `" + tacosToPrepare + "` tacos :taco:!");
                         }
                     })
                 }
                 else{
-                    message.channel.send(message.author + " you do not have any stands to prepare tacos with!");
+                    message.channel.send(message.author + " You do not have any stands to prepare tacos with!");
                 }
             }
             else{
                 var numberOfHours = getDateDifference(prepareResponse.data.lastpreparetime, now, 24);
-                message.channel.send(message.author + " you ran out of ingredients! Please wait `" + numberOfHours + "`");
+                message.channel.send(message.author + " You ran out of ingredients! Please wait `" + numberOfHours + "`");
             }
         }
     })
@@ -319,7 +319,7 @@ module.exports.welcomeCommand = function(message){
         mentionedUser = user
     })
     if (mentionedId == discordUserId){
-        message.channel.send(message.author +" you can't welcome yourself!")
+        message.channel.send(message.author +" You can't welcome yourself!")
     }
     else{
         // check first that user exists, if user doesn't exist create user, then check if welcomed user exists
@@ -353,7 +353,7 @@ module.exports.welcomeCommand = function(message){
                         }
                         else{
                             if (mentionedUser.id){
-                                message.channel.send(" welcome! " + mentionedUser + " you now have " + userData.tacos + " tacos!")
+                                message.channel.send(" Welcome! " + mentionedUser + " You now have " + userData.tacos + " tacos!")
                                 stats.statisticsManage(discordUserId, "welcomeCount", 1, function(err, statSuccess){
                                     if (err){
                                         console.log(err);
@@ -378,7 +378,7 @@ module.exports.welcomeCommand = function(message){
                         }
                         else{
                             // send message that the user has 1 more taco
-                            message.channel.send(mentionedUser + " welcome! you now have " + (welcomeResponse.data.tacos + 2) + " tacos! :taco:");
+                            message.channel.send(mentionedUser + " Welcome! You now have " + (welcomeResponse.data.tacos + 2) + " tacos! :taco:");
                             stats.statisticsManage(discordUserId, "welcomeCount", 1, function(err, statSuccess){
                                 if (err){
                                     console.log(err);
@@ -392,7 +392,7 @@ module.exports.welcomeCommand = function(message){
                     })
                 }
                 else{
-                    message.channel.send(message.author + " the user has already been welcomed!");
+                    message.channel.send(message.author + " This user has already been welcomed!");
                 }
             }
         }) 
@@ -413,14 +413,14 @@ module.exports.giveCommand = function(message, giveTacoAmount){
     })
     // get user
     if (mentionedId == discordUserId){
-        message.channel.send(message.author + " you can't give yourself taco!")
+        message.channel.send(message.author + " You can't give yourself taco!")
     }
     else{
         profileDB.getUserProfileData( discordUserId, function(err, giveResponse) {
             if(err){
                 // user doesnt exist, 
                 if(err.code === 0){
-                    message.channel.send(message.author + " you have no tacos to give!");
+                    message.channel.send(message.author + " You have no tacos to give!");
                 }
             }
             else{
@@ -475,7 +475,7 @@ module.exports.giveCommand = function(message, giveTacoAmount){
                                         }
                                         else{
                                             // send message that the user has gotten tacos
-                                            message.channel.send(message.author + " gifted " + mentionedUser + " " + giveTacoAmount + " tacos! :taco:");
+                                            message.channel.send(message.author + " gifted " + mentionedUser + " `" + giveTacoAmount + "` tacos! :taco:");
                                             stats.statisticsManage(discordUserId, "giveCount", giveTacoAmount, function(err, statSuccess){
                                                 if (err){
                                                     console.log(err);
@@ -507,6 +507,27 @@ module.exports.giveCommand = function(message, giveTacoAmount){
 
 module.exports.cookCommand = function(message){
     var discordUserId = message.author.id;
+    var cookRoll = 2;
+    // roll for cook
+    var rolls = Math.floor(Math.random() * 100) + 1;
+    if (rolls > 97){
+        cookRoll = 7
+    }
+    else if(rolls > 85){
+        cookRoll = 6
+    }
+    else if(rolls > 70){
+        cookRoll = 5
+    }
+    else if(rolls > 50){
+        cookRoll = 4
+    }
+    else if(rolls > 20 ){
+        cookRoll = 3
+    }
+    else{
+        cookRoll = 2
+    }
 
     profileDB.getUserProfileData( discordUserId, function(err, cookResponse) {
         if(err){
@@ -517,7 +538,7 @@ module.exports.cookCommand = function(message){
             threedaysAgo = new Date(threedaysAgo.setHours(threedaysAgo.getHours() - 72));
             var userData = {
                 discordId: mentionedId,
-                tacos: BASE_TACO_COOK,
+                tacos: cookRoll,
                 birthdate: "2001-10-05",
                 lastthanktime: threedaysAgo,
                 lastcooktime: now,
@@ -535,11 +556,11 @@ module.exports.cookCommand = function(message){
                     console.log(err); // cant create user RIP
                 }
                 else{
-                    message.author + " cooked " + BASE_TACO_COOK + " tacos! you now have " + BASE_TACO_COOK + " tacos :taco:"
+                    message.author + " Cooked `" + cookRoll + "` tacos! you now have `" + cookRoll + "` tacos :taco:"
 
                     var data = {}
                     data.achievements = achievements;
-                    data.cookcount = BASE_TACO_COOK
+                    data.cookcount = cookRoll
                     console.log(data);
                     achiev.checkForAchievements(discordUserId, data, message);
                 }
@@ -550,20 +571,20 @@ module.exports.cookCommand = function(message){
             var achievements = cookResponse.data.achievements;
             var now = new Date();
             var threeDaysAgo = new Date();
-            threeDaysAgo = new Date(threeDaysAgo.setHours(threeDaysAgo.getHours() - 0));
+            threeDaysAgo = new Date(threeDaysAgo.setHours(threeDaysAgo.getHours() - 24));
 
             if ( threeDaysAgo > cookResponse.data.lastcooktime ){
-                profileDB.updateUserTacosCook(discordUserId, BASE_TACO_COOK, function(err, updateResponse) {
+                profileDB.updateUserTacosCook(discordUserId, cookRoll, function(err, updateResponse) {
                     if (err){
                         console.log(err);
                     }
                     else{
                         // send message that the user has 1 more taco
-                        message.channel.send(message.author + " cooked " + BASE_TACO_COOK + " tacos! you now have " + (cookResponse.data.tacos + BASE_TACO_COOK) + " tacos :taco:");
+                        message.channel.send(message.author + " Cooked `" + cookRoll + "` tacos! you now have `" + (cookResponse.data.tacos + cookRoll) + "` tacos :taco:");
 
                         var data = {}
                         data.achievements = achievements;
-                        data.cookcount = BASE_TACO_COOK
+                        data.cookcount = cookRoll
                         console.log(data);
                         achiev.checkForAchievements(discordUserId, data, message);
                     }
@@ -571,7 +592,7 @@ module.exports.cookCommand = function(message){
             }else{
                 // six hours have not passed, tell the user they need to wait 
                 var numberOfHours = getDateDifference(cookResponse.data.lastcooktime, now, 24);
-                message.channel.send(message.author + " you cannot cook tacos currently, Please wait `" + numberOfHours + "`");
+                message.channel.send(message.author + " You cannot cook tacos currently, Please wait `" + numberOfHours + "`");
             }
         }
     })
@@ -812,7 +833,7 @@ module.exports.buyPickaxeCommand = function(message){
     profileDB.getUserProfileData( discordUserId, function(err, pickaxeResponse) {
         if(err){
             // user doesnt exist tell the user they should get some tacos
-            message.channel.send(message.author + " you can't afford a stand atm!");
+            message.channel.send(message.author + " You can't afford a stand atm!");
         }
         else{
             if (pickaxeResponse.data.pickaxe == "none"){
@@ -825,13 +846,13 @@ module.exports.buyPickaxeCommand = function(message){
                             // couldn't purchase stand
                         }
                         else{
-                            message.channel.send(message.author + " congratulations you have purchased a pickaxe :pick:!");
+                            message.channel.send(message.author + " Congratulations, you have purchased a pickaxe :pick:!");
                         }
                     })
                 }
             }
             else{
-                message.channel.send(message.author + " you already own the pickaxe selected");
+                message.channel.send(message.author + " You already own the pickaxe selected");
             }
         }
     })
@@ -889,8 +910,6 @@ function shopBuilder(message, shopData){
     .setTitle(welcomeMessage)
     .setThumbnail()
     .setDescription("Bender accepts Tacos as currency since he's a hungry guy :shrug:. Have a look around!")
-    .addField('Your current tacos', shopData.userTacos + " :taco:", false)
-    .addBlankField(false)
     .addField('Taco Stands', ":bus:", true)
     .addField('Description', tacoStandDescription, true)
     .addField('Cost', treeCost, true)
@@ -909,6 +928,8 @@ function shopBuilder(message, shopData){
     .addField('Description', pastaDescription, true)
     .addField('Cost', PASTA_COST + " :taco:", true)
     .addField('Command', "!buyPasta", true)
+    .addBlankField(false)
+    .addField('Your current tacos', shopData.userTacos + " :taco:", false)
     .setTimestamp()
     message.channel.send({embed});
 }
@@ -988,16 +1009,16 @@ module.exports.buyPastaCommand = function(message, pasta){
                 // user can buy the pasta, insert the pasta message into the user's pasta column
                 profileDB.updateUserPasta( discordUserId, PASTA_COST * -1, pasta, function(err, pastaRespond) {
                     if(err){
-                        message.channel.send(message.author + " could not purchase pasta!");
+                        message.channel.send(message.author + " Could not purchase pasta!");
                     }
                     else{
                         // user has updated their pasta
-                        message.channel.send(message.author + " you have purchased a new pasta :spaghetti:!");
+                        message.channel.send(message.author + " You have purchased a new pasta :spaghetti:!");
                     }
                 });
             }
             else{
-                message.channel.send(message.author + " you do not have enough tacos to purchase a pasta");
+                message.channel.send(message.author + " You do not have enough tacos to purchase a pasta!");
             }
 
         }
@@ -1013,11 +1034,11 @@ module.exports.helpCommand = function(message){
     var sorry = "!sorry [user] - say sorry to a user and they get 1 taco! \n "
     var welcome = "!welcome [user] - welcome a user and they get 2 tacos! \n "
     var cook = "!cook - cook some tacos! \n "
-    var give = "!give user number - give the mentioned user some number of tacos! \n "
+    var give = "!give [user] number - give the mentioned user some number of tacos! \n "
     var shop = "!shop - enter Benders shop! \n "
     var prepare = "!prepare - prepare some tacos from your taco stands! \n "
     var throwTaco = "!throw [user] - throw a taco at the mentioned user \n "
-    var scavenge = "!scavenge - use your pickaxe to find items "
+    var scavenge = "!scavenge - use your pickaxe "
     //var commandsList = "```xl Uppercase lowercase 123 ```"
     var commandsList = "```css\n" + commandsList + profile + thank + sorry + welcome + cook + give + shop + prepare + throwTaco + scavenge + "```";
     message.channel.send(commandsList);
@@ -1137,7 +1158,7 @@ module.exports.scavangeCommand = function (message){
                     console.log(error); // cant create user RIP
                 }
                 else{
-                    message.channel.send(message.author + " you need a pickaxe!");
+                    message.channel.send(message.author + " You need a pickaxe!");
                 }
             })
         }
@@ -1265,12 +1286,12 @@ module.exports.scavangeCommand = function (message){
             else{
                 // six hours have not passed, tell the user they need to wait 
                 var numberOfHours = getDateDifference(getUserResponse.data.lastscavangetime, now, 1);
-                message.channel.send(message.author + " you have scavenged too recently! please wait `" + numberOfHours +"`");
+                message.channel.send(message.author + " You have scavenged too recently! please wait `" + numberOfHours +"`");
                 
             }
         }
         else{
-            message.channel.send(message.author + " you need a pickaxe!");
+            message.channel.send(message.author + " You need a pickaxe!");
         }
     })
 }

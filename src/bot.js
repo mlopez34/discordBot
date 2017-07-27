@@ -6,6 +6,7 @@ var options = {
 };
 var config = require("./config.js");
 var commands = require("./commands.js");
+var profileDB = require("./profileDB.js");
 
 const Discord = require("discord.js");
 const client = new Discord.Client();
@@ -13,6 +14,7 @@ const client = new Discord.Client();
 var BASE_INTERVAL = 3600000;
 
 var tacoTuesdayEnabled = false;
+var botEnabled = true;
 
 client.on('ready', function(err) {
     if (err){
@@ -33,82 +35,100 @@ function commandIs(str, msg){
 }
 
 client.on('message', function(message){
-    console.log(message.author.id); // id of the user that created the message
-    var args = message.content.split(/[ ]+/);
-    console.log(args);
-    // check if it is Taco Tueday
-    var dateUtc = new Date()
-    var weekday = dateUtc.getDay();
-    if (weekday == 2 && !tacoTuesdayEnabled){
-        // Taco Tuesday Has begun
-        // taco gains are doubled, Bender brings someone along to share his tacos on taco tuesday on every meal
-        // Bender's shop allows you to purchase a temporary mariachi band, the band can play music and make you dance
-        tacoTuesdayEnabled = true;
-        tacoTuesdayAnnouncement(message);
-    }
-    else{
-        // disable Taco Tuesday
-    }
-    // commands
-    if( commandIs("thank", message )){
-        commands.thankCommand(message);
-    }
-    else if( commandIs("sorry", message )){
-        commands.sorryCommand(message);
-    }
-    else if( commandIs("help", message )){
-        commands.helpCommand(message);
-    }
-    else if( commandIs("buystand", message )){
-        commands.buyStandCommand(message);
-    }
-    else if( commandIs("prepare", message)){
-        commands.prepareCommand(message);
-    }
-    else if( commandIs("welcome", message)){
-        commands.welcomeCommand(message);
-    }
-    else if (commandIs("give", message)){
-        commands.giveCommand(message, args[2]);
-    }
-    else if (commandIs("cook", message)){
-        commands.cookCommand(message);
-    }
-    else if (commandIs("profile", message)){
-        commands.profileCommand(message);
-    }
-    else if(commandIs("tacos", message)){
-        commands.tacosCommand(message);
-    }
-    else if(commandIs("stands", message)){
-        commands.tacoStandsCommand(message);
-    }
-    else if(commandIs("throw", message)){
-        commands.throwCommand(message);
-    }
-    else if(commandIs("shop", message)){
-        commands.shopCommand(message);
-    }
-    else if(commandIs("buypickaxe", message)){
-        commands.buyPickaxeCommand(message);
-    }
-    else if(commandIs("buypasta", message)){
-        var pasta = "";
-        for (var arg in args){
-            if (arg > 0){
-                pasta = pasta.concat(args[arg] + " ");
+    if (botEnabled){
+        console.log(message.author.id); // id of the user that created the message
+        var args = message.content.split(/[ ]+/);
+        console.log(args);
+        // check if it is Taco Tueday
+        var dateUtc = new Date()
+        var weekday = dateUtc.getDay();
+        if (weekday == 2 && !tacoTuesdayEnabled){
+            // Taco Tuesday Has begun
+            // taco gains are doubled, Bender brings someone along to share his tacos on taco tuesday on every meal
+            // Bender's shop allows you to purchase a temporary mariachi band, the band can play music and make you dance
+            tacoTuesdayEnabled = true;
+            tacoTuesdayAnnouncement(message);
+        }
+        else{
+            // disable Taco Tuesday
+        }
+        // commands
+        if( commandIs("thank", message )){
+            commands.thankCommand(message);
+        }
+        else if( commandIs("sorry", message )){
+            commands.sorryCommand(message);
+        }
+        else if( commandIs("help", message )){
+            commands.helpCommand(message);
+        }
+        else if( commandIs("buystand", message )){
+            commands.buyStandCommand(message);
+        }
+        else if( commandIs("prepare", message)){
+            commands.prepareCommand(message);
+        }
+        else if( commandIs("welcome", message)){
+            commands.welcomeCommand(message);
+        }
+        else if (commandIs("give", message)){
+            commands.giveCommand(message, args[2]);
+        }
+        else if (commandIs("cook", message)){
+            commands.cookCommand(message);
+        }
+        else if (commandIs("profile", message)){
+            commands.profileCommand(message);
+        }
+        else if(commandIs("tacos", message)){
+            commands.tacosCommand(message);
+        }
+        else if(commandIs("stands", message)){
+            commands.tacoStandsCommand(message);
+        }
+        else if(commandIs("throw", message)){
+            commands.throwCommand(message);
+        }
+        else if(commandIs("shop", message)){
+            commands.shopCommand(message);
+        }
+        else if(commandIs("buypickaxe", message)){
+            commands.buyPickaxeCommand(message);
+        }
+        else if(commandIs("buypasta", message)){
+            var pasta = "";
+            for (var arg in args){
+                if (arg > 0){
+                    pasta = pasta.concat(args[arg] + " ");
+                }
+            }
+            console.log(pasta);
+            commands.buyPastaCommand(message, pasta);
+        }
+        else if (commandIs("scavenge", message)){
+            commands.scavangeCommand(message);
+        }
+        else if (commandIs("inventory", message)){
+            commands.inventoryCommand(message);
+        }
+        else if (commandIs("enable", message)){
+            for (var arg in args){
+                if(args[arg] == "turnOffNow"){
+                    botEnabled = false;
+                }
             }
         }
-        console.log(pasta);
-        commands.buyPastaCommand(message, pasta);
+    }else{
+        var args = message.content.split(/[ ]+/);
+        console.log(args);
+        if (commandIs("enable", message)){
+            for (var arg in args){
+                if(args[arg] == "turnOnNow"){
+                    botEnabled = true;
+                }
+            }
+        }
     }
-    else if (commandIs("scavenge", message)){
-        commands.scavangeCommand(message);
-    }
-    else if (commandIs("inventory", message)){
-        commands.inventoryCommand(message);
-    }
-    
 });
 
 
@@ -158,7 +178,23 @@ function steal(channelName){
         var interval = setTimeout (function(){ 
             var tacos = Math.floor(Math.random() * 5) + 1
             var bendersMeal = "It is time for Bender's meal. " + possibleUsersUsername[userToTakeFromIndex].username + " has served Bender " + tacos + " tacos :taco: and Bender decided to share his meal with " + possibleUsersUsername[userToShareWithIndex].username + ". Thanks " + possibleUsersUsername[userToTakeFromIndex].username + " for keeping Bender well fed! " + BASE_INTERVAL/1000
-            stealEmbedBuilder(channel, bendersMeal)
+            // update both users with neg, and pos and then do the embed
+            profileDB.updateUserTacosGive(possibleUsersUsername[userToTakeFromIndex].id, (tacos * -1), function(err, updateResponse){
+                if (err){
+                    console.log(err);
+                }
+                else{
+                    stealEmbedBuilder(channel, bendersMeal)
+                }
+            })
+            profileDB.updateUserTacosGive(possibleUsersUsername[userToShareWithIndex].id, tacos , function(err, updateResponse){
+                if (err){
+                    console.log(err);
+                }
+                else{
+                    stealEmbedBuilder(channel, bendersMeal)
+                }
+            })
             BASE_INTERVAL = BASE_INTERVAL; 
             steal(channelName);
         }, BASE_INTERVAL);
@@ -168,7 +204,14 @@ function steal(channelName){
         var interval = setTimeout (function(){ 
             var tacos = Math.floor(Math.random() * 5) + 1;
             var bendersMeal = "It is time for Bender's meal. " + possibleUsersUsername[userToTakeFromIndex].username + " has served Bender " + tacos + " tacos :taco: Thanks " + possibleUsersUsername[userToTakeFromIndex].username + " for keeping Bender well fed! " + BASE_INTERVAL/1000
-            stealEmbedBuilder(channel, bendersMeal)
+            profileDB.updateUserTacosGive(possibleUsersUsername[userToTakeFromIndex].id, (tacos * -1), function(err, updateResponse){
+                if (err){
+                    console.log(err);
+                }
+                else{
+                    stealEmbedBuilder(channel, bendersMeal)
+                }
+            })
             BASE_INTERVAL = BASE_INTERVAL; 
             steal(channelName);
         }, BASE_INTERVAL);
