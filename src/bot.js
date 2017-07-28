@@ -11,7 +11,11 @@ var profileDB = require("./profileDB.js");
 const Discord = require("discord.js");
 const client = new Discord.Client();
 
-var BASE_INTERVAL = 3600000;
+var BASE_INTERVAL = 18000000;
+var MAIN_CHANNEL = config.mainChannelName;
+var BOT_CHANNEL = config.botChannelName;
+var TURN_OFF_MSG = config.turnOff;
+var TURN_ON_MSG = config.turnOn;
 
 var tacoTuesdayEnabled = false;
 var botEnabled = true;
@@ -23,7 +27,8 @@ client.on('ready', function(err) {
     console.log('The bot is online'); 
     var channelName;
     client.channels.forEach(function(channel){
-        if (channel.type == "text"){
+        console.log(channel);
+        if (channel.type == "text" && channel.name == BOT_CHANNEL){
             channelName = channel;
         }
     })
@@ -51,79 +56,95 @@ client.on('message', function(message){
         }
         else{
             // disable Taco Tuesday
+            tacoTuesdayEnabled = false;
         }
-        // commands
-        if( commandIs("thank", message )){
-            commands.thankCommand(message);
-        }
-        else if( commandIs("sorry", message )){
-            commands.sorryCommand(message);
-        }
-        else if( commandIs("help", message )){
-            commands.helpCommand(message);
-        }
-        else if( commandIs("buystand", message )){
-            commands.buyStandCommand(message);
-        }
-        else if( commandIs("prepare", message)){
-            commands.prepareCommand(message);
-        }
-        else if( commandIs("welcome", message)){
-            commands.welcomeCommand(message);
-        }
-        else if (commandIs("give", message)){
-            commands.giveCommand(message, args[2]);
-        }
-        else if (commandIs("cook", message)){
-            commands.cookCommand(message);
-        }
-        else if (commandIs("profile", message)){
-            commands.profileCommand(message);
-        }
-        else if(commandIs("tacos", message)){
-            commands.tacosCommand(message);
-        }
-        else if(commandIs("stands", message)){
-            commands.tacoStandsCommand(message);
-        }
-        else if(commandIs("throw", message)){
-            commands.throwCommand(message);
-        }
-        else if(commandIs("shop", message)){
-            commands.shopCommand(message);
-        }
-        else if(commandIs("buypickaxe", message)){
-            commands.buyPickaxeCommand(message);
-        }
-        else if(commandIs("buypasta", message)){
-            var pasta = "";
+
+        if (commandIs("enable", message)){
             for (var arg in args){
-                if (arg > 0){
-                    pasta = pasta.concat(args[arg] + " ");
-                }
-            }
-            console.log(pasta);
-            commands.buyPastaCommand(message, pasta);
-        }
-        else if (commandIs("scavenge", message)){
-            commands.scavangeCommand(message);
-        }
-        else if (commandIs("inventory", message)){
-            commands.inventoryCommand(message);
-        }
-        else if (commandIs("enable", message)){
-            for (var arg in args){
-                if(args[arg] == "turnOffNow"){
+                if(args[arg] == TURN_OFF_MSG){
                     botEnabled = false;
                 }
             }
         }
+        // commands
+        if (message.channel.type == "text" && message.channel.name == BOT_CHANNEL){
+            if( commandIs("thank", message )){
+                commands.thankCommand(message);
+            }
+            else if( commandIs("sorry", message )){
+                commands.sorryCommand(message);
+            }
+            else if( commandIs("help", message )){
+                commands.helpCommand(message);
+            }
+            else if( commandIs("buystand", message )){
+                commands.buyStandCommand(message);
+            }
+            else if( commandIs("prepare", message)){
+                commands.prepareCommand(message);
+            }
+            else if( commandIs("welcome", message)){
+                commands.welcomeCommand(message);
+            }
+            else if (commandIs("give", message)){
+                commands.giveCommand(message, args[2]);
+            }
+            else if (commandIs("cook", message)){
+                commands.cookCommand(message);
+            }
+            else if (commandIs("profile", message)){
+                commands.profileCommand(message);
+            }
+            else if(commandIs("tacos", message)){
+                commands.tacosCommand(message);
+            }
+            else if(commandIs("stands", message)){
+                commands.tacoStandsCommand(message);
+            }
+            else if(commandIs("throw", message)){
+                commands.throwCommand(message);
+            }
+            else if(commandIs("shop", message)){
+                commands.shopCommand(message);
+            }
+            else if(commandIs("buypickaxe", message)){
+                commands.buyPickaxeCommand(message);
+            }
+            else if(commandIs("buypasta", message)){
+                var pasta = "";
+                for (var arg in args){
+                    if (arg > 0){
+                        pasta = pasta.concat(args[arg] + " ");
+                    }
+                }
+                console.log(pasta);
+                commands.buyPastaCommand(message, pasta);
+            }
+            else if (commandIs("scavenge", message)){
+                commands.scavangeCommand(message);
+            }
+            else if (commandIs("inventory", message)){
+                commands.inventoryCommand(message);
+            }
+        }
+        else if (message.channel.type == "text" && message.channel.name == MAIN_CHANNEL){
+             if( commandIs("thank", message )){
+                commands.thankCommand(message);
+            }
+            else if( commandIs("sorry", message )){
+                commands.sorryCommand(message);
+            }
+            else if( commandIs("welcome", message)){
+                commands.welcomeCommand(message);
+            }
+        }
+        
     }else{
         var args = message.content.split(/[ ]+/);
         console.log(args);
         if (commandIs("enable", message)){
             for (var arg in args){
-                if(args[arg] == "turnOnNow"){
+                if(args[arg] == TURN_ON_MSG){
                     botEnabled = true;
                 }
             }
@@ -179,13 +200,26 @@ function steal(channelName){
             var tacos = Math.floor(Math.random() * 5) + 1
             var bendersMeal = "It is time for Bender's meal. " + possibleUsersUsername[userToTakeFromIndex].username + " has served Bender " + tacos + " tacos :taco: and Bender decided to share his meal with " + possibleUsersUsername[userToShareWithIndex].username + ". Thanks " + possibleUsersUsername[userToTakeFromIndex].username + " for keeping Bender well fed! " + BASE_INTERVAL/1000
             // update both users with neg, and pos and then do the embed
-            profileDB.updateUserTacosGive(possibleUsersUsername[userToTakeFromIndex].id, (tacos * -1), function(err, updateResponse){
-                if (err){
-                    console.log(err);
+            profileDB.getUserProfileData(possibleUsersUsername[userToTakeFromIndex].id, function(getProfileErr, getProfileData){
+                if (getProfileErr){
+                    // user doesn't exist
                 }
                 else{
-                    stealEmbedBuilder(channel, bendersMeal)
+                    // user exists, get the number of tacos they have
+                    var userTacos = getProfileData.data.tacos;
+                    if (userTacos < tacos){
+                        tacos = userTacos;
+                    }
+                    profileDB.updateUserTacosGive(possibleUsersUsername[userToTakeFromIndex].id, (tacos * -1), function(err, updateResponse){
+                        if (err){
+                            console.log(err);
+                        }
+                        else{
+                            stealEmbedBuilder(channel, bendersMeal)
+                        }
+                    })
                 }
+                
             })
             profileDB.updateUserTacosGive(possibleUsersUsername[userToShareWithIndex].id, tacos , function(err, updateResponse){
                 if (err){
@@ -204,12 +238,24 @@ function steal(channelName){
         var interval = setTimeout (function(){ 
             var tacos = Math.floor(Math.random() * 5) + 1;
             var bendersMeal = "It is time for Bender's meal. " + possibleUsersUsername[userToTakeFromIndex].username + " has served Bender " + tacos + " tacos :taco: Thanks " + possibleUsersUsername[userToTakeFromIndex].username + " for keeping Bender well fed! " + BASE_INTERVAL/1000
-            profileDB.updateUserTacosGive(possibleUsersUsername[userToTakeFromIndex].id, (tacos * -1), function(err, updateResponse){
-                if (err){
-                    console.log(err);
+            profileDB.getUserProfileData(possibleUsersUsername[userToTakeFromIndex].id, function(getProfileErr, getProfileData){
+                if (getProfileErr){
+                    // user doesn't exist
                 }
                 else{
-                    stealEmbedBuilder(channel, bendersMeal)
+                    // user exists, get the number of tacos they have
+                    var userTacos = getProfileData.data.tacos;
+                    if (userTacos < tacos){
+                        tacos = userTacos;
+                    }
+                    profileDB.updateUserTacosGive(possibleUsersUsername[userToTakeFromIndex].id, (tacos * -1), function(err, updateResponse){
+                        if (err){
+                            console.log(err);
+                        }
+                        else{
+                            stealEmbedBuilder(channel, bendersMeal)
+                        }
+                    })
                 }
             })
             BASE_INTERVAL = BASE_INTERVAL; 

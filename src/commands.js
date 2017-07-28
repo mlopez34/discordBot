@@ -298,7 +298,7 @@ module.exports.prepareCommand = function (message){
                 }
             }
             else{
-                var numberOfHours = getDateDifference(prepareResponse.data.lastpreparetime, now, 24);
+                var numberOfHours = getDateDifference(prepareResponse.data.lastpreparetime, now, 48);
                 message.channel.send(message.author + " You ran out of ingredients! Please wait `" + numberOfHours + "`");
             }
         }
@@ -321,7 +321,7 @@ module.exports.welcomeCommand = function(message){
     if (mentionedId == discordUserId){
         message.channel.send(message.author +" You can't welcome yourself!")
     }
-    else{
+    else if(!mentionedUser.bot){
         // check first that user exists, if user doesn't exist create user, then check if welcomed user exists
         // if welcomed user exists set to true, if not then create the user and set to true
         profileDB.getUserProfileData( mentionedId, function(err, welcomeResponse) {
@@ -415,6 +415,9 @@ module.exports.giveCommand = function(message, giveTacoAmount){
     if (mentionedId == discordUserId){
         message.channel.send(message.author + " You can't give yourself taco!")
     }
+    else if(giveTacoAmount < 2){
+        message.channel.send(message.author + " You must give more than 2 tacos!")
+    }
     else{
         profileDB.getUserProfileData( discordUserId, function(err, giveResponse) {
             if(err){
@@ -462,20 +465,28 @@ module.exports.giveCommand = function(message, giveTacoAmount){
                             })
                         }
                         else{
+                            var tacoTax = Math.floor(giveTacoAmount * 0.1);
+                            console.log(tacoTax);
+                            if (tacoTax < 1){
+                                tacoTax = 1;
+                            }
                             var negativeGiveTacoAmount = giveTacoAmount * -1
+                            console.log(negativeGiveTacoAmount);
                             profileDB.updateUserTacosGive(discordUserId, negativeGiveTacoAmount, function(givererr, giverUpdateResponse) {
                                 if (givererr){
                                     console.log(givererr);
                                 }
                                 else{
                                     // 
+                                    giveTacoAmount = giveTacoAmount - tacoTax;
+                                    console.log(giveTacoAmount);
                                     profileDB.updateUserTacosGive(mentionedId, giveTacoAmount, function(receivererr, receiverUpdateResponse) {
                                         if (receivererr){
                                             console.log(receivererr);
                                         }
                                         else{
                                             // send message that the user has gotten tacos
-                                            message.channel.send(message.author + " gifted " + mentionedUser + " `" + giveTacoAmount + "` tacos! :taco:");
+                                            message.channel.send(message.author + " gifted " + mentionedUser + " `" + giveTacoAmount + "` tacos! :taco: and Bender kept `" + tacoTax + "` tacos for tax purposes." );
                                             stats.statisticsManage(discordUserId, "giveCount", giveTacoAmount, function(err, statSuccess){
                                                 if (err){
                                                     console.log(err);
@@ -1005,7 +1016,7 @@ module.exports.buyPastaCommand = function(message, pasta){
             message.channel.send(message.author + " you can't afford pasta currently!");
         }
         else{
-            if ( pastaRespond.data.tacos >= PASTA_COST && pasta.length > 0){
+            if ( pastaRespond.data.tacos >= PASTA_COST && pasta.length > 0 && pasta.length < 125){
                 // user can buy the pasta, insert the pasta message into the user's pasta column
                 profileDB.updateUserPasta( discordUserId, PASTA_COST * -1, pasta, function(err, pastaRespond) {
                     if(err){
@@ -1017,8 +1028,11 @@ module.exports.buyPastaCommand = function(message, pasta){
                     }
                 });
             }
-            else{
+            else if (pastaRespond.data.tacos >= PASTA_COST){
                 message.channel.send(message.author + " You do not have enough tacos to purchase a pasta!");
+            }
+            else if(pasta.length > 125){
+                message.channel.send(message.author + " The pasta is too long. Pasta must be less than 125 characters long");
             }
 
         }
@@ -1124,7 +1138,6 @@ function inventoryEmbedBuilder(message, itemsMap, allItems){
 }
 
 module.exports.scavangeCommand = function (message){
-    // TODO: scavange every 3 hours
     var discordUserId = message.author.id;
     
     // roll the number of items to get
@@ -1168,7 +1181,7 @@ module.exports.scavangeCommand = function (message){
             //check for more than 1 hours
             var now = new Date();
             var oneHourAgo = new Date();
-            oneHourAgo = new Date(oneHourAgo.setHours(oneHourAgo.getHours() - 1));
+            oneHourAgo = new Date(oneHourAgo.setHours(oneHourAgo.getHours() - 0));
             if ( oneHourAgo > getUserResponse.data.lastscavangetime ){
                 profileDB.getItemData(function(err, getItemResponse){
                     if (err){
@@ -1300,8 +1313,8 @@ function scavengeEmbedBuilder(message, itemsScavenged){
     // create a quoted message of all the items
     var itemsMessage = ""
     for (var item in itemsScavenged){
-        itemsMessage = itemsMessage + "**" + itemsScavenged[item].itemname + "** - " + itemsScavenged[item].itemdescription + ", " +
-        itemsScavenged[item].itemslot + ", " +itemsScavenged[item].itemstatistics + ", " + itemsScavenged[item].itemraritycategory + " \n";
+        itemsMessage = itemsMessage + "[**" + itemsScavenged[item].itemraritycategory +"**] " + "**"  + itemsScavenged[item].itemname + "** - " + itemsScavenged[item].itemdescription + ", " +
+        itemsScavenged[item].itemslot + ", " +itemsScavenged[item].itemstatistics + " \n";
     }
 
     const embed = new Discord.RichEmbed()
