@@ -886,7 +886,6 @@ function profileBuilder(message, profileData){
     * Takes a Date object, defaults to current date.
     */
     .setTimestamp()
-    .setURL('https://discord.js.org/#/docs/main/indev/class/RichEmbed')
     .addField('Tacos  :taco:', profileData.userTacos, true)
     /*
     * Inline fields may not display as inline if the thumbnail and/or image is too big.
