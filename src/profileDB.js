@@ -258,6 +258,23 @@ module.exports.prepareTacos = function(userId, tacosToPrepare, cb){
     });
 }
 
+module.exports.getTopTenTacoUsers = function(cb) {
+  var query = 'select * from ' + config.profileTable + ' order by tacos DESC LIMIT 50'
+  db.query(query)
+    .then(function (data) {
+      //console.log(data);
+      cb(null, {
+          status: 'success',
+          data: data,
+          message: 'Retrieved top ten users'
+        });
+    })
+    .catch(function (err) {
+      console.log(err);
+      cb(err);
+    });
+}
+
 module.exports.updateAchievements = function(discordUserId, achievement, cb){
     // update statistic
     var query = 'update ' + config.profileTable + ' set achievements = achievements || $1 where discordid=$2'
@@ -301,19 +318,22 @@ module.exports.createUserStatistics = function(userId, columnName, statisticCoun
         thrownToCount: 0,
         giveCount: 0
     }
-  userStatistics[columnName] = statisticCount
-  var query = 'insert into '+ config.statisticsTable + '(discordId, thankCount, sorryCount, welcomeCount, scavengeCount, thrownAtCount, thrownToCount, giveCount)' +
-      'values(${discordId}, ${thankCount}, ${sorryCount}, ${welcomeCount},  ${scavengeCount}, ${thrownAtCount}, ${thrownToCount}, ${giveCount})'
-  db.none(query, userStatistics)
-    .then(function () {
-      cb(null, {
-          status: 'success',
-          message: 'Inserted one user'
+    if (columnName){
+        userStatistics[columnName] = statisticCount;
+    }
+    
+    var query = 'insert into '+ config.statisticsTable + '(discordId, thankCount, sorryCount, welcomeCount, scavengeCount, thrownAtCount, thrownToCount, giveCount)' +
+        'values(${discordId}, ${thankCount}, ${sorryCount}, ${welcomeCount},  ${scavengeCount}, ${thrownAtCount}, ${thrownToCount}, ${giveCount})'
+    db.none(query, userStatistics)
+        .then(function () {
+        cb(null, {
+            status: 'success',
+            message: 'Inserted one user'
+            });
+        })
+        .catch(function (err) {
+        cb(err);
         });
-    })
-    .catch(function (err) {
-      cb(err);
-    });
 }
 
 module.exports.checkStatistics = function(discordId, cb){
