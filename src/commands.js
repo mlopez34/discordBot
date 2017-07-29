@@ -1227,7 +1227,7 @@ module.exports.scavangeCommand = function (message){
             //check for more than 1 hours
             var now = new Date();
             var oneHourAgo = new Date();
-            oneHourAgo = new Date(oneHourAgo.setHours(oneHourAgo.getHours() - 0));
+            oneHourAgo = new Date(oneHourAgo.setHours(oneHourAgo.getHours() - 1));
             if ( oneHourAgo > getUserResponse.data.lastscavangetime ){
                 profileDB.getItemData(function(err, getItemResponse){
                     if (err){
@@ -1343,7 +1343,6 @@ module.exports.scavangeCommand = function (message){
                 })
             }
             else{
-                // six hours have not passed, tell the user they need to wait 
                 var numberOfHours = getDateDifference(getUserResponse.data.lastscavangetime, now, 1);
                 message.channel.send(message.author + " You have scavenged too recently! please wait `" + numberOfHours +"`");
                 
