@@ -367,12 +367,16 @@ module.exports.welcomeCommand = function(message){
         mentionedId = user.id;
         mentionedUser = user
     })
-    var valid = false;
-    for (var welcomer in Last_Five_Welcomes){
-        if (Last_Five_Welcomes[welcomer] != message.author.id){
-            valid = true;
+    var valid = true;
+    if (Last_Five_Welcomes.length >= 4){
+        valid = false;
+        for (var welcomer in Last_Five_Welcomes){
+            if (Last_Five_Welcomes[welcomer] != message.author.id){
+                valid = true;
+            }
         }
     }
+    
     if (!valid){
         message.channel.send(message.author +" Stop.")
     }
