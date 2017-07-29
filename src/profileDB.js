@@ -190,8 +190,13 @@ module.exports.purchasePickAxe = function(userId, tacosSpent, cb){
     var query = 'update ' + config.profileTable + ' set tacos=tacos+$1, pickaxe=$3 where discordid=$2'
     console.log(query)
     var lastThank = new Date();
+    var selectedPickaxe = "basic"
+    if (tacosSpent <= -100 && tacosSpent >= -500){
+        // improved Pickaxe should always be between 100 and 500
+        selectedPickaxe = "improved";
+    }
     //console.log("new last thank: " + lastThank);
-    db.none(query, [tacosSpent, userId, "basic"])
+    db.none(query, [tacosSpent, userId, selectedPickaxe])
     .then(function () {
     cb(null, {
         status: 'success',

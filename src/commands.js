@@ -12,6 +12,7 @@ var BASE_TACO_COST = 50;
 var BASE_TACO_PREPARE = 10;
 var BASE_TACO_COOK = 2;
 var PICKAXE_COST = 35;
+var IMPROVED_PICKAXE_COST = 300;
 var PASTA_COST = 125
 var Last_Five_Welcomes = []
 
@@ -797,6 +798,9 @@ module.exports.profileCommand = function(message){
                     
                     profileData.userItems = "Pickaxe :pick: \n"
                 }
+                else if(profileResponse.data.pickaxe == "improved"){
+                    profileData.userItems = "Improved Pickaxe :small_blue_diamond::pick: \n"
+                }
                 profileBuilder(message, profileData);
             }
         })
@@ -828,6 +832,9 @@ module.exports.profileCommand = function(message){
                 if (profileResponse.data.pickaxe == "basic"){
                     
                     profileData.userItems = "Pickaxe :pick: \n"
+                }
+                else if(profileResponse.data.pickaxe == "improved"){
+                    profileData.userItems = "Improved Pickaxe :small_blue_diamond::pick: \n"
                 }
                 profileBuilder(message, profileData);
             }
@@ -934,9 +941,27 @@ module.exports.buyPickaxeCommand = function(message){
                         }
                     })
                 }
+                else{
+                    message.channel.send(message.author + " You cannot afford the Pickaxe");
+                }
             }
-            else{
-                message.channel.send(message.author + " You already own the pickaxe selected");
+            else if (pickaxeResponse.data.pickaxe == "basic"){
+                if (pickaxeResponse.data.tacos >= IMPROVED_PICKAXE_COST){
+                    // purchaseStand
+                    var tacosSpent = IMPROVED_PICKAXE_COST * -1;
+                    profileDB.purchasePickAxe(discordUserId, tacosSpent, function(err, data){
+                        if (err){
+                            console.log(err);
+                            // couldn't purchase stand
+                        }
+                        else{
+                            message.channel.send(message.author + " Congratulations, you have purchased an Improved Pickaxe :pick:!");
+                        }
+                    })
+                }
+                else{
+                    message.channel.send(message.author + " You cannot afford the Improved Pickaxe");
+                }
             }
         }
     })
@@ -997,15 +1022,27 @@ function shopBuilder(message, shopData){
     .addField('Description', tacoStandDescription, true)
     .addField('Cost', treeCost, true)
     .addField('Command', config.commandString+ "buystand", true)
-
-    .addBlankField(true)
-    .addBlankField(false)
-    .addField('Pickaxe', ":pick:", true)
-    .addField('Description', pickaxeDescription, true)
-    .addField('Cost', pickaxeCost, true)
-    .addField('Command', config.commandString + "buypickaxe", true)
-
-    .addBlankField(true)
+    if(shopData.pickaxe == "none"){
+        embed.addBlankField(true)
+        .addBlankField(false)
+        .addField('Pickaxe', ":pick:", true)
+        .addField('Description', pickaxeDescription, true)
+        .addField('Cost', pickaxeCost, true)
+        .addField('Command', config.commandString + "buypickaxe", true)
+    }
+    else if (shopData.pickaxe == "basic"){
+        // improved pickaxe
+        pickaxeDescription = "The Improved Pickaxe can be used to scavenge. Success rate compared to the pickaxe has increased.";
+        pickaxeCost = IMPROVED_PICKAXE_COST + " :taco:";
+        embed.addBlankField(true)
+        .addBlankField(false)
+        .addField('Improved Pickaxe', ": :small_blue_diamond::pick:", true)
+        .addField('Description', pickaxeDescription, true)
+        .addField('Cost', pickaxeCost, true)
+        .addField('Command', config.commandString + "buypickaxe", true)
+    }
+    
+    embed.addBlankField(true)
     .addBlankField(false)
     .addField('Pasta', ":spaghetti:", true)
     .addField('Description', pastaDescription, true)
@@ -1019,7 +1056,7 @@ function shopBuilder(message, shopData){
 
 module.exports.shopCommand = function(message){
     var discordUserId = message.author.id;
-    profileDB.getUserProfileData( discordUserId, function(err, sorryResponse) {
+    profileDB.getUserProfileData( discordUserId, function(err, shopResponse) {
         if(err){
             // user doesnt exist tell the user they should get some tacos
             var userData = initialUserProfile(discordUserId);
@@ -1036,10 +1073,11 @@ module.exports.shopCommand = function(message){
             // if user has enough tacos to purchase the tree, add 1 tree, subtract x tacos
             var shopData = {};
             var userTacoStands = 0;
-            var userTacos = sorryResponse.data.tacos;
+            var userTacos = shopResponse.data.tacos;
             shopData.userTacos = userTacos;
-            if (sorryResponse.data.tacostands && sorryResponse.data.tacostands > -1){
-                userTacoStands = sorryResponse.data.tacostands;
+            shopData.pickaxe = shopResponse.data.pickaxe;
+            if (shopResponse.data.tacostands && shopResponse.data.tacostands > -1){
+                userTacoStands = shopResponse.data.tacostands;
             }
             shopData.userTacoCost = userTacoStands;
             shopBuilder(message, shopData);
