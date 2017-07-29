@@ -29,7 +29,7 @@ module.exports.thankCommand = function(message){
     
     // check the user mentioned someone, and the user is not the same user
     if ( message.mentions.users.size > 0 && discordUserId != mentionedId ){
-        profileDB.getUserProfileData( mentionedId, function(err, thankResponse) {
+        profileDB.getUserProfileData( discordUserId, function(err, thankResponse) {
             if(err){
                 console.log("in error : " + err.code);
                 // user doesn't exist
@@ -39,8 +39,8 @@ module.exports.thankCommand = function(message){
                     var threedaysAgo = new Date();
                     threedaysAgo = new Date(threedaysAgo.setHours(threedaysAgo.getHours() - 72));
                     var userData = {
-                        discordId: mentionedId,
-                        tacos: 1,
+                        discordId: discordUserId,
+                        tacos: 0,
                         birthdate: "2001-10-05",
                         lastthanktime: threedaysAgo,
                         lastcooktime: threedaysAgo,
@@ -53,13 +53,12 @@ module.exports.thankCommand = function(message){
                         map: false,
                         phone: false
                     }
-                    stats.statisticsManage(discordUserId, "thankCount", 1, function(err, statSuccess){
-                        if (err){
-                            console.log(err);
+                    profileDB.createUserProfile(userData, function(createerr, createUserResponse){
+                        if (createerr){
+                            console.log(createerr); // cant create user RIP
                         }
                         else{
-                            // check achievements??
-                            getProfileForAchievement(discordUserId, message)
+                            exports.thankCommand(message);
                         }
                     })
                 }
@@ -73,17 +72,38 @@ module.exports.thankCommand = function(message){
                 //console.log("timestamp: " + thankResponse.data.lastthanktime);
                 if ( twoHoursAgo > thankResponse.data.lastthanktime ){
                     // six hours have passed - update the user to have 1 more taco
-                    profileDB.updateUserTacosThank(mentionedId, 1, function(err, updateResponse) {
-                        if (err){
-                            console.log(err);
+                    profileDB.updateUserTacosThank(mentionedId, 1, function(updateerr, updateResponse) {
+                        if (updateerr){
+                            console.log(updateerr);
+                            var mentionedData = initialUserProfile(mentionedId);
+                            mentionedData.tacos = mentionedData.tacos + 1
+
+                            // create mentionedId
+                            profileDB.createUserProfile(mentionedData, function(createerr, createUserResponse){
+                                if (createerr){
+                                    console.log(createerr); // cant create user RIP
+                                }
+                                else{
+                                    message.channel.send(message.author + " thanked to " + mentionedUser + ", they received a taco! :taco:");
+                                    stats.statisticsManage(discordUserId, "thankCount", 1, function(staterr, statSuccess){
+                                        if (staterr){
+                                            console.log(staterr);
+                                        }
+                                        else{
+                                            // check achievements??
+                                            getProfileForAchievement(discordUserId, message)
+                                        }
+                                    })
+                                }
+                            }) 
                         }
                         else{
                             // send message that the user has 1 more taco
                             message.channel.send(message.author + " thanked " + mentionedUser + ", they received a taco! :taco:");
                             //update statistic
-                            stats.statisticsManage(discordUserId, "thankCount", 1, function(err, statSuccess){
-                                if (err){
-                                    console.log(err);
+                            stats.statisticsManage(discordUserId, "thankCount", 1, function(staterr, statSuccess){
+                                if (staterr){
+                                    console.log(staterr);
                                 }
                                 else{
                                     // check achievements??
@@ -119,7 +139,7 @@ module.exports.sorryCommand = function(message){
     })
 
     if ( message.mentions.users.size > 0 && discordUserId != mentionedId ){
-        profileDB.getUserProfileData( mentionedId, function(err, sorryResponse) {
+        profileDB.getUserProfileData( discordUserId, function(err, sorryResponse) {
             if(err){
                 console.log("in error : " + err.code);
                 // user doesn't exist
@@ -129,7 +149,7 @@ module.exports.sorryCommand = function(message){
                     var threedaysAgo = new Date();
                     threedaysAgo = new Date(threedaysAgo.setHours(threedaysAgo.getHours() - 72));
                     var userData = {
-                        discordId: mentionedId,
+                        discordId: discordUserId,
                         tacos: 1,
                         birthdate: "2001-10-05",
                         lastthanktime: threedaysAgo,
@@ -143,21 +163,12 @@ module.exports.sorryCommand = function(message){
                         map: false,
                         phone: false
                     }
-                    profileDB.createUserProfile(userData, function(err, createUserResponse){
-                        if (err){
-                            console.log(err); // cant create user RIP
+                    profileDB.createUserProfile(userData, function(createerr, createUserResponse){
+                        if (createerr){
+                            console.log(createerr); // cant create user RIP
                         }
                         else{
-                            message.channel.send(message.author + " apologized to " + mentionedUser + ", they received a taco! :taco:");
-                            stats.statisticsManage(discordUserId, "sorryCount", 1, function(err, statSuccess){
-                                if (err){
-                                    console.log(err);
-                                }
-                                else{
-                                    // check achievements??
-                                    getProfileForAchievement(discordUserId, message)
-                                }
-                            })
+                            exports.sorryCommand(message);
                         }
                     }) 
                 }
@@ -170,9 +181,29 @@ module.exports.sorryCommand = function(message){
                 sixHoursAgo = new Date(sixHoursAgo.setHours(sixHoursAgo.getHours() - 6));
 
                 if ( sixHoursAgo > sorryResponse.data.lastsorrytime ){
-                    profileDB.updateUserTacosSorry(mentionedId, 1, function(err, updateResponse) {
-                        if (err){
-                            console.log(err);
+                    profileDB.updateUserTacosSorry(mentionedId, 1, function(updateerr, updateResponse) {
+                        if (updateerr){
+                            console.log(updateerr);
+                            // create mentioned user
+                            var mentionedData = initialUserProfile(mentionedId);
+                            mentionedData.tacos = mentionedData.tacos + 1
+                            profileDB.createUserProfile(mentionedData, function(createerr, createUserResponse){
+                                if (createerr){
+                                    console.log(createerr); // cant create user RIP
+                                }
+                                else{
+                                    message.channel.send(message.author + " thanked to " + mentionedUser + ", they received a taco! :taco:");
+                                    stats.statisticsManage(discordUserId, "thankCount", 1, function(staterr, statSuccess){
+                                        if (staterr){
+                                            console.log(staterr);
+                                        }
+                                        else{
+                                            // check achievements??
+                                            getProfileForAchievement(discordUserId, message)
+                                        }
+                                    })
+                                }
+                            }) 
                         }
                         else{
                             // send message that the user has 1 more taco
