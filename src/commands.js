@@ -958,7 +958,7 @@ function shopBuilder(message, shopData){
     var welcomeMessage = "Hey " + message.author.username + "! Welcome to Bender's shop."
     var tacoStandDescription = "Taco stands can be used to produce tacos based on the number of stands you have. \nYou can produce " + BASE_TACO_PREPARE + " per taco stand. \nThe cost of each additional stand will be higher - city tax bro. "
     var treeCost = BASE_TACO_COST + (shopData.userTacoCost * 25) + " :taco:"
-    var pickaxeDescription = "The pickaxe can be used to scavange. You never know what you will find in these lands ";
+    var pickaxeDescription = "The pickaxe can be used to scavenge. You never know what you will find in these lands ";
     var pastaDescription = "Add a quote to your profile, to purchase do: !buypasta [your pasta message]."
     
     var pickaxeCost = PICKAXE_COST +" :taco:";
