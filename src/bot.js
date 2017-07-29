@@ -126,6 +126,9 @@ client.on('message', function(message){
             else if (commandIs("inventory", message)){
                 commands.inventoryCommand(message);
             }
+            else if (commandIs("standings", message)){
+                commands.standingsCommand(message, client.users);
+            }
         }
         else if (message.channel.type == "text" && message.channel.name == MAIN_CHANNEL){
              if( commandIs("thank", message )){
@@ -215,7 +218,7 @@ function steal(channelName){
                             console.log(err);
                         }
                         else{
-                            stealEmbedBuilder(channel, bendersMeal)
+                            // took from user
                         }
                     })
                 }

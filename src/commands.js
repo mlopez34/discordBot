@@ -964,7 +964,7 @@ function profileBuilder(message, profileData){
     * Inline fields may not display as inline if the thumbnail and/or image is too big.
     */
     .addField('Taco Stands :bus:', profileData.userTacoStands, true)
-    .addField('Achievements: ', profileData.achievementString, true)
+    .addField('Achievements :military_medal: ', profileData.achievementString, true)
 
     .addField('Items :shopping_bags:', profileData.userItems, true)
     /*
@@ -1406,6 +1406,55 @@ function addToUserInventory(discordUserId, items){
             console.log(itemAddResponse);
         }
     })
+}
+
+module.exports.standingsCommand = function(message, listOfUsers){
+    // query for top 10 then build the embed for top ten users
+    profileDB.getTopTenTacoUsers(function(error, topTenResponse){
+        if (error){
+            console.log(error);
+        }
+        else{
+            //create embed
+            console.log(topTenResponse);
+            // create the string
+            var topTenMap = {};
+            var topTenCount = 1;
+            for (var index in topTenResponse.data){
+                if (topTenCount < 10){
+                    // TODO: get a new batch until we have 9 users
+                    var user = topTenResponse.data[index]
+                    console.log(user);
+                    var topTenUser = listOfUsers.get(user.discordid)
+                    console.log(topTenUser);
+                    if (!topTenUser){
+                        // user is not on the server currently - just skip them
+                        continue;
+                    }
+                    var topTenUsername = topTenUser.username;
+                    var topTenTacos = user.tacos;
+                    topTenMap[topTenCount] = {username: topTenUsername, tacos: topTenTacos}
+                    topTenCount++;
+                }
+            }
+            topTenEmbedBuilder(topTenMap, message);
+        }
+    })
+}
+
+function topTenEmbedBuilder(topTenString, message){
+    console.log(topTenString);
+    const embed = new Discord.RichEmbed()
+    .setTitle("Taco Standings :taco:")
+    .setColor(0xe521ff)
+    for (var key in topTenString) {
+        if (topTenString.hasOwnProperty(key)) {
+            embed.addField("#" + key + ": `" + topTenString[key].username+"`", topTenString[key].tacos, true)
+        }
+    }
+
+    //.addField('Top Ten Tacos:', topTenString, true)
+    message.channel.send({embed});
 }
 
 function initialUserProfile(discordUserId){

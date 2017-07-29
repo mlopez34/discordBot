@@ -45,7 +45,7 @@ var achievementsData = {
     },
     "Luck is on your side": {
         emoji : ":tickets:",
-        description: "Scavange a rare quality item or better"
+        description: "Scavange a ancient quality item or better"
     },
     "Get a room": {
         emoji : ":kiss:",
@@ -59,7 +59,16 @@ module.exports.checkForAchievements = function(discordUserId, data, message){
     // check for all the possible achievements
     profileDB.checkStatistics(discordUserId, function(err, statistics){
         if (err){
-            // cant find the user's statistics
+            // cant find the user's statistics create the user's statistics and check for achievements
+            profileDb.createUserStatistics(discordUserId, null, null, function(createError, statsSuccess){
+                if(createError){
+                    console.log(createError);
+                }
+                else{
+                    exports.checkForAchievements(discordUserId, data, message);
+                }
+
+            })
         }
         else{
             console.log(statistics);
@@ -206,7 +215,7 @@ module.exports.checkForAchievements = function(discordUserId, data, message){
             }
 
             if(data.rarity && 
-               data.rarity == "Rare" && 
+               data.rarity == "ancient" && 
                (data.achievements === null || data.achievements.indexOf("Luck is on your side") == -1)){
 
                 profileDB.updateAchievements(discordUserId, "{Luck is on your side}", function(err, r){
