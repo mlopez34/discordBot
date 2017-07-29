@@ -85,7 +85,7 @@ module.exports.thankCommand = function(message){
                                     console.log(createerr); // cant create user RIP
                                 }
                                 else{
-                                    message.channel.send(message.author + " thanked to " + mentionedUser + ", they received a taco! :taco:");
+                                    message.channel.send(message.author + " thanked " + mentionedUser + ", they received a taco! :taco:");
                                     stats.statisticsManage(discordUserId, "thankCount", 1, function(staterr, statSuccess){
                                         if (staterr){
                                             console.log(staterr);
@@ -238,7 +238,7 @@ module.exports.sorryCommand = function(message){
                     })
                 }else{
                     // six hours have not passed, tell the user they need to wait 
-                    var numberOfHours = getDateDifference(sorryResponse.data.lastthanktime, now, 6);
+                    var numberOfHours = getDateDifference(sorryResponse.data.lastsorrytime, now, 6);
                     message.channel.send(message.author + " You are being too apologetic! Please wait `" + numberOfHours +"`");
                 }
             }
@@ -378,7 +378,7 @@ module.exports.welcomeCommand = function(message){
     }
     
     if (!valid){
-        message.channel.send(message.author +" Stop.")
+        message.channel.send(message.author +" Stop. you are spamming!")
     }
     else if (mentionedId == discordUserId){
         message.channel.send(message.author +" You can't welcome yourself!")
@@ -985,7 +985,7 @@ function shopBuilder(message, shopData){
     var tacoStandDescription = "Taco stands can be used to produce tacos based on the number of stands you have. \nYou can produce " + BASE_TACO_PREPARE + " per taco stand. \nThe cost of each additional stand will be higher - city tax bro. "
     var treeCost = BASE_TACO_COST + (shopData.userTacoCost * 25) + " :taco:"
     var pickaxeDescription = "The pickaxe can be used to scavenge. You never know what you will find in these lands ";
-    var pastaDescription = "Add a quote to your profile, to purchase do: !buypasta [your pasta message]."
+    var pastaDescription = "Add a quote to your profile, to purchase do: " +config.commandString + "buypasta [your pasta message]."
     
     var pickaxeCost = PICKAXE_COST +" :taco:";
     const embed = new Discord.RichEmbed()
