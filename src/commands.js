@@ -416,7 +416,7 @@ module.exports.welcomeCommand = function(message){
                         else{
                             if (mentionedUser.id){
                                 Last_Five_Welcomes.push(discordUserId);
-                                if (Last_Five_Welcomes.length >= 4){
+                                if (Last_Five_Welcomes.length >= 5){
                                     Last_Five_Welcomes.shift();
                                 }
                                 message.channel.send(" Welcome! " + mentionedUser + " You now have " + userData.tacos + " tacos!")
@@ -444,7 +444,7 @@ module.exports.welcomeCommand = function(message){
                         else{
                             // send message that the user has 1 more taco
                             Last_Five_Welcomes.push(discordUserId);
-                            if (Last_Five_Welcomes.length >= 4){
+                            if (Last_Five_Welcomes.length >= 5){
                                 Last_Five_Welcomes.shift();
                             }
                             message.channel.send(mentionedUser + " Welcome! You now have " + (welcomeResponse.data.tacos + 2) + " tacos! :taco:");
@@ -462,7 +462,7 @@ module.exports.welcomeCommand = function(message){
                 }
                 else{
                     Last_Five_Welcomes.push(discordUserId);
-                    if (Last_Five_Welcomes.length >= 4){
+                    if (Last_Five_Welcomes.length >= 5){
                         Last_Five_Welcomes.shift();
                     }
                     message.channel.send(message.author + " This user has already been welcomed!");
