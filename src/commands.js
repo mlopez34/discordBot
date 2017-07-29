@@ -4,6 +4,7 @@ var profileDB = require("./profileDB.js");
 var stats = require("./statistics.js");
 const Discord = require("discord.js");
 var Promise = require('bluebird');
+var config = require("./config.js");
 
 var moment = require("moment");
 
@@ -1042,16 +1043,16 @@ module.exports.buyPastaCommand = function(message, pasta){
 
 module.exports.helpCommand = function(message){
     var commandsList = "List of commands \n ____________ \n "
-    var profile = "!profile - display users profile \n "
-    var thank = "!thank [user] - thank a user and they get 1 taco! \n "
-    var sorry = "!sorry [user] - say sorry to a user and they get 1 taco! \n "
-    var welcome = "!welcome [user] - welcome a user and they get 2 tacos! \n "
-    var cook = "!cook - cook some tacos! \n "
-    var give = "!give [user] number - give the mentioned user some number of tacos! \n "
-    var shop = "!shop - enter Benders shop! \n "
-    var prepare = "!prepare - prepare some tacos from your taco stands! \n "
-    var throwTaco = "!throw [user] - throw a taco at the mentioned user \n "
-    var scavenge = "!scavenge - use your pickaxe "
+    var profile = config.commandString + "profile - display users profile \n "
+    var thank = config.commandString + "thank [user] - thank a user and they get 1 taco! \n "
+    var sorry = config.commandString + "sorry [user] - say sorry to a user and they get 1 taco! \n "
+    var welcome = config.commandString + "welcome [user] - welcome a user and they get 2 tacos! \n "
+    var cook = config.commandString + "cook - cook some tacos! \n "
+    var give = config.commandString + "give [user] number - give the mentioned user some number of tacos! \n "
+    var shop = config.commandString + "shop - enter Benders shop! \n "
+    var prepare = config.commandString + "prepare - prepare some tacos from your taco stands! \n "
+    var throwTaco = config.commandString + "throw [user] - throw a taco at the mentioned user \n "
+    var scavenge = config.commandString + "scavenge - use your pickaxe "
     //var commandsList = "```xl Uppercase lowercase 123 ```"
     var commandsList = "```css\n" + commandsList + profile + thank + sorry + welcome + cook + give + shop + prepare + throwTaco + scavenge + "```";
     message.channel.send(commandsList);
