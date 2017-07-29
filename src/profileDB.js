@@ -122,6 +122,22 @@ module.exports.updateUserTacosWelcome = function(userId, tacos, cb) {
     });
 }
 
+module.exports.updateUserTacos = function(userId, tacos, cb) {
+    var query = 'update ' + config.profileTable + ' set tacos=tacos+$1 where discordid=$2'
+    //console.log("new last thank: " + lastThank);
+    db.none(query, [tacos, userId])
+    .then(function () {
+    cb(null, {
+        status: 'success',
+        message: 'added tacos'
+        });
+    })
+    .catch(function (err) {
+        console.log(err);
+        cb(err);
+    });
+}
+
 module.exports.updateUserTacosGive = function(userId, tacoAmount, cb){
     var query = 'update ' + config.profileTable + ' set tacos=tacos+$1 where discordid=$2'
     //console.log("new last thank: " + lastThank);

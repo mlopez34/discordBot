@@ -72,11 +72,11 @@ module.exports.thankCommand = function(message){
                 //console.log("timestamp: " + thankResponse.data.lastthanktime);
                 if ( twoHoursAgo > thankResponse.data.lastthanktime ){
                     // six hours have passed - update the user to have 1 more taco
-                    profileDB.updateUserTacosThank(mentionedId, 1, function(updateerr, updateResponse) {
+                    profileDB.updateUserTacos(mentionedId, 1, function(updateerr, updateResponse) {
                         if (updateerr){
                             console.log(updateerr);
                             var mentionedData = initialUserProfile(mentionedId);
-                            mentionedData.tacos = mentionedData.tacos + 1
+                            mentionedData.tacos = mentionedData.tacos + 1;
 
                             // create mentionedId
                             profileDB.createUserProfile(mentionedData, function(createerr, createUserResponse){
@@ -98,6 +98,14 @@ module.exports.thankCommand = function(message){
                             }) 
                         }
                         else{
+                            profileDB.updateUserTacosThank(discordUserId, 0, function(updateerr, updateResponse) {
+                                 if (updateerr){
+                                     console.log(updateerr);
+                                 }
+                                 else{
+                                     console.log(updateResponse);
+                                 }
+                            })
                             // send message that the user has 1 more taco
                             message.channel.send(message.author + " thanked " + mentionedUser + ", they received a taco! :taco:");
                             //update statistic
@@ -181,7 +189,7 @@ module.exports.sorryCommand = function(message){
                 sixHoursAgo = new Date(sixHoursAgo.setHours(sixHoursAgo.getHours() - 6));
 
                 if ( sixHoursAgo > sorryResponse.data.lastsorrytime ){
-                    profileDB.updateUserTacosSorry(mentionedId, 1, function(updateerr, updateResponse) {
+                    profileDB.updateUserTacos(mentionedId, 1, function(updateerr, updateResponse) {
                         if (updateerr){
                             console.log(updateerr);
                             // create mentioned user
@@ -206,6 +214,14 @@ module.exports.sorryCommand = function(message){
                             }) 
                         }
                         else{
+                            profileDB.updateUserTacosSorry(discordUserId, 0, function(updateerr, updateResponse) {
+                                 if (updateerr){
+                                     console.log(updateerr);
+                                 }
+                                 else{
+                                     console.log(updateResponse);
+                                 }
+                            })
                             // send message that the user has 1 more taco
                             message.channel.send(message.author + " apologized to " + mentionedUser + ", they received a taco! :taco:");
                             stats.statisticsManage(discordUserId, "sorryCount", 1, function(err, statSuccess){
