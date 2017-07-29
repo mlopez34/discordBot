@@ -406,7 +406,6 @@ module.exports.welcomeCommand = function(message){
                     profileDB.updateUserTacosWelcome(mentionedId, 1, function(err, updateResponse) {
                         if (err){
                             console.log(err);
-                            message.reply( err );
                         }
                         else{
                             // send message that the user has 1 more taco
