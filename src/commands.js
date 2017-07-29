@@ -13,6 +13,7 @@ var BASE_TACO_PREPARE = 10;
 var BASE_TACO_COOK = 2;
 var PICKAXE_COST = 35;
 var PASTA_COST = 125
+var Last_Five_Welcomes = []
 
 module.exports.thankCommand = function(message){
     
@@ -366,7 +367,16 @@ module.exports.welcomeCommand = function(message){
         mentionedId = user.id;
         mentionedUser = user
     })
-    if (mentionedId == discordUserId){
+    var valid = false;
+    for (var welcomer in Last_Five_Welcomes){
+        if (Last_Five_Welcomes[welcomer] != message.author.id){
+            valid = true;
+        }
+    }
+    if (!valid){
+        message.channel.send(message.author +" Stop.")
+    }
+    else if (mentionedId == discordUserId){
         message.channel.send(message.author +" You can't welcome yourself!")
     }
     else if(!mentionedUser.bot){
@@ -401,6 +411,10 @@ module.exports.welcomeCommand = function(message){
                         }
                         else{
                             if (mentionedUser.id){
+                                Last_Five_Welcomes.push(discordUserId);
+                                if (Last_Five_Welcomes.length >= 4){
+                                    Last_Five_Welcomes.shift();
+                                }
                                 message.channel.send(" Welcome! " + mentionedUser + " You now have " + userData.tacos + " tacos!")
                                 stats.statisticsManage(discordUserId, "welcomeCount", 1, function(err, statSuccess){
                                     if (err){
@@ -425,6 +439,10 @@ module.exports.welcomeCommand = function(message){
                         }
                         else{
                             // send message that the user has 1 more taco
+                            Last_Five_Welcomes.push(discordUserId);
+                            if (Last_Five_Welcomes.length >= 4){
+                                Last_Five_Welcomes.shift();
+                            }
                             message.channel.send(mentionedUser + " Welcome! You now have " + (welcomeResponse.data.tacos + 2) + " tacos! :taco:");
                             stats.statisticsManage(discordUserId, "welcomeCount", 1, function(err, statSuccess){
                                 if (err){
@@ -439,6 +457,10 @@ module.exports.welcomeCommand = function(message){
                     })
                 }
                 else{
+                    Last_Five_Welcomes.push(discordUserId);
+                    if (Last_Five_Welcomes.length >= 4){
+                        Last_Five_Welcomes.shift();
+                    }
                     message.channel.send(message.author + " This user has already been welcomed!");
                 }
             }
