@@ -641,7 +641,7 @@ module.exports.throwCommand = function(message){
                 // user exists, subtract 1 taco 
                 var achievements = throwResponse.data.achievements;
                 console.log("asdfasfsd " + throwResponse.data.tacos)
-                if (throwResponse.data.tacos > 1){
+                if (throwResponse.data.tacos >= 1){
                     profileDB.updateUserTacosThrow(discordUserId, -1, function(err, updateResponse) {
                         if (err){
                             console.log(err);
@@ -1346,7 +1346,7 @@ function initialUserProfile(discordUserId){
         tacos: 0,
         birthdate: "2001-10-05",
         lastthanktime: threedaysAgo,
-        lastcooktime: now,
+        lastcooktime: threedaysAgo,
         lastsorrytime: threedaysAgo,
         lastscavangetime: threedaysAgo,
         tacostands: 0,
