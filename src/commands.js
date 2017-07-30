@@ -1038,7 +1038,7 @@ function shopBuilder(message, shopData){
         pickaxeCost = IMPROVED_PICKAXE_COST + " :taco:";
         embed.addBlankField(true)
         .addBlankField(false)
-        .addField('Improved Pickaxe', ": :small_blue_diamond::pick:", true)
+        .addField('Improved Pickaxe', ":small_blue_diamond::pick:", true)
         .addField('Description', pickaxeDescription, true)
         .addField('Cost', pickaxeCost, true)
         .addField('Command', config.commandString + "buypickaxe", true)
@@ -1238,11 +1238,11 @@ function inventoryEmbedBuilder(message, itemsMap, allItems){
             else if (allItems[key].itemraritycategory === "rare"){
                 emoji = ":small_orange_diamond: "
             }
-            inventoryString = emoji + "**"+allItems[key].itemname + "** - "+  itemsMap[key] +" - " + " - " + allItems[key].itemslot +"\n" + inventoryString;
+            inventoryString = emoji + "**"+allItems[key].itemname + "** - " +  itemsMap[key] + " - " + allItems[key].itemslot +"\n" + inventoryString;
         }
     }
     embed
-    .addField("Item Name  | Count | Stats | Slot", inventoryString, true)
+    .addField("Item Name  |  Count  |  Slot", inventoryString, true)
     .setAuthor(message.author.username +"'s Inventory ")
     .setDescription( ":left_luggage:" )
     .setThumbnail(message.author.avatarURL)
@@ -1508,6 +1508,8 @@ module.exports.slotsCommand = function(message, tacosBet){
         })
     }
 }
+
+
 
 function calculateSlotsWin(firstRoll, secondRoll, thirdRoll, bet){
     // all equal you double
