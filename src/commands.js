@@ -1163,8 +1163,9 @@ module.exports.helpCommand = function(message){
     var prepare = config.commandString + "prepare - prepare some tacos from your taco stands! \n "
     var throwTaco = config.commandString + "throw [user] - throw a taco at the mentioned user \n "
     var scavenge = config.commandString + "scavenge - use your pickaxe "
+    var standings = config.commandString + "standings - show taco standings "
     //var commandsList = "```xl Uppercase lowercase 123 ```"
-    var commandsList = "```css\n" + commandsList + profile + thank + sorry + welcome + cook + give + shop + prepare + throwTaco + scavenge + "```";
+    var commandsList = "```css\n" + commandsList + profile + thank + sorry + welcome + cook + give + shop + prepare + throwTaco + scavenge + standings + "```";
     message.channel.send(commandsList);
 }
 
