@@ -14,6 +14,8 @@ var BASE_TACO_COOK = 2;
 var PICKAXE_COST = 35;
 var IMPROVED_PICKAXE_COST = 300;
 var PASTA_COST = 125
+var SCAVENGE_TACO_FIND_CHANCE_HIGHER = 90
+var SCAVENGE_TACO_FIND_CHANCE = 55;
 var Last_Five_Welcomes = []
 
 module.exports.thankCommand = function(message){
@@ -1252,6 +1254,8 @@ module.exports.scavangeCommand = function (message){
     var discordUserId = message.author.id;
     
     // roll the number of items to get
+    var tacoRoll = Math.floor(Math.random() * 100) + 1;
+    var tacosFound = 0
     var rolls = Math.floor(Math.random() * 100) + 1;
     var rollsCount = 1;
     // 25 + = 2, 80 + = 3, 95 + = 4, 98 + = 5
@@ -1269,6 +1273,13 @@ module.exports.scavangeCommand = function (message){
     }
     else{
         rollsCount = 1
+    }
+
+    if (tacoRoll > SCAVENGE_TACO_FIND_CHANCE_HIGHER){
+        tacosFound = 2;
+    }
+    else if(tacoRoll > SCAVENGE_TACO_FIND_CHANCE){
+        tacosFound = 1
     }
     // only scavenge if the user has a pickaxe
     profileDB.getUserProfileData( discordUserId, function(error, getUserResponse) {
@@ -1380,9 +1391,18 @@ module.exports.scavangeCommand = function (message){
                         addToUserInventory(discordUserId, itemsObtainedArray);
 
                         // send message of all items obtained
-                        scavengeEmbedBuilder(message, itemsObtainedArray)
+                        scavengeEmbedBuilder(message, itemsObtainedArray, tacosFound);
                         // update lastscavengetime
                         profileDB.updateLastScavengeTime(discordUserId, function(updateLSErr, updateLSres){
+                            if(updateLSErr){
+                                console.log(updateLSErr);
+                            }
+                            else{
+                                console.log(updateLSres);
+                            }
+                        })
+                        // add the tacos to user
+                        profileDB.updateUserTacos(discordUserId, tacosFound, function(updateLSErr, updateLSres){
                             if(updateLSErr){
                                 console.log(updateLSErr);
                             }
@@ -1419,12 +1439,15 @@ module.exports.scavangeCommand = function (message){
     })
 }
 
-function scavengeEmbedBuilder(message, itemsScavenged){
+function scavengeEmbedBuilder(message, itemsScavenged, tacosFound){
     // create a quoted message of all the items
     var itemsMessage = ""
     for (var item in itemsScavenged){
         itemsMessage = itemsMessage + "[**" + itemsScavenged[item].itemraritycategory +"**] " + "**"  + itemsScavenged[item].itemname + "** - " + itemsScavenged[item].itemdescription + ", " +
         itemsScavenged[item].itemslot + ", " +itemsScavenged[item].itemstatistics + " \n";
+    }
+    if (tacosFound > 0){
+        itemsMessage = itemsMessage + "**Tacos Found**: :taco: " + tacosFound;
     }
 
     const embed = new Discord.RichEmbed()
