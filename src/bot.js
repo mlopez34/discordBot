@@ -129,6 +129,13 @@ client.on('message', function(message){
             else if (commandIs("standings", message)){
                 commands.standingsCommand(message, client.users);
             }
+            else if (commandIs("slots", message)){
+                if (args.length > 1){
+                    var bet = args[1];
+                    console.log(args[1])
+                    commands.slotsCommand(message, bet);
+                }
+            }
         }
         else if (message.channel.type == "text" && message.channel.name == MAIN_CHANNEL){
              if( commandIs("thank", message )){

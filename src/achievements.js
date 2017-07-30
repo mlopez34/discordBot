@@ -235,6 +235,7 @@ function achievementEmbedBuilder(message, achievementName){
     const embed = new Discord.RichEmbed()
     .setTitle(message.author.username + " has earned the achievement " + achievementName + " " + achievementsData[achievementName].emoji)
     .setColor(0x00AE86)
+    .setDescription(achievementsData[achievementName].description)
     .setThumbnail(message.author.avatarURL)
     message.channel.send({embed});
 }

@@ -14,6 +14,8 @@ var BASE_TACO_COOK = 2;
 var PICKAXE_COST = 35;
 var IMPROVED_PICKAXE_COST = 300;
 var PASTA_COST = 125
+var SCAVENGE_TACO_FIND_CHANCE_HIGHER = 90
+var SCAVENGE_TACO_FIND_CHANCE = 66;
 var Last_Five_Welcomes = []
 
 module.exports.thankCommand = function(message){
@@ -1162,9 +1164,10 @@ module.exports.helpCommand = function(message){
     var shop = config.commandString + "shop - enter Benders shop! \n "
     var prepare = config.commandString + "prepare - prepare some tacos from your taco stands! \n "
     var throwTaco = config.commandString + "throw [user] - throw a taco at the mentioned user \n "
-    var scavenge = config.commandString + "scavenge - use your pickaxe "
+    var scavenge = config.commandString + "scavenge - use your pickaxe \n "
+    var standings = config.commandString + "standings - show taco standings "
     //var commandsList = "```xl Uppercase lowercase 123 ```"
-    var commandsList = "```css\n" + commandsList + profile + thank + sorry + welcome + cook + give + shop + prepare + throwTaco + scavenge + "```";
+    var commandsList = "```css\n" + commandsList + profile + thank + sorry + welcome + cook + give + shop + prepare + throwTaco + scavenge + standings + "```";
     message.channel.send(commandsList);
 }
 
@@ -1251,6 +1254,8 @@ module.exports.scavangeCommand = function (message){
     var discordUserId = message.author.id;
     
     // roll the number of items to get
+    var tacoRoll = Math.floor(Math.random() * 100) + 1;
+    var tacosFound = 0
     var rolls = Math.floor(Math.random() * 100) + 1;
     var rollsCount = 1;
     // 25 + = 2, 80 + = 3, 95 + = 4, 98 + = 5
@@ -1268,6 +1273,13 @@ module.exports.scavangeCommand = function (message){
     }
     else{
         rollsCount = 1
+    }
+
+    if (tacoRoll > SCAVENGE_TACO_FIND_CHANCE_HIGHER){
+        tacosFound = 2;
+    }
+    else if(tacoRoll > SCAVENGE_TACO_FIND_CHANCE){
+        tacosFound = 1
     }
     // only scavenge if the user has a pickaxe
     profileDB.getUserProfileData( discordUserId, function(error, getUserResponse) {
@@ -1379,9 +1391,18 @@ module.exports.scavangeCommand = function (message){
                         addToUserInventory(discordUserId, itemsObtainedArray);
 
                         // send message of all items obtained
-                        scavengeEmbedBuilder(message, itemsObtainedArray)
+                        scavengeEmbedBuilder(message, itemsObtainedArray, tacosFound);
                         // update lastscavengetime
                         profileDB.updateLastScavengeTime(discordUserId, function(updateLSErr, updateLSres){
+                            if(updateLSErr){
+                                console.log(updateLSErr);
+                            }
+                            else{
+                                console.log(updateLSres);
+                            }
+                        })
+                        // add the tacos to user
+                        profileDB.updateUserTacos(discordUserId, tacosFound, function(updateLSErr, updateLSres){
                             if(updateLSErr){
                                 console.log(updateLSErr);
                             }
@@ -1418,12 +1439,15 @@ module.exports.scavangeCommand = function (message){
     })
 }
 
-function scavengeEmbedBuilder(message, itemsScavenged){
+function scavengeEmbedBuilder(message, itemsScavenged, tacosFound){
     // create a quoted message of all the items
     var itemsMessage = ""
     for (var item in itemsScavenged){
         itemsMessage = itemsMessage + "[**" + itemsScavenged[item].itemraritycategory +"**] " + "**"  + itemsScavenged[item].itemname + "** - " + itemsScavenged[item].itemdescription + ", " +
         itemsScavenged[item].itemslot + ", " +itemsScavenged[item].itemstatistics + " \n";
+    }
+    if (tacosFound > 0){
+        itemsMessage = itemsMessage + "**Tacos Found**: :taco: " + tacosFound;
     }
 
     const embed = new Discord.RichEmbed()
@@ -1444,6 +1468,133 @@ function addToUserInventory(discordUserId, items){
             console.log(itemAddResponse);
         }
     })
+}
+
+module.exports.slotsCommand = function(message, tacosBet){
+    var discordUserId = message.author.id;
+    // check that tacosBet is less than users tacos
+    var bet = Math.floor(parseInt(tacosBet));
+    if (bet > 0 ){
+        profileDB.getUserProfileData(discordUserId, function(getProfileError, getProfileResponse){
+            if (getProfileError){
+                console.log(getProfileError);
+            }
+            else{
+                if (getProfileResponse.data.tacos >= bet){
+                    // spin the slots
+                    var firstRoll = Math.floor(Math.random() * 8);
+                    var secondRoll = Math.floor(Math.random() * 8);
+                    var thirdRoll = Math.floor(Math.random() * 8);
+                    // 7 emojis
+                    var emojis = [
+                        ":taco:",
+                        ":burrito:",
+                        ":hot_pepper:",
+                        ":grapes:",
+                        ":avocado:",
+                        ":tropical_drink:",
+                        ":stuffed_flatbread:",
+                        ":eggplant:"
+                    ]
+                    var emojisRolled = [emojis[firstRoll], emojis[secondRoll], emojis[thirdRoll]];
+                    var tacosWon = calculateSlotsWin(firstRoll, secondRoll, thirdRoll, bet);
+                    // TODO: update the user's tacos then send the embed
+                    slotsEmbedBuilder(emojisRolled, tacosWon, message);
+                }
+                else{
+                    message.channel.send(message.author + " You don't have enough tacos!");
+                }
+            }
+        })
+    }
+}
+
+function calculateSlotsWin(firstRoll, secondRoll, thirdRoll, bet){
+    // all equal you double
+    // 1 taco get half, 2 tacos, get same amount, 3 tacos double
+    // 2 avocados get half
+    // 2 burritos get half
+    if (firstRoll == secondRoll && secondRoll == thirdRoll){
+        // win double
+        return (bet * 2);
+    }
+
+    if (firstRoll == 0 || secondRoll == 0 || thirdRoll == 0){
+        // win half
+        var count = 0;
+        if (firstRoll == 0){
+            count++;
+        }
+        if (secondRoll == 0){
+            count++;
+        }
+        if (thirdRoll == 0){
+            count++;
+        }
+
+        if (count > 2){
+            // win double
+            return (bet * 2)
+        }
+        else if(count > 1){
+            // win same amount
+            return bet
+        }
+        else{
+            // win half
+            return Math.ceil( bet * 0.5);
+        }
+    }
+
+    if (firstRoll == 4 || secondRoll == 4 || thirdRoll ==4){
+        // count for at least 2 avocados
+        var count = 0;
+        if (firstRoll == 4){
+            count++;
+        }
+        if (secondRoll == 4){
+            count++;
+        }
+        if (thirdRoll == 4){
+            count++;
+        }
+        if (count > 1){
+            // win half
+            return Math.ceil( bet * 0.5);
+        }
+    }
+
+    if (firstRoll == 2 || secondRoll == 2 || thirdRoll == 2){
+        // count for at least 2 burritos
+        var count = 0;
+        if (firstRoll == 2){
+            count++;
+        }
+        if (secondRoll == 2){
+            count++;
+        }
+        if (thirdRoll == 2){
+            count++;
+        }
+        if (count > 1){
+            // win half
+            return Math.ceil( bet * 0.5);
+        }
+    }
+    // lost tacos
+    return (bet * -1);
+}
+
+function slotsEmbedBuilder(emojisRolled, tacosWon, message){
+
+    const embed = new Discord.RichEmbed()
+    .setColor(0xff9c4c)
+    embed.addField("(BETA) Taco Slots", emojisRolled[0] + " " + emojisRolled[1] + " " +  emojisRolled[2] , false)
+    if (tacosWon > 0){
+        embed
+        .addField('You win!', tacosWon + " :taco: tacos won" , true)
+    }
+    message.channel.send({embed});
 }
 
 module.exports.standingsCommand = function(message, listOfUsers){
