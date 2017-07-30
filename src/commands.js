@@ -1474,7 +1474,7 @@ module.exports.slotsCommand = function(message, tacosBet){
                     ]
                     var emojisRolled = [emojis[firstRoll], emojis[secondRoll], emojis[thirdRoll]];
                     var tacosWon = calculateSlotsWin(firstRoll, secondRoll, thirdRoll, bet);
-                    // update the user's tacos then send the embed
+                    // TODO: update the user's tacos then send the embed
                     slotsEmbedBuilder(emojisRolled, tacosWon, message);
                 }
                 else{
@@ -1570,7 +1570,6 @@ function slotsEmbedBuilder(emojisRolled, tacosWon, message){
         embed
         .addField('You win!', tacosWon + " :taco: tacos won" , true)
     }
-    //.addField('Top Ten Tacos:', topTenString, true)
     message.channel.send({embed});
 }
 
