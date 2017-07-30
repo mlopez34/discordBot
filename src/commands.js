@@ -1446,6 +1446,133 @@ function addToUserInventory(discordUserId, items){
     })
 }
 
+module.exports.slotsCommand = function(message, tacosBet){
+    var discordUserId = message.author.id;
+    // check that tacosBet is less than users tacos
+    var bet = Math.floor(parseInt(tacosBet));
+    profileDB.getUserProfileData(discordUserId, function(getProfileError, getProfileResponse){
+        if (getProfileError){
+            console.log(getProfileError);
+        }
+        else{
+            if (getProfileResponse.data.tacos >= bet){
+                // spin the slots
+                var firstRoll = Math.floor(Math.random() * 8);
+                var secondRoll = Math.floor(Math.random() * 8);
+                var thirdRoll = Math.floor(Math.random() * 8);
+                // 7 emojis
+                var emojis = [
+                    ":taco:",
+                    ":burrito:",
+                    ":hot_pepper:",
+                    ":grapes:",
+                    ":avocado:",
+                    ":tropical_drink:",
+                    ":stuffed_flatbread:",
+                    ":eggplant:"
+                ]
+                var emojisRolled = [emojis[firstRoll], emojis[secondRoll], emojis[thirdRoll]];
+                var tacosWon = calculateSlotsWin(firstRoll, secondRoll, thirdRoll, bet);
+                // update the user's tacos then send the embed
+                slotsEmbedBuilder(emojisRolled, tacosWon, message);
+            }
+            else{
+                message.channel.send(message.author + " You don't have enough tacos!");
+            }
+        }
+    })
+
+}
+
+function calculateSlotsWin(firstRoll, secondRoll, thirdRoll, bet){
+    // all equal you double
+    // 1 taco get half, 2 tacos, get same amount, 3 tacos double
+    // 2 avocados get half
+    // 2 burritos get half
+    if (firstRoll == secondRoll && secondRoll == thirdRoll){
+        // win double
+        return (bet * 2);
+    }
+
+    if (firstRoll == 0 || secondRoll == 0 || thirdRoll == 0){
+        // win half
+        var count = 0;
+        if (firstRoll == 0){
+            count++;
+        }
+        if (secondRoll == 0){
+            count++;
+        }
+        if (thirdRoll == 0){
+            count++;
+        }
+
+        if (count > 2){
+            // win double
+            return (bet * 2)
+        }
+        else if(count > 1){
+            // win same amount
+            return bet
+        }
+        else{
+            // win half
+            return Math.ceil( bet * 0.5);
+        }
+    }
+
+    if (firstRoll == 4 || secondRoll == 4 || thirdRoll ==4){
+        // count for at least 2 avocados
+        var count = 0;
+        if (firstRoll == 4){
+            count++;
+        }
+        if (secondRoll == 4){
+            count++;
+        }
+        if (thirdRoll == 4){
+            count++;
+        }
+        if (count > 1){
+            // win half
+            return Math.ceil( bet * 0.5);
+        }
+    }
+
+    if (firstRoll == 2 || secondRoll == 2 || thirdRoll == 2){
+        // count for at least 2 burritos
+        var count = 0;
+        if (firstRoll == 2){
+            count++;
+        }
+        if (secondRoll == 2){
+            count++;
+        }
+        if (thirdRoll == 2){
+            count++;
+        }
+        if (count > 1){
+            // win half
+            return Math.ceil( bet * 0.5);
+        }
+    }
+    // lost tacos
+    return (bet * -1);
+}
+
+function slotsEmbedBuilder(emojisRolled, tacosWon, message){
+
+    const embed = new Discord.RichEmbed()
+    .setColor(0xff9c4c)
+    embed.addField("(BETA) Taco Slots", emojisRolled[0] + " " + emojisRolled[1] + " " +  emojisRolled[2] , false)
+    if (tacosWon > 0){
+        embed
+        .addField('You win!', tacosWon + " :taco: tacos won" , true)
+    }
+    //.addField('Top Ten Tacos:', topTenString, true)
+    message.channel.send({embed});
+}
+
 module.exports.standingsCommand = function(message, listOfUsers){
     // query for top 10 then build the embed for top ten users
     profileDB.getTopTenTacoUsers(function(error, topTenResponse){
