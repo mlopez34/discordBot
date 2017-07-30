@@ -1450,38 +1450,39 @@ module.exports.slotsCommand = function(message, tacosBet){
     var discordUserId = message.author.id;
     // check that tacosBet is less than users tacos
     var bet = Math.floor(parseInt(tacosBet));
-    profileDB.getUserProfileData(discordUserId, function(getProfileError, getProfileResponse){
-        if (getProfileError){
-            console.log(getProfileError);
-        }
-        else{
-            if (getProfileResponse.data.tacos >= bet){
-                // spin the slots
-                var firstRoll = Math.floor(Math.random() * 8);
-                var secondRoll = Math.floor(Math.random() * 8);
-                var thirdRoll = Math.floor(Math.random() * 8);
-                // 7 emojis
-                var emojis = [
-                    ":taco:",
-                    ":burrito:",
-                    ":hot_pepper:",
-                    ":grapes:",
-                    ":avocado:",
-                    ":tropical_drink:",
-                    ":stuffed_flatbread:",
-                    ":eggplant:"
-                ]
-                var emojisRolled = [emojis[firstRoll], emojis[secondRoll], emojis[thirdRoll]];
-                var tacosWon = calculateSlotsWin(firstRoll, secondRoll, thirdRoll, bet);
-                // update the user's tacos then send the embed
-                slotsEmbedBuilder(emojisRolled, tacosWon, message);
+    if (bet > 0 ){
+        profileDB.getUserProfileData(discordUserId, function(getProfileError, getProfileResponse){
+            if (getProfileError){
+                console.log(getProfileError);
             }
             else{
-                message.channel.send(message.author + " You don't have enough tacos!");
+                if (getProfileResponse.data.tacos >= bet){
+                    // spin the slots
+                    var firstRoll = Math.floor(Math.random() * 8);
+                    var secondRoll = Math.floor(Math.random() * 8);
+                    var thirdRoll = Math.floor(Math.random() * 8);
+                    // 7 emojis
+                    var emojis = [
+                        ":taco:",
+                        ":burrito:",
+                        ":hot_pepper:",
+                        ":grapes:",
+                        ":avocado:",
+                        ":tropical_drink:",
+                        ":stuffed_flatbread:",
+                        ":eggplant:"
+                    ]
+                    var emojisRolled = [emojis[firstRoll], emojis[secondRoll], emojis[thirdRoll]];
+                    var tacosWon = calculateSlotsWin(firstRoll, secondRoll, thirdRoll, bet);
+                    // update the user's tacos then send the embed
+                    slotsEmbedBuilder(emojisRolled, tacosWon, message);
+                }
+                else{
+                    message.channel.send(message.author + " You don't have enough tacos!");
+                }
             }
-        }
-    })
-
+        })
+    }
 }
 
 function calculateSlotsWin(firstRoll, secondRoll, thirdRoll, bet){
