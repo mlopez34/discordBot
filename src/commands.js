@@ -15,7 +15,7 @@ var PICKAXE_COST = 35;
 var IMPROVED_PICKAXE_COST = 300;
 var PASTA_COST = 125
 var SCAVENGE_TACO_FIND_CHANCE_HIGHER = 90
-var SCAVENGE_TACO_FIND_CHANCE = 55;
+var SCAVENGE_TACO_FIND_CHANCE = 66;
 var Last_Five_Welcomes = []
 
 module.exports.thankCommand = function(message){
