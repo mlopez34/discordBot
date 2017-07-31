@@ -5,7 +5,13 @@ var stats = require("./statistics.js");
 const Discord = require("discord.js");
 var Promise = require('bluebird');
 var config = require("./config.js");
-
+// game files
+/*
+var game = require("./card_game/miniGame.js");
+var board = require("./card_game/board.js");
+var unit = require("./card_game/unit.js");
+var player = require("./card_game/player.js");
+*/
 var moment = require("moment");
 
 var BASE_TACO_COST = 50;
@@ -877,7 +883,7 @@ function tacoEmbedBuilder(message, profileData){
     .setAuthor(profileData.userName +"'s Tacos")
     .setColor(0x00AE86)
     .addField('Tacos  :taco:', profileData.userTacos, true)
-    .setFooter('use !give @user to give a user some tacos!')
+    .setFooter('use ' + config.commandString + 'give @user to give a user some tacos!')
     message.channel.send({embed});
 }
 
@@ -1341,19 +1347,20 @@ module.exports.scavangeCommand = function (message){
                         // roll rarity, roll item from rarity
                         var gotUncommon = false;
                         var itemsObtainedArray = [];
+                        var highestRarityFound = 1
 
                         for (var i = 0; i < rollsCount; i++){
                             var rarityRoll = Math.floor(Math.random() * 10000) + 1;
                             var rarityString = "";
                             console.log(rarityRoll);
-                            if (!gotUncommon && rollsCount > 4){
+                            if (!gotUncommon && rollsCount > 5){
                                 // guaranteed rare +
-                                rarityRoll = Math.floor(Math.random() * 220) + 9780;
+                                rarityRoll = Math.floor(Math.random() * 220) + 9700;
                                 gotUncommon = true;
                             }
-                            else if(!gotUncommon && rollsCount > 3){
+                            else if(!gotUncommon && rollsCount > 4){
                                 // guaranteed uncommon +
-                                rarityRoll = Math.floor(Math.random() * 1150) + 8850;
+                                rarityRoll = Math.floor(Math.random() * 1150) + 8000;
                                 gotUncommon = true;
                             }
                             if (rarityRoll > 9995){
@@ -1361,24 +1368,36 @@ module.exports.scavangeCommand = function (message){
                                 var itemRoll = Math.floor(Math.random() * artifactItems.length);
                                 console.log(artifactItems[itemRoll]);
                                 itemsObtainedArray.push(artifactItems[itemRoll]);
+                                if (highestRarityFound <= 4){
+                                    highestRarityFound = 5;
+                                }
                             }
-                            else if(rarityRoll > 9950 && rarityRoll <= 9995){
+                            else if(rarityRoll > 9975 && rarityRoll <= 9995){
                                 rarityString = "ancient"
                                 var itemRoll = Math.floor(Math.random() * ancientItems.length);
                                 console.log(ancientItems[itemRoll]);
                                 itemsObtainedArray.push(ancientItems[itemRoll])
+                                if (highestRarityFound <= 3){
+                                    highestRarityFound = 4;
+                                }
                             }
-                            else if(rarityRoll > 9700 && rarityRoll <= 9950){
+                            else if(rarityRoll > 9700 && rarityRoll <= 9975){
                                 rarityString = "rare"
                                 var itemRoll = Math.floor(Math.random() * rareItems.length);
                                 console.log(rareItems[itemRoll]);
                                 itemsObtainedArray.push(rareItems[itemRoll]);
+                                if (highestRarityFound <= 2){
+                                    highestRarityFound = 3;
+                                }
                             }
                             else if (rarityRoll > 8000 && rarityRoll <= 9700){
                                 rarityString = "uncommon"
                                 var itemRoll = Math.floor(Math.random() * uncommonItems.length);
                                 console.log(uncommonItems[itemRoll]);
                                 itemsObtainedArray.push( uncommonItems[itemRoll] );
+                                if (highestRarityFound <= 1){
+                                    highestRarityFound = 2;
+                                }
                             }
                             else {
                                 rarityString = "common"
@@ -1420,6 +1439,22 @@ module.exports.scavangeCommand = function (message){
                                 // check achievements
                                 var data = {}
                                 data.achievements = achievements;
+                                // add the highestRarity
+                                if (highestRarityFound == 5){
+                                    data.rarity = "artifact"
+                                }
+                                else if (highestRarityFound == 4){
+                                    data.rarity = "ancient"
+                                }
+                                else if (highestRarityFound == 3){
+                                    data.rarity = "rare"
+                                }
+                                else if (highestRarityFound == 2){
+                                    data.rarity = "uncommon"
+                                }
+                                if (highestRarityFound == 1){
+                                    data.rarity = "common"
+                                }
                                 console.log(data);
                                 achiev.checkForAchievements(discordUserId, data, message);
                             }
@@ -1598,6 +1633,81 @@ function slotsEmbedBuilder(emojisRolled, tacosWon, message){
     }
     message.channel.send({embed});
 }
+
+// by discordUserId
+var challengesHappening = {};
+/*
+
+module.exports.gameCommand = function(message){
+
+    var discordUserId = message.author.id;
+    var users  = message.mentions.users;
+    var mentionedId;
+    var mentionedUser;
+    console.log(users);
+    users.forEach(function(user){
+        console.log(user.id);
+        mentionedId = user.id;
+        mentionedUser = user
+    })
+
+    if (mentionedUser){
+        // the user challenged create game
+        var player1 = new player("random" , message.author);
+        var player2 = new player("random" , mentionedUser);
+        var newBoard = new board();
+        var newGame = new game(player1, player2, newBoard);
+        
+        // TODO: game announce
+
+
+    }
+
+
+    
+    
+    
+
+    // player challenges other player OR queues up for a match
+    // if challenged other mentioned player, check that neither are in an ongoing match 
+
+    // create empty board, pick cards for players based on players cards, create players, create game match
+    // Bender PMs the user what their cards are
+
+    // randomly pick who has first turn, start both players at 5 pts
+
+    // player picks spot on board A, B, C.. ETC and takes that spot as theirs (change color)
+
+    // update board after every turn
+
+    // next player's turn - player picks the spot they want to place their card on A, B, C..  check adjacent spots
+    // if number is higher than adjacent number, turn that adjacent card as theirs, increase their score
+
+    // game ends when a player quits or the board is full, winner is player with highest score
+
+    
+}
+
+module.exports.gameEmbedBuilder = function(message, data){
+    // TODO: take all the data and create the board
+
+    var array = data.board.visualize();
+    //message.channel.send("``` 2      | 1       |\n        |         |\n        |         |\n        |         |\n— — — — — — — — — — — — - -\n        |         |\n        |         |\n        |         |\n        |         |\n— — — — — — — — — — — — - -\n        |         |\n        |         |\n        |         |\n        |         |\n   ```");
+    const embed = new Discord.RichEmbed()
+    .setDescription("``` 1  🔴   | 1  🔴    | 1  🔴    \n2 3 🔴   |2 3 🔴    |2 3 🔴    \n 4  🔴   | 4  🔴    | 4  🔴    \n    🔥  A|    🔴   B|    🔴  C\n— — — — — — — — — — — — - - -\n 1  🔴   | 1  🔴    | 1  🔵    \n2 3 🔴   |2 3 🔴    |2 3 🔵    \n 4  🔴   | 4  🔴    | 4  🔵    \n    🔴  D|    🔴   E|    🔵  F\n— — — — — — — — — — — — - - -\n 1  ⚪   | 1  🔴    | 1  🔴    \n2 3 ⚪   |2 3 🔴    |2 3 🔴    \n 4  ⚪   | 4  🔴    | 4  🔴    \n    ⚪  G|    🔴   H|    🌊  I```")
+    //.addBlankField(false)
+    .addField("Score:", "Player 1 : " + 5 + "\nPlayer 2: " + 5 , true)
+    .addField("Turn: ", "Player 1", true)
+    .addField("Last Action", "C Name - " + "I", true)
+    
+    .setColor(0xff9c4c)
+    message.channel.send({embed});
+}
+
+module.exports.playCommand = function(message){
+    // TODO: check for user's current match and attempt to make the play on that match
+}
+*/
 
 module.exports.standingsCommand = function(message, listOfUsers){
     // query for top 10 then build the embed for top ten users
