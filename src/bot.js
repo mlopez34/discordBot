@@ -136,6 +136,11 @@ client.on('message', function(message){
                     commands.slotsCommand(message, bet);
                 }
             }
+            /*
+            else if (commandIs("game", message)){
+                commands.gameCommand(message);
+            }
+            */
         }
         else if (message.channel.type == "text" && message.channel.name == MAIN_CHANNEL){
              if( commandIs("thank", message )){
