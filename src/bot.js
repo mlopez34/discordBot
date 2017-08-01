@@ -56,7 +56,7 @@ client.on('message', function(message){
         }
         else{
             // disable Taco Tuesday
-            tacoTuesdayEnabled = false;
+            // tacoTuesdayEnabled = false;
         }
 
         if (commandIs("enable", message)){
