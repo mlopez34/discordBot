@@ -16,7 +16,7 @@ var achievementsData = {
         description: "Give 150 tacos to one person at once"
     },
     "Apologetic geek": {
-        emoji : ": :shrug::skin-tone-2:",
+        emoji : ":shrug::skin-tone-2:",
         description: "Sorry 12 users"
     },
     "Adventure girl": {
