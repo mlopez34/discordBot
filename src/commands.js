@@ -20,8 +20,8 @@ var BASE_TACO_COOK = 2;
 var PICKAXE_COST = 35;
 var IMPROVED_PICKAXE_COST = 300;
 var PASTA_COST = 125
-var SCAVENGE_TACO_FIND_CHANCE_HIGHER = 90
-var SCAVENGE_TACO_FIND_CHANCE = 66;
+var SCAVENGE_TACO_FIND_CHANCE_HIGHER = 94
+var SCAVENGE_TACO_FIND_CHANCE = 75;
 var Last_Five_Welcomes = []
 
 module.exports.thankCommand = function(message){
@@ -494,7 +494,10 @@ module.exports.giveCommand = function(message, giveTacoAmount){
         mentionedUser = user
     })
     // get user
-    if (mentionedId == discordUserId){
+    if (!mentionedId || !mentionedUser){
+        message.channel.send(message.author + " You must mention a user whom you want to give your tacos to!")
+    }
+    else if (mentionedId == discordUserId){
         message.channel.send(message.author + " You can't give yourself taco!")
     }
     else if(giveTacoAmount < 2){
@@ -1636,7 +1639,6 @@ function slotsEmbedBuilder(emojisRolled, tacosWon, message){
 
 // by discordUserId
 var challengesHappening = {};
-/*
 
 module.exports.gameCommand = function(message){
 
@@ -1659,8 +1661,10 @@ module.exports.gameCommand = function(message){
         var newGame = new game(player1, player2, newBoard);
         
         // TODO: game announce
-
-
+        var boardVisualize = newBoard.visualize();
+        var data = {};
+        data.visual = boardVisualize;
+        gameEmbedBuilder(message, data)
     }
 
 
@@ -1688,13 +1692,13 @@ module.exports.gameCommand = function(message){
     
 }
 
-module.exports.gameEmbedBuilder = function(message, data){
+function gameEmbedBuilder(message, data){
     // TODO: take all the data and create the board
 
-    var array = data.board.visualize();
+    //var array = data.board.visualize();
     //message.channel.send("``` 2      | 1       |\n        |         |\n        |         |\n        |         |\n— — — — — — — — — — — — - -\n        |         |\n        |         |\n        |         |\n        |         |\n— — — — — — — — — — — — - -\n        |         |\n        |         |\n        |         |\n        |         |\n   ```");
     const embed = new Discord.RichEmbed()
-    .setDescription("``` 1  🔴   | 1  🔴    | 1  🔴    \n2 3 🔴   |2 3 🔴    |2 3 🔴    \n 4  🔴   | 4  🔴    | 4  🔴    \n    🔥  A|    🔴   B|    🔴  C\n— — — — — — — — — — — — - - -\n 1  🔴   | 1  🔴    | 1  🔵    \n2 3 🔴   |2 3 🔴    |2 3 🔵    \n 4  🔴   | 4  🔴    | 4  🔵    \n    🔴  D|    🔴   E|    🔵  F\n— — — — — — — — — — — — - - -\n 1  ⚪   | 1  🔴    | 1  🔴    \n2 3 ⚪   |2 3 🔴    |2 3 🔴    \n 4  ⚪   | 4  🔴    | 4  🔴    \n    ⚪  G|    🔴   H|    🌊  I```")
+    .setDescription("```" + data.visual + "```")
     //.addBlankField(false)
     .addField("Score:", "Player 1 : " + 5 + "\nPlayer 2: " + 5 , true)
     .addField("Turn: ", "Player 1", true)
@@ -1707,7 +1711,7 @@ module.exports.gameEmbedBuilder = function(message, data){
 module.exports.playCommand = function(message){
     // TODO: check for user's current match and attempt to make the play on that match
 }
-*/
+
 
 module.exports.standingsCommand = function(message, listOfUsers){
     // query for top 10 then build the embed for top ten users
