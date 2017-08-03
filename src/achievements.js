@@ -9,7 +9,7 @@ var achievementsData = {
     },
     "Fidel cashflow": {
         emoji : ":chart_with_upwards_trend:",
-        description: "Obtain 5 taco stands"
+        description: "Obtain 10 taco stands"
     },
     "Get a room": {
         emoji : ":kiss:",
@@ -174,7 +174,7 @@ module.exports.checkForAchievements = function(discordUserId, data, message){
             }
             
             if(data.tacostands && 
-               data.tacostands >= 5 &&
+               data.tacostands >= 10 &&
                (data.achievements === null || data.achievements.indexOf("Fidel cashflow") == -1 )){
                 profileDB.updateAchievements(discordUserId, "{Fidel cashflow}", function(err, r){
                     if (err){
