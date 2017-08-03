@@ -6,11 +6,12 @@ const Discord = require("discord.js");
 var Promise = require('bluebird');
 var config = require("./config.js");
 // game files
+/*
 var game = require("./card_game/miniGame.js");
 var board = require("./card_game/board.js");
 var unit = require("./card_game/unit.js");
 var player = require("./card_game/player.js");
-
+*/
 var moment = require("moment");
 
 var BASE_TACO_COST = 50;
