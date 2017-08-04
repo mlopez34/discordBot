@@ -392,7 +392,7 @@ module.exports.welcomeCommand = function(message){
     else if (mentionedId == discordUserId){
         message.channel.send(message.author +" You can't welcome yourself!")
     }
-    else if(!mentionedUser.bot){
+    else if(mentionedUser && !mentionedUser.bot){
         // check first that user exists, if user doesn't exist create user, then check if welcomed user exists
         // if welcomed user exists set to true, if not then create the user and set to true
         profileDB.getUserProfileData( mentionedId, function(err, welcomeResponse) {
