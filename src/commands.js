@@ -550,10 +550,14 @@ module.exports.giveCommand = function(message, giveTacoAmount){
                             })
                         }
                         else{
-                            var tacoTax = Math.floor(giveTacoAmount * 0.1);
+                            var initialTacoTax = Math.floor(giveTacoAmount * 0.1);
+                            var tacoTax = initialTacoTax;
                             console.log(tacoTax);
-                            if (tacoTax < 1){
+                            if (initialTacoTax < 1){
                                 tacoTax = 1;
+                            }
+                            if (initialTacoTax >= 1){
+                                tacoTax = tacoTax + 1
                             }
                             var negativeGiveTacoAmount = giveTacoAmount * -1
                             console.log(negativeGiveTacoAmount);
