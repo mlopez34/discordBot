@@ -1362,12 +1362,12 @@ module.exports.scavangeCommand = function (message){
                             console.log(rarityRoll);
                             if (!gotUncommon && rollsCount > 4){
                                 // guaranteed more than uncommon +
-                                rarityRoll = Math.floor(Math.random() * 1100) + 8900;
+                                rarityRoll = Math.floor(Math.random() * 1500) + 8501;
                                 gotUncommon = true;
                             }
                             else if(!gotUncommon && rollsCount > 3){
                                 // guaranteed uncommon +
-                                rarityRoll = Math.floor(Math.random() * 2000) + 8000;
+                                rarityRoll = Math.floor(Math.random() * 2000) + 8001;
                                 gotUncommon = true;
                             }
                             if (rarityRoll > 9995){
