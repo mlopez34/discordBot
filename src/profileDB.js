@@ -425,6 +425,23 @@ module.exports.addNewItemToUser = function(discordId, items, cb) {
     }); 
 }
 
+// update user's item status
+module.exports.updateItemStatus = function(itemId, status, cb){
+    var query = 'update ' + config.inventoryTable + ' set status=$1 where id=$2'
+    //console.log("new last thank: " + lastThank);
+    db.none(query, [status, itemId])
+    .then(function () {
+    cb(null, {
+        status: 'success',
+        message: 'set status for item' + itemId
+        });
+    })
+    .catch(function (err) {
+        console.log(err);
+        cb(err);
+    });
+}
+
 // get user's inventory
 module.exports.getUserItems = function(discordId, cb) {
   var query = 'select * from ' + config.inventoryTable + ' where discordId = $1'

@@ -23,7 +23,9 @@ var IMPROVED_PICKAXE_COST = 300;
 var PASTA_COST = 125
 var SCAVENGE_TACO_FIND_CHANCE_HIGHER = 94
 var SCAVENGE_TACO_FIND_CHANCE = 75;
-var Last_Five_Welcomes = []
+var Last_Five_Welcomes = [];
+var ROCK_ITEM_ID = 5;
+var QueueOfTacosDropped = [];
 
 module.exports.thankCommand = function(message){
     
@@ -1215,11 +1217,12 @@ module.exports.inventoryCommand = function(message){
             profileDB.getItemData(function(error, allItemsResponse){
                 //console.log(allItemsResponse.data);
                 for (var item in inventoryResponse.data){
-                    if (!itemsInInventoryCountMap[inventoryResponse.data[item].itemid]){
+                    var validItem = useItem.itemValidate(inventoryResponse.data[item]);
+                    if (!itemsInInventoryCountMap[inventoryResponse.data[item].itemid] && validItem){
                         // item hasnt been added to be counted, add it as 1
                         itemsInInventoryCountMap[inventoryResponse.data[item].itemid] = 1;
                     }
-                    else{
+                    else if (validItem){
                         itemsInInventoryCountMap[inventoryResponse.data[item].itemid] = itemsInInventoryCountMap[inventoryResponse.data[item].itemid] + 1
                     }
                 }
@@ -1789,39 +1792,132 @@ function initialUserProfile(discordUserId){
     return userData;
 }
 
+module.exports.pickupCommand = function (message){
+    // check the queueOfTacos and if there are tacos pick them up - updateUserTacos by +1
+    var discordUserId = message.author.id;
+    var ableToPickUp = false;
+    var indexOfQueue = index;
+    for (var index in QueueOfTacosDropped){
+        if (QueueOfTacosDropped[index].droppedBy != discordUserId && QueueOfTacosDropped[index].cannotPickUp != discordUserId){
+            // user can pick this one up
+            ableToPickUp = true;
+            indexOfQueue = index;
+            break;
+        }
+    }
+    if (ableToPickUp){
+        // update user tacos
+        profileDB.updateUserTacos(discordUserId, 1, function(updateErr, updateRes){
+            if (updateErr){
+                // TODO: create user profile
+                console.log(updateErr)
+            }
+            else{
+                QueueOfTacosDropped.splice(index, 1);
+                message.channel.send(message.author + " picked up a taco from the ground :taco:");
+            }
+        })
+    }
+    else{
+        message.channel.send("There are no tacos to pick up.. ");
+    }
+}
+
 module.exports.useCommand = function(message, args){
     // the use command will obtain args[0] as the name of the item
     // args[1] as the number of the item that will be used
     // and a mentioned user if there is one
-
+    console.log(args);
     var discordUserId = message.author.id;
     var users  = message.mentions.users;
     var mentionedId;
     var mentionedUser;
+    var mentionedUserName;
     console.log(users);
     users.forEach(function(user){
         console.log(user.id);
         mentionedId = user.id;
         mentionedUser = user
+        mentionedUserName = user.username;
     })
+    if (args[1].toLowerCase() == "rock"){
+        if (mentionedUser && !mentionedUser.bot && mentionedId != message.author.id){
+            // use rock
+            profileDB.getUserItems(discordUserId, function(error, inventoryResponse){
+                if (error){
+                    console.log(error);
+                }
+                else{
+                    // check that the user has enough rocks to throw at someone
+                    
+                    // map of user's inventory
+                    var itemsInInventoryCountMap = {};
+                    // map of all items
+                    var itemsMapbyId = {};
+                    // item object for rock to use
+                    var rockToUse;
 
-    if (args[0].toLower() == "rock"){
-        // use rock
-        profileDB.getUserItems(discordUserId, function(error, itemsResponse){
-            if (error){
-                console.log(error);
-            }
-            else{
-                // check that the user has enough rocks to throw at someone
-                console.log(itemsResponse);
+                    profileDB.getItemData(function(itemDataError, allItemsResponse){
+                        if (itemDataError){
+                            console.log(itemDataError);
+                        }
+                        else{
+                            //console.log(allItemsResponse.data);
+                            for (var item in inventoryResponse.data){
+                                // check the rock hasnt been used
+                                var validItem = useItem.itemValidate(inventoryResponse.data[item]);
+                                if (!itemsInInventoryCountMap[inventoryResponse.data[item].itemid] && validItem){
+                                    // item hasnt been added to be counted, add it as 1
+                                    itemsInInventoryCountMap[inventoryResponse.data[item].itemid] = 1;
 
-                useItem.useRock(message, mentionedId)
-            }
-        })
-        
-
+                                    if (inventoryResponse.data[item].itemid == ROCK_ITEM_ID){
+                                        // make this the rockToUse
+                                        rockToUse = inventoryResponse.data[item];
+                                    }
+                                }
+                                else if (validItem){
+                                    itemsInInventoryCountMap[inventoryResponse.data[item].itemid] = itemsInInventoryCountMap[inventoryResponse.data[item].itemid] + 1
+                                }
+                            }
+                            console.log(itemsInInventoryCountMap);
+                            for (var index in allItemsResponse.data){
+                                itemsMapbyId[allItemsResponse.data[index].id] = allItemsResponse.data[index];
+                            }
+                            if (itemsInInventoryCountMap[ROCK_ITEM_ID] && itemsInInventoryCountMap[ROCK_ITEM_ID] > 0){
+                                // user has this many rocks if greater than 0 then able to throw rock
+                                console.log(itemsInInventoryCountMap[ROCK_ITEM_ID]);
+                                useItem.useRock(message, mentionedId, rockToUse, function(throwRockError, throwRes){
+                                    if (throwRockError){
+                                        console.log(throwRockError);
+                                    }
+                                    else{
+                                        console.log(throwRes);
+                                        if (throwRes == "success"){
+                                            message.channel.send( message.author + " threw a rock at " + mentionedUserName + " they became dizzy and dropped `1` taco :taco:");
+                                            // if they drop a taco someone else can pick it up
+                                            QueueOfTacosDropped.push({ droppedBy: mentionedId, cannotPickUp: discordUserId})
+                                        }
+                                        else{
+                                            message.channel.send(message.author + " threw a rock at " + mentionedUserName);
+                                        }
+                                        
+                                    }
+                                })
+                            }
+                            else{
+                                // tell the user they don't have enough rocks
+                                message.channel.send("dont have enough rocks to throw...");
+                            }
+                        }
+                    })
+                }
+            })
+        }
+        else{
+            message.channel.send("mention a user to throw a rock at, you cannot throw rocks at bots or yourself...");
+        }
     }
-    else if(args[0].toLower() == "piece of wood"){
+    else if(args[0].toLowerCase() == "piece of wood"){
         // use pieces of wood
         useItem.usePieceOfWood(message);
     }

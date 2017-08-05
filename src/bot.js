@@ -136,10 +136,18 @@ client.on('message', function(message){
                     commands.slotsCommand(message, bet);
                 }
             }
-            
+            else if (commandIs("use", message)){
+                commands.useCommand(message, args);
+            }
+            else if (commandIs("pickup", message)){
+                commands.pickupCommand(message);
+            }
+            /*
             else if (commandIs("game", message)){
                 commands.gameCommand(message);
             }
+            */
+
             
         }
         else if (message.channel.type == "text" && message.channel.name == MAIN_CHANNEL){
