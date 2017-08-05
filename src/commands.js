@@ -5,6 +5,7 @@ var stats = require("./statistics.js");
 const Discord = require("discord.js");
 var Promise = require('bluebird');
 var config = require("./config.js");
+var useItem = require("./useItem.js")
 // game files
 /*
 var game = require("./card_game/miniGame.js");
@@ -1786,4 +1787,42 @@ function initialUserProfile(discordUserId){
         phone: false
     }
     return userData;
+}
+
+module.exports.useCommand = function(message, args){
+    // the use command will obtain args[0] as the name of the item
+    // args[1] as the number of the item that will be used
+    // and a mentioned user if there is one
+
+    var discordUserId = message.author.id;
+    var users  = message.mentions.users;
+    var mentionedId;
+    var mentionedUser;
+    console.log(users);
+    users.forEach(function(user){
+        console.log(user.id);
+        mentionedId = user.id;
+        mentionedUser = user
+    })
+
+    if (args[0].toLower() == "rock"){
+        // use rock
+        profileDB.getUserItems(discordUserId, function(error, itemsResponse){
+            if (error){
+                console.log(error);
+            }
+            else{
+                // check that the user has enough rocks to throw at someone
+                console.log(itemsResponse);
+
+                useItem.useRock(message, mentionedId)
+            }
+        })
+        
+
+    }
+    else if(args[0].toLower() == "piece of wood"){
+        // use pieces of wood
+        useItem.usePieceOfWood(message);
+    }
 }
