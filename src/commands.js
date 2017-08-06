@@ -1917,7 +1917,7 @@ module.exports.useCommand = function(message, args){
                                             if (poisonedTacoRoll > 66){
                                                 poisonedTaco = true;
                                             }
-                                            QueueOfTacosDropped.push({ droppedBy: mentionedId, cannotPickUp: discordUserId, poiosoned: poisonedTaco })
+                                            QueueOfTacosDropped.push({ droppedBy: mentionedId, cannotPickUp: discordUserId, poisoned: poisonedTaco })
                                         }
                                         else if (throwRes == "protection"){
                                             message.channel.send(message.author + " threw a rock at " + mentionedUserName + " but one of their fences protected them!");
