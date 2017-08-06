@@ -1942,7 +1942,7 @@ module.exports.useCommand = function(message, args){
             message.channel.send("mention a user to throw a rock at, you cannot throw rocks at bots or yourself...");
         }
     }
-    else if(args[1].toLowerCase() == "pieceofwood"){
+    else if(args && args.length > 2 && args[1].toLowerCase() == "pieceofwood"){
         // use pieces of wood - protect against rocks being thrown at you (uses 6 pieces, protects against 3)
         profileDB.getUserItems(discordUserId, function(error, inventoryResponse){
             if (error){
@@ -2013,6 +2013,7 @@ module.exports.useCommand = function(message, args){
         })
         
     }
+    /*
     else if (args[1].toLowerCase() == "soda can"){
         // recycle for an item only obtainable by recycling
         
@@ -2020,6 +2021,7 @@ module.exports.useCommand = function(message, args){
     else if (args[1].toLowerCase() == "soil"){
         // soil your land? bender seeds ur soil
     }
+    */
 }
 
 module.exports.combineCommand = function(message, args){
