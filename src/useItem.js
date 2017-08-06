@@ -7,7 +7,7 @@ module.exports.useRock = function(message, mentionedUserId, rockToUse, cb){
     // create the roll
     var successThrowRockRoll = Math.floor(Math.random() * 100) + 1;
     var knockTacoOff = false;
-    if (successThrowRockRoll > 10){
+    if (successThrowRockRoll > 1){
         knockTacoOff = true
     }
     console.log(successThrowRockRoll)
@@ -30,7 +30,16 @@ module.exports.useRock = function(message, mentionedUserId, rockToUse, cb){
                         }
                         else{
                             console.log(updateResponse);
-                            cb(null, "protection")
+                            profileDB.updateItemStatus(rockToUse.id, "used", function(updateRockStatusErr, updateRockStatusRes){
+                                if (updateRockStatusErr){
+                                    console.log(updateRockStatusErr);
+                                    cb(updateRockStatusErr);
+                                }
+                                else{
+                                    console.log(updateRockStatusRes);
+                                    cb(null, "protection")
+                                }
+                            })
                         }
                     })
                 }
