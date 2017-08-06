@@ -186,6 +186,29 @@ module.exports.updateUserPasta = function( userId, pastaTacoCost, pasta, cb){
     });
 }
 
+// update protect
+module.exports.updateUserProtect = function(userId, protectNumber, protection , cb) {
+    var query = '';
+    if (protection == null ){;
+        query = 'update ' + config.profileTable + ' set protect=$1 where discordid=$2'
+    }
+    else{
+        query = 'update ' + config.profileTable + ' set protect=protect+$1 where discordid=$2'
+    }
+    console.log(protectNumber + " before query")
+    db.none(query, [protectNumber, userId])
+    .then(function () {
+    cb(null, {
+        status: 'success',
+        message: 'updated protect'
+        });
+    })
+    .catch(function (err) {
+        console.log(err);
+        cb(err);
+    });
+}
+
 module.exports.purchasePickAxe = function(userId, tacosSpent, cb){
     var query = 'update ' + config.profileTable + ' set tacos=tacos+$1, pickaxe=$3 where discordid=$2'
     console.log(query)
@@ -423,6 +446,32 @@ module.exports.addNewItemToUser = function(discordId, items, cb) {
         console.log(err);
         cb(err);
     }); 
+}
+
+module.exports.bulkUpdateItemStatus = function(items, status, cb){
+
+    var inventoryItems = []
+    for (var item in items){
+        var idOfItem = items[item].id
+        inventoryItems.push({
+            status : status,
+            id : idOfItem
+        })
+    }
+
+    const query = pgp.helpers.update(inventoryItems, ['id', 'status'], config.inventoryTableNoQuotes) + ' WHERE v.id = t.id';
+    console.log(query);
+    db.none(query)
+    .then(function () {
+    cb(null, {
+        status: 'success',
+        message: 'set status for items'
+        });
+    })
+    .catch(function (err) {
+        console.log(err);
+        cb(err);
+    });
 }
 
 // update user's item status

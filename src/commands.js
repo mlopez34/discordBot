@@ -25,6 +25,7 @@ var SCAVENGE_TACO_FIND_CHANCE_HIGHER = 94
 var SCAVENGE_TACO_FIND_CHANCE = 75;
 var Last_Five_Welcomes = [];
 var ROCK_ITEM_ID = 5;
+var PIECE_OF_WOOD_ITEM_ID = 4;
 var QueueOfTacosDropped = [];
 
 module.exports.thankCommand = function(message){
@@ -1806,26 +1807,42 @@ module.exports.pickupCommand = function (message){
         }
     }
     if (ableToPickUp){
-        // update user tacos
-        profileDB.updateUserTacos(discordUserId, 1, function(updateErr, updateRes){
-            if (updateErr){
-                // TODO: create user profile
-                console.log(updateErr)
-            }
-            else{
-                QueueOfTacosDropped.splice(index, 1);
-                message.channel.send(message.author + " picked up a taco from the ground :taco:");
-            }
-        })
+        if (QueueOfTacosDropped[index].poiosoned){
+            // taco is poisoned, take away instead of giving
+            // update user tacos
+            profileDB.updateUserTacos(discordUserId, -1, function(updateErr, updateRes){
+                if (updateErr){
+                    // TODO: create user profile
+                    console.log(updateErr)
+                }
+                else{
+                    QueueOfTacosDropped.splice(index, 1);
+                    message.channel.send(message.author + " picked up a taco from the ground :taco: but it was poisoned.. :nauseated_face: you ate a taco to cure your sickness.");
+                }
+            })
+        }
+        else{
+            // update user tacos
+            profileDB.updateUserTacos(discordUserId, 1, function(updateErr, updateRes){
+                if (updateErr){
+                    // TODO: create user profile
+                    console.log(updateErr)
+                }
+                else{
+                    QueueOfTacosDropped.splice(index, 1);
+                    message.channel.send(message.author + " picked up a taco from the ground :taco:");
+                }
+            })
+        }
     }
     else{
-        message.channel.send("There are no tacos to pick up.. ");
+        message.channel.send("There are no tacos for you to pick up.. ");
     }
 }
 
 module.exports.useCommand = function(message, args){
-    // the use command will obtain args[0] as the name of the item
-    // args[1] as the number of the item that will be used
+    // the use command will obtain args[1] as the name of the item
+    // args[2] as the number of the item that will be used
     // and a mentioned user if there is one
     console.log(args);
     var discordUserId = message.author.id;
@@ -1893,9 +1910,17 @@ module.exports.useCommand = function(message, args){
                                     else{
                                         console.log(throwRes);
                                         if (throwRes == "success"){
-                                            message.channel.send( message.author + " threw a rock at " + mentionedUserName + " they became dizzy and dropped `1` taco :taco:");
+                                            message.channel.send( message.author + " threw a rock at " + mentionedUserName + ", they became dizzy and dropped `1` taco :taco:");
                                             // if they drop a taco someone else can pick it up
-                                            QueueOfTacosDropped.push({ droppedBy: mentionedId, cannotPickUp: discordUserId})
+                                            var poisonedTacoRoll = Math.floor(Math.random() * 100) + 1;
+                                            var poisonedTaco = false;
+                                            if (poisonedTacoRoll > 85){
+                                                poisonedTaco = true;
+                                            }
+                                            QueueOfTacosDropped.push({ droppedBy: mentionedId, cannotPickUp: discordUserId, poiosoned: poisonedTaco })
+                                        }
+                                        else if (throwRes == "protection"){
+                                            message.channel.send(message.author + " threw a rock at " + mentionedUserName + " but one of their fences protected them!");
                                         }
                                         else{
                                             message.channel.send(message.author + " threw a rock at " + mentionedUserName);
@@ -1917,8 +1942,86 @@ module.exports.useCommand = function(message, args){
             message.channel.send("mention a user to throw a rock at, you cannot throw rocks at bots or yourself...");
         }
     }
-    else if(args[0].toLowerCase() == "piece of wood"){
-        // use pieces of wood
-        useItem.usePieceOfWood(message);
+    else if(args[1].toLowerCase() == "pieceofwood"){
+        // use pieces of wood - protect against rocks being thrown at you (uses 6 pieces, protects against 3)
+        profileDB.getUserItems(discordUserId, function(error, inventoryResponse){
+            if (error){
+                console.log(error);
+            }
+            else{
+                 // check the user has enough pieces of wood
+                 // map of user's inventory
+                var itemsInInventoryCountMap = {};
+                // map of all items
+                var itemsMapbyId = {};
+
+                // array of item objects for using piece of wood
+                var piecesOfWoodToUse = []
+                profileDB.getItemData(function(itemDataError, allItemsResponse){
+                    if (itemDataError){
+                        console.log(itemDataError);
+                    }
+                    else{
+                        //console.log(allItemsResponse.data);
+                        for (var item in inventoryResponse.data){
+                            // check the rock hasnt been used
+                            var validItem = useItem.itemValidate(inventoryResponse.data[item]);
+                            if (!itemsInInventoryCountMap[inventoryResponse.data[item].itemid] && validItem){
+                                // item hasnt been added to be counted, add it as 1
+                                itemsInInventoryCountMap[inventoryResponse.data[item].itemid] = 1;
+
+                                if (inventoryResponse.data[item].itemid == PIECE_OF_WOOD_ITEM_ID && piecesOfWoodToUse.length <= 5){
+                                    // make this the pieceOfWoodToUse
+                                    piecesOfWoodToUse.push(inventoryResponse.data[item]);
+                                }
+                            }
+                            else if (validItem){
+                                itemsInInventoryCountMap[inventoryResponse.data[item].itemid] = itemsInInventoryCountMap[inventoryResponse.data[item].itemid] + 1;
+                                if (inventoryResponse.data[item].itemid == PIECE_OF_WOOD_ITEM_ID && piecesOfWoodToUse.length < 5){
+                                    // make this the pieceOfWoodToUse
+                                    piecesOfWoodToUse.push(inventoryResponse.data[item]);
+                                }
+                            }
+                        }
+
+                        console.log(itemsInInventoryCountMap);
+                        for (var index in allItemsResponse.data){
+                            itemsMapbyId[allItemsResponse.data[index].id] = allItemsResponse.data[index];
+                        }
+                        console.log(piecesOfWoodToUse.length);
+                        // 
+                        if (piecesOfWoodToUse.length == 5){
+                            // able to use those 5 pieces
+                            useItem.usePieceOfWood(message, discordUserId, piecesOfWoodToUse, function(useError, useRes){
+                                if (useError){
+                                    // couldnt update the user protect
+                                    console.log(useError);
+                                }
+                                else{
+                                    console.log(useRes);
+                                    message.channel.send(message.author + " has built a fence, counts as `2` protection points");
+                                }
+                            });
+                        }
+                        else{
+                            message.channel.send(message.author + " you need at least `5` pieces of wood to build a fence");
+                        }
+                        
+                    }
+                })
+            }
+        })
+        
     }
+    else if (args[1].toLowerCase() == "soda can"){
+        // recycle for an item only obtainable by recycling
+        
+    }
+    else if (args[1].toLowerCase() == "soil"){
+        // soil your land? bender seeds ur soil
+    }
+}
+
+module.exports.combineCommand = function(message, args){
+    // combine certain things (only terry cloth, and soil for now?)
 }
