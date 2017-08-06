@@ -1914,7 +1914,7 @@ module.exports.useCommand = function(message, args){
                                             // if they drop a taco someone else can pick it up
                                             var poisonedTacoRoll = Math.floor(Math.random() * 100) + 1;
                                             var poisonedTaco = false;
-                                            if (poisonedTacoRoll > 66){
+                                            if (poisonedTacoRoll > 75){
                                                 poisonedTaco = true;
                                             }
                                             QueueOfTacosDropped.push({ droppedBy: mentionedId, cannotPickUp: discordUserId, poisoned: poisonedTaco })
