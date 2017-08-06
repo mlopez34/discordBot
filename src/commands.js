@@ -1807,7 +1807,7 @@ module.exports.pickupCommand = function (message){
         }
     }
     if (ableToPickUp){
-        if (QueueOfTacosDropped[index].poiosoned){
+        if (QueueOfTacosDropped[index].poisoned){
             // taco is poisoned, take away instead of giving
             // update user tacos
             profileDB.updateUserTacos(discordUserId, -1, function(updateErr, updateRes){
@@ -1914,7 +1914,7 @@ module.exports.useCommand = function(message, args){
                                             // if they drop a taco someone else can pick it up
                                             var poisonedTacoRoll = Math.floor(Math.random() * 100) + 1;
                                             var poisonedTaco = false;
-                                            if (poisonedTacoRoll > 85){
+                                            if (poisonedTacoRoll > 66){
                                                 poisonedTaco = true;
                                             }
                                             QueueOfTacosDropped.push({ droppedBy: mentionedId, cannotPickUp: discordUserId, poiosoned: poisonedTaco })
