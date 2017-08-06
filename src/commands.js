@@ -1807,7 +1807,7 @@ module.exports.pickupCommand = function (message){
         }
     }
     if (ableToPickUp){
-        if (QueueOfTacosDropped[index].poisoned){
+        if (QueueOfTacosDropped[indexOfQueue].poisoned){
             // taco is poisoned, take away instead of giving
             // update user tacos
             profileDB.updateUserTacos(discordUserId, -1, function(updateErr, updateRes){
