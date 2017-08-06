@@ -1807,7 +1807,7 @@ module.exports.pickupCommand = function (message){
         }
     }
     if (ableToPickUp){
-        if (QueueOfTacosDropped[index].poisoned){
+        if (QueueOfTacosDropped[indexOfQueue].poisoned){
             // taco is poisoned, take away instead of giving
             // update user tacos
             profileDB.updateUserTacos(discordUserId, -1, function(updateErr, updateRes){
@@ -1857,7 +1857,7 @@ module.exports.useCommand = function(message, args){
         mentionedUser = user
         mentionedUserName = user.username;
     })
-    if (args[1].toLowerCase() == "rock"){
+    if (args && args.length > 2 && args[1].toLowerCase() == "rock"){
         if (mentionedUser && !mentionedUser.bot && mentionedId != message.author.id){
             // use rock
             profileDB.getUserItems(discordUserId, function(error, inventoryResponse){
