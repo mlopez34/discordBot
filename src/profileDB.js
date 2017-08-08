@@ -271,7 +271,7 @@ module.exports.purchaseTacoStand = function(userId, tacosSpent, currentTacoStand
 
 module.exports.prepareTacos = function(userId, tacosToPrepare, cb){
     // update tacos and lastprepare
-    var query = 'update ' + config.profileTable + ' set tacos=tacos+$1, lastpreparetime=$3 where discordid=$2'
+    var query = 'update ' + config.profileTable + ' set tacos=tacos+$1, lastpreparetime=$3, soiledcrops=0 where discordid=$2'
     var lastprepare = new Date();
     //console.log("new last thank: " + lastThank);
     db.none(query, [ tacosToPrepare, userId, lastprepare ])
@@ -470,6 +470,61 @@ module.exports.bulkUpdateItemStatus = function(items, status, cb){
     })
     .catch(function (err) {
         console.log(err);
+        cb(err);
+    });
+}
+
+module.exports.addUserReputation = function(discordId, reputationNumber, currentReputation, cb){
+    var query = "";
+    if (currentReputation == null){
+        // reputation is zero - just set reputation to reputationNumber
+        query = 'update ' + config.profileTable + ' set reputation=$1 where discordid=$2'
+    }
+    else{
+        query = 'update ' + config.profileTable + ' set reputation=reputation+$1 where discordid=$2'
+    }
+    db.none(query, [reputationNumber, discordId])
+    .then(function () {
+        cb(null, {
+            status: 'success',
+            message: 'added reputation'
+        });
+    })
+    .catch(function (err) {
+        cb(err);
+    });
+}
+
+module.exports.updateUserReputation = function(discordId, reputationStatus, cb){
+    var query = 'update ' + config.profileTable + ' set repstatus=$1 where discordid=$2'
+    db.none(query, [reputationStatus, discordId])
+    .then(function () {
+    cb(null, {
+        status: 'success',
+        message: 'updated reputation'
+        });
+    })
+    .catch(function (err) {
+        cb(err);
+    });
+}
+// update user soiledcrops
+module.exports.updateUserSoiledCrops = function(discordId, soiledCrops, currentSoiledCrops, cb){
+    var query = ""
+    if (!currentSoiledCrops){
+        query = 'update ' + config.profileTable + ' set soiledcrops=$1 where discordid=$2'
+    }
+    else{
+        query = 'update ' + config.profileTable + ' set soiledcrops=soiledcrops+$1 where discordid=$2'
+    }
+    db.none(query, [soiledCrops, discordId])
+    .then(function () {
+    cb(null, {
+        status: 'success',
+        message: 'updated soiledcrops'
+        });
+    })
+    .catch(function (err) {
         cb(err);
     });
 }
