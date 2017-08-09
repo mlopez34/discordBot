@@ -153,7 +153,7 @@ module.exports.thankCommand = function(message){
         });
     }
     else{
-        message.channel.send(message.author + " You must mention a user or a user that isn't you whom you want to thank!");
+        //message.channel.send(message.author + " You must mention a user or a user that isn't you whom you want to thank!");
     }
 }
 
