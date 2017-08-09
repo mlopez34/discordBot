@@ -867,6 +867,9 @@ module.exports.profileCommand = function(message){
                 profileData.userItems = "none";
                 profileData.pasta = profileResponse.data.pasta;
                 profileData.reputation = profileResponse.data.reputation;
+                if (!profileData.reputation){
+                    profileData.reputation = 0;
+                }
                 profileData.reputationStatus = profileResponse.data.repstatus;
                 profileData.nextReputation = ""
                 if (profileData.reputationStatus == null){
@@ -919,6 +922,9 @@ module.exports.profileCommand = function(message){
                 profileData.pasta = profileResponse.data.pasta;
                 profileData.reputation = profileResponse.data.reputation;
                 profileData.reputationStatus = profileResponse.data.repstatus;
+                if (!profileData.reputation){
+                    profileData.reputation = 0;
+                }
                 profileData.nextReputation = ""
                 if (profileData.reputationStatus == null){
                     profileData.nextReputation = "liked"
