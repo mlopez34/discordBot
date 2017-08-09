@@ -56,7 +56,7 @@ function reachedNewRepStatus(message, getProfileRes, discordId, reputationNumber
     }
     var reputationStatus = getProfileRes.data.repstatus;
     // check the current status, and then check the next status number, and check if user rep is greater than that
-    if (!reputationStatus && reputationNumber + 1 >= REPUTATIONS.liked && reputationStatus.toLowerCase() != "liked"){
+    if (!reputationStatus && reputationNumber + 1 >= REPUTATIONS.liked){
         // reached liked
         updateReputationStatus(message, discordId, "Liked");
         cb(null, {repNumber: reputationNumber + 1, repStatus: "Liked" })
