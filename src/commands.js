@@ -344,7 +344,7 @@ module.exports.prepareCommand = function (message){
             var achievements = prepareResponse.data.achievements;
             var now = new Date();
             var threeDaysAgo = new Date();
-            threeDaysAgo = new Date(threeDaysAgo.setHours(threeDaysAgo.getHours() - 0));
+            threeDaysAgo = new Date(threeDaysAgo.setHours(threeDaysAgo.getHours() - 48));
 
             if ( threeDaysAgo > prepareResponse.data.lastpreparetime ){
                 // able to prepare again
@@ -1416,7 +1416,7 @@ module.exports.scavangeCommand = function (message){
             //check for more than 1 hours
             var now = new Date();
             var oneHourAgo = new Date();
-            oneHourAgo = new Date(oneHourAgo.setHours(oneHourAgo.getHours() - 0));
+            oneHourAgo = new Date(oneHourAgo.setHours(oneHourAgo.getHours() - 1));
             if ( oneHourAgo > getUserResponse.data.lastscavangetime ){
                 profileDB.getItemData(function(err, getItemResponse){
                     if (err){
