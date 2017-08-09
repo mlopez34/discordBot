@@ -364,6 +364,22 @@ module.exports.prepareCommand = function (message){
                             soiledToTaco = soiledToTaco + 1;
                         }
                     }
+
+                    stats.statisticsManage(discordUserId, "maxextratacos", soiledToTaco, function(staterr, statSuccess){
+                        if (staterr){
+                            console.log(staterr);
+                        }
+                        else{
+                            // check achievements??
+                            console.log(statSuccess);
+                            // check achievements??
+                            var data = {}
+                            data.achievements = achievements;
+                            data.maxextratacos = soiledToTaco;
+                            console.log(data);
+                            achiev.checkForAchievements(discordUserId, data, message);
+                        }
+                    })
                     tacosToPrepare = tacosToPrepare + soiledToTaco;
                     profileDB.prepareTacos(discordUserId, tacosToPrepare, function(err, data){
                         if (err){
@@ -854,7 +870,8 @@ module.exports.profileCommand = function(message){
                 profileData.reputationStatus = profileResponse.data.repstatus;
                 profileData.nextReputation = ""
                 if (profileData.reputationStatus == null){
-                    profileData.nextReputation = "Liked"
+                    profileData.nextReputation = "liked"
+                    profileData.reputationStatus = "Friendly"
                 }
                 else if (profileData.reputationStatus.toLowerCase() == "liked"){
                     profileData.nextReputation = "respected"
@@ -904,7 +921,8 @@ module.exports.profileCommand = function(message){
                 profileData.reputationStatus = profileResponse.data.repstatus;
                 profileData.nextReputation = ""
                 if (profileData.reputationStatus == null){
-                    profileData.nextReputation = "Liked"
+                    profileData.nextReputation = "liked"
+                    profileData.reputationStatus = "Friendly"
                 }
                 else if (profileData.reputationStatus.toLowerCase() == "liked"){
                     profileData.nextReputation = "respected"
@@ -1251,10 +1269,11 @@ module.exports.helpCommand = function(message){
     var prepare = config.commandString + "prepare - prepare some tacos from your taco stands! \n "
     var throwTaco = config.commandString + "throw [user] - throw a taco at the mentioned user \n "
     var scavenge = config.commandString + "scavenge - use your pickaxe \n "
-    var standings = config.commandString + "standings - show taco standings \n"
-    var useItem = config.commandString + "use [item name] @user(if applicable) - uses an item "
+    var standings = config.commandString + "standings - show taco standings \n "
+    var useItem = config.commandString + "use [item name] [user](if applicable) - uses an item \n "
+    var slots = config.commandString + "slots [number] - play slots and bet [number] of tacos "
     //var commandsList = "```xl Uppercase lowercase 123 ```"
-    var commandsList = "```css\n" + commandsList + profile + thank + sorry + welcome + cook + give + shop + prepare + throwTaco + scavenge + standings + "```";
+    var commandsList = "```css\n" + commandsList + profile + thank + sorry + welcome + cook + give + shop + prepare + throwTaco + scavenge + standings + useItem + slots+ "```";
     message.channel.send(commandsList);
 }
 
@@ -1391,7 +1410,7 @@ module.exports.scavangeCommand = function (message){
             //check for more than 1 hours
             var now = new Date();
             var oneHourAgo = new Date();
-            oneHourAgo = new Date(oneHourAgo.setHours(oneHourAgo.getHours() - 1));
+            oneHourAgo = new Date(oneHourAgo.setHours(oneHourAgo.getHours() - 0));
             if ( oneHourAgo > getUserResponse.data.lastscavangetime ){
                 profileDB.getItemData(function(err, getItemResponse){
                     if (err){
@@ -1591,7 +1610,7 @@ module.exports.slotsCommand = function(message, tacosBet){
     var discordUserId = message.author.id;
     // check that tacosBet is less than users tacos
     var bet = Math.floor(parseInt(tacosBet));
-    if (bet > 0 ){
+    if (bet > 1 ){
         profileDB.getUserProfileData(discordUserId, function(getProfileError, getProfileResponse){
             if (getProfileError){
                 console.log(getProfileError);
@@ -1615,7 +1634,24 @@ module.exports.slotsCommand = function(message, tacosBet){
                     ]
                     var emojisRolled = [emojis[firstRoll], emojis[secondRoll], emojis[thirdRoll]];
                     var tacosWon = calculateSlotsWin(firstRoll, secondRoll, thirdRoll, bet);
-                    // TODO: update the user's tacos then send the embed
+
+                    profileDB.updateUserTacos(discordUserId, tacosWon, function(updateErr, updateRes){
+                        if (updateErr){
+                            console.log(updateErr);
+                        }
+                        else{
+                            console.log(updateRes);
+                            stats.statisticsManage(discordUserId, "slotscount", 1, function(staterr, statSuccess){
+                                if (staterr){
+                                    console.log(staterr);
+                                }
+                                else{
+                                    // check achievements??
+                                    getProfileForAchievement(discordUserId, message)
+                                }
+                            })
+                        }
+                    })
                     slotsEmbedBuilder(emojisRolled, tacosWon, message);
                 }
                 else{
@@ -1623,6 +1659,9 @@ module.exports.slotsCommand = function(message, tacosBet){
                 }
             }
         })
+    }
+    else{
+        message.channel.send(message.author + " You must bet more than 1 taco when using slots!");
     }
 }
 
@@ -1886,20 +1925,39 @@ module.exports.pickupCommand = function (message){
                     console.log(updateErr)
                 }
                 else{
-                    QueueOfTacosDropped.splice(index, 1);
+                    QueueOfTacosDropped.splice(indexOfQueue, 1);
+                    stats.statisticsManage(discordUserId, "poisonedtacoscount", 1, function(staterr, statSuccess){
+                        if (staterr){
+                            console.log(staterr);
+                        }
+                        else{
+                            // check achievements??
+                            getProfileForAchievement(discordUserId, message)
+                        }
+                    })
                     message.channel.send(message.author + " picked up a taco from the ground :taco: but it was poisoned.. :nauseated_face: you ate a taco to cure your sickness.");
                 }
             })
         }
         else{
             // update user tacos
+            
             profileDB.updateUserTacos(discordUserId, 1, function(updateErr, updateRes){
                 if (updateErr){
                     // TODO: create user profile
                     console.log(updateErr)
                 }
                 else{
-                    QueueOfTacosDropped.splice(index, 1);
+                    QueueOfTacosDropped.splice(indexOfQueue, 1);
+                    stats.statisticsManage(discordUserId, "tacospickedup", 1, function(staterr, statSuccess){
+                        if (staterr){
+                            console.log(staterr);
+                        }
+                        else{
+                            // check achievements??
+                            getProfileForAchievement(discordUserId, message)
+                        }
+                    })
                     message.channel.send(message.author + " picked up a taco from the ground :taco:");
                 }
             })
@@ -1995,6 +2053,16 @@ module.exports.useCommand = function(message, args){
                                         else{
                                             message.channel.send(message.author + " threw a rock at " + mentionedUserName);
                                         }
+
+                                        stats.statisticsManage(discordUserId, "rocksthrown", 1, function(staterr, statSuccess){
+                                            if (staterr){
+                                                console.log(staterr);
+                                            }
+                                            else{
+                                                // check achievements??
+                                                getProfileForAchievement(discordUserId, message)
+                                            }
+                                        })
                                         
                                     }
                                 })
@@ -2155,6 +2223,16 @@ module.exports.useCommand = function(message, args){
                                     else if (useRes == 2){
                                         message.channel.send(message.author + " tailored something that Bender likes, Bender gave you `2` tacos :taco:");
                                     }
+                                    stats.statisticsManage(discordUserId, "tailorcount", 1, function(staterr, statSuccess){
+                                        if (staterr){
+                                            console.log(staterr);
+                                        }
+                                        else{
+                                            // check achievements??
+                                            console.log(statSuccess);
+                                            getProfileForAchievement(discordUserId, message)
+                                        }
+                                    })
                                     
                                 }
                             });
@@ -2291,6 +2369,15 @@ module.exports.useCommand = function(message, args){
                                 }
                                 else{
                                     console.log(useRes);
+                                    stats.statisticsManage(discordUserId, "soilcount", 1, function(staterr, statSuccess){
+                                        if (staterr){
+                                            console.log(staterr);
+                                        }
+                                        else{
+                                            // check achievements??
+                                            getProfileForAchievement(discordUserId, message)
+                                        }
+                                    })
                                     message.channel.send(message.author + " soiled their crops, Bender planted some seeds. current soiled crops `" + useRes + "` \n")
                                 }
                             })

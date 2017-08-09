@@ -335,6 +335,22 @@ module.exports.updateStatistics = function(userId, columnName, statisticCount, c
     });
 }
 
+module.exports.updateSingleStatistic = function(userId, columnName, statisticCount, cb){
+    // update statistic
+    var query = 'update ' + config.statisticsTable + ' set ' + columnName + '=$1 where discordid=$2'
+    //console.log("new last thank: " + lastThank);
+    db.none(query, [ statisticCount, userId ])
+    .then(function () {
+    cb(null, {
+        status: 'success',
+        message: 'added statistic'
+        });
+    })
+    .catch(function (err) {
+        cb(err);
+    });
+}
+
 module.exports.createUserStatistics = function(userId, columnName, statisticCount, cb) {
     var userStatistics = {
         discordId: userId,
@@ -344,14 +360,21 @@ module.exports.createUserStatistics = function(userId, columnName, statisticCoun
         scavengeCount: 0,
         thrownAtCount: 0,
         thrownToCount: 0,
-        giveCount: 0
+        giveCount: 0,
+        rocksthrown: 0,
+        maxextratacos: 0,
+        tailorcount: 0, 
+        poisonedtacoscount: 0,
+        tacospickedup: 0,
+        slotscount: 0,
+        soilcount: 0
     }
     if (columnName){
         userStatistics[columnName] = statisticCount;
     }
     
-    var query = 'insert into '+ config.statisticsTable + '(discordId, thankCount, sorryCount, welcomeCount, scavengeCount, thrownAtCount, thrownToCount, giveCount)' +
-        'values(${discordId}, ${thankCount}, ${sorryCount}, ${welcomeCount},  ${scavengeCount}, ${thrownAtCount}, ${thrownToCount}, ${giveCount})'
+    var query = 'insert into '+ config.statisticsTable + '(discordId, thankCount, sorryCount, welcomeCount, scavengeCount, thrownAtCount, thrownToCount, giveCount, rocksthrown, maxextratacos, tailorcount, poisonedtacoscount, tacospickedup, slotscount, soilcount )' +
+        'values(${discordId}, ${thankCount}, ${sorryCount}, ${welcomeCount},  ${scavengeCount}, ${thrownAtCount}, ${thrownToCount}, ${giveCount}, ${rocksthrown}, ${maxextratacos}, ${tailorcount}, ${poisonedtacoscount}, ${tacospickedup}, ${slotscount}, ${soilcount})'
     db.none(query, userStatistics)
         .then(function () {
         cb(null, {

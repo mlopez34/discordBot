@@ -18,15 +18,31 @@ module.exports.statisticsManage = function(discordUserId, columnName, statisticC
         }
         else{
             // update user
-            profileDB.updateStatistics(discordUserId, columnName, statisticCount, function(err, statSuccess){
-                if (err){
-                    console.log(err);
-                }
-                else{
-                    // check achievements??
-                    cb(null, statSuccess)
-                }
-            })
+            // get user statistic first if the statistic is null then updated it as =
+            var columnStatistic = res.data[columnName];
+            if (columnStatistic){
+                // if it exists just update as normal
+                profileDB.updateStatistics(discordUserId, columnName, statisticCount, function(err, statSuccess){
+                    if (err){
+                        console.log(err);
+                    }
+                    else{
+                        // check achievements??
+                        cb(null, statSuccess)
+                    }
+                })
+            }
+            else{
+                profileDB.updateSingleStatistic(discordUserId, columnName, statisticCount, function(err, statSuccess){
+                    if (err){
+                        console.log(err);
+                    }
+                    else{
+                        // check achievements??
+                        cb(null, statSuccess)
+                    }
+                })
+            }
         }
     })
 }
