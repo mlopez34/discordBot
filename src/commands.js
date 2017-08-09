@@ -268,7 +268,7 @@ module.exports.sorryCommand = function(message){
         })
     }
     else{
-        message.channel.send(message.author + " You must mention a user or a user that isn't you whom you want to apologize to!");
+        // message.channel.send(message.author + " You must mention a user or a user that isn't you whom you want to apologize to!");
     }
 
 }
