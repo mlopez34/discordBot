@@ -1753,7 +1753,7 @@ function slotsEmbedBuilder(emojisRolled, tacosWon, message){
 
     const embed = new Discord.RichEmbed()
     .setColor(0xff9c4c)
-    embed.addField("(BETA) Taco Slots", emojisRolled[0] + " " + emojisRolled[1] + " " +  emojisRolled[2] , false)
+    embed.addField("Taco Slots", emojisRolled[0] + " " + emojisRolled[1] + " " +  emojisRolled[2] , false)
     if (tacosWon > 0){
         embed
         .addField('You win!', tacosWon + " :taco: tacos won" , true)
