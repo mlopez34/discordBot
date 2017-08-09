@@ -271,7 +271,7 @@ module.exports.purchaseTacoStand = function(userId, tacosSpent, currentTacoStand
 
 module.exports.prepareTacos = function(userId, tacosToPrepare, cb){
     // update tacos and lastprepare
-    var query = 'update ' + config.profileTable + ' set tacos=tacos+$1, lastpreparetime=$3 where discordid=$2'
+    var query = 'update ' + config.profileTable + ' set tacos=tacos+$1, lastpreparetime=$3, soiledcrops=0 where discordid=$2'
     var lastprepare = new Date();
     //console.log("new last thank: " + lastThank);
     db.none(query, [ tacosToPrepare, userId, lastprepare ])
@@ -335,6 +335,22 @@ module.exports.updateStatistics = function(userId, columnName, statisticCount, c
     });
 }
 
+module.exports.updateSingleStatistic = function(userId, columnName, statisticCount, cb){
+    // update statistic
+    var query = 'update ' + config.statisticsTable + ' set ' + columnName + '=$1 where discordid=$2'
+    //console.log("new last thank: " + lastThank);
+    db.none(query, [ statisticCount, userId ])
+    .then(function () {
+    cb(null, {
+        status: 'success',
+        message: 'added statistic'
+        });
+    })
+    .catch(function (err) {
+        cb(err);
+    });
+}
+
 module.exports.createUserStatistics = function(userId, columnName, statisticCount, cb) {
     var userStatistics = {
         discordId: userId,
@@ -344,14 +360,21 @@ module.exports.createUserStatistics = function(userId, columnName, statisticCoun
         scavengeCount: 0,
         thrownAtCount: 0,
         thrownToCount: 0,
-        giveCount: 0
+        giveCount: 0,
+        rocksthrown: 0,
+        maxextratacos: 0,
+        tailorcount: 0, 
+        poisonedtacoscount: 0,
+        tacospickedup: 0,
+        slotscount: 0,
+        soilcount: 0
     }
     if (columnName){
         userStatistics[columnName] = statisticCount;
     }
     
-    var query = 'insert into '+ config.statisticsTable + '(discordId, thankCount, sorryCount, welcomeCount, scavengeCount, thrownAtCount, thrownToCount, giveCount)' +
-        'values(${discordId}, ${thankCount}, ${sorryCount}, ${welcomeCount},  ${scavengeCount}, ${thrownAtCount}, ${thrownToCount}, ${giveCount})'
+    var query = 'insert into '+ config.statisticsTable + '(discordId, thankCount, sorryCount, welcomeCount, scavengeCount, thrownAtCount, thrownToCount, giveCount, rocksthrown, maxextratacos, tailorcount, poisonedtacoscount, tacospickedup, slotscount, soilcount )' +
+        'values(${discordId}, ${thankCount}, ${sorryCount}, ${welcomeCount},  ${scavengeCount}, ${thrownAtCount}, ${thrownToCount}, ${giveCount}, ${rocksthrown}, ${maxextratacos}, ${tailorcount}, ${poisonedtacoscount}, ${tacospickedup}, ${slotscount}, ${soilcount})'
     db.none(query, userStatistics)
         .then(function () {
         cb(null, {
@@ -470,6 +493,61 @@ module.exports.bulkUpdateItemStatus = function(items, status, cb){
     })
     .catch(function (err) {
         console.log(err);
+        cb(err);
+    });
+}
+
+module.exports.addUserReputation = function(discordId, reputationNumber, currentReputation, cb){
+    var query = "";
+    if (currentReputation == null){
+        // reputation is zero - just set reputation to reputationNumber
+        query = 'update ' + config.profileTable + ' set reputation=$1 where discordid=$2'
+    }
+    else{
+        query = 'update ' + config.profileTable + ' set reputation=reputation+$1 where discordid=$2'
+    }
+    db.none(query, [reputationNumber, discordId])
+    .then(function () {
+        cb(null, {
+            status: 'success',
+            message: 'added reputation'
+        });
+    })
+    .catch(function (err) {
+        cb(err);
+    });
+}
+
+module.exports.updateUserReputation = function(discordId, reputationStatus, cb){
+    var query = 'update ' + config.profileTable + ' set repstatus=$1 where discordid=$2'
+    db.none(query, [reputationStatus, discordId])
+    .then(function () {
+    cb(null, {
+        status: 'success',
+        message: 'updated reputation'
+        });
+    })
+    .catch(function (err) {
+        cb(err);
+    });
+}
+// update user soiledcrops
+module.exports.updateUserSoiledCrops = function(discordId, soiledCrops, currentSoiledCrops, cb){
+    var query = ""
+    if (!currentSoiledCrops){
+        query = 'update ' + config.profileTable + ' set soiledcrops=$1 where discordid=$2'
+    }
+    else{
+        query = 'update ' + config.profileTable + ' set soiledcrops=soiledcrops+$1 where discordid=$2'
+    }
+    db.none(query, [soiledCrops, discordId])
+    .then(function () {
+    cb(null, {
+        status: 'success',
+        message: 'updated soiledcrops'
+        });
+    })
+    .catch(function (err) {
         cb(err);
     });
 }

@@ -36,7 +36,11 @@ client.on('ready', function(err) {
 });
 
 function commandIs(str, msg){
-    return msg.content.toLowerCase().startsWith(config.commandString + str);
+    if ((str === "thank" || str === "sorry" || str === "welcome")){
+        return  msg.content.toLowerCase().startsWith(str);
+    }else{
+        return msg.content.toLowerCase().startsWith(config.commandString + str);
+    }
 }
 
 client.on('message', function(message){
