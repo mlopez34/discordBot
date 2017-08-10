@@ -29,7 +29,7 @@ var PIECE_OF_WOOD_ITEM_ID = 4;
 var TERRY_CLOTH_ITEM_ID = 3;
 var SODA_CAN_ITEM_ID = 1;
 var SOIL_ITEM_ID = 2;
-var PET_COST = 50;
+var PET_COST = 75;
 var QueueOfTacosDropped = [];
 
 var PETS_AVAILABLE = {
