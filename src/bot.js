@@ -150,6 +150,12 @@ client.on('message', function(message){
             else if (commandIs("pickup", message)){
                 commands.pickupCommand(message);
             }
+            else if (commandIs("buypet", message)){
+                commands.buypetCommand(message, args);
+            }
+            else if (commandIs("fetch", message)){
+                commands.fetchCommand(message);
+            }
             /*
             else if (commandIs("game", message)){
                 commands.gameCommand(message);
