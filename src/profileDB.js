@@ -89,6 +89,22 @@ module.exports.updateUserTacosCook = function(userId, tacos, cb) {
     });
 }
 
+//fetch
+module.exports.updateUserTacosFetch = function(userId, tacos, cb) {
+    var query = 'update ' + config.profileTable + ' set tacos=tacos+$1, lastfetchtime=$3 where discordid=$2'
+    var lastFetch = new Date();
+    db.none(query, [tacos, userId, lastFetch])
+    .then(function () {
+    cb(null, {
+        status: 'success',
+        message: 'added tacos fetch'
+        });
+    })
+    .catch(function (err) {
+        cb(err);
+    });
+}
+
 module.exports.updateLastScavengeTime = function(userId, cb) {
     var query = 'update ' + config.profileTable + ' set lastscavangetime=$2 where discordid=$1'
     var lastScavenge = new Date();
@@ -201,6 +217,21 @@ module.exports.updateUserProtect = function(userId, protectNumber, protection , 
     cb(null, {
         status: 'success',
         message: 'updated protect'
+        });
+    })
+    .catch(function (err) {
+        console.log(err);
+        cb(err);
+    });
+}
+// update pet
+module.exports.updateUserPet = function(userId, pet, petName, threedaysAgo, cb) {
+    var query = 'update ' + config.profileTable + ' set pet=$1, petname=$3, lastfetchtime=$4 where discordid=$2'
+    db.none(query, [pet, userId, petName, threedaysAgo])
+    .then(function () {
+    cb(null, {
+        status: 'success',
+        message: 'updated pet'
         });
     })
     .catch(function (err) {

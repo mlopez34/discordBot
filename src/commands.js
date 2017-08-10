@@ -29,7 +29,41 @@ var PIECE_OF_WOOD_ITEM_ID = 4;
 var TERRY_CLOTH_ITEM_ID = 3;
 var SODA_CAN_ITEM_ID = 1;
 var SOIL_ITEM_ID = 2;
+var PET_COST = 50;
 var QueueOfTacosDropped = [];
+
+var PETS_AVAILABLE = {
+    dog: {
+        speak: "WOOF",
+        emoji: ":dog:",
+        fetch: 2,
+        cooldown: 6
+    },
+    cat: {
+        speak: "MEOW",
+        emoji: ":cat:",
+        fetch: 1,
+        cooldown: 3
+    },
+    monkey: {
+        speak: "HUEAHuaHEUEHAHUEAUHAEEA",
+        emoji: ":monkey:",
+        fetch: 3,
+        cooldown: 9
+    },
+    pig: {
+        speak: "OINK OINK OINK OINK",
+        emoji: ":pig:",
+        fetch: 5,
+        cooldown: 24
+    },
+    rabbit: {
+        speak: ".....",
+        emoji: ":rabbit:",
+        fetch: 1,
+        cooldown: 3
+    }
+}
 
 var REPUTATIONS = {
     liked: 50,
@@ -893,6 +927,12 @@ module.exports.profileCommand = function(message){
                 else if(profileResponse.data.pickaxe == "improved"){
                     profileData.userItems = "Improved Pickaxe :small_blue_diamond::pick: \n"
                 }
+                if (profileResponse.data.petname){
+                    if (profileResponse.data.pet && PETS_AVAILABLE[profileResponse.data.pet]){
+                        profileData.petname = profileResponse.data.petname
+                        profileData.petemoji = PETS_AVAILABLE[profileResponse.data.pet].emoji
+                    }
+                }
                 profileBuilder(message, profileData);
             }
         })
@@ -946,6 +986,12 @@ module.exports.profileCommand = function(message){
                 }
                 else if(profileResponse.data.pickaxe == "improved"){
                     profileData.userItems = "Improved Pickaxe :small_blue_diamond::pick: \n"
+                }
+                if (profileResponse.data.petname){
+                    if (profileResponse.data.pet && PETS_AVAILABLE[profileResponse.data.pet]){
+                        profileData.petname = profileResponse.data.petname
+                        profileData.petemoji = PETS_AVAILABLE[profileResponse.data.pet].emoji
+                    }
                 }
                 profileBuilder(message, profileData);
             }
@@ -1096,20 +1142,15 @@ function profileBuilder(message, profileData){
     */
     .setTimestamp()
     .addField('Tacos  :taco:', profileData.userTacos, true)
-    /*
-    * Inline fields may not display as inline if the thumbnail and/or image is too big.
-    */
+    
     .addField('Taco Stands :bus:', profileData.userTacoStands, true)
     .addField('Achievements :military_medal: ', profileData.achievementString, true)
 
     .addField('Items :shopping_bags:', profileData.userItems, true)
     .addField('Bender Reputation :statue_of_liberty:', " **"+ profileData.reputationStatus +"** : " + profileData.reputation + " / " + REPUTATIONS[profileData.nextReputation] , true)
-    /*
-    * Blank field, useful to create some space.
-    
-    .addBlankField(true)
-    .addField('Taco Stands', 3, true);
-    */
+    if (profileData.petname){
+        embed.addField('Pet', profileData.petname + " " + profileData.petemoji , true)
+    }
     if (profileData.pasta && profileData.pasta.length > 0){
         embed.setDescription(profileData.pasta)
     }
@@ -1160,7 +1201,22 @@ function shopBuilder(message, shopData){
     .addField('Description', pastaDescription, true)
     .addField('Cost', PASTA_COST + " :taco:", true)
     .addField('Command', config.commandString + "buyPasta", true)
-    .addBlankField(false)
+    
+    // allow for pet to be purchased
+    if (shopData.repstatus && (shopData.repstatus.toLowerCase() == "liked" 
+        || shopData.repstatus.toLowerCase() == "respected" 
+        || shopData.repstatus.toLowerCase() == "admired" 
+        || shopData.repstatus.toLowerCase() == "glorified") ){
+        var petDescription = "Purchase a pet! Pets are always great companions to have. You may only have 1 pet, buying a new pet will replace the old one - current pets available: dog, cat, monkey, pig, rabbit";
+        var petCost = PET_COST + " :taco:";
+        embed.addBlankField(true)
+        .addBlankField(false)
+        .addField('Pet (Liked Reputation Only)', ":dog2:", true)
+        .addField('Description', petDescription, true)
+        .addField('Cost', petCost, true)
+        .addField('Command', config.commandString + "buypet [kind of pet] [pet name]", true)
+    }
+    embed.addBlankField(false)
     .addField('Your current tacos', shopData.userTacos + " :taco:", false)
     .setTimestamp()
     message.channel.send({embed});
@@ -1191,6 +1247,7 @@ module.exports.shopCommand = function(message){
             if (shopResponse.data.tacostands && shopResponse.data.tacostands > -1){
                 userTacoStands = shopResponse.data.tacostands;
             }
+            shopData.repstatus = shopResponse.data.repstatus
             shopData.userTacoCost = userTacoStands;
             shopBuilder(message, shopData);
         }
@@ -1972,6 +2029,143 @@ module.exports.pickupCommand = function (message){
     else{
         message.channel.send("There are no tacos for you to pick up.. ");
     }
+}
+
+module.exports.buypetCommand = function(message, args){
+    console.log(args);
+    var discordUserId = message.author.id;
+    if (args.length > 3){
+        message.channel.send(" Pet names should be only 1 word long");
+    }
+    else if (args.length == 3){
+        var pet = args[1];
+        var petName = args[2] // 15 characters or less, more than 0 characters
+
+        // check that the user has the reputation needed (liked and up)
+        if (args[2].length > 0 && args[2].length < 15){
+            // add the pet to his profile and take away tacos
+            if (args[2].indexOf("@") > -1
+                || args[2].indexOf("?") > -1
+                || args[2].indexOf("*") > -1
+                || args[2].indexOf("#") > -1
+                || args[2].indexOf("/") > -1
+                || args[2].indexOf(":") > -1
+                || args[2].indexOf("`") > -1){
+                // invalid characters
+                message.channel.send(" Name contains invalid characters")
+            }
+            else{
+                profileDB.getUserProfileData( discordUserId, function(err, buyPetResponse) {
+                    if(err){
+                        // user doesnt exist
+                        console.log(err);
+                    }
+                    else{
+
+                        if (buyPetResponse.data.repstatus && (buyPetResponse.data.repstatus.toLowerCase() == "liked" 
+                            || buyPetResponse.data.repstatus.toLowerCase() == "respected" 
+                            || buyPetResponse.data.repstatus.toLowerCase() == "admired" 
+                            || buyPetResponse.data.repstatus.toLowerCase() == "glorified") ){
+                            // if user has enough tacos to purchase the stand, add 1 tree, subtract x tacos
+                            var achievements = buyPetResponse.data.achievements;
+                            var userTacos = buyPetResponse.data.tacos;
+                            if (userTacos >= PET_COST){
+                                if (PETS_AVAILABLE[pet] != undefined){
+                                    // can afford the pet update user pet, take away tacos.
+                                    var threedaysAgo = new Date();
+                                    threedaysAgo = new Date(threedaysAgo.setHours(threedaysAgo.getHours() - 72));
+                                    profileDB.updateUserPet(discordUserId, pet, petName, threedaysAgo, function( petError, petResponse){
+                                        if (petError){
+                                            console.log(petError);
+                                        }
+                                        else{
+                                            // take away tacos from user
+                                            profileDB.updateUserTacos(discordUserId, (PET_COST * -1), function(updateErr, updateRes){
+                                                if (updateErr){
+                                                    // TODO: create user profile
+                                                    console.log(updateErr)
+                                                    message.channel.send(" error, check bender now");
+                                                }
+                                                else{
+                                                    // anounce the user has a new pet!
+                                                    message.channel.send(" Congratulations! " + message.author + " has a new " + pet + " called: `" + petName + "` \n" + PETS_AVAILABLE[pet].emoji + " " + PETS_AVAILABLE[pet].speak + "\n use -fetch while your pet is not tired!");
+                                                }
+                                            })
+                                        }
+                                    })
+                                }
+                                else{
+                                    message.channel.send(" That pet is not available.. ");
+                                }
+
+                            }
+                            else{
+                                message.channel.send(" You cannot afford a pet currently.. ");
+                            }
+                        }else{
+                            message.channel.send(" You do not have the reputation with Bender needed to buy a pet yet! ");
+                        }
+                    }
+                });
+            }
+            
+        }
+        else{
+            message.channel.send(" Pet names should be between 0 and 15 characters long")
+        }
+    }
+    else if (args.length == 2){
+        message.channel.send(" You must give a name to your pet try:\n `-buypet [kind of pet] [pet name]` ");
+    }
+    else{
+        message.channel.send(" You must pick a pet and give a name to your pet try:\n `-buypet [kind of pet] [pet name]` ");
+    }
+}
+
+module.exports.fetchCommand = function(message, args){
+    console.log(args);
+    var discordUserId = message.author.id;
+
+    // the pet has gone to fetch, get taco amount = their fetch
+    profileDB.getUserProfileData(discordUserId, function(fetchError, fetchResponse){
+        if (fetchError){
+            console.log(fetchError);
+        }
+        else{
+            var userPet = fetchResponse.data.pet;
+            var userPetName = fetchResponse.data.petname;
+            var now = new Date();
+            if (userPet){
+                var cooldownDate = new Date();
+                cooldownDate = new Date(cooldownDate.setHours(cooldownDate.getHours() - PETS_AVAILABLE[userPet].cooldown));
+                if (!fetchResponse.data.lastfetchtime || ( cooldownDate > fetchResponse.data.lastfetchtime )){
+                    // fetch whatever and then set lastfetchtime to now
+                    var fetchTacos = PETS_AVAILABLE[userPet].fetch;
+                    profileDB.updateUserTacosFetch(discordUserId, fetchTacos, function(err, updateResponse) {
+                        if (err){
+                            console.log(err);
+                        }
+                        else{
+                            // user's pet fetched some tacos
+                            message.channel.send("**" + userPetName + "** fetched:` " + fetchTacos + "` tacos :taco: \n" + PETS_AVAILABLE[userPet].emoji + " " + PETS_AVAILABLE[userPet].speak );
+                        }
+                    })
+                }
+                else{
+                    console.log("cd " + PETS_AVAILABLE[userPet].cooldown)
+                    var numberOfHours = getDateDifference(fetchResponse.data.lastfetchtime, now, PETS_AVAILABLE[userPet].cooldown);
+                    message.channel.send(message.author + " **" + userPetName + "** needs to rest and cannot fetch currently, Please wait `" + numberOfHours + "`");
+                }
+            }
+            else{
+                // user doesnt have a pet
+                console.log("doesnt have pet")
+            }
+        }
+    })
+    // check user profile, if the user has a pet, then compare to lastfetchtime
+
+    // set lastfetchtime as now, and compare the lastfetchtime to their cooldown
 }
 
 module.exports.useCommand = function(message, args){

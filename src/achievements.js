@@ -228,7 +228,7 @@ module.exports.checkForAchievements = function(discordUserId, data, message, cal
                 }
 
                 if(data.rarity && 
-                data.rarity == "ancient" && 
+                (data.rarity == "ancient" || data.rarity == "artifact") && 
                 (data.achievements === null || data.achievements.indexOf("Luck is on your side") == -1)){
 
                     profileDB.updateAchievements(discordUserId, "{Luck is on your side}", function(err, r){
