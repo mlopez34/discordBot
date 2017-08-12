@@ -124,7 +124,7 @@ module.exports.thankCommand = function(message){
                 // check against thank timestamp and if 6 hours have passed
                 var now = new Date();
                 var twoHoursAgo = new Date();
-                twoHoursAgo = new Date(twoHoursAgo.setHours(twoHoursAgo.getHours() - 0));
+                twoHoursAgo = new Date(twoHoursAgo.setHours(twoHoursAgo.getHours() - 2));
                 //console.log("now: " + now);
                 //console.log("twoHoursAgo: " + twoHoursAgo);
                 //console.log("timestamp: " + thankResponse.data.lastthanktime);
