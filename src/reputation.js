@@ -2,13 +2,9 @@
 // takes care of gaining reputation with bender
 var profileDB = require("./profileDB.js");
 const Discord = require("discord.js");
+var config = require("./config.js")
 
-var REPUTATIONS = {
-    liked: 50,
-    respected: 225,
-    admired: 625,
-    glorified: 1625
-}
+var REPUTATIONS = config.reputations;
 
 module.exports.gainReputation = function (message, discordUserId, reputationNumber, cb){
     // check the user repstatus

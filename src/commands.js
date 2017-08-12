@@ -6,6 +6,7 @@ const Discord = require("discord.js");
 var Promise = require('bluebird');
 var config = require("./config.js");
 var useItem = require("./useItem.js")
+var experience = require("./experience.js")
 // game files
 /*
 var game = require("./card_game/miniGame.js");
@@ -32,6 +33,25 @@ var SOIL_ITEM_ID = 2;
 var PET_COST = 75;
 var QueueOfTacosDropped = [];
 
+var EXPERIENCE_GAINS = {
+    thank: 2,
+    sorry: 5,
+    cook: 13,
+    prepare: 18,
+    preparePerStand: 4,
+    scavenge: 1,
+    fetch: 1,
+    perFetchCd: 1,
+    useCommonItem: 1,
+    useCommonItemFive: 5,
+    buyStand: 5,
+    buyStandPerStand: 2,
+    buyPickaxe: 4,
+
+}
+
+var Levels = config.Levels;
+
 var PETS_AVAILABLE = {
     dog: {
         speak: "WOOF",
@@ -55,7 +75,7 @@ var PETS_AVAILABLE = {
         speak: "OINK OINK OINK OINK",
         emoji: ":pig:",
         fetch: 5,
-        cooldown: 24
+        cooldown: 30
     },
     rabbit: {
         speak: ".....",
@@ -65,12 +85,7 @@ var PETS_AVAILABLE = {
     }
 }
 
-var REPUTATIONS = {
-    liked: 50,
-    respected: 225,
-    admired: 625,
-    glorified: 1625
-}
+var REPUTATIONS = config.reputations;
 
 module.exports.thankCommand = function(message){
     
@@ -142,14 +157,14 @@ module.exports.thankCommand = function(message){
                                     console.log(createerr); // cant create user RIP
                                 }
                                 else{
-                                    message.channel.send(message.author + " thanked " + mentionedUser + ", they received a taco! :taco:");
+                                    message.channel.send(message.author + " thanked " + mentionedUser.username + ", they received a taco! :taco:");
                                     stats.statisticsManage(discordUserId, "thankcount", 1, function(staterr, statSuccess){
                                         if (staterr){
                                             console.log(staterr);
                                         }
                                         else{
                                             // check achievements??
-                                            getProfileForAchievement(discordUserId, message)
+                                            getProfileForAchievement(discordUserId, message, thankResponse)
                                         }
                                     })
                                 }
@@ -161,21 +176,23 @@ module.exports.thankCommand = function(message){
                                      console.log(updateerr);
                                  }
                                  else{
-                                     console.log(updateResponse);
+                                    console.log(updateResponse);
+                                    experience.gainExperience(message, discordUserId, EXPERIENCE_GAINS.thank, thankResponse);
+                                    //update statistic
+                                    stats.statisticsManage(discordUserId, "thankcount", 1, function(staterr, statSuccess){
+                                        if (staterr){
+                                            console.log(staterr);
+                                        }
+                                        else{
+                                            // check achievements??
+                                            getProfileForAchievement(discordUserId, message, thankResponse )
+                                        }
+                                    })
                                  }
                             })
                             // send message that the user has 1 more taco
-                            message.channel.send(message.author + " thanked " + mentionedUser + ", they received a taco! :taco:");
-                            //update statistic
-                            stats.statisticsManage(discordUserId, "thankcount", 1, function(staterr, statSuccess){
-                                if (staterr){
-                                    console.log(staterr);
-                                }
-                                else{
-                                    // check achievements??
-                                    getProfileForAchievement(discordUserId, message)
-                                }
-                            })
+                            message.channel.send(message.author + " thanked " + mentionedUser.username + ", they received a taco! :taco:");
+                            
                         }
                     })
                 }else{
@@ -259,13 +276,14 @@ module.exports.sorryCommand = function(message){
                                 }
                                 else{
                                     message.channel.send(message.author + " thanked to " + mentionedUser + ", they received a taco! :taco:");
+                                    experience.gainExperience(message, discordUserId, EXPERIENCE_GAINS.sorry , sorryResponse);
                                     stats.statisticsManage(discordUserId, "thankcount", 1, function(staterr, statSuccess){
                                         if (staterr){
                                             console.log(staterr);
                                         }
                                         else{
                                             // check achievements??
-                                            getProfileForAchievement(discordUserId, message)
+                                            getProfileForAchievement(discordUserId, message, sorryResponse )
                                         }
                                     })
                                 }
@@ -278,19 +296,21 @@ module.exports.sorryCommand = function(message){
                                  }
                                  else{
                                      console.log(updateResponse);
+                                     experience.gainExperience(message, discordUserId, EXPERIENCE_GAINS.sorry , sorryResponse);
+                                     stats.statisticsManage(discordUserId, "sorrycount", 1, function(err, statSuccess){
+                                        if (err){
+                                            console.log(err);
+                                        }
+                                        else{
+                                            // check achievements??
+                                            getProfileForAchievement(discordUserId, message, sorryResponse)
+                                        }
+                                    })
                                  }
                             })
                             // send message that the user has 1 more taco
                             message.channel.send(message.author + " apologized to " + mentionedUser + ", they received a taco! :taco:");
-                            stats.statisticsManage(discordUserId, "sorrycount", 1, function(err, statSuccess){
-                                if (err){
-                                    console.log(err);
-                                }
-                                else{
-                                    // check achievements??
-                                    getProfileForAchievement(discordUserId, message)
-                                }
-                            })
+                            
                         }
                     })
                 }else{
@@ -335,7 +355,7 @@ module.exports.buyStandCommand = function (message){
                     }
                     else{
                         message.channel.send(message.author + " Congratulations!, you have purchased a taco stand! :bus:");
-                        
+                        experience.gainExperience(message, discordUserId, EXPERIENCE_GAINS.buyStand + (EXPERIENCE_GAINS.buyStandPerStand * userTacoStands) , buyStandResponse);
                         // check achievements??
                         var data = {}
                         data.achievements = achievements;
@@ -399,21 +419,6 @@ module.exports.prepareCommand = function (message){
                         }
                     }
 
-                    stats.statisticsManage(discordUserId, "maxextratacos", soiledToTaco, function(staterr, statSuccess){
-                        if (staterr){
-                            console.log(staterr);
-                        }
-                        else{
-                            // check achievements??
-                            console.log(statSuccess);
-                            // check achievements??
-                            var data = {}
-                            data.achievements = achievements;
-                            data.maxextratacos = soiledToTaco;
-                            console.log(data);
-                            achiev.checkForAchievements(discordUserId, data, message);
-                        }
-                    })
                     tacosToPrepare = tacosToPrepare + soiledToTaco;
                     profileDB.prepareTacos(discordUserId, tacosToPrepare, function(err, data){
                         if (err){
@@ -430,6 +435,22 @@ module.exports.prepareCommand = function (message){
                                 else{
                                     console.log(updateResponse);
                                     message.channel.send(message.author + " You have prepared `" + tacosToPrepare + "` tacos :taco:! The tacos also come with `2` warranty protection");
+                                    experience.gainExperience(message, discordUserId, EXPERIENCE_GAINS.prepare + (EXPERIENCE_GAINS.preparePerStand * userTacoStands) , prepareResponse);
+                                    stats.statisticsManage(discordUserId, "maxextratacos", soiledToTaco, function(staterr, statSuccess){
+                                        if (staterr){
+                                            console.log(staterr);
+                                        }
+                                        else{
+                                            // check achievements??
+                                            console.log(statSuccess);
+                                            // check achievements??
+                                            var data = {}
+                                            data.achievements = achievements;
+                                            data.maxextratacos = soiledToTaco;
+                                            console.log(data);
+                                            achiev.checkForAchievements(discordUserId, data, message);
+                                        }
+                                    })
                                 }
                             })
                         }
@@ -771,6 +792,7 @@ module.exports.cookCommand = function(message){
                         data.cookcount = cookRoll
                         console.log(data);
                         achiev.checkForAchievements(discordUserId, data, message);
+                        experience.gainExperience(message, discordUserId, EXPERIENCE_GAINS.cook , cookResponse);
                     }
                 })
             }else{
@@ -839,18 +861,18 @@ module.exports.throwCommand = function(message){
                                     data.achievements = achievements;
                                     console.log(data);
                                     achiev.checkForAchievements(discordUserId, data, message);
-                                }
-                            })
-                            stats.statisticsManage(mentionedId, "thrownatcount", 1, function(err, statSuccess){
-                                if (err){
-                                    console.log(err);
-                                }
-                                else{
-                                    // check achievements??
-                                    var data = {}
-                                    data.achievements = achievements;
-                                    console.log(data);
-                                    achiev.checkForAchievements(discordUserId, data, message);
+                                    stats.statisticsManage(mentionedId, "thrownatcount", 1, function(err, statSuccess){
+                                        if (err){
+                                            console.log(err);
+                                        }
+                                        else{
+                                            // check achievements??
+                                            var data = {}
+                                            data.achievements = achievements;
+                                            console.log(data);
+                                            achiev.checkForAchievements(discordUserId, data, message);
+                                        }
+                                    })
                                 }
                             })
                         }
@@ -901,6 +923,9 @@ module.exports.profileCommand = function(message){
                 profileData.userItems = "none";
                 profileData.pasta = profileResponse.data.pasta;
                 profileData.reputation = profileResponse.data.reputation;
+                profileData.level = profileResponse.data.level ? profileResponse.data.level : 1;
+                profileData.experience = profileResponse.data.experience ? profileResponse.data.experience : 0;
+                profileData.nextLevelExp = Levels[profileData.level + 1];
                 if (!profileData.reputation){
                     profileData.reputation = 0;
                 }
@@ -962,6 +987,9 @@ module.exports.profileCommand = function(message){
                 profileData.pasta = profileResponse.data.pasta;
                 profileData.reputation = profileResponse.data.reputation;
                 profileData.reputationStatus = profileResponse.data.repstatus;
+                profileData.level = profileResponse.data.level ? profileResponse.data.level : 1;
+                profileData.experience = profileResponse.data.experience ? profileResponse.data.experience : 0;
+                profileData.nextLevelExp = Levels[profileData.level + 1];
                 if (!profileData.reputation){
                     profileData.reputation = 0;
                 }
@@ -997,6 +1025,44 @@ module.exports.profileCommand = function(message){
             }
         })
     }
+}
+
+module.exports.xpCommand = function(message){
+    var discordUserId = message.author.id;
+
+    profileDB.getUserProfileData( discordUserId, function(err, profileResponse) {
+        if(err){
+            // user doesnt exist, create their profile first
+            if(err.code === 0){
+                // user doesnt exist
+                var userData = initialUserProfile(discordUserId);
+                profileDB.createUserProfile(userData, function(error, createUserResponse){
+                    if (error){
+                        console.log(error); // cant create user RIP
+                    }
+                    else{
+                        exports.tacosCommand(message);
+                    }
+                })
+            }
+        }
+        else{
+            var profileData = {}
+            profileData.userName = message.author.username;
+            profileData.experience = profileResponse.data.experience ? profileResponse.data.experience : 0;
+            profileData.level = profileResponse.data.level ? profileResponse.data.level : 1;
+            profileData.nextLevelExp = Levels[profileData.level + 1];
+            xpEmbedBuilder(message, profileData);
+        }
+    })
+}
+
+function xpEmbedBuilder(message, profileData){
+    const embed = new Discord.RichEmbed()
+    .setAuthor(profileData.userName + "'s Level and Experience")
+    .setColor(0xF2E93E)
+    .addField('Level ' + profileData.level + ' :trident:', "**Next Level:** " + profileData.experience + " / " + profileData.nextLevelExp)
+    message.channel.send({embed});
 }
 
 module.exports.tacosCommand = function(message){
@@ -1094,6 +1160,7 @@ module.exports.buyPickaxeCommand = function(message){
                             // couldn't purchase stand
                         }
                         else{
+                            experience.gainExperience(message, discordUserId, EXPERIENCE_GAINS.buyPickaxe , pickaxeResponse);
                             message.channel.send(message.author + " Congratulations, you have purchased a pickaxe :pick:!");
                         }
                     })
@@ -1144,9 +1211,7 @@ function profileBuilder(message, profileData){
     .addField('Tacos  :taco:', profileData.userTacos, true)
     
     .addField('Taco Stands :bus:', profileData.userTacoStands, true)
-    .addField('Achievements :military_medal: ', profileData.achievementString, true)
-
-    .addField('Items :shopping_bags:', profileData.userItems, true)
+    .addField('Level ' + profileData.level + ' :trident:', "**Next Level:** " + profileData.experience + " / " + profileData.nextLevelExp, true)
     .addField('Bender Reputation :statue_of_liberty:', " **"+ profileData.reputationStatus +"** : " + profileData.reputation + " / " + REPUTATIONS[profileData.nextReputation] , true)
     if (profileData.petname){
         embed.addField('Pet', profileData.petname + " " + profileData.petemoji , true)
@@ -1154,6 +1219,9 @@ function profileBuilder(message, profileData){
     if (profileData.pasta && profileData.pasta.length > 0){
         embed.setDescription(profileData.pasta)
     }
+    embed.addField('Items :shopping_bags:', profileData.userItems, true)
+    .addField('Achievements :military_medal: ', profileData.achievementString, true)
+    
 
     message.channel.send({embed});
 }
@@ -1340,22 +1408,31 @@ module.exports.helpCommand = function(message){
     message.channel.send(commandsList);
 }
 
-function getProfileForAchievement(discordUserId, message){
-    profileDB.getUserProfileData( discordUserId, function(err, profileResponse) {
-        if(err){
-            console.log(err);
-        }
-        else{
-            var achievements = profileResponse.data.achievements;
-            var data = {}
-            data.achievements = achievements;
-            console.log(data);
-            achiev.checkForAchievements(discordUserId, data, message);
-        }
-    });
+function getProfileForAchievement(discordUserId, message, profileResponse){
+    if (!profileResponse){
+        profileDB.getUserProfileData(discordUserId, function(err, profileResponse){
+            if (err){
+                console.log(err);
+            }
+            else{
+                var achievements = profileResponse.data.achievements;
+                var data = {}
+                data.achievements = achievements;
+                console.log(data);
+                achiev.checkForAchievements(discordUserId, data, message);
+            }
+        });
+    }
+    else{
+        var achievements = profileResponse.data.achievements;
+        var data = {}
+        data.achievements = achievements;
+        console.log(data);
+        achiev.checkForAchievements(discordUserId, data, message);
+    }
 }
 
-module.exports.inventoryCommand = function(message){
+module.exports.raresCommand = function(message){
     // get all items for the discord id
     var discordUserId = message.author.id;
     profileDB.getUserItems(discordUserId, function(err, inventoryResponse){
@@ -1371,7 +1448,8 @@ module.exports.inventoryCommand = function(message){
                 //console.log(allItemsResponse.data);
                 for (var item in inventoryResponse.data){
                     var validItem = useItem.itemValidate(inventoryResponse.data[item]);
-                    if (!itemsInInventoryCountMap[inventoryResponse.data[item].itemid] && validItem){
+                    if (!itemsInInventoryCountMap[inventoryResponse.data[item].itemid] 
+                        && validItem){
                         // item hasnt been added to be counted, add it as 1
                         itemsInInventoryCountMap[inventoryResponse.data[item].itemid] = 1;
                     }
@@ -1383,8 +1461,83 @@ module.exports.inventoryCommand = function(message){
                 for (var index in allItemsResponse.data){
                     itemsMapbyId[allItemsResponse.data[index].id] = allItemsResponse.data[index];
                 }
-                inventoryEmbedBuilder(message, itemsInInventoryCountMap, itemsMapbyId);
+                raresEmbedBuilder(message, itemsInInventoryCountMap, itemsMapbyId);
 
+            })
+        }
+    })
+}
+
+function raresEmbedBuilder(message, itemsMap, allItems){
+    // create a field for each item and add the count
+    const embed = new Discord.RichEmbed()
+    var inventoryString = "";
+    for (var key in itemsMap) {
+        if (itemsMap.hasOwnProperty(key)) {
+            // 
+            if (allItems[key].itemraritycategory == "rare"
+                || allItems[key].itemraritycategory == "ancient"
+                || allItems[key].itemraritycategory == "artifact"
+                || allItems[key].itemraritycategory == "myth"){
+                console.log(key + " " + allItems[key].itemname)
+                var emoji = "";
+                if (allItems[key].itemraritycategory === "artifact"){
+                    emoji = ":small_orange_diamond::small_orange_diamond::small_orange_diamond: "
+                }
+                else if (allItems[key].itemraritycategory === "ancient"){
+                    emoji = ":small_orange_diamond::small_orange_diamond: "
+                }
+                else if (allItems[key].itemraritycategory === "rare"){
+                    emoji = ":small_orange_diamond: "
+                }
+                inventoryString = emoji + "**"+allItems[key].itemname + "** - " +  itemsMap[key] + " - " + allItems[key].itemslot +"\n" + inventoryString;
+            }
+        }
+    }
+    embed
+    .addField("Item Name  |  Count  |  Slot", inventoryString, true)
+    .setAuthor(message.author.username +"'s Inventory ")
+    .setDescription( ":left_luggage:" )
+    .setThumbnail(message.author.avatarURL)
+    .setColor(0x06e8e8)
+    message.channel.send({embed});
+}
+
+module.exports.inventoryCommand = function(message){
+    // get all items for the discord id
+    var discordUserId = message.author.id;
+    profileDB.getUserItems(discordUserId, function(err, inventoryResponse){
+        if (err){
+            console.log(err);
+        }
+        else{
+            console.log(inventoryResponse.data);
+            // get all the data for each item
+            var itemsInInventoryCountMap = {};
+            var itemsMapbyId = {};
+            profileDB.getItemData(function(error, allItemsResponse){
+                if (error){
+                    console.log(error);
+                }
+                else{
+                    console.log("allitemsres " + allItemsResponse.data);
+                    for (var item in inventoryResponse.data){
+                        var validItem = useItem.itemValidate(inventoryResponse.data[item]);
+                        if (!itemsInInventoryCountMap[inventoryResponse.data[item].itemid] 
+                            && validItem ){
+                            // item hasnt been added to be counted, add it as 1
+                            itemsInInventoryCountMap[inventoryResponse.data[item].itemid] = 1;
+                        }
+                        else if (validItem){
+                            itemsInInventoryCountMap[inventoryResponse.data[item].itemid] = itemsInInventoryCountMap[inventoryResponse.data[item].itemid] + 1
+                        }
+                    }
+                    console.log(itemsInInventoryCountMap);
+                    for (var index in allItemsResponse.data){
+                        itemsMapbyId[allItemsResponse.data[index].id] = allItemsResponse.data[index];
+                    }
+                    inventoryEmbedBuilder(message, itemsInInventoryCountMap, itemsMapbyId);
+                }
             })
         }
     })
@@ -1397,18 +1550,20 @@ function inventoryEmbedBuilder(message, itemsMap, allItems){
     for (var key in itemsMap) {
         if (itemsMap.hasOwnProperty(key)) {
             // 
-            console.log(key + " " + allItems[key].itemname)
-            var emoji = "";
-            if (allItems[key].itemraritycategory === "artifact"){
-                emoji = ":small_orange_diamond::small_orange_diamond::small_orange_diamond: "
+            if (allItems[key].itemraritycategory == "common" || allItems[key].itemraritycategory == "uncommon"){
+                console.log(key + " " + allItems[key].itemname)
+                var emoji = "";
+                if (allItems[key].itemraritycategory === "artifact"){
+                    emoji = ":small_orange_diamond::small_orange_diamond::small_orange_diamond: "
+                }
+                else if (allItems[key].itemraritycategory === "ancient"){
+                    emoji = ":small_orange_diamond::small_orange_diamond: "
+                }
+                else if (allItems[key].itemraritycategory === "rare"){
+                    emoji = ":small_orange_diamond: "
+                }
+                inventoryString = emoji + "**"+allItems[key].itemname + "** - " +  itemsMap[key] + " - " + allItems[key].itemslot +"\n" + inventoryString;
             }
-            else if (allItems[key].itemraritycategory === "ancient"){
-                emoji = ":small_orange_diamond::small_orange_diamond: "
-            }
-            else if (allItems[key].itemraritycategory === "rare"){
-                emoji = ":small_orange_diamond: "
-            }
-            inventoryString = emoji + "**"+allItems[key].itemname + "** - " +  itemsMap[key] + " - " + allItems[key].itemslot +"\n" + inventoryString;
         }
     }
     embed
@@ -1582,6 +1737,7 @@ module.exports.scavangeCommand = function (message){
                             }
                             else{
                                 console.log(updateLSres);
+                                experience.gainExperience(message, discordUserId, EXPERIENCE_GAINS.scavenge , getUserResponse);
                             }
                         })
                         // add the tacos to user
@@ -1591,38 +1747,39 @@ module.exports.scavangeCommand = function (message){
                             }
                             else{
                                 console.log(updateLSres);
+                                // add to statistics
+                                var achievements = getUserResponse.data.achievements;
+                                stats.statisticsManage(discordUserId, "scavengeCount", 1, function(err, statSuccess){
+                                    if (err){
+                                        console.log(err);
+                                    }
+                                    else{
+                                        // check achievements
+                                        var data = {}
+                                        data.achievements = achievements;
+                                        // add the highestRarity
+                                        if (highestRarityFound == 5){
+                                            data.rarity = "artifact"
+                                        }
+                                        else if (highestRarityFound == 4){
+                                            data.rarity = "ancient"
+                                        }
+                                        else if (highestRarityFound == 3){
+                                            data.rarity = "rare"
+                                        }
+                                        else if (highestRarityFound == 2){
+                                            data.rarity = "uncommon"
+                                        }
+                                        if (highestRarityFound == 1){
+                                            data.rarity = "common"
+                                        }
+                                        console.log(data);
+                                        achiev.checkForAchievements(discordUserId, data, message);
+                                    }
+                                })
                             }
                         })
-                        // add to statistics
-                        var achievements = getUserResponse.data.achievements;
-                        stats.statisticsManage(discordUserId, "scavengeCount", 1, function(err, statSuccess){
-                            if (err){
-                                console.log(err);
-                            }
-                            else{
-                                // check achievements
-                                var data = {}
-                                data.achievements = achievements;
-                                // add the highestRarity
-                                if (highestRarityFound == 5){
-                                    data.rarity = "artifact"
-                                }
-                                else if (highestRarityFound == 4){
-                                    data.rarity = "ancient"
-                                }
-                                else if (highestRarityFound == 3){
-                                    data.rarity = "rare"
-                                }
-                                else if (highestRarityFound == 2){
-                                    data.rarity = "uncommon"
-                                }
-                                if (highestRarityFound == 1){
-                                    data.rarity = "common"
-                                }
-                                console.log(data);
-                                achiev.checkForAchievements(discordUserId, data, message);
-                            }
-                        })
+                        
                     }
                 })
             }
@@ -1710,7 +1867,7 @@ module.exports.slotsCommand = function(message, tacosBet){
                                 }
                                 else{
                                     // check achievements??
-                                    getProfileForAchievement(discordUserId, message)
+                                    getProfileForAchievement(discordUserId, message, getProfileResponse)
                                 }
                             })
                         }
@@ -1995,7 +2152,7 @@ module.exports.pickupCommand = function (message){
                         }
                         else{
                             // check achievements??
-                            getProfileForAchievement(discordUserId, message)
+                            getProfileForAchievement(discordUserId, message) // FIX THIS SHIT
                         }
                     })
                     message.channel.send(message.author + " picked up a taco from the ground :taco: but it was poisoned.. :nauseated_face: you ate a taco to cure your sickness.");
@@ -2018,7 +2175,7 @@ module.exports.pickupCommand = function (message){
                         }
                         else{
                             // check achievements??
-                            getProfileForAchievement(discordUserId, message)
+                            getProfileForAchievement(discordUserId, message) // FIX THSI SHIT
                         }
                     })
                     message.channel.send(message.author + " picked up a taco from the ground :taco:");
@@ -2146,6 +2303,7 @@ module.exports.fetchCommand = function(message, args){
                             console.log(err);
                         }
                         else{
+                            experience.gainExperience(message, discordUserId, EXPERIENCE_GAINS.fetch + (EXPERIENCE_GAINS.perFetchCd * PETS_AVAILABLE[userPet].cooldown) , fetchResponse);
                             // user's pet fetched some tacos
                             message.channel.send("**" + userPetName + "** fetched:` " + fetchTacos + "` tacos :taco: \n" + PETS_AVAILABLE[userPet].emoji + " " + PETS_AVAILABLE[userPet].speak );
                         }
@@ -2194,85 +2352,73 @@ module.exports.useCommand = function(message, args){
                 }
                 else{
                     // check that the user has enough rocks to throw at someone
-                    
                     // map of user's inventory
                     var itemsInInventoryCountMap = {};
-                    // map of all items
-                    var itemsMapbyId = {};
                     // item object for rock to use
                     var rockToUse;
+                    for (var item in inventoryResponse.data){
+                        // check the rock hasnt been used
+                        var validItem = useItem.itemValidate(inventoryResponse.data[item]);
+                        if (!itemsInInventoryCountMap[inventoryResponse.data[item].itemid] && validItem){
+                            // item hasnt been added to be counted, add it as 1
+                            itemsInInventoryCountMap[inventoryResponse.data[item].itemid] = 1;
 
-                    profileDB.getItemData(function(itemDataError, allItemsResponse){
-                        if (itemDataError){
-                            console.log(itemDataError);
+                            if (inventoryResponse.data[item].itemid == ROCK_ITEM_ID){
+                                // make this the rockToUse
+                                rockToUse = inventoryResponse.data[item];
+                            }
                         }
-                        else{
-                            //console.log(allItemsResponse.data);
-                            for (var item in inventoryResponse.data){
-                                // check the rock hasnt been used
-                                var validItem = useItem.itemValidate(inventoryResponse.data[item]);
-                                if (!itemsInInventoryCountMap[inventoryResponse.data[item].itemid] && validItem){
-                                    // item hasnt been added to be counted, add it as 1
-                                    itemsInInventoryCountMap[inventoryResponse.data[item].itemid] = 1;
-
-                                    if (inventoryResponse.data[item].itemid == ROCK_ITEM_ID){
-                                        // make this the rockToUse
-                                        rockToUse = inventoryResponse.data[item];
-                                    }
-                                }
-                                else if (validItem){
-                                    itemsInInventoryCountMap[inventoryResponse.data[item].itemid] = itemsInInventoryCountMap[inventoryResponse.data[item].itemid] + 1
-                                }
-                            }
-                            console.log(itemsInInventoryCountMap);
-                            for (var index in allItemsResponse.data){
-                                itemsMapbyId[allItemsResponse.data[index].id] = allItemsResponse.data[index];
-                            }
-                            if (itemsInInventoryCountMap[ROCK_ITEM_ID] && itemsInInventoryCountMap[ROCK_ITEM_ID] > 0){
-                                // user has this many rocks if greater than 0 then able to throw rock
-                                console.log(itemsInInventoryCountMap[ROCK_ITEM_ID]);
-                                useItem.useRock(message, mentionedId, rockToUse, function(throwRockError, throwRes){
-                                    if (throwRockError){
-                                        console.log(throwRockError);
-                                    }
-                                    else{
-                                        console.log(throwRes);
-                                        if (throwRes == "success"){
-                                            message.channel.send( message.author + " threw a rock at " + mentionedUserName + ", they became dizzy and dropped `1` taco :taco:");
-                                            // if they drop a taco someone else can pick it up
-                                            var poisonedTacoRoll = Math.floor(Math.random() * 100) + 1;
-                                            var poisonedTaco = false;
-                                            if (poisonedTacoRoll > 75){
-                                                poisonedTaco = true;
-                                            }
-                                            QueueOfTacosDropped.push({ droppedBy: mentionedId, cannotPickUp: discordUserId, poisoned: poisonedTaco })
-                                        }
-                                        else if (throwRes == "protection"){
-                                            message.channel.send(message.author + " threw a rock at " + mentionedUserName + " but one of their fences protected them!");
-                                        }
-                                        else{
-                                            message.channel.send(message.author + " threw a rock at " + mentionedUserName);
-                                        }
-
-                                        stats.statisticsManage(discordUserId, "rocksthrown", 1, function(staterr, statSuccess){
-                                            if (staterr){
-                                                console.log(staterr);
-                                            }
-                                            else{
-                                                // check achievements??
-                                                getProfileForAchievement(discordUserId, message)
-                                            }
-                                        })
-                                        
-                                    }
-                                })
+                        else if (validItem){
+                            itemsInInventoryCountMap[inventoryResponse.data[item].itemid] = itemsInInventoryCountMap[inventoryResponse.data[item].itemid] + 1
+                        }
+                    }
+                    console.log(itemsInInventoryCountMap);
+                    if (itemsInInventoryCountMap[ROCK_ITEM_ID] && itemsInInventoryCountMap[ROCK_ITEM_ID] > 0){
+                        // user has this many rocks if greater than 0 then able to throw rock
+                        console.log(itemsInInventoryCountMap[ROCK_ITEM_ID]);
+                        useItem.useRock(message, mentionedId, rockToUse, function(throwRockError, throwRes){
+                            if (throwRockError){
+                                console.log(throwRockError);
                             }
                             else{
-                                // tell the user they don't have enough rocks
-                                message.channel.send("dont have enough rocks to throw...");
+                                console.log(throwRes);
+                                if (throwRes == "success"){
+                                    message.channel.send( message.author + " threw a rock at " + mentionedUserName + ", they became dizzy and dropped `1` taco :taco:");
+                                    // if they drop a taco someone else can pick it up
+                                    var poisonedTacoRoll = Math.floor(Math.random() * 100) + 1;
+                                    var poisonedTaco = false;
+                                    if (poisonedTacoRoll > 75){
+                                        poisonedTaco = true;
+                                    }
+                                    QueueOfTacosDropped.push({ droppedBy: mentionedId, cannotPickUp: discordUserId, poisoned: poisonedTaco })
+                                }
+                                else if (throwRes == "protection"){
+                                    message.channel.send(message.author + " threw a rock at " + mentionedUserName + " but one of their fences protected them!");
+                                }
+                                else{
+                                    message.channel.send(message.author + " threw a rock at " + mentionedUserName);
+                                }
+                                var timeout = setTimeout (function(){ 
+                                    experience.gainExperience(message, discordUserId, EXPERIENCE_GAINS.useCommonItem);
+                                    stats.statisticsManage(discordUserId, "rocksthrown", 1, function(staterr, statSuccess){
+                                        if (staterr){
+                                            console.log(staterr);
+                                        }
+                                        else{
+                                            // check achievements??
+                                            getProfileForAchievement(discordUserId, message) 
+                                        }
+                                    })
+                                }, 1000);
+                                
+                                
                             }
-                        }
-                    })
+                        })
+                    }
+                    else{
+                        // tell the user they don't have enough rocks
+                        message.channel.send("dont have enough rocks to throw...");
+                    }
                 }
             })
         }
@@ -2290,66 +2436,54 @@ module.exports.useCommand = function(message, args){
                  // check the user has enough pieces of wood
                  // map of user's inventory
                 var itemsInInventoryCountMap = {};
-                // map of all items
-                var itemsMapbyId = {};
-
                 // array of item objects for using piece of wood
-                var piecesOfWoodToUse = []
-                profileDB.getItemData(function(itemDataError, allItemsResponse){
-                    if (itemDataError){
-                        console.log(itemDataError);
+                var piecesOfWoodToUse = [];
+                //console.log(allItemsResponse.data);
+                for (var item in inventoryResponse.data){
+                    // check the rock hasnt been used
+                    var validItem = useItem.itemValidate(inventoryResponse.data[item]);
+                    if (!itemsInInventoryCountMap[inventoryResponse.data[item].itemid] && validItem){
+                        // item hasnt been added to be counted, add it as 1
+                        itemsInInventoryCountMap[inventoryResponse.data[item].itemid] = 1;
+
+                        if (inventoryResponse.data[item].itemid == PIECE_OF_WOOD_ITEM_ID && piecesOfWoodToUse.length <= 5){
+                            // make this the pieceOfWoodToUse
+                            piecesOfWoodToUse.push(inventoryResponse.data[item]);
+                        }
                     }
-                    else{
-                        //console.log(allItemsResponse.data);
-                        for (var item in inventoryResponse.data){
-                            // check the rock hasnt been used
-                            var validItem = useItem.itemValidate(inventoryResponse.data[item]);
-                            if (!itemsInInventoryCountMap[inventoryResponse.data[item].itemid] && validItem){
-                                // item hasnt been added to be counted, add it as 1
-                                itemsInInventoryCountMap[inventoryResponse.data[item].itemid] = 1;
-
-                                if (inventoryResponse.data[item].itemid == PIECE_OF_WOOD_ITEM_ID && piecesOfWoodToUse.length <= 5){
-                                    // make this the pieceOfWoodToUse
-                                    piecesOfWoodToUse.push(inventoryResponse.data[item]);
-                                }
-                            }
-                            else if (validItem){
-                                itemsInInventoryCountMap[inventoryResponse.data[item].itemid] = itemsInInventoryCountMap[inventoryResponse.data[item].itemid] + 1;
-                                if (inventoryResponse.data[item].itemid == PIECE_OF_WOOD_ITEM_ID && piecesOfWoodToUse.length < 5){
-                                    // make this the pieceOfWoodToUse
-                                    piecesOfWoodToUse.push(inventoryResponse.data[item]);
-                                }
-                            }
+                    else if (validItem){
+                        itemsInInventoryCountMap[inventoryResponse.data[item].itemid] = itemsInInventoryCountMap[inventoryResponse.data[item].itemid] + 1;
+                        if (inventoryResponse.data[item].itemid == PIECE_OF_WOOD_ITEM_ID && piecesOfWoodToUse.length < 5){
+                            // make this the pieceOfWoodToUse
+                            piecesOfWoodToUse.push(inventoryResponse.data[item]);
                         }
+                    }
+                }
 
-                        console.log(itemsInInventoryCountMap);
-                        for (var index in allItemsResponse.data){
-                            itemsMapbyId[allItemsResponse.data[index].id] = allItemsResponse.data[index];
-                        }
-                        console.log(piecesOfWoodToUse.length);
-                        // 
-                        if (piecesOfWoodToUse.length == 5){
-                            // able to use those 5 pieces
-                            useItem.usePieceOfWood(message, discordUserId, piecesOfWoodToUse, function(useError, useRes){
-                                if (useError){
-                                    // couldnt update the user protect
-                                    console.log(useError);
-                                }
-                                else{
-                                    console.log(useRes);
-                                    message.channel.send(message.author + " has built a fence, counts as `2` protection points");
-                                }
-                            });
+                console.log(itemsInInventoryCountMap);
+                console.log(piecesOfWoodToUse.length);
+                // 
+                if (piecesOfWoodToUse.length == 5){
+                    // able to use those 5 pieces
+                    useItem.usePieceOfWood(message, discordUserId, piecesOfWoodToUse, function(useError, useRes){
+                        if (useError){
+                            // couldnt update the user protect
+                            console.log(useError);
                         }
                         else{
-                            message.channel.send(message.author + " you need at least `5` pieces of wood to build a fence");
+                            console.log(useRes);
+                            var timeout = setTimeout (function(){ 
+                                experience.gainExperience(message, discordUserId, EXPERIENCE_GAINS.useCommonItemFive);
+                            }, 1000);
+                            message.channel.send(message.author + " has built a fence, counts as `2` protection points");
                         }
-                        
-                    }
-                })
+                    });
+                }
+                else{
+                    message.channel.send(message.author + " you need at least `5` pieces of wood to build a fence");
+                }
             }
         })
-        
     }
     else if (args && args.length > 1 && args[1].toLowerCase() == "terrycloth"){
         // create a rare item (chance) if not then receive tacos
@@ -2423,16 +2557,20 @@ module.exports.useCommand = function(message, args){
                                     else if (useRes == 2){
                                         message.channel.send(message.author + " tailored something that Bender likes, Bender gave you `2` tacos :taco:");
                                     }
-                                    stats.statisticsManage(discordUserId, "tailorcount", 1, function(staterr, statSuccess){
-                                        if (staterr){
-                                            console.log(staterr);
-                                        }
-                                        else{
-                                            // check achievements??
-                                            console.log(statSuccess);
-                                            getProfileForAchievement(discordUserId, message)
-                                        }
-                                    })
+                                    var timeout = setTimeout (function(){ 
+                                        experience.gainExperience(message, discordUserId, EXPERIENCE_GAINS.useCommonItemFive);
+                                        stats.statisticsManage(discordUserId, "tailorcount", 1, function(staterr, statSuccess){
+                                            if (staterr){
+                                                console.log(staterr);
+                                            }
+                                            else{
+                                                // check achievements??
+                                                console.log(statSuccess);
+                                                getProfileForAchievement(discordUserId, message) 
+                                            }
+                                        })
+                                    }, 1000);
+                                    
                                     
                                 }
                             });
@@ -2457,60 +2595,52 @@ module.exports.useCommand = function(message, args){
             }
             else{
                 var itemsInInventoryCountMap = {};
-                // map of all items
-                var itemsMapbyId = {};
-
-                // array of item objects for using piece of wood
+                // array of item objects for using sodacan
                 var sodaCanToUse;
-                profileDB.getItemData(function(itemDataError, allItemsResponse){
-                    if (itemDataError){
-                        console.log(itemDataError);
-                    }
-                    else{
-                        //console.log(allItemsResponse.data);
-                        for (var item in inventoryResponse.data){
-                            // check the rock hasnt been used
-                            var validItem = useItem.itemValidate(inventoryResponse.data[item]);
-                            if (!itemsInInventoryCountMap[inventoryResponse.data[item].itemid] && validItem){
-                                // item hasnt been added to be counted, add it as 1
-                                itemsInInventoryCountMap[inventoryResponse.data[item].itemid] = 1;
+                for (var item in inventoryResponse.data){
+                    // check the rock hasnt been used
+                    var validItem = useItem.itemValidate(inventoryResponse.data[item]);
+                    if (!itemsInInventoryCountMap[inventoryResponse.data[item].itemid] && validItem){
+                        // item hasnt been added to be counted, add it as 1
+                        itemsInInventoryCountMap[inventoryResponse.data[item].itemid] = 1;
 
-                                if (inventoryResponse.data[item].itemid == SODA_CAN_ITEM_ID){
-                                    // make this the soda can use
-                                    sodaCanToUse = inventoryResponse.data[item];
-                                }
-                            }
-                            else if (validItem){
-                                itemsInInventoryCountMap[inventoryResponse.data[item].itemid] = itemsInInventoryCountMap[inventoryResponse.data[item].itemid] + 1;
-                                if (inventoryResponse.data[item].itemid == SODA_CAN_ITEM_ID && !sodaCanToUse){
-                                    // make this the soda can use
-                                    sodaCanToUse = inventoryResponse.data[item];
-                                }
-                            }
+                        if (inventoryResponse.data[item].itemid == SODA_CAN_ITEM_ID){
+                            // make this the soda can use
+                            sodaCanToUse = inventoryResponse.data[item];
                         }
+                    }
+                    else if (validItem){
+                        itemsInInventoryCountMap[inventoryResponse.data[item].itemid] = itemsInInventoryCountMap[inventoryResponse.data[item].itemid] + 1;
+                        if (inventoryResponse.data[item].itemid == SODA_CAN_ITEM_ID && !sodaCanToUse){
+                            // make this the soda can use
+                            sodaCanToUse = inventoryResponse.data[item];
+                        }
+                    }
+                }
 
-                        // use soda can
-                        if (sodaCanToUse){
-                            // able to use soda can
-                            useItem.useSodaCan(message, discordUserId, sodaCanToUse, function(useError, useRes){
-                                if (useError){
-                                    console.log(useError);
-                                    message.channel.send(useError);
-                                }
-                                else{
-                                    console.log(useRes);
-                                    message.channel.send(message.author + " recycled a soda can, you have gained `1` reputation with Bender.\n`" + message.author.username + "'s Current reputation " + useRes.repNumber + ", Status: " + useRes.repStatus + "`")
-                                }
-                            })
+                // use soda can
+                if (sodaCanToUse){
+                    // able to use soda can
+                    useItem.useSodaCan(message, discordUserId, sodaCanToUse, function(useError, useRes){
+                        if (useError){
+                            console.log(useError);
+                            message.channel.send(useError);
                         }
                         else{
-                            message.channel.send(message.author + " you do not have any soda cans to recycle..")
+                            console.log(useRes);
+                            var timeout = setTimeout (function(){ 
+                                experience.gainExperience(message, discordUserId, EXPERIENCE_GAINS.useCommonItem);
+                            }, 1000);
+                            
+                            message.channel.send(message.author + " recycled a soda can, you have gained `1` reputation with Bender.\n`" + message.author.username + "'s Current reputation " + useRes.repNumber + ", Status: " + useRes.repStatus + "`")
                         }
-                    }
-                })
+                    })
+                }
+                else{
+                    message.channel.send(message.author + " you do not have any soda cans to recycle..")
+                }
             }
-        });
-        
+        })
     }
     
     else if (args && args.length > 1 && args[1].toLowerCase() == "soil"){
@@ -2527,72 +2657,91 @@ module.exports.useCommand = function(message, args){
             }
             else{
                 var itemsInInventoryCountMap = {};
-                // map of all items
-                var itemsMapbyId = {};
-
-                // array of item objects for using piece of wood
+                // array of item objects for using soil
                 var soilToUse;
-                profileDB.getItemData(function(itemDataError, allItemsResponse){
-                    if (itemDataError){
-                        console.log(itemDataError);
-                    }
-                    else{
-                        //console.log(allItemsResponse.data);
-                        for (var item in inventoryResponse.data){
-                            // check the rock hasnt been used
-                            var validItem = useItem.itemValidate(inventoryResponse.data[item]);
-                            if (!itemsInInventoryCountMap[inventoryResponse.data[item].itemid] && validItem){
-                                // item hasnt been added to be counted, add it as 1
-                                itemsInInventoryCountMap[inventoryResponse.data[item].itemid] = 1;
+                for (var item in inventoryResponse.data){
+                    // check the rock hasnt been used
+                    var validItem = useItem.itemValidate(inventoryResponse.data[item]);
+                    if (!itemsInInventoryCountMap[inventoryResponse.data[item].itemid] && validItem){
+                        // item hasnt been added to be counted, add it as 1
+                        itemsInInventoryCountMap[inventoryResponse.data[item].itemid] = 1;
 
-                                if (inventoryResponse.data[item].itemid == SOIL_ITEM_ID){
-                                    // make this the soda can use
-                                    soilToUse = inventoryResponse.data[item];
-                                }
-                            }
-                            else if (validItem){
-                                itemsInInventoryCountMap[inventoryResponse.data[item].itemid] = itemsInInventoryCountMap[inventoryResponse.data[item].itemid] + 1;
-                                if (inventoryResponse.data[item].itemid == SOIL_ITEM_ID && !soilToUse){
-                                    // make this the soda can use
-                                    soilToUse = inventoryResponse.data[item];
-                                }
-                            }
+                        if (inventoryResponse.data[item].itemid == SOIL_ITEM_ID){
+                            // make this the soda can use
+                            soilToUse = inventoryResponse.data[item];
                         }
+                    }
+                    else if (validItem){
+                        itemsInInventoryCountMap[inventoryResponse.data[item].itemid] = itemsInInventoryCountMap[inventoryResponse.data[item].itemid] + 1;
+                        if (inventoryResponse.data[item].itemid == SOIL_ITEM_ID && !soilToUse){
+                            // make this the soda can use
+                            soilToUse = inventoryResponse.data[item];
+                        }
+                    }
+                }
 
-                        // use soil
-                        if (soilToUse){
-                            // able to use soil
-                            useItem.useSoil(message, discordUserId, soilToUse, function(useError, useRes){
-                                if (useError){
-                                    console.log(useError);
-                                    message.channel.send(useError);
-                                }
-                                else{
-                                    console.log(useRes);
-                                    stats.statisticsManage(discordUserId, "soilcount", 1, function(staterr, statSuccess){
-                                        if (staterr){
-                                            console.log(staterr);
-                                        }
-                                        else{
-                                            // check achievements??
-                                            getProfileForAchievement(discordUserId, message)
-                                        }
-                                    })
-                                    message.channel.send(message.author + " soiled their crops, Bender planted some seeds. current soiled crops `" + useRes + "` \n")
-                                }
-                            })
+                // use soil
+                if (soilToUse){
+                    // able to use soil
+                    useItem.useSoil(message, discordUserId, soilToUse, function(useError, useRes){
+                        if (useError){
+                            console.log(useError);
+                            message.channel.send(useError);
                         }
                         else{
-                            message.channel.send(message.author + " you do not have any soil to use..")
+                            console.log(useRes);
+                            var timeout = setTimeout (function(){ 
+                                experience.gainExperience(message, discordUserId, EXPERIENCE_GAINS.useCommonItem);
+                                stats.statisticsManage(discordUserId, "soilcount", 1, function(staterr, statSuccess){
+                                    if (staterr){
+                                        console.log(staterr);
+                                    }
+                                    else{
+                                        // check achievements??
+                                        getProfileForAchievement(discordUserId, message)
+                                    }
+                                })
+                            }, 1000);
+                            
+                            message.channel.send(message.author + " soiled their crops, Bender planted some seeds. current soiled crops `" + useRes + "` \n")
                         }
-                    }
-                })
+                    })
+                }
+                else{
+                    message.channel.send(message.author + " you do not have any soil to use..")
+                }
             }
         })
-
     }
 }
-
+/*
 module.exports.combineCommand = function(message, args){
     // combine certain things (only terry cloth, and soil for now?)
+    console.log(args);
+    var discordUserId = message.author.id;
+    var users  = message.mentions.users;
+    var mentionedId;
+    var mentionedUser;
+    var mentionedUserName;
+    console.log(users);
+    users.forEach(function(user){
+        console.log(user.id);
+        mentionedId = user.id;
+        mentionedUser = user
+        mentionedUserName = user.username;
+    })
+
+    // combine rock for boulder, 5 rares to make 1 improved, 5 improved to make 1 refined
+    // combine 2 ancients to make 1 improved ancients, and 2 improved to make 1 refined
+    // combine 2 diff artifacts to make a myth item
+    // combine different rares to make something else?
 }
+
+module.exports.wearCommand = function(message, args){
+    // wear an item must have a slot, you can only wear 3 slots slots are unique
+    // wearing on an empty slot activates immediately
+    // if replacing an item, it requires 1 day to take effect
+
+}
+
+*/

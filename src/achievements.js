@@ -45,7 +45,7 @@ var achievementsData = {
     },
     "Luck is on your side": {
         emoji : ":tickets:",
-        description: "Scavange a ancient quality item or better"
+        description: "Scavenge a ancient quality item or better"
     },
     "Get a room": {
         emoji : ":kiss:",
@@ -301,7 +301,7 @@ module.exports.achievementStringBuilder = function(achievements){
     for (var ach in achievements){
         // append each achievmenet string
         if (achievementsData[achievements[ach]]){
-            achievementString = achievementString + (achievementsData[achievements[ach]].emoji) + " " + achievements[ach] + " - " + achievementsData[achievements[ach]].description +  " \n"
+            achievementString = achievementString + (achievementsData[achievements[ach]].emoji) + " " + achievements[ach] +  " \n"
         }
     }
     if (achievementString.length == 0){
