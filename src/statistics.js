@@ -20,6 +20,7 @@ module.exports.statisticsManage = function(discordUserId, columnName, statisticC
             // update user
             // get user statistic first if the statistic is null then updated it as =
             var columnStatistic = res.data[columnName];
+            console.log("column statistic: " + columnStatistic + " column name: " + columnName );
             if (columnStatistic){
                 // if it exists just update as normal
                 profileDB.updateStatistics(discordUserId, columnName, statisticCount, function(err, statSuccess){

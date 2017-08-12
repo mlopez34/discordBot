@@ -134,6 +134,9 @@ client.on('message', function(message){
             else if (commandIs("inventory", message)){
                 commands.inventoryCommand(message);
             }
+            else if (commandIs("rares", message)){
+                commands.raresCommand(message);
+            }
             else if (commandIs("standings", message)){
                 commands.standingsCommand(message, client.users);
             }
@@ -155,6 +158,9 @@ client.on('message', function(message){
             }
             else if (commandIs("fetch", message)){
                 commands.fetchCommand(message);
+            }
+            else if (commandIs("xp", message)){
+                commands.xpCommand(message);
             }
             /*
             else if (commandIs("game", message)){
