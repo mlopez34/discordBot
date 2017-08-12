@@ -143,7 +143,7 @@ module.exports.thankCommand = function(message){
                                 }
                                 else{
                                     message.channel.send(message.author + " thanked " + mentionedUser + ", they received a taco! :taco:");
-                                    stats.statisticsManage(discordUserId, "thankCount", 1, function(staterr, statSuccess){
+                                    stats.statisticsManage(discordUserId, "thankcount", 1, function(staterr, statSuccess){
                                         if (staterr){
                                             console.log(staterr);
                                         }
@@ -167,7 +167,7 @@ module.exports.thankCommand = function(message){
                             // send message that the user has 1 more taco
                             message.channel.send(message.author + " thanked " + mentionedUser + ", they received a taco! :taco:");
                             //update statistic
-                            stats.statisticsManage(discordUserId, "thankCount", 1, function(staterr, statSuccess){
+                            stats.statisticsManage(discordUserId, "thankcount", 1, function(staterr, statSuccess){
                                 if (staterr){
                                     console.log(staterr);
                                 }
@@ -259,7 +259,7 @@ module.exports.sorryCommand = function(message){
                                 }
                                 else{
                                     message.channel.send(message.author + " thanked to " + mentionedUser + ", they received a taco! :taco:");
-                                    stats.statisticsManage(discordUserId, "thankCount", 1, function(staterr, statSuccess){
+                                    stats.statisticsManage(discordUserId, "thankcount", 1, function(staterr, statSuccess){
                                         if (staterr){
                                             console.log(staterr);
                                         }
@@ -282,7 +282,7 @@ module.exports.sorryCommand = function(message){
                             })
                             // send message that the user has 1 more taco
                             message.channel.send(message.author + " apologized to " + mentionedUser + ", they received a taco! :taco:");
-                            stats.statisticsManage(discordUserId, "sorryCount", 1, function(err, statSuccess){
+                            stats.statisticsManage(discordUserId, "sorrycount", 1, function(err, statSuccess){
                                 if (err){
                                     console.log(err);
                                 }
@@ -513,7 +513,7 @@ module.exports.welcomeCommand = function(message){
                                     Last_Five_Welcomes.shift();
                                 }
                                 message.channel.send(" Welcome! " + mentionedUser + " You now have " + userData.tacos + " tacos!")
-                                stats.statisticsManage(discordUserId, "welcomeCount", 1, function(err, statSuccess){
+                                stats.statisticsManage(discordUserId, "welcomecount", 1, function(err, statSuccess){
                                     if (err){
                                         console.log(err);
                                     }
@@ -541,7 +541,7 @@ module.exports.welcomeCommand = function(message){
                                 Last_Five_Welcomes.shift();
                             }
                             message.channel.send(mentionedUser + " Welcome! You now have " + (welcomeResponse.data.tacos + 2) + " tacos! :taco:");
-                            stats.statisticsManage(discordUserId, "welcomeCount", 1, function(err, statSuccess){
+                            stats.statisticsManage(discordUserId, "welcomecount", 1, function(err, statSuccess){
                                 if (err){
                                     console.log(err);
                                 }
@@ -660,7 +660,7 @@ module.exports.giveCommand = function(message, giveTacoAmount){
                                         else{
                                             // send message that the user has gotten tacos
                                             message.channel.send(message.author + " gifted " + mentionedUser + " `" + giveTacoAmount + "` tacos! :taco: and Bender kept `" + tacoTax + "` tacos for tax purposes." );
-                                            stats.statisticsManage(discordUserId, "giveCount", giveTacoAmount, function(err, statSuccess){
+                                            stats.statisticsManage(discordUserId, "givecount", giveTacoAmount, function(err, statSuccess){
                                                 if (err){
                                                     console.log(err);
                                                 }
@@ -829,7 +829,7 @@ module.exports.throwCommand = function(message){
                             }
                             QueueOfTacosDropped.push({ droppedBy: mentionedId, cannotPickUp: discordUserId, poisoned: poisonedTaco })
                         
-                            stats.statisticsManage(discordUserId, "thrownToCount", 1, function(err, statSuccess){
+                            stats.statisticsManage(discordUserId, "throwntocount", 1, function(err, statSuccess){
                                 if (err){
                                     console.log(err);
                                 }
@@ -841,7 +841,7 @@ module.exports.throwCommand = function(message){
                                     achiev.checkForAchievements(discordUserId, data, message);
                                 }
                             })
-                            stats.statisticsManage(mentionedId, "thrownAtCount", 1, function(err, statSuccess){
+                            stats.statisticsManage(mentionedId, "thrownatcount", 1, function(err, statSuccess){
                                 if (err){
                                     console.log(err);
                                 }
