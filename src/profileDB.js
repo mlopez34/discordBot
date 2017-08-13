@@ -583,15 +583,23 @@ module.exports.updateUserSoiledCrops = function(discordId, soiledCrops, currentS
     });
 }
 
-module.exports.updateUserExperience = function(experience, level, userId, firstExperienceGain, cb){
+module.exports.updateUserExperience = function(experience, level, userId, firstExperienceGain, tacoRewards, cb){
     var query= "";
     if (!firstExperienceGain){
-        query = 'update ' + config.profileTable + ' set experience=$1, level=$3 where discordid=$2'
+        if (tacoRewards){
+            query = 'update ' + config.profileTable + ' set tacos=tacos+$4, experience=$1, level=$3 where discordid=$2'
+        }else{
+            query = 'update ' + config.profileTable + ' set experience=$1, level=$3 where discordid=$2'
+        }
     }
     else{
-        query = 'update ' + config.profileTable + ' set experience=experience+$1, level=$3 where discordid=$2'
+        if (tacoRewards){
+            query = 'update ' + config.profileTable + ' set tacos=tacos+$4, experience=experience+$1, level=$3 where discordid=$2'
+        }else{
+            query = 'update ' + config.profileTable + ' set experience=experience+$1, level=$3 where discordid=$2'
+        }
     }
-    db.none(query, [experience, userId, level])
+    db.none(query, [experience, userId, level, tacoRewards])
     .then(function () {
     cb(null, {
         status: 'success',
