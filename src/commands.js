@@ -2303,7 +2303,7 @@ module.exports.fetchCommand = function(message, args){
                             console.log(err);
                         }
                         else{
-                            experience.gainExperience(message, discordUserId, EXPERIENCE_GAINS.fetch + (EXPERIENCE_GAINS.perFetchCd * PETS_AVAILABLE[userPet].cooldown) , fetchResponse);
+                            experience.gainExperience(message, discordUserId, EXPERIENCE_GAINS.fetch + (EXPERIENCE_GAINS.perFetchCd * PETS_AVAILABLE[userPet].fetch) , fetchResponse);
                             // user's pet fetched some tacos
                             message.channel.send("**" + userPetName + "** fetched:` " + fetchTacos + "` tacos :taco: \n" + PETS_AVAILABLE[userPet].emoji + " " + PETS_AVAILABLE[userPet].speak );
                         }
