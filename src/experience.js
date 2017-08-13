@@ -5,6 +5,7 @@ const Discord = require("discord.js");
 var config = require("./config.js");
 
 var Levels = config.Levels
+var levelRewards = config.levelTacoRewards;
 
 module.exports.gainExperience = function (message, discordUserId, experienceNumber, userProfileData){
     if (!userProfileData){
@@ -22,11 +23,11 @@ module.exports.gainExperience = function (message, discordUserId, experienceNumb
     }
 }
 
-function experienceEmbedBuilder(message, level){
-    var xpEmoji = ":arrow_up:";
+function experienceEmbedBuilder(message, level, tacoRewards){
+    var xpEmoji = ":arrow_up: :tada:";
     const embed = new Discord.RichEmbed()
     .setColor(0xED962D)
-    .addField(message.author.username +" has leveled up!", "Level " + level + " "  + xpEmoji, true)
+    .addField(message.author.username +" has leveled up!", "Level " + level + " "  + xpEmoji + "\n**Rewards:** " + tacoRewards + " tacos! :taco:", true)
     message.channel.send({embed});
 }
 
@@ -41,6 +42,7 @@ function gainExperienceHandler(message, discordUserId, experienceNumber, userPro
         var nextLevelExperience = Levels[nextLevel];
         var levelUp = false;
         var userLeveledUpTo = userLevel;
+        var tacoRewards = 0;
         // check if experience + experienceNumber will be >= next level
         if (userExperience + experienceNumber >= nextLevelExperience){
             levelUp = true;
@@ -52,21 +54,33 @@ function gainExperienceHandler(message, discordUserId, experienceNumber, userPro
             while(userExperience + experienceNumber > Levels[userLeveledUpTo+1]){
                 userLeveledUpTo++
             }
+            tacoRewards = levelRewards[userLeveledUpTo];
         }
         console.log("xp: " + experienceNumber + " lvl: " + userLeveledUpTo)
-        // add experience and if userleveledupto is different than userlevel then update userlevel also
-        profileDB.updateUserExperience(experienceNumber, userLeveledUpTo, discordUserId, firstExperienceGain, function(updateXpErr, updateXpRes){
-            if (updateXpErr){
-                console.log(updateXpErr);
-            }
-            else{
-                console.log(updateXpRes);
-                if (levelUp){
-                    // create the level up embed
-                    experienceEmbedBuilder(message, userLeveledUpTo);
+        if (levelUp){
+            // add experience and if userleveledupto is different than userlevel then update userlevel also
+            profileDB.updateUserExperience(experienceNumber, userLeveledUpTo, discordUserId, firstExperienceGain, tacoRewards, function(updateXpErr, updateXpRes){
+                if (updateXpErr){
+                    console.log(updateXpErr);
                 }
-            }
-        })
+                else{
+                    console.log(updateXpRes);
+                    // create the level up embed
+                    experienceEmbedBuilder(message, userLeveledUpTo, tacoRewards);
+                }
+            })
+        }
+        else{
+            profileDB.updateUserExperience(experienceNumber, userLeveledUpTo, discordUserId, firstExperienceGain, null, function(updateXpErr, updateXpRes){
+                if (updateXpErr){
+                    console.log(updateXpErr);
+                }
+                else{
+                    console.log(updateXpRes);
+                }
+            })
+        }
+        
     }
     else{
         // something wrong
