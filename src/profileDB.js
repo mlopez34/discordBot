@@ -10,8 +10,8 @@ var connectionString = config.database;
 var db = pgp(connectionString);
 
 module.exports.getUserProfileData = function(discordId, cb) {
-  var query = 'select * from ' + config.profileTable + ' where discordId = $1'
-  db.one(query, [discordId])
+  var query = 'select * from $1~ where discordId = $2'
+  db.one(query, [config.profileTable, discordId])
     .then(function (data) {
       //console.log(data);
       cb(null, {
