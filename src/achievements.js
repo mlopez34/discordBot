@@ -62,6 +62,10 @@ var achievementsData = {
     "The Exalted" : {
         emoji: ":crown:",
         description: "Become Glorified by Bender"
+    },
+    "Rolechecker" : {
+        emoji: ":scroll:",
+        description : "Win the TOS August 2017 Tournament"
     }
 }
 
