@@ -85,6 +85,9 @@ client.on('message', function(message){
             else if( commandIs("help", message )){
                 commands.helpCommand(message);
             }
+            else if (commandIs("itemhelp", message )){
+                commands.itemhelpCommand(message);
+            }
             else if( commandIs("buystand", message )){
                 commands.buyStandCommand(message);
             }
