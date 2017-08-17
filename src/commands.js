@@ -1505,6 +1505,16 @@ module.exports.helpCommand = function(message){
     message.channel.send(commandsList);
 }
 
+module.exports.itemhelpCommand = function(message){
+    var commandsList = "```List of commands \n ____________ \n "
+    var puton = "-puton [1-3] [first word of item] - you will wear the item!\n"
+    var takeoff = "-takeoff [1-3 - you will take off the item!\n"
+    var wearing = "-wearing - list of all the items you are wearing, and a summary\n"
+    var rules = " You can only wear 3 items MAX at a time, you cannot wear an item of the same item slot as another item. \nItem bonuses take effect after the number of hours the command they affect. \nItems must be taken off before putting on another item on the same slot. \nThe tag [ACTIVE] means the item is now affecting your commands!```"
+    commandsList = commandsList + puton + takeoff + wearing + rules
+    message.channel.send(commandsList);
+}
+
 function getProfileForAchievement(discordUserId, message, profileResponse){
     if (!profileResponse){
         profileDB.getUserProfileData(discordUserId, function(err, profileResponse){
@@ -3232,6 +3242,7 @@ module.exports.putonCommand = function(message, args, retry){
                                                         }
                                                         else{
                                                             console.log(updateRockStatusRes);
+                                                            message.channel.send(message.author + " you are now wearing **" + itemsMapbyName[itemToWear].itemname + "**")
                                                         }
                                                     })
                                                 }
