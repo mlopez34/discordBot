@@ -668,6 +668,9 @@ module.exports.getUserWearingStats = function(message, discordUserId, userLevel,
                     }
                 })
             }
+            else{
+                cb(null, {});
+            }
         }
     })
 }
