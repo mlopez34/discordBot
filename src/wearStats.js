@@ -669,7 +669,32 @@ module.exports.getUserWearingStats = function(message, discordUserId, userLevel,
                 })
             }
             else{
-                cb(null, {});
+                var userItemStats = {};
+                userItemStats.thankCommandCDRPercentage = 0;
+                userItemStats.thankCommandExtraTacosChancePercentage = 0
+                userItemStats.thankCommandExtraTacos = 0
+
+                userItemStats.sorryCommandCDRPercentage = 0;
+                userItemStats.sorryCommandExtraTacosChancePercentage = 0
+                userItemStats.sorryCommandExtraTacos = 0
+            
+                userItemStats.cookCommandCDRPercentage = 0;
+                userItemStats.cookCommandExtraTacos = 0
+                userItemStats.cookCommandExtraTacosChancePercentage = 0
+            
+                userItemStats.prepareCommandCDRPercentage = 0;
+                userItemStats.prepareCommandExtraTacos = 0
+                userItemStats.prepareCommandExtraTacosChancePercentage = 0
+            
+                userItemStats.fetchCommandCDRPercentage = 0;
+                userItemStats.fetchCommandExtraTacos = 0
+                userItemStats.fetchCommandExtraTacosChancePercentage = 0
+                        
+                userItemStats.scavengeCommandCDRPercentage = 0;
+                userItemStats.scavengeCommandExtraTacos = 0
+                userItemStats.scavengeCommandExtraTacosChancePercentage = 0
+            
+                cb(null, userItemStats);
             }
         }
     })
