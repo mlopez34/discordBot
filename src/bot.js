@@ -135,10 +135,13 @@ client.on('message', function(message){
                 commands.inventoryCommand(message);
             }
             else if (commandIs("rares", message)){
-                commands.raresCommand(message);
+                commands.raresCommand(message, args);
             }
             else if (commandIs("standings", message)){
                 commands.standingsCommand(message, client.users);
+            }
+            else if (commandIs("toplist", message)){
+                commands.toplistCommand(message, client.users);
             }
             else if (commandIs("slots", message)){
                 if (args.length > 1){
@@ -161,6 +164,15 @@ client.on('message', function(message){
             }
             else if (commandIs("xp", message)){
                 commands.xpCommand(message);
+            }
+            else if (commandIs("puton", message)){
+                commands.putonCommand(message, args);
+            }
+            else if (commandIs("wearing", message)){
+                commands.wearingCommand(message, args);
+            }
+            else if (commandIs("takeoff", message)){
+                commands.takeoffCommand(message, args);
             }
             /*
             else if (commandIs("game", message)){

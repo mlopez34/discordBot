@@ -334,6 +334,23 @@ module.exports.getTopTenTacoUsers = function(cb) {
     });
 }
 
+module.exports.getToplistUsers = function(cb) {
+    var query = 'select * from ' + config.profileTable + ' where experience is not null order by experience DESC LIMIT 50'
+    db.query(query)
+      .then(function (data) {
+        //console.log(data);
+        cb(null, {
+            status: 'success',
+            data: data,
+            message: 'Retrieved top ten experience'
+          });
+      })
+      .catch(function (err) {
+        console.log(err);
+        cb(err);
+      });
+  }
+
 module.exports.updateAchievements = function(discordUserId, achievement, cb){
     // update statistic
     var query = 'update ' + config.profileTable + ' set achievements = achievements || $1 where discordid=$2'
@@ -455,13 +472,13 @@ module.exports.getItemData = function(cb) {
 }
 
 // get specific item via id
-module.exports.getItemById = function(itemId) {
+module.exports.getItemById = function(itemId, cb) {
   var query = 'select * from ' + config.itemsTable + ' where id =$1'
   console.log(query, [itemId]);
-  db.one(query)
+  db.one(query, [itemId])
     .then(function (data) {
       //console.log(data);
-      promise.resolve({
+      cb(null, {
           status: 'success',
           data: data,
           message: 'Retrieved Item'
@@ -469,9 +486,37 @@ module.exports.getItemById = function(itemId) {
     })
     .catch(function (err) {
       console.log(err);
-      promise.reject(err);
+      cb(err);
     });
 }
+
+// get specific item via ids for wear
+module.exports.getItemByIdsWear = function(itemId, itemId2, itemId3, cb) {
+    if (!itemId){
+        itemId = 0
+    }
+    if (!itemId2){
+        itemId2 = 0;
+    }
+    if (!itemId3){
+        itemId3 = 0;
+    }
+    var query = 'select * from ' + config.itemsTable + ' where id =$1 or id = $2 or id = $3'
+    console.log(query, [itemId, itemId2, itemId3]);
+    db.query(query, [itemId, itemId2, itemId3])
+      .then(function (data) {
+        //console.log(data);
+        cb(null, {
+            status: 'success',
+            data: data,
+            message: 'Retrieved Item'
+          });
+      })
+      .catch(function (err) {
+        console.log(err);
+        cb(err);
+      });
+  }
 
 // store items on user's inventory
 module.exports.addNewItemToUser = function(discordId, items, cb) {
@@ -643,6 +688,88 @@ module.exports.getUserItems = function(discordId, cb) {
     .catch(function (err) {
       console.log(err);
       cb(err);
+    });
+}
+// get wear info
+module.exports.getUserWearInfo = function(discordId, cb){
+    var query = 'select * from ' + config.wearTable + ' where discordId = $1'
+    console.log(query);
+    db.query(query, [discordId])
+      .then(function (data) {
+        cb(null, {
+            status: 'success',
+            data: data,
+            message: 'Retrieved user wear info'
+          });
+      })
+      .catch(function (err) {
+        console.log(err);
+        cb(err);
+      });
+}
+
+// update wear info
+module.exports.updateUserWearInfo = function(discordId, slot, itemslot, itemid, itemuserid, activateDate, replacingCurrentSlot, cb){
+    var query = "";
+    if (slot == 1){
+        query = 'update ' + config.wearTable + ' set slot1slot=$2, slot1itemid=$3, slot1useritemid=$4, activate1date=$6, slot1replacing=$7 where discordid=$5'
+    }
+    if (slot == 2){
+        query = 'update ' + config.wearTable + ' set slot2slot=$2, slot2itemid=$3, slot2useritemid=$4, activate2date=$6, slot2replacing=$7 where discordid=$5'
+    }
+    if (slot == 3){
+        query = 'update ' + config.wearTable + ' set slot3slot=$2, slot3itemid=$3, slot3useritemid=$4, activate3date=$6, slot3replacing=$7 where discordid=$5'
+    }
+    db.none(query, [slot, itemslot, itemid, itemuserid, discordId, activateDate, replacingCurrentSlot])
+    .then(function () {
+    cb(null, {
+        status: 'success',
+        message: 'updated wear info'
+        });
+    })
+    .catch(function (err) {
+        cb(err);
+    });
+}
+
+// update wear info
+module.exports.takeOffWear = function(discordId, slot, cb){
+    var query = "";
+    if (slot == 1){
+        query = 'update ' + config.wearTable + ' set slot1slot=null, slot1itemid=null, slot1useritemid=null where discordid=$1'
+    }
+    if (slot == 2){
+        query = 'update ' + config.wearTable + ' set slot2slot=null, slot2itemid=null, slot2useritemid=null where discordid=$1'
+    }
+    if (slot == 3){
+        query = 'update ' + config.wearTable + ' set slot3slot=null, slot3itemid=null, slot3useritemid=null where discordid=$1'
+    }
+    db.none(query, [discordId])
+    .then(function () {
+    cb(null, {
+        status: 'success',
+        message: 'updated wear info'
+        });
+    })
+    .catch(function (err) {
+        cb(err);
+    });
+}
+
+// create wear info
+module.exports.createUserWearInfo = function(data, cb){
+    var query = 'insert into '+ config.wearTable + '(discordId, slot1replacing, slot2replacing, slot3replacing)' +
+    'values(${discordId}, ${slot1replacing}, ${slot2replacing}, ${slot3replacing} )'
+    console.log(query);
+    db.none(query, data)
+    .then(function () {
+    cb(null, {
+        status: 'success',
+        message: 'updated wear info'
+        });
+    })
+    .catch(function (err) {
+        cb(err);
     });
 }
 

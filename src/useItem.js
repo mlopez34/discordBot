@@ -127,7 +127,7 @@ module.exports.useTerryCloth =  function(message, discordUserId, terryClothToUse
         // roll 20% is a rare
         var rollTerryClothRare = Math.floor(Math.random() * 100) + 1;
         console.log(rollTerryClothRare);
-        if (rollTerryClothRare >= 93){
+        if (rollTerryClothRare >= 95){
             // add a rare item to user's inventory from all the rares
             // roll for a rare
             console.log(listOfRares);
@@ -276,6 +276,14 @@ module.exports.useSoil = function(message, discordUserId, soilToUse, cb){
 module.exports.itemValidate = function (item){
     var valid = true;
     if (item.status == "used"){
+        valid = false;
+    }
+    return valid;
+}
+
+module.exports.itemNotWearing = function (item){
+    var valid = true;
+    if (item.status == "wearing"){
         valid = false;
     }
     return valid;
