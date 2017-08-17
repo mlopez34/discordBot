@@ -3092,7 +3092,7 @@ module.exports.putonCommand = function(message, args, retry){
                         else{
                             console.log(res);
                             // call the same function again now that the user exists
-                            exports.putonCommand(message, args, true)
+                            exports.putonCommand(message, args, false)
                         }
                     })
                 }else{
