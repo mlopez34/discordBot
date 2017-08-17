@@ -3265,7 +3265,7 @@ module.exports.putonCommand = function(message, args, retry){
             }
         })
     }else{
-        message.channel.send(message.author + " do -wear [1-3] [itemname]");
+        message.channel.send(message.author + " do -puton [1-3] [itemname]");
     }
 }
 
