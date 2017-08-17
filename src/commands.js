@@ -3023,6 +3023,9 @@ module.exports.wearingCommand = function(message, args){
                             }
                         })
                     }
+                    else{
+                        message.channel.send(message.author + " you are not wearing any items!")
+                    }
                 }
             })
         }
