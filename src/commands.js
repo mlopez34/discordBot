@@ -876,7 +876,7 @@ module.exports.cookCommand = function(message){
                             else{
                                 // send message that the user has 1 more taco
                                 if (extraTacosFromItems > 0){
-                                    message.channel.send(message.author + " Cooked `" + cookRoll + "` tacos! you now have `" + (cookResponse.data.tacos + cookRoll) + "` tacos :taco:" + " " + "received `" + extraTacosFromItems + "`");
+                                    message.channel.send(message.author + " Cooked `" + cookRoll + "` tacos! you now have `" + (cookResponse.data.tacos + cookRoll) + "` tacos :taco:" + " " + "received `" + extraTacosFromItems + "` extra tacos");
                                 }else{
                                     message.channel.send(message.author + " Cooked `" + cookRoll + "` tacos! you now have `" + (cookResponse.data.tacos + cookRoll) + "` tacos :taco:" );
                                 }
