@@ -2231,7 +2231,7 @@ function topListEmbedBuilder(topXpString, message){
     .setColor(0xe521ff)
     for (var key in topXpString) {
         if (topXpString.hasOwnProperty(key)) {
-            embed.addField("#" + key + ": `" + topXpString[key].username+"`", topXpString[key].experience, true)
+            embed.addField("#" + key + ": `" + topXpString[key].username+"`", "LVL:  **" +topXpString[key].level + "** XP:  **" + topXpString[key].experience + "**", true)
         }
     }
 
