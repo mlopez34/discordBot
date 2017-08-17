@@ -1748,8 +1748,9 @@ module.exports.scavangeCommand = function (message){
             var userLevel = getUserResponse.data.level;
             wearStats.getUserWearingStats(message, discordUserId, userLevel, function(wearErr, wearRes){
                 if (wearErr){
-                    
+                    console.log(wearErr);
                 }else{
+                    console.log("asf " + wearRes);
                     var minutesToRemove = wearStats.calculateMinutesReduced(wearRes, "scavenge");
                     console.log("MINUTES TO REMOVE " + minutesToRemove);
                     //check for more than 1 hours
@@ -2213,7 +2214,8 @@ module.exports.toplistCommand = function(message, listOfUsers){
                     }
                     var toplistUsername = toplistUser.username;
                     var toplistXP = user.experience;
-                    toplistMap[toplistCount] = {username: toplistUsername, experience: toplistXP}
+                    var userLevel = user.level;
+                    toplistMap[toplistCount] = {username: toplistUsername, experience: toplistXP, level: userLevel}
                     toplistCount++;
                 }
             }
