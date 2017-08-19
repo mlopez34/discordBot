@@ -3,7 +3,7 @@ var profileDB = require("./profileDB.js");
 var reputation = require("./reputation.js")
 // functions for using each item
 
-module.exports.useRock = function(message, mentionedUserId, rockToUse, cb){
+module.exports.useRock = function(message, mentionedUserId, rockToUse, tacosInUse, cb){
     //use the rock at the user
     // create the roll
     var successThrowRockRoll = Math.floor(Math.random() * 100) + 1;

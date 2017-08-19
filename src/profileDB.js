@@ -573,6 +573,35 @@ module.exports.bulkUpdateItemStatus = function(items, status, cb){
     });
 }
 
+module.exports.bulkUpdateItemOwner = function(items, newOwner, cb){
+    
+        var inventoryItems = []
+        for (var item in items){
+            var idOfItem = items[item]
+            inventoryItems.push({
+                status : null,
+                discordid: newOwner,
+                id : idOfItem
+            })
+        }
+    
+        const q = pgp.helpers.update(inventoryItems, ['id', 'discordid', 'status'], config.inventoryTableNoQuotes) + ' WHERE v.id = t.id';
+        console.log(q);
+        var query = q.replace(/'/g, "");
+        
+        db.none(query)
+        .then(function () {
+        cb(null, {
+            status: 'success',
+            message: 'updated Owner of Items'
+            });
+        })
+        .catch(function (err) {
+            console.log(err);
+            cb(err);
+        });
+    }
+
 module.exports.addUserReputation = function(discordId, reputationNumber, currentReputation, cb){
     var query = "";
     if (currentReputation == null){
