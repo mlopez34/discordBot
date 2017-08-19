@@ -326,20 +326,20 @@ module.exports.statsStringBuilder = function(message, userItemStats){
     var statsString = "";
     
     if (userItemStats.thankCommandCDRPercentage){
-        thankCommandString = thankCommandString + "Thank Cooldown Reduction: " + userItemStats.thankCommandCDRPercentage * 100 + "% \n"
+        thankCommandString = thankCommandString + "Thank Cooldown Reduction: " + (userItemStats.thankCommandCDRPercentage * 100).toFixed(0) + "% \n"
     }
     if (userItemStats.thankCommandExtraTacosChancePercentage){
-        thankCommandString = thankCommandString + "On Thank +Tacos Chance: " + userItemStats.thankCommandExtraTacosChancePercentage * 100 + "% \n"
+        thankCommandString = thankCommandString + "On Thank +Tacos Chance: " + (userItemStats.thankCommandExtraTacosChancePercentage * 100).toFixed(0) + "% \n"
     }
     if (userItemStats.thankCommandExtraTacos){
         thankCommandString = thankCommandString + "On Thank +Tacos: " + userItemStats.thankCommandExtraTacos + " \n"
     }
 
     if (userItemStats.sorryCommandCDRPercentage){
-        sorryCommandString = sorryCommandString + "Sorry cooldown reduction: " + userItemStats.sorryCommandCDRPercentage * 100 + "% \n"
+        sorryCommandString = sorryCommandString + "Sorry cooldown reduction: " + (userItemStats.sorryCommandCDRPercentage * 100).toFixed(0) + "% \n"
     }
     if (userItemStats.sorryCommandExtraTacosChancePercentage){
-        sorryCommandString = sorryCommandString + "On Sorry +Tacos Chance: " + userItemStats.sorryCommandExtraTacosChancePercentage * 100 + "% \n"
+        sorryCommandString = sorryCommandString + "On Sorry +Tacos Chance: " + (userItemStats.sorryCommandExtraTacosChancePercentage * 100).toFixed(0) + "% \n"
     }
     if (userItemStats.sorryCommandExtraTacos){
         sorryCommandString = sorryCommandString + "On Sorry +Tacos: " + userItemStats.sorryCommandExtraTacos + " \n"
@@ -347,20 +347,20 @@ module.exports.statsStringBuilder = function(message, userItemStats){
 
     
     if (userItemStats.cookCommandCDRPercentage){
-        cookCommandString = cookCommandString + "Cook cooldown reduction: " + userItemStats.cookCommandCDRPercentage * 100 +  "% \n"
+        cookCommandString = cookCommandString + "Cook cooldown reduction: " + (userItemStats.cookCommandCDRPercentage * 100).toFixed(0) +  "% \n"
     }
     if (userItemStats.cookCommandExtraTacosChancePercentage){
-        cookCommandString = cookCommandString + "On Cook +Tacos Chance: " + userItemStats.cookCommandExtraTacosChancePercentage * 100 + "% \n"
+        cookCommandString = cookCommandString + "On Cook +Tacos Chance: " + (userItemStats.cookCommandExtraTacosChancePercentage * 100).toFixed(0) + "% \n"
     }
     if (userItemStats.cookCommandExtraTacos){
         cookCommandString = cookCommandString + "On Cook +Tacos: " + userItemStats.cookCommandExtraTacos + " \n"
     }
     
     if (userItemStats.prepareCommandCDRPercentage){
-        prepareCommandString = prepareCommandString + "Prepare cooldown reduction: " + userItemStats.prepareCommandCDRPercentage * 100 + "% \n"
+        prepareCommandString = prepareCommandString + "Prepare cooldown reduction: " + (userItemStats.prepareCommandCDRPercentage * 100).toFixed(0) + "% \n"
     }
     if (userItemStats.prepareCommandExtraTacosChancePercentage){
-        prepareCommandString = prepareCommandString + "On Prepare +Tacos Chance: " + userItemStats.prepareCommandExtraTacosChancePercentage * 100 + "% \n"
+        prepareCommandString = prepareCommandString + "On Prepare +Tacos Chance: " + (userItemStats.prepareCommandExtraTacosChancePercentage * 100).toFixed(0) + "% \n"
     }
     if (userItemStats.prepareCommandExtraTacos){
         prepareCommandString = prepareCommandString + "On Prepare +Tacos: " + userItemStats.prepareCommandExtraTacos + " \n"
@@ -368,20 +368,20 @@ module.exports.statsStringBuilder = function(message, userItemStats){
     
 
     if (userItemStats.fetchCommandCDRPercentage){
-        fetchCommandString = fetchCommandString + "Fetch cooldown reduction: " + userItemStats.fetchCommandCDRPercentage * 100 + "% \n"
+        fetchCommandString = fetchCommandString + "Fetch cooldown reduction: " + (userItemStats.fetchCommandCDRPercentage * 100).toFixed(0) + "% \n"
     }
     if (userItemStats.fetchCommandExtraTacosChancePercentage){
-        fetchCommandString = fetchCommandString + "On Fetch +Tacos Chance: " + userItemStats.fetchCommandExtraTacosChancePercentage * 100 + "% \n"
+        fetchCommandString = fetchCommandString + "On Fetch +Tacos Chance: " + (userItemStats.fetchCommandExtraTacosChancePercentage * 100).toFixed(0) + "% \n"
     }
     if (userItemStats.fetchCommandExtraTacos){
         fetchCommandString = fetchCommandString + "On Fetch +Tacos: " + userItemStats.fetchCommandExtraTacos + " \n"
     }
 
     if (userItemStats.scavengeCommandCDRPercentage){
-        scavengeCommandString = scavengeCommandString + "Scavenge cooldown reduction: " + userItemStats.scavengeCommandCDRPercentage * 100 + "% \n"
+        scavengeCommandString = scavengeCommandString + "Scavenge cooldown reduction: " + (userItemStats.scavengeCommandCDRPercentage * 100).toFixed(0) + "% \n"
     }
     if (userItemStats.scavengeCommandExtraTacosChancePercentage){
-        scavengeCommandString = scavengeCommandString + "On Scavenge +Tacos Chance: " + userItemStats.scavengeCommandExtraTacosChancePercentage * 100 + "% \n"
+        scavengeCommandString = scavengeCommandString + "On Scavenge +Tacos Chance: " + (userItemStats.scavengeCommandExtraTacosChancePercentage * 100).toFixed(0) + "% \n"
     }
     if (userItemStats.scavengeCommandExtraTacos){
         scavengeCommandString = scavengeCommandString + "On Scavenge +Tacos: " + userItemStats.scavengeCommandExtraTacos + " \n"

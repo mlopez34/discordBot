@@ -39,6 +39,13 @@ var COOK_COOLDOWN_HOURS = 24;
 var PREPARE_COOLDOWN_HOURS = 48;
 var SCAVENGE_COOLDOWN_HOURS = 1;
 
+var activeAuctions = {};
+var itemsInAuction = {};
+var tacosInUseAuction = {};
+var activeTrades = {}
+var hasOpenTrade = {};
+var activeTradeItems = {}
+
 var EXPERIENCE_GAINS = {
     thank: 2,
     sorry: 5,
@@ -58,11 +65,11 @@ var EXPERIENCE_GAINS = {
 
 var commandHoursToActivate = {
     thank: 2,
-    sorry: 6,
+    sorry: 5,
     cook: 12,
     prepare: 24,
     scavenge: 1,
-    fetch: 3
+    fetch: 2
 }
 
 var Levels = config.Levels;
@@ -608,7 +615,7 @@ module.exports.welcomeCommand = function(message){
                                 if (Last_Five_Welcomes.length >= 5){
                                     Last_Five_Welcomes.shift();
                                 }
-                                message.channel.send(" Welcome! " + mentionedUser + " You now have " + userData.tacos + " tacos!")
+                                message.channel.send( mentionedUser +" Welcome!" + " You now have " + userData.tacos + " tacos!")
                                 stats.statisticsManage(discordUserId, "welcomecount", 1, function(err, statSuccess){
                                     if (err){
                                         console.log(err);
@@ -673,6 +680,10 @@ module.exports.giveCommand = function(message, giveTacoAmount){
         mentionedId = user.id;
         mentionedUser = user
     })
+    var tacosInUse = 0;
+    if (tacosInUseAuction[discordUserId] && tacosInUseAuction[discordUserId] > 0){
+        tacosInUse = tacosInUseAuction[discordUserId];
+    }
     // get user
     if (!mentionedId || !mentionedUser){
         message.channel.send(message.author + " You must mention a user whom you want to give your tacos to!")
@@ -694,7 +705,7 @@ module.exports.giveCommand = function(message, giveTacoAmount){
             else{
                 // check if user has enough tacos to give
                 var achievements = giveResponse.data.achievements;
-                if (giveResponse.data.tacos - giveTacoAmount >= 0 ){
+                if (giveResponse.data.tacos - tacosInUse - giveTacoAmount >= 0 ){
                     console.log("have enough");
                     profileDB.getUserProfileData( mentionedId, function(mentionederr, giveMentionedResponse) {
                         if(mentionederr){
@@ -917,6 +928,11 @@ module.exports.throwCommand = function(message){
         mentionedUser = user.username
         mentionedDiscriminator = user.discriminator;
     })
+    var tacosInUse = 0;
+    if (tacosInUseAuction[discordUserId] && tacosInUseAuction[discordUserId] > 0){
+        tacosInUse = tacosInUseAuction[discordUserId];
+    }
+    
     // throw a taco at someone
     if ( message.mentions.users.size > 0 && discordUserId != mentionedId){
         // 
@@ -932,7 +948,7 @@ module.exports.throwCommand = function(message){
                 // user exists, subtract 1 taco 
                 var achievements = throwResponse.data.achievements;
                 console.log("asdfasfsd " + throwResponse.data.tacos)
-                if (throwResponse.data.tacos >= 1){
+                if (throwResponse.data.tacos - tacosInUse >= 1){
                     profileDB.updateUserTacosThrow(discordUserId, -1, function(err, updateResponse) {
                         if (err){
                             console.log(err);
@@ -1016,6 +1032,9 @@ module.exports.profileCommand = function(message){
                 profileData.userName = mentionedUser;
                 profileData.avatarURL = mentionedUserAvatarURL;
                 profileData.userTacos = profileResponse.data.tacos;
+                if (tacosInUseAuction[discordUserId] && tacosInUseAuction[discordUserId] > 0){
+                    profileData.userTacos = profileData.userTacos - tacosInUseAuction[discordUserId];
+                }
                 profileData.userTacoStands = profileResponse.data.tacostands ? profileResponse.data.tacostands : 0;
                 profileData.userItems = "none";
                 profileData.pasta = profileResponse.data.pasta;
@@ -1079,6 +1098,9 @@ module.exports.profileCommand = function(message){
                 profileData.userName = message.author.username;
                 profileData.avatarURL = message.author.avatarURL;
                 profileData.userTacos = profileResponse.data.tacos;
+                if (tacosInUseAuction[discordUserId] && tacosInUseAuction[discordUserId] > 0){
+                    profileData.userTacos = profileData.userTacos - tacosInUseAuction[discordUserId];
+                }
                 profileData.userTacoStands = profileResponse.data.tacostands ? profileResponse.data.tacostands : 0;
                 profileData.userItems = "none";
                 profileData.pasta = profileResponse.data.pasta;
@@ -1138,7 +1160,7 @@ module.exports.xpCommand = function(message){
                         console.log(error); // cant create user RIP
                     }
                     else{
-                        exports.tacosCommand(message);
+                        exports.xpCommand(message);
                     }
                 })
             }
@@ -1185,6 +1207,9 @@ module.exports.tacosCommand = function(message){
             var profileData = {}
             profileData.userName = message.author.username;
             profileData.userTacos = profileResponse.data.tacos;
+            if (tacosInUseAuction[discordUserId] && tacosInUseAuction[discordUserId] > 0){
+                profileData.userTacos = profileData.userTacos - tacosInUseAuction[discordUserId];
+            }
             tacoEmbedBuilder(message, profileData);
         }
     })
@@ -1508,7 +1533,7 @@ module.exports.helpCommand = function(message){
 module.exports.itemhelpCommand = function(message){
     var commandsList = "```List of commands \n ____________ \n "
     var puton = "-puton [1-3] [first word of item] - you will wear the item!\n"
-    var takeoff = "-takeoff [1-3 - you will take off the item!\n"
+    var takeoff = "-takeoff [1-3] - you will take off the item!\n"
     var wearing = "-wearing - list of all the items you are wearing, and a summary\n"
     var rules = " You can only wear 3 items MAX at a time, you cannot wear an item of the same item slot as another item. \nItem bonuses take effect after the number of hours the command they affect. \nItems must be taken off before putting on another item on the same slot. \nThe tag [ACTIVE] means the item is now affecting your commands!```"
     commandsList = commandsList + puton + takeoff + wearing + rules
@@ -1562,13 +1587,21 @@ module.exports.raresCommand = function(message, args){
                 //console.log(allItemsResponse.data);
                 for (var item in inventoryResponse.data){
                     var validItem = useItem.itemValidate(inventoryResponse.data[item]);
+                    var itemBeingAuctioned = false;
+                    if (itemsInAuction[inventoryResponse.data[item].id]){
+                        itemBeingAuctioned = true;
+                    }
+                    var itemBeingTraded = false;
+                    if (activeTradeItems[inventoryResponse.data[item].id]){
+                        itemBeingTraded = true;
+                    }
                     var notWearing = useItem.itemNotWearing(inventoryResponse.data[item])
                     if (!itemsInInventoryCountMap[inventoryResponse.data[item].itemid] 
-                        && validItem && notWearing){
+                        && validItem && notWearing && !itemBeingAuctioned && !itemBeingTraded){
                         // item hasnt been added to be counted, add it as 1
                         itemsInInventoryCountMap[inventoryResponse.data[item].itemid] = 1;
                     }
-                    else if (validItem && notWearing){
+                    else if (validItem && notWearing && !itemBeingAuctioned && !itemBeingTraded){
                         itemsInInventoryCountMap[inventoryResponse.data[item].itemid] = itemsInInventoryCountMap[inventoryResponse.data[item].itemid] + 1
                     }
                 }
@@ -1643,13 +1676,24 @@ module.exports.inventoryCommand = function(message){
                 else{
                     console.log("allitemsres " + allItemsResponse.data);
                     for (var item in inventoryResponse.data){
-                        var validItem = useItem.itemValidate(inventoryResponse.data[item]);
+                        var ItemInQuestion = inventoryResponse.data[item];
+                        var validItem = useItem.itemValidate(ItemInQuestion);
+                        var itemBeingAuctioned = false;
+                        if (itemsInAuction[ItemInQuestion.id]){
+                            itemBeingAuctioned = true;
+                        }
+                        var itemBeingTraded = false;
+                        if (activeTradeItems[inventoryResponse.data[item].id]){
+                            itemBeingTraded = true;
+                        }
                         if (!itemsInInventoryCountMap[inventoryResponse.data[item].itemid] 
-                            && validItem ){
+                            && validItem 
+                            && !itemBeingAuctioned
+                            && !itemBeingTraded){
                             // item hasnt been added to be counted, add it as 1
                             itemsInInventoryCountMap[inventoryResponse.data[item].itemid] = 1;
                         }
-                        else if (validItem){
+                        else if (validItem && !itemBeingAuctioned && !itemBeingTraded){
                             itemsInInventoryCountMap[inventoryResponse.data[item].itemid] = itemsInInventoryCountMap[inventoryResponse.data[item].itemid] + 1
                         }
                     }
@@ -1773,7 +1817,7 @@ module.exports.scavangeCommand = function (message){
                                 var ancientItems = [];
                                 var artifactItems = [];
                                 var mythItems = [];
-
+                                // TODO: add check for rarity chance % to be > 0 
                                 for (var item in allItems){
                                     if (allItems[item].itemraritycategory == "common"){
                                         commonItems.push(allItems[item]);
@@ -1831,7 +1875,7 @@ module.exports.scavangeCommand = function (message){
                                             highestRarityFound = 4;
                                         }
                                     }
-                                    else if(rarityRoll > 9850 && rarityRoll <= 9975){
+                                    else if(rarityRoll > 9800 && rarityRoll <= 9975){
                                         rarityString = "rare"
                                         var itemRoll = Math.floor(Math.random() * rareItems.length);
                                         console.log(rareItems[itemRoll]);
@@ -1840,7 +1884,7 @@ module.exports.scavangeCommand = function (message){
                                             highestRarityFound = 3;
                                         }
                                     }
-                                    else if (rarityRoll > 8000 && rarityRoll <= 9850){
+                                    else if (rarityRoll > 8000 && rarityRoll <= 9800){
                                         rarityString = "uncommon"
                                         var itemRoll = Math.floor(Math.random() * uncommonItems.length);
                                         console.log(uncommonItems[itemRoll]);
@@ -2565,7 +2609,16 @@ module.exports.useCommand = function(message, args){
                     for (var item in inventoryResponse.data){
                         // check the rock hasnt been used
                         var validItem = useItem.itemValidate(inventoryResponse.data[item]);
-                        if (!itemsInInventoryCountMap[inventoryResponse.data[item].itemid] && validItem){
+                        var itemBeingAuctioned = false;
+                        if (itemsInAuction[inventoryResponse.data[item].id]){
+                            itemBeingAuctioned = true;
+                        }
+                        var itemBeingTraded = false;
+                        if (activeTradeItems[inventoryResponse.data[item].id]){
+                            itemBeingTraded = true;
+                        }
+                        if (!itemsInInventoryCountMap[inventoryResponse.data[item].itemid] && validItem
+                            && !itemBeingAuctioned && !itemBeingTraded){
                             // item hasnt been added to be counted, add it as 1
                             itemsInInventoryCountMap[inventoryResponse.data[item].itemid] = 1;
 
@@ -2574,7 +2627,7 @@ module.exports.useCommand = function(message, args){
                                 rockToUse = inventoryResponse.data[item];
                             }
                         }
-                        else if (validItem){
+                        else if (validItem && !itemBeingAuctioned && !itemBeingTraded){
                             itemsInInventoryCountMap[inventoryResponse.data[item].itemid] = itemsInInventoryCountMap[inventoryResponse.data[item].itemid] + 1
                         }
                     }
@@ -2582,7 +2635,12 @@ module.exports.useCommand = function(message, args){
                     if (itemsInInventoryCountMap[ROCK_ITEM_ID] && itemsInInventoryCountMap[ROCK_ITEM_ID] > 0){
                         // user has this many rocks if greater than 0 then able to throw rock
                         console.log(itemsInInventoryCountMap[ROCK_ITEM_ID]);
-                        useItem.useRock(message, mentionedId, rockToUse, function(throwRockError, throwRes){
+                        //tacos being used in auction
+                        var tacosInUse = 0;
+                        if (tacosInUseAuction[mentionedId] && tacosInUseAuction[mentionedId] > 0){
+                            tacosInUse = tacosInUseAuction[mentionedId];
+                        }
+                        useItem.useRock(message, mentionedId, rockToUse, tacosInUse, function(throwRockError, throwRes){
                             if (throwRockError){
                                 console.log(throwRockError);
                             }
@@ -3132,14 +3190,25 @@ module.exports.putonCommand = function(message, args, retry){
                                     console.log("allitemsres " + allItemsResponse.data);
                                     for (var item in inventoryResponse.data){
                                         var validItem = useItem.itemValidate(inventoryResponse.data[item]);
+                                        // item not being auctioned
+                                        var itemBeingAuctioned = false;
+                                        if (itemsInAuction[inventoryResponse.data[item].id]){
+                                            itemBeingAuctioned = true;
+                                        }
+                                        var itemBeingTraded = false;
+                                        if (activeTradeItems[inventoryResponse.data[item].id]){
+                                            itemBeingTraded = true;
+                                        }
                                         if (!itemsInInventoryCountMap[inventoryResponse.data[item].itemid] 
-                                            && validItem ){
+                                            && validItem
+                                            && !itemBeingAuctioned 
+                                            && !itemBeingTraded){
                                             // item hasnt been added to be counted, add it as 1
                                             itemsInInventoryCountMap[inventoryResponse.data[item].itemid] = 1;
                                             userItemsById[inventoryResponse.data[item].itemid] = [];
                                             userItemsById[inventoryResponse.data[item].itemid].push(inventoryResponse.data[item]);
                                         }
-                                        else if (validItem){
+                                        else if (validItem && !itemBeingAuctioned && !itemBeingTraded){
                                             itemsInInventoryCountMap[inventoryResponse.data[item].itemid] = itemsInInventoryCountMap[inventoryResponse.data[item].itemid] + 1;
                                             userItemsById[inventoryResponse.data[item].itemid].push(inventoryResponse.data[item]);
                                         }
@@ -3196,65 +3265,79 @@ module.exports.putonCommand = function(message, args, retry){
                                         }
                                         // id if the specific item the user will wear (pick the first item)
                                         var itemuserid;
+                                        var itemObtainDate;
                                         for (var item in userItemsById[itemid]){
                                             if (userItemsById[itemid][item].status != "wearing"){
                                                 itemuserid = userItemsById[itemid][item].id;
+                                                itemObtainDate = userItemsById[itemid][item].itemobtaindate;
                                                 break;
                                             }
                                         }
-                                        // TODO: do a bunch of checks if item is equippable or not
-                                        
-                                        var validateSlotToWear;
-                                        if (slot == 1 && !currentSlot1Slot){
-                                            validateSlotToWear = validateSlot(itemslot, currentSlot2Slot, currentSlot3Slot)
-                                        }
-                                        else if (slot == 2 && !currentSlot2Slot){
-                                            validateSlotToWear = validateSlot(itemslot, currentSlot1Slot, currentSlot3Slot)
-                                        }
-                                        else if (slot == 3 && !currentSlot3Slot){
-                                            validateSlotToWear = validateSlot(itemslot, currentSlot1Slot, currentSlot2Slot)
-                                        }
-                                        if (validateSlotToWear){
-                                            // check that the item slot is not already equiped elsewhere
-                                            console.log("updating: slot: " + slot + " itemslot: " + itemslot + " itemid: " + itemid + " itemuserid: " + itemuserid + " itemstats: " + JSON.stringify(itemstats, null, 2));
-                                            // equip the item
-                                            // create a date for when the item is active
-                                            var activateDate;
-                                            if (!replacingCurrentSlot){
-                                                activateDate = new Date(); // now
-                                                replacingCurrentSlot = true;
+                                        // validate the user owns that item
+                                        if (itemuserid){
+                                            // TODO: do a bunch of checks if item is equippable or not
+                                            
+                                            var validateSlotToWear;
+                                            if (slot == 1 && !currentSlot1Slot){
+                                                validateSlotToWear = validateSlot(itemslot, currentSlot2Slot, currentSlot3Slot)
                                             }
-                                            else{
-                                                var hoursToAdd = commandHoursToActivate[itemstats.itemCommand] ? commandHoursToActivate[itemstats.itemCommand] : 0 // depending on the item's command
-                                                console.log("hours to add " + hoursToAdd);
-                                                activateDate = new Date() // + hours for the command
-                                                activateDate = new Date(activateDate.setHours(activateDate.getHours() + hoursToAdd));
-                                                replacingCurrentSlot = true;
+                                            else if (slot == 2 && !currentSlot2Slot){
+                                                validateSlotToWear = validateSlot(itemslot, currentSlot1Slot, currentSlot3Slot)
                                             }
-                                            console.log("activate date " + activateDate)
-                                            // each command has a different date activate
-                                            profileDB.updateUserWearInfo(discordUserId, slot + "", itemslot, itemid, itemuserid, activateDate, replacingCurrentSlot, function(err, res){
-                                                // set the item to equipped in userinventory
-                                                if (err){
-                                                    console.log(err);
+                                            else if (slot == 3 && !currentSlot3Slot){
+                                                validateSlotToWear = validateSlot(itemslot, currentSlot1Slot, currentSlot2Slot)
+                                            }
+                                            if (validateSlotToWear){
+                                                // check that the item slot is not already equiped elsewhere
+                                                console.log("updating: slot: " + slot + " itemslot: " + itemslot + " itemid: " + itemid + " itemuserid: " + itemuserid + " itemstats: " + JSON.stringify(itemstats, null, 2));
+                                                // equip the item
+                                                // create a date for when the item is active
+                                                var activateDate;
+                                                if (!replacingCurrentSlot){
+                                                    activateDate = new Date(); // now
+                                                    replacingCurrentSlot = true;
                                                 }
                                                 else{
-                                                    console.log(res);
-                                                    // change the item status to wearing in user inventory
-                                                    profileDB.updateItemStatus(itemuserid, "wearing", function(updateRockStatusErr, updateRockStatusRes){
-                                                        if (updateRockStatusErr){
-                                                            console.log(updateRockStatusErr);
-                                                        }
-                                                        else{
-                                                            console.log(updateRockStatusRes);
-                                                            message.channel.send(message.author + " you are now wearing **" + itemsMapbyName[itemToWear].itemname + "**")
-                                                        }
-                                                    })
+                                                    var hoursToAdd = commandHoursToActivate[itemstats.itemCommand] ? commandHoursToActivate[itemstats.itemCommand] : 0 // depending on the item's command
+                                                    console.log("hours to add " + hoursToAdd);
+                                                    activateDate = new Date() // + hours for the command
+                                                    // if obtain date is greater than 1 hour ago, activate date gets no + hours
+                                                    var oneHourAgo = new Date();
+                                                    oneHourAgo = new Date(oneHourAgo.setHours(oneHourAgo.getHours() - 1));
+                                                    if (itemObtainDate < oneHourAgo){
+                                                        // just got the item, activate immediately
+                                                        activateDate = new Date(activateDate.setHours(activateDate.getHours() + hoursToAdd));
+                                                    }
+                                                    replacingCurrentSlot = true;
                                                 }
-                                            })
+                                                console.log("activate date " + activateDate)
+                                                // each command has a different date activate
+                                                profileDB.updateUserWearInfo(discordUserId, slot + "", itemslot, itemid, itemuserid, activateDate, replacingCurrentSlot, function(err, res){
+                                                    // set the item to equipped in userinventory
+                                                    if (err){
+                                                        console.log(err);
+                                                    }
+                                                    else{
+                                                        console.log(res);
+                                                        // change the item status to wearing in user inventory
+                                                        profileDB.updateItemStatus(itemuserid, "wearing", function(updateRockStatusErr, updateRockStatusRes){
+                                                            if (updateRockStatusErr){
+                                                                console.log(updateRockStatusErr);
+                                                            }
+                                                            else{
+                                                                console.log(updateRockStatusRes);
+                                                                message.channel.send(message.author + " you are now wearing **" + itemsMapbyName[itemToWear].itemname + "**")
+                                                            }
+                                                        })
+                                                    }
+                                                })
+                                            }
+                                            else{
+                                                message.channel.send(message.author + " you are already wearing an item of that slot!")
+                                            }
                                         }
                                         else{
-                                            message.channel.send(message.author + " you are already wearing an item of that slot!")
+                                            message.channel.send(message.author + " invalid item!")
                                         }
                                     }
                                 }
@@ -3299,14 +3382,18 @@ module.exports.takeoffCommand = function(message, args){
             console.log(takeoffRes);
             // item id of item to be set status to null in userinventory
             var itemId;
+            var itemslot;
             if (slot == 1 && takeoffRes.data.length > 0){
                 itemId = takeoffRes.data[0].slot1useritemid
+                itemslot = takeoffRes.data[0].slot1slot
             }
             else if (slot == 2 && takeoffRes.data.length > 0){
                 itemId = takeoffRes.data[0].slot2useritemid
+                itemslot = takeoffRes.data[0].slot2slot
             }
             else if (slot == 3 && takeoffRes.data.length > 0){
                 itemId = takeoffRes.data[0].slot3useritemid
+                itemslot = takeoffRes.data[0].slot3slot
             }
             console.log("itemid " + itemId);
             if (itemId){
@@ -3329,6 +3416,598 @@ module.exports.takeoffCommand = function(message, args){
                     }
                 })
             }
+            else if (!itemId && itemslot){
+                // have an item lingering, just take off everything
+
+                //user wearing slot to null
+                profileDB.takeOffWear(discordUserId, slot, function(err, res){
+                    if (err){
+                        console.log(err);
+                    }
+                    else{
+                        console.log(res);
+                        message.channel.send(message.author.username + " took off item from slot " + slot);
+                    }
+                })
+            }
         }
     })
+}
+
+module.exports.auctionCommand = function(message, args){
+    var discordUserId = message.author.id;
+    var discordUserIdString = "auction-" + message.author.id;
+    // arguments are 1 = item short name, item number
+    if (!activeAuctions[discordUserId]){
+        // dont have an active auction yet
+
+        if ( args && args.length > 1){
+            var myItemShortName = args[1];
+            var itemCount = 1;
+            if (args.length > 2){
+                itemCount = args[2];
+            }
+            
+            profileDB.getUserItems(discordUserId, function(err, inventoryResponse){
+                if (err){
+                    console.log(err);
+                }
+                else{
+                    // 
+                    // get all the data for each item
+                    var itemsInInventoryCountMap = {};
+                    var itemsMapbyShortName = {};
+                    var itemsMapById = {};
+                    var IdsOfItemsBeingedAuctioned = []
+                    profileDB.getItemData(function(error, allItemsResponse){
+                        for (var index in allItemsResponse.data){
+                            itemsMapbyShortName[allItemsResponse.data[index].itemshortname] = allItemsResponse.data[index];
+                        }
+                        for (var index in allItemsResponse.data){
+                            itemsMapById[allItemsResponse.data[index].id] = allItemsResponse.data[index];
+                        }
+                        //console.log(allItemsResponse.data);
+                        for (var item in inventoryResponse.data){
+                            var validItem = useItem.itemValidate(inventoryResponse.data[item]);
+                            var notWearing = useItem.itemNotWearing(inventoryResponse.data[item])
+                            var auctionedItem = false;
+                            var ItemInQuestion = inventoryResponse.data[item]
+    
+                            if (itemsInAuction[inventoryResponse.data[item].id]){
+                                auctionedItem = true;
+                            }
+                            var itemBeingTraded = false;
+                            if (activeTradeItems[inventoryResponse.data[item].id]){
+                                itemBeingTraded = true;
+                            }
+                            if (!itemsInInventoryCountMap[inventoryResponse.data[item].itemid] 
+                                && validItem && notWearing && !auctionedItem && !itemBeingTraded){
+                                // item hasnt been added to be counted, add it as 1
+                                itemsInInventoryCountMap[inventoryResponse.data[item].itemid] = 1;
+                                
+                                console.log(ItemInQuestion);
+                                if (itemsMapbyShortName[myItemShortName] 
+                                    && IdsOfItemsBeingedAuctioned.length < itemCount
+                                    && itemsMapById[ItemInQuestion.itemid].itemshortname === myItemShortName){
+                                    console.log("IN HERE");
+                                    IdsOfItemsBeingedAuctioned.push(ItemInQuestion.id);
+                                }
+                            }
+                            else if (validItem && notWearing && !auctionedItem && !itemBeingTraded){
+                                itemsInInventoryCountMap[inventoryResponse.data[item].itemid] = itemsInInventoryCountMap[inventoryResponse.data[item].itemid] + 1;
+                                if (itemsMapbyShortName[myItemShortName] 
+                                    && IdsOfItemsBeingedAuctioned.length < itemCount
+                                    && itemsMapById[ItemInQuestion.itemid].itemshortname === myItemShortName){
+                                    console.log("IN HERE");
+                                    IdsOfItemsBeingedAuctioned.push(ItemInQuestion.id);
+                                }
+                            }
+                        }
+                        //console.log(itemsInInventoryCountMap);
+                        //console.log(itemsMapbyShortName);
+                        if (itemsMapbyShortName[myItemShortName]){
+                            var idOfMyItem = itemsMapbyShortName[myItemShortName].id;
+                            var itemNameInAuction = itemsMapbyShortName[myItemShortName].itemname
+                            console.log(idOfMyItem);
+                            if (itemsInInventoryCountMap[idOfMyItem] && 
+                                itemsInInventoryCountMap[idOfMyItem] >= itemCount){
+                                // if so, then I can create an auction just fine
+                                // create an auction
+                                var userAuction = {
+                                    itemShortname: myItemShortName,
+                                    itemName: itemNameInAuction,
+                                    itemId: idOfMyItem,
+                                    idsToTransfer: [],
+                                    userAuctionName: message.author.username,
+                                    highestBidderUserObj: null,
+                                    highestBidder: null, //id of bidder
+                                    highestBidderName: null,
+                                    tacoBid: 0
+                                }
+                                activeAuctions[discordUserIdString] = userAuction;
+                                for (var item in IdsOfItemsBeingedAuctioned){
+                                    itemsInAuction[IdsOfItemsBeingedAuctioned[item]] = true;
+                                    userAuction.idsToTransfer.push(IdsOfItemsBeingedAuctioned[item])
+                                }
+                                // to the highest bidder by changing their discordid and setting status to null as safety
+                                // adjust the tacos of the two users, and take tax
+                                // send message for winner of the auction
+                                var auctionEnds = setTimeout (function(){ 
+                                    if (activeAuctions[discordUserIdString] && activeAuctions[discordUserIdString].tacoBid == 0){
+                                        // nobody bought the item
+                                        message.channel.send(message.author + " your auction ended without a buyer :cry:")  
+                                        // delete the auction from activeAuctions
+                                        for (var transferId in activeAuctions[discordUserIdString].idsToTransfer){
+                                            // delete from itemsInAuction
+                                            var idToDelete = activeAuctions[discordUserIdString].idsToTransfer[transferId];
+                                            delete itemsInAuction[idToDelete];
+                                        }
+                                        if (idToDelete){
+                                            delete itemsInAuction[idToDelete];
+                                        }
+                                        delete activeAuctions[discordUserIdString];
+                                    }
+                                    else if (activeAuctions[discordUserIdString]){
+                                        // somebody bought the auction, transfer the items and adjust tacos
+                                        var winner = activeAuctions[discordUserIdString].highestBidder;
+                                        var auctionCreator = discordUserId;
+                                        var itemsArray = activeAuctions[discordUserIdString].idsToTransfer;
+                                        var tacosPaid = activeAuctions[discordUserIdString].tacoBid;
+                                        tacosInUseAuction[winner] = tacosInUseAuction[winner] - tacosPaid;
+                                        var tacosWon = activeAuctions[discordUserIdString].tacoBid;
+                                        // take tax on the item if the item is over 15 tacos
+                                        var initialTacoTax = 0;
+                                        if (tacosWon > 50){
+                                            initialTacoTax = Math.floor(tacosWon * 0.05);
+                                        }
+                                        else if (tacosWon >= 20 && tacosWon <= 50){
+                                            initialTacoTax = Math.floor(tacosWon * 0.1);
+                                        }
+                                        message.channel.send(":loudspeaker: " + activeAuctions[discordUserIdString].highestBidderUserObj + " has won the auction of **" + activeAuctions[discordUserIdString].itemName + "** for `" + activeAuctions[discordUserIdString].tacoBid + "` :taco: tacos! " + "Bender kept `" + initialTacoTax + "` for tax purposes.") 
+                                        tacosWon = tacosWon - initialTacoTax;
+                                        console.log(winner);
+                                        transferItemsAndTacos(winner, auctionCreator, itemsArray, tacosPaid, tacosWon, function(transferErr, transferRes){
+                                            if (transferErr){
+                                                console.log(transferErr)
+                                            }
+                                            else{
+                                                console.log(transferRes);
+                                                
+                                            }
+                                        })
+                                        for (var transferId in activeAuctions[discordUserIdString].idsToTransfer){
+                                            // delete from itemsInAuction
+                                            var idToDelete = activeAuctions[discordUserIdString].idsToTransfer[transferId];
+                                            if (idToDelete){
+                                                delete itemsInAuction[idToDelete];
+                                            }
+                                        }
+                                        delete activeAuctions[discordUserIdString];
+                                    }
+                                    
+                                }, 20000);
+                                message.channel.send(message.author + " has created an auction for **" + itemNameInAuction +"**!")  
+                                console.log("items in auction " + JSON.stringify(itemsInAuction, null, 2));
+                            }
+                            else{
+                                message.channel.send(message.author + " can't create that auction! example use: -auction loincloth OR example use: -auction polyester")  
+                                console.log("items in auction " + JSON.stringify(itemsInAuction, null, 2));
+                            }
+                        }
+                        else{
+                            message.channel.send(message.author + " invalid item! example use: -auction loincloth OR example use: -auction polyester")  
+                            console.log("items in auction " + JSON.stringify(itemsInAuction, null, 2));
+                        }
+                        // check if myItem exists in items, check if otherItem exists in items, if not then turn the string
+                    })
+                }
+            })
+        }
+        else{
+            // message use case
+            message.channel.send("example use: -auction loincloth OR -auction polyester")
+        }
+    }
+    else{
+        message.channel.send(message.author + " You already have an active auction, please wait until it ends to create a new one!")
+    }
+}
+
+function transferItemsAndTacos(winner, auctionCreator, itemsArray, tacosPaid, tacosWon, cb){
+    // transfer - tacosPaid to winner, +tacosWon to auctionCreator, 
+    // transfer all items in the Array to winner
+    profileDB.updateUserTacos(winner, tacosPaid * -1, function(paidErr, paidRes){
+        if (paidErr){
+            cb('fail');
+        }else{
+            profileDB.updateUserTacos(auctionCreator, tacosWon, function(wonErr, wonRes){
+                if (wonErr){
+                    cb('fail');
+                }else{
+                    //paid and won now transfer items
+                    profileDB.bulkUpdateItemOwner(itemsArray, winner, function(transferErr, transferRes){
+                        if (transferErr){
+                            console.log(transferErr);
+                            cb('fail');
+                        }
+                        else{
+                            cb(null, transferRes);
+                        }
+                    })
+                }
+            })
+        }
+    })
+}
+
+module.exports.bidCommand = function(message, args){
+    var discordUserId = message.author.id;
+    var discordUserIdString = "auction-" + discordUserId;
+    // arguments are 1 = tagged person, 2 = #of tacos
+    var users  = message.mentions.users;
+    var mentionedId;
+    var mentionedUser;
+    console.log(users);
+    users.forEach(function(user){
+        console.log(user.id);
+        mentionedId = user.id;
+        mentionedUser = user
+    })
+    if (args && args.length >= 3 && mentionedId){
+        var mentionedIdString = "auction-" + mentionedId;
+        var biddingTacos = parseInt(args[2]);
+        profileDB.getUserProfileData(discordUserId, function(profileErr, profileRes){
+            if (profileErr){
+                console.log(profileErr);
+            }
+            else{
+                var userTacosToBid = profileRes.data.tacos;
+                if (userTacosToBid >= biddingTacos){
+                    // can bid, get the auction that the mentioned user has available
+                    var auctionToBidOn = activeAuctions[mentionedIdString] ? activeAuctions[mentionedIdString] : 0;
+                    // set the new data to the auction
+                    if (biddingTacos > 0 && auctionToBidOn && biddingTacos > auctionToBidOn.tacoBid){
+                        // also remove tacos being used by the last person that had highest bid
+                        var lastHighestBidder = auctionToBidOn.highestBidder;
+                        if (lastHighestBidder){
+                            tacosInUseAuction[lastHighestBidder] = tacosInUseAuction[lastHighestBidder] - auctionToBidOn.tacoBid
+                        }
+
+                        auctionToBidOn.tacoBid = biddingTacos;
+                        auctionToBidOn.highestBidder = discordUserId;
+                        auctionToBidOn.highestBidderName = message.author.username;
+                        auctionToBidOn.highestBidderUserObj = message.author;
+                        if (!tacosInUseAuction[discordUserId]){
+                            tacosInUseAuction[discordUserId] = 0;
+                        }
+                        // cannot use these tacos
+                        tacosInUseAuction[discordUserId] = tacosInUseAuction[discordUserId] + biddingTacos;
+                        message.channel.send(message.author + " is now the highest bidder on **" + auctionToBidOn.itemName + "** with `" + biddingTacos + "` tacos!")
+                    }
+                    else{
+                        if (!auctionToBidOn){
+                            message.channel.send(message.author + " the user currently does not have an auction open"); 
+                        }
+                        else{
+                            message.channel.send(message.author + " your bid is lower than the current highest bid. Highest bid is `" + auctionToBidOn.tacoBid + "` tacos!")                            
+                        }
+                    }
+                }
+                else{
+                    message.channel.send(message.author + " you only have `" + userTacosToBid + "` to bid!")
+                }
+            }
+        })
+    }
+    else{
+        message.channel.send("example use: -bid @user 5")
+    }
+}
+
+module.exports.tradeCommand = function(message, args){
+    var discordUserId = message.author.id;
+    // arguments are 1 = tagged person, 2 = item to trade
+    var mentionedId;
+    var mentionedUser;
+    var users  = message.mentions.users
+    console.log(users);
+    users.forEach(function(user){
+        console.log(user.id);
+        mentionedId = user.id;
+        mentionedUser = user
+    })
+    var mentionedIdString;
+    if (mentionedUser){
+        var mentionedIdString = "trading-" + mentionedId;
+    }
+    var discordUserIdString = "trading-" + mentionedId;
+    if (args && args.length >= 3 && mentionedUser && !activeTrades[mentionedIdString]){
+        
+        var itemCount = 1;
+        var myItemShortName = args[2];
+        if (args.length > 3){
+            itemCount = args[3];
+        }
+        var tacoAsk = 0;
+        if (args[args.length - 2] == "tacos" && args.length >= 5){
+            if (args[args.length -1] >= 0){
+                tacoAsk = args[args.length -1]
+            }
+            if (itemCount == "tacos"){
+                itemCount = 1;
+            }
+        }
+        if (tacoAsk != 1){
+            profileDB.getUserProfileData(discordUserId, function(getProfileErr, getProfileRes){
+                if (getProfileErr){
+                    console.log(getProfileErr);
+                }
+                else{
+                    // get the user's item based on discordid and shortname and check that they have an item that they want to trade
+                    profileDB.getUserItems(discordUserId, function(err, inventoryResponse){
+                        if (err){
+                            console.log(err);
+                        }
+                        else{
+                            console.log(inventoryResponse.data);
+                            // get all the data for each item
+                            var itemsInInventoryCountMap = {};
+                            var itemsMapbyShortName = {};
+                            var itemsMapById = {};
+                            var IdsOfItemsBeingedTraded = []
+                            profileDB.getItemData(function(error, allItemsResponse){
+                                for (var index in allItemsResponse.data){
+                                    itemsMapbyShortName[allItemsResponse.data[index].itemshortname] = allItemsResponse.data[index];
+                                }
+                                for (var index in allItemsResponse.data){
+                                    itemsMapById[allItemsResponse.data[index].id] = allItemsResponse.data[index];
+                                }
+                                //console.log(allItemsResponse.data);
+                                for (var item in inventoryResponse.data){
+                                    var validItem = useItem.itemValidate(inventoryResponse.data[item]);
+                                    var notWearing = useItem.itemNotWearing(inventoryResponse.data[item])
+                                    var ItemInQuestion = inventoryResponse.data[item]
+                                    var auctionedItem = false;
+                                    if (itemsInAuction[inventoryResponse.data[item].id]){
+                                        auctionedItem = true;
+                                    }
+                                    var itemBeingTraded = false;
+                                    if (activeTradeItems[inventoryResponse.data[item].id]){
+                                        itemBeingTraded = true;
+                                    }
+                                    if (!itemsInInventoryCountMap[inventoryResponse.data[item].itemid] 
+                                        && validItem && notWearing && !auctionedItem && !itemBeingTraded){
+                                        // item hasnt been added to be counted, add it as 1
+                                        itemsInInventoryCountMap[inventoryResponse.data[item].itemid] = 1;
+
+                                        console.log(ItemInQuestion);
+                                        if (itemsMapbyShortName[myItemShortName] 
+                                            && IdsOfItemsBeingedTraded.length < itemCount
+                                            && itemsMapById[ItemInQuestion.itemid].itemshortname === myItemShortName){
+                                            IdsOfItemsBeingedTraded.push(ItemInQuestion.id);
+                                        }
+                                    }
+                                    else if (validItem && notWearing && !auctionedItem && !itemBeingTraded){
+                                        itemsInInventoryCountMap[inventoryResponse.data[item].itemid] = itemsInInventoryCountMap[inventoryResponse.data[item].itemid] + 1
+
+                                        if (itemsMapbyShortName[myItemShortName] 
+                                            && IdsOfItemsBeingedTraded.length < itemCount
+                                            && itemsMapById[ItemInQuestion.itemid].itemshortname === myItemShortName){
+                                            IdsOfItemsBeingedTraded.push(ItemInQuestion.id);
+                                        }
+                                    }
+                                }
+                                //console.log(itemsInInventoryCountMap);
+                                
+                                // args[2] is your item(or # of tacos)
+                                // check if myItem exists in items, check if otherItem exists in items, if not then turn the string
+                                if (itemsMapbyShortName[myItemShortName]){
+                                    var idOfMyItem = itemsMapbyShortName[myItemShortName].id;
+                                    var itemNameInTrade = itemsMapbyShortName[myItemShortName].itemname
+                                    console.log(idOfMyItem);
+                                    if (itemsInInventoryCountMap[idOfMyItem] && 
+                                        itemsInInventoryCountMap[idOfMyItem] >= itemCount){
+                                        // the item exists in my inventory
+                                        // create an active trade with the mentioned use, myItem = trading
+                                        var userTrade = {
+                                            item: myItemShortName,
+                                            itemid: itemsMapbyShortName[myItemShortName].itemid,
+                                            idsToTransfer: [],
+                                            tradeFrom: discordUserIdString,
+                                            tradingWith: mentionedUser.username,
+                                            itemRarity: itemsMapbyShortName[myItemShortName].itemraritycategory,
+                                            tacoAsk: tacoAsk
+                                        }
+                                        activeTrades[mentionedIdString] = userTrade;
+                                        hasOpenTrade[discordUserIdString] = true;
+                                        hasOpenTrade[mentionedIdString] = true;
+
+                                        for (var item in IdsOfItemsBeingedTraded){
+                                            activeTradeItems[IdsOfItemsBeingedTraded[item]] = true;
+                                            userTrade.idsToTransfer.push(IdsOfItemsBeingedTraded[item])
+                                        }
+
+                                        message.channel.send(message.author + " has offered " + mentionedUser + " **" + myItemShortName + "** x`" + IdsOfItemsBeingedTraded.length + "` to trade for `" +tacoAsk + "` tacos :taco:" )
+                                        // if the trade is of an uncommon, tax = 1, rare tax = 2, ancient tax = 3, artifact tax = 5
+
+                                        var tradeEnds = setTimeout (function(){ 
+                                            // trade has expired if still there cancel the trade
+                                            // cancel the trade
+                                            if (activeTrades[mentionedIdString]){
+                                                // trade is still active, just cancel it
+                                                var itemToTradeName = activeTrades[mentionedIdString].item;
+                                                var userTradingWith = activeTrades[mentionedIdString].tradingWith;
+                                                var tradeFrom = activeTrades[mentionedIdString].tradeFrom
+                                                for (var transferId in activeTrades[discordUserIdString].idsToTransfer){
+                                                    // delete from itemsInAuction
+                                                    var idToDelete = activeTrades[discordUserIdString].idsToTransfer[transferId];
+                                                    if (idToDelete){
+                                                        delete activeTradeItems[idToDelete];
+                                                    }
+                                                }
+                                                delete activeTrades[mentionedIdString];
+                                                if (hasOpenTrade[tradeFrom]){
+                                                    delete hasOpenTrade[tradeFrom];
+                                                }
+                                                if (hasOpenTrade[mentionedIdString]){
+                                                    delete hasOpenTrade[mentionedIdString]
+                                                }
+                                                message.channel.send(message.author + " your trade offer of **" + itemToTradeName + "** with **" + userTradingWith + "** has expired :x:" )
+                                            }
+                                        }, 15000)
+                                    }
+                                    else{
+                                        message.channel.send(message.author + " you cannot create that trade")
+                                    }
+                                }
+                                else{
+                                    message.channel.send(message.author + " invalid item!");
+                                }
+                            })
+                        }
+                    })
+                }
+            })
+        }
+        else{
+            message.channel.send(message.author + " trade for more than 1 taco, cannot tax 1 taco :(")
+        }
+    }
+    else{
+        if (activeTrades[mentionedIdString]){
+            // can't trade with the user at this time
+            message.channel.send("the user is currently trading with someone else");
+        }else{
+            //print usage
+            message.channel.send("example use:\n-trade @user rock \n-trade @user rock 10 \n-trade @user rock 10 tacos 5");
+        }
+    }
+}
+
+module.exports.acceptTradeCommand = function(message, args){
+    var discordUserId = message.author.id;
+    var discordUserIdString = "trading-" + discordUserId
+    // arguments are 1 = user to trade with
+    var mentionedId;
+    var mentionedUser;
+    var users  = message.mentions.users
+    console.log(users);
+    users.forEach(function(user){
+        console.log(user.id);
+        mentionedId = user.id;
+        mentionedUser = user
+    })
+
+    if (mentionedUser){
+        var mentionedIdString = "trading-" + mentionedId
+        // accept the trade with the user
+        // check that the user accepting the trade has tacos to pay the tax
+        profileDB.getUserProfileData(discordUserId, function(profileErr, profileRes){
+            if (profileErr){
+                console.log(profileErr);
+            }
+            else{
+                // there is an active trade with the user
+                if (activeTrades[discordUserIdString] && activeTrades[mentionedIdString]){
+                    var currentTacos = profileRes.data.tacos;
+                    var tacosToPay = activeTrades[discordUserIdString].tacoAsk;
+                    var tacosAuctioned = 0
+                    var itemsArray = activeTrades[discordUserIdString].idsToTransfer;
+                    if (tacosInUseAuction[discordUserId]){
+                        tacosAuctioned = tacosInUseAuction[discordUserId]
+                    }
+                    var tradeTax = Math.floor(tacosToPay * 0.1);
+                    var tacoTax = tradeTax;
+                    console.log(tacoTax);
+                    if (tradeTax < 1){
+                        tacoTax = 1;
+                    }
+                    if (tradeTax >= 1){
+                        tacoTax = tacoTax + 1
+                    }
+                    if (currentTacos - tacosAuctioned - tacosToPay >= 0){
+                        // accept the trade and transfer the item
+                        message.channel.send(":handshake:  " + message.author + " has accepted the trade of **" + activeTrades[discordUserIdString].item + "** ! " + " Bender kept `" + tacoTax + "` tacos for tax purposes.") 
+                        transferItemsAndTacos(discordUserId, mentionedId, itemsArray, tacosToPay, tacosToPay-tacoTax, function(transErr, transRes){
+                            if (transErr){
+                                console.log(transErr);
+                            }else{
+                                console.log(transRes);
+                            }
+                        })
+                        // delete the item from all the maps
+                        for (var transferId in activeTrades[discordUserIdString].idsToTransfer){
+                            // delete from itemsInAuction
+                            var idToDelete = activeTrades[discordUserIdString].idsToTransfer[transferId];
+                            if (idToDelete){
+                                delete activeTradeItems[idToDelete];
+                            }
+                        }
+                        if (hasOpenTrade[discordUserIdString]){
+                            delete hasOpenTrade[discordUserIdString];
+                        }
+                        if (hasOpenTrade[mentionedIdString]){
+                            delete hasOpenTrade[mentionedIdString];
+                        }
+                        delete activeTrades[discordUserIdString];
+                    }
+                    else{
+                        message.channel.send("You can't afford that trade")
+                    }
+                }
+                else{
+                    message.channel.send(message.author + " You do not currently have open trades with " + mentionedUser.username + "!")
+                }
+            }
+        })
+    }
+    else{
+        // print usage
+        message.channel.send("example use: -accept @user");
+    }
+}
+
+module.exports.cancelTradeCommand = function(message, args){
+    var discordUserId = message.author.id;
+    var discordUserIdString = "trading-" + discordUserId
+    // arguments are 1 = user to trade with
+    var mentionedId;
+    var mentionedUser;
+    var users  = message.mentions.users
+    console.log(users);
+    users.forEach(function(user){
+        console.log(user.id);
+        mentionedId = user.id;
+        mentionedUser = user
+    })
+
+    if (mentionedUser){
+        // cancel the trade active with the mentioned user
+        var mentionedIdString = "trading-" + mentionedId
+        if (activeTrades[discordUserIdString] && activeTrades[mentionedIdString]){
+            // delete the item from all the maps
+            for (var transferId in activeTrades[discordUserIdString].idsToTransfer){
+                // delete from itemsInAuction
+                var idToDelete = activeTrades[discordUserIdString].idsToTransfer[transferId];
+                if (idToDelete){
+                    delete activeTradeItems[idToDelete];
+                }
+            }
+            if (hasOpenTrade[discordUserIdString]){
+                delete hasOpenTrade[discordUserIdString];
+            }
+            if (hasOpenTrade[mentionedIdString]){
+                delete hasOpenTrade[mentionedIdString];
+            }
+            delete activeTrades[discordUserIdString];
+            message.channel.send(":x:  " + message.author + " Canceled a trade with " + mentionedUser) 
+        }
+        else{
+            message.channel.send(message.author + " You do not currently have open trades with " + mentionedUser.username + "!")
+        }
+    }
+    else{
+        // print usage
+        message.channel.send("example use: -cancel @user");
+    }
 }

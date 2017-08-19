@@ -177,6 +177,21 @@ client.on('message', function(message){
             else if (commandIs("takeoff", message)){
                 commands.takeoffCommand(message, args);
             }
+            else if (commandIs("auction", message)){
+                commands.auctionCommand(message, args);
+            }
+            else if (commandIs("bid", message)){
+                commands.bidCommand(message, args);
+            }
+            else if (commandIs("trade", message)){
+                commands.tradeCommand(message, args);
+            }
+            else if (commandIs("accept", message)){
+                commands.acceptTradeCommand(message, args);
+            }
+            else if (commandIs("cancel", message)){
+                commands.cancelTradeCommand(message, args);
+            }
             /*
             else if (commandIs("game", message)){
                 commands.gameCommand(message);
