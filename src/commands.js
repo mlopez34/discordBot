@@ -3438,7 +3438,7 @@ module.exports.auctionCommand = function(message, args){
     var discordUserId = message.author.id;
     var discordUserIdString = "auction-" + message.author.id;
     // arguments are 1 = item short name, item number
-    if (!activeAuctions[discordUserId]){
+    if (!activeAuctions[discordUserIdString]){
         // dont have an active auction yet
 
         if ( args && args.length > 1){
