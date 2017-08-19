@@ -3560,7 +3560,7 @@ module.exports.auctionCommand = function(message, args){
                                         if (tacosWon > 50){
                                             initialTacoTax = Math.floor(tacosWon * 0.05);
                                         }
-                                        else if (tacosWon >= 20 && tacosWon <= 50){
+                                        else if (tacosWon >= 5 && tacosWon <= 50){
                                             initialTacoTax = Math.floor(tacosWon * 0.1);
                                         }
                                         message.channel.send(":loudspeaker: " + activeAuctions[discordUserIdString].highestBidderUserObj + " has won the auction of **" + activeAuctions[discordUserIdString].itemName + "** for `" + activeAuctions[discordUserIdString].tacoBid + "` :taco: tacos! " + "Bender kept `" + initialTacoTax + "` for tax purposes.") 
@@ -3585,7 +3585,7 @@ module.exports.auctionCommand = function(message, args){
                                         delete activeAuctions[discordUserIdString];
                                     }
                                     
-                                }, 20000);
+                                }, 360000);
                                 message.channel.send(message.author + " has created an auction for **" + itemNameInAuction +"**!")  
                                 console.log("items in auction " + JSON.stringify(itemsInAuction, null, 2));
                             }
@@ -3653,7 +3653,7 @@ module.exports.bidCommand = function(message, args){
         mentionedId = user.id;
         mentionedUser = user
     })
-    if (args && args.length >= 3 && mentionedId){
+    if (args && args.length >= 3 && mentionedId && mentionedId != discordUserId){
         var mentionedIdString = "auction-" + mentionedId;
         var biddingTacos = parseInt(args[2]);
         profileDB.getUserProfileData(discordUserId, function(profileErr, profileRes){
@@ -3721,7 +3721,7 @@ module.exports.tradeCommand = function(message, args){
         var mentionedIdString = "trading-" + mentionedId;
     }
     var discordUserIdString = "trading-" + mentionedId;
-    if (args && args.length >= 3 && mentionedUser && !activeTrades[mentionedIdString]){
+    if (args && args.length >= 3 && mentionedUser && !activeTrades[mentionedIdString] && mentionedId != discordUserId){
         
         var itemCount = 1;
         var myItemShortName = args[2];
@@ -3854,7 +3854,7 @@ module.exports.tradeCommand = function(message, args){
                                                 }
                                                 message.channel.send(message.author + " your trade offer of **" + itemToTradeName + "** with **" + userTradingWith + "** has expired :x:" )
                                             }
-                                        }, 15000)
+                                        }, 60000)
                                     }
                                     else{
                                         message.channel.send(message.author + " you cannot create that trade")
