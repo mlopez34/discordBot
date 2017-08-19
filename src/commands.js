@@ -3586,7 +3586,7 @@ module.exports.auctionCommand = function(message, args){
                                     }
                                     
                                 }, 360000);
-                                message.channel.send(message.author + " has created an auction for **" + itemNameInAuction +"**!")  
+                                message.channel.send(message.author + " has created an auction for **" + itemNameInAuction +"** x`" + itemCount + "` !")  
                                 console.log("items in auction " + JSON.stringify(itemsInAuction, null, 2));
                             }
                             else{
@@ -3694,7 +3694,7 @@ module.exports.bidCommand = function(message, args){
                     }
                 }
                 else{
-                    message.channel.send(message.author + " you only have `" + userTacosToBid + "` to bid!")
+                    message.channel.send(message.author + " you only have `" + userTacosToBid + "` tacos to bid!")
                 }
             }
         })
@@ -3827,7 +3827,7 @@ module.exports.tradeCommand = function(message, args){
                                             userTrade.idsToTransfer.push(IdsOfItemsBeingedTraded[item])
                                         }
 
-                                        message.channel.send(message.author + " has offered " + mentionedUser + " **" + myItemShortName + "** x`" + IdsOfItemsBeingedTraded.length + "` to trade for `" +tacoAsk + "` tacos :taco:" )
+                                        message.channel.send(message.author + " has offered " + mentionedUser + " **" + itemNameInTrade + "** x`" + IdsOfItemsBeingedTraded.length + "` to trade for `" +tacoAsk + "` tacos :taco:" )
                                         // if the trade is of an uncommon, tax = 1, rare tax = 2, ancient tax = 3, artifact tax = 5
 
                                         var tradeEnds = setTimeout (function(){ 
@@ -3908,7 +3908,7 @@ module.exports.acceptTradeCommand = function(message, args){
             }
             else{
                 // there is an active trade with the user
-                if (activeTrades[discordUserIdString] && activeTrades[mentionedIdString]){
+                if (activeTrades[discordUserIdString]){
                     var currentTacos = profileRes.data.tacos;
                     var tacosToPay = activeTrades[discordUserIdString].tacoAsk;
                     var tacosAuctioned = 0
