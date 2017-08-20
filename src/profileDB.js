@@ -249,6 +249,9 @@ module.exports.purchasePickAxe = function(userId, tacosSpent, cb){
         // improved Pickaxe should always be between 100 and 500
         selectedPickaxe = "improved";
     }
+    else if (tacosSpent <= -500 ){
+        selectedPickaxe = "master";
+    }
     //console.log("new last thank: " + lastThank);
     db.none(query, [tacosSpent, userId, selectedPickaxe])
     .then(function () {
@@ -523,12 +526,25 @@ module.exports.addNewItemToUser = function(discordId, items, cb) {
     var inventoryItems = [];
     var itemobtaindate = new Date();
     for (var item in items){
-        var inventoryItem = {
-            discordid: discordId,
-            itemid: items[item].id,
-            itemobtaindate: itemobtaindate
+        if (items[item].itemAmount && items[item].itemAmount > 1){
+            // insert more than 1 item
+            for (var i = 0; i < items[item].itemAmount; i++){
+                var inventoryItem = {
+                    discordid: discordId,
+                    itemid: items[item].id,
+                    itemobtaindate: itemobtaindate
+                }
+                inventoryItems.push(inventoryItem);
+            }
         }
-        inventoryItems.push(inventoryItem);
+        else{
+            var inventoryItem = {
+                discordid: discordId,
+                itemid: items[item].id,
+                itemobtaindate: itemobtaindate
+            }
+            inventoryItems.push(inventoryItem);
+        }
     }
     
     var values = new Inserts('${discordid}, ${itemid} ,${itemobtaindate}', inventoryItems); // using Inserts as a type;

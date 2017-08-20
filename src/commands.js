@@ -22,6 +22,7 @@ var BASE_TACO_PREPARE = 10;
 var BASE_TACO_COOK = 2;
 var PICKAXE_COST = 35;
 var IMPROVED_PICKAXE_COST = 300;
+var MASTER_PICKAXE_COST = 10000;
 var PASTA_COST = 250
 var SCAVENGE_TACO_FIND_CHANCE_HIGHER = 94
 var SCAVENGE_TACO_FIND_CHANCE = 75;
@@ -37,7 +38,7 @@ var THANK_COOLDOWN_HOURS = 2;
 var SORRY_COOLDOWN_HOURS = 6;
 var COOK_COOLDOWN_HOURS = 24;
 var PREPARE_COOLDOWN_HOURS = 48;
-var SCAVENGE_COOLDOWN_HOURS = 1;
+var SCAVENGE_COOLDOWN_HOURS = 0;
 
 var activeAuctions = {};
 var itemsInAuction = {};
@@ -1288,7 +1289,7 @@ module.exports.buyPickaxeCommand = function(message){
                     })
                 }
                 else{
-                    message.channel.send(message.author + " You cannot afford the Pickaxe");
+                    message.channel.send(message.author + " You cannot afford the `Pickaxe`");
                 }
             }
             else if (pickaxeResponse.data.pickaxe == "basic"){
@@ -1301,12 +1302,32 @@ module.exports.buyPickaxeCommand = function(message){
                             // couldn't purchase stand
                         }
                         else{
+                            experience.gainExperience(message, discordUserId, EXPERIENCE_GAINS.buyPickaxe * 3 , pickaxeResponse);
                             message.channel.send(message.author + " Congratulations, you have purchased an Improved Pickaxe :pick:!");
                         }
                     })
                 }
                 else{
-                    message.channel.send(message.author + " You cannot afford the Improved Pickaxe");
+                    message.channel.send(message.author + " You cannot afford the `Improved Pickaxe`");
+                }
+            }
+            else if (pickaxeResponse.data.pickaxe == "improved"){
+                if (pickaxeResponse.data.tacos >= MASTER_PICKAXE_COST){
+                    // purchaseStand
+                    var tacosSpent = MASTER_PICKAXE_COST * -1;
+                    profileDB.purchasePickAxe(discordUserId, tacosSpent, function(err, data){
+                        if (err){
+                            console.log(err);
+                            // couldn't purchase stand
+                        }
+                        else{
+                            experience.gainExperience(message, discordUserId, EXPERIENCE_GAINS.buyPickaxe * 10 , pickaxeResponse);
+                            message.channel.send(message.author + " Congratulations, you have purchased the Mster Pickaxe :pick:!");
+                        }
+                    })
+                }
+                else{
+                    message.channel.send(message.author + " You cannot afford the `Master Pickaxe`");
                 }
             }
         }
@@ -1380,6 +1401,17 @@ function shopBuilder(message, shopData){
         embed.addBlankField(true)
         .addBlankField(false)
         .addField('Improved Pickaxe', ":small_blue_diamond::pick:", true)
+        .addField('Description', pickaxeDescription, true)
+        .addField('Cost', pickaxeCost, true)
+        .addField('Command', config.commandString + "buypickaxe", true)
+    }
+    else if (shopData.pickaxe == "improved"){
+        // improved pickaxe
+        pickaxeDescription = "The Master Pickaxe can be used to scavenge. This is the master pickaxe, your adventures will be rewarded with the greatest treasures :diamond_shape_with_a_dot_inside: .";
+        pickaxeCost = MASTER_PICKAXE_COST + " :taco:";
+        embed.addBlankField(true)
+        .addBlankField(false)
+        .addField('Improved Pickaxe', ":diamond_shape_with_a_dot_inside::pick:", true)
         .addField('Description', pickaxeDescription, true)
         .addField('Cost', pickaxeCost, true)
         .addField('Command', config.commandString + "buypickaxe", true)
@@ -1508,7 +1540,7 @@ module.exports.buyPastaCommand = function(message, pasta){
     });
 
 }
-// TODO: mission logic, casino logic, combine logic
+// TODO: mission logic
 
 module.exports.helpCommand = function(message){
     var commandsList = "List of commands \n ____________ \n "
@@ -1634,13 +1666,13 @@ function raresEmbedBuilder(message, itemsMap, allItems, long){
                 console.log(key + " " + allItems[key].itemname)
                 var emoji = "";
                 if (allItems[key].itemraritycategory === "artifact"){
-                    emoji = ":diamond_shape_with_a_dot_inside:  "
+                    emoji = ":diamond_shape_with_a_dot_inside: "
                 }
                 else if (allItems[key].itemraritycategory === "ancient"){
                     emoji = ":small_orange_diamond: "
                 }
                 else if (allItems[key].itemraritycategory === "rare"){
-                    emoji = ":small_blue_diamond:  "
+                    emoji = ":small_blue_diamond: "
                 }
                 else if (allItems[key].itemraritycategory === "rare+"){
                     emoji = ":large_blue_diamond: "
@@ -1770,13 +1802,6 @@ module.exports.scavangeCommand = function (message){
     else{
         rollsCount = 1
     }
-
-    if (tacoRoll > SCAVENGE_TACO_FIND_CHANCE_HIGHER){
-        tacosFound = 2;
-    }
-    else if(tacoRoll > SCAVENGE_TACO_FIND_CHANCE){
-        tacosFound = 1
-    }
     // only scavenge if the user has a pickaxe
     profileDB.getUserProfileData( discordUserId, function(error, getUserResponse) {
         if(error){
@@ -1816,6 +1841,36 @@ module.exports.scavangeCommand = function (message){
                                 console.log(err);
                             }
                             else{
+                                var ARTIFACT_MIN_ROLL = 9995;
+                                var ANCIENT_MAX_ROLL = 9995
+                                var ANCIENT_MIN_ROLL = 9975;
+                                var RARE_MAX_ROLL = 9975;
+                                var RARE_MIN_ROLL = 9800;
+                                var UNCOMMON_MAX_ROLL = 9800;
+                                var UNCOMMON_MIN_ROLL = 8000;
+                                var COMMON_MAX_ROLL = 8000;
+                                var COMMON_ITEMS_TO_OBTAIN = 1;
+                                var TACOS_FOUND_MULTIPLIER = 1;
+                                var EXPERIENCE_MULTIPLIER = 1;
+
+                                if (getUserResponse.data.pickaxe == "improved"){
+                                    COMMON_ITEMS_TO_OBTAIN = 3
+                                    TACOS_FOUND_MULTIPLIER = 3
+                                    ARTIFACT_MIN_ROLL = 9992
+                                    ANCIENT_MAX_ROLL = 9992;
+                                    ANCIENT_MIN_ROLL = 9955;
+                                    RARE_MAX_ROLL = 9955;
+                                    RARE_MIN_ROLL = 9750;
+                                    UNCOMMON_MAX_ROLL = 9750;
+                                    EXPERIENCE_MULTIPLIER = 2;
+
+                                }
+                                else if (getUserResponse.data.pickaxe == "master"){
+                                    COMMON_ITEMS_TO_OBTAIN = 7
+                                    TACOS_FOUND_MULTIPLIER = 8
+                                    EXPERIENCE_MULTIPLIER = 6
+                                }
+
                                 var allItems = getItemResponse.data
                                 var commonItems = [];
                                 var uncommonItems = [];
@@ -1863,7 +1918,7 @@ module.exports.scavangeCommand = function (message){
                                         rarityRoll = Math.floor(Math.random() * 2000) + 8001;
                                         gotUncommon = true;
                                     }
-                                    if (rarityRoll > 9995){
+                                    if (rarityRoll > ARTIFACT_MIN_ROLL){
                                         rarityString = "artifact"
                                         var itemRoll = Math.floor(Math.random() * artifactItems.length);
                                         console.log(artifactItems[itemRoll]);
@@ -1872,7 +1927,7 @@ module.exports.scavangeCommand = function (message){
                                             highestRarityFound = 5;
                                         }
                                     }
-                                    else if(rarityRoll > 9975 && rarityRoll <= 9995){
+                                    else if(rarityRoll > ANCIENT_MIN_ROLL && rarityRoll <= ANCIENT_MAX_ROLL){
                                         rarityString = "ancient"
                                         var itemRoll = Math.floor(Math.random() * ancientItems.length);
                                         console.log(ancientItems[itemRoll]);
@@ -1881,7 +1936,7 @@ module.exports.scavangeCommand = function (message){
                                             highestRarityFound = 4;
                                         }
                                     }
-                                    else if(rarityRoll > 9800 && rarityRoll <= 9975){
+                                    else if(rarityRoll > RARE_MIN_ROLL && rarityRoll <= RARE_MAX_ROLL){
                                         rarityString = "rare"
                                         var itemRoll = Math.floor(Math.random() * rareItems.length);
                                         console.log(rareItems[itemRoll]);
@@ -1890,7 +1945,7 @@ module.exports.scavangeCommand = function (message){
                                             highestRarityFound = 3;
                                         }
                                     }
-                                    else if (rarityRoll > 8000 && rarityRoll <= 9800){
+                                    else if (rarityRoll > UNCOMMON_MIN_ROLL && rarityRoll <= UNCOMMON_MAX_ROLL){
                                         rarityString = "uncommon"
                                         var itemRoll = Math.floor(Math.random() * uncommonItems.length);
                                         console.log(uncommonItems[itemRoll]);
@@ -1903,8 +1958,15 @@ module.exports.scavangeCommand = function (message){
                                         rarityString = "common"
                                         var itemRoll = Math.floor(Math.random() * commonItems.length);
                                         console.log(commonItems[itemRoll]);
+                                        commonItems[itemRoll].itemAmount = COMMON_ITEMS_TO_OBTAIN
                                         itemsObtainedArray.push( commonItems[itemRoll] );
                                     }
+                                }
+                                if (tacoRoll > SCAVENGE_TACO_FIND_CHANCE_HIGHER){
+                                    tacosFound = 2 * TACOS_FOUND_MULTIPLIER;
+                                }
+                                else if(tacoRoll > SCAVENGE_TACO_FIND_CHANCE){
+                                    tacosFound = 1 * TACOS_FOUND_MULTIPLIER;
                                 }
                                 // send the items to be written all at once
                                 addToUserInventory(discordUserId, itemsObtainedArray);
@@ -1918,7 +1980,7 @@ module.exports.scavangeCommand = function (message){
                                     }
                                     else{
                                         console.log(updateLSres);
-                                        experience.gainExperience(message, discordUserId, EXPERIENCE_GAINS.scavenge , getUserResponse);
+                                        experience.gainExperience(message, discordUserId, EXPERIENCE_GAINS.scavenge * EXPERIENCE_MULTIPLIER, getUserResponse);
                                     }
                                 })
                                 // add the tacos to user
@@ -1987,7 +2049,8 @@ function scavengeEmbedBuilder(message, itemsScavenged, tacosFound){
     // create a quoted message of all the items
     var itemsMessage = ""
     for (var item in itemsScavenged){
-        itemsMessage = itemsMessage + "[**" + itemsScavenged[item].itemraritycategory +"**] " + "**"  + itemsScavenged[item].itemname + "** - " + itemsScavenged[item].itemdescription + ", " +
+        var itemAmount = itemsScavenged[item].itemAmount ? itemsScavenged[item].itemAmount : 1;
+        itemsMessage = itemsMessage + "**" +itemAmount + "**x " + "[**" + itemsScavenged[item].itemraritycategory +"**] " + "**"  + itemsScavenged[item].itemname + "** - " + itemsScavenged[item].itemdescription + ", " +
         itemsScavenged[item].itemslot + ", " +itemsScavenged[item].itemstatistics + " \n";
     }
     if (tacosFound > 0){
@@ -2558,7 +2621,7 @@ module.exports.fetchCommand = function(message, args){
                                     experience.gainExperience(message, discordUserId, (EXPERIENCE_GAINS.perFetchCd * PETS_AVAILABLE[userPet].fetch) , fetchResponse);
                                     // user's pet fetched some tacos
                                     if (extraTacosFromItems > 0){
-                                        message.channel.send("**" + userPetName + "** fetched:` " + fetchTacos + "` tacos :taco: \n" + PETS_AVAILABLE[userPet].emoji + " " + PETS_AVAILABLE[userPet].speak   + + " you received `" + extraTacosFromItems + "` extra tacos");
+                                        message.channel.send("**" + userPetName + "** fetched:` " + fetchTacos + "` tacos :taco: \n" + PETS_AVAILABLE[userPet].emoji + " " + PETS_AVAILABLE[userPet].speak + " you received `" + extraTacosFromItems + "` extra tacos");
                                     }else{
                                         message.channel.send("**" + userPetName + "** fetched:` " + fetchTacos + "` tacos :taco: \n" + PETS_AVAILABLE[userPet].emoji + " " + PETS_AVAILABLE[userPet].speak);
                                     }
@@ -3380,7 +3443,6 @@ module.exports.putonCommand = function(message, args, retry){
                                         }
                                         // validate the user owns that item
                                         if (itemuserid){
-                                            // TODO: do a bunch of checks if item is equippable or not
                                             
                                             var validateSlotToWear;
                                             if (slot == 1 && !currentSlot1Slot){
@@ -3827,8 +3889,8 @@ module.exports.tradeCommand = function(message, args){
     if (mentionedUser){
         var mentionedIdString = "trading-" + mentionedId;
     }
-    var discordUserIdString = "trading-" + mentionedId;
-    if (args && args.length >= 3 && mentionedUser && !activeTrades[mentionedIdString] && mentionedId != discordUserId){
+    var discordUserIdString = "trading-" + discordUserId;
+    if (args && args.length >= 3 && mentionedUser && !activeTrades[mentionedIdString] && !hasOpenTrade[discordUserIdString] && !hasOpenTrade[mentionedIdString] ){ //&& mentionedId != discordUserId){
         
         var itemCount = 1;
         var myItemShortName = args[2];
@@ -3869,7 +3931,6 @@ module.exports.tradeCommand = function(message, args){
                                 for (var index in allItemsResponse.data){
                                     itemsMapById[allItemsResponse.data[index].id] = allItemsResponse.data[index];
                                 }
-                                //console.log(allItemsResponse.data);
                                 for (var item in inventoryResponse.data){
                                     var validItem = useItem.itemValidate(inventoryResponse.data[item]);
                                     var notWearing = useItem.itemNotWearing(inventoryResponse.data[item])
@@ -3904,7 +3965,6 @@ module.exports.tradeCommand = function(message, args){
                                         }
                                     }
                                 }
-                                //console.log(itemsInInventoryCountMap);
                                 
                                 // args[2] is your item(or # of tacos)
                                 // check if myItem exists in items, check if otherItem exists in items, if not then turn the string
@@ -3926,8 +3986,8 @@ module.exports.tradeCommand = function(message, args){
                                             tacoAsk: tacoAsk
                                         }
                                         activeTrades[mentionedIdString] = userTrade;
-                                        hasOpenTrade[discordUserIdString] = true;
-                                        hasOpenTrade[mentionedIdString] = true;
+                                        hasOpenTrade[discordUserIdString] = mentionedIdString;
+                                        hasOpenTrade[mentionedIdString] = discordUserIdString;
 
                                         for (var item in IdsOfItemsBeingedTraded){
                                             activeTradeItems[IdsOfItemsBeingedTraded[item]] = true;
@@ -3945,9 +4005,9 @@ module.exports.tradeCommand = function(message, args){
                                                 var itemToTradeName = activeTrades[mentionedIdString].item;
                                                 var userTradingWith = activeTrades[mentionedIdString].tradingWith;
                                                 var tradeFrom = activeTrades[mentionedIdString].tradeFrom
-                                                for (var transferId in activeTrades[discordUserIdString].idsToTransfer){
+                                                for (var transferId in activeTrades[mentionedIdString].idsToTransfer){
                                                     // delete from itemsInAuction
-                                                    var idToDelete = activeTrades[discordUserIdString].idsToTransfer[transferId];
+                                                    var idToDelete = activeTrades[mentionedIdString].idsToTransfer[transferId];
                                                     if (idToDelete){
                                                         delete activeTradeItems[idToDelete];
                                                     }
@@ -3961,7 +4021,7 @@ module.exports.tradeCommand = function(message, args){
                                                 }
                                                 message.channel.send(message.author + " your trade offer of **" + itemToTradeName + "** with **" + userTradingWith + "** has expired :x:" )
                                             }
-                                        }, 60000)
+                                        }, 15000)
                                     }
                                     else{
                                         message.channel.send(message.author + " you cannot create that trade")
@@ -3981,7 +4041,7 @@ module.exports.tradeCommand = function(message, args){
         }
     }
     else{
-        if (activeTrades[mentionedIdString]){
+        if (activeTrades[mentionedIdString] || hasOpenTrade[mentionedIdString]){
             // can't trade with the user at this time
             message.channel.send("the user is currently trading with someone else");
         }else{
@@ -3994,105 +4054,93 @@ module.exports.tradeCommand = function(message, args){
 module.exports.acceptTradeCommand = function(message, args){
     var discordUserId = message.author.id;
     var discordUserIdString = "trading-" + discordUserId
-    // arguments are 1 = user to trade with
-    var mentionedId;
-    var mentionedUser;
-    var users  = message.mentions.users
-    console.log(users);
-    users.forEach(function(user){
-        console.log(user.id);
-        mentionedId = user.id;
-        mentionedUser = user
-    })
-
-    if (mentionedUser){
-        var mentionedIdString = "trading-" + mentionedId
-        // accept the trade with the user
-        // check that the user accepting the trade has tacos to pay the tax
-        profileDB.getUserProfileData(discordUserId, function(profileErr, profileRes){
-            if (profileErr){
-                console.log(profileErr);
-            }
-            else{
-                // there is an active trade with the user
-                if (activeTrades[discordUserIdString]){
-                    var currentTacos = profileRes.data.tacos;
-                    var tacosToPay = activeTrades[discordUserIdString].tacoAsk;
-                    var tacosAuctioned = 0
-                    var itemsArray = activeTrades[discordUserIdString].idsToTransfer;
-                    if (tacosInUseAuction[discordUserId]){
-                        tacosAuctioned = tacosInUseAuction[discordUserId]
-                    }
-                    var tradeTax = Math.floor(tacosToPay * 0.1);
-                    var tacoTax = tradeTax;
-                    console.log(tacoTax);
-                    if (tradeTax < 1){
-                        tacoTax = 1;
-                    }
-                    if (tradeTax >= 1){
-                        tacoTax = tacoTax + 1
-                    }
-                    if (currentTacos - tacosAuctioned - tacosToPay >= 0){
-                        // accept the trade and transfer the item
-                        message.channel.send(":handshake:  " + message.author + " has accepted the trade of **" + activeTrades[discordUserIdString].item + "** ! " + " Bender kept `" + tacoTax + "` tacos for tax purposes.") 
-                        transferItemsAndTacos(discordUserId, mentionedId, itemsArray, tacosToPay, tacosToPay-tacoTax, function(transErr, transRes){
-                            if (transErr){
-                                console.log(transErr);
-                            }else{
-                                console.log(transRes);
-                            }
-                        })
-                        // delete the item from all the maps
-                        for (var transferId in activeTrades[discordUserIdString].idsToTransfer){
-                            // delete from itemsInAuction
-                            var idToDelete = activeTrades[discordUserIdString].idsToTransfer[transferId];
-                            if (idToDelete){
-                                delete activeTradeItems[idToDelete];
-                            }
+    // check that the user accepting the trade has tacos to pay the tax
+    profileDB.getUserProfileData(discordUserId, function(profileErr, profileRes){
+        if (profileErr){
+            console.log(profileErr);
+        }
+        else{
+            // there is an active trade with the user
+            if (activeTrades[discordUserIdString] && hasOpenTrade[discordUserIdString]){
+                var mentionedId = hasOpenTrade[discordUserIdString].substr(8);
+                var currentTacos = profileRes.data.tacos;
+                var tacosToPay = activeTrades[discordUserIdString].tacoAsk;
+                var tacosAuctioned = 0
+                var itemsArray = activeTrades[discordUserIdString].idsToTransfer;
+                if (tacosInUseAuction[discordUserId]){
+                    tacosAuctioned = tacosInUseAuction[discordUserId]
+                }
+                var tradeTax = Math.floor(tacosToPay * 0.1);
+                var tacoTax = tradeTax;
+                console.log(tacoTax);
+                if (tradeTax < 1){
+                    tacoTax = 1;
+                }
+                if (tradeTax >= 1){
+                    tacoTax = tacoTax + 1
+                }
+                if (currentTacos - tacosAuctioned - tacosToPay >= 0){
+                    // accept the trade and transfer the item
+                    message.channel.send(":handshake:  " + message.author + " has accepted the trade of **" + activeTrades[discordUserIdString].item + "** ! " + " Bender kept `" + tacoTax + "` tacos for tax purposes.") 
+                    transferItemsAndTacos(discordUserId, mentionedId, itemsArray, tacosToPay, tacosToPay-tacoTax, function(transErr, transRes){
+                        if (transErr){
+                            console.log(transErr);
+                        }else{
+                            console.log(transRes);
                         }
-                        if (hasOpenTrade[discordUserIdString]){
-                            delete hasOpenTrade[discordUserIdString];
+                    })
+                    // delete the item from all the maps
+                    for (var transferId in activeTrades[discordUserIdString].idsToTransfer){
+                        // delete from itemsInAuction
+                        var idToDelete = activeTrades[discordUserIdString].idsToTransfer[transferId];
+                        if (idToDelete){
+                            delete activeTradeItems[idToDelete];
                         }
-                        if (hasOpenTrade[mentionedIdString]){
-                            delete hasOpenTrade[mentionedIdString];
+                    }
+                    if (hasOpenTrade[discordUserIdString]){
+                        var tradeCreator = hasOpenTrade[discordUserIdString]
+                        if (hasOpenTrade[tradeCreator]){
+                            delete hasOpenTrade[tradeCreator];
                         }
-                        delete activeTrades[discordUserIdString];
+                        delete hasOpenTrade[discordUserIdString];
                     }
-                    else{
-                        message.channel.send("You can't afford that trade")
-                    }
+                    delete activeTrades[discordUserIdString];
                 }
                 else{
-                    message.channel.send(message.author + " You do not currently have open trades with " + mentionedUser.username + "!")
+                    message.channel.send("You can't afford that trade")
                 }
             }
-        })
-    }
-    else{
-        // print usage
-        message.channel.send("example use: -accept @user");
-    }
+            else{
+                message.channel.send(message.author + " You do not currently have open trades!")
+            }
+        }
+    })
 }
 
 module.exports.cancelTradeCommand = function(message, args){
     var discordUserId = message.author.id;
     var discordUserIdString = "trading-" + discordUserId
-    // arguments are 1 = user to trade with
-    var mentionedId;
-    var mentionedUser;
-    var users  = message.mentions.users
-    console.log(users);
-    users.forEach(function(user){
-        console.log(user.id);
-        mentionedId = user.id;
-        mentionedUser = user
-    })
 
-    if (mentionedUser){
-        // cancel the trade active with the mentioned user
-        var mentionedIdString = "trading-" + mentionedId
-        if (activeTrades[discordUserIdString] && activeTrades[mentionedIdString]){
-            // delete the item from all the maps
+    // cancel the active trade
+    if (hasOpenTrade[discordUserIdString]){
+        var tradingWith = hasOpenTrade[discordUserIdString]
+        // delete the item from all the maps
+        if (activeTrades[tradingWith]){
+            for (var transferId in activeTrades[tradingWith].idsToTransfer){
+                // delete from itemsInAuction
+                var idToDelete = activeTrades[tradingWith].idsToTransfer[transferId];
+                if (idToDelete){
+                    delete activeTradeItems[idToDelete];
+                }
+            }
+            if (hasOpenTrade[tradingWith]){
+                delete hasOpenTrade[tradingWith];
+                delete hasOpenTrade[discordUserIdString];
+            }
+            delete activeTrades[tradingWith];
+            message.channel.send(":x:  " + message.author + " Canceled a trade ") 
+        }
+        else{
             for (var transferId in activeTrades[discordUserIdString].idsToTransfer){
                 // delete from itemsInAuction
                 var idToDelete = activeTrades[discordUserIdString].idsToTransfer[transferId];
@@ -4100,21 +4148,16 @@ module.exports.cancelTradeCommand = function(message, args){
                     delete activeTradeItems[idToDelete];
                 }
             }
-            if (hasOpenTrade[discordUserIdString]){
+            if (hasOpenTrade[tradingWith]){
+                delete hasOpenTrade[tradingWith];
                 delete hasOpenTrade[discordUserIdString];
             }
-            if (hasOpenTrade[mentionedIdString]){
-                delete hasOpenTrade[mentionedIdString];
-            }
-            delete activeTrades[discordUserIdString];
-            message.channel.send(":x:  " + message.author + " Canceled a trade with " + mentionedUser) 
+            delete activeTrades[tradingWith];
+            message.channel.send(":x:  " + message.author + " Canceled a trade ") 
         }
-        else{
-            message.channel.send(message.author + " You do not currently have open trades with " + mentionedUser.username + "!")
-        }
+        
     }
     else{
-        // print usage
-        message.channel.send("example use: -cancel @user");
+        message.channel.send(message.author + " You do not currently have open trades !")
     }
 }
