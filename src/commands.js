@@ -1733,7 +1733,7 @@ function inventoryEmbedBuilder(message, itemsMap, allItems){
             // 
             if (allItems[key].itemraritycategory == "common" || allItems[key].itemraritycategory == "uncommon"){
                 console.log(key + " " + allItems[key].itemname)
-                inventoryString = emoji + "**"+allItems[key].itemname + "** - " +  itemsMap[key] + " - " + allItems[key].itemslot +"\n" + inventoryString;
+                inventoryString = "**"+allItems[key].itemname + "** - " +  itemsMap[key] + " - " + allItems[key].itemslot +"\n" + inventoryString;
             }
         }
     }
