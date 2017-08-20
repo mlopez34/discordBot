@@ -1302,6 +1302,7 @@ module.exports.buyPickaxeCommand = function(message){
                             // couldn't purchase stand
                         }
                         else{
+                            experience.gainExperience(message, discordUserId, EXPERIENCE_GAINS.buyPickaxe * 3 , pickaxeResponse);
                             message.channel.send(message.author + " Congratulations, you have purchased an Improved Pickaxe :pick:!");
                         }
                     })
@@ -1320,6 +1321,7 @@ module.exports.buyPickaxeCommand = function(message){
                             // couldn't purchase stand
                         }
                         else{
+                            experience.gainExperience(message, discordUserId, EXPERIENCE_GAINS.buyPickaxe * 10 , pickaxeResponse);
                             message.channel.send(message.author + " Congratulations, you have purchased the Mster Pickaxe :pick:!");
                         }
                     })

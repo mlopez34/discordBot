@@ -249,6 +249,9 @@ module.exports.purchasePickAxe = function(userId, tacosSpent, cb){
         // improved Pickaxe should always be between 100 and 500
         selectedPickaxe = "improved";
     }
+    else if (tacosSpent <= -500 ){
+        selectedPickaxe = "master";
+    }
     //console.log("new last thank: " + lastThank);
     db.none(query, [tacosSpent, userId, selectedPickaxe])
     .then(function () {
