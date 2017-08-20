@@ -22,6 +22,7 @@ var BASE_TACO_PREPARE = 10;
 var BASE_TACO_COOK = 2;
 var PICKAXE_COST = 35;
 var IMPROVED_PICKAXE_COST = 300;
+var MASTER_PICKAXE_COST = 10000;
 var PASTA_COST = 250
 var SCAVENGE_TACO_FIND_CHANCE_HIGHER = 94
 var SCAVENGE_TACO_FIND_CHANCE = 75;
@@ -37,7 +38,7 @@ var THANK_COOLDOWN_HOURS = 2;
 var SORRY_COOLDOWN_HOURS = 6;
 var COOK_COOLDOWN_HOURS = 24;
 var PREPARE_COOLDOWN_HOURS = 48;
-var SCAVENGE_COOLDOWN_HOURS = 1;
+var SCAVENGE_COOLDOWN_HOURS = 0;
 
 var activeAuctions = {};
 var itemsInAuction = {};
@@ -1288,7 +1289,7 @@ module.exports.buyPickaxeCommand = function(message){
                     })
                 }
                 else{
-                    message.channel.send(message.author + " You cannot afford the Pickaxe");
+                    message.channel.send(message.author + " You cannot afford the `Pickaxe`");
                 }
             }
             else if (pickaxeResponse.data.pickaxe == "basic"){
@@ -1306,7 +1307,25 @@ module.exports.buyPickaxeCommand = function(message){
                     })
                 }
                 else{
-                    message.channel.send(message.author + " You cannot afford the Improved Pickaxe");
+                    message.channel.send(message.author + " You cannot afford the `Improved Pickaxe`");
+                }
+            }
+            else if (pickaxeResponse.data.pickaxe == "improved"){
+                if (pickaxeResponse.data.tacos >= MASTER_PICKAXE_COST){
+                    // purchaseStand
+                    var tacosSpent = MASTER_PICKAXE_COST * -1;
+                    profileDB.purchasePickAxe(discordUserId, tacosSpent, function(err, data){
+                        if (err){
+                            console.log(err);
+                            // couldn't purchase stand
+                        }
+                        else{
+                            message.channel.send(message.author + " Congratulations, you have purchased the Mster Pickaxe :pick:!");
+                        }
+                    })
+                }
+                else{
+                    message.channel.send(message.author + " You cannot afford the `Master Pickaxe`");
                 }
             }
         }
@@ -1380,6 +1399,17 @@ function shopBuilder(message, shopData){
         embed.addBlankField(true)
         .addBlankField(false)
         .addField('Improved Pickaxe', ":small_blue_diamond::pick:", true)
+        .addField('Description', pickaxeDescription, true)
+        .addField('Cost', pickaxeCost, true)
+        .addField('Command', config.commandString + "buypickaxe", true)
+    }
+    else if (shopData.pickaxe == "improved"){
+        // improved pickaxe
+        pickaxeDescription = "The Master Pickaxe can be used to scavenge. This is the master pickaxe, your adventures will be rewarded with the greatest treasures :diamond_shape_with_a_dot_inside: .";
+        pickaxeCost = MASTER_PICKAXE_COST + " :taco:";
+        embed.addBlankField(true)
+        .addBlankField(false)
+        .addField('Improved Pickaxe', ":diamond_shape_with_a_dot_inside::pick:", true)
         .addField('Description', pickaxeDescription, true)
         .addField('Cost', pickaxeCost, true)
         .addField('Command', config.commandString + "buypickaxe", true)
@@ -1770,13 +1800,6 @@ module.exports.scavangeCommand = function (message){
     else{
         rollsCount = 1
     }
-
-    if (tacoRoll > SCAVENGE_TACO_FIND_CHANCE_HIGHER){
-        tacosFound = 2;
-    }
-    else if(tacoRoll > SCAVENGE_TACO_FIND_CHANCE){
-        tacosFound = 1
-    }
     // only scavenge if the user has a pickaxe
     profileDB.getUserProfileData( discordUserId, function(error, getUserResponse) {
         if(error){
@@ -1816,6 +1839,36 @@ module.exports.scavangeCommand = function (message){
                                 console.log(err);
                             }
                             else{
+                                var ARTIFACT_MIN_ROLL = 9995;
+                                var ANCIENT_MAX_ROLL = 9995
+                                var ANCIENT_MIN_ROLL = 9975;
+                                var RARE_MAX_ROLL = 9975;
+                                var RARE_MIN_ROLL = 9800;
+                                var UNCOMMON_MAX_ROLL = 9800;
+                                var UNCOMMON_MIN_ROLL = 8000;
+                                var COMMON_MAX_ROLL = 8000;
+                                var COMMON_ITEMS_TO_OBTAIN = 1;
+                                var TACOS_FOUND_MULTIPLIER = 1;
+                                var EXPERIENCE_MULTIPLIER = 1;
+
+                                if (getUserResponse.data.pickaxe == "improved"){
+                                    COMMON_ITEMS_TO_OBTAIN = 3
+                                    TACOS_FOUND_MULTIPLIER = 3
+                                    ARTIFACT_MIN_ROLL = 9992
+                                    ANCIENT_MAX_ROLL = 9992;
+                                    ANCIENT_MIN_ROLL = 9955;
+                                    RARE_MAX_ROLL = 9955;
+                                    RARE_MIN_ROLL = 9750;
+                                    UNCOMMON_MAX_ROLL = 9750;
+                                    EXPERIENCE_MULTIPLIER = 2;
+
+                                }
+                                else if (getUserResponse.data.pickaxe == "master"){
+                                    COMMON_ITEMS_TO_OBTAIN = 7
+                                    TACOS_FOUND_MULTIPLIER = 8
+                                    EXPERIENCE_MULTIPLIER = 6
+                                }
+
                                 var allItems = getItemResponse.data
                                 var commonItems = [];
                                 var uncommonItems = [];
@@ -1863,7 +1916,7 @@ module.exports.scavangeCommand = function (message){
                                         rarityRoll = Math.floor(Math.random() * 2000) + 8001;
                                         gotUncommon = true;
                                     }
-                                    if (rarityRoll > 9995){
+                                    if (rarityRoll > ARTIFACT_MIN_ROLL){
                                         rarityString = "artifact"
                                         var itemRoll = Math.floor(Math.random() * artifactItems.length);
                                         console.log(artifactItems[itemRoll]);
@@ -1872,7 +1925,7 @@ module.exports.scavangeCommand = function (message){
                                             highestRarityFound = 5;
                                         }
                                     }
-                                    else if(rarityRoll > 9975 && rarityRoll <= 9995){
+                                    else if(rarityRoll > ANCIENT_MIN_ROLL && rarityRoll <= ANCIENT_MAX_ROLL){
                                         rarityString = "ancient"
                                         var itemRoll = Math.floor(Math.random() * ancientItems.length);
                                         console.log(ancientItems[itemRoll]);
@@ -1881,7 +1934,7 @@ module.exports.scavangeCommand = function (message){
                                             highestRarityFound = 4;
                                         }
                                     }
-                                    else if(rarityRoll > 9800 && rarityRoll <= 9975){
+                                    else if(rarityRoll > RARE_MIN_ROLL && rarityRoll <= RARE_MAX_ROLL){
                                         rarityString = "rare"
                                         var itemRoll = Math.floor(Math.random() * rareItems.length);
                                         console.log(rareItems[itemRoll]);
@@ -1890,7 +1943,7 @@ module.exports.scavangeCommand = function (message){
                                             highestRarityFound = 3;
                                         }
                                     }
-                                    else if (rarityRoll > 8000 && rarityRoll <= 9800){
+                                    else if (rarityRoll > UNCOMMON_MIN_ROLL && rarityRoll <= UNCOMMON_MAX_ROLL){
                                         rarityString = "uncommon"
                                         var itemRoll = Math.floor(Math.random() * uncommonItems.length);
                                         console.log(uncommonItems[itemRoll]);
@@ -1903,8 +1956,15 @@ module.exports.scavangeCommand = function (message){
                                         rarityString = "common"
                                         var itemRoll = Math.floor(Math.random() * commonItems.length);
                                         console.log(commonItems[itemRoll]);
+                                        commonItems[itemRoll].itemAmount = COMMON_ITEMS_TO_OBTAIN
                                         itemsObtainedArray.push( commonItems[itemRoll] );
                                     }
+                                }
+                                if (tacoRoll > SCAVENGE_TACO_FIND_CHANCE_HIGHER){
+                                    tacosFound = 2 * TACOS_FOUND_MULTIPLIER;
+                                }
+                                else if(tacoRoll > SCAVENGE_TACO_FIND_CHANCE){
+                                    tacosFound = 1 * TACOS_FOUND_MULTIPLIER;
                                 }
                                 // send the items to be written all at once
                                 addToUserInventory(discordUserId, itemsObtainedArray);
@@ -1918,7 +1978,7 @@ module.exports.scavangeCommand = function (message){
                                     }
                                     else{
                                         console.log(updateLSres);
-                                        experience.gainExperience(message, discordUserId, EXPERIENCE_GAINS.scavenge , getUserResponse);
+                                        experience.gainExperience(message, discordUserId, EXPERIENCE_GAINS.scavenge * EXPERIENCE_MULTIPLIER, getUserResponse);
                                     }
                                 })
                                 // add the tacos to user
@@ -1987,7 +2047,8 @@ function scavengeEmbedBuilder(message, itemsScavenged, tacosFound){
     // create a quoted message of all the items
     var itemsMessage = ""
     for (var item in itemsScavenged){
-        itemsMessage = itemsMessage + "[**" + itemsScavenged[item].itemraritycategory +"**] " + "**"  + itemsScavenged[item].itemname + "** - " + itemsScavenged[item].itemdescription + ", " +
+        var itemAmount = itemsScavenged[item].itemAmount ? itemsScavenged[item].itemAmount : 1;
+        itemsMessage = itemsMessage + "**" +itemAmount + "**x " + "[**" + itemsScavenged[item].itemraritycategory +"**] " + "**"  + itemsScavenged[item].itemname + "** - " + itemsScavenged[item].itemdescription + ", " +
         itemsScavenged[item].itemslot + ", " +itemsScavenged[item].itemstatistics + " \n";
     }
     if (tacosFound > 0){
