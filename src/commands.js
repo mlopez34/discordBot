@@ -38,7 +38,7 @@ var THANK_COOLDOWN_HOURS = 2;
 var SORRY_COOLDOWN_HOURS = 6;
 var COOK_COOLDOWN_HOURS = 24;
 var PREPARE_COOLDOWN_HOURS = 48;
-var SCAVENGE_COOLDOWN_HOURS = 0;
+var SCAVENGE_COOLDOWN_HOURS = 1;
 
 var activeAuctions = {};
 var itemsInAuction = {};
@@ -4021,7 +4021,7 @@ module.exports.tradeCommand = function(message, args){
                                                 }
                                                 message.channel.send(message.author + " your trade offer of **" + itemToTradeName + "** with **" + userTradingWith + "** has expired :x:" )
                                             }
-                                        }, 15000)
+                                        }, 60000)
                                     }
                                     else{
                                         message.channel.send(message.author + " you cannot create that trade")
