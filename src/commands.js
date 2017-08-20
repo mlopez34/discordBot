@@ -1624,19 +1624,35 @@ function raresEmbedBuilder(message, itemsMap, allItems, long){
         if (itemsMap.hasOwnProperty(key)) {
             // 
             if (allItems[key].itemraritycategory == "rare"
+                || allItems[key].itemraritycategory == "rare+"
+                || allItems[key].itemraritycategory == "rare++"
                 || allItems[key].itemraritycategory == "ancient"
+                || allItems[key].itemraritycategory == "ancient+"
+                || allItems[key].itemraritycategory == "ancient++"
                 || allItems[key].itemraritycategory == "artifact"
                 || allItems[key].itemraritycategory == "myth"){
                 console.log(key + " " + allItems[key].itemname)
                 var emoji = "";
                 if (allItems[key].itemraritycategory === "artifact"){
-                    emoji = ":small_orange_diamond::small_orange_diamond::small_orange_diamond: "
+                    emoji = ":diamond_shape_with_a_dot_inside:  "
                 }
                 else if (allItems[key].itemraritycategory === "ancient"){
-                    emoji = ":small_orange_diamond::small_orange_diamond: "
+                    emoji = ":small_orange_diamond: "
                 }
                 else if (allItems[key].itemraritycategory === "rare"){
-                    emoji = ":small_orange_diamond: "
+                    emoji = ":small_blue_diamond:  "
+                }
+                else if (allItems[key].itemraritycategory === "rare+"){
+                    emoji = ":large_blue_diamond: "
+                }
+                else if (allItems[key].itemraritycategory === "ancient+"){
+                    emoji = ":large_orange_diamond: "
+                }
+                else if (allItems[key].itemraritycategory === "ancient++"){
+                    emoji = ":diamonds: "
+                }
+                else if (allItems[key].itemraritycategory === "rare++"){
+                    emoji = ":diamonds: "
                 }
                 if (long){
                     embed.addField(emoji + " " + allItems[key].itemname, itemsMap[key] + " - " + allItems[key].itemslot + " - " + allItems[key].itemstatistics, true)
@@ -1717,16 +1733,6 @@ function inventoryEmbedBuilder(message, itemsMap, allItems){
             // 
             if (allItems[key].itemraritycategory == "common" || allItems[key].itemraritycategory == "uncommon"){
                 console.log(key + " " + allItems[key].itemname)
-                var emoji = "";
-                if (allItems[key].itemraritycategory === "artifact"){
-                    emoji = ":small_orange_diamond::small_orange_diamond::small_orange_diamond: "
-                }
-                else if (allItems[key].itemraritycategory === "ancient"){
-                    emoji = ":small_orange_diamond::small_orange_diamond: "
-                }
-                else if (allItems[key].itemraritycategory === "rare"){
-                    emoji = ":small_orange_diamond: "
-                }
                 inventoryString = emoji + "**"+allItems[key].itemname + "** - " +  itemsMap[key] + " - " + allItems[key].itemslot +"\n" + inventoryString;
             }
         }
@@ -2979,29 +2985,148 @@ module.exports.useCommand = function(message, args){
     }
 }
 
-/*
+
 module.exports.combineCommand = function(message, args){
     // combine certain things (only terry cloth, and soil for now?)
     console.log(args);
     var discordUserId = message.author.id;
-    var users  = message.mentions.users;
-    var mentionedId;
-    var mentionedUser;
-    var mentionedUserName;
-    console.log(users);
-    users.forEach(function(user){
-        console.log(user.id);
-        mentionedId = user.id;
-        mentionedUser = user
-        mentionedUserName = user.username;
-    })
+
+    if (args && args.length > 1 ){
+        var myItemShortName =  args[1];
+        var itemCount = 1
+        // get all the items available
+        profileDB.getUserItems(discordUserId, function(err, inventoryResponse){
+            if (err){
+                console.log(err);
+            }
+            else{
+                // 
+                // get all the data for each item
+                var itemsInInventoryCountMap = {};
+                var itemsMapbyShortName = {};
+                var itemsMapById = {};
+                var itemsBeingedCombined = []
+                profileDB.getItemData(function(error, allItemsResponse){
+                    for (var index in allItemsResponse.data){
+                        itemsMapbyShortName[allItemsResponse.data[index].itemshortname] = allItemsResponse.data[index];
+                    }
+                    for (var index in allItemsResponse.data){
+                        itemsMapById[allItemsResponse.data[index].id] = allItemsResponse.data[index];
+                    }
+                    //console.log(allItemsResponse.data);
+                    for (var item in inventoryResponse.data){
+                        var validItem = useItem.itemValidate(inventoryResponse.data[item]);
+                        var notWearing = useItem.itemNotWearing(inventoryResponse.data[item])
+                        var auctionedItem = false;
+                        var ItemInQuestion = inventoryResponse.data[item]
+
+                        if (itemsInAuction[inventoryResponse.data[item].id]){
+                            auctionedItem = true;
+                        }
+                        var itemBeingTraded = false;
+                        if (activeTradeItems[inventoryResponse.data[item].id]){
+                            itemBeingTraded = true;
+                        }
+                        if (!itemsInInventoryCountMap[inventoryResponse.data[item].itemid] 
+                            && validItem && notWearing && !auctionedItem && !itemBeingTraded){
+                            // item hasnt been added to be counted, add it as 1
+                            itemsInInventoryCountMap[inventoryResponse.data[item].itemid] = 1;
+                            if (itemsMapbyShortName[myItemShortName] 
+                                && itemsMapById[ItemInQuestion.itemid].itemshortname === myItemShortName ){
+                                var rarityOfItem = itemsMapbyShortName[myItemShortName].itemraritycategory
+                                if (rarityOfItem == "rare"){
+                                    itemCount = 5
+                                }else if (rarityOfItem == "ancient"){
+                                    itemCount = 4
+                                }
+                                else if (rarityOfItem == "rare+"){
+                                    itemCount = 5
+                                }
+                                else if (rarityOfItem == "ancient+"){
+                                    itemCount = 4
+                                }
+                            }
+                            console.log(ItemInQuestion);
+                            if (itemsMapbyShortName[myItemShortName] 
+                                && itemsBeingedCombined.length < itemCount
+                                && itemsMapById[ItemInQuestion.itemid].itemshortname === myItemShortName){
+                                    itemsBeingedCombined.push(ItemInQuestion);
+                            }
+                        }
+                        else if (validItem && notWearing && !auctionedItem && !itemBeingTraded){
+                            itemsInInventoryCountMap[inventoryResponse.data[item].itemid] = itemsInInventoryCountMap[inventoryResponse.data[item].itemid] + 1;
+                            if (itemsMapbyShortName[myItemShortName] 
+                                && itemsBeingedCombined.length < itemCount
+                                && itemsMapById[ItemInQuestion.itemid].itemshortname === myItemShortName){
+                                    itemsBeingedCombined.push(ItemInQuestion);
+                            }
+                        }
+                    }
+                    var combineToId = itemsMapbyShortName[myItemShortName] ? itemsMapbyShortName[myItemShortName].combinetoid : undefined;
+                    if (combineToId){
+                        // item short name is valid
+                        if (itemsMapbyShortName[myItemShortName]){
+                            var idOfMyItem = itemsMapbyShortName[myItemShortName].id;
+
+                            if (itemsInInventoryCountMap[idOfMyItem] && 
+                                itemsInInventoryCountMap[idOfMyItem] >= itemCount){
+                                // combine all the items into a next level item
+                                var itemToCreate = itemsMapById[combineToId];
+                                var itemToCreateById = itemsMapById[combineToId].id;
+                                var itemToCreateByName = itemsMapById[combineToId].itemname
+                                
+                                //create an item of that kind for the user and set all the other items to 'used'
+                                profileDB.addNewItemToUser(discordUserId, [itemToCreate], function(createErr, createRes){
+                                    if (createErr){
+                                        console.log(createErr);
+                                    }
+                                    else{
+                                        console.log(createRes);
+                                        profileDB.bulkUpdateItemStatus(itemsBeingedCombined, "used", function(combineErr, combineRes){
+                                            if (combineErr){
+                                                console.log(combineErr);
+                                            }else{
+                                                console.log(combineRes);
+                                                combineEmbedBuilder(message, itemToCreateByName, itemToCreate);
+                                            }
+                                        })
+                                    }
+                                })
+                            }
+                            else{
+                                message.channel.send("unable to combine.. you need " + itemCount);
+                            }
+                        }
+                    }
+                    else{
+                        message.channel.send("cannot combine that item");
+                    }
+                })
+            }
+        })
+    }else{
+        //print usage
+        message.channel.send("example use: -combine loincloth OR -combine polyester");
+    }
 
     // combine rock for boulder, 5 rares to make 1 improved, 5 improved to make 1 refined
     // combine 2 ancients to make 1 improved ancients, and 2 improved to make 1 refined
     // combine 2 diff artifacts to make a myth item
     // combine different rares to make something else?
 }
-*/
+
+function combineEmbedBuilder(message, itemToCreateByName, ItemDetails){
+    // create a quoted message of all the items
+    var description = "**Item Stats:** " + ItemDetails.itemstatistics + "\n" + "**Item Slot:** " + ItemDetails.itemslot + "\n" + "**To Wear:** -puton " + ItemDetails.itemshortname;
+    const embed = new Discord.RichEmbed()
+    .setAuthor(message.author.username + " has created " + itemToCreateByName)
+    .addField(ItemDetails.itemdescription, description, true)
+    .setDescription( ":sparkles: :sparkles: :sparkles:" )
+    .setThumbnail(message.author.avatarURL)
+    .setColor(0xFF7A1C)
+    message.channel.send({embed});
+}
+
 module.exports.wearingCommand = function(message, args){
     // create embed of items the user is wearing
     var discordUserId = message.author.id;
@@ -3222,27 +3347,7 @@ module.exports.putonCommand = function(message, args, retry){
                                         itemsMapbyName[allItemsResponse.data[index].itemshortname] = allItemsResponse.data[index];
                                     }
                                     // have the items count map, have the items mapbyid
-                                    var inventoryString = "";
-                                    for (var key in itemsInInventoryCountMap) {
-                                        if (itemsInInventoryCountMap.hasOwnProperty(key)) {
-                                            // 
-                                            if (itemsMapbyId[key].itemraritycategory == "rare" || itemsMapbyId[key].itemraritycategory == "ancient"){
-                                                console.log(key + " " + itemsMapbyId[key].itemname)
-                                                var emoji = "";
-                                                if (itemsMapbyId[key].itemraritycategory === "artifact"){
-                                                    emoji = ":small_orange_diamond::small_orange_diamond::small_orange_diamond: "
-                                                }
-                                                else if (itemsMapbyId[key].itemraritycategory === "ancient"){
-                                                    emoji = ":small_orange_diamond::small_orange_diamond: "
-                                                }
-                                                else if (itemsMapbyId[key].itemraritycategory === "rare"){
-                                                    emoji = ":small_orange_diamond: "
-                                                }
-                                                inventoryString = emoji + "**"+itemsMapbyId[key].itemname + "** - " +  itemsInInventoryCountMap[key] + " - " + itemsMapbyId[key].itemslot +"\n" + inventoryString;
-                                            }
-                                        }
-                                    }
-                                    console.log(inventoryString);
+                                    
                                     // itemsMapbyId is the map of all the items, itemsInInventoryCountMap has the count of all these items
                                     
                                     // have the item available to wear
@@ -3672,17 +3777,19 @@ module.exports.bidCommand = function(message, args){
                         if (lastHighestBidder){
                             tacosInUseAuction[lastHighestBidder] = tacosInUseAuction[lastHighestBidder] - auctionToBidOn.tacoBid
                         }
-
+                        
                         auctionToBidOn.tacoBid = biddingTacos;
                         auctionToBidOn.highestBidder = discordUserId;
                         auctionToBidOn.highestBidderName = message.author.username;
                         auctionToBidOn.highestBidderUserObj = message.author;
+                        // get the number of items being auctioned
+                        var itemCountBeingAuctioned = auctionToBidOn.idsToTransfer.length
                         if (!tacosInUseAuction[discordUserId]){
                             tacosInUseAuction[discordUserId] = 0;
                         }
                         // cannot use these tacos
                         tacosInUseAuction[discordUserId] = tacosInUseAuction[discordUserId] + biddingTacos;
-                        message.channel.send(message.author + " is now the highest bidder on **" + auctionToBidOn.itemName + "** with `" + biddingTacos + "` tacos!")
+                        message.channel.send(message.author + " is now the highest bidder on **" + auctionToBidOn.itemName + "** x`" + itemCountBeingAuctioned + "` with `" + biddingTacos + "` tacos!")
                     }
                     else{
                         if (!auctionToBidOn){
