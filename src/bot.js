@@ -192,6 +192,9 @@ client.on('message', function(message){
             else if (commandIs("cancel", message)){
                 commands.cancelTradeCommand(message, args);
             }
+            else if (commandIs("combine", message)){
+                commands.combineCommand(message, args);
+            }
             /*
             else if (commandIs("game", message)){
                 commands.gameCommand(message);
