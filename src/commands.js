@@ -227,7 +227,7 @@ module.exports.thankCommand = function(message){
                                     })
                                     // send message that the user has 1 more taco
                                     if (extraTacosFromItems > 0){
-                                        message.channel.send(message.author + " thanked " + mentionedUser.username + ", they received a taco! :taco:" + "you received `" + extraTacosFromItems + "` extra tacos");
+                                        message.channel.send(message.author + " thanked " + mentionedUser.username + ", they received a taco! :taco:" + " you received `" + extraTacosFromItems + "` extra tacos");
                                     }
                                     else{
                                         message.channel.send(message.author + " thanked " + mentionedUser.username + ", they received a taco! :taco:");
@@ -365,7 +365,7 @@ module.exports.sorryCommand = function(message){
                                     })
                                     // send message that the user has 1 more taco
                                     if (extraTacosFromItems > 0){
-                                        message.channel.send(message.author + " apologized to " + mentionedUser + ", they received a taco! :taco:" + " " + "received `" + extraTacosFromItems + "` extra tacos");
+                                        message.channel.send(message.author + " apologized to " + mentionedUser + ", they received a taco! :taco:" + " " + " received `" + extraTacosFromItems + "` extra tacos");
                                     }else{
                                         message.channel.send(message.author + " apologized to " + mentionedUser + ", they received a taco! :taco:");
                                     }
@@ -1733,7 +1733,7 @@ function inventoryEmbedBuilder(message, itemsMap, allItems){
             // 
             if (allItems[key].itemraritycategory == "common" || allItems[key].itemraritycategory == "uncommon"){
                 console.log(key + " " + allItems[key].itemname)
-                inventoryString = emoji + "**"+allItems[key].itemname + "** - " +  itemsMap[key] + " - " + allItems[key].itemslot +"\n" + inventoryString;
+                inventoryString = "**"+allItems[key].itemname + "** - " +  itemsMap[key] + " - " + allItems[key].itemslot +"\n" + inventoryString;
             }
         }
     }
@@ -2558,7 +2558,7 @@ module.exports.fetchCommand = function(message, args){
                                     experience.gainExperience(message, discordUserId, (EXPERIENCE_GAINS.perFetchCd * PETS_AVAILABLE[userPet].fetch) , fetchResponse);
                                     // user's pet fetched some tacos
                                     if (extraTacosFromItems > 0){
-                                        message.channel.send("**" + userPetName + "** fetched:` " + fetchTacos + "` tacos :taco: \n" + PETS_AVAILABLE[userPet].emoji + " " + PETS_AVAILABLE[userPet].speak   + + "you received `" + extraTacosFromItems + "` extra tacos");
+                                        message.channel.send("**" + userPetName + "** fetched:` " + fetchTacos + "` tacos :taco: \n" + PETS_AVAILABLE[userPet].emoji + " " + PETS_AVAILABLE[userPet].speak   + + " you received `" + extraTacosFromItems + "` extra tacos");
                                     }else{
                                         message.channel.send("**" + userPetName + "** fetched:` " + fetchTacos + "` tacos :taco: \n" + PETS_AVAILABLE[userPet].emoji + " " + PETS_AVAILABLE[userPet].speak);
                                     }
