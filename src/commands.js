@@ -4152,7 +4152,7 @@ module.exports.cancelTradeCommand = function(message, args){
                 delete hasOpenTrade[tradingWith];
                 delete hasOpenTrade[discordUserIdString];
             }
-            delete activeTrades[tradingWith];
+            delete activeTrades[discordUserIdString];
             message.channel.send(":x:  " + message.author + " Canceled a trade ") 
         }
         
