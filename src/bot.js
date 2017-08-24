@@ -203,7 +203,7 @@ client.on('message', function(message){
 
             
         }
-        else if (message.channel.type == "text" && message.channel.name == MAIN_CHANNEL && !message.channel.author.bot){
+        else if (message.channel.type == "text" && message.channel.name == MAIN_CHANNEL && !message.author.bot){
              if( commandIs("thank", message )){
                 commands.thankCommand(message);
             }
