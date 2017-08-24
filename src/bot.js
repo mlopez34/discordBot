@@ -75,7 +75,7 @@ client.on('message', function(message){
             }
         }
         // commands
-        if (message.channel.type == "text" && message.channel.name == BOT_CHANNEL){
+        if (message.channel.type == "text" && message.channel.name == BOT_CHANNEL && !message.author.bot){
             if( commandIs("thank", message )){
                 commands.thankCommand(message);
             }
@@ -203,7 +203,7 @@ client.on('message', function(message){
 
             
         }
-        else if (message.channel.type == "text" && message.channel.name == MAIN_CHANNEL){
+        else if (message.channel.type == "text" && message.channel.name == MAIN_CHANNEL && !message.author.bot){
              if( commandIs("thank", message )){
                 commands.thankCommand(message);
             }
