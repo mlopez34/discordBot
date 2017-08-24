@@ -80,32 +80,162 @@ var PETS_AVAILABLE = {
         speak: "WOOF",
         emoji: ":dog:",
         fetch: 2,
-        cooldown: 6
+        cooldown: 6,
+        reputation: "liked",
+        repLevel: 2
     },
     cat: {
         speak: "MEOW",
         emoji: ":cat:",
         fetch: 1,
-        cooldown: 3
+        cooldown: 3,
+        reputation: "liked",
+        repLevel: 2
     },
     monkey: {
         speak: "HUEAHuaHEUEHAHUEAUHAEEA",
         emoji: ":monkey:",
         fetch: 3,
-        cooldown: 9
+        cooldown: 9,
+        reputation: "liked",
+        repLevel: 2
     },
     pig: {
         speak: "OINK OINK OINK OINK",
         emoji: ":pig:",
         fetch: 5,
-        cooldown: 27
+        cooldown: 27,
+        reputation: "liked",
+        repLevel: 2
     },
     rabbit: {
         speak: ".....",
         emoji: ":rabbit:",
         fetch: 1,
-        cooldown: 3
-    }
+        cooldown: 3,
+        reputation: "liked",
+        repLevel: 2
+    },
+    wolf: {
+        speak: ".....",
+        emoji: ":wolf:",
+        fetch: 2,
+        cooldown: 6,
+        reputation: "respected",
+        repLevel: 3
+    },
+    butterfly: {
+        speak: ".....",
+        emoji: ":butterfly:",
+        fetch: 1,
+        cooldown: 3,
+        reputation: "respected",
+        repLevel: 3
+    },
+    penguin: {
+        speak: ".....",
+        emoji: ":penguin:",
+        fetch: 2,
+        cooldown: 6,
+        reputation: "respected",
+        repLevel: 3
+    },
+    scorpion: {
+        speak: ".....",
+        emoji: ":scorpion:",
+        fetch: 1,
+        cooldown: 3,
+        reputation: "respected",
+        repLevel: 3
+    },
+    elephant: {
+        speak: ".....",
+        emoji: ":elephant:",
+        fetch: 5,
+        cooldown: 27,
+        reputation: "respected",
+        repLevel: 3
+    },
+    horse: {
+        speak: ".....",
+        emoji: ":horse:",
+        fetch: 2,
+        cooldown: 6,
+        reputation: "respected",
+        repLevel: 3
+    },
+    tiger: {
+        speak: ".....",
+        emoji: ":tiger:",
+        fetch: 2,
+        cooldown: 6,
+        reputation: "admired",
+        repLevel: 4
+    },
+    gorilla: {
+        speak: ".....",
+        emoji: ":gorilla:",
+        fetch: 4,
+        cooldown: 12,
+        reputation: "admired",
+        repLevel: 4
+    },
+    snake: {
+        speak: ".....",
+        emoji: ":gorilla:",
+        fetch: 1,
+        cooldown: 3,
+        reputation: "admired",
+        repLevel: 4
+    },
+    dolphin: {
+        speak: ".....",
+        emoji: ":dolphin:",
+        fetch: 1,
+        cooldown: 3,
+        reputation: "admired",
+        repLevel: 4
+    },
+    rhino: {
+        speak: ".....",
+        emoji: ":rhino:",
+        fetch: 5,
+        cooldown: 27,
+        reputation: "admired",
+        repLevel: 4
+    },
+    crocodile: {
+        speak: ".....",
+        emoji: ":crocodile:",
+        fetch: 4,
+        cooldown: 12,
+        reputation: "admired",
+        repLevel: 4
+    },
+    chipmunk: {
+        speak: ".....",
+        emoji: ":chipmunk:",
+        fetch: 2,
+        cooldown: 6,
+        reputation: "admired",
+        repLevel: 4
+    },
+    unicorn: {
+        speak: ".....",
+        emoji: ":unicorn:",
+        fetch: 1,
+        cooldown: 3,
+        reputation: "glorified",
+        repLevel: 5
+    },
+    dragon: {
+        speak: ".....",
+        emoji: ":dragon:",
+        fetch: 5,
+        cooldown: 27,
+        reputation: "glorified",
+        repLevel: 5
+    },
 }
 
 var REPUTATIONS = config.reputations;
@@ -1355,7 +1485,7 @@ function profileBuilder(message, profileData){
     
     .addField('Taco Stands :bus:', profileData.userTacoStands, true)
     .addField('Level ' + profileData.level + ' :trident:', "**Next Level:** " + profileData.experience + " / " + profileData.nextLevelExp, true)
-    .addField('Bender Reputation :statue_of_liberty:', " **"+ profileData.reputationStatus +"** : " + profileData.reputation + " / " + REPUTATIONS[profileData.nextReputation] , true)
+    .addField('Bender Reputation :statue_of_liberty:', " **"+ profileData.reputationStatus +"** : " + profileData.reputation + " / " + REPUTATIONS[profileData.nextReputation].repToGet , true)
     if (profileData.petname){
         embed.addField('Pet', profileData.petname + " " + profileData.petemoji , true)
     }
@@ -1425,15 +1555,22 @@ function shopBuilder(message, shopData){
     .addField('Command', config.commandString + "buyPasta", true)
     
     // allow for pet to be purchased
-    if (shopData.repstatus && (shopData.repstatus.toLowerCase() == "liked" 
-        || shopData.repstatus.toLowerCase() == "respected" 
-        || shopData.repstatus.toLowerCase() == "admired" 
-        || shopData.repstatus.toLowerCase() == "glorified") ){
-        var petDescription = "Purchase a pet! Pets are always great companions to have. You may only have 1 pet, buying a new pet will replace the old one - current pets available: dog, cat, monkey, pig, rabbit";
+    if (shopData.repstatus && (REPUTATIONS[shopData.repstatus.toLowerCase()]) ){
+        var userRepLevel = REPUTATIONS[shopData.repstatus.toLowerCase()].level;
+        var petsToPurchase = "";
+        for (var key in PETS_AVAILABLE) {
+            if (PETS_AVAILABLE.hasOwnProperty(key)) {
+                // add the pets to petsToPurchase if the userRepLevel >= repLevel
+                if (userRepLevel >= PETS_AVAILABLE[key].repLevel){
+                    petsToPurchase = petsToPurchase + key +  ", "
+                }
+            }
+        }
+        var petDescription = "Purchase a pet! Pets are always great companions to have. You may only have 1 pet, buying a new pet will replace the old one - current pets available: " + petsToPurchase;
         var petCost = PET_COST + " :taco:";
         embed.addBlankField(true)
         .addBlankField(false)
-        .addField('Pet (Liked Reputation Only)', ":dog2:", true)
+        .addField('Pet (Liked Reputation or Better Only)', ":dog2:", true)
         .addField('Description', petDescription, true)
         .addField('Cost', petCost, true)
         .addField('Command', config.commandString + "buypet [kind of pet] [pet name]", true)
@@ -1825,7 +1962,6 @@ module.exports.scavangeCommand = function (message){
                 if (wearErr){
                     console.log(wearErr);
                 }else{
-                    console.log("asf " + wearRes);
                     var minutesToRemove = wearStats.calculateMinutesReduced(wearRes, "scavenge");
                     console.log("MINUTES TO REMOVE " + minutesToRemove);
                     //check for more than 1 hours
@@ -1987,7 +2123,7 @@ module.exports.scavangeCommand = function (message){
                                 ///////// CALCULATE THE EXTRA TACOS HERE 
                                 var extraTacosFromItems = wearStats.calculateExtraTacos(wearRes, "scavenge"); // 0 or extra
                                 if (extraTacosFromItems > 0){
-                                    message.channel.send(message.author + " received `" + extraTacosFromItems + "` for scavenging! :taco:" + "received `" + extraTacosFromItems + "` extra tacos" );
+                                    message.channel.send(message.author + " received `" + extraTacosFromItems + "` for scavenging! :taco:" + " received `" + extraTacosFromItems + "` extra tacos" );
                                 }
                                 profileDB.updateUserTacos(discordUserId, tacosFound + extraTacosFromItems, function(updateLSErr, updateLSres){
                                     if(updateLSErr){
@@ -2519,16 +2655,14 @@ module.exports.buypetCommand = function(message, args){
                         console.log(err);
                     }
                     else{
-
-                        if (buyPetResponse.data.repstatus && (buyPetResponse.data.repstatus.toLowerCase() == "liked" 
-                            || buyPetResponse.data.repstatus.toLowerCase() == "respected" 
-                            || buyPetResponse.data.repstatus.toLowerCase() == "admired" 
-                            || buyPetResponse.data.repstatus.toLowerCase() == "glorified") ){
+                        var userReputation = buyPetResponse.data.repstatus;
+                        var userRepLevel = REPUTATIONS[userReputation.toLowerCase()] ? REPUTATIONS[userReputation.toLowerCase()].level : 1;
+                        if (userReputation && (REPUTATIONS[userReputation.toLowerCase()]) ){
                             // if user has enough tacos to purchase the stand, add 1 tree, subtract x tacos
                             var achievements = buyPetResponse.data.achievements;
                             var userTacos = buyPetResponse.data.tacos;
                             if (userTacos >= PET_COST){
-                                if (PETS_AVAILABLE[pet] != undefined){
+                                if (PETS_AVAILABLE[pet] != undefined && userRepLevel && userRepLevel >= PETS_AVAILABLE[pet].repLevel){
                                     // can afford the pet update user pet, take away tacos.
                                     var threedaysAgo = new Date();
                                     threedaysAgo = new Date(threedaysAgo.setHours(threedaysAgo.getHours() - 72));
