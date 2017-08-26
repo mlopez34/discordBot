@@ -195,7 +195,17 @@ client.on('message', function(message){
             else if (commandIs("combine", message)){
                 commands.combineCommand(message, args);
             }
+            else if (commandIs("agree", message)){
+                commands.agreeTermsCommand(message, args);
+            }
+            else if (commandIs("deny", message)){
+                commands.denyTermsCommand(message, args);
+            }
             /*
+            else if (commandIs("table", message)){
+                commands.createTable(message, args, client);
+            }
+            
             else if (commandIs("game", message)){
                 commands.gameCommand(message);
             }
