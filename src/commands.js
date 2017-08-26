@@ -39,6 +39,8 @@ var SORRY_COOLDOWN_HOURS = 6;
 var COOK_COOLDOWN_HOURS = 24;
 var PREPARE_COOLDOWN_HOURS = 48;
 var SCAVENGE_COOLDOWN_HOURS = 1;
+// make recipe be available at lvl 2 reputation
+var ARTIFACT_RECIPE_COST = 1300;
 
 var activeAuctions = {};
 var itemsInAuction = {};
@@ -46,6 +48,8 @@ var tacosInUseAuction = {};
 var activeTrades = {}
 var hasOpenTrade = {};
 var activeTradeItems = {}
+
+var NeedsToAgree = {}
 
 var EXPERIENCE_GAINS = {
     thank: 2,
@@ -182,7 +186,7 @@ var PETS_AVAILABLE = {
     },
     snake: {
         speak: ".....",
-        emoji: ":gorilla:",
+        emoji: ":snake:",
         fetch: 1,
         cooldown: 3,
         reputation: "admired",
@@ -235,7 +239,7 @@ var PETS_AVAILABLE = {
         cooldown: 27,
         reputation: "glorified",
         repLevel: 5
-    },
+    }
 }
 
 var REPUTATIONS = config.reputations;
@@ -254,40 +258,11 @@ module.exports.thankCommand = function(message){
     })
     
     // check the user mentioned someone, and the user is not the same user
-    if ( message.mentions.users.size > 0 && discordUserId != mentionedId ){
+    if ( message.mentions.users.size > 0 && discordUserId != mentionedId && !NeedsToAgree[mentionedId] ){
         profileDB.getUserProfileData( discordUserId, function(err, thankResponse) {
             if(err){
                 console.log("in error : " + err.code);
-                // user doesn't exist
-                if(err.code === 0){
-                    // create new user
-                    var now = new Date();
-                    var threedaysAgo = new Date();
-                    threedaysAgo = new Date(threedaysAgo.setHours(threedaysAgo.getHours() - 72));
-                    var userData = {
-                        discordId: discordUserId,
-                        tacos: 0,
-                        birthdate: "2001-10-05",
-                        lastthanktime: threedaysAgo,
-                        lastcooktime: threedaysAgo,
-                        lastsorrytime: threedaysAgo,
-                        lastscavangetime: threedaysAgo,
-                        tacostands: 0,
-                        welcomed: false,
-                        lastpreparetime: threedaysAgo,
-                        pickaxe: "none",
-                        map: false,
-                        phone: false
-                    }
-                    profileDB.createUserProfile(userData, function(createerr, createUserResponse){
-                        if (createerr){
-                            console.log(createerr); // cant create user RIP
-                        }
-                        else{
-                            exports.thankCommand(message);
-                        }
-                    })
-                }
+                agreeToTerms(message, discordUserId);
             }else{
                 var userLevel = thankResponse.data.level;
                 wearStats.getUserWearingStats(message, discordUserId, userLevel, function(wearErr, wearRes){
@@ -297,7 +272,6 @@ module.exports.thankCommand = function(message){
                         console.log(wearRes);
                         var minutesToRemove = wearStats.calculateMinutesReduced(wearRes, "thank");
                         console.log("MINUTES TO REMOVE " + minutesToRemove);
-                        // continue with task
                         // check against thank timestamp and if 2 hours have passed
                         var now = new Date();
                         var twoHoursAgo = new Date();
@@ -308,33 +282,12 @@ module.exports.thankCommand = function(message){
 
                         if ( twoHoursAgo > thankResponse.data.lastthanktime ){
                             ///////// CALCULATE THE EXTRA TACOS HERE 
-
                             var extraTacosFromItems = wearStats.calculateExtraTacos(wearRes, "thank"); // 0 or extra
                             // add tacos to user's profile if they got extra tacos
                             profileDB.updateUserTacos(mentionedId, 1, function(updateerr, updateResponse) {
                                 if (updateerr){
                                     console.log(updateerr);
-                                    var mentionedData = initialUserProfile(mentionedId);
-                                    mentionedData.tacos = mentionedData.tacos + 1;
-
-                                    // create mentionedId
-                                    profileDB.createUserProfile(mentionedData, function(createerr, createUserResponse){
-                                        if (createerr){
-                                            console.log(createerr); // cant create user RIP
-                                        }
-                                        else{
-                                            message.channel.send(message.author + " thanked " + mentionedUser.username + ", they received a taco! :taco:");
-                                            stats.statisticsManage(discordUserId, "thankcount", 1, function(staterr, statSuccess){
-                                                if (staterr){
-                                                    console.log(staterr);
-                                                }
-                                                else{
-                                                    // check achievements??
-                                                    getProfileForAchievement(discordUserId, message, thankResponse)
-                                                }
-                                            })
-                                        }
-                                    }) 
+                                    message.channel.send("The user has not yet agreed to the terms");
                                 }
                                 else{
                                     profileDB.updateUserTacosThank(discordUserId, extraTacosFromItems, function(updateerr, updateResponse) {
@@ -376,8 +329,9 @@ module.exports.thankCommand = function(message){
             }
         });
     }
-    else{
+    else if (NeedsToAgree[mentionedId]){
         //message.channel.send(message.author + " You must mention a user or a user that isn't you whom you want to thank!");
+        message.channel.send("the user has not yet agreed to the terms!")
     }
 }
 
@@ -394,40 +348,10 @@ module.exports.sorryCommand = function(message){
         mentionedUser = user.username
     })
 
-    if ( message.mentions.users.size > 0 && discordUserId != mentionedId ){
+    if ( message.mentions.users.size > 0 && discordUserId != mentionedId && !NeedsToAgree[mentionedId]){
         profileDB.getUserProfileData( discordUserId, function(err, sorryResponse) {
             if(err){
-                console.log("in error : " + err.code);
-                // user doesn't exist
-                if(err.code === 0){
-                    // create new user
-                    var now = new Date();
-                    var threedaysAgo = new Date();
-                    threedaysAgo = new Date(threedaysAgo.setHours(threedaysAgo.getHours() - 72));
-                    var userData = {
-                        discordId: discordUserId,
-                        tacos: 1,
-                        birthdate: "2001-10-05",
-                        lastthanktime: threedaysAgo,
-                        lastcooktime: threedaysAgo,
-                        lastsorrytime: threedaysAgo,
-                        lastscavangetime: threedaysAgo,
-                        tacostands: 0,
-                        welcomed: false,
-                        lastpreparetime: threedaysAgo,
-                        pickaxe: "none",
-                        map: false,
-                        phone: false
-                    }
-                    profileDB.createUserProfile(userData, function(createerr, createUserResponse){
-                        if (createerr){
-                            console.log(createerr); // cant create user RIP
-                        }
-                        else{
-                            exports.sorryCommand(message);
-                        }
-                    }) 
-                }
+                agreeToTerms(message, discordUserId);
             }
             else{
                 var userLevel = sorryResponse.data.level;
@@ -514,7 +438,8 @@ module.exports.sorryCommand = function(message){
             }
         })
     }
-    else{
+    else if (NeedsToAgree[mentionedId]){
+        message.channel.send("the user has not yet agreed to the terms!")
         // message.channel.send(message.author + " You must mention a user or a user that isn't you whom you want to apologize to!");
     }
 
@@ -528,6 +453,7 @@ module.exports.buyStandCommand = function (message){
         if(err){
             // user doesnt exist tell the user they should get some tacos
             message.channel.send(message.author + " You can't afford a stand atm!");
+            agreeToTerms(message, discordUserId);
         }
         else{
             // if user has enough tacos to purchase the stand, add 1 tree, subtract x tacos
@@ -576,14 +502,7 @@ module.exports.prepareCommand = function (message){
         if(err){
             // user doesnt exist, they cannot prepare
             var userData = initialUserProfile(discordUserId);
-            profileDB.createUserProfile(userData, function(error, createUserResponse){
-                if (error){
-                    console.log(error); // cant create user RIP
-                }
-                else{
-                    message.channel.send(message.author + " You can't prepare atm because you do not have taco stands!");
-                }
-            })
+            agreeToTerms(message, discordUserId);
         }
         else{
             // get number of trees the user has
@@ -633,7 +552,7 @@ module.exports.prepareCommand = function (message){
                                 else{
                                     // update protection also
                                     var protection = prepareResponse.data.protect;
-                                    profileDB.updateUserProtect(discordUserId, 2, protection, function(updateerr, updateResponse) {
+                                    profileDB.updateUserProtect(discordUserId, 1, protection, function(updateerr, updateResponse) {
                                         if (updateerr){
                                             console.log(updateerr);
                                         }
@@ -641,9 +560,9 @@ module.exports.prepareCommand = function (message){
                                             console.log(updateResponse);
                                             
                                             if (extraTacosFromItems > 0){
-                                                message.channel.send(message.author + " You have prepared `" + tacosToPrepare + "` tacos :taco:! `" + soiledToTaco +"` were from soiled crops. The tacos also come with `2` warranty protection" + " received `" + extraTacosFromItems + "` extra tacos");
+                                                message.channel.send(message.author + " You have prepared `" + tacosToPrepare + "` tacos :taco:! `" + soiledToTaco +"` were from soiled crops. The tacos also come with `1` warranty protection" + " received `" + extraTacosFromItems + "` extra tacos");
                                             }else{
-                                                message.channel.send(message.author + " You have prepared `" + tacosToPrepare + "` tacos :taco:! `" + soiledToTaco +"` were from soiled crops. The tacos also come with `2` warranty protection");
+                                                message.channel.send(message.author + " You have prepared `" + tacosToPrepare + "` tacos :taco:! `" + soiledToTaco +"` were from soiled crops. The tacos also come with `1` warranty protection");
                                             }
                                             experience.gainExperience(message, discordUserId, EXPERIENCE_GAINS.prepare + (EXPERIENCE_GAINS.preparePerStand * userTacoStands) , prepareResponse);
                                             stats.statisticsManage(discordUserId, "maxextratacos", soiledToTaco, function(staterr, statSuccess){
@@ -683,7 +602,6 @@ module.exports.prepareCommand = function (message){
 
 module.exports.welcomeCommand = function(message){
     // welcome a user to the server gain 2 tacos
-
     var discordUserId = message.author.id;
     var users  = message.mentions.users;
     var mentionedId;
@@ -716,49 +634,11 @@ module.exports.welcomeCommand = function(message){
         profileDB.getUserProfileData( mentionedId, function(err, welcomeResponse) {
             if(err){
                 // user doesnt exist, create their profile first
-                if(err.code === 0){
-                    var now = new Date();
-                    var threedaysAgo = new Date();
-                    threedaysAgo = new Date(threedaysAgo.setHours(threedaysAgo.getHours() - 72));
-                    var userData = {
-
-                        discordId: mentionedId,
-                        tacos: 2,
-                        birthdate: "2001-10-05",
-                        lastthanktime: threedaysAgo,
-                        lastcooktime: threedaysAgo,
-                        lastsorrytime: threedaysAgo,
-                        lastscavangetime: threedaysAgo,
-                        tacostands: 0,
-                        welcomed: true,
-                        lastpreparetime: threedaysAgo,
-                        pickaxe: "none",
-                        map: false,
-                        phone: false
-                    }
-                    profileDB.createUserProfile(userData, function(err, createResponse){
-                        if(err){
-                            console.log(err);
-                        }
-                        else{
-                            if (mentionedUser.id){
-                                Last_Five_Welcomes.push(discordUserId);
-                                if (Last_Five_Welcomes.length >= 5){
-                                    Last_Five_Welcomes.shift();
-                                }
-                                message.channel.send( mentionedUser +" Welcome!" + " You now have " + userData.tacos + " tacos!")
-                                stats.statisticsManage(discordUserId, "welcomecount", 1, function(err, statSuccess){
-                                    if (err){
-                                        console.log(err);
-                                    }
-                                    else{
-                                        // check achievements??
-                                        getProfileForAchievement(discordUserId, message)
-                                    }
-                                })
-                            }
-                        }
-                    })
+                if(err.code === 0 && !NeedsToAgree[mentionedId]){
+                    welcomeAgreeToTerms(message, mentionedId, mentionedUser);
+                }
+                else{
+                    message.channel.send("The user has already been welcomed and needs to agree, or deny the terms");
                 }
             }
             else{
@@ -825,11 +705,15 @@ module.exports.giveCommand = function(message, giveTacoAmount){
     else if(giveTacoAmount < 2){
         message.channel.send(message.author + " You must give more than 2 tacos!")
     }
+    else if (NeedsToAgree[mentionedId]){
+        message.channel.send("the user has not yet agreed to the terms!")
+    }
     else{
         profileDB.getUserProfileData( discordUserId, function(err, giveResponse) {
             if(err){
                 // user doesnt exist, 
                 if(err.code === 0){
+                    agreeToTerms(message, discordUserId);
                     message.channel.send(message.author + " You have no tacos to give!");
                 }
             }
@@ -954,42 +838,9 @@ module.exports.cookCommand = function(message){
     profileDB.getUserProfileData( discordUserId, function(err, cookResponse) {
         if(err){
             // user doesnt exist, they cannot cook
-            var achievements = cookResponse.data.achievements;
-            var now = new Date();
-            var threedaysAgo = new Date();
-            threedaysAgo = new Date(threedaysAgo.setHours(threedaysAgo.getHours() - 72));
-            var userData = {
-                discordId: mentionedId,
-                tacos: cookRoll,
-                birthdate: "2001-10-05",
-                lastthanktime: threedaysAgo,
-                lastcooktime: now,
-                lastsorrytime: threedaysAgo,
-                lastscavangetime: threedaysAgo,
-                tacostands: 0,
-                welcomed: false,
-                lastpreparetime: threedaysAgo,
-                pickaxe: "none",
-                map: false,
-                phone: false
-            }
-            profileDB.createUserProfile(userData, function(err, createUserResponse){
-                if (err){
-                    console.log(err); // cant create user RIP
-                }
-                else{
-                    message.author + " Cooked `" + cookRoll + "` tacos! you now have `" + cookRoll + "` tacos :taco:"
-
-                    var data = {}
-                    data.achievements = achievements;
-                    data.cookcount = cookRoll
-                    console.log(data);
-                    achiev.checkForAchievements(discordUserId, data, message);
-                }
-            }) 
+            agreeToTerms(message, discordUserId);
         }
         else{
-
             var userLevel = cookResponse.data.level;
             wearStats.getUserWearingStats(message, discordUserId, userLevel, function(wearErr, wearRes){
                 if (wearErr){
@@ -1072,6 +923,7 @@ module.exports.throwCommand = function(message){
                 // user doesnt exist, create their profile first
                 if(err.code === 0){
                     // user doesn't exist
+                    agreeToTerms(message, discordUserId);
                     message.reply(" you do not have any tacos to throw!");
                 }
             }
@@ -1148,15 +1000,7 @@ module.exports.profileCommand = function(message){
         profileDB.getUserProfileData( mentionedId, function(err, profileResponse) {
             if(err){
                 // user doesnt exist, create their profile first
-                var userData = initialUserProfile(mentionedId);
-                profileDB.createUserProfile(userData, function(error, createUserResponse){
-                    if (error){
-                        console.log(error); // cant create user RIP
-                    }
-                    else{
-                        exports.profileCommand(message);
-                    }
-                })
+                message.channel.send("user has not yet agreed to the terms!")
             }
             else{
                 var profileData = {}
@@ -1213,16 +1057,7 @@ module.exports.profileCommand = function(message){
         profileDB.getUserProfileData( discordUserId, function(err, profileResponse) {
             if(err){
                 // user doesnt exist, create their profile first
-                var userData = initialUserProfile(discordUserId);
-                
-                profileDB.createUserProfile(userData, function(error, createUserResponse){
-                    if (error){
-                        console.log(error); // cant create user RIP
-                    }
-                    else{
-                        exports.profileCommand(message);
-                    }
-                })
+                agreeToTerms(message, discordUserId);
             }
             else{
                 var profileData = {}
@@ -1283,18 +1118,7 @@ module.exports.xpCommand = function(message){
     profileDB.getUserProfileData( discordUserId, function(err, profileResponse) {
         if(err){
             // user doesnt exist, create their profile first
-            if(err.code === 0){
-                // user doesnt exist
-                var userData = initialUserProfile(discordUserId);
-                profileDB.createUserProfile(userData, function(error, createUserResponse){
-                    if (error){
-                        console.log(error); // cant create user RIP
-                    }
-                    else{
-                        exports.xpCommand(message);
-                    }
-                })
-            }
+            agreeToTerms(message, discordUserId);
         }
         else{
             var profileData = {}
@@ -1323,15 +1147,7 @@ module.exports.tacosCommand = function(message){
             // user doesnt exist, create their profile first
             if(err.code === 0){
                 // user doesnt exist
-                var userData = initialUserProfile(discordUserId);
-                profileDB.createUserProfile(userData, function(error, createUserResponse){
-                    if (error){
-                        console.log(error); // cant create user RIP
-                    }
-                    else{
-                        exports.tacosCommand(message);
-                    }
-                })
+                agreeToTerms(message, discordUserId);
             }
         }
         else{
@@ -1363,16 +1179,7 @@ module.exports.tacoStandsCommand = function(message){
             // user doesnt exist, create their profile first
             if(err.code === 0){
                 // user doesnt exist
-                var userData = initialUserProfile(discordUserId);
-
-                profileDB.createUserProfile(userData, function(error, createUserResponse){
-                    if (error){
-                        console.log(error); // cant create user RIP
-                    }
-                    else{
-                        exports.tacoStandsCommand(message);
-                    }
-                })
+                agreeToTerms(message, discordUserId);
             }
         }
         else{
@@ -1400,7 +1207,8 @@ module.exports.buyPickaxeCommand = function(message){
     profileDB.getUserProfileData( discordUserId, function(err, pickaxeResponse) {
         if(err){
             // user doesnt exist tell the user they should get some tacos
-            message.channel.send(message.author + " You can't afford a stand atm!");
+            agreeToTerms(message, discordUserId);
+            message.channel.send(message.author + " You can't afford a pickaxe!");
         }
         else{
             if (pickaxeResponse.data.pickaxe == "none"){
@@ -1541,7 +1349,7 @@ function shopBuilder(message, shopData){
         pickaxeCost = MASTER_PICKAXE_COST + " :taco:";
         embed.addBlankField(true)
         .addBlankField(false)
-        .addField('Improved Pickaxe', ":diamond_shape_with_a_dot_inside::pick:", true)
+        .addField('Master Pickaxe', ":diamond_shape_with_a_dot_inside::pick:", true)
         .addField('Description', pickaxeDescription, true)
         .addField('Cost', pickaxeCost, true)
         .addField('Command', config.commandString + "buypickaxe", true)
@@ -1586,15 +1394,7 @@ module.exports.shopCommand = function(message){
     profileDB.getUserProfileData( discordUserId, function(err, shopResponse) {
         if(err){
             // user doesnt exist tell the user they should get some tacos
-            var userData = initialUserProfile(discordUserId);
-            profileDB.createUserProfile(userData, function(error, createUserResponse){
-                if (error){
-                    console.log(error); // cant create user RIP
-                }
-                else{
-                    exports.shopCommand(message);
-                }
-            })
+            agreeToTerms(message, discordUserId);
         }
         else{
             // if user has enough tacos to purchase the tree, add 1 tree, subtract x tacos
@@ -1652,6 +1452,7 @@ module.exports.buyPastaCommand = function(message, pasta){
         if(err){
             // user doesnt exist tell the user they should get some tacos
             message.channel.send(message.author + " you can't afford pasta currently!");
+            agreeToTerms(message, discordUserId);
         }
         else{
             if ( pastaRespond.data.tacos >= PASTA_COST && pasta.length > 0 && pasta.length < 125){
@@ -1944,16 +1745,7 @@ module.exports.scavangeCommand = function (message){
         if(error){
             console.log(error);
             // create user profile then send a message saying they need a pickaxe
-            var userData = initialUserProfile(discordUserId);
-
-            profileDB.createUserProfile(userData, function(error, createUserResponse){
-                if (error){
-                    console.log(error); // cant create user RIP
-                }
-                else{
-                    message.channel.send(message.author + " You need a pickaxe!");
-                }
-            })
+            agreeToTerms(message, discordUserId);
         }
         else if (getUserResponse.data.pickaxe && getUserResponse.data.pickaxe != "none"){
             // get all the possible items from items DB - Bad implementation but idgaf
@@ -2221,6 +2013,7 @@ module.exports.slotsCommand = function(message, tacosBet){
         profileDB.getUserProfileData(discordUserId, function(getProfileError, getProfileResponse){
             if (getProfileError){
                 console.log(getProfileError);
+                agreeToTerms(message, discordUserId);
             }
             else{
                 if (getProfileResponse.data.tacos >= bet){
@@ -2443,6 +2236,7 @@ module.exports.toplistCommand = function(message, listOfUsers){
     profileDB.getToplistUsers(function(error, toplistResponse){
         if (error){
             console.log(error);
+            agreeToTerms(message, discordUserId);
         }
         else{
             //create embed
@@ -2493,6 +2287,7 @@ module.exports.standingsCommand = function(message, listOfUsers){
     profileDB.getTopTenTacoUsers(function(error, topTenResponse){
         if (error){
             console.log(error);
+            agreeToTerms(message, discordUserId);
         }
         else{
             //create embed
@@ -2580,6 +2375,7 @@ module.exports.pickupCommand = function (message){
                 if (updateErr){
                     // TODO: create user profile
                     console.log(updateErr)
+                    agreeToTerms(message, discordUserId);
                 }
                 else{
                     QueueOfTacosDropped.splice(indexOfQueue, 1);
@@ -2603,6 +2399,7 @@ module.exports.pickupCommand = function (message){
                 if (updateErr){
                     // TODO: create user profile
                     console.log(updateErr)
+                    agreeToTerms(message, discordUserId);
                 }
                 else{
                     QueueOfTacosDropped.splice(indexOfQueue, 1);
@@ -2796,12 +2593,16 @@ module.exports.useCommand = function(message, args){
         mentionedUser = user
         mentionedUserName = user.username;
     })
-    if (args && args.length > 1 && args[1].toLowerCase() == "rock"){
+    if (NeedsToAgree[discordUserId]){
+        message.channel.send("You have not agreed to the terms yet!")
+    }
+    else if (args && args.length > 1 && args[1].toLowerCase() == "rock"){
         if (mentionedUser && !mentionedUser.bot && mentionedId != message.author.id){
             // use rock
             profileDB.getUserItems(discordUserId, function(error, inventoryResponse){
                 if (error){
                     console.log(error);
+                    agreeToTerms(message, discordUserId);
                 }
                 else{
                     // check that the user has enough rocks to throw at someone
@@ -2898,6 +2699,7 @@ module.exports.useCommand = function(message, args){
         profileDB.getUserItems(discordUserId, function(error, inventoryResponse){
             if (error){
                 console.log(error);
+                agreeToTerms(message, discordUserId);
             }
             else{
                  // check the user has enough pieces of wood
@@ -2957,6 +2759,7 @@ module.exports.useCommand = function(message, args){
         profileDB.getUserItems(discordUserId, function(error, inventoryResponse){
             if (error){
                 console.log(error);
+                agreeToTerms(message, discordUserId);
             }
             else{
                 // check the user has enough pieces of wood
@@ -3059,6 +2862,7 @@ module.exports.useCommand = function(message, args){
         profileDB.getUserItems(discordUserId, function(error, inventoryResponse){
             if (error){
                 console.log(error);
+                agreeToTerms(message, discordUserId);
             }
             else{
                 var itemsInInventoryCountMap = {};
@@ -3121,6 +2925,7 @@ module.exports.useCommand = function(message, args){
         profileDB.getUserItems(discordUserId, function(error, inventoryResponse){
             if (error){
                 console.log(error);
+                agreeToTerms(message, discordUserId);
             }
             else{
                 var itemsInInventoryCountMap = {};
@@ -3195,6 +3000,7 @@ module.exports.combineCommand = function(message, args){
         profileDB.getUserItems(discordUserId, function(err, inventoryResponse){
             if (err){
                 console.log(err);
+                agreeToTerms(message, discordUserId);
             }
             else{
                 // 
@@ -3330,6 +3136,7 @@ module.exports.wearingCommand = function(message, args){
     profileDB.getUserProfileData(discordUserId, function (profileErr, profileRes){
         if (profileErr){
             console.log(profileErr);
+            agreeToTerms(message, discordUserId);
         }
         else{
             var userLevel = profileRes.data.level;
@@ -3960,6 +3767,7 @@ module.exports.bidCommand = function(message, args){
         profileDB.getUserProfileData(discordUserId, function(profileErr, profileRes){
             if (profileErr){
                 console.log(profileErr);
+                agreeToTerms(message, discordUserId);
             }
             else{
                 var userTacosToBid = profileRes.data.tacos;
@@ -4044,6 +3852,7 @@ module.exports.tradeCommand = function(message, args){
             profileDB.getUserProfileData(discordUserId, function(getProfileErr, getProfileRes){
                 if (getProfileErr){
                     console.log(getProfileErr);
+                    agreeToTerms(message, discordUserId);
                 }
                 else{
                     // get the user's item based on discordid and shortname and check that they have an item that they want to trade
@@ -4295,3 +4104,87 @@ module.exports.cancelTradeCommand = function(message, args){
         message.channel.send(message.author + " You do not currently have open trades !")
     }
 }
+
+module.exports.agreeTermsCommand = function(message, args){
+    var discordUserId = message.author.id
+    if (NeedsToAgree[discordUserId]){
+        profileDB.getUserProfileData(discordUserId, function(error, data){
+            if (error){
+                // this is what we are expecting, from here we expect to create the user profile
+                var userData = initialUserProfile(discordUserId)
+                profileDB.createUserProfile(userData, function(err, createResponse){
+                    if(err){
+                        console.log(err);
+                    }
+                    else{
+                        message.channel.send("welcome aboard ! " + message.author + " your profile has been created.");
+                        delete NeedsToAgree[discordUserId]
+                    }
+                })
+            }
+            else{
+                // the user profile already exists, ignore this command
+            }
+        })
+    }
+    else{
+        message.channel.send("already accepted");
+    }
+}
+
+module.exports.denyTermsCommand = function(message, args){
+    var discordUserId = message.author.id
+    if (NeedsToAgree[discordUserId]){
+        message.channel.send(message.author + " Your profile will not be created.")
+    }
+    else{
+        message.channel.send("already accepted contact an admin to have your data deleted");
+    }
+}
+
+function agreeToTerms(message, discordUserId){
+    NeedsToAgree[discordUserId] = true;
+    message.channel.send("Hey " + message.author + " Bender will be storing and encrypting your discord id to bring you the best experience, please type -agree to accept these terms, or -deny to decline them!")
+}
+
+function welcomeAgreeToTerms(message, mentionedId, mentionedUser){
+    NeedsToAgree[mentionedId] = true;
+    message.channel.send("Hey " + mentionedUser + " Bender will be storing and encrpyting your discord id to bring you the best experience, please type -agree to accept these terms, or -deny to decline them!")
+}
+/*
+module.exports.createTableCommand = function(message, args){
+    // -> user sends command -> bender creates embed of the party -> embed is the parameter for
+    // reaction collector -> lasts ~ 10 minutes
+    // collect all the users that reacted to the party
+    // give tacos to the users at the end of the party for the reactions collected
+    // 2 tacos to the creator, 12 experience, 1 taco to the people that reacted to it,
+    
+
+    var discordUserId = message.author.id;
+
+    const embed = new Discord.RichEmbed()
+    .setAuthor("test")
+    .setColor(0xF2E93E)
+    .addField('afsd', "asdf")
+    message.channel.send({embed});
+
+    var test = new Discord.ReactionCollector(embed, function(){ return true; } , { time: 15000, max: 5, maxEmojis: 5, maxUsers: 5 } );
+    test.on('collect', function(element, collector){
+        // allow for only 3 emojis, when the user reacts to any of the 3 emojis
+        // they get added to the list of people that reacted to the emoji and cannot be
+        // counted again for that reaction
+        // MAYBE - remove the user from that reaction?
+
+
+        // console.log(element);
+        console.log(collector);
+    })
+    test.on('end', function(collected, reason){
+        // party lasts 10 minutes - upon ending the reaction collector the party has ended
+        // announce how many people got what
+        message.channel.send("asdf");
+    })
+    //message.channel.send("testing - " + message);
+    
+}
+*/
