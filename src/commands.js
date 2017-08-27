@@ -3214,11 +3214,20 @@ module.exports.wearingCommand = function(message, args){
                                 var slot3String = wearStats.slotStringBuilder(message, slot3Item, slot3active)
 
                                 var userPet = profileRes.data.pet ? profileRes.data.pet : undefined;
-                                var userData = {
-                                    userLevel : userLevel,
-                                    fetchCD: PETS_AVAILABLE[userPet].cooldown,
-                                    fetchCount: PETS_AVAILABLE[userPet].fetch
+                                var userData;
+                                if (!userPet){
+                                    userData = {
+                                        userLevel : userLevel
+                                    }
                                 }
+                                else{
+                                    userData = {
+                                        userLevel : userLevel,
+                                        fetchCD: PETS_AVAILABLE[userPet].cooldown,
+                                        fetchCount: PETS_AVAILABLE[userPet].fetch
+                                    }
+                                }
+                                
                                 var userItemStats = wearStats.statsObjectBuilder(message, slot1Item, slot2Item, slot3Item, userData, true, true, true);
                                 var statsString = wearStats.statsStringBuilder(message, userItemStats);
 
