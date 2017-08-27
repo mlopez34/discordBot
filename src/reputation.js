@@ -111,6 +111,14 @@ function reputationEmbedBuilder(message, repstatus){
     }
     const embed = new Discord.RichEmbed()
     .setColor(0xED962D)
+    // Image by Ellen from SCD
+    if (repstatus.toLowerCase() == "liked" || repstatus.toLowerCase() == "admired"){
+        embed.setThumbnail("http://i.imgur.com/KyQCBq9.jpg")
+    }
+    else{
+        embed.setThumbnail("http://i.imgur.com/nrhHBK5.jpg")
+    }
+    embed
     .addField(message.author.username +" has reached a reputation of `" + repstatus + "` with Bender", repEmoji, true)
     message.channel.send({embed});
 }
