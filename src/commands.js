@@ -3099,9 +3099,7 @@ module.exports.combineCommand = function(message, args){
                                         console.log(createErr);
                                     }
                                     else{
-                                        console.log(createRes);
-                                        combineEmbedBuilder(message, itemToCreateByName, itemToCreate, rarityOfItem);
-                                        /*
+                                        console.log(createRes);                                        
                                         profileDB.bulkUpdateItemStatus(itemsBeingedCombined, "used", function(combineErr, combineRes){
                                             if (combineErr){
                                                 console.log(combineErr);
@@ -3110,7 +3108,6 @@ module.exports.combineCommand = function(message, args){
                                                 combineEmbedBuilder(message, itemToCreateByName, itemToCreate, rarityOfItem);
                                             }
                                         })
-                                        */
                                     }
                                 })
                             }
