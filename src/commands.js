@@ -36,7 +36,7 @@ var PET_COST = 75;
 var QueueOfTacosDropped = [];
 var THANK_COOLDOWN_HOURS = 2;
 var SORRY_COOLDOWN_HOURS = 6;
-var COOK_COOLDOWN_HOURS = 24;
+var COOK_COOLDOWN_HOURS = 12;
 var PREPARE_COOLDOWN_HOURS = 48;
 var SCAVENGE_COOLDOWN_HOURS = 1;
 // make recipe be available at lvl 2 reputation
@@ -265,7 +265,7 @@ module.exports.thankCommand = function(message){
                 agreeToTerms(message, discordUserId);
             }else{
                 var userLevel = thankResponse.data.level;
-                wearStats.getUserWearingStats(message, discordUserId, userLevel, function(wearErr, wearRes){
+                wearStats.getUserWearingStats(message, discordUserId, {userLevel: userLevel}, function(wearErr, wearRes){
                     if (wearErr){
                         
                     }else{
@@ -296,7 +296,8 @@ module.exports.thankCommand = function(message){
                                         }
                                         else{
                                             console.log(updateResponse);
-                                            experience.gainExperience(message, discordUserId, EXPERIENCE_GAINS.thank, thankResponse);
+                                            var experienceFromItems = wearRes.thankCommandExperienceGain ? wearRes.thankCommandExperienceGain : 0;
+                                            experience.gainExperience(message, discordUserId, EXPERIENCE_GAINS.thank + experienceFromItems, thankResponse);
                                             //update statistic
                                             stats.statisticsManage(discordUserId, "thankcount", 1, function(staterr, statSuccess){
                                                 if (staterr){
@@ -355,7 +356,7 @@ module.exports.sorryCommand = function(message){
             }
             else{
                 var userLevel = sorryResponse.data.level;
-                wearStats.getUserWearingStats(message, discordUserId, userLevel, function(wearErr, wearRes){
+                wearStats.getUserWearingStats(message, discordUserId, {userLevel: userLevel}, function(wearErr, wearRes){
                     if (wearErr){
                         
                     }else{
@@ -386,7 +387,8 @@ module.exports.sorryCommand = function(message){
                                         }
                                         else{
                                             message.channel.send(message.author + " apologized to " + mentionedUser + ", they received a taco! :taco:" + " cd reduction in minutes " + minutesToRemove + " " + (wearRes.sorryCommandCDRPercentage*100) + "%");
-                                            experience.gainExperience(message, discordUserId, EXPERIENCE_GAINS.sorry , sorryResponse);
+                                            var experienceFromItems = wearRes.sorryCommandExperienceGain ? wearRes.sorryCommandExperienceGain : 0;
+                                            experience.gainExperience(message, discordUserId, (EXPERIENCE_GAINS.sorry + experienceFromItems) , sorryResponse);
                                             stats.statisticsManage(discordUserId, "sorrycount", 1, function(staterr, statSuccess){
                                                 if (staterr){
                                                     console.log(staterr);
@@ -508,7 +510,7 @@ module.exports.prepareCommand = function (message){
             // get number of trees the user has
             // check lastprepare time
             var userLevel = prepareResponse.data.level;
-            wearStats.getUserWearingStats(message, discordUserId, userLevel, function(wearErr, wearRes){
+            wearStats.getUserWearingStats(message, discordUserId, {userLevel: userLevel}, function(wearErr, wearRes){
                 if (wearErr){
                     
                 }else{
@@ -564,7 +566,8 @@ module.exports.prepareCommand = function (message){
                                             }else{
                                                 message.channel.send(message.author + " You have prepared `" + tacosToPrepare + "` tacos :taco:! `" + soiledToTaco +"` were from soiled crops. The tacos also come with `1` warranty protection");
                                             }
-                                            experience.gainExperience(message, discordUserId, EXPERIENCE_GAINS.prepare + (EXPERIENCE_GAINS.preparePerStand * userTacoStands) , prepareResponse);
+                                            var experienceFromItems = wearRes.prepareCommandExperienceGain ? wearRes.prepareCommandExperienceGain : 0;
+                                            experience.gainExperience(message, discordUserId, (EXPERIENCE_GAINS.prepare + (EXPERIENCE_GAINS.preparePerStand * userTacoStands) + experienceFromItems) , prepareResponse);
                                             stats.statisticsManage(discordUserId, "maxextratacos", soiledToTaco, function(staterr, statSuccess){
                                                 if (staterr){
                                                     console.log(staterr);
@@ -842,7 +845,7 @@ module.exports.cookCommand = function(message){
         }
         else{
             var userLevel = cookResponse.data.level;
-            wearStats.getUserWearingStats(message, discordUserId, userLevel, function(wearErr, wearRes){
+            wearStats.getUserWearingStats(message, discordUserId, {userLevel: userLevel}, function(wearErr, wearRes){
                 if (wearErr){
                     
                 }else{
@@ -878,7 +881,8 @@ module.exports.cookCommand = function(message){
                                 data.cookcount = cookRoll
                                 console.log(data);
                                 achiev.checkForAchievements(discordUserId, data, message);
-                                experience.gainExperience(message, discordUserId, EXPERIENCE_GAINS.cook , cookResponse);
+                                var experienceFromItems = wearRes.cookCommandExperienceGain ? wearRes.cookCommandExperienceGain : 0;
+                                experience.gainExperience(message, discordUserId, (EXPERIENCE_GAINS.cook + experienceFromItems), cookResponse);
                             }
                         })
                     }else{
@@ -1750,7 +1754,7 @@ module.exports.scavangeCommand = function (message){
         else if (getUserResponse.data.pickaxe && getUserResponse.data.pickaxe != "none"){
             // get all the possible items from items DB - Bad implementation but idgaf
             var userLevel = getUserResponse.data.level;
-            wearStats.getUserWearingStats(message, discordUserId, userLevel, function(wearErr, wearRes){
+            wearStats.getUserWearingStats(message, discordUserId, {userLevel: userLevel}, function(wearErr, wearRes){
                 if (wearErr){
                     console.log(wearErr);
                 }else{
@@ -1782,7 +1786,7 @@ module.exports.scavangeCommand = function (message){
                                 var EXPERIENCE_MULTIPLIER = 1;
 
                                 if (getUserResponse.data.pickaxe == "improved"){
-                                    COMMON_ITEMS_TO_OBTAIN = 3
+                                    COMMON_ITEMS_TO_OBTAIN = 2
                                     TACOS_FOUND_MULTIPLIER = 3
                                     ARTIFACT_MIN_ROLL = 9992
                                     ANCIENT_MAX_ROLL = 9992;
@@ -1794,8 +1798,8 @@ module.exports.scavangeCommand = function (message){
 
                                 }
                                 else if (getUserResponse.data.pickaxe == "master"){
-                                    COMMON_ITEMS_TO_OBTAIN = 7
-                                    TACOS_FOUND_MULTIPLIER = 8
+                                    COMMON_ITEMS_TO_OBTAIN = 4
+                                    TACOS_FOUND_MULTIPLIER = 6
                                     EXPERIENCE_MULTIPLIER = 6
                                 }
 
@@ -1908,7 +1912,8 @@ module.exports.scavangeCommand = function (message){
                                     }
                                     else{
                                         console.log(updateLSres);
-                                        experience.gainExperience(message, discordUserId, EXPERIENCE_GAINS.scavenge * EXPERIENCE_MULTIPLIER, getUserResponse);
+                                        var experienceFromItems = wearRes.scavengeCommandExperienceGain ? wearRes.scavengeCommandExperienceGain : 0;                                        
+                                        experience.gainExperience(message, discordUserId, ((EXPERIENCE_GAINS.scavenge * EXPERIENCE_MULTIPLIER) + experienceFromItems), getUserResponse);
                                     }
                                 })
                                 // add the tacos to user
@@ -2511,8 +2516,7 @@ module.exports.buypetCommand = function(message, args){
     }
 }
 
-module.exports.fetchCommand = function(message, args){
-    console.log(args);
+module.exports.fetchCommand = function(message){
     var discordUserId = message.author.id;
 
     // the pet has gone to fetch, get taco amount = their fetch
@@ -2522,56 +2526,67 @@ module.exports.fetchCommand = function(message, args){
         }
         else{
             var userLevel = fetchResponse.data.level;
-            wearStats.getUserWearingStats(message, discordUserId, userLevel, function(wearErr, wearRes){
-                if (wearErr){
-                    
-                }else{
-                    var userPet = fetchResponse.data.pet;
-                    var userPetName = fetchResponse.data.petname;
-                    var now = new Date();
-                    if (userPet){
-                        var minutesToRemove = wearStats.calculateMinutesReduced(wearRes, "fetch");
-                        console.log("MINUTES TO REMOVE " + minutesToRemove);
+            var userPet = fetchResponse.data.pet ? fetchResponse.data.pet : undefined;
+            var userPetName = fetchResponse.data.petname ? fetchResponse.data.petname : undefined;
+            if (userPet){
+                var userData = {
+                    userLevel : userLevel,
+                    fetchCD: PETS_AVAILABLE[userPet].cooldown,
+                    fetchCount: PETS_AVAILABLE[userPet].fetch
+                }
+                wearStats.getUserWearingStats(message, discordUserId, userData, function(wearErr, wearRes){
+                    if (wearErr){
+                        
+                    }else{
+                        var now = new Date();
+                        if (userPet){
+                            var minutesToRemove = wearStats.calculateMinutesReduced(wearRes, "fetch");
+                            console.log("MINUTES TO REMOVE " + minutesToRemove);
 
-                        var cooldownDate = new Date();
-                        cooldownDate = new Date(cooldownDate.setHours(cooldownDate.getHours() - PETS_AVAILABLE[userPet].cooldown));
-                        ///////// CALCULATE THE MINUTES REDUCED HERE 
-                        cooldownDate = new Date(cooldownDate.setMinutes(cooldownDate.getMinutes() + minutesToRemove));
+                            var cooldownDate = new Date();
+                            cooldownDate = new Date(cooldownDate.setHours(cooldownDate.getHours() - PETS_AVAILABLE[userPet].cooldown));
+                            ///////// CALCULATE THE MINUTES REDUCED HERE 
+                            cooldownDate = new Date(cooldownDate.setMinutes(cooldownDate.getMinutes() + minutesToRemove));
 
-                        if (!fetchResponse.data.lastfetchtime || ( cooldownDate > fetchResponse.data.lastfetchtime )){
-                            // fetch whatever and then set lastfetchtime to now
-                            var fetchTacos = PETS_AVAILABLE[userPet].fetch;
-                            ///////// CALCULATE THE EXTRA TACOS HERE 
-                            var extraTacosFromItems = wearStats.calculateExtraTacos(wearRes, "fetch"); // 0 or extra
+                            if (!fetchResponse.data.lastfetchtime || ( cooldownDate > fetchResponse.data.lastfetchtime )){
+                                // fetch whatever and then set lastfetchtime to now
+                                var fetchTacos = PETS_AVAILABLE[userPet].fetch;
+                                ///////// CALCULATE THE EXTRA TACOS HERE 
+                                var extraTacosFromItems = wearStats.calculateExtraTacos(wearRes, "fetch"); // 0 or extra
 
-                            profileDB.updateUserTacosFetch(discordUserId, fetchTacos + extraTacosFromItems, function(err, updateResponse) {
-                                if (err){
-                                    console.log(err);
-                                }
-                                else{
-                                    experience.gainExperience(message, discordUserId, (EXPERIENCE_GAINS.perFetchCd * PETS_AVAILABLE[userPet].fetch) , fetchResponse);
-                                    // user's pet fetched some tacos
-                                    if (extraTacosFromItems > 0){
-                                        message.channel.send("**" + userPetName + "** fetched:` " + fetchTacos + "` tacos :taco: \n" + PETS_AVAILABLE[userPet].emoji + " " + PETS_AVAILABLE[userPet].speak + " you received `" + extraTacosFromItems + "` extra tacos");
-                                    }else{
-                                        message.channel.send("**" + userPetName + "** fetched:` " + fetchTacos + "` tacos :taco: \n" + PETS_AVAILABLE[userPet].emoji + " " + PETS_AVAILABLE[userPet].speak);
+                                profileDB.updateUserTacosFetch(discordUserId, fetchTacos + extraTacosFromItems, function(err, updateResponse) {
+                                    if (err){
+                                        console.log(err);
                                     }
-                                }
-                            })
+                                    else{
+                                        var experienceFromItems = wearRes.fetchCommandExperienceGain ? wearRes.fetchCommandExperienceGain : 0;                                                                                
+                                        experience.gainExperience(message, discordUserId, ((EXPERIENCE_GAINS.perFetchCd * PETS_AVAILABLE[userPet].fetch) + experienceFromItems) , fetchResponse);
+                                        // user's pet fetched some tacos
+                                        if (extraTacosFromItems > 0){
+                                            message.channel.send("**" + userPetName + "** fetched:` " + fetchTacos + "` tacos :taco: \n" + PETS_AVAILABLE[userPet].emoji + " " + PETS_AVAILABLE[userPet].speak + " you received `" + extraTacosFromItems + "` extra tacos");
+                                        }else{
+                                            message.channel.send("**" + userPetName + "** fetched:` " + fetchTacos + "` tacos :taco: \n" + PETS_AVAILABLE[userPet].emoji + " " + PETS_AVAILABLE[userPet].speak);
+                                        }
+                                    }
+                                })
+                            }
+                            else{
+                                console.log("cd " + PETS_AVAILABLE[userPet].cooldown)
+                                now = new Date(now.setMinutes(now.getMinutes() + minutesToRemove));
+                                var numberOfHours = getDateDifference(fetchResponse.data.lastfetchtime, now, PETS_AVAILABLE[userPet].cooldown);
+                                message.channel.send(message.author + " **" + userPetName + "** needs to rest and cannot fetch currently, Please wait `" + numberOfHours + "` ");
+                            }
                         }
                         else{
-                            console.log("cd " + PETS_AVAILABLE[userPet].cooldown)
-                            now = new Date(now.setMinutes(now.getMinutes() + minutesToRemove));
-                            var numberOfHours = getDateDifference(fetchResponse.data.lastfetchtime, now, PETS_AVAILABLE[userPet].cooldown);
-                            message.channel.send(message.author + " **" + userPetName + "** needs to rest and cannot fetch currently, Please wait `" + numberOfHours + "` ");
+                            // user doesnt have a pet
+                            console.log("doesnt have pet")
                         }
                     }
-                    else{
-                        // user doesnt have a pet
-                        console.log("doesnt have pet")
-                    }
-                }
-            })
+                })
+            }
+            else{
+                message.channel.send("You do not have a pet to fetch with!")
+            }
         }
     })
 }
@@ -3198,7 +3213,13 @@ module.exports.wearingCommand = function(message, args){
                                 var slot2String = wearStats.slotStringBuilder(message, slot2Item, slot2active)
                                 var slot3String = wearStats.slotStringBuilder(message, slot3Item, slot3active)
 
-                                var userItemStats = wearStats.statsObjectBuilder(message, slot1Item, slot2Item, slot3Item, userLevel, true, true, true);
+                                var userPet = profileRes.data.pet ? profileRes.data.pet : undefined;
+                                var userData = {
+                                    userLevel : userLevel,
+                                    fetchCD: PETS_AVAILABLE[userPet].cooldown,
+                                    fetchCount: PETS_AVAILABLE[userPet].fetch
+                                }
+                                var userItemStats = wearStats.statsObjectBuilder(message, slot1Item, slot2Item, slot3Item, userData, true, true, true);
                                 var statsString = wearStats.statsStringBuilder(message, userItemStats);
 
                                 var profileData = {}
