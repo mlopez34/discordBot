@@ -36,11 +36,11 @@ var PET_COST = 75;
 var QueueOfTacosDropped = [];
 var THANK_COOLDOWN_HOURS = 2;
 var SORRY_COOLDOWN_HOURS = 6;
-var COOK_COOLDOWN_HOURS = 12;
+var COOK_COOLDOWN_HOURS = 24;
 var PREPARE_COOLDOWN_HOURS = 48;
 var SCAVENGE_COOLDOWN_HOURS = 1;
 // make recipe be available at lvl 2 reputation
-var ARTIFACT_RECIPE_COST = 1300;
+var ARTIFACT_RECIPE_COST = 1000;
 
 var activeAuctions = {};
 var itemsInAuction = {};
@@ -78,6 +78,12 @@ var commandHoursToActivate = {
 }
 
 var Levels = config.Levels;
+
+var REWARDS = {
+    ArtifactRecipe : {
+        repLevel : 3
+    }
+}
 
 var PETS_AVAILABLE = {
     dog: {
@@ -1369,23 +1375,13 @@ function shopBuilder(message, shopData){
     // allow for pet to be purchased
     if (shopData.repstatus && (REPUTATIONS[shopData.repstatus.toLowerCase()]) ){
         var userRepLevel = REPUTATIONS[shopData.repstatus.toLowerCase()].level;
-        var petsToPurchase = "";
-        for (var key in PETS_AVAILABLE) {
-            if (PETS_AVAILABLE.hasOwnProperty(key)) {
-                // add the pets to petsToPurchase if the userRepLevel >= repLevel
-                if (userRepLevel >= PETS_AVAILABLE[key].repLevel){
-                    petsToPurchase = petsToPurchase + key +  ", "
-                }
-            }
+        if (userRepLevel >= 2){
+            var repDescription = "Bender's Reputation shop. use -repshop to see what Bender has to offer.";        
+            embed.addBlankField(true)
+            .addBlankField(false)
+            .addField('Reputation shop', ":shopping_cart: ", true)
+            .addField('Description', repDescription, true)
         }
-        var petDescription = "Purchase a pet! Pets are always great companions to have. You may only have 1 pet, buying a new pet will replace the old one - current pets available: " + petsToPurchase;
-        var petCost = PET_COST + " :taco:";
-        embed.addBlankField(true)
-        .addBlankField(false)
-        .addField('Pet (Liked Reputation or Better Only)', ":dog2:", true)
-        .addField('Description', petDescription, true)
-        .addField('Cost', petCost, true)
-        .addField('Command', config.commandString + "buypet [kind of pet] [pet name]", true)
     }
     embed.addBlankField(false)
     .addField('Your current tacos', shopData.userTacos + " :taco:", false)
@@ -1413,6 +1409,101 @@ module.exports.shopCommand = function(message){
             shopData.repstatus = shopResponse.data.repstatus
             shopData.userTacoCost = userTacoStands;
             shopBuilder(message, shopData);
+        }
+    })
+}
+
+
+module.exports.buyRecipeCommand = function(message){
+    var discordUserId = message.author.id;
+
+    profileDB.getUserProfileData( discordUserId, function(err, buyPetResponse) {
+        if(err){
+            // user doesnt exist
+            console.log(err);
+        }
+        else{
+            var userReputation = buyPetResponse.data.repstatus;
+            var userRepLevel = REPUTATIONS[userReputation.toLowerCase()] ? REPUTATIONS[userReputation.toLowerCase()].level : 1;
+            if (userRepLevel >= REWARDS["ArtifactRecipe"].repLevel){
+                // able to shop, spend the tacos and then create the item and store it in the user's inventory
+                message.channel.send("You cannot afford this item.")
+            }
+            else{
+                // unavailable
+            }
+        }
+    })
+}
+
+function repShopBuilder(message, shopData){
+    var welcomeMessage = "Hey " + message.author.username + "! Welcome to Bender's Reputation shop."
+
+    const embed = new Discord.RichEmbed()
+    .setColor(0x87CEFA)
+    .setTitle(welcomeMessage)
+    .setThumbnail()
+    .setDescription("Bender accepts Tacos as currency since he's a hungry guy :shrug:. Have a look around!")
+    // allow for pet to be purchased
+    if (shopData.repstatus && (REPUTATIONS[shopData.repstatus.toLowerCase()]) ){
+        var userRepLevel = REPUTATIONS[shopData.repstatus.toLowerCase()].level;
+        var petsToPurchase = "";
+        for (var key in PETS_AVAILABLE) {
+            if (PETS_AVAILABLE.hasOwnProperty(key)) {
+                // add the pets to petsToPurchase if the userRepLevel >= repLevel
+                if (userRepLevel >= PETS_AVAILABLE[key].repLevel){
+                    petsToPurchase = petsToPurchase + key +  ", "
+                }
+            }
+        }
+        var petDescription = "Purchase a pet! Pets are always great companions to have. You may only have 1 pet, buying a new pet will replace the old one - current pets available: " + petsToPurchase;
+        var petCost = PET_COST + " :taco:";
+        
+        embed
+        .addField('Pet (Liked Reputation or Better Only)', ":dog2:", true)
+        .addField('Description', petDescription, true)
+        .addField('Cost', petCost, true)
+        .addField('Command', config.commandString + "buypet [kind of pet] [pet name]", true)
+    }
+    if (shopData.repstatus && (REPUTATIONS[shopData.repstatus.toLowerCase()]) ){
+        var userRepLevel = REPUTATIONS[shopData.repstatus.toLowerCase()].level;
+        if (userRepLevel >= REWARDS["ArtifactRecipe"].repLevel){
+            var recipeDescription = "Recipe required to combine a complete set of artifact items obtained via scavenge, untradeable."
+
+            embed.addBlankField(true)
+            .addBlankField(false)
+            .addField('Artifact Recipe (Respected Reputation or Better Only)', ":rosette:", true)
+            .addField('Description', recipeDescription, true)
+            .addField('Cost', ARTIFACT_RECIPE_COST + " :taco:", true)
+            .addField('Command', config.commandString + "buyrecipe", true)
+        }
+    }
+    embed.addBlankField(false)
+    .addField('Your current tacos', shopData.userTacos + " :taco:", false)
+    .setTimestamp()
+    message.channel.send({embed});
+}
+
+module.exports.repShopCommand = function(message){
+    var discordUserId = message.author.id;
+    profileDB.getUserProfileData( discordUserId, function(err, shopResponse) {
+        if(err){
+            // user doesnt exist tell the user they should get some tacos
+            agreeToTerms(message, discordUserId);
+        }
+        else{
+            // if user has enough tacos to purchase the tree, add 1 tree, subtract x tacos
+            var shopData = {};
+            var userTacoStands = 0;
+            var userTacos = shopResponse.data.tacos;
+            shopData.userTacos = userTacos;
+            shopData.pickaxe = shopResponse.data.pickaxe;
+            if (shopResponse.data.tacostands && shopResponse.data.tacostands > -1){
+                userTacoStands = shopResponse.data.tacostands;
+            }
+            shopData.repstatus = shopResponse.data.repstatus
+            shopData.userTacoCost = userTacoStands;
+            repShopBuilder(message, shopData);
         }
     })
 }

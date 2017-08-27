@@ -118,6 +118,12 @@ client.on('message', function(message){
             else if(commandIs("shop", message)){
                 commands.shopCommand(message);
             }
+            else if(commandIs("repshop", message)){
+                commands.repShopCommand(message);
+            }
+            else if(commandIs("buyrecipe", message)){
+                commands.buyRecipeCommand(message);
+            }
             else if(commandIs("buypickaxe", message)){
                 commands.buyPickaxeCommand(message);
             }
