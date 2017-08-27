@@ -594,8 +594,8 @@ module.exports.statsStringBuilder = function(message, userItemStats){
     if (userItemStats.scavengeCommandExperienceGain){
         scavengeCommandString = scavengeCommandString + "On Scavenge +Experience: " + userItemStats.scavengeCommandExperienceGain + " \n"
     }
-    if (userItemStats.scavengeommandGuaranteedTacos){
-        scavengeCommandString = scavengeCommandString + "On Thank +Guaraneed Tacos (100% chance): " + userItemStats.scavengeCommandGuaranteedTacos + " \n"
+    if (userItemStats.scavengeCommandGuaranteedTacos){
+        scavengeCommandString = scavengeCommandString + "On Scavenge +Guaraneed Tacos (100% chance): " + userItemStats.scavengeCommandGuaranteedTacos + " \n"
     }
 
     statsString = statsString + thankCommandString;
