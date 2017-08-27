@@ -3100,14 +3100,17 @@ module.exports.combineCommand = function(message, args){
                                     }
                                     else{
                                         console.log(createRes);
+                                        combineEmbedBuilder(message, itemToCreateByName, itemToCreate, rarityOfItem);
+                                        /*
                                         profileDB.bulkUpdateItemStatus(itemsBeingedCombined, "used", function(combineErr, combineRes){
                                             if (combineErr){
                                                 console.log(combineErr);
                                             }else{
                                                 console.log(combineRes);
-                                                combineEmbedBuilder(message, itemToCreateByName, itemToCreate);
+                                                combineEmbedBuilder(message, itemToCreateByName, itemToCreate, rarityOfItem);
                                             }
                                         })
+                                        */
                                     }
                                 })
                             }
@@ -3133,16 +3136,31 @@ module.exports.combineCommand = function(message, args){
     // combine different rares to make something else?
 }
 
-function combineEmbedBuilder(message, itemToCreateByName, ItemDetails){
+function combineEmbedBuilder(message, itemToCreateByName, ItemDetails, itemRarity){
     // create a quoted message of all the items
-    var description = "**Item Stats:** " + ItemDetails.itemstatistics + "\n" + "**Item Slot:** " + ItemDetails.itemslot + "\n" + "**To Wear:** -puton " + ItemDetails.itemshortname;
-    const embed = new Discord.RichEmbed()
-    .setAuthor(message.author.username + " has created " + itemToCreateByName)
-    .addField(ItemDetails.itemdescription, description, true)
-    .setDescription( ":sparkles: :sparkles: :sparkles:" )
-    .setThumbnail(message.author.avatarURL)
-    .setColor(0xFF7A1C)
-    message.channel.send({embed});
+    if (itemRarity == "ancient"){
+        var description = "**Item Stats:** " + ItemDetails.itemstatistics + "\n" + "**Item Slot:** " + ItemDetails.itemslot + "\n" + "**To Wear:** -puton " + ItemDetails.itemshortname;
+        const embed = new Discord.RichEmbed()
+        .setAuthor(message.author.username + " has created " + itemToCreateByName)
+        .addField(ItemDetails.itemdescription, description, true)
+        .setDescription( ":sparkles: :comet: :sparkles:" )
+        .setThumbnail(message.author.avatarURL)
+        .setColor(0xFF7A1C)
+        if (ItemDetails.itemimage){
+            embed.setImage(ItemDetails.itemimage)
+        }
+        message.channel.send({embed});
+    }
+    else{
+        var description = "**Item Stats:** " + ItemDetails.itemstatistics + "\n" + "**Item Slot:** " + ItemDetails.itemslot + "\n" + "**To Wear:** -puton " + ItemDetails.itemshortname;
+        const embed = new Discord.RichEmbed()
+        .setAuthor(message.author.username + " has created " + itemToCreateByName)
+        .addField(ItemDetails.itemdescription, description, true)
+        .setDescription( ":sparkles: :sparkles: :sparkles:" )
+        .setThumbnail(message.author.avatarURL)
+        .setColor(0xFF7A1C)
+        message.channel.send({embed});
+    }
 }
 
 module.exports.wearingCommand = function(message, args){
