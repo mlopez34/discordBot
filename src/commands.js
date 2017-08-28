@@ -2715,6 +2715,7 @@ module.exports.useCommand = function(message, args){
             profileDB.getUserItems(discordUserId, function(error, inventoryResponse){
                 if (error){
                     console.log(error);
+                    message.channel.send(inventoryResponse);
                     agreeToTerms(message, discordUserId);
                 }
                 else{
@@ -4385,10 +4386,10 @@ function calculateRaffleWinner(message){
 }
 
 
-// TODO: UNCOMMON ITEMS , raffle, mario party game, artifact quests, RPG battle, rewards for lvl 15, 25, 40
+// TODO: UNCOMMON ITEMS , mario party game, artifact quests, RPG battle, rewards for lvl 15, 25, 40
 // add achievements embed
 // 200 rep: reward: casserole, buy: artifact recipe 
-// 1000 rep: buy: potions, reward:   5000 rep : achievement, artifact
+// 1000 rep: buy: potions, reward: empowered taco rune  5000 rep : achievement, artifact
 
 
 /*
