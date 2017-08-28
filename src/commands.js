@@ -4310,7 +4310,7 @@ module.exports.enterRaffleCommand = function(message, args){
                 activeRaffle.entriesId.push(discordUserId);
                 var size = activeRaffle.entriesId.length
                 if (size <= RAFFLE_USER_SIZE){
-                    message.channel.send(":ticket: Congratulations " + message.author + " you have entered the taco raffle!")
+                    message.channel.send(":ticket: " + message.author + " you have entered the taco raffle!")
                 }
                 if (size == RAFFLE_USER_SIZE){
                     // just got to 7, trigger the raffle event for someone to win
@@ -4334,7 +4334,7 @@ module.exports.enterRaffleCommand = function(message, args){
 }
 
 function calculateRaffleWinner(message){
-    var raffleWinnerRoll = Math.floor(Math.random() * 1) + 7;
+    var raffleWinnerRoll = Math.floor(Math.random() * 7);
     var raffleWinner = activeRaffle.entriesId[raffleWinnerRoll]
     var raffleWinnerUserName = "";
     // get the username via activeRaffle.users
