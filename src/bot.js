@@ -207,6 +207,9 @@ client.on('message', function(message){
             else if (commandIs("deny", message)){
                 commands.denyTermsCommand(message, args);
             }
+            else if (commandIs("raffle", message)){
+                commands.enterRaffleCommand(message);
+            }
             /*
             else if (commandIs("table", message)){
                 commands.createTable(message, args, client);

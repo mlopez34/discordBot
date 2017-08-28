@@ -39,8 +39,11 @@ var SORRY_COOLDOWN_HOURS = 6;
 var COOK_COOLDOWN_HOURS = 24;
 var PREPARE_COOLDOWN_HOURS = 48;
 var SCAVENGE_COOLDOWN_HOURS = 1;
+var RAFFLE_ENTRY_COST = 5;
+var RAFFLE_USER_SIZE = 7
 // make recipe be available at lvl 2 reputation
 var ARTIFACT_RECIPE_COST = 1000;
+
 
 var activeAuctions = {};
 var itemsInAuction = {};
@@ -48,6 +51,10 @@ var tacosInUseAuction = {};
 var activeTrades = {}
 var hasOpenTrade = {};
 var activeTradeItems = {}
+var activeRaffle = {
+    entriesId: [],
+    users: {}
+}
 
 var NeedsToAgree = {}
 
@@ -127,7 +134,7 @@ var PETS_AVAILABLE = {
         repLevel: 2
     },
     wolf: {
-        speak: ".....",
+        speak: "HaWoooooo",
         emoji: ":wolf:",
         fetch: 2,
         cooldown: 6,
@@ -4287,6 +4294,97 @@ function welcomeAgreeToTerms(message, mentionedId, mentionedUser){
     NeedsToAgree[mentionedId] = true;
     message.channel.send("Hey " + mentionedUser + " Bender will be storing and encrpyting your discord id to bring you the best experience, please type -agree to accept these terms, or -deny to decline them!")
 }
+
+module.exports.enterRaffleCommand = function(message, args){
+    var discordUserId = message.author.id;
+    // check that the user accepting the trade has tacos to pay the tax
+    if (!activeRaffle.users[discordUserId]){
+        profileDB.getUserProfileData(discordUserId, function(profileErr, profileRes){
+            if (profileErr){
+                console.log(profileErr);
+                // they need to agree to terms
+            }
+            else{
+                // add the user to the raffle
+                activeRaffle.users[discordUserId] = message.author.username;
+                activeRaffle.entriesId.push(discordUserId);
+                var size = activeRaffle.entriesId.length
+                if (size <= RAFFLE_USER_SIZE){
+                    message.channel.send(":ticket: Congratulations " + message.author + " you have entered the taco raffle!")
+                }
+                if (size == RAFFLE_USER_SIZE){
+                    // just got to 7, trigger the raffle event for someone to win
+                    calculateRaffleWinner(message);
+                    
+                }
+                else if (size >= RAFFLE_USER_SIZE + 1){
+                    activeRaffle = {
+                        entriesId: [],
+                        users: {}
+                    }
+                    message.channel.send(message.author + " Try again, a raffle might have been in session ;(")
+                }
+            }
+        })
+    }else{
+        message.channel.send("You are already in the raffle!");
+    }
+    
+    
+}
+
+function calculateRaffleWinner(message){
+    var raffleWinnerRoll = Math.floor(Math.random() * 1);
+    var raffleWinner = activeRaffle.entriesId[raffleWinnerRoll]
+    var raffleWinnerUserName = "";
+    // get the username via activeRaffle.users
+    for (var key in activeRaffle.users) {
+        if (activeRaffle.users.hasOwnProperty(key)) {
+            if (key == raffleWinner){
+                raffleWinnerUserName = activeRaffle.users[key]
+            }
+        }
+    }
+    message.channel.send(":ticket: Congratulations " + raffleWinnerUserName + " You are the winner of the taco raffle! You win `" + (RAFFLE_ENTRY_COST * (activeRaffle.entriesId.length - 2)) + "` tacos :taco:");
+    // update the user tacos for all entrants of the raffle
+    profileDB.updateUserTacos(raffleWinner, (RAFFLE_ENTRY_COST * (activeRaffle.entriesId.length - 2)), function(updateErr, updateRes){
+        if (updateErr){
+            console.log(updateErr);
+        }
+        else{
+            var copyOfEntries = []
+            for (var i in activeRaffle.entriesId){
+                copyOfEntries.push(activeRaffle.entriesId[i])
+            }
+            // updated the user tacos, now delete from other users
+            for (var entry in copyOfEntries){
+                // if it isnt the id of the winner, just remove their tacos
+                if (copyOfEntries[entry] != raffleWinner){
+                    profileDB.updateUserTacos(copyOfEntries[entry], (RAFFLE_ENTRY_COST * -1), function(removeErr, removeRes){
+                        if (removeErr){
+                            console.log(removeErr);
+                        }
+                        else{
+                            console.log(removeRes);
+                        }
+                    })
+                }
+            }
+            activeRaffle = {
+                entriesId: [],
+                users: {}
+            }
+        }
+    })
+}
+
+
+// TODO: UNCOMMON ITEMS , raffle, mario party game, artifact quests, RPG battle, rewards for lvl 15, 25, 40
+// add achievements embed
+// 200 rep: reward: casserole, buy: artifact recipe 
+// 1000 rep: buy: potions, reward:   5000 rep : achievement, artifact
+
+
 /*
 module.exports.createTableCommand = function(message, args){
     // -> user sends command -> bender creates embed of the party -> embed is the parameter for
