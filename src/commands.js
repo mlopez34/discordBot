@@ -4305,24 +4305,30 @@ module.exports.enterRaffleCommand = function(message, args){
                 // they need to agree to terms
             }
             else{
-                // add the user to the raffle
-                activeRaffle.users[discordUserId] = message.author.username;
-                activeRaffle.entriesId.push(discordUserId);
-                var size = activeRaffle.entriesId.length
-                if (size <= RAFFLE_USER_SIZE){
-                    message.channel.send(":ticket: " + message.author + " you have entered the taco raffle!")
-                }
-                if (size == RAFFLE_USER_SIZE){
-                    // just got to 7, trigger the raffle event for someone to win
-                    calculateRaffleWinner(message);
-                    
-                }
-                else if (size >= RAFFLE_USER_SIZE + 1){
-                    activeRaffle = {
-                        entriesId: [],
-                        users: {}
+                var userTacos = profileRes.data.tacos
+                if (userTacos >= RAFFLE_ENTRY_COST){
+                    // add the user to the raffle
+                    activeRaffle.users[discordUserId] = message.author.username;
+                    activeRaffle.entriesId.push(discordUserId);
+                    var size = activeRaffle.entriesId.length
+                    if (size <= RAFFLE_USER_SIZE){
+                        message.channel.send(":ticket: " + message.author + " you have entered the taco raffle!")
                     }
-                    message.channel.send(message.author + " Try again, a raffle might have been in session ;(")
+                    if (size == RAFFLE_USER_SIZE){
+                        // just got to 7, trigger the raffle event for someone to win
+                        calculateRaffleWinner(message);
+                        
+                    }
+                    else if (size >= RAFFLE_USER_SIZE + 1){
+                        activeRaffle = {
+                            entriesId: [],
+                            users: {}
+                        }
+                        message.channel.send(message.author + " Try again, a raffle might have been in session ;(")
+                    }
+                }
+                else{
+                    message.channel.send(message.author + " You cannot afford the raffle!")
                 }
             }
         })
