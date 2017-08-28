@@ -4298,7 +4298,7 @@ function welcomeAgreeToTerms(message, mentionedId, mentionedUser){
 module.exports.enterRaffleCommand = function(message, args){
     var discordUserId = message.author.id;
     // check that the user accepting the trade has tacos to pay the tax
-    //if (!activeRaffle.users[discordUserId]){
+    if (!activeRaffle.users[discordUserId]){
         profileDB.getUserProfileData(discordUserId, function(profileErr, profileRes){
             if (profileErr){
                 console.log(profileErr);
@@ -4326,9 +4326,9 @@ module.exports.enterRaffleCommand = function(message, args){
                 }
             }
         })
-    //}else{
-      //  message.channel.send("You are already in the raffle!");
-    //}
+    }else{
+        message.channel.send("You are already in the raffle!");
+    }
     
     
 }
