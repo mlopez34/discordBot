@@ -66,6 +66,10 @@ var achievementsData = {
     "Rolechecker" : {
         emoji: ":scroll:",
         description : "Win the TOS August 2017 Tournament"
+    },
+    "Confirmed Not Hitler" : {
+        emoji: ":white_check_mark:",
+        description : "Win the SH August 2017 Tournament"
     }
 }
 
