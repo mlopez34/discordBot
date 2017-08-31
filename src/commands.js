@@ -3723,7 +3723,7 @@ module.exports.auctionCommand = function(message, args){
         // dont have an active auction yet
 
         if ( args && args.length > 1){
-            var myItemShortName = args[1];
+            var myItemShortName = args[1].toLowerCase();
             var itemCount = 1;
             if (args.length > 2){
                 itemCount = args[2];
@@ -4008,7 +4008,7 @@ module.exports.tradeCommand = function(message, args){
     if (args && args.length >= 3 && mentionedUser && !activeTrades[mentionedIdString] && !hasOpenTrade[discordUserIdString] && !hasOpenTrade[mentionedIdString] ){ //&& mentionedId != discordUserId){
         
         var itemCount = 1;
-        var myItemShortName = args[2];
+        var myItemShortName = args[2].toLowerCase();
         if (args.length > 3){
             itemCount = args[3];
         }
