@@ -1075,7 +1075,7 @@ module.exports.profileCommand = function(message){
                     profileData.userItems = "Master Pickaxe :diamond_shape_with_a_dot_inside::pick: \n"
                 }
                 if (profileResponse.data.casserole == true){
-                    profileData.casserole = profileData.userItems + "Casserole :shallow_pan_of_food: \n"
+                    profileData.userItems = profileData.userItems + "Casserole :shallow_pan_of_food: \n"
                 }
                 if (profileResponse.data.petname){
                     if (profileResponse.data.pet && PETS_AVAILABLE[profileResponse.data.pet]){
