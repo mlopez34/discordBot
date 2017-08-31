@@ -858,6 +858,11 @@ module.exports.cookCommand = function(message){
         }
         else{
             var userLevel = cookResponse.data.level;
+            var extraTacosFromCasserole = 0;
+            var HAS_CASSEROLE = cookResponse.data.casserole;
+            if (HAS_CASSEROLE){
+                extraTacosFromCasserole = cookResponse.data.level;
+            }
             wearStats.getUserWearingStats(message, discordUserId, {userLevel: userLevel}, function(wearErr, wearRes){
                 if (wearErr){
                     
@@ -878,14 +883,20 @@ module.exports.cookCommand = function(message){
                         ///////// CALCULATE THE EXTRA TACOS HERE 
                         var extraTacosFromItems = wearStats.calculateExtraTacos(wearRes, "cook"); // 0 or extra
 
-                        profileDB.updateUserTacosCook(discordUserId, cookRoll + extraTacosFromItems, function(err, updateResponse) {
+                        profileDB.updateUserTacosCook(discordUserId, cookRoll + extraTacosFromItems + extraTacosFromCasserole , function(err, updateResponse) {
                             if (err){
                                 console.log(err);
                             }
                             else{
                                 // send message that the user has 1 more taco
-                                if (extraTacosFromItems > 0){
-                                    message.channel.send(message.author + " Cooked `" + cookRoll + "` tacos! you now have `" + (cookResponse.data.tacos + cookRoll) + "` tacos :taco:" + " " + "received `" + extraTacosFromItems + "` extra tacos");
+                                if (extraTacosFromItems > 0 && HAS_CASSEROLE){
+                                    message.channel.send(message.author + " Cooked `" + cookRoll + "` tacos! you now have `" + (cookResponse.data.tacos + cookRoll) + "` tacos :taco:" + "! received `" + extraTacosFromCasserole + "` extra tacos :taco: from your casserole " + " and received `" + extraTacosFromItems + "` extra tacos from items" );
+                                }
+                                else if (extraTacosFromItems > 0 && !HAS_CASSEROLE){
+                                    message.channel.send(message.author + " Cooked `" + cookRoll + "` tacos! you now have `" + (cookResponse.data.tacos + cookRoll) + "` tacos :taco:" + "! " + "received `" + extraTacosFromItems + "` extra tacos");
+                                }
+                                else if (HAS_CASSEROLE){
+                                    message.channel.send(message.author + " Cooked `" + cookRoll + "` tacos! you now have `" + (cookResponse.data.tacos + cookRoll) + "` tacos :taco:" + "! received `" + extraTacosFromCasserole + "` extra tacos :taco: from your casserole" );
                                 }else{
                                     message.channel.send(message.author + " Cooked `" + cookRoll + "` tacos! you now have `" + (cookResponse.data.tacos + cookRoll) + "` tacos :taco:" );
                                 }

@@ -90,12 +90,46 @@ function updateReputationStatus(message, discordId, repstatus){
         }      
         else{
             console.log(res);
-            reputationEmbedBuilder(message, repstatus);
+            if (repstatus){
+                updateUserRewards(message, discordId, repstatus, function(updateErr, updateRes){
+                    if (updateErr){
+                        console.log(updateErr);
+                    }
+                    else{
+                        reputationEmbedBuilder(message, repstatus, updateRes);
+                    }
+                })
+            }
+            else{
+                reputationEmbedBuilder(message, repstatus, "none");
+            }
         }
     })
 }
 
-function reputationEmbedBuilder(message, repstatus){
+// list of rewards to give the user
+function updateUserRewards(message, discordId, repstatus, cb){
+    switch(repstatus.toLowerCase()){
+        case "liked":
+            cb(null, "none");
+            break;
+        case "respected":
+            // give the user a casserole on their profile
+            profileDB.obtainCasserole(discordId, function(error, res){
+                if (error){
+                    console.log(error);
+                }
+                else{
+                    cb(null, "casserole");
+                }
+            })
+            break;
+    }
+        
+}
+
+
+function reputationEmbedBuilder(message, repstatus, rewards){
     var repEmoji = "";
     if (repstatus.toLowerCase() == "liked"){
         repEmoji = ":statue_of_liberty:"
@@ -109,6 +143,7 @@ function reputationEmbedBuilder(message, repstatus){
     else if(repstatus.toLowerCase() == "glorified"){
         repEmoji = ":statue_of_liberty:"
     }
+    
     const embed = new Discord.RichEmbed()
     .setColor(0xED962D)
     // Image by Ellen from SCD
@@ -120,5 +155,9 @@ function reputationEmbedBuilder(message, repstatus){
     }
     embed
     .addField(message.author.username +" has reached a reputation of `" + repstatus + "` with Bender", repEmoji, true)
+    // rewards
+    if (rewards === "casserole");{
+        embed.addField( "Rewards: " , ":shallow_pan_of_food: Casserole - gain extra tacos on cook based on your level", true)
+    }
     message.channel.send({embed});
 }
