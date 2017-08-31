@@ -858,6 +858,11 @@ module.exports.cookCommand = function(message){
         }
         else{
             var userLevel = cookResponse.data.level;
+            var extraTacosFromCasserole = 0;
+            var HAS_CASSEROLE = cookResponse.data.casserole;
+            if (HAS_CASSEROLE){
+                extraTacosFromCasserole = cookResponse.data.level;
+            }
             wearStats.getUserWearingStats(message, discordUserId, {userLevel: userLevel}, function(wearErr, wearRes){
                 if (wearErr){
                     
@@ -878,14 +883,20 @@ module.exports.cookCommand = function(message){
                         ///////// CALCULATE THE EXTRA TACOS HERE 
                         var extraTacosFromItems = wearStats.calculateExtraTacos(wearRes, "cook"); // 0 or extra
 
-                        profileDB.updateUserTacosCook(discordUserId, cookRoll + extraTacosFromItems, function(err, updateResponse) {
+                        profileDB.updateUserTacosCook(discordUserId, cookRoll + extraTacosFromItems + extraTacosFromCasserole , function(err, updateResponse) {
                             if (err){
                                 console.log(err);
                             }
                             else{
                                 // send message that the user has 1 more taco
-                                if (extraTacosFromItems > 0){
-                                    message.channel.send(message.author + " Cooked `" + cookRoll + "` tacos! you now have `" + (cookResponse.data.tacos + cookRoll) + "` tacos :taco:" + " " + "received `" + extraTacosFromItems + "` extra tacos");
+                                if (extraTacosFromItems > 0 && HAS_CASSEROLE){
+                                    message.channel.send(message.author + " Cooked `" + cookRoll + "` tacos! you now have `" + (cookResponse.data.tacos + cookRoll) + "` tacos :taco:" + "! received `" + extraTacosFromCasserole + "` extra tacos :taco: from your casserole " + " and received `" + extraTacosFromItems + "` extra tacos from items" );
+                                }
+                                else if (extraTacosFromItems > 0 && !HAS_CASSEROLE){
+                                    message.channel.send(message.author + " Cooked `" + cookRoll + "` tacos! you now have `" + (cookResponse.data.tacos + cookRoll) + "` tacos :taco:" + "! " + "received `" + extraTacosFromItems + "` extra tacos");
+                                }
+                                else if (HAS_CASSEROLE){
+                                    message.channel.send(message.author + " Cooked `" + cookRoll + "` tacos! you now have `" + (cookResponse.data.tacos + cookRoll) + "` tacos :taco:" + "! received `" + extraTacosFromCasserole + "` extra tacos :taco: from your casserole" );
                                 }else{
                                     message.channel.send(message.author + " Cooked `" + cookRoll + "` tacos! you now have `" + (cookResponse.data.tacos + cookRoll) + "` tacos :taco:" );
                                 }
@@ -1060,6 +1071,12 @@ module.exports.profileCommand = function(message){
                 else if(profileResponse.data.pickaxe == "improved"){
                     profileData.userItems = "Improved Pickaxe :small_blue_diamond::pick: \n"
                 }
+                else if(profileResponse.data.pickaxe == "master"){
+                    profileData.userItems = "Master Pickaxe :diamond_shape_with_a_dot_inside::pick: \n"
+                }
+                if (profileResponse.data.casserole == true){
+                    profileData.casserole = profileData.userItems + "Casserole :shallow_pan_of_food: \n"
+                }
                 if (profileResponse.data.petname){
                     if (profileResponse.data.pet && PETS_AVAILABLE[profileResponse.data.pet]){
                         profileData.petname = profileResponse.data.petname
@@ -1116,6 +1133,12 @@ module.exports.profileCommand = function(message){
                 }
                 else if(profileResponse.data.pickaxe == "improved"){
                     profileData.userItems = "Improved Pickaxe :small_blue_diamond::pick: \n"
+                }
+                else if(profileResponse.data.pickaxe == "master"){
+                    profileData.userItems = "Master Pickaxe :diamond_shape_with_a_dot_inside::pick: \n"
+                }
+                if (profileResponse.data.casserole == true){
+                    profileData.userItems = profileData.userItems + "Casserole :shallow_pan_of_food: \n"
                 }
                 if (profileResponse.data.petname){
                     if (profileResponse.data.pet && PETS_AVAILABLE[profileResponse.data.pet]){
@@ -1595,20 +1618,26 @@ module.exports.helpCommand = function(message){
     var throwTaco = config.commandString + "throw [user] - throw a taco at the mentioned user \n "
     var scavenge = config.commandString + "scavenge - use your pickaxe \n "
     var standings = config.commandString + "standings - show taco standings \n "
+    var itemHelp = config.commandString + "itemhelp - show item help \n "
     var useItem = config.commandString + "use [item name] [user](if applicable) - uses an item \n "
     var slots = config.commandString + "slots [number] - play slots and bet [number] of tacos "
+    var raffle = config.commandString + "raffle - enter the raffle, costs 5 tacos, raffle ends when 7 players are in "
     //var commandsList = "```xl Uppercase lowercase 123 ```"
-    var commandsList = "```css\n" + commandsList + profile + thank + sorry + welcome + cook + give + shop + prepare + throwTaco + scavenge + standings + useItem + slots+ "```";
+    var commandsList = "```css\n" + commandsList + profile + thank + sorry + welcome + cook + give + shop + prepare + throwTaco + scavenge + standings + itemHelp + useItem + slots + raffle + "```";
     message.channel.send(commandsList);
 }
 
 module.exports.itemhelpCommand = function(message){
-    var commandsList = "```List of commands \n ____________ \n "
-    var puton = "-puton [1-3] [first word of item] - you will wear the item!\n"
-    var takeoff = "-takeoff [1-3] - you will take off the item!\n"
-    var wearing = "-wearing - list of all the items you are wearing, and a summary\n"
-    var rules = " You can only wear 3 items MAX at a time, you cannot wear an item of the same item slot as another item. \nItem bonuses take effect after the number of hours the command they affect. \nItems must be taken off before putting on another item on the same slot. \nThe tag [ACTIVE] means the item is now affecting your commands!```"
-    commandsList = commandsList + puton + takeoff + wearing + rules
+    var commandsList = "```css\nList of commands \n ____________ \n"
+    var puton =   " -puton [1-3] [first word of item] - you will wear the item!\n"
+    var takeoff = " -takeoff [1-3] - you will take off the item!\n"
+    var wearing = " -wearing - list of all the items you are wearing, and a summary\n"
+    var combine = " -combine - combine the item into an improved or refined item - you need 5 for rares, and 4 for ancients\n"
+    var trade =   " -trade [user] [first word of item] [amount] or -trade [user] [first word of item] [amount] tacos [amount] to trade an item with a user\n"
+    var auction = " -auction [first word of item] create an auction for an item where users can bid \n"
+    var bid =     " -bid [user] [amount] bid for the item the user is auctioning for the amount of tacos\n"
+    var rules = " \nRules: You can only wear 3 items MAX at a time, you cannot wear an item of the same item slot as another item. \nItem bonuses take effect after the number of hours the command they affect. \nItems must be taken off before putting on another item on the same slot. \nThe tag [ACTIVE] means the item is now affecting your commands!```"
+    commandsList = commandsList + puton + takeoff + wearing + combine + trade + auction + bid + rules
     message.channel.send(commandsList);
 }
 
