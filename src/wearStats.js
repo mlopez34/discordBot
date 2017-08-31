@@ -508,7 +508,7 @@ module.exports.statsStringBuilder = function(message, userItemStats){
         thankCommandString = thankCommandString + "On Thank +Experience: " + userItemStats.thankCommandExperienceGain + " \n"
     }
     if (userItemStats.thankCommandGuaranteedTacos){
-        thankCommandString = thankCommandString + "On Thank +Guaraneed Tacos (100% chance): " + userItemStats.thankCommandGuaranteedTacos + " \n"
+        thankCommandString = thankCommandString + "On Thank +Guaranteed Tacos (100% chance): " + userItemStats.thankCommandGuaranteedTacos + " \n"
     }
 
     if (userItemStats.sorryCommandCDRPercentage){
@@ -524,7 +524,7 @@ module.exports.statsStringBuilder = function(message, userItemStats){
         sorryCommandString = sorryCommandString + "On Sorry +Experience: " + userItemStats.sorryCommandExperienceGain + " \n"
     }
     if (userItemStats.sorryCommandGuaranteedTacos){
-        sorryCommandString = sorryCommandString + "On Sorry +Guaraneed Tacos (100% chance): " + userItemStats.sorryCommandGuaranteedTacos + " \n"
+        sorryCommandString = sorryCommandString + "On Sorry +Guaranteed Tacos (100% chance): " + userItemStats.sorryCommandGuaranteedTacos + " \n"
     }
 
     if (userItemStats.cookCommandCDRPercentage){
@@ -540,7 +540,7 @@ module.exports.statsStringBuilder = function(message, userItemStats){
         cookCommandString = cookCommandString + "On Cook +Experience: " + userItemStats.cookCommandExperienceGain + " \n"
     }
     if (userItemStats.cookCommandGuaranteedTacos){
-        cookCommandString = cookCommandString + "On Cook +Guaraneed Tacos (100% chance): " + userItemStats.cookCommandGuaranteedTacos + " \n"
+        cookCommandString = cookCommandString + "On Cook +Guaranteed Tacos (100% chance): " + userItemStats.cookCommandGuaranteedTacos + " \n"
     }
     
     if (userItemStats.prepareCommandCDRPercentage){
@@ -556,7 +556,7 @@ module.exports.statsStringBuilder = function(message, userItemStats){
         prepareCommandString = prepareCommandString + "On Prepare +Experience: " + userItemStats.prepareCommandExperienceGain + " \n"
     }
     if (userItemStats.prepareCommandGuaranteedTacos){
-        prepareCommandString = prepareCommandString + "On Prepare +Guaraneed Tacos (100% chance): " + userItemStats.prepareCommandGuaranteedTacos + " \n"
+        prepareCommandString = prepareCommandString + "On Prepare +Guaranteed Tacos (100% chance): " + userItemStats.prepareCommandGuaranteedTacos + " \n"
     }
 
     if (userItemStats.fetchCommandCDRPercentage){
@@ -572,7 +572,7 @@ module.exports.statsStringBuilder = function(message, userItemStats){
         fetchCommandString = fetchCommandString + "On Fetch +Experience: " + userItemStats.fetchCommandExperienceGain + " \n"
     }
     if (userItemStats.fetchCommandGuaranteedTacos){
-        fetchCommandString = fetchCommandString + "On Fetch +Guaraneed Tacos (100% chance): " + userItemStats.fetchCommandGuaranteedTacos + " \n"
+        fetchCommandString = fetchCommandString + "On Fetch +Guaranteed Tacos (100% chance): " + userItemStats.fetchCommandGuaranteedTacos + " \n"
     }
     // special fetch stat
     if (userItemStats.fetchCommandTacosTimesCDHours){
@@ -595,7 +595,7 @@ module.exports.statsStringBuilder = function(message, userItemStats){
         scavengeCommandString = scavengeCommandString + "On Scavenge +Experience: " + userItemStats.scavengeCommandExperienceGain + " \n"
     }
     if (userItemStats.scavengeCommandGuaranteedTacos){
-        scavengeCommandString = scavengeCommandString + "On Scavenge +Guaraneed Tacos (100% chance): " + userItemStats.scavengeCommandGuaranteedTacos + " \n"
+        scavengeCommandString = scavengeCommandString + "On Scavenge +Guaranteed Tacos (100% chance): " + userItemStats.scavengeCommandGuaranteedTacos + " \n"
     }
 
     statsString = statsString + thankCommandString;

@@ -152,8 +152,8 @@ var PETS_AVAILABLE = {
     penguin: {
         speak: ".....",
         emoji: ":penguin:",
-        fetch: 2,
-        cooldown: 6,
+        fetch: 3,
+        cooldown: 9,
         reputation: "respected",
         repLevel: 3
     },
@@ -4421,7 +4421,7 @@ function calculateRaffleWinner(message){
 // 1000 rep: buy: potions, reward: empowered taco rune  5000 rep : achievement, artifact
 
 
-/*
+
 module.exports.createTableCommand = function(message, args){
     // -> user sends command -> bender creates embed of the party -> embed is the parameter for
     // reaction collector -> lasts ~ 10 minutes
@@ -4457,4 +4457,3 @@ module.exports.createTableCommand = function(message, args){
     //message.channel.send("testing - " + message);
     
 }
-*/
