@@ -156,7 +156,7 @@ function reputationEmbedBuilder(message, repstatus, rewards){
     embed
     .addField(message.author.username +" has reached a reputation of `" + repstatus + "` with Bender", repEmoji, true)
     // rewards
-    if (rewards === "casserole");{
+    if (rewards === "casserole"){
         embed.addField( "Rewards: " , ":shallow_pan_of_food: Casserole - gain extra tacos on cook based on your level", true)
     }
     message.channel.send({embed});
