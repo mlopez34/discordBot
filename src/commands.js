@@ -2550,7 +2550,7 @@ module.exports.pickupCommand = function (message){
         }
     }
     else{
-        message.channel.send("There are no tacos for you to pick up.. ");
+        console.log("There are no tacos for you to pick up.. ");
     }
 }
 
@@ -4431,29 +4431,38 @@ module.exports.createTableCommand = function(message, args){
     
 
     var discordUserId = message.author.id;
-
+     
     const embed = new Discord.RichEmbed()
-    .setAuthor("test")
+    .setAuthor("Taco party test")
+    .setThumbnail("https://media.giphy.com/media/mIZ9rPeMKefm0/giphy.gif")
     .setColor(0xF2E93E)
-    .addField('afsd', "asdf")
-    message.channel.send({embed});
+    .addField('React test field', "React test description")
 
-    var test = new Discord.ReactionCollector(embed, function(){ return true; } , { time: 15000, max: 5, maxEmojis: 5, maxUsers: 5 } );
-    test.on('collect', function(element, collector){
-        // allow for only 3 emojis, when the user reacts to any of the 3 emojis
-        // they get added to the list of people that reacted to the emoji and cannot be
-        // counted again for that reaction
-        // MAYBE - remove the user from that reaction?
-
-
-        // console.log(element);
-        console.log(collector);
-    })
-    test.on('end', function(collected, reason){
-        // party lasts 10 minutes - upon ending the reaction collector the party has ended
-        // announce how many people got what
-        message.channel.send("asdf");
-    })
-    //message.channel.send("testing - " + message);
+    message.channel.send({embed})
+    .then(function (sentMessage) {
+        sentMessage.react("🌮")
+        sentMessage.react("🍹")
+        sentMessage.react("💃🏼")
+        var test = new Discord.ReactionCollector(sentMessage, function(){ return true; } , { time: 15000, max: 5, maxEmojis: 5, maxUsers: 5 } );
+        test.on('collect', function(element, collector){
+            // allow for only 3 emojis, when the user reacts to any of the 3 emojis
+            // they get added to the list of people that reacted to the emoji and cannot be
+            // counted again for that reaction
+            // MAYBE - remove the user from that reaction?
+    
+    
+            console.log(element);
+            // console.log(collector);
+        })
+        test.on('end', function(collected, reason){
+            // party lasts 10 minutes - upon ending the reaction collector the party has ended
+            // announce how many people got what
+            message.channel.send("asdf");
+        })
+    }).catch(function(err) {
+      //Something
+        message.channel.send(err);
+     });
+     
     
 }
