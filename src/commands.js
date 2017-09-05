@@ -43,6 +43,7 @@ var RAFFLE_ENTRY_COST = 5;
 var RAFFLE_USER_SIZE = 7
 // make recipe be available at lvl 2 reputation
 var ARTIFACT_RECIPE_COST = 1000;
+var TACO_PARTY_TIME_TO_LIVE = 60000
 
 
 var activeAuctions = {};
@@ -55,6 +56,7 @@ var activeRaffle = {
     entriesId: [],
     users: {}
 }
+var activeTables = {};
 
 var NeedsToAgree = {}
 
@@ -2821,8 +2823,6 @@ module.exports.useCommand = function(message, args){
                                         }
                                     })
                                 }, 1000);
-                                
-                                
                             }
                         })
                     }
@@ -4338,7 +4338,7 @@ module.exports.enterRaffleCommand = function(message, args){
                 var userTacos = profileRes.data.tacos
                 if (userTacos >= RAFFLE_ENTRY_COST){
                     // add the user to the raffle
-                    activeRaffle.users[discordUserId] = message.author.username;
+                    activeRaffle.users[discordUserId] = message.author;
                     activeRaffle.entriesId.push(discordUserId);
                     var size = activeRaffle.entriesId.length
                     if (size <= RAFFLE_USER_SIZE){
@@ -4373,15 +4373,17 @@ function calculateRaffleWinner(message){
     var raffleWinnerRoll = Math.floor(Math.random() * 7);
     var raffleWinner = activeRaffle.entriesId[raffleWinnerRoll]
     var raffleWinnerUserName = "";
+    var raffleWinnerUser;
     // get the username via activeRaffle.users
     for (var key in activeRaffle.users) {
         if (activeRaffle.users.hasOwnProperty(key)) {
             if (key == raffleWinner){
-                raffleWinnerUserName = activeRaffle.users[key]
+                raffleWinnerUserName = activeRaffle.users[key].username
+                raffleWinnerUser = activeRaffle.users[key]
             }
         }
     }
-    message.channel.send(":ticket: Congratulations " + raffleWinnerUserName + " You are the winner of the taco raffle! You win `" + (RAFFLE_ENTRY_COST * (activeRaffle.entriesId.length - 2)) + "` tacos :taco:");
+    message.channel.send(":ticket: Congratulations " + raffleWinnerUser + " You are the winner of the taco raffle! You win `" + (RAFFLE_ENTRY_COST * (activeRaffle.entriesId.length - 2)) + "` tacos :taco:");
     // update the user tacos for all entrants of the raffle
     profileDB.updateUserTacos(raffleWinner, (RAFFLE_ENTRY_COST * (activeRaffle.entriesId.length - 2)), function(updateErr, updateRes){
         if (updateErr){
@@ -4415,54 +4417,272 @@ function calculateRaffleWinner(message){
 }
 
 
-// TODO: UNCOMMON ITEMS , mario party game, artifact quests, RPG battle, rewards for lvl 15, 25, 40
+// TODO: mario party game, artifact quests, RPG battle, rewards for lvl 15, 25, 40
 // add achievements embed
 // 200 rep: reward: casserole, buy: artifact recipe 
 // 1000 rep: buy: potions, reward: empowered taco rune  5000 rep : achievement, artifact
 
-
-
-module.exports.createTableCommand = function(message, args){
-    // -> user sends command -> bender creates embed of the party -> embed is the parameter for
-    // reaction collector -> lasts ~ 10 minutes
-    // collect all the users that reacted to the party
-    // give tacos to the users at the end of the party for the reactions collected
-    // 2 tacos to the creator, 12 experience, 1 taco to the people that reacted to it,
-    
+module.exports.createTableCommand = function(message){
 
     var discordUserId = message.author.id;
-     
+    var IDS_OF_UNCOMMONS_FOR_PARTY = [];
+    var uncommonsToUse = [];
+    // get the user's inventory and use up 1 of each of the 6 items that are uncommon items
+    profileDB.getUserItems(discordUserId, function(err, inventoryResponse){
+        if (err){
+            console.log(err);
+        }
+        else{
+            console.log(inventoryResponse.data);
+            // get all the data for each item
+            var itemsInInventoryCountMap = {};
+            var itemsMapbyId = {};
+            profileDB.getItemData(function(error, allItemsResponse){
+                if (error){
+                    console.log(error);
+                }
+                else{
+                    console.log("allitemsres " + allItemsResponse.data);
+                    for (var item in inventoryResponse.data){
+                        var ItemInQuestion = inventoryResponse.data[item];
+                        var validItem = useItem.itemValidate(ItemInQuestion);
+                        var itemBeingAuctioned = false;
+                        if (itemsInAuction[ItemInQuestion.id]){
+                            itemBeingAuctioned = true;
+                        }
+                        var itemBeingTraded = false;
+                        if (activeTradeItems[inventoryResponse.data[item].id]){
+                            itemBeingTraded = true;
+                        }
+                        if (!itemsInInventoryCountMap[inventoryResponse.data[item].itemid] 
+                            && validItem 
+                            && !itemBeingAuctioned
+                            && !itemBeingTraded){
+                            // item hasnt been added to be counted, add it as 1
+                            itemsInInventoryCountMap[inventoryResponse.data[item].itemid] = 1;
+                        }
+                        else if (validItem && !itemBeingAuctioned && !itemBeingTraded){
+                            itemsInInventoryCountMap[inventoryResponse.data[item].itemid] = itemsInInventoryCountMap[inventoryResponse.data[item].itemid] + 1
+                        }
+                    }
+                    console.log(itemsInInventoryCountMap);
+                    for (var index in allItemsResponse.data){
+                        itemsMapbyId[allItemsResponse.data[index].id] = allItemsResponse.data[index];
+                        if (allItemsResponse.data[index].itemraritycategory == "uncommon"){
+                            IDS_OF_UNCOMMONS_FOR_PARTY.push(allItemsResponse.data[index].id);
+                        }
+                    }
+                    // have items map by id for all items, and itemsInInventoryCountMap itemid : count
+                    // only create table if we have > 1 of the uncommons ids
+                    var ableToCreateTable = true;
+                    for (var uncommon in IDS_OF_UNCOMMONS_FOR_PARTY){
+                        if (!itemsInInventoryCountMap[IDS_OF_UNCOMMONS_FOR_PARTY[uncommon]] 
+                            || itemsInInventoryCountMap[IDS_OF_UNCOMMONS_FOR_PARTY[uncommon]] == 0){
+                            ableToCreateTable = false;
+                        }
+                    }
+
+                    if (ableToCreateTable){
+                        // go through list of uncommons
+                        for (var uncommon in IDS_OF_UNCOMMONS_FOR_PARTY){
+                            // go through list of items in my inventory
+                            for (var item in inventoryResponse.data){
+                                // only need 1 item
+                                var ItemInQuestion = inventoryResponse.data[item];
+                                var validItem = useItem.itemValidate(ItemInQuestion);
+                                var itemBeingAuctioned = false;
+                                if (itemsInAuction[ItemInQuestion.id]){
+                                    itemBeingAuctioned = true;
+                                }
+                                var itemBeingTraded = false;
+                                if (activeTradeItems[inventoryResponse.data[item].id]){
+                                    itemBeingTraded = true;
+                                }
+                                if (inventoryResponse.data[item].itemid == IDS_OF_UNCOMMONS_FOR_PARTY[uncommon]
+                                    && validItem && !itemBeingAuctioned && !itemBeingTraded){
+                                    uncommonsToUse.push(inventoryResponse.data[item]);
+                                    break;
+                                }
+                            }
+                        }
+                        createParty(message, discordUserId, uncommonsToUse);
+                    }
+                    else{
+                        message.channel.send("Missing ingredients for the Taco Party!!");
+                    }
+                }
+            })
+        }
+    })
+}
+
+function createParty(message, discordUserId, uncommonsToUse){
+    
     const embed = new Discord.RichEmbed()
-    .setAuthor("Taco party test")
+    .setAuthor("Taco party created by " + message.author.username + "!!")
     .setThumbnail("https://media.giphy.com/media/mIZ9rPeMKefm0/giphy.gif")
     .setColor(0xF2E93E)
-    .addField('React test field', "React test description")
+    .addField('Eat some tacos, drink some orchata water, or dance with Aileen your taco hostess', "Pick one! \n🌮 = taco, 🍹 = terry cloth, 💃🏼 = rock \nYou will receive it at the end of the party" )
 
-    message.channel.send({embed})
-    .then(function (sentMessage) {
-        sentMessage.react("🌮")
-        sentMessage.react("🍹")
-        sentMessage.react("💃🏼")
-        var test = new Discord.ReactionCollector(sentMessage, function(){ return true; } , { time: 15000, max: 5, maxEmojis: 5, maxUsers: 5 } );
-        test.on('collect', function(element, collector){
-            // allow for only 3 emojis, when the user reacts to any of the 3 emojis
-            // they get added to the list of people that reacted to the emoji and cannot be
-            // counted again for that reaction
-            // MAYBE - remove the user from that reaction?
-    
-    
-            console.log(element);
-            // console.log(collector);
+    useItem.useUncommons(message, discordUserId, uncommonsToUse, function(useError, useRes){
+        if (useError){
+            console.log(useError);
+        }
+        else{
+            console.log(useRes);
+            if (useRes == "success"){
+                message.channel.send({embed})
+                .then(function (sentMessage) {
+                    // match the sent message to the discord user that sent it
+                    activeTables["table-"+sentMessage.id] = { id: discordUserId, username: message.author.username };
+                    sentMessage.react("🌮")
+                    sentMessage.react("🍹")
+                    sentMessage.react("💃🏼")
+                    var tacoParty = new Discord.ReactionCollector(sentMessage, function(){ return true; } , { time: TACO_PARTY_TIME_TO_LIVE, max: 1000, maxEmojis: 100, maxUsers: 100 } );
+                    tacoParty.on('collect', function(element, collector){
+                        // remove the reaction if the user already reacted
+                        console.log(element)
+                        element.users.forEach(function(user){
+                            if (!user.bot){
+                                var userId = user.id;
+                                collector.collected.forEach(function(reaction){
+                                    console.log(reaction);
+                                    reaction.users.forEach(function(collectorUser){
+                                        if (!collectorUser.bot){
+                                            var collectorUser = collectorUser.id;
+                                            if (collectorUser == userId && element.emoji.name != reaction.emoji.name){
+                                                // remove the reaction by the user
+                                                element.remove(userId)
+                                            }
+                                        }
+                                    })
+                                })
+                            }
+                        })
+                    })
+                    tacoParty.on('end', function(collected, reason){
+                        // party lasts 10 minutes - upon ending the reaction collector the party has ended
+                        var ownerOfTable;
+                        var ownerOfTableUsername;
+                        var idOfTable;
+                        var reactionCount = 0;
+                        collected.forEach(function(reactionEmoji){
+                            ownerOfTable = activeTables["table-" + reactionEmoji.message.id].id; // discord id of owner
+                            ownerOfTableUsername = activeTables["table-" + reactionEmoji.message.id].username;
+                            idOfTable = "table-" + reactionEmoji.message.id;
+                            if (reactionEmoji._emoji.name == "🌮"){
+                                reactionEmoji.users.forEach(function(user){
+                                    if (!user.bot && ownerOfTable != user.id){
+                                        tacoPartyReactRewards(message, user, "🌮", "taco")
+                                        reactionCount++;
+                                    }
+                                })
+                            }
+                            else if (reactionEmoji._emoji.name == "🍹"){
+                                reactionEmoji.users.forEach(function(user){
+                                    if (!user.bot && ownerOfTable != user.id){
+                                        tacoPartyReactRewards(message, user, "🍹", "terrycloth")
+                                        reactionCount++;
+                                    }
+                                })
+                            }
+                            else if (reactionEmoji._emoji.name == "💃🏼"){
+                                reactionEmoji.users.forEach(function(user){
+                                    if (!user.bot && ownerOfTable != user.id){
+                                        tacoPartyReactRewards(message, user, "💃🏼", "rock")
+                                        reactionCount++;
+                                    }
+                                })
+                            }
+                            
+                        })
+                        if (ownerOfTable){
+                            // give owner of table 1xp per reaction, 2 tacos per reaction 
+                            var attendees = reactionCount;
+                            if (reactionCount > 15){
+                                reactionCount = 15;
+                            }
+                            profileDB.getUserProfileData(ownerOfTable, function(getDataErr, getDataRes){
+                                if (getDataErr){
+                                    console.log(getDataErr);
+                                    message.channel.send(err);
+                                }
+                                else{
+                                    // for gaining xp
+                                    var userData = getDataRes;
+                                    profileDB.updateUserTacos(ownerOfTable, reactionCount * 2, function(err, res){
+                                        if (err){
+                                            console.log(err);
+                                            message.channel.send(err);
+                                        }
+                                        else{
+                                            console.log(res);
+                                            experience.gainExperience(message, ownerOfTable, reactionCount, userData);
+                                            message.channel.send("The party for " + ownerOfTableUsername + " was a great success! There were `" + attendees + "` guests that showed up")
+                                            var achievements = getDataRes.data.achievements;
+                                            var data = {}
+                                            data.achievements = achievements;
+                                            data.attendees = attendees;
+                                            achiev.checkForAchievements(ownerOfTable, data, message);
+                                            // delete the party from the list
+                                            if (activeTables[idOfTable]){
+                                                delete activeTables[idOfTable];
+                                            }
+                                        }
+                                    })
+                                }
+                            })
+                        }
+                    })
+                }).catch(function(err) {
+                    message.channel.send(err);
+                });
+            }
+        }
+    })
+}
+
+function tacoPartyReactRewards(message, user, emoji, reward){
+    // each of these ids will receive 1 taco, 1 xp, or 1 rock
+    var giveRewardTo = user.id;
+    var giveRewardToUsername = user.username
+    console.log(user.id);
+    if (reward === "taco"){
+        profileDB.updateUserTacos(giveRewardTo, 1, function(err, res){
+            if (err){
+                console.log(err);
+                message.channel.send(err);
+            }else{
+                console.log(res);
+            }
         })
-        test.on('end', function(collected, reason){
-            // party lasts 10 minutes - upon ending the reaction collector the party has ended
-            // announce how many people got what
-            message.channel.send("asdf");
+    }
+    else if (reward === "terrycloth" || reward === "rock"){
+        profileDB.getItemData(function(err, getItemResponse){
+            if (err){
+                console.log(err);
+            }
+            else{
+                var itemsObtainedArray = [];
+                if (reward === "terrycloth"){
+                    // ID of terry cloth
+                    for (var index in getItemResponse.data){
+                        if (getItemResponse.data[index].id == TERRY_CLOTH_ITEM_ID){
+                            itemsObtainedArray.push( getItemResponse.data[index] );
+                            break;
+                        }
+                    }
+                }
+                else if (reward === "rock"){
+                    for (var index in getItemResponse.data){
+                        if (getItemResponse.data[index].id == ROCK_ITEM_ID){
+                            itemsObtainedArray.push( getItemResponse.data[index] );
+                            break;
+                        }
+                    }
+                }
+                addToUserInventory(giveRewardTo, itemsObtainedArray);
+            }
         })
-    }).catch(function(err) {
-      //Something
-        message.channel.send(err);
-     });
-     
-    
+    }
 }
