@@ -4531,6 +4531,7 @@ function createParty(message, discordUserId, uncommonsToUse){
         else{
             console.log(useRes);
             if (useRes == "success"){
+                //config.mainChannelName.send({embed})
                 message.channel.send({embed})
                 .then(function (sentMessage) {
                     // match the sent message to the discord user that sent it
@@ -4648,7 +4649,7 @@ function tacoPartyReactRewards(message, user, emoji, reward){
     var giveRewardToUsername = user.username
     console.log(user.id);
     if (reward === "taco"){
-        profileDB.updateUserTacos(giveRewardTo, 1, function(err, res){
+        profileDB.updateUserTacos(giveRewardTo, 2, function(err, res){
             if (err){
                 console.log(err);
                 message.channel.send(err);
@@ -4676,6 +4677,7 @@ function tacoPartyReactRewards(message, user, emoji, reward){
                 else if (reward === "rock"){
                     for (var index in getItemResponse.data){
                         if (getItemResponse.data[index].id == ROCK_ITEM_ID){
+                            itemsObtainedArray.push( getItemResponse.data[index] );
                             itemsObtainedArray.push( getItemResponse.data[index] );
                             break;
                         }
