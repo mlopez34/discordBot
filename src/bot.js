@@ -49,6 +49,7 @@ function commandIs(str, msg){
 }
 
 client.on('message', function(message){
+    console.log(message);
     if (botEnabled){
         console.log(message.author.id); // id of the user that created the message
         var args = message.content.split(/[ ]+/);
@@ -210,11 +211,11 @@ client.on('message', function(message){
             else if (commandIs("raffle", message)){
                 commands.enterRaffleCommand(message);
             }
-            /*
-            else if (commandIs("table", message)){
-                commands.createTable(message, args, client);
-            }
             
+            else if (commandIs("party", message)){
+                commands.createTableCommand(message);
+            }
+            /*
             else if (commandIs("game", message)){
                 commands.gameCommand(message);
             }

@@ -55,6 +55,10 @@ var achievementsData = {
         emoji: ":tractor:",
         description: "Get 30 extra tacos from soiled crops after preparing"
     },
+    "Miss Popularity": {
+        emoji: ":champagne: ",
+        description: "Get 50 or more people to attend your party"
+    },
     "Executioner" : {
         emoji : ":skull_crossbones:",
         description : "Throw 75 rocks at the same person in a row"
@@ -248,6 +252,19 @@ module.exports.checkForAchievements = function(discordUserId, data, message, cal
                         }
                     })
                 }
+                if(data.attendees && 
+                    (data.attendees >= 50) && 
+                    (data.achievements === null || data.achievements.indexOf("Miss Popularity") == -1)){
+    
+                        profileDB.updateAchievements(discordUserId, "{Miss Popularity}", function(err, r){
+                            if (err){
+                                console.log(err);
+                            }
+                            {
+                                achievementEmbedBuilder(message, "Miss Popularity");
+                            }
+                        })
+                    }
 
                 if(data.maxextratacos && 
                 data.maxextratacos >= 30 && 

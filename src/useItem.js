@@ -273,6 +273,21 @@ module.exports.useSoil = function(message, discordUserId, soilToUse, cb){
     }
 }
 
+module.exports.useUncommons = function(message, discordid, uncommons, cb){
+    if (discordid && uncommons.length > 0){
+        profileDB.bulkUpdateItemStatus(uncommons, "used", function(updateBulkErr, updateBulkRes){
+            if (updateBulkErr){
+                console.log(updateBulkErr);
+                cb(updateBulkErr);
+            }
+            else{
+                console.log(updateBulkRes);
+                cb(null, "success")
+            }
+        })
+    }
+}
+
 module.exports.itemValidate = function (item){
     var valid = true;
     if (item.status == "used"){
