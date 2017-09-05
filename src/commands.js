@@ -4422,7 +4422,7 @@ function calculateRaffleWinner(message){
 // 200 rep: reward: casserole, buy: artifact recipe 
 // 1000 rep: buy: potions, reward: empowered taco rune  5000 rep : achievement, artifact
 
-module.exports.createTableCommand = function(message){
+module.exports.createTableCommand = function(message, mainChannel){
 
     var discordUserId = message.author.id;
     var IDS_OF_UNCOMMONS_FOR_PARTY = [];
@@ -4505,7 +4505,7 @@ module.exports.createTableCommand = function(message){
                                 }
                             }
                         }
-                        createParty(message, discordUserId, uncommonsToUse);
+                        createParty(message, discordUserId, uncommonsToUse, mainChannel);
                     }
                     else{
                         message.channel.send("Missing ingredients for the Taco Party!!");
@@ -4516,7 +4516,7 @@ module.exports.createTableCommand = function(message){
     })
 }
 
-function createParty(message, discordUserId, uncommonsToUse){
+function createParty(message, discordUserId, uncommonsToUse, mainChannel){
     
     const embed = new Discord.RichEmbed()
     .setAuthor("Taco party created by " + message.author.username + "!!")
@@ -4531,8 +4531,10 @@ function createParty(message, discordUserId, uncommonsToUse){
         else{
             console.log(useRes);
             if (useRes == "success"){
-                //config.mainChannelName.send({embed})
-                message.channel.send({embed})
+                if (!mainChannel){
+                    mainChannel = message.channel;
+                }
+                mainChannel.send({embed})
                 .then(function (sentMessage) {
                     // match the sent message to the discord user that sent it
                     activeTables["table-"+sentMessage.id] = { id: discordUserId, username: message.author.username };

@@ -19,6 +19,7 @@ var TURN_ON_MSG = config.turnOn;
 
 var tacoTuesdayEnabled = false;
 var botEnabled = true;
+var mainChannel;
 
 client.on('ready', function(err) {
     if (err){
@@ -30,6 +31,9 @@ client.on('ready', function(err) {
         console.log(channel);
         if (channel.type == "text" && channel.name == BOT_CHANNEL){
             channelName = channel;
+        }
+        if (channel.type == "text" && channel.name == MAIN_CHANNEL){
+            mainChannel = channel;
         }
     })
     steal(channelName);
@@ -213,7 +217,7 @@ client.on('message', function(message){
             }
             
             else if (commandIs("party", message)){
-                commands.createTableCommand(message);
+                commands.createTableCommand(message, mainChannel);
             }
             /*
             else if (commandIs("game", message)){
