@@ -43,7 +43,7 @@ var RAFFLE_ENTRY_COST = 5;
 var RAFFLE_USER_SIZE = 7
 // make recipe be available at lvl 2 reputation
 var ARTIFACT_RECIPE_COST = 1000;
-var TACO_PARTY_TIME_TO_LIVE = 60000
+var TACO_PARTY_TIME_TO_LIVE = 300000
 
 
 var activeAuctions = {};
@@ -4522,7 +4522,7 @@ function createParty(message, discordUserId, uncommonsToUse){
     .setAuthor("Taco party created by " + message.author.username + "!!")
     .setThumbnail("https://media.giphy.com/media/mIZ9rPeMKefm0/giphy.gif")
     .setColor(0xF2E93E)
-    .addField('Eat some tacos, drink some orchata water, or dance with Aileen your taco hostess', "Pick one! \n🌮 = taco, 🍹 = terry cloth, 💃🏼 = rock \nYou will receive it at the end of the party" )
+    .addField('Eat some tacos, drink some orchata water, or dance with Aileen your taco hostess', "Pick one! \n🌮 = taco, 🍹 = terry cloth, 💃🏼 = rock \nYou will receive it at the end of the party (5 minutes)" )
 
     useItem.useUncommons(message, discordUserId, uncommonsToUse, function(useError, useRes){
         if (useError){
