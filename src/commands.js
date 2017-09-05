@@ -4522,7 +4522,7 @@ function createParty(message, discordUserId, uncommonsToUse, mainChannel){
     .setAuthor("Taco party created by " + message.author.username + "!!")
     .setThumbnail("https://media.giphy.com/media/mIZ9rPeMKefm0/giphy.gif")
     .setColor(0xF2E93E)
-    .addField('Eat some tacos, drink some orchata water, or dance with Aileen your taco hostess', "Pick one! \n🌮 = taco, 🍹 = terry cloth, 💃🏼 = rock \nYou will receive it at the end of the party (5 minutes)" )
+    .addField('Eat some tacos, drink some orchata water, or dance with Aileen your taco hostess', "Pick one! \n🌮 = taco x2, 🍹 = terry cloth x1, 💃🏼 = rock x2 \nYou will receive it at the end of the party (5 minutes)" )
 
     useItem.useUncommons(message, discordUserId, uncommonsToUse, function(useError, useRes){
         if (useError){
@@ -4621,7 +4621,7 @@ function createParty(message, discordUserId, uncommonsToUse, mainChannel){
                                         else{
                                             console.log(res);
                                             experience.gainExperience(message, ownerOfTable, reactionCount, userData);
-                                            message.channel.send("The party for " + ownerOfTableUsername + " was a great success! There were `" + attendees + "` guests that showed up")
+                                            mainChannel.send("The party for `" + ownerOfTableUsername + "` was a great success! There were `" + attendees + "` guests that showed up")
                                             var achievements = getDataRes.data.achievements;
                                             var data = {}
                                             data.achievements = achievements;
