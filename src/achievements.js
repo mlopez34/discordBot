@@ -37,7 +37,7 @@ var achievementsData = {
     },
     "Stripper": {
         emoji : ":dancer::skin-tone-2:",
-        description: "Get 100 tacos thrown at you"
+        description: "Get 350 tacos thrown at you"
     },
     "Make it rain": {
         emoji : ":man_in_tuxedo:",
