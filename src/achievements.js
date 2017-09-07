@@ -78,7 +78,7 @@ var achievementsData = {
 }
 
 
-module.exports.checkForAchievements = function(discordUserId, data, message, calledByError){
+module.exports.checkForAchievements = function(discordUserId, data, message, calledByError, mentionedUser){
     // check for achievements by calling get on user statistics, or checking data
     // check for all the possible achievements
     if (!calledByError){
@@ -90,12 +90,13 @@ module.exports.checkForAchievements = function(discordUserId, data, message, cal
                         console.log(createError);
                     }
                     else{
-                        exports.checkForAchievements(discordUserId, data, message, true);
+                        exports.checkForAchievements(discordUserId, data, message, true, mentionedUser);
                     }
 
                 })
             }
             else{
+                var achievementEarner = message.author;
                 console.log(statistics);
                 // check for all possible achievments here (achievement logic goes here)
                 console.log(data.achievements);
@@ -109,7 +110,7 @@ module.exports.checkForAchievements = function(discordUserId, data, message, cal
                             console.log(err);
                         }
                         {
-                            achievementEmbedBuilder(message, "Nice guy");
+                            achievementEmbedBuilder(message, "Nice guy", achievementEarner);
                         }
                     })
                 }
@@ -123,7 +124,7 @@ module.exports.checkForAchievements = function(discordUserId, data, message, cal
                             console.log(err);
                         }
                         {
-                            achievementEmbedBuilder(message, "Apologetic geek");
+                            achievementEmbedBuilder(message, "Apologetic geek", achievementEarner);
                         }
                     })
                 }
@@ -137,7 +138,7 @@ module.exports.checkForAchievements = function(discordUserId, data, message, cal
                             console.log(err);
                         }
                         {
-                            achievementEmbedBuilder(message, "Host");
+                            achievementEmbedBuilder(message, "Host", achievementEarner);
                         }
                     })
                 }
@@ -151,7 +152,7 @@ module.exports.checkForAchievements = function(discordUserId, data, message, cal
                             console.log(err);
                         }
                         {
-                            achievementEmbedBuilder(message, "Adventure girl");
+                            achievementEmbedBuilder(message, "Adventure girl", achievementEarner);
                         }
                     })
                 }
@@ -159,13 +160,15 @@ module.exports.checkForAchievements = function(discordUserId, data, message, cal
                 if(statistics.data.thrownatcount && 
                 statistics.data.thrownatcount >= 350 && 
                 (data.achievements === null || data.achievements.indexOf("Stripper") == -1)){
-
-                    profileDB.updateAchievements(discordUserId, "{Stripper}", function(err, r){
+                    // the achievement earner is the MENTIONED USER
+                    profileDB.updateAchievements(mentionedUser.id, "{Stripper}", function(err, r){
                         if (err){
                             console.log(err);
                         }
                         {
-                            achievementEmbedBuilder(message, "Stripper");
+                            
+                            achievementEarner = mentionedUser
+                            achievementEmbedBuilder(message, "Stripper", achievementEarner);
                         }
                     })
                 }
@@ -179,7 +182,7 @@ module.exports.checkForAchievements = function(discordUserId, data, message, cal
                             console.log(err);
                         }
                         {
-                            achievementEmbedBuilder(message, "Make it rain");
+                            achievementEmbedBuilder(message, "Make it rain", achievementEarner);
                         }
                     })
                 }
@@ -193,7 +196,7 @@ module.exports.checkForAchievements = function(discordUserId, data, message, cal
                             console.log(err);
                         }
                         {
-                            achievementEmbedBuilder(message, "Get a room");
+                            achievementEmbedBuilder(message, "Get a room", achievementEarner);
                         }
                     })
                 }
@@ -206,7 +209,7 @@ module.exports.checkForAchievements = function(discordUserId, data, message, cal
                             console.log(err);
                         }
                         {
-                            achievementEmbedBuilder(message, "Fidel cashflow");
+                            achievementEmbedBuilder(message, "Fidel cashflow", achievementEarner);
                         }
                     })
                 }
@@ -220,7 +223,7 @@ module.exports.checkForAchievements = function(discordUserId, data, message, cal
                             console.log(err);
                         }
                         {
-                            achievementEmbedBuilder(message, "Hoarder");
+                            achievementEmbedBuilder(message, "Hoarder", achievementEarner);
                         }
                     })
                 }
@@ -234,7 +237,7 @@ module.exports.checkForAchievements = function(discordUserId, data, message, cal
                             console.log(err);
                         }
                         {
-                            achievementEmbedBuilder(message, "Hand work");
+                            achievementEmbedBuilder(message, "Hand work", achievementEarner);
                         }
                     })
                 }
@@ -248,7 +251,7 @@ module.exports.checkForAchievements = function(discordUserId, data, message, cal
                             console.log(err);
                         }
                         {
-                            achievementEmbedBuilder(message, "Luck is on your side");
+                            achievementEmbedBuilder(message, "Luck is on your side", achievementEarner);
                         }
                     })
                 }
@@ -261,7 +264,7 @@ module.exports.checkForAchievements = function(discordUserId, data, message, cal
                                 console.log(err);
                             }
                             {
-                                achievementEmbedBuilder(message, "Miss Popularity");
+                                achievementEmbedBuilder(message, "Miss Popularity", achievementEarner);
                             }
                         })
                     }
@@ -275,7 +278,7 @@ module.exports.checkForAchievements = function(discordUserId, data, message, cal
                             console.log(err);
                         }
                         {
-                            achievementEmbedBuilder(message, "Harvester");
+                            achievementEmbedBuilder(message, "Harvester", achievementEarner);
                         }
                     })
                 }
@@ -289,7 +292,7 @@ module.exports.checkForAchievements = function(discordUserId, data, message, cal
                             console.log(err);
                         }
                         {
-                            achievementEmbedBuilder(message, "Harvester");
+                            achievementEmbedBuilder(message, "Harvester", achievementEarner);
                         }
                     })
                 }
@@ -303,7 +306,7 @@ module.exports.checkForAchievements = function(discordUserId, data, message, cal
                             console.log(err);
                         }
                         {
-                            achievementEmbedBuilder(message, "Harvester");
+                            achievementEmbedBuilder(message, "Harvester", achievementEarner);
                         }
                     })
                 }
@@ -312,12 +315,12 @@ module.exports.checkForAchievements = function(discordUserId, data, message, cal
     }
 }
 
-function achievementEmbedBuilder(message, achievementName){
+function achievementEmbedBuilder(message, achievementName, achievementEarner){
     const embed = new Discord.RichEmbed()
-    .setTitle(message.author.username + " has earned the achievement " + achievementName + " " + achievementsData[achievementName].emoji)
+    .setTitle(achievementEarner.username + " has earned the achievement " + achievementName + " " + achievementsData[achievementName].emoji)
     .setColor(0x00AE86)
     .setDescription(achievementsData[achievementName].description)
-    .setThumbnail(message.author.avatarURL)
+    .setThumbnail(achievementEarner.avatarURL)
     message.channel.send({embed});
 }
 
