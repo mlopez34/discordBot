@@ -157,7 +157,7 @@ module.exports.checkForAchievements = function(discordUserId, data, message, cal
                 }
 
                 if(statistics.data.thrownatcount && 
-                statistics.data.thrownatcount >= 100 && 
+                statistics.data.thrownatcount >= 350 && 
                 (data.achievements === null || data.achievements.indexOf("Stripper") == -1)){
 
                     profileDB.updateAchievements(discordUserId, "{Stripper}", function(err, r){
