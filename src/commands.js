@@ -937,7 +937,7 @@ module.exports.throwCommand = function(message){
         console.log(user.id);
         userMentioned = user;
         mentionedId = user.id;
-        mentionedUser = user.username
+        mentionedUser = user
         mentionedDiscriminator = user.discriminator;
     })
     var tacosInUse = 0;
@@ -1001,7 +1001,7 @@ module.exports.throwCommand = function(message){
                                                     var mentionedData = {}
                                                     mentionedData.achievements = mentionedAchievements;
                                                     console.log(mentionedData);
-                                                    achiev.checkForAchievements(mentionedId, mentionedData, message);
+                                                    achiev.checkForAchievements(mentionedUser.id, mentionedData, message, false, mentionedUser);
                                                 }
                                             })
                                         }
