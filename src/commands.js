@@ -1,5 +1,6 @@
 
 var achiev = require("./achievements.js");
+var rpg = require("./rpg.js")
 var profileDB = require("./profileDB.js");
 var stats = require("./statistics.js");
 const Discord = require("discord.js");
@@ -4697,105 +4698,30 @@ function tacoPartyReactRewards(message, user, emoji, reward){
         })
     }
 }
-/*
-var activeRPGEvents = {}
-var usersInRPGEvents = {};
 
 module.exports.rpgBattleCommand = function(message){
-    // create an embed saying that b is about to happen, for users MAX of 5 users and they must all say -ready to start costs 5 tacos per person
-    var discordUserId = message.author.id;
-    // 
-    var users  = message.mentions.users
-
-    var team = [];
-
-    team.push(message.author);
-
-    users.forEach(function(user){
-        if (team.length < 5){
-            team.push(user);
-        }
-    })
-
-    if (team.length >= 2 && team.length <= 5){
-        // send an embed that the users are needed for the RPG event to say -ready or -notready
-        // if the user says -ready, they get added to activeRPGEvents that they were invited to
-        const embed = new Discord.RichEmbed()
-        .setAuthor("Test Event initiated by " + message.author.username + "!!")
-        .setThumbnail("https://media.giphy.com/media/mIZ9rPeMKefm0/giphy.gif")
-        .setColor(0xF2E93E)
-        .addField('Test Event ', "when ready type -ready, if skipping type -skip" )
-    
-        message.channel.send({embed})
-        .then(function (sentMessage) {
-            // create the RPG group and use the message id
-            var membersOfParty = []
-
-            team.forEach(function(member){
-                usersInRPGEvents[member.id] = sentMessage.id;
-                membersOfParty.push(member);
-            })
-            // TODO : MAKE THE IDS OF THE MAPS BE STRINGS AND NOT INTEGERS
-            activeRPGEvents[sentMessage.id] = membersOfParty;
-        })
-    }
-    else{
-        message.channel.send("not enough members in your party for this event")
-    }
+    rpg.rpgInitialize(message);
 }
 
 module.exports.rpgReadyCommand = function(message){
-    // create an embed saying that b is about to happen, for users MAX of 5 users and they must all say -ready to start costs 5 tacos per person
-    var discordUserId = message.author.id;
-
-    if (usersInRPGEvents[discordUserId]){
-        message.channel.send( message.author + " is ready");
-    }
-    else{
-        message.channel.send(message.author + " you are not in an event");
-    }
+    var itemsMapbyId = {};
+    profileDB.getItemData(function(error, allItemsResponse){
+        if (error){
+            console.log(error);
+        }
+        else{
+            for (var index in allItemsResponse.data){
+                itemsMapbyId[allItemsResponse.data[index].id] = allItemsResponse.data[index];
+            }
+            rpg.rpgReady(message, itemsMapbyId);
+        }
+    });
 }
 
 module.exports.rpgSkipCommand = function(message){
-    // create an embed saying that b is about to happen, for users MAX of 5 users and they must all say -ready to start costs 5 tacos per person
-    var discordUserId = message.author.id;
-
-    if (usersInRPGEvents[discordUserId]){
-        message.channel.send( message.author + " is ready");
-    }
-    else{
-        message.channel.send(message.author + " you are not in an event");
-    }
+    rpg.rpgSkip(message);
 }
-*/
 
-// normal attack
-    // abilities based on items worn
-    /* (active)
-        heal (heal hp)
-        bandaid (cure effects)
-        tac wall (protect phys)
-        barrier (protect magical)
-        flame blst (fire)
-        food psning (poison)
-        shards of ice (ice)
-        shock (lightning)
-        rock throw (earth)
-        drain (regular)
-        (passive)
-        haste (goes first always)
-    */
-    // able to scvn?
-    // random ult ab from the 3 items
-    /*
-        revive
-        empower (deal 2x more damage)
-        dest shot
-        elixir (h everyone)
-        freeze (takes 2x more phys damage)
-        cripple (deals 1/2 physical damage)
-        weaken (deals 1/2 magical damage)
-        final fortune (take extra turn)
-        shield (reduce all damage taken by 50%)
-    */
-    // 
+module.exports.castCommand = function(message, args){
+    rpg.useRpgAbility(message, args);
+}

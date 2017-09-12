@@ -25,7 +25,7 @@ var achievementsData = {
     },
     "Hoarder": {
         emoji : ":moneybag:",
-        description: "Obtain 300 tacos"
+        description: "Obtain 100,000 tacos"
     },
     "Host": {
         emoji : ":guardsman:",
@@ -61,7 +61,7 @@ var achievementsData = {
     },
     "Executioner" : {
         emoji : ":skull_crossbones:",
-        description : "Throw 75 rocks at the same person in a row"
+        description : "Throw 1000 rocks at other users"
     },
     "The Exalted" : {
         emoji: ":crown:",
@@ -186,6 +186,20 @@ module.exports.checkForAchievements = function(discordUserId, data, message, cal
                         }
                     })
                 }
+
+                if(statistics.data.rocksthrown && 
+                statistics.data.rocksthrown >= 1000 && 
+                (data.achievements === null || data.achievements.indexOf("Executioner") == -1)){
+
+                    profileDB.updateAchievements(discordUserId, "{Executioner}", function(err, r){
+                        if (err){
+                            console.log(err);
+                        }
+                        {
+                            achievementEmbedBuilder(message, "Executioner", achievementEarner);
+                        }
+                    })
+                }
                 // data achievements
                 if(data.givecount && 
                 data.givecount >= 150 && 
@@ -215,7 +229,7 @@ module.exports.checkForAchievements = function(discordUserId, data, message, cal
                 }
 
                 if(data.tacos && 
-                data.tacos >= 500 && 
+                data.tacos >= 100000 && 
                 (data.achievements === null || data.achievements.indexOf("Hoarder") == -1)){
 
                     profileDB.updateAchievements(discordUserId, "{Hoarder}", function(err, r){
@@ -285,20 +299,6 @@ module.exports.checkForAchievements = function(discordUserId, data, message, cal
 
                 if(data.reputation && 
                 data.reputation.toLowerCase() == "glorified" && 
-                (data.achievements === null || data.achievements.indexOf("Harvester") == -1)){
-
-                    profileDB.updateAchievements(discordUserId, "{Harvester}", function(err, r){
-                        if (err){
-                            console.log(err);
-                        }
-                        {
-                            achievementEmbedBuilder(message, "Harvester", achievementEarner);
-                        }
-                    })
-                }
-
-                if(data.rocksthrowninrow && 
-                data.rocksthrowninrow >= 75 && 
                 (data.achievements === null || data.achievements.indexOf("Harvester") == -1)){
 
                     profileDB.updateAchievements(discordUserId, "{Harvester}", function(err, r){
