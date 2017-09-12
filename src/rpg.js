@@ -101,13 +101,13 @@ module.exports.rpgReady = function(message, itemsAvailable){
                         if (wearingStats.slot2itemid){
                             items.push(wearingStats.slot2itemid)
                         }
-                        if (wearingStats.slot2itemid){
-                            items.push(wearingStats.slot2itemid)
+                        if (wearingStats.slot3itemid){
+                            items.push(wearingStats.slot3itemid)
                         }
                         // added stats from items
                         for (var i in items){
-                            if (itemsAvailable[items[i]].ability){
-                                abilities.push(itemsAvailable[items[i]].ability);
+                            if (itemsAvailable[items[i]].ability1){
+                                abilities.push(itemsAvailable[items[i]].ability1);
                             }
                             if (itemsAvailable[items[i]].specialAbility){
                                 abilities.push(itemsAvailable[items[i]].specialAbility)
@@ -116,11 +116,11 @@ module.exports.rpgReady = function(message, itemsAvailable){
                                 abilities.push(itemsAvailable[items[i]].passiveAbility);
                             }
 
-                            var hpPlus = itemsAvailable[items[i]].hpPlus ? itemsAvailable[items[i]].hpPlus : 0;
-                            var attackDmgPlus = itemsAvailable[items[i]].attackDmgPlus ? itemsAvailable[items[i]].attackDmgPlus : 0;
-                            var magicDmgPlus = itemsAvailable[items[i]].magicDmgPlus ? itemsAvailable[items[i]].magicDmgPlus : 0;
-                            var armorPlus = itemsAvailable[items[i]].armorPlus ? itemsAvailable[items[i]].armorPlus : 0;
-                            var luckPlus = itemsAvailable[items[i]].luckPlus ? itemsAvailable[items[i]].luckPlus : 0;
+                            var hpPlus = itemsAvailable[items[i]].hpplus ? itemsAvailable[items[i]].hpplus : 0;
+                            var attackDmgPlus = itemsAvailable[items[i]].attackdmgplus ? itemsAvailable[items[i]].attackdmgplus : 0;
+                            var magicDmgPlus = itemsAvailable[items[i]].magicdmgplus ? itemsAvailable[items[i]].magicdmgplus : 0;
+                            var armorPlus = itemsAvailable[items[i]].armorplus ? itemsAvailable[items[i]].armorplus : 0;
+                            var luckPlus = itemsAvailable[items[i]].luckplus ? itemsAvailable[items[i]].luckplus : 0;
 
                             statisticsFromItemsAndLevel.hpPlus = statisticsFromItemsAndLevel.hpPlus + hpPlus;
                             statisticsFromItemsAndLevel.attackDmgPlus = statisticsFromItemsAndLevel.attackDmgPlus + attackDmgPlus;
@@ -200,6 +200,7 @@ module.exports.rpgReady = function(message, itemsAvailable){
                                         abilities: ["test", "attack", "tacoHeal", "empower"],
                                         statuses: ["haste"]
                                     }
+                                    membersInParty["rpg-" + partyMember.id].maxhp = membersInParty["rpg-" + partyMember.id].hp;
                                     // insert the abilities and statuses for the party member
                                     if (partyMemberStats && partyMemberStats.abilities){
                                         for( var ability in partyMemberStats.abilities){
@@ -219,13 +220,16 @@ module.exports.rpgReady = function(message, itemsAvailable){
                                 for (var i = 1; i <= enemyCount; i++){
                                     enemies[enemyIdCount] = {
                                         id: enemyIdCount,
+                                        name: "Taco Monster",
                                         hp: 100,
                                         attackDmg: 40,
                                         magicDmg: 44,
                                         armor: 24,
                                         statuses: [],
+                                        abilities: [],
                                         element: "fire"
                                     }
+                                    enemies[enemyIdCount].maxhp = enemies[enemyIdCount].hp;
                                     enemyIdCount++;
                                 }
                 
@@ -244,16 +248,22 @@ module.exports.rpgReady = function(message, itemsAvailable){
                                 //.setThumbnail("https://media.giphy.com/media/mIZ9rPeMKefm0/giphy.gif")
                                 .setColor(0xF2E93E)
                                 // party members
+                                var groupString = "";
+                                var enemiesString = "";
+
                                 for (var member in activeRPGEvents[rpgEvent].members){
                                     var memberInRpgEvent = activeRPGEvents[rpgEvent].members[member];
                                     var memberInParty = activeRPGEvents[rpgEvent].membersInParty["rpg-" + memberInRpgEvent.id]
-                                    embed.addField('test ' + memberInRpgEvent.username, memberInParty )
+                                    groupString = groupString + "\n" + userStatsStringBuilder(memberInParty, memberInRpgEvent.username, false);
                                 }
                                 // enemies
                                 for (var enemy in activeRPGEvents[rpgEvent].enemies){
-                                    var enemyInRpgEvent = activeRPGEvents[rpgEvent].enemies[enemy]
-                                    embed.addField('test2 ' + enemy, enemyInRpgEvent )
+                                    var enemyInRpgEvent = activeRPGEvents[rpgEvent].enemies[enemy];
+                                    var enemyName = activeRPGEvents[rpgEvent].enemies[enemy].name;
+                                    enemiesString = enemiesString + "\n" + userStatsStringBuilder(enemyInRpgEvent, enemyName, true);
                                 }
+                                embed.addField( "Group", groupString )
+                                embed.addField( "Enemy", enemiesString )
                                 message.channel.send({embed})
                                 .then(function (sentMessage) {
                                     // add the members to be a part of this embed message
@@ -320,11 +330,11 @@ module.exports.useRpgAbility = function(message, args){
                 var validTarget = validateTarget(target, abilityToUse, activeRPGEvents["rpg-"+idOfEventUserIsIn]);
                 if (validTarget){
                     activeRPGEvents["rpg-"+idOfEventUserIsIn].memberTurnAbilities.push(abilityToProcess);
-                    // send message saying the user used ability already for that turn
-                    message.channel.send("done");
+                    // TODO: send message saying the user used ability already for that turn
                     // if all users have used their abilities the turn should be processed
                     if (activeRPGEvents["rpg-"+idOfEventUserIsIn].members.length ==  3){ //activeRPGEvents[idOfEventUserIsIn].memberTurnAbilities.length){
                         // TODO: enemies should use abilities here before processing the turn
+                        enemiesUseAbilities(activeRPGEvents["rpg-"+idOfEventUserIsIn]);
                         processRpgTurn(message, activeRPGEvents["rpg-"+idOfEventUserIsIn]);
                     }
                 }else{
@@ -374,6 +384,7 @@ function processRpgTurn(message, event){
     // process all abilities, then check if rpg event ended, if it ended then yield results
 
     // abilities of members with haste
+    
     for ( var abilityIndex in event.memberTurnAbilities){
         var abilityObject = event.memberTurnAbilities[abilityIndex];
         if ( event.membersInParty["rpg-"+abilityObject.user].statuses.indexOf("haste") > -1 ){
@@ -398,31 +409,116 @@ function processRpgTurn(message, event){
         event.memberTurnAbilities.splice(abilityIndex, 1);
     }
     // order for abilities is ready, now use the abilities on targets
+    var turnString = "";
     while ( order.length > 0 ){
         var currentAbility = order.shift();
 
         // do the ability
-        processAbility(currentAbility, event)
+        var abilityToString = processAbility(currentAbility, event)
+        turnString = turnString + abilityToString;
     }
     // the order array is empty, check if the rpg event ended
     event.turn = event.turn++;
     var eventHasEnded = checkRpgEventEnd(event);
     if (eventHasEnded.enemiesDead && eventHasEnded.partySuccess){
         // event is over, yield rewards and anouncements
-        message.channel.send("test: event has ended 1")
+        message.channel.send("test: event has ended success")
+        turnFinishedEmbedBuilder(message, event, turnString);
         // TODO: create embed that contains the preivous turn as well as rpg event ended
         // TODO: create embed of all the user's rewards
+        eventEndedEmbedBuilder(message, event, eventHasEnded.partySuccess)
+
     }
     else if(eventHasEnded.partyDead && !eventHasEnded.partySuccess){
         // event is over, party did not succeed
-        message.channel.send("test: event has ended 2")
+        message.channel.send("test: event has ended fail")
+        turnFinishedEmbedBuilder(message, event, turnString);
         // TODO: create embed that contains the preivous turn as well as rpg event ended
+        // TODO: create embed of all the user's rewards
+        eventEndedEmbedBuilder(message, event, eventHasEnded.partySuccess)
     }
     else{
         // event is not over, continue with event
         message.channel.send("test: event has not ended");
         // TODO: create embed that contains the previous turn as well as current rpg status
+        turnFinishedEmbedBuilder(message, event, turnString);
     }
+}
+
+function turnFinishedEmbedBuilder(message, event, turnString){
+    // create a string of all the events that happened?
+    const embed = new Discord.RichEmbed()
+    .setAuthor("test")
+    .setColor(0xF2E93E)
+    .setDescription(turnString)
+    // party members
+    var groupString = "";
+    var enemiesString = "";
+
+    for (var member in event.members){
+        var memberInRpgEvent = event.members[member];
+        var memberInParty = event.membersInParty["rpg-" + memberInRpgEvent.id]
+        groupString = groupString + "\n" + userStatsStringBuilder(memberInParty, memberInRpgEvent.username, false);
+    }
+    // enemies
+    for (var enemy in event.enemies){
+        var enemyInRpgEvent = event.enemies[enemy];
+        var enemyName = event.enemies[enemy].name;
+        enemiesString = enemiesString + "\n" + userStatsStringBuilder(enemyInRpgEvent, enemyName, true);
+    }
+    embed.addField( "Group", groupString )
+    embed.addField( "Enemy", enemiesString )
+    message.channel.send({embed})
+    .then(function (sentMessage) {
+        // add the members to be a part of this embed message
+        // at this point they will all be able use abilities
+        // these abilities will be done in order (enemy first, then user, unless user has haste)
+
+        // event ends if all enemies are at 0 hp or if all party members are at 0 hp (check after every ability finishes)
+    })
+}
+
+function eventEndedEmbedBuilder(message, event, partySuccess){
+    const embed = new Discord.RichEmbed()
+    .setAuthor("Event has ended")
+    .setColor(0xF2E93E)
+
+    for (var member in event.members){
+        var memberInRpgEvent = event.members[member];
+        var memberInParty = event.membersInParty["rpg-" + memberInRpgEvent.id];
+        var rewards;
+        var rewardString = "";
+        if (partySuccess){
+            rewards = calculateRewards( event, memberInRpgEvent )
+            rewardString = rewardString + " " + JSON.stringify(rewards) + " \n";
+        }
+        else{
+            rewards = "None"
+            rewardString = rewardString + " " + rewards + " \n";
+        }
+        embed.addField(memberInRpgEvent.username,  rewardString, true);
+    }
+    message.channel.send({embed})
+
+    /*
+    rewards should be based off current level, difficulty of the enemies, 
+    */
+}
+
+function calculateRewards(event, memberInRpgEvent){
+    var rewardsForPlayer =  {
+        xp: 1,
+        rpgPoints: 1,
+        items: []
+    }
+
+    // calculate xp based on level and difficulty of enemies
+
+    // calculate rpgPoints based on level and diff of enemies
+
+    // calculate finds based on luck and diff of enemies
+
+    return rewardsForPlayer;
 }
 
 function processAbility(abilityObject, event){
@@ -432,7 +528,8 @@ function processAbility(abilityObject, event){
 
     // string
     var ability = abilityObject.ability;
-
+    // will return this
+    var abilityToString = "";
     var rpgAbility = rpgAbilities[ability] ? rpgAbilities[ability] : undefined;
 
     if (rpgAbility && rpgAbility.dmg){
@@ -442,15 +539,19 @@ function processAbility(abilityObject, event){
         // dealing damage to enemies
         if (event.enemies[targetToDealDmg]){
             event.enemies[targetToDealDmg].hp = event.enemies[targetToDealDmg].hp - damageToDeal;
+            abilityToString = abilityToString + targetToDealDmg + " took " + damageToDeal + " damage from " + ability + "\n";
             if (event.enemies[targetToDealDmg].hp <= 0){
                 event.enemies[targetToDealDmg].statuses.push("dead")
+                abilityToString = abilityToString + targetToDealDmg + " has died. :skull_crossbones: \n";
             }
         }
         // dealing damage to members of party (friendly fire or enemy attacking)
         else if (event.membersInParty["rpg-"+targetToDealDmg]){
             event.membersInParty["rpg-"+targetToDealDmg].hp = event.membersInParty["rpg-"+targetToDealDmg].hp - damageToDeal;
+            abilityToString = abilityToString + targetToDealDmg + " took " + damageToDeal + " damage from " + ability + "\n";
             if (event.membersInParty["rpg-"+targetToDealDmg].hp <= 0){
                 event.membersInParty["rpg-"+targetToDealDmg].statuses.push("dead")
+                abilityToString = abilityToString + targetToDealDmg + " has died. :skull_crossbones: \n";
             }
         }
     }
@@ -462,11 +563,13 @@ function processAbility(abilityObject, event){
             if (event.membersInParty["rpg-"+targetToHeal].statuses.indexOf("dead") == -1){
                 // target is not dead
                 event.membersInParty["rpg-"+targetToHeal].hp = event.membersInParty["rpg-"+targetToHeal].hp + hpToHeal;
+                abilityToString = abilityToString + " " + event.membersInParty["rpg-"+targetToHeal].name + " was healed for " + hpToHeal + "\n"
             }
         }
         else if (event.enemies[targetToHeal]){
             if (event.enemies[targetToHeal].statuses.indexOf("dead") == -1){
-                event.enemies[targetToHeal].hp = event.membersInParty[targetToHeal].hp + hpToHeal;                
+                event.enemies[targetToHeal].hp = event.enemies[targetToHeal].hp + hpToHeal;  
+                abilityToString = abilityToString + " " + event.enemies[targetToHeal].name + " was healed for " + hpToHeal + "\n"
             }
         }
     }
@@ -479,12 +582,14 @@ function processAbility(abilityObject, event){
             if (event.membersInParty["rpg-"+targetToAddStatus].statuses.indexOf("dead") == -1){
                 // target is not dead
                 event.membersInParty["rpg-"+targetToAddStatus].statuses.push(statusToAdd);
+                abilityToString = abilityToString + " " + event.membersInParty["rpg-"+targetToAddStatus].name + " was affected with " + statusToAdd + "\n"
             }
         }
 
         else if (event.enemies[targetToAddStatus]){
             if (event.enemies[targetToAddStatus].statuses.indexOf("dead") == -1){
                 event.enemies[targetToAddStatus].statuses.push(statusToAdd);
+                abilityToString = abilityToString + " " + event.enemies[targetToAddStatus].name + " was affected with " + statusToAdd + " \n"
             }
         }
     }
@@ -495,7 +600,7 @@ function processAbility(abilityObject, event){
             // remove a status from the target
         }
     }
-
+    return abilityToString;
     /*
     abilityToProcess = {
         user: discordUserId,
@@ -544,6 +649,33 @@ function checkRpgEventEnd(event){
     }
 }
 
+function userStatsStringBuilder(userStats, name, isEnemy){
+    var userString = "";
+    if (isEnemy){
+        userString = ":crossed_swords: **" + name + "** :heart_decoration: " + userStats.hp + " / " + userStats.maxhp
+    }else{
+        userString = ":green_heart: **" + name + "** :heart_decoration: " + userStats.hp + " / " + userStats.maxhp
+    }
+    userString = userString + " **:shirt:** " + userStats.armor
+    userString = userString + " **:dagger:** " + userStats.attackDmg
+    userString = userString + " **:comet:** " + userStats.magicDmg + "\n"
+    if (userStats.element){
+        // TODO: show that they are of a certain element
+    }
+    if (!isEnemy){
+        userString = userString + "**Abilities:** " + userStats.abilities + "\n"
+    }
+    userString = userString + "**Status:** " + userStats.statuses
+
+    return userString;
+}
+
+function enemiesUseAbilities(event){
+    // TODO: 
+    // for each enemy in the event, pick out an ability to use, pick a valid target for the ability
+    // queue up the ability used
+}
+
 var rpgAbilities = {
     test : {
         dmg: 50,
@@ -565,7 +697,7 @@ var rpgAbilities = {
     barrier: {
         status: "protect magical"
     },
-    flameBlast: { 
+    flameBlast: {
         dmg: 50,
         type: "fire"
     },
@@ -577,7 +709,7 @@ var rpgAbilities = {
         dmg: 50,
         type: "ice"
     },
-    shock:{
+    shock: {
         dmg: 50,
         type: "electric"
     },
@@ -585,12 +717,12 @@ var rpgAbilities = {
         dmg: 60,
         type: "earth"
     },
-    drain:{
+    drain: {
         dmg: 20,
         heal: 15,
     },
-    haste:{
-        status: "first strike"
+    haste: {
+        status: "haste"
     },
 
     //
