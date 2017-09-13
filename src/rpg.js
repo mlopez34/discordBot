@@ -92,7 +92,8 @@ module.exports.rpgReady = function(message, itemsAvailable){
                             magicDmgPlus: 0,
                             armorPlus: 0,
                             luckPlus: 0,
-                            statuses: []
+                            statuses: [],
+                            buffs: []
                         }
                         
                         if (wearingStats.slot1itemid){
@@ -157,7 +158,7 @@ module.exports.rpgReady = function(message, itemsAvailable){
                             for (var member in activeRPGEvents[rpgEvent].members){
                                 var partyMember = activeRPGEvents[rpgEvent].members[member];
                                 // if the user is the last user needed to be ready, create the RPG event
-                                if (usersInRPGEvents["rpg-" + partyMember.id] && !partyMember.bot && !usersInRPGEvents["rpg-" + partyMember.id].ready && partyMember.bot){
+                                if (usersInRPGEvents["rpg-" + partyMember.id] && !partyMember.bot && !usersInRPGEvents["rpg-" + partyMember.id].ready && !partyMember.bot){
                                     teamIsReady = false;
                                 }
                             }
@@ -192,13 +193,15 @@ module.exports.rpgReady = function(message, itemsAvailable){
                                     }
                                     membersInParty["rpg-" + partyMember.id] = {
                                         id: partyMember.id,
+                                        name: partyMember.username,
                                         hp: 100 + partyMemberHpPlus,
                                         attackDmg: 40 + partyMemberAttackDmgPlus,
                                         magicDmg: 44 + partyMemberMagicDmgPlus,
                                         armor: 24 + partyMemberArmorPlus,
                                         luck: 1 + partyMemberLuckPlus,
-                                        abilities: ["test", "attack", "tacoHeal", "empower"],
-                                        statuses: ["haste"]
+                                        abilities: ["test", "attack", "tacoheal", "empower", "tacowall", "barrier"],
+                                        statuses: [],
+                                        buffs: ["haste"]
                                     }
                                     membersInParty["rpg-" + partyMember.id].maxhp = membersInParty["rpg-" + partyMember.id].hp;
                                     // insert the abilities and statuses for the party member
@@ -215,19 +218,44 @@ module.exports.rpgReady = function(message, itemsAvailable){
                                 // create enemy stats, enemy stats scale with current user's average level
                                 // hp, attack dmg, magic dmg, armor, element(optional)
                                 var enemyCount = activeRPGEvents[rpgEvent].members.length
+
                                 var enemies = {};
                                 var enemyIdCount = 1
                                 for (var i = 1; i <= enemyCount; i++){
+                                    // roll for enemy rarity, then roll for the actual enemy
+                                    var rollForRarity = Math.floor(Math.random() * 10000) + 1;
+                                    var enemyFound;
+                                    if (rollForRarity >= 9750 ){
+                                        // boss
+                                        var enemyRoll = Math.floor(Math.random() * enemiesToEncounter.boss.length);
+                                        enemyFound = enemiesToEncounter.boss[enemyRoll];
+                                    }
+                                    else if (rollForRarity >= 8500 && rollForRarity < 9750 ){
+                                        // hard
+                                        var enemyRoll = Math.floor(Math.random() * enemiesToEncounter.hard.length);
+                                        enemyFound = enemiesToEncounter.hard[enemyRoll];
+                                    }
+                                    else if (rollForRarity >= 5000 && rollForRarity < 8500 ){
+                                        // medium
+                                        var enemyRoll = Math.floor(Math.random() * enemiesToEncounter.medium.length);
+                                        enemyFound = enemiesToEncounter.medium[enemyRoll];
+                                    }
+                                    else {
+                                        // easy :)
+                                        var enemyRoll = Math.floor(Math.random() * enemiesToEncounter.easy.length);
+                                        enemyFound = enemiesToEncounter.easy[enemyRoll];
+                                    }
                                     enemies[enemyIdCount] = {
                                         id: enemyIdCount,
-                                        name: "Taco Monster",
-                                        hp: 100,
-                                        attackDmg: 40,
-                                        magicDmg: 44,
-                                        armor: 24,
+                                        name: enemyFound.name,
+                                        hp: enemyFound.hp,
+                                        attackDmg: enemyFound.attackDmg,
+                                        magicDmg: enemyFound.magicDmg,
+                                        armor: enemyFound.armor,
                                         statuses: [],
-                                        abilities: [],
-                                        element: "fire"
+                                        buffs: enemyFound.buffs,
+                                        abilities: enemyFound.abilities,
+                                        element: enemyFound.element
                                     }
                                     enemies[enemyIdCount].maxhp = enemies[enemyIdCount].hp;
                                     enemyIdCount++;
@@ -266,11 +294,7 @@ module.exports.rpgReady = function(message, itemsAvailable){
                                 embed.addField( "Enemy", enemiesString )
                                 message.channel.send({embed})
                                 .then(function (sentMessage) {
-                                    // add the members to be a part of this embed message
-                                    // at this point they will all be able use abilities
-                                    // these abilities will be done in order (enemy first, then user, unless user has haste)
-                
-                                    // event ends if all enemies are at 0 hp or if all party members are at 0 hp (check after every ability finishes)
+
                                 })
                 
                             }else{
@@ -290,8 +314,7 @@ module.exports.rpgReady = function(message, itemsAvailable){
     }
 }
 
-/// use the abilities
-
+// use the abilities
 module.exports.useRpgAbility = function(message, args){
     var discordUserId = message.author.id;
     var idOfEventUserIsIn = usersInRPGEvents["rpg-"+discordUserId] ? usersInRPGEvents["rpg-"+discordUserId].id : undefined;
@@ -323,7 +346,7 @@ module.exports.useRpgAbility = function(message, args){
                 var abilityToProcess = {
                     user: discordUserId,
                     ability: abilityToUse,
-                    target: target
+                    target: "rpg-"+target
                 }
 
                 // validate the target
@@ -332,8 +355,15 @@ module.exports.useRpgAbility = function(message, args){
                     activeRPGEvents["rpg-"+idOfEventUserIsIn].memberTurnAbilities.push(abilityToProcess);
                     // TODO: send message saying the user used ability already for that turn
                     // if all users have used their abilities the turn should be processed
-                    if (activeRPGEvents["rpg-"+idOfEventUserIsIn].members.length ==  3){ //activeRPGEvents[idOfEventUserIsIn].memberTurnAbilities.length){
-                        // TODO: enemies should use abilities here before processing the turn
+
+                    // get the number of users that are alive and compare to the memberturnabilities array length
+                    var membersAlive = 0;
+                    for (var member in activeRPGEvents["rpg-"+idOfEventUserIsIn].membersInParty){
+                        if (activeRPGEvents["rpg-"+idOfEventUserIsIn].membersInParty[member].statuses.indexOf("dead") == -1){
+                            membersAlive++;
+                        }
+                    }
+                    if (membersAlive == 3) { //activeRPGEvents["rpg-"+idOfEventUserIsIn].memberTurnAbilities.length){
                         enemiesUseAbilities(activeRPGEvents["rpg-"+idOfEventUserIsIn]);
                         processRpgTurn(message, activeRPGEvents["rpg-"+idOfEventUserIsIn]);
                     }
@@ -387,7 +417,7 @@ function processRpgTurn(message, event){
     
     for ( var abilityIndex in event.memberTurnAbilities){
         var abilityObject = event.memberTurnAbilities[abilityIndex];
-        if ( event.membersInParty["rpg-"+abilityObject.user].statuses.indexOf("haste") > -1 ){
+        if ( event.membersInParty["rpg-"+abilityObject.user].buffs.indexOf("haste") > -1 ){
             // user has haste, push them to the top of the order
             order.push(abilityObject);
             // remove it from the array of abilities
@@ -399,14 +429,12 @@ function processRpgTurn(message, event){
         var abilityObject = event.enemyTurnAbilities[abilityIndex];
 
         order.push(abilityObject);
-        event.enemyTurnAbilities.splice(abilityIndex, 1);
     }
     // remaining abilities of members
     for ( var abilityIndex in event.memberTurnAbilities){
         var abilityObject = event.memberTurnAbilities[abilityIndex];
 
         order.push(abilityObject);
-        event.memberTurnAbilities.splice(abilityIndex, 1);
     }
     // order for abilities is ready, now use the abilities on targets
     var turnString = "";
@@ -422,31 +450,26 @@ function processRpgTurn(message, event){
     var eventHasEnded = checkRpgEventEnd(event);
     if (eventHasEnded.enemiesDead && eventHasEnded.partySuccess){
         // event is over, yield rewards and anouncements
-        message.channel.send("test: event has ended success")
         turnFinishedEmbedBuilder(message, event, turnString);
-        // TODO: create embed that contains the preivous turn as well as rpg event ended
-        // TODO: create embed of all the user's rewards
         eventEndedEmbedBuilder(message, event, eventHasEnded.partySuccess)
 
     }
     else if(eventHasEnded.partyDead && !eventHasEnded.partySuccess){
         // event is over, party did not succeed
-        message.channel.send("test: event has ended fail")
         turnFinishedEmbedBuilder(message, event, turnString);
-        // TODO: create embed that contains the preivous turn as well as rpg event ended
-        // TODO: create embed of all the user's rewards
         eventEndedEmbedBuilder(message, event, eventHasEnded.partySuccess)
     }
     else{
         // event is not over, continue with event
-        message.channel.send("test: event has not ended");
+        event.enemyTurnAbilities = [];
+        event.memberTurnAbilities = [];
         // TODO: create embed that contains the previous turn as well as current rpg status
         turnFinishedEmbedBuilder(message, event, turnString);
     }
 }
 
 function turnFinishedEmbedBuilder(message, event, turnString){
-    // create a string of all the events that happened?
+    // create a string of all the events that happened
     const embed = new Discord.RichEmbed()
     .setAuthor("test")
     .setColor(0xF2E93E)
@@ -470,11 +493,7 @@ function turnFinishedEmbedBuilder(message, event, turnString){
     embed.addField( "Enemy", enemiesString )
     message.channel.send({embed})
     .then(function (sentMessage) {
-        // add the members to be a part of this embed message
-        // at this point they will all be able use abilities
-        // these abilities will be done in order (enemy first, then user, unless user has haste)
 
-        // event ends if all enemies are at 0 hp or if all party members are at 0 hp (check after every ability finishes)
     })
 }
 
@@ -531,27 +550,48 @@ function processAbility(abilityObject, event){
     // will return this
     var abilityToString = "";
     var rpgAbility = rpgAbilities[ability] ? rpgAbilities[ability] : undefined;
-
-    if (rpgAbility && rpgAbility.dmg){
+    // check that the user of the ability is still alive
+    var abilityCaster = abilityObject.user;
+    var stillAlive = true;
+    if (abilityCaster > 1000){
+        // this is a user
+        if (event.membersInParty["rpg-"+abilityCaster].hp <= 0 
+            && event.membersInParty["rpg-"+abilityCaster].statuses.indexOf("dead") != -1){
+                // they are no longer alive
+                stillAlive = false;
+            }
+    }else{
+        // this is an enemy
+        if (event.enemies[abilityCaster].hp <= 0 
+            && event.enemies[abilityCaster].statuses.indexOf("dead") != -1){
+                // they are no longer alive
+                stillAlive = false;
+            }
+    }
+    if (rpgAbility && rpgAbility.dmg && stillAlive){
         // this is a damage ability, deal the damage to the target
         var damageToDeal = rpgAbility.dmg;
         var targetToDealDmg = abilityObject.target;
         // dealing damage to enemies
         if (event.enemies[targetToDealDmg]){
+            var targetToDealDmgName = event.enemies[targetToDealDmg].name;
             event.enemies[targetToDealDmg].hp = event.enemies[targetToDealDmg].hp - damageToDeal;
-            abilityToString = abilityToString + targetToDealDmg + " took " + damageToDeal + " damage from " + ability + "\n";
+            abilityToString = abilityToString + targetToDealDmgName + " took " + damageToDeal + " damage from " + ability + "\n";
             if (event.enemies[targetToDealDmg].hp <= 0){
                 event.enemies[targetToDealDmg].statuses.push("dead")
-                abilityToString = abilityToString + targetToDealDmg + " has died. :skull_crossbones: \n";
+                event.enemies[targetToDealDmg].hp = 0;
+                abilityToString = abilityToString + targetToDealDmgName + " has died. :skull_crossbones: \n";
             }
         }
         // dealing damage to members of party (friendly fire or enemy attacking)
-        else if (event.membersInParty["rpg-"+targetToDealDmg]){
-            event.membersInParty["rpg-"+targetToDealDmg].hp = event.membersInParty["rpg-"+targetToDealDmg].hp - damageToDeal;
-            abilityToString = abilityToString + targetToDealDmg + " took " + damageToDeal + " damage from " + ability + "\n";
-            if (event.membersInParty["rpg-"+targetToDealDmg].hp <= 0){
-                event.membersInParty["rpg-"+targetToDealDmg].statuses.push("dead")
-                abilityToString = abilityToString + targetToDealDmg + " has died. :skull_crossbones: \n";
+        else if (event.membersInParty[targetToDealDmg]){
+            var targetToDealDmgName = event.membersInParty[targetToDealDmg].name;
+            event.membersInParty[targetToDealDmg].hp = event.membersInParty[targetToDealDmg].hp - damageToDeal;
+            abilityToString = abilityToString + targetToDealDmgName + " took " + damageToDeal + " damage from " + ability + "\n";
+            if (event.membersInParty[targetToDealDmg].hp <= 0){
+                event.membersInParty[targetToDealDmg].statuses.push("dead");
+                event.membersInParty[targetToDealDmg].hp = 0;
+                abilityToString = abilityToString + targetToDealDmgName + " has died. :skull_crossbones: \n";
             }
         }
     }
@@ -559,17 +599,19 @@ function processAbility(abilityObject, event){
         // this is a healing ability, heal the target
         var hpToHeal = rpgAbility.heal;
         var targetToHeal = abilityObject.target;
-        if (event.membersInParty["rpg-"+targetToHeal]){
-            if (event.membersInParty["rpg-"+targetToHeal].statuses.indexOf("dead") == -1){
+        if (event.membersInParty[targetToHeal]){
+            var targetToHealName = event.membersInParty[targetToHeal].name;
+            if (event.membersInParty[targetToHeal].statuses.indexOf("dead") == -1){
                 // target is not dead
-                event.membersInParty["rpg-"+targetToHeal].hp = event.membersInParty["rpg-"+targetToHeal].hp + hpToHeal;
-                abilityToString = abilityToString + " " + event.membersInParty["rpg-"+targetToHeal].name + " was healed for " + hpToHeal + "\n"
+                event.membersInParty[targetToHeal].hp = event.membersInParty[targetToHeal].hp + hpToHeal;
+                abilityToString = abilityToString + " " + targetToHealName + " was healed for " + hpToHeal + "\n"
             }
         }
         else if (event.enemies[targetToHeal]){
+            var targetToHealName = event.enemies[targetToHeal].name;
             if (event.enemies[targetToHeal].statuses.indexOf("dead") == -1){
                 event.enemies[targetToHeal].hp = event.enemies[targetToHeal].hp + hpToHeal;  
-                abilityToString = abilityToString + " " + event.enemies[targetToHeal].name + " was healed for " + hpToHeal + "\n"
+                abilityToString = abilityToString + " " + targetToHealName + " was healed for " + hpToHeal + "\n"
             }
         }
     }
@@ -578,18 +620,20 @@ function processAbility(abilityObject, event){
         var statusToAdd = rpgAbility.status;
         var targetToAddStatus = abilityObject.target
 
-        if (event.membersInParty["rpg-"+targetToAddStatus]){
-            if (event.membersInParty["rpg-"+targetToAddStatus].statuses.indexOf("dead") == -1){
+        if (event.membersInParty[targetToAddStatus]){
+            var targetToAddStatusName = event.membersInParty[targetToAddStatus].name;
+            if (event.membersInParty[targetToAddStatus].statuses.indexOf("dead") == -1){
                 // target is not dead
-                event.membersInParty["rpg-"+targetToAddStatus].statuses.push(statusToAdd);
-                abilityToString = abilityToString + " " + event.membersInParty["rpg-"+targetToAddStatus].name + " was affected with " + statusToAdd + "\n"
+                event.membersInParty[targetToAddStatus].statuses.push(statusToAdd);
+                abilityToString = abilityToString + " " + targetToAddStatusName + " was affected with " + statusToAdd + "\n"
             }
         }
 
         else if (event.enemies[targetToAddStatus]){
+            var targetToAddStatusName = event.enemies[targetToAddStatus].name;
             if (event.enemies[targetToAddStatus].statuses.indexOf("dead") == -1){
                 event.enemies[targetToAddStatus].statuses.push(statusToAdd);
-                abilityToString = abilityToString + " " + event.enemies[targetToAddStatus].name + " was affected with " + statusToAdd + " \n"
+                abilityToString = abilityToString + " " + targetToAddStatusName + " was affected with " + statusToAdd + " \n"
             }
         }
     }
@@ -597,23 +641,26 @@ function processAbility(abilityObject, event){
     if (rpgAbility && rpgAbility.special){
         // handle the ability in a special manner
         if (ability == "baindaid"){
-            // remove a status from the target
+            // remove a status from the target except dead
+        }
+        else if (ability == "revive"){
+            // remove dead from statuses
+        }
+        else if (ability == "finalfortune"){
+            
+        }
+        else if (ability == "bomb"){
+            
+        }
+        else if (ability == "plague"){
+            
         }
     }
     return abilityToString;
-    /*
-    abilityToProcess = {
-        user: discordUserId,
-        ability: abilityToUse,
-        target: target
-    }
-    */
 }
 
 function checkRpgEventEnd(event){
-    // check if the rpg event has ended
-
-    // conditions for event having ended:
+    // check if the rpg event has ended, conditions for event having ended:
     // all members of party are status: dead
     // all enemies are status: dead
     var eventEndedPartyDead = true;
@@ -665,15 +712,46 @@ function userStatsStringBuilder(userStats, name, isEnemy){
     if (!isEnemy){
         userString = userString + "**Abilities:** " + userStats.abilities + "\n"
     }
-    userString = userString + "**Status:** " + userStats.statuses
+    userString = userString + "**Status:** " + userStats.statuses + " **buffs:** " + userStats.buffs;
 
     return userString;
 }
 
 function enemiesUseAbilities(event){
-    // TODO: 
     // for each enemy in the event, pick out an ability to use, pick a valid target for the ability
     // queue up the ability used
+    for (var enemy in event.enemies){
+        console.log(event.enemies[enemy]);
+        // check that the enemy is not dead first 
+        if (event.enemies[enemy].statuses.indexOf("dead") == -1){
+            // pick an ability, then pick a target, the target must be a member of the party that isnt dead
+            var abilityRoll= Math.floor(Math.random() * event.enemies[enemy].abilities.length);
+            var abilityPicked = event.enemies[enemy].abilities[abilityRoll];
+
+            // now pick a target
+            var validTarget = false;
+            var stuckCount = 0
+            var target;
+            while(!validTarget && stuckCount < 100){
+                var targetRoll = Math.floor(Math.random() * event.members.length);
+                var targetMember = event.members[targetRoll].id;
+                if (event.membersInParty["rpg-"+targetMember].statuses.indexOf("dead") == -1){
+                    // valid target
+                    target = "rpg-"+targetMember;
+                    validTarget = true;
+                }
+                stuckCount++;
+            }
+            
+            var abilityToProcess = {
+                user: enemy,
+                ability: abilityPicked,
+                target: target
+            }
+
+            event.enemyTurnAbilities.push(abilityToProcess);
+        }
+    }
 }
 
 var rpgAbilities = {
@@ -685,27 +763,27 @@ var rpgAbilities = {
         dmg: 50,
         type: "physical"
     },
-    tacoHeal : {
+    tacoheal : {
         heal: 30
     },
     bandaid : {
         special: "remove status"
     },
-    tacoWall: {
+    tacowall: {
         status: "protect physical"
     },
     barrier: {
         status: "protect magical"
     },
-    flameBlast: {
+    flameblast: {
         dmg: 50,
         type: "fire"
     },
-    foodPoisoning: {
+    foodpoisoning: {
         dmg: 40,
         type: "poison"
     },
-    shardsOfIce: {
+    shardsofice: {
         dmg: 50,
         type: "ice"
     },
@@ -713,7 +791,7 @@ var rpgAbilities = {
         dmg: 50,
         type: "electric"
     },
-    rockThrow: {
+    rockthrow: {
         dmg: 60,
         type: "earth"
     },
@@ -732,7 +810,7 @@ var rpgAbilities = {
     empower: {
         status : "dmg x2"
     },
-    destructiveShot: {
+    destructiveshot: {
         dmg: 125,
         type: "physical"
     },
@@ -749,7 +827,7 @@ var rpgAbilities = {
     weaken: {
         status: "deal 1/2 magic dmg"
     },
-    finalFortune: {
+    finalfortune: {
         special: "take extra turn",
         special2: "after turn party dies",
         areaWide: true
@@ -757,6 +835,223 @@ var rpgAbilities = {
     shield: {
         status: "reduce all dmg by 1/2"
     }
+}
+
+// enemy abilities
+var enemyAbilities = {
+
+}
+
+// possible enemies to fight
+// 7 bosses per difficulty
+var enemiesToEncounter = {
+    easy : [
+        {
+            name: "Taco Monster 1",
+            abilities: [
+                "attack",
+                "foodpoisoning",
+                "shock"
+            ],
+            buffs: [],
+            hp: 100,
+            attackDmg: 40,
+            magicDmg: 44,
+            armor: 24,
+            element: "normal"
+        },
+        {
+            name: "Taco Monster 2",
+            abilities: [
+                "attack",
+                "foodpoisoning",
+                "shock"
+            ],
+            buffs: [],
+            hp: 100,
+            attackDmg: 40,
+            magicDmg: 44,
+            armor: 24,
+            element: "normal"
+        },
+        {
+            name: "Taco Monster 3",
+            abilities: [
+                "attack",
+                "foodpoisoning",
+                "shock"
+            ],
+            buffs: [],
+            hp: 100,
+            attackDmg: 40,
+            magicDmg: 44,
+            armor: 24,
+            element: "normal"
+        }
+    ],
+    medium: [
+        {
+            name: "Taco Monster 4",
+            abilities: [
+                "attack",
+                "foodpoisoning",
+                "shock"
+            ],
+            buffs: [],
+            hp: 100,
+            attackDmg: 40,
+            magicDmg: 44,
+            armor: 24,
+            element: "normal"
+        },
+        {
+            name: "Taco Monster 5",
+            abilities: [
+                "attack",
+                "foodpoisoning",
+                "shock"
+            ],
+            buffs: [],
+            hp: 100,
+            attackDmg: 40,
+            magicDmg: 44,
+            armor: 24,
+            element: "normal"
+        },
+        {
+            name: "Taco Monster 6",
+            abilities: [
+                "attack",
+                "foodpoisoning",
+                "shock"
+            ],
+            buffs: [],
+            hp: 100,
+            attackDmg: 40,
+            magicDmg: 44,
+            armor: 24,
+            element: "normal"
+        }
+    ],
+    hard: [
+        {
+            name: "Taco Monster 7",
+            abilities: [
+                "attack",
+                "foodpoisoning",
+                "shock"
+            ],
+            buffs: [],
+            hp: 100,
+            attackDmg: 40,
+            magicDmg: 44,
+            armor: 24,
+            element: "normal"
+        },
+        {
+            name: "Taco Monster 8",
+            abilities: [
+                "attack",
+                "foodpoisoning",
+                "shock"
+            ],
+            buffs: [],
+            hp: 100,
+            attackDmg: 40,
+            magicDmg: 44,
+            armor: 24,
+            element: "normal"
+        },
+        {
+            name: "Taco Monster 9",
+            abilities: [
+                "attack",
+                "foodpoisoning",
+                "shock"
+            ],
+            buffs: [],
+            hp: 100,
+            attackDmg: 40,
+            magicDmg: 44,
+            armor: 24,
+            element: "normal"
+        }
+    ],
+    boss: [
+        {
+            name: "Taco Monster 10",
+            abilities: [
+                "attack",
+                "foodpoisoning",
+                "shock"
+            ],
+            buffs: [],
+            hp: 1000,
+            attackDmg: 40,
+            magicDmg: 44,
+            armor: 24,
+            element: "normal"
+        },
+        {
+            name: "Taco Monster 11",
+            abilities: [
+                "attack",
+                "foodpoisoning",
+                "shock"
+            ],
+            buffs: [],
+            hp: 1000,
+            attackDmg: 40,
+            magicDmg: 44,
+            armor: 24,
+            element: "normal"
+        },
+        {
+            name: "Taco Monster 12",
+            abilities: [
+                "attack",
+                "foodpoisoning",
+                "shock"
+            ],
+            buffs: [],
+            hp: 1000,
+            attackDmg: 40,
+            magicDmg: 44,
+            armor: 24,
+            element: "normal"
+        }
+    ],
+    special: [
+        {
+            name: "Taco Monster 13",
+            abilities: [
+                "attack",
+                "foodpoisoning",
+                "shock"
+            ],
+            buffs: [],
+            hp: 100,
+            attackDmg: 40,
+            magicDmg: 44,
+            armor: 24,
+            element: "normal"
+        },
+        {
+            name: "Taco Monster 14",
+            abilities: [
+                "attack",
+                "foodpoisoning",
+                "shock"
+            ],
+            buffs: [],
+            hp: 100,
+            attackDmg: 40,
+            magicDmg: 44,
+            armor: 24,
+            element: "normal"
+        }
+        
+    ]
 }
 
 
