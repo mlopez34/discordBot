@@ -1654,12 +1654,13 @@ module.exports.itemhelpCommand = function(message){
 module.exports.rpghelpCommand = function(message){
     var commandsList = "```css\nList of commands \n ____________ \n"
     var rpg =   " -rpgstart [user] [user] [user] start an rpg event with the mentioned users [ 2-4 mentions required]\n"
+    var cast = " -cast [ability] [target] - eg: -cast tacoheal [user] OR -cast attack 2 OR -cast iceshards\n"
     var rules = " abilities and stats come from the items you are wearing and level\n"
     var stats = " 👕 = armor (reduces damage from attacks) \n 🙌 = spirit (reduces damage from magic attacks) \n 🗡 = attack dmg (increases damage from attacks) \n ☄️ = magic dmg (increases damage from magic attacks) \n"
     var buffsStatuses = " buffs = helpful abilities, statuses = harmful abilities \n"
     var death = " 💀 = dead, can no longer use abilities unless revived \n"
     var allMustUseAbilities = " all users must use one ability per event turn```"
-    commandsList = commandsList + rpg + rules + stats + buffsStatuses + death + allMustUseAbilities 
+    commandsList = commandsList + rpg + cast + rules + stats + buffsStatuses + death + allMustUseAbilities 
     message.channel.send(commandsList);
 }
 

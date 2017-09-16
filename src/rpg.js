@@ -28,18 +28,18 @@ module.exports.rpgInitialize = function(message){
         if (usersInRPGEvents["rpg-"+team[member].id]){
             validTeam = false;
         }
-        /*
+        
         if (team[member].bot){
             validTeam = false;
         }
-        */
+        
     }
 
     if (team.length >= 2 && team.length <= 4 && validTeam){
         // send an embed that the users are needed for the RPG event to say -ready or -notready
         // if the user says -ready, they get added to activeRPGEvents that they were invited to
         const embed = new Discord.RichEmbed()
-        .setAuthor("RPG Event initiated by " + message.author.username + "!" )
+        .setAuthor("(BETA)RPG Event initiated by " + message.author.username + "!" )
         .setThumbnail("https://media.giphy.com/media/mIZ9rPeMKefm0/giphy.gif")
         .setColor(0xF2E93E)
         .addField('Ready up ', "when ready type -ready, if skipping type -skip" )
@@ -113,7 +113,7 @@ module.exports.rpgReady = function(message, itemsAvailable){
                 ///////// CALCULATE THE MINUTES REDUCED HERE 
                 oneHourAgo = new Date(oneHourAgo.setHours(oneHourAgo.getHours() - 1));
 
-                if (!userData.data.lastrpgtime || oneHourAgo > userData.data.lastrpgtime ){
+                if (userData.data.lastrpgtime || oneHourAgo > userData.data.lastrpgtime ){
                     // get the user profile data
                     var userStats = userData.data;
 
@@ -276,7 +276,7 @@ module.exports.rpgReady = function(message, itemsAvailable){
                                         membersInParty["rpg-" + partyMember.id] = {
                                             id: partyMember.id,
                                             name: partyMember.username,
-                                            hp: 10000 + (20 *  partyMemberStats.level ) + partyMemberHpPlus,
+                                            hp: 100 + (20 *  partyMemberStats.level ) + partyMemberHpPlus,
                                             attackDmg: 10 + (6 * partyMemberStats.level) + partyMemberAttackDmgPlus,
                                             magicDmg:  10 + (6 * partyMemberStats.level) + partyMemberMagicDmgPlus,
                                             armor: 5 + (3 * partyMemberStats.level) + partyMemberArmorPlus,
@@ -345,8 +345,8 @@ module.exports.rpgReady = function(message, itemsAvailable){
                                             id: enemyIdCount,
                                             name: enemyFound.name,
                                             hp: enemyFound.hp + (20 * maxLevelInParty),
-                                            attackDmg: enemyFound.attackDmg + (6 * maxLevelInParty),
-                                            magicDmg: enemyFound.magicDmg + (6 * maxLevelInParty),
+                                            attackDmg: enemyFound.attackDmg + (3 * maxLevelInParty),
+                                            magicDmg: enemyFound.magicDmg + (3 * maxLevelInParty),
                                             armor: enemyFound.armor + (3 * maxLevelInParty),
                                             spirit: enemyFound.spirit + ( 3 * maxLevelInParty),
                                             statuses: [],
@@ -521,7 +521,7 @@ module.exports.useRpgAbility = function(message, args){
                             membersAlive++;
                         }
                     }
-                    if (membersAlive == 2 ) {//activeRPGEvents["rpg-"+idOfEventUserIsIn].memberTurnAbilities.length){
+                    if (membersAlive == activeRPGEvents["rpg-"+idOfEventUserIsIn].memberTurnAbilities.length){
                         enemiesUseAbilities(activeRPGEvents["rpg-"+idOfEventUserIsIn]);
                         processRpgTurn(message, activeRPGEvents["rpg-"+idOfEventUserIsIn]);
                     }
@@ -656,7 +656,7 @@ function cleanupEventEnded(event){
 function turnFinishedEmbedBuilder(message, event, turnString, passiveEffectsString, endOfTurnString){
     // create a string of all the events that happened
     const embed = new Discord.RichEmbed()
-    .setAuthor("Taco RPG Event")
+    .setAuthor("(BETA) Taco RPG Event")
     .setColor(0xF2E93E)
     .setDescription(passiveEffectsString + turnString + endOfTurnString)
     // party members
@@ -694,7 +694,7 @@ function eventEndedEmbedBuilder(message, event, partySuccess){
         var rewardString = "";
         if (partySuccess){
             rewards = calculateRewards( event, memberInRpgEvent )
-            rewardString = rewardString + " " + JSON.stringify(rewards) + " \n";
+            rewardString = rewardString + " No rewards being given out currently." + JSON.stringify(rewards) + " \n";
         }
         else{
             rewards = "None"
@@ -1795,19 +1795,40 @@ function processAbility(abilityObject, event){
     if (rpgAbility && rpgAbility.special && stillAlive){
         // handle the ability in a special manner
         if (rpgAbility.special == "selfdamage"){
-            // deal damage to the user
+            // deal self damage to the user
             if (event.membersInParty["rpg-"+abilityCaster] 
                 && event.membersInParty["rpg-"+abilityCaster].statuses.indexOf("dead") == -1 ){
                 var targetToDealDmgName = event.membersInParty["rpg-"+abilityCaster].name
+                // set damage temporarily
+                var tempDamage = rpgAbility.dmg;
                 rpgAbility.dmg = rpgAbility.selfdamage;
                 var damageToDeal = Math.floor(calculateDamageDealt(event, abilityCaster, "rpg-"+abilityCaster, rpgAbility) * 0.4)
                 event.membersInParty["rpg-"+abilityCaster].hp = event.membersInParty["rpg-"+abilityCaster].hp - damageToDeal;
                 abilityToString = abilityToString + targetToDealDmgName + " suffered " + damageToDeal + " damage from " + rpgAbility.name + "\n"
+                rpgAbility.dmg = tempDamage
                 if (event.membersInParty["rpg-"+abilityCaster].hp <= 0){
                     event.membersInParty["rpg-"+abilityCaster].statuses = [];
                     event.membersInParty["rpg-"+abilityCaster].statuses.push("dead")
                     event.membersInParty["rpg-"+abilityCaster].buffs = [];
-                    abilityToString = abilityToString + "rpg-"+abilityCaster + " has died. :skull_crossbones: \n";   
+                    abilityToString = abilityToString + targetToDealDmgName + " has died. :skull_crossbones: \n";   
+                }              
+            }
+            // deal self damage to the enemy
+            if (event.enemies[abilityCaster] 
+            && event.enemies[abilityCaster].statuses.indexOf("dead") == -1 ){
+                var targetToDealDmgName = event.enemies[abilityCaster].name
+                // set damage temporarily
+                var tempDamage = rpgAbility.dmg;
+                rpgAbility.dmg = rpgAbility.selfdamage;
+                var damageToDeal = Math.floor(calculateDamageDealt(event, abilityCaster, abilityCaster, rpgAbility) * 0.4)
+                event.enemies[abilityCaster].hp = event.enemies[abilityCaster].hp - damageToDeal;
+                abilityToString = abilityToString + targetToDealDmgName + " suffered " + damageToDeal + " damage from " + rpgAbility.name + "\n"
+                rpgAbility.dmg = tempDamage
+                if (event.enemies[abilityCaster].hp <= 0){
+                    event.enemies[abilityCaster].statuses = [];
+                    event.enemies[abilityCaster].statuses.push("dead")
+                    event.enemies[abilityCaster].buffs = [];
+                    abilityToString = abilityToString + targetToDealDmgName + " has died. :skull_crossbones: \n";   
                 }              
             }
         }
@@ -2073,8 +2094,8 @@ function checkRpgEventEnd(event){
 function userStatsStringBuilder(userStats, name, isEnemy){
     var userString = "";
     if (isEnemy){
-        userString = ":heart_decoration: " + (userStats.hp + userStats.statBuffs.hp) + "/" + (userStats.maxhp + userStats.statBuffs.maxhp)
-        userString = userString + " **" + name + "**" + "\n"
+        userString = ":heart_decoration: "  + (userStats.hp + userStats.statBuffs.hp) + "/" + (userStats.maxhp + userStats.statBuffs.maxhp)
+        userString = userString + " - **" + userStats.id + "** **" + name + "**" + "\n"
     }else{
         userString = ":green_heart:  " + (userStats.hp + userStats.statBuffs.hp) + "/" + (userStats.maxhp + userStats.statBuffs.maxhp) + " - **" + name + "**" + "\n"
         userString = userString + " 👕 " + (userStats.armor + userStats.statBuffs.armor)
@@ -2466,6 +2487,7 @@ var rpgAbilities = {
     },
     drain: {
         name: "drain",
+        type: "physical",
         special: {
             name: "drain",
             dmg: 40,
@@ -2553,33 +2575,44 @@ var enemiesToEncounter = {
     easy : [
         {
             name: "Rabbid Wolf",
-            abilities: ["attack", "bandaid", "cripple", "freeze", "shield", "barrier", "tacowall", "orchatasip", "tacoheal", "elixir"],
+            abilities: ["attack", "attack", "foodpoisoning", "foodpoisoning", "tacowall"],
             buffs: [],
             hp: 300,
-            attackDmg: 50,
-            magicDmg: 50,
+            attackDmg: 30,
+            magicDmg: 30,
             armor: 24,
             spirit: 24,
             element: "normal"
         },
         {
             name: "Bad Chef",
-            abilities: ["attack", "bandaid", "cripple", "freeze", "shield", "barrier", "tacowall", "orchatasip", "tacoheal", "elixir"],
+            abilities: ["attack", "attack", "foodpoisoning", "foodpoisoning", "barrier"],
             buffs: [],
             hp: 250,
-            attackDmg: 70,
-            magicDmg: 50,
+            attackDmg: 45,
+            magicDmg: 37,
+            armor: 30,
+            spirit: 17,
+            element: "normal"
+        },
+        {
+            name: "Angry Mob Member",
+            abilities: ["attack", "attack", "foodpoisoning", "iceshards", "iceshards", "cripple"],
+            buffs: [],
+            hp: 260,
+            attackDmg: 43,
+            magicDmg: 35,
             armor: 30,
             spirit: 17,
             element: "normal"
         },
         {
             name: "Taco Dealer",
-            abilities: ["attack", "bandaid", "cripple", "freeze", "shield", "barrier", "tacowall", "orchatasip", "tacoheal", "elixir"],
+            abilities: ["attack", "attack", "drain", "drain", "freeze"],
             buffs: [],
             hp: 325,
-            attackDmg: 40,
-            magicDmg: 100,
+            attackDmg: 25,
+            magicDmg: 49,
             armor: 17,
             spirit: 30,
             element: "normal"
@@ -2588,42 +2621,42 @@ var enemiesToEncounter = {
     medium: [
         {
             name: "Taco Bandit",
-            abilities: ["attack", "bandaid", "cripple", "freeze", "shield", "barrier", "tacowall", "orchatasip", "tacoheal", "elixir"],
+            abilities: ["attack", "attack", "rockthrow", "rockthrow", "orchatasip"],
             buffs: [],
             hp: 450,
             attackDmg: 120,
             magicDmg: 90,
-            armor: 40,
-            spirit: 20,
+            armor: 55,
+            spirit: 40,
             element: "normal"
         },
         {
             name: "Taco Thief",
-            abilities: ["attack", "bandaid", "cripple", "freeze", "shield", "barrier", "tacowall", "orchatasip", "tacoheal", "elixir"],
+            abilities: ["attack", "attack", "orchatasip", "flameblast", "flameblast"],
             buffs: [],
             hp: 500,
             attackDmg: 80,
             magicDmg: 140,
-            armor: 10,
+            armor: 35,
             spirit: 50,
             element: "normal"
         },
         {
             name: "Slots Gambler",
-            abilities: ["attack", "bandaid", "cripple", "freeze", "shield", "barrier", "tacowall", "orchatasip", "tacoheal", "elixir"],
+            abilities: ["attack", "attack", "elixir", "shock", "shock"],
             buffs: [],
             hp: 475,
             attackDmg: 110,
             magicDmg: 110,
             armor: 30,
-            spirit: 30,
+            spirit: 70,
             element: "normal"
         }
     ],
     hard: [
         {
             name: "Football Player",
-            abilities: ["attack", "revive", "cripple", "weaken", "shield", "barrier", "tacowall", "orchatasip", "tacoheal", "elixir"],
+            abilities: ["attack", "attack", "barrier", "shock", "shock", "rockthrow", "rockthrow", "bandaid"],
             buffs: [
                 {
                     name: "frenzy",
@@ -2638,40 +2671,50 @@ var enemiesToEncounter = {
             hp: 1000,
             attackDmg: 160,
             magicDmg: 160,
-            armor: 50,
-            spirit: 50,
+            armor: 80,
+            spirit: 80,
             element: "normal"
         },
         {
             name: "Samurai Warrior",
-            abilities: [
-                "rockthrow",
-                "rockthrow",
-                "rockthrow",
-                "rockthrow"
+            abilities: ["attack", "attack", "iceshards", "iceshards", "drain", "drain", "bandaid"],
+            buffs: [
+                {
+                    name: "frenzy",
+                    emoji: "😡",
+                    onTurnEnd: {
+                        attackDmgPlus : 15,
+                        everyNTurns: 2,
+                        startTurn: 2
+                    }
+                }
             ],
-            buffs: [],
             hp: 1200,
             attackDmg: 200,
             magicDmg: 80,
             armor: 100,
-            spirit: 5,
+            spirit: 50,
             element: "normal"
         },
         {
             name: "Funny Politician",
-            abilities: [
-                "rockthrow",
-                "rockthrow",
-                "rockthrow",
-                "rockthrow"
+            abilities: ["attack" , "attack" , "revive", "foodpoisoning", "foodpoisoning", "shoot", "shoot","freeze"],
+            buffs: [
+                {
+                    name: "frenzy",
+                    emoji: "😡",
+                    onTurnEnd: {
+                        attackDmgPlus : 15,
+                        everyNTurns: 2,
+                        startTurn: 2
+                    }
+                }
             ],
-            buffs: [],
             hp: 850,
             attackDmg: 50,
             magicDmg: 170,
-            armor: 120,
-            spirit: 120,
+            armor: 110,
+            spirit: 70,
             element: "normal"
         }
     ],
@@ -2679,15 +2722,12 @@ var enemiesToEncounter = {
         {
             name: "Vampire",
             abilities: [
-                "rockthrow",
-                "rockthrow",
-                "rockthrow",
-                "rockthrow"
+               "attack", "attack", "rockthrow", "rockthrow", "shock", "shock", "cripple", "foodpoisoning", "foodpoisoning"
             ],
             buffs: [],
             hp: 2000,
-            attackDmg: 300,
-            magicDmg: 300,
+            attackDmg: 200,
+            magicDmg: 200,
             armor: 150,
             spirit: 150,
             element: "normal"
@@ -2695,15 +2735,12 @@ var enemiesToEncounter = {
         {
             name: "Escaped Robot",
             abilities: [
-                "attack",
-                "foodpoisoning",
-                "iceshards",
-                "cripple"
+                "attack", "attack", "foodpoisoning", "foodpoisoning", "iceshards", "iceshards", "cripple"
             ],
             buffs: [],
             hp: 2500,
-            attackDmg: 400,
-            magicDmg: 200,
+            attackDmg: 250,
+            magicDmg: 160,
             armor: 100,
             spirit: 200,
             element: "normal"
@@ -2711,17 +2748,14 @@ var enemiesToEncounter = {
         {
             name: "Desperado",
             abilities: [
-                "attack",
-                "foodpoisoning",
-                "shock",
-                "weaken"
+                "attack", "attack", "foodpoisoning", "foodpoisoning", "shock", "shock", "weaken"
             ],
             buffs: [],
             hp: 1500,
-            attackDmg: 190,
-            magicDmg: 450,
-            armor: 250,
-            spirit: 150,
+            attackDmg: 1700,
+            magicDmg: 250,
+            armor: 180,
+            spirit: 120,
             element: "normal"
         }
     ],
@@ -2730,7 +2764,10 @@ var enemiesToEncounter = {
             name: "Taco Monster 13",
             abilities: [
                 "attack",
+                "attack",
                 "foodpoisoning",
+                "foodpoisoning",
+                "shock",
                 "shock"
             ],
             buffs: [],
