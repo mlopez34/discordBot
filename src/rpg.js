@@ -33,10 +33,10 @@ module.exports.rpgInitialize = function(message){
         // send an embed that the users are needed for the RPG event to say -ready or -notready
         // if the user says -ready, they get added to activeRPGEvents that they were invited to
         const embed = new Discord.RichEmbed()
-        .setAuthor("Test Event initiated by " + message.author.username + "!!" )
+        .setAuthor("RPG Event initiated by " + message.author.username + "!" )
         .setThumbnail("https://media.giphy.com/media/mIZ9rPeMKefm0/giphy.gif")
         .setColor(0xF2E93E)
-        .addField('Test Event ', "when ready type -ready, if skipping type -skip" )
+        .addField('Ready up ', "when ready type -ready, if skipping type -skip" )
     
         message.channel.send({embed})
         .then(function (sentMessage) {
@@ -248,13 +248,13 @@ module.exports.rpgReady = function(message, itemsAvailable){
                                     membersInParty["rpg-" + partyMember.id] = {
                                         id: partyMember.id,
                                         name: partyMember.username,
-                                        hp: 1000 + (20 *  partyMemberStats.level ) + partyMemberHpPlus,
+                                        hp: 10000 + (20 *  partyMemberStats.level ) + partyMemberHpPlus,
                                         attackDmg: 10 + (5 * partyMemberStats.level) + partyMemberAttackDmgPlus,
                                         magicDmg:  10 + (4 * partyMemberStats.level) + partyMemberMagicDmgPlus,
                                         armor: 5 + (3 * partyMemberStats.level) + partyMemberArmorPlus,
                                         spirit: 5 + (2 * partyMemberStats.level) + partyMemberSpiritPlus,
                                         luck: 1 + partyMemberLuckPlus,
-                                        abilities: ["attack", "weaken", "cripple", "freeze", "rockthrow", "drain", "shield"],
+                                        abilities: ["attack", "bandaid", "cripple", "weaken", "freeze", "barrier", "tacowall", "orchatasip", "tacoheal", "elixir"],
                                         statuses: [],
                                         statBuffs: {
                                             hp: 0,
@@ -736,21 +736,7 @@ function processPassiveEffects(event){
                         // remove dot after processing
                         if (event.membersInParty[member].statuses[index].dot.expireOnTurn == event.turn){
                             event.membersInParty[member].statuses.splice(index, 1);
-                        }
-                    }
-
-                    // if it is a hot, process the healing of the hot
-                    if (event.membersInParty[member].statuses[index].hot){
-                        // process the hot
-                        var healingToPlayer = calculateHealingDone(event, event.membersInParty[member].statuses[index].hot.caster, member, event.membersInParty[member].statuses[index].hot)
-                        event.membersInParty[member].hp = event.membersInParty[member].hp + healingToPlayer;
-                        passiveEffectsString = passiveEffectsString + event.membersInParty[member].name + " took " + healingToPlayer + " healing from " + event.membersInParty[member].statuses[index].hot.name + "\n"                        
-                        if (event.membersInParty[member].hp > event.membersInParty[member].maxhp){
-                            event.membersInParty[member].hp = event.membersInParty[member].maxhp
-                        }
-
-                        if (event.membersInParty[member].statuses[index].hot.expireOnTurn == event.turn){
-                            event.membersInParty[member].statuses.splice(index, 1);
+                            continue;
                         }
                     }
                     // if it is something else
@@ -758,6 +744,32 @@ function processPassiveEffects(event){
             }
         }
     }
+
+    for(var member in event.membersInParty){
+        if (event.membersInParty[member].statuses.indexOf("dead" == -1)){
+            for (var index = event.membersInParty[member].buffs.length - 1; index >= 0; index--){
+                // go through each status
+                if (event.membersInParty[member].statuses.indexOf("dead" == -1)){
+                    // if it is a hot, process the healing of the hot
+                    if (event.membersInParty[member].buffs[index].hot){
+                        // process the hot
+                        var healingToPlayer = calculateHealingDone(event, event.membersInParty[member].buffs[index].hot.caster, member, event.membersInParty[member].buffs[index].hot)
+                        event.membersInParty[member].hp = event.membersInParty[member].hp + healingToPlayer;
+                        passiveEffectsString = passiveEffectsString + event.membersInParty[member].name + " took " + healingToPlayer + " healing from " + event.membersInParty[member].buffs[index].hot.name + "\n"                        
+                        if (event.membersInParty[member].hp > event.membersInParty[member].maxhp){
+                            event.membersInParty[member].hp = event.membersInParty[member].maxhp
+                        }
+
+                        if (event.membersInParty[member].buffs[index].hot.expireOnTurn == event.turn){
+                            event.membersInParty[member].buffs.splice(index, 1);
+                            continue;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     // go through each enemy
     for(var enemy in event.enemies){
         if (event.enemies[enemy].statuses.indexOf("dead" == -1)){
@@ -782,24 +794,35 @@ function processPassiveEffects(event){
                         // remove dot after processing
                         if (event.enemies[enemy].statuses[index].dot.expireOnTurn == event.turn){
                             event.enemies[enemy].statuses.splice(index, 1);
+                            continue;
                         }
                     }
+                    // if it is something else
+                }
+            }
+        }
+    }
 
-                    // if it is a hot, process the healing of the hot
-                    if (event.enemies[enemy].statuses[index].hot){
+    for(var enemy in event.enemies){
+        if (event.enemies[enemy].statuses.indexOf("dead" == -1)){
+            for (var index = event.enemies[enemy].buffs.length - 1; index >= 0; index--){
+                // go through each status
+                if (event.enemies[enemy].statuses.indexOf("dead" == -1)){
+                     // if it is a hot, process the healing of the hot
+                     if (event.enemies[enemy].buffs[index].hot){
                         // process the hot
-                        var healingToPlayer = calculateHealingDone(event, event.enemies[enemy].statuses[index].hot.caster, enemy, event.enemies[enemy].statuses[index].hot)
+                        var healingToPlayer = calculateHealingDone(event, event.enemies[enemy].buffs[index].hot.caster, enemy, event.enemies[enemy].buffs[index].hot)
                         event.enemies[enemy].hp = event.enemies[enemy].hp + healingToPlayer;
-                        passiveEffectsString = passiveEffectsString + event.enemies[enemy].name + " took " + healingToPlayer + " healing from " + event.enemies[enemy].statuses[index].hot.name + "\n"                                                
+                        passiveEffectsString = passiveEffectsString + event.enemies[enemy].name + " took " + healingToPlayer + " healing from " + event.enemies[enemy].buffs[index].hot.name + "\n"                                                
                         if (event.enemies[enemy].hp > event.enemies[enemy].maxhp){
                             event.enemies[enemy].hp = event.enemies[enemy].maxhp
                         }
 
-                        if (event.enemies[enemy].statuses[index].hot.expireOnTurn == event.turn){
-                            event.enemies[enemy].statuses.splice(index, 1);
+                        if (event.enemies[enemy].buffs[index].hot.expireOnTurn == event.turn){
+                            event.enemies[enemy].buffs.splice(index, 1);
+                            continue;
                         }
                     }
-                    // if it is something else
                 }
             }
         }
@@ -1367,7 +1390,7 @@ function processAbility(abilityObject, event){
     if (rpgAbility && rpgAbility.dmg && stillAlive){
         // this is a damage ability, deal the damage to the target
 
-        // TODO: calculate the amount of damage that you will do to the target based on:
+        // calculate the amount of damage that you will do to the target based on:
         // caster AD or MD depending on ability, target armor, special buffs, special debuffs some random number gen
         var damageToDeal = rpgAbility.dmg;
         damageToDeal = calculateDamageDealt(event, abilityCaster, abilityObject.target, rpgAbility)
@@ -1496,34 +1519,74 @@ function processAbility(abilityObject, event){
         // this is a status changing ability, add / remove the status
         var statusToAdd = rpgAbility.buff;
         var targetToAddStatus = abilityObject.target
-
+        if (rpgAbility.buff.selfbuff){
+            targetToAddStatus = abilityObject.user
+            if (targetToAddStatus >= 1000){
+                targetToAddStatus = "rpg-"+targetToAddStatus;
+            }
+        }
         if (event.membersInParty[targetToAddStatus]){
             var targetToAddStatusName = event.membersInParty[targetToAddStatus].name;
             if (event.membersInParty[targetToAddStatus].statuses.indexOf("dead") == -1){
                 // target is not dead
                 // check that the the user doesn't already have the buff if they do, replace it
-                for (var index = event.membersInParty[targetToAddStatus].buffs.length - 1; index >= 0; index-- ){
-                    if (event.membersInParty[targetToAddStatus].buffs[index].name == rpgAbility.buff.name ){
-                        // pop this object
-                        event.membersInParty[targetToAddStatus].buffs.splice(index, 1);
+                if (rpgAbility.buff.name != "warm up"){
+                    for (var index = event.membersInParty[targetToAddStatus].buffs.length - 1; index >= 0; index-- ){
+                        if (event.membersInParty[targetToAddStatus].buffs[index].name == rpgAbility.buff.name){
+                            // pop this object
+                            event.membersInParty[targetToAddStatus].buffs.splice(index, 1);
+                        }
+                    }
+                    let buffCloned = Object.assign({}, statusToAdd);
+                    event.membersInParty[targetToAddStatus].buffs.push(buffCloned);
+                    abilityToString = abilityToString + targetToAddStatusName + " was affected with " + statusToAdd.name + "\n"    
+                }
+                else{
+                    // only add it if we dont find it
+                    var foundBuff = false;
+                    for (var index = event.membersInParty[targetToAddStatus].buffs.length - 1; index >= 0; index-- ){
+                        if (event.membersInParty[targetToAddStatus].buffs[index].name == rpgAbility.buff.name){
+                            // pop this object
+                            foundBuff = true;
+                        }
+                    }
+                    if (!foundBuff){
+                        let buffCloned = Object.assign({}, statusToAdd);
+                        event.membersInParty[targetToAddStatus].buffs.push(buffCloned);
+                        abilityToString = abilityToString + targetToAddStatusName + " was affected with " + statusToAdd.name + "\n"        
                     }
                 }
-                event.membersInParty[targetToAddStatus].buffs.push(statusToAdd);
-                abilityToString = abilityToString + targetToAddStatusName + " was affected with " + statusToAdd.name + "\n"
             }
         }
 
         else if (event.enemies[targetToAddStatus]){
             var targetToAddStatusName = event.enemies[targetToAddStatus].name;
             if (event.enemies[targetToAddStatus].statuses.indexOf("dead") == -1){
-                for (var index = event.enemies[targetToAddStatus].buffs.length - 1; index >= 0; index-- ){
-                    if (event.enemies[targetToAddStatus].buffs[index].name == rpgAbility.buff.name ){
-                        // pop this object
-                        event.enemies[targetToAddStatus].buffs.splice(index, 1);
+                if (rpgAbility.buff.name != "warm up"){
+                    for (var index = event.enemies[targetToAddStatus].buffs.length - 1; index >= 0; index-- ){
+                        if (event.enemies[targetToAddStatus].buffs[index].name == rpgAbility.buff.name ){
+                            // pop this object
+                            event.enemies[targetToAddStatus].buffs.splice(index, 1);
+                        }
+                    }
+                    let buffCloned = Object.assign({}, statusToAdd);
+                    event.enemies[targetToAddStatus].buffs.push(buffCloned);
+                    abilityToString = abilityToString + targetToAddStatusName + " was affected with " + statusToAdd.name + " \n"
+                }
+                else{
+                    var foundBuff = false;
+                    for (var index = event.enemies[targetToAddStatus].buffs.length - 1; index >= 0; index-- ){
+                        if (event.enemies[targetToAddStatus].buffs[index].name == rpgAbility.buff.name ){
+                            // pop this object
+                            foundBuff = true;
+                        }
+                    }
+                    if (!foundBuff){
+                        let buffCloned = Object.assign({}, statusToAdd);
+                        event.enemies[targetToAddStatus].buffs.push(buffCloned);
+                        abilityToString = abilityToString + targetToAddStatusName + " was affected with " + statusToAdd.name + " \n"     
                     }
                 }
-                event.enemies[targetToAddStatus].buffs.push(statusToAdd);
-                abilityToString = abilityToString + targetToAddStatusName + " was affected with " + statusToAdd.name + " \n"
             }
         }
     }
@@ -1545,10 +1608,15 @@ function processAbility(abilityObject, event){
                         alreadyHaveStatus = true;
                     }
                     // add the status here
+                    if (event.membersInParty[targetToAddStatus].statuses[status].name == "weakened"
+                        || event.membersInParty[targetToAddStatus].statuses[status].name == "crippled"
+                        || event.membersInParty[targetToAddStatus].statuses[status].name == "frozen" ){
+                            alreadyHaveStatus = true;
+                    }
                 }
                 if (!alreadyHaveStatus){
                     event.membersInParty[targetToAddStatus].statuses.push(statusToAdd);
-                    abilityToString = abilityToString + targetToAddStatusName + " was affected with " + statusToAdd + "\n"
+                    abilityToString = abilityToString + targetToAddStatusName + " was affected with " + statusToAdd.name + "\n"
                 }
             }
         }
@@ -1562,10 +1630,16 @@ function processAbility(abilityObject, event){
                         && event.enemies[targetToAddStatus].statuses[status].dot.caster == abilityObject.user ){
                         alreadyHaveStatus = true;
                     }
+
+                    if (event.enemies[targetToAddStatus].statuses[status].name == "weakened"
+                        || event.enemies[targetToAddStatus].statuses[status].name == "crippled"
+                        || event.enemies[targetToAddStatus].statuses[status].name == "frozen" ){
+                            alreadyHaveStatus = true;
+                    }
                 }
                 if (!alreadyHaveStatus){
                     event.enemies[targetToAddStatus].statuses.push(statusToAdd);
-                    abilityToString = abilityToString + targetToAddStatusName + " was affected with " + statusToAdd + " \n"    
+                    abilityToString = abilityToString + targetToAddStatusName + " was affected with " + statusToAdd.name + " \n"    
                 }
             }
         }
@@ -1573,7 +1647,7 @@ function processAbility(abilityObject, event){
 
     if (rpgAbility && rpgAbility.dot && stillAlive){
         // dot has been applied
-        // TODO: calculate the dot damage based on MD or AD, target armor, special buff
+        // calculate the dot damage based on MD or AD, target armor, special buff
         var dotToAdd = {}
         dotToAdd.dot = rpgAbility.dot;
         var targetToAddDot = abilityObject.target
@@ -1619,7 +1693,7 @@ function processAbility(abilityObject, event){
 
     if (rpgAbility && rpgAbility.hot && stillAlive){
         // hot has been applied
-        // TODO: calculate the hot healing based on MD, special buff, debuff
+        // calculate the hot healing based on MD, special buff, debuff
         var hotToAdd = {}
         hotToAdd.hot = rpgAbility.hot;
         var targetToAddHot = abilityObject.target
@@ -1630,7 +1704,7 @@ function processAbility(abilityObject, event){
             var targetToAddHotName = event.membersInParty[targetToAddHot].name;
             if (event.membersInParty[targetToAddHot].statuses.indexOf("dead") == -1){
                 // target is not dead
-                event.membersInParty[targetToAddHot].statuses.push(hotToAdd);
+                event.membersInParty[targetToAddHot].buffs.push(hotToAdd);
                 abilityToString = abilityToString + targetToAddHotName + " was affected with " + hotToAdd.hot.name + "\n"
             }
         }
@@ -1638,7 +1712,7 @@ function processAbility(abilityObject, event){
         else if (event.enemies[targetToAddHot]){
             var targetToAddHotName = event.enemies[targetToAddHot].name;
             if (event.enemies[targetToAddHot].statuses.indexOf("dead") == -1){
-                event.enemies[targetToAddHot].statuses.push(hotToAdd);
+                event.enemies[targetToAddHot].buffs.push(hotToAdd);
                 abilityToString = abilityToString + targetToAddHotName + " was affected with " + hotToAdd.hot.name + " \n"
             }
         }
@@ -1664,29 +1738,50 @@ function processAbility(abilityObject, event){
         if (ability == "bandaid"){
             // remove a status from the target except dead
             var targetToRemoveFrom = abilityObject.target
-
-            if (event.membersInParty[targetToRemoveFrom].statuses.indexOf("dead") == -1 
-                && event.membersInParty[targetToRemoveFrom].statuses.length > 0){
-                event.membersInParty[targetToRemoveFrom].statuses.splice(0, 1)
-                abilityToString = abilityToString + targetToRemoveFrom + " was cured with " + ability + " \n"                
+            if (event.membersInParty[targetToRemoveFrom]){
+                if (event.membersInParty[targetToRemoveFrom].statuses.indexOf("dead") == -1 
+                    && event.membersInParty[targetToRemoveFrom].statuses.length > 0){
+                    event.membersInParty[targetToRemoveFrom].statuses.splice(0, 1)
+                    abilityToString = abilityToString + event.membersInParty[targetToRemoveFrom] + " was cured with " + ability + " \n"                
+                }
             }
-            else if (event.enemies[targetToRemoveFrom].statuses.indexOf("dead") == -1 
-                && event.enemies[targetToRemoveFrom].statuses.length > 0){
-                event.enemies[targetToRemoveFrom].statuses.splice(0, 1)
-                abilityToString = abilityToString + targetToRemoveFrom + " was cured with " + ability + " \n"                
+            else if (event.enemies[targetToRemoveFrom]){
+                if (event.enemies[targetToRemoveFrom].statuses.indexOf("dead") == -1 
+                    && event.enemies[targetToRemoveFrom].statuses.length > 0){
+                    event.enemies[targetToRemoveFrom].statuses.splice(0, 1)
+                    abilityToString = abilityToString + event.enemies[targetToRemoveFrom].name + " was cured with " + ability + " \n"                
+                }
             }
+            
         }
         else if (ability == "revive"){
             // remove dead from statuses and give 40% of max hp
             var targetToRevive = abilityObject.target;
-            var deadIndex = event.membersInParty[targetToRevive].statuses.indexOf("dead")
-            if (deadIndex > -1){
-                // target is dead
-                event.membersInParty[targetToRevive].statuses.splice(index, 1)
-                // set their hp to 40%
-                event.membersInParty[targetToRevive].hp = Math.floor(event.membersInParty[targetToRevive].maxhp * 0.4);
-                abilityToString = abilityToString + targetToRevive + " was revived \n"                
+            if (event.membersInParty[targetToRevive]){
+                var deadIndex = event.membersInParty[targetToRevive].statuses.indexOf("dead")
+                if (deadIndex > -1){
+                    // target is dead
+                    event.membersInParty[targetToRevive].statuses.splice(index, 1)
+                    // set their hp to 40%
+                    event.membersInParty[targetToRevive].hp = Math.floor(event.membersInParty[targetToRevive].maxhp * 0.4);
+                    // reset their buffs
+                    event.membersInParty[targetToRevive].buffs = []
+                    abilityToString = abilityToString + targetToRevive + " was revived \n"                
+                }
             }
+            else if (event.enemies[targetToRevive]){
+                var deadIndex = event.enemies[targetToRevive].statuses.indexOf("dead")
+                if (deadIndex > -1){
+                    // target is dead
+                    event.enemies[targetToRevive].statuses.splice(index, 1)
+                    // set their hp to 40%
+                    event.enemies[targetToRevive].hp = Math.floor(event.enemies[targetToRevive].maxhp * 0.4);
+                    // reset their buffs
+                    event.enemies[targetToRevive].buffs = []
+                    abilityToString = abilityToString + targetToRevive + " was revived \n"                
+                }
+            }
+            
         }
         else if(ability == "drain"){
             // deal damage to target and heal caster
@@ -1747,35 +1842,95 @@ function processAbility(abilityObject, event){
             if (event.membersInParty["rpg-"+targetToCheck]){
                 var targetToCheck = "rpg-"+targetToCheck
                 for (var buff in event.membersInParty[targetToCheck].buffs){
-                    if (event.membersInParty[targetToCheck].buffs[buff].name == "warm up"){
+                    if (event.membersInParty[targetToCheck].buffs[buff].name == "warm up" ){
                         var stacksOfWarmUp = event.membersInParty[targetToCheck].buffs[buff].stacksOfWarmUp ? event.membersInParty[targetToCheck].buffs[buff].stacksOfWarmUp : 0;
-                        if (stacksOfWarmUp >= 5){
+                        if (stacksOfWarmUp >= rpgAbility.buff.maxStacks){
                             // damage is atMaxStacksDealDamage
-                            rpgAbility.dmg = rpgAbility.buff.dmg;
+                            var tempDmg = rpgAbility.dmg;
+                            rpgAbility.dmg = rpgAbility.buff.atMaxStacksDealDamage;
                             var damageToDeal = calculateDamageDealt(event, abilityObject.user, abilityObject.target, rpgAbility);
+                            rpgAbility.dmg = tempDmg;
                             // deal the damage and then remove the buff
-
-
+                            var targetToDealDmg = abilityObject.target;
+                            if (event.enemies[targetToDealDmg]){
+                                var targetToDealDmgName = event.enemies[targetToDealDmg].name;
+                                event.enemies[targetToDealDmg].hp = event.enemies[targetToDealDmg].hp - damageToDeal;
+                                abilityToString = abilityToString + targetToDealDmgName + " took " + damageToDeal + " damage from " + ability + "\n";
+                                if (event.enemies[targetToDealDmg].hp <= 0){
+                                    event.enemies[targetToDealDmg].statuses.push("dead")
+                                    event.enemies[targetToDealDmg].hp = 0;
+                                    abilityToString = abilityToString + targetToDealDmgName + " has died. :skull_crossbones: \n";
+                                }
+                            }
+                            // dealing damage to members of party (friendly fire or enemy attacking)
+                            else if (event.membersInParty[targetToDealDmg]){
+                                var targetToDealDmgName = event.membersInParty[targetToDealDmg].name;
+                                event.membersInParty[targetToDealDmg].hp = event.membersInParty[targetToDealDmg].hp - damageToDeal;
+                                abilityToString = abilityToString + targetToDealDmgName + " took " + damageToDeal + " damage from " + ability + "\n";
+                                if (event.membersInParty[targetToDealDmg].hp <= 0){
+                                    event.membersInParty[targetToDealDmg].statuses.push("dead");
+                                    event.membersInParty[targetToDealDmg].hp = 0;
+                                    abilityToString = abilityToString + targetToDealDmgName + " has died. :skull_crossbones: \n";
+                                }
+                            }
                             event.membersInParty[targetToCheck].buffs.splice(buff, 1);
-                            abilityToString = abilityToString + targetToCheck + " was cured with " + ability + " \n"
                         }else{
-                            var damageToDeal = calculateDamageDealt(event, abilityObject.user, abilityObject.target, rpgAbility);
                             // deal the damage and add a stack
+                            if (event.membersInParty[targetToCheck].buffs[buff].stacksOfWarmUp > 1){
+                                abilityToString = abilityToString + targetToAddStatusName + " gained a stack of " + event.membersInParty[targetToCheck].buffs[buff].name + "\n"                                
+                            }
+                            event.membersInParty[targetToCheck].buffs[buff].stacksOfWarmUp = event.membersInParty[targetToCheck].buffs[buff].stacksOfWarmUp + 1;                            
                         }
-                    }else{
-                        // first cast
-                        var damageToDeal = calculateDamageDealt(event, abilityObject.user, abilityObject.target, rpgAbility);                        
                     }
-                    
                 }
             }
-            
-            else if (event.enemies[targetToCheck].statuses.indexOf("dead") == -1 
-                && event.enemies[targetToCheck].statuses.length > 0){
-                event.enemies[targetToCheck].statuses.splice(0, 1)
-                abilityToString = abilityToString + targetToCheck + " was cured with " + ability + " \n"                
+            else if(event.enemies[targetToCheck]){
+                // enemy casted the rock throw
+                for (var buff in event.enemies[targetToCheck].buffs){
+                    if (event.enemies[targetToCheck].buffs[buff].name == "warm up" ){
+                        var stacksOfWarmUp = event.enemies[targetToCheck].buffs[buff].stacksOfWarmUp ? event.enemies[targetToCheck].buffs[buff].stacksOfWarmUp : 0;
+                        if (stacksOfWarmUp >= rpgAbility.buff.maxStacks){
+                            // damage is atMaxStacksDealDamage
+                            var tempDmg = rpgAbility.dmg;
+                            rpgAbility.dmg = rpgAbility.buff.atMaxStacksDealDamage;
+                            var damageToDeal = calculateDamageDealt(event, abilityObject.user, abilityObject.target, rpgAbility);
+                            rpgAbility.dmg = tempDmg;
+                            // deal the damage and then remove the buff
+                            var targetToDealDmg = abilityObject.target;
+                            if (event.membersInParty[targetToDealDmg]){
+                                var targetToDealDmgName = event.membersInParty[targetToDealDmg].name;
+                                event.membersInParty[targetToDealDmg].hp = event.membersInParty[targetToDealDmg].hp - damageToDeal;
+                                abilityToString = abilityToString + targetToDealDmgName + " took " + damageToDeal + " damage from " + ability + "\n";
+                                if (event.membersInParty[targetToDealDmg].hp <= 0){
+                                    event.membersInParty[targetToDealDmg].statuses.push("dead")
+                                    event.membersInParty[targetToDealDmg].hp = 0;
+                                    abilityToString = abilityToString + targetToDealDmgName + " has died. :skull_crossbones: \n";
+                                }
+                            }
+                            // dealing damage to members of party (friendly fire or enemy attacking)
+                            else if (event.enemies["rpg-"+targetToDealDmg]){
+                                var targetToDealDmg = "rpg-"+targetToDealDmg;
+                                var targetToDealDmgName = event.enemies[targetToDealDmg].name;
+                                event.enemies[targetToDealDmg].hp = event.enemies[targetToDealDmg].hp - damageToDeal;
+                                abilityToString = abilityToString + targetToDealDmgName + " took " + damageToDeal + " damage from " + ability + "\n";
+                                if (event.enemies[targetToDealDmg].hp <= 0){
+                                    event.enemies[targetToDealDmg].statuses.push("dead");
+                                    event.enemies[targetToDealDmg].hp = 0;
+                                    abilityToString = abilityToString + targetToDealDmgName + " has died. :skull_crossbones: \n";
+                                }
+                            }
+                            event.enemies[targetToCheck].buffs.splice(buff, 1);
+                        }
+                        else{
+                            // deal the damage and add a stack
+                            if (event.enemies[targetToCheck].buffs[buff].stacksOfWarmUp > 1){
+                                abilityToString = abilityToString + targetToAddStatusName + " gained a stack of " + event.enemies[targetToCheck].buffs[buff].name + "\n"                                
+                            }
+                            event.enemies[targetToCheck].buffs[buff].stacksOfWarmUp = event.enemies[targetToCheck].buffs[buff].stacksOfWarmUp + 1;                            
+                        }
+                    }
+                }
             }
-
         }
         else if (ability == "finalfortune"){
             
@@ -1862,10 +2017,14 @@ function userStatsStringBuilder(userStats, name, isEnemy){
     userString = userString + "Status: " + statusesString
     var buffsString = "";
     for (var i in userStats.buffs){
-        buffsString = buffsString + userStats.buffs[i].name + ", ";
+        if (userStats.buffs[i].name){
+            buffsString = buffsString + userStats.buffs[i].name + ", ";
+        }
+        else if(userStats.buffs[i].hot && userStats.buffs[i].hot.name){
+            buffsString = buffsString + userStats.buffs[i].hot.name + ", ";
+        }
     }
     userString = userString + " Buffs: " + buffsString
-     
 
     return userString;
 }
@@ -2001,27 +2160,118 @@ function enemiesUseAbilities(event){
             var abilityPicked = event.enemies[enemy].abilities[abilityRoll];
 
             // now pick a target
-            var validTarget = false;
-            var stuckCount = 0
-            var target;
-            while(!validTarget && stuckCount < 100){
-                var targetRoll = Math.floor(Math.random() * event.members.length);
-                var targetMember = event.members[targetRoll].id;
-                if (event.membersInParty["rpg-"+targetMember].statuses.indexOf("dead") == -1){
-                    // valid target
-                    target = "rpg-"+targetMember;
-                    validTarget = true;
+            if (rpgAbilities[abilityPicked].dmg
+                || rpgAbilities[abilityPicked].dot
+                || rpgAbilities[abilityPicked].status
+                || rpgAbilities[abilityPicked].name == "drain"){
+                // target SHOULD be the membersinparty
+
+                var validTarget = false;
+                var stuckCount = 0
+                var target;
+                while(!validTarget && stuckCount < 100){
+                    var targetRoll = Math.floor(Math.random() * event.members.length);
+                    var targetMember = event.members[targetRoll].id;
+                    if (event.membersInParty["rpg-"+targetMember].statuses.indexOf("dead") == -1){
+                        // valid target
+                        target = "rpg-"+targetMember;
+                        validTarget = true;
+                    }
+                    stuckCount++;
                 }
-                stuckCount++;
+                
+                var abilityToProcess = {
+                    user: enemy,
+                    ability: abilityPicked,
+                    target: target
+                }
+    
+                event.enemyTurnAbilities.push(abilityToProcess);
+
+            }else if(rpgAbilities[abilityPicked].heal
+                || rpgAbilities[abilityPicked].hot
+                || rpgAbilities[abilityPicked].buff
+                || rpgAbilities[abilityPicked].special){
+                // target SHOULD be the enemies
+                var validTarget = false;
+                var stuckCount = 0
+                var target;
+                while(!validTarget && stuckCount < 100){
+                    if (abilityPicked == "revive"){
+                        // check for a dead teammate and revive them, if no dead teammates, just attack ?
+                        var ableToRevive = false;
+                        for (var enemy in event.enemies){
+                            if (event.enemies[enemy].statuses.indexOf("dead") > -1){
+                                // enemy is dead, pick them as the target
+                                target = event.enemies[enemy].id; // for actual id
+                                validTarget = true;
+                                ableToRevive = true;
+                                break;
+                            }
+                        }
+                        if (!ableToRevive){
+                            // attack
+                            abilityPicked = "attack";
+                            while(!validTarget && stuckCount < 100){
+                                var targetRoll = Math.floor(Math.random() * event.members.length);
+                                var targetMember = event.members[targetRoll].id;
+                                if (event.membersInParty["rpg-"+targetMember].statuses.indexOf("dead") == -1){
+                                    // valid target
+                                    target = "rpg-"+targetMember;
+                                    validTarget = true;
+                                }
+                                stuckCount++;
+                            }
+                        }
+                    }
+                    if (abilityPicked == "bandaid"){
+                        // check for an enemy with a status that is not dead, if none with statuses, just attack ?
+                        var ableToBandaid = false;
+                        for (var enemy in event.enemies){
+                            if (event.enemies[enemy].statuses.indexOf("dead") == -1
+                                && event.enemies[enemy].statuses.length > 1){
+                                // enemy is dead, pick them as the target
+                                target = event.enemies[enemy].id; // for actual id
+                                validTarget = true;
+                                var ableToBandaid = true;
+                                break;
+                            }
+                        }
+                        if (!ableToBandaid){
+                            // attack
+                            abilityPicked = "attack";
+                            while(!validTarget && stuckCount < 100){
+                                var targetRoll = Math.floor(Math.random() * event.members.length);
+                                var targetMember = event.members[targetRoll].id;
+                                if (event.membersInParty["rpg-"+targetMember].statuses.indexOf("dead") == -1){
+                                    // valid target
+                                    target = "rpg-"+targetMember;
+                                    validTarget = true;
+                                }
+                                stuckCount++;
+                            }
+                        }
+                    }
+                    else{
+                        var targetMember = Math.floor(Math.random() * event.enemiesCount) + 1;
+                        if (event.enemies[targetMember].statuses.indexOf("dead") == -1){
+                            // valid target
+                            target = targetMember;
+                            validTarget = true;
+                        }
+                        stuckCount++;
+                    }
+                }
+                
+                var abilityToProcess = {
+                    user: enemy,
+                    ability: abilityPicked,
+                    target: target
+                }
+    
+                event.enemyTurnAbilities.push(abilityToProcess);
             }
             
-            var abilityToProcess = {
-                user: enemy,
-                ability: abilityPicked,
-                target: target
-            }
-
-            event.enemyTurnAbilities.push(abilityToProcess);
         }
     }
 }
@@ -2107,12 +2357,14 @@ var rpgAbilities = {
     rockthrow: {
         dmg: 20,
         type: "earth",
+        special: "warm up",
         buff: {
             selfbuff: true,
+            stacksOfWarmUp: 1,
             name: "warm up", //// FIX THIS -- IT IS BEING ADDED TO THE TARGET AND NOT MYSELF also WHEN SOMEONE IS DEAD DO NOT DAMAGE THEM WITH AOE 
             // ATTACKS SHOULD NOT DO ANYTHING TO DEAD TARGETS
             maxStacks: 5,
-            atMaxStacksDealDamage: 250
+            atMaxStacksDealDamage: 200
         }
     },
     drain: {
@@ -2197,11 +2449,7 @@ var enemiesToEncounter = {
     easy : [
         {
             name: "Rabbid Wolf",
-            abilities: [
-                "attack",
-                "foodpoisoning",
-                "barrier"
-            ],
+            abilities: ["attack", "bandaid", "cripple", "freeze", "shield", "barrier", "tacowall", "orchatasip", "tacoheal", "elixir"],
             buffs: [],
             hp: 300,
             attackDmg: 50,
@@ -2212,11 +2460,7 @@ var enemiesToEncounter = {
         },
         {
             name: "Bad Chef",
-            abilities: [
-                "attack",
-                "foodpoisoning",
-                "tacowall"
-            ],
+            abilities: ["attack", "bandaid", "cripple", "freeze", "shield", "barrier", "tacowall", "orchatasip", "tacoheal", "elixir"],
             buffs: [],
             hp: 250,
             attackDmg: 70,
@@ -2227,11 +2471,7 @@ var enemiesToEncounter = {
         },
         {
             name: "Taco Dealer",
-            abilities: [
-                "attack",
-                "rockthrow",
-                "orchatasip"
-            ],
+            abilities: ["attack", "bandaid", "cripple", "freeze", "shield", "barrier", "tacowall", "orchatasip", "tacoheal", "elixir"],
             buffs: [],
             hp: 325,
             attackDmg: 40,
@@ -2244,11 +2484,7 @@ var enemiesToEncounter = {
     medium: [
         {
             name: "Taco Bandit",
-            abilities: [
-                "attack",
-                "elixir",
-                "foodpoisoning",
-            ],
+            abilities: ["attack", "bandaid", "cripple", "freeze", "shield", "barrier", "tacowall", "orchatasip", "tacoheal", "elixir"],
             buffs: [],
             hp: 450,
             attackDmg: 120,
@@ -2259,12 +2495,7 @@ var enemiesToEncounter = {
         },
         {
             name: "Taco Thief",
-            abilities: [
-                "attack",
-                "shock",
-                "foodpoisoning",
-                "tacoheal"
-            ],
+            abilities: ["attack", "bandaid", "cripple", "freeze", "shield", "barrier", "tacowall", "orchatasip", "tacoheal", "elixir"],
             buffs: [],
             hp: 500,
             attackDmg: 80,
@@ -2275,12 +2506,7 @@ var enemiesToEncounter = {
         },
         {
             name: "Slots Gambler",
-            abilities: [
-                "attack",
-                "shock",
-                "flameblast",
-                "elixir"
-            ],
+            abilities: ["attack", "bandaid", "cripple", "freeze", "shield", "barrier", "tacowall", "orchatasip", "tacoheal", "elixir"],
             buffs: [],
             hp: 475,
             attackDmg: 110,
@@ -2293,12 +2519,7 @@ var enemiesToEncounter = {
     hard: [
         {
             name: "Football Player",
-            abilities: [
-                "attack",
-                "iceshards",
-                "foodpoisoning",
-                "tacoheal"
-            ],
+            abilities: ["attack", "revive", "cripple", "weaken", "shield", "barrier", "tacowall", "orchatasip", "tacoheal", "elixir"],
             buffs: [
                 {
                     name: "frenzy",
@@ -2319,10 +2540,10 @@ var enemiesToEncounter = {
         {
             name: "Samurai Warrior",
             abilities: [
-                "attack",
-                "shock",
-                "foodpoisoning",
-                "tacowall"
+                "rockthrow",
+                "rockthrow",
+                "rockthrow",
+                "rockthrow"
             ],
             buffs: [],
             hp: 1200,
@@ -2335,10 +2556,10 @@ var enemiesToEncounter = {
         {
             name: "Funny Politician",
             abilities: [
-                "attack",
-                "foodpoisoning",
-                "shock",
-                "barrier"
+                "rockthrow",
+                "rockthrow",
+                "rockthrow",
+                "rockthrow"
             ],
             buffs: [],
             hp: 850,
@@ -2353,10 +2574,10 @@ var enemiesToEncounter = {
         {
             name: "Vampire",
             abilities: [
-                "attack",
-                "shock",
-                "drain",
-                "revive"
+                "rockthrow",
+                "rockthrow",
+                "rockthrow",
+                "rockthrow"
             ],
             buffs: [],
             hp: 2000,

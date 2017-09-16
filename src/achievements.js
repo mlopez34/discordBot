@@ -61,7 +61,7 @@ var achievementsData = {
     },
     "Executioner" : {
         emoji : ":skull_crossbones:",
-        description : "Throw 1000 rocks at other users"
+        description : "Throw 2000 rocks at other users"
     },
     "The Exalted" : {
         emoji: ":crown:",
@@ -188,7 +188,7 @@ module.exports.checkForAchievements = function(discordUserId, data, message, cal
                 }
 
                 if(statistics.data.rocksthrown && 
-                statistics.data.rocksthrown >= 1000 && 
+                statistics.data.rocksthrown >= 2000 && 
                 (data.achievements === null || data.achievements.indexOf("Executioner") == -1)){
 
                     profileDB.updateAchievements(discordUserId, "{Executioner}", function(err, r){
