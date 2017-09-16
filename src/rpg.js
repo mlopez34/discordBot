@@ -404,7 +404,7 @@ module.exports.rpgReady = function(message, itemsAvailable){
                                     })
                     
                                 }else{
-                                    message.channel.send("test not ready");
+                                    message.channel.send("waiting on the rest of the group");
                                 }
                             }
                         }
