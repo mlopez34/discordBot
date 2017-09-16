@@ -140,6 +140,9 @@ module.exports.rpgReady = function(message, itemsAvailable){
                             if (itemsAvailable[items[i]].ability1){
                                 abilities.push(itemsAvailable[items[i]].ability1);
                             }
+                            if (itemsAvailable[items[i]].ability2){
+                                abilities.push(itemsAvailable[items[i]].ability2);
+                            }
                             if (itemsAvailable[items[i]].specialAbility){
                                 abilities.push(itemsAvailable[items[i]].specialAbility)
                             }
@@ -197,7 +200,8 @@ module.exports.rpgReady = function(message, itemsAvailable){
                             }
                 
                             if (teamIsReady){
-                                message.channel.send("test is all ready")
+                                // TODO: set all players lastrpgtime to 1 hour ago
+                                
                                 // if all team members are ready, create the RPG event
                                 var maxLevelInParty = 1;
                 
@@ -249,12 +253,12 @@ module.exports.rpgReady = function(message, itemsAvailable){
                                         id: partyMember.id,
                                         name: partyMember.username,
                                         hp: 10000 + (20 *  partyMemberStats.level ) + partyMemberHpPlus,
-                                        attackDmg: 10 + (5 * partyMemberStats.level) + partyMemberAttackDmgPlus,
-                                        magicDmg:  10 + (4 * partyMemberStats.level) + partyMemberMagicDmgPlus,
+                                        attackDmg: 10 + (6 * partyMemberStats.level) + partyMemberAttackDmgPlus,
+                                        magicDmg:  10 + (6 * partyMemberStats.level) + partyMemberMagicDmgPlus,
                                         armor: 5 + (3 * partyMemberStats.level) + partyMemberArmorPlus,
-                                        spirit: 5 + (2 * partyMemberStats.level) + partyMemberSpiritPlus,
+                                        spirit: 5 + (3 * partyMemberStats.level) + partyMemberSpiritPlus,
                                         luck: 1 + partyMemberLuckPlus,
-                                        abilities: ["attack", "bandaid", "cripple", "weaken", "freeze", "barrier", "tacowall", "orchatasip", "tacoheal", "elixir"],
+                                        abilities: ["attack"],
                                         statuses: [],
                                         statBuffs: {
                                             hp: 0,
@@ -266,18 +270,20 @@ module.exports.rpgReady = function(message, itemsAvailable){
                                             maxhp: 0
                                         },
                                         buffs: [
-                                            rpgAbilities.haste.buff
                                         ]
                                     }
                                     membersInParty["rpg-" + partyMember.id].maxhp = membersInParty["rpg-" + partyMember.id].hp;
                                     // insert the abilities and statuses for the party member
                                     if (partyMemberStats && partyMemberStats.abilities){
                                         for( var ability in partyMemberStats.abilities){
-                                            membersInParty["rpg-" + partyMember.id].abilities.push(partyMemberStats.abilities[ability]);
+                                            if (rpgAbilities[partyMemberStats.abilities[ability]].passive){
+                                                // add it as a buff
+                                                membersInParty["rpg-" + partyMember.id].buffs.push(rpgAbilities[partyMemberStats.abilities[ability]].buff);
+                                            }else{
+                                                membersInParty["rpg-" + partyMember.id].abilities.push(partyMemberStats.abilities[ability]);                                                
+                                            }
                                         }
                                     }
-                                    // TODO: add special abilities, passive abilities and statuses
-                                    // for (var status in partyMemberStats.statuses)
                                 }
                                 // create the enemy list and add to the embed
                                 // enemy list has regular attack, 2 abilities, 1 ult ability
@@ -315,10 +321,10 @@ module.exports.rpgReady = function(message, itemsAvailable){
                                         id: enemyIdCount,
                                         name: enemyFound.name,
                                         hp: enemyFound.hp + (20 * maxLevelInParty),
-                                        attackDmg: enemyFound.attackDmg + (5 * maxLevelInParty),
-                                        magicDmg: enemyFound.magicDmg + (4 * maxLevelInParty),
+                                        attackDmg: enemyFound.attackDmg + (6 * maxLevelInParty),
+                                        magicDmg: enemyFound.magicDmg + (6 * maxLevelInParty),
                                         armor: enemyFound.armor + (3 * maxLevelInParty),
-                                        spirit: enemyFound.spirit + ( 2 * maxLevelInParty),
+                                        spirit: enemyFound.spirit + ( 3 * maxLevelInParty),
                                         statuses: [],
                                         statBuffs: {
                                             hp: 0,
@@ -730,6 +736,7 @@ function processPassiveEffects(event){
                             // player is dead, remove all statuses, add dead
                             event.membersInParty[member].statuses = [];
                             event.membersInParty[member].statuses.push("dead");
+                            event.membersInParty[member].buffs = [];
                             passiveEffectsString = passiveEffectsString + event.membersInParty[member].name + "has died :skull_crossbones: \n"
                             break;
                         }
@@ -788,6 +795,7 @@ function processPassiveEffects(event){
                             // player is dead, remove all statuses, add dead
                             event.enemies[enemy].statuses = [];
                             event.enemies[enemy].statuses.push("dead");
+                            event.enemies[enemy].buffs = [];
                             passiveEffectsString = passiveEffectsString + event.enemies[enemy].name + "has died :skull_crossbones: \n"                            
                             break;
                         }
@@ -1408,6 +1416,7 @@ function processAbility(abilityObject, event){
                         if (event.enemies[targetToDealDmg].hp <= 0){
                             event.enemies[targetToDealDmg].statuses.push("dead")
                             event.enemies[targetToDealDmg].hp = 0;
+                            event.enemies[targetToDealDmg].buffs = [];
                             abilityToString = abilityToString + targetToDealDmgName + " has died. :skull_crossbones: \n";
                         }
                     }
@@ -1423,6 +1432,7 @@ function processAbility(abilityObject, event){
                     if (event.membersInParty[targetToDealDmg].hp <= 0){
                         event.membersInParty[targetToDealDmg].statuses.push("dead")
                         event.membersInParty[targetToDealDmg].hp = 0;
+                        event.membersInParty[targetToDealDmg].buffs = [];
                         abilityToString = abilityToString + targetToDealDmgName + " has died. :skull_crossbones: \n";
                     }
                 }
@@ -1436,8 +1446,10 @@ function processAbility(abilityObject, event){
                 event.enemies[targetToDealDmg].hp = event.enemies[targetToDealDmg].hp - damageToDeal;
                 abilityToString = abilityToString + targetToDealDmgName + " took " + damageToDeal + " damage from " + ability + "\n";
                 if (event.enemies[targetToDealDmg].hp <= 0){
+                    event.enemies[targetToDealDmg].statuses = [];
                     event.enemies[targetToDealDmg].statuses.push("dead")
                     event.enemies[targetToDealDmg].hp = 0;
+                    event.enemies[targetToDealDmg].buffs = [];
                     abilityToString = abilityToString + targetToDealDmgName + " has died. :skull_crossbones: \n";
                 }
             }
@@ -1447,8 +1459,10 @@ function processAbility(abilityObject, event){
                 event.membersInParty[targetToDealDmg].hp = event.membersInParty[targetToDealDmg].hp - damageToDeal;
                 abilityToString = abilityToString + targetToDealDmgName + " took " + damageToDeal + " damage from " + ability + "\n";
                 if (event.membersInParty[targetToDealDmg].hp <= 0){
+                    event.membersInParty[targetToDealDmg].statuses = [];
                     event.membersInParty[targetToDealDmg].statuses.push("dead");
                     event.membersInParty[targetToDealDmg].hp = 0;
+                    event.membersInParty[targetToDealDmg].buffs = [];
                     abilityToString = abilityToString + targetToDealDmgName + " has died. :skull_crossbones: \n";
                 }
             }
@@ -1456,7 +1470,6 @@ function processAbility(abilityObject, event){
     }
     if (rpgAbility && rpgAbility.heal && stillAlive){
         // this is a healing ability, heal the target
-        // TODO : calculate the amount to heal, based on MD and special buffs / debuffs
         var hpToHeal = calculateHealingDone(event, abilityCaster, abilityObject.target, rpgAbility);
 
         if (rpgAbility.areawide){
@@ -1730,7 +1743,9 @@ function processAbility(abilityObject, event){
                 event.membersInParty["rpg-"+abilityCaster].hp = event.membersInParty["rpg-"+abilityCaster].hp - damageToDeal;
                 abilityToString = abilityToString + targetToDealDmgName + " suffered " + damageToDeal + " damage from " + rpgAbility.name + "\n"
                 if (event.membersInParty["rpg-"+abilityCaster].hp <= 0){
+                    event.membersInParty["rpg-"+abilityCaster].statuses = [];
                     event.membersInParty["rpg-"+abilityCaster].statuses.push("dead")
+                    event.membersInParty["rpg-"+abilityCaster].buffs = [];
                     abilityToString = abilityToString + "rpg-"+abilityCaster + " has died. :skull_crossbones: \n";   
                 }              
             }
@@ -1742,7 +1757,7 @@ function processAbility(abilityObject, event){
                 if (event.membersInParty[targetToRemoveFrom].statuses.indexOf("dead") == -1 
                     && event.membersInParty[targetToRemoveFrom].statuses.length > 0){
                     event.membersInParty[targetToRemoveFrom].statuses.splice(0, 1)
-                    abilityToString = abilityToString + event.membersInParty[targetToRemoveFrom] + " was cured with " + ability + " \n"                
+                    abilityToString = abilityToString + event.membersInParty[targetToRemoveFrom].name + " was cured with " + ability + " \n"                
                 }
             }
             else if (event.enemies[targetToRemoveFrom]){
@@ -1793,8 +1808,10 @@ function processAbility(abilityObject, event){
                 event.enemies[targetToDealDmg].hp = event.enemies[targetToDealDmg].hp - damageToDeal;
                 abilityToString = abilityToString + targetToDealDmgName + " took " + damageToDeal + " damage from " + ability + "\n";
                 if (event.enemies[targetToDealDmg].hp <= 0){
+                    event.enemies[targetToDealDmg].statuses = [];
                     event.enemies[targetToDealDmg].statuses.push("dead")
                     event.enemies[targetToDealDmg].hp = 0;
+                    event.enemies[targetToDealDmg].buffs = [];
                     abilityToString = abilityToString + targetToDealDmgName + " has died. :skull_crossbones: \n";
                 }
             }
@@ -1804,8 +1821,10 @@ function processAbility(abilityObject, event){
                 event.membersInParty[targetToDealDmg].hp = event.membersInParty[targetToDealDmg].hp - damageToDeal;
                 abilityToString = abilityToString + targetToDealDmgName + " took " + damageToDeal + " damage from " + ability + "\n";
                 if (event.membersInParty[targetToDealDmg].hp <= 0){
+                    event.membersInParty[targetToDealDmg].statuses = [];
                     event.membersInParty[targetToDealDmg].statuses.push("dead");
                     event.membersInParty[targetToDealDmg].hp = 0;
+                    event.membersInParty[targetToDealDmg].buffs = [];
                     abilityToString = abilityToString + targetToDealDmgName + " has died. :skull_crossbones: \n";
                 }
             }
@@ -1857,8 +1876,10 @@ function processAbility(abilityObject, event){
                                 event.enemies[targetToDealDmg].hp = event.enemies[targetToDealDmg].hp - damageToDeal;
                                 abilityToString = abilityToString + targetToDealDmgName + " took " + damageToDeal + " damage from " + ability + "\n";
                                 if (event.enemies[targetToDealDmg].hp <= 0){
+                                    event.enemies[targetToDealDmg].statuses = [];
                                     event.enemies[targetToDealDmg].statuses.push("dead")
                                     event.enemies[targetToDealDmg].hp = 0;
+                                    event.enemies[targetToDealDmg].buffs = [];
                                     abilityToString = abilityToString + targetToDealDmgName + " has died. :skull_crossbones: \n";
                                 }
                             }
@@ -1868,8 +1889,10 @@ function processAbility(abilityObject, event){
                                 event.membersInParty[targetToDealDmg].hp = event.membersInParty[targetToDealDmg].hp - damageToDeal;
                                 abilityToString = abilityToString + targetToDealDmgName + " took " + damageToDeal + " damage from " + ability + "\n";
                                 if (event.membersInParty[targetToDealDmg].hp <= 0){
+                                    event.membersInParty[targetToDealDmg].statuses = [];
                                     event.membersInParty[targetToDealDmg].statuses.push("dead");
                                     event.membersInParty[targetToDealDmg].hp = 0;
+                                    event.membersInParty[targetToDealDmg].buffs = [];
                                     abilityToString = abilityToString + targetToDealDmgName + " has died. :skull_crossbones: \n";
                                 }
                             }
@@ -1902,8 +1925,10 @@ function processAbility(abilityObject, event){
                                 event.membersInParty[targetToDealDmg].hp = event.membersInParty[targetToDealDmg].hp - damageToDeal;
                                 abilityToString = abilityToString + targetToDealDmgName + " took " + damageToDeal + " damage from " + ability + "\n";
                                 if (event.membersInParty[targetToDealDmg].hp <= 0){
+                                    event.membersInParty[targetToDealDmg].statuses = [];
                                     event.membersInParty[targetToDealDmg].statuses.push("dead")
                                     event.membersInParty[targetToDealDmg].hp = 0;
+                                    event.membersInParty[targetToDealDmg].buffs = [];
                                     abilityToString = abilityToString + targetToDealDmgName + " has died. :skull_crossbones: \n";
                                 }
                             }
@@ -1914,8 +1939,10 @@ function processAbility(abilityObject, event){
                                 event.enemies[targetToDealDmg].hp = event.enemies[targetToDealDmg].hp - damageToDeal;
                                 abilityToString = abilityToString + targetToDealDmgName + " took " + damageToDeal + " damage from " + ability + "\n";
                                 if (event.enemies[targetToDealDmg].hp <= 0){
+                                    event.enemies[targetToDealDmg].statuses = [];
                                     event.enemies[targetToDealDmg].statuses.push("dead");
                                     event.enemies[targetToDealDmg].hp = 0;
+                                    event.enemies[targetToDealDmg].buffs = [];
                                     abilityToString = abilityToString + targetToDealDmgName + " has died. :skull_crossbones: \n";
                                 }
                             }
@@ -1986,45 +2013,49 @@ function userStatsStringBuilder(userStats, name, isEnemy){
     var userString = "";
     if (isEnemy){
         userString = ":heart_decoration: " + (userStats.hp + userStats.statBuffs.hp) + "/" + (userStats.maxhp + userStats.statBuffs.maxhp)
-        userString = userString + " " + name + "" + "\n"
+        userString = userString + " **" + name + "**" + "\n"
     }else{
-        userString = ":green_heart:  " + (userStats.hp + userStats.statBuffs.hp) + "/" + (userStats.maxhp + userStats.statBuffs.maxhp)
-        userString = userString + " :shirt: " + (userStats.armor + userStats.statBuffs.armor)
-        userString = userString + " :raised_hands: " + (userStats.spirit + userStats.statBuffs.spirit)
-        userString = userString + " :dagger: " + (userStats.attackDmg + userStats.statBuffs.attackDmg)
-        userString = userString + " :comet: " + (userStats.magicDmg + userStats.statBuffs.magicDmg) + " **" + name + "**" + "\n"
+        userString = ":green_heart:  " + (userStats.hp + userStats.statBuffs.hp) + "/" + (userStats.maxhp + userStats.statBuffs.maxhp) + " - **" + name + "**" + "\n"
+        userString = userString + " 👕 " + (userStats.armor + userStats.statBuffs.armor)
+        userString = userString + " 🙌 " + (userStats.spirit + userStats.statBuffs.spirit)
+        userString = userString + " 🗡 " + (userStats.attackDmg + userStats.statBuffs.attackDmg)
+        userString = userString + " ☄️ " + (userStats.magicDmg + userStats.statBuffs.magicDmg) + "\n"
     }
     if (userStats.element){
         // TODO: show that they are of a certain element
     }
     if (!isEnemy){
-        userString = userString + "Abilities: " + userStats.abilities + "\n"
+        var abilitiesString = "";
+        for (var a in userStats.abilities){
+            abilitiesString = abilitiesString  + userStats.abilities[a] + ", "
+        }
+        userString = userString + "**Abilities:** " + abilitiesString + "\n"
     }
     var statusesString = "";
     for (var i in userStats.statuses){
         if (userStats.statuses[i].name){
-            statusesString = statusesString + userStats.statuses[i].name + ", "
+            statusesString = statusesString + userStats.statuses[i].emoji + " "
         }
         else if (userStats.statuses[i].dot && userStats.statuses[i].dot.name){
-            statusesString = statusesString + userStats.statuses[i].dot.name + ", "
+            statusesString = statusesString + userStats.statuses[i].dot.emoji + " "
         }
         else if (userStats.statuses[i].hot && userStats.statuses[i].hot.name){
-            statusesString = statusesString + userStats.statuses[i].hot.name + ", "
+            statusesString = statusesString + userStats.statuses[i].hot.emoji + " "
         }else if(userStats.statuses[i] == "dead"){
-            statusesString = statusesString + userStats.statuses[i] + ", "
+            statusesString = statusesString + "💀" + ", "
         }
     }
-    userString = userString + "Status: " + statusesString
+    userString = userString + "**Status:** " + statusesString
     var buffsString = "";
     for (var i in userStats.buffs){
         if (userStats.buffs[i].name){
-            buffsString = buffsString + userStats.buffs[i].name + ", ";
+            buffsString = buffsString + userStats.buffs[i].emoji + " ";
         }
         else if(userStats.buffs[i].hot && userStats.buffs[i].hot.name){
-            buffsString = buffsString + userStats.buffs[i].hot.name + ", ";
+            buffsString = buffsString + userStats.buffs[i].hot.emoji + " ";
         }
     }
-    userString = userString + " Buffs: " + buffsString
+    userString = userString + " **Buffs:** " + buffsString
 
     return userString;
 }
@@ -2295,6 +2326,7 @@ var rpgAbilities = {
         hot: {
             name: "orchata sip",
             heal: 4,
+            emoji: "🥛",
             healingOnHotApply: false,
             turnsToExpire: 3,
             healingOnDotExpire: false,
@@ -2304,6 +2336,7 @@ var rpgAbilities = {
     tacowall: {
         buff: {
             name: "taco wall",
+            emoji : "🏛",
             affects: ["armor"],
             multiplier: 1.25
         }
@@ -2311,6 +2344,7 @@ var rpgAbilities = {
     barrier: {
         buff: {
             name: "barrier",
+            emoji: "🚧 ",
             affects: ["spirit"],
             additive: 30
         }
@@ -2322,6 +2356,7 @@ var rpgAbilities = {
             name: "burning",
             dmg: 5,
             type: "fire",
+            emoji: "🔥",
             damageOnDotApply: false,
             turnsToExpire: 5,
             damageOnDotExpire: false,
@@ -2334,6 +2369,7 @@ var rpgAbilities = {
         dot: {
             name: "food poisoning",
             dmg: 8,
+            emoji : "🤢",
             type: "poison",
             damageOnDotApply: false,
             turnsToExpire: 3,
@@ -2361,8 +2397,8 @@ var rpgAbilities = {
         buff: {
             selfbuff: true,
             stacksOfWarmUp: 1,
-            name: "warm up", //// FIX THIS -- IT IS BEING ADDED TO THE TARGET AND NOT MYSELF also WHEN SOMEONE IS DEAD DO NOT DAMAGE THEM WITH AOE 
-            // ATTACKS SHOULD NOT DO ANYTHING TO DEAD TARGETS
+            emoji: "🤾",
+            name: "warm up",
             maxStacks: 5,
             atMaxStacksDealDamage: 200
         }
@@ -2371,14 +2407,16 @@ var rpgAbilities = {
         name: "drain",
         special: {
             name: "drain",
-            dmg: 20,
-            heal: 15,
+            dmg: 40,
+            heal: 20,
         }
     },
     haste: {
+        passive: true,
         name: "name",
         buff: {
-            name: "haste"
+            name: "haste",
+            emoji: "💨"
         }
     },
 
@@ -2389,6 +2427,7 @@ var rpgAbilities = {
     empower: {
         buff: {
             name: "empower",
+            emoji: "💪🏼",
             affects: ["attackDmg", "magicDmg"],
             multiplier: 2
         }
@@ -2406,6 +2445,7 @@ var rpgAbilities = {
     freeze: {
         status: {
             name: "frozen",
+            emoji: "❄️",
             affects: ["armor"],
             multiplier: 0.7
         }
@@ -2413,6 +2453,7 @@ var rpgAbilities = {
     cripple: {
         status: {
             name: "crippled",
+            emoji: "🤕",
             affects: ["attackDmg"],
             multiplier: 0.7
         }
@@ -2420,6 +2461,7 @@ var rpgAbilities = {
     weaken: {
         status: {
             name: "weakened",
+            emoji: "😵 ",
             affects: ["magicDmg"],
             multiplier: 0.7
         }
@@ -2432,6 +2474,7 @@ var rpgAbilities = {
     shield: {
         buff: {
             name: "shield",
+            emoji: "🛡️",
             affects: ["spirit"],
             multiplier: 1.5
         }
@@ -2523,6 +2566,7 @@ var enemiesToEncounter = {
             buffs: [
                 {
                     name: "frenzy",
+                    emoji: "😡",
                     onTurnEnd: {
                         attackDmgPlus : 15,
                         everyNTurns: 2,
