@@ -1651,6 +1651,18 @@ module.exports.itemhelpCommand = function(message){
     message.channel.send(commandsList);
 }
 
+module.exports.rpghelpCommand = function(message){
+    var commandsList = "```css\nList of commands \n ____________ \n"
+    var rpg =   " -rpgstart [user] [user] [user] start an rpg event with the mentioned users [ 2-4 mentions required]\n"
+    var rules = " abilities and stats come from the items you are wearing and level\n"
+    var stats = " 👕 = armor (reduces damage from attacks) \n 🙌 = spirit (reduces damage from magic attacks) \n 🗡 = attack dmg (increases damage from attacks) \n ☄️ = magic dmg (increases damage from magic attacks) \n"
+    var buffsStatuses = " buffs = helpful abilities, statuses = harmful abilities \n"
+    var death = " 💀 = dead, can no longer use abilities unless revived \n"
+    var allMustUseAbilities = " all users must use one ability per event turn```"
+    commandsList = commandsList + rpg + rules + stats + buffsStatuses + death + allMustUseAbilities 
+    message.channel.send(commandsList);
+}
+
 function getProfileForAchievement(discordUserId, message, profileResponse){
     if (!profileResponse){
         profileDB.getUserProfileData(discordUserId, function(err, profileResponse){
@@ -1744,6 +1756,7 @@ function raresEmbedBuilder(message, itemsMap, allItems, long){
                 || allItems[key].itemraritycategory == "myth"){
                 console.log(key + " " + allItems[key].itemname)
                 var emoji = "";
+                
                 if (allItems[key].itemraritycategory === "artifact"){
                     emoji = ":diamond_shape_with_a_dot_inside: "
                 }
@@ -1765,10 +1778,15 @@ function raresEmbedBuilder(message, itemsMap, allItems, long){
                 else if (allItems[key].itemraritycategory === "rare++"){
                     emoji = ":diamonds: "
                 }
+                
                 if (long){
                     embed.addField(emoji + " " + allItems[key].itemname, itemsMap[key] + " - " + allItems[key].itemslot + " - " + allItems[key].itemstatistics, true)
                 }else{
-                    inventoryString = emoji + "**"+allItems[key].itemname + "** - " +  itemsMap[key] + " - " + allItems[key].itemslot + "\n" + inventoryString;
+                    if (inventoryString.length > 980){
+                        break
+                    }else{
+                        inventoryString = emoji + "**"+allItems[key].itemname + "** - " +  itemsMap[key] + " - " + allItems[key].itemslot + "\n" + inventoryString;                        
+                    }
                 }
             }
         }

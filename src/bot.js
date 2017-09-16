@@ -218,7 +218,7 @@ client.on('message', function(message){
             else if (commandIs("party", message)){
                 commands.createTableCommand(message, mainChannel);
             }
-            else if (commandIs("rpg", message)){
+            else if (commandIs("rpgstart", message)){
                 commands.rpgBattleCommand(message);
             }
             else if (commandIs("ready", message)){
@@ -229,6 +229,9 @@ client.on('message', function(message){
             }
             else if (commandIs("cast", message)){
                 commands.castCommand(message, args);
+            }
+            else if (commandIs("rpghelp", message)){
+                commands.rpghelpCommand(message);
             }
             /*
             else if (commandIs("game", message)){

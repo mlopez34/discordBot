@@ -135,6 +135,22 @@ module.exports.updateLastScavengeTime = function(userId, cb) {
     });
 }
 
+module.exports.updateLastRpgTime = function(userId, cb) {
+    var query = 'update ' + config.profileTable + ' set lastrpgtime=$2 where discordid=$1'
+    var lastRpg = new Date();
+    //console.log("new last thank: " + lastThank);
+    db.none(query, [userId, lastRpg])
+    .then(function () {
+    cb(null, {
+        status: 'success',
+        message: 'updated lastrpgtime'
+        });
+    })
+    .catch(function (err) {
+        cb(err);
+    });
+}
+
 module.exports.updateUserTacosWelcome = function(userId, tacos, cb) {
     var query = 'update ' + config.profileTable + ' set tacos=tacos+$1, welcomed=$3 where discordid=$2'
     var welcomed = true;
@@ -734,7 +750,7 @@ module.exports.updateItemStatus = function(itemId, status, cb){
 
 // get user's inventory
 module.exports.getUserItems = function(discordId, cb) {
-  var query = 'select * from ' + config.inventoryTable + ' where discordId = $1'
+  var query = 'select * from ' + config.inventoryTable + ' where discordId = $1 AND status is null '
   console.log(query);
   db.query(query, [discordId])
     .then(function (data) {
