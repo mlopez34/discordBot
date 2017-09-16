@@ -23,7 +23,7 @@ var BASE_TACO_PREPARE = 10;
 var BASE_TACO_COOK = 2;
 var PICKAXE_COST = 35;
 var IMPROVED_PICKAXE_COST = 300;
-var MASTER_PICKAXE_COST = 10000;
+var MASTER_PICKAXE_COST = 75000;
 var PASTA_COST = 250
 var SCAVENGE_TACO_FIND_CHANCE_HIGHER = 94
 var SCAVENGE_TACO_FIND_CHANCE = 75;
@@ -43,7 +43,8 @@ var SCAVENGE_COOLDOWN_HOURS = 1;
 var RAFFLE_ENTRY_COST = 5;
 var RAFFLE_USER_SIZE = 7
 // make recipe be available at lvl 2 reputation
-var ARTIFACT_RECIPE_COST = 1000;
+var ARTIFACT_RECIPE_COST = 3500;
+var ARTIFACT_RECIPE_ID = 69;
 var TACO_PARTY_TIME_TO_LIVE = 300000
 
 
@@ -1457,20 +1458,52 @@ module.exports.shopCommand = function(message){
 module.exports.buyRecipeCommand = function(message){
     var discordUserId = message.author.id;
 
-    profileDB.getUserProfileData( discordUserId, function(err, buyPetResponse) {
+    profileDB.getUserProfileData( discordUserId, function(err, buyRecipeResponse) {
         if(err){
             // user doesnt exist
             console.log(err);
         }
         else{
-            var userReputation = buyPetResponse.data.repstatus;
+            var userReputation = buyRecipeResponse.data.repstatus;
             var userRepLevel = REPUTATIONS[userReputation.toLowerCase()] ? REPUTATIONS[userReputation.toLowerCase()].level : 1;
             if (userRepLevel >= REWARDS["ArtifactRecipe"].repLevel){
                 // able to shop, spend the tacos and then create the item and store it in the user's inventory
-                message.channel.send("You cannot afford this item.")
+                if (buyRecipeResponse.data.tacos >= ARTIFACT_RECIPE_COST){
+                    // check that user has enough tacos, if they do, create the item and add it to user
+                    profileDB.getItemData(function(err, getItemResponse){
+                        if (err){
+                            console.log(err);
+                        }
+                        else{
+                            var artifactRecipeItem = [];
+                            for (var item in getItemResponse.data){
+                                if (getItemResponse.data[item].id == ARTIFACT_RECIPE_ID){
+                                    artifactRecipeItem.push(getItemResponse.data[item])
+                                }
+                            }
+                            // add the item to user's inventory
+                            // remove tacos from user\
+                            if (artifactRecipeItem && artifactRecipeItem.length > 0){
+                                addToUserInventory(discordUserId, artifactRecipeItem);
+                                profileDB.updateUserTacos(discordUserId, ARTIFACT_RECIPE_COST * -1, function(updateLSErr, updateLSres){
+                                    if(updateLSErr){
+                                        console.log(updateLSErr);
+                                    }
+                                    else{
+                                        message.channel.send(message.author + " successfully purchased an artifact recipe :rosette:!")
+                                    }
+                                })
+                            }
+                        }
+                    })
+                }
+                else{
+                    message.channel.send("You cannot afford this item.")
+                }
             }
             else{
                 // unavailable
+                message.channel.send("You cannot afford this item.")
             }
         }
     })
@@ -1756,6 +1789,7 @@ function raresEmbedBuilder(message, itemsMap, allItems, long){
                 || allItems[key].itemraritycategory == "artifact"
                 || allItems[key].itemraritycategory == "myth"){
                 console.log(key + " " + allItems[key].itemname)
+                
                 var emoji = "";
                 
                 if (allItems[key].itemraritycategory === "artifact"){
