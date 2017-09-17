@@ -28,11 +28,11 @@ module.exports.rpgInitialize = function(message){
         if (usersInRPGEvents["rpg-"+team[member].id]){
             validTeam = false;
         }
-        /*
+        
         if (team[member].bot){
             validTeam = false;
         }
-        */
+        
     }
 
     if (team.length >= 2 && team.length <= 4 && validTeam){
@@ -521,7 +521,7 @@ module.exports.useRpgAbility = function(message, args){
                             membersAlive++;
                         }
                     }
-                    if (membersAlive == 2 ){//activeRPGEvents["rpg-"+idOfEventUserIsIn].memberTurnAbilities.length){
+                    if (membersAlive == activeRPGEvents["rpg-"+idOfEventUserIsIn].memberTurnAbilities.length){
                         enemiesUseAbilities(activeRPGEvents["rpg-"+idOfEventUserIsIn]);
                         processRpgTurn(message, activeRPGEvents["rpg-"+idOfEventUserIsIn]);
                     }
