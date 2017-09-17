@@ -1471,7 +1471,7 @@ function processAbility(abilityObject, event){
                 abilityToString = abilityToString + caster +  " dealt " + damageToDeal + " damage to all enemies with " + ability + "\n";                
                 for (var targetToDealDmg in event.enemies){
                     var targetToDealDmgName = event.enemies[targetToDealDmg].name
-                    if (event.enemies[targetToDealDmg].statuses.indexOf("dead") != -1){
+                    if (event.enemies[targetToDealDmg].statuses.indexOf("dead") == -1){
                         // target is not dead, damage them
                         event.enemies[targetToDealDmg].hp = event.enemies[targetToDealDmg].hp - damageToDeal;
                         if (event.enemies[targetToDealDmg].hp <= 0){
@@ -1489,12 +1489,14 @@ function processAbility(abilityObject, event){
                 abilityToString = abilityToString + caster +  " dealt " + damageToDeal + " damage to the group with " + ability + "\n";                
                 for (var targetToDealDmg in event.membersInParty){
                     var targetToDealDmgName = event.membersInParty[targetToDealDmg].name
-                    event.membersInParty[targetToDealDmg].hp = event.membersInParty[targetToDealDmg].hp - damageToDeal;
-                    if (event.membersInParty[targetToDealDmg].hp <= 0){
-                        event.membersInParty[targetToDealDmg].statuses.push("dead")
-                        event.membersInParty[targetToDealDmg].hp = 0;
-                        event.membersInParty[targetToDealDmg].buffs = [];
-                        abilityToString = abilityToString + targetToDealDmgName + " has died. :skull_crossbones: \n";
+                    if (event.membersInParty[targetToDealDmg].statuses.indexOf("dead") == -1){
+                        event.membersInParty[targetToDealDmg].hp = event.membersInParty[targetToDealDmg].hp - damageToDeal;
+                        if (event.membersInParty[targetToDealDmg].hp <= 0){
+                            event.membersInParty[targetToDealDmg].statuses.push("dead")
+                            event.membersInParty[targetToDealDmg].hp = 0;
+                            event.membersInParty[targetToDealDmg].buffs = [];
+                            abilityToString = abilityToString + targetToDealDmgName + " has died. :skull_crossbones: \n";
+                        }
                     }
                 }
             }
