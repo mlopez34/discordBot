@@ -1349,14 +1349,14 @@ function calculateHealingDone(event, caster, target, rpgAbility){
             // healing uses 50% of magic Dmg
             if (rpgAbility.turnsToExpire){
                 healingToDo = healingToDo + (userStats.magicDmg + userStats.statBuffs.magicDmg);
-                baseHealing = baseHealing + Math.floor(( healingToDo / rpgAbility.turnsToExpire ) * 0.5)
+                baseHealing = baseHealing + Math.floor(( healingToDo / rpgAbility.turnsToExpire ) * 0.8)
             }else{
                 if (rpgAbility.areawide){
                     healingToDo = healingToDo + (userStats.magicDmg + userStats.statBuffs.magicDmg);
-                    baseHealing = baseHealing + Math.floor(healingToDo * 0.3)
+                    baseHealing = baseHealing + Math.floor(healingToDo * 0.6)
                 }else{
                     healingToDo = healingToDo + (userStats.magicDmg + userStats.statBuffs.magicDmg);
-                    baseHealing = baseHealing + Math.floor(healingToDo * 0.6)
+                    baseHealing = baseHealing + Math.floor(healingToDo * 0.8)
                 }
             }
         }else{
@@ -1369,14 +1369,14 @@ function calculateHealingDone(event, caster, target, rpgAbility){
                 // healing uses 50% of magic Dmg
                 if (rpgAbility.turnsToExpire){
                     healingToDo = healingToDo + (userStats.magicDmg + userStats.statBuffs.magicDmg);
-                    baseHealing = baseHealing + Math.floor(( healingToDo / rpgAbility.turnsToExpire ) * 0.5)
+                    baseHealing = baseHealing + Math.floor(( healingToDo / rpgAbility.turnsToExpire ) * 0.8)
                 }else{
                     if (rpgAbility.areawide){
                         healingToDo = healingToDo + (userStats.magicDmg + userStats.statBuffs.magicDmg);
-                        baseHealing = baseHealing + Math.floor(healingToDo * 0.3)
+                        baseHealing = baseHealing + Math.floor(healingToDo * 0.6)
                     }else{
                         healingToDo = healingToDo + (userStats.magicDmg + userStats.statBuffs.magicDmg);
-                        baseHealing = baseHealing + Math.floor(healingToDo * 0.6)
+                        baseHealing = baseHealing + Math.floor(healingToDo * 0.8)
                     }
                 }
             }
@@ -1393,14 +1393,14 @@ function calculateHealingDone(event, caster, target, rpgAbility){
             // healing uses 50% of magic Dmg
             if (rpgAbility.turnsToExpire){
                 healingToDo = healingToDo + (userStats.magicDmg + userStats.statBuffs.magicDmg);
-                baseHealing = baseHealing + Math.floor(( healingToDo / rpgAbility.turnsToExpire ) * 0.5)
+                baseHealing = baseHealing + Math.floor(( healingToDo / rpgAbility.turnsToExpire ) * 0.8)
             }else{
                 if (rpgAbility.areawide){
                     healingToDo = healingToDo + (userStats.magicDmg + userStats.statBuffs.magicDmg);
-                    baseHealing = baseHealing + Math.floor(healingToDo * 0.3)
+                    baseHealing = baseHealing + Math.floor(healingToDo * 0.6)
                 }else{
                     healingToDo = healingToDo + (userStats.magicDmg + userStats.statBuffs.magicDmg);
-                    baseHealing = baseHealing + Math.floor(healingToDo * 0.6)
+                    baseHealing = baseHealing + Math.floor(healingToDo * 0.8)
                 }
             }
         }else{
@@ -1411,14 +1411,14 @@ function calculateHealingDone(event, caster, target, rpgAbility){
                 // healing uses 50% of magic Dmg
                 if (rpgAbility.turnsToExpire){
                     healingToDo = healingToDo + (userStats.magicDmg + userStats.statBuffs.magicDmg);
-                    baseHealing = baseHealing + Math.floor(( healingToDo / rpgAbility.turnsToExpire ) * 0.5)
+                    baseHealing = baseHealing + Math.floor(( healingToDo / rpgAbility.turnsToExpire ) * 0.8)
                 }else{
                     if (rpgAbility.areawide){
                         healingToDo = healingToDo + (userStats.magicDmg + userStats.statBuffs.magicDmg);
-                        baseHealing = baseHealing + Math.floor(healingToDo * 0.3)
+                        baseHealing = baseHealing + Math.floor(healingToDo * 0.6)
                     }else{
                         healingToDo = healingToDo + (userStats.magicDmg + userStats.statBuffs.magicDmg);
-                        baseHealing = baseHealing + Math.floor(healingToDo * 0.6)
+                        baseHealing = baseHealing + Math.floor(healingToDo * 0.8)
                     }
                 }
             }
@@ -2625,7 +2625,7 @@ var enemiesToEncounter = {
             name: "Taco Bandit",
             abilities: ["attack", "attack", "rockthrow", "rockthrow", "orchatasip"],
             buffs: [],
-            hp: 450,
+            hp: 550,
             attackDmg: 120,
             magicDmg: 90,
             armor: 55,
@@ -2647,7 +2647,7 @@ var enemiesToEncounter = {
             name: "Slots Gambler",
             abilities: ["attack", "attack", "elixir", "shock", "shock"],
             buffs: [],
-            hp: 475,
+            hp: 575,
             attackDmg: 110,
             magicDmg: 110,
             armor: 30,
@@ -2658,7 +2658,7 @@ var enemiesToEncounter = {
     hard: [
         {
             name: "Football Player",
-            abilities: ["attack", "attack", "barrier", "shock", "shock", "rockthrow", "rockthrow", "bandaid"],
+            abilities: ["attack", "attack", "barrier", "shock", "shock", "rockthrow", "rockthrow", "empower"],
             buffs: [
                 {
                     name: "frenzy",
@@ -2700,7 +2700,7 @@ var enemiesToEncounter = {
         },
         {
             name: "Funny Politician",
-            abilities: ["attack" , "attack" , "revive", "foodpoisoning", "foodpoisoning", "shoot", "shoot","freeze"],
+            abilities: ["attack" , "attack" , "revive", "foodpoisoning", "shoot", "shoot","freeze"],
             buffs: [
                 {
                     name: "frenzy",
@@ -2724,9 +2724,19 @@ var enemiesToEncounter = {
         {
             name: "Vampire",
             abilities: [
-               "attack", "attack", "rockthrow", "rockthrow", "shock", "shock", "cripple", "foodpoisoning", "foodpoisoning"
+               "attack", "attack", "rockthrow", "rockthrow", "shock", "shock", "barrier"
             ],
-            buffs: [],
+            buffs: [
+                {
+                    name: "frenzy",
+                    emoji: "😡",
+                    onTurnEnd: {
+                        attackDmgPlus : 30,
+                        everyNTurns: 2,
+                        startTurn: 2
+                    }
+                }
+            ],
             hp: 2000,
             attackDmg: 200,
             magicDmg: 200,
@@ -2737,9 +2747,19 @@ var enemiesToEncounter = {
         {
             name: "Escaped Robot",
             abilities: [
-                "attack", "attack", "foodpoisoning", "foodpoisoning", "iceshards", "iceshards", "cripple"
+                "attack", "attack", "drain", "drain", "iceshards", "iceshards", "shield"
             ],
-            buffs: [],
+            buffs: [
+                {
+                    name: "frenzy",
+                    emoji: "😡",
+                    onTurnEnd: {
+                        attackDmgPlus : 30,
+                        everyNTurns: 2,
+                        startTurn: 2
+                    }
+                }
+            ],
             hp: 2500,
             attackDmg: 250,
             magicDmg: 160,
@@ -2750,11 +2770,21 @@ var enemiesToEncounter = {
         {
             name: "Desperado",
             abilities: [
-                "attack", "attack", "foodpoisoning", "foodpoisoning", "shock", "shock", "weaken"
+                "attack", "attack", "shoot", "shoot", "shock", "shock", "empower"
             ],
-            buffs: [],
+            buffs: [
+                {
+                    name: "frenzy",
+                    emoji: "😡",
+                    onTurnEnd: {
+                        attackDmgPlus : 30,
+                        everyNTurns: 2,
+                        startTurn: 2
+                    }
+                }
+            ],
             hp: 1500,
-            attackDmg: 1700,
+            attackDmg: 170,
             magicDmg: 250,
             armor: 180,
             spirit: 120,
