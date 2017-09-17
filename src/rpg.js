@@ -276,7 +276,7 @@ module.exports.rpgReady = function(message, itemsAvailable){
                                         membersInParty["rpg-" + partyMember.id] = {
                                             id: partyMember.id,
                                             name: partyMember.username,
-                                            hp: 1000 + (20 *  partyMemberStats.level ) + partyMemberHpPlus,
+                                            hp: 100 + (20 *  partyMemberStats.level ) + partyMemberHpPlus,
                                             attackDmg: 10 + (6 * partyMemberStats.level) + partyMemberAttackDmgPlus,
                                             magicDmg:  10 + (6 * partyMemberStats.level) + partyMemberMagicDmgPlus,
                                             armor: 5 + (3 * partyMemberStats.level) + partyMemberArmorPlus,
