@@ -1,5 +1,6 @@
 
 var achiev = require("./achievements.js");
+var rpg = require("./rpg.js")
 var profileDB = require("./profileDB.js");
 var stats = require("./statistics.js");
 const Discord = require("discord.js");
@@ -22,7 +23,7 @@ var BASE_TACO_PREPARE = 10;
 var BASE_TACO_COOK = 2;
 var PICKAXE_COST = 35;
 var IMPROVED_PICKAXE_COST = 300;
-var MASTER_PICKAXE_COST = 10000;
+var MASTER_PICKAXE_COST = 75000;
 var PASTA_COST = 250
 var SCAVENGE_TACO_FIND_CHANCE_HIGHER = 94
 var SCAVENGE_TACO_FIND_CHANCE = 75;
@@ -42,7 +43,8 @@ var SCAVENGE_COOLDOWN_HOURS = 1;
 var RAFFLE_ENTRY_COST = 5;
 var RAFFLE_USER_SIZE = 7
 // make recipe be available at lvl 2 reputation
-var ARTIFACT_RECIPE_COST = 1000;
+var ARTIFACT_RECIPE_COST = 3500;
+var ARTIFACT_RECIPE_ID = 69;
 var TACO_PARTY_TIME_TO_LIVE = 300000
 
 
@@ -1456,20 +1458,52 @@ module.exports.shopCommand = function(message){
 module.exports.buyRecipeCommand = function(message){
     var discordUserId = message.author.id;
 
-    profileDB.getUserProfileData( discordUserId, function(err, buyPetResponse) {
+    profileDB.getUserProfileData( discordUserId, function(err, buyRecipeResponse) {
         if(err){
             // user doesnt exist
             console.log(err);
         }
         else{
-            var userReputation = buyPetResponse.data.repstatus;
+            var userReputation = buyRecipeResponse.data.repstatus;
             var userRepLevel = REPUTATIONS[userReputation.toLowerCase()] ? REPUTATIONS[userReputation.toLowerCase()].level : 1;
             if (userRepLevel >= REWARDS["ArtifactRecipe"].repLevel){
                 // able to shop, spend the tacos and then create the item and store it in the user's inventory
-                message.channel.send("You cannot afford this item.")
+                if (buyRecipeResponse.data.tacos >= ARTIFACT_RECIPE_COST){
+                    // check that user has enough tacos, if they do, create the item and add it to user
+                    profileDB.getItemData(function(err, getItemResponse){
+                        if (err){
+                            console.log(err);
+                        }
+                        else{
+                            var artifactRecipeItem = [];
+                            for (var item in getItemResponse.data){
+                                if (getItemResponse.data[item].id == ARTIFACT_RECIPE_ID){
+                                    artifactRecipeItem.push(getItemResponse.data[item])
+                                }
+                            }
+                            // add the item to user's inventory
+                            // remove tacos from user\
+                            if (artifactRecipeItem && artifactRecipeItem.length > 0){
+                                addToUserInventory(discordUserId, artifactRecipeItem);
+                                profileDB.updateUserTacos(discordUserId, ARTIFACT_RECIPE_COST * -1, function(updateLSErr, updateLSres){
+                                    if(updateLSErr){
+                                        console.log(updateLSErr);
+                                    }
+                                    else{
+                                        message.channel.send(message.author + " successfully purchased an artifact recipe :rosette:!")
+                                    }
+                                })
+                            }
+                        }
+                    })
+                }
+                else{
+                    message.channel.send("You cannot afford this item.")
+                }
             }
             else{
                 // unavailable
+                message.channel.send("You cannot afford this item.")
             }
         }
     })
@@ -1650,6 +1684,19 @@ module.exports.itemhelpCommand = function(message){
     message.channel.send(commandsList);
 }
 
+module.exports.rpghelpCommand = function(message){
+    var commandsList = "```css\nList of commands \n ____________ \n"
+    var rpg =   " -rpgstart [user] [user] [user] start an rpg event with the mentioned users [ 2-4 mentions required]\n"
+    var cast = " -cast [ability] [target] - eg: -cast tacoheal [user] OR -cast attack 2 OR -cast iceshards\n"
+    var rules = " abilities and stats come from the items you are wearing and level\n"
+    var stats = " 👕 = armor (reduces damage from attacks) \n 🙌 = spirit (reduces damage from magic attacks) \n 🗡 = attack dmg (increases damage from attacks) \n ☄️ = magic dmg (increases damage from magic attacks) \n"
+    var buffsStatuses = " buffs = helpful abilities, statuses = harmful abilities \n"
+    var death = " 💀 = dead, can no longer use abilities unless revived \n"
+    var allMustUseAbilities = " all users must use one ability per event turn```"
+    commandsList = commandsList + rpg + cast + rules + stats + buffsStatuses + death + allMustUseAbilities 
+    message.channel.send(commandsList);
+}
+
 function getProfileForAchievement(discordUserId, message, profileResponse){
     if (!profileResponse){
         profileDB.getUserProfileData(discordUserId, function(err, profileResponse){
@@ -1742,7 +1789,9 @@ function raresEmbedBuilder(message, itemsMap, allItems, long){
                 || allItems[key].itemraritycategory == "artifact"
                 || allItems[key].itemraritycategory == "myth"){
                 console.log(key + " " + allItems[key].itemname)
+                
                 var emoji = "";
+                
                 if (allItems[key].itemraritycategory === "artifact"){
                     emoji = ":diamond_shape_with_a_dot_inside: "
                 }
@@ -1764,10 +1813,15 @@ function raresEmbedBuilder(message, itemsMap, allItems, long){
                 else if (allItems[key].itemraritycategory === "rare++"){
                     emoji = ":diamonds: "
                 }
+                
                 if (long){
                     embed.addField(emoji + " " + allItems[key].itemname, itemsMap[key] + " - " + allItems[key].itemslot + " - " + allItems[key].itemstatistics, true)
                 }else{
-                    inventoryString = emoji + "**"+allItems[key].itemname + "** - " +  itemsMap[key] + " - " + allItems[key].itemslot + "\n" + inventoryString;
+                    if (inventoryString.length > 980){
+                        break
+                    }else{
+                        inventoryString = emoji + "**"+allItems[key].itemname + "** - " +  itemsMap[key] + " - " + allItems[key].itemslot + "\n" + inventoryString;                        
+                    }
                 }
             }
         }
@@ -4697,105 +4751,30 @@ function tacoPartyReactRewards(message, user, emoji, reward){
         })
     }
 }
-/*
-var activeRPGEvents = {}
-var usersInRPGEvents = {};
 
 module.exports.rpgBattleCommand = function(message){
-    // create an embed saying that b is about to happen, for users MAX of 5 users and they must all say -ready to start costs 5 tacos per person
-    var discordUserId = message.author.id;
-    // 
-    var users  = message.mentions.users
-
-    var team = [];
-
-    team.push(message.author);
-
-    users.forEach(function(user){
-        if (team.length < 5){
-            team.push(user);
-        }
-    })
-
-    if (team.length >= 2 && team.length <= 5){
-        // send an embed that the users are needed for the RPG event to say -ready or -notready
-        // if the user says -ready, they get added to activeRPGEvents that they were invited to
-        const embed = new Discord.RichEmbed()
-        .setAuthor("Test Event initiated by " + message.author.username + "!!")
-        .setThumbnail("https://media.giphy.com/media/mIZ9rPeMKefm0/giphy.gif")
-        .setColor(0xF2E93E)
-        .addField('Test Event ', "when ready type -ready, if skipping type -skip" )
-    
-        message.channel.send({embed})
-        .then(function (sentMessage) {
-            // create the RPG group and use the message id
-            var membersOfParty = []
-
-            team.forEach(function(member){
-                usersInRPGEvents[member.id] = sentMessage.id;
-                membersOfParty.push(member);
-            })
-            // TODO : MAKE THE IDS OF THE MAPS BE STRINGS AND NOT INTEGERS
-            activeRPGEvents[sentMessage.id] = membersOfParty;
-        })
-    }
-    else{
-        message.channel.send("not enough members in your party for this event")
-    }
+    rpg.rpgInitialize(message);
 }
 
 module.exports.rpgReadyCommand = function(message){
-    // create an embed saying that b is about to happen, for users MAX of 5 users and they must all say -ready to start costs 5 tacos per person
-    var discordUserId = message.author.id;
-
-    if (usersInRPGEvents[discordUserId]){
-        message.channel.send( message.author + " is ready");
-    }
-    else{
-        message.channel.send(message.author + " you are not in an event");
-    }
+    var itemsMapbyId = {};
+    profileDB.getItemData(function(error, allItemsResponse){
+        if (error){
+            console.log(error);
+        }
+        else{
+            for (var index in allItemsResponse.data){
+                itemsMapbyId[allItemsResponse.data[index].id] = allItemsResponse.data[index];
+            }
+            rpg.rpgReady(message, itemsMapbyId);
+        }
+    });
 }
 
 module.exports.rpgSkipCommand = function(message){
-    // create an embed saying that b is about to happen, for users MAX of 5 users and they must all say -ready to start costs 5 tacos per person
-    var discordUserId = message.author.id;
-
-    if (usersInRPGEvents[discordUserId]){
-        message.channel.send( message.author + " is ready");
-    }
-    else{
-        message.channel.send(message.author + " you are not in an event");
-    }
+    rpg.rpgSkip(message);
 }
-*/
 
-// normal attack
-    // abilities based on items worn
-    /* (active)
-        heal (heal hp)
-        bandaid (cure effects)
-        tac wall (protect phys)
-        barrier (protect magical)
-        flame blst (fire)
-        food psning (poison)
-        shards of ice (ice)
-        shock (lightning)
-        rock throw (earth)
-        drain (regular)
-        (passive)
-        haste (goes first always)
-    */
-    // able to scvn?
-    // random ult ab from the 3 items
-    /*
-        revive
-        empower (deal 2x more damage)
-        dest shot
-        elixir (h everyone)
-        freeze (takes 2x more phys damage)
-        cripple (deals 1/2 physical damage)
-        weaken (deals 1/2 magical damage)
-        final fortune (take extra turn)
-        shield (reduce all damage taken by 50%)
-    */
-    // 
+module.exports.castCommand = function(message, args){
+    rpg.useRpgAbility(message, args);
+}

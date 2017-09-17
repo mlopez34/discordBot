@@ -215,9 +215,23 @@ client.on('message', function(message){
             else if (commandIs("raffle", message)){
                 commands.enterRaffleCommand(message);
             }
-            
             else if (commandIs("party", message)){
                 commands.createTableCommand(message, mainChannel);
+            }
+            else if (commandIs("rpgstart", message)){
+                commands.rpgBattleCommand(message);
+            }
+            else if (commandIs("ready", message)){
+                commands.rpgReadyCommand(message);
+            }
+            else if (commandIs("skip", message)){
+                commands.rpgSkipCommand(message);
+            }
+            else if (commandIs("cast", message)){
+                commands.castCommand(message, args);
+            }
+            else if (commandIs("rpghelp", message)){
+                commands.rpghelpCommand(message);
             }
             /*
             else if (commandIs("game", message)){
