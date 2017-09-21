@@ -201,10 +201,10 @@ module.exports.useTerryCloth =  function(message, discordUserId, terryClothToUse
     }
 }
 
-module.exports.useSodaCan = function(message, discordUserId, sodaCanToUse, cb){
+module.exports.useSodaCan = function(message, discordUserId, sodaCansToUse, cb){
     // update reputation
     var REP_GAIN_PER_CAN = 1;
-    reputation.gainReputation(message, discordUserId, REP_GAIN_PER_CAN, function(error, response){
+    reputation.gainReputation(message, discordUserId, (REP_GAIN_PER_CAN * sodaCansToUse.length) , function(error, response){
         if (error){
             console.log(error);
             cb(error);
@@ -213,7 +213,7 @@ module.exports.useSodaCan = function(message, discordUserId, sodaCanToUse, cb){
             // gained rep successfully
             console.log(response);
             // use the item
-            profileDB.updateItemStatus(sodaCanToUse.id, "used", function(updateSodaCanStatusErr, updateSodaCanStatusRes){
+            profileDB.bulkUpdateItemStatus( sodaCansToUse, "used", function(updateSodaCanStatusErr, updateSodaCanStatusRes ){
                 if (updateSodaCanStatusErr){
                     console.log(updateSodaCanStatusErr);
                     cb(updateSodaCanStatusErr);
@@ -237,7 +237,7 @@ module.exports.useSoil = function(message, discordUserId, soilToUse, cb){
             }
             else{
                 var currentCropsSoiled = getProfileRes.data.soiledcrops;
-                var soiledCrops = 1;
+                var soiledCrops = soilToUse.length;
                 profileDB.updateUserSoiledCrops(discordUserId, soiledCrops, currentCropsSoiled, function(error, response){
                     if (error){
                         console.log(error);
@@ -246,7 +246,7 @@ module.exports.useSoil = function(message, discordUserId, soilToUse, cb){
                     else{
                         console.log(response);
                         // use the item
-                        profileDB.updateItemStatus(soilToUse.id, "used", function(updateSodaCanStatusErr, updateSodaCanStatusRes){
+                        profileDB.bulkUpdateItemStatus(soilToUse, "used", function(updateSodaCanStatusErr, updateSodaCanStatusRes){
                             if (updateSodaCanStatusErr){
                                 console.log(updateSodaCanStatusErr);
                                 cb(updateSodaCanStatusErr);
@@ -255,10 +255,10 @@ module.exports.useSoil = function(message, discordUserId, soilToUse, cb){
                                 console.log(updateSodaCanStatusRes);
                                 var cropsCount;
                                 if (currentCropsSoiled){
-                                    cropsCount = currentCropsSoiled + 1;
+                                    cropsCount = currentCropsSoiled + soiledCrops;
                                 }
                                 else{
-                                    cropsCount = 1;
+                                    cropsCount = soiledCrops;
                                 }
                                 cb(null, cropsCount)
                             }
