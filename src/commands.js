@@ -3062,7 +3062,10 @@ module.exports.useCommand = function(message, args){
     else if (args && args.length > 1 && args[1].toLowerCase() == "sodacan"){
         // recycle for an item only obtainable by recycling - reputation with Bender allows u to shop for
         // 50 - pet, 175 - 20% reduced price benders shop, 400 - 50 tacos (casserole, triple cooked tacos), 1000 (server title on profile, roll one of the rarest items)
-
+        var cansToUse = args[2] ? args[2] : 1;
+        if (typeof cansToUse == "string" && cansToUse.toLowerCase() == "all"){
+            cansToUse = 999999
+        }
         profileDB.getUserItems(discordUserId, function(error, inventoryResponse){
             if (error){
                 console.log(error);
@@ -3071,32 +3074,38 @@ module.exports.useCommand = function(message, args){
             else{
                 var itemsInInventoryCountMap = {};
                 // array of item objects for using sodacan
-                var sodaCanToUse;
+                var sodaCansToUse = [];
                 for (var item in inventoryResponse.data){
                     // check the rock hasnt been used
                     var validItem = useItem.itemValidate(inventoryResponse.data[item]);
+                    // TODO: check that the item is not being traded
                     if (!itemsInInventoryCountMap[inventoryResponse.data[item].itemid] && validItem){
                         // item hasnt been added to be counted, add it as 1
                         itemsInInventoryCountMap[inventoryResponse.data[item].itemid] = 1;
 
                         if (inventoryResponse.data[item].itemid == SODA_CAN_ITEM_ID){
                             // make this the soda can use
-                            sodaCanToUse = inventoryResponse.data[item];
+                            sodaCansToUse.push(inventoryResponse.data[item]);
                         }
                     }
                     else if (validItem){
                         itemsInInventoryCountMap[inventoryResponse.data[item].itemid] = itemsInInventoryCountMap[inventoryResponse.data[item].itemid] + 1;
-                        if (inventoryResponse.data[item].itemid == SODA_CAN_ITEM_ID && !sodaCanToUse){
+                        if (inventoryResponse.data[item].itemid == SODA_CAN_ITEM_ID 
+                            && sodaCansToUse
+                            && sodaCansToUse.length < cansToUse ){
                             // make this the soda can use
-                            sodaCanToUse = inventoryResponse.data[item];
+                            sodaCansToUse.push(inventoryResponse.data[item]);
                         }
                     }
                 }
+                if (cansToUse == 999999){
+                    cansToUse = itemsInInventoryCountMap[SODA_CAN_ITEM_ID] ? itemsInInventoryCountMap[SODA_CAN_ITEM_ID] : 999999
+                }
 
                 // use soda can
-                if (sodaCanToUse){
+                if (sodaCansToUse && sodaCansToUse.length == cansToUse){
                     // able to use soda can
-                    useItem.useSodaCan(message, discordUserId, sodaCanToUse, function(useError, useRes){
+                    useItem.useSodaCan(message, discordUserId, sodaCansToUse, function(useError, useRes){
                         if (useError){
                             console.log(useError);
                             message.channel.send(useError);
@@ -3104,15 +3113,18 @@ module.exports.useCommand = function(message, args){
                         else{
                             console.log(useRes);
                             var timeout = setTimeout (function(){ 
-                                experience.gainExperience(message, discordUserId, EXPERIENCE_GAINS.useCommonItem);
-                            }, 1000);
+                                experience.gainExperience(message, discordUserId, EXPERIENCE_GAINS.useCommonItem * cansToUse);
+                            }, 200);
                             
-                            message.channel.send(message.author + " recycled a soda can, you have gained `1` reputation with Bender.\n`" + message.author.username + "'s Current reputation " + useRes.repNumber + ", Status: " + useRes.repStatus + "`")
+                            message.channel.send(message.author + " recycled a soda can, you have gained `" + cansToUse + "` reputation with Bender.\n`" + message.author.username + "'s Current reputation " + useRes.repNumber + ", Status: " + useRes.repStatus + "`")
                         }
                     })
                 }
-                else{
+                else if (sodaCansToUse.length < cansToUse && sodaCansToUse.length == 0){
                     message.channel.send(message.author + " you do not have any soda cans to recycle..")
+                }
+                else if (sodaCansToUse.length < cansToUse){
+                    message.channel.send(message.author + " you do not have that many soda cans to recycle..")
                 }
             }
         })
@@ -3125,6 +3137,10 @@ module.exports.useCommand = function(message, args){
         // add it to user profile as soil to be used on next prepare
         // chance of soil giving extra tacos is 50%
         // add as extra tacos on user profile
+        var soilsCountToUse = args[2] ? args[2] : 1;
+        if (typeof soilsCountToUse == "string" && soilsCountToUse.toLowerCase() == "all"){
+            soilsCountToUse = 999999
+        }
 
         profileDB.getUserItems(discordUserId, function(error, inventoryResponse){
             if (error){
@@ -3134,7 +3150,7 @@ module.exports.useCommand = function(message, args){
             else{
                 var itemsInInventoryCountMap = {};
                 // array of item objects for using soil
-                var soilToUse;
+                var soilToUse = [];
                 for (var item in inventoryResponse.data){
                     // check the rock hasnt been used
                     var validItem = useItem.itemValidate(inventoryResponse.data[item]);
@@ -3144,20 +3160,26 @@ module.exports.useCommand = function(message, args){
 
                         if (inventoryResponse.data[item].itemid == SOIL_ITEM_ID){
                             // make this the soda can use
-                            soilToUse = inventoryResponse.data[item];
+                            soilToUse.push(inventoryResponse.data[item]);
                         }
                     }
                     else if (validItem){
                         itemsInInventoryCountMap[inventoryResponse.data[item].itemid] = itemsInInventoryCountMap[inventoryResponse.data[item].itemid] + 1;
-                        if (inventoryResponse.data[item].itemid == SOIL_ITEM_ID && !soilToUse){
+                        if (inventoryResponse.data[item].itemid == SOIL_ITEM_ID 
+                            && soilToUse
+                            && soilToUse.length < soilsCountToUse){
                             // make this the soda can use
-                            soilToUse = inventoryResponse.data[item];
+                            soilToUse.push(inventoryResponse.data[item]);
                         }
                     }
                 }
 
+                if (soilsCountToUse == 999999){
+                    soilsCountToUse = itemsInInventoryCountMap[SOIL_ITEM_ID] ? itemsInInventoryCountMap[SOIL_ITEM_ID] : 999999
+                }
+
                 // use soil
-                if (soilToUse){
+                if (soilToUse && soilToUse.length == soilsCountToUse){
                     // able to use soil
                     useItem.useSoil(message, discordUserId, soilToUse, function(useError, useRes){
                         if (useError){
@@ -3167,8 +3189,8 @@ module.exports.useCommand = function(message, args){
                         else{
                             console.log(useRes);
                             var timeout = setTimeout (function(){ 
-                                experience.gainExperience(message, discordUserId, EXPERIENCE_GAINS.useCommonItem);
-                                stats.statisticsManage(discordUserId, "soilcount", 1, function(staterr, statSuccess){
+                                experience.gainExperience( message, discordUserId, EXPERIENCE_GAINS.useCommonItem * soilsCountToUse );
+                                stats.statisticsManage(discordUserId, "soilcount", soilsCountToUse, function(staterr, statSuccess){
                                     if (staterr){
                                         console.log(staterr);
                                     }
@@ -3183,8 +3205,11 @@ module.exports.useCommand = function(message, args){
                         }
                     })
                 }
-                else{
+                else if (soilToUse.length < soilsCountToUse && soilToUse.length == 0){
                     message.channel.send(message.author + " you do not have any soil to use..")
+                }
+                else if (soilToUse.length < soilsCountToUse){
+                    message.channel.send(message.author + " you do not have that many soil to use..")
                 }
             }
         })

@@ -44,7 +44,7 @@ module.exports.gainReputation = function (message, discordUserId, reputationNumb
 }
 
 // check if user has obtained a new reputation status
-function reachedNewRepStatus(message, getProfileRes, discordId, reputationNumber, cb){
+function reachedNewRepStatus(message, getProfileRes, discordId, reputationGained, cb){
     // query for user's current reputation number
     var reputationNumber = getProfileRes.data.reputation;
     if (!reputationNumber){
@@ -52,34 +52,34 @@ function reachedNewRepStatus(message, getProfileRes, discordId, reputationNumber
     }
     var reputationStatus = getProfileRes.data.repstatus;
     // check the current status, and then check the next status number, and check if user rep is greater than that
-    if (!reputationStatus && reputationNumber + 1 >= REPUTATIONS.liked.repToGet){
+    if (!reputationStatus && reputationNumber + reputationGained >= REPUTATIONS.liked.repToGet){
         // reached liked
         updateReputationStatus(message, discordId, "Liked");
-        cb(null, {repNumber: reputationNumber + 1, repStatus: "Liked" })
+        cb(null, {repNumber: reputationNumber + reputationGained, repStatus: "Liked" })
     }
-    else if(reputationNumber + 1 >= REPUTATIONS.glorified.repToGet && reputationStatus.toLowerCase() != "glorified"){
+    else if(reputationNumber + reputationGained >= REPUTATIONS.glorified.repToGet && reputationStatus.toLowerCase() != "glorified"){
         // reched glorified
         updateReputationStatus(message, discordId, "Glorified");
-        cb(null, {repNumber: reputationNumber + 1, repStatus: "Glorified" })
+        cb(null, {repNumber: reputationNumber + reputationGained, repStatus: "Glorified" })
     }
-    else if(reputationNumber + 1 >= REPUTATIONS.admired.repToGet && reputationStatus.toLowerCase() != "admired"){
+    else if(reputationNumber + reputationGained >= REPUTATIONS.admired.repToGet && reputationStatus.toLowerCase() != "admired"){
         // reached admired
         updateReputationStatus(message, discordId, "Admired");
-        cb(null, {repNumber: reputationNumber + 1, repStatus: "Admired" })
+        cb(null, {repNumber: reputationNumber + reputationGained, repStatus: "Admired" })
     }
-    else if (reputationNumber + 1 >= REPUTATIONS.respected.repToGet && reputationStatus.toLowerCase() != "respected"){
+    else if (reputationNumber + reputationGained >= REPUTATIONS.respected.repToGet && reputationStatus.toLowerCase() != "respected"){
         // reached respected
         updateReputationStatus(message, discordId, "Respected");
-        cb(null, {repNumber: reputationNumber + 1, repStatus: "Respected" })
+        cb(null, {repNumber: reputationNumber + reputationGained, repStatus: "Respected" })
     }
     else if (!reputationStatus){
         console.log("no change");
-        cb(null, {repNumber: reputationNumber + 1, repStatus: "Friendly"})
+        cb(null, {repNumber: reputationNumber + reputationGained, repStatus: "Friendly"})
     }
     else{
         // nothing happened;
         console.log("no change");
-        cb(null, {repNumber: reputationNumber + 1, repStatus: reputationStatus})
+        cb(null, {repNumber: reputationNumber + reputationGained, repStatus: reputationStatus})
     }
 }
 
