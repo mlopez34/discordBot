@@ -1787,12 +1787,14 @@ function raresEmbedBuilder(message, itemsMap, allItems, long){
                 || allItems[key].itemraritycategory == "ancient+"
                 || allItems[key].itemraritycategory == "ancient++"
                 || allItems[key].itemraritycategory == "artifact"
+                || allItems[key].itemraritycategory == "artifact+"
                 || allItems[key].itemraritycategory == "myth"){
                 console.log(key + " " + allItems[key].itemname)
                 
                 var emoji = "";
                 
-                if (allItems[key].itemraritycategory === "artifact"){
+                if (allItems[key].itemraritycategory === "artifact" 
+                    || allItems[key].itemraritycategory === "artifact+"){
                     emoji = ":diamond_shape_with_a_dot_inside: "
                 }
                 else if (allItems[key].itemraritycategory === "ancient"){
