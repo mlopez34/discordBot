@@ -96,7 +96,7 @@ module.exports.usePieceOfWood = function(message, discordUserId, piecesOfWoodToU
                     console.log("protection is null!")
                 }
                 // update protect for the user
-                profileDB.updateUserProtect(discordUserId, 2, protection, function(updateerr, updateResponse) {
+                profileDB.updateUserProtect(discordUserId, 3, protection, function(updateerr, updateResponse) {
                     if (updateerr){
                         console.log(updateerr);
                         cb(updateerr);

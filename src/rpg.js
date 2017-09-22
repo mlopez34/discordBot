@@ -18,7 +18,7 @@ module.exports.rpgInitialize = function(message){
     team.push(message.author);
 
     users.forEach(function(user){
-        if (team.length < 4){
+        if (team.length < 4 && user.id != discordUserId){
             team.push(user);
         }
     })
@@ -1331,6 +1331,10 @@ function calculateDamageDealt(event, caster, target, rpgAbility){
     }
     
     return Math.floor(baseDamage);
+}
+
+function calculateDamageReduced(event, caster, target, rpgAbility){
+    // formula = 100 / ((45 * 60 - 1716.5) / ARMOR + 1)
 }
 
 function calculateHealingDone(event, caster, target, rpgAbility){
