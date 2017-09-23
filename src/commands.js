@@ -704,6 +704,7 @@ module.exports.giveCommand = function(message, giveTacoAmount){
     var users  = message.mentions.users;
     var mentionedId;
     var mentionedUser;
+    giveTacoAmount = Math.floor(giveTacoAmount);
     console.log("giveTacoAmount " + giveTacoAmount)
     console.log(users);
     users.forEach(function(user){
@@ -4025,6 +4026,7 @@ module.exports.bidCommand = function(message, args){
     if (args && args.length >= 3 && mentionedId && mentionedId != discordUserId){
         var mentionedIdString = "auction-" + mentionedId;
         var biddingTacos = parseInt(args[2]);
+        biddingTacos = Math.floor(biddingTacos);
         profileDB.getUserProfileData(discordUserId, function(profileErr, profileRes){
             if (profileErr){
                 console.log(profileErr);
@@ -4103,7 +4105,7 @@ module.exports.tradeCommand = function(message, args){
         var tacoAsk = 0;
         if (args[args.length - 2] == "tacos" && args.length >= 5){
             if (args[args.length -1] >= 0){
-                tacoAsk = args[args.length -1]
+                tacoAsk = Math.floor( args[args.length -1] )
             }
             if (itemCount == "tacos"){
                 itemCount = 1;
