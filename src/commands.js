@@ -3028,7 +3028,7 @@ module.exports.useCommand = function(message, args){
                             var timeout = setTimeout (function(){ 
                                 experience.gainExperience(message, discordUserId, EXPERIENCE_GAINS.useCommonItemFive);
                             }, 1000);
-                            message.channel.send(message.author + " has built a fence, counts as `2` protection points");
+                            message.channel.send(message.author + " has built a fence, counts as `3` protection points");
                         }
                     });
                 }
