@@ -324,18 +324,46 @@ function achievementEmbedBuilder(message, achievementName, achievementEarner){
     message.channel.send({embed});
 }
 
-module.exports.achievementStringBuilder = function(achievements){
-    var achievementString = "";
-    for (var ach in achievements){
-        // append each achievmenet string
-        if (achievementsData[achievements[ach]]){
-            achievementString = achievementString + (achievementsData[achievements[ach]].emoji) + " " + achievements[ach] +  " \n"
+module.exports.achievementStringBuilder = function(achievements, long){
+    if (long){
+        var achievementStrings = [];
+
+        var achievementString = "";
+        for (var ach in achievements){
+            // append each achievmenet string
+            if (achievementString.length > 900){
+                achievementStrings.push(achievementString);
+                achievementString = "";
+                achievementString = achievementString + (achievementsData[achievements[ach]].emoji) + " **" + achievements[ach] + "** - " + achievementsData[achievements[ach]].description +  " \n"                
+            }
+            if (achievementsData[achievements[ach]]){
+                achievementString = achievementString + (achievementsData[achievements[ach]].emoji) + " **" + achievements[ach] + "** - " + achievementsData[achievements[ach]].description +  " \n"
+            }
+        }
+        if (achievementString.length > 0){
+            achievementStrings.push(achievementString);
+        }
+        if (achievementString.length == 0 && achievementStrings.length == 0){
+            achievementStrings.push("No achievements")
+            return achievementStrings
+        }
+        else{
+            return achievementStrings;
         }
     }
-    if (achievementString.length == 0){
-        return "No achievements"
-    }
     else{
-        return achievementString;
+        var achievementString = "";
+        for (var ach in achievements){
+            // append each achievmenet string
+            if (achievementsData[achievements[ach]]){
+                achievementString = achievementString + (achievementsData[achievements[ach]].emoji) +  " "
+            }
+        }
+        if (achievementString.length == 0){
+            return "No achievements"
+        }
+        else{
+            return achievementString;
+        }
     }
 }

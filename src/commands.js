@@ -1075,7 +1075,7 @@ module.exports.profileCommand = function(message){
                 else if (profileData.reputationStatus.toLowerCase() == "glorified"){
                     profileData.nextReputation = "glorified"
                 }
-                profileData.achievementString = achiev.achievementStringBuilder(profileResponse.data.achievements);
+                profileData.achievementString = achiev.achievementStringBuilder(profileResponse.data.achievements, false);
                 if (profileResponse.data.pickaxe == "basic"){
                     
                     profileData.userItems = "Pickaxe :pick: \n"
@@ -1138,7 +1138,7 @@ module.exports.profileCommand = function(message){
                 else if (profileData.reputationStatus.toLowerCase() == "glorified"){
                     profileData.nextReputation = "glorified"
                 }
-                profileData.achievementString = achiev.achievementStringBuilder(profileResponse.data.achievements);
+                profileData.achievementString = achiev.achievementStringBuilder(profileResponse.data.achievements, false);
                 if (profileResponse.data.pickaxe == "basic"){
                     
                     profileData.userItems = "Pickaxe :pick: \n"
@@ -1162,6 +1162,32 @@ module.exports.profileCommand = function(message){
             }
         })
     }
+}
+
+module.exports.achievementsCommand = function(message){
+    var discordUserId = message.author.id;
+    
+    profileDB.getUserProfileData( discordUserId, function(err, profileResponse) {
+        if(err){
+            // user doesnt exist, create their profile first
+            agreeToTerms(message, discordUserId);
+        }
+        else{
+            var profileData = {}
+            profileData.userName = message.author.username;
+            profileData.achievementStrings = achiev.achievementStringBuilder(profileResponse.data.achievements, true);            
+            achievEmbedBuilder(message, profileData);
+        }
+    })
+}
+
+function achievEmbedBuilder(message, profileData){
+    const embed = new Discord.RichEmbed()
+    .setColor(0xF2E93E)
+    for (var i = profileData.achievementStrings.length - 1; i >= 0; i--){
+        embed.addField(profileData.userName + "'s Achievements " + ':medal:', profileData.achievementStrings[i])
+    }
+    message.channel.send({embed});
 }
 
 module.exports.xpCommand = function(message){
@@ -1359,80 +1385,122 @@ function profileBuilder(message, profileData){
     message.channel.send({embed});
 }
 
-function shopBuilder(message, shopData){
-    var welcomeMessage = "Hey " + message.author.username + "! Welcome to Bender's shop."
-    var tacoStandDescription = "Taco stands can be used to produce tacos based on the number of stands you have. \nYou can produce " + BASE_TACO_PREPARE + " per taco stand. \nThe cost of each additional stand will be higher - city tax bro. "
-    var treeCost = BASE_TACO_COST + (shopData.userTacoCost * 25) + " :taco:"
-    var pickaxeDescription = "The pickaxe can be used to scavenge. You never know what you will find in these lands ";
-    var pastaDescription = "Add a quote to your profile, to purchase do: " +config.commandString + "buypasta [your pasta message]."
-    
-    var pickaxeCost = PICKAXE_COST +" :taco:";
-    const embed = new Discord.RichEmbed()
-    .setColor(0x87CEFA)
-    .setTitle(welcomeMessage)
-    .setThumbnail()
-    .setDescription("Bender accepts Tacos as currency since he's a hungry guy :shrug:. Have a look around!")
-    .addField('Taco Stands', ":bus:", true)
-    .addField('Description', tacoStandDescription, true)
-    .addField('Cost', treeCost, true)
-    .addField('Command', config.commandString+ "buystand", true)
-    if(shopData.pickaxe == "none"){
-        embed.addBlankField(true)
-        .addBlankField(false)
-        .addField('Pickaxe', ":pick:", true)
-        .addField('Description', pickaxeDescription, true)
-        .addField('Cost', pickaxeCost, true)
-        .addField('Command', config.commandString + "buypickaxe", true)
+function shopBuilder(message, shopData, long){
+    if (!long){
+        var treeCost = BASE_TACO_COST + (shopData.userTacoCost * 25) + " :taco:"        
+        // show short shop
+        const embed = new Discord.RichEmbed()
+        .setColor(0x87CEFA)
+        .addField('Taco Stands', treeCost, true)        
+        if(shopData.pickaxe == "none"){
+            var pickaxeCost = PICKAXE_COST +" :taco:";
+            embed.addField('Pickaxe', pickaxeCost, true)
+        }
+        else if (shopData.pickaxe == "basic"){
+            // improved pickaxe
+            pickaxeCost = IMPROVED_PICKAXE_COST + " :taco:";
+            embed.addField('Improved Pickaxe', pickaxeCost, true)
+        }
+        else if (shopData.pickaxe == "improved"){
+            // improved pickaxe
+            pickaxeCost = MASTER_PICKAXE_COST + " :taco:";
+            embed.addField('Master Pickaxe', pickaxeCost, true)
+        }
+        embed.addField('Pasta', PASTA_COST + " :taco:", true)
+        
+        // allow for pet to be purchased
+        if (shopData.repstatus && (REPUTATIONS[shopData.repstatus.toLowerCase()]) ){
+            var userRepLevel = REPUTATIONS[shopData.repstatus.toLowerCase()].level;
+            if (userRepLevel >= 2){
+                var repDescription = "Bender's Reputation shop. use -repshop to see what Bender has to offer.";         
+                embed.addField('Reputation shop', repDescription, true)
+            }
+        }
+        embed.addField('Your current tacos', shopData.userTacos + " :taco:", false)   
+        message.channel.send({embed});        
     }
-    else if (shopData.pickaxe == "basic"){
-        // improved pickaxe
-        pickaxeDescription = "The Improved Pickaxe can be used to scavenge. Success rate compared to the pickaxe has increased.";
-        pickaxeCost = IMPROVED_PICKAXE_COST + " :taco:";
-        embed.addBlankField(true)
-        .addBlankField(false)
-        .addField('Improved Pickaxe', ":small_blue_diamond::pick:", true)
-        .addField('Description', pickaxeDescription, true)
-        .addField('Cost', pickaxeCost, true)
-        .addField('Command', config.commandString + "buypickaxe", true)
-    }
-    else if (shopData.pickaxe == "improved"){
-        // improved pickaxe
-        pickaxeDescription = "The Master Pickaxe can be used to scavenge. This is the master pickaxe, your adventures will be rewarded with the greatest treasures :diamond_shape_with_a_dot_inside: .";
-        pickaxeCost = MASTER_PICKAXE_COST + " :taco:";
-        embed.addBlankField(true)
-        .addBlankField(false)
-        .addField('Master Pickaxe', ":diamond_shape_with_a_dot_inside::pick:", true)
-        .addField('Description', pickaxeDescription, true)
-        .addField('Cost', pickaxeCost, true)
-        .addField('Command', config.commandString + "buypickaxe", true)
-    }
-    
-    embed.addBlankField(true)
-    .addBlankField(false)
-    .addField('Pasta', ":spaghetti:", true)
-    .addField('Description', pastaDescription, true)
-    .addField('Cost', PASTA_COST + " :taco:", true)
-    .addField('Command', config.commandString + "buyPasta", true)
-    
-    // allow for pet to be purchased
-    if (shopData.repstatus && (REPUTATIONS[shopData.repstatus.toLowerCase()]) ){
-        var userRepLevel = REPUTATIONS[shopData.repstatus.toLowerCase()].level;
-        if (userRepLevel >= 2){
-            var repDescription = "Bender's Reputation shop. use -repshop to see what Bender has to offer.";        
+    else {
+        var welcomeMessage = "Hey " + message.author.username + "! Welcome to Bender's shop."
+        var tacoStandDescription = "Taco stands can be used to produce tacos based on the number of stands you have. \nYou can produce " + BASE_TACO_PREPARE + " per taco stand. \nThe cost of each additional stand will be higher - city tax bro. "
+        var treeCost = BASE_TACO_COST + (shopData.userTacoCost * 25) + " :taco:"
+        var pickaxeDescription = "The pickaxe can be used to scavenge. You never know what you will find in these lands ";
+        var pastaDescription = "Add a quote to your profile, to purchase do: " +config.commandString + "buypasta [your pasta message]."
+        
+        var pickaxeCost = PICKAXE_COST +" :taco:";
+        const embed = new Discord.RichEmbed()
+        .setColor(0x87CEFA)
+        .setTitle(welcomeMessage)
+        .setThumbnail()
+        .setDescription("Bender accepts Tacos as currency since he's a hungry guy :shrug:. Have a look around!")
+        .addField('Taco Stands', ":bus:", true)
+        .addField('Description', tacoStandDescription, true)
+        .addField('Cost', treeCost, true)
+        .addField('Command', config.commandString+ "buystand", true)
+        if(shopData.pickaxe == "none"){
             embed.addBlankField(true)
             .addBlankField(false)
-            .addField('Reputation shop', ":shopping_cart: ", true)
-            .addField('Description', repDescription, true)
+            .addField('Pickaxe', ":pick:", true)
+            .addField('Description', pickaxeDescription, true)
+            .addField('Cost', pickaxeCost, true)
+            .addField('Command', config.commandString + "buypickaxe", true)
         }
+        else if (shopData.pickaxe == "basic"){
+            // improved pickaxe
+            pickaxeDescription = "The Improved Pickaxe can be used to scavenge. Success rate compared to the pickaxe has increased.";
+            pickaxeCost = IMPROVED_PICKAXE_COST + " :taco:";
+            embed.addBlankField(true)
+            .addBlankField(false)
+            .addField('Improved Pickaxe', ":small_blue_diamond::pick:", true)
+            .addField('Description', pickaxeDescription, true)
+            .addField('Cost', pickaxeCost, true)
+            .addField('Command', config.commandString + "buypickaxe", true)
+        }
+        else if (shopData.pickaxe == "improved"){
+            // improved pickaxe
+            pickaxeDescription = "The Master Pickaxe can be used to scavenge. This is the master pickaxe, your adventures will be rewarded with the greatest treasures :diamond_shape_with_a_dot_inside: .";
+            pickaxeCost = MASTER_PICKAXE_COST + " :taco:";
+            embed.addBlankField(true)
+            .addBlankField(false)
+            .addField('Master Pickaxe', ":diamond_shape_with_a_dot_inside::pick:", true)
+            .addField('Description', pickaxeDescription, true)
+            .addField('Cost', pickaxeCost, true)
+            .addField('Command', config.commandString + "buypickaxe", true)
+        }
+        
+        embed.addBlankField(true)
+        .addBlankField(false)
+        .addField('Pasta', ":spaghetti:", true)
+        .addField('Description', pastaDescription, true)
+        .addField('Cost', PASTA_COST + " :taco:", true)
+        .addField('Command', config.commandString + "buyPasta", true)
+        
+        // allow for pet to be purchased
+        if (shopData.repstatus && (REPUTATIONS[shopData.repstatus.toLowerCase()]) ){
+            var userRepLevel = REPUTATIONS[shopData.repstatus.toLowerCase()].level;
+            if (userRepLevel >= 2){
+                var repDescription = "Bender's Reputation shop. use -repshop to see what Bender has to offer.";        
+                embed.addBlankField(true)
+                .addBlankField(false)
+                .addField('Reputation shop', ":shopping_cart: ", true)
+                .addField('Description', repDescription, true)
+            }
+        }
+        embed.addBlankField(false)
+        .addField('Your current tacos', shopData.userTacos + " :taco:", false)
+        .setTimestamp()
+        message.channel.send({embed});
     }
-    embed.addBlankField(false)
-    .addField('Your current tacos', shopData.userTacos + " :taco:", false)
-    .setTimestamp()
-    message.channel.send({embed});
 }
 
-module.exports.shopCommand = function(message){
+module.exports.shopCommand = function(message, args){
     var discordUserId = message.author.id;
+    var includeDescriptions = false;
+    if (args && args.length > 1){
+        var long = args[1];
+        if (long == "long"){
+            includeDescriptions = true;
+        }
+    }
     profileDB.getUserProfileData( discordUserId, function(err, shopResponse) {
         if(err){
             // user doesnt exist tell the user they should get some tacos
@@ -1450,7 +1518,7 @@ module.exports.shopCommand = function(message){
             }
             shopData.repstatus = shopResponse.data.repstatus
             shopData.userTacoCost = userTacoStands;
-            shopBuilder(message, shopData);
+            shopBuilder(message, shopData, includeDescriptions);
         }
     })
 }
@@ -1777,6 +1845,7 @@ module.exports.raresCommand = function(message, args){
 function raresEmbedBuilder(message, itemsMap, allItems, long){
     // create a field for each item and add the count
     const embed = new Discord.RichEmbed()
+    var inventoryStrings = [];
     var inventoryString = "";
     for (var key in itemsMap) {
         if (itemsMap.hasOwnProperty(key)) {
@@ -1820,8 +1889,10 @@ function raresEmbedBuilder(message, itemsMap, allItems, long){
                 if (long){
                     embed.addField(emoji + " " + allItems[key].itemname, itemsMap[key] + " - " + allItems[key].itemslot + " - " + allItems[key].itemstatistics, true)
                 }else{
-                    if (inventoryString.length > 980){
-                        break
+                    if (inventoryString.length > 900){
+                        inventoryStrings.push(inventoryString);
+                        inventoryString = "";
+                        inventoryString = emoji + "**"+allItems[key].itemname + "** - " +  itemsMap[key] + " - " + allItems[key].itemslot + "\n" + inventoryString;                        
                     }else{
                         inventoryString = emoji + "**"+allItems[key].itemname + "** - " +  itemsMap[key] + " - " + allItems[key].itemslot + "\n" + inventoryString;                        
                     }
@@ -1829,8 +1900,14 @@ function raresEmbedBuilder(message, itemsMap, allItems, long){
             }
         }
     }
+    // push the leftover
+    if (inventoryString.length > 0){
+        inventoryStrings.push(inventoryString);
+    }
     if (!long){
-        embed.addField("Item Name  |  Count  |  Slot", inventoryString, true)
+        for (var invString = inventoryStrings.length -1; invString >= 0; invString--){
+            embed.addField("Item Name  |  Count  |  Slot", inventoryStrings[invString], true)
+        }
     }
     embed
     .setAuthor(message.author.username +"'s Inventory ")
@@ -2901,7 +2978,7 @@ module.exports.useCommand = function(message, args){
             message.channel.send("mention a user to throw a rock at, you cannot throw rocks at bots or yourself...");
         }
     }
-    else if(args && args.length > 1 && args[1].toLowerCase() == "pieceofwood"){
+    else if(args && args.length > 1 && args[1].toLowerCase() == "pieceofwood" || args[1].toLowerCase() == "wood"){
         // use pieces of wood - protect against rocks being thrown at you (uses 6 pieces, protects against 3)
         profileDB.getUserItems(discordUserId, function(error, inventoryResponse){
             if (error){
@@ -2961,7 +3038,7 @@ module.exports.useCommand = function(message, args){
             }
         })
     }
-    else if (args && args.length > 1 && args[1].toLowerCase() == "terrycloth"){
+    else if (args && args.length > 1 && args[1].toLowerCase() == "terrycloth" || args[1].toLowerCase() == "terry"){
         // create a rare item (chance) if not then receive tacos
         profileDB.getUserItems(discordUserId, function(error, inventoryResponse){
             if (error){
@@ -3062,7 +3139,7 @@ module.exports.useCommand = function(message, args){
     }
 
     
-    else if (args && args.length > 1 && args[1].toLowerCase() == "sodacan"){
+    else if (args && args.length > 1 && args[1].toLowerCase() == "sodacan" || args[1].toLowerCase() == "soda"){
         // recycle for an item only obtainable by recycling - reputation with Bender allows u to shop for
         // 50 - pet, 175 - 20% reduced price benders shop, 400 - 50 tacos (casserole, triple cooked tacos), 1000 (server title on profile, roll one of the rarest items)
         var cansToUse = args[2] ? args[2] : 1;
