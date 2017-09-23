@@ -121,7 +121,7 @@ client.on('message', function(message){
                 commands.throwCommand(message);
             }
             else if(commandIs("shop", message)){
-                commands.shopCommand(message);
+                commands.shopCommand(message, args);
             }
             else if(commandIs("repshop", message)){
                 commands.repShopCommand(message);
@@ -178,6 +178,9 @@ client.on('message', function(message){
             }
             else if (commandIs("xp", message)){
                 commands.xpCommand(message);
+            }
+            else if (commandIs("ach", message)){
+                commands.achievementsCommand(message);
             }
             else if (commandIs("puton", message)){
                 commands.putonCommand(message, args);
