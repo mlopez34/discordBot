@@ -4770,7 +4770,6 @@ function tacoPartyReactRewards(message, user, emoji, reward){
                     for (var index in getItemResponse.data){
                         if (getItemResponse.data[index].id == ROCK_ITEM_ID){
                             itemsObtainedArray.push( getItemResponse.data[index] );
-                            itemsObtainedArray.push( getItemResponse.data[index] );
                             break;
                         }
                     }

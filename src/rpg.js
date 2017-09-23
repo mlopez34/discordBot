@@ -18,7 +18,7 @@ module.exports.rpgInitialize = function(message){
     team.push(message.author);
 
     users.forEach(function(user){
-        if (team.length < 4){
+        if (team.length < 4 && user.id != discordUserId){
             team.push(user);
         }
     })
@@ -1329,9 +1329,16 @@ function calculateDamageDealt(event, caster, target, rpgAbility){
             }
         }
     }
-
-    // do a number crunch of how much damage is done
+    
     return Math.floor(baseDamage);
+}
+
+function calculateDamageReduced(event, caster, target, rpgAbility){
+    // formula = 100 / ((45 * 60 - 1716.5) / ARMOR + 1) OR 100 / ((45 * 60 - 1716.5) / SPIRIT + 1)
+    // gain armor squared by level
+    // rares give 75, 125, 175 armor average, ancients 150, 300, 450 armor average, artifacts 600
+    // 200 base + 10 HP * level 
+    // AD + MD 50 base + 5 per level ? 
 }
 
 function calculateHealingDone(event, caster, target, rpgAbility){
@@ -1804,7 +1811,7 @@ function processAbility(abilityObject, event){
                 // set damage temporarily
                 var tempDamage = rpgAbility.dmg;
                 rpgAbility.dmg = rpgAbility.selfdamage;
-                var damageToDeal = Math.floor(calculateDamageDealt(event, abilityCaster, "rpg-"+abilityCaster, rpgAbility) * 0.4)
+                var damageToDeal = Math.floor(calculateDamageDealt(event, abilityCaster, "rpg-"+abilityCaster, rpgAbility) * 0.2)
                 event.membersInParty["rpg-"+abilityCaster].hp = event.membersInParty["rpg-"+abilityCaster].hp - damageToDeal;
                 abilityToString = abilityToString + targetToDealDmgName + " suffered " + damageToDeal + " damage from " + rpgAbility.name + "\n"
                 rpgAbility.dmg = tempDamage
@@ -1822,7 +1829,7 @@ function processAbility(abilityObject, event){
                 // set damage temporarily
                 var tempDamage = rpgAbility.dmg;
                 rpgAbility.dmg = rpgAbility.selfdamage;
-                var damageToDeal = Math.floor(calculateDamageDealt(event, abilityCaster, abilityCaster, rpgAbility) * 0.4)
+                var damageToDeal = Math.floor(calculateDamageDealt(event, abilityCaster, abilityCaster, rpgAbility) * 0.2)
                 event.enemies[abilityCaster].hp = event.enemies[abilityCaster].hp - damageToDeal;
                 abilityToString = abilityToString + targetToDealDmgName + " suffered " + damageToDeal + " damage from " + rpgAbility.name + "\n"
                 rpgAbility.dmg = tempDamage
@@ -2417,12 +2424,40 @@ var rpgAbilities = {
             healingOnExpire: 0
         }
     },
+    poke: {
+        name:"poke",
+        type:"physical",
+        dot: {
+            name: "poke",
+            type:"physical",
+            dmg: 15,
+            emoji: "📌",
+            dmgOnDotApply: false,
+            turnsToExpire: 3,
+            dmgOnDotExpire: false,
+            dmgOnExpire: 0
+        }
+    },
+    curse: {
+        name:"curse",
+        type:"shadow",
+        dot: {
+            name: "curse",
+            type:"shadow",
+            dmg: 15,
+            emoji: "🌑",
+            dmgOnDotApply: false,
+            turnsToExpire: 3,
+            dmgOnDotExpire: false,
+            dmgOnExpire: 0
+        }
+    },
     tacowall: {
         buff: {
             name: "taco wall",
             emoji : "🏛",
             affects: ["armor"],
-            multiplier: 1.25
+            multiplier: 2
         }
     },
     barrier: {
@@ -2430,7 +2465,7 @@ var rpgAbilities = {
             name: "barrier",
             emoji: "🚧 ",
             affects: ["spirit"],
-            additive: 30
+            additive: 55
         }
     },
     flameblast: {
@@ -2462,8 +2497,14 @@ var rpgAbilities = {
         }
     },
     iceshards: {
-        dmg: 30,
+        dmg: 45,
         type: "ice",
+        areawide: true,
+        targets: "enemy"
+    },
+    slash: {
+        dmg: 45,
+        type: "physical",
         areawide: true,
         targets: "enemy"
     },
@@ -2492,8 +2533,8 @@ var rpgAbilities = {
         type: "physical",
         special: {
             name: "drain",
-            dmg: 40,
-            heal: 20,
+            dmg: 35,
+            heal: 15,
         }
     },
     haste: {
@@ -2535,12 +2576,20 @@ var rpgAbilities = {
             multiplier: 0.7
         }
     },
+    scold: {
+        status: {
+            name: "scold",
+            emoji: "☔️",
+            affects: ["spirit"],
+            multiplier: 0.7
+        }
+    },
     cripple: {
         status: {
             name: "crippled",
             emoji: "🤕",
             affects: ["attackDmg"],
-            multiplier: 0.7
+            multiplier: 0.6
         }
     },
     weaken: {
@@ -2548,7 +2597,7 @@ var rpgAbilities = {
             name: "weakened",
             emoji: "😵 ",
             affects: ["magicDmg"],
-            multiplier: 0.7
+            multiplier: 0.6
         }
     },
     finalfortune: {
@@ -2561,7 +2610,7 @@ var rpgAbilities = {
             name: "shield",
             emoji: "🛡️",
             affects: ["spirit"],
-            multiplier: 1.5
+            multiplier: 2
         }
     }
 }
