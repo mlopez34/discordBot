@@ -18,7 +18,7 @@ module.exports.rpgInitialize = function(message){
     team.push(message.author);
 
     users.forEach(function(user){
-        if (team.length < 4 && user.id != discordUserId){
+        if (team.length < 4){
             team.push(user);
         }
     })
@@ -948,15 +948,15 @@ function calculateDamageDealt(event, caster, target, rpgAbility){
                 }
                 else{
                     if (rpgAbility && rpgAbility.turnsToExpire){
-                        damageToReduce = damageToReduce + ( ( targetStats.armor + targetStats.statBuffs.armor) * 0.25)
+                        damageToReduce = calculateDamageReduced(( targetStats.armor + targetStats.statBuffs.armor ) * 0.25)
                     }else{
-                        damageToReduce = damageToReduce + ( targetStats.armor + targetStats.statBuffs.armor)
+                        damageToReduce = calculateDamageReduced( targetStats.armor + targetStats.statBuffs.armor )
                     }
                 }
-                if (damageToReduce > baseDamage){
-                    baseDamage = Math.floor(baseDamage * 0.25)
+                if (damageToReduce > 0.75){
+                    damageToReduce = 0.75
                 }else{
-                    baseDamage = baseDamage - damageToReduce;
+                    baseDamage = baseDamage * (1 - damageToReduce);
                 }
                 // additional RNG
                 var rngDmgRoll = Math.floor(Math.random() * Math.floor(baseDamage * 0.20)) + 1;
@@ -1333,12 +1333,18 @@ function calculateDamageDealt(event, caster, target, rpgAbility){
     return Math.floor(baseDamage);
 }
 
-function calculateDamageReduced(event, caster, target, rpgAbility){
+function calculateDamageReduced(statUsedToReduce){
     // formula = 100 / ((45 * 60 - 1716.5) / ARMOR + 1) OR 100 / ((45 * 60 - 1716.5) / SPIRIT + 1)
+
+    // statUsedToReduce could be armor or magic
+    var formula = 100 / ((45 * 60 - 1716) / statUsedToReduce + 1)
+    formula = formula * 0.01
+    return formula;
+
     // gain armor squared by level
     // rares give 75, 125, 175 armor average, ancients 150, 300, 450 armor average, artifacts 600
     // 200 base + 10 HP * level 
-    // AD + MD 50 base + 5 per level ? 
+    // AD + MD 50 base + 5 per level ?
 }
 
 function calculateHealingDone(event, caster, target, rpgAbility){
