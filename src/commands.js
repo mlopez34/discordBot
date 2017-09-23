@@ -4338,7 +4338,10 @@ module.exports.acceptTradeCommand = function(message, args){
     var discordUserId = message.author.id;
     var discordUserIdString = "trading-" + discordUserId
 
-    var tacosAgreedOn = args[1];
+    var tacosAgreedOn = 0;
+    if (args.length > 1){
+        tacosAgreedOn = args[1]
+    }
     // check that the user accepting the trade has tacos to pay the tax
     profileDB.getUserProfileData(discordUserId, function(profileErr, profileRes){
         if (profileErr){
