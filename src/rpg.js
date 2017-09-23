@@ -1334,7 +1334,11 @@ function calculateDamageDealt(event, caster, target, rpgAbility){
 }
 
 function calculateDamageReduced(event, caster, target, rpgAbility){
-    // formula = 100 / ((45 * 60 - 1716.5) / ARMOR + 1)
+    // formula = 100 / ((45 * 60 - 1716.5) / ARMOR + 1) OR 100 / ((45 * 60 - 1716.5) / SPIRIT + 1)
+    // gain armor squared by level
+    // rares give 75, 125, 175 armor average, ancients 150, 300, 450 armor average, artifacts 600
+    // 200 base + 10 HP * level 
+    // AD + MD 50 base + 5 per level ? 
 }
 
 function calculateHealingDone(event, caster, target, rpgAbility){
