@@ -4395,7 +4395,7 @@ module.exports.acceptTradeCommand = function(message, args){
                     delete activeTrades[discordUserIdString];
                 }
                 else{
-                    message.channel.send("You can't afford that trade")
+                    message.channel.send("You can't afford that trade OR you need to do -accept #oftacos")
                 }
             }
             else{
