@@ -4337,6 +4337,8 @@ module.exports.tradeCommand = function(message, args){
 module.exports.acceptTradeCommand = function(message, args){
     var discordUserId = message.author.id;
     var discordUserIdString = "trading-" + discordUserId
+
+    var tacosAgreedOn = args[1];
     // check that the user accepting the trade has tacos to pay the tax
     profileDB.getUserProfileData(discordUserId, function(profileErr, profileRes){
         if (profileErr){
@@ -4362,7 +4364,7 @@ module.exports.acceptTradeCommand = function(message, args){
                 if (tradeTax >= 1){
                     tacoTax = tacoTax + 1
                 }
-                if (currentTacos - tacosAuctioned - tacosToPay >= 0){
+                if (currentTacos - tacosAuctioned - tacosToPay >= 0 && tacosToPay == tacosAgreedOn){
                     // accept the trade and transfer the item
                     message.channel.send(":handshake:  " + message.author + " has accepted the trade of **" + activeTrades[discordUserIdString].item + "** ! " + " Bender kept `" + tacoTax + "` tacos for tax purposes.") 
                     transferItemsAndTacos(discordUserId, mentionedId, itemsArray, tacosToPay, tacosToPay-tacoTax, function(transErr, transRes){
