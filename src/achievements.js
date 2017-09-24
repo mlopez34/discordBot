@@ -5,74 +5,87 @@ const Discord = require("discord.js");
 var achievementsData = {
     "Nice guy" : {
         emoji : ":boy::skin-tone-2:",
+        score: 10,
         description: "Thank 25 users"
     },
     "Fidel cashflow": {
         emoji : ":chart_with_upwards_trend:",
+        score: 15,
         description: "Obtain 15 taco stands"
     },
     "Get a room": {
         emoji : ":kiss:",
+        score: 10,
         description: "Give 150 tacos to one person at once"
     },
     "Apologetic geek": {
         emoji : ":shrug::skin-tone-2:",
+        score: 10,
         description: "Sorry 12 users"
     },
     "Adventure girl": {
         emoji : ":mag:",
+        score: 10,
         description: "Buy a pickaxe & scavenge 20 times"
     },
     "Hoarder": {
         emoji : ":moneybag:",
+        score: 15,
         description: "Obtain 100,000 tacos"
     },
     "Host": {
         emoji : ":guardsman:",
+        score: 10,
         description: "Welcome 5 users"
     },
     "Hand work": {
         emoji : ":cooking:",
+        score: 10,
         description: "Cook 7 tacos at one time"
     },
     "Stripper": {
         emoji : ":dancer::skin-tone-2:",
+        score: 10,
         description: "Get 350 tacos thrown at you"
     },
     "Make it rain": {
         emoji : ":man_in_tuxedo:",
+        score: 10,
         description: "Throw 100 tacos at other people"
     },
     "Luck is on your side": {
         emoji : ":tickets:",
+        score: 10,
         description: "Scavenge a ancient quality item or better"
-    },
-    "Get a room": {
-        emoji : ":kiss:",
-        description: "Give 150 tacos to one person at once"
     },
     "Harvester": {
         emoji: ":tractor:",
+        score: 10,
         description: "Get 30 extra tacos from soiled crops after preparing"
     },
     "Miss Popularity": {
         emoji: ":champagne: ",
+        score: 15,
         description: "Get 50 or more people to attend your party"
     },
     "Executioner" : {
         emoji : ":skull_crossbones:",
+        score: 15,
         description : "Throw 2000 rocks at other users"
     },
     "The Exalted" : {
         emoji: ":crown:",
+        score: 20,
         description: "Become Glorified by Bender"
     },
     "Rolechecker" : {
         emoji: ":scroll:",
+        score: 15,
         description : "Win the TOS August 2017 Tournament"
     },
     "Confirmed Not Hitler" : {
         emoji: ":white_check_mark:",
+        score: 15,
         description : "Win the SH August 2017 Tournament"
     }
 }
