@@ -212,8 +212,8 @@ var PETS_AVAILABLE = {
     dolphin: {
         speak: ".....",
         emoji: ":dolphin:",
-        fetch: 1,
-        cooldown: 3,
+        fetch: 3,
+        cooldown: 9,
         reputation: "admired",
         repLevel: 4
     },
