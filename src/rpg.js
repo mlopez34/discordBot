@@ -981,10 +981,10 @@ function getDamageToReduceFromSpirit( rpgAbility, event, targetStats, damageToRe
     }
     else{
         if (rpgAbility && rpgAbility.turnsToExpire){
-            damageToReduce = damageToReduce + ( ( targetStats.spirit + targetStats.statBuffs.spirit) * 0.25)
+            damageToReduce = calculateDamageReduced(( targetStats.spirit + targetStats.statBuffs.spirit) * 0.25)
         }
         else{
-            damageToReduce = damageToReduce + ( targetStats.spirit + targetStats.statBuffs.spirit)
+            damageToReduce = calculateDamageReduced(( targetStats.spirit + targetStats.statBuffs.spirit))
         }
     }
     return damageToReduce;
@@ -2495,7 +2495,7 @@ var enemiesToEncounter = {
             name: "Rabbid Wolf",
             abilities: ["attack", "attack", "foodpoisoning", "foodpoisoning", "tacowall"],
             buffs: [],
-            hp: 500,
+            hp: 540,
             attackDmg: 45,
             magicDmg: 45,
             armor: 200,
@@ -2506,7 +2506,7 @@ var enemiesToEncounter = {
             name: "Bad Chef",
             abilities: ["attack", "attack", "foodpoisoning", "foodpoisoning", "barrier"],
             buffs: [],
-            hp: 390,
+            hp: 490,
             attackDmg: 45,
             magicDmg: 37,
             armor: 300,
@@ -2517,7 +2517,7 @@ var enemiesToEncounter = {
             name: "Angry Mob Member",
             abilities: ["attack", "attack", "foodpoisoning", "iceshards", "iceshards", "cripple"],
             buffs: [],
-            hp: 460,
+            hp: 480,
             attackDmg: 43,
             magicDmg: 35,
             armor: 300,
@@ -2528,7 +2528,7 @@ var enemiesToEncounter = {
             name: "Taco Dealer",
             abilities: ["attack", "attack", "drain", "drain", "freeze"],
             buffs: [],
-            hp: 525,
+            hp: 725,
             attackDmg: 25,
             magicDmg: 49,
             armor: 170,
@@ -2541,7 +2541,7 @@ var enemiesToEncounter = {
             name: "Taco Bandit",
             abilities: ["attack", "attack", "rockthrow", "rockthrow", "orchatasip"],
             buffs: [],
-            hp: 550,
+            hp: 650,
             attackDmg: 120,
             magicDmg: 90,
             armor: 450,
@@ -2552,7 +2552,7 @@ var enemiesToEncounter = {
             name: "Taco Thief",
             abilities: ["attack", "attack", "orchatasip", "flameblast", "flameblast"],
             buffs: [],
-            hp: 500,
+            hp: 940,
             attackDmg: 80,
             magicDmg: 140,
             armor: 300,
@@ -2563,11 +2563,11 @@ var enemiesToEncounter = {
             name: "Slots Gambler",
             abilities: ["attack", "attack", "elixir", "shock", "shock"],
             buffs: [],
-            hp: 575,
+            hp: 975,
             attackDmg: 110,
             magicDmg: 110,
             armor: 250,
-            spirit: 700,
+            spirit: 500,
             element: "normal"
         }
     ],
