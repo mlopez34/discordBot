@@ -1072,6 +1072,9 @@ module.exports.profileCommand = function(message){
                 else if (profileData.reputationStatus.toLowerCase() == "respected"){
                     profileData.nextReputation = "admired"
                 }
+                else if (profileData.reputationStatus.toLowerCase() == "admired"){
+                    profileData.nextReputation = "glorified"
+                }
                 else if (profileData.reputationStatus.toLowerCase() == "glorified"){
                     profileData.nextReputation = "glorified"
                 }
@@ -1134,6 +1137,9 @@ module.exports.profileCommand = function(message){
                 }
                 else if (profileData.reputationStatus.toLowerCase() == "respected"){
                     profileData.nextReputation = "admired"
+                }
+                else if (profileData.reputationStatus.toLowerCase() == "admired"){
+                    profileData.nextReputation = "glorified"
                 }
                 else if (profileData.reputationStatus.toLowerCase() == "glorified"){
                     profileData.nextReputation = "glorified"
