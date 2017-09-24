@@ -28,7 +28,7 @@ client.on('ready', function(err) {
     console.log('The bot is online'); 
     var channelName;
     client.channels.forEach(function(channel){
-        console.log(channel);
+        // console.log(channel);
         if (channel.type == "text" && channel.name == BOT_CHANNEL){
             channelName = channel;
         }
@@ -53,7 +53,7 @@ function commandIs(str, msg){
 }
 
 client.on('message', function(message){
-    console.log(message);
+    // console.log(message);
     if (botEnabled){
         console.log(message.author.id); // id of the user that created the message
         var args = message.content.split(/[ ]+/);
@@ -291,7 +291,7 @@ function steal(channelName){
         // possible users to take from and share with
         if (!member.user.bot){
             var user = member.user
-            console.log( user );
+            // console.log( user );
             possibleUsersUsername.push( user );
         }
     });
