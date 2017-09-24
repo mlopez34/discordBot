@@ -18,7 +18,7 @@ module.exports.rpgInitialize = function(message){
     team.push(message.author);
 
     users.forEach(function(user){
-        if (team.length < 4 && discordUserId != user.id){
+        if (team.length < 4 ){//&& discordUserId != user.id){
             team.push(user);
         }
     })
@@ -282,7 +282,7 @@ module.exports.rpgReady = function(message, itemsAvailable){
                                             armor: 5 + (partyMemberStats.level * partyMemberStats.level) + partyMemberArmorPlus,
                                             spirit: 5 + (partyMemberStats.level * partyMemberStats.level) + partyMemberSpiritPlus,
                                             luck: 1 + partyMemberLuckPlus,
-                                            abilities: ["attack"],
+                                            abilities: ["attack", "weaken", "scold"],
                                             statuses: [],
                                             statBuffs: {
                                                 hp: 0,
@@ -1195,17 +1195,17 @@ function calculateHealingDone(event, caster, target, rpgAbility){
             var userStats = event.enemies[caster];
             
             var healingToDo = 0
-            // healing uses 50% of magic Dmg
+
             if (rpgAbility.turnsToExpire){
                 healingToDo = healingToDo + (userStats.magicDmg + userStats.statBuffs.magicDmg);
-                baseHealing = baseHealing + Math.floor(( healingToDo / rpgAbility.turnsToExpire ) * 0.8)
+                baseHealing = baseHealing + Math.floor(( healingToDo / rpgAbility.turnsToExpire ) * rpgAbility.mdPercentage)
             }else{
                 if (rpgAbility.areawide){
                     healingToDo = healingToDo + (userStats.magicDmg + userStats.statBuffs.magicDmg);
-                    baseHealing = baseHealing + Math.floor(healingToDo * 0.6)
+                    baseHealing = baseHealing + Math.floor(healingToDo * rpgAbility.mdPercentage)
                 }else{
                     healingToDo = healingToDo + (userStats.magicDmg + userStats.statBuffs.magicDmg);
-                    baseHealing = baseHealing + Math.floor(healingToDo * 0.8)
+                    baseHealing = baseHealing + Math.floor(healingToDo * rpgAbility.mdPercentage)
                 }
             }
         }else{
@@ -1215,17 +1215,17 @@ function calculateHealingDone(event, caster, target, rpgAbility){
                 var userStats = event.enemies[caster];
                 
                 var healingToDo = 0
-                // healing uses 50% of magic Dmg
+
                 if (rpgAbility.turnsToExpire){
                     healingToDo = healingToDo + (userStats.magicDmg + userStats.statBuffs.magicDmg);
-                    baseHealing = baseHealing + Math.floor(( healingToDo / rpgAbility.turnsToExpire ) * 0.8)
+                    baseHealing = baseHealing + Math.floor(( healingToDo / rpgAbility.turnsToExpire ) * rpgAbility.mdPercentage)
                 }else{
                     if (rpgAbility.areawide){
                         healingToDo = healingToDo + (userStats.magicDmg + userStats.statBuffs.magicDmg);
-                        baseHealing = baseHealing + Math.floor(healingToDo * 0.6)
+                        baseHealing = baseHealing + Math.floor(healingToDo *  rpgAbility.mdPercentage)
                     }else{
                         healingToDo = healingToDo + (userStats.magicDmg + userStats.statBuffs.magicDmg);
-                        baseHealing = baseHealing + Math.floor(healingToDo * 0.8)
+                        baseHealing = baseHealing + Math.floor(healingToDo * rpgAbility.mdPercentage)
                     }
                 }
             }
@@ -1239,17 +1239,17 @@ function calculateHealingDone(event, caster, target, rpgAbility){
         var checkTarget = event.membersInParty[target];
         if (checkTarget || areaWideAbility){
             var healingToDo = 0
-            // healing uses 50% of magic Dmg
+
             if (rpgAbility.turnsToExpire){
                 healingToDo = healingToDo + (userStats.magicDmg + userStats.statBuffs.magicDmg);
-                baseHealing = baseHealing + Math.floor(( healingToDo / rpgAbility.turnsToExpire ) * 0.8)
+                baseHealing = baseHealing + Math.floor(( healingToDo / rpgAbility.turnsToExpire ) * rpgAbility.mdPercentage)
             }else{
                 if (rpgAbility.areawide){
                     healingToDo = healingToDo + (userStats.magicDmg + userStats.statBuffs.magicDmg);
-                    baseHealing = baseHealing + Math.floor(healingToDo * 0.6)
+                    baseHealing = baseHealing + Math.floor(healingToDo * rpgAbility.mdPercentage)
                 }else{
                     healingToDo = healingToDo + (userStats.magicDmg + userStats.statBuffs.magicDmg);
-                    baseHealing = baseHealing + Math.floor(healingToDo * 0.8)
+                    baseHealing = baseHealing + Math.floor(healingToDo * rpgAbility.mdPercentage)
                 }
             }
         }else{
@@ -1257,17 +1257,17 @@ function calculateHealingDone(event, caster, target, rpgAbility){
             checkTarget = event.enemies[target];
             if (checkTarget){
                 var healingToDo = 0
-                // healing uses 50% of magic Dmg
+
                 if (rpgAbility.turnsToExpire){
                     healingToDo = healingToDo + (userStats.magicDmg + userStats.statBuffs.magicDmg);
-                    baseHealing = baseHealing + Math.floor(( healingToDo / rpgAbility.turnsToExpire ) * 0.8)
+                    baseHealing = baseHealing + Math.floor(( healingToDo / rpgAbility.turnsToExpire ) * rpgAbility.mdPercentage)
                 }else{
                     if (rpgAbility.areawide){
                         healingToDo = healingToDo + (userStats.magicDmg + userStats.statBuffs.magicDmg);
-                        baseHealing = baseHealing + Math.floor(healingToDo * 0.6)
+                        baseHealing = baseHealing + Math.floor(healingToDo * rpgAbility.mdPercentage)
                     }else{
                         healingToDo = healingToDo + (userStats.magicDmg + userStats.statBuffs.magicDmg);
-                        baseHealing = baseHealing + Math.floor(healingToDo * 0.8)
+                        baseHealing = baseHealing + Math.floor(healingToDo * rpgAbility.mdPercentage)
                     }
                 }
             }
@@ -1533,9 +1533,7 @@ function processAbility(abilityObject, event){
                         alreadyHaveStatus = true;
                     }
                     // add the status here
-                    if (event.membersInParty[targetToAddStatus].statuses[status].name == "weakened"
-                        || event.membersInParty[targetToAddStatus].statuses[status].name == "crippled"
-                        || event.membersInParty[targetToAddStatus].statuses[status].name == "frozen" ){
+                    if (event.membersInParty[targetToAddStatus].statuses[status].name == statusToAdd.name){
                             alreadyHaveStatus = true;
                     }
                 }
@@ -1556,9 +1554,7 @@ function processAbility(abilityObject, event){
                         alreadyHaveStatus = true;
                     }
 
-                    if (event.enemies[targetToAddStatus].statuses[status].name == "weakened"
-                        || event.enemies[targetToAddStatus].statuses[status].name == "crippled"
-                        || event.enemies[targetToAddStatus].statuses[status].name == "frozen" ){
+                    if (event.enemies[targetToAddStatus].statuses[status].name == statusToAdd.name){
                             alreadyHaveStatus = true;
                     }
                 }
@@ -2355,14 +2351,14 @@ var rpgAbilities = {
     },
     iceshards: {
         dmg: 45,
-        mdPercentage: 0.7,
+        mdPercentage: 0.6,
         type: "ice",
         areawide: true,
         targets: "enemy"
     },
     slash: {
         dmg: 45,
-        adPercentage: 0.7,
+        adPercentage: 0.6,
         type: "physical",
         areawide: true,
         targets: "enemy"
@@ -2396,10 +2392,10 @@ var rpgAbilities = {
         special: {
             name: "drain",
             adPercentage: 0.8,
-            dmg: 35,
-            heal: 15,
+            dmg: 40,
+            heal: 20,
             mdPercentage: 0.8,
-            healPercentage: 0.45
+            healPercentage: 0.5
         }
     },
     haste: {
@@ -2580,9 +2576,9 @@ var enemiesToEncounter = {
                     name: "frenzy",
                     emoji: "😡",
                     onTurnEnd: {
-                        attackDmgPlus : 80,
-                        magicDmgPlus : 80,
-                        everyNTurns: 2,
+                        attackDmgPlus : 55,
+                        magicDmgPlus : 55,
+                        everyNTurns: 1,
                         startTurn: 2
                     }
                 }
@@ -2602,9 +2598,9 @@ var enemiesToEncounter = {
                     name: "frenzy",
                     emoji: "😡",
                     onTurnEnd: {
-                        attackDmgPlus : 80,
-                        magicDmgPlus : 80,
-                        everyNTurns: 2,
+                        attackDmgPlus : 55,
+                        magicDmgPlus : 55,
+                        everyNTurns: 1,
                         startTurn: 2
                     }
                 }
@@ -2624,9 +2620,9 @@ var enemiesToEncounter = {
                     name: "frenzy",
                     emoji: "😡",
                     onTurnEnd: {
-                        attackDmgPlus : 80,
-                        magicDmgPlus : 80,
-                        everyNTurns: 2,
+                        attackDmgPlus : 55,
+                        magicDmgPlus : 55,
+                        everyNTurns: 1,
                         startTurn: 2
                     }
                 }
@@ -2650,9 +2646,9 @@ var enemiesToEncounter = {
                     name: "frenzy",
                     emoji: "😡",
                     onTurnEnd: {
-                        attackDmgPlus : 135,
-                        magicDmgPlus : 135,
-                        everyNTurns: 2,
+                        attackDmgPlus : 95,
+                        magicDmgPlus : 95,
+                        everyNTurns: 1,
                         startTurn: 2
                     }
                 }
@@ -2674,9 +2670,9 @@ var enemiesToEncounter = {
                     name: "frenzy",
                     emoji: "😡",
                     onTurnEnd: {
-                        attackDmgPlus : 135,
-                        magicDmgPlus : 135,
-                        everyNTurns: 2,
+                        attackDmgPlus : 95,
+                        magicDmgPlus : 95,
+                        everyNTurns: 1,
                         startTurn: 2
                     }
                 }
@@ -2698,9 +2694,9 @@ var enemiesToEncounter = {
                     name: "frenzy",
                     emoji: "😡",
                     onTurnEnd: {
-                        attackDmgPlus : 105,
-                        magicDmgPlus : 105,
-                        everyNTurns: 2,
+                        attackDmgPlus : 95,
+                        magicDmgPlus : 95,
+                        everyNTurns: 1,
                         startTurn: 2
                     }
                 }
