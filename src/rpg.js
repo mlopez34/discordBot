@@ -18,7 +18,7 @@ module.exports.rpgInitialize = function(message){
     team.push(message.author);
 
     users.forEach(function(user){
-        if (team.length < 4 ){//&& discordUserId != user.id){
+        if (team.length < 4 && discordUserId != user.id){
             team.push(user);
         }
     })
