@@ -2978,7 +2978,7 @@ module.exports.useCommand = function(message, args){
             message.channel.send("mention a user to throw a rock at, you cannot throw rocks at bots or yourself...");
         }
     }
-    else if(args && args.length > 1 && args[1].toLowerCase() == "pieceofwood" || args[1].toLowerCase() == "wood"){
+    else if(args && args.length > 1 && (args[1].toLowerCase() == "pieceofwood" || args[1].toLowerCase() == "wood")){
         // use pieces of wood - protect against rocks being thrown at you (uses 6 pieces, protects against 3)
         profileDB.getUserItems(discordUserId, function(error, inventoryResponse){
             if (error){
@@ -3038,7 +3038,7 @@ module.exports.useCommand = function(message, args){
             }
         })
     }
-    else if (args && args.length > 1 && args[1].toLowerCase() == "terrycloth" || args[1].toLowerCase() == "terry"){
+    else if (args && args.length > 1 && (args[1].toLowerCase() == "terrycloth" || args[1].toLowerCase() == "terry")){
         // create a rare item (chance) if not then receive tacos
         profileDB.getUserItems(discordUserId, function(error, inventoryResponse){
             if (error){
@@ -3139,7 +3139,7 @@ module.exports.useCommand = function(message, args){
     }
 
     
-    else if (args && args.length > 1 && args[1].toLowerCase() == "sodacan" || args[1].toLowerCase() == "soda"){
+    else if (args && args.length > 1 && (args[1].toLowerCase() == "sodacan" || args[1].toLowerCase() == "soda")){
         // recycle for an item only obtainable by recycling - reputation with Bender allows u to shop for
         // 50 - pet, 175 - 20% reduced price benders shop, 400 - 50 tacos (casserole, triple cooked tacos), 1000 (server title on profile, roll one of the rarest items)
         var cansToUse = args[2] ? args[2] : 1;
