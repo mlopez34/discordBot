@@ -282,7 +282,7 @@ module.exports.rpgReady = function(message, itemsAvailable){
                                             armor: 5 + (partyMemberStats.level * partyMemberStats.level) + partyMemberArmorPlus,
                                             spirit: 5 + (partyMemberStats.level * partyMemberStats.level) + partyMemberSpiritPlus,
                                             luck: 1 + partyMemberLuckPlus,
-                                            abilities: ["attack", "flameblast"],
+                                            abilities: ["attack"],
                                             statuses: [],
                                             statBuffs: {
                                                 hp: 0,
