@@ -2253,8 +2253,8 @@ var rpgAbilities = {
     },
     tacoheal : {
         name: "heal",
-        heal: 30,
-        mdPercentage: 0.8
+        heal: 40,
+        mdPercentage: 1
     },
     bandaid : {
         name: "bandaid",
@@ -2431,7 +2431,7 @@ var rpgAbilities = {
     },
     elixir: {
         heal: 22,
-        mdPercentage: 0.8,
+        mdPercentage: 1,
         areawide: true,
         targets: "friendly"
     },
