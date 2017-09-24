@@ -18,7 +18,7 @@ module.exports.rpgInitialize = function(message){
     team.push(message.author);
 
     users.forEach(function(user){
-        if (team.length < 4 ){//&& discordUserId != user.id){
+        if (team.length < 4 && discordUserId != user.id){
             team.push(user);
         }
     })
@@ -282,7 +282,7 @@ module.exports.rpgReady = function(message, itemsAvailable){
                                             armor: 5 + (partyMemberStats.level * partyMemberStats.level) + partyMemberArmorPlus,
                                             spirit: 5 + (partyMemberStats.level * partyMemberStats.level) + partyMemberSpiritPlus,
                                             luck: 1 + partyMemberLuckPlus,
-                                            abilities: ["attack", "weaken", "scold"],
+                                            abilities: ["attack"],
                                             statuses: [],
                                             statBuffs: {
                                                 hp: 0,
