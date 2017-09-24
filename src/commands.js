@@ -286,7 +286,7 @@ module.exports.thankCommand = function(message){
                     if (wearErr){
                         
                     }else{
-                        console.log(wearRes);
+                        // console.log(wearRes);
                         var minutesToRemove = wearStats.calculateMinutesReduced(wearRes, "thank");
                         console.log("MINUTES TO REMOVE " + minutesToRemove);
                         // check against thank timestamp and if 2 hours have passed
@@ -312,7 +312,7 @@ module.exports.thankCommand = function(message){
                                             console.log(updateerr);
                                         }
                                         else{
-                                            console.log(updateResponse);
+                                            // console.log(updateResponse);
                                             var experienceFromItems = wearRes.thankCommandExperienceGain ? wearRes.thankCommandExperienceGain : 0;
                                             experience.gainExperience(message, discordUserId, EXPERIENCE_GAINS.thank + experienceFromItems, thankResponse);
                                             //update statistic
@@ -377,7 +377,7 @@ module.exports.sorryCommand = function(message){
                     if (wearErr){
                         
                     }else{
-                        console.log(wearRes);
+                        // console.log(wearRes);
                         var minutesToRemove = wearStats.calculateMinutesReduced(wearRes, "sorry");
                         console.log("MINUTES TO REMOVE " + minutesToRemove);
                         // check six hours ago
@@ -424,7 +424,7 @@ module.exports.sorryCommand = function(message){
                                             console.log(updateerr);
                                         }
                                         else{
-                                            console.log(updateResponse);
+                                            //console.log(updateResponse);
                                             experience.gainExperience(message, discordUserId, EXPERIENCE_GAINS.sorry , sorryResponse);
                                             stats.statisticsManage(discordUserId, "sorrycount", 1, function(err, statSuccess){
                                                 if (err){
@@ -481,7 +481,7 @@ module.exports.buyStandCommand = function (message){
             if (buyStandResponse.data.tacostands && buyStandResponse.data.tacostands > -1){
                 userTacoStands = buyStandResponse.data.tacostands;
             }
-            console.log(buyStandResponse.data.tacos);
+            //console.log(buyStandResponse.data.tacos);
             var standCost = BASE_TACO_COST + (userTacoStands * 25);
             if (buyStandResponse.data.tacos >= standCost){
                 // purchaseStand
@@ -498,7 +498,7 @@ module.exports.buyStandCommand = function (message){
                         var data = {}
                         data.achievements = achievements;
                         data.tacostands = userTacoStands + 1;
-                        console.log(data);
+                        //console.log(data);
                         achiev.checkForAchievements(discordUserId, data, message);
                             
                     }
@@ -576,7 +576,7 @@ module.exports.prepareCommand = function (message){
                                             console.log(updateerr);
                                         }
                                         else{
-                                            console.log(updateResponse);
+                                            //console.log(updateResponse);
                                             
                                             if (extraTacosFromItems > 0){
                                                 message.channel.send(message.author + " You have prepared `" + tacosToPrepare + "` tacos :taco:! `" + soiledToTaco +"` were from soiled crops. The tacos also come with `1` warranty protection" + " received `" + extraTacosFromItems + "` extra tacos");
