@@ -2265,9 +2265,7 @@ function scavengeEmbedBuilder(message, itemsScavenged, tacosFound){
     }
 
     const embed = new Discord.RichEmbed()
-    .setAuthor(message.author.username +"'s Scavenge ")
-    .addField("Items found:", itemsMessage, true)
-    .setDescription( ":pick:" )
+    .addField("[" + message.author.username +"'s Scavenge] :pick: Items found: ", itemsMessage, true)
     .setThumbnail(message.author.avatarURL)
     .setColor(0xbfa5ff)
     message.channel.send({embed});
