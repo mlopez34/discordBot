@@ -2479,8 +2479,17 @@ var rpgAbilities = {
 }
 
 // enemy abilities
-var enemyAbilities = {
+// bomb, 
+// absorb shield (dmg when broken), self damage on (physical or magical)
+// increasing curse (jumps to next person and resets if bandaided)
+// aura (dmg per turn)
+// aura (heal per turn 20% of current hp of members, needs lockon ability)
+// ram (lots of dmg initial target, then reduced damage to subsequent targets)
+// totem of doom (lasts 3 turns, if after 3 turns it is alive, deal lots of damage)
+// 
 
+var enemyAbilities = {
+    
 }
 
 // possible enemies to fight
@@ -2570,7 +2579,7 @@ var enemiesToEncounter = {
     hard: [
         {
             name: "Football Player",
-            abilities: ["attack", "attack", "barrier", "shock", "shock", "rockthrow", "rockthrow", "empower"],
+            abilities: ["attack", "attack", "shield", "slash", "slash", "rockthrow", "empower"],
             buffs: [
                 {
                     name: "frenzy",
@@ -2614,7 +2623,7 @@ var enemiesToEncounter = {
         },
         {
             name: "Funny Politician",
-            abilities: ["attack" , "attack" , "revive", "foodpoisoning", "shoot", "shoot","freeze"],
+            abilities: ["attack" , "attack" , "revive", "curse", "shoot", "shoot","freeze"],
             buffs: [
                 {
                     name: "frenzy",
@@ -2639,7 +2648,7 @@ var enemiesToEncounter = {
         {
             name: "Vampire",
             abilities: [
-               "attack", "attack", "rockthrow", "rockthrow", "shock", "shock", "barrier"
+               "attack", "attack", "rockthrow", "rockthrow", "shock", "shock", "tacowall"
             ],
             buffs: [
                 {
@@ -2687,7 +2696,7 @@ var enemiesToEncounter = {
         {
             name: "Desperado",
             abilities: [
-                "attack", "attack", "shoot", "shoot", "shock", "shock", "empower"
+                "attack", "attack", "shoot", "shoot", "slash", "slash", "empower"
             ],
             buffs: [
                 {
@@ -2709,6 +2718,7 @@ var enemiesToEncounter = {
             element: "normal"
         }
     ],
+    // time travel, demonic summoning, abraham lincolns tomb, evil exes
     special: [
         {
             name: "Taco Monster 13",
@@ -2743,7 +2753,6 @@ var enemiesToEncounter = {
             spirit: 24,
             element: "normal"
         }
-        
     ],
     challenge: {
         1 :{

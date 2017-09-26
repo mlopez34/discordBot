@@ -347,7 +347,7 @@ module.exports.thankCommand = function(message){
             }
         });
     }
-    else if (NeedsToAgree[mentionedId]){
+    else if (NeedsToAgree[mentionedId] && NeedsToAgree[mentionedId].hasNotAgreed){
         //message.channel.send(message.author + " You must mention a user or a user that isn't you whom you want to thank!");
         message.channel.send("the user has not yet agreed to the terms!")
     }
@@ -457,7 +457,7 @@ module.exports.sorryCommand = function(message){
             }
         })
     }
-    else if (NeedsToAgree[mentionedId]){
+    else if (NeedsToAgree[mentionedId] && NeedsToAgree[mentionedId].hasNotAgreed){
         message.channel.send("the user has not yet agreed to the terms!")
         // message.channel.send(message.author + " You must mention a user or a user that isn't you whom you want to apologize to!");
     }
@@ -654,11 +654,11 @@ module.exports.welcomeCommand = function(message){
         profileDB.getUserProfileData( mentionedId, function(err, welcomeResponse) {
             if(err){
                 // user doesnt exist, create their profile first
-                if(err.code === 0 && !NeedsToAgree[mentionedId]){
-                    welcomeAgreeToTerms(message, mentionedId, mentionedUser);
+                if(err.code === 0 && !NeedsToAgree[mentionedId] ){
+                    welcomeAgreeToTerms(message, mentionedId, mentionedUser, message.author);
                 }
                 else{
-                    message.channel.send("The user has already been welcomed and needs to agree, or deny the terms");
+                    message.channel.send("The user has already been welcomed and needs to agree, or deny the terms.");
                 }
             }
             else{
@@ -726,7 +726,7 @@ module.exports.giveCommand = function(message, giveTacoAmount){
     else if(giveTacoAmount < 2){
         message.channel.send(message.author + " You must give more than 2 tacos!")
     }
-    else if (NeedsToAgree[mentionedId]){
+    else if (NeedsToAgree[mentionedId] && NeedsToAgree[mentionedId].hasNotAgreed){
         message.channel.send("the user has not yet agreed to the terms!")
     }
     else{
@@ -825,7 +825,7 @@ module.exports.giveCommand = function(message, giveTacoAmount){
                     })
                 }
                 else{
-                    console.log('dont have enough tacos ')
+                    console.log('dont have enough tacos.')
                 }
             }
         })
@@ -1248,9 +1248,8 @@ module.exports.tacosCommand = function(message){
 
 function tacoEmbedBuilder(message, profileData){
     const embed = new Discord.RichEmbed()
-    .setAuthor(profileData.userName +"'s Tacos")
     .setColor(0x00AE86)
-    .addField('Tacos  :taco:', profileData.userTacos, true)
+    .addField( profileData.userName +"'s Tacos" + ' :taco:', profileData.userTacos, true)
     .setFooter('use ' + config.commandString + 'give @user to give a user some tacos!')
     message.channel.send({embed});
 }
@@ -1277,9 +1276,8 @@ module.exports.tacoStandsCommand = function(message){
 
 function tacoStandsEmbedBuilder(message, profileData){
     const embed = new Discord.RichEmbed()
-    .setAuthor(profileData.userName +"'s Taco Stands")
     .setColor(0x00AE86)
-    .addField('Taco Stands  :bus:', profileData.userTacoStands, true)
+    .addField(profileData.userName +"'s Taco Stands :bus:", profileData.userTacoStands, true)
 
     message.channel.send({embed});
 }
@@ -2055,8 +2053,8 @@ module.exports.scavangeCommand = function (message){
                                 var RARE_MAX_ROLL = 9975;
                                 var RARE_MIN_ROLL = 9800;
                                 var UNCOMMON_MAX_ROLL = 9800;
-                                var UNCOMMON_MIN_ROLL = 9000;
-                                var COMMON_MAX_ROLL = 9000;
+                                var UNCOMMON_MIN_ROLL = 8750;
+                                var COMMON_MAX_ROLL = 8750;
                                 var COMMON_ITEMS_TO_OBTAIN = 1;
                                 var TACOS_FOUND_MULTIPLIER = 1;
                                 var EXPERIENCE_MULTIPLIER = 1;
@@ -2884,7 +2882,7 @@ module.exports.useCommand = function(message, args){
         mentionedUser = user
         mentionedUserName = user.username;
     })
-    if (NeedsToAgree[discordUserId]){
+    if (NeedsToAgree[discordUserId] && NeedsToAgree[discordUserId].hasNotAgreed){
         message.channel.send("You have not agreed to the terms yet!")
     }
     else if (args && args.length > 1 && args[1].toLowerCase() == "rock"){
@@ -3550,7 +3548,12 @@ module.exports.wearingCommand = function(message, args){
                                 profileData.slot1String = slot1String;
                                 profileData.slot2String = slot2String;
                                 profileData.slot3String = slot3String;
-                                wearingEmbedBuilder(message, profileData, statsString);
+                                var activeSlots = {
+                                    activeSlot1: slot1active, 
+                                    activeSlot2: slot2active, 
+                                    activeSlot3: slot3active
+                                }
+                                wearingEmbedBuilder(message, profileData, statsString, activeSlots);
 
                             }
                         })
@@ -3564,19 +3567,22 @@ module.exports.wearingCommand = function(message, args){
     });
 }
 
-function wearingEmbedBuilder(message, profileData, statsString){
+function wearingEmbedBuilder(message, profileData, statsString, activeSlots){
     const embed = new Discord.RichEmbed()
     .setAuthor(message.author.username + "'s Wearing Items")
     .setThumbnail(message.author.avatarURL)
     .setColor(0x00AE86)
     if (profileData.slot1String && profileData.slot1String.length > 0){
-        embed.addField('Slot 1', profileData.slot1String, false)
+        var activeText1 = activeSlots.activeSlot1 ? "**ACTIVE**" : "";
+        embed.addField('Slot 1 ' + activeText1, profileData.slot1String, false)
     }
     if (profileData.slot2String && profileData.slot2String.length > 0){
-        embed.addField('Slot 2', profileData.slot2String, false)
+        var activeText2 = activeSlots.activeSlot2 ? "**ACTIVE**" : "";
+        embed.addField('Slot 2 ' + activeText2, profileData.slot2String, false)
     }
     if (profileData.slot3String && profileData.slot3String.length > 0){
-        embed.addField('Slot 3', profileData.slot3String, false)
+        var activeText3 = activeSlots.activeSlot3 ? "**ACTIVE**" : "";
+        embed.addField('Slot 3 ' + activeText3, profileData.slot3String, false)
     }
     if (statsString && statsString.length > 0){
         embed.addField('Stats Summary', statsString, false)
@@ -4458,17 +4464,40 @@ module.exports.cancelTradeCommand = function(message, args){
 
 module.exports.agreeTermsCommand = function(message, args){
     var discordUserId = message.author.id
-    if (NeedsToAgree[discordUserId]){
+    if (NeedsToAgree[discordUserId] && NeedsToAgree[discordUserId].hasNotAgreed){
         profileDB.getUserProfileData(discordUserId, function(error, data){
             if (error){
                 // this is what we are expecting, from here we expect to create the user profile
-                var userData = initialUserProfile(discordUserId)
+                var userData = initialUserProfile(discordUserId);
+                var host = NeedsToAgree[discordUserId].hostUser;
                 profileDB.createUserProfile(userData, function(err, createResponse){
                     if(err){
                         console.log(err);
+                        message.channel.send("user already exists")
                     }
                     else{
-                        message.channel.send("welcome aboard ! " + message.author + " your profile has been created.");
+                        profileDB.updateUserTacosWelcome(discordUserId, 1, function(err, updateResponse) {
+                            if (err){
+                                console.log(err);
+                            }
+                            else{
+                                // send message that the user has 1 more taco
+                                Last_Five_Welcomes.push(discordUserId);
+                                if (Last_Five_Welcomes.length >= 5){
+                                    Last_Five_Welcomes.shift();
+                                }
+                                message.channel.send("welcome aboard ! " + message.author + " your profile has been created. " + host + " will be your host!" );
+                                stats.statisticsManage(host.id, "welcomecount", 1, function(err, statSuccess){
+                                    if (err){
+                                        console.log(err);
+                                    }
+                                    else{
+                                        // check achievements??
+                                        getProfileForAchievement(host.id, message)
+                                    }
+                                })
+                            }
+                        })
                         delete NeedsToAgree[discordUserId]
                     }
                 })
@@ -4485,7 +4514,7 @@ module.exports.agreeTermsCommand = function(message, args){
 
 module.exports.denyTermsCommand = function(message, args){
     var discordUserId = message.author.id
-    if (NeedsToAgree[discordUserId]){
+    if (NeedsToAgree[discordUserId] && NeedsToAgree[discordUserId].hasNotAgreed){
         message.channel.send(message.author + " Your profile will not be created.")
     }
     else{
@@ -4494,12 +4523,16 @@ module.exports.denyTermsCommand = function(message, args){
 }
 
 function agreeToTerms(message, discordUserId){
-    NeedsToAgree[discordUserId] = true;
+    NeedsToAgree[discordUserId] = {};
+    NeedsToAgree[discordUserId].hasNotAgreed = true;
     message.channel.send("Hey " + message.author + " Bender will be storing and encrypting your discord id to bring you the best experience, please type -agree to accept these terms, or -deny to decline them!")
 }
 
-function welcomeAgreeToTerms(message, mentionedId, mentionedUser){
-    NeedsToAgree[mentionedId] = true;
+function welcomeAgreeToTerms(message, mentionedId, mentionedUser, host){
+    NeedsToAgree[mentionedId] = {
+        hasNotAgreed: true,
+        hostUser: host
+    };
     message.channel.send("Hey " + mentionedUser + " Bender will be storing and encrpyting your discord id to bring you the best experience, please type -agree to accept these terms, or -deny to decline them!")
 }
 
@@ -4697,10 +4730,9 @@ module.exports.createTableCommand = function(message, mainChannel){
 function createParty(message, discordUserId, uncommonsToUse, mainChannel){
     
     const embed = new Discord.RichEmbed()
-    .setAuthor("Taco party created by " + message.author.username + "!!")
     .setThumbnail("https://media.giphy.com/media/mIZ9rPeMKefm0/giphy.gif")
     .setColor(0xF2E93E)
-    .addField('Eat some tacos, drink some orchata water, or dance with Aileen your taco hostess', "Pick one! \n🌮 = taco x2, 🍹 = terry cloth x1, 💃🏼 = rock x1 \nYou will receive it at the end of the party (5 minutes)" )
+    .addField("Taco party created by " + message.author.username + "!! " + 'Eat some tacos, drink some orchata water, or dance with Aileen your taco hostess', "Pick one! 🌮 = taco x2, 🍹 = terry cloth x1, 💃🏼 = rock x1 \nYou will receive it at the end of the party (5 minutes)" )
 
     useItem.useUncommons(message, discordUserId, uncommonsToUse, function(useError, useRes){
         if (useError){
