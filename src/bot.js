@@ -254,6 +254,9 @@ client.on('message', function(message){
             else if( commandIs("welcome", message)){
                 commands.welcomeCommand(message);
             }
+            else if (commandIs("agree", message)){
+                commands.agreeTermsCommand(message, args);
+            }
         }
         
     }else{

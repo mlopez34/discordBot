@@ -652,10 +652,7 @@ module.exports.slotStringBuilder = function(message, slotData, slotActive){
 
         var command = slotData.command
         var emoji = "";
-        if (slotActive){
-            slotStr = slotStr + " **[ACTIVE]** \n"
-        }
-        slotStr = slotStr + "**Item Name:** " + slotData.itemname +  "\n**Item Slot:** " + slotData.itemslot + "\n**Item Stats:** ";
+        slotStr = slotStr + "**Item Name:** " + slotData.itemname +  " - " + slotData.itemslot + "\n**Item Stats:** ";
         if (command){
             slotStr = slotStr + "\n   On: " + emoji + " **" + slotData.command + "**"
         }
