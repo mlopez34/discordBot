@@ -2739,7 +2739,9 @@ module.exports.buypetCommand = function(message, args){
                                 if (PETS_AVAILABLE[pet] != undefined && userRepLevel && userRepLevel >= PETS_AVAILABLE[pet].repLevel){
                                     // can afford the pet update user pet, take away tacos.
                                     var threedaysAgo = new Date();
-                                    threedaysAgo = new Date(threedaysAgo.setHours(threedaysAgo.getHours() - 72));
+                                    if (!buyPetResponse.data.pet){
+                                        threedaysAgo = new Date(threedaysAgo.setHours(threedaysAgo.getHours() - 72));                                        
+                                    }
                                     profileDB.updateUserPet(discordUserId, pet, petName, threedaysAgo, function( petError, petResponse){
                                         if (petError){
                                             console.log(petError);
