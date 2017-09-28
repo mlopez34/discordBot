@@ -2741,6 +2741,8 @@ module.exports.buypetCommand = function(message, args){
                                     var threedaysAgo = new Date();
                                     if (!buyPetResponse.data.pet){
                                         threedaysAgo = new Date(threedaysAgo.setHours(threedaysAgo.getHours() - 72));                                        
+                                    }else{
+                                        threedaysAgo = buyPetResponse.data.lastfetchtime
                                     }
                                     profileDB.updateUserPet(discordUserId, pet, petName, threedaysAgo, function( petError, petResponse){
                                         if (petError){
