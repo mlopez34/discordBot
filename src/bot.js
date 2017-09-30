@@ -36,7 +36,7 @@ client.on('ready', function(err) {
             mainChannel = channel;
         }
     })
-    steal(channelName);
+    //steal(channelName);
 });
 
 function commandIs(str, msg){
@@ -53,7 +53,7 @@ function commandIs(str, msg){
 }
 
 client.on('message', function(message){
-    // console.log(message);
+    console.log(message);
     if (botEnabled){
         console.log(message.author.id); // id of the user that created the message
         var args = message.content.split(/[ ]+/);

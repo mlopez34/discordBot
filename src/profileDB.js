@@ -485,6 +485,25 @@ module.exports.checkStatistics = function(discordId, cb){
     });
 }
 
+// start a quest line
+module.exports.userStartQuest = function(discordUserId, questName, cb){
+    var query;
+    if (questName == "timetravel"){
+        query = 'update ' + config.profileTable + ' set demonicqueststage=1 where discordid=$1'        
+    }
+    // do else for all questlines
+    db.none(query, [discordUserId])
+    .then(function () {
+    cb(null, {
+        status: 'success',
+        message: 'started quest for demonic'
+        });
+    })
+    .catch(function (err) {
+        cb(err);
+    });
+}
+
 // get items from itemsTable
 module.exports.getItemData = function(cb) {
   var query = 'select * from ' + config.itemsTable

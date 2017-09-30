@@ -9,6 +9,7 @@ var config = require("./config.js");
 var useItem = require("./useItem.js")
 var experience = require("./experience.js")
 var wearStats = require("./wearStats.js")
+var quest = require("./quest.js")
 // game files
 /*
 var game = require("./card_game/miniGame.js");
@@ -1851,10 +1852,11 @@ function raresEmbedBuilder(message, itemsMap, allItems, long){
     const embed = new Discord.RichEmbed()
     var inventoryStrings = [];
     var inventoryString = "";
+    var fieldCount = 0
     for (var key in itemsMap) {
         if (itemsMap.hasOwnProperty(key)) {
             // 
-            if (allItems[key].itemraritycategory == "rare"
+            if (allItems[key] && (allItems[key].itemraritycategory == "rare"
                 || allItems[key].itemraritycategory == "rare+"
                 || allItems[key].itemraritycategory == "rare++"
                 || allItems[key].itemraritycategory == "ancient"
@@ -1862,7 +1864,7 @@ function raresEmbedBuilder(message, itemsMap, allItems, long){
                 || allItems[key].itemraritycategory == "ancient++"
                 || allItems[key].itemraritycategory == "artifact"
                 || allItems[key].itemraritycategory == "artifact+"
-                || allItems[key].itemraritycategory == "myth"){
+                || allItems[key].itemraritycategory == "myth")){
                 console.log(key + " " + allItems[key].itemname)
                 
                 var emoji = "";
@@ -1890,8 +1892,9 @@ function raresEmbedBuilder(message, itemsMap, allItems, long){
                     emoji = ":diamonds: "
                 }
                 
-                if (long){
+                if (long && fieldCount < 25){
                     embed.addField(emoji + " " + allItems[key].itemname, itemsMap[key] + " - " + allItems[key].itemslot + " - " + allItems[key].itemstatistics, true)
+                    fieldCount++
                 }else{
                     if (inventoryString.length > 900){
                         inventoryStrings.push(inventoryString);
@@ -1979,7 +1982,7 @@ function inventoryEmbedBuilder(message, itemsMap, allItems){
     for (var key in itemsMap) {
         if (itemsMap.hasOwnProperty(key)) {
             // 
-            if (allItems[key].itemraritycategory == "common" || allItems[key].itemraritycategory == "uncommon"){
+            if (allItems[key] && (allItems[key].itemraritycategory == "common" || allItems[key].itemraritycategory == "uncommon")){
                 console.log(key + " " + allItems[key].itemname)
                 inventoryString = "**"+allItems[key].itemname + "** - " +  itemsMap[key] + " - " + allItems[key].itemslot +"\n" + inventoryString;
             }
@@ -3350,6 +3353,7 @@ module.exports.combineCommand = function(message, args){
                             // item hasnt been added to be counted, add it as 1
                             itemsInInventoryCountMap[inventoryResponse.data[item].itemid] = 1;
                             if (itemsMapbyShortName[myItemShortName] 
+                                && itemsMapById[ItemInQuestion.itemid]
                                 && itemsMapById[ItemInQuestion.itemid].itemshortname === myItemShortName ){
                                 var rarityOfItem = itemsMapbyShortName[myItemShortName].itemraritycategory
                                 if (rarityOfItem == "rare"){
@@ -3363,10 +3367,14 @@ module.exports.combineCommand = function(message, args){
                                 else if (rarityOfItem == "ancient+"){
                                     itemCount = 4
                                 }
+                                else if (rarityOfItem == "artifact"){
+                                    itemCount = 1
+                                }
                             }
                             console.log(ItemInQuestion);
                             if (itemsMapbyShortName[myItemShortName] 
                                 && itemsBeingedCombined.length < itemCount
+                                && itemsMapById[ItemInQuestion.itemid]
                                 && itemsMapById[ItemInQuestion.itemid].itemshortname === myItemShortName){
                                     itemsBeingedCombined.push(ItemInQuestion);
                             }
@@ -3375,6 +3383,7 @@ module.exports.combineCommand = function(message, args){
                             itemsInInventoryCountMap[inventoryResponse.data[item].itemid] = itemsInInventoryCountMap[inventoryResponse.data[item].itemid] + 1;
                             if (itemsMapbyShortName[myItemShortName] 
                                 && itemsBeingedCombined.length < itemCount
+                                && itemsMapById[ItemInQuestion.itemid]
                                 && itemsMapById[ItemInQuestion.itemid].itemshortname === myItemShortName){
                                     itemsBeingedCombined.push(ItemInQuestion);
                             }
@@ -3386,7 +3395,68 @@ module.exports.combineCommand = function(message, args){
                         if (itemsMapbyShortName[myItemShortName]){
                             var idOfMyItem = itemsMapbyShortName[myItemShortName].id;
 
-                            if (itemsInInventoryCountMap[idOfMyItem] && 
+                            var rarityOfMyItem = itemsMapbyShortName[myItemShortName].itemraritycategory
+                            // TODO: do not allow user to combine if they are on stage # of the artifact quest
+                            if (rarityOfMyItem && rarityOfMyItem == "artifact"){
+                                // take the ids of the other 2 artifacts + artifact recipe and push them onto itemsBeingCombined array
+                                var artifactId = 1//ARTIFACT_RECIPE_ID;
+                                var recipeAdded = false;
+                                var firstArtifact = 2; // replce this
+                                var firstArtifactAdded = false;
+                                var secondArtifact = 3; // replace this
+                                var secondArtifactAdded = false;
+                                // get these ids and find if user has count > 1 of these in their inventory
+                                if (itemsInInventoryCountMap[artifactId] >= 1
+                                    && itemsInInventoryCountMap[firstArtifact] >= 1
+                                    && itemsInInventoryCountMap[secondArtifact] >= 1){
+                                    for (var item in inventoryResponse.data){
+                                        var validItem = useItem.itemValidate(inventoryResponse.data[item]);
+                                        var notWearing = useItem.itemNotWearing(inventoryResponse.data[item])
+                                        var auctionedItem = false;
+                                        var ItemInQuestion = inventoryResponse.data[item]
+
+                                        if ( itemsMapById[ItemInQuestion.itemid] && itemsMapById[ItemInQuestion.itemid].id === artifactId && !recipeAdded){
+                                            itemsBeingedCombined.push(ItemInQuestion);
+                                            recipeAdded = true;
+                                        }
+                                        else if (itemsMapById[ItemInQuestion.itemid] && itemsMapById[ItemInQuestion.itemid].id === firstArtifact && !firstArtifactAdded){
+                                            itemsBeingedCombined.push(ItemInQuestion);
+                                            firstArtifactAdded = true;
+                                        }
+                                        else if (itemsMapById[ItemInQuestion.itemid] && itemsMapById[ItemInQuestion.itemid].id === secondArtifact && !secondArtifactAdded){
+                                            itemsBeingedCombined.push(ItemInQuestion);
+                                            secondArtifactAdded = true
+                                        }
+                                    }
+                                    // added all required items - set the artifacts to 'questing'
+
+                                    var itemToCreate = itemsMapById[combineToId];
+                                    var itemToCreateById = itemsMapById[combineToId].id;
+                                    var itemToCreateByName = itemsMapById[combineToId].itemname
+                                    
+                                    // enable user to be in quest stage 1 of the quest series (user profile)
+                                    var questName = "timetravel"
+                                    profileDB.userStartQuest(discordUserId, questName, function(createErr, createRes){
+                                        if (createErr){
+                                            console.log(createErr);
+                                        }
+                                        else{
+                                            console.log(createRes);                                        
+                                            profileDB.bulkUpdateItemStatus(itemsBeingedCombined, "questing", function(combineErr, combineRes){
+                                                if (combineErr){
+                                                    console.log(combineErr);
+                                                }else{
+                                                    console.log(combineRes);
+                                                    // embed showing the questline has begun
+                                                    var questString = quest.questStringBuilder(questName)
+                                                    quest.questStartEmbedBuilder(message, questName, questString);
+                                                }
+                                            })
+                                        }
+                                    })
+                                }
+                            }
+                            else if (itemsInInventoryCountMap[idOfMyItem] && 
                                 itemsInInventoryCountMap[idOfMyItem] >= itemCount){
                                 // combine all the items into a next level item
                                 var itemToCreate = itemsMapById[combineToId];
@@ -3428,9 +3498,29 @@ module.exports.combineCommand = function(message, args){
     }
 
     // combine rock for boulder, 5 rares to make 1 improved, 5 improved to make 1 refined
-    // combine 2 ancients to make 1 improved ancients, and 2 improved to make 1 refined
-    // combine 2 diff artifacts to make a myth item
-    // combine different rares to make something else?
+}
+
+module.exports.timeTravelCommand = function(message, args){
+    // travel to the specified date in args
+    if (args[1] >= 1210 && args[1] <= 1215){
+        // travel back in time to the year... 
+
+        // check that author is on stage 1 of timetravel 
+
+        // create an rpg event with the tagged members to time travel, 
+
+        // post an embed message that shows the team members back in time, they can react
+        // to the embed and obtain items from these reactions - advance to stage 2
+        
+        // when all 5 members react to this embed they will fight against genghis khan and his 4 knights
+        // (special monsters)
+        // when members succeed and defeat them they will all obtain rewards (group leader advances to stage2) 
+
+        // skipping will close the event
+    }
+    else if (args[1] <= -64000000){
+
+    }
 }
 
 function combineEmbedBuilder(message, itemToCreateByName, ItemDetails, itemRarity){
