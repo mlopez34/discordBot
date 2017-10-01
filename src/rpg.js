@@ -55,6 +55,10 @@ module.exports.rpgInitialize = function(message, special){
             
             activeRPGEvents["rpg-" + sentMessage.id] = { members: membersOfParty };
             activeRPGEvents["rpg-" + sentMessage.id].status = "waiting";
+            if (special){
+                activeRPGEvents["rpg-" + sentMessage.id].special = special;
+                //TODO : add the leader of the event to RPG event - when rpg ends the leader moves to next stage
+            }
         })
     }
     else{
@@ -317,54 +321,90 @@ module.exports.rpgReady = function(message, itemsAvailable){
 
                                     var enemies = {};
                                     var enemyIdCount = 1
-                                    for (var i = 1; i <= enemyCount; i++){
-                                        // roll for enemy rarity, then roll for the actual enemy
-                                        var rollForRarity = Math.floor(Math.random() * 10000) + 1;
-                                        var enemyFound;
-                                        if (rollForRarity >= 9750 ){
-                                            // boss
-                                            var enemyRoll = Math.floor(Math.random() * enemiesToEncounter.boss.length);
-                                            enemyFound = JSON.parse(JSON.stringify( enemiesToEncounter.boss[enemyRoll] ));
+                                    if (activeRPGEvents[rpgEvent].special){
+                                        // get 
+                                        var specialRpg = activeRPGEvents[rpgEvent].special;
+                                        var specialEnemies = enemiesToEncounter.special[specialRpg];
+                                        
+                                        for (var i = 0; i < specialEnemies.length; i++){
+                                            enemyFound = JSON.parse(JSON.stringify( specialEnemies[i] ));
+
+                                            enemies[enemyIdCount] = {
+                                                id: enemyIdCount,
+                                                name: enemyFound.name,
+                                                hp: enemyFound.hp + (17 * maxLevelInParty),
+                                                attackDmg: enemyFound.attackDmg + (7 * maxLevelInParty),
+                                                magicDmg: enemyFound.magicDmg + (7 * maxLevelInParty),
+                                                armor: enemyFound.armor + (maxLevelInParty * maxLevelInParty),
+                                                spirit: enemyFound.spirit + ( maxLevelInParty * maxLevelInParty),
+                                                statuses: [],
+                                                statBuffs: {
+                                                    hp: 0,
+                                                    attackDmg: 0,
+                                                    magicDmg: 0,
+                                                    armor: 0,
+                                                    spirit: 0,
+                                                    maxhp: 0
+                                                },
+                                                buffs: enemyFound.buffs,
+                                                abilities: enemyFound.abilities,
+                                                element: enemyFound.element
+                                            }
+                                            enemies[enemyIdCount].maxhp = enemies[enemyIdCount].hp;
+                                            enemyIdCount++;
                                         }
-                                        else if (rollForRarity >= 8500 && rollForRarity < 9750 ){
-                                            // hard
-                                            var enemyRoll = Math.floor(Math.random() * enemiesToEncounter.hard.length);
-                                            enemyFound = JSON.parse(JSON.stringify( enemiesToEncounter.hard[enemyRoll]));
-                                        }
-                                        else if (rollForRarity >= 5000 && rollForRarity < 8500 ){
-                                            // medium
-                                            var enemyRoll = Math.floor(Math.random() * enemiesToEncounter.medium.length);
-                                            enemyFound = JSON.parse(JSON.stringify( enemiesToEncounter.medium[enemyRoll]));
-                                        }
-                                        else {
-                                            // easy :)
-                                            var enemyRoll = Math.floor(Math.random() * enemiesToEncounter.easy.length);
-                                            enemyFound = JSON.parse(JSON.stringify(  enemiesToEncounter.easy[enemyRoll]));
-                                        }
-                                        enemies[enemyIdCount] = {
-                                            id: enemyIdCount,
-                                            name: enemyFound.name,
-                                            hp: enemyFound.hp + (17 * maxLevelInParty),
-                                            attackDmg: enemyFound.attackDmg + (7 * maxLevelInParty),
-                                            magicDmg: enemyFound.magicDmg + (7 * maxLevelInParty),
-                                            armor: enemyFound.armor + (maxLevelInParty * maxLevelInParty),
-                                            spirit: enemyFound.spirit + ( maxLevelInParty * maxLevelInParty),
-                                            statuses: [],
-                                            statBuffs: {
-                                                hp: 0,
-                                                attackDmg: 0,
-                                                magicDmg: 0,
-                                                armor: 0,
-                                                spirit: 0,
-                                                maxhp: 0
-                                            },
-                                            buffs: enemyFound.buffs,
-                                            abilities: enemyFound.abilities,
-                                            element: enemyFound.element
-                                        }
-                                        enemies[enemyIdCount].maxhp = enemies[enemyIdCount].hp;
-                                        enemyIdCount++;
                                     }
+                                    else{
+                                        for (var i = 1; i <= enemyCount; i++){
+                                            // roll for enemy rarity, then roll for the actual enemy
+                                            var rollForRarity = Math.floor(Math.random() * 10000) + 1;
+                                            var enemyFound;
+                                            if (rollForRarity >= 9750 ){
+                                                // boss
+                                                var enemyRoll = Math.floor(Math.random() * enemiesToEncounter.boss.length);
+                                                enemyFound = JSON.parse(JSON.stringify( enemiesToEncounter.boss[enemyRoll] ));
+                                            }
+                                            else if (rollForRarity >= 8500 && rollForRarity < 9750 ){
+                                                // hard
+                                                var enemyRoll = Math.floor(Math.random() * enemiesToEncounter.hard.length);
+                                                enemyFound = JSON.parse(JSON.stringify( enemiesToEncounter.hard[enemyRoll]));
+                                            }
+                                            else if (rollForRarity >= 5000 && rollForRarity < 8500 ){
+                                                // medium
+                                                var enemyRoll = Math.floor(Math.random() * enemiesToEncounter.medium.length);
+                                                enemyFound = JSON.parse(JSON.stringify( enemiesToEncounter.medium[enemyRoll]));
+                                            }
+                                            else {
+                                                // easy :)
+                                                var enemyRoll = Math.floor(Math.random() * enemiesToEncounter.easy.length);
+                                                enemyFound = JSON.parse(JSON.stringify(  enemiesToEncounter.easy[enemyRoll]));
+                                            }
+                                            enemies[enemyIdCount] = {
+                                                id: enemyIdCount,
+                                                name: enemyFound.name,
+                                                hp: enemyFound.hp + (17 * maxLevelInParty),
+                                                attackDmg: enemyFound.attackDmg + (7 * maxLevelInParty),
+                                                magicDmg: enemyFound.magicDmg + (7 * maxLevelInParty),
+                                                armor: enemyFound.armor + (maxLevelInParty * maxLevelInParty),
+                                                spirit: enemyFound.spirit + ( maxLevelInParty * maxLevelInParty),
+                                                statuses: [],
+                                                statBuffs: {
+                                                    hp: 0,
+                                                    attackDmg: 0,
+                                                    magicDmg: 0,
+                                                    armor: 0,
+                                                    spirit: 0,
+                                                    maxhp: 0
+                                                },
+                                                buffs: enemyFound.buffs,
+                                                abilities: enemyFound.abilities,
+                                                element: enemyFound.element
+                                            }
+                                            enemies[enemyIdCount].maxhp = enemies[enemyIdCount].hp;
+                                            enemyIdCount++;
+                                        }
+                                    }
+                                    
                     
                                     activeRPGEvents[rpgEvent].enemies = enemies;
                                     activeRPGEvents[rpgEvent].enemiesCount = enemyIdCount - 1;
@@ -2487,6 +2527,21 @@ var rpgAbilities = {
 // totem of doom (lasts 3 turns, if after 3 turns it is alive, deal lots of damage)
 // 
 
+/*
+flow : 
+user combines either of the 3 items and it creates artifactQuestline for them in a table
+includes discordid questlineid and the quest they are on and item ids of the items used
+itemids are set to "questprogress" in userInventory
+event has event quest start date, as well as last quest attempt date
+
+when the user is enabled for a questline they will be able to use commands related to that questline
+
+-travel [user] [user] ...  year will take them to that specific year,
+ each year period will give 2 clues to next periods the user should pick
+ if they pick the right period order they will be rewarded with a stronger artifact? 
+
+*/
+
 var enemyAbilities = {
     
 }
@@ -2718,41 +2773,93 @@ var enemiesToEncounter = {
         }
     ],
     // time travel, demonic summoning, abraham lincolns tomb, evil exes
-    special: [
-        {
-            name: "Taco Monster 13",
-            abilities: [
-                "attack",
-                "attack",
-                "foodpoisoning",
-                "foodpoisoning",
-                "shock",
-                "shock"
-            ],
-            buffs: [],
-            hp: 100,
-            attackDmg: 40,
-            magicDmg: 44,
-            armor: 24,
-            spirit: 24,
-            element: "normal"
-        },
-        {
-            name: "Taco Monster 14",
-            abilities: [
-                "attack",
-                "foodpoisoning",
-                "shock"
-            ],
-            buffs: [],
-            hp: 100,
-            attackDmg: 40,
-            magicDmg: 44,
-            armor: 24,
-            spirit: 24,
-            element: "normal"
-        }
-    ],
+    special: {
+        "genghis khan": [
+            {
+                name: "Ghenghis Khan",
+                abilities: [
+                    "attack",
+                    "attack",
+                    "slash",
+                    "iceshards",
+                    "empower",
+                    "cripple"
+                ],
+                buffs: [
+                    {
+                        name: "frenzy",
+                        emoji: "😡",
+                        onTurnEnd: {
+                            attackDmgPlus : 60,
+                            magicDmgPlus : 60,
+                            everyNTurns: 1,
+                            startTurn: 2
+                        }
+                    }
+                ],
+                hp: 12000,
+                attackDmg: 210,
+                magicDmg: 190,
+                armor: 1350,
+                spirit: 1200,
+                element: "normal"
+            },
+            {
+                name: "Subutai",
+                abilities: [
+                    "attack",
+                    "attack",
+                    "shock",
+                    "shock",
+                    "shield",
+                    "elixir"
+                ],
+                buffs: [],
+                hp: 5500,
+                attackDmg: 125,
+                magicDmg: 115,
+                armor: 900,
+                spirit: 500,
+                element: "normal"
+            },
+            {
+                name: "Jebe",
+                abilities: [
+                    "attack",
+                    "attack",
+                    "rockthrow",
+                    "rockthrow",
+                    "drain",
+                    "tacowall"
+                ],
+                buffs: [],
+                hp: 4000,
+                attackDmg: 110,
+                magicDmg: 150,
+                armor: 500,
+                spirit: 900,
+                element: "normal"
+            },
+            {
+                name: "Muqali",
+                abilities: [
+                    "attack",
+                    "attack",
+                    "flameblast",
+                    "flameblast",
+                    "elixir",
+                    "weaken"
+                ],
+                buffs: [],
+                hp: 3350,
+                attackDmg: 100,
+                magicDmg: 140,
+                armor: 750,
+                spirit: 750,
+                element: "normal"
+            }
+        ]
+    },
     challenge: {
         1 :{
             enemies: [

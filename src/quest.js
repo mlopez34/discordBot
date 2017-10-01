@@ -287,10 +287,9 @@ function handleTimeMachineArtifactStageTwo(message, discordUserId, stage, team, 
     .setColor(0xFF7A1C)
     message.channel.send({embed})
     .then(function(sentMessage){
-        // start rpg event with the selected team
+        // TODO: start rpg event with the selected team AFTER 20 seconds
         rpg.rpgInitialize(message, special);
     })
-    // take the team and start a special RPG stage
 }
 
 function artifactStartString(questline, discordUser, mentionedUsers){
