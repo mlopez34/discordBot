@@ -489,7 +489,7 @@ module.exports.checkStatistics = function(discordId, cb){
 module.exports.userStartQuest = function(discordUserId, questName, cb){
     var query;
     if (questName == "timetravel"){
-        query = 'update ' + config.profileTable + ' set demonicqueststage=1 where discordid=$1'        
+        query = 'update ' + config.profileTable + ' set timetravelqueststage=1 where discordid=$1'        
     }
     // do else for all questlines
     db.none(query, [discordUserId])
@@ -497,6 +497,24 @@ module.exports.userStartQuest = function(discordUserId, questName, cb){
     cb(null, {
         status: 'success',
         message: 'started quest for demonic'
+        });
+    })
+    .catch(function (err) {
+        cb(err);
+    });
+}
+
+module.exports.updateQuestlineStage = function(discordUserId, questline, stage, cb){
+    var query;
+    if (questline == "timetravel"){
+        query = 'update ' + config.profileTable + ' set timetravelqueststage=$2 where discordid=$1'        
+    }
+    // do else for all questlines
+    db.none(query, [discordUserId, stage])
+    .then(function () {
+    cb(null, {
+        status: 'success',
+        message: questline + " stage:" + stage
         });
     })
     .catch(function (err) {

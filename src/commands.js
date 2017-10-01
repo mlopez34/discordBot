@@ -3502,12 +3502,61 @@ module.exports.combineCommand = function(message, args){
 
 module.exports.timeTravelCommand = function(message, args){
     // travel to the specified date in args
-    if (args[1] >= 1210 && args[1] <= 1215){
+    var discordUserId = message.author.id;
+
+    var users  = message.mentions.users
+    
+    var team = [];
+    team.push(message.author);
+
+    users.forEach(function(user){
+        if (team.length < 4 && discordUserId != user.id){
+            team.push(user);
+        }
+    })
+    // check to see all the team members are available and not already in an event
+    var validTeam = true;
+    for (var member in team){
+        /*
+        if (usersInRPGEvents["rpg-"+team[member].id]){
+            validTeam = false;
+        }
+        */
+        if (team[member].bot){
+            validTeam = false;
+        }
+    }
+
+    if (args.length > 1 && args[1] >= 1210 && args[1] <= 1215 && team.length == 1){
         // travel back in time to the year... 
 
         // check that author is on stage 1 of timetravel 
+        profileDB.getUserProfileData(discordUserId, function(profileErr, profileData){
+            if (profileErr){
+                console.log (profileErr);
+            }else{
+                var stage = profileData.data.timetravelqueststage;
 
-        // create an rpg event with the tagged members to time travel, 
+                if (stage == 1){
+                    // create an rpg event with the tagged members to time travel
+                    var questData = {
+                        year: args[1]
+                    }
+                    quest.questHandler(message, discordUserId, "timetravel", stage, team, questData)
+
+                }
+                else if (stage == 2){
+                    var questData = {
+                        year: args[1]
+                    }
+                    quest.questHandler(message, discordUserId, "timetravel", stage, team, questData)
+                }
+                else{
+                    message.channel.send("traveled to the year " + args[1])
+                }
+            }
+        })
+        
 
         // post an embed message that shows the team members back in time, they can react
         // to the embed and obtain items from these reactions - advance to stage 2

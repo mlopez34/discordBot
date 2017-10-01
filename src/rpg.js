@@ -7,7 +7,7 @@ var moment = require("moment");
 var activeRPGEvents = {}
 var usersInRPGEvents = {};
 
-module.exports.rpgInitialize = function(message){
+module.exports.rpgInitialize = function(message, special){
     // create an embed saying that b is about to happen, for users MAX of 5 users and they must all say -ready to start costs 5 tacos per person
     var discordUserId = message.author.id;
     // 
@@ -18,7 +18,7 @@ module.exports.rpgInitialize = function(message){
     team.push(message.author);
 
     users.forEach(function(user){
-        if (team.length < 4 && discordUserId != user.id){
+        if (team.length < 4){// && discordUserId != user.id){
             team.push(user);
         }
     })
@@ -32,7 +32,6 @@ module.exports.rpgInitialize = function(message){
         if (team[member].bot){
             validTeam = false;
         }
-        
     }
 
     if (team.length >= 2 && team.length <= 4 && validTeam){

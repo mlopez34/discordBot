@@ -236,6 +236,10 @@ client.on('message', function(message){
             else if (commandIs("rpghelp", message)){
                 commands.rpghelpCommand(message);
             }
+            // artifact abilities
+            else if (commandIs("timetravel", message)){
+                commands.timeTravelCommand(message, args);
+            }
             /*
             else if (commandIs("game", message)){
                 commands.gameCommand(message);
