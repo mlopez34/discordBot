@@ -246,7 +246,7 @@ client.on('message', function(message){
                     }
                 })
 
-                commands.timeTravelCommand(message, args, channelName);
+                // commands.timeTravelCommand(message, args, channelName);
             }
             /*
             else if (commandIs("game", message)){

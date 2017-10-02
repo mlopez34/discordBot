@@ -3401,9 +3401,10 @@ module.exports.combineCommand = function(message, args){
                             // TODO: do not allow user to combine if they are on stage # of the artifact quest
                             if (rarityOfMyItem && rarityOfMyItem == "artifact"){
                                 // take the ids of the other 2 artifacts + artifact recipe and push them onto itemsBeingCombined array
-                                var artifactId = 1//ARTIFACT_RECIPE_ID;
+                                /* TODO: uncomment this
+                                var artifactId = 1//TODO: ARTIFACT_RECIPE_ID;
                                 var recipeAdded = false;
-                                var firstArtifact = 2; // replce this
+                                var firstArtifact = 2; //TODO: replce this
                                 var firstArtifactAdded = false;
                                 var secondArtifact = 3; // replace this
                                 var secondArtifactAdded = false;
@@ -3457,6 +3458,7 @@ module.exports.combineCommand = function(message, args){
                                         }
                                     })
                                 }
+                                */
                             }
                             else if (itemsInInventoryCountMap[idOfMyItem] && 
                                 itemsInInventoryCountMap[idOfMyItem] >= itemCount){
@@ -3544,7 +3546,7 @@ module.exports.timeTravelCommand = function(message, args, channel){
                     var questData = {
                         year: args[1]
                     }
-                    quest.questHandler(message, discordUserId, "timetravel", stage, team, questData)
+                    quest.questHandler(message, discordUserId, "timetravel", stage, team, questData, channel)
 
                 }
                 else if (stage == 2){

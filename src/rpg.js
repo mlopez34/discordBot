@@ -4,7 +4,7 @@ var Promise = require('bluebird');
 var profileDB = require("./profileDB.js");
 var config = require("./config");
 var moment = require("moment");
-var RPG_COOLDOWN_HOURS = 0
+var RPG_COOLDOWN_HOURS = 3
 var activeRPGEvents = {}
 var usersInRPGEvents = {};
 var TEAM_MAX_LENGTH = 5;
@@ -20,7 +20,7 @@ module.exports.rpgInitialize = function(message, special){
     team.push(message.author);
 
     users.forEach(function(user){
-        if (team.length < TEAM_MAX_LENGTH){// && discordUserId != user.id){
+        if (team.length < TEAM_MAX_LENGTH && discordUserId != user.id){
             team.push(user);
         }
     })
@@ -943,7 +943,7 @@ function effectsOnTurnEnd(event){
                         // process the on turn end event
                         if (event.membersInParty[member].buffs[index].onTurnEnd.attackDmgPlus){
                             if (event.membersInParty[member].buffs[index].onTurnEnd.currentTurn >= event.membersInParty[member].buffs[index].onTurnEnd.startTurn
-                            && currentTurn % event.membersInParty[member].buffs[index].onTurnEnd.everyNTurns == 0){
+                            && (event.membersInParty[member].buffs[index].onTurnEnd.startTurn + event.membersInParty[member].buffs[index].onTurnEnd.everyNTurns + currentTurn % event.membersInParty[member].buffs[index].onTurnEnd.everyNTurns) == 0){
                                 event.membersInParty[member].attackDmg = event.membersInParty[member].attackDmg + event.membersInParty[member].buffs[index].onTurnEnd.attackDmgPlus                                
                                 // TODO: add to end of turn string
                             }
@@ -963,7 +963,7 @@ function effectsOnTurnEnd(event){
                         // process the on turn end event
                         if (event.enemies[enemy].buffs[index].onTurnEnd.attackDmgPlus){
                             if (currentTurn >= event.enemies[enemy].buffs[index].onTurnEnd.startTurn
-                            && currentTurn % event.enemies[enemy].buffs[index].onTurnEnd.everyNTurns == 0){
+                            && (event.enemies[enemy].buffs[index].onTurnEnd.startTurn + event.enemies[enemy].buffs[index].onTurnEnd.everyNTurns + currentTurn) % event.enemies[enemy].buffs[index].onTurnEnd.everyNTurns == 0){
                                 event.enemies[enemy].attackDmg = event.enemies[enemy].attackDmg + event.enemies[enemy].buffs[index].onTurnEnd.attackDmgPlus
                                 endOfTurnString = endOfTurnString + event.enemies[enemy].name + 
                                 " +" + event.enemies[enemy].buffs[index].onTurnEnd.attackDmgPlus + " 🗡 " +
@@ -973,7 +973,7 @@ function effectsOnTurnEnd(event){
 
                         if (event.enemies[enemy].buffs[index].onTurnEnd.magicDmgPlus){
                             if (currentTurn >= event.enemies[enemy].buffs[index].onTurnEnd.startTurn
-                            && currentTurn % event.enemies[enemy].buffs[index].onTurnEnd.everyNTurns == 0){
+                            && (event.enemies[enemy].buffs[index].onTurnEnd.startTurn + event.enemies[enemy].buffs[index].onTurnEnd.everyNTurns + currentTurn) % event.enemies[enemy].buffs[index].onTurnEnd.everyNTurns  == 0){
                                 event.enemies[enemy].magicDmg = event.enemies[enemy].magicDmg + event.enemies[enemy].buffs[index].onTurnEnd.magicDmgPlus
                                 endOfTurnString = endOfTurnString + event.enemies[enemy].name + 
                                 " +" + event.enemies[enemy].buffs[index].onTurnEnd.magicDmgPlus + " ☄️ " +
@@ -2151,7 +2151,7 @@ function userStatsStringBuilder(userStats, name, isEnemy){
         userString = ":heart_decoration: "  + (userStats.hp + userStats.statBuffs.hp) + "/" + (userStats.maxhp + userStats.statBuffs.maxhp)
         userString = userString + " - **" + userStats.id + "** **" + name + "**" + "\n"
     }else{
-        userString = " :green_heart:  " + (userStats.hp + userStats.statBuffs.hp) + "/" + (userStats.maxhp + userStats.statBuffs.maxhp) + "\n"
+        userString = " :green_heart:  " + (userStats.hp + userStats.statBuffs.hp) + "/" + (userStats.maxhp + userStats.statBuffs.maxhp) + " "
         userString = userString + " 🛡️ " + (userStats.armor + userStats.statBuffs.armor)
         userString = userString + " 🙌 " + (userStats.spirit + userStats.statBuffs.spirit)
         userString = userString + " 🗡 " + (userStats.attackDmg + userStats.statBuffs.attackDmg)
@@ -2484,7 +2484,7 @@ var rpgAbilities = {
             adPercentage: 1.1,
             emoji: "📌",
             dmgOnDotApply: false,
-            turnsToExpire: 3,
+            turnsToExpire: 4,
             dmgOnDotExpire: false,
             dmgOnExpire: 0
         }
@@ -2499,7 +2499,7 @@ var rpgAbilities = {
             mdPercentage: 1.1,
             emoji: "🌑",
             dmgOnDotApply: false,
-            turnsToExpire: 3,
+            turnsToExpire: 4,
             dmgOnDotExpire: false,
             dmgOnExpire: 0
         }
@@ -2517,7 +2517,7 @@ var rpgAbilities = {
             name: "barrier",
             emoji: "🚧 ",
             affects: ["spirit"],
-            additive: 150
+            additive: 350
         }
     },
     flameblast: {

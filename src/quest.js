@@ -112,7 +112,7 @@ function handleTimeMachineArtifact(message, discordUserId, stage, team, year, ch
     time travel with time machine = different years specify different embeds ?
     */
     if (stage == 1){
-        handleTimeMachineArtifactStageOne(message, discordUserId, stage, team, year)
+        handleTimeMachineArtifactStageOne(message, discordUserId, stage, team, year, channel)
     }
     else if (stage == 2){
         handleTimeMachineArtifactStageTwo(message, discordUserId, stage, team, year, channel)
@@ -157,7 +157,7 @@ function handleDemonicArtifact(stage, discordUserId){
     }
 }
 
-function handleTimeMachineArtifactStageOne(message, discordUserId, stage, team, year){
+function handleTimeMachineArtifactStageOne(message, discordUserId, stage, team, year, channel){
     var questData = {
         questname: "timetravel",
         message: message,
@@ -272,7 +272,7 @@ function handleTimeMachineArtifactStageOne(message, discordUserId, stage, team, 
                         delete activeQuests[idOfQuest];
                     }
                     message.channel.send("next stage");
-                    exports.questHandler(message, discordUserId, "timetravel", stage + 1, team, year)
+                    exports.questHandler(message, discordUserId, "timetravel", stage + 1, team, year, channel)
                 }
             })
         })
