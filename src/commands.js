@@ -1057,6 +1057,7 @@ module.exports.profileCommand = function(message){
                 profileData.reputation = profileResponse.data.reputation;
                 profileData.level = profileResponse.data.level ? profileResponse.data.level : 1;
                 profileData.experience = profileResponse.data.experience ? profileResponse.data.experience : 0;
+                profileData.rpgPoints = profileResponse.data.rpgpoints ? profileResponse.data.rpgpoints : 0;
                 profileData.nextLevelExp = Levels[profileData.level + 1];
                 if (!profileData.reputation){
                     profileData.reputation = 0;
@@ -1125,6 +1126,7 @@ module.exports.profileCommand = function(message){
                 profileData.level = profileResponse.data.level ? profileResponse.data.level : 1;
                 profileData.experience = profileResponse.data.experience ? profileResponse.data.experience : 0;
                 profileData.nextLevelExp = Levels[profileData.level + 1];
+                profileData.rpgPoints = profileResponse.data.rpgpoints ? profileResponse.data.rpgpoints : 0;
                 if (!profileData.reputation){
                     profileData.reputation = 0;
                 }
@@ -1385,7 +1387,7 @@ function profileBuilder(message, profileData){
     }
     embed.addField('Items :shopping_bags:', profileData.userItems, true)
     .addField('Achievements :military_medal: ', profileData.achievementString, true)
-    
+    .addField('RPG points :fleur_de_lis:  ', profileData.rpgPoints, true)
 
     message.channel.send({embed});
 }
@@ -3500,7 +3502,7 @@ module.exports.combineCommand = function(message, args){
     // combine rock for boulder, 5 rares to make 1 improved, 5 improved to make 1 refined
 }
 
-module.exports.timeTravelCommand = function(message, args){
+module.exports.timeTravelCommand = function(message, args, channel){
     // travel to the specified date in args
     var discordUserId = message.author.id;
 
@@ -3549,7 +3551,7 @@ module.exports.timeTravelCommand = function(message, args){
                     var questData = {
                         year: args[1]
                     }
-                    quest.questHandler(message, discordUserId, "timetravel", stage, team, questData)
+                    quest.questHandler(message, discordUserId, "timetravel", stage, team, questData, channel)
                 }
                 else{
                     message.channel.send("traveled to the year " + args[1])
@@ -4582,19 +4584,23 @@ module.exports.cancelTradeCommand = function(message, args){
             message.channel.send(":x:  " + message.author + " Canceled a trade ") 
         }
         else{
-            for (var transferId in activeTrades[discordUserIdString].idsToTransfer){
-                // delete from itemsInAuction
-                var idToDelete = activeTrades[discordUserIdString].idsToTransfer[transferId];
-                if (idToDelete){
-                    delete activeTradeItems[idToDelete];
+            if (activeTrades[discordUserIdString]){
+                for (var transferId in activeTrades[discordUserIdString].idsToTransfer){
+                    // delete from itemsInAuction
+                    var idToDelete = activeTrades[discordUserIdString].idsToTransfer[transferId];
+                    if (idToDelete){
+                        delete activeTradeItems[idToDelete];
+                    }
                 }
+                if (hasOpenTrade[tradingWith]){
+                    delete hasOpenTrade[tradingWith];
+                    delete hasOpenTrade[discordUserIdString];
+                }
+                delete activeTrades[discordUserIdString];
+                message.channel.send(":x:  " + message.author + " Canceled a trade ") 
+            }else{
+                message.channel.send("there is some fishy stuff going on and I am investigating....")
             }
-            if (hasOpenTrade[tradingWith]){
-                delete hasOpenTrade[tradingWith];
-                delete hasOpenTrade[discordUserIdString];
-            }
-            delete activeTrades[discordUserIdString];
-            message.channel.send(":x:  " + message.author + " Canceled a trade ") 
         }
         
     }

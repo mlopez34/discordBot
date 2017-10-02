@@ -768,6 +768,26 @@ module.exports.updateUserExperience = function(experience, level, userId, firstE
     });
 }
 
+module.exports.updateRpgPoints = function(discordUserId, rpgPoints, firstRpgGain, cb){
+    var query;
+    if (!firstRpgGain){
+        query = 'update ' + config.profileTable + ' set rpgpoints=$1 where discordid=$2'
+    }
+    else{
+        query = 'update ' + config.profileTable + ' set rpgpoints=rpgpoints+$1 where discordid=$2'
+    }
+    db.none(query, [rpgPoints, discordUserId])
+    .then(function () {
+    cb(null, {
+        status: 'success',
+        message: 'added rpgpoints'
+        });
+    })
+    .catch(function (err) {
+        cb(err);
+    });
+}
+
 // update user's item status
 module.exports.updateItemStatus = function(itemId, status, cb){
     var query = 'update ' + config.inventoryTable + ' set status=$1 where id=$2'

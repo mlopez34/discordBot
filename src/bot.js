@@ -238,7 +238,15 @@ client.on('message', function(message){
             }
             // artifact abilities
             else if (commandIs("timetravel", message)){
-                commands.timeTravelCommand(message, args);
+
+                var channelName;
+                client.channels.forEach(function(channel){
+                    if (channel.type == "voice" && channel.name == "General"){
+                        channelName = channel;
+                    }
+                })
+
+                commands.timeTravelCommand(message, args, channelName);
             }
             /*
             else if (commandIs("game", message)){

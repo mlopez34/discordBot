@@ -1,9 +1,10 @@
 const Discord = require("discord.js");
+var experience = require("./experience.js")
 var Promise = require('bluebird');
 var profileDB = require("./profileDB.js");
 var config = require("./config");
 var moment = require("moment");
-
+var RPG_COOLDOWN_HOURS = 0
 var activeRPGEvents = {}
 var usersInRPGEvents = {};
 
@@ -55,9 +56,11 @@ module.exports.rpgInitialize = function(message, special){
             
             activeRPGEvents["rpg-" + sentMessage.id] = { members: membersOfParty };
             activeRPGEvents["rpg-" + sentMessage.id].status = "waiting";
+            activeRPGEvents["rpg-" + sentMessage.id].lastEmbedMessage = sentMessage;
             if (special){
                 activeRPGEvents["rpg-" + sentMessage.id].special = special;
-                //TODO : add the leader of the event to RPG event - when rpg ends the leader moves to next stage
+                //TODO: add the leader of the event to RPG event - when rpg ends the leader moves to next stage
+                activeRPGEvents["rpg-" + sentMessage.id].leader = message.author;
             }
         })
     }
@@ -113,10 +116,11 @@ module.exports.rpgReady = function(message, itemsAvailable){
             }else{
                 var now = new Date();
                 var oneHourAgo = new Date();
-                ///////// CALCULATE THE MINUTES REDUCED HERE 
-                oneHourAgo = new Date(oneHourAgo.setHours(oneHourAgo.getHours() - 1));
-
-                if (userData.data.lastrpgtime || oneHourAgo > userData.data.lastrpgtime ){
+                var rpgEventId = usersInRPGEvents["rpg-" + discordUserId].id;
+                var isSpecialEvent = activeRPGEvents[ "rpg-" +  rpgEventId ] ? activeRPGEvents[ "rpg-" + rpgEventId ].special : false;
+                oneHourAgo = new Date(oneHourAgo.setHours(oneHourAgo.getHours() - RPG_COOLDOWN_HOURS ));
+                var lastrpgtime = userData.data.lastrpgtime ? userData.data.lastrpgtime : new Date(oneHourAgo.setHours(oneHourAgo.getHours() - RPG_COOLDOWN_HOURS * 2))
+                if ((lastrpgtime && oneHourAgo > lastrpgtime) || isSpecialEvent ){
                     // get the user profile data
                     var userStats = userData.data;
 
@@ -215,18 +219,20 @@ module.exports.rpgReady = function(message, itemsAvailable){
                                 }
                     
                                 if (teamIsReady){
-                                    for (var member in activeRPGEvents[rpgEvent].members){
-                                        var partyMember = activeRPGEvents[rpgEvent].members[member];
-                                        // if the user is the last user needed to be ready, create the RPG event
-                                        if (!partyMember.bot){
-                                            profileDB.updateLastRpgTime(partyMember.id, function(updateLSErr, updateLSres){
-                                                if(updateLSErr){
-                                                    console.log(updateLSErr);
-                                                }
-                                                else{
-                                                    console.log(updateLSres)
-                                                }
-                                            })
+                                    if (!activeRPGEvents[rpgEvent].special){
+                                        for (var member in activeRPGEvents[rpgEvent].members){
+                                            var partyMember = activeRPGEvents[rpgEvent].members[member];
+                                            // if the user is the last user needed to be ready, create the RPG event
+                                            if (!partyMember.bot){
+                                                profileDB.updateLastRpgTime(partyMember.id, function(updateLSErr, updateLSres){
+                                                    if(updateLSErr){
+                                                        console.log(updateLSErr);
+                                                    }
+                                                    else{
+                                                        console.log(updateLSres)
+                                                    }
+                                                })
+                                            }
                                         }
                                     }
                                     // if all team members are ready, create the RPG event
@@ -279,7 +285,7 @@ module.exports.rpgReady = function(message, itemsAvailable){
                                         membersInParty["rpg-" + partyMember.id] = {
                                             id: partyMember.id,
                                             name: partyMember.username,
-                                            hp: 250 + (20 *  partyMemberStats.level ) + partyMemberHpPlus,
+                                            hp: 350 + (34 *  partyMemberStats.level ) + partyMemberHpPlus,
                                             attackDmg: 10 + (10 * partyMemberStats.level) + partyMemberAttackDmgPlus,
                                             magicDmg:  10 + (10 * partyMemberStats.level) + partyMemberMagicDmgPlus,
                                             armor: 5 + (partyMemberStats.level * partyMemberStats.level) + partyMemberArmorPlus,
@@ -323,7 +329,7 @@ module.exports.rpgReady = function(message, itemsAvailable){
                                     var enemyIdCount = 1
                                     if (activeRPGEvents[rpgEvent].special){
                                         // get 
-                                        var specialRpg = activeRPGEvents[rpgEvent].special;
+                                        var specialRpg = activeRPGEvents[rpgEvent].special.questName;
                                         var specialEnemies = enemiesToEncounter.special[specialRpg];
                                         
                                         for (var i = 0; i < specialEnemies.length; i++){
@@ -397,6 +403,7 @@ module.exports.rpgReady = function(message, itemsAvailable){
                                                     maxhp: 0
                                                 },
                                                 buffs: enemyFound.buffs,
+                                                difficulty: enemyFound.difficulty,
                                                 abilities: enemyFound.abilities,
                                                 element: enemyFound.element
                                             }
@@ -441,6 +448,17 @@ module.exports.rpgReady = function(message, itemsAvailable){
                                     message.channel.send({embed})
                                     .then(function (sentMessage) {
                                         recalculateStatBuffs(activeRPGEvents[rpgEvent])
+
+                                        var lastMessage = activeRPGEvents[rpgEvent].lastEmbedMessage
+                                        if (lastMessage){
+                                            lastMessage.delete()
+                                            .then(function(res){
+                                                activeRPGEvents[rpgEvent].lastEmbedMessage = sentMessage
+                                            })
+                                            .catch(function(err){
+                                                console.log(err);
+                                            })
+                                        }
                                     })
                     
                                 }else{
@@ -452,7 +470,7 @@ module.exports.rpgReady = function(message, itemsAvailable){
                 }
                 else{
                     now = new Date(now.setMinutes(now.getMinutes()));
-                    var numberOfHours = getDateDifference(userData.data.lastrpgtime, now, 1);
+                    var numberOfHours = getDateDifference(userData.data.lastrpgtime, now, RPG_COOLDOWN_HOURS);
                     message.channel.send(message.author + " You have rpgd too recently! please wait `" + numberOfHours +"` ");
                 }
             }
@@ -718,53 +736,196 @@ function turnFinishedEmbedBuilder(message, event, turnString, passiveEffectsStri
     embed.addField( "Enemy", enemiesString )
     message.channel.send({embed})
     .then(function (sentMessage) {
-
+        var lastMessage = event.lastEmbedMessage
+        if (lastMessage){
+            lastMessage.delete()
+            .then(function(res){
+                event.lastEmbedMessage = sentMessage
+            })
+            .catch(function(err){
+                console.log(err);
+            })
+        }
     })
 }
 
 function eventEndedEmbedBuilder(message, event, partySuccess){
-    const embed = new Discord.RichEmbed()
-    .setAuthor("Event has ended")
-    .setColor(0xF2E93E)
+    profileDB.getItemData(function(err, getItemResponse){
+        if (err){
+            console.log(err);
+        }else{
+            //TODO: check if event was special event, if it was advance the leader to the next step of the special quest
+            const embed = new Discord.RichEmbed()
+            .setAuthor("Event has ended")
+            .setColor(0xF2E93E)
+        
+            for (var member in event.members){
+                var memberInRpgEvent = event.members[member];
+                var memberInParty = event.membersInParty["rpg-" + memberInRpgEvent.id];
+                var rewards;
+                var rewardString = "";
+                if (partySuccess){
+                    var rewards =  calculateRewards( event, memberInRpgEvent, getItemResponse)
+                    // add experience and rpgpoints to user
+                    profileDB.getUserProfileData( memberInParty.id, function(err, profileResponse) {
+                        if(err){
+                            console.log(err);
+                        }
+                        else{
+                            var firstRpgGain = profileResponse.data.rpgpoints;
 
-    for (var member in event.members){
-        var memberInRpgEvent = event.members[member];
-        var memberInParty = event.membersInParty["rpg-" + memberInRpgEvent.id];
-        var rewards;
-        var rewardString = "";
-        if (partySuccess){
-            rewards = calculateRewards( event, memberInRpgEvent )
-            rewardString = rewardString + " No rewards being given out currently." + JSON.stringify(rewards) + " \n";
+                            profileDB.updateRpgPoints(memberInParty.id, rewards.rpgPoints, firstRpgGain, function(error, res){
+                                if (error){
+                                    console.log(error);
+                                }else{
+                                    console.log(res);
+                                    // add experience and then items
+                                    experience.gainExperience(message, memberInParty.id, rewards.xp);
+                                    addToUserInventory(memberInParty.id, rewards.items);
+                                }
+                            })
+                        }
+                    })
+                    rewardString = rewardString + "**Experience:** " + rewards.xp + "\n**Rpg Points**: " + rewards.rpgPoints + "\n**Items:** \n";
+                    for (var item in rewards.items){
+                        rewardString = rewardString + rewards.items[item].itemname + " \n";
+                    }
+                }
+                else{
+                    rewards = "No rewards :skull_crossbones:"
+                    rewardString = rewardString + " " + rewards + " \n";
+                }
+                embed.addField(memberInRpgEvent.username,  rewardString, true);
+            }
+            message.channel.send({embed})
         }
-        else{
-            rewards = "None"
-            rewardString = rewardString + " " + rewards + " \n";
-        }
-        embed.addField(memberInRpgEvent.username,  rewardString, true);
-    }
-    message.channel.send({embed})
-
-    /*
-    rewards should be based off current level, difficulty of the enemies, 
-    */
+    })
 }
 
-function calculateRewards(event, memberInRpgEvent){
+function addToUserInventory(discordUserId, items){
+    profileDB.addNewItemToUser(discordUserId, items, function(itemError, itemAddResponse){
+        if (itemError){
+            console.log(itemError);
+        }
+        else{
+            console.log(itemAddResponse);
+        }
+    })
+}
+
+function calculateRewards(event, memberInRpgEvent, getItemResponse){
     var rewardsForPlayer =  {
         xp: 1,
         rpgPoints: 1,
         items: []
     }
+    
+    var additionalExperience = 0;
+    var additionalRpgPoints = 0;
 
-    // calculate xp based on level and difficulty of enemies
+    var ANCIENT_MAX_ROLL = 9995
+    var ANCIENT_MIN_ROLL = 9975;
+    var RARE_MAX_ROLL = 9975;
+    var RARE_MIN_ROLL = 9800;
+    var UNCOMMON_MAX_ROLL = 9800;
+    var UNCOMMON_MIN_ROLL = 8750;
+    var COMMON_MAX_ROLL = 8750;
+    var COMMON_ITEMS_TO_OBTAIN = 1;
 
-    // calculate rpgPoints based on level and diff of enemies
+    var allItems = getItemResponse.data
+    var commonItems = [];
+    var uncommonItems = [];
+    var rareItems = [];
+    var ancientItems = [];
+    var artifactItems = [];
+    var mythItems = [];
 
+    for (var item in allItems){
+        if (allItems[item].itemraritycategory == "common"){
+            commonItems.push(allItems[item]);
+        }
+        else if(allItems[item].itemraritycategory == "uncommon"){
+            uncommonItems.push(allItems[item]);
+        }
+        else if(allItems[item].itemraritycategory == "rare"){
+            rareItems.push(allItems[item]);
+        }
+        else if(allItems[item].itemraritycategory == "ancient"){
+            ancientItems.push(allItems[item]);
+        }
+        else if(allItems[item].itemraritycategory == "artifact"){
+            artifactItems.push(allItems[item]);
+        }
+        else if(allItems[item].itemraritycategory == "myth"){
+            mythItems.push(allItems[item]);
+        }
+    }
+
+    var itemsObtainedArray = [];
+    // calculate xp based on level and difficulty of enemies and items
+    for (var enemy in event.enemies){
+        var rarityRoll;
+        var enemyDifficulty =  event.enemies[enemy].difficulty
+        if (enemyDifficulty == "easy"){
+            additionalExperience = additionalExperience + 2
+            additionalRpgPoints = additionalRpgPoints + 1
+            // common items
+            rarityRoll = Math.floor(Math.random() * COMMON_MAX_ROLL) + 1;
+        }
+        else if (enemyDifficulty == "medium"){
+            additionalExperience = additionalExperience + 4
+            additionalRpgPoints = additionalRpgPoints + 2
+            // common ? uncommon
+            rarityRoll = Math.floor(Math.random() * UNCOMMON_MAX_ROLL) + 1;
+        }
+        else if (enemyDifficulty == "hard"){
+            additionalExperience = additionalExperience + 10
+            additionalRpgPoints = additionalRpgPoints + 6
+            // common + uncommon maybe rare
+            rarityRoll = Math.floor(Math.random() * 3975) + 6000;
+        }
+        else if (enemyDifficulty == "boss"){
+            additionalExperience = additionalExperience + 25
+            additionalRpgPoints = additionalRpgPoints + 15
+            // common + uncommon maybe rare maybe ancient
+            rarityRoll = Math.floor(Math.random() * 1000) + 9000;
+        }
+
+        // push the item to items
+        if (rarityRoll){
+            if(rarityRoll > ANCIENT_MIN_ROLL ){
+                rarityString = "ancient"
+                var itemRoll = Math.floor(Math.random() * ancientItems.length);
+                console.log(ancientItems[itemRoll]);
+                itemsObtainedArray.push(ancientItems[itemRoll])
+            }
+            else if(rarityRoll > RARE_MIN_ROLL && rarityRoll <= RARE_MAX_ROLL){
+                rarityString = "rare"
+                var itemRoll = Math.floor(Math.random() * rareItems.length);
+                console.log(rareItems[itemRoll]);
+                itemsObtainedArray.push(rareItems[itemRoll]);
+            }
+            else if (rarityRoll > UNCOMMON_MIN_ROLL && rarityRoll <= UNCOMMON_MAX_ROLL){
+                rarityString = "uncommon"
+                var itemRoll = Math.floor(Math.random() * uncommonItems.length);
+                console.log(uncommonItems[itemRoll]);
+                itemsObtainedArray.push( uncommonItems[itemRoll] );
+            }
+            else {
+                rarityString = "common"
+                var itemRoll = Math.floor(Math.random() * commonItems.length);
+                console.log(commonItems[itemRoll]);
+                commonItems[itemRoll].itemAmount = COMMON_ITEMS_TO_OBTAIN
+                itemsObtainedArray.push( commonItems[itemRoll] );
+            }
+        }
+    }
     // calculate finds based on luck and diff of enemies
-
+    rewardsForPlayer.xp = rewardsForPlayer.xp + additionalExperience
+    rewardsForPlayer.rpgPoints = rewardsForPlayer.rpgPoints + additionalRpgPoints
+    rewardsForPlayer.items = itemsObtainedArray
     return rewardsForPlayer;
 }
-
 
 function effectsOnTurnEnd(event){
     var endOfTurnString = "";
@@ -1082,9 +1243,9 @@ function calculateDamageDealt(event, caster, target, rpgAbility){
                 
                 if (damageToReduce > 0.75){
                     damageToReduce = 0.75
-                }else{
-                    baseDamage = baseDamage * (1 - damageToReduce);
                 }
+                baseDamage = baseDamage * (1 - damageToReduce);
+                
                 // additional RNG
                 var rngDmgRoll = Math.floor(Math.random() * Math.floor(baseDamage * 0.07)) + 1;
                 baseDamage = baseDamage + rngDmgRoll;
@@ -1106,9 +1267,9 @@ function calculateDamageDealt(event, caster, target, rpgAbility){
 
                     if (damageToReduce > 0.75){
                         damageToReduce = 0.75
-                    }else{
-                        baseDamage = baseDamage * ( 1 - damageToReduce );
                     }
+                    baseDamage = baseDamage * ( 1 - damageToReduce );
+                    
                     // additional RNG
                     var rngDmgRoll = Math.floor(Math.random() * Math.floor(baseDamage * 0.07)) + 1;
                     baseDamage = baseDamage  + rngDmgRoll;
@@ -1121,9 +1282,9 @@ function calculateDamageDealt(event, caster, target, rpgAbility){
                     
                     if (damageToReduce > 0.75){
                         damageToReduce = 0.75
-                    }else{
-                        baseDamage = baseDamage * ( 1 - damageToReduce );
                     }
+                    baseDamage = baseDamage * ( 1 - damageToReduce );
+                    
                     // additional RNG
                     var rngDmgRoll = Math.floor(Math.random() * Math.floor(baseDamage * 0.07)) + 1;
                     baseDamage = baseDamage + rngDmgRoll;
@@ -1151,9 +1312,9 @@ function calculateDamageDealt(event, caster, target, rpgAbility){
 
                 if (damageToReduce > 0.75){
                     damageToReduce = 0.75
-                }else{
-                    baseDamage = baseDamage * (1 - damageToReduce );
                 }
+                baseDamage = baseDamage * (1 - damageToReduce );
+                
                 // additional RNG
                 var rngDmgRoll = Math.floor(Math.random() * Math.floor(baseDamage * 0.07)) + 1;
                 baseDamage = baseDamage  + rngDmgRoll;
@@ -1167,9 +1328,9 @@ function calculateDamageDealt(event, caster, target, rpgAbility){
                 
                 if (damageToReduce > 0.75){
                     damageToReduce = 0.75
-                }else{
-                    baseDamage = baseDamage * (1 - damageToReduce);
                 }
+                baseDamage = baseDamage * (1 - damageToReduce);
+                
                 // additional RNG
                 var rngDmgRoll = Math.floor(Math.random() * Math.floor(baseDamage * 0.07)) + 1;
                 baseDamage = baseDamage + rngDmgRoll;
@@ -1192,9 +1353,9 @@ function calculateDamageDealt(event, caster, target, rpgAbility){
 
                     if (damageToReduce > 0.75){
                         damageToReduce = 0.75
-                    }else{
-                        baseDamage = baseDamage * (1 - damageToReduce);
                     }
+                    baseDamage = baseDamage * (1 - damageToReduce);
+                    
                     // additional RNG
                     var rngDmgRoll = Math.floor(Math.random() * Math.floor(baseDamage * 0.07)) + 1;
                     baseDamage = baseDamage  + rngDmgRoll;
@@ -1208,9 +1369,9 @@ function calculateDamageDealt(event, caster, target, rpgAbility){
                     
                     if (damageToReduce > 0.75){
                         damageToReduce = 0.75
-                    }else{
-                        baseDamage = baseDamage * ( 1 - damageToReduce );
                     }
+                    baseDamage = baseDamage * ( 1 - damageToReduce );
+                    
                     // additional RNG
                     var rngDmgRoll = Math.floor(Math.random() * Math.floor(baseDamage * 0.07)) + 1;
                     baseDamage = baseDamage + rngDmgRoll;
@@ -2289,7 +2450,7 @@ var rpgAbilities = {
     tacoheal : {
         name: "heal",
         heal: 40,
-        mdPercentage: 1
+        mdPercentage: 1.3
     },
     bandaid : {
         name: "bandaid",
@@ -2559,6 +2720,7 @@ var enemiesToEncounter = {
             magicDmg: 45,
             armor: 200,
             spirit: 200,
+            difficulty: "easy",
             element: "normal"
         },
         {
@@ -2570,6 +2732,7 @@ var enemiesToEncounter = {
             magicDmg: 37,
             armor: 300,
             spirit: 170,
+            difficulty: "easy",
             element: "normal"
         },
         {
@@ -2581,6 +2744,7 @@ var enemiesToEncounter = {
             magicDmg: 35,
             armor: 300,
             spirit: 170,
+            difficulty: "easy",
             element: "normal"
         },
         {
@@ -2592,6 +2756,7 @@ var enemiesToEncounter = {
             magicDmg: 49,
             armor: 170,
             spirit: 300,
+            difficulty: "easy",
             element: "normal"
         }
     ],
@@ -2605,6 +2770,7 @@ var enemiesToEncounter = {
             magicDmg: 90,
             armor: 450,
             spirit: 300,
+            difficulty: "medium",
             element: "normal"
         },
         {
@@ -2616,6 +2782,7 @@ var enemiesToEncounter = {
             magicDmg: 140,
             armor: 300,
             spirit: 400,
+            difficulty: "medium",
             element: "normal"
         },
         {
@@ -2627,6 +2794,7 @@ var enemiesToEncounter = {
             magicDmg: 110,
             armor: 250,
             spirit: 500,
+            difficulty: "medium",
             element: "normal"
         }
     ],
@@ -2651,6 +2819,7 @@ var enemiesToEncounter = {
             magicDmg: 160,
             armor: 600,
             spirit: 600,
+            difficulty: "hard",
             element: "normal"
         },
         {
@@ -2673,6 +2842,7 @@ var enemiesToEncounter = {
             magicDmg: 80,
             armor: 750,
             spirit: 400,
+            difficulty: "hard",
             element: "normal"
         },
         {
@@ -2695,6 +2865,7 @@ var enemiesToEncounter = {
             magicDmg: 170,
             armor: 400,
             spirit: 900,
+            difficulty: "hard",
             element: "normal"
         }
     ],
@@ -2721,6 +2892,7 @@ var enemiesToEncounter = {
             magicDmg: 200,
             armor: 1300,
             spirit: 900,
+            difficulty: "boss",
             element: "normal"
         },
         {
@@ -2745,6 +2917,7 @@ var enemiesToEncounter = {
             magicDmg: 160,
             armor: 700,
             spirit: 1400,
+            difficulty: "boss",
             element: "normal"
         },
         {
@@ -2769,6 +2942,7 @@ var enemiesToEncounter = {
             magicDmg: 250,
             armor: 1200,
             spirit: 1200,
+            difficulty: "boss",
             element: "normal"
         }
     ],
@@ -2790,18 +2964,19 @@ var enemiesToEncounter = {
                         name: "frenzy",
                         emoji: "😡",
                         onTurnEnd: {
-                            attackDmgPlus : 60,
-                            magicDmgPlus : 60,
-                            everyNTurns: 1,
-                            startTurn: 2
+                            attackDmgPlus : 70,
+                            magicDmgPlus : 70,
+                            everyNTurns: 2,
+                            startTurn: 3
                         }
                     }
                 ],
-                hp: 12000,
+                hp: 10000,
                 attackDmg: 210,
                 magicDmg: 190,
                 armor: 1350,
                 spirit: 1200,
+                difficulty: "special",
                 element: "normal"
             },
             {
@@ -2814,12 +2989,24 @@ var enemiesToEncounter = {
                     "shield",
                     "elixir"
                 ],
-                buffs: [],
-                hp: 5500,
+                buffs: [
+                    {
+                        name: "frenzy",
+                        emoji: "😡",
+                        onTurnEnd: {
+                            attackDmgPlus : 40,
+                            magicDmgPlus : 40,
+                            everyNTurns: 2,
+                            startTurn: 2
+                        }
+                    }
+                ],
+                hp: 4500,
                 attackDmg: 125,
-                magicDmg: 115,
+                magicDmg: 50,
                 armor: 900,
                 spirit: 500,
+                difficulty: "special",
                 element: "normal"
             },
             {
@@ -2833,11 +3020,12 @@ var enemiesToEncounter = {
                     "tacowall"
                 ],
                 buffs: [],
-                hp: 4000,
-                attackDmg: 110,
-                magicDmg: 150,
+                hp: 3000,
+                attackDmg: 90,
+                magicDmg: 120,
                 armor: 500,
                 spirit: 900,
+                difficulty: "special",
                 element: "normal"
             },
             {
@@ -2851,11 +3039,12 @@ var enemiesToEncounter = {
                     "weaken"
                 ],
                 buffs: [],
-                hp: 3350,
+                hp: 2350,
                 attackDmg: 100,
-                magicDmg: 140,
+                magicDmg: 50,
                 armor: 750,
                 spirit: 750,
+                difficulty: "special",
                 element: "normal"
             }
         ]

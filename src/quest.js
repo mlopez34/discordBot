@@ -1,6 +1,9 @@
 var rpg = require("./rpg.js")
 var profileDB = require("./profileDB.js");
 const Discord = require("discord.js");
+const ytdl = require("ytdl-core");
+var dispatcher = null
+var voiceChannel = null
 
 var activeQuests = {};
 
@@ -49,16 +52,22 @@ module.exports.questStringBuilder = function(questname, questData){
     if (questname == "timetravel"){
         if (questData.stage == 1){
             if (questData && questData.storyStep == 1){
-                return questData.message.author + ", the time machine you have assembled has triangluated the exact position of the planet in spacetime at the year 1215, and has begun to break down your body onto its individual subatomic particles..."
+                return questData.message.author.username + ", the time machine you have assembled has triangluated the exact position of the planet in spacetime at the year 1215, and has begun to break down your body onto its individual subatomic particles..."
             }else if (questData && questData.storyStep == 2){
-                return questData.message.author + ", the time machine you have assembled has triangluated the exact position of the planet in spacetime at the year 1215, and has begun to break down your body onto its individual subatomic particles... \n:fireworks: :eight_pointed_black_star: .... Your team has now arrived at the year 1215..."
+                return questData.message.author.username + ", the time machine you have assembled has triangluated the exact position of the planet in spacetime at the year 1215, and has begun to break down your body onto its individual subatomic particles... \n:fireworks: :eight_pointed_black_star: .... Your team has now arrived at the year 1215..."
             }else if (questData && questData.storyStep == 3){
-                return questData.message.author + ", the time machine you have assembled has triangluated the exact position of the planet in spacetime at the year 1215, and has begun to break down your body onto its individual subatomic particles... \n:fireworks: :eight_pointed_black_star: .... Your team has now arrived at the year 1215... \nA tower scout yells of an incoming enemy from the mountains... Your team quickly gathers supplies for an incoming invasion..."        
+                return questData.message.author.username + ", the time machine you have assembled has triangluated the exact position of the planet in spacetime at the year 1215, and has begun to break down your body onto its individual subatomic particles... \n:fireworks: :eight_pointed_black_star: .... Your team has now arrived at the year 1215... \nA tower scout yells of an incoming enemy from the mountains... Your team quickly gathers supplies for an incoming invasion..."        
             }
         }
         else if (questData.stage == 2){
             if (questData && questData.storyStep == 1){
-                return questData.message.author + ", the battle ensues.. both sides suffer many casualties... Because of " + questData.message.author + " and his team, the capital is not ransacked... only Genghis Khan and his top generals remain."
+                return questData.message.author.username + ", the battle ensues.. both sides suffer many casualties..."
+            }
+            else if (questData && questData.storyStep == 2){
+                return questData.message.author.username + ", the battle ensues.. both sides suffer many casualties... Because of " + questData.message.author.username + " and his team, the capital is not ransacked..."                
+            }
+            else if (questData && questData.storyStep == 3){
+                return questData.message.author.username + ", the battle ensues.. both sides suffer many casualties... Because of " + questData.message.author.username + " and his team, the capital is not ransacked... only Genghis Khan and his top generals remain."                
             }
         }
     }
@@ -68,7 +77,7 @@ module.exports.questStringBuilder = function(questname, questData){
     
 }
 
-module.exports.questHandler = function(message, discordUserId, questline, stageInQuest, team, dataUsedInQuest){
+module.exports.questHandler = function(message, discordUserId, questline, stageInQuest, team, dataUsedInQuest, channel){
     // this will create the specific embed for the stage the user is in parameters should include (questline, stage, user)
     if (questline == "testQuest"){
         // handle stage
@@ -77,7 +86,7 @@ module.exports.questHandler = function(message, discordUserId, questline, stageI
     else if (questline == "timetravel"){
         // handle stage
         var year = dataUsedInQuest.year;
-        handleTimeMachineArtifact(message, discordUserId, stageInQuest, team, year)
+        handleTimeMachineArtifact(message, discordUserId, stageInQuest, team, year, channel)
     }
     // quest lines = 
     /*
@@ -97,7 +106,7 @@ module.exports.questHandler = function(message, discordUserId, questline, stageI
     */
 }
 
-function handleTimeMachineArtifact(message, discordUserId, stage, team, year){
+function handleTimeMachineArtifact(message, discordUserId, stage, team, year, channel){
     /*
     time travel with time machine = different years specify different embeds ?
     */
@@ -105,15 +114,15 @@ function handleTimeMachineArtifact(message, discordUserId, stage, team, year){
         handleTimeMachineArtifactStageOne(message, discordUserId, stage, team, year)
     }
     else if (stage == 2){
-        handleTimeMachineArtifactStageTwo(message, discordUserId, stage, team, year)
-    }
-    else if (stage == 2){
-        // travel to the year -1200 and defeat the trojans
+        handleTimeMachineArtifactStageTwo(message, discordUserId, stage, team, year, channel)
     }
     else if (stage == 3){
+        // travel to the year -1200 and defeat the trojans
+    }
+    else if (stage == 4){
         // travel to the year -65,000,000 and save the dinosaurs from the meteor
     }
-    else if (Stage == 4){
+    else if (Stage == 5){
         // travel to the year 4,000,000 and defeat the overmind formed by civilization
         // after the milky way galaxy has been colonized
     }
@@ -164,14 +173,15 @@ function handleTimeMachineArtifactStageOne(message, discordUserId, stage, team, 
     message.channel.send({embed})
     .then(function (sentMessage) {
         activeQuests["quest-"+sentMessage.id] = { id: discordUserId, username: message.author.username };
-        questData.storyStep = questData.storyStep + 1;
         var storytell = setTimeout (function(){
+            questData.storyStep = questData.storyStep + 1;            
             var descriptionString = exports.questStringBuilder("timetravel", questData);
             embed.setDescription(descriptionString)
             sentMessage.edit({embed})
         }, 10000);
-        questData.storyStep = questData.storyStep + 1;
+        
         var storytell = setTimeout (function(){ 
+            questData.storyStep = questData.storyStep + 1;
             var descriptionString = exports.questStringBuilder("timetravel", questData);
             embed.setDescription(descriptionString)
             .addField("Gather supplies", "You may pick up one supply from the list...  ")
@@ -269,7 +279,7 @@ function handleTimeMachineArtifactStageOne(message, discordUserId, stage, team, 
     })
 }
 
-function handleTimeMachineArtifactStageTwo(message, discordUserId, stage, team, year){
+function handleTimeMachineArtifactStageTwo(message, discordUserId, stage, team, year, channel){
     // send embed that Ghenghis Khan's forces have reached the capital, 
     var questData = {
         questname: "timetravel",
@@ -278,7 +288,14 @@ function handleTimeMachineArtifactStageTwo(message, discordUserId, stage, team, 
         stage: stage,
         storyStep: 1
     }
-    var special = "genghis khan"
+    var special = {
+        questName: "genghis khan",
+        reward: {
+            type: "note" , // could be item
+            note: "travel to the year 1250 BC to defeat the trojans",
+            stageAdvance: stage + 1
+        }
+    }
     var descriptionString = exports.questStringBuilder("timetravel", questData);
     // travel to the year 1211 and defeat genghis khan before he invades
     const embed = new Discord.RichEmbed()
@@ -287,8 +304,25 @@ function handleTimeMachineArtifactStageTwo(message, discordUserId, stage, team, 
     .setColor(0xFF7A1C)
     message.channel.send({embed})
     .then(function(sentMessage){
-        // TODO: start rpg event with the selected team AFTER 20 seconds
-        rpg.rpgInitialize(message, special);
+        var storytell = setTimeout (function(){
+            questData.storyStep = questData.storyStep + 1;
+            var descriptionString = exports.questStringBuilder("timetravel", questData);
+            embed.setDescription(descriptionString)
+            sentMessage.edit({embed})
+        }, 1000);
+        
+        var storytell = setTimeout (function(){ 
+            questData.storyStep = questData.storyStep + 1;
+            var descriptionString = exports.questStringBuilder("timetravel", questData);
+            embed.setDescription(descriptionString)
+            sentMessage.edit({embed})
+
+        }, 2000);
+
+        var storytell = setTimeout (function(){ 
+            rpg.rpgInitialize(message, special);
+            playMusicForQuest(channel, "genghisKhan")
+        }, 2500);
     })
 }
 
@@ -350,4 +384,25 @@ function addToUserInventory(discordUserId, items){
             console.log(itemAddResponse);
         }
     })
+}
+
+function playMusicForQuest(channel, questName){
+    if (channel){
+        voiceChannel = channel
+        var ytLink = youtubeLinks[questName]
+        voiceChannel.join().then(function(connection){
+            stream = ytdl(ytLink, {
+                filter: 'audioonly'
+            });
+            
+            dispatcher = connection.playStream(stream);
+            dispatcher.on('end', function() {
+                voiceChannel.leave();
+            })
+        })
+    }
+}
+
+var youtubeLinks = {
+    genghisKhan: "https://www.youtube.com/watch?v=d2hRTLdvdnk"
 }
