@@ -770,8 +770,8 @@ function eventEndedEmbedBuilder(message, event, partySuccess){
                 if (partySuccess){
                     var rewards =  calculateRewards( event, memberInRpgEvent, getItemResponse)
                     // add experience and rpgpoints to user
-                    updateUserRewards(memberInParty, rewards);
-                    
+                    updateUserRewards(message, memberInParty, rewards);
+
                     rewardString = rewardString + "**Experience:** " + rewards.xp + "\n**Rpg Points**: " + rewards.rpgPoints + "\n**Items:** \n";
                     for (var item in rewards.items){
                         rewardString = rewardString + rewards.items[item].itemname + " \n";
@@ -788,7 +788,7 @@ function eventEndedEmbedBuilder(message, event, partySuccess){
     })
 }
 
-function updateUserRewards(memberInParty, rewards){
+function updateUserRewards(message, memberInParty, rewards){
     profileDB.getUserProfileData( memberInParty.id, function(err, profileResponse) {
         if(err){
             console.log(err);
