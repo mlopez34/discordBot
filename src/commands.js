@@ -2564,6 +2564,55 @@ function topListEmbedBuilder(topXpString, message){
     message.channel.send({embed});
 }
 
+module.exports.rpgTopListCommand = function(message, listOfUsers){
+    // query for top 10 then build the embed for top ten users
+    profileDB.getRpgTopList(function(error, toplistResponse){
+        if (error){
+            console.log(error);
+            agreeToTerms(message, discordUserId);
+        }
+        else{
+            //create embed
+            console.log(toplistResponse);
+            // create the string
+            var toplistMap = {};
+            var toplistCount = 1;
+            for (var index in toplistResponse.data){
+                if (toplistCount < 10){
+                    // TODO: get a new batch until we have 9 users
+                    var user = toplistResponse.data[index]
+                    console.log(user);
+                    var toplistUser = listOfUsers.get(user.discordid)
+                    console.log(toplistUser);
+                    if (!toplistUser){
+                        // user is not on the server currently - just skip them
+                        continue;
+                    }
+                    var toplistUsername = toplistUser.username;
+                    var toplistRpg = user.rpgpoints;
+                    toplistMap[toplistCount] = { username: toplistUsername, rpgPoints: toplistRpg }
+                    toplistCount++;
+                }
+            }
+            rpgTopListEmbedBuilder(toplistMap, message);
+        }
+    })
+}
+
+function rpgTopListEmbedBuilder(topRpgString, message){
+    console.log(topRpgString);
+    const embed = new Discord.RichEmbed()
+    .setTitle("Top RPG list Standings :fleur_de_lis:")
+    .setColor(0xe521ff)
+    for (var key in topRpgString) {
+        if (topRpgString.hasOwnProperty(key)) {
+            embed.addField("#" + key + ": `" + topRpgString[key].username+"`", "**Points:  **" +topRpgString[key].rpgPoints , true)
+        }
+    }
+
+    message.channel.send({embed});
+}
+
 module.exports.standingsCommand = function(message, listOfUsers){
     // query for top 10 then build the embed for top ten users
     profileDB.getTopTenTacoUsers(function(error, topTenResponse){
@@ -3401,7 +3450,7 @@ module.exports.combineCommand = function(message, args){
                             // TODO: do not allow user to combine if they are on stage # of the artifact quest
                             if (rarityOfMyItem && rarityOfMyItem == "artifact"){
                                 // take the ids of the other 2 artifacts + artifact recipe and push them onto itemsBeingCombined array
-                                /* TODO: uncomment this
+                                /*
                                 var artifactId = 1//TODO: ARTIFACT_RECIPE_ID;
                                 var recipeAdded = false;
                                 var firstArtifact = 2; //TODO: replce this

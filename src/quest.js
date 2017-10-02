@@ -293,7 +293,9 @@ function handleTimeMachineArtifactStageTwo(message, discordUserId, stage, team, 
         questName: "genghis khan",
         reward: {
             type: "note" , // could be item
+            fieldTitle: "A scroll was found on one of the general's bodies",
             note: "travel to the year 1250 BC to defeat the trojans",
+            questline: "timetravelqueststage",
             stageAdvance: stage + 1
         }
     }
@@ -310,7 +312,7 @@ function handleTimeMachineArtifactStageTwo(message, discordUserId, stage, team, 
             var descriptionString = exports.questStringBuilder("timetravel", questData);
             embed.setDescription(descriptionString)
             sentMessage.edit({embed})
-        }, 1000);
+        }, 10000);
         
         var storytell = setTimeout (function(){ 
             questData.storyStep = questData.storyStep + 1;
@@ -318,13 +320,17 @@ function handleTimeMachineArtifactStageTwo(message, discordUserId, stage, team, 
             embed.setDescription(descriptionString)
             sentMessage.edit({embed})
 
-        }, 2000);
+        }, 20000);
 
         var storytell = setTimeout (function(){ 
             rpg.rpgInitialize(message, special);
             playMusicForQuest(channel, "genghisKhan")
-        }, 2500);
+        }, 25000);
     })
+}
+
+function handleTimeMachineArtifactStageThree(message, discordUserId, stage, team, year, channel){
+
 }
 
 function artifactStartString(questline, discordUser, mentionedUsers){

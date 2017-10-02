@@ -286,9 +286,9 @@ module.exports.rpgReady = function(message, itemsAvailable){
                                         membersInParty["rpg-" + partyMember.id] = {
                                             id: partyMember.id,
                                             name: partyMember.username,
-                                            hp: 350 + (34 *  partyMemberStats.level ) + partyMemberHpPlus,
-                                            attackDmg: 10 + (10 * partyMemberStats.level) + partyMemberAttackDmgPlus,
-                                            magicDmg:  10 + (10 * partyMemberStats.level) + partyMemberMagicDmgPlus,
+                                            hp: 250 + (24 *  partyMemberStats.level ) + partyMemberHpPlus,
+                                            attackDmg: 10 + (9 * partyMemberStats.level) + partyMemberAttackDmgPlus,
+                                            magicDmg:  10 + (9 * partyMemberStats.level) + partyMemberMagicDmgPlus,
                                             armor: 5 + (partyMemberStats.level * partyMemberStats.level) + partyMemberArmorPlus,
                                             spirit: 5 + (partyMemberStats.level * partyMemberStats.level) + partyMemberSpiritPlus,
                                             luck: 1 + partyMemberLuckPlus,
@@ -315,6 +315,7 @@ module.exports.rpgReady = function(message, itemsAvailable){
                                                     // TODO: change this to be deep copy
                                                     membersInParty["rpg-" + partyMember.id].buffs.push(rpgAbilities[partyMemberStats.abilities[ability]].buff);
                                                 }else{
+                                                    // TODO: check that the ability doesn't already exist
                                                     membersInParty["rpg-" + partyMember.id].abilities.push(partyMemberStats.abilities[ability]);                                                
                                                 }
                                             }
@@ -339,9 +340,9 @@ module.exports.rpgReady = function(message, itemsAvailable){
                                             enemies[enemyIdCount] = {
                                                 id: enemyIdCount,
                                                 name: enemyFound.name,
-                                                hp: enemyFound.hp + (17 * maxLevelInParty),
-                                                attackDmg: enemyFound.attackDmg + (7 * maxLevelInParty),
-                                                magicDmg: enemyFound.magicDmg + (7 * maxLevelInParty),
+                                                hp: enemyFound.hp + (18 * maxLevelInParty),
+                                                attackDmg: enemyFound.attackDmg + (11 * maxLevelInParty),
+                                                magicDmg: enemyFound.magicDmg + (11 * maxLevelInParty),
                                                 armor: enemyFound.armor + (maxLevelInParty * maxLevelInParty),
                                                 spirit: enemyFound.spirit + ( maxLevelInParty * maxLevelInParty),
                                                 statuses: [],
@@ -757,18 +758,27 @@ function eventEndedEmbedBuilder(message, event, partySuccess){
         if (err){
             console.log(err);
         }else{
-            //TODO: check if event was special event, if it was advance the leader to the next step of the special quest
             const embed = new Discord.RichEmbed()
             .setAuthor("Event has ended")
             .setColor(0xF2E93E)
-        
+
+            if (event.special && event.special.reward){
+                if (event.special.reward.type == "note"){
+                    embed.addField(event.special.reward.fieldTitle, event.special.reward.note)
+                }
+
+                if (event.special.reward.questline && event.special.reward.stageAdvance){
+                    // TODO: advance the user to the next step of the questline
+                }
+            }
+            var numberOfMembers = event.members.length;
             for (var member in event.members){
                 var memberInRpgEvent = event.members[member];
                 var memberInParty = event.membersInParty["rpg-" + memberInRpgEvent.id];
                 var rewards;
                 var rewardString = "";
                 if (partySuccess){
-                    var rewards =  calculateRewards( event, memberInRpgEvent, getItemResponse)
+                    var rewards =  calculateRewards( event, memberInRpgEvent, getItemResponse, numberOfMembers)
                     // add experience and rpgpoints to user
                     updateUserRewards(message, memberInParty, rewards);
 
@@ -821,7 +831,7 @@ function addToUserInventory(discordUserId, items){
     })
 }
 
-function calculateRewards(event, memberInRpgEvent, getItemResponse){
+function calculateRewards(event, memberInRpgEvent, getItemResponse, numberOfMembers){
     var rewardsForPlayer =  {
         xp: 1,
         rpgPoints: 1,
@@ -929,8 +939,8 @@ function calculateRewards(event, memberInRpgEvent, getItemResponse){
         }
     }
     // calculate finds based on luck and diff of enemies
-    rewardsForPlayer.xp = rewardsForPlayer.xp + additionalExperience
-    rewardsForPlayer.rpgPoints = rewardsForPlayer.rpgPoints + additionalRpgPoints
+    rewardsForPlayer.xp = rewardsForPlayer.xp + additionalExperience + (numberOfMembers * 2)
+    rewardsForPlayer.rpgPoints = rewardsForPlayer.rpgPoints + additionalRpgPoints + numberOfMembers;
     rewardsForPlayer.items = itemsObtainedArray
     return rewardsForPlayer;
 }
@@ -1199,10 +1209,10 @@ function getDamageToReduceFromSpirit( rpgAbility, event, targetStats, damageToRe
 }
 
 function calculateDamageReduced(statUsedToReduce){
-    // formula = 100 / ((45 * 60 - 1716.5) / ARMOR + 1) OR 100 / ((45 * 60 - 1716.5) / SPIRIT + 1)
+    // formula = 100 / ((60 * 60 - 1716.5) / ARMOR + 1) OR 100 / ((45 * 60 - 1716.5) / SPIRIT + 1)
 
     // statUsedToReduce could be armor or magic
-    var formula = 100 / ((45 * 60 - 1716) / statUsedToReduce + 1)
+    var formula = 100 / ((60 * 60 - 1716) / statUsedToReduce + 1)
     formula = formula * 0.01
     return formula;
 
@@ -2472,7 +2482,7 @@ var rpgAbilities = {
             name: "orchata sip",
             heal: 4,
             emoji: "🥛",
-            mdPercentage: 1,
+            mdPercentage: 0.7,
             healingOnHotApply: false,
             turnsToExpire: 3,
             healingOnDotExpire: false,
@@ -2486,7 +2496,7 @@ var rpgAbilities = {
             name: "poke",
             type:"physical",
             dmg: 15,
-            adPercentage: 1.1,
+            adPercentage: 1,
             emoji: "📌",
             dmgOnDotApply: false,
             turnsToExpire: 4,
@@ -2501,7 +2511,7 @@ var rpgAbilities = {
             name: "curse",
             type:"shadow",
             dmg: 15,
-            mdPercentage: 1.1,
+            mdPercentage: 1,
             emoji: "🌑",
             dmgOnDotApply: false,
             turnsToExpire: 4,
@@ -2559,14 +2569,14 @@ var rpgAbilities = {
     },
     iceshards: {
         dmg: 45,
-        mdPercentage: 0.6,
+        mdPercentage: 0.65,
         type: "ice",
         areawide: true,
         targets: "enemy"
     },
     slash: {
         dmg: 45,
-        adPercentage: 0.6,
+        adPercentage: 0.65,
         type: "physical",
         areawide: true,
         targets: "enemy"
@@ -2574,7 +2584,7 @@ var rpgAbilities = {
     shock: {
         name: "shock",
         dmg: 90,
-        mdPercentage: 1.1,
+        mdPercentage: 1.15,
         type: "electric",
         special: "selfdamage",
         selfdamage: 15
@@ -2635,7 +2645,7 @@ var rpgAbilities = {
     },
     elixir: {
         heal: 22,
-        mdPercentage: 1,
+        mdPercentage: 0.7,
         areawide: true,
         targets: "friendly"
     },
@@ -2724,8 +2734,8 @@ var enemiesToEncounter = {
             abilities: ["attack", "attack", "foodpoisoning", "foodpoisoning", "tacowall"],
             buffs: [],
             hp: 540,
-            attackDmg: 45,
-            magicDmg: 45,
+            attackDmg: 55,
+            magicDmg: 55,
             armor: 200,
             spirit: 200,
             difficulty: "easy",
@@ -2736,8 +2746,8 @@ var enemiesToEncounter = {
             abilities: ["attack", "attack", "foodpoisoning", "foodpoisoning", "barrier"],
             buffs: [],
             hp: 490,
-            attackDmg: 45,
-            magicDmg: 37,
+            attackDmg: 75,
+            magicDmg: 47,
             armor: 300,
             spirit: 170,
             difficulty: "easy",
@@ -2748,8 +2758,8 @@ var enemiesToEncounter = {
             abilities: ["attack", "attack", "foodpoisoning", "iceshards", "iceshards", "cripple"],
             buffs: [],
             hp: 480,
-            attackDmg: 43,
-            magicDmg: 35,
+            attackDmg: 53,
+            magicDmg: 75,
             armor: 300,
             spirit: 170,
             difficulty: "easy",
@@ -2760,8 +2770,8 @@ var enemiesToEncounter = {
             abilities: ["attack", "attack", "drain", "drain", "freeze"],
             buffs: [],
             hp: 725,
-            attackDmg: 25,
-            magicDmg: 49,
+            attackDmg: 55,
+            magicDmg: 69,
             armor: 170,
             spirit: 300,
             difficulty: "easy",
@@ -2786,7 +2796,7 @@ var enemiesToEncounter = {
             abilities: ["attack", "attack", "orchatasip", "flameblast", "flameblast"],
             buffs: [],
             hp: 940,
-            attackDmg: 80,
+            attackDmg: 90,
             magicDmg: 140,
             armor: 300,
             spirit: 400,
@@ -2815,16 +2825,16 @@ var enemiesToEncounter = {
                     name: "frenzy",
                     emoji: "😡",
                     onTurnEnd: {
-                        attackDmgPlus : 55,
-                        magicDmgPlus : 55,
+                        attackDmgPlus : 50,
+                        magicDmgPlus : 50,
                         everyNTurns: 1,
                         startTurn: 2
                     }
                 }
             ],
             hp: 4100,
-            attackDmg: 160,
-            magicDmg: 160,
+            attackDmg: 120,
+            magicDmg: 120,
             armor: 600,
             spirit: 600,
             difficulty: "hard",
@@ -2838,18 +2848,18 @@ var enemiesToEncounter = {
                     name: "frenzy",
                     emoji: "😡",
                     onTurnEnd: {
-                        attackDmgPlus : 55,
-                        magicDmgPlus : 55,
+                        attackDmgPlus : 50,
+                        magicDmgPlus : 50,
                         everyNTurns: 1,
                         startTurn: 2
                     }
                 }
             ],
             hp: 3800,
-            attackDmg: 200,
-            magicDmg: 80,
+            attackDmg: 180,
+            magicDmg: 130,
             armor: 750,
-            spirit: 400,
+            spirit: 600,
             difficulty: "hard",
             element: "normal"
         },
@@ -2861,17 +2871,17 @@ var enemiesToEncounter = {
                     name: "frenzy",
                     emoji: "😡",
                     onTurnEnd: {
-                        attackDmgPlus : 55,
-                        magicDmgPlus : 55,
+                        attackDmgPlus : 50,
+                        magicDmgPlus : 50,
                         everyNTurns: 1,
                         startTurn: 2
                     }
                 }
             ],
             hp: 2500,
-            attackDmg: 50,
-            magicDmg: 170,
-            armor: 400,
+            attackDmg: 110,
+            magicDmg: 140,
+            armor: 600,
             spirit: 900,
             difficulty: "hard",
             element: "normal"
@@ -2888,16 +2898,16 @@ var enemiesToEncounter = {
                     name: "frenzy",
                     emoji: "😡",
                     onTurnEnd: {
-                        attackDmgPlus : 95,
-                        magicDmgPlus : 95,
+                        attackDmgPlus : 70,
+                        magicDmgPlus : 70,
                         everyNTurns: 1,
                         startTurn: 2
                     }
                 }
             ],
             hp: 6000,
-            attackDmg: 200,
-            magicDmg: 200,
+            attackDmg: 120,
+            magicDmg: 190,
             armor: 1300,
             spirit: 900,
             difficulty: "boss",
@@ -2913,15 +2923,15 @@ var enemiesToEncounter = {
                     name: "frenzy",
                     emoji: "😡",
                     onTurnEnd: {
-                        attackDmgPlus : 95,
-                        magicDmgPlus : 95,
+                        attackDmgPlus : 70,
+                        magicDmgPlus : 70,
                         everyNTurns: 1,
                         startTurn: 2
                     }
                 }
             ],
             hp: 7500,
-            attackDmg: 250,
+            attackDmg: 160,
             magicDmg: 160,
             armor: 700,
             spirit: 1400,
@@ -2938,16 +2948,16 @@ var enemiesToEncounter = {
                     name: "frenzy",
                     emoji: "😡",
                     onTurnEnd: {
-                        attackDmgPlus : 95,
-                        magicDmgPlus : 95,
+                        attackDmgPlus : 70,
+                        magicDmgPlus : 70,
                         everyNTurns: 1,
                         startTurn: 2
                     }
                 }
             ],
             hp: 6800,
-            attackDmg: 170,
-            magicDmg: 250,
+            attackDmg: 190,
+            magicDmg: 130,
             armor: 1200,
             spirit: 1200,
             difficulty: "boss",
@@ -2972,16 +2982,16 @@ var enemiesToEncounter = {
                         name: "frenzy",
                         emoji: "😡",
                         onTurnEnd: {
-                            attackDmgPlus : 70,
-                            magicDmgPlus : 70,
+                            attackDmgPlus : 110,
+                            magicDmgPlus : 110,
                             everyNTurns: 2,
                             startTurn: 3
                         }
                     }
                 ],
                 hp: 10000,
-                attackDmg: 210,
-                magicDmg: 190,
+                attackDmg: 240,
+                magicDmg: 210,
                 armor: 1350,
                 spirit: 1200,
                 difficulty: "special",
@@ -3002,16 +3012,16 @@ var enemiesToEncounter = {
                         name: "frenzy",
                         emoji: "😡",
                         onTurnEnd: {
-                            attackDmgPlus : 40,
-                            magicDmgPlus : 40,
+                            attackDmgPlus : 60,
+                            magicDmgPlus : 60,
                             everyNTurns: 2,
                             startTurn: 2
                         }
                     }
                 ],
                 hp: 4500,
-                attackDmg: 125,
-                magicDmg: 50,
+                attackDmg: 155,
+                magicDmg: 100,
                 armor: 900,
                 spirit: 500,
                 difficulty: "special",
@@ -3029,8 +3039,8 @@ var enemiesToEncounter = {
                 ],
                 buffs: [],
                 hp: 3000,
-                attackDmg: 90,
-                magicDmg: 120,
+                attackDmg: 110,
+                magicDmg: 170,
                 armor: 500,
                 spirit: 900,
                 difficulty: "special",
@@ -3048,8 +3058,8 @@ var enemiesToEncounter = {
                 ],
                 buffs: [],
                 hp: 2350,
-                attackDmg: 100,
-                magicDmg: 50,
+                attackDmg: 130,
+                magicDmg: 110,
                 armor: 750,
                 spirit: 750,
                 difficulty: "special",

@@ -370,19 +370,36 @@ module.exports.getTopTenTacoUsers = function(cb) {
 module.exports.getToplistUsers = function(cb) {
     var query = 'select * from ' + config.profileTable + ' where experience is not null order by experience DESC LIMIT 50'
     db.query(query)
-      .then(function (data) {
-        //console.log(data);
-        cb(null, {
-            status: 'success',
-            data: data,
-            message: 'Retrieved top ten experience'
-          });
-      })
-      .catch(function (err) {
+    .then(function (data) {
+    //console.log(data);
+    cb(null, {
+        status: 'success',
+        data: data,
+        message: 'Retrieved top ten experience'
+        });
+    })
+    .catch(function (err) {
         console.log(err);
         cb(err);
-      });
-  }
+    });
+}
+
+module.exports.getRpgTopList = function(cb) {
+var query = 'select * from ' + config.profileTable + ' where rpgpoints is not null order by rpgpoints DESC LIMIT 50'
+db.query(query)
+    .then(function (data) {
+    //console.log(data);
+    cb(null, {
+        status: 'success',
+        data: data,
+        message: 'Retrieved top ten rpgpoints'
+        });
+    })
+    .catch(function (err) {
+        console.log(err);
+        cb(err);
+    });
+}
 
 module.exports.updateAchievements = function(discordUserId, achievement, cb){
     // update statistic
