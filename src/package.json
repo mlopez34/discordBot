@@ -11,7 +11,9 @@
   "dependencies": {
     "bluebird": "^3.5.0",
     "discord.js": "^11.1.0",
+    "ffmpeg-binaries": "^3.2.2-3",
     "moment": "^2.18.1",
+    "node-opus": "^0.2.7",
     "pg-promise": "^5.9.7",
     "winston": "^2.3.1",
     "ytdl-core": "^0.17.1"

@@ -53,7 +53,7 @@ function commandIs(str, msg){
 }
 
 client.on('message', function(message){
-    console.log(message);
+    //console.log(message);
     if (botEnabled){
         console.log(message.author.id); // id of the user that created the message
         var args = message.content.split(/[ ]+/);
@@ -157,6 +157,9 @@ client.on('message', function(message){
             else if (commandIs("toplist", message)){
                 commands.toplistCommand(message, client.users);
             }
+            else if (commandIs("toprpg", message)){
+                commands.rpgTopListCommand(message, client.users);
+            }
             else if (commandIs("slots", message)){
                 if (args.length > 1){
                     var bet = args[1];
@@ -246,7 +249,7 @@ client.on('message', function(message){
                     }
                 })
 
-                // commands.timeTravelCommand(message, args, channelName);
+                //commands.timeTravelCommand(message, args, channelName);
             }
             /*
             else if (commandIs("game", message)){
