@@ -4,7 +4,7 @@ var Promise = require('bluebird');
 var profileDB = require("./profileDB.js");
 var config = require("./config");
 var moment = require("moment");
-var RPG_COOLDOWN_HOURS = 3
+var RPG_COOLDOWN_HOURS = 0
 var activeRPGEvents = {}
 var usersInRPGEvents = {};
 var TEAM_MAX_LENGTH = 5;
@@ -20,7 +20,7 @@ module.exports.rpgInitialize = function(message, special){
     team.push(message.author);
 
     users.forEach(function(user){
-        if (team.length < TEAM_MAX_LENGTH && discordUserId != user.id){
+        if (team.length < TEAM_MAX_LENGTH ){// discordUserId != user.id){
             team.push(user);
         }
     })
@@ -292,7 +292,7 @@ module.exports.rpgReady = function(message, itemsAvailable){
                                             armor: 5 + (partyMemberStats.level * partyMemberStats.level) + partyMemberArmorPlus,
                                             spirit: 5 + (partyMemberStats.level * partyMemberStats.level) + partyMemberSpiritPlus,
                                             luck: 1 + partyMemberLuckPlus,
-                                            abilities: ["attack"],
+                                            abilities: ["attack", "slash"],
                                             statuses: [],
                                             statBuffs: {
                                                 hp: 0,
@@ -1161,17 +1161,23 @@ function additionalDamageMD(rpgAbility, userStats, damageToIncrease, baseDamage)
     return Math.floor(baseDamage)
 }
 
-function getDamageToReduceFromArmor( rpgAbility, event, targetStats, damageToReduce ){
+function getDamageToReduceFromArmor( rpgAbility, event, targetStats, damageToReduce, target ){
     if (rpgAbility.areawide){
         // get the average armor of membersInPary
         var totalArmor = 0;
         var numberOfMembers = 0;
-        for (var member in event.membersInParty){
+        var checkGroupArmor;
+        if (target == "party"){
+            checkGroupArmor = event.membersInParty
+        }else if (target == "enemy"){
+            checkGroupArmor = event.enemies
+        }
+        for (var member in checkGroupArmor){
             numberOfMembers++;
-            totalArmor = totalArmor + (event.membersInParty[member].armor + event.membersInParty[member].statBuffs.armor);
+            totalArmor = totalArmor + (checkGroupArmor[member].armor + checkGroupArmor[member].statBuffs.armor);
         }
         var averageArmor = totalArmor / numberOfMembers;
-        damageToReduce = damageToReduce + averageArmor;
+        damageToReduce = calculateDamageReduced( averageArmor );
     }
     else{
         if (rpgAbility && rpgAbility.turnsToExpire){
@@ -1183,17 +1189,23 @@ function getDamageToReduceFromArmor( rpgAbility, event, targetStats, damageToRed
     return damageToReduce;
 }
 
-function getDamageToReduceFromSpirit( rpgAbility, event, targetStats, damageToReduce ){
+function getDamageToReduceFromSpirit( rpgAbility, event, targetStats, damageToReduce, target ){
     if (rpgAbility.areawide){
         // get the average spirit of membersInParty
         var totalSpirit = 0;
         var numberOfMembers = 0;
-        for (var member in event.membersInParty){
+        var checkGroupArmor;
+        if (target == "party"){
+            checkGroupArmor = event.membersInParty
+        }else if (target == "enemy"){
+            checkGroupArmor = event.enemies
+        }
+        for (var member in checkGroupArmor){
             numberOfMembers++;
-            totalSpirit = totalSpirit + (event.membersInParty[member].spirit + event.membersInParty[member].statBuffs.spirit);
+            totalSpirit = totalSpirit + (checkGroupArmor[member].spirit + checkGroupArmor[member].statBuffs.spirit);
         }
         var averageSpirit = totalSpirit / numberOfMembers;
-        damageToReduce = damageToReduce + averageSpirit;
+        damageToReduce = calculateDamageReduced( averageSpirit );
     }
     else{
         if (rpgAbility && rpgAbility.turnsToExpire){
@@ -1240,7 +1252,7 @@ function calculateDamageDealt(event, caster, target, rpgAbility){
                 var damageToIncrease = 0
                 baseDamage = additionalDamageAD(rpgAbility, userStats, damageToIncrease, baseDamage);
                 // reduce damage from armor
-                var damageToReduce = getDamageToReduceFromArmor(rpgAbility, event, targetStats, 0);
+                var damageToReduce = getDamageToReduceFromArmor(rpgAbility, event, targetStats, 0, "party");
 
                 if (damageToReduce > 0.75){
                     damageToReduce = 0.75
@@ -1279,7 +1291,7 @@ function calculateDamageDealt(event, caster, target, rpgAbility){
                     var damageToIncrease = 0
                     baseDamage = additionalDamageAD(rpgAbility, userStats, damageToIncrease, baseDamage);
                     // reduce damage from armor
-                    var damageToReduce = getDamageToReduceFromArmor(rpgAbility, event, targetStats, 0);
+                    var damageToReduce = getDamageToReduceFromArmor(rpgAbility, event, targetStats, 0, "enemy");
 
                     if (damageToReduce > 0.75){
                         damageToReduce = 0.75
@@ -1324,7 +1336,7 @@ function calculateDamageDealt(event, caster, target, rpgAbility){
                 var damageToIncrease = 0
                 baseDamage = additionalDamageAD(rpgAbility, userStats, damageToIncrease, baseDamage);
                 // reduce damage from armor of target
-                var damageToReduce = getDamageToReduceFromArmor(rpgAbility, event, targetStats, 0);
+                var damageToReduce = getDamageToReduceFromArmor(rpgAbility, event, targetStats, 0, "enemy");
 
                 if (damageToReduce > 0.75){
                     damageToReduce = 0.75
@@ -1365,7 +1377,7 @@ function calculateDamageDealt(event, caster, target, rpgAbility){
                     var damageToIncrease = 0
                     baseDamage = additionalDamageAD(rpgAbility, userStats, damageToIncrease, baseDamage);                    
                     // now reduce damage from armor
-                    var damageToReduce = getDamageToReduceFromArmor(rpgAbility, event, targetStats, 0);
+                    var damageToReduce = getDamageToReduceFromArmor(rpgAbility, event, targetStats, 0, "party");
 
                     if (damageToReduce > 0.75){
                         damageToReduce = 0.75
@@ -2567,14 +2579,14 @@ var rpgAbilities = {
     },
     iceshards: {
         dmg: 45,
-        mdPercentage: 0.67,
+        mdPercentage: 0.6,
         type: "ice",
         areawide: true,
         targets: "enemy"
     },
     slash: {
         dmg: 45,
-        adPercentage: 0.67,
+        adPercentage: 0.6,
         type: "physical",
         areawide: true,
         targets: "enemy"
