@@ -286,7 +286,7 @@ module.exports.rpgReady = function(message, itemsAvailable){
                                         membersInParty["rpg-" + partyMember.id] = {
                                             id: partyMember.id,
                                             name: partyMember.username,
-                                            hp: 250 + (24 *  partyMemberStats.level ) + partyMemberHpPlus,
+                                            hp: 220 + (24 *  partyMemberStats.level ) + partyMemberHpPlus,
                                             attackDmg: 10 + (9 * partyMemberStats.level) + partyMemberAttackDmgPlus,
                                             magicDmg:  10 + (9 * partyMemberStats.level) + partyMemberMagicDmgPlus,
                                             armor: 5 + (partyMemberStats.level * partyMemberStats.level) + partyMemberArmorPlus,
@@ -885,26 +885,26 @@ function calculateRewards(event, memberInRpgEvent, getItemResponse, numberOfMemb
         var rarityRoll;
         var enemyDifficulty =  event.enemies[enemy].difficulty
         if (enemyDifficulty == "easy"){
-            additionalExperience = additionalExperience + 2
+            additionalExperience = additionalExperience + 1
             additionalRpgPoints = additionalRpgPoints + 1
             // common items
             rarityRoll = Math.floor(Math.random() * COMMON_MAX_ROLL) + 1;
         }
         else if (enemyDifficulty == "medium"){
-            additionalExperience = additionalExperience + 4
+            additionalExperience = additionalExperience + 2
             additionalRpgPoints = additionalRpgPoints + 2
             // common ? uncommon
             rarityRoll = Math.floor(Math.random() * UNCOMMON_MAX_ROLL) + 1;
         }
         else if (enemyDifficulty == "hard"){
-            additionalExperience = additionalExperience + 10
-            additionalRpgPoints = additionalRpgPoints + 6
+            additionalExperience = additionalExperience + 6
+            additionalRpgPoints = additionalRpgPoints + 5
             // common + uncommon maybe rare
             rarityRoll = Math.floor(Math.random() * 3975) + 6000;
         }
         else if (enemyDifficulty == "boss"){
-            additionalExperience = additionalExperience + 25
-            additionalRpgPoints = additionalRpgPoints + 15
+            additionalExperience = additionalExperience + 15
+            additionalRpgPoints = additionalRpgPoints + 13
             // common + uncommon maybe rare maybe ancient
             rarityRoll = Math.floor(Math.random() * 1000) + 9000;
         }
@@ -939,7 +939,7 @@ function calculateRewards(event, memberInRpgEvent, getItemResponse, numberOfMemb
         }
     }
     // calculate finds based on luck and diff of enemies
-    rewardsForPlayer.xp = rewardsForPlayer.xp + additionalExperience + (numberOfMembers * 2)
+    rewardsForPlayer.xp = rewardsForPlayer.xp + additionalExperience + numberOfMembers
     rewardsForPlayer.rpgPoints = rewardsForPlayer.rpgPoints + additionalRpgPoints + numberOfMembers;
     rewardsForPlayer.items = itemsObtainedArray
     return rewardsForPlayer;
@@ -1136,9 +1136,8 @@ function additionalDamageAD(rpgAbility, userStats, damageToIncrease, baseDamage)
         baseDamage = baseDamage + ( damageToIncrease / rpgAbility.turnsToExpire )
     }else{
         if (rpgAbility.areawide){
-            // take 60% of attackDmg only
             damageToIncrease = damageToIncrease + ((userStats.attackDmg + userStats.statBuffs.attackDmg) * rpgAbility.adPercentage);
-            baseDamage = baseDamage + (damageToIncrease * 0.6)
+            baseDamage = baseDamage + damageToIncrease
         }else{
             damageToIncrease = damageToIncrease + ((userStats.attackDmg + userStats.statBuffs.attackDmg) * rpgAbility.adPercentage);
             baseDamage = baseDamage + damageToIncrease
@@ -1152,9 +1151,8 @@ function additionalDamageMD(rpgAbility, userStats, damageToIncrease, baseDamage)
         baseDamage = baseDamage + ( damageToIncrease / rpgAbility.turnsToExpire )
     }else{
         if (rpgAbility.areawide){
-            // take 60% of magicDmg only
             damageToIncrease = damageToIncrease + ((userStats.magicDmg + userStats.statBuffs.magicDmg) * rpgAbility.mdPercentage);
-            baseDamage = baseDamage + (damageToIncrease * 0.6)
+            baseDamage = baseDamage + damageToIncrease
         }else{
             damageToIncrease = damageToIncrease + ((userStats.magicDmg + userStats.statBuffs.magicDmg) * rpgAbility.mdPercentage);
             baseDamage = baseDamage + damageToIncrease
@@ -1163,17 +1161,23 @@ function additionalDamageMD(rpgAbility, userStats, damageToIncrease, baseDamage)
     return Math.floor(baseDamage)
 }
 
-function getDamageToReduceFromArmor( rpgAbility, event, targetStats, damageToReduce ){
+function getDamageToReduceFromArmor( rpgAbility, event, targetStats, damageToReduce, target ){
     if (rpgAbility.areawide){
         // get the average armor of membersInPary
         var totalArmor = 0;
         var numberOfMembers = 0;
-        for (var member in event.membersInParty){
+        var checkGroupArmor;
+        if (target == "party"){
+            checkGroupArmor = event.membersInParty
+        }else if (target == "enemy"){
+            checkGroupArmor = event.enemies
+        }
+        for (var member in checkGroupArmor){
             numberOfMembers++;
-            totalArmor = totalArmor + (event.membersInParty[member].armor + event.membersInParty[member].statBuffs.armor);
+            totalArmor = totalArmor + (checkGroupArmor[member].armor + checkGroupArmor[member].statBuffs.armor);
         }
         var averageArmor = totalArmor / numberOfMembers;
-        damageToReduce = damageToReduce + averageArmor;
+        damageToReduce = calculateDamageReduced( averageArmor );
     }
     else{
         if (rpgAbility && rpgAbility.turnsToExpire){
@@ -1185,17 +1189,23 @@ function getDamageToReduceFromArmor( rpgAbility, event, targetStats, damageToRed
     return damageToReduce;
 }
 
-function getDamageToReduceFromSpirit( rpgAbility, event, targetStats, damageToReduce ){
+function getDamageToReduceFromSpirit( rpgAbility, event, targetStats, damageToReduce, target ){
     if (rpgAbility.areawide){
         // get the average spirit of membersInParty
         var totalSpirit = 0;
         var numberOfMembers = 0;
-        for (var member in event.membersInParty){
+        var checkGroupArmor;
+        if (target == "party"){
+            checkGroupArmor = event.membersInParty
+        }else if (target == "enemy"){
+            checkGroupArmor = event.enemies
+        }
+        for (var member in checkGroupArmor){
             numberOfMembers++;
-            totalSpirit = totalSpirit + (event.membersInParty[member].spirit + event.membersInParty[member].statBuffs.spirit);
+            totalSpirit = totalSpirit + (checkGroupArmor[member].spirit + checkGroupArmor[member].statBuffs.spirit);
         }
         var averageSpirit = totalSpirit / numberOfMembers;
-        damageToReduce = damageToReduce + averageSpirit;
+        damageToReduce = calculateDamageReduced( averageSpirit );
     }
     else{
         if (rpgAbility && rpgAbility.turnsToExpire){
@@ -1242,7 +1252,7 @@ function calculateDamageDealt(event, caster, target, rpgAbility){
                 var damageToIncrease = 0
                 baseDamage = additionalDamageAD(rpgAbility, userStats, damageToIncrease, baseDamage);
                 // reduce damage from armor
-                var damageToReduce = getDamageToReduceFromArmor(rpgAbility, event, targetStats, 0);
+                var damageToReduce = getDamageToReduceFromArmor(rpgAbility, event, targetStats, 0, "party");
 
                 if (damageToReduce > 0.75){
                     damageToReduce = 0.75
@@ -1281,7 +1291,7 @@ function calculateDamageDealt(event, caster, target, rpgAbility){
                     var damageToIncrease = 0
                     baseDamage = additionalDamageAD(rpgAbility, userStats, damageToIncrease, baseDamage);
                     // reduce damage from armor
-                    var damageToReduce = getDamageToReduceFromArmor(rpgAbility, event, targetStats, 0);
+                    var damageToReduce = getDamageToReduceFromArmor(rpgAbility, event, targetStats, 0, "enemy");
 
                     if (damageToReduce > 0.75){
                         damageToReduce = 0.75
@@ -1326,7 +1336,7 @@ function calculateDamageDealt(event, caster, target, rpgAbility){
                 var damageToIncrease = 0
                 baseDamage = additionalDamageAD(rpgAbility, userStats, damageToIncrease, baseDamage);
                 // reduce damage from armor of target
-                var damageToReduce = getDamageToReduceFromArmor(rpgAbility, event, targetStats, 0);
+                var damageToReduce = getDamageToReduceFromArmor(rpgAbility, event, targetStats, 0, "enemy");
 
                 if (damageToReduce > 0.75){
                     damageToReduce = 0.75
@@ -1367,7 +1377,7 @@ function calculateDamageDealt(event, caster, target, rpgAbility){
                     var damageToIncrease = 0
                     baseDamage = additionalDamageAD(rpgAbility, userStats, damageToIncrease, baseDamage);                    
                     // now reduce damage from armor
-                    var damageToReduce = getDamageToReduceFromArmor(rpgAbility, event, targetStats, 0);
+                    var damageToReduce = getDamageToReduceFromArmor(rpgAbility, event, targetStats, 0, "party");
 
                     if (damageToReduce > 0.75){
                         damageToReduce = 0.75
@@ -2524,7 +2534,7 @@ var rpgAbilities = {
             name: "taco wall",
             emoji : "🏛",
             affects: ["spirit"],
-            multiplier: 1.75
+            multiplier: 1.5
         }
     },
     barrier: {
@@ -2569,14 +2579,14 @@ var rpgAbilities = {
     },
     iceshards: {
         dmg: 45,
-        mdPercentage: 0.65,
+        mdPercentage: 0.6,
         type: "ice",
         areawide: true,
         targets: "enemy"
     },
     slash: {
         dmg: 45,
-        adPercentage: 0.65,
+        adPercentage: 0.6,
         type: "physical",
         areawide: true,
         targets: "enemy"
@@ -2600,7 +2610,7 @@ var rpgAbilities = {
             emoji: "🤾",
             name: "warm up",
             maxStacks: 4,
-            mdPercentageAtMaxStacks: 1,
+            mdPercentageAtMaxStacks: 1.2,
             atMaxStacksDealDamage: 200
         }
     },
@@ -2613,7 +2623,7 @@ var rpgAbilities = {
             dmg: 40,
             heal: 20,
             mdPercentage: 0.8,
-            healPercentage: 0.5
+            healPercentage: 0.4
         }
     },
     haste: {
@@ -2626,6 +2636,11 @@ var rpgAbilities = {
     },
 
     //
+    // execute (more dmg after 40%)
+    // tackle (more damage over 80%)
+    // protect (absorb damage)
+    // bite (hits harder than attack)
+    // 
     revive: {
         special: "remove death"
     },
@@ -2640,12 +2655,12 @@ var rpgAbilities = {
     shoot: {
         dmg: 125,
         charges: 4,
-        adPercentage: 1.1,
+        adPercentage: 1.2,
         type: "physical"
     },
     elixir: {
         heal: 22,
-        mdPercentage: 0.7,
+        mdPercentage: 0.65,
         areawide: true,
         targets: "friendly"
     },
@@ -2691,7 +2706,7 @@ var rpgAbilities = {
             name: "shield",
             emoji: "🛡️",
             affects: ["armor"],
-            multiplier: 1.75
+            multiplier: 1.5
         }
     }
 }
@@ -2736,8 +2751,8 @@ var enemiesToEncounter = {
             hp: 540,
             attackDmg: 55,
             magicDmg: 55,
-            armor: 200,
-            spirit: 200,
+            armor: 300,
+            spirit: 300,
             difficulty: "easy",
             element: "normal"
         },
@@ -2748,8 +2763,8 @@ var enemiesToEncounter = {
             hp: 490,
             attackDmg: 75,
             magicDmg: 47,
-            armor: 300,
-            spirit: 170,
+            armor: 400,
+            spirit: 320,
             difficulty: "easy",
             element: "normal"
         },
@@ -2760,8 +2775,8 @@ var enemiesToEncounter = {
             hp: 480,
             attackDmg: 53,
             magicDmg: 75,
-            armor: 300,
-            spirit: 170,
+            armor: 450,
+            spirit: 370,
             difficulty: "easy",
             element: "normal"
         },
@@ -2772,8 +2787,8 @@ var enemiesToEncounter = {
             hp: 725,
             attackDmg: 55,
             magicDmg: 69,
-            armor: 170,
-            spirit: 300,
+            armor: 290,
+            spirit: 400,
             difficulty: "easy",
             element: "normal"
         }
@@ -2786,8 +2801,8 @@ var enemiesToEncounter = {
             hp: 650,
             attackDmg: 120,
             magicDmg: 90,
-            armor: 450,
-            spirit: 300,
+            armor: 550,
+            spirit: 450,
             difficulty: "medium",
             element: "normal"
         },
@@ -2796,10 +2811,10 @@ var enemiesToEncounter = {
             abilities: ["attack", "attack", "orchatasip", "flameblast", "flameblast"],
             buffs: [],
             hp: 940,
-            attackDmg: 90,
+            attackDmg: 100,
             magicDmg: 140,
-            armor: 300,
-            spirit: 400,
+            armor: 350,
+            spirit: 450,
             difficulty: "medium",
             element: "normal"
         },
@@ -2810,8 +2825,8 @@ var enemiesToEncounter = {
             hp: 975,
             attackDmg: 110,
             magicDmg: 110,
-            armor: 250,
-            spirit: 500,
+            armor: 350,
+            spirit: 550,
             difficulty: "medium",
             element: "normal"
         }
@@ -2833,10 +2848,10 @@ var enemiesToEncounter = {
                 }
             ],
             hp: 4100,
-            attackDmg: 120,
-            magicDmg: 120,
-            armor: 600,
-            spirit: 600,
+            attackDmg: 140,
+            magicDmg: 140,
+            armor: 650,
+            spirit: 650,
             difficulty: "hard",
             element: "normal"
         },
@@ -2879,8 +2894,8 @@ var enemiesToEncounter = {
                 }
             ],
             hp: 2500,
-            attackDmg: 110,
-            magicDmg: 140,
+            attackDmg: 120,
+            magicDmg: 150,
             armor: 600,
             spirit: 900,
             difficulty: "hard",
@@ -2906,8 +2921,8 @@ var enemiesToEncounter = {
                 }
             ],
             hp: 6000,
-            attackDmg: 120,
-            magicDmg: 190,
+            attackDmg: 167,
+            magicDmg: 210,
             armor: 1300,
             spirit: 900,
             difficulty: "boss",
@@ -2931,9 +2946,9 @@ var enemiesToEncounter = {
                 }
             ],
             hp: 7500,
-            attackDmg: 160,
-            magicDmg: 160,
-            armor: 700,
+            attackDmg: 190,
+            magicDmg: 190,
+            armor: 1300,
             spirit: 1400,
             difficulty: "boss",
             element: "normal"
@@ -2956,10 +2971,10 @@ var enemiesToEncounter = {
                 }
             ],
             hp: 6800,
-            attackDmg: 190,
-            magicDmg: 130,
-            armor: 1200,
-            spirit: 1200,
+            attackDmg: 230,
+            magicDmg: 170,
+            armor: 1600,
+            spirit: 1600,
             difficulty: "boss",
             element: "normal"
         }
@@ -2992,8 +3007,8 @@ var enemiesToEncounter = {
                 hp: 10000,
                 attackDmg: 240,
                 magicDmg: 210,
-                armor: 1350,
-                spirit: 1200,
+                armor: 1750,
+                spirit: 1500,
                 difficulty: "special",
                 element: "normal"
             },
@@ -3022,8 +3037,8 @@ var enemiesToEncounter = {
                 hp: 4500,
                 attackDmg: 155,
                 magicDmg: 100,
-                armor: 900,
-                spirit: 500,
+                armor: 1500,
+                spirit: 900,
                 difficulty: "special",
                 element: "normal"
             },
@@ -3041,8 +3056,8 @@ var enemiesToEncounter = {
                 hp: 3000,
                 attackDmg: 110,
                 magicDmg: 170,
-                armor: 500,
-                spirit: 900,
+                armor: 900,
+                spirit: 1500,
                 difficulty: "special",
                 element: "normal"
             },
@@ -3060,8 +3075,8 @@ var enemiesToEncounter = {
                 hp: 2350,
                 attackDmg: 130,
                 magicDmg: 110,
-                armor: 750,
-                spirit: 750,
+                armor: 1150,
+                spirit: 1150,
                 difficulty: "special",
                 element: "normal"
             }
