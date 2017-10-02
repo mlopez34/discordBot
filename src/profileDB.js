@@ -485,6 +485,43 @@ module.exports.checkStatistics = function(discordId, cb){
     });
 }
 
+// start a quest line
+module.exports.userStartQuest = function(discordUserId, questName, cb){
+    var query;
+    if (questName == "timetravel"){
+        query = 'update ' + config.profileTable + ' set timetravelqueststage=1 where discordid=$1'        
+    }
+    // do else for all questlines
+    db.none(query, [discordUserId])
+    .then(function () {
+    cb(null, {
+        status: 'success',
+        message: 'started quest for demonic'
+        });
+    })
+    .catch(function (err) {
+        cb(err);
+    });
+}
+
+module.exports.updateQuestlineStage = function(discordUserId, questline, stage, cb){
+    var query;
+    if (questline == "timetravel"){
+        query = 'update ' + config.profileTable + ' set timetravelqueststage=$2 where discordid=$1'        
+    }
+    // do else for all questlines
+    db.none(query, [discordUserId, stage])
+    .then(function () {
+    cb(null, {
+        status: 'success',
+        message: questline + " stage:" + stage
+        });
+    })
+    .catch(function (err) {
+        cb(err);
+    });
+}
+
 // get items from itemsTable
 module.exports.getItemData = function(cb) {
   var query = 'select * from ' + config.itemsTable
@@ -724,6 +761,26 @@ module.exports.updateUserExperience = function(experience, level, userId, firstE
     cb(null, {
         status: 'success',
         message: 'added experience'
+        });
+    })
+    .catch(function (err) {
+        cb(err);
+    });
+}
+
+module.exports.updateRpgPoints = function(discordUserId, rpgPoints, firstRpgGain, cb){
+    var query;
+    if (!firstRpgGain){
+        query = 'update ' + config.profileTable + ' set rpgpoints=$1 where discordid=$2'
+    }
+    else{
+        query = 'update ' + config.profileTable + ' set rpgpoints=rpgpoints+$1 where discordid=$2'
+    }
+    db.none(query, [rpgPoints, discordUserId])
+    .then(function () {
+    cb(null, {
+        status: 'success',
+        message: 'added rpgpoints'
         });
     })
     .catch(function (err) {
