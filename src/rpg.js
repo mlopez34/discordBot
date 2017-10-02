@@ -4,7 +4,7 @@ var Promise = require('bluebird');
 var profileDB = require("./profileDB.js");
 var config = require("./config");
 var moment = require("moment");
-var RPG_COOLDOWN_HOURS = 0
+var RPG_COOLDOWN_HOURS = 3
 var activeRPGEvents = {}
 var usersInRPGEvents = {};
 var TEAM_MAX_LENGTH = 5;
@@ -20,7 +20,7 @@ module.exports.rpgInitialize = function(message, special){
     team.push(message.author);
 
     users.forEach(function(user){
-        if (team.length < TEAM_MAX_LENGTH ){//&& discordUserId != user.id){
+        if (team.length < TEAM_MAX_LENGTH && discordUserId != user.id){
             team.push(user);
         }
     })
@@ -292,7 +292,7 @@ module.exports.rpgReady = function(message, itemsAvailable){
                                             armor: 5 + (partyMemberStats.level * partyMemberStats.level) + partyMemberArmorPlus,
                                             spirit: 5 + (partyMemberStats.level * partyMemberStats.level) + partyMemberSpiritPlus,
                                             luck: 1 + partyMemberLuckPlus,
-                                            abilities: ["attack", "slash", "iceshards"],
+                                            abilities: ["attack"],
                                             statuses: [],
                                             statBuffs: {
                                                 hp: 0,
@@ -392,8 +392,8 @@ module.exports.rpgReady = function(message, itemsAvailable){
                                             enemies[enemyIdCount] = {
                                                 id: enemyIdCount,
                                                 name: enemyFound.name,
-                                                hp: enemyFound.hp + (18 * maxLevelInParty) + (enemyFound.hpPerPartyMember * enemyCount), // TODO: add + hp per party member
-                                                attackDmg: enemyFound.attackDmg + (11 * maxLevelInParty) + (enemyFound.adPerPartyMember * enemyCount), // add + ad per party member
+                                                hp: enemyFound.hp + (18 * maxLevelInParty) + (enemyFound.hpPerPartyMember * enemyCount), 
+                                                attackDmg: enemyFound.attackDmg + (11 * maxLevelInParty) + (enemyFound.adPerPartyMember * enemyCount), 
                                                 magicDmg: enemyFound.magicDmg + (11 * maxLevelInParty) + (enemyFound.mdPerPartyMember * enemyCount),
                                                 armor: enemyFound.armor + (maxLevelInParty * maxLevelInParty),
                                                 spirit: enemyFound.spirit + ( maxLevelInParty * maxLevelInParty),
