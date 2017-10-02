@@ -4,7 +4,7 @@ var Promise = require('bluebird');
 var profileDB = require("./profileDB.js");
 var config = require("./config");
 var moment = require("moment");
-var RPG_COOLDOWN_HOURS = 0
+var RPG_COOLDOWN_HOURS = 3
 var activeRPGEvents = {}
 var usersInRPGEvents = {};
 var TEAM_MAX_LENGTH = 5;
@@ -20,7 +20,7 @@ module.exports.rpgInitialize = function(message, special){
     team.push(message.author);
 
     users.forEach(function(user){
-        if (team.length < TEAM_MAX_LENGTH ){// discordUserId != user.id){
+        if (team.length < TEAM_MAX_LENGTH && discordUserId != user.id){
             team.push(user);
         }
     })
@@ -286,13 +286,13 @@ module.exports.rpgReady = function(message, itemsAvailable){
                                         membersInParty["rpg-" + partyMember.id] = {
                                             id: partyMember.id,
                                             name: partyMember.username,
-                                            hp: 250 + (24 *  partyMemberStats.level ) + partyMemberHpPlus,
+                                            hp: 220 + (24 *  partyMemberStats.level ) + partyMemberHpPlus,
                                             attackDmg: 10 + (9 * partyMemberStats.level) + partyMemberAttackDmgPlus,
                                             magicDmg:  10 + (9 * partyMemberStats.level) + partyMemberMagicDmgPlus,
                                             armor: 5 + (partyMemberStats.level * partyMemberStats.level) + partyMemberArmorPlus,
                                             spirit: 5 + (partyMemberStats.level * partyMemberStats.level) + partyMemberSpiritPlus,
                                             luck: 1 + partyMemberLuckPlus,
-                                            abilities: ["attack", "slash"],
+                                            abilities: ["attack"],
                                             statuses: [],
                                             statBuffs: {
                                                 hp: 0,
@@ -2802,7 +2802,7 @@ var enemiesToEncounter = {
             attackDmg: 120,
             magicDmg: 90,
             armor: 550,
-            spirit: 400,
+            spirit: 450,
             difficulty: "medium",
             element: "normal"
         },
@@ -2814,7 +2814,7 @@ var enemiesToEncounter = {
             attackDmg: 100,
             magicDmg: 140,
             armor: 350,
-            spirit: 400,
+            spirit: 450,
             difficulty: "medium",
             element: "normal"
         },
@@ -2826,7 +2826,7 @@ var enemiesToEncounter = {
             attackDmg: 110,
             magicDmg: 110,
             armor: 350,
-            spirit: 500,
+            spirit: 550,
             difficulty: "medium",
             element: "normal"
         }
@@ -2921,7 +2921,7 @@ var enemiesToEncounter = {
                 }
             ],
             hp: 6000,
-            attackDmg: 150,
+            attackDmg: 167,
             magicDmg: 210,
             armor: 1300,
             spirit: 900,
@@ -2948,7 +2948,7 @@ var enemiesToEncounter = {
             hp: 7500,
             attackDmg: 190,
             magicDmg: 190,
-            armor: 700,
+            armor: 1300,
             spirit: 1400,
             difficulty: "boss",
             element: "normal"
@@ -2973,8 +2973,8 @@ var enemiesToEncounter = {
             hp: 6800,
             attackDmg: 230,
             magicDmg: 170,
-            armor: 1200,
-            spirit: 1200,
+            armor: 1600,
+            spirit: 1600,
             difficulty: "boss",
             element: "normal"
         }
@@ -3007,8 +3007,8 @@ var enemiesToEncounter = {
                 hp: 10000,
                 attackDmg: 240,
                 magicDmg: 210,
-                armor: 1350,
-                spirit: 1200,
+                armor: 1750,
+                spirit: 1500,
                 difficulty: "special",
                 element: "normal"
             },
@@ -3037,8 +3037,8 @@ var enemiesToEncounter = {
                 hp: 4500,
                 attackDmg: 155,
                 magicDmg: 100,
-                armor: 900,
-                spirit: 500,
+                armor: 1500,
+                spirit: 900,
                 difficulty: "special",
                 element: "normal"
             },
@@ -3056,8 +3056,8 @@ var enemiesToEncounter = {
                 hp: 3000,
                 attackDmg: 110,
                 magicDmg: 170,
-                armor: 500,
-                spirit: 900,
+                armor: 900,
+                spirit: 1500,
                 difficulty: "special",
                 element: "normal"
             },
@@ -3075,8 +3075,8 @@ var enemiesToEncounter = {
                 hp: 2350,
                 attackDmg: 130,
                 magicDmg: 110,
-                armor: 750,
-                spirit: 750,
+                armor: 1150,
+                spirit: 1150,
                 difficulty: "special",
                 element: "normal"
             }
