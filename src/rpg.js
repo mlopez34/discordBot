@@ -120,7 +120,7 @@ module.exports.rpgReady = function(message, itemsAvailable){
                 var rpgEventId = usersInRPGEvents["rpg-" + discordUserId].id;
                 var isSpecialEvent = activeRPGEvents[ "rpg-" +  rpgEventId ] ? activeRPGEvents[ "rpg-" + rpgEventId ].special : false;
                 oneHourAgo = new Date(oneHourAgo.setHours(oneHourAgo.getHours() - RPG_COOLDOWN_HOURS ));
-                var lastrpgtime = userData.data.lastrpgtime ? userData.data.lastrpgtime : new Date(oneHourAgo.setHours(oneHourAgo.getHours() - RPG_COOLDOWN_HOURS * 2))
+                var lastrpgtime = userData.data.lastrpgtime;
                 if ((lastrpgtime && oneHourAgo > lastrpgtime) || isSpecialEvent || !lastrpgtime ){
                     // get the user profile data
                     var userStats = userData.data;
