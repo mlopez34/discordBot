@@ -1212,7 +1212,7 @@ function calculateDamageReduced(statUsedToReduce){
     // formula = 100 / ((60 * 60 - 1716.5) / ARMOR + 1) OR 100 / ((45 * 60 - 1716.5) / SPIRIT + 1)
 
     // statUsedToReduce could be armor or magic
-    var formula = 100 / ((60 * 60 - 1716) / statUsedToReduce + 1)
+    var formula = 100 / ((65 * 60 - 1716) / statUsedToReduce + 1)
     formula = formula * 0.01
     return formula;
 
