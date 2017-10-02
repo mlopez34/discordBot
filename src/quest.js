@@ -18,6 +18,7 @@ module.exports.questStartEmbedBuilder = function(message, questName, questString
         .setThumbnail(message.author.avatarURL)
         .setColor(0xFF7A1C)
         message.channel.send({embed});
+        // TODO: set timeout on the text
     }
     else if(questName == "demonic"){
         const embed = new Discord.RichEmbed()

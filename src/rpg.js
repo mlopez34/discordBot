@@ -7,6 +7,7 @@ var moment = require("moment");
 var RPG_COOLDOWN_HOURS = 0
 var activeRPGEvents = {}
 var usersInRPGEvents = {};
+var TEAM_MAX_LENGTH = 5;
 
 module.exports.rpgInitialize = function(message, special){
     // create an embed saying that b is about to happen, for users MAX of 5 users and they must all say -ready to start costs 5 tacos per person
@@ -19,7 +20,7 @@ module.exports.rpgInitialize = function(message, special){
     team.push(message.author);
 
     users.forEach(function(user){
-        if (team.length < 4){// && discordUserId != user.id){
+        if (team.length < TEAM_MAX_LENGTH){// && discordUserId != user.id){
             team.push(user);
         }
     })
@@ -35,7 +36,7 @@ module.exports.rpgInitialize = function(message, special){
         }
     }
 
-    if (team.length >= 2 && team.length <= 4 && validTeam){
+    if (team.length >= 2 && team.length <= TEAM_MAX_LENGTH && validTeam){
         // send an embed that the users are needed for the RPG event to say -ready or -notready
         // if the user says -ready, they get added to activeRPGEvents that they were invited to
         const embed = new Discord.RichEmbed()
@@ -429,13 +430,14 @@ module.exports.rpgReady = function(message, itemsAvailable){
                                     //.setThumbnail("https://media.giphy.com/media/mIZ9rPeMKefm0/giphy.gif")
                                     .setColor(0xF2E93E)
                                     // party members
-                                    var groupString = "";
+                                    //var groupString = "";
                                     var enemiesString = "";
 
                                     for (var member in activeRPGEvents[rpgEvent].members){
                                         var memberInRpgEvent = activeRPGEvents[rpgEvent].members[member];
                                         var memberInParty = activeRPGEvents[rpgEvent].membersInParty["rpg-" + memberInRpgEvent.id]
-                                        groupString = groupString + "\n" + userStatsStringBuilder(memberInParty, memberInRpgEvent.username, false);
+                                        playerString = userStatsStringBuilder(memberInParty, memberInRpgEvent.username, false);
+                                        embed.addField( memberInRpgEvent.username, playerString )
                                     }
                                     // enemies
                                     for (var enemy in activeRPGEvents[rpgEvent].enemies){
@@ -443,7 +445,7 @@ module.exports.rpgReady = function(message, itemsAvailable){
                                         var enemyName = activeRPGEvents[rpgEvent].enemies[enemy].name;
                                         enemiesString = enemiesString + "\n" + userStatsStringBuilder(enemyInRpgEvent, enemyName, true);
                                     }
-                                    embed.addField( "Group", groupString )
+                                    //embed.addField( "Group", groupString )
                                     embed.addField( "Enemy", enemiesString )
                                     message.channel.send({embed})
                                     .then(function (sentMessage) {
@@ -718,13 +720,14 @@ function turnFinishedEmbedBuilder(message, event, turnString, passiveEffectsStri
     .setColor(0xF2E93E)
     .setDescription(passiveEffectsString + turnString + endOfTurnString)
     // party members
-    var groupString = "";
+    //var groupString = "";
     var enemiesString = "";
 
     for (var member in event.members){
         var memberInRpgEvent = event.members[member];
         var memberInParty = event.membersInParty["rpg-" + memberInRpgEvent.id]
-        groupString = groupString + "\n" + userStatsStringBuilder(memberInParty, memberInRpgEvent.username, false);
+        playerString = userStatsStringBuilder(memberInParty, memberInRpgEvent.username, false);
+        embed.addField( memberInRpgEvent.username, playerString )
     }
     // enemies
     for (var enemy in event.enemies){
@@ -732,7 +735,7 @@ function turnFinishedEmbedBuilder(message, event, turnString, passiveEffectsStri
         var enemyName = event.enemies[enemy].name;
         enemiesString = enemiesString + "\n" + userStatsStringBuilder(enemyInRpgEvent, enemyName, true);
     }
-    embed.addField( "Group", groupString )
+    //embed.addField( "Group", groupString )
     embed.addField( "Enemy", enemiesString )
     message.channel.send({embed})
     .then(function (sentMessage) {
@@ -2148,7 +2151,7 @@ function userStatsStringBuilder(userStats, name, isEnemy){
         userString = ":heart_decoration: "  + (userStats.hp + userStats.statBuffs.hp) + "/" + (userStats.maxhp + userStats.statBuffs.maxhp)
         userString = userString + " - **" + userStats.id + "** **" + name + "**" + "\n"
     }else{
-        userString = ":green_heart:  " + (userStats.hp + userStats.statBuffs.hp) + "/" + (userStats.maxhp + userStats.statBuffs.maxhp) + " - **" + name + "**" + "\n"
+        userString = " :green_heart:  " + (userStats.hp + userStats.statBuffs.hp) + "/" + (userStats.maxhp + userStats.statBuffs.maxhp) + "\n"
         userString = userString + " 🛡️ " + (userStats.armor + userStats.statBuffs.armor)
         userString = userString + " 🙌 " + (userStats.spirit + userStats.statBuffs.spirit)
         userString = userString + " 🗡 " + (userStats.attackDmg + userStats.statBuffs.attackDmg)
