@@ -363,6 +363,8 @@ module.exports.rpgReady = function(message, itemsAvailable){
                                         }
                                     }
                                     else{
+                                        //TODO: if enemycount == 5, get guaranteed hard or better, a guaranteed 2 medium or better, rest anything
+                                        //TODO: if enemycount == 4, get 3 guaranteed medium or better, rest anything
                                         for (var i = 1; i <= enemyCount; i++){
                                             // roll for enemy rarity, then roll for the actual enemy
                                             var rollForRarity = Math.floor(Math.random() * 10000) + 1;
@@ -390,9 +392,9 @@ module.exports.rpgReady = function(message, itemsAvailable){
                                             enemies[enemyIdCount] = {
                                                 id: enemyIdCount,
                                                 name: enemyFound.name,
-                                                hp: enemyFound.hp + (17 * maxLevelInParty),
-                                                attackDmg: enemyFound.attackDmg + (7 * maxLevelInParty),
-                                                magicDmg: enemyFound.magicDmg + (7 * maxLevelInParty),
+                                                hp: enemyFound.hp + (18 * maxLevelInParty) + (enemyFound.hpPerPartyMember * enemyCount), 
+                                                attackDmg: enemyFound.attackDmg + (11 * maxLevelInParty) + (enemyFound.adPerPartyMember * enemyCount), 
+                                                magicDmg: enemyFound.magicDmg + (11 * maxLevelInParty) + (enemyFound.mdPerPartyMember * enemyCount),
                                                 armor: enemyFound.armor + (maxLevelInParty * maxLevelInParty),
                                                 spirit: enemyFound.spirit + ( maxLevelInParty * maxLevelInParty),
                                                 statuses: [],
@@ -1267,7 +1269,7 @@ function calculateDamageDealt(event, caster, target, rpgAbility){
                 var damageToIncrease = 0
                 baseDamage = additionalDamageMD(rpgAbility, userStats, damageToIncrease, baseDamage);
                 // reduce damage from spirit
-                var damageToReduce = getDamageToReduceFromSpirit(rpgAbility, event, targetStats, 0);
+                var damageToReduce = getDamageToReduceFromSpirit(rpgAbility, event, targetStats, 0, "party");
                 
                 if (damageToReduce > 0.75){
                     damageToReduce = 0.75
@@ -1306,7 +1308,7 @@ function calculateDamageDealt(event, caster, target, rpgAbility){
                     var damageToIncrease = 0
                     baseDamage = additionalDamageMD(rpgAbility, userStats, damageToIncrease, baseDamage);                    
                     // now reduce damage from spirit
-                    var damageToReduce = getDamageToReduceFromSpirit(rpgAbility, event, targetStats, 0);                    
+                    var damageToReduce = getDamageToReduceFromSpirit(rpgAbility, event, targetStats, 0, "enemy");                    
                     
                     if (damageToReduce > 0.75){
                         damageToReduce = 0.75
@@ -1352,7 +1354,7 @@ function calculateDamageDealt(event, caster, target, rpgAbility){
                 var damageToIncrease = 0
                 baseDamage = additionalDamageMD(rpgAbility, userStats, damageToIncrease, baseDamage);                
                 // now reduce damage from spirit
-                var damageToReduce = getDamageToReduceFromSpirit(rpgAbility, event, targetStats, 0);                    
+                var damageToReduce = getDamageToReduceFromSpirit(rpgAbility, event, targetStats, 0, "enemy");                    
                 
                 if (damageToReduce > 0.75){
                     damageToReduce = 0.75
@@ -1393,7 +1395,7 @@ function calculateDamageDealt(event, caster, target, rpgAbility){
                     var damageToIncrease = 0
                     baseDamage = additionalDamageMD(rpgAbility, userStats, damageToIncrease, baseDamage);                                    
                     // now reduce damage from spirit
-                    var damageToReduce = getDamageToReduceFromSpirit(rpgAbility, event, targetStats, 0);                    
+                    var damageToReduce = getDamageToReduceFromSpirit(rpgAbility, event, targetStats, 0, "party");                    
                     
                     if (damageToReduce > 0.75){
                         damageToReduce = 0.75
@@ -2748,7 +2750,10 @@ var enemiesToEncounter = {
             name: "Rabbid Wolf",
             abilities: ["attack", "attack", "foodpoisoning", "foodpoisoning", "tacowall"],
             buffs: [],
-            hp: 540,
+            hpPerPartyMember: 70,
+            adPerPartyMember: 5,
+            mddPerPartyMember: 5,
+            hp: 480,
             attackDmg: 55,
             magicDmg: 55,
             armor: 300,
@@ -2760,8 +2765,11 @@ var enemiesToEncounter = {
             name: "Bad Chef",
             abilities: ["attack", "attack", "foodpoisoning", "foodpoisoning", "barrier"],
             buffs: [],
+            hpPerPartyMember: 70,
+            adPerPartyMember: 5,
+            mddPerPartyMember: 5,
             hp: 490,
-            attackDmg: 75,
+            attackDmg: 65,
             magicDmg: 47,
             armor: 400,
             spirit: 320,
@@ -2772,9 +2780,12 @@ var enemiesToEncounter = {
             name: "Angry Mob Member",
             abilities: ["attack", "attack", "foodpoisoning", "iceshards", "iceshards", "cripple"],
             buffs: [],
+            hpPerPartyMember: 70,
+            adPerPartyMember: 5,
+            mddPerPartyMember: 5,
             hp: 480,
-            attackDmg: 53,
-            magicDmg: 75,
+            attackDmg: 50,
+            magicDmg: 65,
             armor: 450,
             spirit: 370,
             difficulty: "easy",
@@ -2784,9 +2795,12 @@ var enemiesToEncounter = {
             name: "Taco Dealer",
             abilities: ["attack", "attack", "drain", "drain", "freeze"],
             buffs: [],
-            hp: 725,
-            attackDmg: 55,
-            magicDmg: 69,
+            hpPerPartyMember: 70,
+            adPerPartyMember: 5,
+            mddPerPartyMember: 5,
+            hp: 500,
+            attackDmg: 49,
+            magicDmg: 59,
             armor: 290,
             spirit: 400,
             difficulty: "easy",
@@ -2798,9 +2812,12 @@ var enemiesToEncounter = {
             name: "Taco Bandit",
             abilities: ["attack", "attack", "rockthrow", "rockthrow", "orchatasip"],
             buffs: [],
+            hpPerPartyMember: 120,
+            adPerPartyMember: 7,
+            mddPerPartyMember: 7,
             hp: 650,
-            attackDmg: 120,
-            magicDmg: 90,
+            attackDmg: 130,
+            magicDmg: 100,
             armor: 550,
             spirit: 450,
             difficulty: "medium",
@@ -2810,9 +2827,12 @@ var enemiesToEncounter = {
             name: "Taco Thief",
             abilities: ["attack", "attack", "orchatasip", "flameblast", "flameblast"],
             buffs: [],
-            hp: 940,
-            attackDmg: 100,
-            magicDmg: 140,
+            hpPerPartyMember: 120,
+            adPerPartyMember: 7,
+            mddPerPartyMember: 7,
+            hp: 780,
+            attackDmg: 80,
+            magicDmg: 120,
             armor: 350,
             spirit: 450,
             difficulty: "medium",
@@ -2822,9 +2842,12 @@ var enemiesToEncounter = {
             name: "Slots Gambler",
             abilities: ["attack", "attack", "elixir", "shock", "shock"],
             buffs: [],
-            hp: 975,
-            attackDmg: 110,
-            magicDmg: 110,
+            hpPerPartyMember: 120,
+            adPerPartyMember: 7,
+            mddPerPartyMember: 7,
+            hp: 840,
+            attackDmg: 90,
+            magicDmg: 90,
             armor: 350,
             spirit: 550,
             difficulty: "medium",
@@ -2847,9 +2870,12 @@ var enemiesToEncounter = {
                     }
                 }
             ],
-            hp: 4100,
-            attackDmg: 140,
-            magicDmg: 140,
+            hpPerPartyMember: 400,
+            adPerPartyMember: 9,
+            mddPerPartyMember: 9,
+            hp: 2100,
+            attackDmg: 100,
+            magicDmg: 100,
             armor: 650,
             spirit: 650,
             difficulty: "hard",
@@ -2870,9 +2896,12 @@ var enemiesToEncounter = {
                     }
                 }
             ],
-            hp: 3800,
-            attackDmg: 180,
-            magicDmg: 130,
+            hpPerPartyMember: 450,
+            adPerPartyMember: 9,
+            mddPerPartyMember: 9,
+            hp: 1800,
+            attackDmg: 140,
+            magicDmg: 93,
             armor: 750,
             spirit: 600,
             difficulty: "hard",
@@ -2893,9 +2922,12 @@ var enemiesToEncounter = {
                     }
                 }
             ],
-            hp: 2500,
-            attackDmg: 120,
-            magicDmg: 150,
+            hpPerPartyMember: 500,
+            adPerPartyMember: 9,
+            mddPerPartyMember: 9,
+            hp: 1500,
+            attackDmg: 95,
+            magicDmg: 120,
             armor: 600,
             spirit: 900,
             difficulty: "hard",
@@ -2915,14 +2947,17 @@ var enemiesToEncounter = {
                     onTurnEnd: {
                         attackDmgPlus : 70,
                         magicDmgPlus : 70,
-                        everyNTurns: 1,
+                        everyNTurns: 2,
                         startTurn: 2
                     }
                 }
             ],
-            hp: 6000,
-            attackDmg: 167,
-            magicDmg: 210,
+            hpPerPartyMember: 1050,
+            adPerPartyMember: 13,
+            mddPerPartyMember: 13,
+            hp: 1500,
+            attackDmg: 147,
+            magicDmg: 170,
             armor: 1300,
             spirit: 900,
             difficulty: "boss",
@@ -2940,14 +2975,17 @@ var enemiesToEncounter = {
                     onTurnEnd: {
                         attackDmgPlus : 70,
                         magicDmgPlus : 70,
-                        everyNTurns: 1,
+                        everyNTurns: 2,
                         startTurn: 2
                     }
                 }
             ],
-            hp: 7500,
-            attackDmg: 190,
-            magicDmg: 190,
+            hpPerPartyMember: 1150,
+            adPerPartyMember: 13,
+            mddPerPartyMember: 13,
+            hp: 2100,
+            attackDmg: 160,
+            magicDmg: 160,
             armor: 1300,
             spirit: 1400,
             difficulty: "boss",
@@ -2965,14 +3003,17 @@ var enemiesToEncounter = {
                     onTurnEnd: {
                         attackDmgPlus : 70,
                         magicDmgPlus : 70,
-                        everyNTurns: 1,
+                        everyNTurns: 2,
                         startTurn: 2
                     }
                 }
             ],
-            hp: 6800,
-            attackDmg: 230,
-            magicDmg: 170,
+            hpPerPartyMember: 822,
+            hp: 1800,
+            adPerPartyMember: 13,
+            mddPerPartyMember: 13,
+            attackDmg: 180,
+            magicDmg: 150,
             armor: 1600,
             spirit: 1600,
             difficulty: "boss",
@@ -3038,7 +3079,7 @@ var enemiesToEncounter = {
                 attackDmg: 155,
                 magicDmg: 100,
                 armor: 1500,
-                spirit: 900,
+                spirit: 1300,
                 difficulty: "special",
                 element: "normal"
             },
