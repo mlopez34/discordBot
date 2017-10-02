@@ -770,25 +770,8 @@ function eventEndedEmbedBuilder(message, event, partySuccess){
                 if (partySuccess){
                     var rewards =  calculateRewards( event, memberInRpgEvent, getItemResponse)
                     // add experience and rpgpoints to user
-                    profileDB.getUserProfileData( memberInParty.id, function(err, profileResponse) {
-                        if(err){
-                            console.log(err);
-                        }
-                        else{
-                            var firstRpgGain = profileResponse.data.rpgpoints;
-
-                            profileDB.updateRpgPoints(memberInParty.id, rewards.rpgPoints, firstRpgGain, function(error, res){
-                                if (error){
-                                    console.log(error);
-                                }else{
-                                    console.log(res);
-                                    // add experience and then items
-                                    experience.gainExperience(message, memberInParty.id, rewards.xp);
-                                    addToUserInventory(memberInParty.id, rewards.items);
-                                }
-                            })
-                        }
-                    })
+                    updateUserRewards(memberInParty, rewards);
+                    
                     rewardString = rewardString + "**Experience:** " + rewards.xp + "\n**Rpg Points**: " + rewards.rpgPoints + "\n**Items:** \n";
                     for (var item in rewards.items){
                         rewardString = rewardString + rewards.items[item].itemname + " \n";
@@ -801,6 +784,28 @@ function eventEndedEmbedBuilder(message, event, partySuccess){
                 embed.addField(memberInRpgEvent.username,  rewardString, true);
             }
             message.channel.send({embed})
+        }
+    })
+}
+
+function updateUserRewards(memberInParty, rewards){
+    profileDB.getUserProfileData( memberInParty.id, function(err, profileResponse) {
+        if(err){
+            console.log(err);
+        }
+        else{
+            var firstRpgGain = profileResponse.data.rpgpoints;
+
+            profileDB.updateRpgPoints(memberInParty.id, rewards.rpgPoints, firstRpgGain, function(error, res){
+                if (error){
+                    console.log(error);
+                }else{
+                    console.log(res);
+                    // add experience and then items
+                    experience.gainExperience(message, memberInParty.id, rewards.xp);
+                    addToUserInventory(memberInParty.id, rewards.items);
+                }
+            })
         }
     })
 }
