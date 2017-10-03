@@ -71,6 +71,22 @@ module.exports.questStringBuilder = function(questname, questData){
                 return questData.message.author.username + ", the battle ensues.. both sides suffer many casualties... Because of " + questData.message.author.username + " and his team, the capital is not ransacked... only Genghis Khan and his top generals remain."                
             }
         }
+        else if (questData.stage == 3){
+            if (questData && questData.storyStep == 1){
+                return questData.message.author.username + ", Your party prepares to be sent back in time millions of years ago..."
+            }
+            else if (questData && questData.storyStep == 2){
+                return questData.message.author.username + ", exact position of the asteroid that is about to hit the planet has been aquired... your party prepares to be sent back in time millions of years ago...\n Your party has now arrived..\n There is no sign of life near your party, as you look up you notice a planet that resembles your home.. "                
+            }
+            else if (questData && questData.storyStep == 3){
+                return questData.message.author.username + ", exact position of the asteroid that is about to hit the planet has been aquired... your party prepares to be sent back in time millions of years ago...\n Your party has now arrived..\n There is no sign of life near your party, as you look up you notice a planet that resembles your home...\nYour party has arrived and is standing on the asteroid.  "                
+            }
+        }
+        else if (questData.stage == 4){
+            if (questData && questData.storyStep == 1){
+                return questData.message.author.username + ", 2 Enormous Creatures emerge..."
+            }
+        }
     }
     else{
         return "Travel with 4 other companions back in time and save the Jin Dynasty";
@@ -119,9 +135,11 @@ function handleTimeMachineArtifact(message, discordUserId, stage, team, year, ch
     }
     else if (stage == 3){
         // travel to the year -1200 and defeat the trojans
+        handleTimeMachineArtifactStageThree(message, discordUserId, stage, team, year, channel)
     }
     else if (stage == 4){
         // travel to the year -65,000,000 and save the dinosaurs from the meteor
+        handleTimeMachineArtifactStageFour(message, discordUserId, stage, team, year, channel)
     }
     else if (Stage == 5){
         // travel to the year 4,000,000 and defeat the overmind formed by civilization
@@ -169,7 +187,7 @@ function handleTimeMachineArtifactStageOne(message, discordUserId, stage, team, 
     // travel to the year 1211 and defeat genghis khan before he invades
     const embed = new Discord.RichEmbed()
     .setDescription(descriptionString)
-    .setThumbnail(message.author.avatarURL)
+    .setThumbnail("https://i.imgur.com/5loQua9.png")
     .setColor(0xFF7A1C)
     message.channel.send({embed})
     .then(function (sentMessage) {
@@ -291,6 +309,8 @@ function handleTimeMachineArtifactStageTwo(message, discordUserId, stage, team, 
     }
     var special = {
         questName: "genghis khan",
+        questData: questData,
+        avatar: "https://i.imgur.com/5loQua9.png",
         reward: {
             type: "note" , // could be item
             fieldTitle: "A scroll was found on one of the general's bodies",
@@ -303,7 +323,7 @@ function handleTimeMachineArtifactStageTwo(message, discordUserId, stage, team, 
     // travel to the year 1211 and defeat genghis khan before he invades
     const embed = new Discord.RichEmbed()
     .setDescription(descriptionString)
-    .setThumbnail(message.author.avatarURL)
+    .setThumbnail("https://i.imgur.com/5loQua9.png")
     .setColor(0xFF7A1C)
     message.channel.send({embed})
     .then(function(sentMessage){
@@ -330,7 +350,99 @@ function handleTimeMachineArtifactStageTwo(message, discordUserId, stage, team, 
 }
 
 function handleTimeMachineArtifactStageThree(message, discordUserId, stage, team, year, channel){
+    // save dinosaurs from the asteroid in -65,000,000
+    var questData = {
+        questname: "timetravel",
+        message: message,
+        year: year,
+        stage: stage,
+        storyStep: 1
+    }
+    var descriptionString = exports.questStringBuilder("timetravel", questData);
+    // travel to the year 1211 and defeat genghis khan before he invades
+    const embed = new Discord.RichEmbed()
+    .setDescription(descriptionString)
+    .setThumbnail("https://i.imgur.com/5loQua9.png")
+    .setColor(0xFF7A1C)
+    message.channel.send({embed})
+    .then(function (sentMessage) {
+        activeQuests["quest-"+sentMessage.id] = { id: discordUserId, username: message.author.username };
+        var storytell = setTimeout (function(){
+            questData.storyStep = questData.storyStep + 1;            
+            var descriptionString = exports.questStringBuilder("timetravel", questData);
+            embed.setDescription(descriptionString)
+            sentMessage.edit({embed})
+        }, 10000);
+        // TODO: add reaction event where user finds 
+        var storytell = setTimeout (function(){ 
+            questData.storyStep = questData.storyStep + 1;
+            var descriptionString = exports.questStringBuilder("timetravel", questData);
+            embed.setDescription(descriptionString)
+            sentMessage.edit({embed})
 
+            var idOfQuest;
+
+            profileDB.updateQuestlineStage(discordUserId, questData.questname, stage + 1, function(error, updateRes){
+                if (error){
+                    console.log(error);
+                }else{
+                    // call self with new stage
+                    
+                    if (activeQuests[idOfQuest]){
+                        delete activeQuests[idOfQuest];
+                    }
+                    message.channel.send("next stage");
+                    exports.questHandler(message, discordUserId, "timetravel", stage + 1, team, year, channel)
+                }
+            })
+
+        }, 20000);
+    })
+}
+
+function handleTimeMachineArtifactStageFour(message, discordUserId, stage, team, year, channel){
+    // send embed that the asteroid is within , 
+    var questData = {
+        questname: "timetravel",
+        message: message,
+        year: year,
+        stage: stage,
+        storyStep: 1
+    }
+    var special = {
+        questName: "asteroid",
+        questData: questData,
+        avatar: "https://i.imgur.com/xTXk6OR.png",
+        reward: {
+            type: "note" , // could be item
+            fieldTitle: "Writting was found on a fragment of the asteroid",
+            note: "travel to the year 3128 and save the humans from being imprisoned",
+            questline: "timetravelqueststage",
+            stageAdvance: stage + 1
+        }
+    }
+    var descriptionString = exports.questStringBuilder("timetravel", questData);
+    // travel to the year 1211 and defeat genghis khan before he invades
+    const embed = new Discord.RichEmbed()
+    .setDescription(descriptionString)
+    .setThumbnail("https://i.imgur.com/xTXk6OR.png")
+    .setColor(0xFF7A1C)
+    message.channel.send({embed})
+    .then(function(sentMessage){
+        
+        var storytell = setTimeout (function(){ 
+            rpg.rpgInitialize(message, special);
+            playMusicForQuest(channel, "asteroid")
+        }, 5000);
+    })
+}
+
+function handleTimeMachineArtifactStageFive(message, discordUserId, stage, team, year, channel){
+    // save humans in the stranded island in year 3177
+}
+
+function handleTimeMachineArtifactStageSix(message, discordUserId, stage, team, year, channel){
+    // save humanity from the overmind in the year 3,759,188
 }
 
 function artifactStartString(questline, discordUser, mentionedUsers){
@@ -411,5 +523,6 @@ function playMusicForQuest(channel, questName){
 }
 
 var youtubeLinks = {
-    genghisKhan: "https://www.youtube.com/watch?v=d2hRTLdvdnk"
+    genghisKhan: "https://www.youtube.com/watch?v=d2hRTLdvdnk",
+    asteroid: "https://www.youtube.com/watch?v=d2hRTLdvdnk"
 }
