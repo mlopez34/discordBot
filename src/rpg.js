@@ -280,13 +280,13 @@ module.exports.rpgReady = function(message, itemsAvailable){
                                             partyMemberAttackDmgPlus = partyMemberStats.plusStats.attackDmgPlus ? partyMemberStats.plusStats.attackDmgPlus : 0
                                             partyMemberMagicDmgPlus = partyMemberStats.plusStats.magicDmgPlus ? partyMemberStats.plusStats.magicDmgPlus : 0
                                             partyMemberArmorPlus = partyMemberStats.plusStats.armorPlus ? partyMemberStats.plusStats.armorPlus : 0
-                                            partyMemberSpiritPlus = partyMemberStats.plusStats.SpiritPlus ? partyMemberStats.plusStats.SpiritPlus : 0
+                                            partyMemberSpiritPlus = partyMemberStats.plusStats.spiritPlus ? partyMemberStats.plusStats.spiritPlus : 0
                                             partyMemberLuckPlus = partyMemberStats.plusStats.luckPlus ? partyMemberStats.plusStats.luckPlus: 0
                                         }
                                         membersInParty["rpg-" + partyMember.id] = {
                                             id: partyMember.id,
                                             name: partyMember.username,
-                                            hp: 220 + (24 *  partyMemberStats.level ) + partyMemberHpPlus,
+                                            hp: 220 + (27 *  partyMemberStats.level ) + partyMemberHpPlus,
                                             attackDmg: 10 + (9 * partyMemberStats.level) + partyMemberAttackDmgPlus,
                                             magicDmg:  10 + (9 * partyMemberStats.level) + partyMemberMagicDmgPlus,
                                             armor: 5 + (partyMemberStats.level * partyMemberStats.level) + partyMemberArmorPlus,
@@ -315,8 +315,10 @@ module.exports.rpgReady = function(message, itemsAvailable){
                                                     // TODO: change this to be deep copy
                                                     membersInParty["rpg-" + partyMember.id].buffs.push(rpgAbilities[partyMemberStats.abilities[ability]].buff);
                                                 }else{
-                                                    // TODO: check that the ability doesn't already exist
-                                                    membersInParty["rpg-" + partyMember.id].abilities.push(partyMemberStats.abilities[ability]);                                                
+                                                    if (membersInParty["rpg-" + partyMember.id].abilities.indexOf(partyMemberStats.abilities[ability]) == -1){
+                                                        membersInParty["rpg-" + partyMember.id].abilities.push(partyMemberStats.abilities[ability]); 
+                                                    }
+                                                                                                   
                                                 }
                                             }
                                         }
@@ -363,23 +365,21 @@ module.exports.rpgReady = function(message, itemsAvailable){
                                         }
                                     }
                                     else{
-                                        //TODO: if enemycount == 5, get guaranteed hard or better, a guaranteed 2 medium or better, rest anything
-                                        //TODO: if enemycount == 4, get 3 guaranteed medium or better, rest anything
                                         for (var i = 1; i <= enemyCount; i++){
                                             // roll for enemy rarity, then roll for the actual enemy
                                             var rollForRarity = Math.floor(Math.random() * 10000) + 1;
                                             var enemyFound;
-                                            if (rollForRarity >= 9750 ){
+                                            if (rollForRarity >= 9550 ){
                                                 // boss
                                                 var enemyRoll = Math.floor(Math.random() * enemiesToEncounter.boss.length);
                                                 enemyFound = JSON.parse(JSON.stringify( enemiesToEncounter.boss[enemyRoll] ));
                                             }
-                                            else if (rollForRarity >= 8500 && rollForRarity < 9750 ){
+                                            else if (rollForRarity >= 8000 && rollForRarity < 9550 ){
                                                 // hard
                                                 var enemyRoll = Math.floor(Math.random() * enemiesToEncounter.hard.length);
                                                 enemyFound = JSON.parse(JSON.stringify( enemiesToEncounter.hard[enemyRoll]));
                                             }
-                                            else if (rollForRarity >= 5000 && rollForRarity < 8500 ){
+                                            else if (rollForRarity >= 4000 && rollForRarity < 8000 ){
                                                 // medium
                                                 var enemyRoll = Math.floor(Math.random() * enemiesToEncounter.medium.length);
                                                 enemyFound = JSON.parse(JSON.stringify( enemiesToEncounter.medium[enemyRoll]));
@@ -2480,7 +2480,7 @@ var rpgAbilities = {
     tacoheal : {
         name: "heal",
         heal: 40,
-        mdPercentage: 1.3
+        mdPercentage: 1.25
     },
     bandaid : {
         name: "bandaid",
@@ -2625,7 +2625,7 @@ var rpgAbilities = {
             dmg: 40,
             heal: 20,
             mdPercentage: 0.8,
-            healPercentage: 0.4
+            healPercentage: 0.35
         }
     },
     haste: {
@@ -2651,7 +2651,7 @@ var rpgAbilities = {
             name: "empower",
             emoji: "💪🏼",
             affects: ["attackDmg", "magicDmg"],
-            multiplier: 1.5
+            multiplier: 1.4
         }
     },
     shoot: {
@@ -2662,7 +2662,7 @@ var rpgAbilities = {
     },
     elixir: {
         heal: 22,
-        mdPercentage: 0.65,
+        mdPercentage: 0.5,
         areawide: true,
         targets: "friendly"
     },
@@ -2750,10 +2750,10 @@ var enemiesToEncounter = {
             name: "Rabbid Wolf",
             abilities: ["attack", "attack", "foodpoisoning", "foodpoisoning", "tacowall"],
             buffs: [],
-            hpPerPartyMember: 70,
-            adPerPartyMember: 5,
-            mdPerPartyMember: 5,
-            hp: 480,
+            hpPerPartyMember: 170,
+            adPerPartyMember: 11,
+            mdPerPartyMember: 11,
+            hp: 280,
             attackDmg: 55,
             magicDmg: 55,
             armor: 300,
@@ -2765,10 +2765,10 @@ var enemiesToEncounter = {
             name: "Bad Chef",
             abilities: ["attack", "attack", "foodpoisoning", "foodpoisoning", "barrier"],
             buffs: [],
-            hpPerPartyMember: 70,
-            adPerPartyMember: 5,
-            mdPerPartyMember: 5,
-            hp: 490,
+            hpPerPartyMember: 130,
+            adPerPartyMember: 11,
+            mdPerPartyMember: 11,
+            hp: 290,
             attackDmg: 65,
             magicDmg: 47,
             armor: 400,
@@ -2780,10 +2780,10 @@ var enemiesToEncounter = {
             name: "Angry Mob Member",
             abilities: ["attack", "attack", "foodpoisoning", "iceshards", "iceshards", "cripple"],
             buffs: [],
-            hpPerPartyMember: 70,
-            adPerPartyMember: 5,
-            mdPerPartyMember: 5,
-            hp: 480,
+            hpPerPartyMember: 130,
+            adPerPartyMember: 11,
+            mdPerPartyMember: 11,
+            hp: 280,
             attackDmg: 50,
             magicDmg: 65,
             armor: 450,
@@ -2795,10 +2795,10 @@ var enemiesToEncounter = {
             name: "Taco Dealer",
             abilities: ["attack", "attack", "drain", "drain", "freeze"],
             buffs: [],
-            hpPerPartyMember: 70,
-            adPerPartyMember: 5,
-            mdPerPartyMember: 5,
-            hp: 500,
+            hpPerPartyMember: 130,
+            adPerPartyMember: 11,
+            mdPerPartyMember: 11,
+            hp: 300,
             attackDmg: 49,
             magicDmg: 59,
             armor: 290,
@@ -2812,10 +2812,10 @@ var enemiesToEncounter = {
             name: "Taco Bandit",
             abilities: ["attack", "attack", "rockthrow", "rockthrow", "orchatasip"],
             buffs: [],
-            hpPerPartyMember: 120,
-            adPerPartyMember: 7,
-            mdPerPartyMember: 7,
-            hp: 650,
+            hpPerPartyMember: 220,
+            adPerPartyMember: 17,
+            mdPerPartyMember: 17,
+            hp: 350,
             attackDmg: 130,
             magicDmg: 100,
             armor: 550,
@@ -2827,10 +2827,10 @@ var enemiesToEncounter = {
             name: "Taco Thief",
             abilities: ["attack", "attack", "orchatasip", "flameblast", "flameblast"],
             buffs: [],
-            hpPerPartyMember: 120,
-            adPerPartyMember: 7,
-            mdPerPartyMember: 7,
-            hp: 780,
+            hpPerPartyMember: 220,
+            adPerPartyMember: 17,
+            mdPerPartyMember: 17,
+            hp: 480,
             attackDmg: 80,
             magicDmg: 120,
             armor: 350,
@@ -2843,8 +2843,8 @@ var enemiesToEncounter = {
             abilities: ["attack", "attack", "elixir", "shock", "shock"],
             buffs: [],
             hpPerPartyMember: 120,
-            adPerPartyMember: 7,
-            mdPerPartyMember: 7,
+            adPerPartyMember: 17,
+            mdPerPartyMember: 17,
             hp: 840,
             attackDmg: 90,
             magicDmg: 90,
@@ -2870,10 +2870,10 @@ var enemiesToEncounter = {
                     }
                 }
             ],
-            hpPerPartyMember: 400,
-            adPerPartyMember: 9,
-            mdPerPartyMember: 9,
-            hp: 2100,
+            hpPerPartyMember: 850,
+            adPerPartyMember: 29,
+            mdPerPartyMember: 29,
+            hp: 900,
             attackDmg: 100,
             magicDmg: 100,
             armor: 650,
@@ -2896,10 +2896,10 @@ var enemiesToEncounter = {
                     }
                 }
             ],
-            hpPerPartyMember: 450,
-            adPerPartyMember: 9,
-            mdPerPartyMember: 9,
-            hp: 1800,
+            hpPerPartyMember: 990,
+            adPerPartyMember: 29,
+            mdPerPartyMember: 29,
+            hp: 800,
             attackDmg: 140,
             magicDmg: 93,
             armor: 750,
@@ -2922,10 +2922,10 @@ var enemiesToEncounter = {
                     }
                 }
             ],
-            hpPerPartyMember: 500,
-            adPerPartyMember: 9,
-            mdPerPartyMember: 9,
-            hp: 1500,
+            hpPerPartyMember: 950,
+            adPerPartyMember: 29,
+            mdPerPartyMember: 29,
+            hp: 850,
             attackDmg: 95,
             magicDmg: 120,
             armor: 600,
@@ -2945,17 +2945,17 @@ var enemiesToEncounter = {
                     name: "frenzy",
                     emoji: "😡",
                     onTurnEnd: {
-                        attackDmgPlus : 70,
-                        magicDmgPlus : 70,
+                        attackDmgPlus : 78,
+                        magicDmgPlus : 78,
                         everyNTurns: 2,
                         startTurn: 2
                     }
                 }
             ],
-            hpPerPartyMember: 1050,
+            hpPerPartyMember: 1350,
             adPerPartyMember: 13,
             mdPerPartyMember: 13,
-            hp: 1500,
+            hp: 1100,
             attackDmg: 147,
             magicDmg: 170,
             armor: 1300,
@@ -2973,17 +2973,17 @@ var enemiesToEncounter = {
                     name: "frenzy",
                     emoji: "😡",
                     onTurnEnd: {
-                        attackDmgPlus : 70,
-                        magicDmgPlus : 70,
+                        attackDmgPlus : 78,
+                        magicDmgPlus : 78,
                         everyNTurns: 2,
                         startTurn: 2
                     }
                 }
             ],
-            hpPerPartyMember: 1150,
+            hpPerPartyMember: 1250,
             adPerPartyMember: 13,
             mdPerPartyMember: 13,
-            hp: 2100,
+            hp: 1500,
             attackDmg: 160,
             magicDmg: 160,
             armor: 1300,
@@ -3001,15 +3001,15 @@ var enemiesToEncounter = {
                     name: "frenzy",
                     emoji: "😡",
                     onTurnEnd: {
-                        attackDmgPlus : 70,
-                        magicDmgPlus : 70,
+                        attackDmgPlus : 78,
+                        magicDmgPlus : 78,
                         everyNTurns: 2,
                         startTurn: 2
                     }
                 }
             ],
-            hpPerPartyMember: 822,
-            hp: 1800,
+            hpPerPartyMember: 1022,
+            hp: 1500,
             adPerPartyMember: 13,
             mdPerPartyMember: 13,
             attackDmg: 180,
@@ -3030,6 +3030,7 @@ var enemiesToEncounter = {
                     "attack",
                     "slash",
                     "iceshards",
+                    "flameblast",
                     "empower",
                     "cripple"
                 ],
@@ -3038,14 +3039,14 @@ var enemiesToEncounter = {
                         name: "frenzy",
                         emoji: "😡",
                         onTurnEnd: {
-                            attackDmgPlus : 110,
-                            magicDmgPlus : 110,
+                            attackDmgPlus : 95,
+                            magicDmgPlus : 95,
                             everyNTurns: 2,
                             startTurn: 3
                         }
                     }
                 ],
-                hp: 10000,
+                hp: 10500,
                 attackDmg: 240,
                 magicDmg: 210,
                 armor: 1750,
@@ -3060,6 +3061,7 @@ var enemiesToEncounter = {
                     "attack",
                     "shock",
                     "shock",
+                    "rockthrow",
                     "shield",
                     "elixir"
                 ],
