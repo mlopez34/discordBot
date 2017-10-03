@@ -14,7 +14,7 @@ const client = new Discord.Client();
 var BASE_INTERVAL = 18000000;
 var MAIN_CHANNEL = config.mainChannelName;
 var BOT_CHANNEL = config.botChannelName;
-var RPG_CHANNEL = config.rpgChannelName;
+var RPG_CHANNEL = config.rpgChannelName ? config.rpgChannelName : config.botChannelName;
 var TURN_OFF_MSG = config.turnOff;
 var TURN_ON_MSG = config.turnOn;
 
