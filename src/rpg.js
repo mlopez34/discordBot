@@ -342,7 +342,7 @@ module.exports.rpgReady = function(message, itemsAvailable){
                                             enemies[enemyIdCount] = {
                                                 id: enemyIdCount,
                                                 name: enemyFound.name,
-                                                hp: enemyFound.hp + (18 * maxLevelInParty),
+                                                hp: enemyFound.hp + (21 * maxLevelInParty),
                                                 attackDmg: enemyFound.attackDmg + (11 * maxLevelInParty),
                                                 magicDmg: enemyFound.magicDmg + (11 * maxLevelInParty),
                                                 armor: enemyFound.armor + (maxLevelInParty * maxLevelInParty),
@@ -365,21 +365,33 @@ module.exports.rpgReady = function(message, itemsAvailable){
                                         }
                                     }
                                     else{
+                                        var foundBoss = false;
                                         for (var i = 1; i <= enemyCount; i++){
                                             // roll for enemy rarity, then roll for the actual enemy
-                                            var rollForRarity = Math.floor(Math.random() * 10000) + 1;
+                                            var rollForRarity;
+                                            if (!foundBoss){
+                                                rollForRarity = Math.floor(Math.random() * 10000) + 1;
+                                            }
+                                            else{
+                                                if (enemyCount > 3){
+                                                    rollForRarity = Math.floor(Math.random() * 9650) + 1;
+                                                }else{
+                                                    rollForRarity = Math.floor(Math.random() * 8250) + 1;
+                                                }
+                                            }
                                             var enemyFound;
-                                            if (rollForRarity >= 9550 ){
+                                            if (rollForRarity >= 9650 ){
                                                 // boss
                                                 var enemyRoll = Math.floor(Math.random() * enemiesToEncounter.boss.length);
                                                 enemyFound = JSON.parse(JSON.stringify( enemiesToEncounter.boss[enemyRoll] ));
+                                                foundBoss = true;
                                             }
-                                            else if (rollForRarity >= 8000 && rollForRarity < 9550 ){
+                                            else if (rollForRarity >= 8250 && rollForRarity < 9650 ){
                                                 // hard
                                                 var enemyRoll = Math.floor(Math.random() * enemiesToEncounter.hard.length);
                                                 enemyFound = JSON.parse(JSON.stringify( enemiesToEncounter.hard[enemyRoll]));
                                             }
-                                            else if (rollForRarity >= 4000 && rollForRarity < 8000 ){
+                                            else if (rollForRarity >= 4000 && rollForRarity < 8250 ){
                                                 // medium
                                                 var enemyRoll = Math.floor(Math.random() * enemiesToEncounter.medium.length);
                                                 enemyFound = JSON.parse(JSON.stringify( enemiesToEncounter.medium[enemyRoll]));
@@ -432,6 +444,9 @@ module.exports.rpgReady = function(message, itemsAvailable){
                                     .setDescription("do -cast [ability name] [target (1-5 for enemies, @user for group members)] \n example: -cast attack 1 OR -cast tacoheal @bender")
                                     //.setThumbnail("https://media.giphy.com/media/mIZ9rPeMKefm0/giphy.gif")
                                     .setColor(0xF2E93E)
+                                    if (activeRPGEvents[rpgEvent].special && activeRPGEvents[rpgEvent].special.avatar){
+                                        embed.setThumbnail(activeRPGEvents[rpgEvent].special.avatar);
+                                    }
                                     // party members
                                     //var groupString = "";
                                     var enemiesString = "";
@@ -725,6 +740,9 @@ function turnFinishedEmbedBuilder(message, event, turnString, passiveEffectsStri
     // party members
     //var groupString = "";
     var enemiesString = "";
+    if (event.special && event.special.avatar){
+        embed.setThumbnail(event.special.avatar);
+    }
 
     for (var member in event.members){
         var memberInRpgEvent = event.members[member];
@@ -763,6 +781,9 @@ function eventEndedEmbedBuilder(message, event, partySuccess){
             const embed = new Discord.RichEmbed()
             .setAuthor("Event has ended")
             .setColor(0xF2E93E)
+            if (event.special && event.special.avatar){
+                embed.setThumbnail(event.special.avatar);
+            }
 
             if (event.special && event.special.reward){
                 if (event.special.reward.type == "note"){
@@ -771,6 +792,13 @@ function eventEndedEmbedBuilder(message, event, partySuccess){
 
                 if (event.special.reward.questline && event.special.reward.stageAdvance){
                     // TODO: advance the user to the next step of the questline
+                    profileDB.updateQuestlineStage(event.leader.id, event.special.questData.questname, event.special.questData.stage + 1, function(error, updateRes){
+                        if (error){
+                            console.log(error);
+                        }else{
+                            message.channel.send("advanced");
+                        }
+                    })
                 }
             }
             var numberOfMembers = event.members.length;
@@ -2492,11 +2520,11 @@ var rpgAbilities = {
         name:"orchata sip",
         hot: {
             name: "orchata sip",
-            heal: 4,
+            heal: 20,
             emoji: "🥛",
-            mdPercentage: 0.7,
+            mdPercentage: 0.85,
             healingOnHotApply: false,
-            turnsToExpire: 3,
+            turnsToExpire: 4,
             healingOnDotExpire: false,
             healingOnExpire: 0
         }
@@ -2662,7 +2690,7 @@ var rpgAbilities = {
     },
     elixir: {
         heal: 22,
-        mdPercentage: 0.5,
+        mdPercentage: 0.65,
         areawide: true,
         targets: "friendly"
     },
@@ -2751,7 +2779,7 @@ var enemiesToEncounter = {
             abilities: ["attack", "attack", "foodpoisoning", "foodpoisoning", "tacowall"],
             buffs: [],
             hpPerPartyMember: 170,
-            adPerPartyMember: 11,
+            adPerPartyMember: 8,
             mdPerPartyMember: 11,
             hp: 280,
             attackDmg: 55,
@@ -2766,8 +2794,8 @@ var enemiesToEncounter = {
             abilities: ["attack", "attack", "foodpoisoning", "foodpoisoning", "barrier"],
             buffs: [],
             hpPerPartyMember: 130,
-            adPerPartyMember: 11,
-            mdPerPartyMember: 11,
+            adPerPartyMember: 8,
+            mdPerPartyMember: 8,
             hp: 290,
             attackDmg: 65,
             magicDmg: 47,
@@ -2781,8 +2809,8 @@ var enemiesToEncounter = {
             abilities: ["attack", "attack", "foodpoisoning", "iceshards", "iceshards", "cripple"],
             buffs: [],
             hpPerPartyMember: 130,
-            adPerPartyMember: 11,
-            mdPerPartyMember: 11,
+            adPerPartyMember: 8,
+            mdPerPartyMember: 8,
             hp: 280,
             attackDmg: 50,
             magicDmg: 65,
@@ -2796,8 +2824,8 @@ var enemiesToEncounter = {
             abilities: ["attack", "attack", "drain", "drain", "freeze"],
             buffs: [],
             hpPerPartyMember: 130,
-            adPerPartyMember: 11,
-            mdPerPartyMember: 11,
+            adPerPartyMember: 8,
+            mdPerPartyMember: 8,
             hp: 300,
             attackDmg: 49,
             magicDmg: 59,
@@ -2813,8 +2841,8 @@ var enemiesToEncounter = {
             abilities: ["attack", "attack", "rockthrow", "rockthrow", "orchatasip"],
             buffs: [],
             hpPerPartyMember: 220,
-            adPerPartyMember: 17,
-            mdPerPartyMember: 17,
+            adPerPartyMember: 14,
+            mdPerPartyMember: 14,
             hp: 350,
             attackDmg: 130,
             magicDmg: 100,
@@ -2828,8 +2856,8 @@ var enemiesToEncounter = {
             abilities: ["attack", "attack", "orchatasip", "flameblast", "flameblast"],
             buffs: [],
             hpPerPartyMember: 220,
-            adPerPartyMember: 17,
-            mdPerPartyMember: 17,
+            adPerPartyMember: 14,
+            mdPerPartyMember: 14,
             hp: 480,
             attackDmg: 80,
             magicDmg: 120,
@@ -2843,8 +2871,8 @@ var enemiesToEncounter = {
             abilities: ["attack", "attack", "elixir", "shock", "shock"],
             buffs: [],
             hpPerPartyMember: 120,
-            adPerPartyMember: 17,
-            mdPerPartyMember: 17,
+            adPerPartyMember: 14,
+            mdPerPartyMember: 14,
             hp: 840,
             attackDmg: 90,
             magicDmg: 90,
@@ -2871,8 +2899,8 @@ var enemiesToEncounter = {
                 }
             ],
             hpPerPartyMember: 850,
-            adPerPartyMember: 29,
-            mdPerPartyMember: 29,
+            adPerPartyMember: 21,
+            mdPerPartyMember: 21,
             hp: 900,
             attackDmg: 100,
             magicDmg: 100,
@@ -2897,8 +2925,8 @@ var enemiesToEncounter = {
                 }
             ],
             hpPerPartyMember: 990,
-            adPerPartyMember: 29,
-            mdPerPartyMember: 29,
+            adPerPartyMember: 21,
+            mdPerPartyMember: 21,
             hp: 800,
             attackDmg: 140,
             magicDmg: 93,
@@ -2923,8 +2951,8 @@ var enemiesToEncounter = {
                 }
             ],
             hpPerPartyMember: 950,
-            adPerPartyMember: 29,
-            mdPerPartyMember: 29,
+            adPerPartyMember: 21,
+            mdPerPartyMember: 21,
             hp: 850,
             attackDmg: 95,
             magicDmg: 120,
@@ -2953,8 +2981,8 @@ var enemiesToEncounter = {
                 }
             ],
             hpPerPartyMember: 1350,
-            adPerPartyMember: 13,
-            mdPerPartyMember: 13,
+            adPerPartyMember: 26,
+            mdPerPartyMember: 26,
             hp: 1100,
             attackDmg: 147,
             magicDmg: 170,
@@ -2981,8 +3009,8 @@ var enemiesToEncounter = {
                 }
             ],
             hpPerPartyMember: 1250,
-            adPerPartyMember: 13,
-            mdPerPartyMember: 13,
+            adPerPartyMember: 26,
+            mdPerPartyMember: 26,
             hp: 1500,
             attackDmg: 160,
             magicDmg: 160,
@@ -3010,8 +3038,8 @@ var enemiesToEncounter = {
             ],
             hpPerPartyMember: 1022,
             hp: 1500,
-            adPerPartyMember: 13,
-            mdPerPartyMember: 13,
+            adPerPartyMember: 26,
+            mdPerPartyMember: 26,
             attackDmg: 180,
             magicDmg: 150,
             armor: 1600,
@@ -3123,6 +3151,74 @@ var enemiesToEncounter = {
                 difficulty: "special",
                 element: "normal"
             }
+        ],
+        "asteroid": [
+            {
+                name: "Asteroid Golem",
+                abilities: [
+                    "attack",
+                    "attack",
+                    "rockthrow",
+                    "rockthrow",
+                    "slash",
+                    "slash",
+                    "shield",
+                    "poke"
+                    // TODO: earthquake
+                ],
+                buffs: [
+                    {
+                        name: "frenzy",
+                        emoji: "😡",
+                        onTurnEnd: {
+                            attackDmgPlus : 105,
+                            magicDmgPlus : 105,
+                            everyNTurns: 2,
+                            startTurn: 3
+                        }
+                    }
+                ],
+                hp: 7600,
+                attackDmg: 300,
+                magicDmg: 270,
+                armor: 1750,
+                spirit: 1500,
+                difficulty: "special",
+                element: "earth"
+            },
+            {
+                name: "Stone Giant",
+                abilities: [
+                    "attack",
+                    "attack",
+                    "rockthrow",
+                    "rockthrow",
+                    "slash",
+                    "slash",
+                    "tacowall",
+                    "poke"
+                    //TODO: meteor
+                ],
+                buffs: [
+                    {
+                        name: "frenzy",
+                        emoji: "😡",
+                        onTurnEnd: {
+                            attackDmgPlus : 105,
+                            magicDmgPlus : 105,
+                            everyNTurns: 2,
+                            startTurn: 2
+                        }
+                    }
+                ],
+                hp: 7600,
+                attackDmg: 300,
+                magicDmg: 270,
+                armor: 1750,
+                spirit: 1500,
+                difficulty: "special",
+                element: "earth"
+            },
         ]
     },
     challenge: {

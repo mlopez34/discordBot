@@ -3610,7 +3610,6 @@ module.exports.timeTravelCommand = function(message, args, channel){
             }
         })
         
-
         // post an embed message that shows the team members back in time, they can react
         // to the embed and obtain items from these reactions - advance to stage 2
         
@@ -3620,8 +3619,30 @@ module.exports.timeTravelCommand = function(message, args, channel){
 
         // skipping will close the event
     }
-    else if (args[1] <= -64000000){
+    else if (args.length > 1 && args[1] >= -66000000 && args[1] <= -64000000 && team.length == 1){
+        profileDB.getUserProfileData(discordUserId, function(profileErr, profileData){
+            if (profileErr){
+                console.log (profileErr);
+            }else{
+                var stage = profileData.data.timetravelqueststage;
 
+                if (stage == 3){
+                    var questData = {
+                        year: args[1]
+                    }
+                    quest.questHandler(message, discordUserId, "timetravel", stage, team, questData, channel)
+                }
+                else if (stage == 4){
+                    var questData = {
+                        year: args[1]
+                    }
+                    quest.questHandler(message, discordUserId, "timetravel", stage, team, questData, channel)
+                }
+                else{
+                    message.channel.send("traveled to the year " + args[1])
+                }
+            }
+        })
     }
 }
 

@@ -14,6 +14,7 @@ const client = new Discord.Client();
 var BASE_INTERVAL = 18000000;
 var MAIN_CHANNEL = config.mainChannelName;
 var BOT_CHANNEL = config.botChannelName;
+var RPG_CHANNEL = config.rpgChannelName ? config.rpgChannelName : config.botChannelName;
 var TURN_OFF_MSG = config.turnOff;
 var TURN_ON_MSG = config.turnOn;
 
@@ -239,9 +240,20 @@ client.on('message', function(message){
             else if (commandIs("rpghelp", message)){
                 commands.rpghelpCommand(message);
             }
+            if (commandIs("timetravel", message)){
+                message.channel.send("use the rpg channel for this")
+            }
+            
+            /*
+            else if (commandIs("game", message)){
+                commands.gameCommand(message);
+            }
+            */
+        }
+        else if (message.channel.type == "text" && message.channel.name == RPG_CHANNEL && !message.author.bot){
             // artifact abilities
-            else if (commandIs("timetravel", message)){
-
+            if (commandIs("timetravel", message)){
+                
                 var channelName;
                 client.channels.forEach(function(channel){
                     if (channel.type == "voice" && channel.name == "General"){
@@ -249,15 +261,23 @@ client.on('message', function(message){
                     }
                 })
 
-                //commands.timeTravelCommand(message, args, channelName);
+                commands.timeTravelCommand(message, args, channelName);
             }
-            /*
-            else if (commandIs("game", message)){
-                commands.gameCommand(message);
+            else if (commandIs("rpgstart", message)){
+                commands.rpgBattleCommand(message);
             }
-            */
-
-            
+            else if (commandIs("ready", message)){
+                commands.rpgReadyCommand(message);
+            }
+            else if (commandIs("skip", message)){
+                commands.rpgSkipCommand(message);
+            }
+            else if (commandIs("cast", message)){
+                commands.castCommand(message, args);
+            }
+            else if (commandIs("rpghelp", message)){
+                commands.rpghelpCommand(message);
+            }
         }
         else if (message.channel.type == "text" && message.channel.name == MAIN_CHANNEL && !message.author.bot){
              if( commandIs("thank", message )){
