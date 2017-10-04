@@ -14,7 +14,7 @@ const client = new Discord.Client();
 var BASE_INTERVAL = 18000000;
 var MAIN_CHANNEL = config.mainChannelName;
 var BOT_CHANNEL = config.botChannelName;
-var RPG_CHANNEL = config.rpgChannelName ? config.rpgChannelName : config.botChannelName;
+var RPG_CHANNEL = config.rpgChannelName;
 var TURN_OFF_MSG = config.turnOff;
 var TURN_ON_MSG = config.turnOn;
 
@@ -226,21 +226,6 @@ client.on('message', function(message){
                 commands.createTableCommand(message, mainChannel);
             }
             else if (commandIs("rpgstart", message)){
-                commands.rpgBattleCommand(message);
-            }
-            else if (commandIs("ready", message)){
-                commands.rpgReadyCommand(message);
-            }
-            else if (commandIs("skip", message)){
-                commands.rpgSkipCommand(message);
-            }
-            else if (commandIs("cast", message)){
-                commands.castCommand(message, args);
-            }
-            else if (commandIs("rpghelp", message)){
-                commands.rpghelpCommand(message);
-            }
-            if (commandIs("timetravel", message)){
                 message.channel.send("use the rpg channel for this")
             }
             

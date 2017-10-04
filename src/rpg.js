@@ -928,13 +928,13 @@ function calculateRewards(event, memberInRpgEvent, getItemResponse, numberOfMemb
         }
         else if (enemyDifficulty == "hard"){
             additionalExperience = additionalExperience + 6
-            additionalRpgPoints = additionalRpgPoints + 5
+            additionalRpgPoints = additionalRpgPoints + 6
             // common + uncommon maybe rare
             rarityRoll = Math.floor(Math.random() * 3975) + 6000;
         }
         else if (enemyDifficulty == "boss"){
-            additionalExperience = additionalExperience + 15
-            additionalRpgPoints = additionalRpgPoints + 13
+            additionalExperience = additionalExperience + 14
+            additionalRpgPoints = additionalRpgPoints + 14
             // common + uncommon maybe rare maybe ancient
             rarityRoll = Math.floor(Math.random() * 1000) + 9000;
         }
@@ -2507,24 +2507,24 @@ var rpgAbilities = {
     },
     tacoheal : {
         name: "heal",
-        heal: 40,
-        mdPercentage: 1.25
+        heal: 60,
+        mdPercentage: 1.35
     },
     bandaid : {
         name: "bandaid",
         heal: 10,
-        mdPercentage: 0.2,
+        mdPercentage: 0.4,
         special: "remove status"
     },
     orchatasip: {
         name:"orchata sip",
         hot: {
             name: "orchata sip",
-            heal: 20,
+            heal: 25,
             emoji: "🥛",
             mdPercentage: 0.85,
             healingOnHotApply: false,
-            turnsToExpire: 4,
+            turnsToExpire: 5,
             healingOnDotExpire: false,
             healingOnExpire: 0
         }
@@ -2576,13 +2576,13 @@ var rpgAbilities = {
         }
     },
     flameblast: {
-        dmg: 50,
+        dmg: 60,
         mdPercentage: 1,
         type: "fire",
         dot: {
             name: "burning",
-            dmg: 5,
-            mdPercentage: 1,
+            dmg: 20,
+            mdPercentage: 0.7,
             type: "fire",
             emoji: "🔥",
             damageOnDotApply: false,
@@ -2592,12 +2592,12 @@ var rpgAbilities = {
         }
     },
     foodpoisoning: {
-        dmg: 40,
+        dmg: 60,
         mdPercentage: 1,
         type: "poison",
         dot: {
             name: "food poisoning",
-            dmg: 8,
+            dmg: 26,
             mdPercentage: 1,
             emoji : "🤢",
             type: "poison",
@@ -2624,7 +2624,7 @@ var rpgAbilities = {
     shock: {
         name: "shock",
         dmg: 90,
-        mdPercentage: 1.15,
+        mdPercentage: 1.2,
         type: "electric",
         special: "selfdamage",
         selfdamage: 15
@@ -2649,10 +2649,10 @@ var rpgAbilities = {
         type: "physical",
         special: {
             name: "drain",
-            adPercentage: 0.8,
+            adPercentage: 0.85,
             dmg: 40,
             heal: 20,
-            mdPercentage: 0.8,
+            mdPercentage: 0.85,
             healPercentage: 0.35
         }
     },
@@ -2690,7 +2690,7 @@ var rpgAbilities = {
     },
     elixir: {
         heal: 22,
-        mdPercentage: 0.65,
+        mdPercentage: 0.7,
         areawide: true,
         targets: "friendly"
     },
@@ -2893,12 +2893,12 @@ var enemiesToEncounter = {
                     onTurnEnd: {
                         attackDmgPlus : 50,
                         magicDmgPlus : 50,
-                        everyNTurns: 1,
+                        everyNTurns: 2,
                         startTurn: 2
                     }
                 }
             ],
-            hpPerPartyMember: 850,
+            hpPerPartyMember: 950,
             adPerPartyMember: 21,
             mdPerPartyMember: 21,
             hp: 900,
@@ -2919,7 +2919,7 @@ var enemiesToEncounter = {
                     onTurnEnd: {
                         attackDmgPlus : 50,
                         magicDmgPlus : 50,
-                        everyNTurns: 1,
+                        everyNTurns: 2,
                         startTurn: 2
                     }
                 }
@@ -2945,7 +2945,7 @@ var enemiesToEncounter = {
                     onTurnEnd: {
                         attackDmgPlus : 50,
                         magicDmgPlus : 50,
-                        everyNTurns: 1,
+                        everyNTurns: 2,
                         startTurn: 2
                     }
                 }
@@ -3036,7 +3036,7 @@ var enemiesToEncounter = {
                     }
                 }
             ],
-            hpPerPartyMember: 1022,
+            hpPerPartyMember: 1122,
             hp: 1500,
             adPerPartyMember: 26,
             mdPerPartyMember: 26,

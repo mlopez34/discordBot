@@ -57,17 +57,21 @@ function reachedNewRepStatus(message, getProfileRes, discordId, reputationGained
         updateReputationStatus(message, discordId, "Liked");
         cb(null, {repNumber: reputationNumber + reputationGained, repStatus: "Liked" })
     }
-    else if(reputationNumber + reputationGained >= REPUTATIONS.glorified.repToGet && reputationStatus.toLowerCase() != "glorified"){
+    else if(reputationNumber + reputationGained >= REPUTATIONS.glorified.repToGet 
+        && reputationStatus.toLowerCase() != "glorified"){
         // reched glorified
         updateReputationStatus(message, discordId, "Glorified");
         cb(null, {repNumber: reputationNumber + reputationGained, repStatus: "Glorified" })
     }
-    else if(reputationNumber + reputationGained >= REPUTATIONS.admired.repToGet && reputationStatus.toLowerCase() != "admired"){
+    else if(reputationNumber + reputationGained >= REPUTATIONS.admired.repToGet 
+        && reputationStatus.toLowerCase() != "admired"){
         // reached admired
         updateReputationStatus(message, discordId, "Admired");
         cb(null, {repNumber: reputationNumber + reputationGained, repStatus: "Admired" })
     }
-    else if (reputationNumber + reputationGained >= REPUTATIONS.respected.repToGet && reputationStatus.toLowerCase() != "respected"){
+    else if (reputationNumber + reputationGained >= REPUTATIONS.respected.repToGet 
+        && reputationStatus.toLowerCase() != "respected" 
+        && reputationStatus.toLowerCase() != "admired"){
         // reached respected
         updateReputationStatus(message, discordId, "Respected");
         cb(null, {repNumber: reputationNumber + reputationGained, repStatus: "Respected" })
@@ -124,6 +128,19 @@ function updateUserRewards(message, discordId, repstatus, cb){
                 }
             })
             break;
+            /*
+        case "admired":
+            // give the user an ancient and a fishing rod?
+            profileDB.obtainCasserole(discordId, function(error, res){
+                if (error){
+                    console.log(error);
+                }
+                else{
+                    cb(null, "casserole");
+                }
+            })
+            break;
+            */
     }
         
 }
