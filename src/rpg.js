@@ -2507,8 +2507,8 @@ var rpgAbilities = {
     },
     tacoheal : {
         name: "heal",
-        heal: 60,
-        mdPercentage: 1.35
+        heal: 50,
+        mdPercentage: 1.33
     },
     bandaid : {
         name: "bandaid",
