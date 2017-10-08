@@ -262,7 +262,7 @@ module.exports.rpgReady = function(message, itemsAvailable){
                                                 buffs: []
                                             }
                                             var items = [];
-                                            var abilities = []
+                                            var abilities = [ ]
                                             partyMemberStats = {
                                                 level: 1,
                                                 plusStats: statisticsFromItemsAndLevel,
@@ -287,7 +287,7 @@ module.exports.rpgReady = function(message, itemsAvailable){
                                         membersInParty["rpg-" + partyMember.id] = {
                                             id: partyMember.id,
                                             name: partyMember.username,
-                                            hp: 220 + (27 *  partyMemberStats.level ) + partyMemberHpPlus,
+                                            hp: 250 + (27 *  partyMemberStats.level ) + partyMemberHpPlus,
                                             attackDmg: 10 + (9 * partyMemberStats.level) + partyMemberAttackDmgPlus,
                                             magicDmg:  10 + (9 * partyMemberStats.level) + partyMemberMagicDmgPlus,
                                             armor: 5 + (partyMemberStats.level * partyMemberStats.level) + partyMemberArmorPlus,
@@ -331,7 +331,7 @@ module.exports.rpgReady = function(message, itemsAvailable){
                                             }
                                         }
                                     }
-                                    averageLevelInParty = averageLevelInParty / activeRPGEvents[rpgEvent].members.length;
+                                    averageLevelInParty = Math.ceil( averageLevelInParty / activeRPGEvents[rpgEvent].members.length );
                                     // create the enemy list and add to the embed
                                     // enemy list has regular attack, 2 abilities, 1 ult ability
                                     // create enemy stats, enemy stats scale with current user's average level
@@ -432,9 +432,9 @@ module.exports.rpgReady = function(message, itemsAvailable){
                                             enemies[enemyIdCount] = {
                                                 id: enemyIdCount,
                                                 name: enemyFound.name,
-                                                hp: enemyFound.hp + (18 * averageLevelInParty) + (enemyFound.hpPerPartyMember * enemyCount), 
-                                                attackDmg: enemyFound.attackDmg + (9 * averageLevelInParty) + (enemyFound.adPerPartyMember * enemyCount), 
-                                                magicDmg: enemyFound.magicDmg + (9 * averageLevelInParty) + (enemyFound.mdPerPartyMember * enemyCount),
+                                                hp: enemyFound.hp + (21 * averageLevelInParty) + (enemyFound.hpPerPartyMember * enemyCount), 
+                                                attackDmg: enemyFound.attackDmg + (10 * averageLevelInParty) + (enemyFound.adPerPartyMember * enemyCount), 
+                                                magicDmg: enemyFound.magicDmg + (10 * averageLevelInParty) + (enemyFound.mdPerPartyMember * enemyCount),
                                                 armor: enemyFound.armor + (averageLevelInParty * averageLevelInParty),
                                                 spirit: enemyFound.spirit + ( averageLevelInParty * averageLevelInParty),
                                                 statuses: [],
