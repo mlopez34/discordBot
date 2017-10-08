@@ -64,14 +64,15 @@ function reachedNewRepStatus(message, getProfileRes, discordId, reputationGained
         cb(null, {repNumber: reputationNumber + reputationGained, repStatus: "Glorified" })
     }
     else if(reputationNumber + reputationGained >= REPUTATIONS.admired.repToGet 
-        && reputationStatus.toLowerCase() != "admired"){
+        && reputationNumber + reputationGained < REPUTATIONS.glorified.repToGet
+        && reputationStatus.toLowerCase() != "admired" ){
         // reached admired
         updateReputationStatus(message, discordId, "Admired");
         cb(null, {repNumber: reputationNumber + reputationGained, repStatus: "Admired" })
     }
     else if (reputationNumber + reputationGained >= REPUTATIONS.respected.repToGet 
-        && reputationStatus.toLowerCase() != "respected" 
-        && reputationStatus.toLowerCase() != "admired"){
+        && reputationNumber + reputationGained < REPUTATIONS.admired.repToGet
+        && reputationStatus.toLowerCase() != "respected"){
         // reached respected
         updateReputationStatus(message, discordId, "Respected");
         cb(null, {repNumber: reputationNumber + reputationGained, repStatus: "Respected" })
