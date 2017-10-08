@@ -1159,8 +1159,8 @@ function hasDied(member){
     member.buffs = [];
 }
 
-function hasRevived(member){
-    member.statuses.splice(index, 1)
+function hasRevived(member, deadIndex){
+    member.statuses.splice(deadIndex, 1)
     // set their hp to 40%
     member.hp = Math.floor(member.maxhp * 0.4);
     // reset their buffs
@@ -2164,7 +2164,7 @@ function processAbility(abilityObject, event){
                 var deadIndex = event.membersInParty[targetToRevive].statuses.indexOf("dead")
                 if (deadIndex > -1){
                     // target is dead
-                    hasRevived( event.membersInParty[targetToRevive] );
+                    hasRevived( event.membersInParty[targetToRevive], deadIndex );
                     abilityToString = abilityToString + targetToReviveName + " was revived \n"                
                 }
             }
@@ -2173,7 +2173,7 @@ function processAbility(abilityObject, event){
                 var deadIndex = event.enemies[targetToRevive].statuses.indexOf("dead")
                 if (deadIndex > -1){
                     // target is dead
-                    hasRevived( event.enemies[targetToRevive] );
+                    hasRevived( event.enemies[targetToRevive], deadIndex );
                     abilityToString = abilityToString + targetToReviveName + " was revived \n"                
                 }
             }

@@ -95,7 +95,7 @@ module.exports = {
                 name: "taco wall",
                 emoji : "🏛",
                 affects: ["spirit"],
-                multiplier: 1.5
+                multiplier: 2
             }
         },
         shield: {
@@ -103,7 +103,7 @@ module.exports = {
                 name: "shield",
                 emoji: "🛡️",
                 affects: ["armor"],
-                multiplier: 1.5
+                multiplier: 2
             }
         },
         barrier: {
