@@ -66,6 +66,7 @@ function gainExperienceHandler(message, discordUserId, experienceNumber, userPro
                 else{
                     console.log(updateXpRes);
                     // create the level up embed
+                    // TODO: embed needs the name of the user that leveled up
                     experienceEmbedBuilder(message, userLeveledUpTo, tacoRewards);
                 }
             })
