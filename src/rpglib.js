@@ -33,7 +33,7 @@ module.exports = {
                 name: "orchata sip",
                 heal: 50,
                 emoji: "🥛",
-                mdPercentage: 0.85,
+                mdPercentage: 1.5,
                 healingOnHotApply: false,
                 turnsToExpire: 5,
                 healingOnDotExpire: false,
@@ -137,7 +137,7 @@ module.exports = {
             dot: {
                 name: "burning",
                 dmg: 20,
-                mdPercentage: 0.7,
+                mdPercentage: 0.8,
                 type: "fire",
                 emoji: "🔥",
                 damageOnDotApply: false,
