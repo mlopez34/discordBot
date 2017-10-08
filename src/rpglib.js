@@ -66,7 +66,7 @@ module.exports = {
             dot: {
                 name: "poke",
                 type:"physical",
-                dmg: 15,
+                dmg: 45,
                 adPercentage: 1,
                 emoji: "📌",
                 dmgOnDotApply: false,
@@ -81,7 +81,7 @@ module.exports = {
             dot: {
                 name: "curse",
                 type:"shadow",
-                dmg: 15,
+                dmg: 45,
                 mdPercentage: 1,
                 emoji: "🌑",
                 dmgOnDotApply: false,
@@ -420,14 +420,14 @@ module.exports = {
                         name: "frenzy",
                         emoji: "😡",
                         onTurnEnd: {
-                            attackDmgPlus : 45,
-                            magicDmgPlus : 45,
+                            attackDmgPlus : 50,
+                            magicDmgPlus : 50,
                             everyNTurns: 2,
                             startTurn: 2
                         }
                     }
                 ],
-                hpPerPartyMember: 1550,
+                hpPerPartyMember: 1350,
                 adPerPartyMember: 18,
                 mdPerPartyMember: 18,
                 hp: 550,
@@ -446,14 +446,14 @@ module.exports = {
                         name: "frenzy",
                         emoji: "😡",
                         onTurnEnd: {
-                            attackDmgPlus : 45,
-                            magicDmgPlus : 45,
+                            attackDmgPlus : 50,
+                            magicDmgPlus : 50,
                             everyNTurns: 2,
                             startTurn: 2
                         }
                     }
                 ],
-                hpPerPartyMember: 1390,
+                hpPerPartyMember: 1190,
                 adPerPartyMember: 18,
                 mdPerPartyMember: 18,
                 hp: 700,
@@ -472,14 +472,14 @@ module.exports = {
                         name: "frenzy",
                         emoji: "😡",
                         onTurnEnd: {
-                            attackDmgPlus : 45,
-                            magicDmgPlus : 45,
+                            attackDmgPlus : 50,
+                            magicDmgPlus : 50,
                             everyNTurns: 2,
                             startTurn: 2
                         }
                     }
                 ],
-                hpPerPartyMember: 1350,
+                hpPerPartyMember: 1150,
                 adPerPartyMember: 18,
                 mdPerPartyMember: 18,
                 hp: 750,
@@ -502,14 +502,14 @@ module.exports = {
                         name: "frenzy",
                         emoji: "😡",
                         onTurnEnd: {
-                            attackDmgPlus : 68,
-                            magicDmgPlus : 68,
+                            attackDmgPlus : 75,
+                            magicDmgPlus : 75,
                             everyNTurns: 2,
                             startTurn: 2
                         }
                     }
                 ],
-                hpPerPartyMember: 1850,
+                hpPerPartyMember: 1650,
                 adPerPartyMember: 21,
                 mdPerPartyMember: 21,
                 hp: 800,
@@ -530,14 +530,14 @@ module.exports = {
                         name: "frenzy",
                         emoji: "😡",
                         onTurnEnd: {
-                            attackDmgPlus : 68,
-                            magicDmgPlus : 68,
+                            attackDmgPlus : 75,
+                            magicDmgPlus : 75,
                             everyNTurns: 2,
                             startTurn: 2
                         }
                     }
                 ],
-                hpPerPartyMember: 1950,
+                hpPerPartyMember: 1750,
                 adPerPartyMember: 21,
                 mdPerPartyMember: 21,
                 hp: 900,
@@ -558,14 +558,14 @@ module.exports = {
                         name: "frenzy",
                         emoji: "😡",
                         onTurnEnd: {
-                            attackDmgPlus : 68,
-                            magicDmgPlus : 68,
+                            attackDmgPlus : 75,
+                            magicDmgPlus : 75,
                             everyNTurns: 2,
                             startTurn: 2
                         }
                     }
                 ],
-                hpPerPartyMember: 1822,
+                hpPerPartyMember: 1622,
                 hp: 1050,
                 adPerPartyMember: 21,
                 mdPerPartyMember: 21,

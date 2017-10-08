@@ -4488,6 +4488,7 @@ module.exports.tradeCommand = function(message, args){
                                         // create an active trade with the mentioned use, myItem = trading
                                         var userTrade = {
                                             item: myItemShortName,
+                                            fullItemName: itemNameInTrade,
                                             itemid: itemsMapbyShortName[myItemShortName].itemid,
                                             idsToTransfer: [],
                                             tradeFrom: discordUserIdString,
@@ -4512,7 +4513,7 @@ module.exports.tradeCommand = function(message, args){
                                             // cancel the trade
                                             if (activeTrades[mentionedIdString]){
                                                 // trade is still active, just cancel it
-                                                var itemToTradeName = activeTrades[mentionedIdString].item;
+                                                var itemToTradeName = activeTrades[mentionedIdString].fullItemName;
                                                 var userTradingWith = activeTrades[mentionedIdString].tradingWith;
                                                 var tradeFrom = activeTrades[mentionedIdString].tradeFrom
                                                 for (var transferId in activeTrades[mentionedIdString].idsToTransfer){
@@ -4596,7 +4597,7 @@ module.exports.acceptTradeCommand = function(message, args){
                 }
                 if (currentTacos - tacosAuctioned - tacosToPay >= 0 && tacosToPay == tacosAgreedOn){
                     // accept the trade and transfer the item
-                    message.channel.send(":handshake:  " + message.author + " has accepted the trade of **" + activeTrades[discordUserIdString].item + "** ! " + " Bender kept `" + tacoTax + "` tacos for tax purposes.") 
+                    message.channel.send(":handshake:  " + message.author + " has accepted the trade of **" + activeTrades[discordUserIdString].fullItemName + "** ! " + " Bender kept `" + tacoTax + "` tacos for tax purposes.") 
                     transferItemsAndTacos(discordUserId, mentionedId, itemsArray, tacosToPay, tacosToPay-tacoTax, function(transErr, transRes){
                         if (transErr){
                             console.log(transErr);
