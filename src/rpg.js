@@ -1269,7 +1269,7 @@ function processPassiveEffects(event){
                         passiveEffectsString = passiveEffectsString + event.enemies[enemy].name + " took " + damageToDealToPlayer + " damage from " + event.enemies[enemy].statuses[index].dot.name + "\n"
                         
                         if (event.enemies[enemy].hp <= 0){
-                            hasDied(event.membersInParty[member]);
+                            hasDied(event.enemies[enemy]);
                             passiveEffectsString = passiveEffectsString + event.enemies[enemy].name + " has died :skull_crossbones: \n"                            
                             break;
                         }

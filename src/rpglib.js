@@ -42,7 +42,7 @@ module.exports = {
         },
         elixir: {
             name: "elixir",
-            heal: 75,
+            heal: 35,
             cooldown: 0,
             maxcooldown: 1,
             mdPercentage: 0.9,
