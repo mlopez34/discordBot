@@ -605,7 +605,7 @@ module.exports.useRpgAbility = function(message, args){
         // if user is dead send message that they are dead and cannot cast
 
         // check that they are able to use the ability they specified (it is in their abilities array)
-        if (activeRPGEvents["rpg-"+idOfEventUserIsIn].membersInParty["rpg-"+discordUserId]){
+        if (activeRPGEvents["rpg-"+idOfEventUserIsIn].membersInParty && activeRPGEvents["rpg-"+idOfEventUserIsIn].membersInParty["rpg-"+discordUserId]){
             var userAbilities = activeRPGEvents["rpg-"+idOfEventUserIsIn].membersInParty["rpg-"+discordUserId].abilities;
             var statuses = activeRPGEvents["rpg-"+idOfEventUserIsIn].membersInParty["rpg-"+discordUserId].statuses;
 
@@ -670,6 +670,8 @@ module.exports.useRpgAbility = function(message, args){
                     message.channel.send("can't do that");
                 }
             }
+        }else{
+            message.channel.send("event has not started yet");
         }
     }
     else{
