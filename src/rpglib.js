@@ -14,12 +14,9 @@ module.exports = {
         },
         replenish : {
             name: "replenish",
-            limitDefensive : {
-                name: "replenish",
-                heal: 200,
-                mdPercentage: 2.5
-            }
-            
+            heal: 450,
+            mdPercentage: 1.8,
+            limitDefensive : true
         },
         bandaid : {
             name: "bandaid",
@@ -42,23 +39,21 @@ module.exports = {
         },
         elixir: {
             name: "elixir",
-            heal: 35,
+            heal: 25,
             cooldown: 0,
             maxcooldown: 1,
-            mdPercentage: 0.9,
+            mdPercentage: 0.65,
             areawide: true,
             targets: "friendly"
         },
         megaelixir: {
             name: "megaelixir",
-            limitDefensive: {
-                name: "megaelixir",
-                heal: 200,
-                specialCharge: 1,
-                mdPercentage: 2,
-                areawide: true,
-                targets: "friendly"
-            }
+            heal: 220,
+            specialCharge: 1,
+            mdPercentage: 1.5,
+            areawide: true,
+            targets: "friendly",
+            limitDefensive: true
         },
         poke: {
             name:"poke",
@@ -131,7 +126,7 @@ module.exports = {
             }
         },
         flameblast: {
-            dmg: 60,
+            dmg: 50,
             mdPercentage: 1,
             type: "fire",
             dot: {
@@ -182,12 +177,8 @@ module.exports = {
             dmg: 125,
             charges: 4,
             maxcharges: 4,
-            adPercentage: 1.3,
+            adPercentage: 1.25,
             type: "physical"
-        },
-        reload: {
-            affects: "shoot",
-            areawide: true
         },
         headshot: {
             name: "headshot",
@@ -220,7 +211,7 @@ module.exports = {
         rockthrow: {
             dmg: 35,
             type: "earth",
-            mdPercentage: 0.65,
+            mdPercentage: 0.7,
             special: "warm up",
             buff: {
                 selfbuff: true,
@@ -244,6 +235,16 @@ module.exports = {
                 healPercentage: 0.35
             }
         },
+        guac: {
+            name: "guac",
+            type: "shadow",
+            special: {
+                name: "guac",
+                mdPerDot: 0.35,
+                mdPercentage: 0.5,
+                dmg: 40
+            }
+        },
         haste: {
             passive: true,
             name: "haste",
@@ -252,14 +253,53 @@ module.exports = {
                 emoji: "💨"
             }
         },
+
+        // endOfTurnEvents
+        echo: {
+            dmgaura: true,
+            name: "echo",
+            areawidedmg: {
+                endOfTurnAura: true,
+                hitsEveryNTurn: 2,
+                dmgPerTurn: 9,
+                name: "echo",
+                dmg: 75,
+                type: "physical"
+            }
+        },
+
+        // death effects
+        explode: {
+            onDeathEffect: true,
+            effectDone: false,
+            name: "explode",
+            areawidedmg : {
+                dmgondeath: true,
+                dmg: 300,
+                mdPercentage: 0.1,
+                name: "onDeath",
+                type: "fire"
+            }
+        },
+
+
         // execute (more dmg after 40%)
         // tackle (more damage over 80%)
         // protect (absorb damage)
         // bite (hits harder than attack)
         // absorb (absorbs damage)
         // cover (take damage for someone else - maybe reduce some dmg)
-        // damage that deals depending on dots 
         // heal that heals depending on hp of player with 1 turn cd
+
+        // ON D Abilities:
+        // explosion for 150
+        // gives +25 AD MD
+        // leaves a curse on someone
+        // aoe aura ends
+        // heals rest of enemies for ~500
+        // deals single target damage
+        // 
+
         revive: {
             special: "remove death"
         },
@@ -578,6 +618,7 @@ module.exports = {
             }
         ],
         // time travel, demonic summoning, abraham lincolns tomb, evil exes
+        
         special: {
             "genghis khan": [
                 {
@@ -601,6 +642,9 @@ module.exports = {
                                 startTurn: 3
                             }
                         }
+                    ],
+                    endOfTurnEvents : [
+                        "echo"
                     ],
                     hp: 10500,
                     attackDmg: 240,
