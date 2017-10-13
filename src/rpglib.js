@@ -277,8 +277,8 @@ module.exports = {
             areawidedmg : {
                 dmgondeath: true,
                 areawide: true,
-                dmg: 65,
-                mdPercentage: 1.25,
+                dmg: 200,
+                mdPercentage: .15,
                 name: "explode",
                 type: "fire"
             }
