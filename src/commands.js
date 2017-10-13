@@ -341,7 +341,7 @@ module.exports.thankCommand = function(message){
                             // six hours have not passed, tell the user they need to wait 
                             now = new Date(now.setMinutes(now.getMinutes() + minutesToRemove));
                             var numberOfHours = getDateDifference(thankResponse.data.lastthanktime, now, 2);
-                            message.channel.send(message.author + " You are being too thankful! please wait `" + numberOfHours +"` ");
+                            message.channel.send(message.author + " You are being too thankful! Please wait `" + numberOfHours +"` ");
                         }
                     }
                 })
@@ -919,7 +919,7 @@ module.exports.cookCommand = function(message){
                         // six hours have not passed, tell the user they need to wait 
                         now = new Date(now.setMinutes(now.getMinutes() + minutesToRemove));
                         var numberOfHours = getDateDifference(cookResponse.data.lastcooktime, now, 24);
-                        message.channel.send(message.author + " You cannot cook tacos currently, Please wait `" + numberOfHours + "` ");
+                        message.channel.send(message.author + " You cannot cook tacos currently! Please wait `" + numberOfHours + "` ");
                     }
                 }
             })
@@ -2245,7 +2245,7 @@ module.exports.scavangeCommand = function (message){
                     else{
                         now = new Date(now.setMinutes(now.getMinutes() + minutesToRemove));
                         var numberOfHours = getDateDifference(getUserResponse.data.lastscavangetime, now, 1);
-                        message.channel.send(message.author + " You have scavenged too recently! please wait `" + numberOfHours +"` ");
+                        message.channel.send(message.author + " You have scavenged too recently! Please wait `" + numberOfHours +"` ");
                     }
                 }
             })
@@ -2904,7 +2904,7 @@ module.exports.fetchCommand = function(message){
                                 console.log("cd " + PETS_AVAILABLE[userPet].cooldown)
                                 now = new Date(now.setMinutes(now.getMinutes() + minutesToRemove));
                                 var numberOfHours = getDateDifference(fetchResponse.data.lastfetchtime, now, PETS_AVAILABLE[userPet].cooldown);
-                                message.channel.send(message.author + " **" + userPetName + "** needs to rest and cannot fetch currently, Please wait `" + numberOfHours + "` ");
+                                message.channel.send(message.author + " **" + userPetName + "** needs to rest and cannot fetch currently! Please wait `" + numberOfHours + "` ");
                             }
                         }
                         else{
@@ -4283,7 +4283,7 @@ module.exports.auctionCommand = function(message, args){
         }
     }
     else{
-        message.channel.send(message.author + " You already have an active auction, please wait until it ends to create a new one!")
+        message.channel.send(message.author + " You already have an active auction! Please wait until it ends to create a new one!")
     }
 }
 
@@ -4745,7 +4745,7 @@ module.exports.denyTermsCommand = function(message, args){
 function agreeToTerms(message, discordUserId){
     NeedsToAgree[discordUserId] = {};
     NeedsToAgree[discordUserId].hasNotAgreed = true;
-    message.channel.send("Hey " + message.author + " Bender will be storing and encrypting your discord id to bring you the best experience, please type -agree to accept these terms, or -deny to decline them!")
+    message.channel.send("Hey " + message.author + " Bender will be storing and encrypting your discord id to bring you the best experience. Please type -agree to accept these terms, or -deny to decline them!")
 }
 
 function welcomeAgreeToTerms(message, mentionedId, mentionedUser, host){
@@ -4753,7 +4753,7 @@ function welcomeAgreeToTerms(message, mentionedId, mentionedUser, host){
         hasNotAgreed: true,
         hostUser: host
     };
-    message.channel.send("Hey " + mentionedUser + " Bender will be storing and encrpyting your discord id to bring you the best experience, please type -agree to accept these terms, or -deny to decline them!")
+    message.channel.send("Hey " + mentionedUser + " Bender will be storing and encrpyting your discord id to bring you the best experience. Please type -agree to accept these terms, or -deny to decline them!")
 }
 
 module.exports.enterRaffleCommand = function(message, args){

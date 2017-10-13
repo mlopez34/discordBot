@@ -14,12 +14,9 @@ module.exports = {
         },
         replenish : {
             name: "replenish",
-            limitDefensive : {
-                name: "replenish",
-                heal: 200,
-                mdPercentage: 2.5
-            }
-            
+            heal: 450,
+            mdPercentage: 1.8,
+            limitDefensive : true
         },
         bandaid : {
             name: "bandaid",
@@ -42,23 +39,21 @@ module.exports = {
         },
         elixir: {
             name: "elixir",
-            heal: 35,
+            heal: 25,
             cooldown: 0,
             maxcooldown: 1,
-            mdPercentage: 0.9,
+            mdPercentage: 0.65,
             areawide: true,
             targets: "friendly"
         },
         megaelixir: {
             name: "megaelixir",
-            limitDefensive: {
-                name: "megaelixir",
-                heal: 200,
-                specialCharge: 1,
-                mdPercentage: 2,
-                areawide: true,
-                targets: "friendly"
-            }
+            heal: 220,
+            specialCharge: 1,
+            mdPercentage: 1.5,
+            areawide: true,
+            targets: "friendly",
+            limitDefensive: true
         },
         poke: {
             name:"poke",
@@ -131,7 +126,7 @@ module.exports = {
             }
         },
         flameblast: {
-            dmg: 60,
+            dmg: 50,
             mdPercentage: 1,
             type: "fire",
             dot: {
@@ -182,12 +177,8 @@ module.exports = {
             dmg: 125,
             charges: 4,
             maxcharges: 4,
-            adPercentage: 1.3,
+            adPercentage: 1.25,
             type: "physical"
-        },
-        reload: {
-            affects: "shoot",
-            areawide: true
         },
         headshot: {
             name: "headshot",
@@ -220,7 +211,7 @@ module.exports = {
         rockthrow: {
             dmg: 35,
             type: "earth",
-            mdPercentage: 0.65,
+            mdPercentage: 0.7,
             special: "warm up",
             buff: {
                 selfbuff: true,
@@ -244,6 +235,16 @@ module.exports = {
                 healPercentage: 0.35
             }
         },
+        guac: {
+            name: "guac",
+            type: "shadow",
+            special: {
+                name: "guac",
+                mdPerDot: 0.35,
+                mdPercentage: 0.5,
+                dmg: 40
+            }
+        },
         haste: {
             passive: true,
             name: "haste",
@@ -252,16 +253,67 @@ module.exports = {
                 emoji: "💨"
             }
         },
+
+        // endOfTurnEvents
+        echo: {
+            dmgaura: true,
+            belongsToEvent: true,
+            name: "echo",
+            areawidedmg: {
+                endOfTurnAura: true,
+                hitsEveryNTurn: 2,
+                dmgPerTurn: 12,
+                name: "echo",
+                dmg: 55,
+                type: "physical"
+            }
+        },
+
+        // death effects
+        explode: {
+            onDeathEffect: true,
+            effectDone: false,
+            name: "explode",
+            areawidedmg : {
+                dmgondeath: true,
+                areawide: true,
+                dmg: 65,
+                mdPercentage: 1.25,
+                name: "explode",
+                type: "fire"
+            }
+        },
+
+
         // execute (more dmg after 40%)
         // tackle (more damage over 80%)
         // protect (absorb damage)
         // bite (hits harder than attack)
         // absorb (absorbs damage)
         // cover (take damage for someone else - maybe reduce some dmg)
-        // damage that deals depending on dots 
         // heal that heals depending on hp of player with 1 turn cd
+
+        // ON D Abilities:
+        // explosion for 150
+        // gives +25 AD MD
+        // leaves a curse on someone
+        // aoe aura ends
+        // heals rest of enemies for ~500
+        // deals single target damage
+        // 100% enrage
+
         revive: {
             special: "remove death"
+        },
+        focus: {
+            name: "focus",
+            belongsToMember: true,
+            status: {
+                focusedBy: "",
+                name: "focus",
+                emoji: "👁️",
+                special: "focus member"
+            }
         },
         freeze: {
             status: {
@@ -326,6 +378,9 @@ module.exports = {
                 adPerPartyMember: 8,
                 mdPerPartyMember: 8,
                 hp: 290,
+                effectsOnDeath: [
+                    "explode"
+                ],
                 attackDmg: 65,
                 magicDmg: 47,
                 armor: 400,
@@ -367,7 +422,7 @@ module.exports = {
         medium: [
             {
                 name: "Taco Bandit",
-                abilities: ["attack", "attack", "rockthrow", "rockthrow", "orchatasip"],
+                abilities: ["attack", "attack", "iceshards", "iceshards", "orchatasip"],
                 buffs: [],
                 hpPerPartyMember: 220,
                 adPerPartyMember: 14,
@@ -384,6 +439,9 @@ module.exports = {
                 name: "Taco Thief",
                 abilities: ["attack", "attack", "flameblast", "flameblast", "orchatasip"],
                 buffs: [],
+                effectsOnDeath: [
+                    "explode"
+                ],
                 hpPerPartyMember: 220,
                 adPerPartyMember: 14,
                 mdPerPartyMember: 14,
@@ -397,7 +455,7 @@ module.exports = {
             },
             {
                 name: "Slots Gambler",
-                abilities: ["attack", "attack", "shock", "shock", "elixir"],
+                abilities: ["attack", "attack", "elixir", "elixir", "orchatasip"],
                 buffs: [],
                 hpPerPartyMember: 120,
                 adPerPartyMember: 14,
@@ -420,8 +478,8 @@ module.exports = {
                         name: "frenzy",
                         emoji: "😡",
                         onTurnEnd: {
-                            attackDmgPlus : 50,
-                            magicDmgPlus : 50,
+                            attackDmgPlus : 45,
+                            magicDmgPlus : 45,
                             everyNTurns: 2,
                             startTurn: 2
                         }
@@ -431,8 +489,8 @@ module.exports = {
                 adPerPartyMember: 18,
                 mdPerPartyMember: 18,
                 hp: 550,
-                attackDmg: 100,
-                magicDmg: 100,
+                attackDmg: 120,
+                magicDmg: 120,
                 armor: 650,
                 spirit: 650,
                 difficulty: "hard",
@@ -446,8 +504,8 @@ module.exports = {
                         name: "frenzy",
                         emoji: "😡",
                         onTurnEnd: {
-                            attackDmgPlus : 50,
-                            magicDmgPlus : 50,
+                            attackDmgPlus : 45,
+                            magicDmgPlus : 45,
                             everyNTurns: 2,
                             startTurn: 2
                         }
@@ -466,25 +524,28 @@ module.exports = {
             },
             {
                 name: "Funny Politician",
-                abilities: ["attack" , "attack" , "curse", "curse", "shoot", "shoot","freeze"],
+                abilities: ["attack" , "attack" , "curse", "foodpoisoning", "shoot", "shoot","freeze"],
                 buffs: [
                     {
                         name: "frenzy",
                         emoji: "😡",
                         onTurnEnd: {
-                            attackDmgPlus : 50,
-                            magicDmgPlus : 50,
+                            attackDmgPlus : 45,
+                            magicDmgPlus : 45,
                             everyNTurns: 2,
                             startTurn: 2
                         }
                     }
+                ],
+                effectsOnDeath: [
+                    "explode"
                 ],
                 hpPerPartyMember: 1150,
                 adPerPartyMember: 18,
                 mdPerPartyMember: 18,
                 hp: 750,
                 attackDmg: 95,
-                magicDmg: 120,
+                magicDmg: 140,
                 armor: 600,
                 spirit: 900,
                 difficulty: "hard",
@@ -502,19 +563,23 @@ module.exports = {
                         name: "frenzy",
                         emoji: "😡",
                         onTurnEnd: {
-                            attackDmgPlus : 75,
-                            magicDmgPlus : 75,
+                            attackDmgPlus : 60,
+                            magicDmgPlus : 60,
                             everyNTurns: 2,
                             startTurn: 2
                         }
                     }
                 ],
-                hpPerPartyMember: 1650,
+                endOfTurnEvents : [
+                    "echo",
+                    "focus"
+                ],
+                hpPerPartyMember: 1658,
                 adPerPartyMember: 21,
                 mdPerPartyMember: 21,
                 hp: 800,
-                attackDmg: 127,
-                magicDmg: 150,
+                attackDmg: 147,
+                magicDmg: 230,
                 armor: 1300,
                 spirit: 900,
                 difficulty: "boss",
@@ -530,19 +595,23 @@ module.exports = {
                         name: "frenzy",
                         emoji: "😡",
                         onTurnEnd: {
-                            attackDmgPlus : 75,
-                            magicDmgPlus : 75,
+                            attackDmgPlus : 60,
+                            magicDmgPlus : 60,
                             everyNTurns: 2,
                             startTurn: 2
                         }
                     }
                 ],
-                hpPerPartyMember: 1750,
+                endOfTurnEvents : [
+                    "echo",
+                    "focus"
+                ],
+                hpPerPartyMember: 1753,
                 adPerPartyMember: 21,
                 mdPerPartyMember: 21,
                 hp: 900,
-                attackDmg: 140,
-                magicDmg: 140,
+                attackDmg: 210,
+                magicDmg: 210,
                 armor: 1300,
                 spirit: 1400,
                 difficulty: "boss",
@@ -558,19 +627,23 @@ module.exports = {
                         name: "frenzy",
                         emoji: "😡",
                         onTurnEnd: {
-                            attackDmgPlus : 75,
-                            magicDmgPlus : 75,
+                            attackDmgPlus : 60,
+                            magicDmgPlus : 60,
                             everyNTurns: 2,
                             startTurn: 2
                         }
                     }
                 ],
+                endOfTurnEvents : [
+                    "echo",
+                    "focus"
+                ],
                 hpPerPartyMember: 1622,
                 hp: 1050,
                 adPerPartyMember: 21,
                 mdPerPartyMember: 21,
-                attackDmg: 160,
-                magicDmg: 150,
+                attackDmg: 240,
+                magicDmg: 180,
                 armor: 1600,
                 spirit: 1600,
                 difficulty: "boss",
@@ -578,6 +651,7 @@ module.exports = {
             }
         ],
         // time travel, demonic summoning, abraham lincolns tomb, evil exes
+        
         special: {
             "genghis khan": [
                 {
@@ -601,6 +675,10 @@ module.exports = {
                                 startTurn: 3
                             }
                         }
+                    ],
+                    endOfTurnEvents : [
+                        "echo",
+                        "focus"
                     ],
                     hp: 10500,
                     attackDmg: 240,
@@ -668,6 +746,9 @@ module.exports = {
                         "flameblast",
                         "elixir",
                         "weaken"
+                    ],
+                    effectsOnDeath: [
+                        "explode"
                     ],
                     buffs: [],
                     hp: 2350,
