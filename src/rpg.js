@@ -1117,7 +1117,7 @@ function effectsOnTurnEnd(event){
                             if (event.membersInParty[member].statuses.indexOf("dead" == -1) ){
                                 var memberBeingChecked = event.membersInParty[member];
                                 if (memberBeingChecked.maxhp > maxHp){
-                                    maxHp = memberBeingChecked;
+                                    maxHp = memberBeingChecked.maxHp;
                                     maxHpIndex = member;
                                     target = "rpg-" + memberBeingChecked.id
                                     targetName = memberBeingChecked.name

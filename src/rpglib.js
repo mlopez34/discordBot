@@ -262,9 +262,9 @@ module.exports = {
             areawidedmg: {
                 endOfTurnAura: true,
                 hitsEveryNTurn: 2,
-                dmgPerTurn: 12,
+                dmgPerTurn: 15,
                 name: "echo",
-                dmg: 55,
+                dmg: 67,
                 type: "physical"
             }
         },
