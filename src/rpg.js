@@ -376,17 +376,20 @@ module.exports.rpgReady = function(message, itemsAvailable){
 
                                             for( var ability in enemies[enemyIdCount].abilities){
                                                 var abilityName = enemies[enemyIdCount].abilities[ability]
-                                                if (rpgAbilities[abilityName].passive){
+                                                if (rpgAbilities[abilityName] && rpgAbilities[abilityName].passive){
                                                     // add it as a buff and a passive ability
                                                     var passiveAbilityBuff = JSON.parse(JSON.stringify( rpgAbilities[abilityName].buff ));
                                                     enemies[enemyIdCount].buffs.push(passiveAbilityBuff);
                                                     enemies[enemyIdCount].passiveAbilities.push(passiveAbilityBuff);
                                                     enemies[enemyIdCount].abilitiesMap[passiveAbilityBuff.name] = passiveAbilityBuff;
                                                 }
-                                                else{
+                                                else if (rpgAbilities[abilityName]){
                                                     var playerAbility = JSON.parse(JSON.stringify( abilityName ));
                                                     var playerAbilityObject = JSON.parse(JSON.stringify( rpgAbilities[ abilityName ] ));
                                                     enemies[enemyIdCount].abilitiesMap[playerAbility] = playerAbilityObject;       
+                                                }
+                                                else{
+                                                    message.channel.send("enemy has an ability that doesnt exist!")
                                                 }
                                             }
 
@@ -473,17 +476,20 @@ module.exports.rpgReady = function(message, itemsAvailable){
 
                                             for( var ability in enemies[enemyIdCount].abilities){
                                                 var abilityName = enemies[enemyIdCount].abilities[ability]
-                                                if (rpgAbilities[abilityName].passive){
+                                                if (rpgAbilities[abilityName] && rpgAbilities[abilityName].passive){
                                                     // add it as a buff and a passive ability
                                                     var passiveAbilityBuff = JSON.parse(JSON.stringify( rpgAbilities[abilityName].buff ));
                                                     enemies[enemyIdCount].buffs.push(passiveAbilityBuff);
                                                     enemies[enemyIdCount].passiveAbilities.push(passiveAbilityBuff);
                                                     enemies[enemyIdCount].abilitiesMap[passiveAbilityBuff.name] = passiveAbilityBuff;
                                                 }
-                                                else{
+                                                else if (rpgAbilities[abilityName]){
                                                     var playerAbility = JSON.parse(JSON.stringify( abilityName ));
                                                     var playerAbilityObject = JSON.parse(JSON.stringify( rpgAbilities[ abilityName ] ));
                                                     enemies[enemyIdCount].abilitiesMap[playerAbility] = playerAbilityObject;       
+                                                }
+                                                else{
+                                                    message.channel.send("enemy has an ability that doesnt exist!")
                                                 }
                                             }
                                             for (var eventAtEndOfTurn in enemyFound.endOfTurnEvents){
@@ -1117,7 +1123,7 @@ function effectsOnTurnEnd(event){
                             if (event.membersInParty[member].statuses.indexOf("dead" == -1) ){
                                 var memberBeingChecked = event.membersInParty[member];
                                 if (memberBeingChecked.maxhp > maxHp){
-                                    maxHp = memberBeingChecked.maxHp;
+                                    maxHp = memberBeingChecked.maxhp;
                                     maxHpIndex = member;
                                     target = "rpg-" + memberBeingChecked.id
                                     targetName = memberBeingChecked.name
