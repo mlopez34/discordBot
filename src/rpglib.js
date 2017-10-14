@@ -422,7 +422,7 @@ module.exports = {
         medium: [
             {
                 name: "Taco Bandit",
-                abilities: ["attack", "attack", "schock", "schock", "orchatasip"],
+                abilities: ["attack", "attack", "shock", "shock", "orchatasip"],
                 buffs: [],
                 hpPerPartyMember: 210,
                 adPerPartyMember: 14,
