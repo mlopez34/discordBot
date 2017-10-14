@@ -61,8 +61,8 @@ module.exports = {
             dot: {
                 name: "poke",
                 type:"physical",
-                dmg: 45,
-                adPercentage: 1,
+                dmg: 75,
+                adPercentage: 1.15,
                 emoji: "📌",
                 dmgOnDotApply: false,
                 turnsToExpire: 4,
@@ -76,8 +76,8 @@ module.exports = {
             dot: {
                 name: "curse",
                 type:"shadow",
-                dmg: 45,
-                mdPercentage: 1,
+                dmg: 75,
+                mdPercentage: 1.15,
                 emoji: "🌑",
                 dmgOnDotApply: false,
                 turnsToExpire: 4,
@@ -122,7 +122,7 @@ module.exports = {
                 name: "empower",
                 emoji: "💪🏼",
                 affects: ["attackDmg", "magicDmg"],
-                multiplier: 1.4
+                multiplier: 1.33
             }
         },
         flameblast: {
@@ -131,8 +131,8 @@ module.exports = {
             type: "fire",
             dot: {
                 name: "burning",
-                dmg: 20,
-                mdPercentage: 0.8,
+                dmg: 25,
+                mdPercentage: .95,
                 type: "fire",
                 emoji: "🔥",
                 damageOnDotApply: false,
@@ -142,13 +142,13 @@ module.exports = {
             }
         },
         foodpoisoning: {
-            dmg: 60,
+            dmg: 50,
             mdPercentage: 1,
             type: "poison",
             dot: {
                 name: "food poisoning",
-                dmg: 26,
-                mdPercentage: 1,
+                dmg: 25,
+                mdPercentage: .85,
                 emoji : "🤢",
                 type: "poison",
                 damageOnDotApply: false,
@@ -177,7 +177,7 @@ module.exports = {
             dmg: 125,
             charges: 4,
             maxcharges: 4,
-            adPercentage: 1.25,
+            adPercentage: 1.2,
             type: "physical"
         },
         headshot: {
@@ -210,7 +210,7 @@ module.exports = {
         },
         rockthrow: {
             dmg: 35,
-            type: "earth",
+            type: "physical",
             mdPercentage: 0.7,
             special: "warm up",
             buff: {
@@ -220,7 +220,7 @@ module.exports = {
                 name: "warm up",
                 maxStacks: 4,
                 mdPercentageAtMaxStacks: 1.3,
-                atMaxStacksDealDamage: 200
+                atMaxStacksDealDamage: 175
             }
         },
         drain: {
@@ -241,7 +241,7 @@ module.exports = {
             special: {
                 name: "guac",
                 mdPerDot: 0.35,
-                mdPercentage: 0.5,
+                mdPercentage: 0.4,
                 dmg: 40
             }
         },
@@ -264,7 +264,7 @@ module.exports = {
                 hitsEveryNTurn: 2,
                 dmgPerTurn: 18,
                 name: "echo",
-                dmg: 67,
+                dmg: 73,
                 type: "physical"
             }
         },
@@ -277,7 +277,7 @@ module.exports = {
             areawidedmg : {
                 dmgondeath: true,
                 areawide: true,
-                dmg: 200,
+                dmg: 188,
                 mdPercentage: .2,
                 name: "explode",
                 type: "fire"
@@ -336,7 +336,7 @@ module.exports = {
                 name: "crippled",
                 emoji: "🤕",
                 affects: ["attackDmg"],
-                multiplier: 0.7
+                multiplier: 0.75
             }
         },
         weaken: {
@@ -344,7 +344,7 @@ module.exports = {
                 name: "weakened",
                 emoji: "😵 ",
                 affects: ["magicDmg"],
-                multiplier: 0.7
+                multiplier: 0.75
             }
         },
         finalfortune: {
