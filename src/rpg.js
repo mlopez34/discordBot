@@ -1290,13 +1290,18 @@ function effectsOnDeath(event, member){
 
 function hasDied(event, member){
     // player is dead, remove all statuses, add dead
-    var deathString = member.name + " has died. :skull_crossbones: \n";
-    member.hp = 0;
-    member.statuses = [];
-    member.statuses.push("dead");
-    member.buffs = [];
-    deathString = deathString + effectsOnDeath(event, member)
-    return deathString;
+    if (member.hp > 0){
+        var deathString = member.name + " has died. :skull_crossbones: \n";
+        member.hp = 0;
+        member.statuses = [];
+        member.statuses.push("dead");
+        member.buffs = [];
+        deathString = deathString + effectsOnDeath(event, member)
+        return deathString;
+    }else{
+        return "";
+    }
+    
 }
 
 function hasRevived(member, deadIndex){
