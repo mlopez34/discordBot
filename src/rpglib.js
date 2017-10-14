@@ -422,14 +422,14 @@ module.exports = {
         medium: [
             {
                 name: "Taco Bandit",
-                abilities: ["attack", "attack", "iceshards", "iceshards", "orchatasip"],
+                abilities: ["attack", "attack", "schock", "schock", "orchatasip"],
                 buffs: [],
-                hpPerPartyMember: 220,
+                hpPerPartyMember: 210,
                 adPerPartyMember: 14,
                 mdPerPartyMember: 14,
                 hp: 350,
-                attackDmg: 130,
-                magicDmg: 100,
+                attackDmg: 120,
+                magicDmg: 90,
                 armor: 550,
                 spirit: 450,
                 difficulty: "medium",
