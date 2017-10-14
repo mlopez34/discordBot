@@ -211,7 +211,7 @@ module.exports = {
         rockthrow: {
             dmg: 35,
             type: "physical",
-            mdPercentage: 0.7,
+            adPercentage: 0.7,
             special: "warm up",
             buff: {
                 selfbuff: true,
@@ -219,7 +219,7 @@ module.exports = {
                 emoji: "🤾",
                 name: "warm up",
                 maxStacks: 4,
-                mdPercentageAtMaxStacks: 1.3,
+                adPercentageAtMaxStacks: 1.3,
                 atMaxStacksDealDamage: 175
             }
         },
