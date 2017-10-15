@@ -254,7 +254,7 @@ module.exports.showRpgStats = function(message, itemsAvailable){
                     oneHourAgo = new Date(oneHourAgo.setHours(oneHourAgo.getHours() - RPG_COOLDOWN_HOURS ));
                     var lastrpgtime = userData.data.lastrpgtime;
                     var rpgTimeLeft = "";
-                    if (lastrpgtime && oneHourAgo > lastrpgtime){
+                    if (lastrpgtime && oneHourAgo > lastrpgtime || !lastrpgtime){
                         rpgTimeLeft = "ready";
                     }
                     else{
