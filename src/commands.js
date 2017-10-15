@@ -3029,7 +3029,7 @@ module.exports.useCommand = function(message, args){
                     }
                     else{
                         // tell the user they don't have enough rocks
-                        message.channel.send("dont have enough rocks to throw...");
+                        message.channel.send("don't have enough rocks to throw...");
                     }
                 }
             })
