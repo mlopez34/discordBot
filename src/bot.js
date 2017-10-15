@@ -228,6 +228,9 @@ client.on('message', function(message){
             else if (commandIs("rpgstart", message)){
                 message.channel.send("use the rpg channel for this")
             }
+            else if (commandIs("rpgstats", message)){
+                commands.rpgstatsCommand(message);
+            }
             
             /*
             else if (commandIs("game", message)){

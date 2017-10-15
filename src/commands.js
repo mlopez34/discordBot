@@ -5146,3 +5146,19 @@ module.exports.rpgSkipCommand = function(message){
 module.exports.castCommand = function(message, args){
     rpg.useRpgAbility(message, args);
 }
+
+module.exports.rpgstatsCommand = function(message){
+    var itemsMapbyId = {};
+    profileDB.getItemData(function(error, allItemsResponse){
+        if (error){
+            console.log(error);
+        }
+        else{
+            for (var index in allItemsResponse.data){
+                itemsMapbyId[allItemsResponse.data[index].id] = allItemsResponse.data[index];
+            }
+            rpg.rpgReady(message, itemsMapbyId);
+        }
+    });
+    rpg.showRpgStats(message, itemsMapbyId);
+}
