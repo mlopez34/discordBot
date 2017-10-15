@@ -212,7 +212,7 @@ module.exports.showRpgStats = function(message, itemsAvailable){
                         spirit: 5 + (partyMemberStats.level * partyMemberStats.level) + partyMemberSpiritPlus,
                         luck: 1 + partyMemberLuckPlus,
                         abilitiesMap : {},
-                        abilities: ["attack", "shield", "protect"],
+                        abilities: ["attack"],
                         passiveAbilities: [],
                         statuses: [],
                         statBuffs: {
