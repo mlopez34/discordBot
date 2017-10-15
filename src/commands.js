@@ -5157,8 +5157,7 @@ module.exports.rpgstatsCommand = function(message){
             for (var index in allItemsResponse.data){
                 itemsMapbyId[allItemsResponse.data[index].id] = allItemsResponse.data[index];
             }
-            rpg.rpgReady(message, itemsMapbyId);
+            rpg.showRpgStats(message, itemsMapbyId);
         }
     });
-    rpg.showRpgStats(message, itemsMapbyId);
 }
