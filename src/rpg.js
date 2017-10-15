@@ -1491,7 +1491,7 @@ function effectsOnDeath(event, member){
 
 function hasDied(event, member){
     // player is dead, remove all statuses, add dead
-    if (member.hp > 0){
+    if (member.hp <= 0 && (member.statuses.indexOf("dead") == -1)){
         var deathString = member.name + " has died. :skull_crossbones: \n";
         member.hp = 0;
         member.statuses = [];
