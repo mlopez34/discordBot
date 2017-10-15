@@ -1500,6 +1500,10 @@ function hasDied(event, member){
         deathString = deathString + effectsOnDeath(event, member)
         return deathString;
     }else{
+        member.hp = 0;
+        member.statuses = [];
+        member.statuses.push("dead");
+        member.buffs = [];
         return "";
     }
     
