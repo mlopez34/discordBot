@@ -103,6 +103,179 @@ module.exports.rpgSkip = function(message){
     }
 }
 
+module.exports.showRpgStats = function(message, itemsAvailable){
+    var discordUserId = message.author.id;
+    
+    profileDB.getUserProfileData(discordUserId, function(err, userData){
+        if (err){
+            console.log(err);
+            message.channel.send(err + " something went wrong [profile]");
+        }else{
+            var userStats = userData.data;
+            profileDB.getUserWearInfo(discordUserId, function(wearErr, wearData){
+                if (wearErr){
+                    console.log(wearErr);
+                    message.channel.send(wearErr + " something went wrong [wearing] - someone doesn't have a wearing profile");
+                }else{
+                    // get the wearing data
+                    var wearingStats = wearData.data[0];
+                    var items = [];
+
+                    var abilities = [];
+                    var statisticsFromItemsAndLevel = {
+                        hpPlus: 0,
+                        attackDmgPlus: 0,
+                        magicDmgPlus: 0,
+                        armorPlus: 0,
+                        spiritPlus: 0,
+                        luckPlus: 0,
+                        statuses: [],
+                        buffs: []
+                    }
+                    
+                    if (wearingStats.slot1itemid){
+                        items.push(wearingStats.slot1itemid)
+                    }
+                    if (wearingStats.slot2itemid){
+                        items.push(wearingStats.slot2itemid)
+                    }
+                    if (wearingStats.slot3itemid){
+                        items.push(wearingStats.slot3itemid)
+                    }
+                    // added stats from items
+                    for (var i in items){
+                        if (itemsAvailable[items[i]].ability1){
+                            abilities.push(itemsAvailable[items[i]].ability1);
+                        }
+                        if (itemsAvailable[items[i]].ability2){
+                            abilities.push(itemsAvailable[items[i]].ability2);
+                        }
+                        if (itemsAvailable[items[i]].specialAbility){
+                            abilities.push(itemsAvailable[items[i]].specialAbility)
+                        }
+                        if (itemsAvailable[items[i]].passiveAbility){
+                            abilities.push(itemsAvailable[items[i]].passiveAbility);
+                        }
+
+                        var hpPlus = itemsAvailable[items[i]].hpplus ? itemsAvailable[items[i]].hpplus : 0;
+                        var attackDmgPlus = itemsAvailable[items[i]].attackdmgplus ? itemsAvailable[items[i]].attackdmgplus : 0;
+                        var magicDmgPlus = itemsAvailable[items[i]].magicdmgplus ? itemsAvailable[items[i]].magicdmgplus : 0;
+                        var armorPlus = itemsAvailable[items[i]].armorplus ? itemsAvailable[items[i]].armorplus : 0;
+                        var spiritPlus = itemsAvailable[items[i]].spiritplus ? itemsAvailable[items[i]].spiritplus : 0;
+                        var luckPlus = itemsAvailable[items[i]].luckplus ? itemsAvailable[items[i]].luckplus : 0;
+
+                        statisticsFromItemsAndLevel.hpPlus = statisticsFromItemsAndLevel.hpPlus + hpPlus;
+                        statisticsFromItemsAndLevel.attackDmgPlus = statisticsFromItemsAndLevel.attackDmgPlus + attackDmgPlus;
+                        statisticsFromItemsAndLevel.magicDmgPlus = statisticsFromItemsAndLevel.magicDmgPlus + magicDmgPlus;
+                        statisticsFromItemsAndLevel.armorPlus = statisticsFromItemsAndLevel.armorPlus + armorPlus;
+                        statisticsFromItemsAndLevel.spiritPlus = statisticsFromItemsAndLevel.spiritPlus + spiritPlus;
+                        statisticsFromItemsAndLevel.luckPlus = statisticsFromItemsAndLevel.luckPlus + luckPlus;
+                    }
+
+                    // added stats from level
+                    statisticsFromItemsAndLevel.hpPlus = statisticsFromItemsAndLevel.hpPlus + userStats.level
+                    statisticsFromItemsAndLevel.attackDmgPlus = statisticsFromItemsAndLevel.attackDmgPlus + userStats.level
+                    statisticsFromItemsAndLevel.magicDmgPlus = statisticsFromItemsAndLevel.magicDmgPlus + userStats.level
+                    statisticsFromItemsAndLevel.armorPlus = statisticsFromItemsAndLevel.armorPlus + userStats.level
+                    statisticsFromItemsAndLevel.spiritPlus = statisticsFromItemsAndLevel.spiritPlus + userStats.level
+                    statisticsFromItemsAndLevel.luckPlus = statisticsFromItemsAndLevel.luckPlus + userStats.level
+
+
+                    var partyMemberStats = {
+                        level: userStats.level,
+                        plusStats: statisticsFromItemsAndLevel,
+                        itemsBeingWorn: items,
+                        abilities: abilities
+                    }
+
+                    var partyMemberHpPlus =  0
+                    var partyMemberAttackDmgPlus =  0
+                    var partyMemberMagicDmgPlus =  0
+                    var partyMemberArmorPlus =  0
+                    var partyMemberSpiritPlus = 0
+                    var partyMemberLuckPlus = 0
+                    if (partyMemberStats && partyMemberStats.plusStats){
+                        partyMemberHpPlus = partyMemberStats.plusStats.hpPlus ? partyMemberStats.plusStats.hpPlus : 0
+                        partyMemberAttackDmgPlus = partyMemberStats.plusStats.attackDmgPlus ? partyMemberStats.plusStats.attackDmgPlus : 0
+                        partyMemberMagicDmgPlus = partyMemberStats.plusStats.magicDmgPlus ? partyMemberStats.plusStats.magicDmgPlus : 0
+                        partyMemberArmorPlus = partyMemberStats.plusStats.armorPlus ? partyMemberStats.plusStats.armorPlus : 0
+                        partyMemberSpiritPlus = partyMemberStats.plusStats.spiritPlus ? partyMemberStats.plusStats.spiritPlus : 0
+                        partyMemberLuckPlus = partyMemberStats.plusStats.luckPlus ? partyMemberStats.plusStats.luckPlus: 0
+                    }
+                    var myStats = {
+                        id: message.author.id,
+                        name: message.author.username,
+                        hp: 250 + (27 *  partyMemberStats.level ) + partyMemberHpPlus,
+                        attackDmg: 10 + (9 * partyMemberStats.level) + partyMemberAttackDmgPlus,
+                        magicDmg:  10 + (9 * partyMemberStats.level) + partyMemberMagicDmgPlus,
+                        armor: 5 + (partyMemberStats.level * partyMemberStats.level) + partyMemberArmorPlus,
+                        spirit: 5 + (partyMemberStats.level * partyMemberStats.level) + partyMemberSpiritPlus,
+                        luck: 1 + partyMemberLuckPlus,
+                        abilitiesMap : {},
+                        abilities: ["attack", "shield", "protect"],
+                        passiveAbilities: [],
+                        statuses: [],
+                        statBuffs: {
+                            hp: 0,
+                            attackDmg: 0,
+                            magicDmg: 0,
+                            armor: 0,
+                            spirit: 0,
+                            spirit: 0,
+                            maxhp: 0
+                        },
+                        buffs: [
+                        ]
+                    }
+                    myStats.maxhp = myStats.hp;
+                    // insert the abilities and statuses for the party member
+                    if (partyMemberStats && partyMemberStats.abilities){
+                        for( var ability in partyMemberStats.abilities){
+                            if (rpgAbilities[partyMemberStats.abilities[ability]].passive){
+                                // add it as a buff and a passive ability
+                                var passiveAbilityBuff = JSON.parse(JSON.stringify( rpgAbilities[partyMemberStats.abilities[ability]].buff ));
+                                myStats.buffs.push(passiveAbilityBuff);
+                                myStats.passiveAbilities.push(passiveAbilityBuff);
+                                myStats.abilitiesMap[passiveAbilityBuff.name] = passiveAbilityBuff;
+                            }
+                            else{
+                                if (myStats.abilities.indexOf(partyMemberStats.abilities[ability]) == -1){
+                                    var playerAbility = JSON.parse(JSON.stringify( partyMemberStats.abilities[ability] ));
+                                    myStats.abilities.push( playerAbility );
+                                    var playerAbilityObject = JSON.parse(JSON.stringify( rpgAbilities[partyMemberStats.abilities[ability]] ));
+                                    myStats.abilitiesMap[playerAbility] = playerAbilityObject;
+                                }                                
+                            }
+                        }
+                    }
+
+                    var now = new Date();
+                    var oneHourAgo = new Date();
+                    oneHourAgo = new Date(oneHourAgo.setHours(oneHourAgo.getHours() - RPG_COOLDOWN_HOURS ));
+                    var lastrpgtime = userData.data.lastrpgtime;
+                    var rpgTimeLeft = "";
+                    if (lastrpgtime && oneHourAgo > lastrpgtime){
+                        rpgTimeLeft = "ready";
+                    }
+                    else{
+                        now = new Date(now.setMinutes(now.getMinutes()));
+                        var numberOfHours = getDateDifference(userData.data.lastrpgtime, now, RPG_COOLDOWN_HOURS);
+                        rpgTimeLeft = " `" + numberOfHours +"` left on cooldown";
+                    }
+                    const embed = new Discord.RichEmbed()
+                    //.setThumbnail("https://media.giphy.com/media/mIZ9rPeMKefm0/giphy.gif")
+                    .setColor(0xF2E93E)
+                    
+                    var playerString = userStatsStringBuilder(myStats, message.author.username, false);
+                    playerString = playerString + "\nTime remaining: " + rpgTimeLeft;
+                    embed.addField( message.author.username, playerString )
+                    message.channel.send({embed})
+                }
+            })
+        }
+    })
+}
+
 module.exports.rpgReady = function(message, itemsAvailable){
     // create an embed saying that b is about to happen, for users MAX of 5 users and they must all say -ready to start costs 5 tacos per person
     var discordUserId = message.author.id;
@@ -295,7 +468,7 @@ module.exports.rpgReady = function(message, itemsAvailable){
                                             spirit: 5 + (partyMemberStats.level * partyMemberStats.level) + partyMemberSpiritPlus,
                                             luck: 1 + partyMemberLuckPlus,
                                             abilitiesMap : {},
-                                            abilities: ["attack"],
+                                            abilities: ["attack", "shield", "protect"],
                                             passiveAbilities: [],
                                             statuses: [],
                                             statBuffs: {
@@ -407,8 +580,6 @@ module.exports.rpgReady = function(message, itemsAvailable){
 
                                             enemies[enemyIdCount].maxhp = enemies[enemyIdCount].hp;
                                             enemyIdCount++;
-
-                                            
                                         }
                                     }
                                     else{
@@ -535,7 +706,7 @@ module.exports.rpgReady = function(message, itemsAvailable){
                                     for (var member in activeRPGEvents[rpgEvent].members){
                                         var memberInRpgEvent = activeRPGEvents[rpgEvent].members[member];
                                         var memberInParty = activeRPGEvents[rpgEvent].membersInParty["rpg-" + memberInRpgEvent.id]
-                                        playerString = userStatsStringBuilder(memberInParty, memberInRpgEvent.username, false);
+                                        var playerString = userStatsStringBuilder(memberInParty, memberInRpgEvent.username, false);
                                         embed.addField( memberInRpgEvent.username, playerString )
                                     }
                                     // enemies
@@ -845,7 +1016,7 @@ function turnFinishedEmbedBuilder(message, event, turnString, passiveEffectsStri
     for (var member in event.members){
         var memberInRpgEvent = event.members[member];
         var memberInParty = event.membersInParty["rpg-" + memberInRpgEvent.id]
-        playerString = userStatsStringBuilder(memberInParty, memberInRpgEvent.username, false);
+        var playerString = userStatsStringBuilder(memberInParty, memberInRpgEvent.username, false);
         embed.addField( memberInRpgEvent.username, playerString )
     }
     // enemies
@@ -1147,6 +1318,36 @@ function effectsOnTurnEnd(event){
                             endOfTurnString = endOfTurnString + targetName + " was affected with " + rpgAbility.name + "\n"
                         }
                     }
+                    /*
+                    // event is enemy under certain hp %
+                    if ( event.enemies[enemy].endOfTurnEvents[index].hppercentage ){
+                        if ( event.enemies[enemy].endOfTurnEvents[index].summon ){
+                            // summon a totem of doom that cannot cast but after 4 turns will explode for
+                            // 500 dmg OR
+                            // summon enemies that attack like usual OR
+                            // gain a buff OR
+                            // cast debuff on members
+                            // deal arewide damage OR
+                            // cast a spell next turn OR
+                            // 
+
+
+                        }
+
+                        // to stuff
+
+                        // pop the event so it doesnt happen again
+                    }
+
+                    // event is at certain turn
+                    if ( event.enemies[enemy].endOfTurnEvents[index].turnbased 
+                        &&  event.enemies[enemy].endOfTurnEvents[index].turnbased % event.turn == 0){
+                        if ( event.enemies[enemy].endOfTurnEvents[index].summon ){
+
+                        }
+                        
+                    }
+                    */
                 }
             }
         }
@@ -1290,13 +1491,18 @@ function effectsOnDeath(event, member){
 
 function hasDied(event, member){
     // player is dead, remove all statuses, add dead
-    var deathString = member.name + " has died. :skull_crossbones: \n";
-    member.hp = 0;
-    member.statuses = [];
-    member.statuses.push("dead");
-    member.buffs = [];
-    deathString = deathString + effectsOnDeath(event, member)
-    return deathString;
+    if (member.hp > 0){
+        var deathString = member.name + " has died. :skull_crossbones: \n";
+        member.hp = 0;
+        member.statuses = [];
+        member.statuses.push("dead");
+        member.buffs = [];
+        deathString = deathString + effectsOnDeath(event, member)
+        return deathString;
+    }else{
+        return "";
+    }
+    
 }
 
 function hasRevived(member, deadIndex){
