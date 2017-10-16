@@ -1252,7 +1252,7 @@ function effectsOnTurnEnd(event){
     for (var member in event.membersInParty){
         if (event.membersInParty[member].statuses.indexOf("dead") == -1){
             for (var index = event.membersInParty[member].buffs.length - 1; index >= 0; index--){
-                if (event.membersInParty[member].buffs.indexOf("dead" == -1)){
+                if (event.membersInParty[member].buffs.indexOf("dead") == -1){
                     // process the on turn end buff
                     if (event.membersInParty[member].buffs[index].onTurnEnd){
                         if (event.membersInParty[member].buffs[index].onTurnEnd.attackDmgPlus){
@@ -1292,7 +1292,7 @@ function effectsOnTurnEnd(event){
                         for ( var member in event.membersInParty ){
                             // check if focus is on a member
                             // check max hp of member
-                            if (event.membersInParty[member].statuses.indexOf("dead" == -1) ){
+                            if (event.membersInParty[member].statuses.indexOf("dead") == -1 ){
                                 var memberBeingChecked = event.membersInParty[member];
                                 if (memberBeingChecked.maxhp > maxHp){
                                     maxHp = memberBeingChecked.maxhp;
@@ -1647,10 +1647,10 @@ function processPassiveEffects(event){
     // go through each member
     for(var member in event.membersInParty){
         
-        if (event.membersInParty[member].statuses.indexOf("dead" == -1)){
+        if (event.membersInParty[member].statuses.indexOf("dead") == -1){
             for (var index = event.membersInParty[member].statuses.length - 1; index >= 0; index--){
                 // go through each status
-                if (event.membersInParty[member].statuses.indexOf("dead" == -1)){
+                if (event.membersInParty[member].statuses.indexOf("dead") == -1){
                     // if it is a dot, then process the damage of the dot
                     if (event.membersInParty[member].statuses[index].dot){
                         // process the dot
@@ -1675,10 +1675,10 @@ function processPassiveEffects(event){
     }
 
     for(var member in event.membersInParty){
-        if (event.membersInParty[member].statuses.indexOf("dead" == -1)){
+        if (event.membersInParty[member].statuses.indexOf("dead") == -1){
             for (var index = event.membersInParty[member].buffs.length - 1; index >= 0; index--){
                 // go through each status
-                if (event.membersInParty[member].statuses.indexOf("dead" == -1)){
+                if (event.membersInParty[member].statuses.indexOf("dead") == -1){
                     // if it is a hot, process the healing of the hot
                     if (event.membersInParty[member].buffs[index].hot){
                         // process the hot
@@ -1711,10 +1711,10 @@ function processPassiveEffects(event){
     }
     // go through each enemy
     for(var enemy in event.enemies){
-        if (event.enemies[enemy].statuses.indexOf("dead" == -1)){
+        if (event.enemies[enemy].statuses.indexOf("dead") == -1){
             for (var index = event.enemies[enemy].statuses.length - 1; index >= 0; index--){
                 // go through each status
-                if (event.enemies[enemy].statuses.indexOf("dead" == -1)){
+                if (event.enemies[enemy].statuses.indexOf("dead") == -1){
                     // if it is a dot, then process the damage of the dot
                     if (event.enemies[enemy].statuses[index].dot){
                         // process the dot
@@ -1739,10 +1739,10 @@ function processPassiveEffects(event){
     }
 
     for(var enemy in event.enemies){
-        if (event.enemies[enemy].statuses.indexOf("dead" == -1)){
+        if (event.enemies[enemy].statuses.indexOf("dead") == -1){
             for (var index = event.enemies[enemy].buffs.length - 1; index >= 0; index--){
                 // go through each status
-                if (event.enemies[enemy].statuses.indexOf("dead" == -1)){
+                if (event.enemies[enemy].statuses.indexOf("dead") == -1){
                      // if it is a hot, process the healing of the hot
                      if (event.enemies[enemy].buffs[index].hot){
                         // process the hot
