@@ -1315,8 +1315,12 @@ function effectsOnTurnEnd(event){
                             rpgAbility.focusedBy = enemy;
 
                             // process ability
-                            event.membersInParty[target].statuses.push(rpgAbility);
-                            endOfTurnString = endOfTurnString + targetName + " was affected with " + rpgAbility.name + "\n"
+                            if (target == 0 ){
+                                // no valid targets left, everyone is dead TODO: figure this out later
+                            }else{
+                                event.membersInParty[target].statuses.push(rpgAbility);
+                                endOfTurnString = endOfTurnString + targetName + " was affected with " + rpgAbility.name + "\n"
+                            }
                         }
                     }
                     var eotEvent = event.enemies[enemy].endOfTurnEvents[index]
@@ -1516,7 +1520,7 @@ function effectsOnTurnEnd(event){
                 if (rpgAbility && rpgAbility.areawidedmg && (event.turn % rpgAbility.areawidedmg.hitsEveryNTurn  == 0)){
                     // deal the damage to all the users
                     damageToDeal = calculateDamageDealt(event, abilityCaster, abilityObject.target, rpgAbility.areawidedmg)
-                    endOfTurnString = endOfTurnString + "The group suffered " + damageToDeal + " damage from " + nameOfEndOfTurnAbility
+                    endOfTurnString = endOfTurnString + "The group suffered " + damageToDeal + " damage from " + nameOfEndOfTurnAbility +"\n"
                     for (var targetToDealDmg in event.membersInParty){
                         var targetToDealDmgName = event.membersInParty[targetToDealDmg].name
                         if (event.membersInParty[targetToDealDmg].statuses.indexOf("dead") == -1){
