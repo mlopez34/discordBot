@@ -12,9 +12,9 @@ const Discord = require("discord.js");
 const client = new Discord.Client();
 
 var BASE_INTERVAL = 18000000;
-var MAIN_CHANNEL = config.mainChannelName;
-var BOT_CHANNEL = config.botChannelName;
-var RPG_CHANNEL = config.rpgChannelName;
+var MAIN_CHANNELS = config.mainChannelName;
+var BOT_CHANNELS = config.botChannelName;
+var RPG_CHANNELS = config.rpgChannelName;
 var TURN_OFF_MSG = config.turnOff;
 var TURN_ON_MSG = config.turnOn;
 
@@ -30,10 +30,10 @@ client.on('ready', function(err) {
     var channelName;
     client.channels.forEach(function(channel){
         // console.log(channel);
-        if (channel.type == "text" && channel.name == BOT_CHANNEL){
+        if (channel.type == "text" && BOT_CHANNELS.indexOf(channel.name) != -1){
             channelName = channel;
         }
-        if (channel.type == "text" && channel.name == MAIN_CHANNEL){
+        if (channel.type == "text" && MAIN_CHANNELS.indexOf(channel.name) != -1){
             mainChannel = channel;
         }
     })
@@ -81,7 +81,7 @@ client.on('message', function(message){
             }
         }
         // commands
-        if (message.channel.type == "text" && message.channel.name == BOT_CHANNEL && !message.author.bot){
+        if (message.channel.type == "text" && (BOT_CHANNELS.indexOf(message.channel.name) != -1) && !message.author.bot){
             if( commandIs("thank", message )){
                 commands.thankCommand(message);
             }
@@ -238,7 +238,7 @@ client.on('message', function(message){
             }
             */
         }
-        else if (message.channel.type == "text" && message.channel.name == RPG_CHANNEL && !message.author.bot){
+        else if (message.channel.type == "text" && (RPG_CHANNELS.indexOf(message.channel.name) != -1) && !message.author.bot){
             // artifact abilities
             if (commandIs("timetravel", message)){
                 
@@ -267,7 +267,7 @@ client.on('message', function(message){
                 commands.rpghelpCommand(message);
             }
         }
-        else if (message.channel.type == "text" && message.channel.name == MAIN_CHANNEL && !message.author.bot){
+        else if (message.channel.type == "text" && (MAIN_CHANNELS.indexOf(message.channel.name) != -1) && !message.author.bot){
              if( commandIs("thank", message )){
                 commands.thankCommand(message);
             }
