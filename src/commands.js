@@ -5124,6 +5124,12 @@ module.exports.rpgBattleCommand = function(message){
     rpg.rpgInitialize(message);
 }
 
+module.exports.rpgChallengeCommand = function(message, args){
+    var challengeNumber = args[1];
+    var special = { challenge: challengeNumber }
+    rpg.rpgInitialize(message, special);
+}
+
 module.exports.rpgReadyCommand = function(message){
     var itemsMapbyId = {};
     profileDB.getItemData(function(error, allItemsResponse){

@@ -184,6 +184,22 @@ module.exports.updateUserTacos = function(userId, tacos, cb) {
     });
 }
 
+module.exports.updateCurrentChallenge = function(userId, challengeNum, cb) {
+    var query = 'update ' + config.profileTable + ' set currentchallenge=$1 where discordid=$2'
+    //console.log("new last thank: " + lastThank);
+    db.none(query, [challengeNum, userId])
+    .then(function () {
+    cb(null, {
+        status: 'success',
+        message: 'added currentchallenge'
+        });
+    })
+    .catch(function (err) {
+        console.log(err);
+        cb(err);
+    });
+}
+
 module.exports.updateUserTacosGive = function(userId, tacoAmount, cb){
     var query = 'update ' + config.profileTable + ' set tacos=tacos+$1 where discordid=$2'
     //console.log("new last thank: " + lastThank);
