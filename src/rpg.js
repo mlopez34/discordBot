@@ -5,7 +5,7 @@ var profileDB = require("./profileDB.js");
 var config = require("./config");
 var rpglib = require("./rpglib");
 var moment = require("moment");
-var RPG_COOLDOWN_HOURS = 3
+var RPG_COOLDOWN_HOURS = 0
 var activeRPGEvents = {}
 var usersInRPGEvents = {};
 var TEAM_MAX_LENGTH = 5;
@@ -20,7 +20,7 @@ module.exports.rpgInitialize = function(message, special){
     team.push(message.author);
 
     users.forEach(function(user){
-        if (team.length < TEAM_MAX_LENGTH && discordUserId != user.id){
+        if (team.length < TEAM_MAX_LENGTH ){ //&& discordUserId != user.id){
             team.push(user);
         }
     })
@@ -156,11 +156,11 @@ module.exports.showRpgStats = function(message, itemsAvailable){
                         if (itemsAvailable[items[i]].ability2){
                             abilities.push(itemsAvailable[items[i]].ability2);
                         }
-                        if (itemsAvailable[items[i]].specialAbility){
-                            abilities.push(itemsAvailable[items[i]].specialAbility)
+                        if (itemsAvailable[items[i]].specialability){
+                            abilities.push(itemsAvailable[items[i]].specialability)
                         }
-                        if (itemsAvailable[items[i]].passiveAbility){
-                            abilities.push(itemsAvailable[items[i]].passiveAbility);
+                        if (itemsAvailable[items[i]].passiveability){
+                            abilities.push(itemsAvailable[items[i]].passiveability);
                         }
 
                         var hpPlus = itemsAvailable[items[i]].hpplus ? itemsAvailable[items[i]].hpplus : 0;
@@ -352,11 +352,11 @@ module.exports.rpgReady = function(message, itemsAvailable){
                                 if (itemsAvailable[items[i]].ability2){
                                     abilities.push(itemsAvailable[items[i]].ability2);
                                 }
-                                if (itemsAvailable[items[i]].specialAbility){
-                                    abilities.push(itemsAvailable[items[i]].specialAbility)
+                                if (itemsAvailable[items[i]].specialability){
+                                    abilities.push(itemsAvailable[items[i]].specialability)
                                 }
-                                if (itemsAvailable[items[i]].passiveAbility){
-                                    abilities.push(itemsAvailable[items[i]].passiveAbility);
+                                if (itemsAvailable[items[i]].passiveability){
+                                    abilities.push(itemsAvailable[items[i]].passiveability);
                                 }
 
                                 var hpPlus = itemsAvailable[items[i]].hpplus ? itemsAvailable[items[i]].hpplus : 0;
@@ -794,6 +794,7 @@ module.exports.rpgReady = function(message, itemsAvailable){
                                         activeRPGEvents[rpgEvent].memberTurnAbilities = [];
                                         activeRPGEvents[rpgEvent].status = "in progress"
                                         activeRPGEvents[rpgEvent].limitDefensiveReady = true;
+                                        activeRPGEvents[rpgEvent].limitOffensiveReady = true;
                                         activeRPGEvents[rpgEvent].averageLevelInParty = averageLevelInParty;
                         
                                         const embed = new Discord.RichEmbed()
@@ -935,7 +936,18 @@ module.exports.useRpgAbility = function(message, args){
                     if (abilityInMap){
                         cooldown = abilityInMap.cooldown ? abilityInMap.cooldown : 0;
                     }
-                    if (cooldown == 0){
+                    var validAbility = true
+                    if (abilityInMap && abilityInMap.limitDefensive){
+                        if (!activeRPGEvents["rpg-"+idOfEventUserIsIn].limitDefensiveReady){
+                            validAbility = false;
+                        }
+                    }
+                    if (abilityInMap && abilityInMap.limitOffensive){
+                        if (!activeRPGEvents["rpg-"+idOfEventUserIsIn].limitOffensiveReady){
+                            validAbility = false;
+                        }
+                    }
+                    if (cooldown == 0 && validAbility){
                         // queue up the ability into the list of abilities that will be used and their target
                         var abilityToProcess = {}
                         if (mentionedUser && target == mentionedUser.id){
@@ -979,7 +991,14 @@ module.exports.useRpgAbility = function(message, args){
                         }else{
                             message.channel.send("invalid ability or already used ability");
                         }
-                    }else{
+                    }else if (!validAbility){
+                        if (!activeRPGEvents["rpg-"+idOfEventUserIsIn].limitOffensiveReady){
+                            message.channel.send("limit offensive ability already used in this event")
+                        }else if (!activeRPGEvents["rpg-"+idOfEventUserIsIn].limitDefensiveReady){
+                            message.channel.send("limit defensive ability already used in this event")
+                        }
+                    }
+                    else{
                         message.channel.send("ability is on cooldown");
                     }
                 }else{
@@ -2401,12 +2420,21 @@ function processAbility(abilityObject, event){
             limitReady = false;
         }
     }
+    if (rpgAbility.limitOffensive){
+        // 
+        if (!event.limitOffensiveReady){
+            limitReady = false;
+        }
+    }
     if (!limitReady){
         validAbility = false;
     }
 
     if (rpgAbility.limitDefensive && event.limitDefensiveReady){
         event.limitDefensiveReady = false;
+    }
+    if (rpgAbility.limitOffensive && event.limitOffensiveReady){
+        event.limitOffensiveReady = false;
     }
 
     if (abilityCaster > 1000){

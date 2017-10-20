@@ -10,13 +10,13 @@ module.exports = {
         crush : {
             name: "crush",
             dmg: 50,
-            adPercentage: 1.4,
+            adPercentage: 1.35,
             type: "physical"
         },
         tacoheal : {
             name: "heal",
             heal: 50,
-            mdPercentage: 1.35
+            mdPercentage: 1.37
         },
         replenish : {
             name: "replenish",
@@ -45,7 +45,7 @@ module.exports = {
         },
         elixir: {
             name: "elixir",
-            heal: 25,
+            heal: 35,
             cooldown: 0,
             maxcooldown: 1,
             mdPercentage: 0.65,
@@ -159,7 +159,7 @@ module.exports = {
                 name: "empower",
                 emoji: "💪🏼",
                 affects: ["attackDmg", "magicDmg"],
-                multiplier: 1.33
+                multiplier: 1.3
             }
         },
         flameblast: {
@@ -217,15 +217,6 @@ module.exports = {
             adPercentage: 1.2,
             type: "physical"
         },
-        headshot: {
-            name: "headshot",
-            limitOffensive:{
-                name: "headshot",
-                dmg: 200,
-                adPercentage: 1.8,
-                type: "physical"
-            }
-        },
         shock: {
             name: "shock",
             dmg: 120,
@@ -234,21 +225,50 @@ module.exports = {
             special: "selfdamage",
             selfdamage: 15
         },
+        headshot: {
+            name: "headshot",
+            limitOffensive: true,
+            name: "headshot",
+            dmg: 250,
+            adPercentage: 2,
+            type: "physical"
+            
+        },
+        execute: {
+            name: "execute",
+            limitOffensive: true,
+            name: "execute",
+            dmg: 200,
+            adPercentage: 2,
+            type: "physical"
+            
+        },
         storm: {
             name: "storm",
-            limitOffensive: {
-                name: "storm",
-                dmg: 150,
-                mdPercentage: 1.2,
-                type: "ice",
-                areawide: true,
-                targets: "enemy"
-            }
+            limitOffensive: true,
+            name: "storm",
+            dmg: 120,
+            mdPercentage: 1.5,
+            type: "electric",
+            areawide: true,
+            targets: "enemy"
+            
+        },
+        earthquake: {
+            name: "earthquake",
+            limitOffensive: true,
+            name: "earthquake",
+            dmg: 120,
+            mdPercentage: 1.5,
+            type: "earth",
+            areawide: true,
+            targets: "enemy"
+            
         },
         rockthrow: {
-            dmg: 35,
+            dmg: 45,
             type: "physical",
-            adPercentage: 0.7,
+            adPercentage: 0.8,
             special: "warm up",
             buff: {
                 selfbuff: true,
@@ -265,11 +285,11 @@ module.exports = {
             type: "physical",
             special: {
                 name: "drain",
-                adPercentage: 0.85,
+                adPercentage: 0.9,
                 dmg: 40,
                 heal: 20,
                 mdPercentage: 0.85,
-                healPercentage: 0.35
+                healPercentage: 0.4
             }
         },
         guac: {
@@ -277,9 +297,9 @@ module.exports = {
             type: "shadow",
             special: {
                 name: "guac",
-                mdPerDot: 0.35,
-                mdPercentage: 0.4,
-                dmg: 40
+                mdPerDot: 0.2,
+                mdPercentage: 0.8,
+                dmg: 50
             }
         },
         haste: {
@@ -299,7 +319,7 @@ module.exports = {
             areawidedmg: {
                 endOfTurnAura: true,
                 hitsEveryNTurn: 2,
-                dmgPerTurn: 18,
+                dmgPerTurn: 16,
                 name: "echo",
                 dmg: 73,
                 type: "physical"
@@ -415,7 +435,7 @@ module.exports = {
                 name: "crippled",
                 emoji: "🤕",
                 affects: ["attackDmg"],
-                multiplier: 0.75
+                multiplier: 0.8
             }
         },
         weaken: {
@@ -423,7 +443,7 @@ module.exports = {
                 name: "weakened",
                 emoji: "😵 ",
                 affects: ["magicDmg"],
-                multiplier: 0.75
+                multiplier: 0.8
             }
         },
         finalfortune: {
@@ -1080,7 +1100,7 @@ module.exports = {
                         element: "normal"
                     },
                 ],
-                points: 5
+                points: 15
             },
             2: {
                 enemies: [
@@ -1205,7 +1225,7 @@ module.exports = {
                         element: "normal"
                     }
                 ],
-                points: 8
+                points: 30
             },
             3: {
                 enemies: [
@@ -1311,7 +1331,7 @@ module.exports = {
                         element: "normal"
                     }
                 ],
-                points: 14
+                points: 125
             }
         }
     }    
