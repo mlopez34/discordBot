@@ -300,7 +300,7 @@ module.exports.rpgReady = function(message, itemsAvailable){
                 var rpgEventId = usersInRPGEvents["rpg-" + discordUserId].id;
                 var isSpecialEvent = activeRPGEvents[ "rpg-" +  rpgEventId ] ? activeRPGEvents[ "rpg-" + rpgEventId ].special : false;
                 var currentPlayerChallenge = userData.data.currentchallenge || 0 ;
-                var challengePicked = activeRPGEvents[ "rpg-" +  rpgEventId ] ? activeRPGEvents[ "rpg-" + rpgEventId ].challenge.challenge : false;
+                var challengePicked = (activeRPGEvents[ "rpg-" +  rpgEventId ] && activeRPGEvents[ "rpg-" +  rpgEventId ].challenge) ? activeRPGEvents[ "rpg-" + rpgEventId ].challenge.challenge : false;
                 if ((currentPlayerChallenge + 1) >= (parseInt( challengePicked ) ) 
                     && (parseInt( challengePicked ) ) > 0 
                     && (parseInt( challengePicked ) ) < 4){
