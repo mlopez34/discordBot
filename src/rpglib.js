@@ -15,7 +15,7 @@ module.exports = {
         },
         tacoheal : {
             name: "heal",
-            heal: 50,
+            heal: 70,
             mdPercentage: 1.37
         },
         replenish : {
@@ -229,7 +229,7 @@ module.exports = {
             name: "headshot",
             limitOffensive: true,
             name: "headshot",
-            dmg: 250,
+            dmg: 480,
             adPercentage: 2,
             type: "physical"
             
@@ -238,7 +238,7 @@ module.exports = {
             name: "execute",
             limitOffensive: true,
             name: "execute",
-            dmg: 200,
+            dmg: 480,
             adPercentage: 2,
             type: "physical"
             
@@ -505,12 +505,12 @@ module.exports = {
                 name: "Rabbid Wolf",
                 abilities: ["attack", "attack", "foodpoisoning", "foodpoisoning", "tacowall"],
                 buffs: [],
-                hpPerPartyMember: 170,
-                adPerPartyMember: 8,
-                mdPerPartyMember: 11,
-                hp: 280,
-                attackDmg: 55,
-                magicDmg: 55,
+                hpPerPartyMember: 210,
+                adPerPartyMember: 9,
+                mdPerPartyMember: 9,
+                hp: 380,
+                attackDmg: 70,
+                magicDmg: 70,
                 armor: 300,
                 spirit: 300,
                 difficulty: "easy",
@@ -520,15 +520,15 @@ module.exports = {
                 name: "Bad Chef",
                 abilities: ["attack", "attack", "foodpoisoning", "foodpoisoning", "barrier"],
                 buffs: [],
-                hpPerPartyMember: 130,
-                adPerPartyMember: 8,
-                mdPerPartyMember: 8,
-                hp: 290,
+                hpPerPartyMember: 180,
+                adPerPartyMember: 9,
+                mdPerPartyMember: 9,
+                hp: 390,
                 effectsOnDeath: [
                     "explode"
                 ],
                 attackDmg: 65,
-                magicDmg: 47,
+                magicDmg: 77,
                 armor: 400,
                 spirit: 320,
                 difficulty: "easy",
@@ -538,11 +538,11 @@ module.exports = {
                 name: "Angry Mob Member",
                 abilities: ["attack", "attack", "foodpoisoning", "iceshards", "iceshards", "cripple"],
                 buffs: [],
-                hpPerPartyMember: 130,
-                adPerPartyMember: 8,
-                mdPerPartyMember: 8,
-                hp: 280,
-                attackDmg: 50,
+                hpPerPartyMember: 190,
+                adPerPartyMember: 9,
+                mdPerPartyMember: 9,
+                hp: 380,
+                attackDmg: 70,
                 magicDmg: 65,
                 armor: 450,
                 spirit: 370,
@@ -553,9 +553,9 @@ module.exports = {
                 name: "Taco Dealer",
                 abilities: ["attack", "attack", "drain", "drain", "freeze"],
                 buffs: [],
-                hpPerPartyMember: 130,
-                adPerPartyMember: 8,
-                mdPerPartyMember: 8,
+                hpPerPartyMember: 190,
+                adPerPartyMember: 9,
+                mdPerPartyMember: 9,
                 hp: 300,
                 attackDmg: 49,
                 magicDmg: 59,
@@ -570,10 +570,10 @@ module.exports = {
                 name: "Taco Bandit",
                 abilities: ["attack", "attack", "shock", "shock", "orchatasip"],
                 buffs: [],
-                hpPerPartyMember: 210,
+                hpPerPartyMember: 230,
                 adPerPartyMember: 14,
                 mdPerPartyMember: 14,
-                hp: 350,
+                hp: 550,
                 attackDmg: 120,
                 magicDmg: 90,
                 armor: 550,
@@ -588,10 +588,10 @@ module.exports = {
                 effectsOnDeath: [
                     "explode"
                 ],
-                hpPerPartyMember: 220,
+                hpPerPartyMember: 250,
                 adPerPartyMember: 14,
                 mdPerPartyMember: 14,
-                hp: 480,
+                hp: 580,
                 attackDmg: 80,
                 magicDmg: 120,
                 armor: 350,
@@ -603,7 +603,7 @@ module.exports = {
                 name: "Slots Gambler",
                 abilities: ["attack", "attack", "elixir", "elixir", "orchatasip"],
                 buffs: [],
-                hpPerPartyMember: 120,
+                hpPerPartyMember: 190,
                 adPerPartyMember: 14,
                 mdPerPartyMember: 14,
                 hp: 640,
@@ -632,11 +632,11 @@ module.exports = {
                     }
                 ],
                 hpPerPartyMember: 1350,
-                adPerPartyMember: 18,
-                mdPerPartyMember: 18,
-                hp: 550,
-                attackDmg: 120,
-                magicDmg: 120,
+                adPerPartyMember: 21,
+                mdPerPartyMember: 21,
+                hp: 850,
+                attackDmg: 150,
+                magicDmg: 150,
                 armor: 650,
                 spirit: 650,
                 difficulty: "hard",
@@ -658,11 +658,11 @@ module.exports = {
                     }
                 ],
                 hpPerPartyMember: 1190,
-                adPerPartyMember: 18,
-                mdPerPartyMember: 18,
-                hp: 700,
-                attackDmg: 140,
-                magicDmg: 93,
+                adPerPartyMember: 21,
+                mdPerPartyMember: 21,
+                hp: 900,
+                attackDmg: 170,
+                magicDmg: 123,
                 armor: 750,
                 spirit: 600,
                 difficulty: "hard",
@@ -686,12 +686,12 @@ module.exports = {
                 effectsOnDeath: [
                     "explode"
                 ],
-                hpPerPartyMember: 1150,
-                adPerPartyMember: 18,
-                mdPerPartyMember: 18,
-                hp: 750,
-                attackDmg: 95,
-                magicDmg: 140,
+                hpPerPartyMember: 1190,
+                adPerPartyMember: 21,
+                mdPerPartyMember: 21,
+                hp: 850,
+                attackDmg: 125,
+                magicDmg: 170,
                 armor: 600,
                 spirit: 900,
                 difficulty: "hard",
@@ -709,8 +709,8 @@ module.exports = {
                         name: "frenzy",
                         emoji: "😡",
                         onTurnEnd: {
-                            attackDmgPlus : 60,
-                            magicDmgPlus : 60,
+                            attackDmgPlus : 65,
+                            magicDmgPlus : 65,
                             everyNTurns: 2,
                             startTurn: 2
                         }
@@ -720,7 +720,7 @@ module.exports = {
                     "echo",
                     "focus"
                 ],
-                hpPerPartyMember: 1658,
+                hpPerPartyMember: 1758,
                 adPerPartyMember: 29,
                 mdPerPartyMember: 29,
                 hp: 800,
@@ -741,8 +741,8 @@ module.exports = {
                         name: "frenzy",
                         emoji: "😡",
                         onTurnEnd: {
-                            attackDmgPlus : 60,
-                            magicDmgPlus : 60,
+                            attackDmgPlus : 65,
+                            magicDmgPlus : 65,
                             everyNTurns: 2,
                             startTurn: 2
                         }
@@ -752,7 +752,7 @@ module.exports = {
                     "echo",
                     "focus"
                 ],
-                hpPerPartyMember: 1753,
+                hpPerPartyMember: 1853,
                 adPerPartyMember: 29,
                 mdPerPartyMember: 29,
                 hp: 900,
@@ -773,8 +773,8 @@ module.exports = {
                         name: "frenzy",
                         emoji: "😡",
                         onTurnEnd: {
-                            attackDmgPlus : 60,
-                            magicDmgPlus : 60,
+                            attackDmgPlus : 65,
+                            magicDmgPlus : 65,
                             everyNTurns: 2,
                             startTurn: 2
                         }
@@ -784,7 +784,7 @@ module.exports = {
                     "echo",
                     "focus"
                 ],
-                hpPerPartyMember: 1622,
+                hpPerPartyMember: 1722,
                 hp: 1050,
                 adPerPartyMember: 29,
                 mdPerPartyMember: 29,
@@ -997,12 +997,12 @@ module.exports = {
                         name: "Angry Mob Member",
                         abilities: ["attack", "attack", "foodpoisoning", "iceshards", "iceshards", "cripple"],
                         buffs: [],
-                        hpPerPartyMember: 130,
+                        hpPerPartyMember: 150,
                         adPerPartyMember: 8,
                         mdPerPartyMember: 8,
-                        hp: 280,
-                        attackDmg: 50,
-                        magicDmg: 65,
+                        hp: 380,
+                        attackDmg: 60,
+                        magicDmg: 75,
                         armor: 450,
                         spirit: 370,
                         difficulty: "easy",
@@ -1015,10 +1015,10 @@ module.exports = {
                         effectsOnDeath: [
                             "explode"
                         ],
-                        hpPerPartyMember: 220,
-                        adPerPartyMember: 14,
-                        mdPerPartyMember: 14,
-                        hp: 480,
+                        hpPerPartyMember: 240,
+                        adPerPartyMember: 16,
+                        mdPerPartyMember: 16,
+                        hp: 490,
                         attackDmg: 80,
                         magicDmg: 120,
                         armor: 350,
@@ -1030,12 +1030,12 @@ module.exports = {
                         name: "Slots Gambler",
                         abilities: ["attack", "attack", "elixir", "elixir", "orchatasip"],
                         buffs: [],
-                        hpPerPartyMember: 120,
+                        hpPerPartyMember: 140,
                         adPerPartyMember: 14,
-                        mdPerPartyMember: 14,
+                        mdPerPartyMember: 16,
                         hp: 640,
                         attackDmg: 90,
-                        magicDmg: 90,
+                        magicDmg: 100,
                         armor: 350,
                         spirit: 550,
                         difficulty: "medium",
@@ -1056,7 +1056,7 @@ module.exports = {
                                 }
                             }
                         ],
-                        hpPerPartyMember: 1390,
+                        hpPerPartyMember: 1490,
                         adPerPartyMember: 18,
                         mdPerPartyMember: 18,
                         hp: 900,
@@ -1077,8 +1077,8 @@ module.exports = {
                                 name: "frenzy",
                                 emoji: "😡",
                                 onTurnEnd: {
-                                    attackDmgPlus : 60,
-                                    magicDmgPlus : 60,
+                                    attackDmgPlus : 65,
+                                    magicDmgPlus : 65,
                                     everyNTurns: 2,
                                     startTurn: 2
                                 }
@@ -1088,11 +1088,11 @@ module.exports = {
                             "echo",
                             "focus"
                         ],
-                        hpPerPartyMember: 1953,
-                        adPerPartyMember: 29,
-                        mdPerPartyMember: 29,
+                        hpPerPartyMember: 2053,
+                        adPerPartyMember: 31,
+                        mdPerPartyMember: 31,
                         hp: 1200,
-                        attackDmg: 210,
+                        attackDmg: 240,
                         magicDmg: 210,
                         armor: 1300,
                         spirit: 1400,
@@ -1100,7 +1100,7 @@ module.exports = {
                         element: "normal"
                     },
                 ],
-                points: 15
+                points: 23
             },
             2: {
                 enemies: [
@@ -1155,7 +1155,7 @@ module.exports = {
                         effectsOnDeath: [
                             "explode"
                         ],
-                        hpPerPartyMember: 1250,
+                        hpPerPartyMember: 1350,
                         adPerPartyMember: 18,
                         mdPerPartyMember: 18,
                         hp: 850,
@@ -1202,8 +1202,8 @@ module.exports = {
                                 name: "frenzy",
                                 emoji: "😡",
                                 onTurnEnd: {
-                                    attackDmgPlus : 60,
-                                    magicDmgPlus : 60,
+                                    attackDmgPlus : 65,
+                                    magicDmgPlus : 65,
                                     everyNTurns: 2,
                                     startTurn: 2
                                 }
@@ -1214,9 +1214,9 @@ module.exports = {
                             "focus"
                         ],
                         hpPerPartyMember: 1622,
-                        hp: 1150,
-                        adPerPartyMember: 29,
-                        mdPerPartyMember: 29,
+                        hp: 1250,
+                        adPerPartyMember: 30,
+                        mdPerPartyMember: 30,
                         attackDmg: 240,
                         magicDmg: 190,
                         armor: 1600,
@@ -1225,7 +1225,7 @@ module.exports = {
                         element: "normal"
                     }
                 ],
-                points: 30
+                points: 45
             },
             3: {
                 enemies: [
@@ -1237,7 +1237,7 @@ module.exports = {
                             "explode"
                         ],
                         hpPerPartyMember: 220,
-                        adPerPartyMember: 14,
+                        adPerPartyMember: 18,
                         mdPerPartyMember: 14,
                         hp: 480,
                         attackDmg: 80,
@@ -1253,7 +1253,7 @@ module.exports = {
                         buffs: [],
                         hpPerPartyMember: 120,
                         adPerPartyMember: 14,
-                        mdPerPartyMember: 14,
+                        mdPerPartyMember: 18,
                         hp: 640,
                         attackDmg: 90,
                         magicDmg: 90,
@@ -1288,12 +1288,12 @@ module.exports = {
                         ],
                         hpPerPartyMember: 0,
                         hp: 24050,
-                        adPerPartyMember: 30,
-                        mdPerPartyMember: 30,
+                        adPerPartyMember: 34,
+                        mdPerPartyMember: 34,
                         attackDmg: 310,
                         magicDmg: 250,
-                        armor: 2400,
-                        spirit: 2400,
+                        armor: 2100,
+                        spirit: 2100,
                         difficulty: "boss",
                         element: "normal"
                     },

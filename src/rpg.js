@@ -1786,7 +1786,7 @@ function hasDied(event, member){
 function hasRevived(member, deadIndex){
     member.statuses.splice(deadIndex, 1)
     // set their hp to 40%
-    member.hp = Math.floor(member.maxhp * 0.4);
+    member.hp = Math.floor(member.maxhp * 0.5);
     // reset their buffs
     member.buffs = []
     if (member.passiveAbilities){
