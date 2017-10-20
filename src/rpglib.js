@@ -1272,8 +1272,8 @@ module.exports = {
                                 name: "frenzy",
                                 emoji: "😡",
                                 onTurnEnd: {
-                                    attackDmgPlus : 80,
-                                    magicDmgPlus : 80,
+                                    attackDmgPlus : 75,
+                                    magicDmgPlus : 75,
                                     everyNTurns: 2,
                                     startTurn: 3
                                 }
@@ -1287,7 +1287,7 @@ module.exports = {
                             "focus"
                         ],
                         hpPerPartyMember: 0,
-                        hp: 29050,
+                        hp: 24050,
                         adPerPartyMember: 30,
                         mdPerPartyMember: 30,
                         attackDmg: 310,
