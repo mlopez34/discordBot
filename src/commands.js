@@ -1058,6 +1058,7 @@ module.exports.profileCommand = function(message){
                 profileData.level = profileResponse.data.level ? profileResponse.data.level : 1;
                 profileData.experience = profileResponse.data.experience ? profileResponse.data.experience : 0;
                 profileData.rpgPoints = profileResponse.data.rpgpoints ? profileResponse.data.rpgpoints : 0;
+                profileData.currentRpgChallenge = profileResponse.data.currentchallenge ? profileResponse.data.currentchallenge : 0;
                 profileData.nextLevelExp = Levels[profileData.level + 1];
                 if (!profileData.reputation){
                     profileData.reputation = 0;
@@ -1127,6 +1128,7 @@ module.exports.profileCommand = function(message){
                 profileData.experience = profileResponse.data.experience ? profileResponse.data.experience : 0;
                 profileData.nextLevelExp = Levels[profileData.level + 1];
                 profileData.rpgPoints = profileResponse.data.rpgpoints ? profileResponse.data.rpgpoints : 0;
+                profileData.currentRpgChallenge = profileResponse.data.currentchallenge ? profileResponse.data.currentchallenge : 0;
                 if (!profileData.reputation){
                     profileData.reputation = 0;
                 }
@@ -1387,7 +1389,7 @@ function profileBuilder(message, profileData){
     }
     embed.addField('Items :shopping_bags:', profileData.userItems, true)
     .addField('Achievements :military_medal: ', profileData.achievementString, true)
-    .addField('RPG points :fleur_de_lis:  ', profileData.rpgPoints, true)
+    .addField('RPG stats :fleur_de_lis:  ', "Points : " + profileData.rpgPoints + "\nChallenge: " + profileData.currentRpgChallenge, true)
 
     message.channel.send({embed});
 }
