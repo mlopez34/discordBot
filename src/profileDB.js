@@ -401,7 +401,7 @@ module.exports.getToplistUsers = function(cb) {
 }
 
 module.exports.getRpgTopList = function(cb) {
-var query = 'select * from ' + config.profileTable + ' where rpgpoints is not null order by rpgpoints DESC LIMIT 50'
+var query = 'select *  from ' + config.profileTable + ' where rpgpoints is not null ORDER BY currentchallenge DESC NULLS LAST, rpgpoints DESC NULLS LAST LIMIT 100'
 db.query(query)
     .then(function (data) {
     //console.log(data);
