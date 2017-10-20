@@ -7,6 +7,12 @@ module.exports = {
             adPercentage: 1,
             type: "physical"
         },
+        crush : {
+            name: "crush",
+            dmg: 50,
+            adPercentage: 1.4,
+            type: "physical"
+        },
         tacoheal : {
             name: "heal",
             heal: 50,
@@ -85,6 +91,37 @@ module.exports = {
                 dmgOnExpire: 0
             }
         },
+        bomb: {
+            name:"bomb",
+            type:"fire",
+            dot: {
+                name: "bomb",
+                type:"fire",
+                dmg: 1,
+                mdPercentage: 0.1,
+                emoji: "💣",
+                dmgOnDotApply: false,
+                turnsToExpire: 6,
+                dmgOnDotExpire: true,
+                dmgOnExpire: 380
+            }
+        },
+        decay: {
+            name:"decay",
+            type:"shadow",
+            dot: {
+                name: "decay",
+                type:"shadow",
+                dmg: 25,
+                areawide: true,
+                mdPercentage: 1,
+                emoji: "🌑",
+                dmgOnDotApply: false,
+                turnsToExpire: 6,
+                dmgOnDotExpire: false,
+                dmgOnExpire: 0
+            }
+        },
         tacowall: {
             buff: {
                 name: "taco wall",
@@ -131,8 +168,8 @@ module.exports = {
             type: "fire",
             dot: {
                 name: "burning",
-                dmg: 25,
-                mdPercentage: .95,
+                dmg: 20,
+                mdPercentage: .9,
                 type: "fire",
                 emoji: "🔥",
                 damageOnDotApply: false,
@@ -147,8 +184,8 @@ module.exports = {
             type: "poison",
             dot: {
                 name: "food poisoning",
-                dmg: 25,
-                mdPercentage: .85,
+                dmg: 20,
+                mdPercentage: .8,
                 emoji : "🤢",
                 type: "poison",
                 damageOnDotApply: false,
@@ -191,7 +228,7 @@ module.exports = {
         },
         shock: {
             name: "shock",
-            dmg: 90,
+            dmg: 120,
             mdPercentage: 1.2,
             type: "electric",
             special: "selfdamage",
@@ -268,6 +305,20 @@ module.exports = {
                 type: "physical"
             }
         },
+        haunt: {
+            afterNTurns: 4,
+            everyNturns: 2,
+            currentTurn: 0,
+            belongsToMember: true,
+            name: "haunt",
+            areawidedmg: {
+                areawide: true,
+                name: "haunt",
+                dmg: 500,
+                adPercentage: 0.1,
+                type: "physical"
+            }
+        },
 
         // death effects
         explode: {
@@ -281,6 +332,34 @@ module.exports = {
                 mdPercentage: .2,
                 name: "explode",
                 type: "fire"
+            }
+        },
+        totemOfDoom75: {
+            belongsToMember: true,
+            hppercentage: 0.75,
+            summon: {
+                enemy: "totemOfDoom",
+            }
+        },
+        footballPlayer75: {
+            belongsToMember: true,
+            hppercentage: 0.75,
+            summon: {
+                enemy: "footballPlayer",
+            }
+        },
+        totemOfDoom50: {
+            belongsToMember: true,
+            hppercentage: 0.50,
+            summon: {
+                enemy: "totemOfDoom",
+            }
+        },
+        totemOfDoom25: {
+            belongsToMember: true,
+            hppercentage: 0.25,
+            summon: {
+                enemy: "totemOfDoom",
             }
         },
 
@@ -354,6 +433,53 @@ module.exports = {
         }
     },
     enemiesToEncounter: {
+        summoned: {
+            totemOfDoom: {
+                name: "Totem Of Doom",
+                passive: true,
+                abilities: [],
+                buffs: [],
+                endOfTurnEvents : [
+                    "haunt"
+                ],
+                hpPerPartyMember: 0,
+                adPerPartyMember: 0,
+                mdPerPartyMember: 0,
+                hp: 3000,
+                attackDmg: 0,
+                magicDmg: 0,
+                armor: 750,
+                spirit: 750,
+                difficulty: "summoned",
+                element: "normal"
+            },
+            footballPlayer: {
+                name: "Football Player",
+                abilities: ["attack", "attack", "slash", "slash", "rockthrow", "empower"],
+                buffs: [
+                    {
+                        name: "frenzy",
+                        emoji: "😡",
+                        onTurnEnd: {
+                            attackDmgPlus : 45,
+                            magicDmgPlus : 45,
+                            everyNTurns: 2,
+                            startTurn: 2
+                        }
+                    }
+                ],
+                hpPerPartyMember: 1350,
+                adPerPartyMember: 18,
+                mdPerPartyMember: 18,
+                hp: 550,
+                attackDmg: 120,
+                magicDmg: 120,
+                armor: 650,
+                spirit: 650,
+                difficulty: "summoned",
+                element: "normal"
+            }
+        },
         easy : [
             {
                 name: "Rabbid Wolf",
@@ -662,7 +788,8 @@ module.exports = {
                         "slash",
                         "iceshards",
                         "flameblast",
-                        "empower"
+                        "empower",
+                        "bomb"
                     ],
                     buffs: [
                         {
@@ -678,7 +805,17 @@ module.exports = {
                     ],
                     endOfTurnEvents : [
                         "echo",
-                        "focus"
+                        "focus",
+                        "footballPlayer75",
+                        "totemOfDoom75",
+                        "totemOfDoom50",
+                        "totemOfDoom50",
+                        "totemOfDoom25",
+                        "totemOfDoom25",
+                        "totemOfDoom25"
+                    ],
+                    abilityOrder: [
+                        0, 6, 1,0,2, 3, [1,2], 0
                     ],
                     hp: 10500,
                     attackDmg: 240,
@@ -830,101 +967,241 @@ module.exports = {
             ]
         },
         challenge: {
+            // 1 : 1 boss, 1 hard, 2 mediums, 1 easy
+            // 2 : 1 boss, 2 hard, 2 medium
+            // 3 : 1 new boss, 1 hard, 3 medium (dps check) 30k hp or smt
+            // 4 : 2 new boss, 1 hard, 2 medium  (2 bosses)
             1 :{
                 enemies: [
                     {
-                        name: "Taco Monster 14",
-                        abilities: [
-                            "attack",
-                            "foodpoisoning",
-                            "shock"
-                        ],
+                        name: "Angry Mob Member",
+                        abilities: ["attack", "attack", "foodpoisoning", "iceshards", "iceshards", "cripple"],
                         buffs: [],
-                        hp: 800,
-                        attackDmg: 150,
-                        magicDmg: 100,
-                        armor: 200,
-                        spirit: 120,
+                        hpPerPartyMember: 130,
+                        adPerPartyMember: 8,
+                        mdPerPartyMember: 8,
+                        hp: 280,
+                        attackDmg: 50,
+                        magicDmg: 65,
+                        armor: 450,
+                        spirit: 370,
+                        difficulty: "easy",
                         element: "normal"
                     },
                     {
-                        name: "Taco Monster 14",
-                        abilities: [
-                            "attack",
-                            "foodpoisoning",
-                            "shock"
-                        ],
+                        name: "Taco Thief",
+                        abilities: ["attack", "attack", "flameblast", "flameblast", "orchatasip"],
                         buffs: [],
-                        hp: 1220,
-                        attackDmg: 130,
+                        effectsOnDeath: [
+                            "explode"
+                        ],
+                        hpPerPartyMember: 220,
+                        adPerPartyMember: 14,
+                        mdPerPartyMember: 14,
+                        hp: 480,
+                        attackDmg: 80,
                         magicDmg: 120,
-                        armor: 200,
-                        spirit: 150,
+                        armor: 350,
+                        spirit: 450,
+                        difficulty: "medium",
                         element: "normal"
                     },
                     {
-                        name: "Taco Monster 14",
-                        abilities: [
-                            "attack",
-                            "foodpoisoning",
-                            "shock"
-                        ],
+                        name: "Slots Gambler",
+                        abilities: ["attack", "attack", "elixir", "elixir", "orchatasip"],
                         buffs: [],
-                        hp: 1510,
-                        attackDmg: 350,
-                        magicDmg: 125,
-                        armor: 150,
-                        spirit: 250,
+                        hpPerPartyMember: 120,
+                        adPerPartyMember: 14,
+                        mdPerPartyMember: 14,
+                        hp: 640,
+                        attackDmg: 90,
+                        magicDmg: 90,
+                        armor: 350,
+                        spirit: 550,
+                        difficulty: "medium",
                         element: "normal"
-                    }
+                    },
+                    {
+                        name: "Samurai Warrior",
+                        abilities: ["attack", "attack", "iceshards", "iceshards", "drain", "drain", "bandaid"],
+                        buffs: [
+                            {
+                                name: "frenzy",
+                                emoji: "😡",
+                                onTurnEnd: {
+                                    attackDmgPlus : 45,
+                                    magicDmgPlus : 45,
+                                    everyNTurns: 2,
+                                    startTurn: 2
+                                }
+                            }
+                        ],
+                        hpPerPartyMember: 1190,
+                        adPerPartyMember: 18,
+                        mdPerPartyMember: 18,
+                        hp: 700,
+                        attackDmg: 140,
+                        magicDmg: 93,
+                        armor: 750,
+                        spirit: 600,
+                        difficulty: "hard",
+                        element: "normal"
+                    },
+                    {
+                        name: "Escaped Robot",
+                        abilities: [
+                            "attack", "attack", "drain", "drain", "iceshards", "iceshards", "shield"
+                        ],
+                        buffs: [
+                            {
+                                name: "frenzy",
+                                emoji: "😡",
+                                onTurnEnd: {
+                                    attackDmgPlus : 60,
+                                    magicDmgPlus : 60,
+                                    everyNTurns: 2,
+                                    startTurn: 2
+                                }
+                            }
+                        ],
+                        endOfTurnEvents : [
+                            "echo",
+                            "focus"
+                        ],
+                        hpPerPartyMember: 1753,
+                        adPerPartyMember: 29,
+                        mdPerPartyMember: 29,
+                        hp: 900,
+                        attackDmg: 210,
+                        magicDmg: 210,
+                        armor: 1300,
+                        spirit: 1400,
+                        difficulty: "boss",
+                        element: "normal"
+                    },
                 ],
                 points: 5
             },
             2: {
                 enemies: [
                     {
-                        name: "Taco Monster 14",
-                        abilities: [
-                            "attack",
-                            "foodpoisoning",
-                            "shock"
-                        ],
+                        name: "Taco Thief",
+                        abilities: ["attack", "attack", "flameblast", "flameblast", "orchatasip"],
                         buffs: [],
-                        hp: 100,
-                        attackDmg: 40,
-                        magicDmg: 44,
-                        armor: 24,
-                        spirit: 24,
+                        effectsOnDeath: [
+                            "explode"
+                        ],
+                        hpPerPartyMember: 220,
+                        adPerPartyMember: 14,
+                        mdPerPartyMember: 14,
+                        hp: 480,
+                        attackDmg: 80,
+                        magicDmg: 120,
+                        armor: 350,
+                        spirit: 450,
+                        difficulty: "medium",
                         element: "normal"
                     },
                     {
-                        name: "Taco Monster 14",
-                        abilities: [
-                            "attack",
-                            "foodpoisoning",
-                            "shock"
-                        ],
+                        name: "Taco Bandit",
+                        abilities: ["attack", "attack", "shock", "shock", "orchatasip"],
                         buffs: [],
-                        hp: 100,
-                        attackDmg: 40,
-                        magicDmg: 44,
-                        armor: 24,
-                        spirit: 24,
+                        hpPerPartyMember: 210,
+                        adPerPartyMember: 14,
+                        mdPerPartyMember: 14,
+                        hp: 350,
+                        attackDmg: 120,
+                        magicDmg: 90,
+                        armor: 550,
+                        spirit: 450,
+                        difficulty: "medium",
                         element: "normal"
                     },
                     {
-                        name: "Taco Monster 14",
-                        abilities: [
-                            "attack",
-                            "foodpoisoning",
-                            "shock"
+                        name: "Funny Politician",
+                        abilities: ["attack" , "attack" , "curse", "foodpoisoning", "shoot", "shoot","freeze"],
+                        buffs: [
+                            {
+                                name: "frenzy",
+                                emoji: "😡",
+                                onTurnEnd: {
+                                    attackDmgPlus : 45,
+                                    magicDmgPlus : 45,
+                                    everyNTurns: 2,
+                                    startTurn: 2
+                                }
+                            }
                         ],
-                        buffs: [],
-                        hp: 100,
-                        attackDmg: 40,
-                        magicDmg: 44,
-                        armor: 24,
-                        spirit: 24,
+                        effectsOnDeath: [
+                            "explode"
+                        ],
+                        hpPerPartyMember: 1150,
+                        adPerPartyMember: 18,
+                        mdPerPartyMember: 18,
+                        hp: 750,
+                        attackDmg: 95,
+                        magicDmg: 140,
+                        armor: 600,
+                        spirit: 900,
+                        difficulty: "hard",
+                        element: "normal"
+                    },
+                    {
+                        name: "Football Player",
+                        abilities: ["attack", "attack", "slash", "slash", "rockthrow", "empower"],
+                        buffs: [
+                            {
+                                name: "frenzy",
+                                emoji: "😡",
+                                onTurnEnd: {
+                                    attackDmgPlus : 45,
+                                    magicDmgPlus : 45,
+                                    everyNTurns: 2,
+                                    startTurn: 2
+                                }
+                            }
+                        ],
+                        hpPerPartyMember: 1350,
+                        adPerPartyMember: 18,
+                        mdPerPartyMember: 18,
+                        hp: 550,
+                        attackDmg: 120,
+                        magicDmg: 120,
+                        armor: 650,
+                        spirit: 650,
+                        difficulty: "hard",
+                        element: "normal"
+                    },
+                    {
+                        name: "Desperado",
+                        abilities: [
+                            "attack", "attack", "shoot", "shoot", "slash", "slash", "cripple",
+                        ],
+                        buffs: [
+                            {
+                                name: "frenzy",
+                                emoji: "😡",
+                                onTurnEnd: {
+                                    attackDmgPlus : 60,
+                                    magicDmgPlus : 60,
+                                    everyNTurns: 2,
+                                    startTurn: 2
+                                }
+                            }
+                        ],
+                        endOfTurnEvents : [
+                            "echo",
+                            "focus"
+                        ],
+                        hpPerPartyMember: 1622,
+                        hp: 1050,
+                        adPerPartyMember: 29,
+                        mdPerPartyMember: 29,
+                        attackDmg: 240,
+                        magicDmg: 190,
+                        armor: 1600,
+                        spirit: 1600,
+                        difficulty: "boss",
                         element: "normal"
                     }
                 ],
@@ -933,33 +1210,104 @@ module.exports = {
             3: {
                 enemies: [
                     {
-                        name: "Taco Monster 14",
-                        abilities: [
-                            "attack",
-                            "foodpoisoning",
-                            "shock"
-                        ],
+                        name: "Taco Thief",
+                        abilities: ["attack", "attack", "flameblast", "flameblast", "orchatasip"],
                         buffs: [],
-                        hp: 4120,
-                        attackDmg: 125,
-                        magicDmg: 125,
-                        armor: 450,
-                        spirit: 240,
+                        effectsOnDeath: [
+                            "explode"
+                        ],
+                        hpPerPartyMember: 220,
+                        adPerPartyMember: 14,
+                        mdPerPartyMember: 14,
+                        hp: 480,
+                        attackDmg: 80,
+                        magicDmg: 120,
+                        armor: 350,
+                        spirit: 450,
+                        difficulty: "medium",
                         element: "normal"
                     },
                     {
-                        name: "Taco Monster 14",
-                        abilities: [
-                            "attack",
-                            "foodpoisoning",
-                            "shock"
-                        ],
+                        name: "Slots Gambler",
+                        abilities: ["attack", "attack", "elixir", "elixir", "orchatasip"],
                         buffs: [],
-                        hp: 5200,
-                        attackDmg: 125,
-                        magicDmg: 125,
-                        armor: 300,
-                        spirit: 580,
+                        hpPerPartyMember: 120,
+                        adPerPartyMember: 14,
+                        mdPerPartyMember: 14,
+                        hp: 640,
+                        attackDmg: 90,
+                        magicDmg: 90,
+                        armor: 350,
+                        spirit: 550,
+                        difficulty: "medium",
+                        element: "normal"
+                    },
+                    {
+                        name: "Roman Soldier",
+                        abilities: [
+                            "attack", "crush", "shock",  "decay"
+                        ],
+                        buffs: [
+                            {
+                                name: "frenzy",
+                                emoji: "😡",
+                                onTurnEnd: {
+                                    attackDmgPlus : 80,
+                                    magicDmgPlus : 80,
+                                    everyNTurns: 2,
+                                    startTurn: 3
+                                }
+                            }
+                        ],
+                        abilityOrder: [
+                            0, 3, 0, [1,2], 0, 0 , [1,2], 0
+                        ],
+                        endOfTurnEvents : [
+                            "echo",
+                            "focus"
+                        ],
+                        hpPerPartyMember: 0,
+                        hp: 29050,
+                        adPerPartyMember: 30,
+                        mdPerPartyMember: 30,
+                        attackDmg: 310,
+                        magicDmg: 250,
+                        armor: 2400,
+                        spirit: 2400,
+                        difficulty: "boss",
+                        element: "normal"
+                    },
+                    {
+                        name: "Taco Thief",
+                        abilities: ["attack", "attack", "flameblast", "flameblast", "orchatasip"],
+                        buffs: [],
+                        effectsOnDeath: [
+                            "explode"
+                        ],
+                        hpPerPartyMember: 220,
+                        adPerPartyMember: 14,
+                        mdPerPartyMember: 14,
+                        hp: 480,
+                        attackDmg: 80,
+                        magicDmg: 120,
+                        armor: 350,
+                        spirit: 450,
+                        difficulty: "medium",
+                        element: "normal"
+                    },
+                    {
+                        name: "Slots Gambler",
+                        abilities: ["attack", "attack", "elixir", "elixir", "orchatasip"],
+                        buffs: [],
+                        hpPerPartyMember: 120,
+                        adPerPartyMember: 14,
+                        mdPerPartyMember: 14,
+                        hp: 640,
+                        attackDmg: 90,
+                        magicDmg: 90,
+                        armor: 350,
+                        spirit: 550,
+                        difficulty: "medium",
                         element: "normal"
                     }
                 ],
