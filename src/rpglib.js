@@ -56,7 +56,7 @@ module.exports = {
             name: "megaelixir",
             heal: 220,
             specialCharge: 1,
-            mdPercentage: 1.5,
+            mdPercentage: 1.2,
             areawide: true,
             targets: "friendly",
             limitDefensive: true
