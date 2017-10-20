@@ -1036,10 +1036,10 @@ module.exports = {
                                 }
                             }
                         ],
-                        hpPerPartyMember: 1190,
+                        hpPerPartyMember: 1390,
                         adPerPartyMember: 18,
                         mdPerPartyMember: 18,
-                        hp: 700,
+                        hp: 900,
                         attackDmg: 140,
                         magicDmg: 93,
                         armor: 750,
@@ -1068,10 +1068,10 @@ module.exports = {
                             "echo",
                             "focus"
                         ],
-                        hpPerPartyMember: 1753,
+                        hpPerPartyMember: 1953,
                         adPerPartyMember: 29,
                         mdPerPartyMember: 29,
-                        hp: 900,
+                        hp: 1200,
                         attackDmg: 210,
                         magicDmg: 210,
                         armor: 1300,
@@ -1135,10 +1135,10 @@ module.exports = {
                         effectsOnDeath: [
                             "explode"
                         ],
-                        hpPerPartyMember: 1150,
+                        hpPerPartyMember: 1250,
                         adPerPartyMember: 18,
                         mdPerPartyMember: 18,
-                        hp: 750,
+                        hp: 850,
                         attackDmg: 95,
                         magicDmg: 140,
                         armor: 600,
@@ -1194,7 +1194,7 @@ module.exports = {
                             "focus"
                         ],
                         hpPerPartyMember: 1622,
-                        hp: 1050,
+                        hp: 1150,
                         adPerPartyMember: 29,
                         mdPerPartyMember: 29,
                         attackDmg: 240,
