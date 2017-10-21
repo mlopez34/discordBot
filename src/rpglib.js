@@ -54,9 +54,9 @@ module.exports = {
         },
         megaelixir: {
             name: "megaelixir",
-            heal: 220,
+            heal: 200,
             specialCharge: 1,
-            mdPercentage: 1.2,
+            mdPercentage: 1,
             areawide: true,
             targets: "friendly",
             limitDefensive: true
@@ -1155,7 +1155,7 @@ module.exports = {
                         effectsOnDeath: [
                             "explode"
                         ],
-                        hpPerPartyMember: 1350,
+                        hpPerPartyMember: 1050,
                         adPerPartyMember: 18,
                         mdPerPartyMember: 18,
                         hp: 850,
@@ -1181,7 +1181,7 @@ module.exports = {
                                 }
                             }
                         ],
-                        hpPerPartyMember: 1350,
+                        hpPerPartyMember: 1150,
                         adPerPartyMember: 18,
                         mdPerPartyMember: 18,
                         hp: 550,
@@ -1213,7 +1213,7 @@ module.exports = {
                             "echo",
                             "focus"
                         ],
-                        hpPerPartyMember: 1622,
+                        hpPerPartyMember: 1522,
                         hp: 1250,
                         adPerPartyMember: 30,
                         mdPerPartyMember: 30,
@@ -1225,7 +1225,7 @@ module.exports = {
                         element: "normal"
                     }
                 ],
-                points: 45
+                points: 49
             },
             3: {
                 enemies: [
@@ -1287,13 +1287,13 @@ module.exports = {
                             "focus"
                         ],
                         hpPerPartyMember: 0,
-                        hp: 24050,
+                        hp: 26350,
                         adPerPartyMember: 34,
                         mdPerPartyMember: 34,
                         attackDmg: 310,
                         magicDmg: 250,
-                        armor: 2100,
-                        spirit: 2100,
+                        armor: 1900,
+                        spirit: 1900,
                         difficulty: "boss",
                         element: "normal"
                     },
