@@ -228,7 +228,6 @@ module.exports = {
         headshot: {
             name: "headshot",
             limitOffensive: true,
-            name: "headshot",
             dmg: 480,
             adPercentage: 2,
             type: "physical"
@@ -237,7 +236,6 @@ module.exports = {
         execute: {
             name: "execute",
             limitOffensive: true,
-            name: "execute",
             dmg: 480,
             adPercentage: 2,
             type: "physical"
@@ -246,7 +244,6 @@ module.exports = {
         storm: {
             name: "storm",
             limitOffensive: true,
-            name: "storm",
             dmg: 120,
             mdPercentage: 1.5,
             type: "electric",
@@ -257,7 +254,6 @@ module.exports = {
         earthquake: {
             name: "earthquake",
             limitOffensive: true,
-            name: "earthquake",
             dmg: 120,
             mdPercentage: 1.5,
             type: "earth",
