@@ -1836,6 +1836,7 @@ function processPassiveEffects(event){
                         if (event.membersInParty[member].statuses[index].dot.expireOnTurn == event.turn){
                             if (event.membersInParty[member].statuses[index].dot.dmgOnDotExpire){
                                 event.membersInParty[member].statuses[index].dot.dmg = event.membersInParty[member].statuses[index].dot.dmgOnExpire;
+                                delete event.membersInParty[member].statuses[index].dot.turnsToExpire
                                 var damageToDealToPlayer = calculateDamageDealt(event, event.membersInParty[member].statuses[index].dot.caster, member, event.membersInParty[member].statuses[index].dot)
                                 event.membersInParty[member].hp = event.membersInParty[member].hp - damageToDealToPlayer;
                                 passiveEffectsString = passiveEffectsString + event.membersInParty[member].name + " took " + damageToDealToPlayer + " damage from " + event.membersInParty[member].statuses[index].dot.name + "\n"
@@ -2861,14 +2862,40 @@ function processAbility(abilityObject, event){
             if (event.membersInParty[targetToRemoveFrom]){
                 if (event.membersInParty[targetToRemoveFrom].statuses.indexOf("dead") == -1 
                     && event.membersInParty[targetToRemoveFrom].statuses.length > 0){
-                    // TODO: change this to be a areawide
-                    /*
+                    
                     for (var status in event.membersInParty[targetToRemoveFrom].statuses){
-                        if (status in event.membersInParty[targetToRemoveFrom].statuses[status].dmgOnDotRemove){
+                        if (event.membersInParty[targetToRemoveFrom].statuses[status].dot
+                            && event.membersInParty[targetToRemoveFrom].statuses[status].dot.dmgOnDotRemove){
                             // deal the dmg on dot remove to everyone
+
+                            var nameOfEndOfTurnAbility = event.membersInParty[targetToRemoveFrom].statuses[status].dot.name;
+                            
+                            var damageToDeal = 1;
+                            
+                            var abilityObject = {
+                                ability: event.membersInParty[targetToRemoveFrom].statuses[status].dot
+                            }
+
+                            abilityObject.ability.dmg = abilityObject.ability.dmgOnRemove
+                            abilityObject.ability.mdPercentage = abilityObject.ability.mdPercentageOnRemove;
+                            abilityObject.ability.areawide = true;
+                            var abilityCaster = abilityObject.ability.caster;
+                            delete abilityObject.ability.turnsToExpire
+
+                            var damageToDeal = calculateDamageDealt(event, abilityCaster, abilityObject.target, abilityObject.ability)
+                            abilityToString = abilityToString + "The group suffered " + damageToDeal + " damage from " + nameOfEndOfTurnAbility +"\n"
+                            for (var targetToDealDmg in event.membersInParty){
+                                var targetToDealDmgName = event.membersInParty[targetToDealDmg].name
+                                if (event.membersInParty[targetToDealDmg].statuses.indexOf("dead") == -1){
+                                    event.membersInParty[targetToDealDmg].hp = event.membersInParty[targetToDealDmg].hp - damageToDeal;
+                                    if (event.membersInParty[targetToDealDmg].hp <= 0){
+                                        abilityToString = abilityToString + hasDied(event, event.membersInParty[targetToDealDmg]);
+                                    }
+                                }
+                            }
                         }
                     }
-                    */
+                    
                     event.membersInParty[targetToRemoveFrom].statuses = []
                     abilityToString = abilityToString + event.membersInParty[targetToRemoveFrom].name + " was cured with " + ability + " \n"                
                 }

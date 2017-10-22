@@ -272,7 +272,8 @@ client.on('message', function(message){
                 }
             }
             catch(error){
-                message.channel.send(error);
+                console.log(error);
+                message.channel.send("error : " + error);
             }
         }
         else if (message.channel.type == "text" && (MAIN_CHANNELS.indexOf(message.channel.name) != -1) && !message.author.bot){
