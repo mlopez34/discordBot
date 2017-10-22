@@ -98,14 +98,14 @@ module.exports = {
                 name: "bomb",
                 type:"fire",
                 dmg: 1,
-                mdPercentage: 0.1,
+                mdPercentage: 0.2,
                 emoji: "💣",
                 dmgOnDotApply: false,
                 turnsToExpire: 6,
                 dmgOnDotExpire: true,
-                dmgOnExpire: 300,
+                dmgOnExpire: 400,
                 dmgOnDotRemove: true,
-                dmgOnRemove: 300,
+                dmgOnRemove: 100,
             }
         },
         decay: {
@@ -1462,7 +1462,7 @@ module.exports = {
                     {
                         name: "Dictator",
                         abilities: [
-                            "attack", "poke", "flameblast", "curse", "attack", "guac"
+                            "attack", "poke", "flameblast", "foodpoisoning", "drain", "guac"
                         ],
                         buffs: [
                             {
