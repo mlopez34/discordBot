@@ -1486,7 +1486,7 @@ module.exports = {
                             "footballPlayer25"
                         ],
                         hpPerPartyMember: 0,
-                        hp: 8520,
+                        hp: 9520,
                         adPerPartyMember: 34,
                         mdPerPartyMember: 34,
                         attackDmg: 200,
