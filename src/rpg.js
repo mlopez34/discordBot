@@ -2861,6 +2861,14 @@ function processAbility(abilityObject, event){
             if (event.membersInParty[targetToRemoveFrom]){
                 if (event.membersInParty[targetToRemoveFrom].statuses.indexOf("dead") == -1 
                     && event.membersInParty[targetToRemoveFrom].statuses.length > 0){
+                    // TODO: change this to be a areawide
+                    /*
+                    for (var status in event.membersInParty[targetToRemoveFrom].statuses){
+                        if (status in event.membersInParty[targetToRemoveFrom].statuses[status].dmgOnDotRemove){
+                            // deal the dmg on dot remove to everyone
+                        }
+                    }
+                    */
                     event.membersInParty[targetToRemoveFrom].statuses = []
                     abilityToString = abilityToString + event.membersInParty[targetToRemoveFrom].name + " was cured with " + ability + " \n"                
                 }
