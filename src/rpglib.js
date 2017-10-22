@@ -103,7 +103,9 @@ module.exports = {
                 dmgOnDotApply: false,
                 turnsToExpire: 6,
                 dmgOnDotExpire: true,
-                dmgOnExpire: 380
+                dmgOnExpire: 300,
+                dmgOnDotRemove: true,
+                dmgOnRemove: 300,
             }
         },
         decay: {
@@ -364,6 +366,69 @@ module.exports = {
                 enemy: "footballPlayer",
             }
         },
+        footballPlayer50: {
+            belongsToMember: true,
+            hppercentage: 0.50,
+            summon: {
+                enemy: "footballPlayer",
+            }
+        },
+        footballPlayer25: {
+            belongsToMember: true,
+            hppercentage: 0.25,
+            summon: {
+                enemy: "footballPlayer",
+            }
+        },
+        slotsGambler75: {
+            belongsToMember: true,
+            hppercentage: 0.75,
+            summon: {
+                enemy: "slotsGambler",
+            }
+        },
+        slotsGambler50: {
+            belongsToMember: true,
+            hppercentage: 0.50,
+            summon: {
+                enemy: "slotsGambler",
+            }
+        },
+        tacoBandit50: {
+            belongsToMember: true,
+            hppercentage: 0.50,
+            summon: {
+                enemy: "tacoBandit",
+            }
+        },
+        badChef75: {
+            belongsToMember: true,
+            hppercentage: 0.75,
+            summon: {
+                enemy: "badChef",
+            }
+        },
+        angryMobMember75: {
+            belongsToMember: true,
+            hppercentage: 0.75,
+            summon: {
+                enemy: "angryMobMember",
+            }
+        },
+        angryMobMember50: {
+            belongsToMember: true,
+            hppercentage: 0.50,
+            summon: {
+                enemy: "angryMobMember",
+            }
+        },
+        angryMobMember25: {
+            belongsToMember: true,
+            hppercentage: 0.25,
+            summon: {
+                enemy: "angryMobMember",
+            }
+        },
         totemOfDoom50: {
             belongsToMember: true,
             hppercentage: 0.50,
@@ -469,6 +534,69 @@ module.exports = {
                 difficulty: "summoned",
                 element: "normal"
             },
+            tacoBandit: {
+                name: "Taco Bandit",
+                abilities: ["attack", "attack", "shock", "shock", "orchatasip"],
+                buffs: [],
+                hpPerPartyMember: 230,
+                adPerPartyMember: 14,
+                mdPerPartyMember: 14,
+                hp: 550,
+                attackDmg: 120,
+                magicDmg: 90,
+                armor: 550,
+                spirit: 450,
+                difficulty: "medium",
+                element: "normal"
+            },
+            slotsGambler: {
+                name: "Slots Gambler",
+                abilities: ["attack", "attack", "elixir", "elixir", "orchatasip"],
+                buffs: [],
+                hpPerPartyMember: 190,
+                adPerPartyMember: 14,
+                mdPerPartyMember: 14,
+                hp: 640,
+                attackDmg: 90,
+                magicDmg: 90,
+                armor: 350,
+                spirit: 550,
+                difficulty: "medium",
+                element: "normal"
+            },
+            angryMobMember: {
+                name: "Angry Mob Member",
+                abilities: ["attack", "attack", "foodpoisoning", "iceshards", "iceshards", "cripple"],
+                buffs: [],
+                hpPerPartyMember: 190,
+                adPerPartyMember: 9,
+                mdPerPartyMember: 9,
+                hp: 280,
+                attackDmg: 80,
+                magicDmg: 75,
+                armor: 450,
+                spirit: 370,
+                difficulty: "easy",
+                element: "normal"
+            },
+            badChef: {
+                name: "Bad Chef",
+                abilities: ["attack", "attack", "foodpoisoning", "foodpoisoning", "barrier"],
+                buffs: [],
+                hpPerPartyMember: 190,
+                adPerPartyMember: 9,
+                mdPerPartyMember: 9,
+                hp: 390,
+                effectsOnDeath: [
+                    "explode"
+                ],
+                attackDmg: 75,
+                magicDmg: 97,
+                armor: 400,
+                spirit: 320,
+                difficulty: "easy",
+                element: "normal"
+            },
             footballPlayer: {
                 name: "Football Player",
                 abilities: ["attack", "attack", "slash", "slash", "rockthrow", "empower"],
@@ -484,7 +612,7 @@ module.exports = {
                         }
                     }
                 ],
-                hpPerPartyMember: 1350,
+                hpPerPartyMember: 450,
                 adPerPartyMember: 18,
                 mdPerPartyMember: 18,
                 hp: 550,
@@ -620,8 +748,8 @@ module.exports = {
                         name: "frenzy",
                         emoji: "😡",
                         onTurnEnd: {
-                            attackDmgPlus : 55,
-                            magicDmgPlus : 55,
+                            attackDmgPlus : 60,
+                            magicDmgPlus : 60,
                             everyNTurns: 2,
                             startTurn: 2
                         }
@@ -631,8 +759,8 @@ module.exports = {
                 adPerPartyMember: 21,
                 mdPerPartyMember: 21,
                 hp: 750,
-                attackDmg: 150,
-                magicDmg: 150,
+                attackDmg: 200,
+                magicDmg: 200,
                 armor: 650,
                 spirit: 650,
                 difficulty: "hard",
@@ -646,8 +774,8 @@ module.exports = {
                         name: "frenzy",
                         emoji: "😡",
                         onTurnEnd: {
-                            attackDmgPlus : 55,
-                            magicDmgPlus : 55,
+                            attackDmgPlus : 60,
+                            magicDmgPlus : 60,
                             everyNTurns: 2,
                             startTurn: 2
                         }
@@ -672,8 +800,8 @@ module.exports = {
                         name: "frenzy",
                         emoji: "😡",
                         onTurnEnd: {
-                            attackDmgPlus : 55,
-                            magicDmgPlus : 55,
+                            attackDmgPlus : 60,
+                            magicDmgPlus : 60,
                             everyNTurns: 2,
                             startTurn: 2
                         }
@@ -705,8 +833,8 @@ module.exports = {
                         name: "frenzy",
                         emoji: "😡",
                         onTurnEnd: {
-                            attackDmgPlus : 80,
-                            magicDmgPlus : 80,
+                            attackDmgPlus : 85,
+                            magicDmgPlus : 85,
                             everyNTurns: 2,
                             startTurn: 2
                         }
@@ -737,8 +865,8 @@ module.exports = {
                         name: "frenzy",
                         emoji: "😡",
                         onTurnEnd: {
-                            attackDmgPlus : 80,
-                            magicDmgPlus : 80,
+                            attackDmgPlus : 85,
+                            magicDmgPlus : 85,
                             everyNTurns: 2,
                             startTurn: 2
                         }
@@ -769,8 +897,8 @@ module.exports = {
                         name: "frenzy",
                         emoji: "😡",
                         onTurnEnd: {
-                            attackDmgPlus : 80,
-                            magicDmgPlus : 80,
+                            attackDmgPlus : 85,
+                            magicDmgPlus : 85,
                             everyNTurns: 2,
                             startTurn: 2
                         }
@@ -1045,8 +1173,8 @@ module.exports = {
                                 name: "frenzy",
                                 emoji: "😡",
                                 onTurnEnd: {
-                                    attackDmgPlus : 55,
-                                    magicDmgPlus : 55,
+                                    attackDmgPlus : 65,
+                                    magicDmgPlus : 65,
                                     everyNTurns: 2,
                                     startTurn: 2
                                 }
@@ -1073,8 +1201,8 @@ module.exports = {
                                 name: "frenzy",
                                 emoji: "😡",
                                 onTurnEnd: {
-                                    attackDmgPlus : 80,
-                                    magicDmgPlus : 80,
+                                    attackDmgPlus : 85,
+                                    magicDmgPlus : 85,
                                     everyNTurns: 2,
                                     startTurn: 2
                                 }
@@ -1141,8 +1269,8 @@ module.exports = {
                                 name: "frenzy",
                                 emoji: "😡",
                                 onTurnEnd: {
-                                    attackDmgPlus : 55,
-                                    magicDmgPlus : 55,
+                                    attackDmgPlus : 65,
+                                    magicDmgPlus : 65,
                                     everyNTurns: 2,
                                     startTurn: 2
                                 }
@@ -1170,8 +1298,8 @@ module.exports = {
                                 name: "frenzy",
                                 emoji: "😡",
                                 onTurnEnd: {
-                                    attackDmgPlus : 55,
-                                    magicDmgPlus : 55,
+                                    attackDmgPlus : 65,
+                                    magicDmgPlus : 65,
                                     everyNTurns: 2,
                                     startTurn: 2
                                 }
@@ -1198,8 +1326,8 @@ module.exports = {
                                 name: "frenzy",
                                 emoji: "😡",
                                 onTurnEnd: {
-                                    attackDmgPlus : 80,
-                                    magicDmgPlus : 80,
+                                    attackDmgPlus : 85,
+                                    magicDmgPlus : 85,
                                     everyNTurns: 2,
                                     startTurn: 2
                                 }
@@ -1232,7 +1360,7 @@ module.exports = {
                         effectsOnDeath: [
                             "explode"
                         ],
-                        hpPerPartyMember: 200,
+                        hpPerPartyMember: 220,
                         adPerPartyMember: 18,
                         mdPerPartyMember: 14,
                         hp: 480,
@@ -1247,7 +1375,7 @@ module.exports = {
                         name: "Slots Gambler",
                         abilities: ["attack", "attack", "elixir", "elixir", "orchatasip"],
                         buffs: [],
-                        hpPerPartyMember: 120,
+                        hpPerPartyMember: 140,
                         adPerPartyMember: 14,
                         mdPerPartyMember: 18,
                         hp: 640,
@@ -1283,13 +1411,13 @@ module.exports = {
                             "focus"
                         ],
                         hpPerPartyMember: 0,
-                        hp: 22350,
+                        hp: 24850,
                         adPerPartyMember: 34,
                         mdPerPartyMember: 34,
-                        attackDmg: 310,
-                        magicDmg: 250,
-                        armor: 1900,
-                        spirit: 1900,
+                        attackDmg: 360,
+                        magicDmg: 230,
+                        armor: 2350,
+                        spirit: 2350,
                         difficulty: "boss",
                         element: "normal"
                     },
@@ -1300,7 +1428,7 @@ module.exports = {
                         effectsOnDeath: [
                             "explode"
                         ],
-                        hpPerPartyMember: 210,
+                        hpPerPartyMember: 230,
                         adPerPartyMember: 14,
                         mdPerPartyMember: 14,
                         hp: 420,
@@ -1315,7 +1443,7 @@ module.exports = {
                         name: "Slots Gambler",
                         abilities: ["attack", "attack", "elixir", "elixir", "orchatasip"],
                         buffs: [],
-                        hpPerPartyMember: 120,
+                        hpPerPartyMember: 140,
                         adPerPartyMember: 14,
                         mdPerPartyMember: 14,
                         hp: 640,
@@ -1327,7 +1455,137 @@ module.exports = {
                         element: "normal"
                     }
                 ],
-                points: 125
+                points: 93
+            },
+            4: {
+                enemies: [
+                    {
+                        name: "Dictator",
+                        abilities: [
+                            "attack", "poke", "flameblast", "curse", "attack", "guac"
+                        ],
+                        buffs: [
+                            {
+                                name: "frenzy",
+                                emoji: "😡",
+                                onTurnEnd: {
+                                    attackDmgPlus : 70,
+                                    magicDmgPlus : 70,
+                                    everyNTurns: 2,
+                                    startTurn: 3
+                                }
+                            }
+                        ],
+                        abilityOrder: [
+                            1, 0, 2, 3, 4, 5, 5, 0
+                        ],
+                        endOfTurnEvents : [
+                            "focus",
+                            "badChef75",
+                            "slotsGambler50",
+                            "footballPlayer25"
+                        ],
+                        hpPerPartyMember: 0,
+                        hp: 9520,
+                        adPerPartyMember: 34,
+                        mdPerPartyMember: 34,
+                        attackDmg: 200,
+                        magicDmg: 200,
+                        armor: 2350,
+                        spirit: 2350,
+                        difficulty: "boss",
+                        element: "normal"
+                    },
+                    {
+                        name: "Mob Lord",
+                        abilities: [
+                            "attack", "bomb", "scold", "freeze", "flameblast", "iceshards"
+                        ],
+                        buffs: [
+                            {
+                                name: "frenzy",
+                                emoji: "😡",
+                                onTurnEnd: {
+                                    attackDmgPlus : 70,
+                                    magicDmgPlus : 70,
+                                    everyNTurns: 2,
+                                    startTurn: 2
+                                }
+                            }
+                        ],
+                        abilityOrder: [
+                            0, 1, 0, [2, 3], 4, 1, 1, 0, [2, 3], 4, 1, 1, 0, [2,3], 4,
+                            1, 1, 1, 0, [2, 3], 4, 1, 1, 1, 0, [2,3], 4, 1, 1, 1, 1, 0, [2,3], 4,
+                            1, 1, 1, 1, 0, [2,3], 4, 1, 1, 1, 1, 1, 0, [2,3], 4, 1, 1, 1, 1, 1,
+                            0, 0, 5
+                        ],
+                        endOfTurnEvents : [
+                            "echo",
+                            "angryMobMember75",
+                            "tacoBandit50",
+                            "footballPlayer25"
+                        ],
+                        hpPerPartyMember: 0,
+                        hp: 14230,
+                        adPerPartyMember: 34,
+                        mdPerPartyMember: 34,
+                        attackDmg: 300,
+                        magicDmg: 200,
+                        armor: 2350,
+                        spirit: 2350,
+                        difficulty: "boss",
+                        element: "normal"
+                    },
+                    {
+                        name: "Slots Gambler",
+                        abilities: ["attack", "attack", "elixir", "elixir", "orchatasip"],
+                        buffs: [],
+                        hpPerPartyMember: 180,
+                        adPerPartyMember: 14,
+                        mdPerPartyMember: 14,
+                        hp: 640,
+                        attackDmg: 90,
+                        magicDmg: 90,
+                        armor: 350,
+                        spirit: 550,
+                        difficulty: "medium",
+                        element: "normal"
+                    },
+                    {
+                        name: "Bad Chef",
+                        abilities: ["attack", "attack", "foodpoisoning", "foodpoisoning", "barrier"],
+                        buffs: [],
+                        hpPerPartyMember: 190,
+                        adPerPartyMember: 9,
+                        mdPerPartyMember: 9,
+                        hp: 490,
+                        effectsOnDeath: [
+                            "explode"
+                        ],
+                        attackDmg: 75,
+                        magicDmg: 97,
+                        armor: 400,
+                        spirit: 320,
+                        difficulty: "easy",
+                        element: "normal"
+                    },
+                    {
+                        name: "Angry Mob Member",
+                        abilities: ["attack", "attack", "foodpoisoning", "iceshards", "iceshards", "cripple"],
+                        buffs: [],
+                        hpPerPartyMember: 190,
+                        adPerPartyMember: 9,
+                        mdPerPartyMember: 9,
+                        hp: 480,
+                        attackDmg: 80,
+                        magicDmg: 75,
+                        armor: 450,
+                        spirit: 370,
+                        difficulty: "easy",
+                        element: "normal"
+                    },
+                ],
+                points: 139
             }
         }
     }    

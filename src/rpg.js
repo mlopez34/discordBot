@@ -303,7 +303,7 @@ module.exports.rpgReady = function(message, itemsAvailable){
                 var challengePicked = (activeRPGEvents[ "rpg-" +  rpgEventId ] && activeRPGEvents[ "rpg-" +  rpgEventId ].challenge) ? activeRPGEvents[ "rpg-" + rpgEventId ].challenge.challenge : false;
                 if ((currentPlayerChallenge + 1) >= (parseInt( challengePicked ) ) 
                     && (parseInt( challengePicked ) ) > 0 
-                    && (parseInt( challengePicked ) ) < 4){
+                    && (parseInt( challengePicked ) ) < 5){
                     activeRPGEvents[ "rpg-" +  rpgEventId ].challenge.valid = true;
                 }
                 oneHourAgo = new Date(oneHourAgo.setHours(oneHourAgo.getHours() - RPG_COOLDOWN_HOURS ));
@@ -1609,8 +1609,9 @@ function effectsOnTurnEnd(event){
                                 // make the event invalid so it doesnt happen anymore
                                 // or else it would happen every turn afterwards
                                 event.enemies[enemy].endOfTurnEvents[index].invalid = true;
+                                endOfTurnString = endOfTurnString + enemySummoned.name + " has been summoned\n"
                             }
-                            // to stuff
+                            // do stuff
                         }
 
                         /////// event happens at certain event turn
@@ -2662,7 +2663,8 @@ function processAbility(abilityObject, event){
                 var alreadyHaveStatus = false;
                 for (var status in event.membersInParty[targetToAddStatus].statuses){
                     if (event.membersInParty[targetToAddStatus].statuses[status].dot
-                        && event.membersInParty[targetToAddStatus].statuses[status].dot.caster == abilityObject.user ){
+                        && event.membersInParty[targetToAddStatus].statuses[status].dot.caster == abilityObject.user
+                        && event.membersInParty[targetToAddStatus].statuses[status].dot.name == statusToAdd.name ){
                         alreadyHaveStatus = true;
                     }
                     // add the status here
@@ -2683,7 +2685,8 @@ function processAbility(abilityObject, event){
                 var alreadyHaveStatus = false;
                 for (var status in event.enemies[targetToAddStatus].statuses){
                     if (event.enemies[targetToAddStatus].statuses[status].dot
-                        && event.enemies[targetToAddStatus].statuses[status].dot.caster == abilityObject.user ){
+                        && event.enemies[targetToAddStatus].statuses[status].dot.caster == abilityObject.user
+                        && event.enemies[targetToAddStatus].statuses[status].dot.name == statusToAdd.name ){
                         alreadyHaveStatus = true;
                     }
 
@@ -2757,7 +2760,8 @@ function processAbility(abilityObject, event){
                     // ONLY ADD THE DOT IF THEY DONT ALREADY HAVE IT
                     for (var status in event.membersInParty[targetToAddDot].statuses){
                         if (event.membersInParty[targetToAddDot].statuses[status].dot
-                            && event.membersInParty[targetToAddDot].statuses[status].dot.caster == abilityObject.user ){
+                            && event.membersInParty[targetToAddDot].statuses[status].dot.caster == abilityObject.user
+                            && event.membersInParty[targetToAddDot].statuses[status].dot.name == dotToAdd.dot.name ){
                             alreadyHaveStatus = true;
                         }
                     }
@@ -3341,6 +3345,7 @@ function enemiesUseAbilities(event){
                 && (rpgAbilities[abilityPicked].dmg
                 || rpgAbilities[abilityPicked].dot
                 || rpgAbilities[abilityPicked].status
+                || rpgAbilities[abilityPicked].name == "guac"
                 || rpgAbilities[abilityPicked].name == "drain")){
                 // target SHOULD be the membersinparty
 
