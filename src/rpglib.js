@@ -106,7 +106,7 @@ module.exports = {
                 dmgOnExpire: 170,
                 dmgOnDotRemove: true,
                 mdPercentageOnRemove: 0.25,
-                dmgOnRemove: 65,
+                dmgOnRemove: 80,
             }
         },
         decay: {
