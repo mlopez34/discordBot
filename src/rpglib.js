@@ -98,15 +98,15 @@ module.exports = {
                 name: "bomb",
                 type:"fire",
                 dmg: 1,
-                mdPercentage: 0.70,
+                mdPercentage: 0.25,
                 emoji: "💣",
                 dmgOnDotApply: false,
                 turnsToExpire: 6,
                 dmgOnDotExpire: true,
-                dmgOnExpire: 270,
+                dmgOnExpire: 750,
                 dmgOnDotRemove: true,
                 mdPercentageOnRemove: 0.25,
-                dmgOnRemove: 80,
+                dmgOnRemove: 75,
             }
         },
         decay: {
@@ -1405,7 +1405,7 @@ module.exports = {
                             }
                         ],
                         abilityOrder: [
-                            0, 3, 0, [1,2], 0, 0 , [1,2], 0
+                            0, 3, [1,2], 0, 0 [1,2], 0, 0 , [1,2]
                         ],
                         endOfTurnEvents : [
                             "echo",
@@ -1415,7 +1415,7 @@ module.exports = {
                         hp: 24850,
                         adPerPartyMember: 34,
                         mdPerPartyMember: 34,
-                        attackDmg: 480,
+                        attackDmg: 530,
                         magicDmg: 320,
                         armor: 2350,
                         spirit: 2350,
