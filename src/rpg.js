@@ -2415,29 +2415,6 @@ function processAbility(abilityObject, event){
             }
         }
     }
-    var limitReady = true;
-    if (rpgAbility.limitDefensive){
-        // 
-        if (!event.limitDefensiveReady){
-            limitReady = false;
-        }
-    }
-    if (rpgAbility.limitOffensive){
-        // 
-        if (!event.limitOffensiveReady){
-            limitReady = false;
-        }
-    }
-    if (!limitReady){
-        validAbility = false;
-    }
-
-    if (rpgAbility.limitDefensive && event.limitDefensiveReady){
-        event.limitDefensiveReady = false;
-    }
-    if (rpgAbility.limitOffensive && event.limitOffensiveReady){
-        event.limitOffensiveReady = false;
-    }
 
     if (abilityCaster > 1000){
         // this is a user
@@ -2454,6 +2431,31 @@ function processAbility(abilityObject, event){
                 stillAlive = false;
             }
     }
+
+    var limitReady = true;
+    if (rpgAbility.limitDefensive && stillAlive){
+        // 
+        if (!event.limitDefensiveReady){
+            limitReady = false;
+        }
+    }
+    if (rpgAbility.limitOffensive && stillAlive){
+        // 
+        if (!event.limitOffensiveReady){
+            limitReady = false;
+        }
+    }
+    if (!limitReady){
+        validAbility = false;
+    }
+
+    if (rpgAbility.limitDefensive && event.limitDefensiveReady && stillAlive){
+        event.limitDefensiveReady = false;
+    }
+    if (rpgAbility.limitOffensive && event.limitOffensiveReady && stillAlive){
+        event.limitOffensiveReady = false;
+    }
+
     if (rpgAbility && rpgAbility.dmg && stillAlive && validAbility){
         // this is a damage ability, deal the damage to the target
         
