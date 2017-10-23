@@ -98,15 +98,15 @@ module.exports = {
                 name: "bomb",
                 type:"fire",
                 dmg: 1,
-                mdPercentage: 0.8,
+                mdPercentage: 0.70,
                 emoji: "💣",
                 dmgOnDotApply: false,
                 turnsToExpire: 6,
                 dmgOnDotExpire: true,
-                dmgOnExpire: 170,
+                dmgOnExpire: 270,
                 dmgOnDotRemove: true,
                 mdPercentageOnRemove: 0.25,
-                dmgOnRemove: 65,
+                dmgOnRemove: 80,
             }
         },
         decay: {
