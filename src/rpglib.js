@@ -98,15 +98,15 @@ module.exports = {
                 name: "bomb",
                 type:"fire",
                 dmg: 1,
-                mdPercentage: 0.15,
+                mdPercentage: 0.8,
                 emoji: "💣",
                 dmgOnDotApply: false,
-                turnsToExpire: 5,
+                turnsToExpire: 6,
                 dmgOnDotExpire: true,
-                dmgOnExpire: 500,
+                dmgOnExpire: 170,
                 dmgOnDotRemove: true,
-                mdPercentageOnRemove: 0.9,
-                dmgOnRemove: 90,
+                mdPercentageOnRemove: 0.25,
+                dmgOnRemove: 65,
             }
         },
         decay: {
@@ -1330,7 +1330,7 @@ module.exports = {
                                     attackDmgPlus : 85,
                                     magicDmgPlus : 85,
                                     everyNTurns: 2,
-                                    startTurn: 2
+                                    startTurn: 3
                                 }
                             }
                         ],
@@ -1342,7 +1342,7 @@ module.exports = {
                         hp: 1250,
                         adPerPartyMember: 30,
                         mdPerPartyMember: 30,
-                        attackDmg: 270,
+                        attackDmg: 220,
                         magicDmg: 190,
                         armor: 1600,
                         spirit: 1600,
@@ -1587,6 +1587,156 @@ module.exports = {
                     },
                 ],
                 points: 139
+            },
+            5: {
+                enemies: [
+                    // 3 bosses, each has a special ability
+                    {
+                        name: "Taco Bandit",
+                        abilities: ["attack", "attack", "shock", "shock", "orchatasip"],
+                        buffs: [],
+                        hpPerPartyMember: 230,
+                        adPerPartyMember: 14,
+                        mdPerPartyMember: 14,
+                        hp: 550,
+                        attackDmg: 120,
+                        magicDmg: 90,
+                        armor: 550,
+                        spirit: 450,
+                        difficulty: "medium",
+                        element: "normal"
+                    },
+                    {
+                        name: "Taco Bandit",
+                        abilities: ["attack", "attack", "shock", "shock", "orchatasip"],
+                        buffs: [],
+                        hpPerPartyMember: 230,
+                        adPerPartyMember: 14,
+                        mdPerPartyMember: 14,
+                        hp: 550,
+                        attackDmg: 120,
+                        magicDmg: 90,
+                        armor: 550,
+                        spirit: 450,
+                        difficulty: "medium",
+                        element: "normal"
+                    },
+                    {
+                        name: "Evil Chef",
+                        // special ability deals single target dmg magic to a non focused target
+                        abilities: [
+                            "attack", "poke", "flameblast", "foodpoisoning", "bomb", "guac"
+                        ],
+                        buffs: [
+                            {
+                                name: "frenzy",
+                                emoji: "😡",
+                                onTurnEnd: {
+                                    attackDmgPlus : 75,
+                                    magicDmgPlus : 75,
+                                    everyNTurns: 2,
+                                    startTurn: 3
+                                }
+                            }
+                        ],
+                        abilityOrder: [
+                            1, 0, 4, 2, 3, 5, 5, 0
+                        ],
+                        endOfTurnEvents : [
+                            "focus",
+                            "badChef75",
+                            "slotsGambler50",
+                            "footballPlayer25"
+                        ],
+                        hpPerPartyMember: 0,
+                        hp: 9520,
+                        adPerPartyMember: 34,
+                        mdPerPartyMember: 34,
+                        attackDmg: 365,
+                        magicDmg: 245,
+                        armor: 2350,
+                        spirit: 2350,
+                        difficulty: "boss",
+                        element: "normal"
+                    },
+                    {
+                        name: "Disobedient Host",
+                        // special ability deals area effect damage
+                        abilities: [
+                            "attack", "poke", "flameblast", "foodpoisoning", "bomb", "guac"
+                        ],
+                        buffs: [
+                            {
+                                name: "frenzy",
+                                emoji: "😡",
+                                onTurnEnd: {
+                                    attackDmgPlus : 75,
+                                    magicDmgPlus : 75,
+                                    everyNTurns: 2,
+                                    startTurn: 3
+                                }
+                            }
+                        ],
+                        abilityOrder: [
+                            1, 0, 4, 2, 3, 5, 5, 0
+                        ],
+                        endOfTurnEvents : [
+                            "focus",
+                            "badChef75",
+                            "slotsGambler50",
+                            "footballPlayer25"
+                        ],
+                        hpPerPartyMember: 0,
+                        hp: 9520,
+                        adPerPartyMember: 34,
+                        mdPerPartyMember: 34,
+                        attackDmg: 365,
+                        magicDmg: 245,
+                        armor: 2350,
+                        spirit: 2350,
+                        difficulty: "boss",
+                        element: "normal"
+                    },
+                    {
+                        name: "Valet",
+                        // special ability summons minions - minions last 3 turns and explode after 3 turns
+                        abilities: [
+                            "attack", "poke", "flameblast", "foodpoisoning", "bomb", "guac"
+                        ],
+                        buffs: [
+                            {
+                                name: "frenzy",
+                                emoji: "😡",
+                                onTurnEnd: {
+                                    attackDmgPlus : 75,
+                                    magicDmgPlus : 75,
+                                    everyNTurns: 2,
+                                    startTurn: 3
+                                }
+                            }
+                        ],
+                        abilityOrder: [
+                            1, 0, 4, 2, 3, 5, 5, 0
+                        ],
+                        endOfTurnEvents : [
+                            "focus",
+                            "badChef75",
+                            "slotsGambler50",
+                            "footballPlayer25"
+                        ],
+                        hpPerPartyMember: 0,
+                        hp: 9520,
+                        adPerPartyMember: 34,
+                        mdPerPartyMember: 34,
+                        attackDmg: 365,
+                        magicDmg: 245,
+                        armor: 2350,
+                        spirit: 2350,
+                        difficulty: "boss",
+                        element: "normal"
+                    },
+                ],
+                points: 181
             }
         }
     }    
