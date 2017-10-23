@@ -1415,8 +1415,8 @@ module.exports = {
                         hp: 24850,
                         adPerPartyMember: 34,
                         mdPerPartyMember: 34,
-                        attackDmg: 360,
-                        magicDmg: 230,
+                        attackDmg: 480,
+                        magicDmg: 320,
                         armor: 2350,
                         spirit: 2350,
                         difficulty: "boss",
@@ -1470,8 +1470,8 @@ module.exports = {
                                 name: "frenzy",
                                 emoji: "😡",
                                 onTurnEnd: {
-                                    attackDmgPlus : 70,
-                                    magicDmgPlus : 70,
+                                    attackDmgPlus : 75,
+                                    magicDmgPlus : 75,
                                     everyNTurns: 2,
                                     startTurn: 3
                                 }
@@ -1490,8 +1490,8 @@ module.exports = {
                         hp: 9520,
                         adPerPartyMember: 34,
                         mdPerPartyMember: 34,
-                        attackDmg: 200,
-                        magicDmg: 200,
+                        attackDmg: 365,
+                        magicDmg: 245,
                         armor: 2350,
                         spirit: 2350,
                         difficulty: "boss",
@@ -1507,8 +1507,8 @@ module.exports = {
                                 name: "frenzy",
                                 emoji: "😡",
                                 onTurnEnd: {
-                                    attackDmgPlus : 70,
-                                    magicDmgPlus : 70,
+                                    attackDmgPlus : 75,
+                                    magicDmgPlus : 75,
                                     everyNTurns: 2,
                                     startTurn: 2
                                 }
@@ -1530,8 +1530,8 @@ module.exports = {
                         hp: 14230,
                         adPerPartyMember: 34,
                         mdPerPartyMember: 34,
-                        attackDmg: 300,
-                        magicDmg: 200,
+                        attackDmg: 260,
+                        magicDmg: 329,
                         armor: 2350,
                         spirit: 2350,
                         difficulty: "boss",
