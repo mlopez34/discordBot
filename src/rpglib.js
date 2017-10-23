@@ -98,7 +98,7 @@ module.exports = {
                 name: "bomb",
                 type:"fire",
                 dmg: 1,
-                mdPercentage: 0.7,
+                mdPercentage: 0.70,
                 emoji: "💣",
                 dmgOnDotApply: false,
                 turnsToExpire: 6,
