@@ -1405,7 +1405,7 @@ module.exports = {
                             }
                         ],
                         abilityOrder: [
-                            0, 3, [1,2], 0, 0 [1,2], 0, 0 , [1,2]
+                            0, 3, [1, 2], 0, 0, [1, 2], 0, 0, [1, 2]
                         ],
                         endOfTurnEvents : [
                             "echo",
@@ -1515,9 +1515,9 @@ module.exports = {
                             }
                         ],
                         abilityOrder: [
-                            0, 1, 0, [2, 3], 4, 1, 1, 0, [2, 3], 4, 1, 1, 0, [2,3], 4,
-                            1, 1, 1, 0, [2, 3], 4, 1, 1, 1, 0, [2,3], 4, 1, 1, 1, 1, 0, [2,3], 4,
-                            1, 1, 1, 1, 0, [2,3], 4, 1, 1, 1, 1, 1, 0, [2,3], 4, 1, 1, 1, 1, 1,
+                            0, 1, 0, [2, 3], 4, 1, 1, 0, [2, 3], 4, 1, 1, 0, [2, 3], 4,
+                            1, 1, 1, 0, [2, 3], 4, 1, 1, 1, 0, [2, 3], 4, 1, 1, 1, 1, 0, [2, 3], 4,
+                            1, 1, 1, 1, 0, [2, 3], 4, 1, 1, 1, 1, 1, 0, [2, 3], 4, 1, 1, 1, 1, 1,
                             0, 0, 5
                         ],
                         endOfTurnEvents : [
@@ -1625,7 +1625,7 @@ module.exports = {
                         name: "Evil Chef",
                         // special ability deals single target dmg magic to a non focused target
                         abilities: [
-                            "attack", "poke", "flameblast", "foodpoisoning", "bomb", "guac"
+                            "attack", "curse"
                         ],
                         buffs: [
                             {
@@ -1640,13 +1640,14 @@ module.exports = {
                             }
                         ],
                         abilityOrder: [
-                            1, 0, 4, 2, 3, 5, 5, 0
+                            1, 0, 0, 0
                         ],
                         endOfTurnEvents : [
                             "focus",
-                            "badChef75",
-                            "slotsGambler50",
-                            "footballPlayer25"
+                            "electric orb"
+                        ],
+                        effectsOnDeath: [
+                            "healAll"
                         ],
                         hpPerPartyMember: 0,
                         hp: 9520,
@@ -1661,9 +1662,9 @@ module.exports = {
                     },
                     {
                         name: "Disobedient Host",
-                        // special ability deals area effect damage
+                        // special ability summons minions - minions last 3 turns and explode after 3 turns
                         abilities: [
-                            "attack", "poke", "flameblast", "foodpoisoning", "bomb", "guac"
+                            "attack", "drain"
                         ],
                         buffs: [
                             {
@@ -1678,13 +1679,14 @@ module.exports = {
                             }
                         ],
                         abilityOrder: [
-                            1, 0, 4, 2, 3, 5, 5, 0
+                            0, 1, 1, 0
                         ],
                         endOfTurnEvents : [
                             "focus",
-                            "badChef75",
-                            "slotsGambler50",
-                            "footballPlayer25"
+                            "summonDemon"
+                        ],
+                        effectsOnDeath: [
+                            "healAll"
                         ],
                         hpPerPartyMember: 0,
                         hp: 9520,
@@ -1699,9 +1701,9 @@ module.exports = {
                     },
                     {
                         name: "Valet",
-                        // special ability summons minions - minions last 3 turns and explode after 3 turns
+                        // special ability deals area effect damage
                         abilities: [
-                            "attack", "poke", "flameblast", "foodpoisoning", "bomb", "guac"
+                            "attack", "crush"
                         ],
                         buffs: [
                             {
@@ -1716,13 +1718,15 @@ module.exports = {
                             }
                         ],
                         abilityOrder: [
-                            1, 0, 4, 2, 3, 5, 5, 0
+                            0, 0, 1, 0
                         ],
                         endOfTurnEvents : [
                             "focus",
-                            "badChef75",
-                            "slotsGambler50",
-                            "footballPlayer25"
+                            "tremor"
+                        ],
+                        effectsOnDeath: [
+                            "healAll"
+                            // also reduce the special ability by 1 turn  to the rest, and increase ad, md
                         ],
                         hpPerPartyMember: 0,
                         hp: 9520,
