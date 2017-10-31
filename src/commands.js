@@ -262,6 +262,70 @@ var PETS_AVAILABLE = {
 
 var REPUTATIONS = config.reputations;
 
+var trickOrTreatMap = {};
+var TOTCOOLDOWNHOURS = 1;
+
+module.exports.trickOrTreatCommand = function(message){
+    
+    var discordUserId = message.author.id;
+    // if they get treat, their pet becomes a jackolantern and they gain 5 tacos and 1 item
+    // if they get trick, their pet becomes a ghost and they lose 5 tacos
+    profileDB.getUserProfileData( discordUserId, function(err, totData) {
+        if(err){
+            console.log("in error : " + err.code);
+            agreeToTerms(message, discordUserId);
+        }else{
+            var trickOrTreat = Math.floor(Math.random() * 2);
+            
+            var now = new Date();
+            var twoHoursAgo = new Date();
+            ///////// CALCULATE THE MINUTES REDUCED HERE 
+            twoHoursAgo = new Date(twoHoursAgo.setHours(twoHoursAgo.getHours() - TOTCOOLDOWNHOURS));
+            // added the CDR
+            twoHoursAgo = new Date(twoHoursAgo.setMinutes(twoHoursAgo.getMinutes()));
+
+            if (!trickOrTreatMap["tot-" + discordUserId] || (twoHoursAgo > totData.data.lasttrickortreat)){
+                if (trickOrTreat == 0){
+                    var trickOrTreatDate = new Date();
+                    trickOrTreatMap["tot-" + discordUserId] = {
+                        tot: "trick"
+                    };
+                    profileDB.updateUserTacosTrickOrTreat(discordUserId, -5, function(updateerr, updateResponse) {
+                        if (updateerr){
+                            console.log(updateerr);
+                        }
+                        else{
+                            message.channel.send("You have been tricked! 👻 Bender took 5 tacos from your candy bag");
+                            // update lasttrickortreattime
+                            
+                        }
+                    })
+                    
+                }else if (trickOrTreat == 1){
+                    var trickOrTreatDate = new Date();
+                    trickOrTreatMap["tot-" + discordUserId] = {
+                        tot: "treat"
+                    };
+                    
+                    profileDB.updateUserTacosThank(discordUserId, 5, function(updateerr, updateResponse) {
+                        if (updateerr){
+                            console.log(updateerr);
+                        }
+                        else{
+                            message.channel.send("You have been treated! 🎃 Bender put 5 tacos in your candy bag");
+                            // update lasttrickortreattime
+                        }
+                    })
+                }
+            }else{
+                var now = new Date();
+                var numberOfHours = getDateDifference(totData.data.lasttrickortreattime, now, 1);
+                message.channel.send(message.author + " You are being too greedy! Please wait `" + numberOfHours +"` ");
+            }
+        }
+    })
+}
+
 module.exports.thankCommand = function(message){
     
     var discordUserId = message.author.id;
@@ -2896,9 +2960,21 @@ module.exports.fetchCommand = function(message){
                                         experience.gainExperience(message, discordUserId, ((EXPERIENCE_GAINS.perFetchCd * PETS_AVAILABLE[userPet].fetch) + experienceFromItems) , fetchResponse);
                                         // user's pet fetched some tacos
                                         if (extraTacosFromItems > 0){
-                                            message.channel.send("**" + userPetName + "** fetched:` " + fetchTacos + "` tacos :taco: \n" + PETS_AVAILABLE[userPet].emoji + " " + PETS_AVAILABLE[userPet].speak + " you received `" + extraTacosFromItems + "` extra tacos");
+                                            if (trickOrTreatMap["tot-" + discordUserId] && trickOrTreatMap["tot-" + discordUserId].tot == "trick"){
+                                                message.channel.send("**" + userPetName + "** fetched:` " + fetchTacos + "` tacos :taco: \n 👻 BOOOOOOOO " + PETS_AVAILABLE[userPet].speak + " you received `" + extraTacosFromItems + "` extra tacos");                                                
+                                            }else if (trickOrTreatMap["tot-" + discordUserId] && trickOrTreatMap["tot-" + discordUserId].tot == "treat"){
+
+                                            }else{
+                                                message.channel.send("**" + userPetName + "** fetched:` " + fetchTacos + "` tacos :taco: \n 🎃 HEEEHEEEHEHEHEE " + PETS_AVAILABLE[userPet].speak + " you received `" + extraTacosFromItems + "` extra tacos");                                                
+                                            }
                                         }else{
-                                            message.channel.send("**" + userPetName + "** fetched:` " + fetchTacos + "` tacos :taco: \n" + PETS_AVAILABLE[userPet].emoji + " " + PETS_AVAILABLE[userPet].speak);
+                                            if (trickOrTreatMap["tot-" + discordUserId] && trickOrTreatMap["tot-" + discordUserId].tot == "trick"){
+                                                message.channel.send("**" + userPetName + "** fetched:` " + fetchTacos + "` tacos :taco: \n 👻 BOOOOOOOO " + PETS_AVAILABLE[userPet].speak);                                                
+                                            }else if (trickOrTreatMap["tot-" + discordUserId] && trickOrTreatMap["tot-" + discordUserId].tot == "treat"){
+                                                message.channel.send("**" + userPetName + "** fetched:` " + fetchTacos + "` tacos :taco: \n 🎃 HEEEHEEEHEHEHEE " + PETS_AVAILABLE[userPet].speak);                                                
+                                            }else{
+                                                message.channel.send("**" + userPetName + "** fetched:` " + fetchTacos + "` tacos :taco: \n" + PETS_AVAILABLE[userPet].emoji + " " + PETS_AVAILABLE[userPet].speak);                                                
+                                            }
                                         }
                                     }
                                 })
