@@ -307,12 +307,12 @@ module.exports.trickOrTreatCommand = function(message){
                         tot: "treat"
                     };
                     
-                    profileDB.updateUserTacosThank(discordUserId, 5, function(updateerr, updateResponse) {
+                    profileDB.updateUserTacosThank(discordUserId, 10, function(updateerr, updateResponse) {
                         if (updateerr){
                             console.log(updateerr);
                         }
                         else{
-                            message.channel.send("You have been treated! 🎃 Bender put 5 tacos in your candy bag");
+                            message.channel.send("You have been treated! 🎃 Bender put 10 tacos in your candy bag");
                             // update lasttrickortreattime
                         }
                     })
