@@ -318,7 +318,7 @@ module.exports.trickOrTreatCommand = function(message){
                     })
                 }
             }else{
-                var now = new Date();
+                var now = new Date(now.setMinutes(now.getMinutes()));
                 var numberOfHours = getDateDifference(totData.data.lasttrickortreattime, now, 1);
                 message.channel.send(message.author + " You are being too greedy! Please wait `" + numberOfHours +"` ");
             }
