@@ -284,7 +284,7 @@ module.exports.trickOrTreatCommand = function(message){
             // added the CDR
             twoHoursAgo = new Date(twoHoursAgo.setMinutes(twoHoursAgo.getMinutes()));
 
-            if (!trickOrTreatMap["tot-" + discordUserId] || (twoHoursAgo > totData.data.lasttrickortreat)){
+            if (!totData.data.lasttrickortreattime || (twoHoursAgo > totData.data.lasttrickortreattime)){
                 if (trickOrTreat == 0){
                     var trickOrTreatDate = new Date();
                     trickOrTreatMap["tot-" + discordUserId] = {
