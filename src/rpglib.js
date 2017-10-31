@@ -326,7 +326,7 @@ module.exports = {
         },
         haunt: {
             afterNTurns: 4,
-            everyNturns: 2,
+            everyNTurns: 2,
             currentTurn: 0,
             belongsToMember: true,
             name: "haunt",
@@ -357,7 +357,7 @@ module.exports = {
             belongsToMember: true,
             hppercentage: 0.75,
             summon: {
-                enemy: "totemOfDoom",
+                enemy: "totemOfDoom"
             }
         },
         footballPlayer75: {
@@ -444,9 +444,74 @@ module.exports = {
                 enemy: "totemOfDoom",
             }
         },
+        // aoe hit for ch 5
+        tremor: {
+            belongsToMember: true,
+            name: "tremor",
+            everyNTurns: 4,
+            afterNTurns: 2,
+            currentTurn: 0,
+            areawidedmg: {
+                areawide: true,
+                name: "tremor",
+                dmg: 350,
+                mdPercentage: 0.5,
+                type: "earth"
+            }
+        },
+        // single targ hit for ch 5
+        electricOrb: {
+            abilityId: "electricOrb",
+            belongsToMember: true,
+            processAbility: true,
+            ignoreFocus: true,
+            name: "electric orb",
+            dmg: 200,
+            mdPercentage: 1,
+            type: "electric",
+            everyNTurns: 4,
+            afterNTurns: 1,
+            currentTurn: 0,
+            status: {
+                status: true,
+                abilityId: "electricOrb",
+                untargettable: true,
+                name: "electric orb",
+                emoji: "⚡",
+                affects: ["spirit"],
+                multiplier: 0.7,
+                turnsToExpire: 10
+            }
+        },
+        // summon demon for ch 5
+        summonDemon: {
+            name: "summon demon",
+            belongsToMember: true,
+            everyNTurns: 4,
+            afterNTurns: 3,
+            currentTurn: 0,
+            summon: {
+                enemy: "demon",
+                attackDmg: 400,
+                magicDmg: 400
+                
+            }
+        },
+        // heal all enemies when one dies in ch 5
+        healAll: {
+            belongsToMember: true,
+            name: "heal all",
+            heal: 20000,
+            areawide: true,
+            mdPercentage: 1,
+        },
+        // transfer ability to the other living enemies
+        transferAbilities: {
+            belongsToMember: true,
+            name: "transfer abilities",
+            transfer: "endOfTurnEvents"
+        },
 
-
-        // execute (more dmg after 40%)
         // tackle (more damage over 80%)
         // protect (absorb damage)
         // bite (hits harder than attack)
@@ -535,6 +600,21 @@ module.exports = {
                 difficulty: "summoned",
                 element: "normal"
             },
+            demon: {
+                name: "Demon",
+                abilities: ["attack", "attack", "shock", "shock"],
+                buffs: [],
+                hpPerPartyMember: 0,
+                adPerPartyMember: 20,
+                mdPerPartyMember: 20,
+                hp: 5000,
+                attackDmg: 400,
+                magicDmg: 250,
+                armor: 1000,
+                spirit: 1000,
+                difficulty: "summoned",
+                element: "normal"
+            },
             tacoBandit: {
                 name: "Taco Bandit",
                 abilities: ["attack", "attack", "shock", "shock", "orchatasip"],
@@ -547,7 +627,7 @@ module.exports = {
                 magicDmg: 90,
                 armor: 550,
                 spirit: 450,
-                difficulty: "medium",
+                difficulty: "summoned",
                 element: "normal"
             },
             slotsGambler: {
@@ -562,7 +642,7 @@ module.exports = {
                 magicDmg: 90,
                 armor: 350,
                 spirit: 550,
-                difficulty: "medium",
+                difficulty: "summoned",
                 element: "normal"
             },
             angryMobMember: {
@@ -577,7 +657,7 @@ module.exports = {
                 magicDmg: 75,
                 armor: 450,
                 spirit: 370,
-                difficulty: "easy",
+                difficulty: "summoned",
                 element: "normal"
             },
             badChef: {
@@ -595,7 +675,7 @@ module.exports = {
                 magicDmg: 97,
                 armor: 400,
                 spirit: 320,
-                difficulty: "easy",
+                difficulty: "summoned",
                 element: "normal"
             },
             footballPlayer: {
@@ -613,14 +693,14 @@ module.exports = {
                         }
                     }
                 ],
-                hpPerPartyMember: 450,
-                adPerPartyMember: 18,
-                mdPerPartyMember: 18,
-                hp: 550,
+                hpPerPartyMember: 0,
+                adPerPartyMember: 24,
+                mdPerPartyMember: 24,
+                hp: 6400,
                 attackDmg: 120,
                 magicDmg: 120,
-                armor: 650,
-                spirit: 650,
+                armor: 1000,
+                spirit: 1000,
                 difficulty: "summoned",
                 element: "normal"
             }
@@ -891,7 +971,7 @@ module.exports = {
             {
                 name: "Desperado",
                 abilities: [
-                    "attack", "attack", "shoot", "shoot", "slash", "slash", "cripple",
+                    "attack", "attack", "shoot", "shoot", "slash", "slash", "cripple"
                 ],
                 buffs: [
                     {
@@ -957,7 +1037,10 @@ module.exports = {
                         "totemOfDoom50",
                         "totemOfDoom25",
                         "totemOfDoom25",
-                        "totemOfDoom25"
+                        "totemOfDoom25",
+                        "summonDemon",
+                        "tremor",
+                        "electricOrb"
                     ],
                     abilityOrder: [
                         0, 6, 1,0,2, 3, [1,2], 0
@@ -1030,7 +1113,8 @@ module.exports = {
                         "weaken"
                     ],
                     effectsOnDeath: [
-                        "explode"
+                        "explode",
+                        "healAll"
                     ],
                     buffs: [],
                     hp: 2350,
@@ -1400,7 +1484,7 @@ module.exports = {
                                     attackDmgPlus : 95,
                                     magicDmgPlus : 95,
                                     everyNTurns: 2,
-                                    startTurn: 3
+                                    startTurn: 1
                                 }
                             }
                         ],
@@ -1415,8 +1499,8 @@ module.exports = {
                         hp: 24850,
                         adPerPartyMember: 34,
                         mdPerPartyMember: 34,
-                        attackDmg: 530,
-                        magicDmg: 320,
+                        attackDmg: 580,
+                        magicDmg: 420,
                         armor: 2350,
                         spirit: 2350,
                         difficulty: "boss",
@@ -1591,6 +1675,8 @@ module.exports = {
             5: {
                 enemies: [
                     // 3 bosses, each has a special ability
+                    // when one of the bosses dies, the other 2 gain the ability at the current CD of the ability
+                    // all bosses get healed, and dmg gets increased as well
                     {
                         name: "Taco Bandit",
                         abilities: ["attack", "attack", "shock", "shock", "orchatasip"],
@@ -1632,10 +1718,10 @@ module.exports = {
                                 name: "frenzy",
                                 emoji: "😡",
                                 onTurnEnd: {
-                                    attackDmgPlus : 75,
-                                    magicDmgPlus : 75,
-                                    everyNTurns: 2,
-                                    startTurn: 3
+                                    attackDmgPlus : 100,
+                                    magicDmgPlus : 100,
+                                    everyNTurns: 3,
+                                    startTurn: 1
                                 }
                             }
                         ],
@@ -1644,17 +1730,17 @@ module.exports = {
                         ],
                         endOfTurnEvents : [
                             "focus",
-                            "electric orb"
+                            "electricOrb"
                         ],
                         effectsOnDeath: [
                             "healAll"
                         ],
                         hpPerPartyMember: 0,
-                        hp: 9520,
+                        hp: 18000,
                         adPerPartyMember: 34,
                         mdPerPartyMember: 34,
-                        attackDmg: 355,
-                        magicDmg: 245,
+                        attackDmg: 400,
+                        magicDmg: 350,
                         armor: 2350,
                         spirit: 2350,
                         difficulty: "boss",
@@ -1664,17 +1750,17 @@ module.exports = {
                         name: "Disobedient Host",
                         // special ability summons minions - minions last 3 turns and explode after 3 turns
                         abilities: [
-                            "attack", "drain"
+                            "attack", "rockthrow"
                         ],
                         buffs: [
                             {
                                 name: "frenzy",
                                 emoji: "😡",
                                 onTurnEnd: {
-                                    attackDmgPlus : 75,
-                                    magicDmgPlus : 75,
-                                    everyNTurns: 2,
-                                    startTurn: 3
+                                    attackDmgPlus : 100,
+                                    magicDmgPlus : 100,
+                                    everyNTurns: 3,
+                                    startTurn: 2
                                 }
                             }
                         ],
@@ -1689,11 +1775,11 @@ module.exports = {
                             "healAll"
                         ],
                         hpPerPartyMember: 0,
-                        hp: 9520,
+                        hp: 18000,
                         adPerPartyMember: 34,
                         mdPerPartyMember: 34,
-                        attackDmg: 315,
-                        magicDmg: 245,
+                        attackDmg: 380,
+                        magicDmg: 300,
                         armor: 2350,
                         spirit: 2350,
                         difficulty: "boss",
@@ -1710,9 +1796,9 @@ module.exports = {
                                 name: "frenzy",
                                 emoji: "😡",
                                 onTurnEnd: {
-                                    attackDmgPlus : 75,
-                                    magicDmgPlus : 75,
-                                    everyNTurns: 2,
+                                    attackDmgPlus : 100,
+                                    magicDmgPlus : 100,
+                                    everyNTurns: 3,
                                     startTurn: 3
                                 }
                             }
@@ -1729,11 +1815,11 @@ module.exports = {
                             // also reduce the special ability by 1 turn  to the rest, and increase ad, md
                         ],
                         hpPerPartyMember: 0,
-                        hp: 9520,
+                        hp: 18000,
                         adPerPartyMember: 34,
                         mdPerPartyMember: 34,
-                        attackDmg: 365,
-                        magicDmg: 245,
+                        attackDmg: 460,
+                        magicDmg: 330,
                         armor: 2350,
                         spirit: 2350,
                         difficulty: "boss",
