@@ -307,7 +307,7 @@ module.exports.trickOrTreatCommand = function(message){
                         tot: "treat"
                     };
                     
-                    profileDB.updateUserTacosThank(discordUserId, 10, function(updateerr, updateResponse) {
+                    profileDB.updateUserTacosTrickOrTreat(discordUserId, 10, function(updateerr, updateResponse) {
                         if (updateerr){
                             console.log(updateerr);
                         }
