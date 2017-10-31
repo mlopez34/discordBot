@@ -83,7 +83,15 @@ client.on('message', function(message){
         // commands
         if (message.channel.type == "text" && (BOT_CHANNELS.indexOf(message.channel.name) != -1) && !message.author.bot){
             if( commandIs("thank", message )){
-                commands.thankCommand(message);
+                try{
+                    commands.thankCommand(message);
+                }
+                catch(error){
+                    message.channel.send(error);
+                }
+            }
+            else if (commandIs("trickortreat", message)){
+                commands.trickOrTreatCommand(message);
             }
             else if( commandIs("sorry", message )){
                 commands.sorryCommand(message);
