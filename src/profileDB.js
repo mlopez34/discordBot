@@ -57,6 +57,22 @@ module.exports.updateUserTacosThank = function(userId, tacos, cb) {
     });
 }
 
+module.exports.updateUserTacosTrickOrTreat = function(userId, tacos, cb) {
+    var query = 'update ' + config.profileTable + ' set tacos=tacos+$1, lasttrickortreattime=$3 where discordid=$2'
+    var lasttrickortreattime = new Date();
+    //console.log("new last thank: " + lastThank);
+    db.none(query, [tacos, userId, lasttrickortreattime])
+    .then(function () {
+    cb(null, {
+        status: 'success',
+        message: 'added tacos'
+        });
+    })
+    .catch(function (err) {
+        cb(err);
+    });
+}
+
 module.exports.obtainCasserole = function(userId, cb) {
     var query = 'update ' + config.profileTable + ' set casserole=true where discordid=$1'
     db.none(query, [userId])
