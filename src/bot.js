@@ -90,9 +90,11 @@ client.on('message', function(message){
                     message.channel.send(error);
                 }
             }
+            /* SEASONAL
             else if (commandIs("trickortreat", message)){
                 commands.trickOrTreatCommand(message);
             }
+            */
             else if( commandIs("sorry", message )){
                 commands.sorryCommand(message);
             }

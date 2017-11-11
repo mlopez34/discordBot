@@ -2,38 +2,45 @@ module.exports = {
 
     rpgAbilities: {
         attack : {
-            name: "attack",
+            name: "Attack",
+            abilityId: "attack",
             dmg: 50,
             adPercentage: 1,
             type: "physical"
         },
         crush : {
-            name: "crush",
+            name: "Crush",
+            abilityId: "crush",
             dmg: 50,
             adPercentage: 1.35,
             type: "physical"
         },
         tacoheal : {
-            name: "heal",
+            name: "Heal",
+            abilityId: "tacoheal",
             heal: 70,
             mdPercentage: 1.37
         },
         replenish : {
-            name: "replenish",
+            name: "Replenish",
+            abilityId: "replenish",
+            special: "remove death",
             heal: 450,
             mdPercentage: 1.8,
             limitDefensive : true
         },
         bandaid : {
-            name: "bandaid",
+            name: "Bandaid",
+            abilityId: "bandaid",
             heal: 20,
             mdPercentage: 0.5,
             special: "remove status"
         },
         orchatasip: {
-            name:"orchata sip",
+            name:"Orchata Sip",
+            abilityId: "orchatasip",
             hot: {
-                name: "orchata sip",
+                name: "Orchata Sip",
                 heal: 50,
                 emoji: "🥛",
                 mdPercentage: 1.5,
@@ -44,7 +51,8 @@ module.exports = {
             }
         },
         elixir: {
-            name: "elixir",
+            name: "Elixir",
+            abilityId: "elixir",
             heal: 35,
             cooldown: 0,
             maxcooldown: 1,
@@ -53,7 +61,8 @@ module.exports = {
             targets: "friendly"
         },
         megaelixir: {
-            name: "megaelixir",
+            name: "Mega Elixir",
+            abilityId: "megaelixir",
             heal: 200,
             specialCharge: 1,
             mdPercentage: 1,
@@ -62,10 +71,11 @@ module.exports = {
             limitDefensive: true
         },
         poke: {
-            name:"poke",
+            name:"Poke",
+            abilityId: "poke",
             type:"physical",
             dot: {
-                name: "poke",
+                name: "Poke",
                 type:"physical",
                 dmg: 75,
                 adPercentage: 1.15,
@@ -77,10 +87,11 @@ module.exports = {
             }
         },
         curse: {
-            name:"curse",
+            name:"Curse",
+            abilityId: "curse",
             type:"shadow",
             dot: {
-                name: "curse",
+                name: "Curse",
                 type:"shadow",
                 dmg: 75,
                 mdPercentage: 1.15,
@@ -92,30 +103,38 @@ module.exports = {
             }
         },
         bomb: {
-            name:"bomb",
+            name:"Bomb",
+            abilityId: "bomb",
             type:"fire",
             dot: {
-                name: "bomb",
+                name: "Bomb",
                 type:"fire",
                 dmg: 1,
-                mdPercentage: 0.25,
+                mdPercentage: 1,
                 emoji: "💣",
                 dmgOnDotApply: false,
                 turnsToExpire: 6,
                 dmgOnDotExpire: true,
-                dmgOnExpire: 750,
+                dmgOnExpire: 550,
                 dmgOnDotRemove: true,
                 mdPercentageOnRemove: 0.25,
-                dmgOnRemove: 75,
+                dmgOnRemove: 100,
             }
         },
         decay: {
-            name:"decay",
+            name:"Decay",
+            abilityId: "decay",
             type:"shadow",
+            abilityId: "decay",
+            processAbility: true,
+            belongsToMember: true,
+            everyNTurns: 7,
+            afterNTurns: 1,
+            currentTurn: 0,
             dot: {
-                name: "decay",
+                name: "Decay",
                 type:"shadow",
-                dmg: 25,
+                dmg: 65,
                 areawide: true,
                 mdPercentage: 1,
                 emoji: "🌑",
@@ -126,51 +145,63 @@ module.exports = {
             }
         },
         tacowall: {
+            name: "Taco Wall",
+            abilityId: "tacowall",
             buff: {
-                name: "taco wall",
+                name: "Taco Wall",
                 emoji : "🏛",
                 affects: ["spirit"],
                 multiplier: 2
             }
         },
         shield: {
+            name: "Shield",
+            abilityId: "shield",
             buff: {
-                name: "shield",
+                name: "Shield",
                 emoji: "🛡️",
                 affects: ["armor"],
                 multiplier: 2
             }
         },
         barrier: {
+            name: "Barrier",
+            abilityId: "barrier",
             buff: {
-                name: "barrier",
+                name: "Barrier",
                 emoji: "🚧",
                 affects: ["spirit"],
                 additive: 650
             }
         },
         protect: {
+            name: "Protect",
+            abilityId: "protect",
             buff: {
-                name: "protect",
+                name: "Protect",
                 emoji: "🥅",
                 affects: ["armor"],
                 additive: 650
             }
         },
         empower: {
+            name: "Empower",
+            abilityId: "empower",
             buff: {
-                name: "empower",
+                name: "Empower",
                 emoji: "💪🏼",
                 affects: ["attackDmg", "magicDmg"],
                 multiplier: 1.3
             }
         },
         flameblast: {
+            name: "Flame Blast",
+            abilityId: "flameblast",
             dmg: 50,
             mdPercentage: 1,
             type: "fire",
             dot: {
-                name: "burning",
+                name: "Burning",
                 dmg: 20,
                 mdPercentage: .9,
                 type: "fire",
@@ -182,11 +213,13 @@ module.exports = {
             }
         },
         foodpoisoning: {
+            name: "Food Poisoning",
+            abilityId: "foodpoisoning",
             dmg: 50,
             mdPercentage: 1,
             type: "poison",
             dot: {
-                name: "food poisoning",
+                name: "Food Poisoning",
                 dmg: 20,
                 mdPercentage: .8,
                 emoji : "🤢",
@@ -198,6 +231,8 @@ module.exports = {
             }
         },
         iceshards: {
+            name: "Ice Shards",
+            abilityId: "iceshards",
             dmg: 45,
             mdPercentage: 0.6,
             type: "ice",
@@ -205,7 +240,8 @@ module.exports = {
             targets: "enemy"
         },
         slash: {
-            name: "slash",
+            name: "Slash",
+            abilityId: "slash",
             dmg: 45,
             adPercentage: 0.6,
             type: "physical",
@@ -213,7 +249,8 @@ module.exports = {
             targets: "enemy"
         },
         shoot: {
-            name: "shoot",
+            name: "Shoot",
+            abilityId: "shoot",
             dmg: 125,
             charges: 4,
             maxcharges: 4,
@@ -221,7 +258,8 @@ module.exports = {
             type: "physical"
         },
         shock: {
-            name: "shock",
+            name: "Shock",
+            abilityId: "shock",
             dmg: 120,
             mdPercentage: 1.2,
             type: "electric",
@@ -229,7 +267,8 @@ module.exports = {
             selfdamage: 15
         },
         headshot: {
-            name: "headshot",
+            name: "Headshot",
+            abilityId: "headshot",
             limitOffensive: true,
             dmg: 480,
             adPercentage: 2,
@@ -237,7 +276,8 @@ module.exports = {
             
         },
         execute: {
-            name: "execute",
+            name: "Execute",
+            abilityId: "execute",
             limitOffensive: true,
             dmg: 480,
             adPercentage: 2,
@@ -245,7 +285,8 @@ module.exports = {
             
         },
         storm: {
-            name: "storm",
+            name: "Storm",
+            abilityId: "storm",
             limitOffensive: true,
             dmg: 120,
             mdPercentage: 1.5,
@@ -255,7 +296,8 @@ module.exports = {
             
         },
         earthquake: {
-            name: "earthquake",
+            name: "Earthquake",
+            abilityId: "earthquake",
             limitOffensive: true,
             dmg: 120,
             mdPercentage: 1.5,
@@ -266,24 +308,27 @@ module.exports = {
         },
         rockthrow: {
             dmg: 45,
+            abilityId: "rockthrow",
             type: "physical",
             adPercentage: 0.8,
             special: "warm up",
+            name: "Rock Throw",
             buff: {
                 selfbuff: true,
                 stacksOfWarmUp: 1,
                 emoji: "🤾",
-                name: "warm up",
+                name: "Warm Up",
                 maxStacks: 4,
                 adPercentageAtMaxStacks: 1.3,
                 atMaxStacksDealDamage: 175
             }
         },
         drain: {
-            name: "drain",
+            name: "Drain",
+            abilityId: "drain",
             type: "physical",
             special: {
-                name: "drain",
+                name: "Drain",
                 adPercentage: 0.9,
                 dmg: 40,
                 heal: 20,
@@ -292,10 +337,11 @@ module.exports = {
             }
         },
         guac: {
-            name: "guac",
+            name: "Guac",
+            abilityId: "guac",
             type: "shadow",
             special: {
-                name: "guac",
+                name: "Guac",
                 mdPerDot: 0.2,
                 mdPercentage: 0.8,
                 dmg: 50
@@ -303,9 +349,10 @@ module.exports = {
         },
         haste: {
             passive: true,
-            name: "haste",
+            abilityId: "haste",
+            name: "Haste",
             buff: {
-                name: "haste",
+                name: "Haste",
                 emoji: "💨"
             }
         },
@@ -314,12 +361,13 @@ module.exports = {
         echo: {
             dmgaura: true,
             belongsToEvent: true,
-            name: "echo",
+            name: "Echo",
+            abilityId: "echo",
             areawidedmg: {
                 endOfTurnAura: true,
                 hitsEveryNTurn: 4,
                 dmgPerTurn: 22,
-                name: "echo",
+                name: "Echo",
                 dmg: 85,
                 type: "physical"
             }
@@ -329,10 +377,11 @@ module.exports = {
             everyNTurns: 2,
             currentTurn: 0,
             belongsToMember: true,
-            name: "haunt",
+            name: "Haunt",
+            abilityId: "haunt",
             areawidedmg: {
                 areawide: true,
-                name: "haunt",
+                name: "Haunt",
                 dmg: 500,
                 adPercentage: 0.1,
                 type: "physical"
@@ -343,13 +392,14 @@ module.exports = {
         explode: {
             onDeathEffect: true,
             effectDone: false,
-            name: "explode",
+            name: "Explode",
+            abilityId: "explode",
             areawidedmg : {
                 dmgondeath: true,
                 areawide: true,
                 dmg: 188,
                 mdPercentage: .2,
-                name: "explode",
+                name: "Explode",
                 type: "fire"
             }
         },
@@ -447,15 +497,16 @@ module.exports = {
         // aoe hit for ch 5
         tremor: {
             belongsToMember: true,
-            name: "tremor",
+            name: "Tremor",
+            abilityId: "tremor",
             everyNTurns: 4,
             afterNTurns: 2,
             currentTurn: 0,
             areawidedmg: {
                 areawide: true,
-                name: "tremor",
-                dmg: 350,
-                mdPercentage: 0.5,
+                name: "Tremor",
+                dmg: 100,
+                mdPercentage: 0.75,
                 type: "earth"
             }
         },
@@ -465,9 +516,9 @@ module.exports = {
             belongsToMember: true,
             processAbility: true,
             ignoreFocus: true,
-            name: "electric orb",
-            dmg: 200,
-            mdPercentage: 1,
+            name: "Electric Orb",
+            dmg: 150,
+            mdPercentage: 0.75,
             type: "electric",
             everyNTurns: 4,
             afterNTurns: 1,
@@ -476,37 +527,41 @@ module.exports = {
                 status: true,
                 abilityId: "electricOrb",
                 untargettable: true,
-                name: "electric orb",
+                name: "Electric Orb",
                 emoji: "⚡",
-                affects: ["spirit"],
-                multiplier: 0.7,
-                turnsToExpire: 10
+                mdPercentage: 1.3,
+                turnsToExpire: 1,
+                dmgOnStatusExpire: true,
+                dmgOnExpire: 300
             }
         },
         // summon demon for ch 5
         summonDemon: {
-            name: "summon demon",
+            name: "Summon Demon",
+            abilityId: "summonDemon",
             belongsToMember: true,
             everyNTurns: 4,
             afterNTurns: 3,
             currentTurn: 0,
             summon: {
                 enemy: "demon",
-                attackDmg: 400,
-                magicDmg: 400
+                attackDmg: 180,
+                magicDmg: 180
                 
             }
         },
         // heal all enemies when one dies in ch 5
         healAll: {
             belongsToMember: true,
-            name: "heal all",
+            name: "Heal All",
+            abilityId: "healAll",
             heal: 20000,
             areawide: true,
             mdPercentage: 1,
         },
         // transfer ability to the other living enemies
         transferAbilities: {
+            abilityId: "transferAbilities",
             belongsToMember: true,
             name: "transfer abilities",
             transfer: "endOfTurnEvents"
@@ -529,45 +584,52 @@ module.exports = {
         // 100% enrage
 
         revive: {
-            special: "remove death"
+            name: "Revive",
+            special: "remove death",
+            cooldown: 0,
+            maxcooldown: 1
         },
         focus: {
-            name: "focus",
+            name: "Focus",
             belongsToMember: true,
             status: {
                 focusedBy: "",
-                name: "focus",
+                name: "Focus",
                 emoji: "👁️",
                 special: "focus member"
             }
         },
         freeze: {
+            name: "Freeze",
             status: {
-                name: "frozen",
+                name: "Frozen",
                 emoji: "❄️",
                 affects: ["armor"],
                 multiplier: 0.7
             }
         },
         scold: {
+            name: "Scold",
             status: {
-                name: "scold",
+                name: "Scold",
                 emoji: "☔️",
                 affects: ["spirit"],
                 multiplier: 0.7
             }
         },
         cripple: {
+            name: "Cripple",
             status: {
-                name: "crippled",
+                name: "Crippled",
                 emoji: "🤕",
                 affects: ["attackDmg"],
                 multiplier: 0.8
             }
         },
         weaken: {
+            name: "Weaken",
             status: {
-                name: "weakened",
+                name: "Weakened",
                 emoji: "😵 ",
                 affects: ["magicDmg"],
                 multiplier: 0.8
@@ -607,11 +669,11 @@ module.exports = {
                 hpPerPartyMember: 0,
                 adPerPartyMember: 20,
                 mdPerPartyMember: 20,
-                hp: 5000,
-                attackDmg: 400,
-                magicDmg: 250,
-                armor: 1000,
-                spirit: 1000,
+                hp: 4000,
+                attackDmg: 150,
+                magicDmg: 150,
+                armor: 400,
+                spirit: 400,
                 difficulty: "summoned",
                 element: "normal"
             },
@@ -1448,7 +1510,7 @@ module.exports = {
                         hpPerPartyMember: 220,
                         adPerPartyMember: 18,
                         mdPerPartyMember: 14,
-                        hp: 480,
+                        hp: 1380,
                         attackDmg: 80,
                         magicDmg: 120,
                         armor: 350,
@@ -1463,7 +1525,7 @@ module.exports = {
                         hpPerPartyMember: 140,
                         adPerPartyMember: 14,
                         mdPerPartyMember: 18,
-                        hp: 640,
+                        hp: 1610,
                         attackDmg: 90,
                         magicDmg: 90,
                         armor: 350,
@@ -1474,7 +1536,7 @@ module.exports = {
                     {
                         name: "Roman Soldier",
                         abilities: [
-                            "attack", "crush", "shock",  "decay"
+                            "attack", "crush", "shock"
                         ],
                         buffs: [
                             {
@@ -1489,11 +1551,12 @@ module.exports = {
                             }
                         ],
                         abilityOrder: [
-                            0, 3, [1, 2], 0, 0, [1, 2], 0, 0, [1, 2]
+                            0, 0, [1, 2], 0, 0, [1, 2], 0, 0, [1, 2]
                         ],
                         endOfTurnEvents : [
                             "echo",
-                            "focus"
+                            "focus",
+                            "decay"
                         ],
                         hpPerPartyMember: 0,
                         hp: 24850,
@@ -1516,7 +1579,7 @@ module.exports = {
                         hpPerPartyMember: 230,
                         adPerPartyMember: 14,
                         mdPerPartyMember: 14,
-                        hp: 420,
+                        hp: 1380,
                         attackDmg: 80,
                         magicDmg: 120,
                         armor: 350,
@@ -1531,7 +1594,7 @@ module.exports = {
                         hpPerPartyMember: 140,
                         adPerPartyMember: 14,
                         mdPerPartyMember: 14,
-                        hp: 640,
+                        hp: 1610,
                         attackDmg: 90,
                         magicDmg: 90,
                         armor: 350,
@@ -1575,7 +1638,7 @@ module.exports = {
                         adPerPartyMember: 34,
                         mdPerPartyMember: 34,
                         attackDmg: 365,
-                        magicDmg: 245,
+                        magicDmg: 345,
                         armor: 2350,
                         spirit: 2350,
                         difficulty: "boss",
@@ -1600,9 +1663,9 @@ module.exports = {
                         ],
                         abilityOrder: [
                             0, 1, 0, [2, 3], 4, 1, 1, 0, [2, 3], 4, 1, 1, 0, [2, 3], 4,
-                            1, 1, 1, 0, [2, 3], 4, 1, 1, 1, 0, [2, 3], 4, 1, 1, 1, 1, 0, [2, 3], 4,
-                            1, 1, 1, 1, 0, [2, 3], 4, 1, 1, 1, 1, 1, 0, [2, 3], 4, 1, 1, 1, 1, 1,
-                            0, 0, 5
+                            1, 1, 0, [2, 3], 4, 1, 1, 0, [2, 3], 4, 1, 1, 0, [2, 3], 4,
+                            1, 1, 0, [2, 3], 4, 1, 1, 0, [2, 3], 4, 1, 1, 0, [2, 3], 4,
+                            1, 1, 0, [2, 3], 4, 1, 1, 0, [2, 3], 4, 1, 1, 0, 0, 5
                         ],
                         endOfTurnEvents : [
                             "echo",
@@ -1614,8 +1677,8 @@ module.exports = {
                         hp: 14230,
                         adPerPartyMember: 27,
                         mdPerPartyMember: 27,
-                        attackDmg: 260,
-                        magicDmg: 329,
+                        attackDmg: 360,
+                        magicDmg: 429,
                         armor: 2350,
                         spirit: 2350,
                         difficulty: "boss",
@@ -1625,10 +1688,10 @@ module.exports = {
                         name: "Slots Gambler",
                         abilities: ["attack", "attack", "elixir", "elixir", "orchatasip"],
                         buffs: [],
-                        hpPerPartyMember: 180,
+                        hpPerPartyMember: 280,
                         adPerPartyMember: 14,
                         mdPerPartyMember: 14,
-                        hp: 640,
+                        hp: 1640,
                         attackDmg: 90,
                         magicDmg: 90,
                         armor: 350,
@@ -1640,10 +1703,10 @@ module.exports = {
                         name: "Bad Chef",
                         abilities: ["attack", "attack", "foodpoisoning", "foodpoisoning", "barrier"],
                         buffs: [],
-                        hpPerPartyMember: 190,
+                        hpPerPartyMember: 290,
                         adPerPartyMember: 9,
                         mdPerPartyMember: 9,
-                        hp: 490,
+                        hp: 1490,
                         effectsOnDeath: [
                             "explode"
                         ],
@@ -1658,10 +1721,10 @@ module.exports = {
                         name: "Angry Mob Member",
                         abilities: ["attack", "attack", "foodpoisoning", "iceshards", "iceshards", "cripple"],
                         buffs: [],
-                        hpPerPartyMember: 190,
+                        hpPerPartyMember: 290,
                         adPerPartyMember: 9,
                         mdPerPartyMember: 9,
-                        hp: 480,
+                        hp: 1480,
                         attackDmg: 80,
                         magicDmg: 75,
                         armor: 450,
@@ -1681,10 +1744,10 @@ module.exports = {
                         name: "Taco Bandit",
                         abilities: ["attack", "attack", "shock", "shock", "orchatasip"],
                         buffs: [],
-                        hpPerPartyMember: 230,
+                        hpPerPartyMember: 210,
                         adPerPartyMember: 14,
                         mdPerPartyMember: 14,
-                        hp: 550,
+                        hp: 1550,
                         attackDmg: 120,
                         magicDmg: 90,
                         armor: 550,
@@ -1696,10 +1759,10 @@ module.exports = {
                         name: "Taco Bandit",
                         abilities: ["attack", "attack", "shock", "shock", "orchatasip"],
                         buffs: [],
-                        hpPerPartyMember: 230,
+                        hpPerPartyMember: 210,
                         adPerPartyMember: 14,
                         mdPerPartyMember: 14,
-                        hp: 550,
+                        hp: 1550,
                         attackDmg: 120,
                         magicDmg: 90,
                         armor: 550,
@@ -1733,13 +1796,14 @@ module.exports = {
                             "electricOrb"
                         ],
                         effectsOnDeath: [
-                            "healAll"
+                            "healAll",
+                            "transferAbilities"
                         ],
                         hpPerPartyMember: 0,
                         hp: 18000,
                         adPerPartyMember: 34,
                         mdPerPartyMember: 34,
-                        attackDmg: 400,
+                        attackDmg: 410,
                         magicDmg: 350,
                         armor: 2350,
                         spirit: 2350,
@@ -1772,14 +1836,15 @@ module.exports = {
                             "summonDemon"
                         ],
                         effectsOnDeath: [
-                            "healAll"
+                            "healAll",
+                            "transferAbilities"
                         ],
                         hpPerPartyMember: 0,
                         hp: 18000,
                         adPerPartyMember: 34,
                         mdPerPartyMember: 34,
                         attackDmg: 380,
-                        magicDmg: 300,
+                        magicDmg: 380,
                         armor: 2350,
                         spirit: 2350,
                         difficulty: "boss",
@@ -1811,15 +1876,16 @@ module.exports = {
                             "tremor"
                         ],
                         effectsOnDeath: [
-                            "healAll"
+                            "healAll",
+                            "transferAbilities"
                             // also reduce the special ability by 1 turn  to the rest, and increase ad, md
                         ],
                         hpPerPartyMember: 0,
                         hp: 18000,
                         adPerPartyMember: 34,
                         mdPerPartyMember: 34,
-                        attackDmg: 460,
-                        magicDmg: 330,
+                        attackDmg: 360,
+                        magicDmg: 290,
                         armor: 2350,
                         spirit: 2350,
                         difficulty: "boss",
@@ -1827,6 +1893,46 @@ module.exports = {
                     },
                 ],
                 points: 181
+            },
+            6: {
+                enemies: [
+                    {
+                        name: "A182-Type2",
+                        abilities: [
+                            "attack", "crush"
+                        ],
+                        buffs: [
+                            {
+                                name: "frenzy",
+                                emoji: "😡",
+                                onTurnEnd: {
+                                    attackDmgPlus : 100,
+                                    magicDmgPlus : 100,
+                                    everyNTurns: 3,
+                                    startTurn: 1
+                                }
+                            }
+                        ],
+                        abilityOrder: [
+                            1, 0, 0, 0
+                        ],
+                        endOfTurnEvents : [
+                            "focus",
+                        ],
+                        effectsOnDeath: [
+                        ],
+                        hpPerPartyMember: 0,
+                        hp: 50000,
+                        adPerPartyMember: 34,
+                        mdPerPartyMember: 34,
+                        attackDmg: 2000,
+                        magicDmg: 1350,
+                        armor: 2350,
+                        spirit: 2350,
+                        difficulty: "boss",
+                        element: "normal"
+                    }
+                ]
             }
         }
     }    
