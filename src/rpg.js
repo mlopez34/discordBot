@@ -5,7 +5,7 @@ var profileDB = require("./profileDB.js");
 var config = require("./config");
 var rpglib = require("./rpglib");
 var moment = require("moment");
-var RPG_COOLDOWN_HOURS = 3
+var RPG_COOLDOWN_HOURS = 0
 var activeRPGEvents = {};
 var activeRPGItemIds = {};
 var usersInRPGEvents = {};
@@ -21,7 +21,7 @@ module.exports.rpgInitialize = function(message, special){
     team.push(message.author);
 
     users.forEach(function(user){
-        if (team.length < TEAM_MAX_LENGTH && discordUserId != user.id){
+        if (team.length < TEAM_MAX_LENGTH ){//&& discordUserId != user.id){
             team.push(user);
         }
     })
@@ -533,14 +533,14 @@ module.exports.rpgReady = function(message, itemsAvailable){
                                             membersInParty["rpg-" + partyMember.id] = {
                                                 id: partyMember.id,
                                                 name: partyMember.username,
-                                                hp: 250 + (27 *  partyMemberStats.level ) + partyMemberHpPlus,
+                                                hp: 250000 + (27 *  partyMemberStats.level ) + partyMemberHpPlus,
                                                 attackDmg: 10 + (9 * partyMemberStats.level) + partyMemberAttackDmgPlus,
                                                 magicDmg:  10 + (9 * partyMemberStats.level) + partyMemberMagicDmgPlus,
                                                 armor: 5 + (partyMemberStats.level * partyMemberStats.level) + partyMemberArmorPlus,
                                                 spirit: 5 + (partyMemberStats.level * partyMemberStats.level) + partyMemberSpiritPlus,
                                                 luck: 1 + partyMemberLuckPlus,
                                                 abilitiesMap : {},
-                                                abilities: ["attack"],
+                                                abilities: ["attack", "cripple"],
                                                 passiveAbilities: [],
                                                 statuses: [],
                                                 statBuffs: {
@@ -1105,7 +1105,7 @@ function processRpgTurn(message, event){
     for ( var index = event.memberTurnAbilities.length - 1; index >= 0; index--){
         var abilityObject = event.memberTurnAbilities[index];
         for (var i in event.membersInParty["rpg-"+abilityObject.user].buffs){
-            if (event.membersInParty["rpg-"+abilityObject.user].buffs[i].name == "haste"){
+            if (event.membersInParty["rpg-"+abilityObject.user].buffs[i].name == "Haste"){
                 order.push(abilityObject);
                 event.memberTurnAbilities.splice(index, 1);
             }
@@ -1531,7 +1531,7 @@ function effectsOnTurnEnd(event){
                         }
 
                         // event is focus
-                        if ( event.enemies[enemy].endOfTurnEvents[index].name == "focus" ){
+                        if ( event.enemies[enemy].endOfTurnEvents[index].name == "Focus" ){
                             // check to see that there is no focus on any party member, if there isnt, add focus to whoever has the highest hp (for now)
                             var focusing = false;
                             var maxHp = 0;
@@ -1550,7 +1550,7 @@ function effectsOnTurnEnd(event){
                                         targetName = memberBeingChecked.name
                                     }
                                     for (var statusToCheck in memberBeingChecked.statuses){
-                                        if (memberBeingChecked.statuses[statusToCheck] && memberBeingChecked.statuses[statusToCheck].name == "focus"){
+                                        if (memberBeingChecked.statuses[statusToCheck] && memberBeingChecked.statuses[statusToCheck].name == "Focus"){
                                             if (memberBeingChecked.statuses[statusToCheck].focusedBy == enemy){
                                                 focusing = true;
                                             }
@@ -1635,7 +1635,7 @@ function effectsOnTurnEnd(event){
                                                         console.log("ignoring focus for ability")
                                                     }else{
                                                         // check if someone has focus on them if they do then the target should be the focused person 
-                                                        if ( event.membersInParty[idOfMemberBeingChecked].statuses[statusToCheck].name == "focus"
+                                                        if ( event.membersInParty[idOfMemberBeingChecked].statuses[statusToCheck].name == "Focus"
                                                             && event.membersInParty[idOfMemberBeingChecked].statuses[statusToCheck].focusedBy == enemy){
                                                             //target roll should be 
                                                             targetMember = event.members[member].id;
@@ -2042,15 +2042,15 @@ function effectsOnDeath(event, member){
                         event.enemies[enemy].endOfTurnEvents.forEach(function(eotEffect){
                             // improve the effect
                             var rpgAbility = eotEffect;
-                            if (rpgAbility.name == "summon demon"){
+                            if (rpgAbility.name == "Summon Demon"){
                                 rpgAbility.summon.attackDmg = rpgAbility.summon.attackDmg * 2;
                                 rpgAbility.summon.magicDmg = rpgAbility.summon.magicDmg * 2;
                                 rpgAbility.everyNTurns = rpgAbility.everyNTurns - 1;
-                            }else if (rpgAbility.name == "electric orb"){
+                            }else if (rpgAbility.name == "Electric Orb"){
                                 rpgAbility.dmg = rpgAbility.dmg * 2;
                                 rpgAbility.status.dmgOnExpire = rpgAbility.status.dmgOnExpire * 2;
                                 rpgAbility.everyNTurns = rpgAbility.everyNTurns - 1;
-                            }else if (rpgAbility.name == "tremor"){
+                            }else if (rpgAbility.name == "Tremor"){
                                 rpgAbility.areawidedmg.dmg = rpgAbility.areawidedmg.dmg * 2;
                                 rpgAbility.everyNTurns = rpgAbility.everyNTurns - 1;
                             }
@@ -3426,7 +3426,7 @@ function processAbility(abilityObject, event){
             if (event.membersInParty["rpg-"+targetToCheck]){
                 var targetToCheck = "rpg-"+targetToCheck
                 for (var buff in event.membersInParty[targetToCheck].buffs){
-                    if (event.membersInParty[targetToCheck].buffs[buff].name == "warm up" ){
+                    if (event.membersInParty[targetToCheck].buffs[buff].name == "Warm Up" ){
                         var stacksOfWarmUp = event.membersInParty[targetToCheck].buffs[buff].stacksOfWarmUp ? event.membersInParty[targetToCheck].buffs[buff].stacksOfWarmUp : 0;
                         if (stacksOfWarmUp >= rpgAbility.buff.maxStacks){
                             // damage is atMaxStacksDealDamage
@@ -3467,7 +3467,7 @@ function processAbility(abilityObject, event){
             else if(event.enemies[targetToCheck]){
                 // enemy casted the rock throw
                 for (var buff in event.enemies[targetToCheck].buffs){
-                    if (event.enemies[targetToCheck].buffs[buff].name == "warm up" ){
+                    if (event.enemies[targetToCheck].buffs[buff].name == "Warm Up" ){
                         var stacksOfWarmUp = event.enemies[targetToCheck].buffs[buff].stacksOfWarmUp ? event.enemies[targetToCheck].buffs[buff].stacksOfWarmUp : 0;
                         if (stacksOfWarmUp >= rpgAbility.buff.maxStacks){
                             // damage is atMaxStacksDealDamage
@@ -3818,8 +3818,8 @@ function enemiesUseAbilities(event){
                 && (rpgAbilities[abilityPicked].dmg
                 || rpgAbilities[abilityPicked].dot
                 || rpgAbilities[abilityPicked].status
-                || rpgAbilities[abilityPicked].name == "guac"
-                || rpgAbilities[abilityPicked].name == "drain")){
+                || rpgAbilities[abilityPicked].name == "Guac"
+                || rpgAbilities[abilityPicked].name == "Drain")){
                 // target SHOULD be the membersinparty
 
                 var validTarget = false;
@@ -3835,7 +3835,7 @@ function enemiesUseAbilities(event){
                             var idOfMemberBeingChecked = "rpg-" + event.members[member].id;
                             for (var statusToCheck in event.membersInParty[idOfMemberBeingChecked].statuses){
                                 // check if someone has focus on them if they do then the target should be the focused person 
-                                if ( event.membersInParty[idOfMemberBeingChecked].statuses[statusToCheck].name == "focus"
+                                if ( event.membersInParty[idOfMemberBeingChecked].statuses[statusToCheck].name == "Focus"
                                     && event.membersInParty[idOfMemberBeingChecked].statuses[statusToCheck].focusedBy == enemy){
                                     //target roll should be 
                                     targetMember = event.members[member].id;
