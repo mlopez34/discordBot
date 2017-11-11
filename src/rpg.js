@@ -5,7 +5,7 @@ var profileDB = require("./profileDB.js");
 var config = require("./config");
 var rpglib = require("./rpglib");
 var moment = require("moment");
-var RPG_COOLDOWN_HOURS = 0
+var RPG_COOLDOWN_HOURS = 3
 var activeRPGEvents = {};
 var activeRPGItemIds = {};
 var usersInRPGEvents = {};
@@ -21,7 +21,7 @@ module.exports.rpgInitialize = function(message, special){
     team.push(message.author);
 
     users.forEach(function(user){
-        if (team.length < TEAM_MAX_LENGTH ){//&& discordUserId != user.id){
+        if (team.length < TEAM_MAX_LENGTH && discordUserId != user.id){
             team.push(user);
         }
     })
@@ -533,14 +533,14 @@ module.exports.rpgReady = function(message, itemsAvailable){
                                             membersInParty["rpg-" + partyMember.id] = {
                                                 id: partyMember.id,
                                                 name: partyMember.username,
-                                                hp: 250000 + (27 *  partyMemberStats.level ) + partyMemberHpPlus,
+                                                hp: 250 + (27 *  partyMemberStats.level ) + partyMemberHpPlus,
                                                 attackDmg: 10 + (9 * partyMemberStats.level) + partyMemberAttackDmgPlus,
                                                 magicDmg:  10 + (9 * partyMemberStats.level) + partyMemberMagicDmgPlus,
                                                 armor: 5 + (partyMemberStats.level * partyMemberStats.level) + partyMemberArmorPlus,
                                                 spirit: 5 + (partyMemberStats.level * partyMemberStats.level) + partyMemberSpiritPlus,
                                                 luck: 1 + partyMemberLuckPlus,
                                                 abilitiesMap : {},
-                                                abilities: ["attack", "cripple"],
+                                                abilities: ["attack"],
                                                 passiveAbilities: [],
                                                 statuses: [],
                                                 statBuffs: {
