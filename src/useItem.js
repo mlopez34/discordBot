@@ -11,13 +11,13 @@ module.exports.useRock = function(message, mentionedUserId, rockToUse, tacosInUs
     if (successThrowRockRoll > 1){
         knockTacoOff = true
     }
-    console.log(successThrowRockRoll)
+    // console.log(successThrowRockRoll)
     // get the mentionedUser's inventory
     if (mentionedUserId && knockTacoOff){
         profileDB.getUserProfileData( mentionedUserId, function(err, getProfileResponse) {
             if(err){
                  // user does not exist
-                 console.log(err);
+                 // console.log(err);
                  cb(err);
             }
             else{
@@ -26,18 +26,18 @@ module.exports.useRock = function(message, mentionedUserId, rockToUse, tacosInUs
                 if (protection && protection > 0){
                     profileDB.updateUserProtect(mentionedUserId, -1, protection, function(updateerr, updateResponse) {
                         if (updateerr){
-                            console.log(updateerr);
+                            // console.log(updateerr);
                             cb(updateerr);
                         }
                         else{
-                            console.log(updateResponse);
+                            // console.log(updateResponse);
                             profileDB.updateItemStatus(rockToUse.id, "used", function(updateRockStatusErr, updateRockStatusRes){
                                 if (updateRockStatusErr){
-                                    console.log(updateRockStatusErr);
+                                    // console.log(updateRockStatusErr);
                                     cb(updateRockStatusErr);
                                 }
                                 else{
-                                    console.log(updateRockStatusRes);
+                                    // console.log(updateRockStatusRes);
                                     cb(null, "protection")
                                 }
                             })
@@ -50,19 +50,19 @@ module.exports.useRock = function(message, mentionedUserId, rockToUse, tacosInUs
                     if (getProfileResponse.data.tacos > 0){
                         profileDB.updateUserTacos(mentionedUserId, -1, function(updateerr, updateResponse) {
                             if (updateerr){
-                                console.log(updateerr);
+                                // console.log(updateerr);
                                 cb(updateerr);
                             }
                             else{
-                                console.log(updateResponse);
+                                // console.log(updateResponse);
                                 // update users Inventory - remove a rock - mark the rock as used
                                 profileDB.updateItemStatus(rockToUse.id, "used", function(updateRockStatusErr, updateRockStatusRes){
                                     if (updateRockStatusErr){
-                                        console.log(updateRockStatusErr);
+                                        // console.log(updateRockStatusErr);
                                         cb(updateRockStatusErr);
                                     }
                                     else{
-                                        console.log(updateRockStatusRes);
+                                        // console.log(updateRockStatusRes);
                                         cb(null, "success")
                                     }
                                 })
@@ -77,7 +77,7 @@ module.exports.useRock = function(message, mentionedUserId, rockToUse, tacosInUs
         })
     }
     else{
-        console.log(successThrowRockRoll)
+        // console.log(successThrowRockRoll)
         cb("failed")
     }
 }
@@ -87,30 +87,30 @@ module.exports.usePieceOfWood = function(message, discordUserId, piecesOfWoodToU
     if (piecesOfWoodToUse.length == 5){
         profileDB.getUserProfileData(discordUserId, function(getProfileErr, getProfileRes){
             if (getProfileErr){
-                console.log(getProfileErr);
+                // console.log(getProfileErr);
             }
             else{
                 var protection = getProfileRes.data.protect;
-                console.log("protection " + protection);
+                // console.log("protection " + protection);
                 if (protection == null){
-                    console.log("protection is null!")
+                    // console.log("protection is null!")
                 }
                 // update protect for the user
                 profileDB.updateUserProtect(discordUserId, 3, protection, function(updateerr, updateResponse) {
                     if (updateerr){
-                        console.log(updateerr);
+                        // console.log(updateerr);
                         cb(updateerr);
                     }
                     else{
-                        console.log(updateResponse);
+                        // console.log(updateResponse);
                         // update user inventory
                         profileDB.bulkUpdateItemStatus(piecesOfWoodToUse, "used", function(updateBulkErr, updateBulkRes){
                             if (updateBulkErr){
-                                console.log(updateBulkErr);
+                                // console.log(updateBulkErr);
                                 cb(updateBulkErr);
                             }
                             else{
-                                console.log(updateBulkRes);
+                                // console.log(updateBulkRes);
                                 cb(null, "success")
                             }
                         })
@@ -126,27 +126,27 @@ module.exports.useTerryCloth =  function(message, discordUserId, terryClothToUse
     if (terryClothToUse.length == 5){
         // roll 20% is a rare
         var rollTerryClothRare = Math.floor(Math.random() * 100) + 1;
-        console.log(rollTerryClothRare);
+        // console.log(rollTerryClothRare);
         if (rollTerryClothRare >= 95){
             // add a rare item to user's inventory from all the rares
             // roll for a rare
-            console.log(listOfRares);
+            // console.log(listOfRares);
             var indexOfRare = Math.floor(Math.random() * listOfRares.length);
             var rareWon = [listOfRares[indexOfRare]];
             profileDB.addNewItemToUser(discordUserId, rareWon, function(error, response){
                 if (error){
-                    console.log("couldnt add item");
+                    // console.log("couldnt add item");
                     cb("error");
                 }
                 else{
                     // added item, use the terry cloths
                     profileDB.bulkUpdateItemStatus(terryClothToUse, "used", function(updateBulkErr, updateBulkRes){
                         if (updateBulkErr){
-                            console.log(updateBulkErr);
+                            // console.log(updateBulkErr);
                             cb(updateBulkErr);
                         }
                         else{
-                            console.log(updateBulkRes);
+                            // console.log(updateBulkRes);
                             cb(null, rareWon);
                         }
                     })
@@ -157,18 +157,18 @@ module.exports.useTerryCloth =  function(message, discordUserId, terryClothToUse
             // add tacos to user
             profileDB.updateUserTacos(discordUserId, 5, function(tacosError, tacosRes){
                 if (tacosError){
-                    console.log(tacosError);
+                    // console.log(tacosError);
                     cb(tacosError);
                 }
                 else{
-                    console.log(tacosRes);
+                    // console.log(tacosRes);
                     profileDB.bulkUpdateItemStatus(terryClothToUse, "used", function(updateBulkErr, updateBulkRes){
                         if (updateBulkErr){
-                            console.log(updateBulkErr);
+                            // console.log(updateBulkErr);
                             cb(updateBulkErr);
                         }
                         else{
-                            console.log(updateBulkRes);
+                            // console.log(updateBulkRes);
                             cb(null, 5)
                         }
                     })
@@ -180,18 +180,18 @@ module.exports.useTerryCloth =  function(message, discordUserId, terryClothToUse
             // add tacos to user
             profileDB.updateUserTacos(discordUserId, 2, function(tacosError, tacosRes){
                 if (tacosError){
-                    console.log(tacosError);
+                    // console.log(tacosError);
                     cb(tacosError);
                 }
                 else{
-                    console.log(tacosRes);
+                    // console.log(tacosRes);
                     profileDB.bulkUpdateItemStatus(terryClothToUse, "used", function(updateBulkErr, updateBulkRes){
                         if (updateBulkErr){
-                            console.log(updateBulkErr);
+                            // console.log(updateBulkErr);
                             cb(updateBulkErr);
                         }
                         else{
-                            console.log(updateBulkRes);
+                            // console.log(updateBulkRes);
                             cb(null, 2)
                         }
                     })
@@ -206,20 +206,20 @@ module.exports.useSodaCan = function(message, discordUserId, sodaCansToUse, cb){
     var REP_GAIN_PER_CAN = 1;
     reputation.gainReputation(message, discordUserId, (REP_GAIN_PER_CAN * sodaCansToUse.length) , function(error, response){
         if (error){
-            console.log(error);
+            // console.log(error);
             cb(error);
         }
         else{
             // gained rep successfully
-            console.log(response);
+            // console.log(response);
             // use the item
             profileDB.bulkUpdateItemStatus( sodaCansToUse, "used", function(updateSodaCanStatusErr, updateSodaCanStatusRes ){
                 if (updateSodaCanStatusErr){
-                    console.log(updateSodaCanStatusErr);
+                    // console.log(updateSodaCanStatusErr);
                     cb(updateSodaCanStatusErr);
                 }
                 else{
-                    console.log(updateSodaCanStatusRes);
+                    // console.log(updateSodaCanStatusRes);
                     cb(null, response);
                 }
             })
@@ -232,7 +232,7 @@ module.exports.useSoil = function(message, discordUserId, soilToUse, cb){
     if (discordUserId && soilToUse){
         profileDB.getUserProfileData(discordUserId, function(getProfileErr, getProfileRes){
             if (getProfileErr){
-                console.log(getProfileErr);
+                // console.log(getProfileErr);
                 cb(getProfileErr);
             }
             else{
@@ -240,19 +240,19 @@ module.exports.useSoil = function(message, discordUserId, soilToUse, cb){
                 var soiledCrops = soilToUse.length;
                 profileDB.updateUserSoiledCrops(discordUserId, soiledCrops, currentCropsSoiled, function(error, response){
                     if (error){
-                        console.log(error);
+                        // console.log(error);
                         cb(error);
                     }
                     else{
-                        console.log(response);
+                        // console.log(response);
                         // use the item
                         profileDB.bulkUpdateItemStatus(soilToUse, "used", function(updateSodaCanStatusErr, updateSodaCanStatusRes){
                             if (updateSodaCanStatusErr){
-                                console.log(updateSodaCanStatusErr);
+                                // console.log(updateSodaCanStatusErr);
                                 cb(updateSodaCanStatusErr);
                             }
                             else{
-                                console.log(updateSodaCanStatusRes);
+                                // console.log(updateSodaCanStatusRes);
                                 var cropsCount;
                                 if (currentCropsSoiled){
                                     cropsCount = currentCropsSoiled + soiledCrops;
@@ -277,11 +277,11 @@ module.exports.useUncommons = function(message, discordid, uncommons, cb){
     if (discordid && uncommons.length > 0){
         profileDB.bulkUpdateItemStatus(uncommons, "used", function(updateBulkErr, updateBulkRes){
             if (updateBulkErr){
-                console.log(updateBulkErr);
+                // console.log(updateBulkErr);
                 cb(updateBulkErr);
             }
             else{
-                console.log(updateBulkRes);
+                // console.log(updateBulkRes);
                 cb(null, "success")
             }
         })

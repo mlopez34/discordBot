@@ -11,7 +11,7 @@ module.exports.gainExperience = function (message, discordUserId, experienceNumb
     if (!userProfileData){
         profileDB.getUserProfileData( discordUserId, function(err, profileResponse) {
             if(err){
-                console.log(err);
+                // console.log(err);
             }
             else{
                 gainExperienceHandler(message, discordUserId, experienceNumber, profileResponse)
@@ -56,15 +56,15 @@ function gainExperienceHandler(message, discordUserId, experienceNumber, userPro
             }
             tacoRewards = levelRewards[userLeveledUpTo];
         }
-        console.log("xp: " + experienceNumber + " lvl: " + userLeveledUpTo)
+        // console.log("xp: " + experienceNumber + " lvl: " + userLeveledUpTo)
         if (levelUp){
             // add experience and if userleveledupto is different than userlevel then update userlevel also
             profileDB.updateUserExperience(experienceNumber, userLeveledUpTo, discordUserId, firstExperienceGain, tacoRewards, function(updateXpErr, updateXpRes){
                 if (updateXpErr){
-                    console.log(updateXpErr);
+                    // console.log(updateXpErr);
                 }
                 else{
-                    console.log(updateXpRes);
+                    // console.log(updateXpRes);
                     // create the level up embed
                     // TODO: embed needs the name of the user that leveled up
                     experienceEmbedBuilder(message, userLeveledUpTo, tacoRewards);
@@ -74,10 +74,10 @@ function gainExperienceHandler(message, discordUserId, experienceNumber, userPro
         else{
             profileDB.updateUserExperience(experienceNumber, userLeveledUpTo, discordUserId, firstExperienceGain, null, function(updateXpErr, updateXpRes){
                 if (updateXpErr){
-                    console.log(updateXpErr);
+                    // console.log(updateXpErr);
                 }
                 else{
-                    console.log(updateXpRes);
+                    // console.log(updateXpRes);
                 }
             })
         }

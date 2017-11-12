@@ -125,13 +125,13 @@ module.exports.showRpgStats = function(message, itemsAvailable){
     
     profileDB.getUserProfileData(discordUserId, function(err, userData){
         if (err){
-            console.log(err);
+            // console.log(err);
             message.channel.send(err + " something went wrong [profile]");
         }else{
             var userStats = userData.data;
             profileDB.getUserWearInfo(discordUserId, function(wearErr, wearData){
                 if (wearErr){
-                    console.log(wearErr);
+                    // console.log(wearErr);
                     message.channel.send(wearErr + " something went wrong [wearing] - someone doesn't have a wearing profile");
                 }else{
                     // get the wearing data
@@ -324,7 +324,7 @@ module.exports.rpgReady = function(message, itemsAvailable){
         // get the user's profile and get the user's wearing
         profileDB.getUserProfileData(discordUserId, function(err, userData){
             if (err){
-                console.log(err);
+                // console.log(err);
                 message.channel.send(err + " something went wrong [profile]");
             }else{
 
@@ -349,7 +349,7 @@ module.exports.rpgReady = function(message, itemsAvailable){
 
                     profileDB.getUserWearInfo(discordUserId, function(wearErr, wearData){
                         if (wearErr){
-                            console.log(wearErr);
+                            // console.log(wearErr);
                             message.channel.send(wearErr + " something went wrong [wearing] - someone doesn't have a wearing profile");
                         }else{
                             // get the wearing data
@@ -472,10 +472,10 @@ module.exports.rpgReady = function(message, itemsAvailable){
                                                 if (!partyMember.bot){
                                                     profileDB.updateLastRpgTime(partyMember.id, function(updateLSErr, updateLSres){
                                                         if(updateLSErr){
-                                                            console.log(updateLSErr);
+                                                            // // console.log(updateLSErr);
                                                         }
                                                         else{
-                                                            console.log(updateLSres)
+                                                            // // console.log(updateLSres)
                                                         }
                                                     })
                                                 }
@@ -882,7 +882,7 @@ module.exports.rpgReady = function(message, itemsAvailable){
                                                     activeRPGEvents[rpgEvent].lastEmbedMessage = sentMessage
                                                 })
                                                 .catch(function(err){
-                                                    console.log(err);
+                                                    // console.log(err);
                                                 })
                                             }
                                         })
@@ -1254,7 +1254,7 @@ function turnFinishedEmbedBuilder(message, event, turnString, passiveEffectsStri
                 event.lastEmbedMessage = sentMessage
             })
             .catch(function(err){
-                console.log(err);
+                // console.log(err);
             })
         }
     })
@@ -1263,7 +1263,7 @@ function turnFinishedEmbedBuilder(message, event, turnString, passiveEffectsStri
 function eventEndedEmbedBuilder(message, event, partySuccess){
     profileDB.getItemData(function(err, getItemResponse){
         if (err){
-            console.log(err);
+            // console.log(err);
         }else{
             const embed = new Discord.RichEmbed()
             .setAuthor("Event has ended")
@@ -1280,9 +1280,9 @@ function eventEndedEmbedBuilder(message, event, partySuccess){
                     if ( (challengenumber + 1) == event.challenge.challenge ){
                         profileDB.updateCurrentChallenge( memberInParty.id, challengenumber + 1, function(error, challengeRes){
                             if (error){
-                                console.log(error);
+                                // console.log(error);
                             }else{
-                                console.log(challengeRes);
+                                // console.log(challengeRes);
                                 //embed.addField("Challenge complete", challengenumber);
                             }
                         })
@@ -1299,7 +1299,7 @@ function eventEndedEmbedBuilder(message, event, partySuccess){
                     // TODO: advance the user to the next step of the questline
                     profileDB.updateQuestlineStage(event.leader.id, event.special.questData.questname, event.special.questData.stage + 1, function(error, updateRes){
                         if (error){
-                            console.log(error);
+                            // console.log(error);
                         }else{
                             message.channel.send("advanced");
                         }
@@ -1337,16 +1337,16 @@ function eventEndedEmbedBuilder(message, event, partySuccess){
 function updateUserRewards(message, memberInParty, rewards){
     profileDB.getUserProfileData( memberInParty.id, function(err, profileResponse) {
         if(err){
-            console.log(err);
+            // console.log(err);
         }
         else{
             var firstRpgGain = profileResponse.data.rpgpoints;
 
             profileDB.updateRpgPoints(memberInParty.id, rewards.rpgPoints, firstRpgGain, function(error, res){
                 if (error){
-                    console.log(error);
+                    // console.log(error);
                 }else{
-                    console.log(res);
+                    // console.log(res);
                     // add experience and then items
                     experience.gainExperience(message, memberInParty.id, rewards.xp);
                     if (rewards.items.length > 0){
@@ -1361,10 +1361,10 @@ function updateUserRewards(message, memberInParty, rewards){
 function addToUserInventory(discordUserId, items){
     profileDB.addNewItemToUser(discordUserId, items, function(itemError, itemAddResponse){
         if (itemError){
-            console.log(itemError);
+            // console.log(itemError);
         }
         else{
-            console.log(itemAddResponse);
+            // console.log(itemAddResponse);
         }
     })
 }
@@ -1452,25 +1452,25 @@ function calculateRewards(event, memberInRpgEvent, getItemResponse, numberOfMemb
             if(rarityRoll > ANCIENT_MIN_ROLL ){
                 rarityString = "ancient"
                 var itemRoll = Math.floor(Math.random() * ancientItems.length);
-                console.log(ancientItems[itemRoll]);
+                // console.log(ancientItems[itemRoll]);
                 itemsObtainedArray.push(ancientItems[itemRoll])
             }
             else if(rarityRoll > RARE_MIN_ROLL && rarityRoll <= RARE_MAX_ROLL){
                 rarityString = "rare"
                 var itemRoll = Math.floor(Math.random() * rareItems.length);
-                console.log(rareItems[itemRoll]);
+                // console.log(rareItems[itemRoll]);
                 itemsObtainedArray.push(rareItems[itemRoll]);
             }
             else if (rarityRoll > UNCOMMON_MIN_ROLL && rarityRoll <= UNCOMMON_MAX_ROLL){
                 rarityString = "uncommon"
                 var itemRoll = Math.floor(Math.random() * uncommonItems.length);
-                console.log(uncommonItems[itemRoll]);
+                // console.log(uncommonItems[itemRoll]);
                 itemsObtainedArray.push( uncommonItems[itemRoll] );
             }
             else {
                 rarityString = "common"
                 var itemRoll = Math.floor(Math.random() * commonItems.length);
-                console.log(commonItems[itemRoll]);
+                // console.log(commonItems[itemRoll]);
                 commonItems[itemRoll].itemAmount = COMMON_ITEMS_TO_OBTAIN
                 itemsObtainedArray.push( commonItems[itemRoll] );
             }
@@ -1632,7 +1632,7 @@ function effectsOnTurnEnd(event){
                                                 var idOfMemberBeingChecked = "rpg-" + event.members[member].id;
                                                 for (var statusToCheck in event.membersInParty[idOfMemberBeingChecked].statuses){
                                                     if (rpgAbility && rpgAbility.ignoreFocus){
-                                                        console.log("ignoring focus for ability")
+                                                        // // console.log("ignoring focus for ability")
                                                     }else{
                                                         // check if someone has focus on them if they do then the target should be the focused person 
                                                         if ( event.membersInParty[idOfMemberBeingChecked].statuses[statusToCheck].name == "Focus"
@@ -1821,6 +1821,7 @@ function effectsOnTurnEnd(event){
 
             ////// Event is an aoe aura dmg
             if (event.endOfTurnEvents[index].dmgaura){
+                var ability = event.endOfTurnEvents[index].abilityId;
                 var nameOfEndOfTurnAbility = event.endOfTurnEvents[index].name;
                 // check that the event should be done this turn
                 var rpgAbility = rpgAbilities[ability] ? JSON.parse(JSON.stringify(rpgAbilities[ability])) : undefined;                
@@ -1830,7 +1831,6 @@ function effectsOnTurnEnd(event){
                     user: 0, // aura
                     ability: event.endOfTurnEvents[index].name
                 }
-                var ability = abilityObject.ability;
                 var abilityCaster = abilityObject.user;
                 var rpgAbility = rpgAbilities[ability] ? JSON.parse(JSON.stringify(rpgAbilities[ability])) : undefined;
                 if (rpgAbility && rpgAbility.areawidedmg && rpgAbility.areawidedmg.dmgPerTurn){
@@ -2988,7 +2988,7 @@ function processAbility(abilityObject, event){
             if (event.membersInParty[targetToAddStatus].statuses.indexOf("dead") == -1){
                 // target is not dead
                 // check that the the user doesn't already have the buff if they do, replace it
-                if (rpgAbility.buff.name != "warm up"){
+                if (rpgAbility.buff.name != "Warm Up"){
                     for (var index = event.membersInParty[targetToAddStatus].buffs.length - 1; index >= 0; index-- ){
                         if (event.membersInParty[targetToAddStatus].buffs[index].name == rpgAbility.buff.name){
                             // pop this object
@@ -3020,7 +3020,7 @@ function processAbility(abilityObject, event){
         else if (event.enemies[targetToAddStatus]){
             var targetToAddStatusName = event.enemies[targetToAddStatus].name;
             if (event.enemies[targetToAddStatus].statuses.indexOf("dead") == -1){
-                if (rpgAbility.buff.name != "warm up"){
+                if (rpgAbility.buff.name != "Warm Up"){
                     for (var index = event.enemies[targetToAddStatus].buffs.length - 1; index >= 0; index-- ){
                         if (event.enemies[targetToAddStatus].buffs[index].name == rpgAbility.buff.name ){
                             // pop this object
@@ -3789,7 +3789,7 @@ function enemiesUseAbilities(event){
     }
 
     for (var enemy in event.enemies){
-        console.log(event.enemies[enemy]);
+        // console.log(event.enemies[enemy]);
         // check that the enemy is not dead first 
         if (event.enemies[enemy].statuses.indexOf("dead") == -1){
             // pick an ability, then pick a target, the target must be a member of the party that isnt dead

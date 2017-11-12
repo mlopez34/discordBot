@@ -8,7 +8,7 @@ module.exports.statisticsManage = function(discordUserId, columnName, statisticC
             // user doesnt exist, create it
             profileDB.createUserStatistics(discordUserId, columnName, statisticCount, function(err, statSuccess){
                 if (err){
-                    console.log(err);
+                    // console.log(err);
                 }
                 else{
                     // check achievements??
@@ -20,12 +20,12 @@ module.exports.statisticsManage = function(discordUserId, columnName, statisticC
             // update user
             // get user statistic first if the statistic is null then updated it as =
             var columnStatistic = res.data[columnName];
-            console.log("column statistic: " + columnStatistic + " column name: " + columnName );
+            // console.log("column statistic: " + columnStatistic + " column name: " + columnName );
             if (columnStatistic){
                 // if it exists just update as normal
                 profileDB.updateStatistics(discordUserId, columnName, statisticCount, function(err, statSuccess){
                     if (err){
-                        console.log(err);
+                        // console.log(err);
                     }
                     else{
                         // check achievements??
@@ -36,7 +36,7 @@ module.exports.statisticsManage = function(discordUserId, columnName, statisticC
             else{
                 profileDB.updateSingleStatistic(discordUserId, columnName, statisticCount, function(err, statSuccess){
                     if (err){
-                        console.log(err);
+                        // console.log(err);
                     }
                     else{
                         // check achievements??

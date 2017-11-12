@@ -100,7 +100,7 @@ module.exports.checkForAchievements = function(discordUserId, data, message, cal
                 // cant find the user's statistics create the user's statistics and check for achievements
                 profileDB.createUserStatistics(discordUserId, null, null, function(createError, statsSuccess){
                     if(createError){
-                        console.log(createError);
+                        // console.log(createError);
                     }
                     else{
                         exports.checkForAchievements(discordUserId, data, message, true, mentionedUser);
@@ -110,9 +110,9 @@ module.exports.checkForAchievements = function(discordUserId, data, message, cal
             }
             else{
                 var achievementEarner = message.author;
-                console.log(statistics);
+                // console.log(statistics);
                 // check for all possible achievments here (achievement logic goes here)
-                console.log(data.achievements);
+                // console.log(data.achievements);
                 // statistics table achievements
                 if(statistics.data.thankcount && 
                 statistics.data.thankcount >= 25 && 
@@ -120,7 +120,7 @@ module.exports.checkForAchievements = function(discordUserId, data, message, cal
 
                     profileDB.updateAchievements(discordUserId, "{Nice guy}", function(err, r){
                         if (err){
-                            console.log(err);
+                            // console.log(err);
                         }
                         {
                             achievementEmbedBuilder(message, "Nice guy", achievementEarner);
@@ -134,7 +134,7 @@ module.exports.checkForAchievements = function(discordUserId, data, message, cal
 
                     profileDB.updateAchievements(discordUserId, "{Apologetic geek}", function(err, r){
                         if (err){
-                            console.log(err);
+                            // console.log(err);
                         }
                         {
                             achievementEmbedBuilder(message, "Apologetic geek", achievementEarner);
@@ -148,7 +148,7 @@ module.exports.checkForAchievements = function(discordUserId, data, message, cal
 
                     profileDB.updateAchievements(discordUserId, "{Host}", function(err, r){
                         if (err){
-                            console.log(err);
+                            // console.log(err);
                         }
                         {
                             achievementEmbedBuilder(message, "Host", achievementEarner);
@@ -162,7 +162,7 @@ module.exports.checkForAchievements = function(discordUserId, data, message, cal
 
                     profileDB.updateAchievements(discordUserId, "{Adventure girl}", function(err, r){
                         if (err){
-                            console.log(err);
+                            // console.log(err);
                         }
                         {
                             achievementEmbedBuilder(message, "Adventure girl", achievementEarner);
@@ -176,7 +176,7 @@ module.exports.checkForAchievements = function(discordUserId, data, message, cal
                     // the achievement earner is the MENTIONED USER
                     profileDB.updateAchievements(mentionedUser.id, "{Stripper}", function(err, r){
                         if (err){
-                            console.log(err);
+                            // console.log(err);
                         }
                         {
                             
@@ -192,7 +192,7 @@ module.exports.checkForAchievements = function(discordUserId, data, message, cal
 
                     profileDB.updateAchievements(discordUserId, "{Make it rain}", function(err, r){
                         if (err){
-                            console.log(err);
+                            // console.log(err);
                         }
                         {
                             achievementEmbedBuilder(message, "Make it rain", achievementEarner);
@@ -206,7 +206,7 @@ module.exports.checkForAchievements = function(discordUserId, data, message, cal
 
                     profileDB.updateAchievements(discordUserId, "{Executioner}", function(err, r){
                         if (err){
-                            console.log(err);
+                            // console.log(err);
                         }
                         {
                             achievementEmbedBuilder(message, "Executioner", achievementEarner);
@@ -220,7 +220,7 @@ module.exports.checkForAchievements = function(discordUserId, data, message, cal
 
                     profileDB.updateAchievements(discordUserId, "{Get a room}", function(err, r){
                         if (err){
-                            console.log(err);
+                            // console.log(err);
                         }
                         {
                             achievementEmbedBuilder(message, "Get a room", achievementEarner);
@@ -233,7 +233,7 @@ module.exports.checkForAchievements = function(discordUserId, data, message, cal
                 (data.achievements === null || data.achievements.indexOf("Fidel cashflow") == -1 )){
                     profileDB.updateAchievements(discordUserId, "{Fidel cashflow}", function(err, r){
                         if (err){
-                            console.log(err);
+                            // console.log(err);
                         }
                         {
                             achievementEmbedBuilder(message, "Fidel cashflow", achievementEarner);
@@ -247,7 +247,7 @@ module.exports.checkForAchievements = function(discordUserId, data, message, cal
 
                     profileDB.updateAchievements(discordUserId, "{Hoarder}", function(err, r){
                         if (err){
-                            console.log(err);
+                            // console.log(err);
                         }
                         {
                             achievementEmbedBuilder(message, "Hoarder", achievementEarner);
@@ -261,7 +261,7 @@ module.exports.checkForAchievements = function(discordUserId, data, message, cal
 
                     profileDB.updateAchievements(discordUserId, "{Hand work}", function(err, r){
                         if (err){
-                            console.log(err);
+                            // console.log(err);
                         }
                         {
                             achievementEmbedBuilder(message, "Hand work", achievementEarner);
@@ -275,7 +275,7 @@ module.exports.checkForAchievements = function(discordUserId, data, message, cal
 
                     profileDB.updateAchievements(discordUserId, "{Luck is on your side}", function(err, r){
                         if (err){
-                            console.log(err);
+                            // console.log(err);
                         }
                         {
                             achievementEmbedBuilder(message, "Luck is on your side", achievementEarner);
@@ -288,7 +288,7 @@ module.exports.checkForAchievements = function(discordUserId, data, message, cal
     
                         profileDB.updateAchievements(discordUserId, "{Miss Popularity}", function(err, r){
                             if (err){
-                                console.log(err);
+                                // console.log(err);
                             }
                             {
                                 achievementEmbedBuilder(message, "Miss Popularity", achievementEarner);
@@ -302,7 +302,7 @@ module.exports.checkForAchievements = function(discordUserId, data, message, cal
 
                     profileDB.updateAchievements(discordUserId, "{Harvester}", function(err, r){
                         if (err){
-                            console.log(err);
+                            // console.log(err);
                         }
                         {
                             achievementEmbedBuilder(message, "Harvester", achievementEarner);
@@ -316,7 +316,7 @@ module.exports.checkForAchievements = function(discordUserId, data, message, cal
 
                     profileDB.updateAchievements(discordUserId, "{Harvester}", function(err, r){
                         if (err){
-                            console.log(err);
+                            // console.log(err);
                         }
                         {
                             achievementEmbedBuilder(message, "Harvester", achievementEarner);

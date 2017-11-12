@@ -13,7 +13,7 @@ module.exports.getUserProfileData = function(discordId, cb) {
   var query = 'select * from ' + config.profileTable + ' where discordId = $1'
   db.one(query, [discordId])
     .then(function (data) {
-      //console.log(data);
+      //// console.log(data);
       cb(null, {
           status: 'success',
           data: data,
@@ -21,7 +21,7 @@ module.exports.getUserProfileData = function(discordId, cb) {
         });
     })
     .catch(function (err) {
-      console.log(err);
+      // console.log(err);
       cb(err);
     });
 }
@@ -44,7 +44,7 @@ module.exports.createUserProfile = function(data, cb) {
 module.exports.updateUserTacosThank = function(userId, tacos, cb) {
     var query = 'update ' + config.profileTable + ' set tacos=tacos+$1, lastthanktime=$3 where discordid=$2'
     var lastThank = new Date();
-    //console.log("new last thank: " + lastThank);
+    //// console.log("new last thank: " + lastThank);
     db.none(query, [tacos, userId, lastThank])
     .then(function () {
     cb(null, {
@@ -60,7 +60,7 @@ module.exports.updateUserTacosThank = function(userId, tacos, cb) {
 module.exports.updateUserTacosTrickOrTreat = function(userId, tacos, cb) {
     var query = 'update ' + config.profileTable + ' set tacos=tacos+$1, lasttrickortreattime=$3 where discordid=$2'
     var lasttrickortreattime = new Date();
-    //console.log("new last thank: " + lastThank);
+    //// console.log("new last thank: " + lastThank);
     db.none(query, [tacos, userId, lasttrickortreattime])
     .then(function () {
     cb(null, {
@@ -90,7 +90,7 @@ module.exports.obtainCasserole = function(userId, cb) {
 module.exports.updateUserTacosSorry = function(userId, tacos, cb) {
     var query = 'update ' + config.profileTable + ' set tacos=tacos+$1, lastsorrytime=$3 where discordid=$2'
     var lastThank = new Date();
-    //console.log("new last thank: " + lastThank);
+    //// console.log("new last thank: " + lastThank);
     db.none(query, [tacos, userId, lastThank])
     .then(function () {
     cb(null, {
@@ -106,7 +106,7 @@ module.exports.updateUserTacosSorry = function(userId, tacos, cb) {
 module.exports.updateUserTacosCook = function(userId, tacos, cb) {
     var query = 'update ' + config.profileTable + ' set tacos=tacos+$1, lastcooktime=$3 where discordid=$2'
     var lastCook = new Date();
-    //console.log("new last thank: " + lastThank);
+    //// console.log("new last thank: " + lastThank);
     db.none(query, [tacos, userId, lastCook])
     .then(function () {
     cb(null, {
@@ -138,7 +138,7 @@ module.exports.updateUserTacosFetch = function(userId, tacos, cb) {
 module.exports.updateLastScavengeTime = function(userId, cb) {
     var query = 'update ' + config.profileTable + ' set lastscavangetime=$2 where discordid=$1'
     var lastScavenge = new Date();
-    //console.log("new last thank: " + lastThank);
+    //// console.log("new last thank: " + lastThank);
     db.none(query, [userId, lastScavenge])
     .then(function () {
     cb(null, {
@@ -154,7 +154,7 @@ module.exports.updateLastScavengeTime = function(userId, cb) {
 module.exports.updateLastRpgTime = function(userId, cb) {
     var query = 'update ' + config.profileTable + ' set lastrpgtime=$2 where discordid=$1'
     var lastRpg = new Date();
-    //console.log("new last thank: " + lastThank);
+    //// console.log("new last thank: " + lastThank);
     db.none(query, [userId, lastRpg])
     .then(function () {
     cb(null, {
@@ -170,7 +170,7 @@ module.exports.updateLastRpgTime = function(userId, cb) {
 module.exports.updateUserTacosWelcome = function(userId, tacos, cb) {
     var query = 'update ' + config.profileTable + ' set tacos=tacos+$1, welcomed=$3 where discordid=$2'
     var welcomed = true;
-    //console.log("new last thank: " + lastThank);
+    //// console.log("new last thank: " + lastThank);
     db.none(query, [tacos, userId, welcomed])
     .then(function () {
     cb(null, {
@@ -179,14 +179,14 @@ module.exports.updateUserTacosWelcome = function(userId, tacos, cb) {
         });
     })
     .catch(function (err) {
-        console.log(err);
+        // console.log(err);
         cb(err);
     });
 }
 
 module.exports.updateUserTacos = function(userId, tacos, cb) {
     var query = 'update ' + config.profileTable + ' set tacos=tacos+$1 where discordid=$2'
-    //console.log("new last thank: " + lastThank);
+    //// console.log("new last thank: " + lastThank);
     db.none(query, [tacos, userId])
     .then(function () {
     cb(null, {
@@ -195,14 +195,14 @@ module.exports.updateUserTacos = function(userId, tacos, cb) {
         });
     })
     .catch(function (err) {
-        console.log(err);
+        // console.log(err);
         cb(err);
     });
 }
 
 module.exports.updateCurrentChallenge = function(userId, challengeNum, cb) {
     var query = 'update ' + config.profileTable + ' set currentchallenge=$1 where discordid=$2'
-    //console.log("new last thank: " + lastThank);
+    //// console.log("new last thank: " + lastThank);
     db.none(query, [challengeNum, userId])
     .then(function () {
     cb(null, {
@@ -211,14 +211,14 @@ module.exports.updateCurrentChallenge = function(userId, challengeNum, cb) {
         });
     })
     .catch(function (err) {
-        console.log(err);
+        // console.log(err);
         cb(err);
     });
 }
 
 module.exports.updateUserTacosGive = function(userId, tacoAmount, cb){
     var query = 'update ' + config.profileTable + ' set tacos=tacos+$1 where discordid=$2'
-    //console.log("new last thank: " + lastThank);
+    //// console.log("new last thank: " + lastThank);
     db.none(query, [tacoAmount, userId])
     .then(function () {
     cb(null, {
@@ -227,14 +227,14 @@ module.exports.updateUserTacosGive = function(userId, tacoAmount, cb){
         });
     })
     .catch(function (err) {
-        console.log(err);
+        // console.log(err);
         cb(err);
     });
 }
 
 module.exports.updateUserTacosThrow = function(userId, tacoAmount, cb){
     var query = 'update ' + config.profileTable + ' set tacos=tacos+$1 where discordid=$2'
-    //console.log("new last thank: " + lastThank);
+    //// console.log("new last thank: " + lastThank);
     db.none(query, [tacoAmount, userId])
     .then(function () {
     cb(null, {
@@ -243,14 +243,14 @@ module.exports.updateUserTacosThrow = function(userId, tacoAmount, cb){
         });
     })
     .catch(function (err) {
-        console.log(err);
+        // console.log(err);
         cb(err);
     });
 }
 
 module.exports.updateUserPasta = function( userId, pastaTacoCost, pasta, cb){
     var query = 'update ' + config.profileTable + ' set tacos=tacos+$1, pasta=$3 where discordid=$2'
-    //console.log("new last thank: " + lastThank);
+    //// console.log("new last thank: " + lastThank);
     db.none(query, [pastaTacoCost, userId, pasta])
     .then(function () {
     cb(null, {
@@ -259,7 +259,7 @@ module.exports.updateUserPasta = function( userId, pastaTacoCost, pasta, cb){
         });
     })
     .catch(function (err) {
-        console.log(err);
+        // console.log(err);
         cb(err);
     });
 }
@@ -273,7 +273,7 @@ module.exports.updateUserProtect = function(userId, protectNumber, protection , 
     else{
         query = 'update ' + config.profileTable + ' set protect=protect+$1 where discordid=$2'
     }
-    console.log(protectNumber + " before query")
+    // console.log(protectNumber + " before query")
     db.none(query, [protectNumber, userId])
     .then(function () {
     cb(null, {
@@ -282,7 +282,7 @@ module.exports.updateUserProtect = function(userId, protectNumber, protection , 
         });
     })
     .catch(function (err) {
-        console.log(err);
+        // console.log(err);
         cb(err);
     });
 }
@@ -297,14 +297,14 @@ module.exports.updateUserPet = function(userId, pet, petName, threedaysAgo, cb) 
         });
     })
     .catch(function (err) {
-        console.log(err);
+        // console.log(err);
         cb(err);
     });
 }
 
 module.exports.purchasePickAxe = function(userId, tacosSpent, cb){
     var query = 'update ' + config.profileTable + ' set tacos=tacos+$1, pickaxe=$3 where discordid=$2'
-    console.log(query)
+    // console.log(query)
     var lastThank = new Date();
     var selectedPickaxe = "basic"
     if (tacosSpent <= -100 && tacosSpent >= -500){
@@ -314,7 +314,7 @@ module.exports.purchasePickAxe = function(userId, tacosSpent, cb){
     else if (tacosSpent <= -500 ){
         selectedPickaxe = "master";
     }
-    //console.log("new last thank: " + lastThank);
+    //// console.log("new last thank: " + lastThank);
     db.none(query, [tacosSpent, userId, selectedPickaxe])
     .then(function () {
     cb(null, {
@@ -328,13 +328,13 @@ module.exports.purchasePickAxe = function(userId, tacosSpent, cb){
 }
 
 module.exports.purchaseTacoStand = function(userId, tacosSpent, currentTacoStands, cb){
-    console.log(currentTacoStands);
+    // console.log(currentTacoStands);
     let tacoStand = 1;
     if (currentTacoStands){
         var query = 'update ' + config.profileTable + ' set tacos=tacos+$1, tacostands=tacostands+$3 where discordid=$2'
-        console.log(query)
+        // console.log(query)
         var lastThank = new Date();
-        //console.log("new last thank: " + lastThank);
+        //// console.log("new last thank: " + lastThank);
         db.none(query, [tacosSpent, userId, tacoStand])
         .then(function () {
         cb(null, {
@@ -349,9 +349,9 @@ module.exports.purchaseTacoStand = function(userId, tacosSpent, currentTacoStand
     else{
         
         var query = 'update ' + config.profileTable + ' set tacos=tacos+$1, tacostands=$3 where discordid=$2'
-        console.log(query)
+        // console.log(query)
         var lastThank = new Date();
-        //console.log("new last thank: " + lastThank);
+        //// console.log("new last thank: " + lastThank);
         db.none(query, [tacosSpent, userId, tacoStand])
         .then(function () {
         cb(null, {
@@ -369,7 +369,7 @@ module.exports.prepareTacos = function(userId, tacosToPrepare, cb){
     // update tacos and lastprepare
     var query = 'update ' + config.profileTable + ' set tacos=tacos+$1, lastpreparetime=$3, soiledcrops=0 where discordid=$2'
     var lastprepare = new Date();
-    //console.log("new last thank: " + lastThank);
+    //// console.log("new last thank: " + lastThank);
     db.none(query, [ tacosToPrepare, userId, lastprepare ])
     .then(function () {
     cb(null, {
@@ -386,7 +386,7 @@ module.exports.getTopTenTacoUsers = function(cb) {
   var query = 'select * from ' + config.profileTable + ' order by tacos DESC LIMIT 50'
   db.query(query)
     .then(function (data) {
-      //console.log(data);
+      //// console.log(data);
       cb(null, {
           status: 'success',
           data: data,
@@ -394,7 +394,7 @@ module.exports.getTopTenTacoUsers = function(cb) {
         });
     })
     .catch(function (err) {
-      console.log(err);
+      // console.log(err);
       cb(err);
     });
 }
@@ -403,7 +403,7 @@ module.exports.getToplistUsers = function(cb) {
     var query = 'select * from ' + config.profileTable + ' where experience is not null order by experience DESC LIMIT 50'
     db.query(query)
     .then(function (data) {
-    //console.log(data);
+    //// console.log(data);
     cb(null, {
         status: 'success',
         data: data,
@@ -411,7 +411,7 @@ module.exports.getToplistUsers = function(cb) {
         });
     })
     .catch(function (err) {
-        console.log(err);
+        // console.log(err);
         cb(err);
     });
 }
@@ -420,7 +420,7 @@ module.exports.getRpgTopList = function(cb) {
 var query = 'select *  from ' + config.profileTable + ' where rpgpoints is not null ORDER BY currentchallenge DESC NULLS LAST, rpgpoints DESC NULLS LAST LIMIT 100'
 db.query(query)
     .then(function (data) {
-    //console.log(data);
+    //// console.log(data);
     cb(null, {
         status: 'success',
         data: data,
@@ -428,7 +428,7 @@ db.query(query)
         });
     })
     .catch(function (err) {
-        console.log(err);
+        // console.log(err);
         cb(err);
     });
 }
@@ -436,7 +436,7 @@ db.query(query)
 module.exports.updateAchievements = function(discordUserId, achievement, cb){
     // update statistic
     var query = 'update ' + config.profileTable + ' set achievements = achievements || $1 where discordid=$2'
-    //console.log("new last thank: " + lastThank);
+    //// console.log("new last thank: " + lastThank);
     db.none(query, [ achievement, discordUserId ])
     .then(function () {
     cb(null, {
@@ -452,7 +452,7 @@ module.exports.updateAchievements = function(discordUserId, achievement, cb){
 module.exports.updateStatistics = function(userId, columnName, statisticCount, cb){
     // update statistic
     var query = 'update ' + config.statisticsTable + ' set ' + columnName + '=' + columnName + '+$1 where discordid=$2'
-    //console.log("new last thank: " + lastThank);
+    //// console.log("new last thank: " + lastThank);
     db.none(query, [ statisticCount, userId ])
     .then(function () {
     cb(null, {
@@ -468,7 +468,7 @@ module.exports.updateStatistics = function(userId, columnName, statisticCount, c
 module.exports.updateSingleStatistic = function(userId, columnName, statisticCount, cb){
     // update statistic
     var query = 'update ' + config.statisticsTable + ' set ' + columnName + '=$1 where discordid=$2'
-    //console.log("new last thank: " + lastThank);
+    //// console.log("new last thank: " + lastThank);
     db.none(query, [ statisticCount, userId ])
     .then(function () {
     cb(null, {
@@ -521,7 +521,7 @@ module.exports.checkStatistics = function(discordId, cb){
     var query = 'select * from ' + config.statisticsTable + ' where discordId = $1'
     db.one(query, [discordId])
     .then(function (data) {
-      //console.log(data);
+      //// console.log(data);
       cb(null, {
           status: 'success',
           data: data,
@@ -529,7 +529,7 @@ module.exports.checkStatistics = function(discordId, cb){
         });
     })
     .catch(function (err) {
-      console.log(err);
+      // console.log(err);
       cb(err);
     });
 }
@@ -574,10 +574,10 @@ module.exports.updateQuestlineStage = function(discordUserId, questline, stage, 
 // get items from itemsTable
 module.exports.getItemData = function(cb) {
   var query = 'select * from ' + config.itemsTable
-  console.log(query);
+  // console.log(query);
   db.query(query)
     .then(function (data) {
-      //console.log(data);
+      //// console.log(data);
       cb(null, {
           status: 'success',
           data: data,
@@ -585,7 +585,7 @@ module.exports.getItemData = function(cb) {
         });
     })
     .catch(function (err) {
-      console.log(err);
+      // console.log(err);
       cb(err);
     });
 }
@@ -593,10 +593,10 @@ module.exports.getItemData = function(cb) {
 // get specific item via id
 module.exports.getItemById = function(itemId, cb) {
   var query = 'select * from ' + config.itemsTable + ' where id =$1'
-  console.log(query, [itemId]);
+  // console.log(query, [itemId]);
   db.one(query, [itemId])
     .then(function (data) {
-      //console.log(data);
+      //// console.log(data);
       cb(null, {
           status: 'success',
           data: data,
@@ -604,7 +604,7 @@ module.exports.getItemById = function(itemId, cb) {
         });
     })
     .catch(function (err) {
-      console.log(err);
+      // console.log(err);
       cb(err);
     });
 }
@@ -621,10 +621,10 @@ module.exports.getItemByIdsWear = function(itemId, itemId2, itemId3, cb) {
         itemId3 = 0;
     }
     var query = 'select * from ' + config.itemsTable + ' where id =$1 or id = $2 or id = $3'
-    console.log(query, [itemId, itemId2, itemId3]);
+    // console.log(query, [itemId, itemId2, itemId3]);
     db.query(query, [itemId, itemId2, itemId3])
       .then(function (data) {
-        //console.log(data);
+        //// console.log(data);
         cb(null, {
             status: 'success',
             data: data,
@@ -632,7 +632,7 @@ module.exports.getItemByIdsWear = function(itemId, itemId2, itemId3, cb) {
           });
       })
       .catch(function (err) {
-        console.log(err);
+        // console.log(err);
         cb(err);
       });
   }
@@ -674,7 +674,7 @@ module.exports.addNewItemToUser = function(discordId, items, cb) {
         });
     })
     .catch(function (err) {
-        console.log(err);
+        // console.log(err);
         cb(err);
     }); 
 }
@@ -691,7 +691,7 @@ module.exports.bulkUpdateItemStatus = function(items, status, cb){
     }
 
     const query = pgp.helpers.update(inventoryItems, ['id', 'status'], config.inventoryTableNoQuotes) + ' WHERE v.id = t.id';
-    console.log(query);
+    // console.log(query);
     db.none(query)
     .then(function () {
     cb(null, {
@@ -700,7 +700,7 @@ module.exports.bulkUpdateItemStatus = function(items, status, cb){
         });
     })
     .catch(function (err) {
-        console.log(err);
+        // console.log(err);
         cb(err);
     });
 }
@@ -718,7 +718,7 @@ module.exports.bulkUpdateItemOwner = function(items, newOwner, cb){
         }
     
         const q = pgp.helpers.update(inventoryItems, ['id', 'discordid', 'status'], config.inventoryTableNoQuotes) + ' WHERE v.id = t.id';
-        console.log(q);
+        // console.log(q);
         var query = q.replace(/'/g, "");
         
         db.none(query)
@@ -729,7 +729,7 @@ module.exports.bulkUpdateItemOwner = function(items, newOwner, cb){
             });
         })
         .catch(function (err) {
-            console.log(err);
+            // console.log(err);
             cb(err);
         });
     }
@@ -840,7 +840,7 @@ module.exports.updateRpgPoints = function(discordUserId, rpgPoints, firstRpgGain
 // update user's item status
 module.exports.updateItemStatus = function(itemId, status, cb){
     var query = 'update ' + config.inventoryTable + ' set status=$1 where id=$2'
-    //console.log("new last thank: " + lastThank);
+    //// console.log("new last thank: " + lastThank);
     db.none(query, [status, itemId])
     .then(function () {
     cb(null, {
@@ -849,7 +849,7 @@ module.exports.updateItemStatus = function(itemId, status, cb){
         });
     })
     .catch(function (err) {
-        console.log(err);
+        // console.log(err);
         cb(err);
     });
 }
@@ -857,7 +857,7 @@ module.exports.updateItemStatus = function(itemId, status, cb){
 // get user's inventory
 module.exports.getUserItems = function(discordId, cb) {
   var query = 'select * from ' + config.inventoryTable + ' where discordId = $1 AND status is null '
-  console.log(query);
+  // console.log(query);
   db.query(query, [discordId])
     .then(function (data) {
       cb(null, {
@@ -867,14 +867,14 @@ module.exports.getUserItems = function(discordId, cb) {
         });
     })
     .catch(function (err) {
-      console.log(err);
+      // console.log(err);
       cb(err);
     });
 }
 // get wear info
 module.exports.getUserWearInfo = function(discordId, cb){
     var query = 'select * from ' + config.wearTable + ' where discordId = $1'
-    console.log(query);
+    // console.log(query);
     db.query(query, [discordId])
       .then(function (data) {
         cb(null, {
@@ -884,7 +884,7 @@ module.exports.getUserWearInfo = function(discordId, cb){
           });
       })
       .catch(function (err) {
-        console.log(err);
+        // console.log(err);
         cb(err);
       });
 }
@@ -941,7 +941,7 @@ module.exports.takeOffWear = function(discordId, slot, cb){
 module.exports.createUserWearInfo = function(data, cb){
     var query = 'insert into '+ config.wearTable + '(discordId, slot1replacing, slot2replacing, slot3replacing)' +
     'values(${discordId}, ${slot1replacing}, ${slot2replacing}, ${slot3replacing} )'
-    console.log(query);
+    // console.log(query);
     db.none(query, data)
     .then(function () {
     cb(null, {
