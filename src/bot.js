@@ -24,12 +24,12 @@ var mainChannel;
 
 client.on('ready', function(err) {
     if (err){
-        console.log(err);
+        // console.log(err);
     } 
-    console.log('The bot is online'); 
+    // console.log('The bot is online'); 
     var channelName;
     client.channels.forEach(function(channel){
-        // console.log(channel);
+        // // console.log(channel);
         if (channel.type == "text" && BOT_CHANNELS.indexOf(channel.name) != -1){
             channelName = channel;
         }
@@ -54,11 +54,11 @@ function commandIs(str, msg){
 }
 
 client.on('message', function(message){
-    //console.log(message);
+    //// console.log(message);
     if (botEnabled){
-        console.log(message.author.id); // id of the user that created the message
+        // console.log(message.author.id); // id of the user that created the message
         var args = message.content.split(/[ ]+/);
-        console.log(args);
+        // console.log(args);
         // check if it is Taco Tueday
         var dateUtc = new Date()
         var weekday = dateUtc.getDay();
@@ -150,7 +150,7 @@ client.on('message', function(message){
                         pasta = pasta.concat(args[arg] + " ");
                     }
                 }
-                console.log(pasta);
+                // console.log(pasta);
                 commands.buyPastaCommand(message, pasta);
             }
             else if (commandIs("scavenge", message)){
@@ -174,7 +174,7 @@ client.on('message', function(message){
             else if (commandIs("slots", message)){
                 if (args.length > 1){
                     var bet = args[1];
-                    console.log(args[1])
+                    // console.log(args[1])
                     commands.slotsCommand(message, bet);
                 }
             }
@@ -282,7 +282,7 @@ client.on('message', function(message){
                 }
             }
             catch(error){
-                console.log(error);
+                // console.log(error);
                 message.channel.send("error : " + error);
             }
         }
@@ -303,7 +303,7 @@ client.on('message', function(message){
         
     }else{
         var args = message.content.split(/[ ]+/);
-        console.log(args);
+        // console.log(args);
         if (commandIs("enable", message)){
             for (var arg in args){
                 if(args[arg] == TURN_ON_MSG){
@@ -336,17 +336,17 @@ function steal(channelName){
         // possible users to take from and share with
         if (!member.user.bot){
             var user = member.user
-            // console.log( user );
+            // // console.log( user );
             possibleUsersUsername.push( user );
         }
     });
 
     // random the user based on array size
     var userToTakeFromIndex = Math.floor(Math.random() * possibleUsersUsername.length);
-    console.log("taking from " + possibleUsersUsername[userToTakeFromIndex].username )
+    // console.log("taking from " + possibleUsersUsername[userToTakeFromIndex].username )
     // random if bender is sharing half his meal
     var sharing = Math.floor(Math.random() * 10)
-    console.log("sharing ? " + sharing )
+    // console.log("sharing ? " + sharing )
     // random the user bender will share with
     var userToShareWithIndex = Math.floor(Math.random() * possibleUsersUsername.length);
 
@@ -354,7 +354,7 @@ function steal(channelName){
         // check for a different user until the indeces are not equal
         userToShareWithIndex = Math.floor(Math.random() * possibleUsersUsername.length);
     }
-    console.log("sharing with " + possibleUsersUsername[userToShareWithIndex].username )
+    // console.log("sharing with " + possibleUsersUsername[userToShareWithIndex].username )
 
     // sharing
     if (sharing >= 8){
@@ -374,7 +374,7 @@ function steal(channelName){
                     }
                     profileDB.updateUserTacosGive(possibleUsersUsername[userToTakeFromIndex].id, (tacos * -1), function(err, updateResponse){
                         if (err){
-                            console.log(err);
+                            // console.log(err);
                         }
                         else{
                             // took from user
@@ -385,7 +385,7 @@ function steal(channelName){
             })
             profileDB.updateUserTacosGive(possibleUsersUsername[userToShareWithIndex].id, tacos , function(err, updateResponse){
                 if (err){
-                    console.log(err);
+                    // console.log(err);
                 }
                 else{
                     stealEmbedBuilder(channel, bendersMeal)
@@ -412,7 +412,7 @@ function steal(channelName){
                     }
                     profileDB.updateUserTacosGive(possibleUsersUsername[userToTakeFromIndex].id, (tacos * -1), function(err, updateResponse){
                         if (err){
-                            console.log(err);
+                            // console.log(err);
                         }
                         else{
                             stealEmbedBuilder(channel, bendersMeal)

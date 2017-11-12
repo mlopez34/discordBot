@@ -272,7 +272,7 @@ module.exports.trickOrTreatCommand = function(message){
     // if they get trick, their pet becomes a ghost and they lose 5 tacos
     profileDB.getUserProfileData( discordUserId, function(err, totData) {
         if(err){
-            console.log("in error : " + err.code);
+            // console.log("in error : " + err.code);
             agreeToTerms(message, discordUserId);
         }else{
             var trickOrTreat = Math.floor(Math.random() * 2);
@@ -292,7 +292,7 @@ module.exports.trickOrTreatCommand = function(message){
                     };
                     profileDB.updateUserTacosTrickOrTreat(discordUserId, -5, function(updateerr, updateResponse) {
                         if (updateerr){
-                            console.log(updateerr);
+                            // console.log(updateerr);
                         }
                         else{
                             message.channel.send("You have been tricked! 👻 Bender took 5 tacos from your candy bag");
@@ -309,7 +309,7 @@ module.exports.trickOrTreatCommand = function(message){
                     
                     profileDB.updateUserTacosTrickOrTreat(discordUserId, 10, function(updateerr, updateResponse) {
                         if (updateerr){
-                            console.log(updateerr);
+                            // console.log(updateerr);
                         }
                         else{
                             message.channel.send("You have been treated! 🎃 Bender put 10 tacos in your candy bag");
@@ -332,9 +332,9 @@ module.exports.thankCommand = function(message){
     var users  = message.mentions.users;
     var mentionedId;
     var mentionedUser;
-    console.log(users);
+    // console.log(users);
     users.forEach(function(user){
-        console.log(user.id);
+        // console.log(user.id);
         mentionedId = user.id;
         mentionedUser = user
     })
@@ -343,7 +343,7 @@ module.exports.thankCommand = function(message){
     if ( message.mentions.users.size > 0 && discordUserId != mentionedId && !NeedsToAgree[mentionedId] ){
         profileDB.getUserProfileData( discordUserId, function(err, thankResponse) {
             if(err){
-                console.log("in error : " + err.code);
+                // console.log("in error : " + err.code);
                 agreeToTerms(message, discordUserId);
             }else{
                 var userLevel = thankResponse.data.level;
@@ -351,9 +351,9 @@ module.exports.thankCommand = function(message){
                     if (wearErr){
                         
                     }else{
-                        // console.log(wearRes);
+                        // // console.log(wearRes);
                         var minutesToRemove = wearStats.calculateMinutesReduced(wearRes, "thank");
-                        console.log("MINUTES TO REMOVE " + minutesToRemove);
+                        // console.log("MINUTES TO REMOVE " + minutesToRemove);
                         // check against thank timestamp and if 2 hours have passed
                         var now = new Date();
                         var twoHoursAgo = new Date();
@@ -368,22 +368,22 @@ module.exports.thankCommand = function(message){
                             // add tacos to user's profile if they got extra tacos
                             profileDB.updateUserTacos(mentionedId, 1, function(updateerr, updateResponse) {
                                 if (updateerr){
-                                    console.log(updateerr);
+                                    // console.log(updateerr);
                                     message.channel.send("The user has not yet agreed to the terms");
                                 }
                                 else{
                                     profileDB.updateUserTacosThank(discordUserId, extraTacosFromItems, function(updateerr, updateResponse) {
                                         if (updateerr){
-                                            console.log(updateerr);
+                                            // console.log(updateerr);
                                         }
                                         else{
-                                            // console.log(updateResponse);
+                                            // // console.log(updateResponse);
                                             var experienceFromItems = wearRes.thankCommandExperienceGain ? wearRes.thankCommandExperienceGain : 0;
                                             experience.gainExperience(message, discordUserId, EXPERIENCE_GAINS.thank + experienceFromItems, thankResponse);
                                             //update statistic
                                             stats.statisticsManage(discordUserId, "thankcount", 1, function(staterr, statSuccess){
                                                 if (staterr){
-                                                    console.log(staterr);
+                                                    // console.log(staterr);
                                                 }
                                                 else{
                                                     // check achievements??
@@ -424,9 +424,9 @@ module.exports.sorryCommand = function(message){
     var users  = message.mentions.users;
     var mentionedId;
     var mentionedUser;
-    console.log(users);
+    // console.log(users);
     users.forEach(function(user){
-        console.log(user.id);
+        // console.log(user.id);
         mentionedId = user.id;
         mentionedUser = user.username
     })
@@ -442,9 +442,9 @@ module.exports.sorryCommand = function(message){
                     if (wearErr){
                         
                     }else{
-                        // console.log(wearRes);
+                        // // console.log(wearRes);
                         var minutesToRemove = wearStats.calculateMinutesReduced(wearRes, "sorry");
-                        console.log("MINUTES TO REMOVE " + minutesToRemove);
+                        // console.log("MINUTES TO REMOVE " + minutesToRemove);
                         // check six hours ago
                         var achievements = sorryResponse.data.achievements;
                         var now = new Date();
@@ -459,13 +459,13 @@ module.exports.sorryCommand = function(message){
                             
                             profileDB.updateUserTacos(mentionedId, 1, function(updateerr, updateResponse) {
                                 if (updateerr){
-                                    console.log(updateerr);
+                                    // console.log(updateerr);
                                     // create mentioned user
                                     var mentionedData = initialUserProfile(mentionedId);
                                     mentionedData.tacos = mentionedData.tacos + 1
                                     profileDB.createUserProfile(mentionedData, function(createerr, createUserResponse){
                                         if (createerr){
-                                            console.log(createerr); // cant create user RIP
+                                            // console.log(createerr); // cant create user RIP
                                         }
                                         else{
                                             message.channel.send(message.author + " apologized to " + mentionedUser + ", they received a taco! :taco:" + " cd reduction in minutes " + minutesToRemove + " " + (wearRes.sorryCommandCDRPercentage*100) + "%");
@@ -473,7 +473,7 @@ module.exports.sorryCommand = function(message){
                                             experience.gainExperience(message, discordUserId, (EXPERIENCE_GAINS.sorry + experienceFromItems) , sorryResponse);
                                             stats.statisticsManage(discordUserId, "sorrycount", 1, function(staterr, statSuccess){
                                                 if (staterr){
-                                                    console.log(staterr);
+                                                    // console.log(staterr);
                                                 }
                                                 else{
                                                     // check achievements??
@@ -486,14 +486,14 @@ module.exports.sorryCommand = function(message){
                                 else{
                                     profileDB.updateUserTacosSorry(discordUserId, extraTacosFromItems, function(updateerr, updateResponse) {
                                         if (updateerr){
-                                            console.log(updateerr);
+                                            // console.log(updateerr);
                                         }
                                         else{
-                                            //console.log(updateResponse);
+                                            //// console.log(updateResponse);
                                             experience.gainExperience(message, discordUserId, EXPERIENCE_GAINS.sorry , sorryResponse);
                                             stats.statisticsManage(discordUserId, "sorrycount", 1, function(err, statSuccess){
                                                 if (err){
-                                                    console.log(err);
+                                                    // console.log(err);
                                                 }
                                                 else{
                                                     // check achievements??
@@ -546,14 +546,14 @@ module.exports.buyStandCommand = function (message){
             if (buyStandResponse.data.tacostands && buyStandResponse.data.tacostands > -1){
                 userTacoStands = buyStandResponse.data.tacostands;
             }
-            //console.log(buyStandResponse.data.tacos);
+            //// console.log(buyStandResponse.data.tacos);
             var standCost = BASE_TACO_COST + (userTacoStands * 25);
             if (buyStandResponse.data.tacos >= standCost){
                 // purchaseStand
                 var tacosSpent = standCost * -1
                 profileDB.purchaseTacoStand(discordUserId, tacosSpent, buyStandResponse.data.tacostands, function(err, data){
                     if (err){
-                        console.log(err);
+                        // console.log(err);
                         // couldn't purchase stand
                     }
                     else{
@@ -563,7 +563,7 @@ module.exports.buyStandCommand = function (message){
                         var data = {}
                         data.achievements = achievements;
                         data.tacostands = userTacoStands + 1;
-                        //console.log(data);
+                        //// console.log(data);
                         achiev.checkForAchievements(discordUserId, data, message);
                             
                     }
@@ -601,7 +601,7 @@ module.exports.prepareCommand = function (message){
                     var threeDaysAgo = new Date();
                     ///////// CALCULATE THE MINUTES REDUCED HERE 
                     var minutesToRemove = wearStats.calculateMinutesReduced(wearRes, "prepare");
-                    console.log("MINUTES TO REMOVE " + minutesToRemove);
+                    // console.log("MINUTES TO REMOVE " + minutesToRemove);
                     threeDaysAgo = new Date(threeDaysAgo.setHours(threeDaysAgo.getHours() - PREPARE_COOLDOWN_HOURS));
                     threeDaysAgo = new Date(threeDaysAgo.setMinutes(threeDaysAgo.getMinutes() + minutesToRemove));
 
@@ -630,7 +630,7 @@ module.exports.prepareCommand = function (message){
                             tacosToPrepare = tacosToPrepare + soiledToTaco;
                             profileDB.prepareTacos(discordUserId, tacosToPrepare + extraTacosFromItems, function(err, data){
                                 if (err){
-                                    console.log(err);
+                                    // console.log(err);
                                     // something happened
                                 }
                                 else{
@@ -638,10 +638,10 @@ module.exports.prepareCommand = function (message){
                                     var protection = prepareResponse.data.protect;
                                     profileDB.updateUserProtect(discordUserId, 1, protection, function(updateerr, updateResponse) {
                                         if (updateerr){
-                                            console.log(updateerr);
+                                            // console.log(updateerr);
                                         }
                                         else{
-                                            //console.log(updateResponse);
+                                            //// console.log(updateResponse);
                                             
                                             if (extraTacosFromItems > 0){
                                                 message.channel.send(message.author + " You have prepared `" + tacosToPrepare + "` tacos :taco:! `" + soiledToTaco +"` were from soiled crops. The tacos also come with `1` warranty protection" + " received `" + extraTacosFromItems + "` extra tacos");
@@ -652,16 +652,16 @@ module.exports.prepareCommand = function (message){
                                             experience.gainExperience(message, discordUserId, (EXPERIENCE_GAINS.prepare + (EXPERIENCE_GAINS.preparePerStand * userTacoStands) + experienceFromItems) , prepareResponse);
                                             stats.statisticsManage(discordUserId, "maxextratacos", soiledToTaco, function(staterr, statSuccess){
                                                 if (staterr){
-                                                    console.log(staterr);
+                                                    // console.log(staterr);
                                                 }
                                                 else{
                                                     // check achievements??
-                                                    console.log(statSuccess);
+                                                    // console.log(statSuccess);
                                                     // check achievements??
                                                     var data = {}
                                                     data.achievements = achievements;
                                                     data.maxextratacos = soiledToTaco;
-                                                    console.log(data);
+                                                    // console.log(data);
                                                     achiev.checkForAchievements(discordUserId, data, message);
                                                 }
                                             })
@@ -691,9 +691,9 @@ module.exports.welcomeCommand = function(message){
     var users  = message.mentions.users;
     var mentionedId;
     var mentionedUser;
-    console.log(users);
+    // console.log(users);
     users.forEach(function(user){
-        console.log(user.id);
+        // console.log(user.id);
         mentionedId = user.id;
         mentionedUser = user
     })
@@ -731,7 +731,7 @@ module.exports.welcomeCommand = function(message){
                 if ( !welcomeResponse.data.welcomed ){
                     profileDB.updateUserTacosWelcome(mentionedId, 1, function(err, updateResponse) {
                         if (err){
-                            console.log(err);
+                            // console.log(err);
                         }
                         else{
                             // send message that the user has 1 more taco
@@ -742,7 +742,7 @@ module.exports.welcomeCommand = function(message){
                             message.channel.send(mentionedUser + " Welcome! You now have " + (welcomeResponse.data.tacos + 2) + " tacos! :taco:");
                             stats.statisticsManage(discordUserId, "welcomecount", 1, function(err, statSuccess){
                                 if (err){
-                                    console.log(err);
+                                    // console.log(err);
                                 }
                                 else{
                                     // check achievements??
@@ -770,10 +770,10 @@ module.exports.giveCommand = function(message, giveTacoAmount){
     var mentionedId;
     var mentionedUser;
     giveTacoAmount = Math.floor(giveTacoAmount);
-    console.log("giveTacoAmount " + giveTacoAmount)
-    console.log(users);
+    // console.log("giveTacoAmount " + giveTacoAmount)
+    // console.log(users);
     users.forEach(function(user){
-        console.log(user.id);
+        // console.log(user.id);
         mentionedId = user.id;
         mentionedUser = user
     })
@@ -807,10 +807,10 @@ module.exports.giveCommand = function(message, giveTacoAmount){
                 // check if user has enough tacos to give
                 var achievements = giveResponse.data.achievements;
                 if (giveResponse.data.tacos - tacosInUse - giveTacoAmount >= 0 ){
-                    console.log("have enough");
+                    // console.log("have enough");
                     profileDB.getUserProfileData( mentionedId, function(mentionederr, giveMentionedResponse) {
                         if(mentionederr){
-                            console.log(mentionederr);
+                            // console.log(mentionederr);
                             // create user and give them the number of tacos
                             var now = new Date();
                             var threedaysAgo = new Date();
@@ -833,10 +833,10 @@ module.exports.giveCommand = function(message, giveTacoAmount){
                             }
                             profileDB.createUserProfile(userData, function(createerr, createResponse){
                                 if(createerr){
-                                    console.log(createerr);
+                                    // console.log(createerr);
                                 }
                                 else{
-                                    console.log(createResponse);
+                                    // console.log(createResponse);
                                     exports.giveCommand(message, giveTacoAmount);
                                 }
                             })
@@ -844,7 +844,7 @@ module.exports.giveCommand = function(message, giveTacoAmount){
                         else{
                             var initialTacoTax = Math.floor(giveTacoAmount * 0.1);
                             var tacoTax = initialTacoTax;
-                            console.log(tacoTax);
+                            // console.log(tacoTax);
                             if (initialTacoTax < 1){
                                 tacoTax = 1;
                             }
@@ -852,33 +852,33 @@ module.exports.giveCommand = function(message, giveTacoAmount){
                                 tacoTax = tacoTax + 1
                             }
                             var negativeGiveTacoAmount = giveTacoAmount * -1
-                            console.log(negativeGiveTacoAmount);
+                            // console.log(negativeGiveTacoAmount);
                             profileDB.updateUserTacosGive(discordUserId, negativeGiveTacoAmount, function(givererr, giverUpdateResponse) {
                                 if (givererr){
-                                    console.log(givererr);
+                                    // console.log(givererr);
                                 }
                                 else{
                                     // 
                                     giveTacoAmount = giveTacoAmount - tacoTax;
-                                    console.log(giveTacoAmount);
+                                    // console.log(giveTacoAmount);
                                     profileDB.updateUserTacosGive(mentionedId, giveTacoAmount, function(receivererr, receiverUpdateResponse) {
                                         if (receivererr){
-                                            console.log(receivererr);
+                                            // console.log(receivererr);
                                         }
                                         else{
                                             // send message that the user has gotten tacos
                                             message.channel.send(message.author + " gifted " + mentionedUser + " `" + giveTacoAmount + "` tacos! :taco: and Bender kept `" + tacoTax + "` tacos for tax purposes." );
                                             stats.statisticsManage(discordUserId, "givecount", giveTacoAmount, function(err, statSuccess){
                                                 if (err){
-                                                    console.log(err);
+                                                    // console.log(err);
                                                 }
                                                 else{
-                                                    console.log(statSuccess);
+                                                    // console.log(statSuccess);
                                                     // check achievements??
                                                     var data = {}
                                                     data.achievements = achievements;
                                                     data.givecount = giveTacoAmount;
-                                                    console.log(data);
+                                                    // console.log(data);
                                                     achiev.checkForAchievements(discordUserId, data, message);
                                                 }
                                             })
@@ -890,7 +890,7 @@ module.exports.giveCommand = function(message, giveTacoAmount){
                     })
                 }
                 else{
-                    console.log('dont have enough tacos.')
+                    // console.log('dont have enough tacos.')
                 }
             }
         })
@@ -939,7 +939,7 @@ module.exports.cookCommand = function(message){
                 }else{
                     // check six hours ago
                     var minutesToRemove = wearStats.calculateMinutesReduced(wearRes, "cook");
-                    console.log("MINUTES TO REMOVE " + minutesToRemove);
+                    // console.log("MINUTES TO REMOVE " + minutesToRemove);
 
                     var achievements = cookResponse.data.achievements;
                     var now = new Date();
@@ -955,7 +955,7 @@ module.exports.cookCommand = function(message){
 
                         profileDB.updateUserTacosCook(discordUserId, cookRoll + extraTacosFromItems + extraTacosFromCasserole , function(err, updateResponse) {
                             if (err){
-                                console.log(err);
+                                // console.log(err);
                             }
                             else{
                                 // send message that the user has 1 more taco
@@ -973,7 +973,7 @@ module.exports.cookCommand = function(message){
                                 var data = {}
                                 data.achievements = achievements;
                                 data.cookcount = cookRoll
-                                console.log(data);
+                                // console.log(data);
                                 achiev.checkForAchievements(discordUserId, data, message);
                                 var experienceFromItems = wearRes.cookCommandExperienceGain ? wearRes.cookCommandExperienceGain : 0;
                                 experience.gainExperience(message, discordUserId, (EXPERIENCE_GAINS.cook + experienceFromItems), cookResponse);
@@ -993,16 +993,16 @@ module.exports.cookCommand = function(message){
 }
 
 module.exports.throwCommand = function(message){
-    console.log(message);
+    // console.log(message);
     var discordUserId = message.author.id;
     var users  = message.mentions.users;
     var userMentioned;
     var mentionedId;
     var mentionedUser;
     var mentionedDiscriminator;
-    console.log(users);
+    // console.log(users);
     users.forEach(function(user){
-        console.log(user.id);
+        // console.log(user.id);
         userMentioned = user;
         mentionedId = user.id;
         mentionedUser = user
@@ -1028,11 +1028,11 @@ module.exports.throwCommand = function(message){
             else{
                 // user exists, subtract 1 taco 
                 var achievements = throwResponse.data.achievements;
-                console.log("asdfasfsd " + throwResponse.data.tacos)
+                // console.log("asdfasfsd " + throwResponse.data.tacos)
                 if (throwResponse.data.tacos - tacosInUse >= 1){
                     profileDB.updateUserTacosThrow(discordUserId, -1, function(err, updateResponse) {
                         if (err){
-                            console.log(err);
+                            // console.log(err);
                         }
                         else{
                             // send message that the user has 1 more taco
@@ -1047,17 +1047,17 @@ module.exports.throwCommand = function(message){
                         
                             stats.statisticsManage(discordUserId, "throwntocount", 1, function(err, statSuccess){
                                 if (err){
-                                    console.log(err);
+                                    // console.log(err);
                                 }
                                 else{
                                     // check achievements??
                                     var data = {}
                                     data.achievements = achievements;
-                                    console.log(data);
+                                    // console.log(data);
                                     achiev.checkForAchievements(discordUserId, data, message);
                                     stats.statisticsManage(mentionedId, "thrownatcount", 1, function(err, statSuccess){
                                         if (err){
-                                            console.log(err);
+                                            // console.log(err);
                                         }
                                         else{
                                             profileDB.getUserProfileData( mentionedId, function(err, thrownAtRes) {
@@ -1068,7 +1068,7 @@ module.exports.throwCommand = function(message){
                                                     var mentionedAchievements = thrownAtRes.data.achievements
                                                     var mentionedData = {}
                                                     mentionedData.achievements = mentionedAchievements;
-                                                    console.log(mentionedData);
+                                                    // console.log(mentionedData);
                                                     achiev.checkForAchievements(mentionedUser.id, mentionedData, message, false, mentionedUser);
                                                 }
                                             })
@@ -1088,15 +1088,15 @@ module.exports.throwCommand = function(message){
 }
 
 module.exports.profileCommand = function(message){
-    console.log(message);
+    // console.log(message);
     var discordUserId = message.author.id;
     var users  = message.mentions.users;
     var mentionedId;
     var mentionedUser;
     var mentionedUserAvatarURL;
-    console.log(users);
+    // console.log(users);
     users.forEach(function(user){
-        console.log(user.id);
+        // console.log(user.id);
         mentionedId = user.id;
         mentionedUser = user.username
         mentionedUserAvatarURL = user.avatarURL;
@@ -1368,7 +1368,7 @@ module.exports.buyPickaxeCommand = function(message){
                     var tacosSpent = PICKAXE_COST * -1;
                     profileDB.purchasePickAxe(discordUserId, tacosSpent, function(err, data){
                         if (err){
-                            console.log(err);
+                            // console.log(err);
                             // couldn't purchase stand
                         }
                         else{
@@ -1387,7 +1387,7 @@ module.exports.buyPickaxeCommand = function(message){
                     var tacosSpent = IMPROVED_PICKAXE_COST * -1;
                     profileDB.purchasePickAxe(discordUserId, tacosSpent, function(err, data){
                         if (err){
-                            console.log(err);
+                            // console.log(err);
                             // couldn't purchase stand
                         }
                         else{
@@ -1406,7 +1406,7 @@ module.exports.buyPickaxeCommand = function(message){
                     var tacosSpent = MASTER_PICKAXE_COST * -1;
                     profileDB.purchasePickAxe(discordUserId, tacosSpent, function(err, data){
                         if (err){
-                            console.log(err);
+                            // console.log(err);
                             // couldn't purchase stand
                         }
                         else{
@@ -1603,7 +1603,7 @@ module.exports.buyRecipeCommand = function(message){
     profileDB.getUserProfileData( discordUserId, function(err, buyRecipeResponse) {
         if(err){
             // user doesnt exist
-            console.log(err);
+            // console.log(err);
         }
         else{
             var userReputation = buyRecipeResponse.data.repstatus;
@@ -1614,7 +1614,7 @@ module.exports.buyRecipeCommand = function(message){
                     // check that user has enough tacos, if they do, create the item and add it to user
                     profileDB.getItemData(function(err, getItemResponse){
                         if (err){
-                            console.log(err);
+                            // console.log(err);
                         }
                         else{
                             var artifactRecipeItem = [];
@@ -1629,7 +1629,7 @@ module.exports.buyRecipeCommand = function(message){
                                 addToUserInventory(discordUserId, artifactRecipeItem);
                                 profileDB.updateUserTacos(discordUserId, ARTIFACT_RECIPE_COST * -1, function(updateLSErr, updateLSres){
                                     if(updateLSErr){
-                                        console.log(updateLSErr);
+                                        // console.log(updateLSErr);
                                     }
                                     else{
                                         message.channel.send(message.author + " successfully purchased an artifact recipe :rosette:!")
@@ -1843,13 +1843,13 @@ function getProfileForAchievement(discordUserId, message, profileResponse){
     if (!profileResponse){
         profileDB.getUserProfileData(discordUserId, function(err, profileResponse){
             if (err){
-                console.log(err);
+                // console.log(err);
             }
             else{
                 var achievements = profileResponse.data.achievements;
                 var data = {}
                 data.achievements = achievements;
-                console.log(data);
+                // console.log(data);
                 achiev.checkForAchievements(discordUserId, data, message);
             }
         });
@@ -1858,7 +1858,7 @@ function getProfileForAchievement(discordUserId, message, profileResponse){
         var achievements = profileResponse.data.achievements;
         var data = {}
         data.achievements = achievements;
-        console.log(data);
+        // console.log(data);
         achiev.checkForAchievements(discordUserId, data, message);
     }
 }
@@ -1875,15 +1875,15 @@ module.exports.raresCommand = function(message, args){
     }
     profileDB.getUserItems(discordUserId, function(err, inventoryResponse){
         if (err){
-            console.log(err);
+            // console.log(err);
         }
         else{
-            console.log(inventoryResponse.data);
+            // console.log(inventoryResponse.data);
             // get all the data for each item
             var itemsInInventoryCountMap = {};
             var itemsMapbyId = {};
             profileDB.getItemData(function(error, allItemsResponse){
-                //console.log(allItemsResponse.data);
+                //// console.log(allItemsResponse.data);
                 for (var item in inventoryResponse.data){
                     var validItem = useItem.itemValidate(inventoryResponse.data[item]);
                     var itemBeingAuctioned = false;
@@ -1904,7 +1904,7 @@ module.exports.raresCommand = function(message, args){
                         itemsInInventoryCountMap[inventoryResponse.data[item].itemid] = itemsInInventoryCountMap[inventoryResponse.data[item].itemid] + 1
                     }
                 }
-                //console.log(itemsInInventoryCountMap);
+                //// console.log(itemsInInventoryCountMap);
                 for (var index in allItemsResponse.data){
                     itemsMapbyId[allItemsResponse.data[index].id] = allItemsResponse.data[index];
                 }
@@ -1933,7 +1933,7 @@ function raresEmbedBuilder(message, itemsMap, allItems, long){
                 || allItems[key].itemraritycategory == "artifact"
                 || allItems[key].itemraritycategory == "artifact+"
                 || allItems[key].itemraritycategory == "myth")){
-                console.log(key + " " + allItems[key].itemname)
+                // console.log(key + " " + allItems[key].itemname)
                 
                 var emoji = "";
                 
@@ -1997,19 +1997,19 @@ module.exports.inventoryCommand = function(message){
     var discordUserId = message.author.id;
     profileDB.getUserItems(discordUserId, function(err, inventoryResponse){
         if (err){
-            console.log(err);
+            // console.log(err);
         }
         else{
-            console.log(inventoryResponse.data);
+            // console.log(inventoryResponse.data);
             // get all the data for each item
             var itemsInInventoryCountMap = {};
             var itemsMapbyId = {};
             profileDB.getItemData(function(error, allItemsResponse){
                 if (error){
-                    console.log(error);
+                    // console.log(error);
                 }
                 else{
-                    console.log("allitemsres " + allItemsResponse.data);
+                    // console.log("allitemsres " + allItemsResponse.data);
                     for (var item in inventoryResponse.data){
                         var ItemInQuestion = inventoryResponse.data[item];
                         var validItem = useItem.itemValidate(ItemInQuestion);
@@ -2032,7 +2032,7 @@ module.exports.inventoryCommand = function(message){
                             itemsInInventoryCountMap[inventoryResponse.data[item].itemid] = itemsInInventoryCountMap[inventoryResponse.data[item].itemid] + 1
                         }
                     }
-                    console.log(itemsInInventoryCountMap);
+                    // console.log(itemsInInventoryCountMap);
                     for (var index in allItemsResponse.data){
                         itemsMapbyId[allItemsResponse.data[index].id] = allItemsResponse.data[index];
                     }
@@ -2051,7 +2051,7 @@ function inventoryEmbedBuilder(message, itemsMap, allItems){
         if (itemsMap.hasOwnProperty(key)) {
             // 
             if (allItems[key] && (allItems[key].itemraritycategory == "common" || allItems[key].itemraritycategory == "uncommon")){
-                console.log(key + " " + allItems[key].itemname)
+                // console.log(key + " " + allItems[key].itemname)
                 inventoryString = "**"+allItems[key].itemname + "** - " +  itemsMap[key] + " - " + allItems[key].itemslot +"\n" + inventoryString;
             }
         }
@@ -2092,7 +2092,7 @@ module.exports.scavangeCommand = function (message){
     // only scavenge if the user has a pickaxe
     profileDB.getUserProfileData( discordUserId, function(error, getUserResponse) {
         if(error){
-            console.log(error);
+            // console.log(error);
             // create user profile then send a message saying they need a pickaxe
             agreeToTerms(message, discordUserId);
         }
@@ -2101,10 +2101,10 @@ module.exports.scavangeCommand = function (message){
             var userLevel = getUserResponse.data.level;
             wearStats.getUserWearingStats(message, discordUserId, {userLevel: userLevel}, function(wearErr, wearRes){
                 if (wearErr){
-                    console.log(wearErr);
+                    // console.log(wearErr);
                 }else{
                     var minutesToRemove = wearStats.calculateMinutesReduced(wearRes, "scavenge");
-                    console.log("MINUTES TO REMOVE " + minutesToRemove);
+                    // console.log("MINUTES TO REMOVE " + minutesToRemove);
                     //check for more than 1 hours
                     var now = new Date();
                     var oneHourAgo = new Date();
@@ -2115,7 +2115,7 @@ module.exports.scavangeCommand = function (message){
                     if ( oneHourAgo > getUserResponse.data.lastscavangetime ){
                         profileDB.getItemData(function(err, getItemResponse){
                             if (err){
-                                console.log(err);
+                                // console.log(err);
                             }
                             else{
                                 var ARTIFACT_MIN_ROLL = 9995;
@@ -2184,7 +2184,7 @@ module.exports.scavangeCommand = function (message){
                                 for (var i = 0; i < rollsCount; i++){
                                     var rarityRoll = Math.floor(Math.random() * 10000) + 1;
                                     var rarityString = "";
-                                    console.log(rarityRoll);
+                                    // console.log(rarityRoll);
                                     if (!gotUncommon && rollsCount > 4){
                                         // guaranteed more than uncommon +
                                         rarityRoll = Math.floor(Math.random() * 1500) + 8501;
@@ -2198,7 +2198,7 @@ module.exports.scavangeCommand = function (message){
                                     if (rarityRoll > ARTIFACT_MIN_ROLL){
                                         rarityString = "artifact"
                                         var itemRoll = Math.floor(Math.random() * artifactItems.length);
-                                        console.log(artifactItems[itemRoll]);
+                                        // console.log(artifactItems[itemRoll]);
                                         itemsObtainedArray.push(artifactItems[itemRoll]);
                                         if (highestRarityFound <= 4){
                                             highestRarityFound = 5;
@@ -2207,7 +2207,7 @@ module.exports.scavangeCommand = function (message){
                                     else if(rarityRoll > ANCIENT_MIN_ROLL && rarityRoll <= ANCIENT_MAX_ROLL){
                                         rarityString = "ancient"
                                         var itemRoll = Math.floor(Math.random() * ancientItems.length);
-                                        console.log(ancientItems[itemRoll]);
+                                        // console.log(ancientItems[itemRoll]);
                                         itemsObtainedArray.push(ancientItems[itemRoll])
                                         if (highestRarityFound <= 3){
                                             highestRarityFound = 4;
@@ -2216,7 +2216,7 @@ module.exports.scavangeCommand = function (message){
                                     else if(rarityRoll > RARE_MIN_ROLL && rarityRoll <= RARE_MAX_ROLL){
                                         rarityString = "rare"
                                         var itemRoll = Math.floor(Math.random() * rareItems.length);
-                                        console.log(rareItems[itemRoll]);
+                                        // console.log(rareItems[itemRoll]);
                                         itemsObtainedArray.push(rareItems[itemRoll]);
                                         if (highestRarityFound <= 2){
                                             highestRarityFound = 3;
@@ -2225,7 +2225,7 @@ module.exports.scavangeCommand = function (message){
                                     else if (rarityRoll > UNCOMMON_MIN_ROLL && rarityRoll <= UNCOMMON_MAX_ROLL){
                                         rarityString = "uncommon"
                                         var itemRoll = Math.floor(Math.random() * uncommonItems.length);
-                                        console.log(uncommonItems[itemRoll]);
+                                        // console.log(uncommonItems[itemRoll]);
                                         itemsObtainedArray.push( uncommonItems[itemRoll] );
                                         if (highestRarityFound <= 1){
                                             highestRarityFound = 2;
@@ -2234,7 +2234,7 @@ module.exports.scavangeCommand = function (message){
                                     else {
                                         rarityString = "common"
                                         var itemRoll = Math.floor(Math.random() * commonItems.length);
-                                        console.log(commonItems[itemRoll]);
+                                        // console.log(commonItems[itemRoll]);
                                         commonItems[itemRoll].itemAmount = COMMON_ITEMS_TO_OBTAIN
                                         itemsObtainedArray.push( commonItems[itemRoll] );
                                     }
@@ -2253,10 +2253,10 @@ module.exports.scavangeCommand = function (message){
                                 // update lastscavengetime
                                 profileDB.updateLastScavengeTime(discordUserId, function(updateLSErr, updateLSres){
                                     if(updateLSErr){
-                                        console.log(updateLSErr);
+                                        // console.log(updateLSErr);
                                     }
                                     else{
-                                        console.log(updateLSres);
+                                        // console.log(updateLSres);
                                         var experienceFromItems = wearRes.scavengeCommandExperienceGain ? wearRes.scavengeCommandExperienceGain : 0;                                        
                                         experience.gainExperience(message, discordUserId, ((EXPERIENCE_GAINS.scavenge * EXPERIENCE_MULTIPLIER) + experienceFromItems), getUserResponse);
                                     }
@@ -2269,15 +2269,15 @@ module.exports.scavangeCommand = function (message){
                                 }
                                 profileDB.updateUserTacos(discordUserId, tacosFound + extraTacosFromItems, function(updateLSErr, updateLSres){
                                     if(updateLSErr){
-                                        console.log(updateLSErr);
+                                        // console.log(updateLSErr);
                                     }
                                     else{
-                                        console.log(updateLSres);
+                                        // console.log(updateLSres);
                                         // add to statistics
                                         var achievements = getUserResponse.data.achievements;
                                         stats.statisticsManage(discordUserId, "scavengecount", 1, function(err, statSuccess){
                                             if (err){
-                                                console.log(err);
+                                                // console.log(err);
                                             }
                                             else{
                                                 // check achievements
@@ -2299,7 +2299,7 @@ module.exports.scavangeCommand = function (message){
                                                 if (highestRarityFound == 1){
                                                     data.rarity = "common"
                                                 }
-                                                console.log(data);
+                                                // console.log(data);
                                                 achiev.checkForAchievements(discordUserId, data, message);
                                             }
                                         })
@@ -2345,10 +2345,10 @@ function scavengeEmbedBuilder(message, itemsScavenged, tacosFound){
 function addToUserInventory(discordUserId, items){
     profileDB.addNewItemToUser(discordUserId, items, function(itemError, itemAddResponse){
         if (itemError){
-            console.log(itemError);
+            // console.log(itemError);
         }
         else{
-            console.log(itemAddResponse);
+            // console.log(itemAddResponse);
         }
     })
 }
@@ -2360,7 +2360,7 @@ module.exports.slotsCommand = function(message, tacosBet){
     if (bet > 1 ){
         profileDB.getUserProfileData(discordUserId, function(getProfileError, getProfileResponse){
             if (getProfileError){
-                console.log(getProfileError);
+                // console.log(getProfileError);
                 agreeToTerms(message, discordUserId);
             }
             else{
@@ -2385,13 +2385,13 @@ module.exports.slotsCommand = function(message, tacosBet){
 
                     profileDB.updateUserTacos(discordUserId, tacosWon, function(updateErr, updateRes){
                         if (updateErr){
-                            console.log(updateErr);
+                            // console.log(updateErr);
                         }
                         else{
-                            console.log(updateRes);
+                            // console.log(updateRes);
                             stats.statisticsManage(discordUserId, "slotscount", 1, function(staterr, statSuccess){
                                 if (staterr){
-                                    console.log(staterr);
+                                    // console.log(staterr);
                                 }
                                 else{
                                     // check achievements??
@@ -2512,9 +2512,9 @@ module.exports.gameCommand = function(message){
     var users  = message.mentions.users;
     var mentionedId;
     var mentionedUser;
-    console.log(users);
+    // console.log(users);
     users.forEach(function(user){
-        console.log(user.id);
+        // console.log(user.id);
         mentionedId = user.id;
         mentionedUser = user
     })
@@ -2583,12 +2583,12 @@ module.exports.toplistCommand = function(message, listOfUsers){
     // query for top 10 then build the embed for top ten users
     profileDB.getToplistUsers(function(error, toplistResponse){
         if (error){
-            console.log(error);
+            // console.log(error);
             agreeToTerms(message, discordUserId);
         }
         else{
             //create embed
-            console.log(toplistResponse);
+            // console.log(toplistResponse);
             // create the string
             var toplistMap = {};
             var toplistCount = 1;
@@ -2596,9 +2596,9 @@ module.exports.toplistCommand = function(message, listOfUsers){
                 if (toplistCount < 10){
                     // TODO: get a new batch until we have 9 users
                     var user = toplistResponse.data[index]
-                    console.log(user);
+                    // console.log(user);
                     var toplistUser = listOfUsers.get(user.discordid)
-                    console.log(toplistUser);
+                    // console.log(toplistUser);
                     if (!toplistUser){
                         // user is not on the server currently - just skip them
                         continue;
@@ -2616,7 +2616,7 @@ module.exports.toplistCommand = function(message, listOfUsers){
 }
 
 function topListEmbedBuilder(topXpString, message){
-    console.log(topXpString);
+    // console.log(topXpString);
     const embed = new Discord.RichEmbed()
     .setTitle("Top List Standings :trident:")
     .setColor(0xe521ff)
@@ -2634,12 +2634,12 @@ module.exports.rpgTopListCommand = function(message, listOfUsers){
     // query for top 10 then build the embed for top ten users
     profileDB.getRpgTopList(function(error, toplistResponse){
         if (error){
-            console.log(error);
+            // console.log(error);
             agreeToTerms(message, discordUserId);
         }
         else{
             //create embed
-            console.log(toplistResponse);
+            // console.log(toplistResponse);
             // create the string
             var toplistMap = {};
             var toplistCount = 1;
@@ -2647,9 +2647,9 @@ module.exports.rpgTopListCommand = function(message, listOfUsers){
                 if (toplistCount < 10){
                     // TODO: get a new batch until we have 9 users
                     var user = toplistResponse.data[index]
-                    console.log(user);
+                    // console.log(user);
                     var toplistUser = listOfUsers.get(user.discordid)
-                    console.log(toplistUser);
+                    // console.log(toplistUser);
                     if (!toplistUser){
                         // user is not on the server currently - just skip them
                         continue;
@@ -2667,7 +2667,7 @@ module.exports.rpgTopListCommand = function(message, listOfUsers){
 }
 
 function rpgTopListEmbedBuilder(topRpgString, message){
-    console.log(topRpgString);
+    // console.log(topRpgString);
     const embed = new Discord.RichEmbed()
     .setTitle("Top RPG list Standings :fleur_de_lis:")
     .setColor(0xe521ff)
@@ -2684,12 +2684,12 @@ module.exports.standingsCommand = function(message, listOfUsers){
     // query for top 10 then build the embed for top ten users
     profileDB.getTopTenTacoUsers(function(error, topTenResponse){
         if (error){
-            console.log(error);
+            // console.log(error);
             agreeToTerms(message, discordUserId);
         }
         else{
             //create embed
-            console.log(topTenResponse);
+            // console.log(topTenResponse);
             // create the string
             var topTenMap = {};
             var topTenCount = 1;
@@ -2697,9 +2697,9 @@ module.exports.standingsCommand = function(message, listOfUsers){
                 if (topTenCount < 10){
                     // TODO: get a new batch until we have 9 users
                     var user = topTenResponse.data[index]
-                    console.log(user);
+                    // console.log(user);
                     var topTenUser = listOfUsers.get(user.discordid)
-                    console.log(topTenUser);
+                    // console.log(topTenUser);
                     if (!topTenUser){
                         // user is not on the server currently - just skip them
                         continue;
@@ -2716,7 +2716,7 @@ module.exports.standingsCommand = function(message, listOfUsers){
 }
 
 function topTenEmbedBuilder(topTenString, message){
-    console.log(topTenString);
+    // console.log(topTenString);
     const embed = new Discord.RichEmbed()
     .setTitle("Taco Standings :taco:")
     .setColor(0xe521ff)
@@ -2772,14 +2772,14 @@ module.exports.pickupCommand = function (message){
             profileDB.updateUserTacos(discordUserId, -1, function(updateErr, updateRes){
                 if (updateErr){
                     // TODO: create user profile
-                    console.log(updateErr)
+                    // console.log(updateErr)
                     agreeToTerms(message, discordUserId);
                 }
                 else{
                     QueueOfTacosDropped.splice(indexOfQueue, 1);
                     stats.statisticsManage(discordUserId, "poisonedtacoscount", 1, function(staterr, statSuccess){
                         if (staterr){
-                            console.log(staterr);
+                            // console.log(staterr);
                         }
                         else{
                             // check achievements??
@@ -2796,14 +2796,14 @@ module.exports.pickupCommand = function (message){
             profileDB.updateUserTacos(discordUserId, 1, function(updateErr, updateRes){
                 if (updateErr){
                     // TODO: create user profile
-                    console.log(updateErr)
+                    // console.log(updateErr)
                     agreeToTerms(message, discordUserId);
                 }
                 else{
                     QueueOfTacosDropped.splice(indexOfQueue, 1);
                     stats.statisticsManage(discordUserId, "tacospickedup", 1, function(staterr, statSuccess){
                         if (staterr){
-                            console.log(staterr);
+                            // console.log(staterr);
                         }
                         else{
                             // check achievements??
@@ -2816,12 +2816,12 @@ module.exports.pickupCommand = function (message){
         }
     }
     else{
-        console.log("There are no tacos for you to pick up.. ");
+        // console.log("There are no tacos for you to pick up.. ");
     }
 }
 
 module.exports.buypetCommand = function(message, args){
-    console.log(args);
+    // console.log(args);
     var discordUserId = message.author.id;
     if (args.length > 3){
         message.channel.send(" Pet names should be only 1 word long");
@@ -2847,7 +2847,7 @@ module.exports.buypetCommand = function(message, args){
                 profileDB.getUserProfileData( discordUserId, function(err, buyPetResponse) {
                     if(err){
                         // user doesnt exist
-                        console.log(err);
+                        // console.log(err);
                     }
                     else{
                         var userReputation = buyPetResponse.data.repstatus;
@@ -2867,14 +2867,14 @@ module.exports.buypetCommand = function(message, args){
                                     }
                                     profileDB.updateUserPet(discordUserId, pet, petName, threedaysAgo, function( petError, petResponse){
                                         if (petError){
-                                            console.log(petError);
+                                            // console.log(petError);
                                         }
                                         else{
                                             // take away tacos from user
                                             profileDB.updateUserTacos(discordUserId, (PET_COST * -1), function(updateErr, updateRes){
                                                 if (updateErr){
                                                     // TODO: create user profile
-                                                    console.log(updateErr)
+                                                    // console.log(updateErr)
                                                     message.channel.send(" error, check bender now");
                                                 }
                                                 else{
@@ -2919,7 +2919,7 @@ module.exports.fetchCommand = function(message){
     // the pet has gone to fetch, get taco amount = their fetch
     profileDB.getUserProfileData(discordUserId, function(fetchError, fetchResponse){
         if (fetchError){
-            console.log(fetchError);
+            // console.log(fetchError);
         }
         else{
             var userLevel = fetchResponse.data.level;
@@ -2938,7 +2938,7 @@ module.exports.fetchCommand = function(message){
                         var now = new Date();
                         if (userPet){
                             var minutesToRemove = wearStats.calculateMinutesReduced(wearRes, "fetch");
-                            console.log("MINUTES TO REMOVE " + minutesToRemove);
+                            // console.log("MINUTES TO REMOVE " + minutesToRemove);
 
                             var cooldownDate = new Date();
                             cooldownDate = new Date(cooldownDate.setHours(cooldownDate.getHours() - PETS_AVAILABLE[userPet].cooldown));
@@ -2953,7 +2953,7 @@ module.exports.fetchCommand = function(message){
 
                                 profileDB.updateUserTacosFetch(discordUserId, fetchTacos + extraTacosFromItems, function(err, updateResponse) {
                                     if (err){
-                                        console.log(err);
+                                        // console.log(err);
                                     }
                                     else{
                                         var experienceFromItems = wearRes.fetchCommandExperienceGain ? wearRes.fetchCommandExperienceGain : 0;                                                                                
@@ -2980,7 +2980,7 @@ module.exports.fetchCommand = function(message){
                                 })
                             }
                             else{
-                                console.log("cd " + PETS_AVAILABLE[userPet].cooldown)
+                                // console.log("cd " + PETS_AVAILABLE[userPet].cooldown)
                                 now = new Date(now.setMinutes(now.getMinutes() + minutesToRemove));
                                 var numberOfHours = getDateDifference(fetchResponse.data.lastfetchtime, now, PETS_AVAILABLE[userPet].cooldown);
                                 message.channel.send(message.author + " **" + userPetName + "** needs to rest and cannot fetch currently! Please wait `" + numberOfHours + "` ");
@@ -2988,7 +2988,7 @@ module.exports.fetchCommand = function(message){
                         }
                         else{
                             // user doesnt have a pet
-                            console.log("doesnt have pet")
+                            // console.log("doesnt have pet")
                         }
                     }
                 })
@@ -3004,15 +3004,15 @@ module.exports.useCommand = function(message, args){
     // the use command will obtain args[1] as the name of the item
     // args[2] as the number of the item that will be used
     // and a mentioned user if there is one
-    console.log(args);
+    // console.log(args);
     var discordUserId = message.author.id;
     var users  = message.mentions.users;
     var mentionedId;
     var mentionedUser;
     var mentionedUserName;
-    console.log(users);
+    // console.log(users);
     users.forEach(function(user){
-        console.log(user.id);
+        // console.log(user.id);
         mentionedId = user.id;
         mentionedUser = user
         mentionedUserName = user.username;
@@ -3025,7 +3025,7 @@ module.exports.useCommand = function(message, args){
             // use rock
             profileDB.getUserItems(discordUserId, function(error, inventoryResponse){
                 if (error){
-                    console.log(error);
+                    // console.log(error);
                     message.channel.send(inventoryResponse);
                     agreeToTerms(message, discordUserId);
                 }
@@ -3060,10 +3060,10 @@ module.exports.useCommand = function(message, args){
                             itemsInInventoryCountMap[inventoryResponse.data[item].itemid] = itemsInInventoryCountMap[inventoryResponse.data[item].itemid] + 1
                         }
                     }
-                    console.log(itemsInInventoryCountMap);
+                    // console.log(itemsInInventoryCountMap);
                     if (itemsInInventoryCountMap[ROCK_ITEM_ID] && itemsInInventoryCountMap[ROCK_ITEM_ID] > 0){
                         // user has this many rocks if greater than 0 then able to throw rock
-                        console.log(itemsInInventoryCountMap[ROCK_ITEM_ID]);
+                        // console.log(itemsInInventoryCountMap[ROCK_ITEM_ID]);
                         //tacos being used in auction
                         var tacosInUse = 0;
                         if (tacosInUseAuction[mentionedId] && tacosInUseAuction[mentionedId] > 0){
@@ -3071,10 +3071,10 @@ module.exports.useCommand = function(message, args){
                         }
                         useItem.useRock(message, mentionedId, rockToUse, tacosInUse, function(throwRockError, throwRes){
                             if (throwRockError){
-                                console.log(throwRockError);
+                                // console.log(throwRockError);
                             }
                             else{
-                                console.log(throwRes);
+                                // console.log(throwRes);
                                 if (throwRes == "success"){
                                     message.channel.send( message.author + " threw a rock at " + mentionedUserName + ", they became dizzy and dropped `1` taco :taco:");
                                     // if they drop a taco someone else can pick it up
@@ -3095,7 +3095,7 @@ module.exports.useCommand = function(message, args){
                                     experience.gainExperience(message, discordUserId, EXPERIENCE_GAINS.useCommonItem);
                                     stats.statisticsManage(discordUserId, "rocksthrown", 1, function(staterr, statSuccess){
                                         if (staterr){
-                                            console.log(staterr);
+                                            // console.log(staterr);
                                         }
                                         else{
                                             // check achievements??
@@ -3121,7 +3121,7 @@ module.exports.useCommand = function(message, args){
         // use pieces of wood - protect against rocks being thrown at you (uses 6 pieces, protects against 3)
         profileDB.getUserItems(discordUserId, function(error, inventoryResponse){
             if (error){
-                console.log(error);
+                // console.log(error);
                 agreeToTerms(message, discordUserId);
             }
             else{
@@ -3130,7 +3130,7 @@ module.exports.useCommand = function(message, args){
                 var itemsInInventoryCountMap = {};
                 // array of item objects for using piece of wood
                 var piecesOfWoodToUse = [];
-                //console.log(allItemsResponse.data);
+                //// console.log(allItemsResponse.data);
                 for (var item in inventoryResponse.data){
                     // check the rock hasnt been used
                     var validItem = useItem.itemValidate(inventoryResponse.data[item]);
@@ -3152,18 +3152,18 @@ module.exports.useCommand = function(message, args){
                     }
                 }
 
-                console.log(itemsInInventoryCountMap);
-                console.log(piecesOfWoodToUse.length);
+                // console.log(itemsInInventoryCountMap);
+                // console.log(piecesOfWoodToUse.length);
                 // 
                 if (piecesOfWoodToUse.length == 5){
                     // able to use those 5 pieces
                     useItem.usePieceOfWood(message, discordUserId, piecesOfWoodToUse, function(useError, useRes){
                         if (useError){
                             // couldnt update the user protect
-                            console.log(useError);
+                            // console.log(useError);
                         }
                         else{
-                            console.log(useRes);
+                            // console.log(useRes);
                             var timeout = setTimeout (function(){ 
                                 experience.gainExperience(message, discordUserId, EXPERIENCE_GAINS.useCommonItemFive);
                             }, 1000);
@@ -3181,7 +3181,7 @@ module.exports.useCommand = function(message, args){
         // create a rare item (chance) if not then receive tacos
         profileDB.getUserItems(discordUserId, function(error, inventoryResponse){
             if (error){
-                console.log(error);
+                // console.log(error);
                 agreeToTerms(message, discordUserId);
             }
             else{
@@ -3196,10 +3196,10 @@ module.exports.useCommand = function(message, args){
                 var listOfRares = []
                 profileDB.getItemData(function(itemDataError, allItemsResponse){
                     if (itemDataError){
-                        console.log(itemDataError);
+                        // console.log(itemDataError);
                     }
                     else{
-                        //console.log(allItemsResponse.data);
+                        //// console.log(allItemsResponse.data);
                         for (var item in inventoryResponse.data){
                             // check the rock hasnt been used
                             var validItem = useItem.itemValidate(inventoryResponse.data[item]);
@@ -3221,26 +3221,26 @@ module.exports.useCommand = function(message, args){
                             }
                         }
 
-                        console.log(itemsInInventoryCountMap);
+                        // console.log(itemsInInventoryCountMap);
                         for (var index in allItemsResponse.data){
                             itemsMapbyId[allItemsResponse.data[index].id] = allItemsResponse.data[index];
-                            console.log(allItemsResponse.data[index]);
+                            // console.log(allItemsResponse.data[index]);
                             if (allItemsResponse.data[index].itemraritycategory == "rare"){
                                 // add to list of rares
                                 listOfRares.push(allItemsResponse.data[index]);
                             }
                         }
-                        console.log(terryClothToUse.length);
+                        // console.log(terryClothToUse.length);
                         // 
                         if (terryClothToUse.length == 5){
                             // able to use those 20 pieces
                             useItem.useTerryCloth(message, discordUserId, terryClothToUse, listOfRares, function(useError, useRes){
                                 if (useError){
                                     // couldnt update the user protect
-                                    console.log(useError);
+                                    // console.log(useError);
                                 }
                                 else{
-                                    console.log(useRes[0]);
+                                    // console.log(useRes[0]);
                                     if (useRes.length && useRes.length > 0 && useRes[0].itemname){
                                         message.channel.send(message.author + " has tailored a **" + useRes[0].itemname + "** -" + "`" + useRes[0].itemdescription + ", " + useRes[0].itemslot + ", " + useRes[0].itemstatistics + "`");
                                     }
@@ -3254,11 +3254,11 @@ module.exports.useCommand = function(message, args){
                                         experience.gainExperience(message, discordUserId, EXPERIENCE_GAINS.useCommonItemFive);
                                         stats.statisticsManage(discordUserId, "tailorcount", 1, function(staterr, statSuccess){
                                             if (staterr){
-                                                console.log(staterr);
+                                                // console.log(staterr);
                                             }
                                             else{
                                                 // check achievements??
-                                                console.log(statSuccess);
+                                                // console.log(statSuccess);
                                                 getProfileForAchievement(discordUserId, message) 
                                             }
                                         })
@@ -3287,7 +3287,7 @@ module.exports.useCommand = function(message, args){
         }
         profileDB.getUserItems(discordUserId, function(error, inventoryResponse){
             if (error){
-                console.log(error);
+                // console.log(error);
                 agreeToTerms(message, discordUserId);
             }
             else{
@@ -3326,11 +3326,11 @@ module.exports.useCommand = function(message, args){
                     // able to use soda can
                     useItem.useSodaCan(message, discordUserId, sodaCansToUse, function(useError, useRes){
                         if (useError){
-                            console.log(useError);
+                            // console.log(useError);
                             message.channel.send(useError);
                         }
                         else{
-                            console.log(useRes);
+                            // console.log(useRes);
                             var timeout = setTimeout (function(){ 
                                 experience.gainExperience(message, discordUserId, EXPERIENCE_GAINS.useCommonItem * cansToUse);
                             }, 200);
@@ -3363,7 +3363,7 @@ module.exports.useCommand = function(message, args){
 
         profileDB.getUserItems(discordUserId, function(error, inventoryResponse){
             if (error){
-                console.log(error);
+                // console.log(error);
                 agreeToTerms(message, discordUserId);
             }
             else{
@@ -3402,16 +3402,16 @@ module.exports.useCommand = function(message, args){
                     // able to use soil
                     useItem.useSoil(message, discordUserId, soilToUse, function(useError, useRes){
                         if (useError){
-                            console.log(useError);
+                            // console.log(useError);
                             message.channel.send(useError);
                         }
                         else{
-                            console.log(useRes);
+                            // console.log(useRes);
                             var timeout = setTimeout (function(){ 
                                 experience.gainExperience( message, discordUserId, EXPERIENCE_GAINS.useCommonItem * soilsCountToUse );
                                 stats.statisticsManage(discordUserId, "soilcount", soilsCountToUse, function(staterr, statSuccess){
                                     if (staterr){
-                                        console.log(staterr);
+                                        // console.log(staterr);
                                     }
                                     else{
                                         // check achievements??
@@ -3438,7 +3438,7 @@ module.exports.useCommand = function(message, args){
 
 module.exports.combineCommand = function(message, args){
     // combine certain things (only terry cloth, and soil for now?)
-    console.log(args);
+    // console.log(args);
     var discordUserId = message.author.id;
 
     if (args && args.length > 1 ){
@@ -3447,7 +3447,7 @@ module.exports.combineCommand = function(message, args){
         // get all the items available
         profileDB.getUserItems(discordUserId, function(err, inventoryResponse){
             if (err){
-                console.log(err);
+                // console.log(err);
                 agreeToTerms(message, discordUserId);
             }
             else{
@@ -3464,7 +3464,7 @@ module.exports.combineCommand = function(message, args){
                     for (var index in allItemsResponse.data){
                         itemsMapById[allItemsResponse.data[index].id] = allItemsResponse.data[index];
                     }
-                    //console.log(allItemsResponse.data);
+                    //// console.log(allItemsResponse.data);
                     for (var item in inventoryResponse.data){
                         var validItem = useItem.itemValidate(inventoryResponse.data[item]);
                         var notWearing = useItem.itemNotWearing(inventoryResponse.data[item])
@@ -3501,7 +3501,7 @@ module.exports.combineCommand = function(message, args){
                                     itemCount = 1
                                 }
                             }
-                            console.log(ItemInQuestion);
+                            // console.log(ItemInQuestion);
                             if (itemsMapbyShortName[myItemShortName] 
                                 && itemsBeingedCombined.length < itemCount
                                 && itemsMapById[ItemInQuestion.itemid]
@@ -3569,15 +3569,15 @@ module.exports.combineCommand = function(message, args){
                                     var questName = "timetravel"
                                     profileDB.userStartQuest(discordUserId, questName, function(createErr, createRes){
                                         if (createErr){
-                                            console.log(createErr);
+                                            // console.log(createErr);
                                         }
                                         else{
-                                            console.log(createRes);                                        
+                                            // console.log(createRes);                                        
                                             profileDB.bulkUpdateItemStatus(itemsBeingedCombined, "questing", function(combineErr, combineRes){
                                                 if (combineErr){
-                                                    console.log(combineErr);
+                                                    // console.log(combineErr);
                                                 }else{
-                                                    console.log(combineRes);
+                                                    // console.log(combineRes);
                                                     // embed showing the questline has begun
                                                     var questString = quest.questStringBuilder(questName)
                                                     quest.questStartEmbedBuilder(message, questName, questString);
@@ -3598,15 +3598,15 @@ module.exports.combineCommand = function(message, args){
                                 //create an item of that kind for the user and set all the other items to 'used'
                                 profileDB.addNewItemToUser(discordUserId, [itemToCreate], function(createErr, createRes){
                                     if (createErr){
-                                        console.log(createErr);
+                                        // console.log(createErr);
                                     }
                                     else{
-                                        console.log(createRes);                                        
+                                        // console.log(createRes);                                        
                                         profileDB.bulkUpdateItemStatus(itemsBeingedCombined, "used", function(combineErr, combineRes){
                                             if (combineErr){
-                                                console.log(combineErr);
+                                                // console.log(combineErr);
                                             }else{
-                                                console.log(combineRes);
+                                                // console.log(combineRes);
                                                 combineEmbedBuilder(message, itemToCreateByName, itemToCreate, rarityOfItem);
                                             }
                                         })
@@ -3665,7 +3665,7 @@ module.exports.timeTravelCommand = function(message, args, channel){
         // check that author is on stage 1 of timetravel 
         profileDB.getUserProfileData(discordUserId, function(profileErr, profileData){
             if (profileErr){
-                console.log (profileErr);
+                // console.log (profileErr);
             }else{
                 var stage = profileData.data.timetravelqueststage;
 
@@ -3701,7 +3701,7 @@ module.exports.timeTravelCommand = function(message, args, channel){
     else if (args.length > 1 && args[1] >= -66000000 && args[1] <= -64000000 && team.length == 1){
         profileDB.getUserProfileData(discordUserId, function(profileErr, profileData){
             if (profileErr){
-                console.log (profileErr);
+                // console.log (profileErr);
             }else{
                 var stage = profileData.data.timetravelqueststage;
 
@@ -3757,7 +3757,7 @@ module.exports.wearingCommand = function(message, args){
     var discordUserId = message.author.id;
     profileDB.getUserProfileData(discordUserId, function (profileErr, profileRes){
         if (profileErr){
-            console.log(profileErr);
+            // console.log(profileErr);
             agreeToTerms(message, discordUserId);
         }
         else{
@@ -3765,10 +3765,10 @@ module.exports.wearingCommand = function(message, args){
             // get the user's wearing data
             profileDB.getUserWearInfo(discordUserId, function(getWearErr, getWearRes){
                 if (getWearErr){
-                    console.log(getWearErr);
+                    // console.log(getWearErr);
                 }
                 else{
-                    console.log(getWearRes);
+                    // console.log(getWearRes);
                     // get the item info by calling items table
                     if (getWearRes.data.length > 0){
                         var slot1Id = getWearRes.data[0].slot1itemid;
@@ -3792,13 +3792,13 @@ module.exports.wearingCommand = function(message, args){
                             slot3active = true
                         }
 
-                        console.log(slot1Id);
+                        // console.log(slot1Id);
                         profileDB.getItemByIdsWear(slot1Id, slot2Id, slot3Id, function(error, itemResponse){
                             if (error){
-                                console.log(error);
+                                // console.log(error);
                             }
                             else{
-                                console.log(itemResponse);
+                                // console.log(itemResponse);
                                 var slot1Item;
                                 var slot2Item;
                                 var slot3Item;
@@ -3813,9 +3813,9 @@ module.exports.wearingCommand = function(message, args){
                                         slot3Item = itemResponse.data[slotItem]
                                     }
                                 }
-                                console.log(slot1Item);
-                                console.log(slot2Item);
-                                console.log(slot3Item);
+                                // console.log(slot1Item);
+                                // console.log(slot2Item);
+                                // console.log(slot3Item);
                                 var slot1String = wearStats.slotStringBuilder(message, slot1Item, slot1active)
                                 var slot2String = wearStats.slotStringBuilder(message, slot2Item, slot2active)
                                 var slot3String = wearStats.slotStringBuilder(message, slot3Item, slot3active)
@@ -3896,19 +3896,19 @@ module.exports.putonCommand = function(message, args, retry){
         // check user doesnt have the same slot category in 1 and 3, if so then valid command, update slot 2 with all the info for sundress
         profileDB.getUserWearInfo(discordUserId, function(getWearErr, getWearRes){
             if (getWearErr){
-                console.log(getWearErr);
+                // console.log(getWearErr);
                 // user isn't wearing any items
                 profileDB.createUserWearInfo(discordUserId, false, function(error, res){
                     if (error){
-                        console.log(error);
+                        // console.log(error);
                     }
                     else{
-                        console.log(res);
+                        // console.log(res);
                     }
                 })
             }
             else{
-                console.log("wear res " + JSON.stringify(getWearRes, null, 2));
+                // console.log("wear res " + JSON.stringify(getWearRes, null, 2));
                 if (getWearRes.data.length == 0){
                     // create the user
                     var data = {
@@ -3919,10 +3919,10 @@ module.exports.putonCommand = function(message, args, retry){
                     }
                     profileDB.createUserWearInfo(data, function(error, res){
                         if (error){
-                            console.log(error);
+                            // console.log(error);
                         }
                         else{
-                            console.log(res);
+                            // console.log(res);
                             // call the same function again now that the user exists
                             exports.putonCommand(message, args, false)
                         }
@@ -3947,7 +3947,7 @@ module.exports.putonCommand = function(message, args, retry){
 
                     profileDB.getUserItems(discordUserId, function(err, inventoryResponse){
                         if (err){
-                            console.log(err);
+                            // console.log(err);
                         }
                         else{
                             // 
@@ -3958,10 +3958,10 @@ module.exports.putonCommand = function(message, args, retry){
                             var itemsMapbyName = {};
                             profileDB.getItemData(function(error, allItemsResponse){
                                 if (error){
-                                    console.log(error);
+                                    // console.log(error);
                                 }
                                 else{
-                                    console.log("allitemsres " + allItemsResponse.data);
+                                    // console.log("allitemsres " + allItemsResponse.data);
                                     for (var item in inventoryResponse.data){
                                         var validItem = useItem.itemValidate(inventoryResponse.data[item]);
                                         // item not being auctioned
@@ -3987,8 +3987,8 @@ module.exports.putonCommand = function(message, args, retry){
                                             userItemsById[inventoryResponse.data[item].itemid].push(inventoryResponse.data[item]);
                                         }
                                     }
-                                    console.log(itemsInInventoryCountMap);
-                                    console.log(userItemsById);
+                                    // console.log(itemsInInventoryCountMap);
+                                    // console.log(userItemsById);
                                     for (var index in allItemsResponse.data){
                                         itemsMapbyId[allItemsResponse.data[index].id] = allItemsResponse.data[index];
                                     }
@@ -4001,7 +4001,7 @@ module.exports.putonCommand = function(message, args, retry){
                                     
                                     // have the item available to wear
                                     if (itemsMapbyName[itemToWear]){
-                                        console.log(itemsMapbyName[itemToWear])
+                                        // console.log(itemsMapbyName[itemToWear])
                                         // get all the data needed for equiping  for the item
                                         
                                         // name of the slot the item is taking up
@@ -4042,7 +4042,7 @@ module.exports.putonCommand = function(message, args, retry){
                                             }
                                             if (validateSlotToWear){
                                                 // check that the item slot is not already equiped elsewhere
-                                                console.log("updating: slot: " + slot + " itemslot: " + itemslot + " itemid: " + itemid + " itemuserid: " + itemuserid + " itemstats: " + JSON.stringify(itemstats, null, 2));
+                                                // console.log("updating: slot: " + slot + " itemslot: " + itemslot + " itemid: " + itemid + " itemuserid: " + itemuserid + " itemstats: " + JSON.stringify(itemstats, null, 2));
                                                 // equip the item
                                                 // create a date for when the item is active
                                                 var activateDate;
@@ -4052,7 +4052,7 @@ module.exports.putonCommand = function(message, args, retry){
                                                 }
                                                 else{
                                                     var hoursToAdd = commandHoursToActivate[itemstats.itemCommand] ? commandHoursToActivate[itemstats.itemCommand] : 0 // depending on the item's command
-                                                    console.log("hours to add " + hoursToAdd);
+                                                    // console.log("hours to add " + hoursToAdd);
                                                     activateDate = new Date() // + hours for the command
                                                     // if obtain date is greater than 1 hour ago, activate date gets no + hours
                                                     var oneHourAgo = new Date();
@@ -4063,22 +4063,22 @@ module.exports.putonCommand = function(message, args, retry){
                                                     }
                                                     replacingCurrentSlot = true;
                                                 }
-                                                console.log("activate date " + activateDate)
+                                                // console.log("activate date " + activateDate)
                                                 // each command has a different date activate
                                                 profileDB.updateUserWearInfo(discordUserId, slot + "", itemslot, itemid, itemuserid, activateDate, replacingCurrentSlot, function(err, res){
                                                     // set the item to equipped in userinventory
                                                     if (err){
-                                                        console.log(err);
+                                                        // console.log(err);
                                                     }
                                                     else{
-                                                        console.log(res);
+                                                        // console.log(res);
                                                         // change the item status to wearing in user inventory
                                                         profileDB.updateItemStatus(itemuserid, "wearing", function(updateRockStatusErr, updateRockStatusRes){
                                                             if (updateRockStatusErr){
-                                                                console.log(updateRockStatusErr);
+                                                                // console.log(updateRockStatusErr);
                                                             }
                                                             else{
-                                                                console.log(updateRockStatusRes);
+                                                                // console.log(updateRockStatusRes);
                                                                 message.channel.send(message.author + " you are now wearing **" + itemsMapbyName[itemToWear].itemname + "**")
                                                             }
                                                         })
@@ -4106,10 +4106,10 @@ module.exports.putonCommand = function(message, args, retry){
 }
 
 function validateSlot(slotToEquip, currentSlot1, currentSlot2){
-    console.log("in validateSlot");
-    console.log(slotToEquip);
-    console.log(currentSlot1);
-    console.log(currentSlot2);
+    // console.log("in validateSlot");
+    // console.log(slotToEquip);
+    // console.log(currentSlot1);
+    // console.log(currentSlot2);
     var slotIsValid = false;
     if (!currentSlot1 && !currentSlot2)
     {
@@ -4129,10 +4129,10 @@ module.exports.takeoffCommand = function(message, args){
     // get the user's wear information ( to get the itemuserid from that slot)
     profileDB.getUserWearInfo(discordUserId, function(takeoffError, takeoffRes){
         if (takeoffError){
-            console.log(takeoffError);
+            // console.log(takeoffError);
         }
         else{
-            console.log(takeoffRes);
+            // console.log(takeoffRes);
             // item id of item to be set status to null in userinventory
             var itemId;
             var itemslot;
@@ -4148,21 +4148,21 @@ module.exports.takeoffCommand = function(message, args){
                 itemId = takeoffRes.data[0].slot3useritemid
                 itemslot = takeoffRes.data[0].slot3slot
             }
-            console.log("itemid " + itemId);
+            // console.log("itemid " + itemId);
             if (itemId){
                 // change the item status from wearing to null in userinventory using the item id
                 profileDB.updateItemStatus(itemId, null, function(updateErr, updateRes){
                     if (updateErr){
-                        console.log(updateErr);
+                        // console.log(updateErr);
                     }
                     else{
                         //user wearing slot to null
                         profileDB.takeOffWear(discordUserId, slot, function(err, res){
                             if (err){
-                                console.log(err);
+                                // console.log(err);
                             }
                             else{
-                                console.log(res);
+                                // console.log(res);
                                 message.channel.send(message.author.username + " took off item from slot " + slot);
                             }
                         })
@@ -4175,10 +4175,10 @@ module.exports.takeoffCommand = function(message, args){
                 //user wearing slot to null
                 profileDB.takeOffWear(discordUserId, slot, function(err, res){
                     if (err){
-                        console.log(err);
+                        // console.log(err);
                     }
                     else{
-                        console.log(res);
+                        // console.log(res);
                         message.channel.send(message.author.username + " took off item from slot " + slot);
                     }
                 })
@@ -4203,7 +4203,7 @@ module.exports.auctionCommand = function(message, args){
             
             profileDB.getUserItems(discordUserId, function(err, inventoryResponse){
                 if (err){
-                    console.log(err);
+                    // console.log(err);
                 }
                 else{
                     // 
@@ -4219,7 +4219,7 @@ module.exports.auctionCommand = function(message, args){
                         for (var index in allItemsResponse.data){
                             itemsMapById[allItemsResponse.data[index].id] = allItemsResponse.data[index];
                         }
-                        //console.log(allItemsResponse.data);
+                        //// console.log(allItemsResponse.data);
                         for (var item in inventoryResponse.data){
                             var validItem = useItem.itemValidate(inventoryResponse.data[item]);
                             var notWearing = useItem.itemNotWearing(inventoryResponse.data[item])
@@ -4238,11 +4238,11 @@ module.exports.auctionCommand = function(message, args){
                                 // item hasnt been added to be counted, add it as 1
                                 itemsInInventoryCountMap[inventoryResponse.data[item].itemid] = 1;
                                 
-                                console.log(ItemInQuestion);
+                                // console.log(ItemInQuestion);
                                 if (itemsMapbyShortName[myItemShortName] 
                                     && IdsOfItemsBeingedAuctioned.length < itemCount
                                     && itemsMapById[ItemInQuestion.itemid].itemshortname === myItemShortName){
-                                    console.log("IN HERE");
+                                    // console.log("IN HERE");
                                     IdsOfItemsBeingedAuctioned.push(ItemInQuestion.id);
                                 }
                             }
@@ -4251,17 +4251,17 @@ module.exports.auctionCommand = function(message, args){
                                 if (itemsMapbyShortName[myItemShortName] 
                                     && IdsOfItemsBeingedAuctioned.length < itemCount
                                     && itemsMapById[ItemInQuestion.itemid].itemshortname === myItemShortName){
-                                    console.log("IN HERE");
+                                    // console.log("IN HERE");
                                     IdsOfItemsBeingedAuctioned.push(ItemInQuestion.id);
                                 }
                             }
                         }
-                        //console.log(itemsInInventoryCountMap);
-                        //console.log(itemsMapbyShortName);
+                        //// console.log(itemsInInventoryCountMap);
+                        //// console.log(itemsMapbyShortName);
                         if (itemsMapbyShortName[myItemShortName]){
                             var idOfMyItem = itemsMapbyShortName[myItemShortName].id;
                             var itemNameInAuction = itemsMapbyShortName[myItemShortName].itemname
-                            console.log(idOfMyItem);
+                            // console.log(idOfMyItem);
                             if (itemsInInventoryCountMap[idOfMyItem] && 
                                 itemsInInventoryCountMap[idOfMyItem] >= itemCount){
                                 // if so, then I can create an auction just fine
@@ -4318,13 +4318,13 @@ module.exports.auctionCommand = function(message, args){
                                         }
                                         message.channel.send(":loudspeaker: " + activeAuctions[discordUserIdString].highestBidderUserObj + " has won the auction of **" + activeAuctions[discordUserIdString].itemName + "** for `" + activeAuctions[discordUserIdString].tacoBid + "` :taco: tacos! " + "Bender kept `" + initialTacoTax + "` for tax purposes.") 
                                         tacosWon = tacosWon - initialTacoTax;
-                                        console.log(winner);
+                                        // console.log(winner);
                                         transferItemsAndTacos(winner, auctionCreator, itemsArray, tacosPaid, tacosWon, function(transferErr, transferRes){
                                             if (transferErr){
-                                                console.log(transferErr)
+                                                // console.log(transferErr)
                                             }
                                             else{
-                                                console.log(transferRes);
+                                                // console.log(transferRes);
                                                 
                                             }
                                         })
@@ -4340,16 +4340,16 @@ module.exports.auctionCommand = function(message, args){
                                     
                                 }, 360000);
                                 message.channel.send(message.author + " has created an auction for **" + itemNameInAuction +"** x`" + itemCount + "` !")  
-                                console.log("items in auction " + JSON.stringify(itemsInAuction, null, 2));
+                                // console.log("items in auction " + JSON.stringify(itemsInAuction, null, 2));
                             }
                             else{
                                 message.channel.send(message.author + " can't create that auction! example use: -auction loincloth OR example use: -auction polyester")  
-                                console.log("items in auction " + JSON.stringify(itemsInAuction, null, 2));
+                                // console.log("items in auction " + JSON.stringify(itemsInAuction, null, 2));
                             }
                         }
                         else{
                             message.channel.send(message.author + " invalid item! example use: -auction loincloth OR example use: -auction polyester")  
-                            console.log("items in auction " + JSON.stringify(itemsInAuction, null, 2));
+                            // console.log("items in auction " + JSON.stringify(itemsInAuction, null, 2));
                         }
                         // check if myItem exists in items, check if otherItem exists in items, if not then turn the string
                     })
@@ -4380,7 +4380,7 @@ function transferItemsAndTacos(winner, auctionCreator, itemsArray, tacosPaid, ta
                     //paid and won now transfer items
                     profileDB.bulkUpdateItemOwner(itemsArray, winner, function(transferErr, transferRes){
                         if (transferErr){
-                            console.log(transferErr);
+                            // console.log(transferErr);
                             cb('fail');
                         }
                         else{
@@ -4400,9 +4400,9 @@ module.exports.bidCommand = function(message, args){
     var users  = message.mentions.users;
     var mentionedId;
     var mentionedUser;
-    console.log(users);
+    // console.log(users);
     users.forEach(function(user){
-        console.log(user.id);
+        // console.log(user.id);
         mentionedId = user.id;
         mentionedUser = user
     })
@@ -4412,7 +4412,7 @@ module.exports.bidCommand = function(message, args){
         biddingTacos = Math.floor(biddingTacos);
         profileDB.getUserProfileData(discordUserId, function(profileErr, profileRes){
             if (profileErr){
-                console.log(profileErr);
+                // console.log(profileErr);
                 agreeToTerms(message, discordUserId);
             }
             else{
@@ -4467,9 +4467,9 @@ module.exports.tradeCommand = function(message, args){
     var mentionedId;
     var mentionedUser;
     var users  = message.mentions.users
-    console.log(users);
+    // console.log(users);
     users.forEach(function(user){
-        console.log(user.id);
+        // console.log(user.id);
         mentionedId = user.id;
         mentionedUser = user
     })
@@ -4497,17 +4497,17 @@ module.exports.tradeCommand = function(message, args){
         if (tacoAsk != 1){
             profileDB.getUserProfileData(discordUserId, function(getProfileErr, getProfileRes){
                 if (getProfileErr){
-                    console.log(getProfileErr);
+                    // console.log(getProfileErr);
                     agreeToTerms(message, discordUserId);
                 }
                 else{
                     // get the user's item based on discordid and shortname and check that they have an item that they want to trade
                     profileDB.getUserItems(discordUserId, function(err, inventoryResponse){
                         if (err){
-                            console.log(err);
+                            // console.log(err);
                         }
                         else{
-                            console.log(inventoryResponse.data);
+                            // console.log(inventoryResponse.data);
                             // get all the data for each item
                             var itemsInInventoryCountMap = {};
                             var itemsMapbyShortName = {};
@@ -4537,7 +4537,7 @@ module.exports.tradeCommand = function(message, args){
                                         // item hasnt been added to be counted, add it as 1
                                         itemsInInventoryCountMap[inventoryResponse.data[item].itemid] = 1;
 
-                                        console.log(ItemInQuestion);
+                                        // console.log(ItemInQuestion);
                                         if (itemsMapbyShortName[myItemShortName] 
                                             && IdsOfItemsBeingedTraded.length < itemCount
                                             && itemsMapById[ItemInQuestion.itemid].itemshortname === myItemShortName){
@@ -4560,7 +4560,7 @@ module.exports.tradeCommand = function(message, args){
                                 if (itemsMapbyShortName[myItemShortName]){
                                     var idOfMyItem = itemsMapbyShortName[myItemShortName].id;
                                     var itemNameInTrade = itemsMapbyShortName[myItemShortName].itemname
-                                    console.log(idOfMyItem);
+                                    // console.log(idOfMyItem);
                                     if (itemsInInventoryCountMap[idOfMyItem] && 
                                         itemsInInventoryCountMap[idOfMyItem] >= itemCount){
                                         // the item exists in my inventory
@@ -4652,7 +4652,7 @@ module.exports.acceptTradeCommand = function(message, args){
     // check that the user accepting the trade has tacos to pay the tax
     profileDB.getUserProfileData(discordUserId, function(profileErr, profileRes){
         if (profileErr){
-            console.log(profileErr);
+            // console.log(profileErr);
         }
         else{
             // there is an active trade with the user
@@ -4667,7 +4667,7 @@ module.exports.acceptTradeCommand = function(message, args){
                 }
                 var tradeTax = Math.floor(tacosToPay * 0.1);
                 var tacoTax = tradeTax;
-                console.log(tacoTax);
+                // console.log(tacoTax);
                 if (tradeTax < 1){
                     tacoTax = 1;
                 }
@@ -4679,9 +4679,9 @@ module.exports.acceptTradeCommand = function(message, args){
                     message.channel.send(":handshake:  " + message.author + " has accepted the trade of **" + activeTrades[discordUserIdString].fullItemName + "** ! " + " Bender kept `" + tacoTax + "` tacos for tax purposes.") 
                     transferItemsAndTacos(discordUserId, mentionedId, itemsArray, tacosToPay, tacosToPay-tacoTax, function(transErr, transRes){
                         if (transErr){
-                            console.log(transErr);
+                            // console.log(transErr);
                         }else{
-                            console.log(transRes);
+                            // console.log(transRes);
                         }
                     })
                     // delete the item from all the maps
@@ -4771,13 +4771,13 @@ module.exports.agreeTermsCommand = function(message, args){
                 var host = NeedsToAgree[discordUserId].hostUser;
                 profileDB.createUserProfile(userData, function(err, createResponse){
                     if(err){
-                        console.log(err);
+                        // console.log(err);
                         message.channel.send("user already exists")
                     }
                     else{
                         profileDB.updateUserTacosWelcome(discordUserId, 1, function(err, updateResponse) {
                             if (err){
-                                console.log(err);
+                                // console.log(err);
                             }
                             else{
                                 // send message that the user has 1 more taco
@@ -4788,7 +4788,7 @@ module.exports.agreeTermsCommand = function(message, args){
                                 message.channel.send("welcome aboard ! " + message.author + " your profile has been created. " + host + " will be your host!" );
                                 stats.statisticsManage(host.id, "welcomecount", 1, function(err, statSuccess){
                                     if (err){
-                                        console.log(err);
+                                        // console.log(err);
                                     }
                                     else{
                                         // check achievements??
@@ -4841,7 +4841,7 @@ module.exports.enterRaffleCommand = function(message, args){
     if (!activeRaffle.users[discordUserId]){
         profileDB.getUserProfileData(discordUserId, function(profileErr, profileRes){
             if (profileErr){
-                console.log(profileErr);
+                // console.log(profileErr);
                 // they need to agree to terms
             }
             else{
@@ -4897,7 +4897,7 @@ function calculateRaffleWinner(message){
     // update the user tacos for all entrants of the raffle
     profileDB.updateUserTacos(raffleWinner, (RAFFLE_ENTRY_COST * (activeRaffle.entriesId.length - 2)), function(updateErr, updateRes){
         if (updateErr){
-            console.log(updateErr);
+            // console.log(updateErr);
         }
         else{
             var copyOfEntries = []
@@ -4910,10 +4910,10 @@ function calculateRaffleWinner(message){
                 if (copyOfEntries[entry] != raffleWinner){
                     profileDB.updateUserTacos(copyOfEntries[entry], (RAFFLE_ENTRY_COST * -1), function(removeErr, removeRes){
                         if (removeErr){
-                            console.log(removeErr);
+                            // console.log(removeErr);
                         }
                         else{
-                            console.log(removeRes);
+                            // console.log(removeRes);
                         }
                     })
                 }
@@ -4940,19 +4940,19 @@ module.exports.createTableCommand = function(message, mainChannel){
     // get the user's inventory and use up 1 of each of the 6 items that are uncommon items
     profileDB.getUserItems(discordUserId, function(err, inventoryResponse){
         if (err){
-            console.log(err);
+            // console.log(err);
         }
         else{
-            console.log(inventoryResponse.data);
+            // console.log(inventoryResponse.data);
             // get all the data for each item
             var itemsInInventoryCountMap = {};
             var itemsMapbyId = {};
             profileDB.getItemData(function(error, allItemsResponse){
                 if (error){
-                    console.log(error);
+                    // console.log(error);
                 }
                 else{
-                    console.log("allitemsres " + allItemsResponse.data);
+                    // console.log("allitemsres " + allItemsResponse.data);
                     for (var item in inventoryResponse.data){
                         var ItemInQuestion = inventoryResponse.data[item];
                         var validItem = useItem.itemValidate(ItemInQuestion);
@@ -4975,7 +4975,7 @@ module.exports.createTableCommand = function(message, mainChannel){
                             itemsInInventoryCountMap[inventoryResponse.data[item].itemid] = itemsInInventoryCountMap[inventoryResponse.data[item].itemid] + 1
                         }
                     }
-                    console.log(itemsInInventoryCountMap);
+                    // console.log(itemsInInventoryCountMap);
                     for (var index in allItemsResponse.data){
                         itemsMapbyId[allItemsResponse.data[index].id] = allItemsResponse.data[index];
                         if (allItemsResponse.data[index].itemraritycategory == "uncommon"){
@@ -5035,10 +5035,10 @@ function createParty(message, discordUserId, uncommonsToUse, mainChannel){
 
     useItem.useUncommons(message, discordUserId, uncommonsToUse, function(useError, useRes){
         if (useError){
-            console.log(useError);
+            // console.log(useError);
         }
         else{
-            console.log(useRes);
+            // console.log(useRes);
             if (useRes == "success"){
                 if (!mainChannel){
                     mainChannel = message.channel;
@@ -5053,12 +5053,12 @@ function createParty(message, discordUserId, uncommonsToUse, mainChannel){
                     var tacoParty = new Discord.ReactionCollector(sentMessage, function(){ return true; } , { time: TACO_PARTY_TIME_TO_LIVE, max: 1000, maxEmojis: 100, maxUsers: 100 } );
                     tacoParty.on('collect', function(element, collector){
                         // remove the reaction if the user already reacted
-                        console.log(element)
+                        // console.log(element)
                         element.users.forEach(function(user){
                             if (!user.bot){
                                 var userId = user.id;
                                 collector.collected.forEach(function(reaction){
-                                    console.log(reaction);
+                                    // console.log(reaction);
                                     reaction.users.forEach(function(collectorUser){
                                         if (!collectorUser.bot){
                                             var collectorUser = collectorUser.id;
@@ -5116,7 +5116,7 @@ function createParty(message, discordUserId, uncommonsToUse, mainChannel){
                             }
                             profileDB.getUserProfileData(ownerOfTable, function(getDataErr, getDataRes){
                                 if (getDataErr){
-                                    console.log(getDataErr);
+                                    // console.log(getDataErr);
                                     message.channel.send(err);
                                 }
                                 else{
@@ -5124,11 +5124,11 @@ function createParty(message, discordUserId, uncommonsToUse, mainChannel){
                                     var userData = getDataRes;
                                     profileDB.updateUserTacos(ownerOfTable, reactionCount * 2, function(err, res){
                                         if (err){
-                                            console.log(err);
+                                            // console.log(err);
                                             message.channel.send(err);
                                         }
                                         else{
-                                            console.log(res);
+                                            // console.log(res);
                                             experience.gainExperience(message, ownerOfTable, reactionCount, userData);
                                             mainChannel.send("The party for `" + ownerOfTableUsername + "` was a great success! There were `" + attendees + "` guests that showed up")
                                             var achievements = getDataRes.data.achievements;
@@ -5158,21 +5158,21 @@ function tacoPartyReactRewards(message, user, emoji, reward){
     // each of these ids will receive 1 taco, 1 xp, or 1 rock
     var giveRewardTo = user.id;
     var giveRewardToUsername = user.username
-    console.log(user.id);
+    // console.log(user.id);
     if (reward === "taco"){
         profileDB.updateUserTacos(giveRewardTo, 2, function(err, res){
             if (err){
-                console.log(err);
+                // console.log(err);
                 message.channel.send(err);
             }else{
-                console.log(res);
+                // console.log(res);
             }
         })
     }
     else if (reward === "terrycloth" || reward === "rock"){
         profileDB.getItemData(function(err, getItemResponse){
             if (err){
-                console.log(err);
+                // console.log(err);
             }
             else{
                 var itemsObtainedArray = [];
@@ -5213,7 +5213,7 @@ module.exports.rpgReadyCommand = function(message){
     var itemsMapbyId = {};
     profileDB.getItemData(function(error, allItemsResponse){
         if (error){
-            console.log(error);
+            // console.log(error);
         }
         else{
             for (var index in allItemsResponse.data){
@@ -5236,7 +5236,7 @@ module.exports.rpgstatsCommand = function(message){
     var itemsMapbyId = {};
     profileDB.getItemData(function(error, allItemsResponse){
         if (error){
-            console.log(error);
+            // console.log(error);
         }
         else{
             for (var index in allItemsResponse.data){

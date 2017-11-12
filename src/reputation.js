@@ -12,23 +12,23 @@ module.exports.gainReputation = function (message, discordUserId, reputationNumb
         // call to add reputation to user
         profileDB.getUserProfileData(discordUserId, function(getProfileErr, getProfileRes){
             if (getProfileErr){
-                console.log(getProfileErr);
+                // console.log(getProfileErr);
             }
             else{
                 var currentReputation = getProfileRes.data.reputation;
                 profileDB.addUserReputation(discordUserId, reputationNumber, currentReputation, function(repError, repRes){
                     if (repError){
-                        console.log(repError)
+                        // console.log(repError)
                         cb(repError);
                     }
                     else{
-                        console.log(repRes);
+                        // console.log(repRes);
                         reachedNewRepStatus(message, getProfileRes, discordUserId, reputationNumber, function(statusErr, statusRes){
                             if (statusErr){
                                 cb(statusErr);
                             }
                             else{
-                                console.log(statusRes);
+                                // console.log(statusRes);
                                 cb(null, statusRes);
                             }
                         });
@@ -78,12 +78,12 @@ function reachedNewRepStatus(message, getProfileRes, discordId, reputationGained
         cb(null, {repNumber: reputationNumber + reputationGained, repStatus: "Respected" })
     }
     else if (!reputationStatus){
-        console.log("no change");
+        // console.log("no change");
         cb(null, {repNumber: reputationNumber + reputationGained, repStatus: "Friendly"})
     }
     else{
         // nothing happened;
-        console.log("no change");
+        // console.log("no change");
         cb(null, {repNumber: reputationNumber + reputationGained, repStatus: reputationStatus})
     }
 }
@@ -91,14 +91,14 @@ function reachedNewRepStatus(message, getProfileRes, discordId, reputationGained
 function updateReputationStatus(message, discordId, repstatus){
     profileDB.updateUserReputation(discordId, repstatus, function(err, res){
         if (err){
-            console.log(err);
+            // console.log(err);
         }      
         else{
-            console.log(res);
+            // console.log(res);
             if (repstatus){
                 updateUserRewards(message, discordId, repstatus, function(updateErr, updateRes){
                     if (updateErr){
-                        console.log(updateErr);
+                        // console.log(updateErr);
                     }
                     else{
                         reputationEmbedBuilder(message, repstatus, updateRes);
@@ -122,7 +122,7 @@ function updateUserRewards(message, discordId, repstatus, cb){
             // give the user a casserole on their profile
             profileDB.obtainCasserole(discordId, function(error, res){
                 if (error){
-                    console.log(error);
+                    // console.log(error);
                 }
                 else{
                     cb(null, "casserole");
@@ -134,7 +134,7 @@ function updateUserRewards(message, discordId, repstatus, cb){
             // give the user an ancient and a fishing rod?
             profileDB.obtainCasserole(discordId, function(error, res){
                 if (error){
-                    console.log(error);
+                    // console.log(error);
                 }
                 else{
                     cb(null, "casserole");
