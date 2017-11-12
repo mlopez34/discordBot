@@ -2960,21 +2960,25 @@ module.exports.fetchCommand = function(message){
                                         experience.gainExperience(message, discordUserId, ((EXPERIENCE_GAINS.perFetchCd * PETS_AVAILABLE[userPet].fetch) + experienceFromItems) , fetchResponse);
                                         // user's pet fetched some tacos
                                         if (extraTacosFromItems > 0){
+                                            /* SEASONAL
                                             if (trickOrTreatMap["tot-" + discordUserId] && trickOrTreatMap["tot-" + discordUserId].tot == "trick"){
                                                 message.channel.send("**" + userPetName + "** fetched:` " + fetchTacos + "` tacos :taco: \n 👻 BOOOOOOOO " + PETS_AVAILABLE[userPet].speak + " you received `" + extraTacosFromItems + "` extra tacos");                                                
                                             }else if (trickOrTreatMap["tot-" + discordUserId] && trickOrTreatMap["tot-" + discordUserId].tot == "treat"){
 
                                             }else{
-                                                message.channel.send("**" + userPetName + "** fetched:` " + fetchTacos + "` tacos :taco: \n 🎃 HEEEHEEEHEHEHEE " + PETS_AVAILABLE[userPet].speak + " you received `" + extraTacosFromItems + "` extra tacos");                                                
-                                            }
+                                                */
+                                            message.channel.send("**" + userPetName + "** fetched:` " + fetchTacos + "` tacos :taco: \n 🎃 HEEEHEEEHEHEHEE " + PETS_AVAILABLE[userPet].speak + " you received `" + extraTacosFromItems + "` extra tacos");                                                
+                                            //}
                                         }else{
+                                            /* SEASONAL
                                             if (trickOrTreatMap["tot-" + discordUserId] && trickOrTreatMap["tot-" + discordUserId].tot == "trick"){
                                                 message.channel.send("**" + userPetName + "** fetched:` " + fetchTacos + "` tacos :taco: \n 👻 BOOOOOOOO " + PETS_AVAILABLE[userPet].speak);                                                
                                             }else if (trickOrTreatMap["tot-" + discordUserId] && trickOrTreatMap["tot-" + discordUserId].tot == "treat"){
                                                 message.channel.send("**" + userPetName + "** fetched:` " + fetchTacos + "` tacos :taco: \n 🎃 HEEEHEEEHEHEHEE " + PETS_AVAILABLE[userPet].speak);                                                
                                             }else{
-                                                message.channel.send("**" + userPetName + "** fetched:` " + fetchTacos + "` tacos :taco: \n" + PETS_AVAILABLE[userPet].emoji + " " + PETS_AVAILABLE[userPet].speak);                                                
-                                            }
+                                                */
+                                            message.channel.send("**" + userPetName + "** fetched:` " + fetchTacos + "` tacos :taco: \n" + PETS_AVAILABLE[userPet].emoji + " " + PETS_AVAILABLE[userPet].speak);                                                
+                                            //}
                                         }
                                     }
                                 })
