@@ -26,7 +26,7 @@ client.on('ready', function(err) {
     if (err){
         // console.log(err);
     } 
-    // console.log('The bot is online'); 
+    console.log('The bot is online'); 
     var channelName;
     client.channels.forEach(function(channel){
         // // console.log(channel);
@@ -58,7 +58,7 @@ client.on('message', function(message){
     if (botEnabled){
         // console.log(message.author.id); // id of the user that created the message
         var args = message.content.split(/[ ]+/);
-        // console.log(args);
+         console.log(args);
         // check if it is Taco Tueday
         var dateUtc = new Date()
         var weekday = dateUtc.getDay();
