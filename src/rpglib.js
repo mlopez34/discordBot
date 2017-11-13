@@ -518,7 +518,7 @@ module.exports = {
             ignoreFocus: true,
             name: "Electric Orb",
             dmg: 20,
-            mdPercentage: 0.6,
+            mdPercentage: 0.5,
             type: "electric",
             everyNTurns: 4,
             afterNTurns: 1,
@@ -1747,7 +1747,7 @@ module.exports = {
                         hpPerPartyMember: 210,
                         adPerPartyMember: 14,
                         mdPerPartyMember: 14,
-                        hp: 1150,
+                        hp: 1050,
                         attackDmg: 120,
                         magicDmg: 90,
                         armor: 550,
@@ -1762,7 +1762,7 @@ module.exports = {
                         hpPerPartyMember: 210,
                         adPerPartyMember: 14,
                         mdPerPartyMember: 14,
-                        hp: 1150,
+                        hp: 1050,
                         attackDmg: 120,
                         magicDmg: 90,
                         armor: 550,
@@ -1781,15 +1781,15 @@ module.exports = {
                                 name: "frenzy",
                                 emoji: "😡",
                                 onTurnEnd: {
-                                    attackDmgPlus : 100,
-                                    magicDmgPlus : 100,
+                                    attackDmgPlus : 85,
+                                    magicDmgPlus : 85,
                                     everyNTurns: 3,
                                     startTurn: 1
                                 }
                             }
                         ],
                         abilityOrder: [
-                            1, 0, 0, 0
+                            1, 0, 0, 0, 0, 0, 0
                         ],
                         endOfTurnEvents : [
                             "focus",
@@ -1805,7 +1805,7 @@ module.exports = {
                         mdPerPartyMember: 34,
                         attackDmg: 310,
                         magicDmg: 320,
-                        armor: 2350,
+                        armor: 1650,
                         spirit: 2350,
                         difficulty: "boss",
                         element: "normal"
@@ -1821,15 +1821,15 @@ module.exports = {
                                 name: "frenzy",
                                 emoji: "😡",
                                 onTurnEnd: {
-                                    attackDmgPlus : 100,
-                                    magicDmgPlus : 100,
+                                    attackDmgPlus : 85,
+                                    magicDmgPlus : 85,
                                     everyNTurns: 3,
                                     startTurn: 2
                                 }
                             }
                         ],
                         abilityOrder: [
-                            0, 1, 1, 0
+                            0, 1, 0, 1, 0
                         ],
                         endOfTurnEvents : [
                             "focus",
@@ -1845,8 +1845,8 @@ module.exports = {
                         mdPerPartyMember: 34,
                         attackDmg: 310,
                         magicDmg: 310,
-                        armor: 2350,
-                        spirit: 2350,
+                        armor: 2050,
+                        spirit: 2050,
                         difficulty: "boss",
                         element: "normal"
                     },
@@ -1861,15 +1861,15 @@ module.exports = {
                                 name: "frenzy",
                                 emoji: "😡",
                                 onTurnEnd: {
-                                    attackDmgPlus : 100,
-                                    magicDmgPlus : 100,
+                                    attackDmgPlus : 85,
+                                    magicDmgPlus : 85,
                                     everyNTurns: 3,
                                     startTurn: 3
                                 }
                             }
                         ],
                         abilityOrder: [
-                            0, 0, 1, 0
+                            0, 0, 1, 0, 0
                         ],
                         endOfTurnEvents : [
                             "focus",
@@ -1887,7 +1887,7 @@ module.exports = {
                         attackDmg: 260,
                         magicDmg: 290,
                         armor: 2350,
-                        spirit: 2350,
+                        spirit: 1650,
                         difficulty: "boss",
                         element: "normal"
                     },
