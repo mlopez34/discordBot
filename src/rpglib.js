@@ -532,7 +532,7 @@ module.exports = {
                 mdPercentage: 1,
                 turnsToExpire: 1,
                 dmgOnStatusExpire: true,
-                dmgOnExpire: 300
+                dmgOnExpire: 150
             }
         },
         // summon demon for ch 5
@@ -545,8 +545,8 @@ module.exports = {
             currentTurn: 0,
             summon: {
                 enemy: "demon",
-                attackDmg: 180,
-                magicDmg: 180
+                attackDmg: 150,
+                magicDmg: 150
                 
             }
         },
