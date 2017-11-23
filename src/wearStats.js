@@ -1,7 +1,7 @@
 'use strict'
 var profileDB = require("./profileDB.js")
 
-var THANK_BASE_MINUTES = 120;
+var THANK_BASE_MINUTES = 60;
 var SORRY_BASE_MINUTES = 360;
 var SCAVENGE_BASE_MINUTES = 60;
 var FETCH_BASE_MINUTES = 60;
