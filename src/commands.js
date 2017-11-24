@@ -340,7 +340,7 @@ module.exports.thankCommand = function(message){
     })
     
     // check the user mentioned someone, and the user is not the same user
-    if ( message.mentions.users.size > 0 && discordUserId != mentionedId && !NeedsToAgree[mentionedId] ){
+    if ( message.mentions.users.size > 0 && discordUserId != mentionedId && !NeedsToAgree[mentionedId] && !mentionedUser.bot){
         profileDB.getUserProfileData( discordUserId, function(err, thankResponse) {
             if(err){
                 // console.log("in error : " + err.code);
