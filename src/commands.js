@@ -36,7 +36,7 @@ var SODA_CAN_ITEM_ID = 1;
 var SOIL_ITEM_ID = 2;
 var PET_COST = 75;
 var QueueOfTacosDropped = [];
-var THANK_COOLDOWN_HOURS = 1;
+var THANK_COOLDOWN_HOURS = 2;
 var SORRY_COOLDOWN_HOURS = 6;
 var COOK_COOLDOWN_HOURS = 24;
 var PREPARE_COOLDOWN_HOURS = 48;
@@ -81,7 +81,7 @@ var EXPERIENCE_GAINS = {
 }
 
 var commandHoursToActivate = {
-    thank: 1,
+    thank: 2,
     sorry: 5,
     cook: 12,
     prepare: 24,
@@ -366,7 +366,7 @@ module.exports.thankCommand = function(message){
                             ///////// CALCULATE THE EXTRA TACOS HERE 
                             var extraTacosFromItems = wearStats.calculateExtraTacos(wearRes, "thank"); // 0 or extra
                             // add tacos to user's profile if they got extra tacos
-                            profileDB.updateUserTacos(mentionedId, 15, function(updateerr, updateResponse) {
+                            profileDB.updateUserTacos(mentionedId, 1, function(updateerr, updateResponse) {
                                 if (updateerr){
                                     // console.log(updateerr);
                                     message.channel.send("The user has not yet agreed to the terms");
@@ -394,17 +394,17 @@ module.exports.thankCommand = function(message){
                                     })
                                     // send message that the user has 1 more taco
                                     if (extraTacosFromItems > 0){
-                                        message.channel.send(message.author + " thanked " + mentionedUser.username + ", they received 15 tacos! :taco: :turkey: " + " you received `" + extraTacosFromItems + "` extra tacos");
+                                        message.channel.send(message.author + " thanked " + mentionedUser.username + ", they received 1 taco! :taco: :turkey: " + " you received `" + extraTacosFromItems + "` extra tacos");
                                     }
                                     else{
-                                        message.channel.send(message.author + " thanked " + mentionedUser.username + ", they received 15 tacos! :taco: :turkey: ");
+                                        message.channel.send(message.author + " thanked " + mentionedUser.username + ", they received 1 taco! :taco: :turkey: ");
                                     }
                                 }
                             })
                         }else{
                             // six hours have not passed, tell the user they need to wait 
                             now = new Date(now.setMinutes(now.getMinutes() + minutesToRemove));
-                            var numberOfHours = getDateDifference(thankResponse.data.lastthanktime, now, 1);
+                            var numberOfHours = getDateDifference(thankResponse.data.lastthanktime, now, 2);
                             message.channel.send(message.author + " You are being too thankful! Please wait `" + numberOfHours +"` ");
                         }
                     }
