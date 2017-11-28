@@ -468,7 +468,6 @@ module.exports.sorryCommand = function(message){
                                             // console.log(createerr); // cant create user RIP
                                         }
                                         else{
-                                            message.channel.send(message.author + " apologized to " + mentionedUser + ", they received a taco! :taco:" + " cd reduction in minutes " + minutesToRemove + " " + (wearRes.sorryCommandCDRPercentage*100) + "%");
                                             var experienceFromItems = wearRes.sorryCommandExperienceGain ? wearRes.sorryCommandExperienceGain : 0;
                                             experience.gainExperience(message, discordUserId, (EXPERIENCE_GAINS.sorry + experienceFromItems) , sorryResponse);
                                             stats.statisticsManage(discordUserId, "sorrycount", 1, function(staterr, statSuccess){
@@ -490,10 +489,11 @@ module.exports.sorryCommand = function(message){
                                         }
                                         else{
                                             //// console.log(updateResponse);
-                                            experience.gainExperience(message, discordUserId, EXPERIENCE_GAINS.sorry , sorryResponse);
-                                            stats.statisticsManage(discordUserId, "sorrycount", 1, function(err, statSuccess){
-                                                if (err){
-                                                    // console.log(err);
+                                            var experienceFromItems = wearRes.sorryCommandExperienceGain ? wearRes.sorryCommandExperienceGain : 0;
+                                            experience.gainExperience(message, discordUserId,  (EXPERIENCE_GAINS.sorry + experienceFromItems) , sorryResponse);
+                                            stats.statisticsManage(discordUserId, "sorrycount", 1, function(staterr, statSuccess){
+                                                if (staterr){
+                                                    console.log(staterr);
                                                 }
                                                 else{
                                                     // check achievements??
