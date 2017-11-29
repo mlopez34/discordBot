@@ -585,12 +585,14 @@ module.exports = {
 
         revive: {
             name: "Revive",
+            abilityId: "revive",
             special: "remove death",
             cooldown: 0,
             maxcooldown: 1
         },
         focus: {
             name: "Focus",
+            abilityId: "focus",
             belongsToMember: true,
             status: {
                 focusedBy: "",
@@ -601,6 +603,7 @@ module.exports = {
         },
         freeze: {
             name: "Freeze",
+            abilityId: "freeze",
             status: {
                 name: "Frozen",
                 emoji: "❄️",
@@ -610,6 +613,7 @@ module.exports = {
         },
         scold: {
             name: "Scold",
+            abilityId: "scold",
             status: {
                 name: "Scold",
                 emoji: "☔️",
@@ -619,6 +623,7 @@ module.exports = {
         },
         cripple: {
             name: "Cripple",
+            abilityId: "cripple",
             status: {
                 name: "Crippled",
                 emoji: "🤕",
@@ -628,6 +633,7 @@ module.exports = {
         },
         weaken: {
             name: "Weaken",
+            abilityId: "weaken",
             status: {
                 name: "Weakened",
                 emoji: "😵 ",
