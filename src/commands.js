@@ -379,7 +379,7 @@ module.exports.thankCommand = function(message){
                                         else{
                                             // // console.log(updateResponse);
                                             var experienceFromItems = wearRes.thankCommandExperienceGain ? wearRes.thankCommandExperienceGain : 0;
-                                            experience.gainExperience(message, discordUserId, EXPERIENCE_GAINS.thank + experienceFromItems, thankResponse);
+                                            experience.gainExperience(message, message.author, EXPERIENCE_GAINS.thank + experienceFromItems, thankResponse);
                                             //update statistic
                                             stats.statisticsManage(discordUserId, "thankcount", 1, function(staterr, statSuccess){
                                                 if (staterr){
@@ -469,7 +469,7 @@ module.exports.sorryCommand = function(message){
                                         }
                                         else{
                                             var experienceFromItems = wearRes.sorryCommandExperienceGain ? wearRes.sorryCommandExperienceGain : 0;
-                                            experience.gainExperience(message, discordUserId, (EXPERIENCE_GAINS.sorry + experienceFromItems) , sorryResponse);
+                                            experience.gainExperience(message, message.author, (EXPERIENCE_GAINS.sorry + experienceFromItems) , sorryResponse);
                                             stats.statisticsManage(discordUserId, "sorrycount", 1, function(staterr, statSuccess){
                                                 if (staterr){
                                                     // console.log(staterr);
@@ -490,7 +490,7 @@ module.exports.sorryCommand = function(message){
                                         else{
                                             //// console.log(updateResponse);
                                             var experienceFromItems = wearRes.sorryCommandExperienceGain ? wearRes.sorryCommandExperienceGain : 0;
-                                            experience.gainExperience(message, discordUserId,  (EXPERIENCE_GAINS.sorry + experienceFromItems) , sorryResponse);
+                                            experience.gainExperience(message, message.author,  (EXPERIENCE_GAINS.sorry + experienceFromItems) , sorryResponse);
                                             stats.statisticsManage(discordUserId, "sorrycount", 1, function(staterr, statSuccess){
                                                 if (staterr){
                                                     console.log(staterr);
@@ -558,7 +558,7 @@ module.exports.buyStandCommand = function (message){
                     }
                     else{
                         message.channel.send(message.author + " Congratulations!, you have purchased a taco stand! :bus:");
-                        experience.gainExperience(message, discordUserId, EXPERIENCE_GAINS.buyStand + (EXPERIENCE_GAINS.buyStandPerStand * userTacoStands) , buyStandResponse);
+                        experience.gainExperience(message, message.author, EXPERIENCE_GAINS.buyStand + (EXPERIENCE_GAINS.buyStandPerStand * userTacoStands) , buyStandResponse);
                         // check achievements??
                         var data = {}
                         data.achievements = achievements;
@@ -649,7 +649,7 @@ module.exports.prepareCommand = function (message){
                                                 message.channel.send(message.author + " You have prepared `" + tacosToPrepare + "` tacos :taco:! `" + soiledToTaco +"` were from soiled crops. The tacos also come with `1` warranty protection");
                                             }
                                             var experienceFromItems = wearRes.prepareCommandExperienceGain ? wearRes.prepareCommandExperienceGain : 0;
-                                            experience.gainExperience(message, discordUserId, (EXPERIENCE_GAINS.prepare + (EXPERIENCE_GAINS.preparePerStand * userTacoStands) + experienceFromItems) , prepareResponse);
+                                            experience.gainExperience(message, message.author, (EXPERIENCE_GAINS.prepare + (EXPERIENCE_GAINS.preparePerStand * userTacoStands) + experienceFromItems) , prepareResponse);
                                             stats.statisticsManage(discordUserId, "maxextratacos", soiledToTaco, function(staterr, statSuccess){
                                                 if (staterr){
                                                     // console.log(staterr);
@@ -976,7 +976,7 @@ module.exports.cookCommand = function(message){
                                 // console.log(data);
                                 achiev.checkForAchievements(discordUserId, data, message);
                                 var experienceFromItems = wearRes.cookCommandExperienceGain ? wearRes.cookCommandExperienceGain : 0;
-                                experience.gainExperience(message, discordUserId, (EXPERIENCE_GAINS.cook + experienceFromItems), cookResponse);
+                                experience.gainExperience(message, message.author, (EXPERIENCE_GAINS.cook + experienceFromItems), cookResponse);
                             }
                         })
                     }else{
@@ -1372,7 +1372,7 @@ module.exports.buyPickaxeCommand = function(message){
                             // couldn't purchase stand
                         }
                         else{
-                            experience.gainExperience(message, discordUserId, EXPERIENCE_GAINS.buyPickaxe , pickaxeResponse);
+                            experience.gainExperience(message, message.author, EXPERIENCE_GAINS.buyPickaxe , pickaxeResponse);
                             message.channel.send(message.author + " Congratulations, you have purchased a pickaxe :pick:!");
                         }
                     })
@@ -1391,7 +1391,7 @@ module.exports.buyPickaxeCommand = function(message){
                             // couldn't purchase stand
                         }
                         else{
-                            experience.gainExperience(message, discordUserId, EXPERIENCE_GAINS.buyPickaxe * 3 , pickaxeResponse);
+                            experience.gainExperience(message, message.author, EXPERIENCE_GAINS.buyPickaxe * 3 , pickaxeResponse);
                             message.channel.send(message.author + " Congratulations, you have purchased an Improved Pickaxe :pick:!");
                         }
                     })
@@ -1410,7 +1410,7 @@ module.exports.buyPickaxeCommand = function(message){
                             // couldn't purchase stand
                         }
                         else{
-                            experience.gainExperience(message, discordUserId, EXPERIENCE_GAINS.buyPickaxe * 10 , pickaxeResponse);
+                            experience.gainExperience(message, message.author, EXPERIENCE_GAINS.buyPickaxe * 10 , pickaxeResponse);
                             message.channel.send(message.author + " Congratulations, you have purchased the Mster Pickaxe :pick:!");
                         }
                     })
@@ -2258,7 +2258,7 @@ module.exports.scavangeCommand = function (message){
                                     else{
                                         // console.log(updateLSres);
                                         var experienceFromItems = wearRes.scavengeCommandExperienceGain ? wearRes.scavengeCommandExperienceGain : 0;                                        
-                                        experience.gainExperience(message, discordUserId, ((EXPERIENCE_GAINS.scavenge * EXPERIENCE_MULTIPLIER) + experienceFromItems), getUserResponse);
+                                        experience.gainExperience(message, message.author, ((EXPERIENCE_GAINS.scavenge * EXPERIENCE_MULTIPLIER) + experienceFromItems), getUserResponse);
                                     }
                                 })
                                 // add the tacos to user
@@ -2957,7 +2957,7 @@ module.exports.fetchCommand = function(message){
                                     }
                                     else{
                                         var experienceFromItems = wearRes.fetchCommandExperienceGain ? wearRes.fetchCommandExperienceGain : 0;                                                                                
-                                        experience.gainExperience(message, discordUserId, ((EXPERIENCE_GAINS.perFetchCd * PETS_AVAILABLE[userPet].fetch) + experienceFromItems) , fetchResponse);
+                                        experience.gainExperience(message, message.author, ((EXPERIENCE_GAINS.perFetchCd * PETS_AVAILABLE[userPet].fetch) + experienceFromItems) , fetchResponse);
                                         // user's pet fetched some tacos
                                         if (extraTacosFromItems > 0){
                                             /* SEASONAL
@@ -3096,7 +3096,7 @@ module.exports.useCommand = function(message, args){
                                     message.channel.send(message.author + " threw a rock at " + mentionedUserName);
                                 }
                                 var timeout = setTimeout (function(){ 
-                                    experience.gainExperience(message, discordUserId, EXPERIENCE_GAINS.useCommonItem);
+                                    experience.gainExperience(message, message.author, EXPERIENCE_GAINS.useCommonItem);
                                     stats.statisticsManage(discordUserId, "rocksthrown", 1, function(staterr, statSuccess){
                                         if (staterr){
                                             // console.log(staterr);
@@ -3169,7 +3169,7 @@ module.exports.useCommand = function(message, args){
                         else{
                             // console.log(useRes);
                             var timeout = setTimeout (function(){ 
-                                experience.gainExperience(message, discordUserId, EXPERIENCE_GAINS.useCommonItemFive);
+                                experience.gainExperience(message, message.author, EXPERIENCE_GAINS.useCommonItemFive);
                             }, 1000);
                             message.channel.send(message.author + " has built a fence, counts as `3` protection points");
                         }
@@ -3255,7 +3255,7 @@ module.exports.useCommand = function(message, args){
                                         message.channel.send(message.author + " tailored something that Bender likes, Bender gave you `2` tacos :taco:");
                                     }
                                     var timeout = setTimeout (function(){ 
-                                        experience.gainExperience(message, discordUserId, EXPERIENCE_GAINS.useCommonItemFive);
+                                        experience.gainExperience(message, message.author, EXPERIENCE_GAINS.useCommonItemFive);
                                         stats.statisticsManage(discordUserId, "tailorcount", 1, function(staterr, statSuccess){
                                             if (staterr){
                                                 // console.log(staterr);
@@ -3336,7 +3336,7 @@ module.exports.useCommand = function(message, args){
                         else{
                             // console.log(useRes);
                             var timeout = setTimeout (function(){ 
-                                experience.gainExperience(message, discordUserId, EXPERIENCE_GAINS.useCommonItem * cansToUse);
+                                experience.gainExperience(message, message.author, EXPERIENCE_GAINS.useCommonItem * cansToUse);
                             }, 200);
                             
                             message.channel.send(message.author + " recycled a soda can, you have gained `" + cansToUse + "` reputation with Bender.\n`" + message.author.username + "'s Current reputation " + useRes.repNumber + ", Status: " + useRes.repStatus + "`")
@@ -3412,7 +3412,7 @@ module.exports.useCommand = function(message, args){
                         else{
                             // console.log(useRes);
                             var timeout = setTimeout (function(){ 
-                                experience.gainExperience( message, discordUserId, EXPERIENCE_GAINS.useCommonItem * soilsCountToUse );
+                                experience.gainExperience( message, message.author, EXPERIENCE_GAINS.useCommonItem * soilsCountToUse );
                                 stats.statisticsManage(discordUserId, "soilcount", soilsCountToUse, function(staterr, statSuccess){
                                     if (staterr){
                                         // console.log(staterr);
@@ -5083,12 +5083,12 @@ function createParty(message, discordUserId, uncommonsToUse, mainChannel){
                         var idOfTable;
                         var reactionCount = 0;
                         collected.forEach(function(reactionEmoji){
-                            ownerOfTable = activeTables["table-" + reactionEmoji.message.id].id; // discord id of owner
+                            ownerOfTable = activeTables["table-" + reactionEmoji.message.id]; // discord id of owner
                             ownerOfTableUsername = activeTables["table-" + reactionEmoji.message.id].username;
                             idOfTable = "table-" + reactionEmoji.message.id;
                             if (reactionEmoji._emoji.name == "🌮"){
                                 reactionEmoji.users.forEach(function(user){
-                                    if (!user.bot && ownerOfTable != user.id){
+                                    if (!user.bot && ownerOfTable.id != user.id){
                                         tacoPartyReactRewards(message, user, "🌮", "taco")
                                         reactionCount++;
                                     }
@@ -5096,7 +5096,7 @@ function createParty(message, discordUserId, uncommonsToUse, mainChannel){
                             }
                             else if (reactionEmoji._emoji.name == "🍹"){
                                 reactionEmoji.users.forEach(function(user){
-                                    if (!user.bot && ownerOfTable != user.id){
+                                    if (!user.bot && ownerOfTable.id != user.id){
                                         tacoPartyReactRewards(message, user, "🍹", "terrycloth")
                                         reactionCount++;
                                     }
@@ -5104,7 +5104,7 @@ function createParty(message, discordUserId, uncommonsToUse, mainChannel){
                             }
                             else if (reactionEmoji._emoji.name == "💃🏼"){
                                 reactionEmoji.users.forEach(function(user){
-                                    if (!user.bot && ownerOfTable != user.id){
+                                    if (!user.bot && ownerOfTable.id != user.id){
                                         tacoPartyReactRewards(message, user, "💃🏼", "rock")
                                         reactionCount++;
                                     }
@@ -5112,13 +5112,13 @@ function createParty(message, discordUserId, uncommonsToUse, mainChannel){
                             }
                             
                         })
-                        if (ownerOfTable){
+                        if (ownerOfTable.id){
                             // give owner of table 1xp per reaction, 2 tacos per reaction 
                             var attendees = reactionCount;
                             if (reactionCount > 15){
                                 reactionCount = 15;
                             }
-                            profileDB.getUserProfileData(ownerOfTable, function(getDataErr, getDataRes){
+                            profileDB.getUserProfileData(ownerOfTable.id, function(getDataErr, getDataRes){
                                 if (getDataErr){
                                     // console.log(getDataErr);
                                     message.channel.send(err);
@@ -5126,7 +5126,7 @@ function createParty(message, discordUserId, uncommonsToUse, mainChannel){
                                 else{
                                     // for gaining xp
                                     var userData = getDataRes;
-                                    profileDB.updateUserTacos(ownerOfTable, reactionCount * 2, function(err, res){
+                                    profileDB.updateUserTacos(ownerOfTable.id, reactionCount * 2, function(err, res){
                                         if (err){
                                             // console.log(err);
                                             message.channel.send(err);
@@ -5139,7 +5139,7 @@ function createParty(message, discordUserId, uncommonsToUse, mainChannel){
                                             var data = {}
                                             data.achievements = achievements;
                                             data.attendees = attendees;
-                                            achiev.checkForAchievements(ownerOfTable, data, message);
+                                            achiev.checkForAchievements(ownerOfTable.id, data, message);
                                             // delete the party from the list
                                             if (activeTables[idOfTable]){
                                                 delete activeTables[idOfTable];
