@@ -331,7 +331,7 @@ module.exports = {
                 name: "Drain",
                 adPercentage: 0.9,
                 dmg: 40,
-                heal: 20,
+                heal: 40,
                 mdPercentage: 0.85,
                 healPercentage: 0.4
             }
@@ -344,7 +344,7 @@ module.exports = {
                 name: "Guac",
                 mdPerDot: 0.2,
                 mdPercentage: 0.8,
-                dmg: 50
+                dmg: 85
             }
         },
         haste: {
@@ -676,8 +676,8 @@ module.exports = {
                 adPerPartyMember: 0,
                 mdPerPartyMember: 0,
                 hp: 2300,
-                attackDmg: 150,
-                magicDmg: 150,
+                attackDmg: 100,
+                magicDmg: 100,
                 armor: 300,
                 spirit: 300,
                 difficulty: "summoned",
