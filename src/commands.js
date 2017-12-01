@@ -2389,6 +2389,14 @@ module.exports.slotsCommand = function(message, tacosBet){
                         }
                         else{
                             // console.log(updateRes);
+                            // check for achievement
+                            if (tacosWon >= 1 && bet >= 5000){
+                                var data = {
+                                    slotsTacosBet: bet
+                                };
+                                data.achievements = getProfileResponse.data.achievements;
+                                achiev.checkForAchievements(discordUserId, data, message);
+                            }
                             stats.statisticsManage(discordUserId, "slotscount", 1, function(staterr, statSuccess){
                                 if (staterr){
                                     // console.log(staterr);

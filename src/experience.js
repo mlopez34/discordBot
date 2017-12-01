@@ -3,6 +3,7 @@
 var profileDB = require("./profileDB.js");
 const Discord = require("discord.js");
 var config = require("./config.js");
+var achiev = require("./achievements.js");
 
 var Levels = config.Levels
 var levelRewards = config.levelTacoRewards;
@@ -65,8 +66,11 @@ function gainExperienceHandler(message, discordUser, experienceNumber, userProfi
                 }
                 else{
                     // console.log(updateXpRes);
-                    // create the level up embed
-                    // TODO: embed needs the name of the user that leveled up
+                    var data = {
+                        levelObtained: userLeveledUpTo
+                    }
+                    data.achievements = userProfileData.data.achievements;
+                    achiev.checkForAchievements(discordUser.id, data, message);
                     experienceEmbedBuilder(message, discordUser, userLeveledUpTo, tacoRewards);
                 }
             })
@@ -86,4 +90,10 @@ function gainExperienceHandler(message, discordUser, experienceNumber, userProfi
     else{
         // something wrong
     }
+}
+
+function extraLevelRewards(message, discordUser, userLeveledUpTo){
+    // check when the user reaches level 30 and give them a reward
+    // reward possibilities (amulet), ancient item, 
+    // :sparkle: = emerald amulet
 }
