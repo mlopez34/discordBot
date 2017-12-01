@@ -78,6 +78,16 @@ var achievementsData = {
         score: 20,
         description: "Become Glorified by Bender"
     },
+    "Devoted" : {
+        emoji: ":scales:",
+        score: 15,
+        description : "Reach level 30"
+    },
+    "Gambler" : {
+        emoji: ":game_die:",
+        score: 15,
+        description : "Slot 5000 tacos and win"
+    },
     "Rolechecker" : {
         emoji: ":scroll:",
         score: 15,
@@ -88,6 +98,7 @@ var achievementsData = {
         score: 15,
         description : "Win the SH August 2017 Tournament"
     }
+    
 }
 
 
@@ -320,6 +331,32 @@ module.exports.checkForAchievements = function(discordUserId, data, message, cal
                         }
                         {
                             achievementEmbedBuilder(message, "Harvester", achievementEarner);
+                        }
+                    })
+                }
+
+                if(data.levelObtained && 
+                data.levelObtained >= 30 && 
+                (data.achievements === null || data.achievements.indexOf("Devoted") == -1)){
+                    profileDB.updateAchievements(discordUserId, "{Devoted}", function(err, r){
+                        if (err){
+                            // console.log(err);
+                        }
+                        {
+                            achievementEmbedBuilder(message, "Devoted", achievementEarner);
+                        }
+                    })
+                }
+
+                if(data.slotsTacosBet && 
+                data.slotsTacosBet >= 5000 && 
+                (data.achievements === null || data.achievements.indexOf("Gambler") == -1)){
+                    profileDB.updateAchievements(discordUserId, "{Gambler}", function(err, r){
+                        if (err){
+                            // console.log(err);
+                        }
+                        {
+                            achievementEmbedBuilder(message, "Gambler", achievementEarner);
                         }
                     })
                 }

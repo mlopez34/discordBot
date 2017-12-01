@@ -240,6 +240,7 @@ module.exports.showRpgStats = function(message, itemsAvailable){
                     var myStats = {
                         id: message.author.id,
                         name: message.author.username,
+                        username: message.author.username,
                         hp: 250 + (27 *  partyMemberStats.level ) + partyMemberHpPlus,
                         attackDmg: 10 + (9 * partyMemberStats.level) + partyMemberAttackDmgPlus,
                         magicDmg:  10 + (9 * partyMemberStats.level) + partyMemberMagicDmgPlus,
@@ -533,6 +534,7 @@ module.exports.rpgReady = function(message, itemsAvailable){
                                             membersInParty["rpg-" + partyMember.id] = {
                                                 id: partyMember.id,
                                                 name: partyMember.username,
+                                                username: partyMember.username,
                                                 hp: 250 + (27 *  partyMemberStats.level ) + partyMemberHpPlus,
                                                 attackDmg: 10 + (9 * partyMemberStats.level) + partyMemberAttackDmgPlus,
                                                 magicDmg:  10 + (9 * partyMemberStats.level) + partyMemberMagicDmgPlus,
@@ -1353,7 +1355,7 @@ function updateUserRewards(message, memberInParty, rewards){
                 }else{
                     console.log(res);
                     // add experience and then items
-                    experience.gainExperience(message, memberInParty.id, rewards.xp);
+                    experience.gainExperience(message, memberInParty, rewards.xp);
                     if (rewards.items.length > 0){
                         addToUserInventory(memberInParty.id, rewards.items);                        
                     }

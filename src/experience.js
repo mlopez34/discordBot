@@ -3,37 +3,38 @@
 var profileDB = require("./profileDB.js");
 const Discord = require("discord.js");
 var config = require("./config.js");
+var achiev = require("./achievements.js");
 
 var Levels = config.Levels
 var levelRewards = config.levelTacoRewards;
 
-module.exports.gainExperience = function (message, discordUserId, experienceNumber, userProfileData){
+module.exports.gainExperience = function (message, discordUser, experienceNumber, userProfileData){
     if (!userProfileData){
-        profileDB.getUserProfileData( discordUserId, function(err, profileResponse) {
+        profileDB.getUserProfileData( discordUser.id, function(err, profileResponse) {
             if(err){
                 // console.log(err);
             }
             else{
-                gainExperienceHandler(message, discordUserId, experienceNumber, profileResponse)
+                gainExperienceHandler(message, discordUser, experienceNumber, profileResponse)
             }
         })
     }
     else{
-        gainExperienceHandler(message, discordUserId, experienceNumber, userProfileData)
+        gainExperienceHandler(message, discordUser, experienceNumber, userProfileData)
     }
 }
 
-function experienceEmbedBuilder(message, level, tacoRewards){
+function experienceEmbedBuilder(message, userThatLeveled, level, tacoRewards){
     var xpEmoji = ":arrow_up: :tada:";
     const embed = new Discord.RichEmbed()
     .setColor(0xED962D)
-    .addField(message.author.username +" has leveled up!", "Level " + level + " "  + xpEmoji + "\n**Rewards:** " + tacoRewards + " tacos! :taco:", true)
+    .addField(userThatLeveled.username +" has leveled up!", "Level " + level + " "  + xpEmoji + "\n**Rewards:** " + tacoRewards + " tacos! :taco:", true)
     message.channel.send({embed});
 }
 
-function gainExperienceHandler(message, discordUserId, experienceNumber, userProfileData){
+function gainExperienceHandler(message, discordUser, experienceNumber, userProfileData){
     // once the user has gained experience, check if the user has leveled and check which level the user is in 
-    if (discordUserId && experienceNumber){
+    if (discordUser && discordUser.id && experienceNumber){
         // get user's experience, and level
         var firstExperienceGain = userProfileData.data.experience;
         var userExperience = userProfileData.data.experience ? userProfileData.data.experience : 0;
@@ -59,20 +60,23 @@ function gainExperienceHandler(message, discordUserId, experienceNumber, userPro
         // console.log("xp: " + experienceNumber + " lvl: " + userLeveledUpTo)
         if (levelUp){
             // add experience and if userleveledupto is different than userlevel then update userlevel also
-            profileDB.updateUserExperience(experienceNumber, userLeveledUpTo, discordUserId, firstExperienceGain, tacoRewards, function(updateXpErr, updateXpRes){
+            profileDB.updateUserExperience(experienceNumber, userLeveledUpTo, discordUser.id, firstExperienceGain, tacoRewards, function(updateXpErr, updateXpRes){
                 if (updateXpErr){
                     // console.log(updateXpErr);
                 }
                 else{
                     // console.log(updateXpRes);
-                    // create the level up embed
-                    // TODO: embed needs the name of the user that leveled up
-                    experienceEmbedBuilder(message, userLeveledUpTo, tacoRewards);
+                    var data = {
+                        levelObtained: userLeveledUpTo
+                    }
+                    data.achievements = userProfileData.data.achievements;
+                    achiev.checkForAchievements(discordUser.id, data, message);
+                    experienceEmbedBuilder(message, discordUser, userLeveledUpTo, tacoRewards);
                 }
             })
         }
         else{
-            profileDB.updateUserExperience(experienceNumber, userLeveledUpTo, discordUserId, firstExperienceGain, null, function(updateXpErr, updateXpRes){
+            profileDB.updateUserExperience(experienceNumber, userLeveledUpTo, discordUser.id, firstExperienceGain, null, function(updateXpErr, updateXpRes){
                 if (updateXpErr){
                     // console.log(updateXpErr);
                 }
@@ -86,4 +90,10 @@ function gainExperienceHandler(message, discordUserId, experienceNumber, userPro
     else{
         // something wrong
     }
+}
+
+function extraLevelRewards(message, discordUser, userLeveledUpTo){
+    // check when the user reaches level 30 and give them a reward
+    // reward possibilities (amulet), ancient item, 
+    // :sparkle: = emerald amulet
 }
