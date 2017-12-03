@@ -45,6 +45,7 @@ var RAFFLE_ENTRY_COST = 5;
 var RAFFLE_USER_SIZE = 7
 // make recipe be available at lvl 2 reputation
 var ARTIFACT_RECIPE_COST = 3500;
+var FLASK_COST = 100;
 var ARTIFACT_RECIPE_ID = 69;
 var TACO_PARTY_TIME_TO_LIVE = 300000
 
@@ -94,6 +95,9 @@ var Levels = config.Levels;
 var REWARDS = {
     ArtifactRecipe : {
         repLevel : 3
+    },
+    Flask : {
+        repLevel : 4
     }
 }
 
@@ -591,12 +595,17 @@ module.exports.prepareCommand = function (message){
         else{
             // get number of trees the user has
             // check lastprepare time
-            var userLevel = prepareResponse.data.level;
-            wearStats.getUserWearingStats(message, discordUserId, {userLevel: userLevel}, function(wearErr, wearRes){
+            var HAS_SPRINTING_SHOES = prepareResponse.data.sprintingshoes;
+            var userWearingData = {
+                userLevel : prepareResponse.data.level,
+                hasSprintingShoes : HAS_SPRINTING_SHOES
+            }
+            wearStats.getUserWearingStats(message, discordUserId, userWearingData, function(wearErr, wearRes){
                 if (wearErr){
                     
                 }else{
                     var achievements = prepareResponse.data.achievements;
+                    
                     var now = new Date();
                     var threeDaysAgo = new Date();
                     ///////// CALCULATE THE MINUTES REDUCED HERE 
@@ -1159,6 +1168,12 @@ module.exports.profileCommand = function(message){
                 if (profileResponse.data.casserole == true){
                     profileData.userItems = profileData.userItems + "Casserole :shallow_pan_of_food: \n"
                 }
+                if (profileResponse.data.sprintingshoes == true){
+                    profileData.userItems = profileData.userItems + "Sprinting Shoes :athletic_shoe: \n"
+                }
+                if (profileResponse.data.flasks){
+                    profileData.userItems = profileData.userItems + "Flasks :alembic: " + profileResponse.data.flasks + "\n"
+                }
                 if (profileResponse.data.petname){
                     if (profileResponse.data.pet && PETS_AVAILABLE[profileResponse.data.pet]){
                         profileData.petname = profileResponse.data.petname
@@ -1226,6 +1241,12 @@ module.exports.profileCommand = function(message){
                 }
                 if (profileResponse.data.casserole == true){
                     profileData.userItems = profileData.userItems + "Casserole :shallow_pan_of_food: \n"
+                }
+                if (profileResponse.data.sprintingshoes == true){
+                    profileData.userItems = profileData.userItems + "Sprinting Shoes :athletic_shoe: \n"
+                }
+                if (profileResponse.data.flasks){
+                    profileData.userItems = profileData.userItems + "Flasks :alembic: " + profileResponse.data.flasks + "\n"
                 }
                 if (profileResponse.data.petname){
                     if (profileResponse.data.pet && PETS_AVAILABLE[profileResponse.data.pet]){
@@ -1596,6 +1617,98 @@ module.exports.shopCommand = function(message, args){
     })
 }
 
+module.exports.createPotionCommand = function(message){
+    var discordUserId = message.author.id;
+
+    profileDB.getUserProfileData( discordUserId, function(err, potionRes) {
+        if(err){
+            console.log(err);
+        }
+        else{
+            // consume a flask and create a potion
+            var currentFlasks = potionRes.data.flasks;
+            if (currentFlasks > 0){
+                // create random potion that reduces a command by 1 hour and gives effect in rpg (only 1 effect)
+                profileDB.getItemData(function(err, getItemResponse){
+                    if (err){
+                        console.log(err);
+                    }else{
+                        var allItems = getItemResponse.data
+                        var potionItems = [];
+        
+                        for (var item in allItems){
+                            
+                            if(allItems[item].itemraritycategory == "uncommon+"){
+                                potionItems.push(allItems[item]);
+                            }
+                        }
+                        var itemsObtainedArray = [];
+                        // roll for ancient
+                        var potionRoll = Math.floor(Math.random() * potionItems.length);
+                        console.log(potionItems[potionRoll]);
+                        itemsObtainedArray.push(potionItems[potionRoll])
+
+                        if (itemsObtainedArray.length > 0){
+                            // consume the flask
+                            profileDB.consumeFlask(discordUserId, function(consumeErr, consumeRes){
+                                if (consumeErr){
+                                    console.log(consumeErr);
+                                }else{
+                                    console.log(consumeRes);
+                                    addToUserInventory(message.author.id, itemsObtainedArray);
+                                }
+                            })
+                        }
+        
+                        const embed = new Discord.RichEmbed()
+                        .setColor(0xF2E93E)
+                        var rewardString = "";
+                        
+                        for (var item in itemsObtainedArray){
+                            var itemAmount = itemsObtainedArray[item].itemAmount ? itemsObtainedArray[item].itemAmount : 1;
+                            rewardString = rewardString + ":alembic: **" + itemsObtainedArray[item].itemname + "** - " + itemsObtainedArray[item].itemdescription + ", " +itemsObtainedArray[item].itemstatistics + " \n";
+                        }
+                        embed.addField("Potion Created", rewardString, true)
+                        message.channel.send({embed});
+                    }
+                })
+            }else{
+                message.channel.send("You need a flask to create a potion")
+            }
+        }
+    })
+}
+
+module.exports.buyFlaskCommand = function(message){
+    var discordUserId = message.author.id;
+
+    profileDB.getUserProfileData( discordUserId, function(err, buyFlaskResponse) {
+        if(err){
+            // user doesnt exist
+            // console.log(err);
+        }
+        else{
+            var userReputation = buyFlaskResponse.data.repstatus;
+            var currentFlasks = buyFlaskResponse.data.flasks;
+            var userRepLevel = REPUTATIONS[userReputation.toLowerCase()] ? REPUTATIONS[userReputation.toLowerCase()].level : 1;
+            if (userRepLevel >= REWARDS["Flask"].repLevel){
+                // able to shop, spend the tacos and then create the item and store it in the user's inventory
+                if (buyFlaskResponse.data.tacos >= FLASK_COST){
+                    // add a flask to the user's profile
+                    profileDB.buyFlask(discordUserId, currentFlasks, function(flaskErr, flaskRes){
+                        if (flaskErr){
+                            console.log(flaskErr);
+                        }else{
+                            console.log(flaskRes);
+                            // create message that the user purchased a flask
+                            message.channel.send(message.author + " has purchased a flask! :alembic:")
+                        }
+                    })
+                }
+            }
+        }
+    })
+}
 
 module.exports.buyRecipeCommand = function(message){
     var discordUserId = message.author.id;
@@ -1683,7 +1796,7 @@ function repShopBuilder(message, shopData){
     if (shopData.repstatus && (REPUTATIONS[shopData.repstatus.toLowerCase()]) ){
         var userRepLevel = REPUTATIONS[shopData.repstatus.toLowerCase()].level;
         if (userRepLevel >= REWARDS["ArtifactRecipe"].repLevel){
-            var recipeDescription = "Recipe required to combine a complete set of artifact items obtained via scavenge, untradeable."
+            var recipeDescription = "Recipe required to combine a complete set of artifact items obtained via scavenge, not tradeable."
 
             embed.addBlankField(true)
             .addBlankField(false)
@@ -1691,6 +1804,19 @@ function repShopBuilder(message, shopData){
             .addField('Description', recipeDescription, true)
             .addField('Cost', ARTIFACT_RECIPE_COST + " :taco:", true)
             .addField('Command', config.commandString + "buyrecipe", true)
+        }
+    }
+    if (shopData.repstatus && (REPUTATIONS[shopData.repstatus.toLowerCase()]) ){
+        var userRepLevel = REPUTATIONS[shopData.repstatus.toLowerCase()].level;
+        if (userRepLevel >= REWARDS["Flask"].repLevel){
+            var flaskDescription = "Purchase a Flask! used to create potions for random effects, not tradeable."
+
+            embed.addBlankField(true)
+            .addBlankField(false)
+            .addField('Flask (Admired Reputation or Better Only)', ":alembic:", true)
+            .addField('Description', flaskDescription, true)
+            .addField('Cost', FLASK_COST + " :taco:", true)
+            .addField('Command', config.commandString + "buyflask", true)
         }
     }
     embed.addBlankField(false)
@@ -2050,7 +2176,10 @@ function inventoryEmbedBuilder(message, itemsMap, allItems){
     for (var key in itemsMap) {
         if (itemsMap.hasOwnProperty(key)) {
             // 
-            if (allItems[key] && (allItems[key].itemraritycategory == "common" || allItems[key].itemraritycategory == "uncommon")){
+            if (allItems[key] && (allItems[key].itemraritycategory == "common" 
+                || allItems[key].itemraritycategory == "uncommon" 
+                || allItems[key].itemraritycategory == "amulet" 
+                || allItems[key].itemraritycategory == "uncommon+" )){
                 // console.log(key + " " + allItems[key].itemname)
                 inventoryString = "**"+allItems[key].itemname + "** - " +  itemsMap[key] + " - " + allItems[key].itemslot +"\n" + inventoryString;
             }
@@ -3126,6 +3255,7 @@ module.exports.useCommand = function(message, args){
             })
         }
         else{
+            // TODO: grind rocks to find amulets
             message.channel.send("mention a user to throw a rock at, you cannot throw rocks at bots or yourself...");
         }
     }
@@ -3442,6 +3572,40 @@ module.exports.useCommand = function(message, args){
                 else if (soilToUse.length < soilsCountToUse){
                     message.channel.send(message.author + " you do not have that many soil to use..")
                 }
+            }
+        })
+    }else{
+        // use the item based on itemshortname
+        var itemShortName = (args.length >= 2) ? args[1] : undefined;
+
+        profileDB.getUserItems(discordUserId, function(error, inventoryResponse){
+            if (error){
+                // console.log(error);
+                agreeToTerms(message, discordUserId);
+            }
+            else{
+                var itemsInInventoryCountMap = {};
+                var userInventory = inventoryResponse.data
+                for (var item in inventoryResponse.data){
+                    // check the rock hasnt been used
+                    var validItem = useItem.itemValidate(inventoryResponse.data[item]);
+                    if (!itemsInInventoryCountMap[inventoryResponse.data[item].itemid] && validItem){
+                        // item hasnt been added to be counted, add it as 1
+                        itemsInInventoryCountMap[inventoryResponse.data[item].itemid] = 1;
+                    }
+                    else if (validItem){
+                        itemsInInventoryCountMap[inventoryResponse.data[item].itemid] = itemsInInventoryCountMap[inventoryResponse.data[item].itemid] + 1;
+                    }
+                }
+
+                // have the inventory done, now call 
+                useItem.useBasedOnShortName(message, discordUserId, itemShortName, itemsInInventoryCountMap, userInventory, function(err, res){
+                    if (err){
+                        console.log(err);
+                    }else{
+                        console.log(res);
+                    }
+                })
             }
         })
     }
@@ -3777,7 +3941,7 @@ module.exports.wearingCommand = function(message, args){
             // get the user's wearing data
             profileDB.getUserWearInfo(discordUserId, function(getWearErr, getWearRes){
                 if (getWearErr){
-                    // console.log(getWearErr);
+                    console.log(getWearErr);
                 }
                 else{
                     // console.log(getWearRes);
@@ -3834,16 +3998,19 @@ module.exports.wearingCommand = function(message, args){
 
                                 var userPet = profileRes.data.pet ? profileRes.data.pet : undefined;
                                 var userData;
+                                var HAS_SPRINTING_SHOES = profileRes.data.sprintingshoes;
                                 if (!userPet){
                                     userData = {
-                                        userLevel : userLevel
+                                        userLevel : userLevel,
+                                        hasSprintingShoes : HAS_SPRINTING_SHOES
                                     }
                                 }
                                 else{
                                     userData = {
                                         userLevel : userLevel,
                                         fetchCD: PETS_AVAILABLE[userPet].cooldown,
-                                        fetchCount: PETS_AVAILABLE[userPet].fetch
+                                        fetchCount: PETS_AVAILABLE[userPet].fetch,
+                                        hasSprintingShoes : HAS_SPRINTING_SHOES
                                     }
                                 }
                                 
@@ -4961,7 +5128,7 @@ module.exports.createTableCommand = function(message, mainChannel){
             var itemsMapbyId = {};
             profileDB.getItemData(function(error, allItemsResponse){
                 if (error){
-                    // console.log(error);
+                    console.log(error);
                 }
                 else{
                     // console.log("allitemsres " + allItemsResponse.data);
@@ -5041,13 +5208,13 @@ module.exports.createTableCommand = function(message, mainChannel){
 function createParty(message, discordUserId, uncommonsToUse, mainChannel){
     
     const embed = new Discord.RichEmbed()
-    .setThumbnail("https://media.giphy.com/media/mIZ9rPeMKefm0/giphy.gif")
+    .setThumbnail("https://i.imgur.com/dI1PWNo.png")
     .setColor(0xF2E93E)
     .addField("Taco party created by " + message.author.username + "!! " + 'Eat some tacos, drink some orchata water, or dance with Aileen your taco hostess', "Pick one! 🌮 = taco x2, 🍹 = terry cloth x1, 💃🏼 = rock x1 \nYou will receive it at the end of the party (5 minutes)" )
 
     useItem.useUncommons(message, discordUserId, uncommonsToUse, function(useError, useRes){
         if (useError){
-            // console.log(useError);
+            console.log(useError);
         }
         else{
             // console.log(useRes);

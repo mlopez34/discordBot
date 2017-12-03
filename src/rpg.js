@@ -1427,7 +1427,7 @@ function calculateRewards(event, memberInRpgEvent, getItemResponse, numberOfMemb
     var itemsObtainedArray = [];
     // calculate xp based on level and difficulty of enemies and items
     for (var enemy in event.enemies){
-        var rarityRoll;
+        var rarityRoll = undefined;
         var enemyDifficulty =  event.enemies[enemy].difficulty
         if (enemyDifficulty == "easy"){
             additionalExperience = additionalExperience + 1
@@ -1457,25 +1457,21 @@ function calculateRewards(event, memberInRpgEvent, getItemResponse, numberOfMemb
         // push the item to items
         if (rarityRoll){
             if(rarityRoll > ANCIENT_MIN_ROLL ){
-                rarityString = "ancient"
                 var itemRoll = Math.floor(Math.random() * ancientItems.length);
                 console.log(ancientItems[itemRoll]);
                 itemsObtainedArray.push(ancientItems[itemRoll])
             }
             else if(rarityRoll > RARE_MIN_ROLL && rarityRoll <= RARE_MAX_ROLL){
-                rarityString = "rare"
                 var itemRoll = Math.floor(Math.random() * rareItems.length);
                 console.log(rareItems[itemRoll]);
                 itemsObtainedArray.push(rareItems[itemRoll]);
             }
             else if (rarityRoll > UNCOMMON_MIN_ROLL && rarityRoll <= UNCOMMON_MAX_ROLL){
-                rarityString = "uncommon"
                 var itemRoll = Math.floor(Math.random() * uncommonItems.length);
                 console.log(uncommonItems[itemRoll]);
                 itemsObtainedArray.push( uncommonItems[itemRoll] );
             }
             else {
-                rarityString = "common"
                 var itemRoll = Math.floor(Math.random() * commonItems.length);
                 console.log(commonItems[itemRoll]);
                 commonItems[itemRoll].itemAmount = COMMON_ITEMS_TO_OBTAIN

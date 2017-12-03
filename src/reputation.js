@@ -122,26 +122,26 @@ function updateUserRewards(message, discordId, repstatus, cb){
             // give the user a casserole on their profile
             profileDB.obtainCasserole(discordId, function(error, res){
                 if (error){
-                    // console.log(error);
+                    console.log(error);
                 }
                 else{
                     cb(null, "casserole");
                 }
             })
             break;
-            /*
+            
         case "admired":
-            // give the user an ancient and a fishing rod?
-            profileDB.obtainCasserole(discordId, function(error, res){
+            // give user sprinting shoes on their profile
+            profileDB.obtainSprintingShoes(discordId, function(error, res){
                 if (error){
-                    // console.log(error);
+                    console.log(error);
                 }
                 else{
-                    cb(null, "casserole");
+                    cb(null, "sprinting shoes");
                 }
             })
             break;
-            */
+            
     }
         
 }
@@ -176,6 +176,9 @@ function reputationEmbedBuilder(message, repstatus, rewards){
     // rewards
     if (rewards === "casserole"){
         embed.addField( "Rewards: " , ":shallow_pan_of_food: Casserole - gain extra tacos on cook based on your level", true)
+    }
+    if (rewards === "sprinting shoes"){
+        embed.addField( "Rewards: " , ":athletic_shoe: Sprinting Shoes - reduce prepare cooldown by 1% based on your level", true)
     }
     message.channel.send({embed});
 }

@@ -41,7 +41,12 @@ module.exports.statsObjectBuilder = function(message, slot1Data, slot2Data, slot
     var prepareCommandExtraTacosChance = []
     var prepareCommandExtraTacos = []
     var prepareCommandExperience = [];
-    var prepareGuaranteedTacos = []
+    var prepareGuaranteedTacos = [];
+    // if the user has sprinting shoes (1000 rep), insert prepareCommandCDR here
+    if ( userData.hasSprintingShoes){
+        var cdrCalculateBySprintingShoes = userLevel
+        prepareCommandCDR.push(cdrCalculateBySprintingShoes);
+    }
 
     var fetchCommandCDR = [];
     var fetchCommandExtraTacosChance = []
