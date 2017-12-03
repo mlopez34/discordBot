@@ -855,13 +855,14 @@ module.exports.updateUserSoiledCrops = function(discordId, soiledCrops, currentS
 module.exports.buyFlask = function(discordId, currentFlask, cb){
     var query = ""
     var flask = 1;
+    var flaskCost = 100;
     if (!currentFlask){
-        query = 'update ' + config.profileTable + ' set flasks=$1 where discordid=$2'
+        query = 'update ' + config.profileTable + ' set flasks=$1, tacos=tacos-$3 where discordid=$2'
     }
     else{
-        query = 'update ' + config.profileTable + ' set flasks=flasks+$1 where discordid=$2'
+        query = 'update ' + config.profileTable + ' set flasks=flasks+$1, tacos=tacos-$3 where discordid=$2'
     }
-    db.none(query, [flask, discordId])
+    db.none(query, [flask, discordId, flaskCost])
     .then(function () {
         cb(null, {
             status: 'success',
