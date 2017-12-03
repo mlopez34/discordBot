@@ -45,7 +45,7 @@ var RAFFLE_ENTRY_COST = 5;
 var RAFFLE_USER_SIZE = 7
 // make recipe be available at lvl 2 reputation
 var ARTIFACT_RECIPE_COST = 3500;
-var FLASK_COST = 100;
+var FLASK_COST = 50;
 var ARTIFACT_RECIPE_ID = 69;
 var TACO_PARTY_TIME_TO_LIVE = 300000
 
@@ -3276,7 +3276,16 @@ module.exports.useCommand = function(message, args){
                 for (var item in inventoryResponse.data){
                     // check the rock hasnt been used
                     var validItem = useItem.itemValidate(inventoryResponse.data[item]);
-                    if (!itemsInInventoryCountMap[inventoryResponse.data[item].itemid] && validItem){
+                    var itemBeingAuctioned = false;
+                    if (itemsInAuction[inventoryResponse.data[item].id]){
+                        itemBeingAuctioned = true;
+                    }
+                    var itemBeingTraded = false;
+                    if (activeTradeItems[inventoryResponse.data[item].id]){
+                        itemBeingTraded = true;
+                    }
+                    if (!itemsInInventoryCountMap[inventoryResponse.data[item].itemid] 
+                        && validItem && !itemBeingTraded && !itemBeingAuctioned){
                         // item hasnt been added to be counted, add it as 1
                         itemsInInventoryCountMap[inventoryResponse.data[item].itemid] = 1;
 
@@ -3285,7 +3294,7 @@ module.exports.useCommand = function(message, args){
                             piecesOfWoodToUse.push(inventoryResponse.data[item]);
                         }
                     }
-                    else if (validItem){
+                    else if (validItem && !itemBeingTraded && !itemBeingAuctioned){
                         itemsInInventoryCountMap[inventoryResponse.data[item].itemid] = itemsInInventoryCountMap[inventoryResponse.data[item].itemid] + 1;
                         if (inventoryResponse.data[item].itemid == PIECE_OF_WOOD_ITEM_ID && piecesOfWoodToUse.length < 5){
                             // make this the pieceOfWoodToUse
@@ -3345,7 +3354,16 @@ module.exports.useCommand = function(message, args){
                         for (var item in inventoryResponse.data){
                             // check the rock hasnt been used
                             var validItem = useItem.itemValidate(inventoryResponse.data[item]);
-                            if (!itemsInInventoryCountMap[inventoryResponse.data[item].itemid] && validItem){
+                            var itemBeingAuctioned = false;
+                            if (itemsInAuction[inventoryResponse.data[item].id]){
+                                itemBeingAuctioned = true;
+                            }
+                            var itemBeingTraded = false;
+                            if (activeTradeItems[inventoryResponse.data[item].id]){
+                                itemBeingTraded = true;
+                            }
+                            if (!itemsInInventoryCountMap[inventoryResponse.data[item].itemid] 
+                                && validItem && !itemBeingTraded && !itemBeingAuctioned){
                                 // item hasnt been added to be counted, add it as 1
                                 itemsInInventoryCountMap[inventoryResponse.data[item].itemid] = 1;
 
@@ -3354,7 +3372,7 @@ module.exports.useCommand = function(message, args){
                                     terryClothToUse.push(inventoryResponse.data[item]);
                                 }
                             }
-                            else if (validItem){
+                            else if (validItem && !itemBeingTraded && !itemBeingAuctioned){
                                 itemsInInventoryCountMap[inventoryResponse.data[item].itemid] = itemsInInventoryCountMap[inventoryResponse.data[item].itemid] + 1;
                                 if (inventoryResponse.data[item].itemid == TERRY_CLOTH_ITEM_ID && terryClothToUse.length < 5){
                                     // make this the terry cloth use
@@ -3439,8 +3457,17 @@ module.exports.useCommand = function(message, args){
                 for (var item in inventoryResponse.data){
                     // check the rock hasnt been used
                     var validItem = useItem.itemValidate(inventoryResponse.data[item]);
+                    var itemBeingAuctioned = false;
+                    if (itemsInAuction[inventoryResponse.data[item].id]){
+                        itemBeingAuctioned = true;
+                    }
+                    var itemBeingTraded = false;
+                    if (activeTradeItems[inventoryResponse.data[item].id]){
+                        itemBeingTraded = true;
+                    }
                     // TODO: check that the item is not being traded
-                    if (!itemsInInventoryCountMap[inventoryResponse.data[item].itemid] && validItem){
+                    if (!itemsInInventoryCountMap[inventoryResponse.data[item].itemid] 
+                        && validItem && !itemBeingTraded && !itemBeingAuctioned){
                         // item hasnt been added to be counted, add it as 1
                         itemsInInventoryCountMap[inventoryResponse.data[item].itemid] = 1;
 
@@ -3449,7 +3476,7 @@ module.exports.useCommand = function(message, args){
                             sodaCansToUse.push(inventoryResponse.data[item]);
                         }
                     }
-                    else if (validItem){
+                    else if (validItem && !itemBeingTraded && !itemBeingAuctioned){
                         itemsInInventoryCountMap[inventoryResponse.data[item].itemid] = itemsInInventoryCountMap[inventoryResponse.data[item].itemid] + 1;
                         if (inventoryResponse.data[item].itemid == SODA_CAN_ITEM_ID 
                             && sodaCansToUse
@@ -3515,7 +3542,16 @@ module.exports.useCommand = function(message, args){
                 for (var item in inventoryResponse.data){
                     // check the rock hasnt been used
                     var validItem = useItem.itemValidate(inventoryResponse.data[item]);
-                    if (!itemsInInventoryCountMap[inventoryResponse.data[item].itemid] && validItem){
+                    var itemBeingAuctioned = false;
+                    if (itemsInAuction[inventoryResponse.data[item].id]){
+                        itemBeingAuctioned = true;
+                    }
+                    var itemBeingTraded = false;
+                    if (activeTradeItems[inventoryResponse.data[item].id]){
+                        itemBeingTraded = true;
+                    }
+                    if (!itemsInInventoryCountMap[inventoryResponse.data[item].itemid] 
+                        && validItem && !itemBeingTraded && !itemBeingAuctioned){
                         // item hasnt been added to be counted, add it as 1
                         itemsInInventoryCountMap[inventoryResponse.data[item].itemid] = 1;
 
@@ -3524,7 +3560,7 @@ module.exports.useCommand = function(message, args){
                             soilToUse.push(inventoryResponse.data[item]);
                         }
                     }
-                    else if (validItem){
+                    else if (validItem && !itemBeingTraded && !itemBeingAuctioned){
                         itemsInInventoryCountMap[inventoryResponse.data[item].itemid] = itemsInInventoryCountMap[inventoryResponse.data[item].itemid] + 1;
                         if (inventoryResponse.data[item].itemid == SOIL_ITEM_ID 
                             && soilToUse
@@ -3589,11 +3625,20 @@ module.exports.useCommand = function(message, args){
                 for (var item in inventoryResponse.data){
                     // check the rock hasnt been used
                     var validItem = useItem.itemValidate(inventoryResponse.data[item]);
-                    if (!itemsInInventoryCountMap[inventoryResponse.data[item].itemid] && validItem){
+                    var itemBeingAuctioned = false;
+                    if (itemsInAuction[inventoryResponse.data[item].id]){
+                        itemBeingAuctioned = true;
+                    }
+                    var itemBeingTraded = false;
+                    if (activeTradeItems[inventoryResponse.data[item].id]){
+                        itemBeingTraded = true;
+                    }
+                    if (!itemsInInventoryCountMap[inventoryResponse.data[item].itemid] 
+                        && validItem && !itemBeingTraded && !itemBeingAuctioned){
                         // item hasnt been added to be counted, add it as 1
                         itemsInInventoryCountMap[inventoryResponse.data[item].itemid] = 1;
                     }
-                    else if (validItem){
+                    else if (validItem && !itemBeingTraded && !itemBeingAuctioned){
                         itemsInInventoryCountMap[inventoryResponse.data[item].itemid] = itemsInInventoryCountMap[inventoryResponse.data[item].itemid] + 1;
                     }
                 }
@@ -3928,12 +3973,91 @@ function combineEmbedBuilder(message, itemToCreateByName, ItemDetails, itemRarit
     }
 }
 
+module.exports.amuletsWearingCommand = function(message, args){
+    var discordUserId = message.author.id;
+    profileDB.getUserProfileData(discordUserId, function (profileErr, profileRes){
+        if (profileErr){
+            console.log(profileErr);
+            agreeToTerms(message, discordUserId);
+        }
+        else{
+            var userLevel = profileRes.data.level;
+            // get the user's wearing data
+
+            profileDB.getItemData(function(err, getItemResponse){
+                if (err){
+                    console.log(err);
+                }
+                else{
+                    var allItems = getItemResponse.data
+                    // all possible amulet items
+                    var amuletItemsById = {};
+                    
+                    for (var item in allItems){
+                        if (allItems[item].itemraritycategory == "amulet"){
+                            amuletItemsById[allItems[item].id] = allItems[item];
+                        }
+                    }
+                    // get user's Items
+                    profileDB.getUserItems(discordUserId, function(err, inventoryResponse){
+                        if (err){
+                            console.log(err);
+                        }
+                        else{
+                            // console.log(inventoryResponse.data);
+                            // get all the data for each item
+                            var itemsInInventoryCountMap = {};
+                            var itemsMapbyId = {};
+        
+                            for (var item in inventoryResponse.data){
+        
+                                if (!itemsInInventoryCountMap[inventoryResponse.data[item].itemid] ){
+                                    // item hasnt been added to be counted, add it as 1
+                                    itemsInInventoryCountMap[inventoryResponse.data[item].itemid] = 1;
+                                }
+                            }
+                            // have items mapped by id and items in inventory
+                            // check if i have any of all the possible amulet items
+                            var userAmuletData = []
+                            for (var amulet in amuletItemsById){
+                                var idToCheck = amuletItemsById[amulet].id;
+                                if (itemsInInventoryCountMap[idToCheck]){
+                                    userAmuletData.push(amuletItemsById[amulet]);
+                                }
+                            }
+                            var userPet = profileRes.data.pet ? profileRes.data.pet : undefined;                            
+                            var userData;
+                            if (!userPet){
+                                userData = {
+                                    userLevel : userLevel,
+                                }
+                            }else{
+                                userData = {
+                                    userLevel : userLevel,
+                                    fetchCD: PETS_AVAILABLE[userPet].cooldown,
+                                    fetchCount: PETS_AVAILABLE[userPet].fetch
+                                }
+                            }                       
+                            var userItemStats = wearStats.statsObjectBuilder(message, null, null, null, userData, true, true, true, userAmuletData);
+                            var statsString = wearStats.statsStringBuilder(message, userItemStats);
+
+                            var amuletsString = wearStats.amuletsStringBuilder(userAmuletData);
+                            amuletsEmbedBuilder(message, amuletsString, statsString);
+
+                        }
+                    })
+                }
+            })
+        }
+    })
+}
+
 module.exports.wearingCommand = function(message, args){
     // create embed of items the user is wearing
     var discordUserId = message.author.id;
     profileDB.getUserProfileData(discordUserId, function (profileErr, profileRes){
         if (profileErr){
-            // console.log(profileErr);
+            console.log(profileErr);
             agreeToTerms(message, discordUserId);
         }
         else{
@@ -3971,10 +4095,10 @@ module.exports.wearingCommand = function(message, args){
                         // console.log(slot1Id);
                         profileDB.getItemByIdsWear(slot1Id, slot2Id, slot3Id, function(error, itemResponse){
                             if (error){
-                                // console.log(error);
+                                console.log(error);
                             }
                             else{
-                                // console.log(itemResponse);
+                                //console.log(itemResponse);
                                 var slot1Item;
                                 var slot2Item;
                                 var slot3Item;
@@ -4014,10 +4138,10 @@ module.exports.wearingCommand = function(message, args){
                                     }
                                 }
                                 
-                                var userItemStats = wearStats.statsObjectBuilder(message, slot1Item, slot2Item, slot3Item, userData, true, true, true);
+                                var userItemStats = wearStats.statsObjectBuilder(message, slot1Item, slot2Item, slot3Item, userData, true, true, true, null);
                                 var statsString = wearStats.statsStringBuilder(message, userItemStats);
 
-                                var profileData = {}
+                                var profileData = {};
                                 profileData.slot1String = slot1String;
                                 profileData.slot2String = slot2String;
                                 profileData.slot3String = slot3String;
@@ -4037,7 +4161,7 @@ module.exports.wearingCommand = function(message, args){
                 }
             })
         }
-    });
+    })
 }
 
 function wearingEmbedBuilder(message, profileData, statsString, activeSlots){
@@ -4056,6 +4180,19 @@ function wearingEmbedBuilder(message, profileData, statsString, activeSlots){
     if (profileData.slot3String && profileData.slot3String.length > 0){
         var activeText3 = activeSlots.activeSlot3 ? "**ACTIVE**" : "";
         embed.addField('Slot 3 ' + activeText3, profileData.slot3String, false)
+    }
+    if (statsString && statsString.length > 0){
+        embed.addField('Stats Summary', statsString, false)
+    }
+    message.channel.send({embed});
+}
+
+function amuletsEmbedBuilder(message, amuletsString, statsString){
+    const embed = new Discord.RichEmbed()
+    .setThumbnail(message.author.avatarURL)
+    .setColor(0x00AE86)
+    if (amuletsString && amuletsString.length > 0){
+        embed.addField(message.author.username + "'s Amulets", amuletsString, false)
     }
     if (statsString && statsString.length > 0){
         embed.addField('Stats Summary', statsString, false)
@@ -4858,9 +4995,9 @@ module.exports.acceptTradeCommand = function(message, args){
                     message.channel.send(":handshake:  " + message.author + " has accepted the trade of **" + activeTrades[discordUserIdString].fullItemName + "** ! " + " Bender kept `" + tacoTax + "` tacos for tax purposes.") 
                     transferItemsAndTacos(discordUserId, mentionedId, itemsArray, tacosToPay, tacosToPay-tacoTax, function(transErr, transRes){
                         if (transErr){
-                            // console.log(transErr);
+                            console.log(transErr);
                         }else{
-                            // console.log(transRes);
+                            console.log(transRes);
                         }
                     })
                     // delete the item from all the maps
@@ -5392,13 +5529,19 @@ module.exports.rpgReadyCommand = function(message){
     var itemsMapbyId = {};
     profileDB.getItemData(function(error, allItemsResponse){
         if (error){
-            // console.log(error);
+            console.log(error);
         }
         else{
             for (var index in allItemsResponse.data){
                 itemsMapbyId[allItemsResponse.data[index].id] = allItemsResponse.data[index];
             }
-            rpg.rpgReady(message, itemsMapbyId);
+            var amuletItemsById = {}
+            for (var item in allItemsResponse.data){
+                if (allItemsResponse.data[item].itemraritycategory == "amulet"){
+                    amuletItemsById[allItemsResponse.data[item].id] = allItemsResponse.data[item];
+                }
+            }
+            rpg.rpgReady(message, itemsMapbyId, amuletItemsById);
         }
     });
 }
@@ -5415,13 +5558,19 @@ module.exports.rpgstatsCommand = function(message){
     var itemsMapbyId = {};
     profileDB.getItemData(function(error, allItemsResponse){
         if (error){
-            // console.log(error);
+            console.log(error);
         }
         else{
             for (var index in allItemsResponse.data){
                 itemsMapbyId[allItemsResponse.data[index].id] = allItemsResponse.data[index];
             }
-            rpg.showRpgStats(message, itemsMapbyId);
+            var amuletItemsById = {}
+            for (var item in allItemsResponse.data){
+                if (allItemsResponse.data[item].itemraritycategory == "amulet"){
+                    amuletItemsById[allItemsResponse.data[item].id] = allItemsResponse.data[item];
+                }
+            }
+            rpg.showRpgStats(message, itemsMapbyId, amuletItemsById);
         }
     });
 }
