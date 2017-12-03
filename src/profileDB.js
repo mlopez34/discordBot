@@ -772,15 +772,14 @@ module.exports.bulkUpdateItemOwner = function(items, newOwner, cb){
     
         var inventoryItems = []
         for (var item in items){
-            var idOfItem = items[item]
+            var idOfItem = items[item];
             inventoryItems.push({
-                status : null,
                 discordid: newOwner,
                 id : idOfItem
             })
         }
     
-        const q = pgp.helpers.update(inventoryItems, ['id', 'discordid', 'status'], config.inventoryTableNoQuotes) + ' WHERE v.id = t.id';
+        const q = pgp.helpers.update(inventoryItems, ['id', 'discordid'], config.inventoryTableNoQuotes) + ' WHERE v.id = t.id';
         // console.log(q);
         var query = q.replace(/'/g, "");
         
@@ -855,7 +854,7 @@ module.exports.updateUserSoiledCrops = function(discordId, soiledCrops, currentS
 module.exports.buyFlask = function(discordId, currentFlask, cb){
     var query = ""
     var flask = 1;
-    var flaskCost = 100;
+    var flaskCost = 50;
     if (!currentFlask){
         query = 'update ' + config.profileTable + ' set flasks=$1, tacos=tacos-$3 where discordid=$2'
     }

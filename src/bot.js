@@ -208,6 +208,9 @@ client.on('message', function(message){
             else if (commandIs("wearing", message)){
                 commands.wearingCommand(message, args);
             }
+            else if (commandIs("amulets", message)){
+                commands.amuletsWearingCommand(message, args);
+            }
             else if (commandIs("takeoff", message)){
                 commands.takeoffCommand(message, args);
             }
