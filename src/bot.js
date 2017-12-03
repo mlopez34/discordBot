@@ -140,6 +140,12 @@ client.on('message', function(message){
             else if(commandIs("buyrecipe", message)){
                 commands.buyRecipeCommand(message);
             }
+            else if(commandIs("buyflask", message)){
+                commands.buyFlaskCommand(message);
+            }
+            else if(commandIs("createpotion", message)){
+                commands.createPotionCommand(message);
+            }
             else if(commandIs("buypickaxe", message)){
                 commands.buyPickaxeCommand(message);
             }

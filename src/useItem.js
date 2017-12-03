@@ -273,6 +273,98 @@ module.exports.useSoil = function(message, discordUserId, soilToUse, cb){
     }
 }
 
+module.exports.useBasedOnShortName = function(message, discordid, itemshortname, userInventoryCountMap, userInventory, cb){
+    // get all items, map by itemshortname as key, if it matches an item then use the item
+    profileDB.getItemData(function(error, allItemsResponse){
+        if (error){
+            // console.log(error);
+            cb("failed");
+        }
+        else{
+            var itemsMapbyName = {};
+            for (var index in allItemsResponse.data){
+                itemsMapbyName[allItemsResponse.data[index].itemshortname] = allItemsResponse.data[index];
+            }
+            // 
+            if (itemsMapbyName[itemshortname]){
+                // item exists, use the item and remove from user inventory
+                if (itemshortname == "adventurer"
+                    || itemshortname == "culinary"
+                    || itemshortname == "roleplaying"
+                    || itemshortname == "wild"
+                    || itemshortname == "satisfying"
+                    || itemshortname == "guilt"
+                    || itemshortname == "productivity"){
+                    // use a potion from inventory
+                    var idOfItemToUse = itemsMapbyName[itemshortname].id;
+                    var itemInInventoryCount = userInventoryCountMap[idOfItemToUse]
+                    // look for an item in my inventory that has the above id
+                    if (itemInInventoryCount > 0){
+                        var potionToUse = undefined;
+                        for (var item in userInventory){
+                            // check the rock hasnt been used
+                            var validItem = exports.itemValidate(userInventory[item]);
+                            if (validItem){
+                                // item hasnt been added to be counted, add it as 1
+                                if (userInventory[item].itemid == idOfItemToUse){
+                                    potionToUse = userInventory[item];
+                                    break;
+                                }
+                            }
+                        }
+                        // use the potion
+                        if (potionToUse){
+                            profileDB.updateItemStatus(potionToUse.id, "used", function(updatePotionErr, updatePotionRes){
+                                if (updatePotionErr){
+                                    cb(updatePotionErr);
+                                }
+                                else{
+                                    // used the potion, reduce the command that the potion affects by 1 hour
+                                    reduceCommandCooldown(discordid, itemsMapbyName[itemshortname].command, function(reduceErr, reduceRes){
+                                        if (reduceErr){
+                                            message.channel.send("Something went wrong, call 911")
+                                            cb("failed");
+                                        }else{
+                                            message.channel.send( message.author + " used a **" + itemsMapbyName[itemshortname].itemname + "**, they reduced their " + itemsMapbyName[itemshortname].command + " command cooldown by `1 hour`");                                                                
+                                            cb(null, "success")
+                                        }
+                                    })
+                                }
+                            })
+                        }else{
+                            cb("failed")
+                        }
+                    }else{
+                        cb("failed");
+                    }
+                }
+            }else{
+                cb("failed");
+            }
+        }
+    })
+}
+
+function reduceCommandCooldown(discordUserId, command, cb){
+    profileDB.getUserProfileData(discordUserId, function(err, profileRes){
+        if (err){
+            console.log(err);
+            cb(err);
+        }else{
+            var userProfile = profileRes.data;
+
+            profileDB.reduceCommandCooldownByHour(discordUserId, command, userProfile, function(err, res){
+                if (err){
+                    cb(err);
+                }else{
+                    cb(null, "success");
+                }
+            })
+        }
+    })
+    
+}
+
 module.exports.useUncommons = function(message, discordid, uncommons, cb){
     if (discordid && uncommons.length > 0){
         profileDB.bulkUpdateItemStatus(uncommons, "used", function(updateBulkErr, updateBulkRes){
