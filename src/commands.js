@@ -265,7 +265,7 @@ var PETS_AVAILABLE = {
 }
 
 var REPUTATIONS = config.reputations;
-
+//// TEMPORARY COMMANDS
 var trickOrTreatMap = {};
 var TOTCOOLDOWNHOURS = 1;
 
@@ -325,6 +325,115 @@ module.exports.trickOrTreatCommand = function(message){
                 now = new Date(now.setMinutes(now.getMinutes() + 0 ));
                 var numberOfHours = getDateDifference(totData.data.lasttrickortreattime, now, 1);
                 message.channel.send(message.author + " You are being too greedy! Please wait `" + numberOfHours +"` ");
+            }
+        }
+    })
+}
+
+module.exports.openPresentCommand = function(message){
+    // open a present, tacos, or an item, or a flask, or 
+    var discordUserId = message.author.id;
+    
+    // roll the number of items to get
+    var tacosFound = 0
+    var roll = Math.floor(Math.random() * 100) + 1;
+    profileDB.getUserProfileData( discordUserId, function(error, getUserResponse) {
+        if(error){
+            console.log(error);
+            agreeToTerms(message, discordUserId);
+        }else{
+            // get all the possible items from items DB - Bad implementation but idgaf
+            var userLevel = getUserResponse.data.level;
+            var now = new Date();
+            var oneDayAgo = new Date();
+            ///////// CALCULATE THE MINUTES REDUCED HERE 
+            oneDayAgo = new Date(oneDayAgo.setHours(oneDayAgo.getHours() - 24));
+            // added the CDR
+            oneDayAgo = new Date( oneDayAgo.setMinutes( oneDayAgo.getMinutes() ));
+
+            if ( !getUserResponse.data.lastpresenttime || (oneDayAgo > getUserResponse.data.lastpresenttime) ){
+                if (roll >= 50){
+                    // roll an item
+                    var itemsObtainedArray = [];                
+                    profileDB.getItemData(function(err, getItemResponse){
+                        if (err){
+                            console.log(err);
+                        }
+                        else{
+                            var allItems = getItemResponse.data
+                            var uncommonItems = [];
+                            var rareItems = [];
+                            var ancientItems = [];                        
+                            for (var item in allItems){
+                                if(allItems[item].itemraritycategory == "uncommon"){
+                                    uncommonItems.push(allItems[item]);
+                                }
+                                else if(allItems[item].itemraritycategory == "rare"){
+                                    rareItems.push(allItems[item]);
+                                }
+                                else if(allItems[item].itemraritycategory == "ancient"){
+                                    ancientItems.push(allItems[item]);
+                                }
+                            }
+                            var rarityRoll = Math.floor(Math.random() * 10000) + 1;
+
+                            var ANCIENT_MAX_ROLL = 10000
+                            var ANCIENT_MIN_ROLL = 9920;
+                            var RARE_MAX_ROLL = 9920;
+                            var RARE_MIN_ROLL = 9700;
+                            
+                            if(rarityRoll > ANCIENT_MIN_ROLL && rarityRoll <= ANCIENT_MAX_ROLL){
+                                var itemRoll = Math.floor(Math.random() * ancientItems.length);
+                                itemsObtainedArray.push(ancientItems[itemRoll])
+                            }
+                            else if(rarityRoll > RARE_MIN_ROLL && rarityRoll <= RARE_MAX_ROLL){
+                                var itemRoll = Math.floor(Math.random() * rareItems.length);
+                                itemsObtainedArray.push(rareItems[itemRoll]);
+                            }
+                            else {
+                                var itemRoll = Math.floor(Math.random() * uncommonItems.length);
+                                itemsObtainedArray.push( uncommonItems[itemRoll] );
+                            }
+
+                            addToUserInventory(discordUserId, itemsObtainedArray);
+
+                            profileDB.updateUserTacosPresent(discordUserId, tacosFound, function(updateerr, updateResponse) {
+                                if (updateerr){
+                                    console.log(updateerr);
+                                }
+                                else{
+                                    var itemsMessage = ""
+                                    for (var item in itemsObtainedArray){
+                                        itemsMessage = itemsMessage + "[**" + itemsObtainedArray[item].itemraritycategory +"**] " + "**"  + itemsObtainedArray[item].itemname + "** - " + itemsObtainedArray[item].itemdescription + ", " +
+                                        itemsObtainedArray[item].itemslot + ", " +itemsObtainedArray[item].itemstatistics + " \n";
+                                    }
+                                
+                                    const embed = new Discord.RichEmbed()
+                                    .addField(message.author.username + "'s present contained :gift: :christmas_tree:", itemsMessage, true)
+                                    .setThumbnail(message.author.avatarURL)
+                                    .setColor(0xbfa5ff)
+                                    message.channel.send({embed});
+                                }
+                            })
+                        }
+                    })
+                }
+                else if (roll < 50){
+                    // give the user tacos           
+                    tacosFound = 25;
+                    profileDB.updateUserTacosPresent(discordUserId, tacosFound, function(updateerr, updateResponse) {
+                        if (updateerr){
+                            console.log(updateerr);
+                        }
+                        else{
+                            message.channel.send(message.author + " received `" + tacosFound + "` tacos :taco: :gift: :christmas_tree: ")
+                        }
+                    })
+                }
+            } else{
+                now = new Date(now.setMinutes(now.getMinutes()));
+                var numberOfHours = getDateDifference(getUserResponse.data.lastpresenttime, now, 24);
+                message.channel.send(message.author + " You have recently opened a present! :gift: Please wait `" + numberOfHours +"` ");
             }
         }
     })
