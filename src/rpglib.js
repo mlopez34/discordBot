@@ -505,8 +505,8 @@ module.exports = {
             areawidedmg: {
                 areawide: true,
                 name: "Tremor",
-                dmg: 100,
-                mdPercentage: 0.75,
+                dmg: 50,
+                mdPercentage: 1,
                 type: "earth"
             }
         },
@@ -517,8 +517,8 @@ module.exports = {
             processAbility: true,
             ignoreFocus: true,
             name: "Electric Orb",
-            dmg: 20,
-            mdPercentage: 0.5,
+            dmg: 50,
+            mdPercentage: 0.75,
             type: "electric",
             everyNTurns: 5,
             afterNTurns: 1,
@@ -532,7 +532,7 @@ module.exports = {
                 mdPercentage: 1,
                 turnsToExpire: 1,
                 dmgOnStatusExpire: true,
-                dmgOnExpire: 100
+                dmgOnExpire: 150
             }
         },
         // summon demon for ch 5
@@ -546,8 +546,8 @@ module.exports = {
             summon: {
                 enemy: "demon",
                 attackDmg: 150,
-                magicDmg: 150
-                
+                magicDmg: 150,
+                hpPlus: 30
             }
         },
         // heal all enemies when one dies in ch 5
