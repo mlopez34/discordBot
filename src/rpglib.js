@@ -499,7 +499,7 @@ module.exports = {
             belongsToMember: true,
             name: "Tremor",
             abilityId: "tremor",
-            everyNTurns: 4,
+            everyNTurns: 5,
             afterNTurns: 2,
             currentTurn: 0,
             areawidedmg: {
@@ -520,7 +520,7 @@ module.exports = {
             dmg: 20,
             mdPercentage: 0.5,
             type: "electric",
-            everyNTurns: 4,
+            everyNTurns: 5,
             afterNTurns: 1,
             currentTurn: 0,
             status: {
@@ -532,7 +532,7 @@ module.exports = {
                 mdPercentage: 1,
                 turnsToExpire: 1,
                 dmgOnStatusExpire: true,
-                dmgOnExpire: 150
+                dmgOnExpire: 100
             }
         },
         // summon demon for ch 5
@@ -540,7 +540,7 @@ module.exports = {
             name: "Summon Demon",
             abilityId: "summonDemon",
             belongsToMember: true,
-            everyNTurns: 4,
+            everyNTurns: 5,
             afterNTurns: 3,
             currentTurn: 0,
             summon: {

@@ -1749,6 +1749,7 @@ function effectsOnTurnEnd(event){
                                         var targetRoll = Math.floor(Math.random() * event.members.length);
                                         var targetMember = event.members[targetRoll].id;
                                         var targetFocusedMember = true;
+                                        var targettingFocusedMember = false;
                                         if (stuckCount < 5){
                                             for (var member in event.members){
                                                 // TODO: IGNORE FOCUS EFFECT
@@ -1756,6 +1757,7 @@ function effectsOnTurnEnd(event){
                                                 for (var statusToCheck in event.membersInParty[idOfMemberBeingChecked].statuses){
                                                     if (rpgAbility && rpgAbility.ignoreFocus){
                                                         console.log("ignoring focus for ability")
+                                                        targettingFocusedMember = true;
                                                     }else{
                                                         // check if someone has focus on them if they do then the target should be the focused person 
                                                         if ( event.membersInParty[idOfMemberBeingChecked].statuses[statusToCheck].name == "Focus"
@@ -1772,7 +1774,7 @@ function effectsOnTurnEnd(event){
                                         
                                         if (event.membersInParty["rpg-"+targetMember].statuses.indexOf("dead") == -1){
                                             // valid target
-                                            if (untargettable){
+                                            if (untargettable && !targettingFocusedMember){
                                                 // check that no status contains the id of the ability which the player
                                                 // cannot be targetted by
                                                 target = "rpg-"+targetMember;
@@ -1784,10 +1786,14 @@ function effectsOnTurnEnd(event){
                                                         target = undefined;
                                                     }
                                                 }
+                                                console.log(stuckCount)
 
                                             }else{
-                                                target = "rpg-"+targetMember;
-                                                validTarget = true;
+                                                if (!targettingFocusedMember){
+                                                    target = "rpg-"+targetMember;
+                                                    validTarget = true;
+                                                    console.log("stuck count" + stuckCount)
+                                                }
                                             }
                                             
                                         }
