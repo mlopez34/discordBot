@@ -2407,6 +2407,10 @@ module.exports.scavangeCommand = function (message){
                                     else if(allItems[item].itemraritycategory == "ancient"){
                                         ancientItems.push(allItems[item]);
                                     }
+                                    else if(allItems[item].itemraritycategory == "amulet" 
+                                        && allItems[item].amuletsource == "scavenge"){
+                                        ancientItems.push(allItems[item]);
+                                    }
                                     else if(allItems[item].itemraritycategory == "artifact"){
                                         artifactItems.push(allItems[item]);
                                     }
