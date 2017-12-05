@@ -1748,16 +1748,19 @@ function effectsOnTurnEnd(event){
                                     while(!validTarget && stuckCount < 100){
                                         var targetRoll = Math.floor(Math.random() * event.members.length);
                                         var targetMember = event.members[targetRoll].id;
-                                        var targetFocusedMember = true;
-                                        var targettingFocusedMember = false;
+                                        var targetFocusedMember = false;
                                         if (stuckCount < 5){
                                             for (var member in event.members){
-                                                // TODO: IGNORE FOCUS EFFECT
                                                 var idOfMemberBeingChecked = "rpg-" + event.members[member].id;
                                                 for (var statusToCheck in event.membersInParty[idOfMemberBeingChecked].statuses){
                                                     if (rpgAbility && rpgAbility.ignoreFocus){
                                                         console.log("ignoring focus for ability")
-                                                        targettingFocusedMember = true;
+                                                        // IGNORE FOCUS EFFECT - check if the person being targetted by the ability is being focused by the caster
+                                                        if ( (targetMember == event.members[member].id) 
+                                                            &&  event.membersInParty[idOfMemberBeingChecked].statuses[statusToCheck].name == "Focus"
+                                                            && event.membersInParty[idOfMemberBeingChecked].statuses[statusToCheck].focusedBy == enemy){
+                                                                targetFocusedMember = true;
+                                                            }
                                                     }else{
                                                         // check if someone has focus on them if they do then the target should be the focused person 
                                                         if ( event.membersInParty[idOfMemberBeingChecked].statuses[statusToCheck].name == "Focus"
@@ -1774,7 +1777,7 @@ function effectsOnTurnEnd(event){
                                         
                                         if (event.membersInParty["rpg-"+targetMember].statuses.indexOf("dead") == -1){
                                             // valid target
-                                            if (untargettable && !targettingFocusedMember){
+                                            if (untargettable && !targetFocusedMember){
                                                 // check that no status contains the id of the ability which the player
                                                 // cannot be targetted by
                                                 target = "rpg-"+targetMember;
@@ -1789,7 +1792,7 @@ function effectsOnTurnEnd(event){
                                                 console.log(stuckCount)
 
                                             }else{
-                                                if (!targettingFocusedMember){
+                                                if (!targetFocusedMember){
                                                     target = "rpg-"+targetMember;
                                                     validTarget = true;
                                                     console.log("stuck count" + stuckCount)
@@ -2007,6 +2010,8 @@ function summonEnemy(event, enemy, index){
     // summoning plus ad, md, armor, spirit
     var summoningAdPlus = event.enemies[enemy].endOfTurnEvents[index].summon.attackDmg || 0;
     var summoningMdPlus = event.enemies[enemy].endOfTurnEvents[index].summon.magicDmg || 0;
+    var summoningHpPlus = event.enemies[enemy].endOfTurnEvents[index].summon.hpPlus || 0;
+
     
     var averageLevelInParty = event.averageLevelInParty;
     var nameOfSummon = event.enemies[enemy].endOfTurnEvents[index].summon.enemy;
@@ -2016,7 +2021,7 @@ function summonEnemy(event, enemy, index){
     var enemySummoned = {
         id: enemyIdCount,
         name: enemyFound.name,
-        hp: enemyFound.hp + (21 * averageLevelInParty) + (enemyFound.hpPerPartyMember * enemyCount), 
+        hp: enemyFound.hp + (21 * averageLevelInParty) + (enemyFound.hpPerPartyMember * enemyCount) + summoningHpPlus, 
         attackDmg: enemyFound.attackDmg + (10 * averageLevelInParty) + (enemyFound.adPerPartyMember * enemyCount) + summoningAdPlus, 
         magicDmg: enemyFound.magicDmg + (10 * averageLevelInParty) + (enemyFound.mdPerPartyMember * enemyCount) + summoningMdPlus,
         armor: enemyFound.armor + (averageLevelInParty * averageLevelInParty),
@@ -2174,13 +2179,14 @@ function effectsOnDeath(event, member){
                             if (rpgAbility.name == "Summon Demon"){
                                 rpgAbility.summon.attackDmg = rpgAbility.summon.attackDmg * 2;
                                 rpgAbility.summon.magicDmg = rpgAbility.summon.magicDmg * 2;
+                                rpgAbility.summon.magicDmg = rpgAbility.summon.hpPlus + 450;
                                 rpgAbility.everyNTurns = rpgAbility.everyNTurns - 1;
                             }else if (rpgAbility.name == "Electric Orb"){
-                                rpgAbility.dmg = rpgAbility.dmg * 2;
-                                rpgAbility.status.dmgOnExpire = rpgAbility.status.dmgOnExpire * 2;
+                                rpgAbility.dmg = rpgAbility.dmg + 150;
+                                rpgAbility.status.dmgOnExpire = rpgAbility.status.dmgOnExpire + 300;
                                 rpgAbility.everyNTurns = rpgAbility.everyNTurns - 1;
                             }else if (rpgAbility.name == "Tremor"){
-                                rpgAbility.areawidedmg.dmg = rpgAbility.areawidedmg.dmg * 2;
+                                rpgAbility.areawidedmg.dmg = rpgAbility.areawidedmg.dmg + 400;
                                 rpgAbility.everyNTurns = rpgAbility.everyNTurns - 1;
                             }
                         })
@@ -2188,11 +2194,20 @@ function effectsOnDeath(event, member){
                 }
 
                 if (bossesAlive.length == 1){
-                    onDeathString = onDeathString + bossesAlive[0].name + " Gains Unimaginable Power\n";
-                    // give the enemy + 400 magic and attack
+                    onDeathString = onDeathString + bossesAlive[0].name + " Gains Unimaginable Power 🗡 +800, ☄️ + 800 \n";
+                    // give the enemy + 600 magic and attack
                     var enemy = bossesAlive[0].enemyNumber;
-                    event.enemies[enemy].attackDmg = event.enemies[enemy].attackDmg + 400;
-                    event.enemies[enemy].magicDmg = event.enemies[enemy].magicDmg + 400;                
+                    event.enemies[enemy].attackDmg = event.enemies[enemy].attackDmg + 800;
+                    event.enemies[enemy].magicDmg = event.enemies[enemy].magicDmg + 800;                
+                }else if (bossesAlive.length == 2){
+                    // give the enemy + 300 magic and attack
+                    var enemyOne = bossesAlive[0].enemyNumber;
+                    var enemyTwo = bossesAlive[1].enemyNumber;
+                    event.enemies[enemyOne].attackDmg = event.enemies[enemyOne].attackDmg + 300;
+                    event.enemies[enemyOne].magicDmg = event.enemies[enemyOne].magicDmg + 300;
+                    event.enemies[enemyTwo].attackDmg = event.enemies[enemyTwo].attackDmg + 300; 
+                    event.enemies[enemyTwo].magicDmg = event.enemies[enemyTwo].magicDmg + 300;                 
+
                 }
 
                 // array of end of turn abilities
