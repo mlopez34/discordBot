@@ -2179,7 +2179,7 @@ function effectsOnDeath(event, member){
                             if (rpgAbility.name == "Summon Demon"){
                                 rpgAbility.summon.attackDmg = rpgAbility.summon.attackDmg * 2;
                                 rpgAbility.summon.magicDmg = rpgAbility.summon.magicDmg * 2;
-                                rpgAbility.summon.magicDmg = rpgAbility.summon.hpPlus + 450;
+                                rpgAbility.summon.hpPlus = rpgAbility.summon.hpPlus + 450;
                                 rpgAbility.everyNTurns = rpgAbility.everyNTurns - 1;
                             }else if (rpgAbility.name == "Electric Orb"){
                                 rpgAbility.dmg = rpgAbility.dmg + 150;
@@ -2194,19 +2194,19 @@ function effectsOnDeath(event, member){
                 }
 
                 if (bossesAlive.length == 1){
-                    onDeathString = onDeathString + bossesAlive[0].name + " Gains Unimaginable Power 🗡 +800, ☄️ + 800 \n";
+                    onDeathString = onDeathString + bossesAlive[0].name + " Gains Unimaginable Power 🗡 +600, ☄️ + 300 \n";
                     // give the enemy + 600 magic and attack
                     var enemy = bossesAlive[0].enemyNumber;
-                    event.enemies[enemy].attackDmg = event.enemies[enemy].attackDmg + 800;
-                    event.enemies[enemy].magicDmg = event.enemies[enemy].magicDmg + 800;                
+                    event.enemies[enemy].attackDmg = event.enemies[enemy].attackDmg + 600;
+                    event.enemies[enemy].magicDmg = event.enemies[enemy].magicDmg + 300;                
                 }else if (bossesAlive.length == 2){
                     // give the enemy + 300 magic and attack
                     var enemyOne = bossesAlive[0].enemyNumber;
                     var enemyTwo = bossesAlive[1].enemyNumber;
-                    event.enemies[enemyOne].attackDmg = event.enemies[enemyOne].attackDmg + 300;
-                    event.enemies[enemyOne].magicDmg = event.enemies[enemyOne].magicDmg + 300;
-                    event.enemies[enemyTwo].attackDmg = event.enemies[enemyTwo].attackDmg + 300; 
-                    event.enemies[enemyTwo].magicDmg = event.enemies[enemyTwo].magicDmg + 300;                 
+                    event.enemies[enemyOne].attackDmg = event.enemies[enemyOne].attackDmg + 250;
+                    event.enemies[enemyOne].magicDmg = event.enemies[enemyOne].magicDmg + 180;
+                    event.enemies[enemyTwo].attackDmg = event.enemies[enemyTwo].attackDmg + 250; 
+                    event.enemies[enemyTwo].magicDmg = event.enemies[enemyTwo].magicDmg + 180;                 
 
                 }
 
