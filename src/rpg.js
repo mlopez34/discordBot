@@ -1521,7 +1521,6 @@ function calculateRewards(event, memberInRpgEvent, getItemResponse, numberOfMemb
     var rareItems = [];
     var ancientItems = [];
     var artifactItems = [];
-    var mythItems = [];
 
     for (var item in allItems){
         if (allItems[item].itemraritycategory == "common"){
@@ -1536,11 +1535,12 @@ function calculateRewards(event, memberInRpgEvent, getItemResponse, numberOfMemb
         else if(allItems[item].itemraritycategory == "ancient"){
             ancientItems.push(allItems[item]);
         }
+        else if (allItems[item].itemraritycategory == "amulet"
+            && allItems[item].amuletsource == "rpgchallenge"){
+            ancientItems.push(allItems[item]);
+        }
         else if(allItems[item].itemraritycategory == "artifact"){
             artifactItems.push(allItems[item]);
-        }
-        else if(allItems[item].itemraritycategory == "myth"){
-            mythItems.push(allItems[item]);
         }
     }
 
@@ -1573,7 +1573,7 @@ function calculateRewards(event, memberInRpgEvent, getItemResponse, numberOfMemb
             // common + uncommon maybe rare maybe ancient
             rarityRoll = Math.floor(Math.random() * 1000) + 9000;
         }
-
+        // TODO: add + luck to rarityroll
         // push the item to items
         if (rarityRoll){
             if(rarityRoll > ANCIENT_MIN_ROLL ){
