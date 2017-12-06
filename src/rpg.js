@@ -5,7 +5,7 @@ var profileDB = require("./profileDB.js");
 var config = require("./config");
 var rpglib = require("./rpglib");
 var moment = require("moment");
-var RPG_COOLDOWN_HOURS = 3
+var RPG_COOLDOWN_HOURS = 0
 var activeRPGEvents = {};
 var activeRPGItemIds = {};
 var usersInRPGEvents = {};
@@ -21,7 +21,7 @@ module.exports.rpgInitialize = function(message, special){
     team.push(message.author);
 
     users.forEach(function(user){
-        if (team.length < TEAM_MAX_LENGTH && discordUserId != user.id){
+        if (team.length < TEAM_MAX_LENGTH ){//&& discordUserId != user.id){
             team.push(user);
         }
     })
@@ -653,11 +653,11 @@ module.exports.rpgReady = function(message, itemsAvailable, amuletItemsById){
                                                         id: partyMember.id,
                                                         name: partyMember.username,
                                                         username: partyMember.username,
-                                                        hp: 250 + (27 *  partyMemberStats.level ) + partyMemberHpPlus,
-                                                        attackDmg: 10 + (9 * partyMemberStats.level) + partyMemberAttackDmgPlus,
+                                                        hp: 250000 + (27 *  partyMemberStats.level ) + partyMemberHpPlus,
+                                                        attackDmg: 10000 + (9 * partyMemberStats.level) + partyMemberAttackDmgPlus,
                                                         magicDmg:  10 + (9 * partyMemberStats.level) + partyMemberMagicDmgPlus,
-                                                        armor: 5 + (partyMemberStats.level * partyMemberStats.level) + partyMemberArmorPlus,
-                                                        spirit: 5 + (partyMemberStats.level * partyMemberStats.level) + partyMemberSpiritPlus,
+                                                        armor: 3005 + (partyMemberStats.level * partyMemberStats.level) + partyMemberArmorPlus,
+                                                        spirit: 2005 + (partyMemberStats.level * partyMemberStats.level) + partyMemberSpiritPlus,
                                                         luck: 1 + partyMemberLuckPlus,
                                                         abilitiesMap : {},
                                                         abilities: ["attack"],
@@ -2089,6 +2089,7 @@ function summonEnemy(event, enemy, index){
 
 function effectsOnDeath(event, member){
     var onDeathString = "";
+    var currentTurn = event.turn;
     // do effect on death
     var idOfMember = member.id
     if ( event.enemies[idOfMember] && event.enemies[idOfMember].effectsOnDeath){
@@ -2213,6 +2214,7 @@ function effectsOnDeath(event, member){
                 // array of end of turn abilities
                 var deadUnitEOTAbilities = event.enemies[idOfMember].endOfTurnEvents;
                 // check that the units receiving the effects, do not already have them and are not dead
+                var numberOfEnemiesAlive = 0;
                 for (var targetToTransfer in event.enemies){
                     if (event.enemies[targetToTransfer].hp > 0
                         && event.enemies[targetToTransfer].statuses.indexOf("dead") == -1
@@ -2227,7 +2229,9 @@ function effectsOnDeath(event, member){
                                 }
                             })
                             if ( !eotexists ){
+                                numberOfEnemiesAlive++;
                                 var copyOfeotAbility = JSON.parse( JSON.stringify( eotAbility ) );
+                                copyOfeotAbility.afterNTurns = currentTurn + numberOfEnemiesAlive;
                                 event.enemies[targetToTransfer].endOfTurnEvents.push( copyOfeotAbility );
                             }
                         })
