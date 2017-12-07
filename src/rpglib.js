@@ -506,7 +506,7 @@ module.exports = {
                 areawide: true,
                 name: "Tremor",
                 dmg: 50,
-                mdPercentage: 1,
+                mdPercentage: .9,
                 type: "earth"
             }
         },
@@ -518,7 +518,7 @@ module.exports = {
             ignoreFocus: true,
             name: "Electric Orb",
             dmg: 50,
-            mdPercentage: 0.75,
+            mdPercentage: 0.6,
             type: "electric",
             everyNTurns: 5,
             afterNTurns: 1,
@@ -546,7 +546,7 @@ module.exports = {
             summon: {
                 enemy: "demon",
                 attackDmg: 150,
-                magicDmg: 150,
+                magicDmg: 100,
                 hpPlus: 30
             }
         },
@@ -670,16 +670,16 @@ module.exports = {
             },
             demon: {
                 name: "Demon",
-                abilities: ["attack", "attack", "shock", "shock"],
+                abilities: ["attack", "attack", "attack", "shock"],
                 buffs: [],
                 hpPerPartyMember: 0,
                 adPerPartyMember: 0,
                 mdPerPartyMember: 0,
                 hp: 2300,
-                attackDmg: 100,
-                magicDmg: 100,
-                armor: 300,
-                spirit: 300,
+                attackDmg: 300,
+                magicDmg: 200,
+                armor: 600,
+                spirit: 600,
                 difficulty: "summoned",
                 element: "normal"
             },

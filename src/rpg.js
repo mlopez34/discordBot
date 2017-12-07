@@ -962,7 +962,9 @@ module.exports.rpgReady = function(message, itemsAvailable, amuletItemsById){
                                                 activeRPGEvents[rpgEvent].memberTurnAbilities = [];
                                                 activeRPGEvents[rpgEvent].status = "in progress"
                                                 activeRPGEvents[rpgEvent].limitDefensiveReady = true;
+                                                activeRPGEvents[rpgEvent].limitDefensiveTurnUsed = 0;
                                                 activeRPGEvents[rpgEvent].limitOffensiveReady = true;
+                                                activeRPGEvents[rpgEvent].limitOffensiveTurnUsed = 0;
                                                 activeRPGEvents[rpgEvent].averageLevelInParty = averageLevelInParty;
                                 
                                                 const embed = new Discord.RichEmbed()
@@ -2022,10 +2024,10 @@ function summonEnemy(event, enemy, index){
         id: enemyIdCount,
         name: enemyFound.name,
         hp: enemyFound.hp + (21 * averageLevelInParty) + (enemyFound.hpPerPartyMember * enemyCount) + summoningHpPlus, 
-        attackDmg: enemyFound.attackDmg + (10 * averageLevelInParty) + (enemyFound.adPerPartyMember * enemyCount) + summoningAdPlus, 
-        magicDmg: enemyFound.magicDmg + (10 * averageLevelInParty) + (enemyFound.mdPerPartyMember * enemyCount) + summoningMdPlus,
-        armor: enemyFound.armor + (averageLevelInParty * averageLevelInParty),
-        spirit: enemyFound.spirit + ( averageLevelInParty * averageLevelInParty),
+        attackDmg: enemyFound.attackDmg + (enemyFound.adPerPartyMember * enemyCount) + summoningAdPlus, 
+        magicDmg: enemyFound.magicDmg + (enemyFound.mdPerPartyMember * enemyCount) + summoningMdPlus,
+        armor: enemyFound.armor,
+        spirit: enemyFound.spirit,
         statuses: [],
         endOfTurnEvents: [],
         statBuffs: {
@@ -2180,14 +2182,14 @@ function effectsOnDeath(event, member){
                             if (rpgAbility.name == "Summon Demon"){
                                 rpgAbility.summon.attackDmg = rpgAbility.summon.attackDmg * 2;
                                 rpgAbility.summon.magicDmg = rpgAbility.summon.magicDmg * 2;
-                                rpgAbility.summon.hpPlus = rpgAbility.summon.hpPlus + 450;
+                                rpgAbility.summon.hpPlus = rpgAbility.summon.hpPlus + 400;
                                 rpgAbility.everyNTurns = rpgAbility.everyNTurns - 1;
                             }else if (rpgAbility.name == "Electric Orb"){
-                                rpgAbility.dmg = rpgAbility.dmg + 150;
+                                rpgAbility.dmg = rpgAbility.dmg + 100;
                                 rpgAbility.status.dmgOnExpire = rpgAbility.status.dmgOnExpire + 300;
                                 rpgAbility.everyNTurns = rpgAbility.everyNTurns - 1;
                             }else if (rpgAbility.name == "Tremor"){
-                                rpgAbility.areawidedmg.dmg = rpgAbility.areawidedmg.dmg + 400;
+                                rpgAbility.areawidedmg.dmg = rpgAbility.areawidedmg.dmg + 300;
                                 rpgAbility.everyNTurns = rpgAbility.everyNTurns - 1;
                             }
                         })
@@ -2198,17 +2200,16 @@ function effectsOnDeath(event, member){
                     onDeathString = onDeathString + bossesAlive[0].name + " Gains Unimaginable Power 🗡 +600, ☄️ + 300 \n";
                     // give the enemy + 600 magic and attack
                     var enemy = bossesAlive[0].enemyNumber;
-                    event.enemies[enemy].attackDmg = event.enemies[enemy].attackDmg + 600;
+                    event.enemies[enemy].attackDmg = event.enemies[enemy].attackDmg + 500;
                     event.enemies[enemy].magicDmg = event.enemies[enemy].magicDmg + 300;                
                 }else if (bossesAlive.length == 2){
                     // give the enemy + 300 magic and attack
                     var enemyOne = bossesAlive[0].enemyNumber;
                     var enemyTwo = bossesAlive[1].enemyNumber;
-                    event.enemies[enemyOne].attackDmg = event.enemies[enemyOne].attackDmg + 250;
-                    event.enemies[enemyOne].magicDmg = event.enemies[enemyOne].magicDmg + 180;
-                    event.enemies[enemyTwo].attackDmg = event.enemies[enemyTwo].attackDmg + 250; 
-                    event.enemies[enemyTwo].magicDmg = event.enemies[enemyTwo].magicDmg + 180;                 
-
+                    event.enemies[enemyOne].attackDmg = event.enemies[enemyOne].attackDmg + 200;
+                    event.enemies[enemyOne].magicDmg = event.enemies[enemyOne].magicDmg + 100;
+                    event.enemies[enemyTwo].attackDmg = event.enemies[enemyTwo].attackDmg + 200; 
+                    event.enemies[enemyTwo].magicDmg = event.enemies[enemyTwo].magicDmg + 100;
                 }
 
                 // array of end of turn abilities
@@ -2324,6 +2325,15 @@ function hasRevived(member, deadIndex, hpPercentageToReviveAt){
 function processPassiveEffects(event){
     var passiveEffectsString = "";
     
+    // reset limit defensive and limit offensive
+    var LIMIT_ABILITIES_COOLDOWN = 10
+    var currentTurn = event.turn;
+    if (event.limitDefensiveReady == false && event.limitDefensiveTurnUsed + LIMIT_ABILITIES_COOLDOWN < currentTurn){
+        event.limitDefensiveReady = true;
+    }
+    if (event.limitOffensiveReady == false && event.limitOffensiveTurnUsed + LIMIT_ABILITIES_COOLDOWN < currentTurn){
+        event.limitOffensiveReady = true;
+    }
 
     // reset cooldowns
     for(var member in event.membersInParty){
@@ -2998,9 +3008,11 @@ function processAbility(abilityObject, event){
 
     if (rpgAbility.limitDefensive && event.limitDefensiveReady && stillAlive){
         event.limitDefensiveReady = false;
+        event.limitDefensiveTurnUsed = currentTurn
     }
     if (rpgAbility.limitOffensive && event.limitOffensiveReady && stillAlive){
         event.limitOffensiveReady = false;
+        event.limitOffensiveTurnUsed = currentTurn
     }
 
     if (rpgAbility && rpgAbility.dmg && stillAlive && validAbility){
