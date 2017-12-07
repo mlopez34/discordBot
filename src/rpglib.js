@@ -284,6 +284,15 @@ module.exports = {
             type: "physical"
             
         },
+        flare: {
+            name: "Flare",
+            abilityId: "flare",
+            limitOffensive: true,
+            dmg: 480,
+            mdPercentage: 2,
+            type: "fire"
+            
+        },
         storm: {
             name: "Storm",
             abilityId: "storm",
