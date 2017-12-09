@@ -1947,7 +1947,8 @@ module.exports = {
                         difficulty: "boss",
                         element: "normal"
                     }
-                ]
+                ],
+                points: 249
             }
         }
     }    
