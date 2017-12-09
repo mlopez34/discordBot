@@ -2179,17 +2179,17 @@ function effectsOnDeath(event, member){
                         event.enemies[enemy].endOfTurnEvents.forEach(function(eotEffect){
                             // improve the effect
                             var rpgAbility = eotEffect;
-                            if (rpgAbility.name == "Summon Demon"){
+                            if (rpgAbility.name == "Summon Demon" && !rpgAbility.transferred){
                                 rpgAbility.summon.attackDmg = rpgAbility.summon.attackDmg * 2;
                                 rpgAbility.summon.magicDmg = rpgAbility.summon.magicDmg * 2;
                                 rpgAbility.summon.hpPlus = rpgAbility.summon.hpPlus + 400;
                                 rpgAbility.everyNTurns = rpgAbility.everyNTurns - 1;
-                            }else if (rpgAbility.name == "Electric Orb"){
+                            }else if (rpgAbility.name == "Electric Orb" && !rpgAbility.transferred){
                                 rpgAbility.dmg = rpgAbility.dmg + 100;
                                 rpgAbility.status.dmgOnExpire = rpgAbility.status.dmgOnExpire + 300;
                                 rpgAbility.everyNTurns = rpgAbility.everyNTurns - 1;
-                            }else if (rpgAbility.name == "Tremor"){
-                                rpgAbility.areawidedmg.dmg = rpgAbility.areawidedmg.dmg + 300;
+                            }else if (rpgAbility.name == "Tremor" && !rpgAbility.transferred){
+                                rpgAbility.areawidedmg.dmg = rpgAbility.areawidedmg.dmg + 250;
                                 rpgAbility.everyNTurns = rpgAbility.everyNTurns - 1;
                             }
                         })
@@ -2197,11 +2197,11 @@ function effectsOnDeath(event, member){
                 }
 
                 if (bossesAlive.length == 1){
-                    onDeathString = onDeathString + bossesAlive[0].name + " Gains Unimaginable Power 🗡 +600, ☄️ + 300 \n";
+                    onDeathString = onDeathString + bossesAlive[0].name + " Gains Unimaginable Power 🗡 +400, ☄️ + 200 \n";
                     // give the enemy + 600 magic and attack
                     var enemy = bossesAlive[0].enemyNumber;
-                    event.enemies[enemy].attackDmg = event.enemies[enemy].attackDmg + 500;
-                    event.enemies[enemy].magicDmg = event.enemies[enemy].magicDmg + 300;                
+                    event.enemies[enemy].attackDmg = event.enemies[enemy].attackDmg + 400;
+                    event.enemies[enemy].magicDmg = event.enemies[enemy].magicDmg + 200;                
                 }else if (bossesAlive.length == 2){
                     // give the enemy + 300 magic and attack
                     var enemyOne = bossesAlive[0].enemyNumber;
@@ -2233,6 +2233,7 @@ function effectsOnDeath(event, member){
                                 numberOfEnemiesAlive++;
                                 var copyOfeotAbility = JSON.parse( JSON.stringify( eotAbility ) );
                                 copyOfeotAbility.afterNTurns = currentTurn + numberOfEnemiesAlive;
+                                copyOfeotAbility.transferred = true;
                                 event.enemies[targetToTransfer].endOfTurnEvents.push( copyOfeotAbility );
                             }
                         })
