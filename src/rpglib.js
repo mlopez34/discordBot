@@ -310,7 +310,7 @@ module.exports = {
             limitOffensive: true,
             dmg: 120,
             mdPercentage: 1.5,
-            type: "earth",
+            type: "physical",
             areawide: true,
             targets: "enemy"
             
