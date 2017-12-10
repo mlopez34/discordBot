@@ -253,12 +253,6 @@ client.on('message', function(message){
             else if (commandIs("rpgstats", message)){
                 commands.rpgstatsCommand(message);
             }
-            
-            /*
-            else if (commandIs("game", message)){
-                commands.gameCommand(message);
-            }
-            */
         }
         else if (message.channel.type == "text" && (RPG_CHANNELS.indexOf(message.channel.name) != -1) && !message.author.bot){
             // artifact abilities
@@ -291,6 +285,12 @@ client.on('message', function(message){
                 }
                 else if (commandIs("rpghelp", message)){
                     commands.rpghelpCommand(message);
+                }
+                
+                else if (commandIs("fruits", message)){
+                    commands.miniGameCommand(message);
+                }else if (commandIs("take", message)){
+                    commands.miniGamePlay(message, args);
                 }
             }
             catch(error){
