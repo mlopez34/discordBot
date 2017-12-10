@@ -82,7 +82,7 @@ module.exports = class Board {
         // return visual string version of the board
         var gameString = ":arrow_right:";
         for (var i = 0; i < this.boardArray.length; i++){
-            if (gameString.length < 980){
+            if (gameString.length < 200){
                 gameString = gameString + " " + this.boardArray[i];                
             }
         }
