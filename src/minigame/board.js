@@ -2,7 +2,7 @@
 var _ = require("lodash");
 
 module.exports = class Board {
-    constructor(listOfPlayers) {
+    constructor(listOfPlayers, message) {
         // create the board, array of all the fruits, bombs, possible items
         // number of bombs should be number of players in game -1
         // the last item should be a bomb
@@ -33,6 +33,7 @@ module.exports = class Board {
         this.boardArray = boardArray;
         this.status = "waiting"
         this.currentTurn = 1;
+        this.lastMessage = undefined;
     }
     // isTurn - returns which player's turn it is
     isTurn(){
@@ -42,6 +43,12 @@ module.exports = class Board {
     }
     getCurrentTurn(){
         return this.currentTurn
+    }
+    getLastMessage(){
+        return this.lastMessage;
+    }
+    setLastMessage(message){
+        this.lastMessage = message;
     }
     // status - returns the status of the game (start - in progress - finished)
     getStatus(){
@@ -82,7 +89,7 @@ module.exports = class Board {
         // return visual string version of the board
         var gameString = ":arrow_right:";
         for (var i = 0; i < this.boardArray.length; i++){
-            if (gameString.length < 200){
+            if (gameString.length < 150){
                 gameString = gameString + " " + this.boardArray[i];                
             }
         }

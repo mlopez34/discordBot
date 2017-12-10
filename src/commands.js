@@ -2824,7 +2824,18 @@ function miniGameEmbedBuilder(message, data){
     }
     embed
     .setColor(0xff9c4c)
-    message.channel.send({embed});
+    message.channel.send({embed})
+    .then(function (sentMessage) {
+        var currentGameLastMessage = data.currentGame.getLastMessage();
+
+        if (currentGameLastMessage){
+            // delete the message
+            currentGameLastMessage.delete()
+            .then(function(res){
+                currentGame.setLastMessage(sentMessage);
+            })
+        }
+    })
 }
 
 var usersMinigames = {};
@@ -2883,6 +2894,7 @@ function takeFruits(message, playerTakingTurn, currentGame, amount){
     data.currentTurn = currentGame.getCurrentTurn();                    
     data.visual = boardVisualize;
     data.nextTurn = userObjectNextTurnUser
+    data.currentGame = currentGame;
     
     if (gameEnded){
         miniGameEmbedBuilder(message, data);
@@ -5809,6 +5821,7 @@ module.exports.rpgReadyCommand = function(message){
             data.visual = boardVisualize;
             data.nextTurn = userObjectNextTurnUser
             data.currentTurn = currentGame.getCurrentTurn();
+            data.currentGame = currentGame;
             miniGameEmbedBuilder(message, data);
 
             var turnToTakeRandomFruits = currentGame.getCurrentTurn();
