@@ -2908,8 +2908,6 @@ function takeFruits(message, playerTakingTurn, currentGame, amount){
             if (currentTurn == turnToTakeRandomFruits){
                 var randomAmount = Math.floor(Math.random() * 2) + 1;
                 takeFruits(message, nextPlayer, currentGame, randomAmount);
-            }else{
-                message.channel.send("no longer in that turn")
             }
             // get the turn number, and compare with turn numbres to make sure this timeout is valid
             
