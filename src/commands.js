@@ -2834,6 +2834,8 @@ function miniGameEmbedBuilder(message, data){
             .then(function(res){
                 currentGame.setLastMessage(sentMessage);
             })
+        }else{
+            currentGame.setLastMessage(sentMessage);
         }
     })
 }
