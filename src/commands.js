@@ -2774,33 +2774,33 @@ module.exports.miniGameCommand = function(message) {
         team.push(message.author);
 
         users.forEach(function(user){
-            if (team.length < 8 && discordUserId != user.id){
+            if (team.length < 11  && discordUserId != user.id){
                 team.push(user);
             }
         })
         var listOfPlayers = []
+        var validGroup = true;
         // the user challenged create game
         for (var user in team){
-            // create a player object and push to list of players
-            var player = new miniplayer(team[user].username , team[user]);
-            listOfPlayers.push(player);
+            if (usersMinigames[team[user].id]){
+                validGroup = false;
+                break;
+            }else{
+                // create a player object and push to list of players
+                var player = new miniplayer(team[user].username , team[user]);
+                listOfPlayers.push(player);
+            }
+            
         }
-        if (listOfPlayers.length > 2 ){
-            var newBoard = new miniboard(listOfPlayers);
+        if (listOfPlayers.length > 3 && validGroup){
+            var currentGame = new miniboard(listOfPlayers);
             
             for (var user in team){
-                usersMinigames[team[user].id] = newBoard;
+                usersMinigames[team[user].id] = currentGame;
             }
-        
-            var boardVisualize = newBoard.visualize();
-            var data = {};
-            var idOfNextTurnUser = newBoard.isTurn();
-            var userObjectNextTurnUser = newBoard.getPlayer(idOfNextTurnUser);
-            data.visual = boardVisualize;
-            data.nextTurn = userObjectNextTurnUser
-            miniGameEmbedBuilder(message, data);
+            message.channel.send(message.author + " has started a game of fruits :strawberry: type -ready to start!")
         }else{
-            message.channel.send("there must be more than 2 players in the game!")
+            message.channel.send("there must be more than 2 players in the game! OR your someone is already in a game")
         }
     }
     catch(error){
@@ -2809,11 +2809,20 @@ module.exports.miniGameCommand = function(message) {
 }
 
 function miniGameEmbedBuilder(message, data){
-    // TODO: take all the data and create the board
-
     const embed = new Discord.RichEmbed()
     .setDescription(data.visual)
-    .addField("player to take " , data.nextTurn.username)
+    .setAuthor("Take one or two fruits use -take 1 OR -take 2")
+    if (data.rules){
+        embed.addField("Rules", "-take 1 or -take 2, to take one or two fruits, if you take a bomb you lose");
+    }
+    embed.addField("player to take " , data.nextTurn.user, true)
+    if (data.playerThatLost){
+        embed.addField("Lost", data.playerThatLost, true)
+    }
+    if (data.currentTurn){
+        embed.addField("Turn", data.currentTurn, true)
+    }
+    embed
     .setColor(0xff9c4c)
     message.channel.send({embed});
 }
@@ -2837,27 +2846,16 @@ module.exports.miniGamePlay = function(message, args){
                 // it is the user's turn
                 var playerTakingTurn = currentGame.getPlayer(discordUserId);
 
-                if (playerTakingTurn){
-                    playerTakingTurn.takeTurn(amount, currentGame);
-                    var gameEnded = currentGame.gameEnded();
+                if (playerTakingTurn && amount && amount > 0 && amount < 3){
 
-                    var boardVisualize = currentGame.visualize();
-                    var idOfNextTurnUser = currentGame.isTurn();
-                    var userObjectNextTurnUser = currentGame.getPlayer(idOfNextTurnUser);
-                    var data = {};
-                    data.visual = boardVisualize;
-                    data.nextTurn = userObjectNextTurnUser
-                    
-                    if (gameEnded){
-                        miniGameEmbedBuilder(message, data);
-                        var winner = currentGame.checkWinner();
-                        message.channel.send("game is over! **" + winner.username + "** wins!");
-                    }else{
-                        miniGameEmbedBuilder(message, data);
-                    }
+                    takeFruits(message, playerTakingTurn, currentGame, amount)
                 }else{
                     // something went wrong, the player isnt part of the game even though map said he was
-                    message.channel.send("error");
+                    if (playerTakingTurn){
+                        message.channel.send("You can only take 1 or 2 fruits!");
+                    }else{
+                        message.channel.send("you are not in a fruit game currently!")
+                    }
                 }
             }else{
                 message.channel.send("it is not your turn");
@@ -2867,7 +2865,55 @@ module.exports.miniGamePlay = function(message, args){
         }
     }
     catch(error){
-        message.channel.send(error);
+        message.channel.send("error");
+    }
+}
+
+function takeFruits(message, playerTakingTurn, currentGame, amount){
+    var playerThatLost = playerTakingTurn.takeTurn(amount, currentGame);
+    var gameEnded = currentGame.gameEnded();
+
+    var boardVisualize = currentGame.visualize();
+    var idOfNextTurnUser = currentGame.isTurn();
+    var userObjectNextTurnUser = currentGame.getPlayer(idOfNextTurnUser);
+    var data = {};
+    if (playerThatLost){
+        data.playerThatLost = playerThatLost;
+    }
+    data.currentTurn = currentGame.getCurrentTurn();                    
+    data.visual = boardVisualize;
+    data.nextTurn = userObjectNextTurnUser
+    
+    if (gameEnded){
+        miniGameEmbedBuilder(message, data);
+        var winner = currentGame.checkWinner();
+        message.channel.send("game is over! **" + winner.username + "** wins!");
+        // do cleanup
+        var usersToCleanUp = currentGame.cleanup();
+        for(var user in usersToCleanUp){
+            if (usersMinigames[usersToCleanUp[user]]){
+                delete usersMinigames[usersToCleanUp[user]];
+            }
+        }
+    }else{
+        miniGameEmbedBuilder(message, data);
+        // timeout make move for next player after 10 seconds
+        var turnToTakeRandomFruits = currentGame.getCurrentTurn();
+        var nextPlayer = currentGame.getPlayer(currentGame.isTurn());
+
+        var timeout = setTimeout (function(){ 
+            // get the next player's to make move
+            
+            var currentTurn = currentGame.getCurrentTurn();
+            if (currentTurn == turnToTakeRandomFruits){
+                var randomAmount = Math.floor(Math.random() * 2) + 1;
+                takeFruits(message, nextPlayer, currentGame, randomAmount);
+            }else{
+                message.channel.send("no longer in that turn")
+            }
+            // get the turn number, and compare with turn numbres to make sure this timeout is valid
+            
+        }, 15000);
     }
 }
 
@@ -2897,11 +2943,6 @@ module.exports.gameCommand = function(message){
         data.visual = boardVisualize;
         gameEmbedBuilder(message, data)
     }
-
-
-    
-    
-    
 
     // player challenges other player OR queues up for a match
     // if challenged other mentioned player, check that neither are in an ongoing match 
@@ -5754,28 +5795,75 @@ module.exports.rpgChallengeCommand = function(message, args){
 }
 
 module.exports.rpgReadyCommand = function(message){
-    var itemsMapbyId = {};
-    profileDB.getItemData(function(error, allItemsResponse){
-        if (error){
-            console.log(error);
-        }
-        else{
-            for (var index in allItemsResponse.data){
-                itemsMapbyId[allItemsResponse.data[index].id] = allItemsResponse.data[index];
-            }
-            var amuletItemsById = {}
-            for (var item in allItemsResponse.data){
-                if (allItemsResponse.data[item].itemraritycategory == "amulet"){
-                    amuletItemsById[allItemsResponse.data[item].id] = allItemsResponse.data[item];
+    if (usersMinigames[message.author.id]){
+        var currentGame = usersMinigames[message.author.id];
+        var playerToReady = currentGame.getPlayer(message.author.id);
+        playerToReady.playerIsReady();
+        var isGameReady = currentGame.gameIsReady();
+        if (isGameReady){
+            // start the game
+            currentGame.setStatus("in progress");
+            var boardVisualize = currentGame.visualize();
+            var data = {};
+            var idOfNextTurnUser = currentGame.isTurn();
+            var userObjectNextTurnUser = currentGame.getPlayer(idOfNextTurnUser);
+            data.rules = true;
+            data.visual = boardVisualize;
+            data.nextTurn = userObjectNextTurnUser
+            data.currentTurn = currentGame.getCurrentTurn();
+            miniGameEmbedBuilder(message, data);
+
+            var turnToTakeRandomFruits = currentGame.getCurrentTurn();
+            var nextPlayer = currentGame.getPlayer(currentGame.isTurn());
+
+            var timeout = setTimeout (function(){ 
+                // get the next player's to make move
+                
+                var currentTurn = currentGame.getCurrentTurn();
+                if (currentTurn == turnToTakeRandomFruits){
+                    var randomAmount = Math.floor(Math.random() * 2) + 1;
+                    takeFruits(message, nextPlayer, currentGame, randomAmount);
                 }
-            }
-            rpg.rpgReady(message, itemsMapbyId, amuletItemsById);
+                // get the turn number, and compare with turn numbres to make sure this timeout is valid
+                
+            }, 10000);
+        }else{
+            message.channel.send(message.author + " is ready, waiting on players")
         }
-    });
+    }else{
+        var itemsMapbyId = {};
+        profileDB.getItemData(function(error, allItemsResponse){
+            if (error){
+                console.log(error);
+            }
+            else{
+                for (var index in allItemsResponse.data){
+                    itemsMapbyId[allItemsResponse.data[index].id] = allItemsResponse.data[index];
+                }
+                var amuletItemsById = {}
+                for (var item in allItemsResponse.data){
+                    if (allItemsResponse.data[item].itemraritycategory == "amulet"){
+                        amuletItemsById[allItemsResponse.data[item].id] = allItemsResponse.data[item];
+                    }
+                }
+                rpg.rpgReady(message, itemsMapbyId, amuletItemsById);
+            }
+        });
+    }
 }
 
 module.exports.rpgSkipCommand = function(message){
-    rpg.rpgSkip(message);
+    if (usersMinigames[message.author.id]){
+        delete usersMinigames;
+        var gameStatus = usersMinigames[message.author.id].getStatus();
+        if (gameStatus == "waiting"){
+            message.channel.send(message.author + " has skipped! game will not start");            
+        }else if (gameStatus == "in progress"){
+            message.channel.send(message.author + " game is in progress, you cannot skip!");                        
+        }
+    }else{
+        rpg.rpgSkip(message);
+    }
 }
 
 module.exports.castCommand = function(message, args){

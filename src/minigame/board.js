@@ -1,4 +1,6 @@
 'use strict'
+var _ = require("lodash");
+
 module.exports = class Board {
     constructor(listOfPlayers) {
         // create the board, array of all the fruits, bombs, possible items
@@ -14,6 +16,7 @@ module.exports = class Board {
             this.mapOfUsers[userId] = listOfPlayers[i];
             this.playerOrder.push(userId);
         }
+        this.playerOrder = _.shuffle(this.playerOrder);
         var fruitEmojis = [":tangerine:", ":pineapple:", ":watermelon:", ":strawberry:", ":cherries:", ":banana:"];
         var bombEmoji = ":bomb:";
         var boardArray = [];
@@ -28,9 +31,8 @@ module.exports = class Board {
             boardArray.push(bombEmoji);
         }
         this.boardArray = boardArray;
-        this.status = "in progress"
+        this.status = "waiting"
         this.currentTurn = 1;
-        
     }
     // isTurn - returns which player's turn it is
     isTurn(){
@@ -38,10 +40,16 @@ module.exports = class Board {
         var idOfUserTurn = this.playerOrder[0]
         return idOfUserTurn;
     }
+    getCurrentTurn(){
+        return this.currentTurn
+    }
     // status - returns the status of the game (start - in progress - finished)
     getStatus(){
         // return status of game (waiting for players, in progress, ended)
         return this.status;
+    }
+    setStatus(status){
+        this.status = status;
     }
     getPlayer(discordUserId){
         var playerToReturn = this.mapOfUsers[discordUserId];
@@ -81,6 +89,20 @@ module.exports = class Board {
         return gameString;
     }
 
+    gameIsReady(){
+        // check all players belonging to this game are ready
+        var gameIsReady = true;
+        for (var user in this.playerOrder){
+            var playerToCheck = this.mapOfUsers[this.playerOrder[user]];
+            var playerIsReady = playerToCheck.getPlayerReadyStatus();
+            if (!playerIsReady){
+                gameIsReady = false;
+                break;
+            }
+        }
+        return gameIsReady;
+    }
+
     makeMove(player, numberOfTakes){
         // player makes move, 1 or 2 number of takes only valid
         if (numberOfTakes && numberOfTakes > 0 && numberOfTakes <= 2){
@@ -99,13 +121,16 @@ module.exports = class Board {
             }
             if (!playerHasLost){
                 this.playerOrder.push(this.playerOrder.shift());
-                this.currentTurn++;    
+                this.currentTurn++;  
+                return null 
             }else{
                 // player lost remove from order
-                this.playerOrder.shift()
+                var playerThatLostId = this.playerOrder.shift()
+                this.currentTurn++;
                 if (this.boardArray.length == 0){
                     this.status = "ended";
                 }
+                return this.mapOfUsers[playerThatLostId].user;                
             }
         }
     }
@@ -119,5 +144,14 @@ module.exports = class Board {
         }else{
             return "None"
         }
+    }
+
+    cleanup(){
+        // return array of ids
+        var arrayOfIds = []
+        for (var key in this.mapOfUsers){
+            arrayOfIds.push(key);
+        }
+        return arrayOfIds;
     }
 }

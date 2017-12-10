@@ -5,6 +5,7 @@ module.exports = class Player {
         this.username = username
         this.user = discordUser
         this.status = "active"
+        this.ready = false;
     }
     // take turn
     takeTurn(numberTaken, Board){
@@ -17,5 +18,13 @@ module.exports = class Player {
             return "Invalid user";
         }
         
+    }
+
+    playerIsReady(){
+        this.ready = true;
+    }
+
+    getPlayerReadyStatus(){
+        return this.ready;
     }
 }
