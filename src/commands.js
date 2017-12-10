@@ -5852,9 +5852,15 @@ module.exports.rpgReadyCommand = function(message){
 
 module.exports.rpgSkipCommand = function(message){
     if (usersMinigames[message.author.id]){
-        delete usersMinigames;
+        var currentGame = usersMinigames[message.author.id];
         var gameStatus = usersMinigames[message.author.id].getStatus();
         if (gameStatus == "waiting"){
+            var usersToCleanUp = currentGame.cleanup();
+            for(var user in usersToCleanUp){
+                if (usersMinigames[usersToCleanUp[user]]){
+                    delete usersMinigames[usersToCleanUp[user]];
+                }
+            }
             message.channel.send(message.author + " has skipped! game will not start");            
         }else if (gameStatus == "in progress"){
             message.channel.send(message.author + " game is in progress, you cannot skip!");                        
