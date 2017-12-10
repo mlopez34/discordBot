@@ -16,7 +16,11 @@ var game = require("./card_game/miniGame.js");
 var board = require("./card_game/board.js");
 var unit = require("./card_game/unit.js");
 var player = require("./card_game/player.js");
+
 */
+var miniboard = require("./minigame/board.js");
+var miniplayer = require("./minigame/player.js");
+
 var moment = require("moment");
 
 var BASE_TACO_COST = 50;
@@ -2755,6 +2759,117 @@ function slotsEmbedBuilder(emojisRolled, tacosWon, message){
 
 // by discordUserId
 var challengesHappening = {};
+
+module.exports.miniGameCommand = function(message) {
+    try{
+        // create a game where users get to pick between the numbers 1 or 2
+        // the user has 10 seconds to pick or else a number is chosen at random
+        // if they eat a bomb they will be taken out of the game
+        // the number is the number of fruits they will eat
+        // random fruits and fruit numbers in between bombs, possible chance at amulets, items
+        var discordUserId = message.author.id;
+
+        var users  = message.mentions.users
+        var team = [];
+        team.push(message.author);
+
+        users.forEach(function(user){
+            if (team.length < 8 && discordUserId != user.id){
+                team.push(user);
+            }
+        })
+        var listOfPlayers = []
+        // the user challenged create game
+        for (var user in team){
+            // create a player object and push to list of players
+            var player = new miniplayer(team[user].username , team[user]);
+            listOfPlayers.push(player);
+        }
+        if (listOfPlayers.length > 2 ){
+            var newBoard = new miniboard(listOfPlayers);
+            
+            for (var user in team){
+                usersMinigames[team[user].id] = newBoard;
+            }
+        
+            var boardVisualize = newBoard.visualize();
+            var data = {};
+            var idOfNextTurnUser = newBoard.isTurn();
+            var userObjectNextTurnUser = newBoard.getPlayer(idOfNextTurnUser);
+            data.visual = boardVisualize;
+            data.nextTurn = userObjectNextTurnUser
+            miniGameEmbedBuilder(message, data);
+        }else{
+            message.channel.send("there must be more than 2 players in the game!")
+        }
+    }
+    catch(error){
+        message.channel.send(error);
+    }
+}
+
+function miniGameEmbedBuilder(message, data){
+    // TODO: take all the data and create the board
+
+    const embed = new Discord.RichEmbed()
+    .setDescription(data.visual)
+    .addField("player to take " , data.nextTurn.username)
+    .setColor(0xff9c4c)
+    message.channel.send({embed});
+}
+
+var usersMinigames = {};
+
+module.exports.miniGamePlay = function(message, args){
+    try{
+        // check the user's current game in list of games, check that the game status is "in progress"
+        // if the game is in progress, check to see whose turn it is in the game
+        // if current player's turn, check that player can make move on the board
+        // make move on board and create new embed, the embed should read whose turn is next and visual
+        var discordUserId = message.author.id;
+        var amount = args[1] || 1;
+        var currentGame = usersMinigames[discordUserId];
+        if (currentGame){
+            // user is matched to a game
+            var userIdTurn = currentGame.isTurn();
+            var status = currentGame.getStatus();
+            if (userIdTurn == discordUserId && status == "in progress"){
+                // it is the user's turn
+                var playerTakingTurn = currentGame.getPlayer(discordUserId);
+
+                if (playerTakingTurn){
+                    playerTakingTurn.takeTurn(amount, currentGame);
+                    var gameEnded = currentGame.gameEnded();
+
+                    var boardVisualize = currentGame.visualize();
+                    var idOfNextTurnUser = currentGame.isTurn();
+                    var userObjectNextTurnUser = currentGame.getPlayer(idOfNextTurnUser);
+                    var data = {};
+                    data.visual = boardVisualize;
+                    data.nextTurn = userObjectNextTurnUser
+                    
+                    if (gameEnded){
+                        miniGameEmbedBuilder(message, data);
+                        var winner = currentGame.checkWinner();
+                        message.channel.send("game is over! **" + winner.username + "** wins!");
+                    }else{
+                        miniGameEmbedBuilder(message, data);
+                    }
+                }else{
+                    // something went wrong, the player isnt part of the game even though map said he was
+                    message.channel.send("error");
+                }
+            }else{
+                message.channel.send("it is not your turn");
+            }
+        }else{
+            message.channel.send("not in game currently");
+        }
+    }
+    catch(error){
+        message.channel.send(error);
+    }
+}
 
 module.exports.gameCommand = function(message){
 

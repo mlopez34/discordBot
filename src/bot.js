@@ -254,11 +254,12 @@ client.on('message', function(message){
                 commands.rpgstatsCommand(message);
             }
             
-            /*
+            
             else if (commandIs("game", message)){
-                commands.gameCommand(message);
+                commands.miniGameCommand(message);
+            }else if (commandIs("take", message)){
+                commands.miniGamePlay(message, args);
             }
-            */
         }
         else if (message.channel.type == "text" && (RPG_CHANNELS.indexOf(message.channel.name) != -1) && !message.author.bot){
             // artifact abilities
