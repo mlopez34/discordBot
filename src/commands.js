@@ -2774,7 +2774,7 @@ module.exports.miniGameCommand = function(message) {
         team.push(message.author);
 
         users.forEach(function(user){
-            if (team.length < 11  ){//&& discordUserId != user.id){
+            if (team.length < 11  && discordUserId != user.id){
                 team.push(user);
             }
         })
@@ -2792,7 +2792,7 @@ module.exports.miniGameCommand = function(message) {
             }
             
         }
-        if (listOfPlayers.length > 0 && validGroup){
+        if (listOfPlayers.length > 3 && validGroup){
             var currentGame = new miniboard(listOfPlayers);
             
             for (var user in team){
