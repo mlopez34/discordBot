@@ -2774,7 +2774,7 @@ module.exports.miniGameCommand = function(message) {
         team.push(message.author);
 
         users.forEach(function(user){
-            if (team.length < 11  && discordUserId != user.id){
+            if (team.length < 11  ){//&& discordUserId != user.id){
                 team.push(user);
             }
         })
@@ -2792,7 +2792,7 @@ module.exports.miniGameCommand = function(message) {
             }
             
         }
-        if (listOfPlayers.length > 3 && validGroup){
+        if (listOfPlayers.length > 0 && validGroup){
             var currentGame = new miniboard(listOfPlayers);
             
             for (var user in team){
@@ -2826,7 +2826,8 @@ function miniGameEmbedBuilder(message, data){
     .setColor(0xff9c4c)
     message.channel.send({embed})
     .then(function (sentMessage) {
-        var currentGameLastMessage = data.currentGame.getLastMessage();
+        var currentGame = data.currentGame;
+        var currentGameLastMessage = currentGame.getLastMessage();
 
         if (currentGameLastMessage){
             // delete the message
