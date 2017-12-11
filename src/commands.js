@@ -2826,7 +2826,8 @@ function miniGameEmbedBuilder(message, data){
     .setColor(0xff9c4c)
     message.channel.send({embed})
     .then(function (sentMessage) {
-        var currentGameLastMessage = data.currentGame.getLastMessage();
+        var currentGame = data.currentGame;
+        var currentGameLastMessage = currentGame.getLastMessage();
 
         if (currentGameLastMessage){
             // delete the message
