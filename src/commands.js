@@ -2851,6 +2851,7 @@ module.exports.miniGamePlay = function(message, args){
         // make move on board and create new embed, the embed should read whose turn is next and visual
         var discordUserId = message.author.id;
         var amount = args[1] || 1;
+        amount = Math.floor(amount);
         var currentGame = usersMinigames[discordUserId];
         if (currentGame){
             // user is matched to a game
