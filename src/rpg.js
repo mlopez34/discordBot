@@ -2180,13 +2180,13 @@ function effectsOnDeath(event, member){
                             // improve the effect
                             var rpgAbility = eotEffect;
                             if (rpgAbility.name == "Summon Demon" && !rpgAbility.transferred){
-                                rpgAbility.summon.attackDmg = rpgAbility.summon.attackDmg * 2;
-                                rpgAbility.summon.magicDmg = rpgAbility.summon.magicDmg * 2;
-                                rpgAbility.summon.hpPlus = rpgAbility.summon.hpPlus + 400;
+                                rpgAbility.summon.attackDmg = rpgAbility.summon.attackDmg + 100;
+                                rpgAbility.summon.magicDmg = rpgAbility.summon.magicDmg + 100;
                                 rpgAbility.everyNTurns = rpgAbility.everyNTurns - 1;
                             }else if (rpgAbility.name == "Electric Orb" && !rpgAbility.transferred){
                                 rpgAbility.dmg = rpgAbility.dmg + 100;
-                                rpgAbility.status.dmgOnExpire = rpgAbility.status.dmgOnExpire + 300;
+                                rpgAbility.status.dmgOnExpire = rpgAbility.status.dmgOnExpire + 350;
+                                rpgAbility.status.dmgOnRemove = rpgAbility.status.dmgOnRemove + 350
                                 rpgAbility.everyNTurns = rpgAbility.everyNTurns - 1;
                             }else if (rpgAbility.name == "Tremor" && !rpgAbility.transferred){
                                 rpgAbility.areawidedmg.dmg = rpgAbility.areawidedmg.dmg + 250;
@@ -3455,28 +3455,46 @@ function processAbility(abilityObject, event){
                     && event.membersInParty[targetToRemoveFrom].statuses.length > 0){
                     
                     for (var status in event.membersInParty[targetToRemoveFrom].statuses){
-                        if (event.membersInParty[targetToRemoveFrom].statuses[status].dot
-                            && event.membersInParty[targetToRemoveFrom].statuses[status].dot.dmgOnDotRemove){
+                        if ((event.membersInParty[targetToRemoveFrom].statuses[status].dot
+                            && event.membersInParty[targetToRemoveFrom].statuses[status].dot.dmgOnDotRemove)
+                            || (event.membersInParty[targetToRemoveFrom].statuses[status].dmgOnStatusRemove)){
                             // deal the dmg on dot remove to everyone
 
-                            var nameOfEndOfTurnAbility = event.membersInParty[targetToRemoveFrom].statuses[status].dot.name;
-                            
+                            var nameOfEndOfTurnAbility = "";
+
+                            if (event.membersInParty[targetToRemoveFrom].statuses[status].dot){
+                                nameOfEndOfTurnAbility = event.membersInParty[targetToRemoveFrom].statuses[status].dot.name;
+                            }else{
+                                nameOfEndOfTurnAbility = event.membersInParty[targetToRemoveFrom].statuses[status].name;
+                            }
                             var damageToDeal = 1;
-                            
-                            var abilityObject = {
-                                ability: event.membersInParty[targetToRemoveFrom].statuses[status].dot
+                            var abilityObject = { }
+
+                            if (event.membersInParty[targetToRemoveFrom].statuses[status].dot){
+                                abilityObject = {
+                                    ability: event.membersInParty[targetToRemoveFrom].statuses[status].dot
+                                }
+                            }else{
+                                abilityObject = {
+                                    ability: event.membersInParty[targetToRemoveFrom].statuses[status],
+                                    target: targetToRemoveFrom
+                                }
                             }
 
                             event.membersInParty[targetToRemoveFrom].statuses.splice(status, 1);
 
                             abilityObject.ability.dmg = abilityObject.ability.dmgOnRemove
                             abilityObject.ability.mdPercentage = abilityObject.ability.mdPercentageOnRemove;
-                            abilityObject.ability.areawide = true;
+                            abilityObject.ability.areawide = abilityObject.ability.dmgOnRemoveAreaWide;
                             var abilityCaster = abilityObject.ability.caster;
                             delete abilityObject.ability.turnsToExpire
 
                             var damageToDeal = calculateDamageDealt(event, abilityCaster, abilityObject.target, abilityObject.ability)
-                            abilityToString = abilityToString + "The group suffered " + damageToDeal + " damage from " + nameOfEndOfTurnAbility +"\n"
+                            if (abilityObject.ability.areawide){
+                                abilityToString = abilityToString + "The group suffered " + damageToDeal + " damage from " + nameOfEndOfTurnAbility +"\n"                                
+                            }else{
+                                abilityToString = abilityToString + event.membersInParty[targetToRemoveFrom].name + " took " + damageToDeal + " damage from " + nameOfEndOfTurnAbility +"\n"                                
+                            }
                             for (var targetToDealDmg in event.membersInParty){
                                 var targetToDealDmgName = event.membersInParty[targetToDealDmg].name
                                 if (event.membersInParty[targetToDealDmg].statuses.indexOf("dead") == -1){

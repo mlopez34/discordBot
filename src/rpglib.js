@@ -117,8 +117,9 @@ module.exports = {
                 dmgOnDotExpire: true,
                 dmgOnExpire: 550,
                 dmgOnDotRemove: true,
+                dmgOnRemoveAreaWide: true,
                 mdPercentageOnRemove: 0.25,
-                dmgOnRemove: 100,
+                dmgOnRemove: 100
             }
         },
         decay: {
@@ -309,7 +310,7 @@ module.exports = {
             abilityId: "earthquake",
             limitOffensive: true,
             dmg: 120,
-            mdPercentage: 1.5,
+            adPercentage: 1.5,
             type: "physical",
             areawide: true,
             targets: "enemy"
@@ -539,8 +540,12 @@ module.exports = {
                 name: "Electric Orb",
                 emoji: "⚡",
                 mdPercentage: 1,
-                turnsToExpire: 1,
+                turnsToExpire: 2,
                 dmgOnStatusExpire: true,
+                dmgOnStatusRemove: true,
+                dmgOnRemove: 150,
+                dmgOnRemoveAreaWide: false,
+                mdPercentageOnRemove: 1,
                 dmgOnExpire: 150
             }
         },
@@ -1910,6 +1915,12 @@ module.exports = {
                 points: 181
             },
             6: {
+                // 4 energy crystals, frenzy every 5 turns
+                // shadowbolt, and regular attack
+                // red crystal = damage to 3 enemies, green = damage to everyone
+                // yellow = abilities more often, aoe abilities, black = summon 6 minions
+                // purple = status on target, after 3 statuses they explode
+                // blue = 1 cooldown per ability, effect ends when new crystals appear
                 enemies: [
                     {
                         name: "A182-Type2",
