@@ -1912,7 +1912,7 @@ module.exports = {
                         element: "normal"
                     },
                 ],
-                points: 181
+                points: 681
             },
             6: {
                 // 4 energy crystals, frenzy every 5 turns
@@ -1925,22 +1925,22 @@ module.exports = {
                     {
                         name: "A182-Type2",
                         abilities: [
-                            "attack", "crush"
+                            "attack", "crush", "slash"
                         ],
                         buffs: [
                             {
                                 name: "frenzy",
                                 emoji: "😡",
                                 onTurnEnd: {
-                                    attackDmgPlus : 100,
-                                    magicDmgPlus : 100,
+                                    attackDmgPlus : 1000,
+                                    magicDmgPlus : 1000,
                                     everyNTurns: 3,
                                     startTurn: 1
                                 }
                             }
                         ],
                         abilityOrder: [
-                            1, 0, 0, 0
+                            1, 0, 0, 0,2,2,2,2,2
                         ],
                         endOfTurnEvents : [
                             "focus",
@@ -1951,7 +1951,7 @@ module.exports = {
                         hp: 50000,
                         adPerPartyMember: 34,
                         mdPerPartyMember: 34,
-                        attackDmg: 2000,
+                        attackDmg: 5000,
                         magicDmg: 1350,
                         armor: 2350,
                         spirit: 2350,
