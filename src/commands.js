@@ -2386,8 +2386,6 @@ module.exports.scavangeCommand = function (message){
 
                                 }
                                 else if (getUserResponse.data.pickaxe == "master"){
-                                    COMMON_ITEMS_TO_OBTAIN = 2
-                                    TACOS_FOUND_MULTIPLIER = 3
                                     ARTIFACT_MIN_ROLL = 9985
                                     ANCIENT_MAX_ROLL = 9985;
                                     ANCIENT_MIN_ROLL = 9940;
