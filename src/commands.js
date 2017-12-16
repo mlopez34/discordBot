@@ -29,6 +29,7 @@ var BASE_TACO_COOK = 2;
 var PICKAXE_COST = 35;
 var IMPROVED_PICKAXE_COST = 300;
 var MASTER_PICKAXE_COST = 75000;
+var ETHEREAL_PICKAXE_COST = 1250000
 var PASTA_COST = 250
 var SCAVENGE_TACO_FIND_CHANCE_HIGHER = 94
 var SCAVENGE_TACO_FIND_CHANCE = 75;
@@ -1278,6 +1279,9 @@ module.exports.profileCommand = function(message){
                 else if(profileResponse.data.pickaxe == "master"){
                     profileData.userItems = "Master Pickaxe :diamond_shape_with_a_dot_inside::pick: \n"
                 }
+                else if(profileResponse.data.pickaxe == "ethereal"){
+                    profileData.userItems = "Ethereal Pickaxe :cyclone::pick: \n"
+                }
                 if (profileResponse.data.casserole == true){
                     profileData.userItems = profileData.userItems + "Casserole :shallow_pan_of_food: \n"
                 }
@@ -1351,6 +1355,9 @@ module.exports.profileCommand = function(message){
                 }
                 else if(profileResponse.data.pickaxe == "master"){
                     profileData.userItems = "Master Pickaxe :diamond_shape_with_a_dot_inside::pick: \n"
+                }
+                else if(profileResponse.data.pickaxe == "ethereal"){
+                    profileData.userItems = "Ethereal Pickaxe :cyclone::pick: \n"
                 }
                 if (profileResponse.data.casserole == true){
                     profileData.userItems = profileData.userItems + "Casserole :shallow_pan_of_food: \n"
@@ -1553,6 +1560,25 @@ module.exports.buyPickaxeCommand = function(message){
                     message.channel.send(message.author + " You cannot afford the `Master Pickaxe`");
                 }
             }
+            else if (pickaxeResponse.data.pickaxe == "master"){
+                if (pickaxeResponse.data.tacos >= ETHEREAL_PICKAXE_COST){
+                    // purchaseStand
+                    var tacosSpent = ETHEREAL_PICKAXE_COST * -1;
+                    profileDB.purchasePickAxe(discordUserId, tacosSpent, function(err, data){
+                        if (err){
+                            // console.log(err);
+                            // couldn't purchase stand
+                        }
+                        else{
+                            experience.gainExperience(message, message.author, EXPERIENCE_GAINS.buyPickaxe * 50 , pickaxeResponse);
+                            message.channel.send(message.author + " Congratulations, you have purchased the Ethereal Pickaxe :pick:!");
+                        }
+                    })
+                }
+                else{
+                    message.channel.send(message.author + " You cannot afford the `Ethereal Pickaxe`");
+                }
+            }
         }
     })
 }
@@ -1613,6 +1639,11 @@ function shopBuilder(message, shopData, long){
             pickaxeCost = MASTER_PICKAXE_COST + " :taco:";
             embed.addField('Master Pickaxe', pickaxeCost, true)
         }
+        else if (shopData.pickaxe == "master"){
+            // improved pickaxe
+            pickaxeCost = ETHEREAL_PICKAXE_COST + " :taco:";
+            embed.addField('Ethereal Pickaxe', pickaxeCost, true)
+        }
         embed.addField('Pasta', PASTA_COST + " :taco:", true)
         
         // allow for pet to be purchased
@@ -1664,11 +1695,22 @@ function shopBuilder(message, shopData, long){
         }
         else if (shopData.pickaxe == "improved"){
             // improved pickaxe
-            pickaxeDescription = "The Master Pickaxe can be used to scavenge. This is the master pickaxe, your adventures will be rewarded with the greatest treasures :diamond_shape_with_a_dot_inside: .";
+            pickaxeDescription = "The Ethereal Pickaxe can be used to scavenge. This is the master pickaxe, your adventures will be rewarded with the greatest treasures :diamond_shape_with_a_dot_inside: .";
             pickaxeCost = MASTER_PICKAXE_COST + " :taco:";
             embed.addBlankField(true)
             .addBlankField(false)
-            .addField('Master Pickaxe', ":diamond_shape_with_a_dot_inside::pick:", true)
+            .addField('Ethereal Pickaxe', ":diamond_shape_with_a_dot_inside::pick:", true)
+            .addField('Description', pickaxeDescription, true)
+            .addField('Cost', pickaxeCost, true)
+            .addField('Command', config.commandString + "buypickaxe", true)
+        }
+        else if (shopData.pickaxe == "master"){
+            // improved pickaxe
+            pickaxeDescription = "The Ethereal Pickaxe can be used to scavenge. This is the Ethereal pickaxe, your adventures will be rewarded with unbelievable treasures :cyclone: .";
+            pickaxeCost = ETHEREAL_PICKAXE_COST + " :taco:";
+            embed.addBlankField(true)
+            .addBlankField(false)
+            .addField('Ethereal Pickaxe', ":cyclone::pick:", true)
             .addField('Description', pickaxeDescription, true)
             .addField('Cost', pickaxeCost, true)
             .addField('Command', config.commandString + "buypickaxe", true)
