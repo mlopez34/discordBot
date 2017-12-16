@@ -1545,7 +1545,7 @@ module.exports.buyPickaxeCommand = function(message){
                         }
                         else{
                             experience.gainExperience(message, message.author, EXPERIENCE_GAINS.buyPickaxe * 10 , pickaxeResponse);
-                            message.channel.send(message.author + " Congratulations, you have purchased the Mster Pickaxe :pick:!");
+                            message.channel.send(message.author + " Congratulations, you have purchased the Master Pickaxe :pick:!");
                         }
                     })
                 }
@@ -2368,6 +2368,7 @@ module.exports.scavangeCommand = function (message){
                                 var UNCOMMON_MAX_ROLL = 9800;
                                 var UNCOMMON_MIN_ROLL = 8750;
                                 var COMMON_MAX_ROLL = 8750;
+                                var UNCOMMON_ITEMS_TO_OBTAIN = 1;
                                 var COMMON_ITEMS_TO_OBTAIN = 1;
                                 var TACOS_FOUND_MULTIPLIER = 1;
                                 var EXPERIENCE_MULTIPLIER = 1;
@@ -2385,9 +2386,19 @@ module.exports.scavangeCommand = function (message){
 
                                 }
                                 else if (getUserResponse.data.pickaxe == "master"){
+                                    COMMON_ITEMS_TO_OBTAIN = 2
+                                    TACOS_FOUND_MULTIPLIER = 3
+                                    ARTIFACT_MIN_ROLL = 9985
+                                    ANCIENT_MAX_ROLL = 9985;
+                                    ANCIENT_MIN_ROLL = 9940;
+                                    RARE_MAX_ROLL = 9940;
+                                    RARE_MIN_ROLL = 9725;
+                                    UNCOMMON_MAX_ROLL = 9725;
                                     COMMON_ITEMS_TO_OBTAIN = 4
+                                    UNCOMMON_ITEMS_TO_OBTAIN = 2
                                     TACOS_FOUND_MULTIPLIER = 6
                                     EXPERIENCE_MULTIPLIER = 6
+                                    rollsCount++
                                 }
 
                                 var allItems = getItemResponse.data
@@ -2473,6 +2484,7 @@ module.exports.scavangeCommand = function (message){
                                         var itemRoll = Math.floor(Math.random() * uncommonItems.length);
                                         // console.log(uncommonItems[itemRoll]);
                                         itemsObtainedArray.push( uncommonItems[itemRoll] );
+                                        commonItems[itemRoll].itemAmount = UNCOMMON_ITEMS_TO_OBTAIN
                                         if (highestRarityFound <= 1){
                                             highestRarityFound = 2;
                                         }
