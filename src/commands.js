@@ -2417,6 +2417,7 @@ module.exports.scavangeCommand = function (message){
 
                                 if (getUserResponse.data.pickaxe == "improved"){
                                     COMMON_ITEMS_TO_OBTAIN = 2
+                                    UNCOMMON_ITEMS_TO_OBTAIN = 1
                                     TACOS_FOUND_MULTIPLIER = 3
                                     ARTIFACT_MIN_ROLL = 9992
                                     ANCIENT_MAX_ROLL = 9992;
@@ -2523,8 +2524,8 @@ module.exports.scavangeCommand = function (message){
                                         rarityString = "uncommon"
                                         var itemRoll = Math.floor(Math.random() * uncommonItems.length);
                                         // console.log(uncommonItems[itemRoll]);
+                                        uncommonItems[itemRoll].itemAmount = UNCOMMON_ITEMS_TO_OBTAIN
                                         itemsObtainedArray.push( uncommonItems[itemRoll] );
-                                        commonItems[itemRoll].itemAmount = UNCOMMON_ITEMS_TO_OBTAIN
                                         if (highestRarityFound <= 1){
                                             highestRarityFound = 2;
                                         }
@@ -4253,8 +4254,7 @@ module.exports.timeTravelCommand = function(message, args, channel){
         // when members succeed and defeat them they will all obtain rewards (group leader advances to stage2) 
 
         // skipping will close the event
-    }
-    else if (args.length > 1 && args[1] >= -66000000 && args[1] <= -64000000 && team.length == 1){
+    }else if (args.length > 1 && args[1] >= -66000000 && args[1] <= -64000000 && team.length == 1){
         profileDB.getUserProfileData(discordUserId, function(profileErr, profileData){
             if (profileErr){
                 // console.log (profileErr);
@@ -4268,6 +4268,30 @@ module.exports.timeTravelCommand = function(message, args, channel){
                     quest.questHandler(message, discordUserId, "timetravel", stage, team, questData, channel)
                 }
                 else if (stage == 4){
+                    var questData = {
+                        year: args[1]
+                    }
+                    quest.questHandler(message, discordUserId, "timetravel", stage, team, questData, channel)
+                }
+                else{
+                    message.channel.send("traveled to the year " + args[1])
+                }
+            }
+        })
+    }else if (args.length > 1 && args[1] >= 3120 && args[1] <= 3130 && team.length == 1){
+        profileDB.getUserProfileData(discordUserId, function(profileErr, profileData){
+            if (profileErr){
+                // console.log (profileErr);
+            }else{
+                var stage = profileData.data.timetravelqueststage;
+
+                if (stage == 5){
+                    var questData = {
+                        year: args[1]
+                    }
+                    quest.questHandler(message, discordUserId, "timetravel", stage, team, questData, channel)
+                }
+                else if (stage == 6){
                     var questData = {
                         year: args[1]
                     }
@@ -4757,10 +4781,6 @@ module.exports.putonCommand = function(message, args, retry){
 }
 
 function validateSlot(slotToEquip, currentSlot1, currentSlot2){
-    // console.log("in validateSlot");
-    // console.log(slotToEquip);
-    // console.log(currentSlot1);
-    // console.log(currentSlot2);
     var slotIsValid = false;
     if (!currentSlot1 && !currentSlot2)
     {
@@ -4780,7 +4800,7 @@ module.exports.takeoffCommand = function(message, args){
     // get the user's wear information ( to get the itemuserid from that slot)
     profileDB.getUserWearInfo(discordUserId, function(takeoffError, takeoffRes){
         if (takeoffError){
-            // console.log(takeoffError);
+            console.log(takeoffError);
         }
         else{
             // console.log(takeoffRes);
