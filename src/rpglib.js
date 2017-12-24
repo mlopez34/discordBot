@@ -136,6 +136,7 @@ module.exports = {
                 name: "Decay",
                 type:"shadow",
                 dmg: 65,
+                areawide: true,
                 mdPercentage: 1,
                 emoji: "🌑",
                 dmgOnDotApply: false,
@@ -857,6 +858,7 @@ module.exports = {
             status: {
                 status: true,
                 name: "Radioactive",
+                areawide: true,
                 ignoreUnique: true,
                 ignoreBandaid: true,
                 emoji: "☢️",

@@ -3465,6 +3465,7 @@ function processAbility(abilityObject, event){
                     }
                 }
                 if (!alreadyHaveStatus){
+                    delete statusToAdd.areawide 
                     event.membersInParty[targetToAddStatus].statuses.push(statusToAdd);
                     if (statusToAdd.turnsToExpire){
                         statusToAdd.caster = abilityCaster // id of the caster
@@ -3546,6 +3547,7 @@ function processAbility(abilityObject, event){
                             }
                         }
                         if (!alreadyHaveStatus){
+                            delete dotToAdd.areawide 
                             event.membersInParty[targetToAddDot].statuses.push(dotToAdd);
                         }
                     }
