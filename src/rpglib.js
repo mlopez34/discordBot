@@ -136,7 +136,6 @@ module.exports = {
                 name: "Decay",
                 type:"shadow",
                 dmg: 65,
-                areawide: true,
                 mdPercentage: 1,
                 emoji: "🌑",
                 dmgOnDotApply: false,
@@ -366,6 +365,45 @@ module.exports = {
                 emoji: "💨"
             }
         },
+        rocketStrike : {
+            name: "Rocket Strike",
+            processAbility: true,
+            belongsToMember: true,
+            everyNTurns: 3,
+            afterNTurns: 2,
+            currentTurn: 0,
+            abilityId: "rocketStrike",
+            dmg: 50,
+            mdPercentage: 0.6,
+            type: "magical"
+        },
+        rocketStrikeAreaWide : {
+            name: "Rocket Strike",
+            processAbility: true,
+            belongsToMember: true,
+            everyNTurns: 2,
+            afterNTurns: 1,
+            currentTurn: 0,
+            abilityId: "rocketStrikeAreaWide",
+            dmg: 50,
+            mdPercentage: 0.6,
+            type: "magical",
+            areawide: true,
+            areawidedmg: {
+                areawide: true,
+                name: "Rocket Strike",
+                dmg: 50,
+                mdPercentage: 0.6,
+                type: "magical"
+            }
+        },
+        laserBeam : {
+            name: "Laser Beam",
+            abilityId: "laserBeam",
+            dmg: 50,
+            adPercentage: 1,
+            type: "physical"
+        },
 
         // endOfTurnEvents
         echo: {
@@ -418,6 +456,201 @@ module.exports = {
             hppercentage: 0.75,
             summon: {
                 enemy: "totemOfDoom"
+            }
+        },
+        absorbEnergyCrystals: {
+            abilityId: "absorbEnergyCrystals",
+            belongsToMember: true,
+            processAbility: true,
+            everyNTurns: 10,
+            afterNTurns: 4,
+            currentTurn: 0,
+            special: "absorb energy crystals"
+        },
+        blackEnergyCrystal: {
+            name: "blackEnergyCrystal",
+            abilityId: "blackEnergyCrystal",
+            buff: {
+                name: "blackEnergyCrystal",
+                turnsToExpire: 7,
+                emoji: "⚫"
+            }
+        },
+        blueEnergyCrystal: {
+            name: "blueEnergyCrystal",
+            abilityId: "blueEnergyCrystal",
+            buff: {
+                name: "blueEnergyCrystal",
+                turnsToExpire: 7,
+                emoji: "🔵"
+            }
+        },
+        yellowEnergyCrystal: {
+            name: "yellowEnergyCrystal",
+            abilityId: "yellowEnergyCrystal",
+            buff: {
+                name: "yellowEnergyCrystal",
+                specialOnExpire: true,
+                turnsToExpire: 7,
+                reduceEveryNTurnsFurnace: 1,
+                reduceEveryNTurnsDismantle: 1,
+                reduceEveryNTurnsSummonTorturedRobot: 5,
+                reduceEveryNTurnsRocketStrike: 1,
+                rocketStrikeAreawide: true,
+                emoji: "☀️"
+            }
+        },
+        purpleEnergyCrystal: {
+            name: "purpleEnergyCrystal",
+            abilityId: "purpleEnergyCrystal",
+            buff: {
+                name: "purpleEnergyCrystal",
+                turnsToExpire: 7,
+                emoji: "🌑",
+                specialOnExpire: true,
+                onExpireRemoveMemberStatus: "Radioactive"
+            }
+        },
+        greenEnergyCrystal: {
+            name: "greenEnergyCrystal",
+            abilityId: "greenEnergyCrystal",
+            buff: {
+                name: "greenEnergyCrystal",
+                turnsToExpire: 7,
+                emoji: "🎾"
+            }
+        },
+        redEnergyCrystal: {
+            name: "redEnergyCrystal",
+            abilityId: "redEnergyCrystal",
+            buff: {
+                name: "redEnergyCrystal",
+                turnsToExpire: 7,
+                emoji: "🔴"
+            }
+        },
+        summonEnergyCrystalsA: {
+            name: "summonEnergyCrystalsA",
+            belongsToMember: true,
+            oneTimeCast: true,
+            everyNTurns: 10,
+            afterNTurns: 1,
+            currentTurn: 0,
+            summon: {
+                enemies: [
+                    "blackEnergyCrystal", "blueEnergyCrystal", "greenEnergyCrystal", "purpleEnergyCrystal"
+                ]
+            }
+        },
+        summonEnergyCrystalsB: {
+            name: "summonEnergyCrystalsB",
+            belongsToMember: true,
+            oneTimeCast: true,
+            everyNTurns: 10,
+            afterNTurns: 11,
+            currentTurn: 0,
+            summon: {
+                enemies: [
+                    "blackEnergyCrystal", "blueEnergyCrystal", "greenEnergyCrystal", "redEnergyCrystal"
+                ]
+            }
+        },
+        summonEnergyCrystalsC: {
+            name: "summonEnergyCrystalsC",
+            belongsToMember: true,
+            oneTimeCast: true,
+            everyNTurns: 10,
+            afterNTurns: 21,
+            currentTurn: 0,
+            summon: {
+                enemies: [
+                    "blackEnergyCrystal", "blueEnergyCrystal", "purpleEnergyCrystal", "yellowEnergyCrystal"
+                ]
+            }
+        },
+        summonEnergyCrystalsD: {
+            name: "summonEnergyCrystalsD",
+            belongsToMember: true,
+            oneTimeCast: true,
+            everyNTurns: 10,
+            afterNTurns: 31,
+            currentTurn: 0,
+            summon: {
+                enemies: [
+                    "blackEnergyCrystal", "greenEnergyCrystal", "redEnergyCrystal", "yellowEnergyCrystal"
+                ]
+            }
+        },
+        summonEnergyCrystalsE: {
+            name: "summonEnergyCrystalsE",
+            belongsToMember: true,
+            oneTimeCast: true,
+            everyNTurns: 10,
+            afterNTurns: 41,
+            currentTurn: 0,
+            summon: {
+                enemies: [
+                    "blackEnergyCrystal", "purpleEnergyCrystal", "redEnergyCrystal", "yellowEnergyCrystal"
+                ]
+            }
+        },
+        summonEnergyCrystalsF: {
+            name: "summonEnergyCrystalsF",
+            belongsToMember: true,
+            everyNTurns: 10,
+            oneTimeCast: true,
+            afterNTurns: 51,
+            currentTurn: 0,
+            summon: {
+                enemies: [
+                    "blueEnergyCrystal", "greenEnergyCrystal", "purpleEnergyCrystal", "yellowEnergyCrystal"
+                ]
+            }
+        },
+        summonTorturedRobots: {
+            name: "summonTorturedRobots",
+            belongsToMember: true,
+            validIfBuff: "blackEnergyCrystal",
+            everyNTurns: 10,
+            afterNTurns: 5,
+            currentTurn: 0,
+            summon: {
+                enemies: [
+                    "torturedRobot",
+                    "torturedRobot",
+                    "torturedRobot",
+                    "torturedRobot",
+                    "torturedRobot",
+                    "torturedRobot"
+                ]
+            }
+        },
+        summonTorturedRobotsYellowCrystal: {
+            name: "summonTorturedRobots",
+            belongsToMember: true,
+            validIfBuff: "Chaos",
+            everyNTurns: 10,
+            afterNTurns: 9,
+            currentTurn: 0,
+            summon: {
+                enemies: [
+                    "torturedRobot",
+                    "torturedRobot",
+                    "torturedRobot",
+                    "torturedRobot",
+                    "torturedRobot",
+                    "torturedRobot"
+                ]
+            }
+        },
+        summonEnergyCore: {
+            belongsToMember: true,
+            validIfBuff: "blueEnergyCrystal",
+            everyNTurns: 10,
+            afterNTurns: 5,
+            currentTurn: 0,
+            summon: {
+                enemy: "energyCore",
             }
         },
         footballPlayer75: {
@@ -580,6 +813,117 @@ module.exports = {
             name: "transfer abilities",
             transfer: "endOfTurnEvents"
         },
+        removeEnergize: {
+            passive: true,
+            belongsToMember: true,
+            abilityId: "removeEnergize",
+            removeEnemyBuff : "Energize",
+            name: "De-Energize"
+        },
+        energize: {
+            belongsToMember: true,
+            abilityId: "energize",
+            name: "Energize",
+            buff: {
+                name: "Energize",
+                emoji: "🤖",
+                turnsToExpire: 7,
+                abilityId: "energize",
+                affects: ["attackDmg", "magicDmg"],
+                additive: 400
+            }
+        },
+        chaos: {
+            belongsToMember: true,
+            abilityId: "chaos",
+            name: "Chaos",
+            buff: {
+                name: "Chaos",
+                emoji: "💊",
+                turnsToExpire: 7
+            }
+        },
+
+        radioactive: {
+            name: "Radioactive",
+            belongsToMember: true,
+            processAbility: true,
+            abilityId: "radioactive",
+            areawide: true,
+            validIfBuff: "purpleEnergyCrystal",
+            everyNTurns: 10,
+            afterNTurns: 5,
+            currentTurn: 0,
+            status: {
+                status: true,
+                name: "Radioactive",
+                ignoreUnique: true,
+                ignoreBandaid: true,
+                emoji: "☢️",
+                turnsToExpire: 7,
+                count: 0,
+                //TODO: create another ability that keeps count of # of stacks of radioactive
+                abilityId: "radioactive",
+                special: "after being healed 4 times you will explode for 1500 magic damage"
+            }
+        },
+
+
+        furnace: {
+            abilityId: "furnace",
+            belongsToMember: true,
+            processAbility: true,
+            validIfBuff: "redEnergyCrystal",
+            name: "Furnace",
+            type: "fire",
+            everyNTurns: 2,
+            afterNTurns: 5,
+            currentTurn: 0,
+            status: {
+                status: true,
+                abilityId: "furnace",
+                untargettable: true,
+                name: "Furnace",
+                emoji: "♨️",
+                mdPercentage: 1,
+                turnsToExpire: 1,
+                dmgOnStatusExpire: true,
+                dmgOnStatusRemove: true,
+                dmgOnRemove: 150,
+                dmgOnRemoveAreaWide: false,
+                mdPercentageOnRemove: 1,
+                dmgOnExpire: 150
+            }
+        },
+
+        dismantle: {
+            abilityId: "dismantle",
+            belongsToMember: true,
+            processAbility: true,
+            ignoreFocus: true,
+            validIfBuff: "greenEnergyCrystal",
+            name: "Dismantle",
+            type: "physical",
+            everyNTurns: 2,
+            afterNTurns: 5,
+            currentTurn: 0,
+            status: {
+                status: true,
+                abilityId: "dismantle",
+                untargettable: true,
+                name: "Dismantle",
+                emoji: "✂️",
+                type: "physical",
+                adPercentage: 1,
+                turnsToExpire: 1,
+                dmgOnStatusExpire: true,
+                dmgOnStatusRemove: true,
+                dmgOnRemove: 150,
+                dmgOnRemoveAreaWide: false,
+                adPercentageOnRemove: 1,
+                dmgOnExpire: 150
+            }
+        },
 
         // tackle (more damage over 80%)
         // protect (absorb damage)
@@ -663,6 +1007,151 @@ module.exports = {
     },
     enemiesToEncounter: {
         summoned: {
+            torturedRobot: {
+                name: "Tortured Robot",
+                abilities: ["attack"],
+                buffs: [],
+                hpPerPartyMember: 0,
+                adPerPartyMember: 0,
+                mdPerPartyMember: 0,
+                hp: 2500,
+                attackDmg: 130,
+                magicDmg: 130,
+                armor: 600,
+                spirit: 600,
+                difficulty: "summoned",
+                element: "normal"
+            },
+            energyCore: {
+                name: "Energy Core",
+                passive: true,
+                immuneToAoe: true,
+                abilities: [],
+                buffs: [],
+                endOfTurnEvents : [
+                ],
+                effectsOnDeath: [
+                    "removeEnergize"
+                ],
+                hpPerPartyMember: 0,
+                adPerPartyMember: 0,
+                mdPerPartyMember: 0,
+                hp: 5000,
+                attackDmg: 0,
+                magicDmg: 0,
+                armor: 300,
+                spirit: 300,
+                difficulty: "summoned",
+                element: "normal"
+            },
+            redEnergyCrystal: {
+                name: "Red Energy Crystal",
+                passive: true,
+                abilities: [],
+                buffs: [],
+                endOfTurnEvents : [
+                ],
+                hpPerPartyMember: 0,
+                adPerPartyMember: 0,
+                mdPerPartyMember: 0,
+                hp: 8000,
+                attackDmg: 0,
+                magicDmg: 0,
+                armor: 300,
+                spirit: 300,
+                difficulty: "summoned",
+                element: "normal"
+            },
+            blueEnergyCrystal: {
+                name: "Blue Energy Crystal",
+                passive: true,
+                abilities: [],
+                buffs: [],
+                endOfTurnEvents : [
+                ],
+                hpPerPartyMember: 0,
+                adPerPartyMember: 0,
+                mdPerPartyMember: 0,
+                hp: 8000,
+                attackDmg: 0,
+                magicDmg: 0,
+                armor: 300,
+                spirit: 300,
+                difficulty: "summoned",
+                element: "normal"
+            },
+            yellowEnergyCrystal: {
+                name: "Yellow Energy Crystal",
+                passive: true,
+                abilities: [],
+                buffs: [],
+                endOfTurnEvents : [
+                ],
+                hpPerPartyMember: 0,
+                adPerPartyMember: 0,
+                mdPerPartyMember: 0,
+                hp: 8000,
+                attackDmg: 0,
+                magicDmg: 0,
+                armor: 300,
+                spirit: 300,
+                difficulty: "summoned",
+                element: "normal"
+            },
+            greenEnergyCrystal: {
+                name: "Green Energy Crystal",
+                passive: true,
+                abilities: [],
+                buffs: [],
+                endOfTurnEvents : [
+                ],
+                hpPerPartyMember: 0,
+                adPerPartyMember: 0,
+                mdPerPartyMember: 0,
+                hp: 8000,
+                attackDmg: 0,
+                magicDmg: 0,
+                armor: 300,
+                spirit: 300,
+                difficulty: "summoned",
+                element: "normal"
+            },
+            blackEnergyCrystal: {
+                name: "Black Energy Crystal",
+                passive: true,
+                abilities: [],
+                buffs: [],
+                endOfTurnEvents : [
+                ],
+                hpPerPartyMember: 0,
+                adPerPartyMember: 0,
+                mdPerPartyMember: 0,
+                hp: 8000,
+                attackDmg: 0,
+                magicDmg: 0,
+                armor: 300,
+                spirit: 300,
+                difficulty: "summoned",
+                element: "normal"
+            },
+            purpleEnergyCrystal: {
+                name: "Purple Energy Crystal",
+                passive: true,
+                abilities: [],
+                buffs: [],
+                endOfTurnEvents : [
+                ],
+                hpPerPartyMember: 0,
+                adPerPartyMember: 0,
+                mdPerPartyMember: 0,
+                hp: 8000,
+                attackDmg: 0,
+                magicDmg: 0,
+                armor: 300,
+                spirit: 300,
+                difficulty: "summoned",
+                element: "normal"
+            },
             totemOfDoom: {
                 name: "Totem Of Doom",
                 passive: true,
@@ -1915,7 +2404,7 @@ module.exports = {
                 points: 681
             },
             6: {
-                // 4 energy crystals, frenzy every 5 turns
+                // 4 energy crystals
                 // shadowbolt, and regular attack
                 // red crystal = damage to 3 enemies, green = damage to everyone
                 // yellow = abilities more often, aoe abilities, black = summon 6 minions
@@ -1925,41 +2414,67 @@ module.exports = {
                     {
                         name: "A182-Type2",
                         abilities: [
-                            "attack", "crush", "slash"
+                            "laserBeam", "flameblast", "storm", "iceshards"
                         ],
                         buffs: [
                             {
                                 name: "frenzy",
                                 emoji: "😡",
                                 onTurnEnd: {
-                                    attackDmgPlus : 1000,
-                                    magicDmgPlus : 1000,
-                                    everyNTurns: 3,
-                                    startTurn: 1
+                                    attackDmgPlus : 10000,
+                                    magicDmgPlus : 10000,
+                                    everyNTurns: 1,
+                                    startTurn: 62
                                 }
                             }
                         ],
                         abilityOrder: [
-                            1, 0, 0, 0,2,2,2,2,2
+                            [0,1], [0,1], [0,1],[0,1],[0,1], [0,1],[0,1],[0,1],[0,1],[0,1],[0,1],[0,1],
+                                          [0,1],[0,1],[0,1], [0,1],[0,1],[0,1],[0,1],[0,1],[0,1],[0,1],
+                                          [0,1],[0,1],[0,1], [0,1],[0,1],[0,1],[0,1],[0,1],[0,1],[0,1],
+                                          [0,1],[0,1],[0,1], [0,1],[0,1],[0,1],[0,1],[0,1],[0,1],[0,1],
+                                          [0,1],[0,1],[0,1], [0,1],[0,1],[0,1],[0,1],[0,1],[0,1],[0,1],
+                                          [0,1],[0,1],[0,1], [0,1],[0,1],[0,1],[0,1],[0,1],[0,1],[0,1],
+                                          [0,1], 3, 2, 3, 3, 3, 3, 3, 3
                         ],
                         endOfTurnEvents : [
-                            "focus",
+                            "focus", "summonEnergyCrystalsA",
+                            // TODO: Randomize summoning of crystals
+                            "summonEnergyCrystalsB", "summonEnergyCrystalsC", "summonEnergyCrystalsD",
+                            "summonEnergyCrystalsE", "summonEnergyCrystalsF",
+                            "absorbEnergyCrystals", 
+                            "rocketStrike",
+                            // TODO: give energy core +dmg to the boss
+                            "summonEnergyCore", 
+                            "furnace", "furnace",
+                            "dismantle", "dismantle",
+                            "summonTorturedRobots",
+                            "summonTorturedRobotsYellowCrystal", 
+                            "radioactive"
                         ],
                         effectsOnDeath: [
                         ],
+                        crystalCombosToRandomize: [
+                            "summonEnergyCrystalsA",
+                            "summonEnergyCrystalsB",
+                            "summonEnergyCrystalsC",
+                            "summonEnergyCrystalsD",
+                            "summonEnergyCrystalsE",
+                            "summonEnergyCrystalsF"
+                        ],
                         hpPerPartyMember: 0,
-                        hp: 50000,
-                        adPerPartyMember: 34,
-                        mdPerPartyMember: 34,
-                        attackDmg: 5000,
-                        magicDmg: 1350,
+                        hp: 67000,
+                        adPerPartyMember: 0,
+                        mdPerPartyMember: 0,
+                        attackDmg: 1300,
+                        magicDmg: 900,
                         armor: 2350,
                         spirit: 2350,
                         difficulty: "boss",
                         element: "normal"
                     }
                 ],
-                points: 249
+                points: 929
             }
         }
     }    
