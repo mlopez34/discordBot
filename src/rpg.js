@@ -656,7 +656,7 @@ module.exports.rpgReady = function(message, itemsAvailable, amuletItemsById){
                                                         id: partyMember.id,
                                                         name: partyMember.username,
                                                         username: partyMember.username,
-                                                        hp: 2500 + (27 *  partyMemberStats.level ) + partyMemberHpPlus,
+                                                        hp: 250 + (27 *  partyMemberStats.level ) + partyMemberHpPlus,
                                                         attackDmg: 10 + (9 * partyMemberStats.level) + partyMemberAttackDmgPlus,
                                                         magicDmg:  10 + (9 * partyMemberStats.level) + partyMemberMagicDmgPlus,
                                                         armor: 5 + (partyMemberStats.level * partyMemberStats.level) + partyMemberArmorPlus,
