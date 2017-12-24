@@ -2412,6 +2412,7 @@ module.exports = {
                 // yellow = abilities more often, aoe abilities, black = summon 6 minions
                 // purple = status on target, after 3 statuses they explode
                 // blue = 1 cooldown per ability, effect ends when new crystals appear
+                description: "**Energy Crystals:** \nRed - grants Furnace(magical)\nGreen- grants Dismantle(physical)\nBlack - Summons Tortured Robots\nBlue - Summons Energy Core(Immune to areawide damage)\nYellow - Rocket Strike becomes areawide, reduces Furnace, Dismantle, Rocket Strike cooldown by 1 turn, Summon Tortured Robot by 6 turns\nPurple - affects with Radioactive(direct healing grants an additional stack of Radioactive, at 5 stacks you explode for 1300 damage)\nEnergy Core - Grants Energize to the boss upon being summoned, Energize lasts 6 turns (+400 attack, magic), upon death causes cleansing which removes Energized from all units\nLaser Beam - Physical, Rocket Strike - Magical",
                 enemies: [
                     {
                         name: "A182-Type2",
@@ -2468,8 +2469,8 @@ module.exports = {
                         hp: 67000,
                         adPerPartyMember: 0,
                         mdPerPartyMember: 0,
-                        attackDmg: 1300,
-                        magicDmg: 900,
+                        attackDmg: 1200,
+                        magicDmg: 800,
                         armor: 2350,
                         spirit: 2350,
                         difficulty: "boss",

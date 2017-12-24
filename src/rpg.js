@@ -606,7 +606,7 @@ module.exports.rpgReady = function(message, itemsAvailable, amuletItemsById){
                                                 // if all team members are ready, create the RPG event
                                                 var maxLevelInParty = 1;
                                                 var averageLevelInParty = 0;
-                                
+                                                var embedDescription = "do -cast [ability name] [target (1-5 for enemies, @user for group members)] \n example: -cast attack 1 OR -cast tacoheal @bender"
                                                 // create team members list
                                                 // team members get abilities based on their items, 1 ult ability at random
                                                 // create their stats based on their level + items
@@ -656,7 +656,7 @@ module.exports.rpgReady = function(message, itemsAvailable, amuletItemsById){
                                                         id: partyMember.id,
                                                         name: partyMember.username,
                                                         username: partyMember.username,
-                                                        hp: 250 + (27 *  partyMemberStats.level ) + partyMemberHpPlus,
+                                                        hp: 2500 + (27 *  partyMemberStats.level ) + partyMemberHpPlus,
                                                         attackDmg: 10 + (9 * partyMemberStats.level) + partyMemberAttackDmgPlus,
                                                         magicDmg:  10 + (9 * partyMemberStats.level) + partyMemberMagicDmgPlus,
                                                         armor: 5 + (partyMemberStats.level * partyMemberStats.level) + partyMemberArmorPlus,
@@ -710,9 +710,10 @@ module.exports.rpgReady = function(message, itemsAvailable, amuletItemsById){
                                                 var enemies = {};
                                                 var enemyIdCount = 1
                                                 if (activeRPGEvents[rpgEvent].challenge){
+                                                    
                                                     var challengeNum = activeRPGEvents[rpgEvent].challenge.challenge;
                                                     var specialEnemies = enemiesToEncounter.challenge[challengeNum].enemies;
-
+                                                    embedDescription = enemiesToEncounter.challenge[challengeNum].description;
                                                     for (var i = 0; i < specialEnemies.length; i++){
                                                         enemyFound = JSON.parse(JSON.stringify( specialEnemies[i] ));
 
@@ -998,7 +999,7 @@ module.exports.rpgReady = function(message, itemsAvailable, amuletItemsById){
                                 
                                                 const embed = new Discord.RichEmbed()
                                                 .setAuthor("Taco RPG Event has started !!")
-                                                .setDescription("do -cast [ability name] [target (1-5 for enemies, @user for group members)] \n example: -cast attack 1 OR -cast tacoheal @bender")
+                                                .setDescription(embedDescription)
                                                 //.setThumbnail("https://media.giphy.com/media/mIZ9rPeMKefm0/giphy.gif")
                                                 .setColor(0xF2E93E)
                                                 if (activeRPGEvents[rpgEvent].special && activeRPGEvents[rpgEvent].special.avatar){
@@ -3446,59 +3447,103 @@ function processAbility(abilityObject, event){
         var statusToAdd = rpgAbility.status;
         var targetToAddStatus = abilityObject.target
 
-        if (event.membersInParty[targetToAddStatus]){
-            var targetToAddStatusName = event.membersInParty[targetToAddStatus].name;
-            if (event.membersInParty[targetToAddStatus].statuses.indexOf("dead") == -1){
-                // target is not dead
-                // ONLY ADD STATUS IF THEY DO NOT ALREADY HAVE IT
-                var alreadyHaveStatus = false;
-                for (var status in event.membersInParty[targetToAddStatus].statuses){
-                    if (event.membersInParty[targetToAddStatus].statuses[status].dot
-                        && event.membersInParty[targetToAddStatus].statuses[status].dot.caster == abilityObject.user
-                        && event.membersInParty[targetToAddStatus].statuses[status].dot.name == statusToAdd.name ){
-                        alreadyHaveStatus = true;
-                    }
-                    // add the status here
-                    if (event.membersInParty[targetToAddStatus].statuses[status].name == statusToAdd.name
-                        && !event.membersInParty[targetToAddStatus].statuses[status].ignoreUnique){
-                            alreadyHaveStatus = true;
+        if (rpgAbility.status.areawide){
+            // deal damage area wide against opposite party
+            if (abilityCaster > 1000){
+                // if caster is party of membersInParty then target = all the enemies
+                for (var targetToAddStatus in event.enemies){
+                    if (event.enemies[targetToAddStatus].hp > 0
+                        && event.enemies[targetToAddStatus].statuses.indexOf("dead") == -1){
+                        var alreadyHaveStatus = false;
+                        for (var status in event.enemies[targetToAddStatus].statuses){
+                            if (event.enemies[targetToAddStatus].statuses[status]
+                                && event.enemies[targetToAddStatus].statuses[status].caster == abilityObject.user
+                                && event.enemies[targetToAddStatus].statuses[status].name == statusToAdd.name
+                                && !event.enemies[targetToAddStatus].statuses[status].ignoreUnique ){
+                                alreadyHaveStatus = true;
+                            }
+                        }
+                        if (!alreadyHaveStatus){
+                            event.enemies[targetToAddStatus].statuses.push(statusToAdd);
+                        }
                     }
                 }
-                if (!alreadyHaveStatus){
-                    delete statusToAdd.areawide 
-                    event.membersInParty[targetToAddStatus].statuses.push(statusToAdd);
-                    if (statusToAdd.turnsToExpire){
-                        statusToAdd.caster = abilityCaster // id of the caster
-                        statusToAdd.expireOnTurn = currentTurn + statusToAdd.turnsToExpire;
+                abilityToString = abilityToString + "The group was affected with " + statusToAdd.name + " \n" 
+            }else{
+                var caster = event.membersInParty["rpg-"+abilityCaster] ? event.membersInParty["rpg-"+abilityCaster].name : undefined;
+                for (var targetToAddStatus in event.membersInParty){
+                    if (event.membersInParty[targetToAddStatus].hp > 0
+                    && event.membersInParty[targetToAddStatus].statuses.indexOf("dead") == -1){
+                        var alreadyHaveStatus = false;
+                        for (var status in event.membersInParty[targetToAddStatus].statuses){
+                            if (event.membersInParty[targetToAddStatus].statuses[status]
+                                && event.membersInParty[targetToAddStatus].statuses[status].caster == abilityObject.user ){
+                                alreadyHaveStatus = true;
+                            }
+                        }
+                        if (!alreadyHaveStatus){
+                            delete statusToAdd.areawide 
+                            event.membersInParty[targetToAddStatus].statuses.push(statusToAdd);
+                        }
                     }
-                    abilityToString = abilityToString + targetToAddStatusName + " was affected with " + statusToAdd.name + "\n"
+                }
+                abilityToString = abilityToString + "The group was affected with " + statusToAdd.name + " \n"                 
+            }
+        }else{
+            if (event.membersInParty[targetToAddStatus]){
+                var targetToAddStatusName = event.membersInParty[targetToAddStatus].name;
+                if (event.membersInParty[targetToAddStatus].statuses.indexOf("dead") == -1){
+                    // target is not dead
+                    // ONLY ADD STATUS IF THEY DO NOT ALREADY HAVE IT
+                    var alreadyHaveStatus = false;
+                    for (var status in event.membersInParty[targetToAddStatus].statuses){
+                        if (event.membersInParty[targetToAddStatus].statuses[status].dot
+                            && event.membersInParty[targetToAddStatus].statuses[status].dot.caster == abilityObject.user
+                            && event.membersInParty[targetToAddStatus].statuses[status].dot.name == statusToAdd.name ){
+                            alreadyHaveStatus = true;
+                        }
+                        // add the status here
+                        if (event.membersInParty[targetToAddStatus].statuses[status].name == statusToAdd.name
+                            && !event.membersInParty[targetToAddStatus].statuses[status].ignoreUnique){
+                                alreadyHaveStatus = true;
+                        }
+                    }
+                    if (!alreadyHaveStatus){
+                        delete statusToAdd.areawide 
+                        event.membersInParty[targetToAddStatus].statuses.push(statusToAdd);
+                        if (statusToAdd.turnsToExpire){
+                            statusToAdd.caster = abilityCaster // id of the caster
+                            statusToAdd.expireOnTurn = currentTurn + statusToAdd.turnsToExpire;
+                        }
+                        abilityToString = abilityToString + targetToAddStatusName + " was affected with " + statusToAdd.name + "\n"
+                    }
                 }
             }
-        }
-        else if (event.enemies[targetToAddStatus]){
-            var targetToAddStatusName = event.enemies[targetToAddStatus].name;
-            if (event.enemies[targetToAddStatus].statuses.indexOf("dead") == -1){
-                // ONLY ADD STATUS IF THEY DO NOT ALREADY HAVE IT 
-                var alreadyHaveStatus = false;
-                for (var status in event.enemies[targetToAddStatus].statuses){
-                    if (event.enemies[targetToAddStatus].statuses[status].dot
-                        && event.enemies[targetToAddStatus].statuses[status].dot.caster == abilityObject.user
-                        && event.enemies[targetToAddStatus].statuses[status].dot.name == statusToAdd.name ){
-                        alreadyHaveStatus = true;
-                    }
-
-                    if (event.enemies[targetToAddStatus].statuses[status].name == statusToAdd.name
-                        && !event.enemies[targetToAddStatus].statuses[status].ignoreUnique){
+            else if (event.enemies[targetToAddStatus]){
+                var targetToAddStatusName = event.enemies[targetToAddStatus].name;
+                if (event.enemies[targetToAddStatus].statuses.indexOf("dead") == -1){
+                    // ONLY ADD STATUS IF THEY DO NOT ALREADY HAVE IT 
+                    var alreadyHaveStatus = false;
+                    for (var status in event.enemies[targetToAddStatus].statuses){
+                        if (event.enemies[targetToAddStatus].statuses[status].dot
+                            && event.enemies[targetToAddStatus].statuses[status].dot.caster == abilityObject.user
+                            && event.enemies[targetToAddStatus].statuses[status].dot.name == statusToAdd.name ){
                             alreadyHaveStatus = true;
+                        }
+    
+                        if (event.enemies[targetToAddStatus].statuses[status].name == statusToAdd.name
+                            && !event.enemies[targetToAddStatus].statuses[status].ignoreUnique){
+                                alreadyHaveStatus = true;
+                        }
                     }
-                }
-                if (!alreadyHaveStatus){
-                    event.enemies[targetToAddStatus].statuses.push(statusToAdd);
-                    if (statusToAdd.turnsToExpire){
-                        statusToAdd.caster = abilityCaster // id of the caster
-                        statusToAdd.expireOnTurn = currentTurn + statusToAdd.turnsToExpire;
+                    if (!alreadyHaveStatus){
+                        event.enemies[targetToAddStatus].statuses.push(statusToAdd);
+                        if (statusToAdd.turnsToExpire){
+                            statusToAdd.caster = abilityCaster // id of the caster
+                            statusToAdd.expireOnTurn = currentTurn + statusToAdd.turnsToExpire;
+                        }
+                        abilityToString = abilityToString + targetToAddStatusName + " was affected with " + statusToAdd.name + " \n"    
                     }
-                    abilityToString = abilityToString + targetToAddStatusName + " was affected with " + statusToAdd.name + " \n"    
                 }
             }
         }
