@@ -5,6 +5,8 @@ var profileDB = require("./profileDB.js");
 var config = require("./config");
 var rpglib = require("./rpglib");
 var moment = require("moment");
+var _ = require("lodash");
+
 var RPG_COOLDOWN_HOURS = 3
 var activeRPGEvents = {};
 var activeRPGItemIds = {};
@@ -417,7 +419,8 @@ module.exports.rpgReady = function(message, itemsAvailable, amuletItemsById){
                 var lastrpgtime = userData.data.lastrpgtime;
                 if ((lastrpgtime && oneHourAgo > lastrpgtime) 
                     || isSpecialEvent 
-                    || !lastrpgtime ){
+                    || !lastrpgtime
+                    ||  challengePicked == 6){
                     // get the user profile data
                     var userStats = userData.data;
 
@@ -770,6 +773,32 @@ module.exports.rpgReady = function(message, itemsAvailable, amuletItemsById){
                                                                     activeRPGEvents[rpgEvent].endOfTurnEvents.push( eventToPush );
                                                                 }else if ( eventToPush.belongsToMember ){
                                                                     enemies[enemyIdCount].endOfTurnEvents.push( eventToPush );
+                                                                }
+                                                            }
+                                                        }
+
+                                                        if (challengeNum == 6){
+                                                            // if challenge 6, randomize energy crystal summons
+                                                            var shuffledCrystals =  _.shuffle( JSON.parse(JSON.stringify(enemyFound.crystalCombosToRandomize)));
+                                                            // events already created, just need to push the shuffled crystals
+                                                            for (var eventAtEndOfTurn in enemies[enemyIdCount].endOfTurnEvents){
+                                                                if (enemies[enemyIdCount].endOfTurnEvents[eventAtEndOfTurn].name == shuffledCrystals[0]){
+                                                                    enemies[enemyIdCount].endOfTurnEvents[eventAtEndOfTurn].afterNTurns = 1
+                                                                }
+                                                                if (enemies[enemyIdCount].endOfTurnEvents[eventAtEndOfTurn].name == shuffledCrystals[1]){
+                                                                    enemies[enemyIdCount].endOfTurnEvents[eventAtEndOfTurn].afterNTurns = 11
+                                                                }
+                                                                if (enemies[enemyIdCount].endOfTurnEvents[eventAtEndOfTurn].name == shuffledCrystals[2]){
+                                                                    enemies[enemyIdCount].endOfTurnEvents[eventAtEndOfTurn].afterNTurns = 21
+                                                                }
+                                                                if (enemies[enemyIdCount].endOfTurnEvents[eventAtEndOfTurn].name == shuffledCrystals[3]){
+                                                                    enemies[enemyIdCount].endOfTurnEvents[eventAtEndOfTurn].afterNTurns = 31
+                                                                }
+                                                                if (enemies[enemyIdCount].endOfTurnEvents[eventAtEndOfTurn].name == shuffledCrystals[4]){
+                                                                    enemies[enemyIdCount].endOfTurnEvents[eventAtEndOfTurn].afterNTurns = 41
+                                                                }
+                                                                if (enemies[enemyIdCount].endOfTurnEvents[eventAtEndOfTurn].name == shuffledCrystals[5]){
+                                                                    enemies[enemyIdCount].endOfTurnEvents[eventAtEndOfTurn].afterNTurns = 51
                                                                 }
                                                             }
                                                         }
@@ -1738,86 +1767,141 @@ function effectsOnTurnEnd(event){
                                 }
                                 ////// effect is a regular ability that should be processed as an ability
                                 else if (event.enemies[enemy].endOfTurnEvents[index].processAbility){
-
-                                    var abilityPicked = event.enemies[enemy].endOfTurnEvents[index].abilityId
-                                    var untargettable = event.enemies[enemy].endOfTurnEvents[index].status ? event.enemies[enemy].endOfTurnEvents[index].status.untargettable : undefined;
-                                    // get the rpgAbility from lib
-                                    var rpgAbility = rpgAbilities[abilityPicked] ? JSON.parse(JSON.stringify(rpgAbilities[abilityPicked])) : undefined; 
-
-                                    var validTarget = false;
-                                    var stuckCount = 0
-                                    var target;
-                                    while(!validTarget && stuckCount < 100){
-                                        var targetRoll = Math.floor(Math.random() * event.members.length);
-                                        var targetMember = event.members[targetRoll].id;
-                                        var targetFocusedMember = false;
-                                        if (stuckCount < 5){
-                                            for (var member in event.members){
-                                                var idOfMemberBeingChecked = "rpg-" + event.members[member].id;
-                                                for (var statusToCheck in event.membersInParty[idOfMemberBeingChecked].statuses){
-                                                    if (rpgAbility && rpgAbility.ignoreFocus){
-                                                        console.log("ignoring focus for ability")
-                                                        // IGNORE FOCUS EFFECT - check if the person being targetted by the ability is being focused by the caster
-                                                        if ( (targetMember == event.members[member].id) 
-                                                            &&  event.membersInParty[idOfMemberBeingChecked].statuses[statusToCheck].name == "Focus"
-                                                            && event.membersInParty[idOfMemberBeingChecked].statuses[statusToCheck].focusedBy == enemy){
-                                                                targetFocusedMember = true;
-                                                            }
-                                                    }else{
-                                                        // check if someone has focus on them if they do then the target should be the focused person 
-                                                        if ( event.membersInParty[idOfMemberBeingChecked].statuses[statusToCheck].name == "Focus"
-                                                            && event.membersInParty[idOfMemberBeingChecked].statuses[statusToCheck].focusedBy == enemy){
-                                                            //target roll should be 
-                                                            targetMember = event.members[member].id;
-                                                            break;
-                                                        }
-                                                    }
-                                                    
+                                    var validCast = true;
+                                    if (event.enemies[enemy].endOfTurnEvents[index].validIfBuff){
+                                        // check that enemy has the buff required
+                                        validCast = false;
+                                        var buffToCheck = event.enemies[enemy].endOfTurnEvents[index].validIfBuff
+                                        for (var i = event.enemies[enemy].buffs.length - 1; i >= 0; i--){
+                                            if (event.enemies[enemy].buffs.indexOf("dead") == -1){
+                                                // process the on turn end buff
+                                                if (event.enemies[enemy].buffs[i].name == buffToCheck){
+                                                    validCast = true;
+                                                    break;
                                                 }
                                             }
                                         }
-                                        
-                                        if (event.membersInParty["rpg-"+targetMember].statuses.indexOf("dead") == -1){
-                                            // valid target
-                                            if (untargettable && !targetFocusedMember){
-                                                // check that no status contains the id of the ability which the player
-                                                // cannot be targetted by
-                                                target = "rpg-"+targetMember;
-                                                validTarget = true;
-                                                for ( var s in event.membersInParty["rpg-"+targetMember].statuses ){
-                                                    var statusToCheck = event.membersInParty["rpg-"+targetMember].statuses[s];
-                                                    if ( statusToCheck.abilityId == abilityPicked ){
-                                                        validTarget = false;
-                                                        target = undefined;
-                                                    }
-                                                }
-                                                console.log(stuckCount)
+                                    }
+                                    if (validCast){
+                                        var abilityPicked = event.enemies[enemy].endOfTurnEvents[index].abilityId
+                                        var untargettable = event.enemies[enemy].endOfTurnEvents[index].status ? event.enemies[enemy].endOfTurnEvents[index].status.untargettable : undefined;
+                                        // get the rpgAbility from lib
+                                        var rpgAbility = rpgAbilities[abilityPicked] ? JSON.parse(JSON.stringify(rpgAbilities[abilityPicked])) : undefined; 
 
-                                            }else{
-                                                if (!targetFocusedMember){
-                                                    target = "rpg-"+targetMember;
-                                                    validTarget = true;
-                                                    console.log("stuck count" + stuckCount)
+                                        var validTarget = false;
+                                        var stuckCount = 0
+                                        var target;
+                                        while(!validTarget && stuckCount < 100){
+                                            var targetRoll = Math.floor(Math.random() * event.members.length);
+                                            var targetMember = event.members[targetRoll].id;
+                                            var targetFocusedMember = false;
+                                            if (stuckCount < 5){
+                                                for (var member in event.members){
+                                                    var idOfMemberBeingChecked = "rpg-" + event.members[member].id;
+                                                    for (var statusToCheck in event.membersInParty[idOfMemberBeingChecked].statuses){
+                                                        if (rpgAbility && rpgAbility.ignoreFocus){
+                                                            console.log("ignoring focus for ability")
+                                                            // IGNORE FOCUS EFFECT - check if the person being targetted by the ability is being focused by the caster
+                                                            if ( (targetMember == event.members[member].id) 
+                                                                &&  event.membersInParty[idOfMemberBeingChecked].statuses[statusToCheck].name == "Focus"
+                                                                && event.membersInParty[idOfMemberBeingChecked].statuses[statusToCheck].focusedBy == enemy){
+                                                                    targetFocusedMember = true;
+                                                                }
+                                                        }else{
+                                                            // check if someone has focus on them if they do then the target should be the focused person 
+                                                            if ( event.membersInParty[idOfMemberBeingChecked].statuses[statusToCheck].name == "Focus"
+                                                                && event.membersInParty[idOfMemberBeingChecked].statuses[statusToCheck].focusedBy == enemy){
+                                                                //target roll should be 
+                                                                targetMember = event.members[member].id;
+                                                                break;
+                                                            }
+                                                        }
+                                                        
+                                                    }
                                                 }
                                             }
                                             
-                                        }
-                                        stuckCount++;
-                                    }
+                                            if (event.membersInParty["rpg-"+targetMember].statuses.indexOf("dead") == -1){
+                                                // valid target
+                                                if (untargettable && !targetFocusedMember){
+                                                    // check that no status contains the id of the ability which the player
+                                                    // cannot be targetted by
+                                                    target = "rpg-"+targetMember;
+                                                    validTarget = true;
+                                                    for ( var s in event.membersInParty["rpg-"+targetMember].statuses ){
+                                                        var statusToCheck = event.membersInParty["rpg-"+targetMember].statuses[s];
+                                                        if ( statusToCheck.abilityId == abilityPicked ){
+                                                            validTarget = false;
+                                                            target = undefined;
+                                                        }
+                                                    }
+                                                    console.log(stuckCount)
 
-                                    var abilityToProcess = {
-                                        user: enemy,
-                                        ability: abilityPicked,
-                                        target: target
-                                    }
-                                    if (abilityToProcess.target != undefined){
-                                        endOfTurnString = endOfTurnString  + processAbility(abilityToProcess, event);                                        
+                                                }else{
+                                                    if (!targetFocusedMember){
+                                                        target = "rpg-"+targetMember;
+                                                        validTarget = true;
+                                                        console.log("stuck count" + stuckCount)
+                                                    }
+                                                }
+                                                
+                                            }
+                                            stuckCount++;
+                                        }
+
+                                        var abilityToProcess = {
+                                            user: enemy,
+                                            ability: abilityPicked,
+                                            target: target
+                                        }
+                                        if (abilityToProcess.target != undefined){
+                                            endOfTurnString = endOfTurnString  + processAbility(abilityToProcess, event);                                        
+                                        }
                                     }
                                 }
                                 //////// effect is a summoning
                                 else if( event.enemies[enemy].endOfTurnEvents[index].summon ){
-
-                                    endOfTurnString = endOfTurnString + summonEnemy(event, enemy, index);
+                                    var validSummon = true;
+                                    if (event.enemies[enemy].endOfTurnEvents[index].validIfBuff){
+                                        // check that enemy has the buff required
+                                        validSummon = false;
+                                        var buffToCheck = event.enemies[enemy].endOfTurnEvents[index].validIfBuff
+                                        for (var i = event.enemies[enemy].buffs.length - 1; i >= 0; i--){
+                                            if (event.enemies[enemy].buffs.indexOf("dead") == -1){
+                                                // process the on turn end buff
+                                                if (event.enemies[enemy].buffs[i].name == buffToCheck){
+                                                    validSummon = true;
+                                                    break;
+                                                }
+                                            }
+                                        }
+                                    }
+                                    if (validSummon){
+                                        if (event.enemies[enemy].endOfTurnEvents[index].summon.enemies){
+                                            var listOfEnemies = event.enemies[enemy].endOfTurnEvents[index].summon.enemies
+                                            for (var enemyToSummon in listOfEnemies){
+                                                var nameOfSummon = listOfEnemies[enemyToSummon];
+                                                var enemyFound = JSON.parse(JSON.stringify(  enemiesToEncounter.summoned[nameOfSummon]));
+                                                endOfTurnString = endOfTurnString + summonEnemy(event, enemy, index, enemyFound )
+                                            }
+                                            if (event.enemies[enemy].endOfTurnEvents[index].oneTimeCast){
+                                                event.enemies[enemy].endOfTurnEvents[index].invalid = true;
+                                            }
+                                        }else{
+                                            var nameOfSummon = event.enemies[enemy].endOfTurnEvents[index].summon.enemy;
+                                            var enemyFound = JSON.parse(JSON.stringify(  enemiesToEncounter.summoned[nameOfSummon]));
+                                            endOfTurnString = endOfTurnString + summonEnemy(event, enemy, index, enemyFound);
+                                            if (nameOfSummon == "energyCore"){
+                                                var energize = rpgAbilities["energize"] ? JSON.parse(JSON.stringify(rpgAbilities["energize"])) : undefined;
+                                                energize.buff.expireOnTurn = currentTurn + energize.buff.turnsToExpire
+                                                event.enemies[enemy].buffs.push(energize.buff);
+                                                endOfTurnString = endOfTurnString + event.enemies[enemy].name + " gained Energized 🗡 +400, ☄️ + 400 \n\n"
+                                            }
+                                            if (event.enemies[enemy].endOfTurnEvents[index].oneTimeCast){
+                                                event.enemies[enemy].endOfTurnEvents[index].invalid = true;
+                                            }
+                                        }
+                                    }
                                 }
                             }
                             eotEvent.currentTurn++;
@@ -1976,7 +2060,8 @@ function effectsOnTurnEnd(event){
                     endOfTurnString = endOfTurnString + "The group suffered " + damageToDeal + " damage from " + nameOfEndOfTurnAbility +"\n"
                     for (var targetToDealDmg in event.membersInParty){
                         var targetToDealDmgName = event.membersInParty[targetToDealDmg].name
-                        if (event.membersInParty[targetToDealDmg].statuses.indexOf("dead") == -1){
+                        if (event.membersInParty[targetToDealDmg].statuses.indexOf("dead") == -1
+                            && !event.membersInParty[targetToDealDmg].immuneToAoe){
                             event.membersInParty[targetToDealDmg].hp = event.membersInParty[targetToDealDmg].hp - damageToDeal;
                             if (event.membersInParty[targetToDealDmg].hp <= 0){
                                 endOfTurnString = endOfTurnString + hasDied(event, event.membersInParty[targetToDealDmg]);
@@ -2008,16 +2093,13 @@ function effectsOnTurnEnd(event){
     return endOfTurnString;
 }
 
-function summonEnemy(event, enemy, index){
+function summonEnemy(event, enemy, index, enemyFound){
     // summoning plus ad, md, armor, spirit
     var summoningAdPlus = event.enemies[enemy].endOfTurnEvents[index].summon.attackDmg || 0;
     var summoningMdPlus = event.enemies[enemy].endOfTurnEvents[index].summon.magicDmg || 0;
     var summoningHpPlus = event.enemies[enemy].endOfTurnEvents[index].summon.hpPlus || 0;
 
-    
     var averageLevelInParty = event.averageLevelInParty;
-    var nameOfSummon = event.enemies[enemy].endOfTurnEvents[index].summon.enemy;
-    var enemyFound = JSON.parse(JSON.stringify(  enemiesToEncounter.summoned[nameOfSummon]));
     var enemyIdCount = event.enemiesCount + 1;
     var enemyCount = event.enemiesCount;
     var enemySummoned = {
@@ -2075,7 +2157,7 @@ function summonEnemy(event, enemy, index){
             }
         }
     }
-
+    enemySummoned.immuneToAoe = enemyFound.immuneToAoe
     enemySummoned.maxhp = enemySummoned.hp;
     enemyIdCount++;
     // add the enemy to the list
@@ -2117,7 +2199,8 @@ function effectsOnDeath(event, member){
                 onDeathString = onDeathString + "The group suffered " + damageToDeal + " damage from " + nameOfDeadMember + "'s " + rpgAbility.name + "\n";
                 for (var targetToDealDmg in event.membersInParty){
                     var targetToDealDmgName = event.membersInParty[targetToDealDmg].name
-                    if (event.membersInParty[targetToDealDmg].statuses.indexOf("dead") == -1){
+                    if (event.membersInParty[targetToDealDmg].statuses.indexOf("dead") == -1
+                        && !event.membersInParty[targetToDealDmg].immuneToAoe){
                         event.membersInParty[targetToDealDmg].hp = event.membersInParty[targetToDealDmg].hp - damageToDeal;
                         if (event.membersInParty[targetToDealDmg].hp <= 0){
                             onDeathString = onDeathString + hasDied(event, event.membersInParty[targetToDealDmg]);
@@ -2127,7 +2210,20 @@ function effectsOnDeath(event, member){
             }
             ///// effect gives a buff to members in party
             if (rpgAbility && rpgAbility.buff){
-
+                
+            }
+            ///// effect removes buff from enemy
+            if (rpgAbility && rpgAbility.removeEnemyBuff){
+                for (var enemyToCheck in event.enemies){
+                    var enemyToCheckBuff = event.enemies[enemyToCheck]
+                    for (var b in enemyToCheckBuff.buffs){
+                        if (enemyToCheckBuff.buffs[b].name == rpgAbility.removeEnemyBuff){
+                            onDeathString = onDeathString + enemyToCheckBuff.name + " lost " + enemyToCheckBuff.buffs[b].name + "\n"
+                            enemyToCheckBuff.buffs.splice(b, 1);
+                            break;
+                        }
+                    }
+                }
             }
             ////// effect heals the rest of the enemies
             if (rpgAbility && rpgAbility.heal && rpgAbility.areawide){
@@ -2243,6 +2339,117 @@ function effectsOnDeath(event, member){
         }
     }
     return onDeathString;
+}
+
+function processYellowEnergyCrystal(event, active){
+    /*
+    reduceEveryNTurnsFurnace: 1,
+    reduceEveryNTurnsDismantle: 1,
+    reduceEveryNTurnsSummonTorturedRobot: 5,
+    reduceEveryNTurnsRocketStrike: 1,
+    rocketStrikeAreawide: true,
+    */
+    for (var enemy in event.enemies){
+        // check enemy statuses
+        for ( var e in event.enemies[enemy].endOfTurnEvents){
+            // check for each event
+            var eventToCheck = event.enemies[enemy].endOfTurnEvents[e]
+            if (active){
+                if (eventToCheck.name == "Furnace"){
+                    // reduce by 1 turn
+                    eventToCheck.everyNTurns = eventToCheck.everyNTurns - 1
+                }
+                if (eventToCheck.name == "Dismantle"){
+                    // reduce by 1 turn
+                    eventToCheck.everyNTurns = eventToCheck.everyNTurns - 1
+                }
+                if (eventToCheck.name == "Rocket Strike"){
+                    // turn it into areawide dmg, reduce by 1 turn
+                    eventToCheck.everyNTurns = eventToCheck.everyNTurns - 1
+                    eventToCheck.abilityId = "rocketStrikeAreaWide"
+                }
+            }else{
+                if (eventToCheck.name == "Furnace"){
+                    // reduce by 1 turn
+                    eventToCheck.everyNTurns = eventToCheck.everyNTurns + 1
+                }
+                if (eventToCheck.name == "Dismantle"){
+                    // reduce by 1 turn
+                    eventToCheck.everyNTurns = eventToCheck.everyNTurns + 1
+                }
+                if (eventToCheck.name == "Rocket Strike"){
+                    // turn it into areawide dmg, reduce by 1 turn
+                    eventToCheck.everyNTurns = eventToCheck.everyNTurns + 1
+                    if (eventToCheck.areawide){
+                        delete eventToCheck.areawide
+                    }
+                    if (eventToCheck.abilityId == "rocketStrikeAreaWide"){
+                        eventToCheck.abilityId = "rocketStrike"
+                    }
+                }
+            }
+        }
+    }
+}
+
+function removeRadiactive(event){
+    for(var member in event.membersInParty){
+        if (event.membersInParty[member].statuses.indexOf("dead") == -1){
+            for (var index = event.membersInParty[member].statuses.length - 1; index >= 0; index--){
+                // go through each status
+                if (event.membersInParty[member].statuses.indexOf("dead") == -1){
+                    if (event.membersInParty[member].statuses[index].name == "Radioactive"){
+                        event.membersInParty[member].statuses.splice(index, 1);
+                    }
+                }
+            }
+        }
+    }
+}
+
+function checkRadioactive(event, member){
+    // if the user has a stack of radioactive, then add another stack
+    var radioactiveCount = 0;
+    var hasRadioactive = false;
+    var copyOfRadioactive = {};
+    var radioactiveString = "";
+    for (var status in member.statuses){
+        try{
+            if (member.statuses[status].name == "Radioactive"){
+                // add another stack
+                radioactiveCount++;
+                hasRadioactive = true;
+                copyOfRadioactive = JSON.parse(JSON.stringify ( member.statuses[status] ) );
+            }
+        }
+        catch(error){
+            console.log(error);
+        }
+    }
+    if (hasRadioactive){
+        radioactiveString = radioactiveString + member.name + " gained Radioactive\n"
+        member.statuses.push( copyOfRadioactive );
+        radioactiveCount++;
+    }
+
+    if (radioactiveCount >= 5){
+        // deal 1300 damage to all members
+        var damageToDeal = 1300;
+
+        radioactiveString = radioactiveString + "The group suffered " + damageToDeal + " damage from Radioactive Explosion\n"
+        for (var targetToDealDmg in event.membersInParty){
+            var targetToDealDmgName = event.membersInParty[targetToDealDmg].name
+            if (event.membersInParty[targetToDealDmg].statuses.indexOf("dead") == -1){
+                event.membersInParty[targetToDealDmg].hp = event.membersInParty[targetToDealDmg].hp - damageToDeal;
+                if (event.membersInParty[targetToDealDmg].hp <= 0){
+                    radioactiveString = radioactiveString + hasDied(event, event.membersInParty[targetToDealDmg]);
+                }
+            }
+        }
+
+    }
+    return radioactiveString;
+    // return stack of radioactive gained, if 5 stacks, deal 1000 damage to all members
 }
 
 function hasDied(event, member){
@@ -2505,6 +2712,22 @@ function processPassiveEffects(event){
                         }
 
                         if (event.enemies[enemy].buffs[index].hot.expireOnTurn == event.turn){
+                            event.enemies[enemy].buffs.splice(index, 1);
+                            continue;
+                        }
+                    }
+                    if (event.enemies[enemy].buffs[index].expireOnTurn){
+                        if (event.enemies[enemy].buffs[index].expireOnTurn == event.turn){
+                            if (event.enemies[enemy].buffs[index].specialOnExpire){
+                                // do the special on expire effect
+                                if (event.enemies[enemy].buffs[index].onExpireRemoveMemberStatus
+                                    && event.enemies[enemy].buffs[index].onExpireRemoveMemberStatus == "Radioactive"){
+                                    removeRadiactive(event);
+                                }
+                                if (event.enemies[enemy].buffs[index].name == "yellowEnergyCrystal"){
+                                    processYellowEnergyCrystal(event, false);
+                                }
+                            }
                             event.enemies[enemy].buffs.splice(index, 1);
                             continue;
                         }
@@ -3031,7 +3254,8 @@ function processAbility(abilityObject, event){
                 abilityToString = abilityToString + caster +  " dealt " + damageToDeal + " damage to all enemies with " + rpgAbility.name + "\n";                
                 for (var targetToDealDmg in event.enemies){
                     var targetToDealDmgName = event.enemies[targetToDealDmg].name
-                    if (event.enemies[targetToDealDmg].statuses.indexOf("dead") == -1){
+                    if (event.enemies[targetToDealDmg].statuses.indexOf("dead") == -1
+                        && !event.enemies[targetToDealDmg].immuneToAoe){
                         // target is not dead, damage them
                         event.enemies[targetToDealDmg].hp = event.enemies[targetToDealDmg].hp - damageToDeal;
                         if (event.enemies[targetToDealDmg].hp <= 0){
@@ -3091,6 +3315,8 @@ function processAbility(abilityObject, event){
                     if (event.membersInParty[targetToHeal].hp > 0
                     && event.membersInParty[targetToHeal].statuses.indexOf("dead") == -1){
                         event.membersInParty[targetToHeal].hp = event.membersInParty[targetToHeal].hp + hpToHeal;
+                        // gain stack of radioactive
+                        abilityToString = abilityToString + checkRadioactive(event, event.membersInParty[targetToHeal])
                         if (event.membersInParty[targetToHeal].hp > event.membersInParty[targetToHeal].maxhp){
                             event.membersInParty[targetToHeal].hp = event.membersInParty[targetToHeal].maxhp
                         }
@@ -3118,6 +3344,8 @@ function processAbility(abilityObject, event){
                 if (event.membersInParty[targetToHeal].statuses.indexOf("dead") == -1){
                     // target is not dead
                     event.membersInParty[targetToHeal].hp = event.membersInParty[targetToHeal].hp + hpToHeal;
+                    // gain stack of radioactive
+                    abilityToString = abilityToString + checkRadioactive(event, event.membersInParty[targetToHeal])
                     abilityToString = abilityToString + targetToHealName + " was healed for " + hpToHeal + "\n"
                     if (event.membersInParty[targetToHeal].hp > event.membersInParty[targetToHeal].maxhp){
                         event.membersInParty[targetToHeal].hp = event.membersInParty[targetToHeal].maxhp
@@ -3231,7 +3459,8 @@ function processAbility(abilityObject, event){
                         alreadyHaveStatus = true;
                     }
                     // add the status here
-                    if (event.membersInParty[targetToAddStatus].statuses[status].name == statusToAdd.name){
+                    if (event.membersInParty[targetToAddStatus].statuses[status].name == statusToAdd.name
+                        && !event.membersInParty[targetToAddStatus].statuses[status].ignoreUnique){
                             alreadyHaveStatus = true;
                     }
                 }
@@ -3257,7 +3486,8 @@ function processAbility(abilityObject, event){
                         alreadyHaveStatus = true;
                     }
 
-                    if (event.enemies[targetToAddStatus].statuses[status].name == statusToAdd.name){
+                    if (event.enemies[targetToAddStatus].statuses[status].name == statusToAdd.name
+                        && !event.enemies[targetToAddStatus].statuses[status].ignoreUnique){
                             alreadyHaveStatus = true;
                     }
                 }
@@ -3388,6 +3618,8 @@ function processAbility(abilityObject, event){
                 }
                 if (!alreadyHaveHot){
                     event.membersInParty[targetToAddHot].buffs.push(hotToAdd);
+                    // gain stack of radioactive
+                    abilityToString = abilityToString + checkRadioactive(event, event.membersInParty[targetToAddHot])
                     abilityToString = abilityToString + targetToAddHotName + " was affected with " + hotToAdd.hot.name + " \n" 
                 }
             }
@@ -3415,6 +3647,82 @@ function processAbility(abilityObject, event){
 
     if (rpgAbility && rpgAbility.special && stillAlive && validAbility){
         // handle the ability in a special manner
+        if (rpgAbility.special == "absorb energy crystals"){
+            // check for any enemy of name Red Energy Crystal etc..
+            // if enemy matches name and enemy is not dead, absorb the energy crystal
+            // (gain buff color) for visual, kill the crystal absorbed
+            for (var enemy in event.enemies){
+                var nameOfCaster = event.enemies[abilityCaster].name;
+                if (event.enemies[enemy].name == "Black Energy Crystal"
+                    && event.enemies[enemy].statuses.indexOf("dead") == -1){
+                    // get the buff to display black energy crystal
+                    var energyCrystalBuff = rpgAbilities["blackEnergyCrystal"] ? JSON.parse(JSON.stringify(rpgAbilities["blackEnergyCrystal"])) : undefined;
+                    energyCrystalBuff.buff.expireOnTurn = currentTurn + energyCrystalBuff.buff.turnsToExpire
+                    event.enemies[abilityCaster].buffs.push(energyCrystalBuff.buff);
+                    abilityToString = abilityToString + nameOfCaster + " absorbed Black Energy Crystal \n"
+                    hasDied(event, event.enemies[enemy])
+                }else if (event.enemies[enemy].name == "Blue Energy Crystal"
+                    && event.enemies[enemy].statuses.indexOf("dead") == -1){
+                    var energyCrystalBuff = rpgAbilities["blueEnergyCrystal"] ? JSON.parse(JSON.stringify(rpgAbilities["blueEnergyCrystal"])) : undefined;
+                    energyCrystalBuff.buff.expireOnTurn = currentTurn + energyCrystalBuff.buff.turnsToExpire
+                    event.enemies[abilityCaster].buffs.push(energyCrystalBuff.buff);
+                    // TODO: make the core immune to areawide dmg
+                    abilityToString = abilityToString + nameOfCaster + " absorbed Blue Energy Crystal \n"
+                    hasDied(event, event.enemies[enemy])
+                }else if (event.enemies[enemy].name == "Purple Energy Crystal"
+                    && event.enemies[enemy].statuses.indexOf("dead") == -1){
+                    var energyCrystalBuff = rpgAbilities["purpleEnergyCrystal"] ? JSON.parse(JSON.stringify(rpgAbilities["purpleEnergyCrystal"])) : undefined;
+                    energyCrystalBuff.buff.expireOnTurn = currentTurn + energyCrystalBuff.buff.turnsToExpire
+                    event.enemies[abilityCaster].buffs.push(energyCrystalBuff.buff);
+                    abilityToString = abilityToString + nameOfCaster + " absorbed Purple Energy Crystal \n"
+                    hasDied(event, event.enemies[enemy])
+                }else if (event.enemies[enemy].name == "Yellow Energy Crystal"
+                    && event.enemies[enemy].statuses.indexOf("dead") == -1){
+                    var energyCrystalBuff = rpgAbilities["yellowEnergyCrystal"] ? JSON.parse(JSON.stringify(rpgAbilities["yellowEnergyCrystal"])) : undefined;
+                    energyCrystalBuff.buff.expireOnTurn = currentTurn + energyCrystalBuff.buff.turnsToExpire
+                    event.enemies[abilityCaster].buffs.push(energyCrystalBuff.buff);
+                    
+                    processYellowEnergyCrystal(event, true);
+                    abilityToString = abilityToString + nameOfCaster + " absorbed Yellow Energy Crystal \n"
+                    hasDied(event, event.enemies[enemy])
+                }else if (event.enemies[enemy].name == "Green Energy Crystal"
+                    && event.enemies[enemy].statuses.indexOf("dead") == -1){
+                    var energyCrystalBuff = rpgAbilities["greenEnergyCrystal"] ? JSON.parse(JSON.stringify(rpgAbilities["greenEnergyCrystal"])) : undefined;
+                    energyCrystalBuff.buff.expireOnTurn = currentTurn + energyCrystalBuff.buff.turnsToExpire
+                    event.enemies[abilityCaster].buffs.push(energyCrystalBuff.buff);
+                    abilityToString = abilityToString + nameOfCaster + " absorbed Green Energy Crystal \n"
+                    hasDied(event, event.enemies[enemy])
+                }else if (event.enemies[enemy].name == "Red Energy Crystal"
+                    && event.enemies[enemy].statuses.indexOf("dead") == -1){
+                    var energyCrystalBuff = rpgAbilities["redEnergyCrystal"] ? JSON.parse(JSON.stringify(rpgAbilities["redEnergyCrystal"])) : undefined;
+                    energyCrystalBuff.buff.expireOnTurn = currentTurn + energyCrystalBuff.buff.turnsToExpire
+                    event.enemies[abilityCaster].buffs.push(energyCrystalBuff.buff);
+                    abilityToString = abilityToString + nameOfCaster + " absorbed Red Energy Crystal \n"
+                    hasDied(event, event.enemies[enemy])
+                }
+            }
+
+            // check if yellow and black are together
+            for (var enemy in event.enemies){
+                var haveBlackCrystal = false;
+                var haveYellowCrystal = false;
+                for (var buff in event.enemies[enemy].buffs){
+                    if (event.enemies[enemy].buffs[buff].name == "yellowEnergyCrystal"){
+                        haveYellowCrystal = true
+                    }
+                    if (event.enemies[enemy].buffs[buff].name == "blackEnergyCrystal"){
+                        haveBlackCrystal = true;
+                    }
+                }
+                if (haveBlackCrystal && haveYellowCrystal){
+                    var chaos = rpgAbilities["chaos"] ? JSON.parse(JSON.stringify(rpgAbilities["chaos"])) : undefined;
+                    chaos.buff.expireOnTurn = currentTurn + chaos.buff.turnsToExpire
+                    event.enemies[abilityCaster].buffs.push(chaos.buff);
+                }
+
+            }
+            
+        }
         if (rpgAbility.special == "selfdamage"){
             // deal self damage to the user
             if (event.membersInParty["rpg-"+abilityCaster] 
@@ -3453,8 +3761,11 @@ function processAbility(abilityObject, event){
             if (event.membersInParty[targetToRemoveFrom]){
                 if (event.membersInParty[targetToRemoveFrom].statuses.indexOf("dead") == -1 
                     && event.membersInParty[targetToRemoveFrom].statuses.length > 0){
-                    
+                    var ignoreBandaid = []
                     for (var status in event.membersInParty[targetToRemoveFrom].statuses){
+                        if (event.membersInParty[targetToRemoveFrom].statuses[status].ignoreBandaid){
+                            ignoreBandaid.push(event.membersInParty[targetToRemoveFrom].statuses[status]);
+                        }
                         if ((event.membersInParty[targetToRemoveFrom].statuses[status].dot
                             && event.membersInParty[targetToRemoveFrom].statuses[status].dot.dmgOnDotRemove)
                             || (event.membersInParty[targetToRemoveFrom].statuses[status].dmgOnStatusRemove)){
@@ -3508,6 +3819,9 @@ function processAbility(abilityObject, event){
                     }
                     
                     event.membersInParty[targetToRemoveFrom].statuses = []
+                    for (var i in ignoreBandaid){
+                        event.membersInParty[targetToRemoveFrom].statuses.push(ignoreBandaid[i])
+                    }
                     abilityToString = abilityToString + event.membersInParty[targetToRemoveFrom].name + " was cured with " + rpgAbility.name + " \n"                
                 }
             }
