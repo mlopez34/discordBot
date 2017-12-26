@@ -94,10 +94,11 @@ client.on('message', function(message){
             else if (commandIs("trickortreat", message)){
                 commands.trickOrTreatCommand(message);
             }
-            */
+            
             else if (commandIs("present", message)){
                 commands.openPresentCommand(message);
             }
+            */
             else if( commandIs("sorry", message )){
                 commands.sorryCommand(message);
             }
