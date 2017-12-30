@@ -470,15 +470,14 @@ module.exports.thankCommand = function(message){
                         
                     }else{
                         // // console.log(wearRes);
-                        var minutesToRemove = wearStats.calculateMinutesReduced(wearRes, "thank");
-                        // console.log("MINUTES TO REMOVE " + minutesToRemove);
+                        var secondsToRemove = wearStats.calculateSecondsReduced(wearRes, "thank");
                         // check against thank timestamp and if 2 hours have passed
                         var now = new Date();
                         var twoHoursAgo = new Date();
                         ///////// CALCULATE THE MINUTES REDUCED HERE 
                         twoHoursAgo = new Date(twoHoursAgo.setHours(twoHoursAgo.getHours() - THANK_COOLDOWN_HOURS));
                         // added the CDR
-                        twoHoursAgo = new Date(twoHoursAgo.setMinutes(twoHoursAgo.getMinutes() + minutesToRemove));
+                        twoHoursAgo = new Date(twoHoursAgo.setSeconds(twoHoursAgo.getSeconds() + secondsToRemove));
 
                         if ( twoHoursAgo > thankResponse.data.lastthanktime ){
                             ///////// CALCULATE THE EXTRA TACOS HERE 
@@ -521,7 +520,7 @@ module.exports.thankCommand = function(message){
                             })
                         }else{
                             // six hours have not passed, tell the user they need to wait 
-                            now = new Date(now.setMinutes(now.getMinutes() + minutesToRemove));
+                            now = new Date(now.setSeconds(now.getSeconds() + secondsToRemove));
                             var numberOfHours = getDateDifference(thankResponse.data.lastthanktime, now, 2);
                             message.channel.send(message.author + " You are being too thankful! Please wait `" + numberOfHours +"` ");
                         }
@@ -561,8 +560,7 @@ module.exports.sorryCommand = function(message){
                         
                     }else{
                         // // console.log(wearRes);
-                        var minutesToRemove = wearStats.calculateMinutesReduced(wearRes, "sorry");
-                        // console.log("MINUTES TO REMOVE " + minutesToRemove);
+                        var secondsToRemove = wearStats.calculateSecondsReduced(wearRes, "sorry");
                         // check six hours ago
                         var achievements = sorryResponse.data.achievements;
                         var now = new Date();
@@ -570,7 +568,7 @@ module.exports.sorryCommand = function(message){
                         ///////// CALCULATE THE MINUTES REDUCED HERE 
                         sixHoursAgo = new Date(sixHoursAgo.setHours(sixHoursAgo.getHours() - SORRY_COOLDOWN_HOURS));
                         // added the CDR
-                        sixHoursAgo = new Date(sixHoursAgo.setMinutes(sixHoursAgo.getMinutes() + minutesToRemove));
+                        sixHoursAgo = new Date(sixHoursAgo.setSeconds(sixHoursAgo.getSeconds() + secondsToRemove));
                         if ( sixHoursAgo > sorryResponse.data.lastsorrytime ){
                             ///////// CALCULATE THE EXTRA TACOS HERE 
                             var extraTacosFromItems = wearStats.calculateExtraTacos(wearRes, "sorry"); // 0 or extra
@@ -630,7 +628,7 @@ module.exports.sorryCommand = function(message){
                             })
                         }else{
                             // six hours have not passed, tell the user they need to wait 
-                            now = new Date(now.setMinutes(now.getMinutes() + minutesToRemove));
+                            now = new Date(now.setSeconds(now.getSeconds() + secondsToRemove));
                             var numberOfHours = getDateDifference(sorryResponse.data.lastsorrytime, now, 6);
                             message.channel.send(message.author + " You are being too apologetic! Please wait `" + numberOfHours +"` ");
                         }
@@ -723,10 +721,10 @@ module.exports.prepareCommand = function (message){
                     var now = new Date();
                     var threeDaysAgo = new Date();
                     ///////// CALCULATE THE MINUTES REDUCED HERE 
-                    var minutesToRemove = wearStats.calculateMinutesReduced(wearRes, "prepare");
-                    // console.log("MINUTES TO REMOVE " + minutesToRemove);
+                    var secondsToRemove = wearStats.calculateSecondsReduced(wearRes, "prepare");
+
                     threeDaysAgo = new Date(threeDaysAgo.setHours(threeDaysAgo.getHours() - PREPARE_COOLDOWN_HOURS));
-                    threeDaysAgo = new Date(threeDaysAgo.setMinutes(threeDaysAgo.getMinutes() + minutesToRemove));
+                    threeDaysAgo = new Date(threeDaysAgo.setSeconds(threeDaysAgo.getSeconds() + secondsToRemove));
 
                     if ( threeDaysAgo > prepareResponse.data.lastpreparetime ){
                         // able to prepare again
@@ -798,7 +796,7 @@ module.exports.prepareCommand = function (message){
                         }
                     }
                     else{
-                        now = new Date(now.setMinutes(now.getMinutes() + minutesToRemove));
+                        now = new Date(now.setSeconds(now.getSeconds() + secondsToRemove));
                         var numberOfHours = getDateDifference(prepareResponse.data.lastpreparetime, now, 48);
                         message.channel.send(message.author + " You ran out of ingredients! Please wait `" + numberOfHours + "` ");
                     }
@@ -1061,8 +1059,7 @@ module.exports.cookCommand = function(message){
                     
                 }else{
                     // check six hours ago
-                    var minutesToRemove = wearStats.calculateMinutesReduced(wearRes, "cook");
-                    // console.log("MINUTES TO REMOVE " + minutesToRemove);
+                    var secondsToRemove = wearStats.calculateSecondsReduced(wearRes, "cook");
 
                     var achievements = cookResponse.data.achievements;
                     var now = new Date();
@@ -1070,7 +1067,7 @@ module.exports.cookCommand = function(message){
                     ///////// CALCULATE THE MINUTES REDUCED HERE 
                     threeDaysAgo = new Date(threeDaysAgo.setHours(threeDaysAgo.getHours() - COOK_COOLDOWN_HOURS));
 
-                    threeDaysAgo = new Date(threeDaysAgo.setMinutes(threeDaysAgo.getMinutes() + minutesToRemove));
+                    threeDaysAgo = new Date(threeDaysAgo.setSeconds(threeDaysAgo.getSeconds() + secondsToRemove));
 
                     if ( threeDaysAgo > cookResponse.data.lastcooktime ){
                         ///////// CALCULATE THE EXTRA TACOS HERE 
@@ -1104,7 +1101,7 @@ module.exports.cookCommand = function(message){
                         })
                     }else{
                         // six hours have not passed, tell the user they need to wait 
-                        now = new Date(now.setMinutes(now.getMinutes() + minutesToRemove));
+                        now = new Date(now.setSeconds(now.getSeconds() + secondsToRemove));
                         var numberOfHours = getDateDifference(cookResponse.data.lastcooktime, now, 24);
                         message.channel.send(message.author + " You cannot cook tacos currently! Please wait `" + numberOfHours + "` ");
                     }
@@ -2017,7 +2014,7 @@ function getDateDifference(beforeDate, now, hoursDifference){
     var minutesToAdd = momentAfterDate.diff(nowPlusHours, 'minutes');
     var nowPlusMinutes = new Date(nowPlusHours.setMinutes(nowPlusHours.getMinutes() + minutesToAdd));
     var secondsToAdd = momentAfterDate.diff(nowPlusMinutes, 'seconds');
-    var nowPlusSeconds = new Date(nowPlusMinutes.setMinutes(nowPlusMinutes.getSeconds() + secondsToAdd));
+    var nowPlusSeconds = new Date(nowPlusMinutes.setSeconds(nowPlusMinutes.getSeconds() + secondsToAdd));
     
     var dateDifferenceString = "";
     if (daysToAdd > 0){
@@ -2387,14 +2384,13 @@ module.exports.scavangeCommand = function (message){
                 if (wearErr){
                     // console.log(wearErr);
                 }else{
-                    var minutesToRemove = wearStats.calculateMinutesReduced(wearRes, "scavenge");
-                    // console.log("MINUTES TO REMOVE " + minutesToRemove);
+                    var secondsToRemove = wearStats.calculateSecondsReduced(wearRes, "scavenge");
                     //check for more than 1 hours
                     var now = new Date();
                     var oneHourAgo = new Date();
                     ///////// CALCULATE THE MINUTES REDUCED HERE 
                     oneHourAgo = new Date(oneHourAgo.setHours(oneHourAgo.getHours() - SCAVENGE_COOLDOWN_HOURS));
-                    oneHourAgo = new Date(oneHourAgo.setMinutes(oneHourAgo.getMinutes() + minutesToRemove));
+                    oneHourAgo = new Date(oneHourAgo.setSeconds(oneHourAgo.getSeconds() + secondsToRemove));
 
                     if ( oneHourAgo > getUserResponse.data.lastscavangetime ){
                         profileDB.getItemData(function(err, getItemResponse){
@@ -2608,7 +2604,7 @@ module.exports.scavangeCommand = function (message){
                         })
                     }
                     else{
-                        now = new Date(now.setMinutes(now.getMinutes() + minutesToRemove));
+                        now = new Date(now.setSeconds(now.getSeconds() + secondsToRemove));
                         var numberOfHours = getDateDifference(getUserResponse.data.lastscavangetime, now, 1);
                         message.channel.send(message.author + " You have scavenged too recently! Please wait `" + numberOfHours +"` ");
                     }
@@ -3410,13 +3406,12 @@ module.exports.fetchCommand = function(message){
                     }else{
                         var now = new Date();
                         if (userPet){
-                            var minutesToRemove = wearStats.calculateMinutesReduced(wearRes, "fetch");
-                            // console.log("MINUTES TO REMOVE " + minutesToRemove);
+                            var secondsToRemove = wearStats.calculateSecondsReduced(wearRes, "fetch");
 
                             var cooldownDate = new Date();
                             cooldownDate = new Date(cooldownDate.setHours(cooldownDate.getHours() - PETS_AVAILABLE[userPet].cooldown));
                             ///////// CALCULATE THE MINUTES REDUCED HERE 
-                            cooldownDate = new Date(cooldownDate.setMinutes(cooldownDate.getMinutes() + minutesToRemove));
+                            cooldownDate = new Date(cooldownDate.setSeconds(cooldownDate.getSeconds() + secondsToRemove));
 
                             if (!fetchResponse.data.lastfetchtime || ( cooldownDate > fetchResponse.data.lastfetchtime )){
                                 // fetch whatever and then set lastfetchtime to now
@@ -3458,7 +3453,7 @@ module.exports.fetchCommand = function(message){
                             }
                             else{
                                 // console.log("cd " + PETS_AVAILABLE[userPet].cooldown)
-                                now = new Date(now.setMinutes(now.getMinutes() + minutesToRemove));
+                                now = new Date(now.setSeconds(now.getSeconds() + secondsToRemove));
                                 var numberOfHours = getDateDifference(fetchResponse.data.lastfetchtime, now, PETS_AVAILABLE[userPet].cooldown);
                                 message.channel.send(message.author + " **" + userPetName + "** needs to rest and cannot fetch currently! Please wait `" + numberOfHours + "` ");
                             }

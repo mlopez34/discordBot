@@ -713,7 +713,12 @@ module.exports.rpgReady = function(message, itemsAvailable, amuletItemsById){
                                                     
                                                     var challengeNum = activeRPGEvents[rpgEvent].challenge.challenge;
                                                     var specialEnemies = enemiesToEncounter.challenge[challengeNum].enemies;
-                                                    embedDescription = enemiesToEncounter.challenge[challengeNum].description;
+                                                    if (enemiesToEncounter.challenge[challengeNum].description){
+                                                        embedDescription = enemiesToEncounter.challenge[challengeNum].description;
+                                                    }
+                                                    if (enemiesToEncounter.challenge[challengeNum].timed){
+                                                        activeRPGEvents[rpgEvent].TIMER = enemiesToEncounter.challenge[challengeNum].timedPerTurn
+                                                    }
                                                     for (var i = 0; i < specialEnemies.length; i++){
                                                         enemyFound = JSON.parse(JSON.stringify( specialEnemies[i] ));
 
@@ -996,6 +1001,10 @@ module.exports.rpgReady = function(message, itemsAvailable, amuletItemsById){
                                                 activeRPGEvents[rpgEvent].limitOffensiveReady = true;
                                                 activeRPGEvents[rpgEvent].limitOffensiveTurnUsed = 0;
                                                 activeRPGEvents[rpgEvent].averageLevelInParty = averageLevelInParty;
+                                                // start date
+                                                var eventStartDate = new Date();
+                                                activeRPGEvents[rpgEvent].eventStartDate = eventStartDate
+                                                activeRPGEvents[rpgEvent].lastTurnTaken = eventStartDate
                                 
                                                 const embed = new Discord.RichEmbed()
                                                 .setAuthor("Taco RPG Event has started !!")
@@ -1326,6 +1335,23 @@ function processRpgTurn(message, event){
         // var endOfTurnString = effectsOnTurnEnd(event)
         event.turn = event.turn + 1;
         turnFinishedEmbedBuilder(message, event, turnString, passiveEffectsString, endOfTurnString);
+        // attempt to process the next turn if the event is in turn + 1
+        if (event.TIMER){
+            var turnToAttempt = event.turn;
+        
+            var countdownTimeout = setTimeout (function(){ 
+                if (event.turn == turnToAttempt){
+                    message.channel.send("15 seconds")
+                }
+            }, event.TIMER - 15000);
+
+            var turnTimeout = setTimeout (function(){ 
+                if (event.turn == turnToAttempt){
+                    processRpgTurn(message, event)
+                }
+            }, event.TIMER);
+        }
+        
     }
 }
 
@@ -1486,6 +1512,7 @@ function eventEndedEmbedBuilder(message, event, partySuccess){
                     rewardString = rewardString + " " + rewards + " \n";
                 }
                 embed.addField(memberInRpgEvent.username,  rewardString, true);
+                // TODO: check for achievments, timed, special kills, 
             }
             message.channel.send({embed})
             cleanupEventEnded(event);
@@ -1603,7 +1630,7 @@ function calculateRewards(event, memberInRpgEvent, getItemResponse, numberOfMemb
             additionalExperience = additionalExperience + 19
             additionalRpgPoints = additionalRpgPoints + 19
             // common + uncommon maybe rare maybe ancient
-            rarityRoll = Math.floor(Math.random() * 1000) + 9000;
+            rarityRoll = Math.floor(Math.random() * 1500) + 8300;
         }
         // TODO: add + luck to rarityroll
         // push the item to items
