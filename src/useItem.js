@@ -48,7 +48,7 @@ module.exports.useRock = function(message, mentionedUserId, rockToUse, tacosInUs
                     // user has no protecton, drop tacos
                     // update the mentioned user's tacos if they have tacos to drop
                     if (getProfileResponse.data.tacos > 0){
-                        profileDB.updateUserTacos(mentionedUserId, -1, function(updateerr, updateResponse) {
+                        profileDB.updateUserTacos(mentionedUserId, -10, function(updateerr, updateResponse) {
                             if (updateerr){
                                 // console.log(updateerr);
                                 cb(updateerr);

@@ -619,9 +619,9 @@ module.exports.sorryCommand = function(message){
                                     })
                                     // send message that the user has 1 more taco
                                     if (extraTacosFromItems > 0){
-                                        message.channel.send(message.author + " apologized to " + mentionedUser + ", they received a taco! :taco:" + " " + " received `" + extraTacosFromItems + "` extra tacos");
+                                        message.channel.send(message.author + " apologized to " + mentionedUser + ", they received `10` tacos! :taco:" + " " + " received `" + extraTacosFromItems + "` extra tacos");
                                     }else{
-                                        message.channel.send(message.author + " apologized to " + mentionedUser + ", they received a taco! :taco:");
+                                        message.channel.send(message.author + " apologized to " + mentionedUser + ", they received `10` tacos! :taco:");
                                     }
                                 }
                             })
@@ -1149,13 +1149,13 @@ module.exports.throwCommand = function(message){
                 var achievements = throwResponse.data.achievements;
                 // console.log("asdfasfsd " + throwResponse.data.tacos)
                 if (throwResponse.data.tacos - tacosInUse >= 1){
-                    profileDB.updateUserTacosThrow(discordUserId, -1, function(err, updateResponse) {
+                    profileDB.updateUserTacosThrow(discordUserId, -10, function(err, updateResponse) {
                         if (err){
                             // console.log(err);
                         }
                         else{
                             // send message that the user has 1 more taco
-                            message.channel.send(message.author + " threw a taco at " + userMentioned + " :dizzy_face: :taco: :wave: :smiling_imp:");
+                            message.channel.send(message.author + " threw `10` tacos at " + userMentioned + " :dizzy_face: :taco: :wave: :smiling_imp:");
                             // if they drop a taco someone else can pick it up
                             var poisonedTacoRoll = Math.floor(Math.random() * 100) + 1;
                             var poisonedTaco = false;
@@ -3237,7 +3237,7 @@ module.exports.pickupCommand = function (message){
         if (QueueOfTacosDropped[indexOfQueue].poisoned){
             // taco is poisoned, take away instead of giving
             // update user tacos
-            profileDB.updateUserTacos(discordUserId, -1, function(updateErr, updateRes){
+            profileDB.updateUserTacos(discordUserId, -10, function(updateErr, updateRes){
                 if (updateErr){
                     // TODO: create user profile
                     // console.log(updateErr)
@@ -3254,14 +3254,14 @@ module.exports.pickupCommand = function (message){
                             getProfileForAchievement(discordUserId, message) // FIX THIS SHIT
                         }
                     })
-                    message.channel.send(message.author + " picked up a taco from the ground :taco: but it was poisoned.. :nauseated_face: you ate a taco to cure your sickness.");
+                    message.channel.send(message.author + " picked up `10` tacos from the ground :taco: but one was poisoned.. :nauseated_face: you ate `10` tacos to cure your sickness.");
                 }
             })
         }
         else{
             // update user tacos
             
-            profileDB.updateUserTacos(discordUserId, 1, function(updateErr, updateRes){
+            profileDB.updateUserTacos(discordUserId, 10, function(updateErr, updateRes){
                 if (updateErr){
                     // TODO: create user profile
                     // console.log(updateErr)
@@ -3278,7 +3278,7 @@ module.exports.pickupCommand = function (message){
                             getProfileForAchievement(discordUserId, message) // FIX THSI SHIT
                         }
                     })
-                    message.channel.send(message.author + " picked up a taco from the ground :taco:");
+                    message.channel.send(message.author + " picked up `10` tacos from the ground :taco:");
                 }
             })
         }
@@ -3547,7 +3547,7 @@ module.exports.useCommand = function(message, args){
                             else{
                                 // console.log(throwRes);
                                 if (throwRes == "success"){
-                                    message.channel.send( message.author + " threw a rock at " + mentionedUserName + ", they became dizzy and dropped `1` taco :taco:");
+                                    message.channel.send( message.author + " threw a rock at " + mentionedUserName + ", they became dizzy and dropped `10` tacos :taco:");
                                     // if they drop a taco someone else can pick it up
                                     var poisonedTacoRoll = Math.floor(Math.random() * 100) + 1;
                                     var poisonedTaco = false;
