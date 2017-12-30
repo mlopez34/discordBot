@@ -1630,7 +1630,7 @@ function calculateRewards(event, memberInRpgEvent, getItemResponse, numberOfMemb
             additionalExperience = additionalExperience + 19
             additionalRpgPoints = additionalRpgPoints + 19
             // common + uncommon maybe rare maybe ancient
-            rarityRoll = Math.floor(Math.random() * 1500) + 8300;
+            rarityRoll = Math.floor(Math.random() * 1700) + 8300;
         }
         // TODO: add + luck to rarityroll
         // push the item to items
