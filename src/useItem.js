@@ -155,7 +155,7 @@ module.exports.useTerryCloth =  function(message, discordUserId, terryClothToUse
         }
         else if (rollTerryClothRare >= 60){
             // add tacos to user
-            profileDB.updateUserTacos(discordUserId, 5, function(tacosError, tacosRes){
+            profileDB.updateUserTacos(discordUserId, 50, function(tacosError, tacosRes){
                 if (tacosError){
                     // console.log(tacosError);
                     cb(tacosError);
@@ -169,7 +169,7 @@ module.exports.useTerryCloth =  function(message, discordUserId, terryClothToUse
                         }
                         else{
                             // console.log(updateBulkRes);
-                            cb(null, 5)
+                            cb(null, 50)
                         }
                     })
                 }
@@ -178,7 +178,7 @@ module.exports.useTerryCloth =  function(message, discordUserId, terryClothToUse
         }
         else{
             // add tacos to user
-            profileDB.updateUserTacos(discordUserId, 2, function(tacosError, tacosRes){
+            profileDB.updateUserTacos(discordUserId, 20, function(tacosError, tacosRes){
                 if (tacosError){
                     // console.log(tacosError);
                     cb(tacosError);
@@ -192,7 +192,7 @@ module.exports.useTerryCloth =  function(message, discordUserId, terryClothToUse
                         }
                         else{
                             // console.log(updateBulkRes);
-                            cb(null, 2)
+                            cb(null, 20)
                         }
                     })
                 }

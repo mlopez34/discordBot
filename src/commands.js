@@ -23,14 +23,13 @@ var miniplayer = require("./minigame/player.js");
 
 var moment = require("moment");
 
-var BASE_TACO_COST = 50;
-var BASE_TACO_PREPARE = 10;
-var BASE_TACO_COOK = 2;
-var PICKAXE_COST = 35;
-var IMPROVED_PICKAXE_COST = 300;
-var MASTER_PICKAXE_COST = 75000;
-var ETHEREAL_PICKAXE_COST = 1250000
-var PASTA_COST = 250
+var BASE_TACO_COST = 500;
+var BASE_TACO_PREPARE = 100;
+var PICKAXE_COST = 350;
+var IMPROVED_PICKAXE_COST = 10000;
+var MASTER_PICKAXE_COST = 750000;
+var ETHEREAL_PICKAXE_COST = 12500000
+var PASTA_COST = 2500
 var SCAVENGE_TACO_FIND_CHANCE_HIGHER = 94
 var SCAVENGE_TACO_FIND_CHANCE = 75;
 var Last_Five_Welcomes = [];
@@ -39,18 +38,18 @@ var PIECE_OF_WOOD_ITEM_ID = 4;
 var TERRY_CLOTH_ITEM_ID = 3;
 var SODA_CAN_ITEM_ID = 1;
 var SOIL_ITEM_ID = 2;
-var PET_COST = 75;
+var PET_COST = 750;
 var QueueOfTacosDropped = [];
 var THANK_COOLDOWN_HOURS = 2;
 var SORRY_COOLDOWN_HOURS = 6;
 var COOK_COOLDOWN_HOURS = 24;
 var PREPARE_COOLDOWN_HOURS = 48;
 var SCAVENGE_COOLDOWN_HOURS = 1;
-var RAFFLE_ENTRY_COST = 5;
+var RAFFLE_ENTRY_COST = 50;
 var RAFFLE_USER_SIZE = 7
 // make recipe be available at lvl 2 reputation
-var ARTIFACT_RECIPE_COST = 3500;
-var FLASK_COST = 50;
+var ARTIFACT_RECIPE_COST = 35000;
+var FLASK_COST = 500;
 var ARTIFACT_RECIPE_ID = 69;
 var TACO_PARTY_TIME_TO_LIVE = 300000
 
@@ -110,7 +109,7 @@ var PETS_AVAILABLE = {
     dog: {
         speak: "WOOF",
         emoji: ":dog:",
-        fetch: 2,
+        fetch: 20,
         cooldown: 6,
         reputation: "liked",
         repLevel: 2
@@ -118,7 +117,7 @@ var PETS_AVAILABLE = {
     cat: {
         speak: "MEOW",
         emoji: ":cat:",
-        fetch: 1,
+        fetch: 10,
         cooldown: 3,
         reputation: "liked",
         repLevel: 2
@@ -126,7 +125,7 @@ var PETS_AVAILABLE = {
     monkey: {
         speak: "HUEAHuaHEUEHAHUEAUHAEEA",
         emoji: ":monkey:",
-        fetch: 3,
+        fetch: 30,
         cooldown: 9,
         reputation: "liked",
         repLevel: 2
@@ -134,7 +133,7 @@ var PETS_AVAILABLE = {
     pig: {
         speak: "OINK OINK OINK OINK",
         emoji: ":pig:",
-        fetch: 5,
+        fetch: 50,
         cooldown: 27,
         reputation: "liked",
         repLevel: 2
@@ -142,7 +141,7 @@ var PETS_AVAILABLE = {
     rabbit: {
         speak: ".....",
         emoji: ":rabbit:",
-        fetch: 1,
+        fetch: 10,
         cooldown: 3,
         reputation: "liked",
         repLevel: 2
@@ -150,7 +149,7 @@ var PETS_AVAILABLE = {
     wolf: {
         speak: "HaWoooooo",
         emoji: ":wolf:",
-        fetch: 2,
+        fetch: 20,
         cooldown: 6,
         reputation: "respected",
         repLevel: 3
@@ -158,7 +157,7 @@ var PETS_AVAILABLE = {
     butterfly: {
         speak: ".....",
         emoji: ":butterfly:",
-        fetch: 1,
+        fetch: 10,
         cooldown: 3,
         reputation: "respected",
         repLevel: 3
@@ -166,7 +165,7 @@ var PETS_AVAILABLE = {
     penguin: {
         speak: ".....",
         emoji: ":penguin:",
-        fetch: 3,
+        fetch: 30,
         cooldown: 9,
         reputation: "respected",
         repLevel: 3
@@ -174,7 +173,7 @@ var PETS_AVAILABLE = {
     scorpion: {
         speak: ".....",
         emoji: ":scorpion:",
-        fetch: 1,
+        fetch: 10,
         cooldown: 3,
         reputation: "respected",
         repLevel: 3
@@ -182,7 +181,7 @@ var PETS_AVAILABLE = {
     elephant: {
         speak: ".....",
         emoji: ":elephant:",
-        fetch: 5,
+        fetch: 50,
         cooldown: 27,
         reputation: "respected",
         repLevel: 3
@@ -190,7 +189,7 @@ var PETS_AVAILABLE = {
     horse: {
         speak: ".....",
         emoji: ":horse:",
-        fetch: 2,
+        fetch: 20,
         cooldown: 6,
         reputation: "respected",
         repLevel: 3
@@ -198,7 +197,7 @@ var PETS_AVAILABLE = {
     tiger: {
         speak: ".....",
         emoji: ":tiger:",
-        fetch: 2,
+        fetch: 20,
         cooldown: 6,
         reputation: "admired",
         repLevel: 4
@@ -206,7 +205,7 @@ var PETS_AVAILABLE = {
     gorilla: {
         speak: ".....",
         emoji: ":gorilla:",
-        fetch: 4,
+        fetch: 40,
         cooldown: 12,
         reputation: "admired",
         repLevel: 4
@@ -214,7 +213,7 @@ var PETS_AVAILABLE = {
     snake: {
         speak: ".....",
         emoji: ":snake:",
-        fetch: 1,
+        fetch: 10,
         cooldown: 3,
         reputation: "admired",
         repLevel: 4
@@ -222,7 +221,7 @@ var PETS_AVAILABLE = {
     dolphin: {
         speak: ".....",
         emoji: ":dolphin:",
-        fetch: 3,
+        fetch: 30,
         cooldown: 9,
         reputation: "admired",
         repLevel: 4
@@ -230,7 +229,7 @@ var PETS_AVAILABLE = {
     rhino: {
         speak: ".....",
         emoji: ":rhino:",
-        fetch: 5,
+        fetch: 50,
         cooldown: 27,
         reputation: "admired",
         repLevel: 4
@@ -238,7 +237,7 @@ var PETS_AVAILABLE = {
     crocodile: {
         speak: ".....",
         emoji: ":crocodile:",
-        fetch: 4,
+        fetch: 40,
         cooldown: 12,
         reputation: "admired",
         repLevel: 4
@@ -246,7 +245,7 @@ var PETS_AVAILABLE = {
     chipmunk: {
         speak: ".....",
         emoji: ":chipmunk:",
-        fetch: 2,
+        fetch: 20,
         cooldown: 6,
         reputation: "admired",
         repLevel: 4
@@ -254,7 +253,7 @@ var PETS_AVAILABLE = {
     unicorn: {
         speak: ".....",
         emoji: ":unicorn:",
-        fetch: 1,
+        fetch: 10,
         cooldown: 3,
         reputation: "glorified",
         repLevel: 5
@@ -262,7 +261,7 @@ var PETS_AVAILABLE = {
     dragon: {
         speak: ".....",
         emoji: ":dragon:",
-        fetch: 5,
+        fetch: 50,
         cooldown: 27,
         reputation: "glorified",
         repLevel: 5
@@ -483,7 +482,7 @@ module.exports.thankCommand = function(message){
                             ///////// CALCULATE THE EXTRA TACOS HERE 
                             var extraTacosFromItems = wearStats.calculateExtraTacos(wearRes, "thank"); // 0 or extra
                             // add tacos to user's profile if they got extra tacos
-                            profileDB.updateUserTacos(mentionedId, 1, function(updateerr, updateResponse) {
+                            profileDB.updateUserTacos(mentionedId, 10, function(updateerr, updateResponse) {
                                 if (updateerr){
                                     // console.log(updateerr);
                                     message.channel.send("The user has not yet agreed to the terms");
@@ -511,10 +510,10 @@ module.exports.thankCommand = function(message){
                                     })
                                     // send message that the user has 1 more taco
                                     if (extraTacosFromItems > 0){
-                                        message.channel.send(message.author + " thanked " + mentionedUser.username + ", they received 1 taco! :taco:" + " you received `" + extraTacosFromItems + "` extra tacos");
+                                        message.channel.send(message.author + " thanked " + mentionedUser.username + ", they received 10 tacos! :taco:" + " you received `" + extraTacosFromItems + "` extra tacos");
                                     }
                                     else{
-                                        message.channel.send(message.author + " thanked " + mentionedUser.username + ", they received 1 taco! :taco: ");
+                                        message.channel.send(message.author + " thanked " + mentionedUser.username + ", they received 10 tacos! :taco: ");
                                     }
                                 }
                             })
@@ -573,12 +572,12 @@ module.exports.sorryCommand = function(message){
                             ///////// CALCULATE THE EXTRA TACOS HERE 
                             var extraTacosFromItems = wearStats.calculateExtraTacos(wearRes, "sorry"); // 0 or extra
                             
-                            profileDB.updateUserTacos(mentionedId, 1, function(updateerr, updateResponse) {
+                            profileDB.updateUserTacos(mentionedId, 10, function(updateerr, updateResponse) {
                                 if (updateerr){
                                     // console.log(updateerr);
                                     // create mentioned user
                                     var mentionedData = initialUserProfile(mentionedId);
-                                    mentionedData.tacos = mentionedData.tacos + 1
+                                    mentionedData.tacos = mentionedData.tacos + 10
                                     profileDB.createUserProfile(mentionedData, function(createerr, createUserResponse){
                                         if (createerr){
                                             // console.log(createerr); // cant create user RIP
@@ -663,7 +662,7 @@ module.exports.buyStandCommand = function (message){
                 userTacoStands = buyStandResponse.data.tacostands;
             }
             //// console.log(buyStandResponse.data.tacos);
-            var standCost = BASE_TACO_COST + (userTacoStands * 25);
+            var standCost = BASE_TACO_COST + (userTacoStands * 250);
             if (buyStandResponse.data.tacos >= standCost){
                 // purchaseStand
                 var tacosSpent = standCost * -1
@@ -687,7 +686,7 @@ module.exports.buyStandCommand = function (message){
             }
             else{
                 // can't afford stand
-                var standCost = BASE_TACO_COST + (userTacoStands * 25);
+                var standCost = BASE_TACO_COST + (userTacoStands * 250);
                 message.channel.send(message.author + " You can't afford a stand , you need `" + standCost + " tacos`!");
             }
         }
@@ -741,7 +740,7 @@ module.exports.prepareCommand = function (message){
                             for (i = 0; i < soiledCrops; i++) {
                                 var soilRoll = Math.floor(Math.random() * 100) + 1;
                                 if ( soilRoll > 50 ){
-                                    soiledToTaco = soiledToTaco + 1;
+                                    soiledToTaco = soiledToTaco + 10;
                                 }
                             }
         
@@ -1020,26 +1019,26 @@ module.exports.giveCommand = function(message, giveTacoAmount){
 
 module.exports.cookCommand = function(message){
     var discordUserId = message.author.id;
-    var cookRoll = 2;
+    var cookRoll = 20;
     // roll for cook
     var rolls = Math.floor(Math.random() * 100) + 1;
     if (rolls > 97){
-        cookRoll = 7
+        cookRoll = 70
     }
     else if(rolls > 85){
-        cookRoll = 6
+        cookRoll = 60
     }
     else if(rolls > 70){
-        cookRoll = 5
+        cookRoll = 50
     }
     else if(rolls > 50){
-        cookRoll = 4
+        cookRoll = 40
     }
     else if(rolls > 20 ){
-        cookRoll = 3
+        cookRoll = 30
     }
     else{
-        cookRoll = 2
+        cookRoll = 20
     }
 
     profileDB.getUserProfileData( discordUserId, function(err, cookResponse) {
@@ -1052,7 +1051,7 @@ module.exports.cookCommand = function(message){
             var extraTacosFromCasserole = 0;
             var HAS_CASSEROLE = cookResponse.data.casserole;
             if (HAS_CASSEROLE){
-                extraTacosFromCasserole = cookResponse.data.level;
+                extraTacosFromCasserole = cookResponse.data.level * 5;
             }
             wearStats.getUserWearingStats(message, discordUserId, {userLevel: userLevel}, function(wearErr, wearRes){
                 if (wearErr){
@@ -1617,7 +1616,7 @@ function profileBuilder(message, profileData){
 
 function shopBuilder(message, shopData, long){
     if (!long){
-        var treeCost = BASE_TACO_COST + (shopData.userTacoCost * 25) + " :taco:"        
+        var treeCost = BASE_TACO_COST + (shopData.userTacoCost * 250) + " :taco:"        
         // show short shop
         const embed = new Discord.RichEmbed()
         .setColor(0x87CEFA)
@@ -1657,7 +1656,7 @@ function shopBuilder(message, shopData, long){
     else {
         var welcomeMessage = "Hey " + message.author.username + "! Welcome to Bender's shop."
         var tacoStandDescription = "Taco stands can be used to produce tacos based on the number of stands you have. \nYou can produce " + BASE_TACO_PREPARE + " per taco stand. \nThe cost of each additional stand will be higher - city tax bro. "
-        var treeCost = BASE_TACO_COST + (shopData.userTacoCost * 25) + " :taco:"
+        var treeCost = BASE_TACO_COST + (shopData.userTacoCost * 250) + " :taco:"
         var pickaxeDescription = "The pickaxe can be used to scavenge. You never know what you will find in these lands ";
         var pastaDescription = "Add a quote to your profile, to purchase do: " +config.commandString + "buypasta [your pasta message]."
         
@@ -2072,8 +2071,8 @@ module.exports.helpCommand = function(message){
     var commandsList = "List of commands \n ____________ \n "
     var profile = config.commandString + "profile - display users profile \n "
     var thank = config.commandString + "thank [user] - thank a user and they get 1 taco! \n "
-    var sorry = config.commandString + "sorry [user] - say sorry to a user and they get 1 taco! \n "
-    var welcome = config.commandString + "welcome [user] - welcome a user and they get 2 tacos! \n "
+    var sorry = config.commandString + "sorry [user] - say sorry to a user and they get 10 tacos! \n "
+    var welcome = config.commandString + "welcome [user] - welcome a user and they get 20 tacoss! \n "
     var cook = config.commandString + "cook - cook some tacos! \n "
     var give = config.commandString + "give [user] number - give the mentioned user some number of tacos! \n "
     var shop = config.commandString + "shop - enter Benders shop! \n "
@@ -2084,7 +2083,7 @@ module.exports.helpCommand = function(message){
     var itemHelp = config.commandString + "itemhelp - show item help \n "
     var useItem = config.commandString + "use [item name] [user](if applicable) - uses an item \n "
     var slots = config.commandString + "slots [number] - play slots and bet [number] of tacos "
-    var raffle = config.commandString + "raffle - enter the raffle, costs 5 tacos, raffle ends when 7 players are in "
+    var raffle = config.commandString + "raffle - enter the raffle, costs 50 tacos, raffle ends when 7 players are in "
     //var commandsList = "```xl Uppercase lowercase 123 ```"
     var commandsList = "```css\n" + commandsList + profile + thank + sorry + welcome + cook + give + shop + prepare + throwTaco + scavenge + standings + itemHelp + useItem + slots + raffle + "```";
     message.channel.send(commandsList);
@@ -2535,10 +2534,10 @@ module.exports.scavangeCommand = function (message){
                                     }
                                 }
                                 if (tacoRoll > SCAVENGE_TACO_FIND_CHANCE_HIGHER){
-                                    tacosFound = 2 * TACOS_FOUND_MULTIPLIER;
+                                    tacosFound = 20 * TACOS_FOUND_MULTIPLIER;
                                 }
                                 else if(tacoRoll > SCAVENGE_TACO_FIND_CHANCE){
-                                    tacosFound = 1 * TACOS_FOUND_MULTIPLIER;
+                                    tacosFound = 10 * TACOS_FOUND_MULTIPLIER;
                                 }
                                 // send the items to be written all at once
                                 addToUserInventory(discordUserId, itemsObtainedArray);
@@ -3735,11 +3734,11 @@ module.exports.useCommand = function(message, args){
                                     if (useRes.length && useRes.length > 0 && useRes[0].itemname){
                                         message.channel.send(message.author + " has tailored a **" + useRes[0].itemname + "** -" + "`" + useRes[0].itemdescription + ", " + useRes[0].itemslot + ", " + useRes[0].itemstatistics + "`");
                                     }
-                                    else if (useRes == 5){
-                                        message.channel.send(message.author + " tailored something that Bender really likes, Bender gave you `5` tacos :taco:");
+                                    else if (useRes == 50){
+                                        message.channel.send(message.author + " tailored something that Bender really likes, Bender gave you `50` tacos :taco:");
                                     }
-                                    else if (useRes == 2){
-                                        message.channel.send(message.author + " tailored something that Bender likes, Bender gave you `2` tacos :taco:");
+                                    else if (useRes == 20){
+                                        message.channel.send(message.author + " tailored something that Bender likes, Bender gave you `20` tacos :taco:");
                                     }
                                     var timeout = setTimeout (function(){ 
                                         experience.gainExperience(message, message.author, EXPERIENCE_GAINS.useCommonItemFive);
@@ -5697,7 +5696,7 @@ function createParty(message, discordUserId, uncommonsToUse, mainChannel){
     const embed = new Discord.RichEmbed()
     .setThumbnail("https://i.imgur.com/dI1PWNo.png")
     .setColor(0xF2E93E)
-    .addField("Taco party created by " + message.author.username + "!! " + 'Eat some tacos, drink some orchata water, or dance with Aileen your taco hostess', "Pick one! 🌮 = taco x2, 🍹 = terry cloth x1, 💃🏼 = rock x1 \nYou will receive it at the end of the party (5 minutes)" )
+    .addField("Taco party created by " + message.author.username + "!! " + 'Eat some tacos, drink some orchata water, or dance with Aileen your taco hostess', "Pick one! 🌮 = taco x20, 🍹 = terry cloth x1, 💃🏼 = rock x1 \nYou will receive it at the end of the party (5 minutes)" )
 
     useItem.useUncommons(message, discordUserId, uncommonsToUse, function(useError, useRes){
         if (useError){
@@ -5788,7 +5787,7 @@ function createParty(message, discordUserId, uncommonsToUse, mainChannel){
                                 else{
                                     // for gaining xp
                                     var userData = getDataRes;
-                                    profileDB.updateUserTacos(ownerOfTable.id, reactionCount * 2, function(err, res){
+                                    profileDB.updateUserTacos(ownerOfTable.id, reactionCount * 20, function(err, res){
                                         if (err){
                                             // console.log(err);
                                             message.channel.send(err);
@@ -5826,7 +5825,7 @@ function tacoPartyReactRewards(message, user, emoji, reward){
     var giveRewardToUsername = user.username
     // console.log(user.id);
     if (reward === "taco"){
-        profileDB.updateUserTacos(giveRewardTo, 2, function(err, res){
+        profileDB.updateUserTacos(giveRewardTo, 20, function(err, res){
             if (err){
                 // console.log(err);
                 message.channel.send(err);
