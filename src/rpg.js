@@ -1570,8 +1570,8 @@ function calculateRewards(event, memberInRpgEvent, getItemResponse, numberOfMemb
     var RARE_MAX_ROLL = 9975;
     var RARE_MIN_ROLL = 9800;
     var UNCOMMON_MAX_ROLL = 9800;
-    var UNCOMMON_MIN_ROLL = 8750;
-    var COMMON_MAX_ROLL = 8750;
+    var UNCOMMON_MIN_ROLL = 8000;
+    var COMMON_MAX_ROLL = 8000;
     var COMMON_ITEMS_TO_OBTAIN = 1;
 
     var allItems = getItemResponse.data
@@ -1630,7 +1630,7 @@ function calculateRewards(event, memberInRpgEvent, getItemResponse, numberOfMemb
             additionalExperience = additionalExperience + 19
             additionalRpgPoints = additionalRpgPoints + 19
             // common + uncommon maybe rare maybe ancient
-            rarityRoll = Math.floor(Math.random() * 1700) + 8300;
+            rarityRoll = Math.floor(Math.random() * 2000) + 8000;
         }
         // TODO: add + luck to rarityroll
         // push the item to items

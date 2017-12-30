@@ -16,7 +16,7 @@ var achievementsData = {
     "Get a room": {
         emoji : ":kiss:",
         score: 10,
-        description: "Give 150 tacos to one person at once"
+        description: "Give 1500 tacos to one person at once"
     },
     "Apologetic geek": {
         emoji : ":shrug::skin-tone-2:",
@@ -31,7 +31,7 @@ var achievementsData = {
     "Hoarder": {
         emoji : ":moneybag:",
         score: 15,
-        description: "Obtain 100,000 tacos"
+        description: "Obtain 1,000,000 tacos"
     },
     "Host": {
         emoji : ":guardsman:",
@@ -41,7 +41,7 @@ var achievementsData = {
     "Hand work": {
         emoji : ":cooking:",
         score: 10,
-        description: "Cook 7 tacos at one time"
+        description: "Cook 70 tacos at one time"
     },
     "Stripper": {
         emoji : ":dancer::skin-tone-2:",
@@ -61,7 +61,7 @@ var achievementsData = {
     "Harvester": {
         emoji: ":tractor:",
         score: 10,
-        description: "Get 30 extra tacos from soiled crops after preparing"
+        description: "Get 300 extra tacos from soiled crops after preparing"
     },
     "Miss Popularity": {
         emoji: ":champagne: ",
@@ -86,7 +86,7 @@ var achievementsData = {
     "Gambler" : {
         emoji: ":game_die:",
         score: 15,
-        description : "Slot 5000 tacos and win"
+        description : "Slot 50,000 tacos and win"
     },
     "Rolechecker" : {
         emoji: ":scroll:",
@@ -226,7 +226,7 @@ module.exports.checkForAchievements = function(discordUserId, data, message, cal
                 }
                 // data achievements
                 if(data.givecount && 
-                data.givecount >= 150 && 
+                data.givecount >= 1500 && 
                 (data.achievements === null || data.achievements.indexOf("Get a room") == -1)){
 
                     profileDB.updateAchievements(discordUserId, "{Get a room}", function(err, r){
@@ -253,7 +253,7 @@ module.exports.checkForAchievements = function(discordUserId, data, message, cal
                 }
 
                 if(data.tacos && 
-                data.tacos >= 100000 && 
+                data.tacos >= 1000000 && 
                 (data.achievements === null || data.achievements.indexOf("Hoarder") == -1)){
 
                     profileDB.updateAchievements(discordUserId, "{Hoarder}", function(err, r){
@@ -267,7 +267,7 @@ module.exports.checkForAchievements = function(discordUserId, data, message, cal
                 }
 
                 if(data.cookcount && 
-                data.cookcount >= 7 && 
+                data.cookcount >= 70 && 
                 (data.achievements === null || data.achievements.indexOf("Hand work") == -1)){
 
                     profileDB.updateAchievements(discordUserId, "{Hand work}", function(err, r){
@@ -308,7 +308,7 @@ module.exports.checkForAchievements = function(discordUserId, data, message, cal
                     }
 
                 if(data.maxextratacos && 
-                data.maxextratacos >= 30 && 
+                data.maxextratacos >= 300 && 
                 (data.achievements === null || data.achievements.indexOf("Harvester") == -1)){
 
                     profileDB.updateAchievements(discordUserId, "{Harvester}", function(err, r){
@@ -349,7 +349,7 @@ module.exports.checkForAchievements = function(discordUserId, data, message, cal
                 }
 
                 if(data.slotsTacosBet && 
-                data.slotsTacosBet >= 5000 && 
+                data.slotsTacosBet >= 50000 && 
                 (data.achievements === null || data.achievements.indexOf("Gambler") == -1)){
                     profileDB.updateAchievements(discordUserId, "{Gambler}", function(err, r){
                         if (err){

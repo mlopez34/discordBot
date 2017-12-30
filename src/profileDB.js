@@ -386,14 +386,14 @@ module.exports.purchasePickAxe = function(userId, tacosSpent, cb){
     // console.log(query)
     var lastThank = new Date();
     var selectedPickaxe = "basic"
-    if (tacosSpent <= -100 && tacosSpent >= -500){
+    if (tacosSpent <= -15000 && tacosSpent >= -5000){
         // improved Pickaxe should always be between 100 and 500
         selectedPickaxe = "improved";
     }
-    else if (tacosSpent <= -500 && tacosSpent >= -500000){
+    else if (tacosSpent <= -50000 && tacosSpent >= -5000000){
         selectedPickaxe = "master";
     }
-    else if (tacosSpent <= -500000 ){
+    else if (tacosSpent <= -50000000 ){
         selectedPickaxe = "ethereal";
     }
     //// console.log("new last thank: " + lastThank);
@@ -873,7 +873,7 @@ module.exports.updateUserSoiledCrops = function(discordId, soiledCrops, currentS
 module.exports.buyFlask = function(discordId, currentFlask, cb){
     var query = ""
     var flask = 1;
-    var flaskCost = 50;
+    var flaskCost = 500;
     if (!currentFlask){
         query = 'update ' + config.profileTable + ' set flasks=$1, tacos=tacos-$3 where discordid=$2'
     }
