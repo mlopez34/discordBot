@@ -1,12 +1,12 @@
 'use strict'
 var profileDB = require("./profileDB.js")
 
-var THANK_BASE_MINUTES = 120;
-var SORRY_BASE_MINUTES = 360;
-var SCAVENGE_BASE_MINUTES = 60;
-var FETCH_BASE_MINUTES = 60;
-var COOK_BASE_MINUTES = 1440;
-var PREPARE_BASE_MINUTES = 2880;
+var THANK_BASE_SECONDS = 7200;
+var SORRY_BASE_SECONDS = 21600;
+var SCAVENGE_BASE_SECONDS = 3600;
+var FETCH_BASE_SECONDS = 3600;
+var COOK_BASE_SECONDS = 86400;
+var PREPARE_BASE_SECONDS = 172800;
 
 module.exports.statsObjectBuilder = function(message, slot1Data, slot2Data, slot3Data, userData, slot1active, slot2active, slot3active, userAmuletData){
     // calculate the stats that the user has accumulated with all the items
@@ -18,25 +18,21 @@ module.exports.statsObjectBuilder = function(message, slot1Data, slot2Data, slot
     var fetchCD = userData.fetchCD;
 
     var thankCommandCDR = [];
-    var thankCommandExtraTacosChance = [];
     var thankCommandExtraTacos = [];
     var thankCommandExperience = [];
     var thankGuaranteedTacos = []
 
     var sorryCommandCDR = [];
-    var sorryCommandExtraTacosChance = [];
     var sorryCommandExtraTacos = [];
     var sorryCommandExperience = [];
     var sorryGuaranteedTacos = []
 
     var cookCommandCDR = [];
-    var cookCommandExtraTacosChance = []
     var cookCommandExtraTacos = [];
     var cookCommandExperience = [];
     var cookGuaranteedTacos = []
 
     var prepareCommandCDR = [];
-    var prepareCommandExtraTacosChance = []
     var prepareCommandExtraTacos = []
     var prepareCommandExperience = [];
     var prepareGuaranteedTacos = [];
@@ -47,7 +43,6 @@ module.exports.statsObjectBuilder = function(message, slot1Data, slot2Data, slot
     }
 
     var fetchCommandCDR = [];
-    var fetchCommandExtraTacosChance = []
     var fetchCommandExtraTacos = []
     var fetchCommandExperience = [];
     var fetchGuaranteedTacos = [];
@@ -56,7 +51,6 @@ module.exports.statsObjectBuilder = function(message, slot1Data, slot2Data, slot
     var fetchCommandTacosTimesCDChance = []
 
     var scavengeCommandCDR = [];
-    var scavengeCommandExtraTacosChance = []
     var scavengeCommandExtraTacos = []
     var scavengeCommandExperience = [];
     var scavengeGuaranteedTacos = []
@@ -67,12 +61,12 @@ module.exports.statsObjectBuilder = function(message, slot1Data, slot2Data, slot
             var cdrCalculate = slot1Data.itembasecdr + (slot1Data.itemcdrperlevel * userLevel)
             var extraTacosCalculate = slot1Data.itembaseextratacos + (slot1Data.itemextratacosperlevel * userLevel)
             var extraTacoChanceCalculate = slot1Data.itembasetacochance + (slot1Data.itemtacochanceperlevel * userLevel);
+            var extraTacosPairToCalculate = { extraTacos: extraTacosCalculate, tacoChance: getPercentage([ extraTacoChanceCalculate ]) }
             var experienceCalculate = slot1Data.experiencegain + ((Math.floor( slot1Data.experienceonlevel / slot1Data.experiencegainperlevel * userLevel))  || 0);
             var guaranteedTacoChanceCalculate = slot1Data.guaranteedtacos;
 
             thankCommandCDR.push(cdrCalculate);
-            thankCommandExtraTacos.push(extraTacosCalculate);
-            thankCommandExtraTacosChance.push(extraTacoChanceCalculate);
+            thankCommandExtraTacos.push(extraTacosPairToCalculate);
             thankCommandExperience.push(experienceCalculate);
             thankGuaranteedTacos.push(guaranteedTacoChanceCalculate);
         }
@@ -80,12 +74,12 @@ module.exports.statsObjectBuilder = function(message, slot1Data, slot2Data, slot
             var cdrCalculate = slot1Data.itembasecdr + (slot1Data.itemcdrperlevel * userLevel)
             var extraTacosCalculate = slot1Data.itembaseextratacos + (slot1Data.itemextratacosperlevel * userLevel)
             var extraTacoChanceCalculate = slot1Data.itembasetacochance + (slot1Data.itemtacochanceperlevel * userLevel);
+            var extraTacosPairToCalculate = { extraTacos: extraTacosCalculate, tacoChance: getPercentage([ extraTacoChanceCalculate ]) }
             var experienceCalculate = slot1Data.experiencegain + ((Math.floor(slot1Data.experienceonlevel / slot1Data.experiencegainperlevel * userLevel)) || 0);
             var guaranteedTacoChanceCalculate = slot1Data.guaranteedtacos;
 
             sorryCommandCDR.push(cdrCalculate);
-            sorryCommandExtraTacos.push(extraTacosCalculate);
-            sorryCommandExtraTacosChance.push(extraTacoChanceCalculate);
+            sorryCommandExtraTacos.push(extraTacosPairToCalculate);
             sorryCommandExperience.push(experienceCalculate);
             sorryGuaranteedTacos.push(guaranteedTacoChanceCalculate);
         }
@@ -93,12 +87,12 @@ module.exports.statsObjectBuilder = function(message, slot1Data, slot2Data, slot
             var cdrCalculate = slot1Data.itembasecdr + (slot1Data.itemcdrperlevel * userLevel)
             var extraTacosCalculate = slot1Data.itembaseextratacos + (slot1Data.itemextratacosperlevel * userLevel)
             var extraTacoChanceCalculate = slot1Data.itembasetacochance + (slot1Data.itemtacochanceperlevel * userLevel);
+            var extraTacosPairToCalculate = { extraTacos: extraTacosCalculate, tacoChance: getPercentage([ extraTacoChanceCalculate ]) }
             var experienceCalculate = slot1Data.experiencegain + ((Math.floor(slot1Data.experienceonlevel / slot1Data.experiencegainperlevel * userLevel)) || 0);
             var guaranteedTacoChanceCalculate = slot1Data.guaranteedtacos;
             
             cookCommandCDR.push(cdrCalculate);
-            cookCommandExtraTacos.push(extraTacosCalculate);
-            cookCommandExtraTacosChance.push(extraTacoChanceCalculate);
+            cookCommandExtraTacos.push(extraTacosPairToCalculate);
             cookCommandExperience.push(experienceCalculate);
             cookGuaranteedTacos.push(guaranteedTacoChanceCalculate);
         }
@@ -106,12 +100,12 @@ module.exports.statsObjectBuilder = function(message, slot1Data, slot2Data, slot
             var cdrCalculate = slot1Data.itembasecdr + (slot1Data.itemcdrperlevel * userLevel)
             var extraTacosCalculate = slot1Data.itembaseextratacos + (slot1Data.itemextratacosperlevel * userLevel)
             var extraTacoChanceCalculate = slot1Data.itembasetacochance + (slot1Data.itemtacochanceperlevel * userLevel);
+            var extraTacosPairToCalculate = { extraTacos: extraTacosCalculate, tacoChance: getPercentage([ extraTacoChanceCalculate ]) }
             var experienceCalculate = slot1Data.experiencegain + ((Math.floor(slot1Data.experienceonlevel / slot1Data.experiencegainperlevel * userLevel)) || 0);
             var guaranteedTacoChanceCalculate = slot1Data.guaranteedtacos;
 
             prepareCommandCDR.push(cdrCalculate);
-            prepareCommandExtraTacos.push(extraTacosCalculate);
-            prepareCommandExtraTacosChance.push(extraTacoChanceCalculate);
+            prepareCommandExtraTacos.push(extraTacosPairToCalculate);
             prepareCommandExperience.push(experienceCalculate);
             prepareGuaranteedTacos.push(guaranteedTacoChanceCalculate);
         }
@@ -119,6 +113,7 @@ module.exports.statsObjectBuilder = function(message, slot1Data, slot2Data, slot
             var cdrCalculate = slot1Data.itembasecdr + (slot1Data.itemcdrperlevel * userLevel)
             var extraTacosCalculate = slot1Data.itembaseextratacos + (slot1Data.itemextratacosperlevel * userLevel)
             var extraTacoChanceCalculate = slot1Data.itembasetacochance + (slot1Data.itemtacochanceperlevel * userLevel);
+            var extraTacosPairToCalculate = { extraTacos: extraTacosCalculate, tacoChance: getPercentage([ extraTacoChanceCalculate ] ) }
             var experienceCalculate = slot1Data.experiencegain + ((Math.floor(slot1Data.experienceonlevel / slot1Data.experiencegainperlevel * userLevel)) || 0);
             var extraTacosTimesCD = (slot1Data.tacostimescdhours * fetchCount)
             var extraTacosTimesCDChance = 0
@@ -128,8 +123,7 @@ module.exports.statsObjectBuilder = function(message, slot1Data, slot2Data, slot
             var guaranteedTacoChanceCalculate = slot1Data.guaranteedtacos;
 
             fetchCommandCDR.push(cdrCalculate);
-            fetchCommandExtraTacos.push(extraTacosCalculate);
-            fetchCommandExtraTacosChance.push(extraTacoChanceCalculate);
+            fetchCommandExtraTacos.push(extraTacosPairToCalculate);
             fetchCommandExperience.push(experienceCalculate);
             fetchGuaranteedTacos.push(guaranteedTacoChanceCalculate);
             // used for special stat for fetch
@@ -140,12 +134,12 @@ module.exports.statsObjectBuilder = function(message, slot1Data, slot2Data, slot
             var cdrCalculate = slot1Data.itembasecdr + (slot1Data.itemcdrperlevel * userLevel)
             var extraTacosCalculate = slot1Data.itembaseextratacos + (slot1Data.itemextratacosperlevel * userLevel)
             var extraTacoChanceCalculate = slot1Data.itembasetacochance + (slot1Data.itemtacochanceperlevel * userLevel);
+            var extraTacosPairToCalculate = { extraTacos: extraTacosCalculate, tacoChance: getPercentage([ extraTacoChanceCalculate ]) }
             var experienceCalculate = slot1Data.experiencegain + ((Math.floor(slot1Data.experienceonlevel / slot1Data.experiencegainperlevel * userLevel)) || 0);
             var guaranteedTacoChanceCalculate = slot1Data.guaranteedtacos;
 
             scavengeCommandCDR.push(cdrCalculate);
-            scavengeCommandExtraTacos.push(extraTacosCalculate);
-            scavengeCommandExtraTacosChance.push(extraTacoChanceCalculate);
+            scavengeCommandExtraTacos.push(extraTacosPairToCalculate);
             scavengeCommandExperience.push(experienceCalculate);
             scavengeGuaranteedTacos.push(guaranteedTacoChanceCalculate);
         }
@@ -156,12 +150,12 @@ module.exports.statsObjectBuilder = function(message, slot1Data, slot2Data, slot
             var cdrCalculate = slot2Data.itembasecdr + (slot2Data.itemcdrperlevel * userLevel)
             var extraTacosCalculate = slot2Data.itembaseextratacos + (slot2Data.itemextratacosperlevel * userLevel)
             var extraTacoChanceCalculate = slot2Data.itembasetacochance + (slot2Data.itemtacochanceperlevel * userLevel);
+            var extraTacosPairToCalculate = { extraTacos: extraTacosCalculate, tacoChance: getPercentage([ extraTacoChanceCalculate ]) }
             var experienceCalculate = slot2Data.experiencegain + ((Math.floor(slot2Data.experienceonlevel / slot2Data.experiencegainperlevel * userLevel)) || 0);
             var guaranteedTacoChanceCalculate = slot2Data.guaranteedtacos;
 
             thankCommandCDR.push(cdrCalculate);
-            thankCommandExtraTacos.push(extraTacosCalculate);
-            thankCommandExtraTacosChance.push(extraTacoChanceCalculate);
+            thankCommandExtraTacos.push(extraTacosPairToCalculate);
             thankCommandExperience.push(experienceCalculate);
             thankGuaranteedTacos.push(guaranteedTacoChanceCalculate);
         }
@@ -169,12 +163,12 @@ module.exports.statsObjectBuilder = function(message, slot1Data, slot2Data, slot
             var cdrCalculate = slot2Data.itembasecdr + (slot2Data.itemcdrperlevel * userLevel)
             var extraTacosCalculate = slot2Data.itembaseextratacos + (slot2Data.itemextratacosperlevel * userLevel)
             var extraTacoChanceCalculate = slot2Data.itembasetacochance + (slot2Data.itemtacochanceperlevel * userLevel);
+            var extraTacosPairToCalculate = { extraTacos: extraTacosCalculate, tacoChance: getPercentage([ extraTacoChanceCalculate ]) }
             var experienceCalculate = slot2Data.experiencegain + ((Math.floor(slot2Data.experienceonlevel / slot2Data.experiencegainperlevel * userLevel)) || 0);
             var guaranteedTacoChanceCalculate = slot2Data.guaranteedtacos;
 
             sorryCommandCDR.push(cdrCalculate);
-            sorryCommandExtraTacos.push(extraTacosCalculate);
-            sorryCommandExtraTacosChance.push(extraTacoChanceCalculate);
+            sorryCommandExtraTacos.push(extraTacosPairToCalculate);
             sorryCommandExperience.push(experienceCalculate);
             sorryGuaranteedTacos.push(guaranteedTacoChanceCalculate);
         }
@@ -183,12 +177,12 @@ module.exports.statsObjectBuilder = function(message, slot1Data, slot2Data, slot
             var cdrCalculate = slot2Data.itembasecdr + (slot2Data.itemcdrperlevel * userLevel)
             var extraTacosCalculate = slot2Data.itembaseextratacos + (slot2Data.itemextratacosperlevel * userLevel)
             var extraTacoChanceCalculate = slot2Data.itembasetacochance + (slot2Data.itemtacochanceperlevel * userLevel);
+            var extraTacosPairToCalculate = { extraTacos: extraTacosCalculate, tacoChance: getPercentage([ extraTacoChanceCalculate ]) }
             var experienceCalculate = slot2Data.experiencegain + ((Math.floor(slot2Data.experienceonlevel / slot2Data.experiencegainperlevel * userLevel)) || 0);
             var guaranteedTacoChanceCalculate = slot2Data.guaranteedtacos;
 
             cookCommandCDR.push(cdrCalculate);
-            cookCommandExtraTacos.push(extraTacosCalculate);
-            cookCommandExtraTacosChance.push(extraTacoChanceCalculate);
+            cookCommandExtraTacos.push(extraTacosPairToCalculate);
             cookCommandExperience.push(experienceCalculate);
             cookGuaranteedTacos.push(guaranteedTacoChanceCalculate);
         }
@@ -196,12 +190,12 @@ module.exports.statsObjectBuilder = function(message, slot1Data, slot2Data, slot
             var cdrCalculate = slot2Data.itembasecdr + (slot2Data.itemcdrperlevel * userLevel)
             var extraTacosCalculate = slot2Data.itembaseextratacos + (slot2Data.itemextratacosperlevel * userLevel)
             var extraTacoChanceCalculate = slot2Data.itembasetacochance + (slot2Data.itemtacochanceperlevel * userLevel);
+            var extraTacosPairToCalculate = { extraTacos: extraTacosCalculate, tacoChance: getPercentage([ extraTacoChanceCalculate ]) }
             var experienceCalculate = slot2Data.experiencegain + ((Math.floor(slot2Data.experienceonlevel / slot2Data.experiencegainperlevel * userLevel)) || 0);
             var guaranteedTacoChanceCalculate = slot2Data.guaranteedtacos;
 
             prepareCommandCDR.push(cdrCalculate);
-            prepareCommandExtraTacos.push(extraTacosCalculate);
-            prepareCommandExtraTacosChance.push(extraTacoChanceCalculate);
+            prepareCommandExtraTacos.push(extraTacosPairToCalculate);
             prepareCommandExperience.push(experienceCalculate);
             prepareGuaranteedTacos.push(guaranteedTacoChanceCalculate);
         }
@@ -209,6 +203,7 @@ module.exports.statsObjectBuilder = function(message, slot1Data, slot2Data, slot
             var cdrCalculate = slot2Data.itembasecdr + (slot2Data.itemcdrperlevel * userLevel)
             var extraTacosCalculate = slot2Data.itembaseextratacos + (slot2Data.itemextratacosperlevel * userLevel)
             var extraTacoChanceCalculate = slot2Data.itembasetacochance + (slot2Data.itemtacochanceperlevel * userLevel);
+            var extraTacosPairToCalculate = { extraTacos: extraTacosCalculate, tacoChance: getPercentage([ extraTacoChanceCalculate ]) }
             var experienceCalculate = slot2Data.experiencegain + ((Math.floor(slot2Data.experienceonlevel / slot2Data.experiencegainperlevel * userLevel)) || 0);
             var extraTacosTimesCD = (slot2Data.tacostimescdhours * fetchCount)
             var extraTacosTimesCDChance = 0
@@ -218,8 +213,7 @@ module.exports.statsObjectBuilder = function(message, slot1Data, slot2Data, slot
             var guaranteedTacoChanceCalculate = slot2Data.guaranteedtacos;
 
             fetchCommandCDR.push(cdrCalculate);
-            fetchCommandExtraTacos.push(extraTacosCalculate);
-            fetchCommandExtraTacosChance.push(extraTacoChanceCalculate);
+            fetchCommandExtraTacos.push(extraTacosPairToCalculate);
             fetchCommandExperience.push(experienceCalculate);
             fetchGuaranteedTacos.push(guaranteedTacoChanceCalculate);
             // special stat for fetch
@@ -230,12 +224,12 @@ module.exports.statsObjectBuilder = function(message, slot1Data, slot2Data, slot
             var cdrCalculate = slot2Data.itembasecdr + (slot2Data.itemcdrperlevel * userLevel)
             var extraTacosCalculate = slot2Data.itembaseextratacos + (slot2Data.itemextratacosperlevel * userLevel)
             var extraTacoChanceCalculate = slot2Data.itembasetacochance + (slot2Data.itemtacochanceperlevel * userLevel);
+            var extraTacosPairToCalculate = { extraTacos: extraTacosCalculate, tacoChance: getPercentage([ extraTacoChanceCalculate ]) }
             var experienceCalculate = slot2Data.experiencegain + ((Math.floor(slot2Data.experienceonlevel / slot2Data.experiencegainperlevel * userLevel)) || 0);
             var guaranteedTacoChanceCalculate = slot2Data.guaranteedtacos;
 
             scavengeCommandCDR.push(cdrCalculate);
-            scavengeCommandExtraTacos.push(extraTacosCalculate);
-            scavengeCommandExtraTacosChance.push(extraTacoChanceCalculate);
+            scavengeCommandExtraTacos.push(extraTacosPairToCalculate);
             scavengeCommandExperience.push(experienceCalculate);
             scavengeGuaranteedTacos.push(guaranteedTacoChanceCalculate);
         }
@@ -246,12 +240,12 @@ module.exports.statsObjectBuilder = function(message, slot1Data, slot2Data, slot
             var cdrCalculate = slot3Data.itembasecdr + (slot3Data.itemcdrperlevel * userLevel)
             var extraTacosCalculate = slot3Data.itembaseextratacos + (slot3Data.itemextratacosperlevel * userLevel)
             var extraTacoChanceCalculate = slot3Data.itembasetacochance + (slot3Data.itemtacochanceperlevel * userLevel);
+            var extraTacosPairToCalculate = { extraTacos: extraTacosCalculate, tacoChance: getPercentage([ extraTacoChanceCalculate ]) }
             var experienceCalculate = slot3Data.experiencegain + ((Math.floor(slot3Data.experienceonlevel / slot3Data.experiencegainperlevel * userLevel)) || 0);
             var guaranteedTacoChanceCalculate = slot3Data.guaranteedtacos;
 
             thankCommandCDR.push(cdrCalculate);
-            thankCommandExtraTacos.push(extraTacosCalculate);
-            thankCommandExtraTacosChance.push(extraTacoChanceCalculate);
+            thankCommandExtraTacos.push(extraTacosPairToCalculate);
             thankCommandExperience.push(experienceCalculate);
             thankGuaranteedTacos.push(guaranteedTacoChanceCalculate);
         }
@@ -259,12 +253,12 @@ module.exports.statsObjectBuilder = function(message, slot1Data, slot2Data, slot
             var cdrCalculate = slot3Data.itembasecdr + (slot3Data.itemcdrperlevel * userLevel)
             var extraTacosCalculate = slot3Data.itembaseextratacos + (slot3Data.itemextratacosperlevel * userLevel)
             var extraTacoChanceCalculate = slot3Data.itembasetacochance + (slot3Data.itemtacochanceperlevel * userLevel);
+            var extraTacosPairToCalculate = { extraTacos: extraTacosCalculate, tacoChance: getPercentage([ extraTacoChanceCalculate ]) }
             var experienceCalculate = slot3Data.experiencegain + ((Math.floor(slot3Data.experienceonlevel / slot3Data.experiencegainperlevel * userLevel)) || 0);
             var guaranteedTacoChanceCalculate = slot3Data.guaranteedtacos;
 
             sorryCommandCDR.push(cdrCalculate);
-            sorryCommandExtraTacos.push(extraTacosCalculate);
-            sorryCommandExtraTacosChance.push(extraTacoChanceCalculate);
+            sorryCommandExtraTacos.push(extraTacosPairToCalculate);
             sorryCommandExperience.push(experienceCalculate);
             sorryGuaranteedTacos.push(guaranteedTacoChanceCalculate);
         }
@@ -273,12 +267,12 @@ module.exports.statsObjectBuilder = function(message, slot1Data, slot2Data, slot
             var cdrCalculate = slot3Data.itembasecdr + (slot3Data.itemcdrperlevel * userLevel)
             var extraTacosCalculate = slot3Data.itembaseextratacos + (slot3Data.itemextratacosperlevel * userLevel)
             var extraTacoChanceCalculate = slot3Data.itembasetacochance + (slot3Data.itemtacochanceperlevel * userLevel);
+            var extraTacosPairToCalculate = { extraTacos: extraTacosCalculate, tacoChance: getPercentage([ extraTacoChanceCalculate ]) }
             var experienceCalculate = slot3Data.experiencegain + ((Math.floor(slot3Data.experienceonlevel / slot3Data.experiencegainperlevel * userLevel)) || 0);
             var guaranteedTacoChanceCalculate = slot3Data.guaranteedtacos;
 
             cookCommandCDR.push(cdrCalculate);
-            cookCommandExtraTacos.push(extraTacosCalculate);
-            cookCommandExtraTacosChance.push(extraTacoChanceCalculate);
+            cookCommandExtraTacos.push(extraTacosPairToCalculate);
             cookCommandExperience.push(experienceCalculate);
             cookGuaranteedTacos.push(guaranteedTacoChanceCalculate);
         }
@@ -286,12 +280,12 @@ module.exports.statsObjectBuilder = function(message, slot1Data, slot2Data, slot
             var cdrCalculate = slot3Data.itembasecdr + (slot3Data.itemcdrperlevel * userLevel)
             var extraTacosCalculate = slot3Data.itembaseextratacos + (slot3Data.itemextratacosperlevel * userLevel)
             var extraTacoChanceCalculate = slot3Data.itembasetacochance + (slot3Data.itemtacochanceperlevel * userLevel);
+            var extraTacosPairToCalculate = { extraTacos: extraTacosCalculate, tacoChance: getPercentage([ extraTacoChanceCalculate ]) }
             var experienceCalculate = slot3Data.experiencegain + ((Math.floor(slot3Data.experienceonlevel / slot3Data.experiencegainperlevel * userLevel)) || 0);
             var guaranteedTacoChanceCalculate = slot3Data.guaranteedtacos;
 
             prepareCommandCDR.push(cdrCalculate);
-            prepareCommandExtraTacos.push(extraTacosCalculate);
-            prepareCommandExtraTacosChance.push(extraTacoChanceCalculate);
+            prepareCommandExtraTacos.push(extraTacosPairToCalculate);
             prepareCommandExperience.push(experienceCalculate);
             prepareGuaranteedTacos.push(guaranteedTacoChanceCalculate);
         }
@@ -300,6 +294,7 @@ module.exports.statsObjectBuilder = function(message, slot1Data, slot2Data, slot
             var extraTacosCalculate = slot3Data.itembaseextratacos + (slot3Data.itemextratacosperlevel * userLevel)
             var extraTacoChanceCalculate = slot3Data.itembasetacochance + (slot3Data.itemtacochanceperlevel * userLevel);
             var experienceCalculate = slot3Data.experiencegain + ((Math.floor(slot3Data.experienceonlevel / slot3Data.experiencegainperlevel * userLevel)) || 0);
+            var extraTacosPairToCalculate = { extraTacos: extraTacosCalculate, tacoChance: getPercentage([ extraTacoChanceCalculate ]) }
             var extraTacosTimesCD = (slot3Data.tacostimescdhours * fetchCount)
             var extraTacosTimesCDChance = 0
             if (slot3Data.tacostimescdhourschanceperlevel) {
@@ -308,8 +303,7 @@ module.exports.statsObjectBuilder = function(message, slot1Data, slot2Data, slot
             var guaranteedTacoChanceCalculate = slot3Data.guaranteedtacos;
 
             fetchCommandCDR.push(cdrCalculate);
-            fetchCommandExtraTacos.push(extraTacosCalculate);
-            fetchCommandExtraTacosChance.push(extraTacoChanceCalculate);
+            fetchCommandExtraTacos.push(extraTacosPairToCalculate);
             fetchCommandExperience.push(experienceCalculate);
             fetchGuaranteedTacos.push(guaranteedTacoChanceCalculate);
             // special stat for fetch
@@ -320,12 +314,12 @@ module.exports.statsObjectBuilder = function(message, slot1Data, slot2Data, slot
             var cdrCalculate = slot3Data.itembasecdr + (slot3Data.itemcdrperlevel * userLevel)
             var extraTacosCalculate = slot3Data.itembaseextratacos + (slot3Data.itemextratacosperlevel * userLevel)
             var extraTacoChanceCalculate = slot3Data.itembasetacochance + (slot3Data.itemtacochanceperlevel * userLevel);
+            var extraTacosPairToCalculate = { extraTacos: extraTacosCalculate, tacoChance: getPercentage([ extraTacoChanceCalculate ]) }
             var experienceCalculate = slot3Data.experiencegain + ((Math.floor(slot3Data.experienceonlevel / slot3Data.experiencegainperlevel * userLevel)) || 0);
             var guaranteedTacoChanceCalculate = slot3Data.guaranteedtacos;
 
             scavengeCommandCDR.push(cdrCalculate);
-            scavengeCommandExtraTacos.push(extraTacosCalculate);
-            scavengeCommandExtraTacosChance.push(extraTacoChanceCalculate);
+            scavengeCommandExtraTacos.push(extraTacosPairToCalculate);
             scavengeCommandExperience.push(experienceCalculate);
             scavengeGuaranteedTacos.push(guaranteedTacoChanceCalculate);
         }
@@ -336,12 +330,12 @@ module.exports.statsObjectBuilder = function(message, slot1Data, slot2Data, slot
             var cdrCalculate = userAmuletData[amulet].itembasecdr + (userAmuletData[amulet].itemcdrperlevel * userLevel)
             var extraTacosCalculate = userAmuletData[amulet].itembaseextratacos + (userAmuletData[amulet].itemextratacosperlevel * userLevel)
             var extraTacoChanceCalculate = userAmuletData[amulet].itembasetacochance + (userAmuletData[amulet].itemtacochanceperlevel * userLevel);
+            var extraTacosPairToCalculate = { extraTacos: extraTacosCalculate, tacoChance: getPercentage([ extraTacoChanceCalculate ]) }
             var experienceCalculate = userAmuletData[amulet].experiencegain + ((Math.floor(userAmuletData[amulet].experienceonlevel / userAmuletData[amulet].experiencegainperlevel * userLevel)) || 0);
             var guaranteedTacoChanceCalculate = userAmuletData[amulet].guaranteedtacos;
 
             thankCommandCDR.push(cdrCalculate);
-            thankCommandExtraTacos.push(extraTacosCalculate);
-            thankCommandExtraTacosChance.push(extraTacoChanceCalculate);
+            thankCommandExtraTacos.push(extraTacosPairToCalculate);
             thankCommandExperience.push(experienceCalculate);
             thankGuaranteedTacos.push(guaranteedTacoChanceCalculate);
         }
@@ -349,12 +343,12 @@ module.exports.statsObjectBuilder = function(message, slot1Data, slot2Data, slot
             var cdrCalculate = userAmuletData[amulet].itembasecdr + (userAmuletData[amulet].itemcdrperlevel * userLevel)
             var extraTacosCalculate = userAmuletData[amulet].itembaseextratacos + (userAmuletData[amulet].itemextratacosperlevel * userLevel)
             var extraTacoChanceCalculate = userAmuletData[amulet].itembasetacochance + (userAmuletData[amulet].itemtacochanceperlevel * userLevel);
+            var extraTacosPairToCalculate = { extraTacos: extraTacosCalculate, tacoChance: getPercentage([ extraTacoChanceCalculate ]) }
             var experienceCalculate = userAmuletData[amulet].experiencegain + ((Math.floor(userAmuletData[amulet].experienceonlevel / userAmuletData[amulet].experiencegainperlevel * userLevel)) || 0);
             var guaranteedTacoChanceCalculate = userAmuletData[amulet].guaranteedtacos;
 
             sorryCommandCDR.push(cdrCalculate);
-            sorryCommandExtraTacos.push(extraTacosCalculate);
-            sorryCommandExtraTacosChance.push(extraTacoChanceCalculate);
+            sorryCommandExtraTacos.push(extraTacosPairToCalculate);
             sorryCommandExperience.push(experienceCalculate);
             sorryGuaranteedTacos.push(guaranteedTacoChanceCalculate);
         }
@@ -363,12 +357,12 @@ module.exports.statsObjectBuilder = function(message, slot1Data, slot2Data, slot
             var cdrCalculate = userAmuletData[amulet].itembasecdr + (userAmuletData[amulet].itemcdrperlevel * userLevel)
             var extraTacosCalculate = userAmuletData[amulet].itembaseextratacos + (userAmuletData[amulet].itemextratacosperlevel * userLevel)
             var extraTacoChanceCalculate = userAmuletData[amulet].itembasetacochance + (userAmuletData[amulet].itemtacochanceperlevel * userLevel);
+            var extraTacosPairToCalculate = { extraTacos: extraTacosCalculate, tacoChance: getPercentage([ extraTacoChanceCalculate ]) }
             var experienceCalculate = userAmuletData[amulet].experiencegain + ((Math.floor(userAmuletData[amulet].experienceonlevel / userAmuletData[amulet].experiencegainperlevel * userLevel)) || 0);
             var guaranteedTacoChanceCalculate = userAmuletData[amulet].guaranteedtacos;
 
             cookCommandCDR.push(cdrCalculate);
-            cookCommandExtraTacos.push(extraTacosCalculate);
-            cookCommandExtraTacosChance.push(extraTacoChanceCalculate);
+            cookCommandExtraTacos.push(extraTacosPairToCalculate);
             cookCommandExperience.push(experienceCalculate);
             cookGuaranteedTacos.push(guaranteedTacoChanceCalculate);
         }
@@ -376,12 +370,12 @@ module.exports.statsObjectBuilder = function(message, slot1Data, slot2Data, slot
             var cdrCalculate = userAmuletData[amulet].itembasecdr + (userAmuletData[amulet].itemcdrperlevel * userLevel)
             var extraTacosCalculate = userAmuletData[amulet].itembaseextratacos + (userAmuletData[amulet].itemextratacosperlevel * userLevel)
             var extraTacoChanceCalculate = userAmuletData[amulet].itembasetacochance + (userAmuletData[amulet].itemtacochanceperlevel * userLevel);
+            var extraTacosPairToCalculate = { extraTacos: extraTacosCalculate, tacoChance: getPercentage([ extraTacoChanceCalculate ]) }
             var experienceCalculate = userAmuletData[amulet].experiencegain + ((Math.floor(userAmuletData[amulet].experienceonlevel / userAmuletData[amulet].experiencegainperlevel * userLevel)) || 0);
             var guaranteedTacoChanceCalculate = userAmuletData[amulet].guaranteedtacos;
 
             prepareCommandCDR.push(cdrCalculate);
-            prepareCommandExtraTacos.push(extraTacosCalculate);
-            prepareCommandExtraTacosChance.push(extraTacoChanceCalculate);
+            prepareCommandExtraTacos.push(extraTacosPairToCalculate);
             prepareCommandExperience.push(experienceCalculate);
             prepareGuaranteedTacos.push(guaranteedTacoChanceCalculate);
         }
@@ -390,6 +384,7 @@ module.exports.statsObjectBuilder = function(message, slot1Data, slot2Data, slot
             var extraTacosCalculate = userAmuletData[amulet].itembaseextratacos + (userAmuletData[amulet].itemextratacosperlevel * userLevel)
             var extraTacoChanceCalculate = userAmuletData[amulet].itembasetacochance + (userAmuletData[amulet].itemtacochanceperlevel * userLevel);
             var experienceCalculate = userAmuletData[amulet].experiencegain + ((Math.floor(userAmuletData[amulet].experienceonlevel / userAmuletData[amulet].experiencegainperlevel * userLevel)) || 0);
+            var extraTacosPairToCalculate = { extraTacos: extraTacosCalculate, tacoChance: getPercentage([ extraTacoChanceCalculate ]) }
             var extraTacosTimesCD = (userAmuletData[amulet].tacostimescdhours * fetchCount)
             var extraTacosTimesCDChance = 0
             if (userAmuletData[amulet].tacostimescdhourschanceperlevel) {
@@ -398,8 +393,7 @@ module.exports.statsObjectBuilder = function(message, slot1Data, slot2Data, slot
             var guaranteedTacoChanceCalculate = userAmuletData[amulet].guaranteedtacos;
 
             fetchCommandCDR.push(cdrCalculate);
-            fetchCommandExtraTacos.push(extraTacosCalculate);
-            fetchCommandExtraTacosChance.push(extraTacoChanceCalculate);
+            fetchCommandExtraTacos.push(extraTacosPairToCalculate);
             fetchCommandExperience.push(experienceCalculate);
             fetchGuaranteedTacos.push(guaranteedTacoChanceCalculate);
             // special stat for fetch
@@ -410,43 +404,38 @@ module.exports.statsObjectBuilder = function(message, slot1Data, slot2Data, slot
             var cdrCalculate = userAmuletData[amulet].itembasecdr + (userAmuletData[amulet].itemcdrperlevel * userLevel)
             var extraTacosCalculate = userAmuletData[amulet].itembaseextratacos + (userAmuletData[amulet].itemextratacosperlevel * userLevel)
             var extraTacoChanceCalculate = userAmuletData[amulet].itembasetacochance + (userAmuletData[amulet].itemtacochanceperlevel * userLevel);
+            var extraTacosPairToCalculate = { extraTacos: extraTacosCalculate, tacoChance: getPercentage([ extraTacoChanceCalculate ]) }
             var experienceCalculate = userAmuletData[amulet].experiencegain + ((Math.floor(userAmuletData[amulet].experienceonlevel / userAmuletData[amulet].experiencegainperlevel * userLevel)) || 0);
             var guaranteedTacoChanceCalculate = userAmuletData[amulet].guaranteedtacos;
 
             scavengeCommandCDR.push(cdrCalculate);
-            scavengeCommandExtraTacos.push(extraTacosCalculate);
-            scavengeCommandExtraTacosChance.push(extraTacoChanceCalculate);
+            scavengeCommandExtraTacos.push(extraTacosPairToCalculate);
             scavengeCommandExperience.push(experienceCalculate);
             scavengeGuaranteedTacos.push(guaranteedTacoChanceCalculate);
         }
     }
 
     thankCommandCDR.sort().reverse();
-    thankCommandExtraTacosChance.sort().reverse();
     thankCommandExtraTacos.sort().reverse();
     thankCommandExperience.sort().reverse();
     thankGuaranteedTacos.sort().reverse();
 
     sorryCommandCDR.sort().reverse();
-    sorryCommandExtraTacosChance.sort().reverse();
     sorryCommandExtraTacos.sort().reverse();
     sorryCommandExperience.sort().reverse();
     sorryGuaranteedTacos.sort().reverse();
 
     cookCommandCDR.sort().reverse();
-    cookCommandExtraTacosChance.sort().reverse();
     cookCommandExtraTacos.sort().reverse();
     cookCommandExperience.sort().reverse();
     cookGuaranteedTacos.sort().reverse();
 
     prepareCommandCDR.sort().reverse();
-    prepareCommandExtraTacosChance.sort().reverse();
     prepareCommandExtraTacos.sort().reverse();
     prepareCommandExperience.sort().reverse();
     prepareGuaranteedTacos.sort().reverse();
 
     fetchCommandCDR.sort().reverse();
-    fetchCommandExtraTacosChance.sort().reverse();
     fetchCommandExtraTacos.sort().reverse();
     fetchCommandExperience.sort().reverse();
     fetchGuaranteedTacos.sort().reverse();
@@ -455,7 +444,6 @@ module.exports.statsObjectBuilder = function(message, slot1Data, slot2Data, slot
     fetchCommandTacosTimesCDChance.sort().reverse();
 
     scavengeCommandCDR.sort().reverse();
-    scavengeCommandExtraTacosChance.sort().reverse();
     scavengeCommandExtraTacos.sort().reverse();
     scavengeCommandExperience.sort().reverse();
     scavengeGuaranteedTacos.sort().reverse();
@@ -463,50 +451,39 @@ module.exports.statsObjectBuilder = function(message, slot1Data, slot2Data, slot
     // have all the arrays populated with the data now  create the string for individual commands
 
     var thankCommandCDRPercentage = getPercentage(thankCommandCDR);
-    var thankCommandExtraTacosChancePercentage = getPercentage(thankCommandExtraTacosChance);
-    var thankCommandExtraTacos = getTotal(thankCommandExtraTacos);
     var thankCommandExperienceGain = getTotal(thankCommandExperience);
     var thankCommandGuaranteedTacos = getTotal(thankGuaranteedTacos);
 
     userItemStats.thankCommandCDRPercentage = thankCommandCDRPercentage;
-    userItemStats.thankCommandExtraTacosChancePercentage = thankCommandExtraTacosChancePercentage
     userItemStats.thankCommandExtraTacos = thankCommandExtraTacos
     userItemStats.thankCommandExperienceGain = thankCommandExperienceGain;
     userItemStats.thankCommandGuaranteedTacos = thankCommandGuaranteedTacos;
 
     // console.log(thankCommandCDRPercentage)
-    // console.log(thankCommandExtraTacosChancePercentage)
     // console.log(thankCommandExtraTacos)
     // console.log(thankCommandExperienceGain);
     // console.log(thankCommandGuaranteedTacos);
 
     var sorryCommandCDRPercentage = getPercentage(sorryCommandCDR);
-    var sorryCommandExtraTacosChancePercentage = getPercentage(sorryCommandExtraTacosChance);
-    var sorryCommandExtraTacos = getTotal(sorryCommandExtraTacos);
     var sorryCommandExperienceGain = getTotal(sorryCommandExperience);
     var sorryCommandGuaranteedTacos = getTotal(sorryGuaranteedTacos);
 
     userItemStats.sorryCommandCDRPercentage = sorryCommandCDRPercentage;
-    userItemStats.sorryCommandExtraTacosChancePercentage = sorryCommandExtraTacosChancePercentage
     userItemStats.sorryCommandExtraTacos = sorryCommandExtraTacos
     userItemStats.sorryCommandExperienceGain = sorryCommandExperienceGain;
     userItemStats.sorryCommandGuaranteedTacos = sorryCommandGuaranteedTacos;
 
     // console.log(sorryCommandCDRPercentage)
-    // console.log(sorryCommandExtraTacosChancePercentage)
     // console.log(sorryCommandExtraTacos)
     // console.log(sorryCommandExperienceGain);
     // console.log(sorryCommandGuaranteedTacos);
 
     var cookCommandCDRPercentage = getPercentage(cookCommandCDR);
-    var cookCommandExtraTacos = getTotal(cookCommandExtraTacos);
-    var cookCommandExtraTacosChancePercentage = getPercentage(cookCommandExtraTacosChance);
     var cookCommandExperienceGain = getTotal(cookCommandExperience);
     var cookCommandGuaranteedTacos = getTotal(cookGuaranteedTacos);
 
     userItemStats.cookCommandCDRPercentage = cookCommandCDRPercentage;
     userItemStats.cookCommandExtraTacos = cookCommandExtraTacos
-    userItemStats.cookCommandExtraTacosChancePercentage = cookCommandExtraTacosChancePercentage
     userItemStats.cookCommandExperienceGain = cookCommandExperienceGain;
     userItemStats.cookCommandGuaranteedTacos = cookCommandGuaranteedTacos;
 
@@ -516,14 +493,11 @@ module.exports.statsObjectBuilder = function(message, slot1Data, slot2Data, slot
     // console.log(cookCommandExperienceGain);
     
     var prepareCommandCDRPercentage = getPercentage(prepareCommandCDR);
-    var prepareCommandExtraTacos = getTotal(prepareCommandExtraTacos);
-    var prepareCommandExtraTacosChancePercentage = getPercentage(prepareCommandExtraTacosChance);
     var prepareCommandExperienceGain = getTotal(prepareCommandExperience);
     var prepareCommandGuaranteedTacos = getTotal(prepareGuaranteedTacos);
 
     userItemStats.prepareCommandCDRPercentage = prepareCommandCDRPercentage;
     userItemStats.prepareCommandExtraTacos = prepareCommandExtraTacos
-    userItemStats.prepareCommandExtraTacosChancePercentage = prepareCommandExtraTacosChancePercentage
     userItemStats.prepareCommandExperienceGain = prepareCommandExperienceGain;
     userItemStats.prepareCommandGuaranteedTacos = prepareCommandGuaranteedTacos;
 
@@ -533,8 +507,6 @@ module.exports.statsObjectBuilder = function(message, slot1Data, slot2Data, slot
     // console.log(prepareCommandExperienceGain);
 
     var fetchCommandCDRPercentage = getPercentage(fetchCommandCDR);
-    var fetchCommandExtraTacos = getTotal(fetchCommandExtraTacos);
-    var fetchCommandExtraTacosChancePercentage = getPercentage(fetchCommandExtraTacosChance);
     var fetchCommandExperienceGain = getTotal(fetchCommandExperience);
     var fetchCommandGuaranteedTacos = getTotal(fetchGuaranteedTacos);
     var fetchCommandTacosTimesCDChancePercentage = getPercentage(fetchCommandTacosTimesCDChance);
@@ -542,7 +514,6 @@ module.exports.statsObjectBuilder = function(message, slot1Data, slot2Data, slot
 
     userItemStats.fetchCommandCDRPercentage = fetchCommandCDRPercentage;
     userItemStats.fetchCommandExtraTacos = fetchCommandExtraTacos
-    userItemStats.fetchCommandExtraTacosChancePercentage = fetchCommandExtraTacosChancePercentage
     userItemStats.fetchCommandExperienceGain = fetchCommandExperienceGain;
     userItemStats.fetchCommandGuaranteedTacos = fetchCommandGuaranteedTacos;
     // special fetch stat
@@ -557,14 +528,11 @@ module.exports.statsObjectBuilder = function(message, slot1Data, slot2Data, slot
     // console.log(fetchCommandTacosTimesCDHours);
 
     var scavengeCommandCDRPercentage = getPercentage(scavengeCommandCDR);
-    var scavengeCommandExtraTacos = getTotal(scavengeCommandExtraTacos);
-    var scavengeCommandExtraTacosChancePercentage = getPercentage(scavengeCommandExtraTacosChance);
     var scavengeCommandExperienceGain = getTotal(scavengeCommandExperience);
     var scavengeCommandGuaranteedTacos = getTotal(scavengeGuaranteedTacos);
 
     userItemStats.scavengeCommandCDRPercentage = scavengeCommandCDRPercentage;
     userItemStats.scavengeCommandExtraTacos = scavengeCommandExtraTacos
-    userItemStats.scavengeCommandExtraTacosChancePercentage = scavengeCommandExtraTacosChancePercentage
     userItemStats.sacengeCommandExperienceGain = scavengeCommandExperienceGain;
     userItemStats.scavengeCommandGuaranteedTacos = scavengeCommandGuaranteedTacos;
 
@@ -598,11 +566,14 @@ module.exports.statsStringBuilder = function(message, userItemStats){
     if (userItemStats.thankCommandCDRPercentage){
         thankCommandString = thankCommandString + "Thank Cooldown Reduction: " + (userItemStats.thankCommandCDRPercentage * 100).toFixed(0) + "% \n"
     }
-    if (userItemStats.thankCommandExtraTacosChancePercentage){
-        thankCommandString = thankCommandString + "On Thank +Tacos Chance: " + (userItemStats.thankCommandExtraTacosChancePercentage * 100).toFixed(0) + "% \n"
-    }
     if (userItemStats.thankCommandExtraTacos){
-        thankCommandString = thankCommandString + "On Thank +Tacos: " + userItemStats.thankCommandExtraTacos + " \n"
+        if (userItemStats.thankCommandExtraTacos.length > 0){
+            for (var pair in userItemStats.thankCommandExtraTacos){
+                if ( userItemStats.thankCommandExtraTacos[pair].extraTacos > 0 ){
+                    thankCommandString = thankCommandString + "On Thank +Tacos: " + userItemStats.thankCommandExtraTacos[pair].extraTacos + " Chance: " + (userItemStats.thankCommandExtraTacos[pair].tacoChance * 100).toFixed(0) + "% \n"
+                }
+            }
+        }
     }
     if (userItemStats.thankCommandExperienceGain){
         thankCommandString = thankCommandString + "On Thank +Experience: " + userItemStats.thankCommandExperienceGain + " \n"
@@ -614,11 +585,14 @@ module.exports.statsStringBuilder = function(message, userItemStats){
     if (userItemStats.sorryCommandCDRPercentage){
         sorryCommandString = sorryCommandString + "Sorry cooldown reduction: " + (userItemStats.sorryCommandCDRPercentage * 100).toFixed(0) + "% \n"
     }
-    if (userItemStats.sorryCommandExtraTacosChancePercentage){
-        sorryCommandString = sorryCommandString + "On Sorry +Tacos Chance: " + (userItemStats.sorryCommandExtraTacosChancePercentage * 100).toFixed(0) + "% \n"
-    }
     if (userItemStats.sorryCommandExtraTacos){
-        sorryCommandString = sorryCommandString + "On Sorry +Tacos: " + userItemStats.sorryCommandExtraTacos + " \n"
+        if (userItemStats.sorryCommandExtraTacos.length > 0){
+            for (var pair in userItemStats.sorryCommandExtraTacos){
+                if ( userItemStats.sorryCommandExtraTacos[pair].extraTacos > 0 ){
+                    sorryCommandString = sorryCommandString + "On Sorry +Tacos: " + userItemStats.sorryCommandExtraTacos[pair].extraTacos + " Chance: " + (userItemStats.sorryCommandExtraTacos[pair].tacoChance * 100).toFixed(0) + "% \n"
+                }    
+            }
+        }
     }
     if (userItemStats.sorryCommandExperienceGain){
         sorryCommandString = sorryCommandString + "On Sorry +Experience: " + userItemStats.sorryCommandExperienceGain + " \n"
@@ -630,11 +604,14 @@ module.exports.statsStringBuilder = function(message, userItemStats){
     if (userItemStats.cookCommandCDRPercentage){
         cookCommandString = cookCommandString + "Cook cooldown reduction: " + (userItemStats.cookCommandCDRPercentage * 100).toFixed(0) +  "% \n"
     }
-    if (userItemStats.cookCommandExtraTacosChancePercentage){
-        cookCommandString = cookCommandString + "On Cook +Tacos Chance: " + (userItemStats.cookCommandExtraTacosChancePercentage * 100).toFixed(0) + "% \n"
-    }
     if (userItemStats.cookCommandExtraTacos){
-        cookCommandString = cookCommandString + "On Cook +Tacos: " + userItemStats.cookCommandExtraTacos + " \n"
+        if (userItemStats.cookCommandExtraTacos.length > 0){
+            for (var pair in userItemStats.cookCommandExtraTacos){
+                if ( userItemStats.cookCommandExtraTacos[pair].extraTacos > 0 ){
+                    cookCommandString = cookCommandString + "On Cook +Tacos: " + userItemStats.cookCommandExtraTacos[pair].extraTacos + " Chance: " + (userItemStats.cookCommandExtraTacos[pair].tacoChance * 100).toFixed(0) + "% \n"
+                }
+            }
+        }
     }
     if (userItemStats.cookCommandExperienceGain){
         cookCommandString = cookCommandString + "On Cook +Experience: " + userItemStats.cookCommandExperienceGain + " \n"
@@ -646,11 +623,14 @@ module.exports.statsStringBuilder = function(message, userItemStats){
     if (userItemStats.prepareCommandCDRPercentage){
         prepareCommandString = prepareCommandString + "Prepare cooldown reduction: " + (userItemStats.prepareCommandCDRPercentage * 100).toFixed(0) + "% \n"
     }
-    if (userItemStats.prepareCommandExtraTacosChancePercentage){
-        prepareCommandString = prepareCommandString + "On Prepare +Tacos Chance: " + (userItemStats.prepareCommandExtraTacosChancePercentage * 100).toFixed(0) + "% \n"
-    }
     if (userItemStats.prepareCommandExtraTacos){
-        prepareCommandString = prepareCommandString + "On Prepare +Tacos: " + userItemStats.prepareCommandExtraTacos + " \n"
+        if (userItemStats.prepareCommandExtraTacos.length > 0){
+            for (var pair in userItemStats.prepareCommandExtraTacos){
+                if ( userItemStats.prepareCommandExtraTacos[pair].extraTacos > 0 ){
+                    prepareCommandString = prepareCommandString + "On Prepare +Tacos: " + userItemStats.prepareCommandExtraTacos[pair].extraTacos + " Chance: " + (userItemStats.prepareCommandExtraTacos[pair].tacoChance * 100).toFixed(0) + "% \n"
+                }
+            }
+        }
     }
     if (userItemStats.prepareCommandExperienceGain){
         prepareCommandString = prepareCommandString + "On Prepare +Experience: " + userItemStats.prepareCommandExperienceGain + " \n"
@@ -662,11 +642,14 @@ module.exports.statsStringBuilder = function(message, userItemStats){
     if (userItemStats.fetchCommandCDRPercentage){
         fetchCommandString = fetchCommandString + "Fetch cooldown reduction: " + (userItemStats.fetchCommandCDRPercentage * 100).toFixed(0) + "% \n"
     }
-    if (userItemStats.fetchCommandExtraTacosChancePercentage){
-        fetchCommandString = fetchCommandString + "On Fetch +Tacos Chance: " + (userItemStats.fetchCommandExtraTacosChancePercentage * 100).toFixed(0) + "% \n"
-    }
     if (userItemStats.fetchCommandExtraTacos){
-        fetchCommandString = fetchCommandString + "On Fetch +Tacos: " + userItemStats.fetchCommandExtraTacos + " \n"
+        if (userItemStats.fetchCommandExtraTacos.length > 0){
+            for (var pair in userItemStats.fetchCommandExtraTacos){
+                if ( userItemStats.fetchCommandExtraTacos[pair].extraTacos > 0 ){
+                    fetchCommandString = fetchCommandString + "On Fetch +Tacos: " + userItemStats.fetchCommandExtraTacos[pair].extraTacos + " Chance: " + (userItemStats.fetchCommandExtraTacos[pair].tacoChance * 100).toFixed(0) + "% \n"
+                }
+            }
+        }
     }
     if (userItemStats.fetchCommandExperienceGain){
         fetchCommandString = fetchCommandString + "On Fetch +Experience: " + userItemStats.fetchCommandExperienceGain + " \n"
@@ -685,11 +668,14 @@ module.exports.statsStringBuilder = function(message, userItemStats){
     if (userItemStats.scavengeCommandCDRPercentage){
         scavengeCommandString = scavengeCommandString + "Scavenge cooldown reduction: " + (userItemStats.scavengeCommandCDRPercentage * 100).toFixed(0) + "% \n"
     }
-    if (userItemStats.scavengeCommandExtraTacosChancePercentage){
-        scavengeCommandString = scavengeCommandString + "On Scavenge +Tacos Chance: " + (userItemStats.scavengeCommandExtraTacosChancePercentage * 100).toFixed(0) + "% \n"
-    }
     if (userItemStats.scavengeCommandExtraTacos){
-        scavengeCommandString = scavengeCommandString + "On Scavenge +Tacos: " + userItemStats.scavengeCommandExtraTacos + " \n"
+        if (userItemStats.scavengeCommandExtraTacos.length > 0){
+            for (var pair in userItemStats.scavengeCommandExtraTacos){
+                if ( userItemStats.scavengeCommandExtraTacos[pair].extraTacos > 0 ){
+                    scavengeCommandString = scavengeCommandString + "On Scavenge +Tacos: " + userItemStats.scavengeCommandExtraTacos[pair].extraTacos + " Chance: " + (userItemStats.scavengeCommandExtraTacos[pair].tacoChance * 100).toFixed(0) + "% \n"
+                }
+            }
+        }
     }
     if (userItemStats.scavengeCommandExperienceGain){
         scavengeCommandString = scavengeCommandString + "On Scavenge +Experience: " + userItemStats.scavengeCommandExperienceGain + " \n"
@@ -799,19 +785,29 @@ module.exports.slotStringBuilder = function(message, slotData, slotActive){
     }
 }
 
+function calculateIndividualPairExtraTacos(extraTacosChancePairs){
+
+    var extraTacos = 0;
+    for (var index in extraTacosChancePairs){
+        var pair = extraTacosChancePairs[index];
+        var extraTacosToRollOver = 1000 - (pair.tacoChance * 1000);
+        var extraTacosRoll = Math.floor(Math.random() * 1000) + 1;
+
+        if (extraTacosRoll > extraTacosToRollOver){
+            extraTacos = extraTacos + extraTacosChancePairs[index].extraTacos;
+        }
+    }
+    return extraTacos;
+}
+
 module.exports.calculateExtraTacos = function(userItemStats, command){
     // use the command to figure out the extra tacos, calculate the extra tacos gained
     var extraTacos = 0;
 
     if (command == "thank"){
         // roll for extra tacos
-        var extraTacosChance = userItemStats.thankCommandExtraTacosChancePercentage;
-        var extraTacosToRollOver = 1000 - (extraTacosChance * 1000);
-        var extraTacosRoll = Math.floor(Math.random() * 1000) + 1;
-
-        if (extraTacosRoll > extraTacosToRollOver){
-            extraTacos = userItemStats.thankCommandExtraTacos;
-        }
+        var extraTacosChancePairs = userItemStats.thankCommandExtraTacos;
+        extraTacos = extraTacos + calculateIndividualPairExtraTacos( extraTacosChancePairs );
 
         var thankCommandGuaranteedTacos = userItemStats.thankCommandGuaranteedTacos;
         if (thankCommandGuaranteedTacos){
@@ -822,13 +818,8 @@ module.exports.calculateExtraTacos = function(userItemStats, command){
     }
     else if (command == "sorry"){
         // roll for extra tacos
-        var extraTacosChance = userItemStats.sorryCommandExtraTacosChancePercentage;
-        var extraTacosToRollOver = 1000 - (extraTacosChance * 1000);
-        var extraTacosRoll = Math.floor(Math.random() * 1000) + 1;
-
-        if (extraTacosRoll > extraTacosToRollOver){
-            extraTacos = userItemStats.sorryCommandExtraTacos;
-        }
+        var extraTacosChancePairs = userItemStats.sorryCommandExtraTacos;
+        extraTacos = extraTacos + calculateIndividualPairExtraTacos( extraTacosChancePairs );
 
         var sorryCommandGuaranteedTacos = userItemStats.sorryCommandGuaranteedTacos;
         if (sorryCommandGuaranteedTacos){
@@ -839,13 +830,8 @@ module.exports.calculateExtraTacos = function(userItemStats, command){
     }
     else if (command == "cook"){
         // roll for extra tacos
-        var extraTacosChance = userItemStats.cookCommandExtraTacosChancePercentage;
-        var extraTacosToRollOver = 1000 - (extraTacosChance * 1000);
-        var extraTacosRoll = Math.floor(Math.random() * 1000) + 1;
-
-        if (extraTacosRoll > extraTacosToRollOver){
-            extraTacos = userItemStats.cookCommandExtraTacos;
-        }
+        var extraTacosChancePairs = userItemStats.cookCommandExtraTacos;
+        extraTacos = extraTacos + calculateIndividualPairExtraTacos( extraTacosChancePairs );
 
         var cookCommandGuaranteedTacos = userItemStats.cookCommandGuaranteedTacos;
         if (cookCommandGuaranteedTacos){
@@ -856,13 +842,8 @@ module.exports.calculateExtraTacos = function(userItemStats, command){
     }
     else if (command == "prepare"){
         // roll for extra tacos
-        var extraTacosChance = userItemStats.prepareCommandExtraTacosChancePercentage;
-        var extraTacosToRollOver = 1000 - (extraTacosChance * 1000);
-        var extraTacosRoll = Math.floor(Math.random() * 1000) + 1;
-
-        if (extraTacosRoll > extraTacosToRollOver){
-            extraTacos = userItemStats.prepareCommandExtraTacos;
-        }
+        var extraTacosChancePairs = userItemStats.prepareCommandExtraTacos;
+        extraTacos = extraTacos + calculateIndividualPairExtraTacos( extraTacosChancePairs );
 
         var prepareCommandGuaranteedTacos = userItemStats.prepareCommandGuaranteedTacos;
         if (prepareCommandGuaranteedTacos){
@@ -873,13 +854,8 @@ module.exports.calculateExtraTacos = function(userItemStats, command){
     }
     else if (command == "fetch"){
         // roll for extra tacos
-        var extraTacosChance = userItemStats.fetchCommandExtraTacosChancePercentage;
-        var extraTacosToRollOver = 1000 - (extraTacosChance * 1000);
-        var extraTacosRoll = Math.floor(Math.random() * 1000) + 1;
-
-        if (extraTacosRoll > extraTacosToRollOver){
-            extraTacos = userItemStats.fetchCommandExtraTacos;
-        }
+        var extraTacosChancePairs = userItemStats.fetchCommandExtraTacos;
+        extraTacos = extraTacos + calculateIndividualPairExtraTacos( extraTacosChancePairs );
 
         var fetchCommandGuaranteedTacos = userItemStats.fetchCommandGuaranteedTacos;
         if (fetchCommandGuaranteedTacos){
@@ -888,8 +864,8 @@ module.exports.calculateExtraTacos = function(userItemStats, command){
         // calculate fetch special stat
         var extraTacosTimesCDRChance = userItemStats.fetchCommandTacosTimesCDChancePercentage ? userItemStats.fetchCommandTacosTimesCDChancePercentage : 0
         var extraTacosTimesFetchCommand = userItemStats.fetchCommandTacosTimesCDHours ? userItemStats.fetchCommandTacosTimesCDHours : 0
-        extraTacosToRollOver = 1000 - (extraTacosTimesCDRChance * 1000);
-        extraTacosRoll = Math.floor(Math.random() * 1000) + 1;
+        var extraTacosToRollOver = 1000 - (extraTacosTimesCDRChance * 1000);
+        var extraTacosRoll = Math.floor(Math.random() * 1000) + 1;
         if (extraTacosRoll > extraTacosToRollOver){
             extraTacos = extraTacos +  extraTacosTimesFetchCommand;
         }
@@ -899,13 +875,8 @@ module.exports.calculateExtraTacos = function(userItemStats, command){
     }
     else if (command == "scavenge"){
         // roll for extra tacos
-        var extraTacosChance = userItemStats.scavengeCommandExtraTacosChancePercentage;
-        var extraTacosToRollOver = 1000 - (extraTacosChance * 1000);
-        var extraTacosRoll = Math.floor(Math.random() * 1000) + 1;
-
-        if (extraTacosRoll > extraTacosToRollOver){
-            extraTacos = userItemStats.scavengeCommandExtraTacos;
-        }
+        var extraTacosChancePairs = userItemStats.scavengeCommandExtraTacos;
+        extraTacos = extraTacos + calculateIndividualPairExtraTacos( extraTacosChancePairs );
         
         var scavengeCommandGuaranteedTacos = userItemStats.scavengeCommandGuaranteedTacos;
         if (scavengeCommandGuaranteedTacos){
@@ -920,43 +891,43 @@ module.exports.calculateExtraTacos = function(userItemStats, command){
 
 }
 
-module.exports.calculateMinutesReduced = function (userItemStats, command){
+module.exports.calculateSecondsReduced = function (userItemStats, command){
     // use the command to figure out the CDR we are looking for
     // for each command
-    var minutesReduced = 0;
+    var secondsReduced = 0;
 
     if (command == "thank"){
-        var commandBaseTimeInMinutes = THANK_BASE_MINUTES;
-        minutesReduced = commandBaseTimeInMinutes * userItemStats.thankCommandCDRPercentage;
-        return minutesReduced
+        var commandBaseTimeInSeconds = THANK_BASE_SECONDS;
+        secondsReduced = commandBaseTimeInSeconds * userItemStats.thankCommandCDRPercentage;
+        return secondsReduced
     }
     else if (command == "sorry"){
-        var commandBaseTimeInMinutes = SORRY_BASE_MINUTES;
-        minutesReduced = commandBaseTimeInMinutes * userItemStats.sorryCommandCDRPercentage;
-        return minutesReduced
+        var commandBaseTimeInSeconds = SORRY_BASE_SECONDS;
+        secondsReduced = commandBaseTimeInSeconds * userItemStats.sorryCommandCDRPercentage;
+        return secondsReduced
     }
     else if (command == "cook"){
-        var commandBaseTimeInMinutes = COOK_BASE_MINUTES;
-        minutesReduced = commandBaseTimeInMinutes * userItemStats.cookCommandCDRPercentage;
-        return minutesReduced
+        var commandBaseTimeInSeconds = COOK_BASE_SECONDS;
+        secondsReduced = commandBaseTimeInSeconds * userItemStats.cookCommandCDRPercentage;
+        return secondsReduced
     }
     else if (command == "prepare"){
-        var commandBaseTimeInMinutes = PREPARE_BASE_MINUTES;
-        minutesReduced = commandBaseTimeInMinutes * userItemStats.prepareCommandCDRPercentage;
-        return minutesReduced
+        var commandBaseTimeInSeconds = PREPARE_BASE_SECONDS;
+        secondsReduced = commandBaseTimeInSeconds * userItemStats.prepareCommandCDRPercentage;
+        return secondsReduced
     }
     else if (command == "fetch"){
-        var commandBaseTimeInMinutes = FETCH_BASE_MINUTES;
-        minutesReduced = commandBaseTimeInMinutes * userItemStats.fetchCommandCDRPercentage;
-        return minutesReduced
+        var commandBaseTimeInSeconds = FETCH_BASE_SECONDS;
+        secondsReduced = commandBaseTimeInSeconds * userItemStats.fetchCommandCDRPercentage;
+        return secondsReduced
     }
     else if (command == "scavenge"){
-        var commandBaseTimeInMinutes = SCAVENGE_BASE_MINUTES;
-        minutesReduced = commandBaseTimeInMinutes * userItemStats.scavengeCommandCDRPercentage;
-        return minutesReduced
+        var commandBaseTimeInSeconds = SCAVENGE_BASE_SECONDS;
+        secondsReduced = commandBaseTimeInSeconds * userItemStats.scavengeCommandCDRPercentage;
+        return secondsReduced
     }
     else{
-        return minutesReduced;
+        return secondsReduced;
     }
 }
 
@@ -1062,38 +1033,32 @@ module.exports.getUserWearingStats = function(message, discordUserId, userData, 
                             else{
                                 var userItemStats = {};
                                 userItemStats.thankCommandCDRPercentage = 0;
-                                userItemStats.thankCommandExtraTacosChancePercentage = 0
-                                userItemStats.thankCommandExtraTacos = 0
+                                userItemStats.thankCommandExtraTacos = []
                                 userItemStats.thankCommandExperienceGain = 0
                                 userItemStats.thankCommandGuaranteedTacos = 0
                 
                                 userItemStats.sorryCommandCDRPercentage = 0;
-                                userItemStats.sorryCommandExtraTacosChancePercentage = 0
-                                userItemStats.sorryCommandExtraTacos = 0
+                                userItemStats.sorryCommandExtraTacos = []
                                 userItemStats.sorryCommandExperienceGain = 0
                                 userItemStats.sorryCommandGuaranteedTacos = 0
                             
                                 userItemStats.cookCommandCDRPercentage = 0;
-                                userItemStats.cookCommandExtraTacos = 0
-                                userItemStats.cookCommandExtraTacosChancePercentage = 0
+                                userItemStats.cookCommandExtraTacos = []
                                 userItemStats.cookCommandExperienceGain = 0
                                 userItemStats.cookCommandGuaranteedTacos = 0
                             
                                 userItemStats.prepareCommandCDRPercentage = 0;
-                                userItemStats.prepareCommandExtraTacos = 0
-                                userItemStats.prepareCommandExtraTacosChancePercentage = 0
+                                userItemStats.prepareCommandExtraTacos = []
                                 userItemStats.prepareCommandExperienceGain = 0
                                 userItemStats.prepareCommandGuaranteedTacos = 0
                             
                                 userItemStats.fetchCommandCDRPercentage = 0;
-                                userItemStats.fetchCommandExtraTacos = 0
-                                userItemStats.fetchCommandExtraTacosChancePercentage = 0
+                                userItemStats.fetchCommandExtraTacos = []
                                 userItemStats.fetchCommandExperienceGain = 0
                                 userItemStats.fetchCommandGuaranteedTacos = 0
                                         
                                 userItemStats.scavengeCommandCDRPercentage = 0;
-                                userItemStats.scavengeCommandExtraTacos = 0
-                                userItemStats.scavengeCommandExtraTacosChancePercentage = 0
+                                userItemStats.scavengeCommandExtraTacos = []
                                 userItemStats.scavengeCommandExperienceGain = 0
                                 userItemStats.scavengeCommandGuaranteedTacos = 0
                             
