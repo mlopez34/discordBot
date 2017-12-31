@@ -2651,7 +2651,7 @@ module.exports.slotsCommand = function(message, tacosBet){
     var discordUserId = message.author.id;
     // check that tacosBet is less than users tacos
     var bet = Math.floor(parseInt(tacosBet));
-    if (bet > 1 ){
+    if (bet > 19 ){
         profileDB.getUserProfileData(discordUserId, function(getProfileError, getProfileResponse){
             if (getProfileError){
                 // console.log(getProfileError);
@@ -2711,7 +2711,7 @@ module.exports.slotsCommand = function(message, tacosBet){
         })
     }
     else{
-        message.channel.send(message.author + " You must bet more than 1 taco when using slots!");
+        message.channel.send(message.author + " You must bet more than 19 tacos when using slots!");
     }
 }
 
