@@ -1346,7 +1346,7 @@ function processRpgTurn(message, event){
             }, event.TIMER - 15000);
 
             var turnTimeout = setTimeout (function(){ 
-                if (event.turn == turnToAttempt){
+                if (event.turn == turnToAttempt && event.status != "ended"){
                     processRpgTurn(message, event)
                 }
             }, event.TIMER);
