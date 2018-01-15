@@ -19,21 +19,21 @@ module.exports = {
             name: "Heal",
             abilityId: "tacoheal",
             heal: 70,
-            mdPercentage: 1.20
+            mdPercentage: 1.27
         },
         replenish : {
             name: "Replenish",
             abilityId: "replenish",
             special: "remove death",
             heal: 450,
-            mdPercentage: 1.8,
+            mdPercentage: 1.9,
             limitDefensive : true
         },
         bandaid : {
             name: "Bandaid",
             abilityId: "bandaid",
             heal: 20,
-            mdPercentage: 0.5,
+            mdPercentage: 0.6,
             special: "remove status"
         },
         orchatasip: {
@@ -43,7 +43,7 @@ module.exports = {
                 name: "Orchata Sip",
                 heal: 50,
                 emoji: "🥛",
-                mdPercentage: 1.4,
+                mdPercentage: 1.45,
                 healingOnHotApply: false,
                 turnsToExpire: 5,
                 healingOnDotExpire: false,
@@ -56,7 +56,7 @@ module.exports = {
             heal: 35,
             cooldown: 0,
             maxcooldown: 1,
-            mdPercentage: 0.55,
+            mdPercentage: 0.6,
             areawide: true,
             targets: "friendly"
         },
