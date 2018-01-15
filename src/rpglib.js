@@ -43,7 +43,7 @@ module.exports = {
                 name: "Orchata Sip",
                 heal: 50,
                 emoji: "🥛",
-                mdPercentage: 1.35,
+                mdPercentage: 1.4,
                 healingOnHotApply: false,
                 turnsToExpire: 5,
                 healingOnDotExpire: false,
