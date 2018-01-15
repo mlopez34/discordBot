@@ -19,7 +19,7 @@ module.exports = {
             name: "Heal",
             abilityId: "tacoheal",
             heal: 70,
-            mdPercentage: 1.37
+            mdPercentage: 1.15
         },
         replenish : {
             name: "Replenish",
@@ -43,7 +43,7 @@ module.exports = {
                 name: "Orchata Sip",
                 heal: 50,
                 emoji: "🥛",
-                mdPercentage: 1.5,
+                mdPercentage: 1.35,
                 healingOnHotApply: false,
                 turnsToExpire: 5,
                 healingOnDotExpire: false,
@@ -56,7 +56,7 @@ module.exports = {
             heal: 35,
             cooldown: 0,
             maxcooldown: 1,
-            mdPercentage: 0.65,
+            mdPercentage: 0.5,
             areawide: true,
             targets: "friendly"
         },
