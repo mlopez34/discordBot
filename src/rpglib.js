@@ -19,7 +19,7 @@ module.exports = {
             name: "Heal",
             abilityId: "tacoheal",
             heal: 70,
-            mdPercentage: 1.15
+            mdPercentage: 1.20
         },
         replenish : {
             name: "Replenish",
