@@ -43,7 +43,7 @@ module.exports = {
                 name: "Orchata Sip",
                 heal: 50,
                 emoji: "🥛",
-                mdPercentage: 1.35,
+                mdPercentage: 1.4,
                 healingOnHotApply: false,
                 turnsToExpire: 5,
                 healingOnDotExpire: false,
@@ -56,7 +56,7 @@ module.exports = {
             heal: 35,
             cooldown: 0,
             maxcooldown: 1,
-            mdPercentage: 0.5,
+            mdPercentage: 0.55,
             areawide: true,
             targets: "friendly"
         },
@@ -235,7 +235,7 @@ module.exports = {
             name: "Uppercut",
             abilityId: "uppercut",
             dmg: 50,
-            mdPercentage: 1,
+            adPercentage: 1,
             type: "physical",
             dot: {
                 name: "Uppercut",
