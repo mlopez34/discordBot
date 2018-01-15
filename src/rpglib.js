@@ -231,6 +231,24 @@ module.exports = {
                 damageOnExpire: 0
             }
         },
+        uppercut: {
+            name: "Uppercut",
+            abilityId: "uppercut",
+            dmg: 50,
+            mdPercentage: 1,
+            type: "physical",
+            dot: {
+                name: "Uppercut",
+                dmg: 20,
+                adPercentage: .8,
+                emoji : "🥊",
+                type: "physical",
+                damageOnDotApply: false,
+                turnsToExpire: 3,
+                damageOnDotExpire: false,
+                damageOnExpire: 0
+            }
+        },
         iceshards: {
             name: "Ice Shards",
             abilityId: "iceshards",
@@ -354,6 +372,18 @@ module.exports = {
                 name: "Guac",
                 mdPerDot: 0.2,
                 mdPercentage: 0.8,
+                dmg: 85
+            }
+        },
+        tackle: {
+            name: "Tackle",
+            abilityId: "tackle",
+            type: "physical",
+            special: {
+                name: "Tackle",
+                adPerDot: 0.2,
+                type: "physical",
+                adPercentage: 0.8,
                 dmg: 85
             }
         },
