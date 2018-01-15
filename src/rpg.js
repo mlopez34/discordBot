@@ -4128,6 +4128,53 @@ function processAbility(abilityObject, event){
                 }
             }
         }
+        else if (ability == "tackle"){
+            // deal damage depending on dots on target
+            var targetToDealDmg = abilityObject.target;
+            // dealing damage to enemies
+            if (event.enemies[targetToDealDmg]){
+                // deal damage to enemy
+                // check the number of dots on target
+                var numberOfDots = 0;
+                for (var status in event.enemies[targetToDealDmg].statuses){
+                    var statusToCheck = event.enemies[targetToDealDmg].statuses[status];
+                    if (statusToCheck.dot){
+                        numberOfDots++;
+                    }
+                }
+                rpgAbility.special.adPercentage = rpgAbility.special.adPercentage + rpgAbility.special.adPerDot * numberOfDots;
+
+                var damageToDeal = calculateDamageDealt(event, abilityCaster, abilityObject.target, rpgAbility.special)
+                // deal the damage                
+                var targetToDealDmgName = event.enemies[targetToDealDmg].name;
+                event.enemies[targetToDealDmg].hp = event.enemies[targetToDealDmg].hp - damageToDeal;
+                abilityToString = abilityToString + targetToDealDmgName + " took " + damageToDeal + " damage from " + rpgAbility.name + "\n";
+                if (event.enemies[targetToDealDmg].hp <= 0){
+                    abilityToString = abilityToString + hasDied(event, event.enemies[targetToDealDmg]);
+                }
+                
+            }
+            else if (event.membersInParty[targetToDealDmg]){
+                // dealing damage to party member
+                var numberOfDots = 0;
+                for (var status in event.membersInParty[targetToDealDmg].statuses){
+                    var statusToCheck = event.membersInParty[targetToDealDmg].statuses[status];
+                    if (statusToCheck.dot){
+                        numberOfDots++;
+                    }
+                }
+                rpgAbility.special.mdPercentage = rpgAbility.special.adPercentage + rpgAbility.special.mdPerDot * numberOfDots;
+
+                var damageToDeal = calculateDamageDealt(event, abilityCaster, abilityObject.target, rpgAbility.special)
+
+                var targetToDealDmgName = event.membersInParty[targetToDealDmg].name;
+                event.membersInParty[targetToDealDmg].hp = event.membersInParty[targetToDealDmg].hp - damageToDeal;
+                abilityToString = abilityToString + targetToDealDmgName + " took " + damageToDeal + " damage from " + rpgAbility.name + "\n";
+                if (event.membersInParty[targetToDealDmg].hp <= 0){
+                    abilityToString = abilityToString + hasDied( event, event.membersInParty[targetToDealDmg]);
+                }
+            }
+        }
         else if (ability == "finalfortune"){
             
         }
