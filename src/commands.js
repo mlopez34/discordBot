@@ -4296,6 +4296,30 @@ module.exports.timeTravelCommand = function(message, args, channel){
                 }
             }
         })
+    }else if (args.length > 1 && args[1] >= 325000000 && args[1] <= 326000000 && team.length == 1){
+        profileDB.getUserProfileData(discordUserId, function(profileErr, profileData){
+            if (profileErr){
+                // console.log (profileErr);
+            }else{
+                var stage = profileData.data.timetravelqueststage;
+
+                if (stage == 7){
+                    var questData = {
+                        year: args[1]
+                    }
+                    quest.questHandler(message, discordUserId, "timetravel", stage, team, questData, channel)
+                }
+                else if (stage == 8){
+                    var questData = {
+                        year: args[1]
+                    }
+                    quest.questHandler(message, discordUserId, "timetravel", stage, team, questData, channel)
+                }
+                else{
+                    message.channel.send("traveled to the year " + args[1])
+                }
+            }
+        })
     }
 }
 

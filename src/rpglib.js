@@ -1795,7 +1795,7 @@ module.exports = {
                     spirit: 1500,
                     difficulty: "special",
                     element: "earth"
-                },
+                }
             ],
             "island": [
                 {
@@ -1929,7 +1929,7 @@ module.exports = {
                     spirit: 1500,
                     difficulty: "special",
                     element: "earth"
-                },
+                }
             ],
             "corruptedOvermind": [
                 {
@@ -2064,7 +2064,252 @@ module.exports = {
                     difficulty: "special",
                     element: "earth"
                 },
-            ]
+            ],
+            "hounds": [
+                {
+                    name: "Pack Leader",
+                    abilities: [
+                        "attack",
+                        "attack",
+                        "rockthrow",
+                        "rockthrow",
+                        "slash",
+                        "slash",
+                        "poke",
+                        "shield"
+                        // TODO: earthquake
+                    ],
+                    buffs: [
+                        {
+                            name: "frenzy",
+                            emoji: "😡",
+                            onTurnEnd: {
+                                attackDmgPlus : 105,
+                                magicDmgPlus : 105,
+                                everyNTurns: 2,
+                                startTurn: 3
+                            }
+                        }
+                    ],
+                    hp: 7600,
+                    attackDmg: 300,
+                    magicDmg: 270,
+                    armor: 1750,
+                    spirit: 1500,
+                    difficulty: "special",
+                    element: "earth"
+                }
+            ],
+            "vampireSwarm": [
+                {
+                    name: "Enraged Vampire",
+                    abilities: [
+                        "attack",
+                        "attack",
+                        "rockthrow",
+                        "rockthrow",
+                        "slash",
+                        "slash",
+                        "poke",
+                        "shield"
+                        // TODO: earthquake
+                    ],
+                    buffs: [
+                        {
+                            name: "frenzy",
+                            emoji: "😡",
+                            onTurnEnd: {
+                                attackDmgPlus : 105,
+                                magicDmgPlus : 105,
+                                everyNTurns: 2,
+                                startTurn: 3
+                            }
+                        }
+                    ],
+                    hp: 7600,
+                    attackDmg: 300,
+                    magicDmg: 270,
+                    armor: 1750,
+                    spirit: 1500,
+                    difficulty: "special",
+                    element: "earth"
+                }
+            ],
+            "gateKeeper": [
+                {
+                    name: "The Gatekeeper",
+                    abilities: [
+                        "attack",
+                        "attack",
+                        "rockthrow",
+                        "rockthrow",
+                        "slash",
+                        "slash",
+                        "poke",
+                        "shield"
+                        // TODO: earthquake
+                    ],
+                    buffs: [
+                        {
+                            name: "frenzy",
+                            emoji: "😡",
+                            onTurnEnd: {
+                                attackDmgPlus : 105,
+                                magicDmgPlus : 105,
+                                everyNTurns: 2,
+                                startTurn: 3
+                            }
+                        }
+                    ],
+                    hp: 7600,
+                    attackDmg: 300,
+                    magicDmg: 270,
+                    armor: 1750,
+                    spirit: 1500,
+                    difficulty: "special",
+                    element: "earth"
+                }
+            ],
+            "vampireCouncil": [
+                {
+                    name: "Archvampire",
+                    abilities: [
+                        "attack",
+                        "attack",
+                        "rockthrow",
+                        "rockthrow",
+                        "slash",
+                        "slash",
+                        "poke",
+                        "shield"
+                        // TODO: earthquake
+                    ],
+                    buffs: [
+                        {
+                            name: "frenzy",
+                            emoji: "😡",
+                            onTurnEnd: {
+                                attackDmgPlus : 105,
+                                magicDmgPlus : 105,
+                                everyNTurns: 2,
+                                startTurn: 3
+                            }
+                        }
+                    ],
+                    hp: 7600,
+                    attackDmg: 300,
+                    magicDmg: 270,
+                    armor: 1750,
+                    spirit: 1500,
+                    difficulty: "special",
+                    element: "earth"
+                }
+            ],
+            "legion": [
+                {
+                    name: "Servant of Andromalius",
+                    abilities: [
+                        "attack",
+                        "attack",
+                        "rockthrow",
+                        "rockthrow",
+                        "slash",
+                        "slash",
+                        "poke",
+                        "shield"
+                        // TODO: earthquake
+                    ],
+                    buffs: [
+                        {
+                            name: "frenzy",
+                            emoji: "😡",
+                            onTurnEnd: {
+                                attackDmgPlus : 105,
+                                magicDmgPlus : 105,
+                                everyNTurns: 2,
+                                startTurn: 3
+                            }
+                        }
+                    ],
+                    hp: 7600,
+                    attackDmg: 300,
+                    magicDmg: 270,
+                    armor: 1750,
+                    spirit: 1500,
+                    difficulty: "special",
+                    element: "earth"
+                }
+            ],
+            "andromalius": [
+                {
+                    name: "Andromalius",
+                    abilities: [
+                        "attack",
+                        "attack",
+                        "rockthrow",
+                        "rockthrow",
+                        "slash",
+                        "slash",
+                        "poke",
+                        "shield"
+                        // TODO: earthquake
+                    ],
+                    buffs: [
+                        {
+                            name: "frenzy",
+                            emoji: "😡",
+                            onTurnEnd: {
+                                attackDmgPlus : 105,
+                                magicDmgPlus : 105,
+                                everyNTurns: 2,
+                                startTurn: 3
+                            }
+                        }
+                    ],
+                    hp: 7600,
+                    attackDmg: 300,
+                    magicDmg: 270,
+                    armor: 1750,
+                    spirit: 1500,
+                    difficulty: "special",
+                    element: "earth"
+                }
+            ],
+            "evilExes": [
+                {
+                    name: "Seventh Evil Ex",
+                    abilities: [
+                        "attack",
+                        "attack",
+                        "rockthrow",
+                        "rockthrow",
+                        "slash",
+                        "slash",
+                        "poke",
+                        "shield"
+                        // TODO: earthquake
+                    ],
+                    buffs: [
+                        {
+                            name: "frenzy",
+                            emoji: "😡",
+                            onTurnEnd: {
+                                attackDmgPlus : 105,
+                                magicDmgPlus : 105,
+                                everyNTurns: 2,
+                                startTurn: 3
+                            }
+                        }
+                    ],
+                    hp: 7600,
+                    attackDmg: 300,
+                    magicDmg: 270,
+                    armor: 1750,
+                    spirit: 1500,
+                    difficulty: "special",
+                    element: "earth"
+                }
+            ],
         },
         challenge: {
             // 1 : 1 boss, 1 hard, 2 mediums, 1 easy
@@ -2769,8 +3014,8 @@ module.exports = {
                         hp: 67000,
                         adPerPartyMember: 0,
                         mdPerPartyMember: 0,
-                        attackDmg: 1070,
-                        magicDmg: 690,
+                        attackDmg: 1100,
+                        magicDmg: 750,
                         armor: 2350,
                         spirit: 2350,
                         difficulty: "boss",
