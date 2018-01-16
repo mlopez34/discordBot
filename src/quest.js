@@ -864,6 +864,478 @@ function handleTimeMachineArtifactStageSix(message, discordUserId, stage, team, 
 ** Demonic Artifact Stages
 */
 
+// embed
+function handleTimeMachineArtifactStageOne(message, discordUserId, stage, team, year, channel){
+    var questData = {
+        questname: "timetravel",
+        message: message,
+        year: year,
+        stage: stage,
+        storyStep: 1
+    }
+    var descriptionString = exports.questStringBuilder("timetravel", questData);
+    // travel to the year 1211 and defeat genghis khan before he invades
+    const embed = new Discord.RichEmbed()
+    .setDescription(descriptionString)
+    .setThumbnail("https://i.imgur.com/5loQua9.png")
+    .setColor(0xFF7A1C)
+    message.channel.send({embed})
+    .then(function (sentMessage) {
+        activeQuests["quest-"+sentMessage.id] = { id: discordUserId, username: message.author.username };
+        var storytell = setTimeout (function(){
+            questData.storyStep = questData.storyStep + 1;            
+            var descriptionString = exports.questStringBuilder("timetravel", questData);
+            embed.setDescription(descriptionString)
+            sentMessage.edit({embed})
+        }, 10000);
+        
+        var storytell = setTimeout (function(){ 
+            questData.storyStep = questData.storyStep + 1;
+            var descriptionString = exports.questStringBuilder("timetravel", questData);
+            embed.setDescription(descriptionString)
+            .addField("Gather supplies", "You may pick up one supply from the list...  ")
+            sentMessage.edit({embed})
+
+            sentMessage.react("🏮")
+            sentMessage.react("🍱")
+            sentMessage.react("📦")
+            //sentMessage.react("🛋️")
+            sentMessage.react("🚪")
+            sentMessage.react("🏯")
+            //sentMessage.react("🏚️")
+            //sentMessage.react("🕳️")
+            //sentMessage.react("🗄️")
+            //sentMessage.react("⚰️")
+            sentMessage.react("🎨")
+        }, 20000);
+        // reactions for user
+        // porcelain vase, kitchen table, wooden box, chair, wardrobe, interrogation room, 
+        // cellar, irrigation ditch, blacksmith toolbox, coffin, art gallery
+        
+        var supplies = new Discord.ReactionCollector(sentMessage, function(){ return true; } , { time: 60000, max: 1000, maxEmojis: 100, maxUsers: 100 } );
+        supplies.on('collect', function(element, collector){
+            // remove the reaction if the user already reacted
+            console.log(element)
+            element.users.forEach(function(user){
+                if (!user.bot){
+                    var userId = user.id;
+                    collector.collected.forEach(function(reaction){
+                        console.log(reaction);
+                        reaction.users.forEach(function(collectorUser){
+                            if (!collectorUser.bot){
+                                var collectorUser = collectorUser.id;
+                                if (collectorUser == userId && element.emoji.name != reaction.emoji.name){
+                                    // remove the reaction by the user
+                                    element.remove(userId)
+                                }
+                                // TODO: check if everyone has gathered supplies if they have then do supplies.stop
+                            }
+                        })
+                    })
+                }
+            })
+        })
+        supplies.on('end', function(collected, reason){
+            // TODO: hand out the supplies to each team member
+            var leaderOfGroup;
+            var leaderOfGroupUsername;
+            var idOfQuest;
+            var reactionCount = 0;
+            collected.forEach(function(reactionEmoji){
+                leaderOfGroup = activeQuests["quest-" + reactionEmoji.message.id].id; // discord id of leader
+                leaderOfGroupUsername = activeQuests["quest-" + reactionEmoji.message.id].username;
+                idOfQuest = "quest-" + reactionEmoji.message.id;
+                if (reactionEmoji._emoji.name == "🌮"){
+                    reactionEmoji.users.forEach(function(user){
+                        if (!user.bot && ownerOfTable != user.id){
+                            questFindRewards(message, user, "🌮", "taco")
+                            reactionCount++;
+                        }
+                    })
+                }
+                else if (reactionEmoji._emoji.name == "🍹"){
+                    reactionEmoji.users.forEach(function(user){
+                        if (!user.bot && ownerOfTable != user.id){
+                            questFindRewards(message, user, "🍹", "terrycloth")
+                            reactionCount++;
+                        }
+                    })
+                }
+                else if (reactionEmoji._emoji.name == "💃🏼"){
+                    reactionEmoji.users.forEach(function(user){
+                        if (!user.bot && ownerOfTable != user.id){
+                            questFindRewards(message, user, "💃🏼", "rock")
+                            reactionCount++;
+                        }
+                    })
+                }
+            })
+            // collected all supplies move the user to the next stage and call self on stage 2
+            profileDB.updateQuestlineStage(discordUserId, questData.questname, stage + 1, function(error, updateRes){
+                if (error){
+                    console.log(error);
+                }else{
+                    // call self with new stage
+                    if (activeQuests[idOfQuest]){
+                        delete activeQuests[idOfQuest];
+                    }
+                    message.channel.send("next stage");
+                    exports.questHandler(message, discordUserId, "timetravel", stage + 1, team, year, channel)
+                }
+            })
+        })
+
+    })
+}
+// embed
+function handleTimeMachineArtifactStageOne(message, discordUserId, stage, team, year, channel){
+    var questData = {
+        questname: "timetravel",
+        message: message,
+        year: year,
+        stage: stage,
+        storyStep: 1
+    }
+    var descriptionString = exports.questStringBuilder("timetravel", questData);
+    // travel to the year 1211 and defeat genghis khan before he invades
+    const embed = new Discord.RichEmbed()
+    .setDescription(descriptionString)
+    .setThumbnail("https://i.imgur.com/5loQua9.png")
+    .setColor(0xFF7A1C)
+    message.channel.send({embed})
+    .then(function (sentMessage) {
+        activeQuests["quest-"+sentMessage.id] = { id: discordUserId, username: message.author.username };
+        var storytell = setTimeout (function(){
+            questData.storyStep = questData.storyStep + 1;            
+            var descriptionString = exports.questStringBuilder("timetravel", questData);
+            embed.setDescription(descriptionString)
+            sentMessage.edit({embed})
+        }, 10000);
+        
+        var storytell = setTimeout (function(){ 
+            questData.storyStep = questData.storyStep + 1;
+            var descriptionString = exports.questStringBuilder("timetravel", questData);
+            embed.setDescription(descriptionString)
+            .addField("Gather supplies", "You may pick up one supply from the list...  ")
+            sentMessage.edit({embed})
+
+            sentMessage.react("🏮")
+            sentMessage.react("🍱")
+            sentMessage.react("📦")
+            //sentMessage.react("🛋️")
+            sentMessage.react("🚪")
+            sentMessage.react("🏯")
+            //sentMessage.react("🏚️")
+            //sentMessage.react("🕳️")
+            //sentMessage.react("🗄️")
+            //sentMessage.react("⚰️")
+            sentMessage.react("🎨")
+        }, 20000);
+        // reactions for user
+        // porcelain vase, kitchen table, wooden box, chair, wardrobe, interrogation room, 
+        // cellar, irrigation ditch, blacksmith toolbox, coffin, art gallery
+        
+        var supplies = new Discord.ReactionCollector(sentMessage, function(){ return true; } , { time: 60000, max: 1000, maxEmojis: 100, maxUsers: 100 } );
+        supplies.on('collect', function(element, collector){
+            // remove the reaction if the user already reacted
+            console.log(element)
+            element.users.forEach(function(user){
+                if (!user.bot){
+                    var userId = user.id;
+                    collector.collected.forEach(function(reaction){
+                        console.log(reaction);
+                        reaction.users.forEach(function(collectorUser){
+                            if (!collectorUser.bot){
+                                var collectorUser = collectorUser.id;
+                                if (collectorUser == userId && element.emoji.name != reaction.emoji.name){
+                                    // remove the reaction by the user
+                                    element.remove(userId)
+                                }
+                                // TODO: check if everyone has gathered supplies if they have then do supplies.stop
+                            }
+                        })
+                    })
+                }
+            })
+        })
+        supplies.on('end', function(collected, reason){
+            // TODO: hand out the supplies to each team member
+            var leaderOfGroup;
+            var leaderOfGroupUsername;
+            var idOfQuest;
+            var reactionCount = 0;
+            collected.forEach(function(reactionEmoji){
+                leaderOfGroup = activeQuests["quest-" + reactionEmoji.message.id].id; // discord id of leader
+                leaderOfGroupUsername = activeQuests["quest-" + reactionEmoji.message.id].username;
+                idOfQuest = "quest-" + reactionEmoji.message.id;
+                if (reactionEmoji._emoji.name == "🌮"){
+                    reactionEmoji.users.forEach(function(user){
+                        if (!user.bot && ownerOfTable != user.id){
+                            questFindRewards(message, user, "🌮", "taco")
+                            reactionCount++;
+                        }
+                    })
+                }
+                else if (reactionEmoji._emoji.name == "🍹"){
+                    reactionEmoji.users.forEach(function(user){
+                        if (!user.bot && ownerOfTable != user.id){
+                            questFindRewards(message, user, "🍹", "terrycloth")
+                            reactionCount++;
+                        }
+                    })
+                }
+                else if (reactionEmoji._emoji.name == "💃🏼"){
+                    reactionEmoji.users.forEach(function(user){
+                        if (!user.bot && ownerOfTable != user.id){
+                            questFindRewards(message, user, "💃🏼", "rock")
+                            reactionCount++;
+                        }
+                    })
+                }
+            })
+            // collected all supplies move the user to the next stage and call self on stage 2
+            profileDB.updateQuestlineStage(discordUserId, questData.questname, stage + 1, function(error, updateRes){
+                if (error){
+                    console.log(error);
+                }else{
+                    // call self with new stage
+                    if (activeQuests[idOfQuest]){
+                        delete activeQuests[idOfQuest];
+                    }
+                    message.channel.send("next stage");
+                    exports.questHandler(message, discordUserId, "timetravel", stage + 1, team, year, channel)
+                }
+            })
+        })
+
+    })
+}
+// embed
+function handleTimeMachineArtifactStageOne(message, discordUserId, stage, team, year, channel){
+    var questData = {
+        questname: "timetravel",
+        message: message,
+        year: year,
+        stage: stage,
+        storyStep: 1
+    }
+    var descriptionString = exports.questStringBuilder("timetravel", questData);
+    // travel to the year 1211 and defeat genghis khan before he invades
+    const embed = new Discord.RichEmbed()
+    .setDescription(descriptionString)
+    .setThumbnail("https://i.imgur.com/5loQua9.png")
+    .setColor(0xFF7A1C)
+    message.channel.send({embed})
+    .then(function (sentMessage) {
+        activeQuests["quest-"+sentMessage.id] = { id: discordUserId, username: message.author.username };
+        var storytell = setTimeout (function(){
+            questData.storyStep = questData.storyStep + 1;            
+            var descriptionString = exports.questStringBuilder("timetravel", questData);
+            embed.setDescription(descriptionString)
+            sentMessage.edit({embed})
+        }, 10000);
+        
+        var storytell = setTimeout (function(){ 
+            questData.storyStep = questData.storyStep + 1;
+            var descriptionString = exports.questStringBuilder("timetravel", questData);
+            embed.setDescription(descriptionString)
+            .addField("Gather supplies", "You may pick up one supply from the list...  ")
+            sentMessage.edit({embed})
+
+            sentMessage.react("🏮")
+            sentMessage.react("🍱")
+            sentMessage.react("📦")
+            //sentMessage.react("🛋️")
+            sentMessage.react("🚪")
+            sentMessage.react("🏯")
+            //sentMessage.react("🏚️")
+            //sentMessage.react("🕳️")
+            //sentMessage.react("🗄️")
+            //sentMessage.react("⚰️")
+            sentMessage.react("🎨")
+        }, 20000);
+        // reactions for user
+        // porcelain vase, kitchen table, wooden box, chair, wardrobe, interrogation room, 
+        // cellar, irrigation ditch, blacksmith toolbox, coffin, art gallery
+        
+        var supplies = new Discord.ReactionCollector(sentMessage, function(){ return true; } , { time: 60000, max: 1000, maxEmojis: 100, maxUsers: 100 } );
+        supplies.on('collect', function(element, collector){
+            // remove the reaction if the user already reacted
+            console.log(element)
+            element.users.forEach(function(user){
+                if (!user.bot){
+                    var userId = user.id;
+                    collector.collected.forEach(function(reaction){
+                        console.log(reaction);
+                        reaction.users.forEach(function(collectorUser){
+                            if (!collectorUser.bot){
+                                var collectorUser = collectorUser.id;
+                                if (collectorUser == userId && element.emoji.name != reaction.emoji.name){
+                                    // remove the reaction by the user
+                                    element.remove(userId)
+                                }
+                                // TODO: check if everyone has gathered supplies if they have then do supplies.stop
+                            }
+                        })
+                    })
+                }
+            })
+        })
+        supplies.on('end', function(collected, reason){
+            // TODO: hand out the supplies to each team member
+            var leaderOfGroup;
+            var leaderOfGroupUsername;
+            var idOfQuest;
+            var reactionCount = 0;
+            collected.forEach(function(reactionEmoji){
+                leaderOfGroup = activeQuests["quest-" + reactionEmoji.message.id].id; // discord id of leader
+                leaderOfGroupUsername = activeQuests["quest-" + reactionEmoji.message.id].username;
+                idOfQuest = "quest-" + reactionEmoji.message.id;
+                if (reactionEmoji._emoji.name == "🌮"){
+                    reactionEmoji.users.forEach(function(user){
+                        if (!user.bot && ownerOfTable != user.id){
+                            questFindRewards(message, user, "🌮", "taco")
+                            reactionCount++;
+                        }
+                    })
+                }
+                else if (reactionEmoji._emoji.name == "🍹"){
+                    reactionEmoji.users.forEach(function(user){
+                        if (!user.bot && ownerOfTable != user.id){
+                            questFindRewards(message, user, "🍹", "terrycloth")
+                            reactionCount++;
+                        }
+                    })
+                }
+                else if (reactionEmoji._emoji.name == "💃🏼"){
+                    reactionEmoji.users.forEach(function(user){
+                        if (!user.bot && ownerOfTable != user.id){
+                            questFindRewards(message, user, "💃🏼", "rock")
+                            reactionCount++;
+                        }
+                    })
+                }
+            })
+            // collected all supplies move the user to the next stage and call self on stage 2
+            profileDB.updateQuestlineStage(discordUserId, questData.questname, stage + 1, function(error, updateRes){
+                if (error){
+                    console.log(error);
+                }else{
+                    // call self with new stage
+                    if (activeQuests[idOfQuest]){
+                        delete activeQuests[idOfQuest];
+                    }
+                    message.channel.send("next stage");
+                    exports.questHandler(message, discordUserId, "timetravel", stage + 1, team, year, channel)
+                }
+            })
+        })
+
+    })
+}
+// rpg
+function handleTimeMachineArtifactStageTwo(message, discordUserId, stage, team, year, channel){
+    // send embed that Ghenghis Khan's forces have reached the capital, 
+    var questData = {
+        questname: "timetravel",
+        message: message,
+        year: year,
+        stage: stage,
+        storyStep: 1
+    }
+    var special = {
+        questName: "genghis khan",
+        questData: questData,
+        avatar: "https://i.imgur.com/5loQua9.png",
+        reward: {
+            type: "note" , // could be item
+            fieldTitle: "A scroll was found on one of the general's bodies",
+            note: "travel to the year 1250 BC to defeat the trojans",
+            questline: "timetravelqueststage",
+            stageAdvance: stage + 1
+        }
+    }
+    var descriptionString = exports.questStringBuilder("timetravel", questData);
+    // travel to the year 1211 and defeat genghis khan before he invades
+    const embed = new Discord.RichEmbed()
+    .setDescription(descriptionString)
+    .setThumbnail("https://i.imgur.com/5loQua9.png")
+    .setColor(0xFF7A1C)
+    message.channel.send({embed})
+    .then(function(sentMessage){
+        var storytell = setTimeout (function(){
+            questData.storyStep = questData.storyStep + 1;
+            var descriptionString = exports.questStringBuilder("timetravel", questData);
+            embed.setDescription(descriptionString)
+            sentMessage.edit({embed})
+        }, 100);
+        
+        var storytell = setTimeout (function(){ 
+            questData.storyStep = questData.storyStep + 1;
+            var descriptionString = exports.questStringBuilder("timetravel", questData);
+            embed.setDescription(descriptionString)
+            sentMessage.edit({embed})
+
+        }, 200);
+
+        var storytell = setTimeout (function(){ 
+            rpg.rpgInitialize(message, special);
+            playMusicForQuest(channel, "genghisKhan")
+        }, 250);
+    })
+}
+// rpg
+function handleTimeMachineArtifactStageTwo(message, discordUserId, stage, team, year, channel){
+    // send embed that Ghenghis Khan's forces have reached the capital, 
+    var questData = {
+        questname: "timetravel",
+        message: message,
+        year: year,
+        stage: stage,
+        storyStep: 1
+    }
+    var special = {
+        questName: "genghis khan",
+        questData: questData,
+        avatar: "https://i.imgur.com/5loQua9.png",
+        reward: {
+            type: "note" , // could be item
+            fieldTitle: "A scroll was found on one of the general's bodies",
+            note: "travel to the year 1250 BC to defeat the trojans",
+            questline: "timetravelqueststage",
+            stageAdvance: stage + 1
+        }
+    }
+    var descriptionString = exports.questStringBuilder("timetravel", questData);
+    // travel to the year 1211 and defeat genghis khan before he invades
+    const embed = new Discord.RichEmbed()
+    .setDescription(descriptionString)
+    .setThumbnail("https://i.imgur.com/5loQua9.png")
+    .setColor(0xFF7A1C)
+    message.channel.send({embed})
+    .then(function(sentMessage){
+        var storytell = setTimeout (function(){
+            questData.storyStep = questData.storyStep + 1;
+            var descriptionString = exports.questStringBuilder("timetravel", questData);
+            embed.setDescription(descriptionString)
+            sentMessage.edit({embed})
+        }, 100);
+        
+        var storytell = setTimeout (function(){ 
+            questData.storyStep = questData.storyStep + 1;
+            var descriptionString = exports.questStringBuilder("timetravel", questData);
+            embed.setDescription(descriptionString)
+            sentMessage.edit({embed})
+
+        }, 200);
+
+        var storytell = setTimeout (function(){ 
+            rpg.rpgInitialize(message, special);
+            playMusicForQuest(channel, "genghisKhan")
+        }, 250);
+    })
+}
+
 /*
 ** Ring Artifact Stages
 */
@@ -1415,6 +1887,457 @@ function handleRingArtifactStageFive(message, discordUserId, stage, team, year, 
 /*
 ** Lincoln Tomb Artifact Stages
 */
+
+// embed
+function handleTimeMachineArtifactStageOne(message, discordUserId, stage, team, year, channel){
+    var questData = {
+        questname: "timetravel",
+        message: message,
+        year: year,
+        stage: stage,
+        storyStep: 1
+    }
+    var descriptionString = exports.questStringBuilder("timetravel", questData);
+    // travel to the year 1211 and defeat genghis khan before he invades
+    const embed = new Discord.RichEmbed()
+    .setDescription(descriptionString)
+    .setThumbnail("https://i.imgur.com/5loQua9.png")
+    .setColor(0xFF7A1C)
+    message.channel.send({embed})
+    .then(function (sentMessage) {
+        activeQuests["quest-"+sentMessage.id] = { id: discordUserId, username: message.author.username };
+        var storytell = setTimeout (function(){
+            questData.storyStep = questData.storyStep + 1;            
+            var descriptionString = exports.questStringBuilder("timetravel", questData);
+            embed.setDescription(descriptionString)
+            sentMessage.edit({embed})
+        }, 10000);
+        
+        var storytell = setTimeout (function(){ 
+            questData.storyStep = questData.storyStep + 1;
+            var descriptionString = exports.questStringBuilder("timetravel", questData);
+            embed.setDescription(descriptionString)
+            .addField("Gather supplies", "You may pick up one supply from the list...  ")
+            sentMessage.edit({embed})
+
+            sentMessage.react("🏮")
+            sentMessage.react("🍱")
+            sentMessage.react("📦")
+            //sentMessage.react("🛋️")
+            sentMessage.react("🚪")
+            sentMessage.react("🏯")
+            //sentMessage.react("🏚️")
+            //sentMessage.react("🕳️")
+            //sentMessage.react("🗄️")
+            //sentMessage.react("⚰️")
+            sentMessage.react("🎨")
+        }, 20000);
+        // reactions for user
+        // porcelain vase, kitchen table, wooden box, chair, wardrobe, interrogation room, 
+        // cellar, irrigation ditch, blacksmith toolbox, coffin, art gallery
+        
+        var supplies = new Discord.ReactionCollector(sentMessage, function(){ return true; } , { time: 60000, max: 1000, maxEmojis: 100, maxUsers: 100 } );
+        supplies.on('collect', function(element, collector){
+            // remove the reaction if the user already reacted
+            console.log(element)
+            element.users.forEach(function(user){
+                if (!user.bot){
+                    var userId = user.id;
+                    collector.collected.forEach(function(reaction){
+                        console.log(reaction);
+                        reaction.users.forEach(function(collectorUser){
+                            if (!collectorUser.bot){
+                                var collectorUser = collectorUser.id;
+                                if (collectorUser == userId && element.emoji.name != reaction.emoji.name){
+                                    // remove the reaction by the user
+                                    element.remove(userId)
+                                }
+                                // TODO: check if everyone has gathered supplies if they have then do supplies.stop
+                            }
+                        })
+                    })
+                }
+            })
+        })
+        supplies.on('end', function(collected, reason){
+            // TODO: hand out the supplies to each team member
+            var leaderOfGroup;
+            var leaderOfGroupUsername;
+            var idOfQuest;
+            var reactionCount = 0;
+            collected.forEach(function(reactionEmoji){
+                leaderOfGroup = activeQuests["quest-" + reactionEmoji.message.id].id; // discord id of leader
+                leaderOfGroupUsername = activeQuests["quest-" + reactionEmoji.message.id].username;
+                idOfQuest = "quest-" + reactionEmoji.message.id;
+                if (reactionEmoji._emoji.name == "🌮"){
+                    reactionEmoji.users.forEach(function(user){
+                        if (!user.bot && ownerOfTable != user.id){
+                            questFindRewards(message, user, "🌮", "taco")
+                            reactionCount++;
+                        }
+                    })
+                }
+                else if (reactionEmoji._emoji.name == "🍹"){
+                    reactionEmoji.users.forEach(function(user){
+                        if (!user.bot && ownerOfTable != user.id){
+                            questFindRewards(message, user, "🍹", "terrycloth")
+                            reactionCount++;
+                        }
+                    })
+                }
+                else if (reactionEmoji._emoji.name == "💃🏼"){
+                    reactionEmoji.users.forEach(function(user){
+                        if (!user.bot && ownerOfTable != user.id){
+                            questFindRewards(message, user, "💃🏼", "rock")
+                            reactionCount++;
+                        }
+                    })
+                }
+            })
+            // collected all supplies move the user to the next stage and call self on stage 2
+            profileDB.updateQuestlineStage(discordUserId, questData.questname, stage + 1, function(error, updateRes){
+                if (error){
+                    console.log(error);
+                }else{
+                    // call self with new stage
+                    if (activeQuests[idOfQuest]){
+                        delete activeQuests[idOfQuest];
+                    }
+                    message.channel.send("next stage");
+                    exports.questHandler(message, discordUserId, "timetravel", stage + 1, team, year, channel)
+                }
+            })
+        })
+
+    })
+}
+// rpg
+function handleTimeMachineArtifactStageTwo(message, discordUserId, stage, team, year, channel){
+    // send embed that Ghenghis Khan's forces have reached the capital, 
+    var questData = {
+        questname: "timetravel",
+        message: message,
+        year: year,
+        stage: stage,
+        storyStep: 1
+    }
+    var special = {
+        questName: "genghis khan",
+        questData: questData,
+        avatar: "https://i.imgur.com/5loQua9.png",
+        reward: {
+            type: "note" , // could be item
+            fieldTitle: "A scroll was found on one of the general's bodies",
+            note: "travel to the year 1250 BC to defeat the trojans",
+            questline: "timetravelqueststage",
+            stageAdvance: stage + 1
+        }
+    }
+    var descriptionString = exports.questStringBuilder("timetravel", questData);
+    // travel to the year 1211 and defeat genghis khan before he invades
+    const embed = new Discord.RichEmbed()
+    .setDescription(descriptionString)
+    .setThumbnail("https://i.imgur.com/5loQua9.png")
+    .setColor(0xFF7A1C)
+    message.channel.send({embed})
+    .then(function(sentMessage){
+        var storytell = setTimeout (function(){
+            questData.storyStep = questData.storyStep + 1;
+            var descriptionString = exports.questStringBuilder("timetravel", questData);
+            embed.setDescription(descriptionString)
+            sentMessage.edit({embed})
+        }, 100);
+        
+        var storytell = setTimeout (function(){ 
+            questData.storyStep = questData.storyStep + 1;
+            var descriptionString = exports.questStringBuilder("timetravel", questData);
+            embed.setDescription(descriptionString)
+            sentMessage.edit({embed})
+
+        }, 200);
+
+        var storytell = setTimeout (function(){ 
+            rpg.rpgInitialize(message, special);
+            playMusicForQuest(channel, "genghisKhan")
+        }, 250);
+    })
+}
+// rpg
+function handleTimeMachineArtifactStageTwo(message, discordUserId, stage, team, year, channel){
+    // send embed that Ghenghis Khan's forces have reached the capital, 
+    var questData = {
+        questname: "timetravel",
+        message: message,
+        year: year,
+        stage: stage,
+        storyStep: 1
+    }
+    var special = {
+        questName: "genghis khan",
+        questData: questData,
+        avatar: "https://i.imgur.com/5loQua9.png",
+        reward: {
+            type: "note" , // could be item
+            fieldTitle: "A scroll was found on one of the general's bodies",
+            note: "travel to the year 1250 BC to defeat the trojans",
+            questline: "timetravelqueststage",
+            stageAdvance: stage + 1
+        }
+    }
+    var descriptionString = exports.questStringBuilder("timetravel", questData);
+    // travel to the year 1211 and defeat genghis khan before he invades
+    const embed = new Discord.RichEmbed()
+    .setDescription(descriptionString)
+    .setThumbnail("https://i.imgur.com/5loQua9.png")
+    .setColor(0xFF7A1C)
+    message.channel.send({embed})
+    .then(function(sentMessage){
+        var storytell = setTimeout (function(){
+            questData.storyStep = questData.storyStep + 1;
+            var descriptionString = exports.questStringBuilder("timetravel", questData);
+            embed.setDescription(descriptionString)
+            sentMessage.edit({embed})
+        }, 100);
+        
+        var storytell = setTimeout (function(){ 
+            questData.storyStep = questData.storyStep + 1;
+            var descriptionString = exports.questStringBuilder("timetravel", questData);
+            embed.setDescription(descriptionString)
+            sentMessage.edit({embed})
+
+        }, 200);
+
+        var storytell = setTimeout (function(){ 
+            rpg.rpgInitialize(message, special);
+            playMusicForQuest(channel, "genghisKhan")
+        }, 250);
+    })
+}
+// rpg
+function handleTimeMachineArtifactStageTwo(message, discordUserId, stage, team, year, channel){
+    // send embed that Ghenghis Khan's forces have reached the capital, 
+    var questData = {
+        questname: "timetravel",
+        message: message,
+        year: year,
+        stage: stage,
+        storyStep: 1
+    }
+    var special = {
+        questName: "genghis khan",
+        questData: questData,
+        avatar: "https://i.imgur.com/5loQua9.png",
+        reward: {
+            type: "note" , // could be item
+            fieldTitle: "A scroll was found on one of the general's bodies",
+            note: "travel to the year 1250 BC to defeat the trojans",
+            questline: "timetravelqueststage",
+            stageAdvance: stage + 1
+        }
+    }
+    var descriptionString = exports.questStringBuilder("timetravel", questData);
+    // travel to the year 1211 and defeat genghis khan before he invades
+    const embed = new Discord.RichEmbed()
+    .setDescription(descriptionString)
+    .setThumbnail("https://i.imgur.com/5loQua9.png")
+    .setColor(0xFF7A1C)
+    message.channel.send({embed})
+    .then(function(sentMessage){
+        var storytell = setTimeout (function(){
+            questData.storyStep = questData.storyStep + 1;
+            var descriptionString = exports.questStringBuilder("timetravel", questData);
+            embed.setDescription(descriptionString)
+            sentMessage.edit({embed})
+        }, 100);
+        
+        var storytell = setTimeout (function(){ 
+            questData.storyStep = questData.storyStep + 1;
+            var descriptionString = exports.questStringBuilder("timetravel", questData);
+            embed.setDescription(descriptionString)
+            sentMessage.edit({embed})
+
+        }, 200);
+
+        var storytell = setTimeout (function(){ 
+            rpg.rpgInitialize(message, special);
+            playMusicForQuest(channel, "genghisKhan")
+        }, 250);
+    })
+}
+// embed
+function handleTimeMachineArtifactStageOne(message, discordUserId, stage, team, year, channel){
+    var questData = {
+        questname: "timetravel",
+        message: message,
+        year: year,
+        stage: stage,
+        storyStep: 1
+    }
+    var descriptionString = exports.questStringBuilder("timetravel", questData);
+    // travel to the year 1211 and defeat genghis khan before he invades
+    const embed = new Discord.RichEmbed()
+    .setDescription(descriptionString)
+    .setThumbnail("https://i.imgur.com/5loQua9.png")
+    .setColor(0xFF7A1C)
+    message.channel.send({embed})
+    .then(function (sentMessage) {
+        activeQuests["quest-"+sentMessage.id] = { id: discordUserId, username: message.author.username };
+        var storytell = setTimeout (function(){
+            questData.storyStep = questData.storyStep + 1;            
+            var descriptionString = exports.questStringBuilder("timetravel", questData);
+            embed.setDescription(descriptionString)
+            sentMessage.edit({embed})
+        }, 10000);
+        
+        var storytell = setTimeout (function(){ 
+            questData.storyStep = questData.storyStep + 1;
+            var descriptionString = exports.questStringBuilder("timetravel", questData);
+            embed.setDescription(descriptionString)
+            .addField("Gather supplies", "You may pick up one supply from the list...  ")
+            sentMessage.edit({embed})
+
+            sentMessage.react("🏮")
+            sentMessage.react("🍱")
+            sentMessage.react("📦")
+            //sentMessage.react("🛋️")
+            sentMessage.react("🚪")
+            sentMessage.react("🏯")
+            //sentMessage.react("🏚️")
+            //sentMessage.react("🕳️")
+            //sentMessage.react("🗄️")
+            //sentMessage.react("⚰️")
+            sentMessage.react("🎨")
+        }, 20000);
+        // reactions for user
+        // porcelain vase, kitchen table, wooden box, chair, wardrobe, interrogation room, 
+        // cellar, irrigation ditch, blacksmith toolbox, coffin, art gallery
+        
+        var supplies = new Discord.ReactionCollector(sentMessage, function(){ return true; } , { time: 60000, max: 1000, maxEmojis: 100, maxUsers: 100 } );
+        supplies.on('collect', function(element, collector){
+            // remove the reaction if the user already reacted
+            console.log(element)
+            element.users.forEach(function(user){
+                if (!user.bot){
+                    var userId = user.id;
+                    collector.collected.forEach(function(reaction){
+                        console.log(reaction);
+                        reaction.users.forEach(function(collectorUser){
+                            if (!collectorUser.bot){
+                                var collectorUser = collectorUser.id;
+                                if (collectorUser == userId && element.emoji.name != reaction.emoji.name){
+                                    // remove the reaction by the user
+                                    element.remove(userId)
+                                }
+                                // TODO: check if everyone has gathered supplies if they have then do supplies.stop
+                            }
+                        })
+                    })
+                }
+            })
+        })
+        supplies.on('end', function(collected, reason){
+            // TODO: hand out the supplies to each team member
+            var leaderOfGroup;
+            var leaderOfGroupUsername;
+            var idOfQuest;
+            var reactionCount = 0;
+            collected.forEach(function(reactionEmoji){
+                leaderOfGroup = activeQuests["quest-" + reactionEmoji.message.id].id; // discord id of leader
+                leaderOfGroupUsername = activeQuests["quest-" + reactionEmoji.message.id].username;
+                idOfQuest = "quest-" + reactionEmoji.message.id;
+                if (reactionEmoji._emoji.name == "🌮"){
+                    reactionEmoji.users.forEach(function(user){
+                        if (!user.bot && ownerOfTable != user.id){
+                            questFindRewards(message, user, "🌮", "taco")
+                            reactionCount++;
+                        }
+                    })
+                }
+                else if (reactionEmoji._emoji.name == "🍹"){
+                    reactionEmoji.users.forEach(function(user){
+                        if (!user.bot && ownerOfTable != user.id){
+                            questFindRewards(message, user, "🍹", "terrycloth")
+                            reactionCount++;
+                        }
+                    })
+                }
+                else if (reactionEmoji._emoji.name == "💃🏼"){
+                    reactionEmoji.users.forEach(function(user){
+                        if (!user.bot && ownerOfTable != user.id){
+                            questFindRewards(message, user, "💃🏼", "rock")
+                            reactionCount++;
+                        }
+                    })
+                }
+            })
+            // collected all supplies move the user to the next stage and call self on stage 2
+            profileDB.updateQuestlineStage(discordUserId, questData.questname, stage + 1, function(error, updateRes){
+                if (error){
+                    console.log(error);
+                }else{
+                    // call self with new stage
+                    if (activeQuests[idOfQuest]){
+                        delete activeQuests[idOfQuest];
+                    }
+                    message.channel.send("next stage");
+                    exports.questHandler(message, discordUserId, "timetravel", stage + 1, team, year, channel)
+                }
+            })
+        })
+
+    })
+}
+// rpg
+function handleTimeMachineArtifactStageTwo(message, discordUserId, stage, team, year, channel){
+    // send embed that Ghenghis Khan's forces have reached the capital, 
+    var questData = {
+        questname: "timetravel",
+        message: message,
+        year: year,
+        stage: stage,
+        storyStep: 1
+    }
+    var special = {
+        questName: "genghis khan",
+        questData: questData,
+        avatar: "https://i.imgur.com/5loQua9.png",
+        reward: {
+            type: "note" , // could be item
+            fieldTitle: "A scroll was found on one of the general's bodies",
+            note: "travel to the year 1250 BC to defeat the trojans",
+            questline: "timetravelqueststage",
+            stageAdvance: stage + 1
+        }
+    }
+    var descriptionString = exports.questStringBuilder("timetravel", questData);
+    // travel to the year 1211 and defeat genghis khan before he invades
+    const embed = new Discord.RichEmbed()
+    .setDescription(descriptionString)
+    .setThumbnail("https://i.imgur.com/5loQua9.png")
+    .setColor(0xFF7A1C)
+    message.channel.send({embed})
+    .then(function(sentMessage){
+        var storytell = setTimeout (function(){
+            questData.storyStep = questData.storyStep + 1;
+            var descriptionString = exports.questStringBuilder("timetravel", questData);
+            embed.setDescription(descriptionString)
+            sentMessage.edit({embed})
+        }, 100);
+        
+        var storytell = setTimeout (function(){ 
+            questData.storyStep = questData.storyStep + 1;
+            var descriptionString = exports.questStringBuilder("timetravel", questData);
+            embed.setDescription(descriptionString)
+            sentMessage.edit({embed})
+
+        }, 200);
+
+        var storytell = setTimeout (function(){ 
+            rpg.rpgInitialize(message, special);
+            playMusicForQuest(channel, "genghisKhan")
+        }, 250);
+    })
+}
 
 
 function artifactStartString(questline, discordUser, mentionedUsers){

@@ -2140,7 +2140,7 @@ function getProfileForAchievement(discordUserId, message, profileResponse){
     }
 }
 
-module.exports.raresCommand = function(message, args){
+module.exports.raresCommand = function(message, args, rarity){
     // get all items for the discord id
     var discordUserId = message.author.id;
     var includeDescriptions = false;
@@ -2185,31 +2185,36 @@ module.exports.raresCommand = function(message, args){
                 for (var index in allItemsResponse.data){
                     itemsMapbyId[allItemsResponse.data[index].id] = allItemsResponse.data[index];
                 }
-                raresEmbedBuilder(message, itemsInInventoryCountMap, itemsMapbyId, includeDescriptions);
+                raresEmbedBuilder(message, itemsInInventoryCountMap, itemsMapbyId, includeDescriptions, rarity);
 
             })
         }
     })
 }
 
-function raresEmbedBuilder(message, itemsMap, allItems, long){
+function raresEmbedBuilder(message, itemsMap, allItems, long, rarity){
     // create a field for each item and add the count
     const embed = new Discord.RichEmbed()
-    var inventoryStrings = [];
-    var inventoryString = "";
+    var inventoryStringsRegular = [];
+    var inventoryStringsImproved = [];
+    var inventoryStringsRefined = [];
+    var inventoryStringRegular = "";
+    var inventoryStringImproved = "";
+    var inventoryStringRefined = "";
     var fieldCount = 0
     for (var key in itemsMap) {
         if (itemsMap.hasOwnProperty(key)) {
-            // 
-            if (allItems[key] && (allItems[key].itemraritycategory == "rare"
-                || allItems[key].itemraritycategory == "rare+"
-                || allItems[key].itemraritycategory == "rare++"
-                || allItems[key].itemraritycategory == "ancient"
-                || allItems[key].itemraritycategory == "ancient+"
-                || allItems[key].itemraritycategory == "ancient++"
-                || allItems[key].itemraritycategory == "artifact"
-                || allItems[key].itemraritycategory == "artifact+"
-                || allItems[key].itemraritycategory == "myth")){
+            //
+            if ( allItems[key] && 
+                ( (allItems[key].itemraritycategory == "rare" && rarity == "rare")
+                || (allItems[key].itemraritycategory == "rare+" && rarity == "rare")
+                || (allItems[key].itemraritycategory == "rare++" && rarity == "rare")
+                || (allItems[key].itemraritycategory == "ancient" && rarity == "ancient")
+                || (allItems[key].itemraritycategory == "ancient+" && rarity == "ancient")
+                || (allItems[key].itemraritycategory == "ancient++" && rarity == "ancient")
+                || (allItems[key].itemraritycategory == "artifact" && rarity == "artifact")
+                || (allItems[key].itemraritycategory == "artifact+" && rarity == "artifact")
+                || (allItems[key].itemraritycategory == "myth" && rarity == "artifact")) ){
                 // console.log(key + " " + allItems[key].itemname)
                 
                 var emoji = "";
@@ -2241,24 +2246,91 @@ function raresEmbedBuilder(message, itemsMap, allItems, long){
                     embed.addField(emoji + " " + allItems[key].itemname, itemsMap[key] + " - " + allItems[key].itemslot + " - " + allItems[key].itemstatistics, true)
                     fieldCount++
                 }else{
-                    if (inventoryString.length > 900){
-                        inventoryStrings.push(inventoryString);
-                        inventoryString = "";
-                        inventoryString = emoji + "**"+allItems[key].itemname + "** - " +  itemsMap[key] + " - " + allItems[key].itemslot + "\n" + inventoryString;                        
-                    }else{
-                        inventoryString = emoji + "**"+allItems[key].itemname + "** - " +  itemsMap[key] + " - " + allItems[key].itemslot + "\n" + inventoryString;                        
+                    if (allItems[key].itemraritycategory == "rare" 
+                        || allItems[key].itemraritycategory == "ancient" 
+                        || allItems[key].itemraritycategory == "artifact" ){
+
+                        if (inventoryStringRegular.length > 900){
+                            inventoryStringsRegular.push(inventoryStringRegular);
+                            inventoryStringRegular = "";
+                            inventoryStringRegular = "**"+allItems[key].itemname + "** - " +  itemsMap[key] + " - " + allItems[key].itemslot + "\n" + inventoryStringRegular;                        
+                        }else{
+                            inventoryStringRegular = "**"+allItems[key].itemname + "** - " +  itemsMap[key] + " - " + allItems[key].itemslot + "\n" + inventoryStringRegular;                        
+                        }
+
+                    }else if (allItems[key].itemraritycategory == "rare+" 
+                        || allItems[key].itemraritycategory == "ancient+" 
+                        || allItems[key].itemraritycategory == "artifact+" ){
+
+                        if (inventoryStringImproved.length > 900){
+                            inventoryStringsImproved.push(inventoryStringImproved);
+                            inventoryStringImproved = "";
+                            inventoryStringImproved = "**"+allItems[key].itemname + "** - " +  itemsMap[key] + " - " + allItems[key].itemslot + "\n" + inventoryStringImproved;                        
+                        }else{
+                            inventoryStringImproved = "**"+allItems[key].itemname + "** - " +  itemsMap[key] + " - " + allItems[key].itemslot + "\n" + inventoryStringImproved;                        
+                        }
+
+                    }else if (allItems[key].itemraritycategory == "rare++" 
+                        || allItems[key].itemraritycategory == "ancient++" 
+                        || allItems[key].itemraritycategory == "myth" ){
+
+                        if (inventoryStringRefined.length > 900){
+                            inventoryStringsRefined.push(inventoryStringRefined);
+                            inventoryStringRefined = "";
+                            inventoryStringRefined = "**"+allItems[key].itemname + "** - " +  itemsMap[key] + " - " + allItems[key].itemslot + "\n" + inventoryStringRefined;                        
+                        }else{
+                            inventoryStringRefined = "**"+allItems[key].itemname + "** - " +  itemsMap[key] + " - " + allItems[key].itemslot + "\n" + inventoryStringRefined;                        
+                        }
+
                     }
+
                 }
             }
         }
     }
     // push the leftover
-    if (inventoryString.length > 0){
-        inventoryStrings.push(inventoryString);
+    if (inventoryStringRegular.length > 0){
+        inventoryStringsRegular.push(inventoryStringRegular);
+    }
+    if (inventoryStringImproved.length > 0){
+        inventoryStringsImproved.push(inventoryStringImproved);
+    }
+    if (inventoryStringRefined.length > 0){
+        inventoryStringsRefined.push(inventoryStringRefined);
     }
     if (!long){
-        for (var invString = inventoryStrings.length -1; invString >= 0; invString--){
-            embed.addField("Item Name  |  Count  |  Slot", inventoryStrings[invString], true)
+        for (var invString = inventoryStringsRefined.length -1; invString >= 0; invString--){
+            var emoji = ""
+            if ( rarity == "rare"){
+                emoji = ":diamonds: "
+            }else if (rarity == "ancient"){
+                emoji = ":star:  "
+            }else if (rarity == "artifact"){
+                emoji = ":diamond_shape_with_a_dot_inside: "
+            }
+            embed.addField(emoji + " Item Name  |  Count  |  Slot " + emoji, inventoryStringsRefined[invString], true)
+        }
+        for (var invString = inventoryStringsImproved.length -1; invString >= 0; invString--){
+            var emoji = ""
+            if ( rarity == "rare"){
+                emoji = ":large_blue_diamond: "
+            }else if (rarity == "ancient"){
+                emoji = ":large_orange_diamond: "
+            }else if (rarity == "artifact"){
+                emoji = ":diamond_shape_with_a_dot_inside: "
+            }
+            embed.addField(emoji + " Item Name  |  Count  |  Slot " + emoji, inventoryStringsImproved[invString], true)
+        }
+        for (var invString = inventoryStringsRegular.length -1; invString >= 0; invString--){
+            var emoji = ""
+            if ( rarity == "rare"){
+                emoji = ":small_blue_diamond: "
+            }else if (rarity == "ancient"){
+                emoji = ":small_orange_diamond: "
+            }else if (rarity == "artifact"){
+                emoji = ":diamond_shape_with_a_dot_inside: "
+            }
+            embed.addField(emoji + " Item Name  |  Count  |  Slot " + emoji, inventoryStringsRegular[invString], true)
         }
     }
     embed
