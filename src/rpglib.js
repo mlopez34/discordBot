@@ -357,11 +357,11 @@ module.exports = {
             type: "physical",
             special: {
                 name: "Drain",
-                adPercentage: 0.9,
+                adPercentage: 1,
                 dmg: 40,
-                heal: 40,
-                mdPercentage: 0.85,
-                healPercentage: 0.4
+                heal: 50,
+                mdPercentage: 0.9,
+                healPercentage: 0.55
             }
         },
         guac: {
