@@ -419,8 +419,7 @@ module.exports.rpgReady = function(message, itemsAvailable, amuletItemsById){
                 var lastrpgtime = userData.data.lastrpgtime;
                 if ((lastrpgtime && oneHourAgo > lastrpgtime) 
                     || isSpecialEvent 
-                    || !lastrpgtime
-                    ||  challengePicked == 6){
+                    || !lastrpgtime){
                     // get the user profile data
                     var userStats = userData.data;
 
@@ -1346,7 +1345,7 @@ function processRpgTurn(message, event){
             }, event.TIMER - 15000);
 
             var turnTimeout = setTimeout (function(){ 
-                if (event.turn == turnToAttempt){
+                if (event.turn == turnToAttempt && event.status != "ended"){
                     processRpgTurn(message, event)
                 }
             }, event.TIMER);
@@ -1481,7 +1480,11 @@ function eventEndedEmbedBuilder(message, event, partySuccess){
                 }
 
                 if (event.special.reward.questline && event.special.reward.stageAdvance){
-                    // TODO: advance the user to the next step of the questline
+                    // TODO: advance the user to the next step of the questline, create in artifacts case
+                    // Create the artifact for the user, timetravel = time machine
+                    // demonic = bow of andromalius
+                    // diamond = ring (linked souls)
+                    // abraham = vampire slaying pike
                     profileDB.updateQuestlineStage(event.leader.id, event.special.questData.questname, event.special.questData.stage + 1, function(error, updateRes){
                         if (error){
                             console.log(error);
@@ -1923,7 +1926,7 @@ function effectsOnTurnEnd(event){
                                                 var energize = rpgAbilities["energize"] ? JSON.parse(JSON.stringify(rpgAbilities["energize"])) : undefined;
                                                 energize.buff.expireOnTurn = currentTurn + energize.buff.turnsToExpire
                                                 event.enemies[enemy].buffs.push(energize.buff);
-                                                endOfTurnString = endOfTurnString + event.enemies[enemy].name + " gained Energized 🗡 +400, ☄️ + 400 \n\n"
+                                                endOfTurnString = endOfTurnString + event.enemies[enemy].name + " gained Energized 🗡 +350, ☄️ + 350 \n\n"
                                             }
                                             if (event.enemies[enemy].endOfTurnEvents[index].oneTimeCast){
                                                 event.enemies[enemy].endOfTurnEvents[index].invalid = true;
@@ -2866,7 +2869,7 @@ function calculateDamageReduced(statUsedToReduce){
     // formula = 100 / ((65 * 60 - 1716) / ARMOR + 1) OR 100 / ((45 * 60 - 1716.5) / SPIRIT + 1)
 
     // statUsedToReduce could be armor or spirit
-    var formula = 100 / ((65 * 80 - 1716) / statUsedToReduce + 1)
+    var formula = 100 / ((65 * 70 - 1716) / statUsedToReduce + 1)
     formula = formula * 0.01
     return formula;
 

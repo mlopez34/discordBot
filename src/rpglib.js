@@ -19,21 +19,21 @@ module.exports = {
             name: "Heal",
             abilityId: "tacoheal",
             heal: 70,
-            mdPercentage: 1.20
+            mdPercentage: 1.27
         },
         replenish : {
             name: "Replenish",
             abilityId: "replenish",
             special: "remove death",
             heal: 450,
-            mdPercentage: 1.8,
+            mdPercentage: 1.9,
             limitDefensive : true
         },
         bandaid : {
             name: "Bandaid",
             abilityId: "bandaid",
             heal: 20,
-            mdPercentage: 0.5,
+            mdPercentage: 0.6,
             special: "remove status"
         },
         orchatasip: {
@@ -43,7 +43,7 @@ module.exports = {
                 name: "Orchata Sip",
                 heal: 50,
                 emoji: "🥛",
-                mdPercentage: 1.4,
+                mdPercentage: 1.45,
                 healingOnHotApply: false,
                 turnsToExpire: 5,
                 healingOnDotExpire: false,
@@ -56,7 +56,7 @@ module.exports = {
             heal: 35,
             cooldown: 0,
             maxcooldown: 1,
-            mdPercentage: 0.55,
+            mdPercentage: 0.6,
             areawide: true,
             targets: "friendly"
         },
@@ -861,7 +861,7 @@ module.exports = {
                 turnsToExpire: 7,
                 abilityId: "energize",
                 affects: ["attackDmg", "magicDmg"],
-                additive: 400
+                additive: 350
             }
         },
         chaos: {
@@ -905,6 +905,7 @@ module.exports = {
             abilityId: "furnace",
             belongsToMember: true,
             processAbility: true,
+            ignoreFocus: true,
             validIfBuff: "redEnergyCrystal",
             name: "Furnace",
             type: "fire",
@@ -1046,11 +1047,11 @@ module.exports = {
                 hpPerPartyMember: 0,
                 adPerPartyMember: 0,
                 mdPerPartyMember: 0,
-                hp: 2500,
-                attackDmg: 130,
-                magicDmg: 130,
-                armor: 600,
-                spirit: 600,
+                hp: 3300,
+                attackDmg: 110,
+                magicDmg: 110,
+                armor: 700,
+                spirit: 700,
                 difficulty: "summoned",
                 element: "normal"
             },
@@ -1068,11 +1069,11 @@ module.exports = {
                 hpPerPartyMember: 0,
                 adPerPartyMember: 0,
                 mdPerPartyMember: 0,
-                hp: 5000,
+                hp: 5500,
                 attackDmg: 0,
                 magicDmg: 0,
-                armor: 300,
-                spirit: 300,
+                armor: 950,
+                spirit: 950,
                 difficulty: "summoned",
                 element: "normal"
             },
@@ -1089,8 +1090,8 @@ module.exports = {
                 hp: 8000,
                 attackDmg: 0,
                 magicDmg: 0,
-                armor: 300,
-                spirit: 300,
+                armor: 500,
+                spirit: 500,
                 difficulty: "summoned",
                 element: "normal"
             },
@@ -1107,8 +1108,8 @@ module.exports = {
                 hp: 8000,
                 attackDmg: 0,
                 magicDmg: 0,
-                armor: 300,
-                spirit: 300,
+                armor: 500,
+                spirit: 500,
                 difficulty: "summoned",
                 element: "normal"
             },
@@ -1125,8 +1126,8 @@ module.exports = {
                 hp: 8000,
                 attackDmg: 0,
                 magicDmg: 0,
-                armor: 300,
-                spirit: 300,
+                armor: 500,
+                spirit: 500,
                 difficulty: "summoned",
                 element: "normal"
             },
@@ -1143,8 +1144,8 @@ module.exports = {
                 hp: 8000,
                 attackDmg: 0,
                 magicDmg: 0,
-                armor: 300,
-                spirit: 300,
+                armor: 500,
+                spirit: 500,
                 difficulty: "summoned",
                 element: "normal"
             },
@@ -1161,8 +1162,8 @@ module.exports = {
                 hp: 8000,
                 attackDmg: 0,
                 magicDmg: 0,
-                armor: 300,
-                spirit: 300,
+                armor: 500,
+                spirit: 500,
                 difficulty: "summoned",
                 element: "normal"
             },
@@ -1179,8 +1180,8 @@ module.exports = {
                 hp: 8000,
                 attackDmg: 0,
                 magicDmg: 0,
-                armor: 300,
-                spirit: 300,
+                armor: 500,
+                spirit: 500,
                 difficulty: "summoned",
                 element: "normal"
             },
@@ -1211,10 +1212,10 @@ module.exports = {
                 adPerPartyMember: 0,
                 mdPerPartyMember: 0,
                 hp: 2300,
-                attackDmg: 300,
-                magicDmg: 200,
-                armor: 600,
-                spirit: 600,
+                attackDmg: 260,
+                magicDmg: 180,
+                armor: 700,
+                spirit: 700,
                 difficulty: "summoned",
                 element: "normal"
             },
@@ -1300,8 +1301,8 @@ module.exports = {
                 adPerPartyMember: 24,
                 mdPerPartyMember: 24,
                 hp: 6400,
-                attackDmg: 600,
-                magicDmg: 600,
+                attackDmg: 500,
+                magicDmg: 500,
                 armor: 1000,
                 spirit: 1000,
                 difficulty: "summoned",
@@ -1795,8 +1796,521 @@ module.exports = {
                     spirit: 1500,
                     difficulty: "special",
                     element: "earth"
+                }
+            ],
+            "island": [
+                {
+                    name: "Robot Overlord",
+                    abilities: [
+                        "attack",
+                        "attack",
+                        "rockthrow",
+                        "rockthrow",
+                        "slash",
+                        "slash",
+                        "poke",
+                        "shield"
+                        // TODO: earthquake
+                    ],
+                    buffs: [
+                        {
+                            name: "frenzy",
+                            emoji: "😡",
+                            onTurnEnd: {
+                                attackDmgPlus : 105,
+                                magicDmgPlus : 105,
+                                everyNTurns: 2,
+                                startTurn: 3
+                            }
+                        }
+                    ],
+                    hp: 7600,
+                    attackDmg: 300,
+                    magicDmg: 270,
+                    armor: 1750,
+                    spirit: 1500,
+                    difficulty: "special",
+                    element: "earth"
                 },
-            ]
+                {
+                    name: "Tormented Robot",
+                    abilities: [
+                        "attack",
+                        "attack",
+                        "rockthrow",
+                        "rockthrow",
+                        "slash",
+                        "slash",
+                        "poke",
+                        "tacowall"
+                        //TODO: meteor
+                    ],
+                    buffs: [
+                        {
+                            name: "frenzy",
+                            emoji: "😡",
+                            onTurnEnd: {
+                                attackDmgPlus : 105,
+                                magicDmgPlus : 105,
+                                everyNTurns: 2,
+                                startTurn: 2
+                            }
+                        }
+                    ],
+                    hp: 7600,
+                    attackDmg: 300,
+                    magicDmg: 270,
+                    armor: 1750,
+                    spirit: 1500,
+                    difficulty: "special",
+                    element: "earth"
+                },
+                {
+                    name: "Escaped Robot",
+                    abilities: [
+                        "attack",
+                        "attack",
+                        "rockthrow",
+                        "rockthrow",
+                        "slash",
+                        "slash",
+                        "poke",
+                        "tacowall"
+                        //TODO: meteor
+                    ],
+                    buffs: [
+                        {
+                            name: "frenzy",
+                            emoji: "😡",
+                            onTurnEnd: {
+                                attackDmgPlus : 105,
+                                magicDmgPlus : 105,
+                                everyNTurns: 2,
+                                startTurn: 2
+                            }
+                        }
+                    ],
+                    hp: 7600,
+                    attackDmg: 300,
+                    magicDmg: 270,
+                    armor: 1750,
+                    spirit: 1500,
+                    difficulty: "special",
+                    element: "earth"
+                },
+                {
+                    name: "Reactivated Robot",
+                    abilities: [
+                        "attack",
+                        "attack",
+                        "rockthrow",
+                        "rockthrow",
+                        "slash",
+                        "slash",
+                        "poke",
+                        "tacowall"
+                        //TODO: meteor
+                    ],
+                    buffs: [
+                        {
+                            name: "frenzy",
+                            emoji: "😡",
+                            onTurnEnd: {
+                                attackDmgPlus : 105,
+                                magicDmgPlus : 105,
+                                everyNTurns: 2,
+                                startTurn: 2
+                            }
+                        }
+                    ],
+                    hp: 7600,
+                    attackDmg: 300,
+                    magicDmg: 270,
+                    armor: 1750,
+                    spirit: 1500,
+                    difficulty: "special",
+                    element: "earth"
+                }
+            ],
+            "corruptedOvermind": [
+                {
+                    name: "Corrupted Overmind",
+                    abilities: [
+                        "attack",
+                        "attack",
+                        "rockthrow",
+                        "rockthrow",
+                        "slash",
+                        "slash",
+                        "poke",
+                        "shield"
+                        // TODO: earthquake
+                    ],
+                    buffs: [
+                        {
+                            name: "frenzy",
+                            emoji: "😡",
+                            onTurnEnd: {
+                                attackDmgPlus : 105,
+                                magicDmgPlus : 105,
+                                everyNTurns: 2,
+                                startTurn: 3
+                            }
+                        }
+                    ],
+                    hp: 7600,
+                    attackDmg: 300,
+                    magicDmg: 270,
+                    armor: 1750,
+                    spirit: 1500,
+                    difficulty: "special",
+                    element: "earth"
+                },
+                {
+                    name: "Overmind Minion",
+                    abilities: [
+                        "attack",
+                        "attack",
+                        "rockthrow",
+                        "rockthrow",
+                        "slash",
+                        "slash",
+                        "poke",
+                        "tacowall"
+                        //TODO: meteor
+                    ],
+                    buffs: [
+                        {
+                            name: "frenzy",
+                            emoji: "😡",
+                            onTurnEnd: {
+                                attackDmgPlus : 105,
+                                magicDmgPlus : 105,
+                                everyNTurns: 2,
+                                startTurn: 2
+                            }
+                        }
+                    ],
+                    hp: 7600,
+                    attackDmg: 300,
+                    magicDmg: 270,
+                    armor: 1750,
+                    spirit: 1500,
+                    difficulty: "special",
+                    element: "earth"
+                },
+                {
+                    name: "Dark Matter",
+                    abilities: [
+                        "attack",
+                        "attack",
+                        "rockthrow",
+                        "rockthrow",
+                        "slash",
+                        "slash",
+                        "poke",
+                        "tacowall"
+                        //TODO: meteor
+                    ],
+                    buffs: [
+                        {
+                            name: "frenzy",
+                            emoji: "😡",
+                            onTurnEnd: {
+                                attackDmgPlus : 105,
+                                magicDmgPlus : 105,
+                                everyNTurns: 2,
+                                startTurn: 2
+                            }
+                        }
+                    ],
+                    hp: 7600,
+                    attackDmg: 300,
+                    magicDmg: 270,
+                    armor: 1750,
+                    spirit: 1500,
+                    difficulty: "special",
+                    element: "earth"
+                },
+                {
+                    name: "Overcharged Neutrino",
+                    abilities: [
+                        "attack",
+                        "attack",
+                        "rockthrow",
+                        "rockthrow",
+                        "slash",
+                        "slash",
+                        "poke",
+                        "tacowall"
+                        //TODO: meteor
+                    ],
+                    buffs: [
+                        {
+                            name: "frenzy",
+                            emoji: "😡",
+                            onTurnEnd: {
+                                attackDmgPlus : 105,
+                                magicDmgPlus : 105,
+                                everyNTurns: 2,
+                                startTurn: 2
+                            }
+                        }
+                    ],
+                    hp: 7600,
+                    attackDmg: 300,
+                    magicDmg: 270,
+                    armor: 1750,
+                    spirit: 1500,
+                    difficulty: "special",
+                    element: "earth"
+                },
+            ],
+            "hounds": [
+                {
+                    name: "Pack Leader",
+                    abilities: [
+                        "attack",
+                        "attack",
+                        "rockthrow",
+                        "rockthrow",
+                        "slash",
+                        "slash",
+                        "poke",
+                        "shield"
+                        // TODO: earthquake
+                    ],
+                    buffs: [
+                        {
+                            name: "frenzy",
+                            emoji: "😡",
+                            onTurnEnd: {
+                                attackDmgPlus : 105,
+                                magicDmgPlus : 105,
+                                everyNTurns: 2,
+                                startTurn: 3
+                            }
+                        }
+                    ],
+                    hp: 7600,
+                    attackDmg: 300,
+                    magicDmg: 270,
+                    armor: 1750,
+                    spirit: 1500,
+                    difficulty: "special",
+                    element: "earth"
+                }
+            ],
+            "vampireSwarm": [
+                {
+                    name: "Enraged Vampire",
+                    abilities: [
+                        "attack",
+                        "attack",
+                        "rockthrow",
+                        "rockthrow",
+                        "slash",
+                        "slash",
+                        "poke",
+                        "shield"
+                        // TODO: earthquake
+                    ],
+                    buffs: [
+                        {
+                            name: "frenzy",
+                            emoji: "😡",
+                            onTurnEnd: {
+                                attackDmgPlus : 105,
+                                magicDmgPlus : 105,
+                                everyNTurns: 2,
+                                startTurn: 3
+                            }
+                        }
+                    ],
+                    hp: 7600,
+                    attackDmg: 300,
+                    magicDmg: 270,
+                    armor: 1750,
+                    spirit: 1500,
+                    difficulty: "special",
+                    element: "earth"
+                }
+            ],
+            "gateKeeper": [
+                {
+                    name: "The Gatekeeper",
+                    abilities: [
+                        "attack",
+                        "attack",
+                        "rockthrow",
+                        "rockthrow",
+                        "slash",
+                        "slash",
+                        "poke",
+                        "shield"
+                        // TODO: earthquake
+                    ],
+                    buffs: [
+                        {
+                            name: "frenzy",
+                            emoji: "😡",
+                            onTurnEnd: {
+                                attackDmgPlus : 105,
+                                magicDmgPlus : 105,
+                                everyNTurns: 2,
+                                startTurn: 3
+                            }
+                        }
+                    ],
+                    hp: 7600,
+                    attackDmg: 300,
+                    magicDmg: 270,
+                    armor: 1750,
+                    spirit: 1500,
+                    difficulty: "special",
+                    element: "earth"
+                }
+            ],
+            "vampireCouncil": [
+                {
+                    name: "Archvampire",
+                    abilities: [
+                        "attack",
+                        "attack",
+                        "rockthrow",
+                        "rockthrow",
+                        "slash",
+                        "slash",
+                        "poke",
+                        "shield"
+                        // TODO: earthquake
+                    ],
+                    buffs: [
+                        {
+                            name: "frenzy",
+                            emoji: "😡",
+                            onTurnEnd: {
+                                attackDmgPlus : 105,
+                                magicDmgPlus : 105,
+                                everyNTurns: 2,
+                                startTurn: 3
+                            }
+                        }
+                    ],
+                    hp: 7600,
+                    attackDmg: 300,
+                    magicDmg: 270,
+                    armor: 1750,
+                    spirit: 1500,
+                    difficulty: "special",
+                    element: "earth"
+                }
+            ],
+            "legion": [
+                {
+                    name: "Servant of Andromalius",
+                    abilities: [
+                        "attack",
+                        "attack",
+                        "rockthrow",
+                        "rockthrow",
+                        "slash",
+                        "slash",
+                        "poke",
+                        "shield"
+                        // TODO: earthquake
+                    ],
+                    buffs: [
+                        {
+                            name: "frenzy",
+                            emoji: "😡",
+                            onTurnEnd: {
+                                attackDmgPlus : 105,
+                                magicDmgPlus : 105,
+                                everyNTurns: 2,
+                                startTurn: 3
+                            }
+                        }
+                    ],
+                    hp: 7600,
+                    attackDmg: 300,
+                    magicDmg: 270,
+                    armor: 1750,
+                    spirit: 1500,
+                    difficulty: "special",
+                    element: "earth"
+                }
+            ],
+            "andromalius": [
+                {
+                    name: "Andromalius",
+                    abilities: [
+                        "attack",
+                        "attack",
+                        "rockthrow",
+                        "rockthrow",
+                        "slash",
+                        "slash",
+                        "poke",
+                        "shield"
+                        // TODO: earthquake
+                    ],
+                    buffs: [
+                        {
+                            name: "frenzy",
+                            emoji: "😡",
+                            onTurnEnd: {
+                                attackDmgPlus : 105,
+                                magicDmgPlus : 105,
+                                everyNTurns: 2,
+                                startTurn: 3
+                            }
+                        }
+                    ],
+                    hp: 7600,
+                    attackDmg: 300,
+                    magicDmg: 270,
+                    armor: 1750,
+                    spirit: 1500,
+                    difficulty: "special",
+                    element: "earth"
+                }
+            ],
+            "evilExes": [
+                {
+                    name: "Seventh Evil Ex",
+                    abilities: [
+                        "attack",
+                        "attack",
+                        "rockthrow",
+                        "rockthrow",
+                        "slash",
+                        "slash",
+                        "poke",
+                        "shield"
+                        // TODO: earthquake
+                    ],
+                    buffs: [
+                        {
+                            name: "frenzy",
+                            emoji: "😡",
+                            onTurnEnd: {
+                                attackDmgPlus : 105,
+                                magicDmgPlus : 105,
+                                everyNTurns: 2,
+                                startTurn: 3
+                            }
+                        }
+                    ],
+                    hp: 7600,
+                    attackDmg: 300,
+                    magicDmg: 270,
+                    armor: 1750,
+                    spirit: 1500,
+                    difficulty: "special",
+                    element: "earth"
+                }
+            ],
         },
         challenge: {
             // 1 : 1 boss, 1 hard, 2 mediums, 1 easy
@@ -2103,10 +2617,10 @@ module.exports = {
                         hp: 24850,
                         adPerPartyMember: 34,
                         mdPerPartyMember: 34,
-                        attackDmg: 460,
-                        magicDmg: 390,
-                        armor: 2350,
-                        spirit: 2350,
+                        attackDmg: 410,
+                        magicDmg: 240,
+                        armor: 2750,
+                        spirit: 2750,
                         difficulty: "boss",
                         element: "normal"
                     },
@@ -2178,10 +2692,10 @@ module.exports = {
                         hp: 9520,
                         adPerPartyMember: 34,
                         mdPerPartyMember: 34,
-                        attackDmg: 365,
-                        magicDmg: 345,
-                        armor: 2350,
-                        spirit: 2350,
+                        attackDmg: 295,
+                        magicDmg: 235,
+                        armor: 2650,
+                        spirit: 2650,
                         difficulty: "boss",
                         element: "normal"
                     },
@@ -2218,10 +2732,10 @@ module.exports = {
                         hp: 14230,
                         adPerPartyMember: 27,
                         mdPerPartyMember: 27,
-                        attackDmg: 360,
-                        magicDmg: 429,
-                        armor: 2350,
-                        spirit: 2350,
+                        attackDmg: 220,
+                        magicDmg: 289,
+                        armor: 2650,
+                        spirit: 2650,
                         difficulty: "boss",
                         element: "normal"
                     },
@@ -2344,10 +2858,10 @@ module.exports = {
                         hp: 18000,
                         adPerPartyMember: 34,
                         mdPerPartyMember: 34,
-                        attackDmg: 310,
-                        magicDmg: 320,
-                        armor: 1650,
-                        spirit: 2350,
+                        attackDmg: 270,
+                        magicDmg: 180,
+                        armor: 1950,
+                        spirit: 2650,
                         difficulty: "boss",
                         element: "normal"
                     },
@@ -2384,10 +2898,10 @@ module.exports = {
                         hp: 18000,
                         adPerPartyMember: 34,
                         mdPerPartyMember: 34,
-                        attackDmg: 310,
-                        magicDmg: 310,
-                        armor: 2050,
-                        spirit: 2050,
+                        attackDmg: 280,
+                        magicDmg: 210,
+                        armor: 2350,
+                        spirit: 2350,
                         difficulty: "boss",
                         element: "normal"
                     },
@@ -2425,10 +2939,10 @@ module.exports = {
                         hp: 18000,
                         adPerPartyMember: 34,
                         mdPerPartyMember: 34,
-                        attackDmg: 260,
-                        magicDmg: 290,
-                        armor: 2350,
-                        spirit: 1650,
+                        attackDmg: 240,
+                        magicDmg: 170,
+                        armor: 2650,
+                        spirit: 1950,
                         difficulty: "boss",
                         element: "normal"
                     },
@@ -2444,7 +2958,7 @@ module.exports = {
                 // blue = 1 cooldown per ability, effect ends when new crystals appear
                 description: "**Energy Crystals:** \nRed - grants Furnace(magical)\nGreen- grants Dismantle(physical)\nBlack - Summons Tortured Robots\nBlue - Summons Energy Core(Immune to areawide damage)\nYellow - Rocket Strike becomes areawide, reduces Furnace, Dismantle, Rocket Strike cooldown by 1 turn, Summon Tortured Robot by 6 turns\nPurple - affects with Radioactive(direct healing grants an additional stack of Radioactive, at 5 stacks you explode for 1300 damage)\nEnergy Core - Grants Energize to the boss upon being summoned, Energize lasts 6 turns (+400 attack, magic), upon death causes cleansing which removes Energized from all units\nLaser Beam - Physical, Rocket Strike - Magical",
                 timed: true,
-                timedPerTurn: 25000,
+                timedPerTurn: 180000,
                 enemies: [
                     {
                         name: "A182-Type2",
@@ -2501,10 +3015,10 @@ module.exports = {
                         hp: 67000,
                         adPerPartyMember: 0,
                         mdPerPartyMember: 0,
-                        attackDmg: 1200,
+                        attackDmg: 1100,
                         magicDmg: 800,
-                        armor: 2350,
-                        spirit: 2350,
+                        armor: 2650,
+                        spirit: 2650,
                         difficulty: "boss",
                         element: "normal"
                     }

@@ -170,7 +170,13 @@ client.on('message', function(message){
                 commands.inventoryCommand(message);
             }
             else if (commandIs("rares", message)){
-                commands.raresCommand(message, args);
+                commands.raresCommand(message, args, "rare");
+            }
+            else if (commandIs("ancients", message)){
+                commands.raresCommand(message, args, "ancient");
+            }
+            else if (commandIs("artifacts", message)){
+                commands.raresCommand(message, args, "artifact");
             }
             else if (commandIs("standings", message)){
                 commands.standingsCommand(message, client.users);
