@@ -7,7 +7,7 @@ var rpglib = require("./rpglib");
 var moment = require("moment");
 var _ = require("lodash");
 
-var RPG_COOLDOWN_HOURS = 3
+var RPG_COOLDOWN_HOURS = 0
 var activeRPGEvents = {};
 var activeRPGItemIds = {};
 var usersInRPGEvents = {};
@@ -23,7 +23,7 @@ module.exports.rpgInitialize = function(message, special){
     team.push(message.author);
 
     users.forEach(function(user){
-        if (team.length < TEAM_MAX_LENGTH && discordUserId != user.id){
+        if (team.length < TEAM_MAX_LENGTH ){// && discordUserId != user.id){
             team.push(user);
         }
     })
@@ -147,6 +147,9 @@ module.exports.showRpgStats = function(message, itemsAvailable, amuletItemsById)
                         if (!itemsInInventoryCountMap[inventoryResponse.data[item].itemid] ){
                             // item hasnt been added to be counted, add it as 1
                             itemsInInventoryCountMap[inventoryResponse.data[item].itemid] = 1;
+                        }else{
+                            // 
+                            itemsInInventoryCountMap[inventoryResponse.data[item].itemid] = itemsInInventoryCountMap[inventoryResponse.data[item].itemid] + 1
                         }
                     }
                     // have items mapped by id and items in inventory
@@ -155,6 +158,8 @@ module.exports.showRpgStats = function(message, itemsAvailable, amuletItemsById)
                     for (var amulet in amuletItemsById){
                         var idToCheck = amuletItemsById[amulet].id;
                         if (itemsInInventoryCountMap[idToCheck]){
+                            var amuletToAdd = amuletItemsById[amulet]
+                            amuletToAdd.count = itemsInInventoryCountMap[idToCheck]
                             userAmuletData.push(amuletItemsById[amulet]);
                         }
                     }
@@ -248,12 +253,12 @@ module.exports.showRpgStats = function(message, itemsAvailable, amuletItemsById)
                             for (var i in userAmuletData){
                                 singleItemString = singleItemString + "\n"
 
-                                var hpPlus = itemsAvailable[userAmuletData[i].id].hpplus ? itemsAvailable[userAmuletData[i].id].hpplus : 0;
-                                var attackDmgPlus = itemsAvailable[userAmuletData[i].id].attackdmgplus ? itemsAvailable[userAmuletData[i].id].attackdmgplus : 0;
-                                var magicDmgPlus = itemsAvailable[userAmuletData[i].id].magicdmgplus ? itemsAvailable[userAmuletData[i].id].magicdmgplus : 0;
-                                var armorPlus = itemsAvailable[userAmuletData[i].id].armorplus ? itemsAvailable[userAmuletData[i].id].armorplus : 0;
-                                var spiritPlus = itemsAvailable[userAmuletData[i].id].spiritplus ? itemsAvailable[userAmuletData[i].id].spiritplus : 0;
-                                var luckPlus = itemsAvailable[userAmuletData[i].id].luckplus ? itemsAvailable[userAmuletData[i].id].luckplus : 0;
+                                var hpPlus = itemsAvailable[userAmuletData[i].id].hpplus ? itemsAvailable[userAmuletData[i].id].hpplus * userAmuletData[i].count : 0;
+                                var attackDmgPlus = itemsAvailable[userAmuletData[i].id].attackdmgplus ? itemsAvailable[userAmuletData[i].id].attackdmgplus * userAmuletData[i].count : 0;
+                                var magicDmgPlus = itemsAvailable[userAmuletData[i].id].magicdmgplus ? itemsAvailable[userAmuletData[i].id].magicdmgplus * userAmuletData[i].count : 0;
+                                var armorPlus = itemsAvailable[userAmuletData[i].id].armorplus ? itemsAvailable[userAmuletData[i].id].armorplus * userAmuletData[i].count : 0;
+                                var spiritPlus = itemsAvailable[userAmuletData[i].id].spiritplus ? itemsAvailable[userAmuletData[i].id].spiritplus * userAmuletData[i].count : 0;
+                                var luckPlus = itemsAvailable[userAmuletData[i].id].luckplus ? itemsAvailable[userAmuletData[i].id].luckplus * userAmuletData[i].count : 0;
                                 amuletHpPlus = amuletHpPlus + hpPlus;
                                 amuletAttackDmgPlus = amuletAttackDmgPlus + attackDmgPlus
                                 amuletMagicDmgPlus = amuletMagicDmgPlus + magicDmgPlus;
@@ -438,6 +443,9 @@ module.exports.rpgReady = function(message, itemsAvailable, amuletItemsById){
                                 if (!itemsInInventoryCountMap[inventoryResponse.data[item].itemid] ){
                                     // item hasnt been added to be counted, add it as 1
                                     itemsInInventoryCountMap[inventoryResponse.data[item].itemid] = 1;
+                                }else{
+                                    // 
+                                    itemsInInventoryCountMap[inventoryResponse.data[item].itemid] = itemsInInventoryCountMap[inventoryResponse.data[item].itemid] + 1
                                 }
                             }
                             // have items mapped by id and items in inventory
@@ -446,6 +454,8 @@ module.exports.rpgReady = function(message, itemsAvailable, amuletItemsById){
                             for (var amulet in amuletItemsById){
                                 var idToCheck = amuletItemsById[amulet].id;
                                 if (itemsInInventoryCountMap[idToCheck]){
+                                    var amuletToAdd = amuletItemsById[amulet]
+                                    amuletToAdd.count = itemsInInventoryCountMap[idToCheck]        
                                     userAmuletData.push(amuletItemsById[amulet]);
                                 }
                             }        
@@ -526,12 +536,12 @@ module.exports.rpgReady = function(message, itemsAvailable, amuletItemsById){
 
                                     for (var i in userAmuletData){
 
-                                        var hpPlus = itemsAvailable[userAmuletData[i].id].hpplus ? itemsAvailable[userAmuletData[i].id].hpplus : 0;
-                                        var attackDmgPlus = itemsAvailable[userAmuletData[i].id].attackdmgplus ? itemsAvailable[userAmuletData[i].id].attackdmgplus : 0;
-                                        var magicDmgPlus = itemsAvailable[userAmuletData[i].id].magicdmgplus ? itemsAvailable[userAmuletData[i].id].magicdmgplus : 0;
-                                        var armorPlus = itemsAvailable[userAmuletData[i].id].armorplus ? itemsAvailable[userAmuletData[i].id].armorplus : 0;
-                                        var spiritPlus = itemsAvailable[userAmuletData[i].id].spiritplus ? itemsAvailable[userAmuletData[i].id].spiritplus : 0;
-                                        var luckPlus = itemsAvailable[userAmuletData[i].id].luckplus ? itemsAvailable[userAmuletData[i].id].luckplus : 0;
+                                        var hpPlus = itemsAvailable[userAmuletData[i].id].hpplus ? itemsAvailable[userAmuletData[i].id].hpplus * userAmuletData[i].count : 0;
+                                        var attackDmgPlus = itemsAvailable[userAmuletData[i].id].attackdmgplus ? itemsAvailable[userAmuletData[i].id].attackdmgplus * userAmuletData[i].count : 0;
+                                        var magicDmgPlus = itemsAvailable[userAmuletData[i].id].magicdmgplus ? itemsAvailable[userAmuletData[i].id].magicdmgplus * userAmuletData[i].count : 0;
+                                        var armorPlus = itemsAvailable[userAmuletData[i].id].armorplus ? itemsAvailable[userAmuletData[i].id].armorplus * userAmuletData[i].count : 0;
+                                        var spiritPlus = itemsAvailable[userAmuletData[i].id].spiritplus ? itemsAvailable[userAmuletData[i].id].spiritplus * userAmuletData[i].count : 0;
+                                        var luckPlus = itemsAvailable[userAmuletData[i].id].luckplus ? itemsAvailable[userAmuletData[i].id].luckplus * userAmuletData[i].count : 0;
 
                                         statisticsFromItemsAndLevel.hpPlus = statisticsFromItemsAndLevel.hpPlus + hpPlus;
                                         statisticsFromItemsAndLevel.attackDmgPlus = statisticsFromItemsAndLevel.attackDmgPlus + attackDmgPlus;

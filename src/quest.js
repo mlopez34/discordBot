@@ -871,7 +871,7 @@ function handleTimeMachineArtifactStageSix(message, discordUserId, stage, team, 
 // embed
 function handleDemonicArtifactStageOne(message, discordUserId, stage, team, year, channel){
     var questData = {
-        questname: "timetravel",
+        questname: "demonic",
         message: message,
         year: year,
         stage: stage,
@@ -2437,15 +2437,94 @@ function handleRitualStandingMission(mission){
     // users should be standing on 5 different places on a clock
     // 1 - 12, if they are standing on ie 12, 2, 5, 7, 10 then activate second step
 
+    // SET OF VALID STAR FORMATIONS - already sorted
+    var validRitualForm = [
+        [2, 5, 7, 10, 12 ],
+        [1, 3, 6, 8, 11 ],
+        [2, 4, 7, 9, 12 ],
+        [1, 3, 5, 8, 10 ],
+        [2, 4, 6, 9, 11 ],
+        [3, 5, 7, 10, 12 ],
+        [1, 4, 6, 8, 11 ],
+        [2, 5, 7, 9, 12],
+        [1, 3, 6, 8, 10],
+        [2, 4, 7, 9, 11],
+        [3, 5, 8, 10, 12],
+        [1, 4, 6, 9, 11]
+    ]
+
+    function sortNumber(a, b){
+        return a - b;
+    }
+
+    var missionArr = [5, 2, 7, 12, 10]
+    var missionArray = missionArr.sort(sortNumber);
+    var missionComplete = true;
+    var arrayOfSpots = [] // should be total of 5
+
+    for (var i in missionArray){
+        arrayOfSpots.push(missionArray[i]);
+    }
+
+    // check the differences between the 5 numbers
+    if (arrayOfSpots.length != 5){
+        return false;
+    }else{
+        // check against valid formations (finite)
+        var matchedFormGroup = true;
+        for (var formGroup in validRitualForm){
+            var matchedFormGroup = true;
+            var formToCheck = validRitualForm[formGroup]
+            // compare each index
+            for (var index in formToCheck){
+                console.log(formToCheck[index])
+                console.log(arrayOfSpots[index])
+                if (formToCheck[index] != arrayOfSpots[index]){
+                    matchedFormGroup = false;
+                    break;
+                }
+            }
+            if (matchedFormGroup){
+                return missionComplete;
+            }else{
+                matchedFormGroup = false;
+            }
+        }
+        if (!matchedFormGroup){
+            missionComplete = matchedFormGroup
+        }
+        return missionComplete;
+    }
+    
+
     // TODO: create structure for clock
 }
 
-function handleRitualTacoThrowMission(){
+function handleRitualTacoThrowMission(groupArray, groupIds){
+    // keep a list of throws
+
     // users should be throwing their tacos in a specific order
     // 12 throws to 5, 5 throws to 10, 10 throws to 2, 2 throws to 7, 7 throws to 10
     // 12 throws to 7, 7 throws to 2, 2 throws to 10, 10 throws to 5, 5 throws to 10
 
+    var ritualSuccess = false;
+    // valid throws based on groupArray ??
+
+    if (!ritualSuccess){
+        // reset the throw order to the person that just threw
+    }
+
+    return ritualSuccess
+
     //TODO: create structure that keeps track of possible throws and starting throw
+}
+
+function checkValidRitualThrow(thrower, receiver){
+    // the thrower and receivers are indexes (1 - 12)
+
+    // this function checks against a list of valid throws
+    var validThrow = true;
+    if (receiver != expectedRecei)
 }
 
 function handleTacoGiveMission(giveAmount, mission){
@@ -2524,3 +2603,6 @@ function handleCommandToPlayerMission(command, mission, data){
     
     // return true or false for complete
 }
+
+var check = handleRitualStandingMission(true);
+console.log(check);

@@ -3658,7 +3658,7 @@ module.exports.useCommand = function(message, args){
         }
         else{
             // TODO: grind rocks to find amulets
-            message.channel.send("mention a user to throw a rock at, you cannot throw rocks at bots or yourself...");
+            message.channel.send("mention a user to throw a rock at, you cannot throw rocks at bots or yourself... grind");
         }
     }
     else if(args && args.length > 1 && (args[1].toLowerCase() == "pieceofwood" || args[1].toLowerCase() == "wood")){
@@ -4463,6 +4463,9 @@ module.exports.amuletsWearingCommand = function(message, args){
                                 if (!itemsInInventoryCountMap[inventoryResponse.data[item].itemid] ){
                                     // item hasnt been added to be counted, add it as 1
                                     itemsInInventoryCountMap[inventoryResponse.data[item].itemid] = 1;
+                                }else{
+                                    // 
+                                    itemsInInventoryCountMap[inventoryResponse.data[item].itemid] = itemsInInventoryCountMap[inventoryResponse.data[item].itemid] + 1
                                 }
                             }
                             // have items mapped by id and items in inventory
@@ -4471,6 +4474,8 @@ module.exports.amuletsWearingCommand = function(message, args){
                             for (var amulet in amuletItemsById){
                                 var idToCheck = amuletItemsById[amulet].id;
                                 if (itemsInInventoryCountMap[idToCheck]){
+                                    var amuletToAdd = amuletItemsById[amulet]
+                                    amuletToAdd.count = itemsInInventoryCountMap[idToCheck]
                                     userAmuletData.push(amuletItemsById[amulet]);
                                 }
                             }
