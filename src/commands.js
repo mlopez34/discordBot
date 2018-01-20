@@ -3496,7 +3496,7 @@ module.exports.fetchCommand = function(message){
                                     }
                                     else{
                                         var experienceFromItems = wearRes.fetchCommandExperienceGain ? wearRes.fetchCommandExperienceGain : 0;                                                                                
-                                        experience.gainExperience(message, message.author, ((EXPERIENCE_GAINS.perFetchCd * PETS_AVAILABLE[userPet].fetch) + experienceFromItems) , fetchResponse);
+                                        experience.gainExperience(message, message.author, (( (EXPERIENCE_GAINS.perFetchCd * PETS_AVAILABLE[userPet].fetch) / 10) + experienceFromItems) , fetchResponse);
                                         // user's pet fetched some tacos
                                         if (extraTacosFromItems > 0){
                                             /* SEASONAL
