@@ -446,19 +446,19 @@ function handleTombArtifact(message, discordUserId, stage, team, year, channel){
     }
     else if (stage == 2){
         // create special encounter with hounds
-        handleTombArtifactStageOne(message, discordUserId, stage, team, year, channel)
+        handleTombArtifactStageTwo(message, discordUserId, stage, team, year, channel)
     }
     else if (stage == 3){
         // travel to the year -65,000,000 and save the dinosaurs from the meteor
-        handleTombArtifactStageOne(message, discordUserId, stage, team, year, channel)
+        handleTombArtifactStageThree(message, discordUserId, stage, team, year, channel)
     }
     else if (stage == 4){
         // travel to the year -65,000,000 and save the dinosaurs from the meteor
-        handleTombArtifactStageOne(message, discordUserId, stage, team, year, channel)
+        handleTombArtifactStageFour(message, discordUserId, stage, team, year, channel)
     }
     else if (stage == 5){
         // travel to the year -65,000,000 and save the dinosaurs from the meteor
-        handleTombArtifactStageOne(message, discordUserId, stage, team, year, channel)
+        handleTombArtifactStageFive(message, discordUserId, stage, team, year, channel)
     }
 }
 
@@ -474,18 +474,23 @@ function handleDemonicArtifact(stage, discordUserId){
     */
     if (stage == 1){
         // all members stand in a star formation (react on spots)
+        handleDemonicArtifactStageOne(message, discordUserId, stage, team, year, channel)
     }
     else if (stage == 2){
         // react to say the summoning ritual in order
+        handleDemonicArtifactStageTwo(message, discordUserId, stage, team, year, channel)
     }
     else if (stage == 3){
         // sacrifice a server member by throwing tacos to each other in the formation to create a star (start at top)
+        handleDemonicArtifactStageThree(message, discordUserId, stage, team, year, channel)
     }
     else if (stage == 4){
         // defeat a legion of demons that have spawned from the summoning (5 members)
+        handleDemonicArtifactStageFour(message, discordUserId, stage, team, year, channel)
     }
     else if (Stage == 5){
         // defeat the demon lord andromalius that has spawned from the summoning (5 members)
+        handleDemonicArtifactStageFive(message, discordUserId, stage, team, year, channel)
     }
 }
 
@@ -785,7 +790,6 @@ function handleTimeMachineArtifactStageFour(message, discordUserId, stage, team,
     })
 }
 
-
 function handleTimeMachineArtifactStageFive(message, discordUserId, stage, team, year, channel){
     // save humans in the stranded island in year 3177
     var questData = {
@@ -865,7 +869,7 @@ function handleTimeMachineArtifactStageSix(message, discordUserId, stage, team, 
 */
 
 // embed
-function handleTimeMachineArtifactStageOne(message, discordUserId, stage, team, year, channel){
+function handleDemonicArtifactStageOne(message, discordUserId, stage, team, year, channel){
     var questData = {
         questname: "timetravel",
         message: message,
@@ -988,7 +992,7 @@ function handleTimeMachineArtifactStageOne(message, discordUserId, stage, team, 
     })
 }
 // embed
-function handleTimeMachineArtifactStageOne(message, discordUserId, stage, team, year, channel){
+function handleDemonicArtifactStageTwo(message, discordUserId, stage, team, year, channel){
     var questData = {
         questname: "timetravel",
         message: message,
@@ -1111,7 +1115,7 @@ function handleTimeMachineArtifactStageOne(message, discordUserId, stage, team, 
     })
 }
 // embed
-function handleTimeMachineArtifactStageOne(message, discordUserId, stage, team, year, channel){
+function handleDemonicArtifactStageThree(message, discordUserId, stage, team, year, channel){
     var questData = {
         questname: "timetravel",
         message: message,
@@ -1234,29 +1238,29 @@ function handleTimeMachineArtifactStageOne(message, discordUserId, stage, team, 
     })
 }
 // rpg
-function handleTimeMachineArtifactStageTwo(message, discordUserId, stage, team, year, channel){
-    // send embed that Ghenghis Khan's forces have reached the capital, 
+function handleDemonicArtifactStageFour(message, discordUserId, stage, team, year, channel){
+
     var questData = {
-        questname: "timetravel",
+        questname: "demonic",
         message: message,
         year: year,
         stage: stage,
         storyStep: 1
     }
     var special = {
-        questName: "genghis khan",
+        questName: "legion",
         questData: questData,
         avatar: "https://i.imgur.com/5loQua9.png",
         reward: {
             type: "note" , // could be item
             fieldTitle: "A scroll was found on one of the general's bodies",
             note: "travel to the year 1250 BC to defeat the trojans",
-            questline: "timetravelqueststage",
+            questline: "demonicqueststage",
             stageAdvance: stage + 1
         }
     }
-    var descriptionString = exports.questStringBuilder("timetravel", questData);
-    // travel to the year 1211 and defeat genghis khan before he invades
+    var descriptionString = exports.questStringBuilder("demonic", questData);
+
     const embed = new Discord.RichEmbed()
     .setDescription(descriptionString)
     .setThumbnail("https://i.imgur.com/5loQua9.png")
@@ -1265,14 +1269,14 @@ function handleTimeMachineArtifactStageTwo(message, discordUserId, stage, team, 
     .then(function(sentMessage){
         var storytell = setTimeout (function(){
             questData.storyStep = questData.storyStep + 1;
-            var descriptionString = exports.questStringBuilder("timetravel", questData);
+            var descriptionString = exports.questStringBuilder("demonic", questData);
             embed.setDescription(descriptionString)
             sentMessage.edit({embed})
         }, 100);
         
         var storytell = setTimeout (function(){ 
             questData.storyStep = questData.storyStep + 1;
-            var descriptionString = exports.questStringBuilder("timetravel", questData);
+            var descriptionString = exports.questStringBuilder("demonic", questData);
             embed.setDescription(descriptionString)
             sentMessage.edit({embed})
 
@@ -1280,34 +1284,34 @@ function handleTimeMachineArtifactStageTwo(message, discordUserId, stage, team, 
 
         var storytell = setTimeout (function(){ 
             rpg.rpgInitialize(message, special);
-            playMusicForQuest(channel, "genghisKhan")
+            playMusicForQuest(channel, "legion")
         }, 250);
     })
 }
 // rpg
-function handleTimeMachineArtifactStageTwo(message, discordUserId, stage, team, year, channel){
+function handleDemonicArtifactStageFive(message, discordUserId, stage, team, year, channel){
     // send embed that Ghenghis Khan's forces have reached the capital, 
     var questData = {
-        questname: "timetravel",
+        questname: "demonic",
         message: message,
         year: year,
         stage: stage,
         storyStep: 1
     }
     var special = {
-        questName: "genghis khan",
+        questName: "andromalius",
         questData: questData,
         avatar: "https://i.imgur.com/5loQua9.png",
         reward: {
             type: "note" , // could be item
             fieldTitle: "A scroll was found on one of the general's bodies",
             note: "travel to the year 1250 BC to defeat the trojans",
-            questline: "timetravelqueststage",
+            questline: "demonicqueststage",
             stageAdvance: stage + 1
         }
     }
-    var descriptionString = exports.questStringBuilder("timetravel", questData);
-    // travel to the year 1211 and defeat genghis khan before he invades
+    var descriptionString = exports.questStringBuilder("demonic", questData);
+
     const embed = new Discord.RichEmbed()
     .setDescription(descriptionString)
     .setThumbnail("https://i.imgur.com/5loQua9.png")
@@ -1316,14 +1320,14 @@ function handleTimeMachineArtifactStageTwo(message, discordUserId, stage, team, 
     .then(function(sentMessage){
         var storytell = setTimeout (function(){
             questData.storyStep = questData.storyStep + 1;
-            var descriptionString = exports.questStringBuilder("timetravel", questData);
+            var descriptionString = exports.questStringBuilder("demonic", questData);
             embed.setDescription(descriptionString)
             sentMessage.edit({embed})
         }, 100);
         
         var storytell = setTimeout (function(){ 
             questData.storyStep = questData.storyStep + 1;
-            var descriptionString = exports.questStringBuilder("timetravel", questData);
+            var descriptionString = exports.questStringBuilder("demonic", questData);
             embed.setDescription(descriptionString)
             sentMessage.edit({embed})
 
@@ -1331,7 +1335,7 @@ function handleTimeMachineArtifactStageTwo(message, discordUserId, stage, team, 
 
         var storytell = setTimeout (function(){ 
             rpg.rpgInitialize(message, special);
-            playMusicForQuest(channel, "genghisKhan")
+            playMusicForQuest(channel, "andromalius")
         }, 250);
     })
 }
@@ -1834,27 +1838,27 @@ function handleRingArtifactStageFour(message, discordUserId, stage, team, year, 
 }
 // rpg
 function handleRingArtifactStageFive(message, discordUserId, stage, team, year, channel){
-    // send embed that Ghenghis Khan's forces have reached the capital, 
+
     var questData = {
-        questname: "timetravel",
+        questname: "ring",
         message: message,
         year: year,
         stage: stage,
         storyStep: 1
     }
     var special = {
-        questName: "genghis khan",
+        questName: "evilExes",
         questData: questData,
         avatar: "https://i.imgur.com/5loQua9.png",
         reward: {
             type: "note" , // could be item
             fieldTitle: "A scroll was found on one of the general's bodies",
             note: "travel to the year 1250 BC to defeat the trojans",
-            questline: "timetravelqueststage",
+            questline: "ringqueststage",
             stageAdvance: stage + 1
         }
     }
-    var descriptionString = exports.questStringBuilder("timetravel", questData);
+    var descriptionString = exports.questStringBuilder("ring", questData);
     // travel to the year 1211 and defeat genghis khan before he invades
     const embed = new Discord.RichEmbed()
     .setDescription(descriptionString)
@@ -1864,14 +1868,14 @@ function handleRingArtifactStageFive(message, discordUserId, stage, team, year, 
     .then(function(sentMessage){
         var storytell = setTimeout (function(){
             questData.storyStep = questData.storyStep + 1;
-            var descriptionString = exports.questStringBuilder("timetravel", questData);
+            var descriptionString = exports.questStringBuilder("ring", questData);
             embed.setDescription(descriptionString)
             sentMessage.edit({embed})
         }, 100);
         
         var storytell = setTimeout (function(){ 
             questData.storyStep = questData.storyStep + 1;
-            var descriptionString = exports.questStringBuilder("timetravel", questData);
+            var descriptionString = exports.questStringBuilder("ring", questData);
             embed.setDescription(descriptionString)
             sentMessage.edit({embed})
 
@@ -1879,7 +1883,7 @@ function handleRingArtifactStageFive(message, discordUserId, stage, team, year, 
 
         var storytell = setTimeout (function(){ 
             rpg.rpgInitialize(message, special);
-            playMusicForQuest(channel, "genghisKhan")
+            playMusicForQuest(channel, "evilExes")
         }, 250);
     })
 }
@@ -1889,7 +1893,7 @@ function handleRingArtifactStageFive(message, discordUserId, stage, team, year, 
 */
 
 // embed
-function handleTimeMachineArtifactStageOne(message, discordUserId, stage, team, year, channel){
+function handleTombArtifactStageOne(message, discordUserId, stage, team, year, channel){
     var questData = {
         questname: "timetravel",
         message: message,
@@ -2012,28 +2016,28 @@ function handleTimeMachineArtifactStageOne(message, discordUserId, stage, team, 
     })
 }
 // rpg
-function handleTimeMachineArtifactStageTwo(message, discordUserId, stage, team, year, channel){
-    // send embed that Ghenghis Khan's forces have reached the capital, 
+function handleTombArtifactStageTwo(message, discordUserId, stage, team, year, channel){
+
     var questData = {
-        questname: "timetravel",
+        questname: "tomb",
         message: message,
         year: year,
         stage: stage,
         storyStep: 1
     }
     var special = {
-        questName: "genghis khan",
+        questName: "hounds",
         questData: questData,
         avatar: "https://i.imgur.com/5loQua9.png",
         reward: {
             type: "note" , // could be item
             fieldTitle: "A scroll was found on one of the general's bodies",
             note: "travel to the year 1250 BC to defeat the trojans",
-            questline: "timetravelqueststage",
+            questline: "tombqueststage",
             stageAdvance: stage + 1
         }
     }
-    var descriptionString = exports.questStringBuilder("timetravel", questData);
+    var descriptionString = exports.questStringBuilder("tomb", questData);
     // travel to the year 1211 and defeat genghis khan before he invades
     const embed = new Discord.RichEmbed()
     .setDescription(descriptionString)
@@ -2043,14 +2047,14 @@ function handleTimeMachineArtifactStageTwo(message, discordUserId, stage, team, 
     .then(function(sentMessage){
         var storytell = setTimeout (function(){
             questData.storyStep = questData.storyStep + 1;
-            var descriptionString = exports.questStringBuilder("timetravel", questData);
+            var descriptionString = exports.questStringBuilder("tomb", questData);
             embed.setDescription(descriptionString)
             sentMessage.edit({embed})
         }, 100);
         
         var storytell = setTimeout (function(){ 
             questData.storyStep = questData.storyStep + 1;
-            var descriptionString = exports.questStringBuilder("timetravel", questData);
+            var descriptionString = exports.questStringBuilder("tomb", questData);
             embed.setDescription(descriptionString)
             sentMessage.edit({embed})
 
@@ -2058,33 +2062,33 @@ function handleTimeMachineArtifactStageTwo(message, discordUserId, stage, team, 
 
         var storytell = setTimeout (function(){ 
             rpg.rpgInitialize(message, special);
-            playMusicForQuest(channel, "genghisKhan")
+            playMusicForQuest(channel, "hounds")
         }, 250);
     })
 }
 // rpg
-function handleTimeMachineArtifactStageTwo(message, discordUserId, stage, team, year, channel){
-    // send embed that Ghenghis Khan's forces have reached the capital, 
+function handleTombArtifactStageThree(message, discordUserId, stage, team, year, channel){
+
     var questData = {
-        questname: "timetravel",
+        questname: "tomb",
         message: message,
         year: year,
         stage: stage,
         storyStep: 1
     }
     var special = {
-        questName: "genghis khan",
+        questName: "vampireSwarm",
         questData: questData,
         avatar: "https://i.imgur.com/5loQua9.png",
         reward: {
             type: "note" , // could be item
             fieldTitle: "A scroll was found on one of the general's bodies",
             note: "travel to the year 1250 BC to defeat the trojans",
-            questline: "timetravelqueststage",
+            questline: "tombqueststage",
             stageAdvance: stage + 1
         }
     }
-    var descriptionString = exports.questStringBuilder("timetravel", questData);
+    var descriptionString = exports.questStringBuilder("tomb", questData);
     // travel to the year 1211 and defeat genghis khan before he invades
     const embed = new Discord.RichEmbed()
     .setDescription(descriptionString)
@@ -2094,14 +2098,14 @@ function handleTimeMachineArtifactStageTwo(message, discordUserId, stage, team, 
     .then(function(sentMessage){
         var storytell = setTimeout (function(){
             questData.storyStep = questData.storyStep + 1;
-            var descriptionString = exports.questStringBuilder("timetravel", questData);
+            var descriptionString = exports.questStringBuilder("tomb", questData);
             embed.setDescription(descriptionString)
             sentMessage.edit({embed})
         }, 100);
         
         var storytell = setTimeout (function(){ 
             questData.storyStep = questData.storyStep + 1;
-            var descriptionString = exports.questStringBuilder("timetravel", questData);
+            var descriptionString = exports.questStringBuilder("tomb", questData);
             embed.setDescription(descriptionString)
             sentMessage.edit({embed})
 
@@ -2109,29 +2113,29 @@ function handleTimeMachineArtifactStageTwo(message, discordUserId, stage, team, 
 
         var storytell = setTimeout (function(){ 
             rpg.rpgInitialize(message, special);
-            playMusicForQuest(channel, "genghisKhan")
+            playMusicForQuest(channel, "vampireSwarm")
         }, 250);
     })
 }
 // rpg
-function handleTimeMachineArtifactStageTwo(message, discordUserId, stage, team, year, channel){
+function handleTombArtifactStageFour(message, discordUserId, stage, team, year, channel){
     // send embed that Ghenghis Khan's forces have reached the capital, 
     var questData = {
-        questname: "timetravel",
+        questname: "tomb",
         message: message,
         year: year,
         stage: stage,
         storyStep: 1
     }
     var special = {
-        questName: "genghis khan",
+        questName: "gateKeeper",
         questData: questData,
         avatar: "https://i.imgur.com/5loQua9.png",
         reward: {
             type: "note" , // could be item
             fieldTitle: "A scroll was found on one of the general's bodies",
             note: "travel to the year 1250 BC to defeat the trojans",
-            questline: "timetravelqueststage",
+            questline: "tombqueststage",
             stageAdvance: stage + 1
         }
     }
@@ -2145,14 +2149,14 @@ function handleTimeMachineArtifactStageTwo(message, discordUserId, stage, team, 
     .then(function(sentMessage){
         var storytell = setTimeout (function(){
             questData.storyStep = questData.storyStep + 1;
-            var descriptionString = exports.questStringBuilder("timetravel", questData);
+            var descriptionString = exports.questStringBuilder("tomb", questData);
             embed.setDescription(descriptionString)
             sentMessage.edit({embed})
         }, 100);
         
         var storytell = setTimeout (function(){ 
             questData.storyStep = questData.storyStep + 1;
-            var descriptionString = exports.questStringBuilder("timetravel", questData);
+            var descriptionString = exports.questStringBuilder("tomb", questData);
             embed.setDescription(descriptionString)
             sentMessage.edit({embed})
 
@@ -2160,12 +2164,12 @@ function handleTimeMachineArtifactStageTwo(message, discordUserId, stage, team, 
 
         var storytell = setTimeout (function(){ 
             rpg.rpgInitialize(message, special);
-            playMusicForQuest(channel, "genghisKhan")
+            playMusicForQuest(channel, "gateKeeper")
         }, 250);
     })
 }
 // embed
-function handleTimeMachineArtifactStageOne(message, discordUserId, stage, team, year, channel){
+function handleTombArtifactStageFive(message, discordUserId, stage, team, year, channel){
     var questData = {
         questname: "timetravel",
         message: message,
@@ -2288,28 +2292,28 @@ function handleTimeMachineArtifactStageOne(message, discordUserId, stage, team, 
     })
 }
 // rpg
-function handleTimeMachineArtifactStageTwo(message, discordUserId, stage, team, year, channel){
+function handleTombArtifactStageSix(message, discordUserId, stage, team, year, channel){
     // send embed that Ghenghis Khan's forces have reached the capital, 
     var questData = {
-        questname: "timetravel",
+        questname: "tomb",
         message: message,
         year: year,
         stage: stage,
         storyStep: 1
     }
     var special = {
-        questName: "genghis khan",
+        questName: "vampireCouncil",
         questData: questData,
         avatar: "https://i.imgur.com/5loQua9.png",
         reward: {
             type: "note" , // could be item
             fieldTitle: "A scroll was found on one of the general's bodies",
             note: "travel to the year 1250 BC to defeat the trojans",
-            questline: "timetravelqueststage",
+            questline: "tombqueststage",
             stageAdvance: stage + 1
         }
     }
-    var descriptionString = exports.questStringBuilder("timetravel", questData);
+    var descriptionString = exports.questStringBuilder("tomb", questData);
     // travel to the year 1211 and defeat genghis khan before he invades
     const embed = new Discord.RichEmbed()
     .setDescription(descriptionString)
@@ -2319,14 +2323,14 @@ function handleTimeMachineArtifactStageTwo(message, discordUserId, stage, team, 
     .then(function(sentMessage){
         var storytell = setTimeout (function(){
             questData.storyStep = questData.storyStep + 1;
-            var descriptionString = exports.questStringBuilder("timetravel", questData);
+            var descriptionString = exports.questStringBuilder("tomb", questData);
             embed.setDescription(descriptionString)
             sentMessage.edit({embed})
         }, 100);
         
         var storytell = setTimeout (function(){ 
             questData.storyStep = questData.storyStep + 1;
-            var descriptionString = exports.questStringBuilder("timetravel", questData);
+            var descriptionString = exports.questStringBuilder("tomb", questData);
             embed.setDescription(descriptionString)
             sentMessage.edit({embed})
 
@@ -2334,7 +2338,7 @@ function handleTimeMachineArtifactStageTwo(message, discordUserId, stage, team, 
 
         var storytell = setTimeout (function(){ 
             rpg.rpgInitialize(message, special);
-            playMusicForQuest(channel, "genghisKhan")
+            playMusicForQuest(channel, "vampireCouncil")
         }, 250);
     })
 }
