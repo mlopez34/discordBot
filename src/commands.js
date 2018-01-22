@@ -495,6 +495,10 @@ module.exports.thankCommand = function(message){
                                         else{
                                             // // console.log(updateResponse);
                                             var experienceFromItems = wearRes.thankCommandExperienceGain ? wearRes.thankCommandExperienceGain : 0;
+                                            ///// For Artifact or Missions
+                                            var dataForMission = {}
+                                            missionCheckCommand(message, discordUserId, "thank", mentionedId, dataForMission)
+
                                             experience.gainExperience(message, message.author, EXPERIENCE_GAINS.thank + experienceFromItems, thankResponse);
                                             //update statistic
                                             stats.statisticsManage(discordUserId, "thankcount", 1, function(staterr, statSuccess){
@@ -585,6 +589,10 @@ module.exports.sorryCommand = function(message){
                                         else{
                                             var experienceFromItems = wearRes.sorryCommandExperienceGain ? wearRes.sorryCommandExperienceGain : 0;
                                             experience.gainExperience(message, message.author, (EXPERIENCE_GAINS.sorry + experienceFromItems) , sorryResponse);
+                                            ///// For Artifact or Missions
+                                            var dataForMission = {}
+                                            missionCheckCommand(message, discordUserId, "sorry", mentionedId, dataForMission)
+
                                             stats.statisticsManage(discordUserId, "sorrycount", 1, function(staterr, statSuccess){
                                                 if (staterr){
                                                     // console.log(staterr);
@@ -988,6 +996,12 @@ module.exports.giveCommand = function(message, giveTacoAmount){
                                         else{
                                             // send message that the user has gotten tacos
                                             message.channel.send(message.author + " gifted " + mentionedUser + " `" + giveTacoAmount + "` tacos! :taco: and Bender kept `" + tacoTax + "` tacos for tax purposes." );
+                                            ///// For Artifact or Missions
+                                            var dataForMission = {
+                                                giveAmount: giveTacoAmount
+                                            }
+                                            missionCheckCommand(message, discordUserId, "give", mentionedId, dataForMission)
+                                            
                                             stats.statisticsManage(discordUserId, "givecount", giveTacoAmount, function(err, statSuccess){
                                                 if (err){
                                                     // console.log(err);
@@ -4152,7 +4166,7 @@ module.exports.combineCommand = function(message, args){
                             // TODO: do not allow user to combine if they are on stage # of the artifact quest
                             if (rarityOfMyItem && rarityOfMyItem == "artifact"){
                                 // take the ids of the other 2 artifacts + artifact recipe and push them onto itemsBeingCombined array
-                                /*
+                                
                                 var artifactId = 1//TODO: ARTIFACT_RECIPE_ID;
                                 var recipeAdded = false;
                                 var firstArtifact = 2; //TODO: replce this
@@ -4189,27 +4203,33 @@ module.exports.combineCommand = function(message, args){
                                     var itemToCreateByName = itemsMapById[combineToId].itemname
                                     
                                     // enable user to be in quest stage 1 of the quest series (user profile)
-                                    var questName = "timetravel"
+                                    ///////////////////////////// TODO: questName should be named after the artifact set combined
+                                    var questName = "ring"
+
+
                                     profileDB.userStartQuest(discordUserId, questName, function(createErr, createRes){
                                         if (createErr){
-                                            // console.log(createErr);
+                                            console.log(createErr);
                                         }
                                         else{
                                             // console.log(createRes);                                        
                                             profileDB.bulkUpdateItemStatus(itemsBeingedCombined, "questing", function(combineErr, combineRes){
                                                 if (combineErr){
-                                                    // console.log(combineErr);
+                                                    console.log(combineErr);
                                                 }else{
                                                     // console.log(combineRes);
                                                     // embed showing the questline has begun
-                                                    var questString = quest.questStringBuilder(questName)
+                                                    var questData = {
+                                                        stage: 0
+                                                    }
+                                                    var questString = quest.questStringBuilder(questName, questData)
                                                     quest.questStartEmbedBuilder(message, questName, questString);
                                                 }
                                             })
                                         }
                                     })
                                 }
-                                */
+                                
                             }
                             else if (itemsInInventoryCountMap[idOfMyItem] && 
                                 itemsInInventoryCountMap[idOfMyItem] >= itemCount){
@@ -4253,6 +4273,240 @@ module.exports.combineCommand = function(message, args){
     }
 
     // combine rock for boulder, 5 rares to make 1 improved, 5 improved to make 1 refined
+}
+
+function missionCheckCommand(message, discordUserId, command, commandDoneToId, data){
+
+    // if not on ring stage then just check for other regular missions (future)
+    profileDB.getUserProfileData(discordUserId, function(profileErr, profileData){
+        if (profileErr){
+            console.log (profileErr);
+        }else{
+            var stage = profileData.data.ringqueststage;
+
+            if (stage == 2){
+                // on the give 20000 tacos step
+                if (command == "give"){
+                    var questData = {
+                        giveAmount: data.giveAmount,
+                        commandTo: commandDoneToId,
+                        command: command
+                    }
+                    var team = []
+                    quest.questHandler(message, discordUserId, "ring", stage, team, questData, channel)
+                }
+                
+            }else if (stage == 3){
+                if (command == "thank" || command == "sorry"){
+                    // thank / sorry command
+                    var questData = {
+                        command: command,
+                        commandTo: commandDoneToId
+                    }
+                    var team = []
+                    quest.questHandler(message, discordUserId, "ring", stage, team, questData, channel)
+                }
+                
+            }else if (stage == 4){
+                // wedding step - 15 required for reactions (should be done via -marry instead)
+            }
+        }
+    })
+}
+
+module.exports.proposeCommand = function(message, channel){
+    // travel to the specified date in args
+    var discordUserId = message.author.id;
+    var users  = message.mentions.users;
+    var mentionedId;
+    var mentionedUser;
+    users.forEach(function(user){
+        mentionedId = user.id;
+        mentionedUser = user
+    })
+
+    profileDB.getUserProfileData(discordUserId, function(profileErr, profileData){
+        if (profileErr){
+            console.log (profileErr);
+        }else{
+            var stage = profileData.data.ringqueststage;
+
+            // TODO: save the person the user proposed to on DB
+            if (stage == 1){
+                // first stage of ring, user proposes
+                var questData = {
+                    proposedTo: mentionedUser
+                }
+                var team = []
+                quest.questHandler(message, discordUserId, "ring", stage, team, questData, channel)
+            }
+            if (stage == 4){
+                // user marries - creates embed for wedding
+                var questData = {
+                    marriedTo: mentionedUser
+                }
+                var team = []
+                quest.questHandler(message, discordUserId, "ring", stage, team, questData, channel)
+            }
+            // TODO: give, thanks, and sorry should check whether the user is in stages 2, 3 and complete the stages
+            // on stage 4, everyone can react to the embed and receive rewards
+            // stage 5 should be started via -rpgstart ring @users
+        }
+    })
+}
+
+module.exports.exploreTombCommand = function(message, args, channel){
+    // travel to the specified date in args
+    var discordUserId = message.author.id;
+
+    var users  = message.mentions.users
+    
+    var team = [];
+    team.push(message.author);
+
+    users.forEach(function(user){
+        if (team.length < 4 && discordUserId != user.id){
+            team.push(user);
+        }
+    })
+    // check to see all the team members are available and not already in an event
+    var validTeam = true;
+    for (var member in team){
+        /*
+        if (usersInRPGEvents["rpg-"+team[member].id]){
+            validTeam = false;
+        }
+        */
+        if (team[member].bot){
+            validTeam = false;
+        }
+    }
+
+    if (team.length == 1){
+        profileDB.getUserProfileData(discordUserId, function(profileErr, profileData){
+            if (profileErr){
+                console.log (profileErr);
+            }else{
+                var stage = profileData.data.tombqueststage;
+
+                if (stage == 1){
+                    // first stage of tomb, enter tomb
+                    var questData = {
+
+                    }
+                    quest.questHandler(message, discordUserId, "tomb", stage, team, questData, channel)
+
+                }
+                else if (stage == 2){
+                    // second stage of tomb
+                    var questData = {
+                    }
+                    quest.questHandler(message, discordUserId, "tomb", stage, team, questData, channel)
+                }
+                else if (stage == 3){
+                    // third stage of tomb
+                    var questData = {
+                    }
+                    quest.questHandler(message, discordUserId, "tomb", stage, team, questData, channel)
+                }
+                else if (stage == 4){
+                    // 4th stage, tomb
+                    var questData = {
+                    }
+                    quest.questHandler(message, discordUserId, "tomb", stage, team, questData, channel)
+                }
+                else if (stage == 5){
+                    // 5th stage, tomb
+                    var questData = {
+                    }
+                    quest.questHandler(message, discordUserId, "tomb", stage, team, questData, channel)
+                }
+                else if (stage == 6){
+                    // 6th stage, defeat archvampires
+                    var questData = {
+                    }
+                    quest.questHandler(message, discordUserId, "tomb", stage, team, questData, channel)
+                }
+                else{
+                    message.channel.send("entered tomb ")
+                }
+
+            }
+        })
+    }
+}
+
+module.exports.ritualCommand = function(message, args, channel){
+    
+    var discordUserId = message.author.id;
+
+    var users  = message.mentions.users
+    
+    var team = [];
+    team.push(message.author);
+
+    users.forEach(function(user){
+        if (team.length < 4 && discordUserId != user.id){
+            team.push(user);
+        }
+    })
+    // check to see all the team members are available and not already in an event
+    var validTeam = true;
+    for (var member in team){
+        /*
+        if (usersInRPGEvents["rpg-"+team[member].id]){
+            validTeam = false;
+        }
+        */
+        if (team[member].bot){
+            validTeam = false;
+        }
+    }
+    if (team.length == 1){
+        profileDB.getUserProfileData(discordUserId, function(profileErr, profileData){
+            if (profileErr){
+                // console.log (profileErr);
+            }else{
+                var stage = profileData.data.demonicqueststage;
+
+                if (stage == 1){
+                    // first stage of demonic
+                    var questData = {
+
+                    }
+                    quest.questHandler(message, discordUserId, "demonic", stage, team, questData, channel)
+
+                }
+                else if (stage == 2){
+                    // second stage of demonic
+                    var questData = {
+                    }
+                    quest.questHandler(message, discordUserId, "demonic", stage, team, questData, channel)
+                }
+                else if (stage == 3){
+                    // third stage of demonic
+                    var questData = {
+                    }
+                    quest.questHandler(message, discordUserId, "demonic", stage, team, questData, channel)
+                }
+                else if (stage == 4){
+                    // 4th stage, defeat the swarm of demons
+                    var questData = {
+                    }
+                    quest.questHandler(message, discordUserId, "demonic", stage, team, questData, channel)
+                }
+                else if (stage == 5){
+                    // 5th stage, defeat andromalius
+                    var questData = {
+                    }
+                    quest.questHandler(message, discordUserId, "demonic", stage, team, questData, channel)
+                }
+                else{
+                    message.channel.send("performed ritual ")
+                }
+            }
+        })
+    }
 }
 
 module.exports.timeTravelCommand = function(message, args, channel){
@@ -4307,6 +4561,7 @@ module.exports.timeTravelCommand = function(message, args, channel){
                     quest.questHandler(message, discordUserId, "timetravel", stage, team, questData, channel)
                 }
                 else{
+                    // TODO: make this just be a travel in time
                     message.channel.send("traveled to the year " + args[1])
                 }
             }
@@ -4368,20 +4623,14 @@ module.exports.timeTravelCommand = function(message, args, channel){
                 }
             }
         })
-    }else if (args.length > 1 && args[1] >= 325000000 && args[1] <= 326000000 && team.length == 1){
+    }else if (args.length > 1 && args[1] >= 3250000 && args[1] <= 3260000 && team.length == 1){
         profileDB.getUserProfileData(discordUserId, function(profileErr, profileData){
             if (profileErr){
                 // console.log (profileErr);
             }else{
                 var stage = profileData.data.timetravelqueststage;
 
-                if (stage == 7){
-                    var questData = {
-                        year: args[1]
-                    }
-                    quest.questHandler(message, discordUserId, "timetravel", stage, team, questData, channel)
-                }
-                else if (stage == 8){
+                if (stage == 6){
                     var questData = {
                         year: args[1]
                     }

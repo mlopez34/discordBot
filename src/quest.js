@@ -34,8 +34,9 @@ module.exports.questStartEmbedBuilder = function(message, questName, questString
     else if(questName == "demonic"){
         const embed = new Discord.RichEmbed()
         .setAuthor(message.author.username + " has begun an artifact quest.")
-        .addField("Stage 1 name", questString, true)
+        .addField("Perform the summoning ritual and expell the evil demons", questString, true)
         .setDescription(":sparkles: :sparkles: :sparkles:")
+        .addField("New command granted", "-startRitual [@user] [@user] [@user] [@user]")
         .setThumbnail(message.author.avatarURL)
         .setColor(0xFF7A1C)
         message.channel.send({embed});
@@ -43,8 +44,9 @@ module.exports.questStartEmbedBuilder = function(message, questName, questString
     else if(questName == "ring"){
         const embed = new Discord.RichEmbed()
         .setAuthor(message.author.username + " has begun an artifact quest.")
-        .addField("Stage 1 name", questString, true)
+        .addField("Propose your love", questString, true)
         .setDescription(":sparkles: :sparkles: :sparkles:")
+        .addField("New command granted", "-propose [@user]")
         .setThumbnail(message.author.avatarURL)
         .setColor(0xFF7A1C)
         message.channel.send({embed});
@@ -52,8 +54,9 @@ module.exports.questStartEmbedBuilder = function(message, questName, questString
     else if(questName == "tomb"){
         const embed = new Discord.RichEmbed()
         .setAuthor(message.author.username + " has begun an artifact quest.")
-        .addField("Stage 1 name", questString, true)
+        .addField("Enter the tomb of abraham lincoln and discover a horrifying secrets", questString, true)
         .setDescription(":sparkles: :sparkles: :sparkles:")
+        .addField("New command granted", "-entertomb [number (positive or negative)] [@user] [@user] [@user] [@user]")
         .setThumbnail(message.author.avatarURL)
         .setColor(0xFF7A1C)
         message.channel.send({embed});
@@ -129,6 +132,9 @@ module.exports.questStringBuilder = function(questname, questData){
             if (questData && questData.storyStep == 1){
                 return questData.message.author.username + ", The corrupted overmind emerges from above"
             }
+        }
+        else{
+            return "Travel with 4 other companions back in time and save the Jin Dynasty";
         }
     }
     if (questname == "tomb"){
@@ -206,6 +212,8 @@ module.exports.questStringBuilder = function(questname, questData){
             if (questData && questData.storyStep == 1){
                 return questData.message.author.username + ", "
             }
+        }else{
+            return "Travel with 4 other companions into the tomb of Abraham Lincoln";
         }
     }
     if (questname == "demonic"){
@@ -284,6 +292,8 @@ module.exports.questStringBuilder = function(questname, questData){
             if (questData && questData.storyStep == 1){
                 return questData.message.author.username + ", "
             }
+        }else{
+            return "Perform the demonic ritual with 4 other companions";
         }
     }
     if (questname == "ring"){
@@ -338,34 +348,12 @@ module.exports.questStringBuilder = function(questname, questData){
             else if (questData && questData.storyStep == 3){
                 return questData.message.author.username + ", "                
             }
-        }
-        // defeat the fifth evil ex
-        else if (questData.stage == 6){
-            if (questData && questData.storyStep == 1){
-                return questData.message.author.username + ", "
-            }
-        }
-        // defeat the sixth evil ex
-        else if (questData.stage == 7){
-            if (questData && questData.storyStep == 1){
-                return questData.message.author.username + ", "
-            }
-            else if (questData && questData.storyStep == 2){
-                return questData.message.author.username + ",  "                
-            }
-            else if (questData && questData.storyStep == 3){
-                return questData.message.author.username + ", "                
-            }
-        }
-        // defeat the seventh evil ex
-        else if (questData.stage == 8){
-            if (questData && questData.storyStep == 1){
-                return questData.message.author.username + ", "
-            }
+        }else{
+            return "Profess your love to your soulmate";
         }
     }
     else{
-        return "Travel with 4 other companions back in time and save the Jin Dynasty";
+        return "Check error";
     }
     
 }
@@ -383,15 +371,15 @@ module.exports.questHandler = function(message, discordUserId, questline, stageI
     }
     else if (questline == "tomb"){
         // handle abraham lincoln
-        handleTombArtifact(message, discordUserId, stageInQuest, team, year, channel)
+        handleTombArtifact(message, discordUserId, stageInQuest, team, channel)
     }
     else if (questline == "demonic"){
         // handle demonic
-        handleDemonicArtifact(message, discordUserId, stageInQuest, team, year, channel)
+        handleDemonicArtifact(message, discordUserId, stageInQuest, team, channel)
     }
     else if (questline == "ring"){
         // handle evilexes
-        handleRingArtifact(message, discordUserId, stageInQuest, team, year, channel)
+        handleRingArtifact(message, discordUserId, stageInQuest, team, channel)
     }
 }
 
@@ -420,17 +408,17 @@ function handleTimeMachineArtifact(message, discordUserId, stage, team, year, ch
         // travel to the year -65,000,000 and save the dinosaurs from the meteor
         handleTimeMachineArtifactStageFour(message, discordUserId, stage, team, year, channel)
     }
-    else if (Stage == 5){
+    else if (stage == 5){
         // travel to the year 3,189 and free the humans that are being held hostage in a remote island
         handleTimeMachineArtifactStageFive(message, discordUserId, stage, team, year, channel)
     }
-    else if (Stage == 6){
+    else if (stage == 6){
         // travel to the year 3,250,000 and defeat the corrupted overmind
         handleTimeMachineArtifactStageSix(message, discordUserId, stage, team, year, channel)
     }
 }
 
-function handleTombArtifact(message, discordUserId, stage, team, year, channel){
+function handleTombArtifact(message, discordUserId, stage, team, channel){
     /*
     abraham lincoln tomb
     -stage 1 = (embed)arrive at the tomb and gather supplies 
@@ -442,27 +430,31 @@ function handleTombArtifact(message, discordUserId, stage, team, year, channel){
     */
     if (stage == 1){
         // embed shows supplies that users can gather (item pickup)
-        handleTombArtifactStageOne(message, discordUserId, stage, team, year, channel)
+        handleTombArtifactStageOne(message, discordUserId, stage, team, channel)
     }
     else if (stage == 2){
         // create special encounter with hounds
-        handleTombArtifactStageTwo(message, discordUserId, stage, team, year, channel)
+        handleTombArtifactStageTwo(message, discordUserId, stage, team, channel)
     }
     else if (stage == 3){
-        // travel to the year -65,000,000 and save the dinosaurs from the meteor
-        handleTombArtifactStageThree(message, discordUserId, stage, team, year, channel)
+        // defeat the vampires in the first chamber
+        handleTombArtifactStageThree(message, discordUserId, stage, team, channel)
     }
     else if (stage == 4){
-        // travel to the year -65,000,000 and save the dinosaurs from the meteor
-        handleTombArtifactStageFour(message, discordUserId, stage, team, year, channel)
+        // defeat the gatekeeper
+        handleTombArtifactStageFour(message, discordUserId, stage, team, channel)
     }
     else if (stage == 5){
-        // travel to the year -65,000,000 and save the dinosaurs from the meteor
-        handleTombArtifactStageFive(message, discordUserId, stage, team, year, channel)
+        // pull the lever
+        handleTombArtifactStageFive(message, discordUserId, stage, team, channel)
+    }
+    else if (stage == 6){
+        // defeat the archvampires
+        handleTombArtifactStageSix(message, discordUserId, stage, team, channel)
     }
 }
 
-function handleDemonicArtifact(stage, discordUserId){
+function handleDemonicArtifact(message, discordUserId, stage, team, channel){
     /*
     demonic scroll :
     -stage 1 = * (mission) all members stand in a star formation (react on spots)
@@ -474,27 +466,27 @@ function handleDemonicArtifact(stage, discordUserId){
     */
     if (stage == 1){
         // all members stand in a star formation (react on spots)
-        handleDemonicArtifactStageOne(message, discordUserId, stage, team, year, channel)
+        handleDemonicArtifactStageOne(message, discordUserId, stage, team, channel)
     }
     else if (stage == 2){
         // react to say the summoning ritual in order
-        handleDemonicArtifactStageTwo(message, discordUserId, stage, team, year, channel)
+        handleDemonicArtifactStageTwo(message, discordUserId, stage, team, channel)
     }
     else if (stage == 3){
         // sacrifice a server member by throwing tacos to each other in the formation to create a star (start at top)
-        handleDemonicArtifactStageThree(message, discordUserId, stage, team, year, channel)
+        handleDemonicArtifactStageThree(message, discordUserId, stage, team, channel)
     }
     else if (stage == 4){
         // defeat a legion of demons that have spawned from the summoning (5 members)
-        handleDemonicArtifactStageFour(message, discordUserId, stage, team, year, channel)
+        handleDemonicArtifactStageFour(message, discordUserId, stage, team, channel)
     }
     else if (Stage == 5){
         // defeat the demon lord andromalius that has spawned from the summoning (5 members)
-        handleDemonicArtifactStageFive(message, discordUserId, stage, team, year, channel)
+        handleDemonicArtifactStageFive(message, discordUserId, stage, team, channel)
     }
 }
 
-function handleRingArtifact(stage, discordUserId){
+function handleRingArtifact(message, discordUserId, stage, team, questData, channel){
     /*
     fight the evil exes
     ring:
@@ -505,22 +497,31 @@ function handleRingArtifact(stage, discordUserId){
     -stage 5 = * (rpg)defeat the 7 evil exes
     */
     if (stage == 1){
-        handleRingArtifactStageOne(message, discordUserId, stage, team, year, channel)
+        // propose to a member
+        var proposedTo = questData.proposedTo;
+        handleRingArtifactStageOne(message, discordUserId, stage, team, proposedTo, channel)
     }
     else if (stage == 2){
-        handleRingArtifactStageTwo(message, discordUserId, stage, team, year, channel)
+        // give member 20000 tacos
+        var giveAmount = questData.giveAmount
+        var giveTo = questData.giveTo
+        handleRingArtifactStageTwo(message, discordUserId, stage, team, giveAmount, giveTo, channel)
     }
     else if (stage == 3){
-        // travel to the year -65,000,000 and save the dinosaurs from the meteor
-        handleRingArtifactStageThree(message, discordUserId, stage, team, year, channel)
+        // sorry and thank the user
+        var command = questData.command
+        var commandTo = questData.commandTo
+        handleRingArtifactStageThree(message, discordUserId, stage, team, command, commandTo, channel)
     }
     else if (stage == 4){
-        // travel to the year -65,000,000 and save the dinosaurs from the meteor
-        handleRingArtifactStageFour(message, discordUserId, stage, team, year, channel)
+        // react to embed with hearts
+        var marriedTo = questData.marriedTo
+        handleRingArtifactStageFour(message, discordUserId, stage, team, marriedTo, channel)
     }
-    else if (Stage == 5){
-        // travel to the year 3,189 and free the humans that are being held hostage in a remote island
-        handleRingArtifactStageFive(message, discordUserId, stage, team, year, channel)
+    else if (stage == 5){
+        // rpg - defeat the 7 evil exes
+        var marriedTo = questData.marriedTo
+        handleRingArtifactStageFive(message, discordUserId, stage, team, channel)
     }
 }
 /*
@@ -608,6 +609,7 @@ function handleTimeMachineArtifactStageOne(message, discordUserId, stage, team, 
                 leaderOfGroup = activeQuests["quest-" + reactionEmoji.message.id].id; // discord id of leader
                 leaderOfGroupUsername = activeQuests["quest-" + reactionEmoji.message.id].username;
                 idOfQuest = "quest-" + reactionEmoji.message.id;
+                // TODO: split reactions to have their own item buckets
                 if (reactionEmoji._emoji.name == "🌮"){
                     reactionEmoji.users.forEach(function(user){
                         if (!user.bot && ownerOfTable != user.id){
@@ -726,14 +728,96 @@ function handleTimeMachineArtifactStageThree(message, discordUserId, stage, team
             embed.setDescription(descriptionString)
             sentMessage.edit({embed})
         }, 10000);
-        // TODO: add reaction event where user finds 
+        // TODO: add reaction event where user finds items 
         var storytell = setTimeout (function(){ 
             questData.storyStep = questData.storyStep + 1;
             var descriptionString = exports.questStringBuilder("timetravel", questData);
             embed.setDescription(descriptionString)
             sentMessage.edit({embed})
+        }, 20000);
 
+        var storytell = setTimeout (function(){ 
+            questData.storyStep = questData.storyStep + 1;
+            var descriptionString = exports.questStringBuilder("timetravel", questData);
+            embed.setDescription(descriptionString)
+            .addField("Gather supplies", "You may pick up one supply from the list...  ")
+            sentMessage.edit({embed})
+
+            sentMessage.react("🏮")
+            sentMessage.react("🍱")
+            sentMessage.react("📦")
+            //sentMessage.react("🛋️")
+            sentMessage.react("🚪")
+            sentMessage.react("🏯")
+            //sentMessage.react("🏚️")
+            //sentMessage.react("🕳️")
+            //sentMessage.react("🗄️")
+            //sentMessage.react("⚰️")
+            sentMessage.react("🎨")
+        }, 20000);
+        // reactions for user
+        // porcelain vase, kitchen table, wooden box, chair, wardrobe, interrogation room, 
+        // cellar, irrigation ditch, blacksmith toolbox, coffin, art gallery
+        
+        var supplies = new Discord.ReactionCollector(sentMessage, function(){ return true; } , { time: 60000, max: 1000, maxEmojis: 100, maxUsers: 100 } );
+        supplies.on('collect', function(element, collector){
+            // remove the reaction if the user already reacted
+            console.log(element)
+            element.users.forEach(function(user){
+                if (!user.bot){
+                    var userId = user.id;
+                    collector.collected.forEach(function(reaction){
+                        console.log(reaction);
+                        reaction.users.forEach(function(collectorUser){
+                            if (!collectorUser.bot){
+                                var collectorUser = collectorUser.id;
+                                if (collectorUser == userId && element.emoji.name != reaction.emoji.name){
+                                    // remove the reaction by the user
+                                    element.remove(userId)
+                                }
+                                // TODO: check if everyone has gathered supplies if they have then do supplies.stop
+                            }
+                        })
+                    })
+                }
+            })
+        })
+        supplies.on('end', function(collected, reason){
+            // TODO: hand out the supplies to each team member
+            var leaderOfGroup;
+            var leaderOfGroupUsername;
             var idOfQuest;
+            var reactionCount = 0;
+            collected.forEach(function(reactionEmoji){
+                leaderOfGroup = activeQuests["quest-" + reactionEmoji.message.id].id; // discord id of leader
+                leaderOfGroupUsername = activeQuests["quest-" + reactionEmoji.message.id].username;
+                idOfQuest = "quest-" + reactionEmoji.message.id;
+                // TODO: split reactions to have their own item buckets
+                if (reactionEmoji._emoji.name == "🌮"){
+                    reactionEmoji.users.forEach(function(user){
+                        if (!user.bot && ownerOfTable != user.id){
+                            questFindRewards(message, user, "🌮", "taco")
+                            reactionCount++;
+                        }
+                    })
+                }
+                else if (reactionEmoji._emoji.name == "🍹"){
+                    reactionEmoji.users.forEach(function(user){
+                        if (!user.bot && ownerOfTable != user.id){
+                            questFindRewards(message, user, "🍹", "terrycloth")
+                            reactionCount++;
+                        }
+                    })
+                }
+                else if (reactionEmoji._emoji.name == "💃🏼"){
+                    reactionEmoji.users.forEach(function(user){
+                        if (!user.bot && ownerOfTable != user.id){
+                            questFindRewards(message, user, "💃🏼", "rock")
+                            reactionCount++;
+                        }
+                    })
+                }
+            })
 
             profileDB.updateQuestlineStage(discordUserId, questData.questname, stage + 1, function(error, updateRes){
                 if (error){
@@ -748,8 +832,7 @@ function handleTimeMachineArtifactStageThree(message, discordUserId, stage, team
                     exports.questHandler(message, discordUserId, "timetravel", stage + 1, team, year, channel)
                 }
             })
-
-        }, 20000);
+        })
     })
 }
 
@@ -775,7 +858,7 @@ function handleTimeMachineArtifactStageFour(message, discordUserId, stage, team,
         }
     }
     var descriptionString = exports.questStringBuilder("timetravel", questData);
-    // travel to the year 1211 and defeat genghis khan before he invades
+    // asteroid RPG
     const embed = new Discord.RichEmbed()
     .setDescription(descriptionString)
     .setThumbnail("https://i.imgur.com/xTXk6OR.png")
@@ -819,7 +902,7 @@ function handleTimeMachineArtifactStageFive(message, discordUserId, stage, team,
     .setColor(0xFF7A1C)
     message.channel.send({embed})
     .then(function(sentMessage){
-        
+        // island RPG
         var storytell = setTimeout (function(){ 
             rpg.rpgInitialize(message, special);
             playMusicForQuest(channel, "island")
@@ -869,16 +952,17 @@ function handleTimeMachineArtifactStageSix(message, discordUserId, stage, team, 
 */
 
 // embed
-function handleDemonicArtifactStageOne(message, discordUserId, stage, team, year, channel){
+function handleDemonicArtifactStageOne(message, discordUserId, stage, team, channel){
     var questData = {
         questname: "demonic",
         message: message,
-        year: year,
         stage: stage,
         storyStep: 1
     }
-    var descriptionString = exports.questStringBuilder("timetravel", questData);
-    // travel to the year 1211 and defeat genghis khan before he invades
+    var descriptionString = exports.questStringBuilder("demonic", questData);
+    /*
+     -stage 1 = * (mission) all members stand in a star formation (react on spots)
+    */
     const embed = new Discord.RichEmbed()
     .setDescription(descriptionString)
     .setThumbnail("https://i.imgur.com/5loQua9.png")
@@ -888,14 +972,14 @@ function handleDemonicArtifactStageOne(message, discordUserId, stage, team, year
         activeQuests["quest-"+sentMessage.id] = { id: discordUserId, username: message.author.username };
         var storytell = setTimeout (function(){
             questData.storyStep = questData.storyStep + 1;            
-            var descriptionString = exports.questStringBuilder("timetravel", questData);
+            var descriptionString = exports.questStringBuilder("demonic", questData);
             embed.setDescription(descriptionString)
             sentMessage.edit({embed})
         }, 10000);
         
         var storytell = setTimeout (function(){ 
             questData.storyStep = questData.storyStep + 1;
-            var descriptionString = exports.questStringBuilder("timetravel", questData);
+            var descriptionString = exports.questStringBuilder("demonic", questData);
             embed.setDescription(descriptionString)
             .addField("Gather supplies", "You may pick up one supply from the list...  ")
             sentMessage.edit({embed})
@@ -984,7 +1068,7 @@ function handleDemonicArtifactStageOne(message, discordUserId, stage, team, year
                         delete activeQuests[idOfQuest];
                     }
                     message.channel.send("next stage");
-                    exports.questHandler(message, discordUserId, "timetravel", stage + 1, team, year, channel)
+                    exports.questHandler(message, discordUserId, "demonic", stage + 1, team, channel)
                 }
             })
         })
@@ -992,16 +1076,17 @@ function handleDemonicArtifactStageOne(message, discordUserId, stage, team, year
     })
 }
 // embed
-function handleDemonicArtifactStageTwo(message, discordUserId, stage, team, year, channel){
+function handleDemonicArtifactStageTwo(message, discordUserId, stage, team, channel){
     var questData = {
-        questname: "timetravel",
+        questname: "demonic",
         message: message,
-        year: year,
         stage: stage,
         storyStep: 1
     }
-    var descriptionString = exports.questStringBuilder("timetravel", questData);
-    // travel to the year 1211 and defeat genghis khan before he invades
+    var descriptionString = exports.questStringBuilder("demonic", questData);
+    /*
+    -stage 2 = (embed)react to say the summoning ritual in order
+    */
     const embed = new Discord.RichEmbed()
     .setDescription(descriptionString)
     .setThumbnail("https://i.imgur.com/5loQua9.png")
@@ -1011,14 +1096,14 @@ function handleDemonicArtifactStageTwo(message, discordUserId, stage, team, year
         activeQuests["quest-"+sentMessage.id] = { id: discordUserId, username: message.author.username };
         var storytell = setTimeout (function(){
             questData.storyStep = questData.storyStep + 1;            
-            var descriptionString = exports.questStringBuilder("timetravel", questData);
+            var descriptionString = exports.questStringBuilder("demonic", questData);
             embed.setDescription(descriptionString)
             sentMessage.edit({embed})
         }, 10000);
         
         var storytell = setTimeout (function(){ 
             questData.storyStep = questData.storyStep + 1;
-            var descriptionString = exports.questStringBuilder("timetravel", questData);
+            var descriptionString = exports.questStringBuilder("demonic", questData);
             embed.setDescription(descriptionString)
             .addField("Gather supplies", "You may pick up one supply from the list...  ")
             sentMessage.edit({embed})
@@ -1035,11 +1120,9 @@ function handleDemonicArtifactStageTwo(message, discordUserId, stage, team, year
             //sentMessage.react("⚰️")
             sentMessage.react("🎨")
         }, 20000);
-        // reactions for user
-        // porcelain vase, kitchen table, wooden box, chair, wardrobe, interrogation room, 
-        // cellar, irrigation ditch, blacksmith toolbox, coffin, art gallery
+        // reactions for user each reaction is the spot on the clock - TODO: change the above to be 12, all are clock spots
         
-        var supplies = new Discord.ReactionCollector(sentMessage, function(){ return true; } , { time: 60000, max: 1000, maxEmojis: 100, maxUsers: 100 } );
+        var supplies = new Discord.ReactionCollector(sentMessage, function(){ return true; } , { time: 360000, max: 1000, maxEmojis: 100, maxUsers: 100 } );
         supplies.on('collect', function(element, collector){
             // remove the reaction if the user already reacted
             console.log(element)
@@ -1063,7 +1146,7 @@ function handleDemonicArtifactStageTwo(message, discordUserId, stage, team, year
             })
         })
         supplies.on('end', function(collected, reason){
-            // TODO: hand out the supplies to each team member
+            // 
             var leaderOfGroup;
             var leaderOfGroupUsername;
             var idOfQuest;
@@ -1097,7 +1180,7 @@ function handleDemonicArtifactStageTwo(message, discordUserId, stage, team, year
                     })
                 }
             })
-            // collected all supplies move the user to the next stage and call self on stage 2
+            // 
             profileDB.updateQuestlineStage(discordUserId, questData.questname, stage + 1, function(error, updateRes){
                 if (error){
                     console.log(error);
@@ -1107,7 +1190,7 @@ function handleDemonicArtifactStageTwo(message, discordUserId, stage, team, year
                         delete activeQuests[idOfQuest];
                     }
                     message.channel.send("next stage");
-                    exports.questHandler(message, discordUserId, "timetravel", stage + 1, team, year, channel)
+                    exports.questHandler(message, discordUserId, "demonic", stage + 1, team, channel)
                 }
             })
         })
@@ -1115,16 +1198,15 @@ function handleDemonicArtifactStageTwo(message, discordUserId, stage, team, year
     })
 }
 // embed
-function handleDemonicArtifactStageThree(message, discordUserId, stage, team, year, channel){
+function handleDemonicArtifactStageThree(message, discordUserId, stage, team, channel){
     var questData = {
-        questname: "timetravel",
+        questname: "demonic",
         message: message,
-        year: year,
         stage: stage,
         storyStep: 1
     }
-    var descriptionString = exports.questStringBuilder("timetravel", questData);
-    // travel to the year 1211 and defeat genghis khan before he invades
+    var descriptionString = exports.questStringBuilder("demonic", questData);
+    // 
     const embed = new Discord.RichEmbed()
     .setDescription(descriptionString)
     .setThumbnail("https://i.imgur.com/5loQua9.png")
@@ -1134,14 +1216,14 @@ function handleDemonicArtifactStageThree(message, discordUserId, stage, team, ye
         activeQuests["quest-"+sentMessage.id] = { id: discordUserId, username: message.author.username };
         var storytell = setTimeout (function(){
             questData.storyStep = questData.storyStep + 1;            
-            var descriptionString = exports.questStringBuilder("timetravel", questData);
+            var descriptionString = exports.questStringBuilder("demonic", questData);
             embed.setDescription(descriptionString)
             sentMessage.edit({embed})
         }, 10000);
         
         var storytell = setTimeout (function(){ 
             questData.storyStep = questData.storyStep + 1;
-            var descriptionString = exports.questStringBuilder("timetravel", questData);
+            var descriptionString = exports.questStringBuilder("demonic", questData);
             embed.setDescription(descriptionString)
             .addField("Gather supplies", "You may pick up one supply from the list...  ")
             sentMessage.edit({embed})
@@ -1159,8 +1241,6 @@ function handleDemonicArtifactStageThree(message, discordUserId, stage, team, ye
             sentMessage.react("🎨")
         }, 20000);
         // reactions for user
-        // porcelain vase, kitchen table, wooden box, chair, wardrobe, interrogation room, 
-        // cellar, irrigation ditch, blacksmith toolbox, coffin, art gallery
         
         var supplies = new Discord.ReactionCollector(sentMessage, function(){ return true; } , { time: 60000, max: 1000, maxEmojis: 100, maxUsers: 100 } );
         supplies.on('collect', function(element, collector){
@@ -1220,7 +1300,7 @@ function handleDemonicArtifactStageThree(message, discordUserId, stage, team, ye
                     })
                 }
             })
-            // collected all supplies move the user to the next stage and call self on stage 2
+            // 
             profileDB.updateQuestlineStage(discordUserId, questData.questname, stage + 1, function(error, updateRes){
                 if (error){
                     console.log(error);
@@ -1230,7 +1310,7 @@ function handleDemonicArtifactStageThree(message, discordUserId, stage, team, ye
                         delete activeQuests[idOfQuest];
                     }
                     message.channel.send("next stage");
-                    exports.questHandler(message, discordUserId, "timetravel", stage + 1, team, year, channel)
+                    exports.questHandler(message, discordUserId, "demonic", stage + 1, team, channel)
                 }
             })
         })
@@ -1238,12 +1318,11 @@ function handleDemonicArtifactStageThree(message, discordUserId, stage, team, ye
     })
 }
 // rpg
-function handleDemonicArtifactStageFour(message, discordUserId, stage, team, year, channel){
+function handleDemonicArtifactStageFour(message, discordUserId, stage, team, channel){
 
     var questData = {
         questname: "demonic",
         message: message,
-        year: year,
         stage: stage,
         storyStep: 1
     }
@@ -1289,12 +1368,11 @@ function handleDemonicArtifactStageFour(message, discordUserId, stage, team, yea
     })
 }
 // rpg
-function handleDemonicArtifactStageFive(message, discordUserId, stage, team, year, channel){
-    // send embed that Ghenghis Khan's forces have reached the capital, 
+function handleDemonicArtifactStageFive(message, discordUserId, stage, team, channel){
+    // defeat andromalius
     var questData = {
         questname: "demonic",
         message: message,
-        year: year,
         stage: stage,
         storyStep: 1
     }
@@ -1304,8 +1382,8 @@ function handleDemonicArtifactStageFive(message, discordUserId, stage, team, yea
         avatar: "https://i.imgur.com/5loQua9.png",
         reward: {
             type: "note" , // could be item
-            fieldTitle: "A scroll was found on one of the general's bodies",
-            note: "travel to the year 1250 BC to defeat the trojans",
+            fieldTitle: "Andromalius defeated",
+            note: "You have defeated Andromalius, you've found the demonic bow of andromalius",
             questline: "demonicqueststage",
             stageAdvance: stage + 1
         }
@@ -1345,16 +1423,16 @@ function handleDemonicArtifactStageFive(message, discordUserId, stage, team, yea
 */
 
 // embed
-function handleRingArtifactStageOne(message, discordUserId, stage, team, year, channel){
+function handleRingArtifactStageOne(message, discordUserId, stage, team, proposedTo, channel){
     var questData = {
-        questname: "timetravel",
+        questname: "ring",
         message: message,
-        year: year,
+        proposeTo: proposeTo,
         stage: stage,
         storyStep: 1
     }
-    var descriptionString = exports.questStringBuilder("timetravel", questData);
-    // travel to the year 1211 and defeat genghis khan before he invades
+    var descriptionString = exports.questStringBuilder("ring", questData);
+    // 
     const embed = new Discord.RichEmbed()
     .setDescription(descriptionString)
     .setThumbnail("https://i.imgur.com/5loQua9.png")
@@ -1364,93 +1442,12 @@ function handleRingArtifactStageOne(message, discordUserId, stage, team, year, c
         activeQuests["quest-"+sentMessage.id] = { id: discordUserId, username: message.author.username };
         var storytell = setTimeout (function(){
             questData.storyStep = questData.storyStep + 1;            
-            var descriptionString = exports.questStringBuilder("timetravel", questData);
+            var descriptionString = exports.questStringBuilder("ring", questData);
             embed.setDescription(descriptionString)
-            sentMessage.edit({embed})
-        }, 10000);
-        
-        var storytell = setTimeout (function(){ 
-            questData.storyStep = questData.storyStep + 1;
-            var descriptionString = exports.questStringBuilder("timetravel", questData);
-            embed.setDescription(descriptionString)
-            .addField("Gather supplies", "You may pick up one supply from the list...  ")
             sentMessage.edit({embed})
 
-            sentMessage.react("🏮")
-            sentMessage.react("🍱")
-            sentMessage.react("📦")
-            //sentMessage.react("🛋️")
-            sentMessage.react("🚪")
-            sentMessage.react("🏯")
-            //sentMessage.react("🏚️")
-            //sentMessage.react("🕳️")
-            //sentMessage.react("🗄️")
-            //sentMessage.react("⚰️")
-            sentMessage.react("🎨")
-        }, 20000);
-        // reactions for user
-        // porcelain vase, kitchen table, wooden box, chair, wardrobe, interrogation room, 
-        // cellar, irrigation ditch, blacksmith toolbox, coffin, art gallery
-        
-        var supplies = new Discord.ReactionCollector(sentMessage, function(){ return true; } , { time: 60000, max: 1000, maxEmojis: 100, maxUsers: 100 } );
-        supplies.on('collect', function(element, collector){
-            // remove the reaction if the user already reacted
-            console.log(element)
-            element.users.forEach(function(user){
-                if (!user.bot){
-                    var userId = user.id;
-                    collector.collected.forEach(function(reaction){
-                        console.log(reaction);
-                        reaction.users.forEach(function(collectorUser){
-                            if (!collectorUser.bot){
-                                var collectorUser = collectorUser.id;
-                                if (collectorUser == userId && element.emoji.name != reaction.emoji.name){
-                                    // remove the reaction by the user
-                                    element.remove(userId)
-                                }
-                                // TODO: check if everyone has gathered supplies if they have then do supplies.stop
-                            }
-                        })
-                    })
-                }
-            })
-        })
-        supplies.on('end', function(collected, reason){
-            // TODO: hand out the supplies to each team member
-            var leaderOfGroup;
-            var leaderOfGroupUsername;
-            var idOfQuest;
-            var reactionCount = 0;
-            collected.forEach(function(reactionEmoji){
-                leaderOfGroup = activeQuests["quest-" + reactionEmoji.message.id].id; // discord id of leader
-                leaderOfGroupUsername = activeQuests["quest-" + reactionEmoji.message.id].username;
-                idOfQuest = "quest-" + reactionEmoji.message.id;
-                if (reactionEmoji._emoji.name == "🌮"){
-                    reactionEmoji.users.forEach(function(user){
-                        if (!user.bot && ownerOfTable != user.id){
-                            questFindRewards(message, user, "🌮", "taco")
-                            reactionCount++;
-                        }
-                    })
-                }
-                else if (reactionEmoji._emoji.name == "🍹"){
-                    reactionEmoji.users.forEach(function(user){
-                        if (!user.bot && ownerOfTable != user.id){
-                            questFindRewards(message, user, "🍹", "terrycloth")
-                            reactionCount++;
-                        }
-                    })
-                }
-                else if (reactionEmoji._emoji.name == "💃🏼"){
-                    reactionEmoji.users.forEach(function(user){
-                        if (!user.bot && ownerOfTable != user.id){
-                            questFindRewards(message, user, "💃🏼", "rock")
-                            reactionCount++;
-                        }
-                    })
-                }
-            })
-            // collected all supplies move the user to the next stage and call self on stage 2
+            // You have proposed to someone
+
             profileDB.updateQuestlineStage(discordUserId, questData.questname, stage + 1, function(error, updateRes){
                 if (error){
                     console.log(error);
@@ -1459,25 +1456,26 @@ function handleRingArtifactStageOne(message, discordUserId, stage, team, year, c
                     if (activeQuests[idOfQuest]){
                         delete activeQuests[idOfQuest];
                     }
-                    message.channel.send("next stage");
-                    exports.questHandler(message, discordUserId, "timetravel", stage + 1, team, year, channel)
+                    message.channel.send("next stage - ");
+                    // exports.questHandler(message, discordUserId, "ring", stage + 1, team, year, channel)
                 }
             })
-        })
+        }, 10000);
 
     })
 }
 
-function handleRingArtifactStageTwo(message, discordUserId, stage, team, year, channel){
+function handleRingArtifactStageTwo(message, discordUserId, stage, team, giveAmount, giveTo, channel){
+    // check that the user has been given 20000 tacos
     var questData = {
-        questname: "timetravel",
+        questname: "ring",
         message: message,
-        year: year,
+        giveAmount: giveAmount,
         stage: stage,
         storyStep: 1
     }
-    var descriptionString = exports.questStringBuilder("timetravel", questData);
-    // travel to the year 1211 and defeat genghis khan before he invades
+    var descriptionString = exports.questStringBuilder("ring", questData);
+    // 
     const embed = new Discord.RichEmbed()
     .setDescription(descriptionString)
     .setThumbnail("https://i.imgur.com/5loQua9.png")
@@ -1487,120 +1485,37 @@ function handleRingArtifactStageTwo(message, discordUserId, stage, team, year, c
         activeQuests["quest-"+sentMessage.id] = { id: discordUserId, username: message.author.username };
         var storytell = setTimeout (function(){
             questData.storyStep = questData.storyStep + 1;            
-            var descriptionString = exports.questStringBuilder("timetravel", questData);
+            var descriptionString = exports.questStringBuilder("ring", questData);
             embed.setDescription(descriptionString)
             sentMessage.edit({embed})
         }, 10000);
         
-        var storytell = setTimeout (function(){ 
-            questData.storyStep = questData.storyStep + 1;
-            var descriptionString = exports.questStringBuilder("timetravel", questData);
-            embed.setDescription(descriptionString)
-            .addField("Gather supplies", "You may pick up one supply from the list...  ")
-            sentMessage.edit({embed})
-
-            sentMessage.react("🏮")
-            sentMessage.react("🍱")
-            sentMessage.react("📦")
-            //sentMessage.react("🛋️")
-            sentMessage.react("🚪")
-            sentMessage.react("🏯")
-            //sentMessage.react("🏚️")
-            //sentMessage.react("🕳️")
-            //sentMessage.react("🗄️")
-            //sentMessage.react("⚰️")
-            sentMessage.react("🎨")
-        }, 20000);
-        // reactions for user
-        // porcelain vase, kitchen table, wooden box, chair, wardrobe, interrogation room, 
-        // cellar, irrigation ditch, blacksmith toolbox, coffin, art gallery
-        
-        var supplies = new Discord.ReactionCollector(sentMessage, function(){ return true; } , { time: 60000, max: 1000, maxEmojis: 100, maxUsers: 100 } );
-        supplies.on('collect', function(element, collector){
-            // remove the reaction if the user already reacted
-            console.log(element)
-            element.users.forEach(function(user){
-                if (!user.bot){
-                    var userId = user.id;
-                    collector.collected.forEach(function(reaction){
-                        console.log(reaction);
-                        reaction.users.forEach(function(collectorUser){
-                            if (!collectorUser.bot){
-                                var collectorUser = collectorUser.id;
-                                if (collectorUser == userId && element.emoji.name != reaction.emoji.name){
-                                    // remove the reaction by the user
-                                    element.remove(userId)
-                                }
-                                // TODO: check if everyone has gathered supplies if they have then do supplies.stop
-                            }
-                        })
-                    })
+        profileDB.updateQuestlineStage(discordUserId, questData.questname, stage + 1, function(error, updateRes){
+            if (error){
+                console.log(error);
+            }else{
+                // call self with new stage
+                if (activeQuests[idOfQuest]){
+                    delete activeQuests[idOfQuest];
                 }
-            })
+                message.channel.send("next stage - commands to married person");
+                //exports.questHandler(message, discordUserId, "ring", stage + 1, team, year, channel)
+            }
         })
-        supplies.on('end', function(collected, reason){
-            // TODO: hand out the supplies to each team member
-            var leaderOfGroup;
-            var leaderOfGroupUsername;
-            var idOfQuest;
-            var reactionCount = 0;
-            collected.forEach(function(reactionEmoji){
-                leaderOfGroup = activeQuests["quest-" + reactionEmoji.message.id].id; // discord id of leader
-                leaderOfGroupUsername = activeQuests["quest-" + reactionEmoji.message.id].username;
-                idOfQuest = "quest-" + reactionEmoji.message.id;
-                if (reactionEmoji._emoji.name == "🌮"){
-                    reactionEmoji.users.forEach(function(user){
-                        if (!user.bot && ownerOfTable != user.id){
-                            questFindRewards(message, user, "🌮", "taco")
-                            reactionCount++;
-                        }
-                    })
-                }
-                else if (reactionEmoji._emoji.name == "🍹"){
-                    reactionEmoji.users.forEach(function(user){
-                        if (!user.bot && ownerOfTable != user.id){
-                            questFindRewards(message, user, "🍹", "terrycloth")
-                            reactionCount++;
-                        }
-                    })
-                }
-                else if (reactionEmoji._emoji.name == "💃🏼"){
-                    reactionEmoji.users.forEach(function(user){
-                        if (!user.bot && ownerOfTable != user.id){
-                            questFindRewards(message, user, "💃🏼", "rock")
-                            reactionCount++;
-                        }
-                    })
-                }
-            })
-            // collected all supplies move the user to the next stage and call self on stage 2
-            profileDB.updateQuestlineStage(discordUserId, questData.questname, stage + 1, function(error, updateRes){
-                if (error){
-                    console.log(error);
-                }else{
-                    // call self with new stage
-                    if (activeQuests[idOfQuest]){
-                        delete activeQuests[idOfQuest];
-                    }
-                    message.channel.send("next stage");
-                    exports.questHandler(message, discordUserId, "timetravel", stage + 1, team, year, channel)
-                }
-            })
-        })
-
     })
 }
 
-function handleRingArtifactStageThree(message, discordUserId, stage, team, year, channel){
+function handleRingArtifactStageThree(message, discordUserId, stage, team, command, commandTo, channel){
+    // check the user has been thanked and sorried
     var questData = {
-        questname: "timetravel",
+        questname: "ring",
         message: message,
-        year: year,
+        thankedAndSorry: thankedAndSorry,
         stage: stage,
         storyStep: 1
     }
-    var descriptionString = exports.questStringBuilder("timetravel", questData);
-    // travel to the year 1211 and defeat genghis khan before he invades
+    var descriptionString = exports.questStringBuilder("ring", questData);
+    
     const embed = new Discord.RichEmbed()
     .setDescription(descriptionString)
     .setThumbnail("https://i.imgur.com/5loQua9.png")
@@ -1610,120 +1525,35 @@ function handleRingArtifactStageThree(message, discordUserId, stage, team, year,
         activeQuests["quest-"+sentMessage.id] = { id: discordUserId, username: message.author.username };
         var storytell = setTimeout (function(){
             questData.storyStep = questData.storyStep + 1;            
-            var descriptionString = exports.questStringBuilder("timetravel", questData);
+            var descriptionString = exports.questStringBuilder("ring", questData);
             embed.setDescription(descriptionString)
             sentMessage.edit({embed})
-        }, 10000);
-        
-        var storytell = setTimeout (function(){ 
-            questData.storyStep = questData.storyStep + 1;
-            var descriptionString = exports.questStringBuilder("timetravel", questData);
-            embed.setDescription(descriptionString)
-            .addField("Gather supplies", "You may pick up one supply from the list...  ")
-            sentMessage.edit({embed})
-
-            sentMessage.react("🏮")
-            sentMessage.react("🍱")
-            sentMessage.react("📦")
-            //sentMessage.react("🛋️")
-            sentMessage.react("🚪")
-            sentMessage.react("🏯")
-            //sentMessage.react("🏚️")
-            //sentMessage.react("🕳️")
-            //sentMessage.react("🗄️")
-            //sentMessage.react("⚰️")
-            sentMessage.react("🎨")
-        }, 20000);
-        // reactions for user
-        // porcelain vase, kitchen table, wooden box, chair, wardrobe, interrogation room, 
-        // cellar, irrigation ditch, blacksmith toolbox, coffin, art gallery
-        
-        var supplies = new Discord.ReactionCollector(sentMessage, function(){ return true; } , { time: 60000, max: 1000, maxEmojis: 100, maxUsers: 100 } );
-        supplies.on('collect', function(element, collector){
-            // remove the reaction if the user already reacted
-            console.log(element)
-            element.users.forEach(function(user){
-                if (!user.bot){
-                    var userId = user.id;
-                    collector.collected.forEach(function(reaction){
-                        console.log(reaction);
-                        reaction.users.forEach(function(collectorUser){
-                            if (!collectorUser.bot){
-                                var collectorUser = collectorUser.id;
-                                if (collectorUser == userId && element.emoji.name != reaction.emoji.name){
-                                    // remove the reaction by the user
-                                    element.remove(userId)
-                                }
-                                // TODO: check if everyone has gathered supplies if they have then do supplies.stop
-                            }
-                        })
-                    })
-                }
-            })
-        })
-        supplies.on('end', function(collected, reason){
-            // TODO: hand out the supplies to each team member
-            var leaderOfGroup;
-            var leaderOfGroupUsername;
-            var idOfQuest;
-            var reactionCount = 0;
-            collected.forEach(function(reactionEmoji){
-                leaderOfGroup = activeQuests["quest-" + reactionEmoji.message.id].id; // discord id of leader
-                leaderOfGroupUsername = activeQuests["quest-" + reactionEmoji.message.id].username;
-                idOfQuest = "quest-" + reactionEmoji.message.id;
-                if (reactionEmoji._emoji.name == "🌮"){
-                    reactionEmoji.users.forEach(function(user){
-                        if (!user.bot && ownerOfTable != user.id){
-                            questFindRewards(message, user, "🌮", "taco")
-                            reactionCount++;
-                        }
-                    })
-                }
-                else if (reactionEmoji._emoji.name == "🍹"){
-                    reactionEmoji.users.forEach(function(user){
-                        if (!user.bot && ownerOfTable != user.id){
-                            questFindRewards(message, user, "🍹", "terrycloth")
-                            reactionCount++;
-                        }
-                    })
-                }
-                else if (reactionEmoji._emoji.name == "💃🏼"){
-                    reactionEmoji.users.forEach(function(user){
-                        if (!user.bot && ownerOfTable != user.id){
-                            questFindRewards(message, user, "💃🏼", "rock")
-                            reactionCount++;
-                        }
-                    })
-                }
-            })
-            // collected all supplies move the user to the next stage and call self on stage 2
             profileDB.updateQuestlineStage(discordUserId, questData.questname, stage + 1, function(error, updateRes){
                 if (error){
                     console.log(error);
                 }else{
-                    // call self with new stage
                     if (activeQuests[idOfQuest]){
                         delete activeQuests[idOfQuest];
                     }
-                    message.channel.send("next stage");
-                    exports.questHandler(message, discordUserId, "timetravel", stage + 1, team, year, channel)
+                    message.channel.send("next stage - wedding embed");
+                    // exports.questHandler(message, discordUserId, "ring", stage + 1, team, year, channel)
                 }
             })
-        })
-
+        }, 10000);
+        
     })
 }
 
-function handleRingArtifactStageFour(message, discordUserId, stage, team, year, channel){
+function handleRingArtifactStageFour(message, discordUserId, stage, team, marriedTo, channel){
     var questData = {
-        questname: "timetravel",
+        questname: "ring",
         message: message,
-        year: year,
+        marriedTo: marriedTo,
         stage: stage,
         storyStep: 1
     }
-    var descriptionString = exports.questStringBuilder("timetravel", questData);
-    // travel to the year 1211 and defeat genghis khan before he invades
+    var descriptionString = exports.questStringBuilder("ring", questData);
+    // its wedding day, react with emojis, wedding finishes when there is more than 15 guests
     const embed = new Discord.RichEmbed()
     .setDescription(descriptionString)
     .setThumbnail("https://i.imgur.com/5loQua9.png")
@@ -1733,14 +1563,14 @@ function handleRingArtifactStageFour(message, discordUserId, stage, team, year, 
         activeQuests["quest-"+sentMessage.id] = { id: discordUserId, username: message.author.username };
         var storytell = setTimeout (function(){
             questData.storyStep = questData.storyStep + 1;            
-            var descriptionString = exports.questStringBuilder("timetravel", questData);
+            var descriptionString = exports.questStringBuilder("ring", questData);
             embed.setDescription(descriptionString)
             sentMessage.edit({embed})
         }, 10000);
         
-        var storytell = setTimeout (function(){ 
+        var storytell = setTimeout (function(){
             questData.storyStep = questData.storyStep + 1;
-            var descriptionString = exports.questStringBuilder("timetravel", questData);
+            var descriptionString = exports.questStringBuilder("ring", questData);
             embed.setDescription(descriptionString)
             .addField("Gather supplies", "You may pick up one supply from the list...  ")
             sentMessage.edit({embed})
@@ -1785,7 +1615,7 @@ function handleRingArtifactStageFour(message, discordUserId, stage, team, year, 
             })
         })
         supplies.on('end', function(collected, reason){
-            // TODO: hand out the supplies to each team member
+            //
             var leaderOfGroup;
             var leaderOfGroupUsername;
             var idOfQuest;
@@ -1819,7 +1649,7 @@ function handleRingArtifactStageFour(message, discordUserId, stage, team, year, 
                     })
                 }
             })
-            // collected all supplies move the user to the next stage and call self on stage 2
+            // wedding has ended update the user to the next stage of the quest
             profileDB.updateQuestlineStage(discordUserId, questData.questname, stage + 1, function(error, updateRes){
                 if (error){
                     console.log(error);
@@ -1828,8 +1658,8 @@ function handleRingArtifactStageFour(message, discordUserId, stage, team, year, 
                     if (activeQuests[idOfQuest]){
                         delete activeQuests[idOfQuest];
                     }
-                    message.channel.send("next stage");
-                    exports.questHandler(message, discordUserId, "timetravel", stage + 1, team, year, channel)
+                    message.channel.send("next stage -rpgstart wedding @users");
+                    //exports.questHandler(message, discordUserId, "ring", stage + 1, team, year, channel)
                 }
             })
         })
@@ -1837,12 +1667,11 @@ function handleRingArtifactStageFour(message, discordUserId, stage, team, year, 
     })
 }
 // rpg
-function handleRingArtifactStageFive(message, discordUserId, stage, team, year, channel){
-
+function handleRingArtifactStageFive(message, discordUserId, stage, team, channel){
+    // TODO: this stage should be started via rpgstart evilexes @user @user
     var questData = {
         questname: "ring",
         message: message,
-        year: year,
         stage: stage,
         storyStep: 1
     }
@@ -1852,14 +1681,14 @@ function handleRingArtifactStageFive(message, discordUserId, stage, team, year, 
         avatar: "https://i.imgur.com/5loQua9.png",
         reward: {
             type: "note" , // could be item
-            fieldTitle: "A scroll was found on one of the general's bodies",
-            note: "travel to the year 1250 BC to defeat the trojans",
+            fieldTitle: "You have defeated your soulmate's evil exes",
+            note: "You and your soulmate are now linked by souls, taco gains from one are gained by the other",
             questline: "ringqueststage",
             stageAdvance: stage + 1
         }
     }
     var descriptionString = exports.questStringBuilder("ring", questData);
-    // travel to the year 1211 and defeat genghis khan before he invades
+    // 
     const embed = new Discord.RichEmbed()
     .setDescription(descriptionString)
     .setThumbnail("https://i.imgur.com/5loQua9.png")
@@ -1893,16 +1722,15 @@ function handleRingArtifactStageFive(message, discordUserId, stage, team, year, 
 */
 
 // embed
-function handleTombArtifactStageOne(message, discordUserId, stage, team, year, channel){
+function handleTombArtifactStageOne(message, discordUserId, stage, team, channel){
     var questData = {
-        questname: "timetravel",
+        questname: "tomb",
         message: message,
-        year: year,
         stage: stage,
         storyStep: 1
     }
-    var descriptionString = exports.questStringBuilder("timetravel", questData);
-    // travel to the year 1211 and defeat genghis khan before he invades
+    var descriptionString = exports.questStringBuilder("tomb", questData);
+    // gather supplies at the tomb entrance
     const embed = new Discord.RichEmbed()
     .setDescription(descriptionString)
     .setThumbnail("https://i.imgur.com/5loQua9.png")
@@ -1912,14 +1740,14 @@ function handleTombArtifactStageOne(message, discordUserId, stage, team, year, c
         activeQuests["quest-"+sentMessage.id] = { id: discordUserId, username: message.author.username };
         var storytell = setTimeout (function(){
             questData.storyStep = questData.storyStep + 1;            
-            var descriptionString = exports.questStringBuilder("timetravel", questData);
+            var descriptionString = exports.questStringBuilder("tomb", questData);
             embed.setDescription(descriptionString)
             sentMessage.edit({embed})
         }, 10000);
         
         var storytell = setTimeout (function(){ 
             questData.storyStep = questData.storyStep + 1;
-            var descriptionString = exports.questStringBuilder("timetravel", questData);
+            var descriptionString = exports.questStringBuilder("tomb", questData);
             embed.setDescription(descriptionString)
             .addField("Gather supplies", "You may pick up one supply from the list...  ")
             sentMessage.edit({embed})
@@ -2008,7 +1836,7 @@ function handleTombArtifactStageOne(message, discordUserId, stage, team, year, c
                         delete activeQuests[idOfQuest];
                     }
                     message.channel.send("next stage");
-                    exports.questHandler(message, discordUserId, "timetravel", stage + 1, team, year, channel)
+                    exports.questHandler(message, discordUserId, "tomb", stage + 1, team, channel)
                 }
             })
         })
@@ -2016,12 +1844,11 @@ function handleTombArtifactStageOne(message, discordUserId, stage, team, year, c
     })
 }
 // rpg
-function handleTombArtifactStageTwo(message, discordUserId, stage, team, year, channel){
+function handleTombArtifactStageTwo(message, discordUserId, stage, team, channel){
 
     var questData = {
         questname: "tomb",
         message: message,
-        year: year,
         stage: stage,
         storyStep: 1
     }
@@ -2031,14 +1858,14 @@ function handleTombArtifactStageTwo(message, discordUserId, stage, team, year, c
         avatar: "https://i.imgur.com/5loQua9.png",
         reward: {
             type: "note" , // could be item
-            fieldTitle: "A scroll was found on one of the general's bodies",
-            note: "travel to the year 1250 BC to defeat the trojans",
+            fieldTitle: "The door behind you closes shut.",
+            note: "Survive the vampire swarm",
             questline: "tombqueststage",
             stageAdvance: stage + 1
         }
     }
     var descriptionString = exports.questStringBuilder("tomb", questData);
-    // travel to the year 1211 and defeat genghis khan before he invades
+    // defeat the hounds inside the first chamber of the tomb
     const embed = new Discord.RichEmbed()
     .setDescription(descriptionString)
     .setThumbnail("https://i.imgur.com/5loQua9.png")
@@ -2067,12 +1894,11 @@ function handleTombArtifactStageTwo(message, discordUserId, stage, team, year, c
     })
 }
 // rpg
-function handleTombArtifactStageThree(message, discordUserId, stage, team, year, channel){
+function handleTombArtifactStageThree(message, discordUserId, stage, team, channel){
 
     var questData = {
         questname: "tomb",
         message: message,
-        year: year,
         stage: stage,
         storyStep: 1
     }
@@ -2082,14 +1908,14 @@ function handleTombArtifactStageThree(message, discordUserId, stage, team, year,
         avatar: "https://i.imgur.com/5loQua9.png",
         reward: {
             type: "note" , // could be item
-            fieldTitle: "A scroll was found on one of the general's bodies",
-            note: "travel to the year 1250 BC to defeat the trojans",
+            fieldTitle: "You have survived the swarm of vampires",
+            note: "Find the secret chamber door marked on your map ",
             questline: "tombqueststage",
             stageAdvance: stage + 1
         }
     }
     var descriptionString = exports.questStringBuilder("tomb", questData);
-    // travel to the year 1211 and defeat genghis khan before he invades
+    // survive the vampire swarm
     const embed = new Discord.RichEmbed()
     .setDescription(descriptionString)
     .setThumbnail("https://i.imgur.com/5loQua9.png")
@@ -2118,12 +1944,11 @@ function handleTombArtifactStageThree(message, discordUserId, stage, team, year,
     })
 }
 // rpg
-function handleTombArtifactStageFour(message, discordUserId, stage, team, year, channel){
+function handleTombArtifactStageFour(message, discordUserId, stage, team, channel){
     // send embed that Ghenghis Khan's forces have reached the capital, 
     var questData = {
         questname: "tomb",
         message: message,
-        year: year,
         stage: stage,
         storyStep: 1
     }
@@ -2133,13 +1958,13 @@ function handleTombArtifactStageFour(message, discordUserId, stage, team, year, 
         avatar: "https://i.imgur.com/5loQua9.png",
         reward: {
             type: "note" , // could be item
-            fieldTitle: "A scroll was found on one of the general's bodies",
-            note: "travel to the year 1250 BC to defeat the trojans",
+            fieldTitle: "Enter the secret chamber",
+            note: "Discover the secret inside abraham lincoln's secret chamber",
             questline: "tombqueststage",
             stageAdvance: stage + 1
         }
     }
-    var descriptionString = exports.questStringBuilder("timetravel", questData);
+    var descriptionString = exports.questStringBuilder("tomb", questData);
     // travel to the year 1211 and defeat genghis khan before he invades
     const embed = new Discord.RichEmbed()
     .setDescription(descriptionString)
@@ -2169,16 +1994,15 @@ function handleTombArtifactStageFour(message, discordUserId, stage, team, year, 
     })
 }
 // embed
-function handleTombArtifactStageFive(message, discordUserId, stage, team, year, channel){
+function handleTombArtifactStageFive(message, discordUserId, stage, team, channel){
     var questData = {
-        questname: "timetravel",
+        questname: "tomb",
         message: message,
-        year: year,
         stage: stage,
         storyStep: 1
     }
-    var descriptionString = exports.questStringBuilder("timetravel", questData);
-    // travel to the year 1211 and defeat genghis khan before he invades
+    var descriptionString = exports.questStringBuilder("tomb", questData);
+    // click the lever at the same time
     const embed = new Discord.RichEmbed()
     .setDescription(descriptionString)
     .setThumbnail("https://i.imgur.com/5loQua9.png")
@@ -2188,14 +2012,14 @@ function handleTombArtifactStageFive(message, discordUserId, stage, team, year, 
         activeQuests["quest-"+sentMessage.id] = { id: discordUserId, username: message.author.username };
         var storytell = setTimeout (function(){
             questData.storyStep = questData.storyStep + 1;            
-            var descriptionString = exports.questStringBuilder("timetravel", questData);
+            var descriptionString = exports.questStringBuilder("tomb", questData);
             embed.setDescription(descriptionString)
             sentMessage.edit({embed})
         }, 10000);
         
         var storytell = setTimeout (function(){ 
             questData.storyStep = questData.storyStep + 1;
-            var descriptionString = exports.questStringBuilder("timetravel", questData);
+            var descriptionString = exports.questStringBuilder("tomb", questData);
             embed.setDescription(descriptionString)
             .addField("Gather supplies", "You may pick up one supply from the list...  ")
             sentMessage.edit({embed})
@@ -2274,7 +2098,7 @@ function handleTombArtifactStageFive(message, discordUserId, stage, team, year, 
                     })
                 }
             })
-            // collected all supplies move the user to the next stage and call self on stage 2
+            // Lever has been pulled at the same time, continue on to the next stage
             profileDB.updateQuestlineStage(discordUserId, questData.questname, stage + 1, function(error, updateRes){
                 if (error){
                     console.log(error);
@@ -2284,7 +2108,7 @@ function handleTombArtifactStageFive(message, discordUserId, stage, team, year, 
                         delete activeQuests[idOfQuest];
                     }
                     message.channel.send("next stage");
-                    exports.questHandler(message, discordUserId, "timetravel", stage + 1, team, year, channel)
+                    exports.questHandler(message, discordUserId, "tomb", stage + 1, team, channel)
                 }
             })
         })
@@ -2292,12 +2116,11 @@ function handleTombArtifactStageFive(message, discordUserId, stage, team, year, 
     })
 }
 // rpg
-function handleTombArtifactStageSix(message, discordUserId, stage, team, year, channel){
+function handleTombArtifactStageSix(message, discordUserId, stage, team, channel){
     // send embed that Ghenghis Khan's forces have reached the capital, 
     var questData = {
         questname: "tomb",
         message: message,
-        year: year,
         stage: stage,
         storyStep: 1
     }
@@ -2307,14 +2130,14 @@ function handleTombArtifactStageSix(message, discordUserId, stage, team, year, c
         avatar: "https://i.imgur.com/5loQua9.png",
         reward: {
             type: "note" , // could be item
-            fieldTitle: "A scroll was found on one of the general's bodies",
-            note: "travel to the year 1250 BC to defeat the trojans",
+            fieldTitle: "You have defeated the vampire council",
+            note: "You receive Abraham lincolns vampire slaying pike",
             questline: "tombqueststage",
             stageAdvance: stage + 1
         }
     }
     var descriptionString = exports.questStringBuilder("tomb", questData);
-    // travel to the year 1211 and defeat genghis khan before he invades
+    // create rpg event for vampire council
     const embed = new Discord.RichEmbed()
     .setDescription(descriptionString)
     .setThumbnail("https://i.imgur.com/5loQua9.png")
@@ -2328,7 +2151,7 @@ function handleTombArtifactStageSix(message, discordUserId, stage, team, year, c
             sentMessage.edit({embed})
         }, 100);
         
-        var storytell = setTimeout (function(){ 
+        var storytell = setTimeout (function(){
             questData.storyStep = questData.storyStep + 1;
             var descriptionString = exports.questStringBuilder("tomb", questData);
             embed.setDescription(descriptionString)
@@ -2336,7 +2159,7 @@ function handleTombArtifactStageSix(message, discordUserId, stage, team, year, c
 
         }, 200);
 
-        var storytell = setTimeout (function(){ 
+        var storytell = setTimeout (function(){
             rpg.rpgInitialize(message, special);
             playMusicForQuest(channel, "vampireCouncil")
         }, 250);
@@ -2354,6 +2177,7 @@ function questFindRewards(message, user, emoji, reward){
     var giveRewardToUsername = user.username
     console.log(user.id);
     if (reward === "taco"){
+        // TODO: create reward list and then roll for the rewards
         profileDB.updateUserTacos(giveRewardTo, 2, function(err, res){
             if (err){
                 console.log(err);
@@ -2364,6 +2188,7 @@ function questFindRewards(message, user, emoji, reward){
         })
     }
     else if (reward === "terrycloth" || reward === "rock"){
+        // TODO: create reward list and then roll for the rewards
         profileDB.getItemData(function(err, getItemResponse){
             if (err){
                 console.log(err);
@@ -2408,23 +2233,27 @@ function playMusicForQuest(channel, questName){
     if (channel){
         voiceChannel = channel
         var ytLink = youtubeLinks[questName]
-        voiceChannel.join().then(function(connection){
-            stream = ytdl(ytLink, {
-                filter: 'audioonly'
-            });
-            
-            dispatcher = connection.playStream(stream);
-            dispatcher.on('end', function() {
-                voiceChannel.leave();
+        if (ytLink){
+            voiceChannel.join().then(function(connection){
+                stream = ytdl(ytLink, {
+                    filter: 'audioonly'
+                });
+                
+                dispatcher = connection.playStream(stream);
+                dispatcher.on('end', function() {
+                    voiceChannel.leave();
+                })
             })
-        })
+        }
     }
 }
 
 var youtubeLinks = {
     genghisKhan: "https://www.youtube.com/watch?v=d2hRTLdvdnk",
     asteroid: "https://www.youtube.com/watch?v=d2hRTLdvdnk",
-    island: "https://www.youtube.com/watch?v=d2hRTLdvdnk"
+    island: "https://www.youtube.com/watch?v=d2hRTLdvdnk",
+    corruptedOvermind: "https://www.youtube.com/watch?v=d2hRTLdvdnk",
+    evilExes: "https://www.youtube.com/watch?v=d2hRTLdvdnk"
 }
 
 function checkMissionStatus(missionName, discordUserId, cb){
@@ -2524,7 +2353,9 @@ function checkValidRitualThrow(thrower, receiver){
 
     // this function checks against a list of valid throws
     var validThrow = true;
-    if (receiver != expectedRecei)
+    if (receiver != expectedRecei){
+        
+    }
 }
 
 function handleTacoGiveMission(giveAmount, mission){
@@ -2604,5 +2435,7 @@ function handleCommandToPlayerMission(command, mission, data){
     // return true or false for complete
 }
 
+/*
 var check = handleRitualStandingMission(true);
 console.log(check);
+*/
