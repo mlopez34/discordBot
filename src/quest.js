@@ -563,13 +563,13 @@ function handleTimeMachineArtifactStageOne(message, discordUserId, stage, team, 
             sentMessage.react("🏮")
             sentMessage.react("🍱")
             sentMessage.react("📦")
-            //sentMessage.react("🛋️")
+            sentMessage.react("🛀")
             sentMessage.react("🚪")
             sentMessage.react("🏯")
-            //sentMessage.react("🏚️")
-            //sentMessage.react("🕳️")
-            //sentMessage.react("🗄️")
-            //sentMessage.react("⚰️")
+            sentMessage.react("💈")
+            sentMessage.react("📮")
+            sentMessage.react("🔗")
+            sentMessage.react("🚽")
             sentMessage.react("🎨")
         }, 20000);
         // reactions for user
@@ -580,6 +580,11 @@ function handleTimeMachineArtifactStageOne(message, discordUserId, stage, team, 
         supplies.on('collect', function(element, collector){
             // remove the reaction if the user already reacted
             console.log(element)
+            var mapOfTeamMembers = {}
+            for (var m in team){
+                var teamUser = team[m]
+                mapOfTeamMembers["quest-" + teamUser.id] = false
+            }
             element.users.forEach(function(user){
                 if (!user.bot){
                     var userId = user.id;
@@ -592,48 +597,53 @@ function handleTimeMachineArtifactStageOne(message, discordUserId, stage, team, 
                                     // remove the reaction by the user
                                     element.remove(userId)
                                 }
-                                // TODO: check if everyone has gathered supplies if they have then do supplies.stop
                             }
                         })
                     })
                 }
             })
+
+            collector.collected.forEach(function(reaction){
+                console.log(reaction);
+                reaction.users.forEach(function(collectorUser){
+                    if (!collectorUser.bot){
+                        var collectorUser = collectorUser.id;
+                        mapOfTeamMembers["quest-" +collectorUser] = true;
+                    }
+                })
+            })
+            // check that all the members in mapOfTeamMembers have collected - if they have, call .stop
+            var allMembersCollected = true;
+            for (var key in mapOfTeamMembers){
+                if (mapOfTeamMembers[key] == false){
+                    allMembersCollected = false;
+                    break
+                }
+            }
+            if (allMembersCollected){
+                supplies.stop("All members have collected")
+            }
         })
         supplies.on('end', function(collected, reason){
-            // TODO: hand out the supplies to each team member
+
             var leaderOfGroup;
             var leaderOfGroupUsername;
             var idOfQuest;
-            var reactionCount = 0;
             collected.forEach(function(reactionEmoji){
                 leaderOfGroup = activeQuests["quest-" + reactionEmoji.message.id].id; // discord id of leader
                 leaderOfGroupUsername = activeQuests["quest-" + reactionEmoji.message.id].username;
                 idOfQuest = "quest-" + reactionEmoji.message.id;
-                // TODO: split reactions to have their own item buckets
-                if (reactionEmoji._emoji.name == "🌮"){
-                    reactionEmoji.users.forEach(function(user){
-                        if (!user.bot && ownerOfTable != user.id){
-                            questFindRewards(message, user, "🌮", "taco")
-                            reactionCount++;
+
+                // only team members should be getting items
+                reactionEmoji.users.forEach(function(user){
+                    
+                    for (var m in team){
+                        var teamUser = team[m]
+                        if (!user.bot && teamUser.id == user.id){
+                            questFindRewards(message, user, reactionEmoji._emoji.name)
                         }
-                    })
-                }
-                else if (reactionEmoji._emoji.name == "🍹"){
-                    reactionEmoji.users.forEach(function(user){
-                        if (!user.bot && ownerOfTable != user.id){
-                            questFindRewards(message, user, "🍹", "terrycloth")
-                            reactionCount++;
-                        }
-                    })
-                }
-                else if (reactionEmoji._emoji.name == "💃🏼"){
-                    reactionEmoji.users.forEach(function(user){
-                        if (!user.bot && ownerOfTable != user.id){
-                            questFindRewards(message, user, "💃🏼", "rock")
-                            reactionCount++;
-                        }
-                    })
-                }
+                    }
+                })
             })
             // collected all supplies move the user to the next stage and call self on stage 2
             profileDB.updateQuestlineStage(discordUserId, questData.questname, stage + 1, function(error, updateRes){
@@ -2171,51 +2181,136 @@ function artifactStartString(questline, discordUser, mentionedUsers){
     // return the starting quest text
 }
 
-function questFindRewards(message, user, emoji, reward){
-    // each of these ids will receive 1 taco, 1 xp, or 1 rock
+function questFindRewards(message, user, emoji){
+
     var giveRewardTo = user.id;
     var giveRewardToUsername = user.username
     console.log(user.id);
-    if (reward === "taco"){
-        // TODO: create reward list and then roll for the rewards
-        profileDB.updateUserTacos(giveRewardTo, 2, function(err, res){
-            if (err){
-                console.log(err);
-                message.channel.send(err);
-            }else{
-                console.log(res);
+
+    profileDB.getItemData(function(error, allItemsResponse){
+        for (var index in allItemsResponse.data){
+            itemsMapbyShortName[allItemsResponse.data[index].itemshortname] = allItemsResponse.data[index];
+        }
+        for (var index in allItemsResponse.data){
+            itemsMapById[allItemsResponse.data[index].id] = allItemsResponse.data[index];
+        }
+
+        var ANCIENT_MIN_ROLL = 9920;
+        var RARE_MAX_ROLL = 9920;
+        var RARE_MIN_ROLL = 9800;
+        var UNCOMMON_MAX_ROLL = 9800;
+        var UNCOMMON_MIN_ROLL = 8750;
+        var COMMON_MAX_ROLL = 8750;
+        var UNCOMMON_ITEMS_TO_OBTAIN = 2;
+        var COMMON_ITEMS_TO_OBTAIN = 5;
+
+        var allItems = getItemResponse.data
+        var commonItems = [];
+        var uncommonItems = [];
+        var rareItems = [];
+        var ancientItems = [];
+        // TODO: add check for rarity chance % to be > 0 
+        for (var item in allItems){
+            if (allItems[item].itemraritycategory == "common"){
+                commonItems.push(allItems[item]);
             }
-        })
-    }
-    else if (reward === "terrycloth" || reward === "rock"){
-        // TODO: create reward list and then roll for the rewards
-        profileDB.getItemData(function(err, getItemResponse){
-            if (err){
-                console.log(err);
+            else if(allItems[item].itemraritycategory == "uncommon"){
+                uncommonItems.push(allItems[item]);
             }
-            else{
-                var itemsObtainedArray = [];
-                if (reward === "terrycloth"){
-                    // ID of terry cloth
-                    for (var index in getItemResponse.data){
-                        if (getItemResponse.data[index].id == TERRY_CLOTH_ITEM_ID){
-                            itemsObtainedArray.push( getItemResponse.data[index] );
-                            break;
-                        }
+            else if(allItems[item].itemraritycategory == "rare"){
+                rareItems.push(allItems[item]);
+            }
+            else if(allItems[item].itemraritycategory == "ancient"){
+                ancientItems.push(allItems[item]);
+            }
+            else if(allItems[item].itemraritycategory == "amulet"){
+                ancientItems.push(allItems[item]);
+            }
+        }
+        
+        var itemsObtainedArray = [];
+        var rollsCount = 5
+
+        for (var i = 0; i < rollsCount; i++){
+            var rarityRoll = Math.floor(Math.random() * 10000) + 1;
+            var rarityString = "";
+
+            if(rarityRoll > ANCIENT_MIN_ROLL){
+                var itemRoll = Math.floor(Math.random() * ancientItems.length);
+                itemsObtainedArray.push(ancientItems[itemRoll])
+            }
+            else if(rarityRoll > RARE_MIN_ROLL && rarityRoll <= RARE_MAX_ROLL){
+                var itemRoll = Math.floor(Math.random() * rareItems.length);
+                itemsObtainedArray.push(rareItems[itemRoll]);
+            }
+            else if (rarityRoll > UNCOMMON_MIN_ROLL && rarityRoll <= UNCOMMON_MAX_ROLL){
+                var itemRoll = Math.floor(Math.random() * uncommonItems.length);
+                uncommonItems[itemRoll].itemAmount = UNCOMMON_ITEMS_TO_OBTAIN
+                itemsObtainedArray.push( uncommonItems[itemRoll] );
+            }
+            else {
+                var itemRoll = Math.floor(Math.random() * commonItems.length);
+                commonItems[itemRoll].itemAmount = COMMON_ITEMS_TO_OBTAIN
+                itemsObtainedArray.push( commonItems[itemRoll] );
+            }
+        }
+
+        // timetravel
+        if (emoji == "📮" || emoji == "🏯" || emoji == "🏮" ){
+            // push a special item?
+            // roll for it
+            var rarityRoll = Math.floor(Math.random() * 10) + 1;
+
+            if(rarityRoll > 8){
+                for (var index in allItems){
+                    if (allItems[index].id == TRANSFORMIUM_ID){
+                        itemsObtainedArray.push( allItems[index] );
                     }
                 }
-                else if (reward === "rock"){
-                    for (var index in getItemResponse.data){
-                        if (getItemResponse.data[index].id == ROCK_ITEM_ID){
-                            itemsObtainedArray.push( getItemResponse.data[index] );
-                            break;
-                        }
+            }
+
+        }
+        // tomb
+        else if (emoji == ""){
+            var rarityRoll = Math.floor(Math.random() * 10) + 1;
+
+            if(rarityRoll > 8){
+                for (var index in allItems){
+                    if (allItems[index].id == SILVER_CROSS_ID){
+                        itemsObtainedArray.push( allItems[index] );
                     }
                 }
-                addToUserInventory(giveRewardTo, itemsObtainedArray);
             }
-        })
+    
+        }
+        // demonic
+        else if (emoji == ""){
+            
+        }
+        //wedding
+        else if (emoji == ""){
+            
+        }
+
+        // TODO: print embed of all the items
+        addToUserInventory(giveRewardTo, itemsObtainedArray);
+        itemObtainEmbedBuilder(message, itemsObtainedArray, user);
+    })
+}
+
+function itemObtainEmbedBuilder(message, itemsFound, user){
+    // create a quoted message of all the items
+    var itemsMessage = ""
+    for (var item in itemsFound){
+        var itemAmount = itemsFound[item].itemAmount ? itemsFound[item].itemAmount : 1;
+        itemsMessage = itemsMessage + "**" +itemAmount + "**x " + "[**" + itemsFound[item].itemraritycategory +"**] " + "**"  + itemsFound[item].itemname + "** - " + itemsFound[item].itemdescription + ", " +
+        itemsFound[item].itemslot + ", " + itemsFound[item].itemstatistics + " \n";
     }
+
+    const embed = new Discord.RichEmbed()
+    .addField("[" + user.username +"'s Items found] Items found: ", itemsMessage, true)
+    .setColor(0xbfa5ff)
+    message.channel.send({embed});
 }
 
 function addToUserInventory(discordUserId, items){

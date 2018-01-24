@@ -4163,7 +4163,7 @@ module.exports.combineCommand = function(message, args){
                             var idOfMyItem = itemsMapbyShortName[myItemShortName].id;
 
                             var rarityOfMyItem = itemsMapbyShortName[myItemShortName].itemraritycategory
-                            // TODO: do not allow user to combine if they are on stage # of the artifact quest
+                            //////////////////// TODO: do not allow user to combine if they are on stage # of the artifact quest
                             if (rarityOfMyItem && rarityOfMyItem == "artifact"){
                                 // take the ids of the other 2 artifacts + artifact recipe and push them onto itemsBeingCombined array
                                 
@@ -4198,36 +4198,41 @@ module.exports.combineCommand = function(message, args){
                                     }
                                     // added all required items - set the artifacts to 'questing'
 
-                                    var itemToCreate = itemsMapById[combineToId];
+                                    var itemToCreate = itemsMapById[combineToId];  // maybe create the item and keep it inactive?
                                     var itemToCreateById = itemsMapById[combineToId].id;
                                     var itemToCreateByName = itemsMapById[combineToId].itemname
                                     
                                     // enable user to be in quest stage 1 of the quest series (user profile)
                                     ///////////////////////////// TODO: questName should be named after the artifact set combined
-                                    var questName = "ring"
+                                    var questname = itemsMapbyShortName[myItemShortName] ? itemsMapbyShortName[myItemShortName].questname : undefined;
+                                    // var questName = "ring" // get from item.questname
 
-
-                                    profileDB.userStartQuest(discordUserId, questName, function(createErr, createRes){
-                                        if (createErr){
-                                            console.log(createErr);
-                                        }
-                                        else{
-                                            // console.log(createRes);                                        
-                                            profileDB.bulkUpdateItemStatus(itemsBeingedCombined, "questing", function(combineErr, combineRes){
-                                                if (combineErr){
-                                                    console.log(combineErr);
-                                                }else{
-                                                    // console.log(combineRes);
-                                                    // embed showing the questline has begun
-                                                    var questData = {
-                                                        stage: 0
+                                    if (questname && recipeAdded && firstArtifactAdded && secondArtifactAdded ){
+                                        profileDB.userStartQuest(discordUserId, questName, function(createErr, createRes){
+                                            if (createErr){
+                                                console.log(createErr);
+                                            }
+                                            else{
+                                                // console.log(createRes);                                        
+                                                profileDB.bulkUpdateItemStatus(itemsBeingedCombined, "questing", function(combineErr, combineRes){
+                                                    if (combineErr){
+                                                        console.log(combineErr);
+                                                    }else{
+                                                        // console.log(combineRes);
+                                                        // embed showing the questline has begun
+                                                        var questData = {
+                                                            stage: 0
+                                                        }
+                                                        var questString = quest.questStringBuilder(questName, questData)
+                                                        quest.questStartEmbedBuilder(message, questName, questString);
                                                     }
-                                                    var questString = quest.questStringBuilder(questName, questData)
-                                                    quest.questStartEmbedBuilder(message, questName, questString);
-                                                }
-                                            })
-                                        }
-                                    })
+                                                })
+                                            }
+                                        })
+                                    }
+                                    else{
+                                        message.channel.send("do not have enough items to combine")
+                                    }
                                 }
                                 
                             }
