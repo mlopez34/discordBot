@@ -4167,13 +4167,14 @@ module.exports.combineCommand = function(message, args){
                             if (rarityOfMyItem && rarityOfMyItem == "artifact"){
                                 // take the ids of the other 2 artifacts + artifact recipe and push them onto itemsBeingCombined array
                                 
-                                var artifactId = 1//TODO: ARTIFACT_RECIPE_ID;
+                                var artifactId = ARTIFACT_RECIPE_ID//TODO: ARTIFACT_RECIPE_ID;
                                 var recipeAdded = false;
-                                var firstArtifact = 2; //TODO: replce this
+                                var firstArtifact = itemsMapbyShortName[myItemShortName] ? itemsMapbyShortName[myItemShortName].firstartifact : undefined; 
                                 var firstArtifactAdded = false;
-                                var secondArtifact = 3; // replace this
+                                var secondArtifact = itemsMapbyShortName[myItemShortName] ? itemsMapbyShortName[myItemShortName].secondartifact : undefined; 
                                 var secondArtifactAdded = false;
-                                // get these ids and find if user has count > 1 of these in their inventory
+
+                                // Check that the user has an artifact recipe, and the other two artifacts in their inventory
                                 if (itemsInInventoryCountMap[artifactId] >= 1
                                     && itemsInInventoryCountMap[firstArtifact] >= 1
                                     && itemsInInventoryCountMap[secondArtifact] >= 1){
@@ -4221,7 +4222,7 @@ module.exports.combineCommand = function(message, args){
                                                         // console.log(combineRes);
                                                         // embed showing the questline has begun
                                                         var questData = {
-                                                            stage: 0
+                                                            stage: "start"
                                                         }
                                                         var questString = quest.questStringBuilder(questName, questData)
                                                         quest.questStartEmbedBuilder(message, questName, questString);
@@ -4231,7 +4232,7 @@ module.exports.combineCommand = function(message, args){
                                         })
                                     }
                                     else{
-                                        message.channel.send("do not have enough items to combine")
+                                        message.channel.send("You do not have all the items required to combine")
                                     }
                                 }
                                 
@@ -4302,7 +4303,7 @@ function missionCheckCommand(message, discordUserId, command, commandDoneToId, d
                 }
                 
             }else if (stage == 3){
-                if (command == "thank" || command == "sorry"){
+                if (command == "thank"){ // TODO:  || command == "sorry"){
                     // thank / sorry command
                     var questData = {
                         command: command,
@@ -4355,7 +4356,7 @@ module.exports.proposeCommand = function(message, channel){
             }
             // TODO: give, thanks, and sorry should check whether the user is in stages 2, 3 and complete the stages
             // on stage 4, everyone can react to the embed and receive rewards
-            // stage 5 should be started via -rpgstart ring @users
+            // stage 5 should be started via -wedding @users
         }
     })
 }
@@ -4433,7 +4434,7 @@ module.exports.exploreTombCommand = function(message, args, channel){
                     quest.questHandler(message, discordUserId, "tomb", stage, team, questData, channel)
                 }
                 else{
-                    message.channel.send("entered tomb ")
+                    message.channel.send("exploring tomb ")
                 }
 
             }

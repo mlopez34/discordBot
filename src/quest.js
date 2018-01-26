@@ -29,14 +29,13 @@ module.exports.questStartEmbedBuilder = function(message, questName, questString
         .setThumbnail(message.author.avatarURL)
         .setColor(0xFF7A1C)
         message.channel.send({embed});
-        // TODO: set timeout on the text
     }
     else if(questName == "demonic"){
         const embed = new Discord.RichEmbed()
         .setAuthor(message.author.username + " has begun an artifact quest.")
         .addField("Perform the summoning ritual and expell the evil demons", questString, true)
         .setDescription(":sparkles: :sparkles: :sparkles:")
-        .addField("New command granted", "-startRitual [@user] [@user] [@user] [@user]")
+        .addField("New command granted", "-ritual [@user] [@user] [@user] [@user]")
         .setThumbnail(message.author.avatarURL)
         .setColor(0xFF7A1C)
         message.channel.send({embed});
@@ -65,7 +64,10 @@ module.exports.questStartEmbedBuilder = function(message, questName, questString
 
 module.exports.questStringBuilder = function(questname, questData){
     if (questname == "timetravel"){
-        if (questData.stage == 1){
+        if (questData.stage == "start"){
+            return "Travel with 4 other companions back in time and save the Jin Dynasty";
+        }
+        else if (questData.stage == 1){
             if (questData && questData.storyStep == 1){
                 return questData.message.author.username + ", the time machine you have assembled has triangluated the exact position of the planet in spacetime at the year 1215, and has begun to break down your body onto its individual subatomic particles..."
             }else if (questData && questData.storyStep == 2){
@@ -134,12 +136,15 @@ module.exports.questStringBuilder = function(questname, questData){
             }
         }
         else{
-            return "Travel with 4 other companions back in time and save the Jin Dynasty";
+            return "not a valid stage";
         }
     }
     if (questname == "tomb"){
         // enter tomb
-        if (questData.stage == 1){
+        if (questData.stage == "start"){
+            return "Travel with 4 other companions into the tomb of Abraham Lincoln";
+        }
+        else if (questData.stage == 1){
             if (questData && questData.storyStep == 1){
                 return questData.message.author.username + ", After obtaining the map, compass, and the secret chamber key you enter the tomb"
             }else if (questData && questData.storyStep == 2){
@@ -213,12 +218,15 @@ module.exports.questStringBuilder = function(questname, questData){
                 return questData.message.author.username + ", "
             }
         }else{
-            return "Travel with 4 other companions into the tomb of Abraham Lincoln";
+            return "not a valid stage";
         }
     }
     if (questname == "demonic"){
         // 
-        if (questData.stage == 1){
+        if (questData.stage == "start"){
+            return "Perform the demonic ritual with 4 other companions";
+        }
+        else if (questData.stage == 1){
             if (questData && questData.storyStep == 1){
                 return questData.message.author.username + ", After obtaining the map, compass, and the secret chamber key you enter the tomb"
             }else if (questData && questData.storyStep == 2){
@@ -293,12 +301,15 @@ module.exports.questStringBuilder = function(questname, questData){
                 return questData.message.author.username + ", "
             }
         }else{
-            return "Perform the demonic ritual with 4 other companions";
+            return "not a valid stage";
         }
     }
     if (questname == "ring"){
         // propose
-        if (questData.stage == 1){
+        if ( questData.stage == "start"){
+            return "Profess your love to your soulmate";
+        }
+        else if (questData.stage == 1){
             if (questData && questData.storyStep == 1){
                 return questData.message.author.username + ", After obtaining the map, compass, and the secret chamber key you enter the tomb"
             }else if (questData && questData.storyStep == 2){
@@ -353,7 +364,7 @@ module.exports.questStringBuilder = function(questname, questData){
         }
     }
     else{
-        return "Check error";
+        return "Check error - quest stage not set correctly";
     }
     
 }
@@ -572,9 +583,6 @@ function handleTimeMachineArtifactStageOne(message, discordUserId, stage, team, 
             sentMessage.react("🚽")
             sentMessage.react("🎨")
         }, 20000);
-        // reactions for user
-        // porcelain vase, kitchen table, wooden box, chair, wardrobe, interrogation room, 
-        // cellar, irrigation ditch, blacksmith toolbox, coffin, art gallery
         
         var supplies = new Discord.ReactionCollector(sentMessage, function(){ return true; } , { time: 60000, max: 1000, maxEmojis: 100, maxUsers: 100 } );
         supplies.on('collect', function(element, collector){
@@ -659,7 +667,6 @@ function handleTimeMachineArtifactStageOne(message, discordUserId, stage, team, 
                 }
             })
         })
-
     })
 }
 // rpg
@@ -738,7 +745,7 @@ function handleTimeMachineArtifactStageThree(message, discordUserId, stage, team
             embed.setDescription(descriptionString)
             sentMessage.edit({embed})
         }, 10000);
-        // TODO: add reaction event where user finds items 
+        
         var storytell = setTimeout (function(){ 
             questData.storyStep = questData.storyStep + 1;
             var descriptionString = exports.questStringBuilder("timetravel", questData);
@@ -756,23 +763,25 @@ function handleTimeMachineArtifactStageThree(message, discordUserId, stage, team
             sentMessage.react("🏮")
             sentMessage.react("🍱")
             sentMessage.react("📦")
-            //sentMessage.react("🛋️")
+            sentMessage.react("🛀")
             sentMessage.react("🚪")
             sentMessage.react("🏯")
-            //sentMessage.react("🏚️")
-            //sentMessage.react("🕳️")
-            //sentMessage.react("🗄️")
-            //sentMessage.react("⚰️")
+            sentMessage.react("💈")
+            sentMessage.react("📮")
+            sentMessage.react("🔗")
+            sentMessage.react("🚽")
             sentMessage.react("🎨")
         }, 20000);
-        // reactions for user
-        // porcelain vase, kitchen table, wooden box, chair, wardrobe, interrogation room, 
-        // cellar, irrigation ditch, blacksmith toolbox, coffin, art gallery
         
         var supplies = new Discord.ReactionCollector(sentMessage, function(){ return true; } , { time: 60000, max: 1000, maxEmojis: 100, maxUsers: 100 } );
         supplies.on('collect', function(element, collector){
             // remove the reaction if the user already reacted
             console.log(element)
+            var mapOfTeamMembers = {}
+            for (var m in team){
+                var teamUser = team[m]
+                mapOfTeamMembers["quest-" + teamUser.id] = false
+            }
             element.users.forEach(function(user){
                 if (!user.bot){
                     var userId = user.id;
@@ -785,56 +794,60 @@ function handleTimeMachineArtifactStageThree(message, discordUserId, stage, team
                                     // remove the reaction by the user
                                     element.remove(userId)
                                 }
-                                // TODO: check if everyone has gathered supplies if they have then do supplies.stop
                             }
                         })
                     })
                 }
             })
+
+            collector.collected.forEach(function(reaction){
+                console.log(reaction);
+                reaction.users.forEach(function(collectorUser){
+                    if (!collectorUser.bot){
+                        var collectorUser = collectorUser.id;
+                        mapOfTeamMembers["quest-" +collectorUser] = true;
+                    }
+                })
+            })
+            // check that all the members in mapOfTeamMembers have collected - if they have, call .stop
+            var allMembersCollected = true;
+            for (var key in mapOfTeamMembers){
+                if (mapOfTeamMembers[key] == false){
+                    allMembersCollected = false;
+                    break
+                }
+            }
+            if (allMembersCollected){
+                supplies.stop("All members have collected")
+            }
         })
         supplies.on('end', function(collected, reason){
-            // TODO: hand out the supplies to each team member
+
             var leaderOfGroup;
             var leaderOfGroupUsername;
             var idOfQuest;
-            var reactionCount = 0;
             collected.forEach(function(reactionEmoji){
                 leaderOfGroup = activeQuests["quest-" + reactionEmoji.message.id].id; // discord id of leader
                 leaderOfGroupUsername = activeQuests["quest-" + reactionEmoji.message.id].username;
                 idOfQuest = "quest-" + reactionEmoji.message.id;
-                // TODO: split reactions to have their own item buckets
-                if (reactionEmoji._emoji.name == "🌮"){
-                    reactionEmoji.users.forEach(function(user){
-                        if (!user.bot && ownerOfTable != user.id){
-                            questFindRewards(message, user, "🌮", "taco")
-                            reactionCount++;
-                        }
-                    })
-                }
-                else if (reactionEmoji._emoji.name == "🍹"){
-                    reactionEmoji.users.forEach(function(user){
-                        if (!user.bot && ownerOfTable != user.id){
-                            questFindRewards(message, user, "🍹", "terrycloth")
-                            reactionCount++;
-                        }
-                    })
-                }
-                else if (reactionEmoji._emoji.name == "💃🏼"){
-                    reactionEmoji.users.forEach(function(user){
-                        if (!user.bot && ownerOfTable != user.id){
-                            questFindRewards(message, user, "💃🏼", "rock")
-                            reactionCount++;
-                        }
-                    })
-                }
-            })
 
+                // only team members should be getting items
+                reactionEmoji.users.forEach(function(user){
+                    
+                    for (var m in team){
+                        var teamUser = team[m]
+                        if (!user.bot && teamUser.id == user.id){
+                            questFindRewards(message, user, reactionEmoji._emoji.name)
+                        }
+                    }
+                })
+            })
+            // collected all supplies move the user to the next stage and call self on stage 2
             profileDB.updateQuestlineStage(discordUserId, questData.questname, stage + 1, function(error, updateRes){
                 if (error){
                     console.log(error);
                 }else{
                     // call self with new stage
-                    
                     if (activeQuests[idOfQuest]){
                         delete activeQuests[idOfQuest];
                     }
@@ -989,7 +1002,7 @@ function handleDemonicArtifactStageOne(message, discordUserId, stage, team, chan
         
         var storytell = setTimeout (function(){ 
             questData.storyStep = questData.storyStep + 1;
-            var descriptionString = exports.questStringBuilder("demonic", questData);
+            var descriptionString = exports.questStringBuilder("timetravel", questData);
             embed.setDescription(descriptionString)
             .addField("Gather supplies", "You may pick up one supply from the list...  ")
             sentMessage.edit({embed})
@@ -997,23 +1010,25 @@ function handleDemonicArtifactStageOne(message, discordUserId, stage, team, chan
             sentMessage.react("🏮")
             sentMessage.react("🍱")
             sentMessage.react("📦")
-            //sentMessage.react("🛋️")
+            sentMessage.react("🛀")
             sentMessage.react("🚪")
             sentMessage.react("🏯")
-            //sentMessage.react("🏚️")
-            //sentMessage.react("🕳️")
-            //sentMessage.react("🗄️")
-            //sentMessage.react("⚰️")
+            sentMessage.react("💈")
+            sentMessage.react("📮")
+            sentMessage.react("🔗")
+            sentMessage.react("🚽")
             sentMessage.react("🎨")
         }, 20000);
-        // reactions for user
-        // porcelain vase, kitchen table, wooden box, chair, wardrobe, interrogation room, 
-        // cellar, irrigation ditch, blacksmith toolbox, coffin, art gallery
         
         var supplies = new Discord.ReactionCollector(sentMessage, function(){ return true; } , { time: 60000, max: 1000, maxEmojis: 100, maxUsers: 100 } );
         supplies.on('collect', function(element, collector){
             // remove the reaction if the user already reacted
             console.log(element)
+            var mapOfTeamMembers = {}
+            for (var m in team){
+                var teamUser = team[m]
+                mapOfTeamMembers["quest-" + teamUser.id] = false
+            }
             element.users.forEach(function(user){
                 if (!user.bot){
                     var userId = user.id;
@@ -1025,50 +1040,59 @@ function handleDemonicArtifactStageOne(message, discordUserId, stage, team, chan
                                 if (collectorUser == userId && element.emoji.name != reaction.emoji.name){
                                     // remove the reaction by the user
                                     element.remove(userId)
+                                }else{
+                                    // TODO: check that the set of all reactions forms a star
+                                    handleRitualStandingMission(mission)
                                 }
-                                // TODO: check if everyone has gathered supplies if they have then do supplies.stop
                             }
                         })
                     })
                 }
             })
+
+            collector.collected.forEach(function(reaction){
+                console.log(reaction);
+                reaction.users.forEach(function(collectorUser){
+                    if (!collectorUser.bot){
+                        var collectorUser = collectorUser.id;
+                        mapOfTeamMembers["quest-" +collectorUser] = true;
+                    }
+                })
+            })
+            // check that all the members in mapOfTeamMembers have collected - if they have, call .stop
+            var allMembersCollected = true;
+            for (var key in mapOfTeamMembers){
+                if (mapOfTeamMembers[key] == false){
+                    allMembersCollected = false;
+                    break
+                }
+            }
+            if (allMembersCollected){
+                supplies.stop("All members have collected")
+            }
         })
         supplies.on('end', function(collected, reason){
-            // TODO: hand out the supplies to each team member
+
             var leaderOfGroup;
             var leaderOfGroupUsername;
             var idOfQuest;
-            var reactionCount = 0;
             collected.forEach(function(reactionEmoji){
                 leaderOfGroup = activeQuests["quest-" + reactionEmoji.message.id].id; // discord id of leader
                 leaderOfGroupUsername = activeQuests["quest-" + reactionEmoji.message.id].username;
                 idOfQuest = "quest-" + reactionEmoji.message.id;
-                if (reactionEmoji._emoji.name == "🌮"){
-                    reactionEmoji.users.forEach(function(user){
-                        if (!user.bot && ownerOfTable != user.id){
-                            questFindRewards(message, user, "🌮", "taco")
-                            reactionCount++;
+
+                // only team members should be getting items
+                reactionEmoji.users.forEach(function(user){
+                    
+                    for (var m in team){
+                        var teamUser = team[m]
+                        if (!user.bot && teamUser.id == user.id){
+                            questFindRewards(message, user, reactionEmoji._emoji.name)
                         }
-                    })
-                }
-                else if (reactionEmoji._emoji.name == "🍹"){
-                    reactionEmoji.users.forEach(function(user){
-                        if (!user.bot && ownerOfTable != user.id){
-                            questFindRewards(message, user, "🍹", "terrycloth")
-                            reactionCount++;
-                        }
-                    })
-                }
-                else if (reactionEmoji._emoji.name == "💃🏼"){
-                    reactionEmoji.users.forEach(function(user){
-                        if (!user.bot && ownerOfTable != user.id){
-                            questFindRewards(message, user, "💃🏼", "rock")
-                            reactionCount++;
-                        }
-                    })
-                }
+                    }
+                })
             })
-            // collected all supplies move the user to the next stage and call self on stage 2
+            // 
             profileDB.updateQuestlineStage(discordUserId, questData.questname, stage + 1, function(error, updateRes){
                 if (error){
                     console.log(error);
@@ -1082,7 +1106,6 @@ function handleDemonicArtifactStageOne(message, discordUserId, stage, team, chan
                 }
             })
         })
-
     })
 }
 // embed
@@ -1216,7 +1239,7 @@ function handleDemonicArtifactStageThree(message, discordUserId, stage, team, ch
         storyStep: 1
     }
     var descriptionString = exports.questStringBuilder("demonic", questData);
-    // 
+    // Gather supplies, collect demonic supplies
     const embed = new Discord.RichEmbed()
     .setDescription(descriptionString)
     .setThumbnail("https://i.imgur.com/5loQua9.png")
@@ -1230,7 +1253,7 @@ function handleDemonicArtifactStageThree(message, discordUserId, stage, team, ch
             embed.setDescription(descriptionString)
             sentMessage.edit({embed})
         }, 10000);
-        
+
         var storytell = setTimeout (function(){ 
             questData.storyStep = questData.storyStep + 1;
             var descriptionString = exports.questStringBuilder("demonic", questData);
@@ -1241,21 +1264,25 @@ function handleDemonicArtifactStageThree(message, discordUserId, stage, team, ch
             sentMessage.react("🏮")
             sentMessage.react("🍱")
             sentMessage.react("📦")
-            //sentMessage.react("🛋️")
+            sentMessage.react("🛀")
             sentMessage.react("🚪")
             sentMessage.react("🏯")
-            //sentMessage.react("🏚️")
-            //sentMessage.react("🕳️")
-            //sentMessage.react("🗄️")
-            //sentMessage.react("⚰️")
+            sentMessage.react("💈")
+            sentMessage.react("📮")
+            sentMessage.react("🔗")
+            sentMessage.react("🚽")
             sentMessage.react("🎨")
         }, 20000);
-        // reactions for user
         
         var supplies = new Discord.ReactionCollector(sentMessage, function(){ return true; } , { time: 60000, max: 1000, maxEmojis: 100, maxUsers: 100 } );
         supplies.on('collect', function(element, collector){
             // remove the reaction if the user already reacted
             console.log(element)
+            var mapOfTeamMembers = {}
+            for (var m in team){
+                var teamUser = team[m]
+                mapOfTeamMembers["quest-" + teamUser.id] = false
+            }
             element.users.forEach(function(user){
                 if (!user.bot){
                     var userId = user.id;
@@ -1268,49 +1295,55 @@ function handleDemonicArtifactStageThree(message, discordUserId, stage, team, ch
                                     // remove the reaction by the user
                                     element.remove(userId)
                                 }
-                                // TODO: check if everyone has gathered supplies if they have then do supplies.stop
                             }
                         })
                     })
                 }
             })
+
+            collector.collected.forEach(function(reaction){
+                console.log(reaction);
+                reaction.users.forEach(function(collectorUser){
+                    if (!collectorUser.bot){
+                        var collectorUser = collectorUser.id;
+                        mapOfTeamMembers["quest-" +collectorUser] = true;
+                    }
+                })
+            })
+            // check that all the members in mapOfTeamMembers have collected - if they have, call .stop
+            var allMembersCollected = true;
+            for (var key in mapOfTeamMembers){
+                if (mapOfTeamMembers[key] == false){
+                    allMembersCollected = false;
+                    break
+                }
+            }
+            if (allMembersCollected){
+                supplies.stop("All members have collected")
+            }
         })
         supplies.on('end', function(collected, reason){
-            // TODO: hand out the supplies to each team member
+
             var leaderOfGroup;
             var leaderOfGroupUsername;
             var idOfQuest;
-            var reactionCount = 0;
             collected.forEach(function(reactionEmoji){
                 leaderOfGroup = activeQuests["quest-" + reactionEmoji.message.id].id; // discord id of leader
                 leaderOfGroupUsername = activeQuests["quest-" + reactionEmoji.message.id].username;
                 idOfQuest = "quest-" + reactionEmoji.message.id;
-                if (reactionEmoji._emoji.name == "🌮"){
-                    reactionEmoji.users.forEach(function(user){
-                        if (!user.bot && ownerOfTable != user.id){
-                            questFindRewards(message, user, "🌮", "taco")
-                            reactionCount++;
+
+                // only team members should be getting items
+                reactionEmoji.users.forEach(function(user){
+                    
+                    for (var m in team){
+                        var teamUser = team[m]
+                        if (!user.bot && teamUser.id == user.id){
+                            questFindRewards(message, user, reactionEmoji._emoji.name)
                         }
-                    })
-                }
-                else if (reactionEmoji._emoji.name == "🍹"){
-                    reactionEmoji.users.forEach(function(user){
-                        if (!user.bot && ownerOfTable != user.id){
-                            questFindRewards(message, user, "🍹", "terrycloth")
-                            reactionCount++;
-                        }
-                    })
-                }
-                else if (reactionEmoji._emoji.name == "💃🏼"){
-                    reactionEmoji.users.forEach(function(user){
-                        if (!user.bot && ownerOfTable != user.id){
-                            questFindRewards(message, user, "💃🏼", "rock")
-                            reactionCount++;
-                        }
-                    })
-                }
+                    }
+                })
             })
-            // 
+            
             profileDB.updateQuestlineStage(discordUserId, questData.questname, stage + 1, function(error, updateRes){
                 if (error){
                     console.log(error);
@@ -1324,7 +1357,6 @@ function handleDemonicArtifactStageThree(message, discordUserId, stage, team, ch
                 }
             })
         })
-
     })
 }
 // rpg
@@ -1456,18 +1488,16 @@ function handleRingArtifactStageOne(message, discordUserId, stage, team, propose
             embed.setDescription(descriptionString)
             sentMessage.edit({embed})
 
-            // You have proposed to someone
-
+            // You have proposed to someone - TODO: create the mission
             profileDB.updateQuestlineStage(discordUserId, questData.questname, stage + 1, function(error, updateRes){
                 if (error){
                     console.log(error);
                 }else{
-                    // call self with new stage
+                    
                     if (activeQuests[idOfQuest]){
                         delete activeQuests[idOfQuest];
                     }
                     message.channel.send("next stage - ");
-                    // exports.questHandler(message, discordUserId, "ring", stage + 1, team, year, channel)
                 }
             })
         }, 10000);
@@ -1477,81 +1507,103 @@ function handleRingArtifactStageOne(message, discordUserId, stage, team, propose
 
 function handleRingArtifactStageTwo(message, discordUserId, stage, team, giveAmount, giveTo, channel){
     // check that the user has been given 20000 tacos
-    var questData = {
-        questname: "ring",
-        message: message,
-        giveAmount: giveAmount,
-        stage: stage,
-        storyStep: 1
-    }
-    var descriptionString = exports.questStringBuilder("ring", questData);
-    // 
-    const embed = new Discord.RichEmbed()
-    .setDescription(descriptionString)
-    .setThumbnail("https://i.imgur.com/5loQua9.png")
-    .setColor(0xFF7A1C)
-    message.channel.send({embed})
-    .then(function (sentMessage) {
-        activeQuests["quest-"+sentMessage.id] = { id: discordUserId, username: message.author.username };
-        var storytell = setTimeout (function(){
-            questData.storyStep = questData.storyStep + 1;            
-            var descriptionString = exports.questStringBuilder("ring", questData);
-            embed.setDescription(descriptionString)
-            sentMessage.edit({embed})
-        }, 10000);
-        
-        profileDB.updateQuestlineStage(discordUserId, questData.questname, stage + 1, function(error, updateRes){
-            if (error){
-                console.log(error);
-            }else{
-                // call self with new stage
-                if (activeQuests[idOfQuest]){
-                    delete activeQuests[idOfQuest];
-                }
-                message.channel.send("next stage - commands to married person");
-                //exports.questHandler(message, discordUserId, "ring", stage + 1, team, year, channel)
+    // get the mission that the user is in
+    var mission = activeMissions["quest-" + discordUserId]
+    if (!mission){
+        message.channel.send("not in a mission, you must propose to someone")
+    }else{
+        var haveGivenEnoughTacos = handleTacoGiveMission(giveAmount, giveTo, mission)
+
+        if (haveGivenEnoughTacos){
+            var questData = {
+                questname: "ring",
+                message: message,
+                giveAmount: giveAmount,
+                stage: stage,
+                storyStep: 1
             }
-        })
-    })
+            var descriptionString = exports.questStringBuilder("ring", questData);
+            // 
+            const embed = new Discord.RichEmbed()
+            .setDescription(descriptionString)
+            .setThumbnail("https://i.imgur.com/5loQua9.png")
+            .setColor(0xFF7A1C)
+            message.channel.send({embed})
+            .then(function (sentMessage) {
+                activeQuests["quest-"+sentMessage.id] = { id: discordUserId, username: message.author.username };
+                var storytell = setTimeout (function(){
+                    questData.storyStep = questData.storyStep + 1;            
+                    var descriptionString = exports.questStringBuilder("ring", questData);
+                    embed.setDescription(descriptionString)
+                    sentMessage.edit({embed})
+                }, 10000);
+                
+                profileDB.updateQuestlineStage(discordUserId, questData.questname, stage + 1, function(error, updateRes){
+                    if (error){
+                        console.log(error);
+                    }else{
+                        // TODO: update the mission
+                        if (activeQuests[idOfQuest]){
+                            delete activeQuests[idOfQuest];
+                        }
+                        message.channel.send("next stage - commands to married person");
+                    }
+                })
+            })
+        }else{
+            message.channel.send("you must give more tacos")
+        }
+    }
 }
 
 function handleRingArtifactStageThree(message, discordUserId, stage, team, command, commandTo, channel){
     // check the user has been thanked and sorried
-    var questData = {
-        questname: "ring",
-        message: message,
-        thankedAndSorry: thankedAndSorry,
-        stage: stage,
-        storyStep: 1
-    }
-    var descriptionString = exports.questStringBuilder("ring", questData);
-    
-    const embed = new Discord.RichEmbed()
-    .setDescription(descriptionString)
-    .setThumbnail("https://i.imgur.com/5loQua9.png")
-    .setColor(0xFF7A1C)
-    message.channel.send({embed})
-    .then(function (sentMessage) {
-        activeQuests["quest-"+sentMessage.id] = { id: discordUserId, username: message.author.username };
-        var storytell = setTimeout (function(){
-            questData.storyStep = questData.storyStep + 1;            
+    var mission = activeMissions["quest-" + discordUserId]
+    if (!mission){
+        message.channel.send("not in a mission, you must propose to someone")
+    }else{
+        // check that the commands for the mission have been completed
+        var haveCompletedCommands = handleCommandToPlayerMission(command, mission, data)
+
+        if (haveCompletedCommands){
+            var questData = {
+                questname: "ring",
+                message: message,
+                stage: stage,
+                storyStep: 1
+            }
             var descriptionString = exports.questStringBuilder("ring", questData);
-            embed.setDescription(descriptionString)
-            sentMessage.edit({embed})
-            profileDB.updateQuestlineStage(discordUserId, questData.questname, stage + 1, function(error, updateRes){
-                if (error){
-                    console.log(error);
-                }else{
-                    if (activeQuests[idOfQuest]){
-                        delete activeQuests[idOfQuest];
-                    }
-                    message.channel.send("next stage - wedding embed");
-                    // exports.questHandler(message, discordUserId, "ring", stage + 1, team, year, channel)
-                }
+            
+            const embed = new Discord.RichEmbed()
+            .setDescription(descriptionString)
+            .setThumbnail("https://i.imgur.com/5loQua9.png")
+            .setColor(0xFF7A1C)
+            message.channel.send({embed})
+            .then(function (sentMessage) {
+                activeQuests["quest-"+sentMessage.id] = { id: discordUserId, username: message.author.username };
+                var storytell = setTimeout (function(){
+                    questData.storyStep = questData.storyStep + 1;            
+                    var descriptionString = exports.questStringBuilder("ring", questData);
+                    embed.setDescription(descriptionString)
+                    sentMessage.edit({embed})
+                    profileDB.updateQuestlineStage(discordUserId, questData.questname, stage + 1, function(error, updateRes){
+                        if (error){
+                            console.log(error);
+                        }else{
+                            //TODO: update the mission
+                            if (activeQuests[idOfQuest]){
+                                delete activeQuests[idOfQuest];
+                            }
+                            message.channel.send("next stage - wedding embed");
+                        }
+                    })
+                }, 10000);
+                
             })
-        }, 10000);
-        
-    })
+        }else{
+            message.channel.send("you must complete the commands required");
+        }
+    }
 }
 
 function handleRingArtifactStageFour(message, discordUserId, stage, team, marriedTo, channel){
@@ -1577,8 +1629,8 @@ function handleRingArtifactStageFour(message, discordUserId, stage, team, marrie
             embed.setDescription(descriptionString)
             sentMessage.edit({embed})
         }, 10000);
-        
-        var storytell = setTimeout (function(){
+
+        var storytell = setTimeout (function(){ 
             questData.storyStep = questData.storyStep + 1;
             var descriptionString = exports.questStringBuilder("ring", questData);
             embed.setDescription(descriptionString)
@@ -1588,23 +1640,25 @@ function handleRingArtifactStageFour(message, discordUserId, stage, team, marrie
             sentMessage.react("🏮")
             sentMessage.react("🍱")
             sentMessage.react("📦")
-            //sentMessage.react("🛋️")
+            sentMessage.react("🛀")
             sentMessage.react("🚪")
             sentMessage.react("🏯")
-            //sentMessage.react("🏚️")
-            //sentMessage.react("🕳️")
-            //sentMessage.react("🗄️")
-            //sentMessage.react("⚰️")
+            sentMessage.react("💈")
+            sentMessage.react("📮")
+            sentMessage.react("🔗")
+            sentMessage.react("🚽")
             sentMessage.react("🎨")
         }, 20000);
-        // reactions for user
-        // porcelain vase, kitchen table, wooden box, chair, wardrobe, interrogation room, 
-        // cellar, irrigation ditch, blacksmith toolbox, coffin, art gallery
         
         var supplies = new Discord.ReactionCollector(sentMessage, function(){ return true; } , { time: 60000, max: 1000, maxEmojis: 100, maxUsers: 100 } );
         supplies.on('collect', function(element, collector){
             // remove the reaction if the user already reacted
             console.log(element)
+            var mapOfTeamMembers = {}
+            for (var m in team){
+                var teamUser = team[m]
+                mapOfTeamMembers["quest-" + teamUser.id] = false
+            }
             element.users.forEach(function(user){
                 if (!user.bot){
                     var userId = user.id;
@@ -1617,68 +1671,72 @@ function handleRingArtifactStageFour(message, discordUserId, stage, team, marrie
                                     // remove the reaction by the user
                                     element.remove(userId)
                                 }
-                                // TODO: check if everyone has gathered supplies if they have then do supplies.stop
                             }
                         })
                     })
                 }
             })
+
+            collector.collected.forEach(function(reaction){
+                console.log(reaction);
+                reaction.users.forEach(function(collectorUser){
+                    if (!collectorUser.bot){
+                        var collectorUser = collectorUser.id;
+                        mapOfTeamMembers["quest-" +collectorUser] = true;
+                    }
+                })
+            })
+            // check that all the members in mapOfTeamMembers have collected - if they have, call .stop
+            var allMembersCollected = true;
+            for (var key in mapOfTeamMembers){
+                if (mapOfTeamMembers[key] == false){
+                    allMembersCollected = false;
+                    break
+                }
+            }
+            if (allMembersCollected){
+                supplies.stop("All members have collected")
+            }
         })
         supplies.on('end', function(collected, reason){
-            //
+
             var leaderOfGroup;
             var leaderOfGroupUsername;
             var idOfQuest;
-            var reactionCount = 0;
             collected.forEach(function(reactionEmoji){
                 leaderOfGroup = activeQuests["quest-" + reactionEmoji.message.id].id; // discord id of leader
                 leaderOfGroupUsername = activeQuests["quest-" + reactionEmoji.message.id].username;
                 idOfQuest = "quest-" + reactionEmoji.message.id;
-                if (reactionEmoji._emoji.name == "🌮"){
-                    reactionEmoji.users.forEach(function(user){
-                        if (!user.bot && ownerOfTable != user.id){
-                            questFindRewards(message, user, "🌮", "taco")
-                            reactionCount++;
+
+                // only team members should be getting items
+                reactionEmoji.users.forEach(function(user){
+                    
+                    for (var m in team){
+                        var teamUser = team[m]
+                        if (!user.bot && teamUser.id == user.id){
+                            questFindRewards(message, user, reactionEmoji._emoji.name)
                         }
-                    })
-                }
-                else if (reactionEmoji._emoji.name == "🍹"){
-                    reactionEmoji.users.forEach(function(user){
-                        if (!user.bot && ownerOfTable != user.id){
-                            questFindRewards(message, user, "🍹", "terrycloth")
-                            reactionCount++;
-                        }
-                    })
-                }
-                else if (reactionEmoji._emoji.name == "💃🏼"){
-                    reactionEmoji.users.forEach(function(user){
-                        if (!user.bot && ownerOfTable != user.id){
-                            questFindRewards(message, user, "💃🏼", "rock")
-                            reactionCount++;
-                        }
-                    })
-                }
+                    }
+                })
             })
-            // wedding has ended update the user to the next stage of the quest
+            
             profileDB.updateQuestlineStage(discordUserId, questData.questname, stage + 1, function(error, updateRes){
                 if (error){
                     console.log(error);
                 }else{
-                    // call self with new stage
                     if (activeQuests[idOfQuest]){
                         delete activeQuests[idOfQuest];
                     }
-                    message.channel.send("next stage -rpgstart wedding @users");
-                    //exports.questHandler(message, discordUserId, "ring", stage + 1, team, year, channel)
+                    message.channel.send("next stage");
+                    exports.questHandler(message, discordUserId, "ring", stage + 1, team, year, channel)
                 }
             })
         })
-
     })
 }
 // rpg
 function handleRingArtifactStageFive(message, discordUserId, stage, team, channel){
-    // TODO: this stage should be started via rpgstart evilexes @user @user
+    // TODO: this stage should be started via -wedding @user @user
     var questData = {
         questname: "ring",
         message: message,
@@ -1757,7 +1815,7 @@ function handleTombArtifactStageOne(message, discordUserId, stage, team, channel
         
         var storytell = setTimeout (function(){ 
             questData.storyStep = questData.storyStep + 1;
-            var descriptionString = exports.questStringBuilder("tomb", questData);
+            var descriptionString = exports.questStringBuilder("timetravel", questData);
             embed.setDescription(descriptionString)
             .addField("Gather supplies", "You may pick up one supply from the list...  ")
             sentMessage.edit({embed})
@@ -1765,23 +1823,25 @@ function handleTombArtifactStageOne(message, discordUserId, stage, team, channel
             sentMessage.react("🏮")
             sentMessage.react("🍱")
             sentMessage.react("📦")
-            //sentMessage.react("🛋️")
+            sentMessage.react("🛀")
             sentMessage.react("🚪")
             sentMessage.react("🏯")
-            //sentMessage.react("🏚️")
-            //sentMessage.react("🕳️")
-            //sentMessage.react("🗄️")
-            //sentMessage.react("⚰️")
+            sentMessage.react("💈")
+            sentMessage.react("📮")
+            sentMessage.react("🔗")
+            sentMessage.react("🚽")
             sentMessage.react("🎨")
         }, 20000);
-        // reactions for user
-        // porcelain vase, kitchen table, wooden box, chair, wardrobe, interrogation room, 
-        // cellar, irrigation ditch, blacksmith toolbox, coffin, art gallery
         
         var supplies = new Discord.ReactionCollector(sentMessage, function(){ return true; } , { time: 60000, max: 1000, maxEmojis: 100, maxUsers: 100 } );
         supplies.on('collect', function(element, collector){
             // remove the reaction if the user already reacted
             console.log(element)
+            var mapOfTeamMembers = {}
+            for (var m in team){
+                var teamUser = team[m]
+                mapOfTeamMembers["quest-" + teamUser.id] = false
+            }
             element.users.forEach(function(user){
                 if (!user.bot){
                     var userId = user.id;
@@ -1794,47 +1854,53 @@ function handleTombArtifactStageOne(message, discordUserId, stage, team, channel
                                     // remove the reaction by the user
                                     element.remove(userId)
                                 }
-                                // TODO: check if everyone has gathered supplies if they have then do supplies.stop
                             }
                         })
                     })
                 }
             })
+
+            collector.collected.forEach(function(reaction){
+                console.log(reaction);
+                reaction.users.forEach(function(collectorUser){
+                    if (!collectorUser.bot){
+                        var collectorUser = collectorUser.id;
+                        mapOfTeamMembers["quest-" +collectorUser] = true;
+                    }
+                })
+            })
+            // check that all the members in mapOfTeamMembers have collected - if they have, call .stop
+            var allMembersCollected = true;
+            for (var key in mapOfTeamMembers){
+                if (mapOfTeamMembers[key] == false){
+                    allMembersCollected = false;
+                    break
+                }
+            }
+            if (allMembersCollected){
+                supplies.stop("All members have collected")
+            }
         })
         supplies.on('end', function(collected, reason){
-            // TODO: hand out the supplies to each team member
+
             var leaderOfGroup;
             var leaderOfGroupUsername;
             var idOfQuest;
-            var reactionCount = 0;
             collected.forEach(function(reactionEmoji){
                 leaderOfGroup = activeQuests["quest-" + reactionEmoji.message.id].id; // discord id of leader
                 leaderOfGroupUsername = activeQuests["quest-" + reactionEmoji.message.id].username;
                 idOfQuest = "quest-" + reactionEmoji.message.id;
-                if (reactionEmoji._emoji.name == "🌮"){
-                    reactionEmoji.users.forEach(function(user){
-                        if (!user.bot && ownerOfTable != user.id){
-                            questFindRewards(message, user, "🌮", "taco")
-                            reactionCount++;
+
+                // only team members should be getting items
+                reactionEmoji.users.forEach(function(user){
+                    
+                    for (var m in team){
+                        var teamUser = team[m]
+                        if (!user.bot && teamUser.id == user.id){
+                            questFindRewards(message, user, reactionEmoji._emoji.name)
                         }
-                    })
-                }
-                else if (reactionEmoji._emoji.name == "🍹"){
-                    reactionEmoji.users.forEach(function(user){
-                        if (!user.bot && ownerOfTable != user.id){
-                            questFindRewards(message, user, "🍹", "terrycloth")
-                            reactionCount++;
-                        }
-                    })
-                }
-                else if (reactionEmoji._emoji.name == "💃🏼"){
-                    reactionEmoji.users.forEach(function(user){
-                        if (!user.bot && ownerOfTable != user.id){
-                            questFindRewards(message, user, "💃🏼", "rock")
-                            reactionCount++;
-                        }
-                    })
-                }
+                    }
+                })
             })
             // collected all supplies move the user to the next stage and call self on stage 2
             profileDB.updateQuestlineStage(discordUserId, questData.questname, stage + 1, function(error, updateRes){
@@ -1850,7 +1916,6 @@ function handleTombArtifactStageOne(message, discordUserId, stage, team, channel
                 }
             })
         })
-
     })
 }
 // rpg
@@ -1955,7 +2020,7 @@ function handleTombArtifactStageThree(message, discordUserId, stage, team, chann
 }
 // rpg
 function handleTombArtifactStageFour(message, discordUserId, stage, team, channel){
-    // send embed that Ghenghis Khan's forces have reached the capital, 
+    // defeat the gatekeeper
     var questData = {
         questname: "tomb",
         message: message,
@@ -1969,13 +2034,13 @@ function handleTombArtifactStageFour(message, discordUserId, stage, team, channe
         reward: {
             type: "note" , // could be item
             fieldTitle: "Enter the secret chamber",
-            note: "Discover the secret inside abraham lincoln's secret chamber",
+            note: "Discover the secret inside Abraham Lincoln's secret chamber",
             questline: "tombqueststage",
             stageAdvance: stage + 1
         }
     }
     var descriptionString = exports.questStringBuilder("tomb", questData);
-    // travel to the year 1211 and defeat genghis khan before he invades
+    // 
     const embed = new Discord.RichEmbed()
     .setDescription(descriptionString)
     .setThumbnail("https://i.imgur.com/5loQua9.png")
@@ -2037,18 +2102,9 @@ function handleTombArtifactStageFive(message, discordUserId, stage, team, channe
             sentMessage.react("🏮")
             sentMessage.react("🍱")
             sentMessage.react("📦")
-            //sentMessage.react("🛋️")
             sentMessage.react("🚪")
             sentMessage.react("🏯")
-            //sentMessage.react("🏚️")
-            //sentMessage.react("🕳️")
-            //sentMessage.react("🗄️")
-            //sentMessage.react("⚰️")
-            sentMessage.react("🎨")
         }, 20000);
-        // reactions for user
-        // porcelain vase, kitchen table, wooden box, chair, wardrobe, interrogation room, 
-        // cellar, irrigation ditch, blacksmith toolbox, coffin, art gallery
         
         var supplies = new Discord.ReactionCollector(sentMessage, function(){ return true; } , { time: 60000, max: 1000, maxEmojis: 100, maxUsers: 100 } );
         supplies.on('collect', function(element, collector){
@@ -2074,7 +2130,6 @@ function handleTombArtifactStageFive(message, discordUserId, stage, team, channe
             })
         })
         supplies.on('end', function(collected, reason){
-            // TODO: hand out the supplies to each team member
             var leaderOfGroup;
             var leaderOfGroupUsername;
             var idOfQuest;
@@ -2127,7 +2182,7 @@ function handleTombArtifactStageFive(message, discordUserId, stage, team, channe
 }
 // rpg
 function handleTombArtifactStageSix(message, discordUserId, stage, team, channel){
-    // send embed that Ghenghis Khan's forces have reached the capital, 
+    // defeat the archvampire 
     var questData = {
         questname: "tomb",
         message: message,
@@ -2209,7 +2264,7 @@ function questFindRewards(message, user, emoji){
         var uncommonItems = [];
         var rareItems = [];
         var ancientItems = [];
-        // TODO: add check for rarity chance % to be > 0 
+        
         for (var item in allItems){
             if (allItems[item].itemraritycategory == "common"){
                 commonItems.push(allItems[item]);
@@ -2292,7 +2347,7 @@ function questFindRewards(message, user, emoji){
             
         }
 
-        // TODO: print embed of all the items
+        // TODO: print embed of all the items - change these outside of the for loop
         addToUserInventory(giveRewardTo, itemsObtainedArray);
         itemObtainEmbedBuilder(message, itemsObtainedArray, user);
     })
@@ -2453,12 +2508,15 @@ function checkValidRitualThrow(thrower, receiver){
     }
 }
 
-function handleTacoGiveMission(giveAmount, mission){
+function handleTacoGiveMission(giveAmount, giveTo, mission){
     // check that the user has given x tacos to y person
-    if (giveAmount >= mission.tacosToGive){
+    if ( giveAmount >= mission.tacosToGive && giveTo == mission.proposedTo ){
         // TODO: check the target as well
         return true
     }else{
+        if (giveTo == mission.proposedTo){
+            mission.tacosToGive = mission.tacosToGive - giveAmount
+        }
         return false;
     }
 }
@@ -2470,60 +2528,90 @@ function handleCommandToPlayerMission(command, mission, data){
     // add +1 to count, if count < countToComplete, return false
     if (command == "thank"){
         // TODO: check if there is a target the command has to be done to
-        mission.count++;
-        if (mission.CountToCOmplete > mission.count){
-            return false;
+        if (mission.commandTo && mission.commandTo == data.commandTo){
+            mission.count++;
+            if (mission.CountToCOmplete > mission.count){
+                return false;
+            }else{
+                return true;
+            }
         }else{
-            return true;
+
         }
+        
     }
     if (command == "sorry"){
         // TODO: check if there is a target the command has to be done to
-        mission.count++;
-        if (mission.CountToCOmplete > mission.count){
-            return false;
+        if (mission.commandTo && mission.commandTo == data.commandTo){
+            mission.count++;
+            if (mission.CountToCOmplete > mission.count){
+                return false;
+            }else{
+                return true;
+            }
         }else{
-            return true;
+
         }
     }
     if (command == "cook"){
-        mission.count++;
-        if (mission.CountToCOmplete > mission.count){
-            return false;
+        if (mission.commandTo && mission.commandTo == data.commandTo){
+            mission.count++;
+            if (mission.CountToCOmplete > mission.count){
+                return false;
+            }else{
+                return true;
+            }
         }else{
-            return true;
+
         }
     }
     if (command == "prepare"){
-        mission.count++;
-        if (mission.CountToCOmplete > mission.count){
-            return false;
+        if (mission.commandTo && mission.commandTo == data.commandTo){
+            mission.count++;
+            if (mission.CountToCOmplete > mission.count){
+                return false;
+            }else{
+                return true;
+            }
         }else{
-            return true;
+
         }
     }
     if (command == "fetch"){
-        mission.count++;
-        if (mission.CountToCOmplete > mission.count){
-            return false;
+        if (mission.commandTo && mission.commandTo == data.commandTo){
+            mission.count++;
+            if (mission.CountToCOmplete > mission.count){
+                return false;
+            }else{
+                return true;
+            }
         }else{
-            return true;
+
         }
     }
     if (command == "scavenge"){
-        mission.count++;
-        if (mission.CountToCOmplete > mission.count){
-            return false;
+        if (mission.commandTo && mission.commandTo == data.commandTo){
+            mission.count++;
+            if (mission.CountToCOmplete > mission.count){
+                return false;
+            }else{
+                return true;
+            }
         }else{
-            return true;
+
         }
     }
     if (command == "propose"){
         
-        if (mission.targetToProposeTo == data.TargetToProposeTo){
-            return false;
+        if (mission.commandTo && mission.commandTo == data.commandTo){
+            mission.count++;
+            if (mission.CountToCOmplete > mission.count){
+                return false;
+            }else{
+                return true;
+            }
         }else{
-            return true;
+
         }
     }
     
