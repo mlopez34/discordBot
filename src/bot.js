@@ -260,7 +260,7 @@ client.on('message', function(message){
             else if (commandIs("rpgstats", message)){
                 commands.rpgstatsCommand(message);
             }
-            else if (commandIs("propose", message) || commandIs("propose", message)){
+            else if (commandIs("propose", message)){
                     
                 var channelName;
                 client.channels.forEach(function(channel){
@@ -271,7 +271,7 @@ client.on('message', function(message){
 
                 commands.proposeCommand(message, channelName);
             }
-            else if (commandIs("exploreTomb", message)){
+            else if (commandIs("wedding", message)){
                     
                 var channelName;
                 client.channels.forEach(function(channel){
@@ -280,7 +280,29 @@ client.on('message', function(message){
                     }
                 })
 
-                commands.proposeCommand(message, channelName);
+                commands.weddingCommand(message, channelName);
+            }
+            else if (commandIs("explore", message)){
+                    
+                var channelName;
+                client.channels.forEach(function(channel){
+                    if (channel.type == "voice" && channel.name == "General"){
+                        channelName = channel;
+                    }
+                })
+
+                commands.exploreTombCommand(message, channelName);
+            }
+            else if (commandIs("ritual", message)){
+                    
+                var channelName;
+                client.channels.forEach(function(channel){
+                    if (channel.type == "voice" && channel.name == "General"){
+                        channelName = channel;
+                    }
+                })
+
+                commands.ritualCommand(message, channelName);
             }
         }
         else if (message.channel.type == "text" && (RPG_CHANNELS.indexOf(message.channel.name) != -1) && !message.author.bot){

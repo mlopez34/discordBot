@@ -646,6 +646,15 @@ module.exports.updateQuestlineStage = function(discordUserId, questline, stage, 
     if (questline == "timetravel"){
         query = 'update ' + config.profileTable + ' set timetravelqueststage=$2 where discordid=$1'        
     }
+    else if (questline == "demonic"){
+        query = 'update ' + config.profileTable + ' set demonicqueststage=$2 where discordid=$1'        
+    }
+    else if (questline == "tomb"){
+        query = 'update ' + config.profileTable + ' set tombqueststage=$2 where discordid=$1'        
+    }
+    else if (questline == "ring"){
+        query = 'update ' + config.profileTable + ' set ringqueststage=$2 where discordid=$1'        
+    }
     // do else for all questlines
     db.none(query, [discordUserId, stage])
     .then(function () {
