@@ -380,14 +380,18 @@ function handleTimeMachineArtifact(message, discordUserId, stage, team, year, ch
     */
 
     if (stage == 1){
-        handleTimeMachineArtifactStageOne(message, discordUserId, stage, team, year, channel)
+        if (!activeMissions["quest-" + discordUserId]){
+            handleTimeMachineArtifactStageOne(message, discordUserId, stage, team, year, channel)
+        }
     }
     else if (stage == 2){
         handleTimeMachineArtifactStageTwo(message, discordUserId, stage, team, year, channel)
     }
     else if (stage == 3){
-        // travel to the year -65,000,000 and save the dinosaurs from the meteor
-        handleTimeMachineArtifactStageThree(message, discordUserId, stage, team, year, channel)
+        if (!activeMissions["quest-" + discordUserId]){
+            // travel to the year -65,000,000 and save the dinosaurs from the meteor
+            handleTimeMachineArtifactStageThree(message, discordUserId, stage, team, year, channel)
+        }
     }
     else if (stage == 4){
         // travel to the year -65,000,000 and save the dinosaurs from the meteor
@@ -415,7 +419,9 @@ function handleTombArtifact(message, discordUserId, stage, team, channel){
     */
     if (stage == 1){
         // embed shows supplies that users can gather (item pickup)
-        handleTombArtifactStageOne(message, discordUserId, stage, team, channel)
+        if (!activeMissions["quest-" + discordUserId]){
+            handleTombArtifactStageOne(message, discordUserId, stage, team, channel)
+        }
     }
     else if (stage == 2){
         // create special encounter with hounds
@@ -431,7 +437,9 @@ function handleTombArtifact(message, discordUserId, stage, team, channel){
     }
     else if (stage == 5){
         // pull the lever
-        handleTombArtifactStageFive(message, discordUserId, stage, team, channel)
+        if (!activeMissions["quest-" + discordUserId]){
+            handleTombArtifactStageFive(message, discordUserId, stage, team, channel)
+        }
     }
     else if (stage == 6){
         // defeat the archvampires
@@ -451,15 +459,21 @@ function handleDemonicArtifact(message, discordUserId, stage, team, channel){
     */
     if (stage == 1){
         // all members stand in a star formation (react on spots)
-        handleDemonicArtifactStageOne(message, discordUserId, stage, team, channel)
+        if (!activeMissions["quest-" + discordUserId]){
+            handleDemonicArtifactStageOne(message, discordUserId, stage, team, channel)
+        }
     }
     else if (stage == 2){
         // react to say the summoning ritual in order
-        handleDemonicArtifactStageTwo(message, discordUserId, stage, team, channel)
+        if (!activeMissions["quest-" + discordUserId]){
+            handleDemonicArtifactStageTwo(message, discordUserId, stage, team, channel)
+        }
     }
     else if (stage == 3){
         // sacrifice a server member by throwing tacos to each other in the formation to create a star (start at top)
-        handleDemonicArtifactStageThree(message, discordUserId, stage, team, channel)
+        if (!activeMissions["quest-" + discordUserId]){
+            handleDemonicArtifactStageThree(message, discordUserId, stage, team, channel)
+        }
     }
     else if (stage == 4){
         // defeat a legion of demons that have spawned from the summoning (5 members)
@@ -500,8 +514,10 @@ function handleRingArtifact(message, discordUserId, stage, team, questData, chan
     }
     else if (stage == 4){
         // react to embed with hearts
-        var marriedTo = questData.marriedTo
-        handleRingArtifactStageFour(message, discordUserId, stage, team, marriedTo, channel)
+        if (!activeMissions["quest-" + discordUserId]){
+            var marriedTo = questData.marriedTo
+            handleRingArtifactStageFour(message, discordUserId, stage, team, marriedTo, channel)
+        }
     }
     else if (stage == 5){
         // rpg - defeat the 7 evil exes
@@ -531,12 +547,13 @@ function handleTimeMachineArtifactStageOne(message, discordUserId, stage, team, 
     message.channel.send({embed})
     .then(function (sentMessage) {
         activeQuests["quest-"+sentMessage.id] = { id: discordUserId, username: message.author.username };
+        activeMissions["quest-" + discordUserId] = "timetravel stage 1"
         var storytell = setTimeout (function(){
             questData.storyStep = questData.storyStep + 1;            
             var descriptionString = exports.questStringBuilder("timetravel", questData);
             embed.setDescription(descriptionString)
             sentMessage.edit({embed})
-        }, 10000);
+        }, 5000);
         
         var storytell = setTimeout (function(){ 
             questData.storyStep = questData.storyStep + 1;
@@ -556,9 +573,9 @@ function handleTimeMachineArtifactStageOne(message, discordUserId, stage, team, 
             sentMessage.react("🔗")
             sentMessage.react("🚽")
             sentMessage.react("🎨")
-        }, 20000);
+        }, 10000);
         
-        var supplies = new Discord.ReactionCollector(sentMessage, function(){ return true; } , { time: 60000, max: 1000, maxEmojis: 100, maxUsers: 100 } );
+        var supplies = new Discord.ReactionCollector(sentMessage, function(){ return true; } , { time: 120000, max: 1000, maxEmojis: 100, maxUsers: 100 } );
         supplies.on('collect', function(element, collector){
             // remove the reaction if the user already reacted
             console.log(element)
@@ -607,6 +624,9 @@ function handleTimeMachineArtifactStageOne(message, discordUserId, stage, team, 
             }
         })
         supplies.on('end', function(collected, reason){
+            if (activeMissions["quest-" + discordUserId]){
+                delete activeMissions["quest-" + discordUserId]
+            }
 
             var leaderOfGroup;
             var leaderOfGroupUsername;
@@ -636,7 +656,6 @@ function handleTimeMachineArtifactStageOne(message, discordUserId, stage, team, 
                     if (activeQuests[idOfQuest]){
                         delete activeQuests[idOfQuest];
                     }
-                    message.channel.send("next stage");
                     exports.questHandler(message, discordUserId, "timetravel", stage + 1, team, year, channel)
                 }
             })
@@ -678,7 +697,7 @@ function handleTimeMachineArtifactStageTwo(message, discordUserId, stage, team, 
             var descriptionString = exports.questStringBuilder("timetravel", questData);
             embed.setDescription(descriptionString)
             sentMessage.edit({embed})
-        }, 100);
+        }, 5000);
         
         var storytell = setTimeout (function(){ 
             questData.storyStep = questData.storyStep + 1;
@@ -686,12 +705,12 @@ function handleTimeMachineArtifactStageTwo(message, discordUserId, stage, team, 
             embed.setDescription(descriptionString)
             sentMessage.edit({embed})
 
-        }, 200);
+        }, 10000);
 
         var storytell = setTimeout (function(){ 
             rpg.rpgInitialize(message, special);
             playMusicForQuest(channel, "genghisKhan")
-        }, 250);
+        }, 15000);
     })
 }
 
@@ -713,19 +732,20 @@ function handleTimeMachineArtifactStageThree(message, discordUserId, stage, team
     message.channel.send({embed})
     .then(function (sentMessage) {
         activeQuests["quest-"+sentMessage.id] = { id: discordUserId, username: message.author.username };
+        activeMissions["quest-" + discordUserId] = "timetravel stage 3";
         var storytell = setTimeout (function(){
             questData.storyStep = questData.storyStep + 1;            
             var descriptionString = exports.questStringBuilder("timetravel", questData);
             embed.setDescription(descriptionString)
             sentMessage.edit({embed})
-        }, 10000);
+        }, 5000);
         
         var storytell = setTimeout (function(){ 
             questData.storyStep = questData.storyStep + 1;
             var descriptionString = exports.questStringBuilder("timetravel", questData);
             embed.setDescription(descriptionString)
             sentMessage.edit({embed})
-        }, 20000);
+        }, 10000);
 
         var storytell = setTimeout (function(){ 
             questData.storyStep = questData.storyStep + 1;
@@ -745,9 +765,9 @@ function handleTimeMachineArtifactStageThree(message, discordUserId, stage, team
             sentMessage.react("🔗")
             sentMessage.react("🚽")
             sentMessage.react("🎨")
-        }, 20000);
+        }, 15000);
         
-        var supplies = new Discord.ReactionCollector(sentMessage, function(){ return true; } , { time: 60000, max: 1000, maxEmojis: 100, maxUsers: 100 } );
+        var supplies = new Discord.ReactionCollector(sentMessage, function(){ return true; } , { time: 120000, max: 1000, maxEmojis: 100, maxUsers: 100 } );
         supplies.on('collect', function(element, collector){
             // remove the reaction if the user already reacted
             console.log(element)
@@ -796,6 +816,9 @@ function handleTimeMachineArtifactStageThree(message, discordUserId, stage, team
             }
         })
         supplies.on('end', function(collected, reason){
+            if (activeMissions["quest-" + discordUserId]){
+                delete activeMissions["quest-" + discordUserId]
+            }
 
             var leaderOfGroup;
             var leaderOfGroupUsername;
@@ -825,7 +848,6 @@ function handleTimeMachineArtifactStageThree(message, discordUserId, stage, team
                     if (activeQuests[idOfQuest]){
                         delete activeQuests[idOfQuest];
                     }
-                    message.channel.send("next stage");
                     exports.questHandler(message, discordUserId, "timetravel", stage + 1, team, year, channel)
                 }
             })
@@ -973,7 +995,7 @@ function handleDemonicArtifactStageOne(message, discordUserId, stage, team, chan
             var descriptionString = exports.questStringBuilder("demonic", questData);
             embed.setDescription(descriptionString)
             sentMessage.edit({embed})
-        }, 1000);
+        }, 5000);
         
         var storytell = setTimeout (function(){ 
             questData.storyStep = questData.storyStep + 1;
@@ -1017,9 +1039,9 @@ function handleDemonicArtifactStageOne(message, discordUserId, stage, team, chan
                 })
             })
             
-        }, 2000);
+        }, 10000);
         
-        var supplies = new Discord.ReactionCollector(sentMessage, function(){ return true; } , { time: 60000, max: 1000, maxEmojis: 100, maxUsers: 100 } );
+        var supplies = new Discord.ReactionCollector(sentMessage, function(){ return true; } , { time: 1000000, max: 1000, maxEmojis: 1000, maxUsers: 1000 } );
         supplies.on('collect', function(element, collector){
             // remove the reaction if the user already reacted
             console.log(element)
@@ -1029,7 +1051,7 @@ function handleDemonicArtifactStageOne(message, discordUserId, stage, team, chan
                 mapOfTeamMembers["quest-" + teamUser.id] = false
             }
             element.users.forEach(function(user){
-                /*
+                
                 if (!user.bot){
                     var userId = user.id;
                     collector.collected.forEach(function(reaction){
@@ -1045,7 +1067,7 @@ function handleDemonicArtifactStageOne(message, discordUserId, stage, team, chan
                         })
                     })
                 }
-                */
+                
             })
             var mission = activeMissions["quest-" + discordUserId]
             collector.collected.forEach(function(reaction){
@@ -1102,8 +1124,8 @@ function handleDemonicArtifactStageOne(message, discordUserId, stage, team, chan
             }
             
             if (allMembersCollected){
-                //var ritualPositionComplete = handleRitualStandingMission(mission)
-                mission.ritualPositions = [3, 5, 8, 10, 12]
+                var ritualPositionComplete = handleRitualStandingMission(mission)
+                // mission.ritualPositions = [3, 5, 8, 10, 12] // FOR TESTING
                 var ritualPositionComplete = handleRitualStandingMission(mission)
                 if (ritualPositionComplete){
                     supplies.stop("Ritual Complete")
@@ -1112,6 +1134,9 @@ function handleDemonicArtifactStageOne(message, discordUserId, stage, team, chan
             }
         })
         supplies.on('end', function(collected, reason){
+            if (activeMissions["quest-" + discordUserId]){
+                delete activeMissions["quest-" + discordUserId]
+            }
 
             var leaderOfGroup;
             var leaderOfGroupUsername;
@@ -1129,7 +1154,6 @@ function handleDemonicArtifactStageOne(message, discordUserId, stage, team, chan
                         if (activeQuests[idOfQuest]){
                             delete activeQuests[idOfQuest];
                         }
-                        message.channel.send("next stage");
                         exports.questHandler(message, discordUserId, "demonic", stage + 1, team, channel)
                     }
                 })
@@ -1158,12 +1182,13 @@ function handleDemonicArtifactStageTwo(message, discordUserId, stage, team, chan
     message.channel.send({embed})
     .then(function (sentMessage) {
         activeQuests["quest-"+sentMessage.id] = { id: discordUserId, username: message.author.username };
+        activeMissions["quest-"] = "demonic stage 2"
         var storytell = setTimeout (function(){
             questData.storyStep = questData.storyStep + 1;            
             var descriptionString = exports.questStringBuilder("demonic", questData);
             embed.setDescription(descriptionString)
             sentMessage.edit({embed})
-        }, 10000);
+        }, 5000);
         
         var storytell = setTimeout (function(){ 
             questData.storyStep = questData.storyStep + 1;
@@ -1177,9 +1202,9 @@ function handleDemonicArtifactStageTwo(message, discordUserId, stage, team, chan
             sentMessage.react("📦")
             sentMessage.react("🚪")
             sentMessage.react("🏯")
-        }, 20000);
+        }, 10000);
         
-        var supplies = new Discord.ReactionCollector(sentMessage, function(){ return true; } , { time: 60000, max: 1000, maxEmojis: 100, maxUsers: 100 } );
+        var supplies = new Discord.ReactionCollector(sentMessage, function(){ return true; } , { time: 100000, max: 1000, maxEmojis: 1000, maxUsers: 1000 } );
         supplies.on('collect', function(element, collector){
             // remove the reaction if the user already reacted
             console.log(element)
@@ -1230,6 +1255,9 @@ function handleDemonicArtifactStageTwo(message, discordUserId, stage, team, chan
         })
 
         supplies.on('end', function(collected, reason){
+            if (activeMissions["quest-" + discordUserId]){
+                delete activeMissions["quest-" + discordUserId]
+            }
             
             var idOfQuest;
             collected.forEach(function(reactionEmoji){
@@ -1243,7 +1271,6 @@ function handleDemonicArtifactStageTwo(message, discordUserId, stage, team, chan
                     if (activeQuests[idOfQuest]){
                         delete activeQuests[idOfQuest];
                     }
-                    message.channel.send("next stage");
                     exports.questHandler(message, discordUserId, "demonic", stage + 1, team, channel)
                 }
             })
@@ -1267,12 +1294,13 @@ function handleDemonicArtifactStageThree(message, discordUserId, stage, team, ch
     message.channel.send({embed})
     .then(function (sentMessage) {
         activeQuests["quest-"+sentMessage.id] = { id: discordUserId, username: message.author.username };
+        activeMissions["quest-" + discordUserId] = "demonic stage 3";
         var storytell = setTimeout (function(){
             questData.storyStep = questData.storyStep + 1;            
             var descriptionString = exports.questStringBuilder("demonic", questData);
             embed.setDescription(descriptionString)
             sentMessage.edit({embed})
-        }, 10000);
+        }, 5000);
 
         var storytell = setTimeout (function(){ 
             questData.storyStep = questData.storyStep + 1;
@@ -1292,9 +1320,9 @@ function handleDemonicArtifactStageThree(message, discordUserId, stage, team, ch
             sentMessage.react("🔗")
             sentMessage.react("🚽")
             sentMessage.react("🎨")
-        }, 20000);
+        }, 10000);
         
-        var supplies = new Discord.ReactionCollector(sentMessage, function(){ return true; } , { time: 60000, max: 1000, maxEmojis: 100, maxUsers: 100 } );
+        var supplies = new Discord.ReactionCollector(sentMessage, function(){ return true; } , { time: 120000, max: 1000, maxEmojis: 1000, maxUsers: 1000 } );
         supplies.on('collect', function(element, collector){
             // remove the reaction if the user already reacted
             console.log(element)
@@ -1343,6 +1371,9 @@ function handleDemonicArtifactStageThree(message, discordUserId, stage, team, ch
             }
         })
         supplies.on('end', function(collected, reason){
+            if (activeMissions["quest-" + discordUserId]){
+                delete activeMissions["quest-" + discordUserId]
+            }
 
             var leaderOfGroup;
             var leaderOfGroupUsername;
@@ -1372,7 +1403,6 @@ function handleDemonicArtifactStageThree(message, discordUserId, stage, team, ch
                     if (activeQuests[idOfQuest]){
                         delete activeQuests[idOfQuest];
                     }
-                    message.channel.send("next stage");
                     exports.questHandler(message, discordUserId, "demonic", stage + 1, team, channel)
                 }
             })
@@ -1413,7 +1443,7 @@ function handleDemonicArtifactStageFour(message, discordUserId, stage, team, cha
             var descriptionString = exports.questStringBuilder("demonic", questData);
             embed.setDescription(descriptionString)
             sentMessage.edit({embed})
-        }, 100);
+        }, 5000);
         
         var storytell = setTimeout (function(){ 
             questData.storyStep = questData.storyStep + 1;
@@ -1421,12 +1451,12 @@ function handleDemonicArtifactStageFour(message, discordUserId, stage, team, cha
             embed.setDescription(descriptionString)
             sentMessage.edit({embed})
 
-        }, 200);
+        }, 10000);
 
         var storytell = setTimeout (function(){ 
             rpg.rpgInitialize(message, special);
             playMusicForQuest(channel, "legion")
-        }, 250);
+        }, 15000);
     })
 }
 // rpg
@@ -1463,7 +1493,7 @@ function handleDemonicArtifactStageFive(message, discordUserId, stage, team, cha
             var descriptionString = exports.questStringBuilder("demonic", questData);
             embed.setDescription(descriptionString)
             sentMessage.edit({embed})
-        }, 100);
+        }, 5000);
         
         var storytell = setTimeout (function(){ 
             questData.storyStep = questData.storyStep + 1;
@@ -1471,12 +1501,12 @@ function handleDemonicArtifactStageFive(message, discordUserId, stage, team, cha
             embed.setDescription(descriptionString)
             sentMessage.edit({embed})
 
-        }, 200);
+        }, 10000);
 
         var storytell = setTimeout (function(){ 
             rpg.rpgInitialize(message, special);
             playMusicForQuest(channel, "andromalius")
-        }, 250);
+        }, 15000);
     })
 }
 
@@ -1517,10 +1547,9 @@ function handleRingArtifactStageOne(message, discordUserId, stage, team, propose
                     if (activeQuests[idOfQuest]){
                         delete activeQuests[idOfQuest];
                     }
-                    message.channel.send("next stage - ");
                 }
             })
-        }, 10000);
+        }, 5000);
 
     })
 }
@@ -1556,7 +1585,7 @@ function handleRingArtifactStageTwo(message, discordUserId, stage, team, giveAmo
                     var descriptionString = exports.questStringBuilder("ring", questData);
                     embed.setDescription(descriptionString)
                     sentMessage.edit({embed})
-                }, 10000);
+                }, 5000);
 
                 var idOfQuest = "quest-" + sentMessage.id;
                 
@@ -1570,7 +1599,6 @@ function handleRingArtifactStageTwo(message, discordUserId, stage, team, giveAmo
                         if (activeQuests[idOfQuest]){
                             delete activeQuests[idOfQuest];
                         }
-                        message.channel.send("next stage - commands to married person");
                     }
                 })
             })
@@ -1627,10 +1655,9 @@ function handleRingArtifactStageThree(message, discordUserId, stage, team, comma
                             if (activeQuests[idOfQuest]){
                                 delete activeQuests[idOfQuest];
                             }
-                            message.channel.send("next stage - wedding embed");
                         }
                     })
-                }, 10000);
+                }, 5000);
                 
             })
         }else{
@@ -1664,7 +1691,7 @@ function handleRingArtifactStageFour(message, discordUserId, stage, team, marrie
                 var descriptionString = exports.questStringBuilder("ring", questData);
                 embed.setDescription(descriptionString)
                 sentMessage.edit({embed})
-            }, 10000);
+            }, 5000);
 
             var storytell = setTimeout (function(){ 
                 questData.storyStep = questData.storyStep + 1;
@@ -1684,9 +1711,9 @@ function handleRingArtifactStageFour(message, discordUserId, stage, team, marrie
                 sentMessage.react("🔗")
                 sentMessage.react("🚽")
                 sentMessage.react("🎨")
-            }, 20000);
+            }, 10000);
             
-            var supplies = new Discord.ReactionCollector(sentMessage, function(){ return true; } , { time: 60000, max: 1000, maxEmojis: 100, maxUsers: 100 } );
+            var supplies = new Discord.ReactionCollector(sentMessage, function(){ return true; } , { time: 180000, max: 1000, maxEmojis: 1000, maxUsers: 1000 } );
             supplies.on('collect', function(element, collector){
                 // remove the reaction if the user already reacted
                 console.log(element)
@@ -1734,7 +1761,6 @@ function handleRingArtifactStageFour(message, discordUserId, stage, team, marrie
                         if (activeQuests[idOfQuest]){
                             delete activeQuests[idOfQuest];
                         }
-                        message.channel.send("next stage");
                         exports.questHandler(message, discordUserId, "ring", stage + 1, team, channel)
                     }
                 })
@@ -1780,7 +1806,7 @@ function handleRingArtifactStageFive(message, discordUserId, stage, team, channe
                 var descriptionString = exports.questStringBuilder("ring", questData);
                 embed.setDescription(descriptionString)
                 sentMessage.edit({embed})
-            }, 100);
+            }, 5000);
             
             var storytell = setTimeout (function(){ 
                 questData.storyStep = questData.storyStep + 1;
@@ -1788,12 +1814,12 @@ function handleRingArtifactStageFive(message, discordUserId, stage, team, channe
                 embed.setDescription(descriptionString)
                 sentMessage.edit({embed})
 
-            }, 200);
+            }, 10000);
 
             var storytell = setTimeout (function(){ 
                 rpg.rpgInitialize(message, special);
                 playMusicForQuest(channel, "evilExes")
-            }, 250);
+            }, 15000);
         })
     }
 }
@@ -1819,12 +1845,13 @@ function handleTombArtifactStageOne(message, discordUserId, stage, team, channel
     message.channel.send({embed})
     .then(function (sentMessage) {
         activeQuests["quest-"+sentMessage.id] = { id: discordUserId, username: message.author.username };
+        activeMissions["quest-" + discordUserId] = "tomb stage 1"
         var storytell = setTimeout (function(){
             questData.storyStep = questData.storyStep + 1;            
             var descriptionString = exports.questStringBuilder("tomb", questData);
             embed.setDescription(descriptionString)
             sentMessage.edit({embed})
-        }, 10000);
+        }, 5000);
         
         var storytell = setTimeout (function(){ 
             questData.storyStep = questData.storyStep + 1;
@@ -1844,9 +1871,9 @@ function handleTombArtifactStageOne(message, discordUserId, stage, team, channel
             sentMessage.react("🔗")
             sentMessage.react("🚽")
             sentMessage.react("🎨")
-        }, 20000);
+        }, 10000);
         
-        var supplies = new Discord.ReactionCollector(sentMessage, function(){ return true; } , { time: 60000, max: 1000, maxEmojis: 100, maxUsers: 100 } );
+        var supplies = new Discord.ReactionCollector(sentMessage, function(){ return true; } , { time: 120000, max: 1000, maxEmojis: 1000, maxUsers: 1000 } );
         supplies.on('collect', function(element, collector){
             // remove the reaction if the user already reacted
             console.log(element)
@@ -1895,7 +1922,9 @@ function handleTombArtifactStageOne(message, discordUserId, stage, team, channel
             }
         })
         supplies.on('end', function(collected, reason){
-
+            if (activeMissions["quest-" + discordUserId]){
+                delete activeMissions["quest-" + discordUserId]
+            }
             var leaderOfGroup;
             var leaderOfGroupUsername;
             var idOfQuest;
@@ -1924,7 +1953,6 @@ function handleTombArtifactStageOne(message, discordUserId, stage, team, channel
                     if (activeQuests[idOfQuest]){
                         delete activeQuests[idOfQuest];
                     }
-                    message.channel.send("next stage");
                     exports.questHandler(message, discordUserId, "tomb", stage + 1, team, channel)
                 }
             })
@@ -1965,7 +1993,7 @@ function handleTombArtifactStageTwo(message, discordUserId, stage, team, channel
             var descriptionString = exports.questStringBuilder("tomb", questData);
             embed.setDescription(descriptionString)
             sentMessage.edit({embed})
-        }, 100);
+        }, 5000);
         
         var storytell = setTimeout (function(){ 
             questData.storyStep = questData.storyStep + 1;
@@ -1973,12 +2001,12 @@ function handleTombArtifactStageTwo(message, discordUserId, stage, team, channel
             embed.setDescription(descriptionString)
             sentMessage.edit({embed})
 
-        }, 200);
+        }, 10000);
 
         var storytell = setTimeout (function(){ 
             rpg.rpgInitialize(message, special);
             playMusicForQuest(channel, "hounds")
-        }, 250);
+        }, 15000);
     })
 }
 // rpg
@@ -2015,7 +2043,7 @@ function handleTombArtifactStageThree(message, discordUserId, stage, team, chann
             var descriptionString = exports.questStringBuilder("tomb", questData);
             embed.setDescription(descriptionString)
             sentMessage.edit({embed})
-        }, 100);
+        }, 5000);
         
         var storytell = setTimeout (function(){ 
             questData.storyStep = questData.storyStep + 1;
@@ -2023,12 +2051,12 @@ function handleTombArtifactStageThree(message, discordUserId, stage, team, chann
             embed.setDescription(descriptionString)
             sentMessage.edit({embed})
 
-        }, 200);
+        }, 10000);
 
         var storytell = setTimeout (function(){ 
             rpg.rpgInitialize(message, special);
             playMusicForQuest(channel, "vampireSwarm")
-        }, 250);
+        }, 15000);
     })
 }
 // rpg
@@ -2065,7 +2093,7 @@ function handleTombArtifactStageFour(message, discordUserId, stage, team, channe
             var descriptionString = exports.questStringBuilder("tomb", questData);
             embed.setDescription(descriptionString)
             sentMessage.edit({embed})
-        }, 100);
+        }, 5000);
         
         var storytell = setTimeout (function(){ 
             questData.storyStep = questData.storyStep + 1;
@@ -2073,12 +2101,12 @@ function handleTombArtifactStageFour(message, discordUserId, stage, team, channe
             embed.setDescription(descriptionString)
             sentMessage.edit({embed})
 
-        }, 200);
+        }, 10000);
 
         var storytell = setTimeout (function(){ 
             rpg.rpgInitialize(message, special);
             playMusicForQuest(channel, "gateKeeper")
-        }, 250);
+        }, 15000);
     })
 }
 // embed
@@ -2098,12 +2126,13 @@ function handleTombArtifactStageFive(message, discordUserId, stage, team, channe
     message.channel.send({embed})
     .then(function (sentMessage) {
         activeQuests["quest-"+sentMessage.id] = { id: discordUserId, username: message.author.username };
+        activeMissions["quest-" + discordUserId] = "tomb stage 5"
         var storytell = setTimeout (function(){
             questData.storyStep = questData.storyStep + 1;            
             var descriptionString = exports.questStringBuilder("tomb", questData);
             embed.setDescription(descriptionString)
             sentMessage.edit({embed})
-        }, 10000);
+        }, 5000);
         
         var storytell = setTimeout (function(){ 
             questData.storyStep = questData.storyStep + 1;
@@ -2117,9 +2146,9 @@ function handleTombArtifactStageFive(message, discordUserId, stage, team, channe
             sentMessage.react("📦")
             sentMessage.react("🚪")
             sentMessage.react("🏯")
-        }, 20000);
+        }, 10000);
         
-        var supplies = new Discord.ReactionCollector(sentMessage, function(){ return true; } , { time: 60000, max: 1000, maxEmojis: 100, maxUsers: 100 } );
+        var supplies = new Discord.ReactionCollector(sentMessage, function(){ return true; } , { time: 360000, max: 1000, maxEmojis: 1000, maxUsers: 1000 } );
         supplies.on('collect', function(element, collector){
             // remove the reaction if the user already reacted
             console.log(element)
@@ -2140,7 +2169,6 @@ function handleTombArtifactStageFive(message, discordUserId, stage, team, channe
                                     // remove the reaction by the user
                                     element.remove(userId)
                                 }
-                                // TODO: check if everyone has gathered supplies if they have then do supplies.stop
                             }
                         })
                     })
@@ -2168,25 +2196,16 @@ function handleTombArtifactStageFive(message, discordUserId, stage, team, channe
             }
         })
         supplies.on('end', function(collected, reason){
+            if (activeMissions["quest-" + discordUserId]){
+                delete activeMissions["quest-" + discordUserId]
+            }
 
             var leaderOfGroup;
             var leaderOfGroupUsername;
             var idOfQuest;
             collected.forEach(function(reactionEmoji){
-                leaderOfGroup = activeQuests["quest-" + reactionEmoji.message.id].id; // discord id of leader
-                leaderOfGroupUsername = activeQuests["quest-" + reactionEmoji.message.id].username;
                 idOfQuest = "quest-" + reactionEmoji.message.id;
 
-                // only team members should be getting items
-                reactionEmoji.users.forEach(function(user){
-                    
-                    for (var m in team){
-                        var teamUser = team[m]
-                        if (!user.bot && teamUser.id == user.id){
-                            questFindRewards(message, user, reactionEmoji._emoji.name)
-                        }
-                    }
-                })
             })
             // Lever has been pulled at the same time, continue on to the next stage
             profileDB.updateQuestlineStage(discordUserId, questData.questname, stage + 1, function(error, updateRes){
@@ -2197,7 +2216,6 @@ function handleTombArtifactStageFive(message, discordUserId, stage, team, channe
                     if (activeQuests[idOfQuest]){
                         delete activeQuests[idOfQuest];
                     }
-                    message.channel.send("next stage");
                     exports.questHandler(message, discordUserId, "tomb", stage + 1, team, channel)
                 }
             })
@@ -2239,7 +2257,7 @@ function handleTombArtifactStageSix(message, discordUserId, stage, team, channel
             var descriptionString = exports.questStringBuilder("tomb", questData);
             embed.setDescription(descriptionString)
             sentMessage.edit({embed})
-        }, 100);
+        }, 5000);
         
         var storytell = setTimeout (function(){
             questData.storyStep = questData.storyStep + 1;
@@ -2247,12 +2265,12 @@ function handleTombArtifactStageSix(message, discordUserId, stage, team, channel
             embed.setDescription(descriptionString)
             sentMessage.edit({embed})
 
-        }, 200);
+        }, 10000);
 
         var storytell = setTimeout (function(){
             rpg.rpgInitialize(message, special);
             playMusicForQuest(channel, "vampireCouncil")
-        }, 250);
+        }, 15000);
     })
 }
 
