@@ -1496,6 +1496,7 @@ function eventEndedEmbedBuilder(message, event, partySuccess){
                     // demonic = bow of andromalius
                     // diamond = ring (linked souls)
                     // abraham = vampire slaying pike
+                   
                     profileDB.updateQuestlineStage(event.leader.id, event.special.questData.questname, event.special.questData.stage + 1, function(error, updateRes){
                         if (error){
                             console.log(error);
@@ -1512,7 +1513,12 @@ function eventEndedEmbedBuilder(message, event, partySuccess){
                 var rewards;
                 var rewardString = "";
                 if (partySuccess){
-                    var rewards =  calculateRewards( event, memberInRpgEvent, getItemResponse, numberOfMembers)
+                    var extraItem = null;
+                    if ( event.special.reward.item && event.leader.id == event.members[member].id){
+                        extraItem = event.special.reward.item
+                    }
+
+                    var rewards =  calculateRewards( event, memberInRpgEvent, getItemResponse, numberOfMembers, extraItem)
                     // add experience and rpgpoints to user
                     updateUserRewards(message, memberInParty, rewards);
 
@@ -1569,7 +1575,7 @@ function addToUserInventory(discordUserId, items){
     })
 }
 
-function calculateRewards(event, memberInRpgEvent, getItemResponse, numberOfMembers){
+function calculateRewards(event, memberInRpgEvent, getItemResponse, numberOfMembers, extraItem){
     var rewardsForPlayer =  {
         xp: 1,
         rpgPoints: 1,
@@ -1674,6 +1680,13 @@ function calculateRewards(event, memberInRpgEvent, getItemResponse, numberOfMemb
                 console.log(commonItems[itemRoll]);
                 commonItems[itemRoll].itemAmount = COMMON_ITEMS_TO_OBTAIN
                 itemsObtainedArray.push( commonItems[itemRoll] );
+            }
+        }
+    }
+    if (extraItem){
+        for (var i in allItems){
+            if (allItems[i].id == extraItem ){
+                itemsObtainedArray.push(allItems[i])
             }
         }
     }

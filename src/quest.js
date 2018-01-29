@@ -5,6 +5,12 @@ const ytdl = require("ytdl-core");
 var dispatcher = null
 var voiceChannel = null
 
+/// Obtain these from DB
+var TIME_MACHINE_ID = 29
+var RING_ID = 32
+var ABRAHAM_LINCOLN_PIKE_ID = 35
+var DEMONIC_BOW_ID = 38
+
 /*
 activeQuests holds { id: discordid of quest starter, username: username of quest starter }
 activeQuests key is the message that was sent for the embed - quest-messageid
@@ -23,7 +29,7 @@ module.exports.questStartEmbedBuilder = function(message, questName, questString
     if (questName == "timetravel"){
         const embed = new Discord.RichEmbed()
         .setAuthor(message.author.username + " has begun an artifact quest.")
-        .addField("Save the Jin Dynasty from Genghis Khan", questString, true)
+        .addField("Save the Jin Dynasty from Genghis Khan's army", questString, true)
         .setDescription(":hourglass_flowing_sand:  :hourglass_flowing_sand:  :hourglass_flowing_sand:  \n" + message.author.username + " reads the cassete player's label.. the label says the following: Our messanger Minghan has betrayed us... because of this he besieged, captured, and sacked our Jin capital of Zhongdu, the empire has collapsed...")
         .addField("New command granted", "-timetravel [number (positive or negative)] [@user] [@user] [@user] [@user]")
         .setThumbnail(message.author.avatarURL)
@@ -34,7 +40,7 @@ module.exports.questStartEmbedBuilder = function(message, questName, questString
         const embed = new Discord.RichEmbed()
         .setAuthor(message.author.username + " has begun an artifact quest.")
         .addField("Perform the summoning ritual and expell the evil demons", questString, true)
-        .setDescription(":sparkles: :sparkles: :sparkles:")
+        .setDescription(":prayer_beads:  :prayer_beads:  :prayer_beads: \n" + message.author.username + " has gathered all the ingredients for a summoning that will vanquish all the evil spirits that has been tormenting them. The headless chicken begins to run around the room, the blood of andromalius turns black, and the demonic scroll reveals the words needed for the ritual" )
         .addField("New command granted", "-ritual [@user] [@user] [@user] [@user]")
         .setThumbnail(message.author.avatarURL)
         .setColor(0xFF7A1C)
@@ -44,7 +50,7 @@ module.exports.questStartEmbedBuilder = function(message, questName, questString
         const embed = new Discord.RichEmbed()
         .setAuthor(message.author.username + " has begun an artifact quest.")
         .addField("Propose your love", questString, true)
-        .setDescription(":sparkles: :sparkles: :sparkles:")
+        .setDescription(":cupid:  :cupid:  :cupid: \n" + message.author.username + " has crafted a very lavish ring to show their soulmate how much they mean.")
         .addField("New command granted", "-propose [@user]")
         .setThumbnail(message.author.avatarURL)
         .setColor(0xFF7A1C)
@@ -54,7 +60,7 @@ module.exports.questStartEmbedBuilder = function(message, questName, questString
         const embed = new Discord.RichEmbed()
         .setAuthor(message.author.username + " has begun an artifact quest.")
         .addField("Enter the tomb of abraham lincoln and discover a horrifying secrets", questString, true)
-        .setDescription(":sparkles: :sparkles: :sparkles:")
+        .setDescription(":candle:  :candle: :candle: \n" +message.author.username + " stands outside of the tomb of abraham lincoln. The entrance is cold and quiet... there are nail marks on the walls.  " )
         .addField("New command granted", "-explore [@user] [@user] [@user] [@user]")
         .setThumbnail(message.author.avatarURL)
         .setColor(0xFF7A1C)
@@ -936,6 +942,7 @@ function handleTimeMachineArtifactStageSix(message, discordUserId, stage, team, 
         avatar: "https://i.imgur.com/fteI06F.jpg",
         reward: {
             type: "note" , // could be item
+            item: TIME_MACHINE_ID,
             fieldTitle: "Corrupted Overmind Defeated",
             note: "You have defeated the corrupted overmind and slowly fade from current time. You have obtained a fully functioning time machine.",
             questline: "timetravelqueststage",
@@ -1466,6 +1473,7 @@ function handleDemonicArtifactStageFive(message, discordUserId, stage, team, cha
         reward: {
             type: "note" , // could be item
             fieldTitle: "Andromalius defeated",
+            item: DEMONIC_BOW_ID,
             note: "You have defeated Andromalius, You have also found the demonic bow of andromalius",
             questline: "demonicqueststage",
             stageAdvance: stage + 1
@@ -1779,6 +1787,7 @@ function handleRingArtifactStageFive(message, discordUserId, stage, team, channe
             reward: {
                 type: "note" , // could be item
                 fieldTitle: "You have defeated your soulmate's evil exes",
+                item: RING_ID,
                 note: "You and your soulmate are now linked by souls, taco gains from one are gained by the other",
                 questline: "ringqueststage",
                 stageAdvance: stage + 1
@@ -2232,6 +2241,7 @@ function handleTombArtifactStageSix(message, discordUserId, stage, team, channel
         reward: {
             type: "note" , // could be item
             fieldTitle: "You have defeated the vampire council",
+            item: ABRAHAM_LINCOLN_PIKE_ID,
             note: "You have saved the helpless man from the vampires. He has a very distinct appearance. It is Abraham Lincoln. You receive Abraham lincolns vampire slaying pike",
             questline: "tombqueststage",
             stageAdvance: stage + 1
@@ -2287,7 +2297,6 @@ module.exports.proposedTo = function(message, discordUserId, stage, proposedTo){
         message.channel.send("You cannot propose to anyone at this time.")
     }
 }
-
 
 function artifactStartString(questline, discordUser, mentionedUsers){
     // return the starting quest text
@@ -2373,18 +2382,6 @@ function questFindRewards(message, user, emoji){
                     itemsObtainedArray.push( commonItems[itemRoll] );
                 }
             }
-
-            sentMessage.react("🏮")
-            sentMessage.react("🎁")
-            sentMessage.react("📦")
-            sentMessage.react("🎀")
-            sentMessage.react("🏬")
-            sentMessage.react("🎈")
-            sentMessage.react("💌")
-            sentMessage.react("💝")
-            sentMessage.react("💦")
-            sentMessage.react("💳")
-            sentMessage.react("⌚")
 
             // timetravel
             if (emoji == "📮" || emoji == "🏯" || emoji == "🏮" ){

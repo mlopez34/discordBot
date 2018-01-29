@@ -1634,17 +1634,7 @@ module.exports = {
                     ],
                     endOfTurnEvents : [
                         "echo",
-                        "focus",
-                        "footballPlayer75",
-                        "totemOfDoom75",
-                        "totemOfDoom50",
-                        "totemOfDoom50",
-                        "totemOfDoom25",
-                        "totemOfDoom25",
-                        "totemOfDoom25",
-                        "summonDemon",
-                        "tremor",
-                        "electricOrb"
+                        "focus"
                     ],
                     abilityOrder: [
                         0, 6, 1,0,2, 3, [1,2], 0
@@ -1679,7 +1669,7 @@ module.exports = {
                             }
                         }
                     ],
-                    hp: 4500,
+                    hp: 7500,
                     attackDmg: 155,
                     magicDmg: 100,
                     armor: 1500,
@@ -1701,8 +1691,8 @@ module.exports = {
                     hp: 3000,
                     attackDmg: 110,
                     magicDmg: 170,
-                    armor: 900,
-                    spirit: 1500,
+                    armor: 1800,
+                    spirit: 1800,
                     difficulty: "special",
                     element: "normal"
                 },
@@ -1717,15 +1707,14 @@ module.exports = {
                         "weaken"
                     ],
                     effectsOnDeath: [
-                        "explode",
-                        "healAll"
+                        "explode"
                     ],
                     buffs: [],
                     hp: 2350,
                     attackDmg: 130,
                     magicDmg: 110,
-                    armor: 1150,
-                    spirit: 1150,
+                    armor: 1400,
+                    spirit: 1400,
                     difficulty: "special",
                     element: "normal"
                 }
@@ -1742,7 +1731,6 @@ module.exports = {
                         "slash",
                         "poke",
                         "shield"
-                        // TODO: earthquake
                     ],
                     buffs: [
                         {
@@ -1775,7 +1763,6 @@ module.exports = {
                         "slash",
                         "poke",
                         "tacowall"
-                        //TODO: meteor
                     ],
                     buffs: [
                         {
@@ -1796,6 +1783,36 @@ module.exports = {
                     spirit: 1500,
                     difficulty: "special",
                     element: "earth"
+                },
+                {
+                    name: "Asteroid Boulder",
+                    abilities: ["attack", "attack", "rockthrow", "rockthrow", "slash", "protect"],
+                    buffs: [],
+                    hpPerPartyMember: 130,
+                    adPerPartyMember: 8,
+                    mdPerPartyMember: 8,
+                    hp: 350,
+                    attackDmg: 60,
+                    magicDmg: 75,
+                    armor: 450,
+                    spirit: 370,
+                    difficulty: "easy",
+                    element: "normal"
+                },
+                {
+                    name: "Asteroid Boulder",
+                    abilities: ["attack", "attack", "rockthrow", "rockthrow", "slash", "protect"],
+                    buffs: [],
+                    hpPerPartyMember: 130,
+                    adPerPartyMember: 8,
+                    mdPerPartyMember: 8,
+                    hp: 350,
+                    attackDmg: 60,
+                    magicDmg: 75,
+                    armor: 450,
+                    spirit: 370,
+                    difficulty: "easy",
+                    element: "normal"
                 }
             ],
             "island": [
@@ -1810,7 +1827,6 @@ module.exports = {
                         "slash",
                         "poke",
                         "shield"
-                        // TODO: earthquake
                     ],
                     buffs: [
                         {
@@ -1843,7 +1859,6 @@ module.exports = {
                         "slash",
                         "poke",
                         "tacowall"
-                        //TODO: meteor
                     ],
                     buffs: [
                         {
@@ -1876,7 +1891,6 @@ module.exports = {
                         "slash",
                         "poke",
                         "tacowall"
-                        //TODO: meteor
                     ],
                     buffs: [
                         {
@@ -1909,7 +1923,6 @@ module.exports = {
                         "slash",
                         "poke",
                         "tacowall"
-                        //TODO: meteor
                     ],
                     buffs: [
                         {
@@ -1944,7 +1957,6 @@ module.exports = {
                         "slash",
                         "poke",
                         "shield"
-                        // TODO: earthquake
                     ],
                     buffs: [
                         {
@@ -1977,7 +1989,6 @@ module.exports = {
                         "slash",
                         "poke",
                         "tacowall"
-                        //TODO: meteor
                     ],
                     buffs: [
                         {
@@ -2010,7 +2021,6 @@ module.exports = {
                         "slash",
                         "poke",
                         "tacowall"
-                        //TODO: meteor
                     ],
                     buffs: [
                         {
@@ -2043,7 +2053,6 @@ module.exports = {
                         "slash",
                         "poke",
                         "tacowall"
-                        //TODO: meteor
                     ],
                     buffs: [
                         {
@@ -2064,7 +2073,7 @@ module.exports = {
                     spirit: 1500,
                     difficulty: "special",
                     element: "earth"
-                },
+                }
             ],
             "hounds": [
                 {
@@ -2078,7 +2087,6 @@ module.exports = {
                         "slash",
                         "poke",
                         "shield"
-                        // TODO: earthquake
                     ],
                     buffs: [
                         {
@@ -2099,6 +2107,66 @@ module.exports = {
                     spirit: 1500,
                     difficulty: "special",
                     element: "earth"
+                },
+                {
+                    name: "Blood Hound",
+                    abilities: ["attack", "attack", "rockthrow", "rockthrow", "slash", "protect"],
+                    buffs: [],
+                    hpPerPartyMember: 130,
+                    adPerPartyMember: 8,
+                    mdPerPartyMember: 8,
+                    hp: 350,
+                    attackDmg: 60,
+                    magicDmg: 75,
+                    armor: 450,
+                    spirit: 370,
+                    difficulty: "easy",
+                    element: "normal"
+                },
+                {
+                    name: "Blood Hound",
+                    abilities: ["attack", "attack", "rockthrow", "rockthrow", "slash", "protect"],
+                    buffs: [],
+                    hpPerPartyMember: 130,
+                    adPerPartyMember: 8,
+                    mdPerPartyMember: 8,
+                    hp: 350,
+                    attackDmg: 60,
+                    magicDmg: 75,
+                    armor: 450,
+                    spirit: 370,
+                    difficulty: "easy",
+                    element: "normal"
+                },
+                {
+                    name: "Starved Hound",
+                    abilities: ["attack", "attack", "rockthrow", "rockthrow", "slash", "protect"],
+                    buffs: [],
+                    hpPerPartyMember: 130,
+                    adPerPartyMember: 8,
+                    mdPerPartyMember: 8,
+                    hp: 350,
+                    attackDmg: 60,
+                    magicDmg: 75,
+                    armor: 450,
+                    spirit: 370,
+                    difficulty: "easy",
+                    element: "normal"
+                },
+                {
+                    name: "Starved Hound",
+                    abilities: ["attack", "attack", "rockthrow", "rockthrow", "slash", "protect"],
+                    buffs: [],
+                    hpPerPartyMember: 130,
+                    adPerPartyMember: 8,
+                    mdPerPartyMember: 8,
+                    hp: 350,
+                    attackDmg: 60,
+                    magicDmg: 75,
+                    armor: 450,
+                    spirit: 370,
+                    difficulty: "easy",
+                    element: "normal"
                 }
             ],
             "vampireSwarm": [
@@ -2113,7 +2181,6 @@ module.exports = {
                         "slash",
                         "poke",
                         "shield"
-                        // TODO: earthquake
                     ],
                     buffs: [
                         {
@@ -2134,6 +2201,83 @@ module.exports = {
                     spirit: 1500,
                     difficulty: "special",
                     element: "earth"
+                },
+                {
+                    name: "Vampire",
+                    abilities: [
+                    "attack", "attack", "rockthrow", "rockthrow", "shock", "shock", "tacowall"
+                    ],
+                    buffs: [
+                        {
+                            name: "frenzy",
+                            emoji: "😡",
+                            onTurnEnd: {
+                                attackDmgPlus : 85,
+                                magicDmgPlus : 85,
+                                everyNTurns: 2,
+                                startTurn: 2
+                            }
+                        }
+                    ],
+                    endOfTurnEvents : [
+                        "echo",
+                        "focus"
+                    ],
+                    hpPerPartyMember: 1458,
+                    adPerPartyMember: 29,
+                    mdPerPartyMember: 29,
+                    hp: 800,
+                    attackDmg: 177,
+                    magicDmg: 250,
+                    armor: 1300,
+                    spirit: 900,
+                    difficulty: "boss",
+                    element: "normal"
+                },
+                {
+                    name: "Vampiric Minion",
+                    abilities: ["attack", "attack", "rockthrow", "rockthrow", "slash", "protect"],
+                    buffs: [],
+                    hpPerPartyMember: 130,
+                    adPerPartyMember: 8,
+                    mdPerPartyMember: 8,
+                    hp: 350,
+                    attackDmg: 60,
+                    magicDmg: 75,
+                    armor: 450,
+                    spirit: 370,
+                    difficulty: "easy",
+                    element: "normal"
+                },
+                {
+                    name: "Vampiric Minion",
+                    abilities: ["attack", "attack", "rockthrow", "rockthrow", "slash", "protect"],
+                    buffs: [],
+                    hpPerPartyMember: 130,
+                    adPerPartyMember: 8,
+                    mdPerPartyMember: 8,
+                    hp: 350,
+                    attackDmg: 60,
+                    magicDmg: 75,
+                    armor: 450,
+                    spirit: 370,
+                    difficulty: "easy",
+                    element: "normal"
+                },
+                {
+                    name: "Vampiric Minion",
+                    abilities: ["attack", "attack", "rockthrow", "rockthrow", "slash", "protect"],
+                    buffs: [],
+                    hpPerPartyMember: 130,
+                    adPerPartyMember: 8,
+                    mdPerPartyMember: 8,
+                    hp: 350,
+                    attackDmg: 60,
+                    magicDmg: 75,
+                    armor: 450,
+                    spirit: 370,
+                    difficulty: "easy",
+                    element: "normal"
                 }
             ],
             "gateKeeper": [
@@ -2148,7 +2292,6 @@ module.exports = {
                         "slash",
                         "poke",
                         "shield"
-                        // TODO: earthquake
                     ],
                     buffs: [
                         {
@@ -2173,7 +2316,7 @@ module.exports = {
             ],
             "vampireCouncil": [
                 {
-                    name: "Archvampire",
+                    name: "Archvampire ",
                     abilities: [
                         "attack",
                         "attack",
@@ -2183,7 +2326,6 @@ module.exports = {
                         "slash",
                         "poke",
                         "shield"
-                        // TODO: earthquake
                     ],
                     buffs: [
                         {
@@ -2204,6 +2346,100 @@ module.exports = {
                     spirit: 1500,
                     difficulty: "special",
                     element: "earth"
+                },
+                {
+                    name: "Frenzied Vampire",
+                    abilities: [
+                        "attack",
+                        "attack",
+                        "rockthrow",
+                        "rockthrow",
+                        "slash",
+                        "slash",
+                        "poke",
+                        "shield"
+                    ],
+                    buffs: [
+                        {
+                            name: "frenzy",
+                            emoji: "😡",
+                            onTurnEnd: {
+                                attackDmgPlus : 105,
+                                magicDmgPlus : 105,
+                                everyNTurns: 2,
+                                startTurn: 3
+                            }
+                        }
+                    ],
+                    hp: 7600,
+                    attackDmg: 300,
+                    magicDmg: 270,
+                    armor: 1750,
+                    spirit: 1500,
+                    difficulty: "special",
+                    element: "earth"
+                },
+                {
+                    name: "Blood King",
+                    abilities: [
+                        "attack",
+                        "attack",
+                        "rockthrow",
+                        "rockthrow",
+                        "slash",
+                        "slash",
+                        "poke",
+                        "shield"
+                    ],
+                    buffs: [
+                        {
+                            name: "frenzy",
+                            emoji: "😡",
+                            onTurnEnd: {
+                                attackDmgPlus : 105,
+                                magicDmgPlus : 105,
+                                everyNTurns: 2,
+                                startTurn: 3
+                            }
+                        }
+                    ],
+                    hp: 7600,
+                    attackDmg: 300,
+                    magicDmg: 270,
+                    armor: 1750,
+                    spirit: 1500,
+                    difficulty: "special",
+                    element: "earth"
+                },
+                {
+                    name: "Immortality Seeker",
+                    abilities: ["attack", "attack", "rockthrow", "rockthrow", "slash", "protect"],
+                    buffs: [],
+                    hpPerPartyMember: 130,
+                    adPerPartyMember: 8,
+                    mdPerPartyMember: 8,
+                    hp: 350,
+                    attackDmg: 60,
+                    magicDmg: 75,
+                    armor: 450,
+                    spirit: 370,
+                    difficulty: "easy",
+                    element: "normal"
+                },
+                {
+                    name: "Immortality Seeker",
+                    abilities: ["attack", "attack", "rockthrow", "rockthrow", "slash", "protect"],
+                    buffs: [],
+                    hpPerPartyMember: 130,
+                    adPerPartyMember: 8,
+                    mdPerPartyMember: 8,
+                    hp: 350,
+                    attackDmg: 60,
+                    magicDmg: 75,
+                    armor: 450,
+                    spirit: 370,
+                    difficulty: "easy",
+                    element: "normal"
                 }
             ],
             "legion": [
@@ -2218,7 +2454,6 @@ module.exports = {
                         "slash",
                         "poke",
                         "shield"
-                        // TODO: earthquake
                     ],
                     buffs: [
                         {
@@ -2239,6 +2474,66 @@ module.exports = {
                     spirit: 1500,
                     difficulty: "special",
                     element: "earth"
+                },
+                {
+                    name: "Chupacabra",
+                    abilities: ["attack", "attack", "rockthrow", "rockthrow", "slash", "protect"],
+                    buffs: [],
+                    hpPerPartyMember: 130,
+                    adPerPartyMember: 8,
+                    mdPerPartyMember: 8,
+                    hp: 350,
+                    attackDmg: 60,
+                    magicDmg: 75,
+                    armor: 450,
+                    spirit: 370,
+                    difficulty: "easy",
+                    element: "normal"
+                },
+                {
+                    name: "Tormentor",
+                    abilities: ["attack", "attack", "rockthrow", "rockthrow", "slash", "protect"],
+                    buffs: [],
+                    hpPerPartyMember: 130,
+                    adPerPartyMember: 8,
+                    mdPerPartyMember: 8,
+                    hp: 350,
+                    attackDmg: 60,
+                    magicDmg: 75,
+                    armor: 450,
+                    spirit: 370,
+                    difficulty: "easy",
+                    element: "normal"
+                },
+                {
+                    name: "Reanimated Headless Chicken",
+                    abilities: ["attack", "attack", "rockthrow", "rockthrow", "slash", "protect"],
+                    buffs: [],
+                    hpPerPartyMember: 130,
+                    adPerPartyMember: 8,
+                    mdPerPartyMember: 8,
+                    hp: 350,
+                    attackDmg: 60,
+                    magicDmg: 75,
+                    armor: 450,
+                    spirit: 370,
+                    difficulty: "easy",
+                    element: "normal"
+                },
+                {
+                    name: "Three Headed Beast",
+                    abilities: ["attack", "attack", "rockthrow", "rockthrow", "slash", "protect"],
+                    buffs: [],
+                    hpPerPartyMember: 130,
+                    adPerPartyMember: 8,
+                    mdPerPartyMember: 8,
+                    hp: 350,
+                    attackDmg: 60,
+                    magicDmg: 75,
+                    armor: 450,
+                    spirit: 370,
+                    difficulty: "easy",
+                    element: "normal"
                 }
             ],
             "andromalius": [
@@ -2253,7 +2548,6 @@ module.exports = {
                         "slash",
                         "poke",
                         "shield"
-                        // TODO: earthquake
                     ],
                     buffs: [
                         {
@@ -2274,6 +2568,66 @@ module.exports = {
                     spirit: 1500,
                     difficulty: "special",
                     element: "earth"
+                },
+                {
+                    name: "Three Headed Beast",
+                    abilities: ["attack", "attack", "rockthrow", "rockthrow", "slash", "protect"],
+                    buffs: [],
+                    hpPerPartyMember: 130,
+                    adPerPartyMember: 8,
+                    mdPerPartyMember: 8,
+                    hp: 350,
+                    attackDmg: 60,
+                    magicDmg: 75,
+                    armor: 450,
+                    spirit: 370,
+                    difficulty: "easy",
+                    element: "normal"
+                },
+                {
+                    name: "Demonic Presence",
+                    abilities: ["attack", "attack", "rockthrow", "rockthrow", "slash", "protect"],
+                    buffs: [],
+                    hpPerPartyMember: 130,
+                    adPerPartyMember: 8,
+                    mdPerPartyMember: 8,
+                    hp: 350,
+                    attackDmg: 60,
+                    magicDmg: 75,
+                    armor: 450,
+                    spirit: 370,
+                    difficulty: "easy",
+                    element: "normal"
+                },
+                {
+                    name: "Diabloic Ghoul",
+                    abilities: ["attack", "attack", "rockthrow", "rockthrow", "slash", "protect"],
+                    buffs: [],
+                    hpPerPartyMember: 130,
+                    adPerPartyMember: 8,
+                    mdPerPartyMember: 8,
+                    hp: 350,
+                    attackDmg: 60,
+                    magicDmg: 75,
+                    armor: 450,
+                    spirit: 370,
+                    difficulty: "easy",
+                    element: "normal"
+                },
+                {
+                    name: "Zombie",
+                    abilities: ["attack", "attack", "rockthrow", "rockthrow", "slash", "protect"],
+                    buffs: [],
+                    hpPerPartyMember: 130,
+                    adPerPartyMember: 8,
+                    mdPerPartyMember: 8,
+                    hp: 350,
+                    attackDmg: 60,
+                    magicDmg: 75,
+                    armor: 450,
+                    spirit: 370,
+                    difficulty: "easy",
+                    element: "normal"
                 }
             ],
             "evilExes": [
@@ -2288,7 +2642,102 @@ module.exports = {
                         "slash",
                         "poke",
                         "shield"
-                        // TODO: earthquake
+                    ],
+                    buffs: [
+                        {
+                            name: "frenzy",
+                            emoji: "😡",
+                            onTurnEnd: {
+                                attackDmgPlus : 105,
+                                magicDmgPlus : 105,
+                                everyNTurns: 2,
+                                startTurn: 3
+                            }
+                        }
+                    ],
+                    hp: 7600,
+                    attackDmg: 300,
+                    magicDmg: 270,
+                    armor: 1750,
+                    spirit: 1500,
+                    difficulty: "special",
+                    element: "earth"
+                },
+                {
+                    name: "Evil Ex Twins",
+                    abilities: [
+                        "attack",
+                        "attack",
+                        "rockthrow",
+                        "rockthrow",
+                        "slash",
+                        "slash",
+                        "poke",
+                        "shield"
+                    ],
+                    buffs: [
+                        {
+                            name: "frenzy",
+                            emoji: "😡",
+                            onTurnEnd: {
+                                attackDmgPlus : 105,
+                                magicDmgPlus : 105,
+                                everyNTurns: 2,
+                                startTurn: 3
+                            }
+                        }
+                    ],
+                    hp: 7600,
+                    attackDmg: 300,
+                    magicDmg: 270,
+                    armor: 1750,
+                    spirit: 1500,
+                    difficulty: "special",
+                    element: "earth"
+                },
+                {
+                    name: "First Evil Ex",
+                    abilities: [
+                        "attack",
+                        "attack",
+                        "rockthrow",
+                        "rockthrow",
+                        "slash",
+                        "slash",
+                        "poke",
+                        "shield"
+                    ],
+                    buffs: [
+                        {
+                            name: "frenzy",
+                            emoji: "😡",
+                            onTurnEnd: {
+                                attackDmgPlus : 105,
+                                magicDmgPlus : 105,
+                                everyNTurns: 2,
+                                startTurn: 3
+                            }
+                        }
+                    ],
+                    hp: 7600,
+                    attackDmg: 300,
+                    magicDmg: 270,
+                    armor: 1750,
+                    spirit: 1500,
+                    difficulty: "special",
+                    element: "earth"
+                },
+                {
+                    name: "Second Evil Ex",
+                    abilities: [
+                        "attack",
+                        "attack",
+                        "rockthrow",
+                        "rockthrow",
+                        "slash",
+                        "slash",
+                        "poke",
+                        "shield"
                     ],
                     buffs: [
                         {
