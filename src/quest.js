@@ -55,7 +55,7 @@ module.exports.questStartEmbedBuilder = function(message, questName, questString
         .setAuthor(message.author.username + " has begun an artifact quest.")
         .addField("Enter the tomb of abraham lincoln and discover a horrifying secrets", questString, true)
         .setDescription(":sparkles: :sparkles: :sparkles:")
-        .addField("New command granted", "-explore [number (positive or negative)] [@user] [@user] [@user] [@user]")
+        .addField("New command granted", "-explore [@user] [@user] [@user] [@user]")
         .setThumbnail(message.author.avatarURL)
         .setColor(0xFF7A1C)
         message.channel.send({embed});
@@ -96,6 +96,8 @@ module.exports.questStringBuilder = function(questname, questData){
             }
             else if (questData && questData.storyStep == 3){
                 return questData.message.author.username + ", Your party prepares to be sent back in time millions of years ago... exact position of the asteroid that is about to hit the planet has been aquired... your party prepares to be sent back in time millions of years ago...\n Your party has now arrived..\n There is no sign of life near your party, as you look up you notice a planet that resembles your home...\nYour party has arrived and is standing on the asteroid.  "                
+            }else if (questData && questData.storyStep == 4){
+                return questData.message.author.username + ", Your party prepares to be sent back in time millions of years ago... exact position of the asteroid that is about to hit the planet has been aquired... your party prepares to be sent back in time millions of years ago...\n Your party has now arrived..\n There is no sign of life near your party, as you look up you notice a planet that resembles your home...\nYour party has arrived and is standing on the asteroid.  "                
             }
         }
         else if (questData.stage == 4){
@@ -111,15 +113,10 @@ module.exports.questStringBuilder = function(questname, questData){
                 return questData.message.author.username + ", Nobody is seen in sight, the silence is too suspicious.. "                
             }
             else if (questData && questData.storyStep == 3){
-                return questData.message.author.username + ", Your party sees an enormous wall over the horizon, you slowly walk in its direction, the sky slowly begins to turn black"                
+                return questData.message.author.username + ", Your party sees an enormous wall over the horizon, you slowly walk in its direction, the sky slowly begins to turn black. Your party climbs the wall, You are greeted by a human whom whispers in your ear the words 'help us', moments later you are swarmed by robots"                
             }
         }
         else if (questData.stage == 6){
-            if (questData && questData.storyStep == 1){
-                return questData.message.author.username + ", Your party climbs the wall, You are greeted by a human whom whispers in your ear the words 'help us', moments later you are swarmed by robots"
-            }
-        }
-        else if (questData.stage == 7){
             if (questData && questData.storyStep == 1){
                 return questData.message.author.username + ", Your party prepares itself to travel forward in time"
             }
@@ -127,12 +124,7 @@ module.exports.questStringBuilder = function(questname, questData){
                 return questData.message.author.username + ", Your party arrives atht the year 325,000,000 and in a remote planet very close to the center of the galaxy "                
             }
             else if (questData && questData.storyStep == 3){
-                return questData.message.author.username + ", A strong presence is felt..."                
-            }
-        }
-        else if (questData.stage == 8){
-            if (questData && questData.storyStep == 1){
-                return questData.message.author.username + ", The corrupted overmind emerges from above"
+                return questData.message.author.username + ", Your party arrives atht the year 325,000,000 and in a remote planet very close to the center of the galaxy. A strong presence is felt... The corrupted overmind emerges from above"                
             }
         }
         else{
@@ -156,61 +148,61 @@ module.exports.questStringBuilder = function(questname, questData){
         // Hounds battle
         else if (questData.stage == 2){
             if (questData && questData.storyStep == 1){
-                return questData.message.author.username + ", a large number of vicious hounds ambush the group."
+                return questData.message.author.username + ", You walk past the entrance and hear loud howling noises."
             }
             else if (questData && questData.storyStep == 2){
-                return questData.message.author.username + ", a large number of vicious hounds ambush the group. "                
+                return questData.message.author.username + ", You walk past the entrance and hear loud howling noises... The howls become louder... "                
             }
             else if (questData && questData.storyStep == 3){
-                return questData.message.author.username + ", a large number of vicious hounds ambush the group. "                
+                return questData.message.author.username + ", You walk past the entrance and hear loud howling noises... The howls become louder... A large number of vicious hounds ambush the group. "                
             }
         }
         // vampires
         else if (questData.stage == 3){
             if (questData && questData.storyStep == 1){
-                return questData.message.author.username + ", a large number of vampires ambush the group. "
+                return questData.message.author.username + ", The hounds were no match. You notice something odd... their eyes are a bright red color. "
             }
             else if (questData && questData.storyStep == 2){
-                return questData.message.author.username + ", a large number of vampires ambush the group. "                
+                return questData.message.author.username + ", The hounds were no match. You notice something odd... their eyes are a bright red color... You continue through the tomb and enter a very big room with chains on every wall... "                
             }
             else if (questData && questData.storyStep == 3){
-                return questData.message.author.username + ", a large number of vampires ambush the group. "                
+                return questData.message.author.username + ", The hounds were no match. You notice something odd... their eyes are a bright red color... You continue through the tomb and enter a very big room with chains on every wall... A group of vampires ambush the group. "                
             }
         }
         // gatekeeper
         else if (questData.stage == 4){
             if (questData && questData.storyStep == 1){
-                return questData.message.author.username + ", a gatekeeper ambush the group. "
+                return questData.message.author.username + ", You made quick work of the vampires, but notice their eyes are also bright red. "
             }
             else if (questData && questData.storyStep == 2){
-                return questData.message.author.username + ", a gatekeeper ambush the group. "                
+                return questData.message.author.username + ", You made quick work of the vampires, but notice their eyes are also bright red. There is something terribly wrong about this place.... "                
             }
             else if (questData && questData.storyStep == 3){
-                return questData.message.author.username + ", a gatekeeper ambush the group. "                
+                return questData.message.author.username + ", You made quick work of the vampires, but notice their eyes are also bright red. There is something terribly wrong about this place.... You continue down the tomb and reach a place near the x on your map... An enormous creature breaks out of a brick wall. "                
             }
         }
         // lever
         else if (questData.stage == 5){
             if (questData && questData.storyStep == 1){
-                return questData.message.author.username + ", a giant lever is in front of you, you must pull the lever at once."
+                return questData.message.author.username + ", a giant lever is in front of you, you must all pull the lever at once."
             }
             else if (questData && questData.storyStep == 2){
-                return questData.message.author.username + ", a giant lever is in front of you, you must pull the lever at once. a small door appears "                
+                return questData.message.author.username + ", a giant lever is in front of you, you must all pull the lever at once. "                
             }
             else if (questData && questData.storyStep == 3){
-                return questData.message.author.username + ", a giant lever is in front of you, you must pull the lever at once. a small door appears. you enter the secret chamber"                
+                return questData.message.author.username + ", a giant lever is in front of you, you must all pull the lever at once."                
             }
         }
         // use the secret chamber key and enter the secret chamber
         else if (questData.stage == 6){
             if (questData && questData.storyStep == 1){
-                return questData.message.author.username + ", inside the room you notice a group of vampires surrounding a helpless man."
+                return questData.message.author.username + ", You open the door to the secret chamber. inside the room you notice a group of vampires surrounding a helpless man."
             }
             else if (questData && questData.storyStep == 2){
-                return questData.message.author.username + ", inside the room you notice a group of vampires surrounding a helpless man. the vampires turn towards you.."                
+                return questData.message.author.username + ", You open the door to the secret chamber. inside the room you notice a group of vampires surrounding a helpless man. The man is shackled and being tortured."                
             }
             else if (questData && questData.storyStep == 3){
-                return questData.message.author.username + ", inside the room you notice a group of vampires surrounding a helpless man. the vampires turn towards you......."                
+                return questData.message.author.username + ", You open the door to the secret chamber. inside the room you notice a group of vampires surrounding a helpless man. The man is shackled and being tortured. The vampires turn towards you........."                
             }
         }else{
             return "not a valid stage";
@@ -285,11 +277,11 @@ module.exports.questStringBuilder = function(questname, questData){
         // proposed
         else if (questData.stage == 1){
             if (questData && questData.storyStep == 1){
-                return questData.message.author.username + ", you must show your love the hard way, give your soulmate 20,000 tacos"
+                return questData.message.author.username + ", you must show your love the hard way..."
             }else if (questData && questData.storyStep == 2){
                 return questData.message.author.username + ", you must show your love the hard way, give your soulmate 20,000 tacos"
             }else if (questData && questData.storyStep == 3){
-                return questData.message.author.username + ", you must show your love the hard way, give your soulmate 20,000 tacos"
+                return questData.message.author.username + ", you must show your love the hard way, give your soulmate 20,000 tacos ❤️❤️❤️ "
             }
         }
         // gave 20,000 tacos
@@ -297,41 +289,41 @@ module.exports.questStringBuilder = function(questname, questData){
             if (questData && questData.storyStep == 1){
                 return questData.message.author.username + ", thank your soulmate for being themselves"
             }else if (questData && questData.storyStep == 2){
-                return questData.message.author.username + ", thank your soulmate for being themselves"
+                return questData.message.author.username + ", thank your soulmate for being themselves  ❤️❤️❤️"
             }else if (questData && questData.storyStep == 3){
-                return questData.message.author.username + ", thank your soulmate for being themselves"
+                return questData.message.author.username + ", thank your soulmate for being themselves  ❤️❤️❤️❤️❤️"
             }
         }
         // thanked soulmate
         else if (questData.stage == 3){
             if (questData && questData.storyStep == 1){
-                return questData.message.author.username + ", it is wedding day, time to celebrate! -wedding @user "
+                return questData.message.author.username + ", it is wedding day, time to celebrate! -wedding @user 🥂 "
             }else if (questData && questData.storyStep == 2){
-                return questData.message.author.username + ", it is wedding day, time to celebrate! -wedding @user "
+                return questData.message.author.username + ", it is wedding day, time to celebrate! -wedding @user 🥂"
             }else if (questData && questData.storyStep == 3){
-                return questData.message.author.username + ", it is wedding day, time to celebrate! -wedding @user "
+                return questData.message.author.username + ", it is wedding day, time to celebrate! -wedding @user 🥂"
             }
         }
         // wedding
         else if (questData.stage == 4){
             if (questData && questData.storyStep == 1){
-                return questData.message.author.username + ", everyone gets to collect presents at the wedding"
+                return questData.message.author.username + ", everyone gets to collect presents at the wedding 🥂 "
             }else if (questData && questData.storyStep == 2){
-                return questData.message.author.username + ", everyone gets to collect presents at the wedding"
+                return questData.message.author.username + ", everyone gets to collect presents at the wedding 🥂"
             }else if (questData && questData.storyStep == 3){
-                return questData.message.author.username + ", everyone gets to collect presents at the wedding"
+                return questData.message.author.username + ", everyone gets to collect presents at the wedding 🥂"
             }
         }
         // defeat evil exes
         else if (questData.stage == 5){
             if (questData && questData.storyStep == 1){
-                return questData.message.author.username + ", defeat the seven evil exes"
+                return questData.message.author.username + ", there is a loud crashing sound outside."
             }
             else if (questData && questData.storyStep == 2){
-                return questData.message.author.username + ", defeat the seven evil exes "                
+                return questData.message.author.username + ", there is a loud crashing sound outside... It is your soulmate's exes "                
             }
             else if (questData && questData.storyStep == 3){
-                return questData.message.author.username + ", defeat the seven evil exes"                
+                return questData.message.author.username + ", there is a loud crashing sound outside... It is your soulmate's exes. You must defeat your soulmate's seven evil exes"                
             }
         }else{
             return "Profess your love to your soulmate";
@@ -514,7 +506,7 @@ function handleRingArtifact(message, discordUserId, stage, team, questData, chan
     }
     else if (stage == 4){
         // react to embed with hearts
-        if (!activeMissions["quest-" + discordUserId]){
+        if (activeMissions["quest-" + discordUserId] && activeMissions["quest-" + discordUserId].proposedTo){
             var marriedTo = questData.marriedTo
             handleRingArtifactStageFour(message, discordUserId, stage, team, marriedTo, channel)
         }
@@ -679,7 +671,7 @@ function handleTimeMachineArtifactStageTwo(message, discordUserId, stage, team, 
         reward: {
             type: "note" , // could be item
             fieldTitle: "A scroll was found on one of the general's bodies",
-            note: "travel to the year 1250 BC to defeat the trojans",
+            note: "Their reptile scales and enormous bodies will be our secret weapon against every army.",
             questline: "timetravelqueststage",
             stageAdvance: stage + 1
         }
@@ -751,7 +743,7 @@ function handleTimeMachineArtifactStageThree(message, discordUserId, stage, team
             questData.storyStep = questData.storyStep + 1;
             var descriptionString = exports.questStringBuilder("timetravel", questData);
             embed.setDescription(descriptionString)
-            .addField("Gather supplies", "You may pick up one supply from the list...  ")
+            .addField("Gather unearthly objects", "You only have room for one object...  ")
             sentMessage.edit({embed})
 
             sentMessage.react("🏮")
@@ -871,7 +863,7 @@ function handleTimeMachineArtifactStageFour(message, discordUserId, stage, team,
         reward: {
             type: "note" , // could be item
             fieldTitle: "Writting was found on a fragment of the asteroid",
-            note: "travel to the year 3128 and save the humans from being imprisoned",
+            note: "Error code 3 : 1 fragment sent back in time : only 2 civilizations are left : standby 8 seconds remaining",
             questline: "timetravelqueststage",
             stageAdvance: stage + 1
         }
@@ -904,11 +896,11 @@ function handleTimeMachineArtifactStageFive(message, discordUserId, stage, team,
     var special = {
         questName: "island",
         questData: questData,
-        avatar: "http://prntscr.com/i0sx83",
+        avatar: "https://i.imgur.com/gd3bRoB.jpg",
         reward: {
             type: "note" , // could be item
             fieldTitle: "You found carvings on the walls of the wooden cabin",
-            note: "travel to the year 3,759,188 and defeat the corrupted overmind",
+            note: "travel to the year 3,250,000 and defeat the corrupted overmind",
             questline: "timetravelqueststage",
             stageAdvance: stage + 1
         }
@@ -917,7 +909,7 @@ function handleTimeMachineArtifactStageFive(message, discordUserId, stage, team,
 
     const embed = new Discord.RichEmbed()
     .setDescription(descriptionString)
-    .setThumbnail("http://prntscr.com/i0sx83")
+    .setThumbnail("https://i.imgur.com/gd3bRoB.jpg")
     .setColor(0xFF7A1C)
     message.channel.send({embed})
     .then(function(sentMessage){
@@ -941,11 +933,11 @@ function handleTimeMachineArtifactStageSix(message, discordUserId, stage, team, 
     var special = {
         questName: "corruptedOvermind",
         questData: questData,
-        avatar: "http://prntscr.com/i0te3y",
+        avatar: "https://i.imgur.com/fteI06F.jpg",
         reward: {
             type: "note" , // could be item
             fieldTitle: "Corrupted Overmind Defeated",
-            note: "you have defeated the corrupted overmind and slowly fade from current time",
+            note: "You have defeated the corrupted overmind and slowly fade from current time. You have obtained a fully functioning time machine.",
             questline: "timetravelqueststage",
             stageAdvance: stage + 1
         }
@@ -954,7 +946,7 @@ function handleTimeMachineArtifactStageSix(message, discordUserId, stage, team, 
 
     const embed = new Discord.RichEmbed()
     .setDescription(descriptionString)
-    .setThumbnail("http://prntscr.com/i0te3y")
+    .setThumbnail("https://i.imgur.com/fteI06F.jpg")
     .setColor(0xFF7A1C)
     message.channel.send({embed})
     .then(function(sentMessage){
@@ -984,7 +976,7 @@ function handleDemonicArtifactStageOne(message, discordUserId, stage, team, chan
     */
     const embed = new Discord.RichEmbed()
     .setDescription(descriptionString)
-    .setThumbnail("https://i.imgur.com/5loQua9.png")
+    .setThumbnail("https://i.imgur.com/xTEhvG6.jpg")
     .setColor(0xFF7A1C)
     message.channel.send({embed})
     .then(function (sentMessage) {
@@ -1001,7 +993,7 @@ function handleDemonicArtifactStageOne(message, discordUserId, stage, team, chan
             questData.storyStep = questData.storyStep + 1;
             var descriptionString = exports.questStringBuilder("demonic", questData);
             embed.setDescription(descriptionString)
-            .addField("Gather supplies", "You may pick up one supply from the list...  ")
+            .addField("Ritual of summoning", "follow the stars...  ")
             sentMessage.edit({embed})
 
             sentMessage.react("🇦")
@@ -1124,8 +1116,8 @@ function handleDemonicArtifactStageOne(message, discordUserId, stage, team, chan
             }
             
             if (allMembersCollected){
-                var ritualPositionComplete = handleRitualStandingMission(mission)
-                // mission.ritualPositions = [3, 5, 8, 10, 12] // FOR TESTING
+                //var ritualPositionComplete = handleRitualStandingMission(mission)
+                mission.ritualPositions = [3, 5, 8, 10, 12] // FOR TESTING
                 var ritualPositionComplete = handleRitualStandingMission(mission)
                 if (ritualPositionComplete){
                     supplies.stop("Ritual Complete")
@@ -1177,7 +1169,7 @@ function handleDemonicArtifactStageTwo(message, discordUserId, stage, team, chan
     */
     const embed = new Discord.RichEmbed()
     .setDescription(descriptionString)
-    .setThumbnail("https://i.imgur.com/5loQua9.png")
+    .setThumbnail("https://i.imgur.com/xTEhvG6.jpg")
     .setColor(0xFF7A1C)
     message.channel.send({embed})
     .then(function (sentMessage) {
@@ -1194,7 +1186,7 @@ function handleDemonicArtifactStageTwo(message, discordUserId, stage, team, chan
             questData.storyStep = questData.storyStep + 1;
             var descriptionString = exports.questStringBuilder("demonic", questData);
             embed.setDescription(descriptionString)
-            .addField("Perform the ritual ", "perform the ritual  ")
+            .addField("Perform the ritual ", "All members of the ritual must recite their part of the ritual in order.  ")
             sentMessage.edit({embed})
 
             sentMessage.react("🏮")
@@ -1286,10 +1278,9 @@ function handleDemonicArtifactStageThree(message, discordUserId, stage, team, ch
         storyStep: 1
     }
     var descriptionString = exports.questStringBuilder("demonic", questData);
-    // Gather supplies, collect demonic supplies
     const embed = new Discord.RichEmbed()
     .setDescription(descriptionString)
-    .setThumbnail("https://i.imgur.com/5loQua9.png")
+    .setThumbnail("https://i.imgur.com/xTEhvG6.jpg")
     .setColor(0xFF7A1C)
     message.channel.send({embed})
     .then(function (sentMessage) {
@@ -1306,15 +1297,15 @@ function handleDemonicArtifactStageThree(message, discordUserId, stage, team, ch
             questData.storyStep = questData.storyStep + 1;
             var descriptionString = exports.questStringBuilder("demonic", questData);
             embed.setDescription(descriptionString)
-            .addField("Gather supplies", "You may pick up one supply from the list...  ")
+            .addField("Collect ritual spoils ", "The objects are too demonic to take more than one...  ")
             sentMessage.edit({embed})
 
-            sentMessage.react("🏮")
-            sentMessage.react("🍱")
-            sentMessage.react("📦")
-            sentMessage.react("🛀")
-            sentMessage.react("🚪")
-            sentMessage.react("🏯")
+            sentMessage.react("🔪")
+            sentMessage.react("💉")
+            sentMessage.react("📜")
+            sentMessage.react("💊")
+            sentMessage.react("💀")
+            sentMessage.react("🐍")
             sentMessage.react("💈")
             sentMessage.react("📮")
             sentMessage.react("🔗")
@@ -1421,11 +1412,11 @@ function handleDemonicArtifactStageFour(message, discordUserId, stage, team, cha
     var special = {
         questName: "legion",
         questData: questData,
-        avatar: "https://i.imgur.com/5loQua9.png",
+        avatar: "https://i.imgur.com/xTEhvG6.jpg",
         reward: {
             type: "note" , // could be item
             fieldTitle: "Servant of Andromalius defeated",
-            note: "you have vanquished the Servant of Andromalius, however the sky turns completely dark, perform the final ritual with 4 other companions",
+            note: "You have vanquished the Servant of Andromalius, however the sky turns completely dark. Perform the final ritual with 4 other companions",
             questline: "demonicqueststage",
             stageAdvance: stage + 1
         }
@@ -1434,7 +1425,7 @@ function handleDemonicArtifactStageFour(message, discordUserId, stage, team, cha
 
     const embed = new Discord.RichEmbed()
     .setDescription(descriptionString)
-    .setThumbnail("https://i.imgur.com/5loQua9.png")
+    .setThumbnail("https://i.imgur.com/xTEhvG6.jpg")
     .setColor(0xFF7A1C)
     message.channel.send({embed})
     .then(function(sentMessage){
@@ -1471,11 +1462,11 @@ function handleDemonicArtifactStageFive(message, discordUserId, stage, team, cha
     var special = {
         questName: "andromalius",
         questData: questData,
-        avatar: "https://i.imgur.com/5loQua9.png",
+        avatar: "https://i.imgur.com/xTEhvG6.jpg",
         reward: {
             type: "note" , // could be item
             fieldTitle: "Andromalius defeated",
-            note: "You have defeated Andromalius, you've found the demonic bow of andromalius",
+            note: "You have defeated Andromalius, You have also found the demonic bow of andromalius",
             questline: "demonicqueststage",
             stageAdvance: stage + 1
         }
@@ -1484,7 +1475,7 @@ function handleDemonicArtifactStageFive(message, discordUserId, stage, team, cha
 
     const embed = new Discord.RichEmbed()
     .setDescription(descriptionString)
-    .setThumbnail("https://i.imgur.com/5loQua9.png")
+    .setThumbnail("https://i.imgur.com/xTEhvG6.jpg")
     .setColor(0xFF7A1C)
     message.channel.send({embed})
     .then(function(sentMessage){
@@ -1527,7 +1518,7 @@ function handleRingArtifactStageOne(message, discordUserId, stage, team, propose
     // 
     const embed = new Discord.RichEmbed()
     .setDescription(descriptionString)
-    .setThumbnail("https://i.imgur.com/5loQua9.png")
+    .setThumbnail("https://i.imgur.com/aOudcmc.jpg")
     .setColor(0xFF7A1C)
     message.channel.send({embed})
     .then(function (sentMessage) {
@@ -1559,7 +1550,7 @@ function handleRingArtifactStageTwo(message, discordUserId, stage, team, giveAmo
     // get the mission that the user is in
     var mission = activeMissions["quest-" + discordUserId]
     if (!mission){
-        message.channel.send("not in a mission, you must propose to someone")
+        message.channel.send("not currently in a quest, you must propose to someone")
     }else{
         var haveGivenEnoughTacos = handleTacoGiveMission(giveAmount, giveTo, mission)
 
@@ -1575,7 +1566,7 @@ function handleRingArtifactStageTwo(message, discordUserId, stage, team, giveAmo
             // 
             const embed = new Discord.RichEmbed()
             .setDescription(descriptionString)
-            .setThumbnail("https://i.imgur.com/5loQua9.png")
+            .setThumbnail("https://i.imgur.com/aOudcmc.jpg")
             .setColor(0xFF7A1C)
             message.channel.send({embed})
             .then(function (sentMessage) {
@@ -1603,7 +1594,7 @@ function handleRingArtifactStageTwo(message, discordUserId, stage, team, giveAmo
                 })
             })
         }else{
-            message.channel.send("you must give more tacos")
+            message.channel.send("you must give more tacos :drooling_face:")
         }
     }
 }
@@ -1612,7 +1603,7 @@ function handleRingArtifactStageThree(message, discordUserId, stage, team, comma
     // check the user has been thanked and sorried
     var mission = activeMissions["quest-" + discordUserId]
     if (!mission){
-        message.channel.send("not in a mission, you must propose to someone")
+        message.channel.send("not currently in a quest, you must propose to someone")
     }else{
         // check that the commands for the mission have been completed
         var data = { 
@@ -1631,7 +1622,7 @@ function handleRingArtifactStageThree(message, discordUserId, stage, team, comma
             
             const embed = new Discord.RichEmbed()
             .setDescription(descriptionString)
-            .setThumbnail("https://i.imgur.com/5loQua9.png")
+            .setThumbnail("https://i.imgur.com/aOudcmc.jpg")
             .setColor(0xFF7A1C)
             message.channel.send({embed})
             .then(function (sentMessage) {
@@ -1649,7 +1640,7 @@ function handleRingArtifactStageThree(message, discordUserId, stage, team, comma
                         if (error){
                             console.log(error);
                         }else{
-                            var proposedTo = activeMissions["quest-" + discordUserId].proposedTo
+                            var proposedTo = activeMissions["quest-" + discordUserId].commandTo
                             activeMissions["quest-" + discordUserId] = { proposedTo: proposedTo }
 
                             if (activeQuests[idOfQuest]){
@@ -1657,7 +1648,7 @@ function handleRingArtifactStageThree(message, discordUserId, stage, team, comma
                             }
                         }
                     })
-                }, 5000);
+                }, 500);
                 
             })
         }else{
@@ -1669,7 +1660,7 @@ function handleRingArtifactStageThree(message, discordUserId, stage, team, comma
 function handleRingArtifactStageFour(message, discordUserId, stage, team, marriedTo, channel){
     var mission = activeMissions["quest-" + discordUserId]
     if (!mission){
-        message.channel.send("not in a mission, you must propose to someone")
+        message.channel.send("not currently in a quest, you must propose to someone")
     }else{
         var questData = {
             questname: "ring",
@@ -1681,7 +1672,7 @@ function handleRingArtifactStageFour(message, discordUserId, stage, team, marrie
         // its wedding day, react with emojis, wedding finishes when there is more than 15 guests
         const embed = new Discord.RichEmbed()
         .setDescription(descriptionString)
-        .setThumbnail("https://i.imgur.com/5loQua9.png")
+        .setThumbnail("https://i.imgur.com/STjXRQs.png")
         .setColor(0xFF7A1C)
         message.channel.send({embed})
         .then(function (sentMessage) {
@@ -1701,16 +1692,16 @@ function handleRingArtifactStageFour(message, discordUserId, stage, team, marrie
                 sentMessage.edit({embed})
 
                 sentMessage.react("🏮")
-                sentMessage.react("🍱")
+                sentMessage.react("🎁")
                 sentMessage.react("📦")
-                sentMessage.react("🛀")
-                sentMessage.react("🚪")
-                sentMessage.react("🏯")
-                sentMessage.react("💈")
-                sentMessage.react("📮")
-                sentMessage.react("🔗")
-                sentMessage.react("🚽")
-                sentMessage.react("🎨")
+                sentMessage.react("🎀")
+                sentMessage.react("🏬")
+                sentMessage.react("🎈")
+                sentMessage.react("💌")
+                sentMessage.react("💝")
+                sentMessage.react("💦")
+                sentMessage.react("💳")
+                sentMessage.react("⌚")
             }, 10000);
             
             var supplies = new Discord.ReactionCollector(sentMessage, function(){ return true; } , { time: 180000, max: 1000, maxEmojis: 1000, maxUsers: 1000 } );
@@ -1773,7 +1764,7 @@ function handleRingArtifactStageFive(message, discordUserId, stage, team, channe
     // 
     var mission = activeMissions["quest-" + discordUserId]
     if (!mission){
-        message.channel.send("not in a mission, you must propose to someone")
+        message.channel.send("not currently in a quest, you must propose to someone")
     }else {
         var questData = {
             questname: "ring",
@@ -1784,7 +1775,7 @@ function handleRingArtifactStageFive(message, discordUserId, stage, team, channe
         var special = {
             questName: "evilExes",
             questData: questData,
-            avatar: "https://i.imgur.com/5loQua9.png",
+            avatar: "https://i.imgur.com/STjXRQs.png",
             reward: {
                 type: "note" , // could be item
                 fieldTitle: "You have defeated your soulmate's evil exes",
@@ -1797,7 +1788,7 @@ function handleRingArtifactStageFive(message, discordUserId, stage, team, channe
         // 
         const embed = new Discord.RichEmbed()
         .setDescription(descriptionString)
-        .setThumbnail("https://i.imgur.com/5loQua9.png")
+        .setThumbnail("https://i.imgur.com/STjXRQs.png")
         .setColor(0xFF7A1C)
         message.channel.send({embed})
         .then(function(sentMessage){
@@ -1817,6 +1808,9 @@ function handleRingArtifactStageFive(message, discordUserId, stage, team, channe
             }, 10000);
 
             var storytell = setTimeout (function(){ 
+                if (activeMissions["quest-" + discordUserId]){
+                    delete activeMissions["quest-" + discordUserId]
+                }
                 rpg.rpgInitialize(message, special);
                 playMusicForQuest(channel, "evilExes")
             }, 15000);
@@ -1837,10 +1831,9 @@ function handleTombArtifactStageOne(message, discordUserId, stage, team, channel
         storyStep: 1
     }
     var descriptionString = exports.questStringBuilder("tomb", questData);
-    // gather supplies at the tomb entrance
     const embed = new Discord.RichEmbed()
     .setDescription(descriptionString)
-    .setThumbnail("https://i.imgur.com/5loQua9.png")
+    .setThumbnail("https://i.imgur.com/jM9oOy9.jpg")
     .setColor(0xFF7A1C)
     message.channel.send({embed})
     .then(function (sentMessage) {
@@ -1857,20 +1850,20 @@ function handleTombArtifactStageOne(message, discordUserId, stage, team, channel
             questData.storyStep = questData.storyStep + 1;
             var descriptionString = exports.questStringBuilder("tomb", questData);
             embed.setDescription(descriptionString)
-            .addField("Gather supplies", "You may pick up one supply from the list...  ")
+            .addField("Gather supplies", "Prepare yourself before entering the tomb. You may pick up one supply from the list...  ")
             sentMessage.edit({embed})
 
             sentMessage.react("🏮")
             sentMessage.react("🍱")
-            sentMessage.react("📦")
+            sentMessage.react("🔍")
             sentMessage.react("🛀")
-            sentMessage.react("🚪")
-            sentMessage.react("🏯")
-            sentMessage.react("💈")
+            sentMessage.react("📡")
+            sentMessage.react("🔦")
+            sentMessage.react("🔩")
             sentMessage.react("📮")
             sentMessage.react("🔗")
             sentMessage.react("🚽")
-            sentMessage.react("🎨")
+            sentMessage.react("🔨")
         }, 10000);
         
         var supplies = new Discord.ReactionCollector(sentMessage, function(){ return true; } , { time: 120000, max: 1000, maxEmojis: 1000, maxUsers: 1000 } );
@@ -1971,11 +1964,11 @@ function handleTombArtifactStageTwo(message, discordUserId, stage, team, channel
     var special = {
         questName: "hounds",
         questData: questData,
-        avatar: "https://i.imgur.com/5loQua9.png",
+        avatar: "https://i.imgur.com/jM9oOy9.jpg",
         reward: {
             type: "note" , // could be item
             fieldTitle: "The door behind you closes shut.",
-            note: "Survive the hounds",
+            note: "You have survived the hounds ambush. The tomb is not very friendly to visitors, proceed with caution.",
             questline: "tombqueststage",
             stageAdvance: stage + 1
         }
@@ -1984,7 +1977,7 @@ function handleTombArtifactStageTwo(message, discordUserId, stage, team, channel
     // defeat the hounds inside the first chamber of the tomb
     const embed = new Discord.RichEmbed()
     .setDescription(descriptionString)
-    .setThumbnail("https://i.imgur.com/5loQua9.png")
+    .setThumbnail("https://i.imgur.com/jM9oOy9.jpg")
     .setColor(0xFF7A1C)
     message.channel.send({embed})
     .then(function(sentMessage){
@@ -2021,7 +2014,7 @@ function handleTombArtifactStageThree(message, discordUserId, stage, team, chann
     var special = {
         questName: "vampireSwarm",
         questData: questData,
-        avatar: "https://i.imgur.com/5loQua9.png",
+        avatar: "https://i.imgur.com/jM9oOy9.jpg",
         reward: {
             type: "note" , // could be item
             fieldTitle: "You have survived the swarm of vampires",
@@ -2034,7 +2027,7 @@ function handleTombArtifactStageThree(message, discordUserId, stage, team, chann
     // survive the vampire swarm
     const embed = new Discord.RichEmbed()
     .setDescription(descriptionString)
-    .setThumbnail("https://i.imgur.com/5loQua9.png")
+    .setThumbnail("https://i.imgur.com/jM9oOy9.jpg")
     .setColor(0xFF7A1C)
     message.channel.send({embed})
     .then(function(sentMessage){
@@ -2071,7 +2064,7 @@ function handleTombArtifactStageFour(message, discordUserId, stage, team, channe
     var special = {
         questName: "gateKeeper",
         questData: questData,
-        avatar: "https://i.imgur.com/5loQua9.png",
+        avatar: "https://i.imgur.com/jM9oOy9.jpg",
         reward: {
             type: "note" , // could be item
             fieldTitle: "Enter the secret chamber",
@@ -2084,7 +2077,7 @@ function handleTombArtifactStageFour(message, discordUserId, stage, team, channe
     // 
     const embed = new Discord.RichEmbed()
     .setDescription(descriptionString)
-    .setThumbnail("https://i.imgur.com/5loQua9.png")
+    .setThumbnail("https://i.imgur.com/jM9oOy9.jpg")
     .setColor(0xFF7A1C)
     message.channel.send({embed})
     .then(function(sentMessage){
@@ -2121,7 +2114,7 @@ function handleTombArtifactStageFive(message, discordUserId, stage, team, channe
     // click the lever at the same time
     const embed = new Discord.RichEmbed()
     .setDescription(descriptionString)
-    .setThumbnail("https://i.imgur.com/5loQua9.png")
+    .setThumbnail("https://i.imgur.com/jM9oOy9.jpg")
     .setColor(0xFF7A1C)
     message.channel.send({embed})
     .then(function (sentMessage) {
@@ -2138,7 +2131,7 @@ function handleTombArtifactStageFive(message, discordUserId, stage, team, channe
             questData.storyStep = questData.storyStep + 1;
             var descriptionString = exports.questStringBuilder("tomb", questData);
             embed.setDescription(descriptionString)
-            .addField("Gather supplies", "You may pick up one supply from the list...  ")
+            .addField("Pull the lever", "You must all pull the lever at once...  ")
             sentMessage.edit({embed})
 
             sentMessage.react("🏮")
@@ -2235,7 +2228,7 @@ function handleTombArtifactStageSix(message, discordUserId, stage, team, channel
     var special = {
         questName: "vampireCouncil",
         questData: questData,
-        avatar: "https://i.imgur.com/5loQua9.png",
+        avatar: "https://i.imgur.com/CRqOr25.png",
         reward: {
             type: "note" , // could be item
             fieldTitle: "You have defeated the vampire council",
@@ -2248,7 +2241,7 @@ function handleTombArtifactStageSix(message, discordUserId, stage, team, channel
     // create rpg event for vampire council
     const embed = new Discord.RichEmbed()
     .setDescription(descriptionString)
-    .setThumbnail("https://i.imgur.com/5loQua9.png")
+    .setThumbnail("https://i.imgur.com/CRqOr25.png")
     .setColor(0xFF7A1C)
     message.channel.send({embed})
     .then(function(sentMessage){
@@ -2327,8 +2320,8 @@ function questFindRewards(message, user, emoji){
             var COMMON_MAX_ROLL = 8750;
             var UNCOMMON_ITEMS_TO_OBTAIN = 2;
             var COMMON_ITEMS_TO_OBTAIN = 5;
-            var TRANSFORMIUM_ID = 69 // TODO: CHANGE THESE
-            var SILVER_CROSS_ID = 69
+            var TRANSFORMIUM_ID = 155 
+            var SILVER_CROSS_ID = 155
 
             var allItems = allItemsResponse.data
             var commonItems = [];
@@ -2355,7 +2348,7 @@ function questFindRewards(message, user, emoji){
             }
             
             var itemsObtainedArray = [];
-            var rollsCount = 5
+            var rollsCount = 4
 
             for (var i = 0; i < rollsCount; i++){
                 var rarityRoll = Math.floor(Math.random() * 10000) + 1;
@@ -2381,6 +2374,18 @@ function questFindRewards(message, user, emoji){
                 }
             }
 
+            sentMessage.react("🏮")
+            sentMessage.react("🎁")
+            sentMessage.react("📦")
+            sentMessage.react("🎀")
+            sentMessage.react("🏬")
+            sentMessage.react("🎈")
+            sentMessage.react("💌")
+            sentMessage.react("💝")
+            sentMessage.react("💦")
+            sentMessage.react("💳")
+            sentMessage.react("⌚")
+
             // timetravel
             if (emoji == "📮" || emoji == "🏯" || emoji == "🏮" ){
                 // push a special item?
@@ -2394,15 +2399,14 @@ function questFindRewards(message, user, emoji){
                         }
                     }
                 }
-
             }
             // tomb
-            else if (emoji == ""){
+            else if (emoji == "🔨" || emoji == "🍱" || emoji == "🔦" ){
                 var rarityRoll = Math.floor(Math.random() * 10) + 1;
 
                 if(rarityRoll > 8){
                     for (var index in allItems){
-                        if (allItems[index].id == SILVER_CROSS_ID){
+                        if (allItems[index].id == TRANSFORMIUM_ID){
                             itemsObtainedArray.push( allItems[index] );
                         }
                     }
@@ -2410,12 +2414,28 @@ function questFindRewards(message, user, emoji){
         
             }
             // demonic
-            else if (emoji == ""){
-                
+            else if (emoji == "🐍" || emoji == "🎨"|| emoji == "💉"){
+                var rarityRoll = Math.floor(Math.random() * 10) + 1;
+
+                if(rarityRoll > 8){
+                    for (var index in allItems){
+                        if (allItems[index].id == TRANSFORMIUM_ID){
+                            itemsObtainedArray.push( allItems[index] );
+                        }
+                    }
+                }
             }
             //wedding
-            else if (emoji == ""){
-                
+            else if (emoji == "🎈" || emoji == "💝" || emoji == "💳"){
+                var rarityRoll = Math.floor(Math.random() * 10) + 1;
+
+                if(rarityRoll > 8){
+                    for (var index in allItems){
+                        if (allItems[index].id == TRANSFORMIUM_ID){
+                            itemsObtainedArray.push( allItems[index] );
+                        }
+                    }
+                }
             }
 
             // TODO: print embed of all the items - change these outside of the for loop
@@ -2475,6 +2495,12 @@ var youtubeLinks = {
     asteroid: "https://www.youtube.com/watch?v=d2hRTLdvdnk",
     island: "https://www.youtube.com/watch?v=d2hRTLdvdnk",
     corruptedOvermind: "https://www.youtube.com/watch?v=d2hRTLdvdnk",
+    hounds: "https://www.youtube.com/watch?v=d2hRTLdvdnk",
+    vampireSwarm: "https://www.youtube.com/watch?v=d2hRTLdvdnk",
+    gateKeeper: "https://www.youtube.com/watch?v=d2hRTLdvdnk",
+    vampireCouncil: "https://www.youtube.com/watch?v=d2hRTLdvdnk",
+    legion: "https://www.youtube.com/watch?v=d2hRTLdvdnk",
+    andromalius: "https://www.youtube.com/watch?v=d2hRTLdvdnk",
     evilExes: "https://www.youtube.com/watch?v=d2hRTLdvdnk"
 }
 

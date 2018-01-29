@@ -386,7 +386,7 @@ module.exports.purchasePickAxe = function(userId, tacosSpent, cb){
     // console.log(query)
     var lastThank = new Date();
     var selectedPickaxe = "basic"
-    if (tacosSpent <= -15000 && tacosSpent >= -5000){
+    if (tacosSpent <= -5000 && tacosSpent >= -15000){
         // improved Pickaxe should always be between 100 and 500
         selectedPickaxe = "improved";
     }

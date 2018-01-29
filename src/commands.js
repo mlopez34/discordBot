@@ -40,7 +40,7 @@ var SODA_CAN_ITEM_ID = 1;
 var SOIL_ITEM_ID = 2;
 var PET_COST = 750;
 var QueueOfTacosDropped = [];
-var THANK_COOLDOWN_HOURS = 0;
+var THANK_COOLDOWN_HOURS = 2;
 var SORRY_COOLDOWN_HOURS = 6;
 var COOK_COOLDOWN_HOURS = 24;
 var PREPARE_COOLDOWN_HOURS = 48;
@@ -3881,7 +3881,6 @@ module.exports.useCommand = function(message, args){
                     if (activeTradeItems[inventoryResponse.data[item].id]){
                         itemBeingTraded = true;
                     }
-                    // TODO: check that the item is not being traded
                     if (!itemsInInventoryCountMap[inventoryResponse.data[item].itemid] 
                         && validItem && !itemBeingTraded && !itemBeingAuctioned){
                         // item hasnt been added to be counted, add it as 1
@@ -4170,7 +4169,7 @@ module.exports.combineCommand = function(message, args){
                                 if (rarityOfMyItem && rarityOfMyItem == "artifact"){
                                     // take the ids of the other 2 artifacts + artifact recipe and push them onto itemsBeingCombined array
                                     
-                                    var artifactId = ARTIFACT_RECIPE_ID//TODO: ARTIFACT_RECIPE_ID;
+                                    var artifactId = ARTIFACT_RECIPE_ID
                                     var recipeAdded = false;
                                     var firstArtifact = itemsMapbyShortName[myItemShortName] ? itemsMapbyShortName[myItemShortName].firstartifact : undefined; 
                                     var firstArtifactAdded = false;
@@ -4205,9 +4204,7 @@ module.exports.combineCommand = function(message, args){
                                         var itemToCreate = itemsMapById[combineToId];  // maybe create the item and keep it inactive?
                                         var itemToCreateById = itemsMapById[combineToId].id;
                                         var itemToCreateByName = itemsMapById[combineToId].itemname
-                                        
                                         // enable user to be in quest stage 1 of the quest series (user profile)
-                                        ///////////////////////////// TODO: questName should be named after the artifact set combined
                                         var questName = itemsMapbyShortName[myItemShortName] ? itemsMapbyShortName[myItemShortName].questname : undefined;
                                         // var questName = "ring" // get from item.questname
 
@@ -4334,28 +4331,30 @@ module.exports.proposeCommand = function(message, channel){
         mentionedId = user.id;
         mentionedUser = user
     })
+    if (!mentionedUser.bot && mentionedUser != discordUserId){
+        profileDB.getUserProfileData(discordUserId, function(profileErr, profileData){
+            if (profileErr){
+                console.log (profileErr);
+            }else{
+                var stage = profileData.data.ringqueststage;
 
-    profileDB.getUserProfileData(discordUserId, function(profileErr, profileData){
-        if (profileErr){
-            console.log (profileErr);
-        }else{
-            var stage = profileData.data.ringqueststage;
-
-            // TODO: save the person the user proposed to on DB
-            if (stage == 1){
-                // first stage of ring, user proposes
-                var questData = {
-                    proposedTo: mentionedUser
+                if (stage == 1){
+                    // first stage of ring, user proposes
+                    var questData = {
+                        proposedTo: mentionedUser
+                    }
+                    var team = []
+                    quest.questHandler(message, discordUserId, "ring", stage, team, questData, channel)
                 }
-                var team = []
-                quest.questHandler(message, discordUserId, "ring", stage, team, questData, channel)
+                if (stage >= 2 && stage <= 4){
+                    // create a mission in quest for the user with proposedTo and the data depending on what stage they are on
+                    quest.proposedTo(message, discordUserId, stage, mentionedUser)
+                }
             }
-            if (stage >= 2 && stage <= 4){
-                // create a mission in quest for the user with proposedTo and the data depending on what stage they are on
-                quest.proposedTo(message, discordUserId, stage, mentionedUser)
-            }
-        }
-    })
+        })
+    }else{
+        message.channel.send("You must propose to another user that is not a bot")
+    }
 }
 
 module.exports.weddingCommand = function(message, channel){
@@ -4375,7 +4374,6 @@ module.exports.weddingCommand = function(message, channel){
         }else{
             var stage = profileData.data.ringqueststage;
 
-            // TODO: save the person the user proposed to on DB
             if (stage == 4){
                 // first stage of ring, user proposes
                 var questData = {
@@ -4572,7 +4570,7 @@ module.exports.timeTravelCommand = function(message, args, channel){
         // check that author is on stage 1 of timetravel 
         profileDB.getUserProfileData(discordUserId, function(profileErr, profileData){
             if (profileErr){
-                // console.log (profileErr);
+                console.log (profileErr);
             }else{
                 var stage = profileData.data.timetravelqueststage;
 

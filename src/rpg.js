@@ -665,8 +665,8 @@ module.exports.rpgReady = function(message, itemsAvailable, amuletItemsById){
                                                         id: partyMember.id,
                                                         name: partyMember.username,
                                                         username: partyMember.username,
-                                                        hp: 250 + (27 *  partyMemberStats.level ) + partyMemberHpPlus,
-                                                        attackDmg: 10 + (9 * partyMemberStats.level) + partyMemberAttackDmgPlus,
+                                                        hp: 25000 + (27 *  partyMemberStats.level ) + partyMemberHpPlus,
+                                                        attackDmg: 10000 + (9 * partyMemberStats.level) + partyMemberAttackDmgPlus,
                                                         magicDmg:  10 + (9 * partyMemberStats.level) + partyMemberMagicDmgPlus,
                                                         armor: 5 + (partyMemberStats.level * partyMemberStats.level) + partyMemberArmorPlus,
                                                         spirit: 5 + (partyMemberStats.level * partyMemberStats.level) + partyMemberSpiritPlus,
@@ -849,6 +849,7 @@ module.exports.rpgReady = function(message, itemsAvailable, amuletItemsById){
                                                                 maxhp: 0
                                                             },
                                                             buffs: enemyFound.buffs,
+                                                            difficulty: enemyFound.difficulty,
                                                             abilities: enemyFound.abilities,
                                                             effectsOnDeath: enemyFound.effectsOnDeath,
                                                             abilitiesMap : {},
@@ -1499,7 +1500,7 @@ function eventEndedEmbedBuilder(message, event, partySuccess){
                         if (error){
                             console.log(error);
                         }else{
-                            message.channel.send("advanced");
+                            console.log("advanced special rpg ");
                         }
                     })
                 }
@@ -1640,6 +1641,11 @@ function calculateRewards(event, memberInRpgEvent, getItemResponse, numberOfMemb
             rarityRoll = Math.floor(Math.random() * 3975) + 6000;
         }
         else if (enemyDifficulty == "boss"){
+            additionalExperience = additionalExperience + 19
+            additionalRpgPoints = additionalRpgPoints + 19
+            // common + uncommon maybe rare maybe ancient
+            rarityRoll = Math.floor(Math.random() * 2000) + 8000;
+        }else if (enemyDifficulty == "special"){
             additionalExperience = additionalExperience + 19
             additionalRpgPoints = additionalRpgPoints + 19
             // common + uncommon maybe rare maybe ancient

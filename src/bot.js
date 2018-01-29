@@ -260,6 +260,9 @@ client.on('message', function(message){
             else if (commandIs("rpgstats", message)){
                 commands.rpgstatsCommand(message);
             }
+            else if (commandIs("ready", message)){
+                message.channel.send("use the rpg channel for this")
+            }
             else if (commandIs("propose", message)){
                     
                 var channelName;
