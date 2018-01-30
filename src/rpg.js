@@ -1496,6 +1496,15 @@ function eventEndedEmbedBuilder(message, event, partySuccess){
                     // demonic = bow of andromalius
                     // diamond = ring (linked souls)
                     // abraham = vampire slaying pike
+                    
+                    if ( event.special.reward.item ){
+                        var extraItem = event.special.reward.item
+                        // add the artifact item
+                        var rewards = addArtifactItem(getItemResponse, extraItem)
+                        // event.leader.id
+                        artifactEmbedBuilder(message, rewards.items, event.leader)
+                        updateUserRewards(message, event.leader.id, rewards);
+                    }
                    
                     profileDB.updateQuestlineStage(event.leader.id, event.special.questData.questname, event.special.questData.stage + 1, function(error, updateRes){
                         if (error){
@@ -1513,12 +1522,8 @@ function eventEndedEmbedBuilder(message, event, partySuccess){
                 var rewards;
                 var rewardString = "";
                 if (partySuccess){
-                    var extraItem = null;
-                    if ( event.special.reward.item && event.leader.id == event.members[member].id){
-                        extraItem = event.special.reward.item
-                    }
 
-                    var rewards =  calculateRewards( event, memberInRpgEvent, getItemResponse, numberOfMembers, extraItem)
+                    var rewards =  calculateRewards( event, memberInRpgEvent, getItemResponse, numberOfMembers)
                     // add experience and rpgpoints to user
                     updateUserRewards(message, memberInParty, rewards);
 
@@ -1575,7 +1580,42 @@ function addToUserInventory(discordUserId, items){
     })
 }
 
-function calculateRewards(event, memberInRpgEvent, getItemResponse, numberOfMembers, extraItem){
+function addArtifactItem( getItemResponse, extraItem){
+    var rewardsForPlayer =  {
+        xp: 0,
+        rpgPoints: 0,
+        items: []
+    }
+    var allItems = getItemResponse.data
+    var itemsObtainedArray = [];
+    if (extraItem){
+        for (var i in allItems){
+            if (allItems[i].id == extraItem ){
+                itemsObtainedArray.push(allItems[i])
+            }
+        }
+    }
+    rewardsForPlayer.items = itemsObtainedArray
+    return rewardsForPlayer
+}
+
+function artifactEmbedBuilder(message, artifactItems, user){
+    // create a quoted message of all the items
+    var itemsMessage = ""
+    for (var item in artifactItems){
+        var itemAmount = artifactItems[item].itemAmount ? artifactItems[item].itemAmount : 1;
+        itemsMessage = itemsMessage + "**" +itemAmount + "**x " + "[**" + artifactItems[item].itemraritycategory +"**] " + "**"  + artifactItems[item].itemname + "** - " + artifactItems[item].itemdescription + ", " +
+        artifactItems[item].itemslot + ", " + artifactItems[item].itemstatistics + " \n";
+    }
+
+    const embed = new Discord.RichEmbed()
+    .addField("[" + user.username +" has created an myth item :cyclone: ]  Items found: ", itemsMessage, true)
+    .setThumbnail(user.avatarURL)
+    .setColor(0xbfa5ff)
+    message.channel.send({embed});
+}
+
+function calculateRewards(event, memberInRpgEvent, getItemResponse, numberOfMembers){
     var rewardsForPlayer =  {
         xp: 1,
         rpgPoints: 1,
@@ -1680,13 +1720,6 @@ function calculateRewards(event, memberInRpgEvent, getItemResponse, numberOfMemb
                 console.log(commonItems[itemRoll]);
                 commonItems[itemRoll].itemAmount = COMMON_ITEMS_TO_OBTAIN
                 itemsObtainedArray.push( commonItems[itemRoll] );
-            }
-        }
-    }
-    if (extraItem){
-        for (var i in allItems){
-            if (allItems[i].id == extraItem ){
-                itemsObtainedArray.push(allItems[i])
             }
         }
     }
