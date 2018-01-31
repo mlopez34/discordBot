@@ -57,6 +57,12 @@ function reachedNewRepStatus(message, getProfileRes, discordId, reputationGained
         updateReputationStatus(message, discordId, "Liked");
         cb(null, {repNumber: reputationNumber + reputationGained, repStatus: "Liked" })
     }
+    else if(reputationNumber + reputationGained >= REPUTATIONS.sanctified.repToGet 
+        && reputationStatus.toLowerCase() != "sanctified"){
+        // reched sanctified
+        updateReputationStatus(message, discordId, "Sanctified");
+        cb(null, {repNumber: reputationNumber + reputationGained, repStatus: "Sanctified" })
+    }
     else if(reputationNumber + reputationGained >= REPUTATIONS.glorified.repToGet 
         && reputationStatus.toLowerCase() != "glorified"){
         // reched glorified
@@ -141,6 +147,28 @@ function updateUserRewards(message, discordId, repstatus, cb){
                 }
             })
             break;
+        case "glorified":
+            // TODO: give the user reward, one rewrd should be a jewel, sorry gives an extra scavenge, artifacts can be obtained via 
+            profileDB.obtainSprintingShoes(discordId, function(error, res){
+                if (error){
+                    console.log(error);
+                }
+                else{
+                    cb(null, "sprinting shoes");
+                }
+            })
+            break;
+        case "sanctified":
+            // TODO: give the user reward
+            profileDB.obtainSprintingShoes(discordId, function(error, res){
+                if (error){
+                    console.log(error);
+                }
+                else{
+                    cb(null, "sprinting shoes");
+                }
+            })
+            break;
             
     }
         
@@ -161,6 +189,9 @@ function reputationEmbedBuilder(message, repstatus, rewards){
     else if(repstatus.toLowerCase() == "glorified"){
         repEmoji = ":statue_of_liberty:"
     }
+    else if(repstatus.toLowerCase() == "sanctified"){
+        repEmoji = ":statue_of_liberty:"
+    }
     
     const embed = new Discord.RichEmbed()
     .setColor(0xED962D)
@@ -177,6 +208,10 @@ function reputationEmbedBuilder(message, repstatus, rewards){
     if (rewards === "casserole"){
         embed.addField( "Rewards: " , ":shallow_pan_of_food: Casserole - gain extra tacos on cook based on your level", true)
     }
+    if (rewards === "sprinting shoes"){
+        embed.addField( "Rewards: " , ":athletic_shoe: Sprinting Shoes - reduce prepare cooldown by 1% based on your level", true)
+    }
+    // TODO: add the embed field for new reward
     if (rewards === "sprinting shoes"){
         embed.addField( "Rewards: " , ":athletic_shoe: Sprinting Shoes - reduce prepare cooldown by 1% based on your level", true)
     }

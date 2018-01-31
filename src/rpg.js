@@ -23,7 +23,7 @@ module.exports.rpgInitialize = function(message, special){
     team.push(message.author);
 
     users.forEach(function(user){
-        if (team.length < TEAM_MAX_LENGTH && discordUserId != user.id){
+        if (team.length < TEAM_MAX_LENGTH  && discordUserId != user.id){
             team.push(user);
         }
     })
@@ -147,6 +147,9 @@ module.exports.showRpgStats = function(message, itemsAvailable, amuletItemsById)
                         if (!itemsInInventoryCountMap[inventoryResponse.data[item].itemid] ){
                             // item hasnt been added to be counted, add it as 1
                             itemsInInventoryCountMap[inventoryResponse.data[item].itemid] = 1;
+                        }else{
+                            // 
+                            itemsInInventoryCountMap[inventoryResponse.data[item].itemid] = itemsInInventoryCountMap[inventoryResponse.data[item].itemid] + 1
                         }
                     }
                     // have items mapped by id and items in inventory
@@ -155,6 +158,8 @@ module.exports.showRpgStats = function(message, itemsAvailable, amuletItemsById)
                     for (var amulet in amuletItemsById){
                         var idToCheck = amuletItemsById[amulet].id;
                         if (itemsInInventoryCountMap[idToCheck]){
+                            var amuletToAdd = amuletItemsById[amulet]
+                            amuletToAdd.count = itemsInInventoryCountMap[idToCheck]
                             userAmuletData.push(amuletItemsById[amulet]);
                         }
                     }
@@ -189,6 +194,9 @@ module.exports.showRpgStats = function(message, itemsAvailable, amuletItemsById)
                             }
                             if (wearingStats.slot3itemid){
                                 items.push(wearingStats.slot3itemid)
+                            }
+                            if (wearingStats.slot4itemid){
+                                items.push(wearingStats.slot4itemid)
                             }
                             // added stats from items
                             
@@ -248,12 +256,12 @@ module.exports.showRpgStats = function(message, itemsAvailable, amuletItemsById)
                             for (var i in userAmuletData){
                                 singleItemString = singleItemString + "\n"
 
-                                var hpPlus = itemsAvailable[userAmuletData[i].id].hpplus ? itemsAvailable[userAmuletData[i].id].hpplus : 0;
-                                var attackDmgPlus = itemsAvailable[userAmuletData[i].id].attackdmgplus ? itemsAvailable[userAmuletData[i].id].attackdmgplus : 0;
-                                var magicDmgPlus = itemsAvailable[userAmuletData[i].id].magicdmgplus ? itemsAvailable[userAmuletData[i].id].magicdmgplus : 0;
-                                var armorPlus = itemsAvailable[userAmuletData[i].id].armorplus ? itemsAvailable[userAmuletData[i].id].armorplus : 0;
-                                var spiritPlus = itemsAvailable[userAmuletData[i].id].spiritplus ? itemsAvailable[userAmuletData[i].id].spiritplus : 0;
-                                var luckPlus = itemsAvailable[userAmuletData[i].id].luckplus ? itemsAvailable[userAmuletData[i].id].luckplus : 0;
+                                var hpPlus = itemsAvailable[userAmuletData[i].id].hpplus ? itemsAvailable[userAmuletData[i].id].hpplus * userAmuletData[i].count : 0;
+                                var attackDmgPlus = itemsAvailable[userAmuletData[i].id].attackdmgplus ? itemsAvailable[userAmuletData[i].id].attackdmgplus * userAmuletData[i].count : 0;
+                                var magicDmgPlus = itemsAvailable[userAmuletData[i].id].magicdmgplus ? itemsAvailable[userAmuletData[i].id].magicdmgplus * userAmuletData[i].count : 0;
+                                var armorPlus = itemsAvailable[userAmuletData[i].id].armorplus ? itemsAvailable[userAmuletData[i].id].armorplus * userAmuletData[i].count : 0;
+                                var spiritPlus = itemsAvailable[userAmuletData[i].id].spiritplus ? itemsAvailable[userAmuletData[i].id].spiritplus * userAmuletData[i].count : 0;
+                                var luckPlus = itemsAvailable[userAmuletData[i].id].luckplus ? itemsAvailable[userAmuletData[i].id].luckplus * userAmuletData[i].count : 0;
                                 amuletHpPlus = amuletHpPlus + hpPlus;
                                 amuletAttackDmgPlus = amuletAttackDmgPlus + attackDmgPlus
                                 amuletMagicDmgPlus = amuletMagicDmgPlus + magicDmgPlus;
@@ -438,6 +446,9 @@ module.exports.rpgReady = function(message, itemsAvailable, amuletItemsById){
                                 if (!itemsInInventoryCountMap[inventoryResponse.data[item].itemid] ){
                                     // item hasnt been added to be counted, add it as 1
                                     itemsInInventoryCountMap[inventoryResponse.data[item].itemid] = 1;
+                                }else{
+                                    // 
+                                    itemsInInventoryCountMap[inventoryResponse.data[item].itemid] = itemsInInventoryCountMap[inventoryResponse.data[item].itemid] + 1
                                 }
                             }
                             // have items mapped by id and items in inventory
@@ -446,6 +457,8 @@ module.exports.rpgReady = function(message, itemsAvailable, amuletItemsById){
                             for (var amulet in amuletItemsById){
                                 var idToCheck = amuletItemsById[amulet].id;
                                 if (itemsInInventoryCountMap[idToCheck]){
+                                    var amuletToAdd = amuletItemsById[amulet]
+                                    amuletToAdd.count = itemsInInventoryCountMap[idToCheck]        
                                     userAmuletData.push(amuletItemsById[amulet]);
                                 }
                             }        
@@ -494,6 +507,13 @@ module.exports.rpgReady = function(message, itemsAvailable, amuletItemsById){
                                             activeRPGItemIds[wearingStats.slot3useritemid] = true;
                                         }
                                     }
+                                    if (wearingStats.slot4itemid){
+                                        if (!activeRPGItemIds[wearingStats.slot4useritemid]){
+                                            items.push(wearingStats.slot4itemid);
+                                            userItemIds.push(wearingStats.slot4useritemid);
+                                            activeRPGItemIds[wearingStats.slot4useritemid] = true;
+                                        }
+                                    }
                                     // added stats from items
                                     for (var i in items){
                                         if (itemsAvailable[items[i]].ability1){
@@ -526,12 +546,12 @@ module.exports.rpgReady = function(message, itemsAvailable, amuletItemsById){
 
                                     for (var i in userAmuletData){
 
-                                        var hpPlus = itemsAvailable[userAmuletData[i].id].hpplus ? itemsAvailable[userAmuletData[i].id].hpplus : 0;
-                                        var attackDmgPlus = itemsAvailable[userAmuletData[i].id].attackdmgplus ? itemsAvailable[userAmuletData[i].id].attackdmgplus : 0;
-                                        var magicDmgPlus = itemsAvailable[userAmuletData[i].id].magicdmgplus ? itemsAvailable[userAmuletData[i].id].magicdmgplus : 0;
-                                        var armorPlus = itemsAvailable[userAmuletData[i].id].armorplus ? itemsAvailable[userAmuletData[i].id].armorplus : 0;
-                                        var spiritPlus = itemsAvailable[userAmuletData[i].id].spiritplus ? itemsAvailable[userAmuletData[i].id].spiritplus : 0;
-                                        var luckPlus = itemsAvailable[userAmuletData[i].id].luckplus ? itemsAvailable[userAmuletData[i].id].luckplus : 0;
+                                        var hpPlus = itemsAvailable[userAmuletData[i].id].hpplus ? itemsAvailable[userAmuletData[i].id].hpplus * userAmuletData[i].count : 0;
+                                        var attackDmgPlus = itemsAvailable[userAmuletData[i].id].attackdmgplus ? itemsAvailable[userAmuletData[i].id].attackdmgplus * userAmuletData[i].count : 0;
+                                        var magicDmgPlus = itemsAvailable[userAmuletData[i].id].magicdmgplus ? itemsAvailable[userAmuletData[i].id].magicdmgplus * userAmuletData[i].count : 0;
+                                        var armorPlus = itemsAvailable[userAmuletData[i].id].armorplus ? itemsAvailable[userAmuletData[i].id].armorplus * userAmuletData[i].count : 0;
+                                        var spiritPlus = itemsAvailable[userAmuletData[i].id].spiritplus ? itemsAvailable[userAmuletData[i].id].spiritplus * userAmuletData[i].count : 0;
+                                        var luckPlus = itemsAvailable[userAmuletData[i].id].luckplus ? itemsAvailable[userAmuletData[i].id].luckplus * userAmuletData[i].count : 0;
 
                                         statisticsFromItemsAndLevel.hpPlus = statisticsFromItemsAndLevel.hpPlus + hpPlus;
                                         statisticsFromItemsAndLevel.attackDmgPlus = statisticsFromItemsAndLevel.attackDmgPlus + attackDmgPlus;
@@ -839,6 +859,7 @@ module.exports.rpgReady = function(message, itemsAvailable, amuletItemsById){
                                                                 maxhp: 0
                                                             },
                                                             buffs: enemyFound.buffs,
+                                                            difficulty: enemyFound.difficulty,
                                                             abilities: enemyFound.abilities,
                                                             effectsOnDeath: enemyFound.effectsOnDeath,
                                                             abilitiesMap : {},
@@ -1485,11 +1506,21 @@ function eventEndedEmbedBuilder(message, event, partySuccess){
                     // demonic = bow of andromalius
                     // diamond = ring (linked souls)
                     // abraham = vampire slaying pike
+                    
+                    if ( event.special.reward.item ){
+                        var extraItem = event.special.reward.item
+                        // add the artifact item
+                        var rewards = addArtifactItem(getItemResponse, extraItem)
+                        // event.leader.id
+                        artifactEmbedBuilder(message, rewards.items, event.leader)
+                        updateUserRewards(message, event.leader.id, rewards);
+                    }
+                   
                     profileDB.updateQuestlineStage(event.leader.id, event.special.questData.questname, event.special.questData.stage + 1, function(error, updateRes){
                         if (error){
                             console.log(error);
                         }else{
-                            message.channel.send("advanced");
+                            console.log("advanced special rpg ");
                         }
                     })
                 }
@@ -1501,6 +1532,7 @@ function eventEndedEmbedBuilder(message, event, partySuccess){
                 var rewards;
                 var rewardString = "";
                 if (partySuccess){
+
                     var rewards =  calculateRewards( event, memberInRpgEvent, getItemResponse, numberOfMembers)
                     // add experience and rpgpoints to user
                     updateUserRewards(message, memberInParty, rewards);
@@ -1556,6 +1588,41 @@ function addToUserInventory(discordUserId, items){
             console.log(itemAddResponse);
         }
     })
+}
+
+function addArtifactItem( getItemResponse, extraItem){
+    var rewardsForPlayer =  {
+        xp: 0,
+        rpgPoints: 0,
+        items: []
+    }
+    var allItems = getItemResponse.data
+    var itemsObtainedArray = [];
+    if (extraItem){
+        for (var i in allItems){
+            if (allItems[i].id == extraItem ){
+                itemsObtainedArray.push(allItems[i])
+            }
+        }
+    }
+    rewardsForPlayer.items = itemsObtainedArray
+    return rewardsForPlayer
+}
+
+function artifactEmbedBuilder(message, artifactItems, user){
+    // create a quoted message of all the items
+    var itemsMessage = ""
+    for (var item in artifactItems){
+        var itemAmount = artifactItems[item].itemAmount ? artifactItems[item].itemAmount : 1;
+        itemsMessage = itemsMessage + "**" +itemAmount + "**x " + "[**" + artifactItems[item].itemraritycategory +"**] " + "**"  + artifactItems[item].itemname + "** - " + artifactItems[item].itemdescription + ", " +
+        artifactItems[item].itemslot + ", " + artifactItems[item].itemstatistics + " \n";
+    }
+
+    const embed = new Discord.RichEmbed()
+    .addField("[" + user.username +" has created an myth item :cyclone: ]  Items found: ", itemsMessage, true)
+    .setThumbnail(user.avatarURL)
+    .setColor(0xbfa5ff)
+    message.channel.send({embed});
 }
 
 function calculateRewards(event, memberInRpgEvent, getItemResponse, numberOfMembers){
@@ -1630,6 +1697,11 @@ function calculateRewards(event, memberInRpgEvent, getItemResponse, numberOfMemb
             rarityRoll = Math.floor(Math.random() * 3975) + 6000;
         }
         else if (enemyDifficulty == "boss"){
+            additionalExperience = additionalExperience + 19
+            additionalRpgPoints = additionalRpgPoints + 19
+            // common + uncommon maybe rare maybe ancient
+            rarityRoll = Math.floor(Math.random() * 2000) + 8000;
+        }else if (enemyDifficulty == "special"){
             additionalExperience = additionalExperience + 19
             additionalRpgPoints = additionalRpgPoints + 19
             // common + uncommon maybe rare maybe ancient

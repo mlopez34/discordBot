@@ -495,6 +495,10 @@ module.exports.thankCommand = function(message){
                                         else{
                                             // // console.log(updateResponse);
                                             var experienceFromItems = wearRes.thankCommandExperienceGain ? wearRes.thankCommandExperienceGain : 0;
+                                            ///// For Artifact or Missions
+                                            var dataForMission = {}
+                                            missionCheckCommand(message, discordUserId, "thank", mentionedId, dataForMission)
+
                                             experience.gainExperience(message, message.author, EXPERIENCE_GAINS.thank + experienceFromItems, thankResponse);
                                             //update statistic
                                             stats.statisticsManage(discordUserId, "thankcount", 1, function(staterr, statSuccess){
@@ -585,6 +589,10 @@ module.exports.sorryCommand = function(message){
                                         else{
                                             var experienceFromItems = wearRes.sorryCommandExperienceGain ? wearRes.sorryCommandExperienceGain : 0;
                                             experience.gainExperience(message, message.author, (EXPERIENCE_GAINS.sorry + experienceFromItems) , sorryResponse);
+                                            ///// For Artifact or Missions
+                                            var dataForMission = {}
+                                            missionCheckCommand(message, discordUserId, "sorry", mentionedId, dataForMission)
+
                                             stats.statisticsManage(discordUserId, "sorrycount", 1, function(staterr, statSuccess){
                                                 if (staterr){
                                                     // console.log(staterr);
@@ -988,6 +996,12 @@ module.exports.giveCommand = function(message, giveTacoAmount){
                                         else{
                                             // send message that the user has gotten tacos
                                             message.channel.send(message.author + " gifted " + mentionedUser + " `" + giveTacoAmount + "` tacos! :taco: and Bender kept `" + tacoTax + "` tacos for tax purposes." );
+                                            ///// For Artifact or Missions
+                                            var dataForMission = {
+                                                giveAmount: giveTacoAmount
+                                            }
+                                            missionCheckCommand(message, discordUserId, "give", mentionedId, dataForMission)
+                                            
                                             stats.statisticsManage(discordUserId, "givecount", giveTacoAmount, function(err, statSuccess){
                                                 if (err){
                                                     // console.log(err);
@@ -2218,8 +2232,10 @@ function raresEmbedBuilder(message, itemsMap, allItems, long, rarity){
                 // console.log(key + " " + allItems[key].itemname)
                 
                 var emoji = "";
-                
-                if (allItems[key].itemraritycategory === "artifact" 
+                if (allItems[key].itemraritycategory === "myth" ){
+                    emoji = ":cyclone: "
+                }
+                else if (allItems[key].itemraritycategory === "artifact" 
                     || allItems[key].itemraritycategory === "artifact+"){
                     emoji = ":diamond_shape_with_a_dot_inside: "
                 }
@@ -2236,7 +2252,7 @@ function raresEmbedBuilder(message, itemsMap, allItems, long, rarity){
                     emoji = ":large_orange_diamond: "
                 }
                 else if (allItems[key].itemraritycategory === "ancient++"){
-                    emoji = ":diamonds: "
+                    emoji = ":star: "
                 }
                 else if (allItems[key].itemraritycategory === "rare++"){
                     emoji = ":diamonds: "
@@ -2306,7 +2322,7 @@ function raresEmbedBuilder(message, itemsMap, allItems, long, rarity){
             }else if (rarity == "ancient"){
                 emoji = ":star:  "
             }else if (rarity == "artifact"){
-                emoji = ":diamond_shape_with_a_dot_inside: "
+                emoji = ":cyclone:  "
             }
             embed.addField(emoji + " Item Name  |  Count  |  Slot " + emoji, inventoryStringsRefined[invString], true)
         }
@@ -3658,7 +3674,7 @@ module.exports.useCommand = function(message, args){
         }
         else{
             // TODO: grind rocks to find amulets
-            message.channel.send("mention a user to throw a rock at, you cannot throw rocks at bots or yourself...");
+            message.channel.send("mention a user to throw a rock at, you cannot throw rocks at bots or yourself... grind");
         }
     }
     else if(args && args.length > 1 && (args[1].toLowerCase() == "pieceofwood" || args[1].toLowerCase() == "wood")){
@@ -3867,7 +3883,6 @@ module.exports.useCommand = function(message, args){
                     if (activeTradeItems[inventoryResponse.data[item].id]){
                         itemBeingTraded = true;
                     }
-                    // TODO: check that the item is not being traded
                     if (!itemsInInventoryCountMap[inventoryResponse.data[item].itemid] 
                         && validItem && !itemBeingTraded && !itemBeingAuctioned){
                         // item hasnt been added to be counted, add it as 1
@@ -4081,168 +4096,183 @@ module.exports.combineCommand = function(message, args){
                 var itemsMapById = {};
                 var itemsBeingedCombined = []
                 profileDB.getItemData(function(error, allItemsResponse){
-                    for (var index in allItemsResponse.data){
-                        itemsMapbyShortName[allItemsResponse.data[index].itemshortname] = allItemsResponse.data[index];
-                    }
-                    for (var index in allItemsResponse.data){
-                        itemsMapById[allItemsResponse.data[index].id] = allItemsResponse.data[index];
-                    }
-                    //// console.log(allItemsResponse.data);
-                    for (var item in inventoryResponse.data){
-                        var validItem = useItem.itemValidate(inventoryResponse.data[item]);
-                        var notWearing = useItem.itemNotWearing(inventoryResponse.data[item])
-                        var auctionedItem = false;
-                        var ItemInQuestion = inventoryResponse.data[item]
+                    if (error){
+                        console.log(error)
+                    }else{
+                        for (var index in allItemsResponse.data){
+                            itemsMapbyShortName[allItemsResponse.data[index].itemshortname] = allItemsResponse.data[index];
+                        }
+                        for (var index in allItemsResponse.data){
+                            itemsMapById[allItemsResponse.data[index].id] = allItemsResponse.data[index];
+                        }
+                        //// console.log(allItemsResponse.data);
+                        for (var item in inventoryResponse.data){
+                            var validItem = useItem.itemValidate(inventoryResponse.data[item]);
+                            var notWearing = useItem.itemNotWearing(inventoryResponse.data[item])
+                            var auctionedItem = false;
+                            var ItemInQuestion = inventoryResponse.data[item]
 
-                        if (itemsInAuction[inventoryResponse.data[item].id]){
-                            auctionedItem = true;
-                        }
-                        var itemBeingTraded = false;
-                        if (activeTradeItems[inventoryResponse.data[item].id]){
-                            itemBeingTraded = true;
-                        }
-                        if (!itemsInInventoryCountMap[inventoryResponse.data[item].itemid] 
-                            && validItem && notWearing && !auctionedItem && !itemBeingTraded){
-                            // item hasnt been added to be counted, add it as 1
-                            itemsInInventoryCountMap[inventoryResponse.data[item].itemid] = 1;
-                            if (itemsMapbyShortName[myItemShortName] 
-                                && itemsMapById[ItemInQuestion.itemid]
-                                && itemsMapById[ItemInQuestion.itemid].itemshortname === myItemShortName ){
-                                var rarityOfItem = itemsMapbyShortName[myItemShortName].itemraritycategory
-                                if (rarityOfItem == "rare"){
-                                    itemCount = 5
-                                }else if (rarityOfItem == "ancient"){
-                                    itemCount = 4
+                            if (itemsInAuction[inventoryResponse.data[item].id]){
+                                auctionedItem = true;
+                            }
+                            var itemBeingTraded = false;
+                            if (activeTradeItems[inventoryResponse.data[item].id]){
+                                itemBeingTraded = true;
+                            }
+                            if (!itemsInInventoryCountMap[inventoryResponse.data[item].itemid] 
+                                && validItem && notWearing && !auctionedItem && !itemBeingTraded){
+                                // item hasnt been added to be counted, add it as 1
+                                itemsInInventoryCountMap[inventoryResponse.data[item].itemid] = 1;
+                                if (itemsMapbyShortName[myItemShortName] 
+                                    && itemsMapById[ItemInQuestion.itemid]
+                                    && itemsMapById[ItemInQuestion.itemid].itemshortname === myItemShortName ){
+                                    var rarityOfItem = itemsMapbyShortName[myItemShortName].itemraritycategory
+                                    if (rarityOfItem == "rare"){
+                                        itemCount = 5
+                                    }else if (rarityOfItem == "ancient"){
+                                        itemCount = 4
+                                    }
+                                    else if (rarityOfItem == "rare+"){
+                                        itemCount = 5
+                                    }
+                                    else if (rarityOfItem == "ancient+"){
+                                        itemCount = 4
+                                    }
+                                    else if (rarityOfItem == "artifact"){
+                                        itemCount = 1
+                                    }
                                 }
-                                else if (rarityOfItem == "rare+"){
-                                    itemCount = 5
-                                }
-                                else if (rarityOfItem == "ancient+"){
-                                    itemCount = 4
-                                }
-                                else if (rarityOfItem == "artifact"){
-                                    itemCount = 1
+                                // console.log(ItemInQuestion);
+                                if (itemsMapbyShortName[myItemShortName] 
+                                    && itemsBeingedCombined.length < itemCount
+                                    && itemsMapById[ItemInQuestion.itemid]
+                                    && itemsMapById[ItemInQuestion.itemid].itemshortname === myItemShortName){
+                                        itemsBeingedCombined.push(ItemInQuestion);
                                 }
                             }
-                            // console.log(ItemInQuestion);
-                            if (itemsMapbyShortName[myItemShortName] 
-                                && itemsBeingedCombined.length < itemCount
-                                && itemsMapById[ItemInQuestion.itemid]
-                                && itemsMapById[ItemInQuestion.itemid].itemshortname === myItemShortName){
-                                    itemsBeingedCombined.push(ItemInQuestion);
+                            else if (validItem && notWearing && !auctionedItem && !itemBeingTraded){
+                                itemsInInventoryCountMap[inventoryResponse.data[item].itemid] = itemsInInventoryCountMap[inventoryResponse.data[item].itemid] + 1;
+                                if (itemsMapbyShortName[myItemShortName] 
+                                    && itemsBeingedCombined.length < itemCount
+                                    && itemsMapById[ItemInQuestion.itemid]
+                                    && itemsMapById[ItemInQuestion.itemid].itemshortname === myItemShortName){
+                                        itemsBeingedCombined.push(ItemInQuestion);
+                                }
                             }
                         }
-                        else if (validItem && notWearing && !auctionedItem && !itemBeingTraded){
-                            itemsInInventoryCountMap[inventoryResponse.data[item].itemid] = itemsInInventoryCountMap[inventoryResponse.data[item].itemid] + 1;
-                            if (itemsMapbyShortName[myItemShortName] 
-                                && itemsBeingedCombined.length < itemCount
-                                && itemsMapById[ItemInQuestion.itemid]
-                                && itemsMapById[ItemInQuestion.itemid].itemshortname === myItemShortName){
-                                    itemsBeingedCombined.push(ItemInQuestion);
-                            }
-                        }
-                    }
-                    var combineToId = itemsMapbyShortName[myItemShortName] ? itemsMapbyShortName[myItemShortName].combinetoid : undefined;
-                    if (combineToId){
-                        // item short name is valid
-                        if (itemsMapbyShortName[myItemShortName]){
-                            var idOfMyItem = itemsMapbyShortName[myItemShortName].id;
+                        var combineToId = itemsMapbyShortName[myItemShortName] ? itemsMapbyShortName[myItemShortName].combinetoid : undefined;
+                        if (combineToId){
+                            // item short name is valid
+                            if (itemsMapbyShortName[myItemShortName]){
+                                var idOfMyItem = itemsMapbyShortName[myItemShortName].id;
 
-                            var rarityOfMyItem = itemsMapbyShortName[myItemShortName].itemraritycategory
-                            // TODO: do not allow user to combine if they are on stage # of the artifact quest
-                            if (rarityOfMyItem && rarityOfMyItem == "artifact"){
-                                // take the ids of the other 2 artifacts + artifact recipe and push them onto itemsBeingCombined array
-                                /*
-                                var artifactId = 1//TODO: ARTIFACT_RECIPE_ID;
-                                var recipeAdded = false;
-                                var firstArtifact = 2; //TODO: replce this
-                                var firstArtifactAdded = false;
-                                var secondArtifact = 3; // replace this
-                                var secondArtifactAdded = false;
-                                // get these ids and find if user has count > 1 of these in their inventory
-                                if (itemsInInventoryCountMap[artifactId] >= 1
-                                    && itemsInInventoryCountMap[firstArtifact] >= 1
-                                    && itemsInInventoryCountMap[secondArtifact] >= 1){
-                                    for (var item in inventoryResponse.data){
-                                        var validItem = useItem.itemValidate(inventoryResponse.data[item]);
-                                        var notWearing = useItem.itemNotWearing(inventoryResponse.data[item])
-                                        var auctionedItem = false;
-                                        var ItemInQuestion = inventoryResponse.data[item]
+                                var rarityOfMyItem = itemsMapbyShortName[myItemShortName].itemraritycategory
+                                //////////////////// TODO: do not allow user to combine if they are on stage # of the artifact quest
+                                if (rarityOfMyItem && rarityOfMyItem == "artifact"){
+                                    // take the ids of the other 2 artifacts + artifact recipe and push them onto itemsBeingCombined array
+                                    
+                                    /*
+                                    var artifactId = ARTIFACT_RECIPE_ID
+                                    var recipeAdded = false;
+                                    var firstArtifact = itemsMapbyShortName[myItemShortName] ? itemsMapbyShortName[myItemShortName].firstartifact : undefined; 
+                                    var firstArtifactAdded = false;
+                                    var secondArtifact = itemsMapbyShortName[myItemShortName] ? itemsMapbyShortName[myItemShortName].secondartifact : undefined; 
+                                    var secondArtifactAdded = false;
 
-                                        if ( itemsMapById[ItemInQuestion.itemid] && itemsMapById[ItemInQuestion.itemid].id === artifactId && !recipeAdded){
-                                            itemsBeingedCombined.push(ItemInQuestion);
-                                            recipeAdded = true;
+                                    // Check that the user has an artifact recipe, and the other two artifacts in their inventory
+                                    if (itemsInInventoryCountMap[artifactId] >= 1
+                                        && itemsInInventoryCountMap[firstArtifact] >= 1
+                                        && itemsInInventoryCountMap[secondArtifact] >= 1){
+                                        for (var item in inventoryResponse.data){
+                                            var validItem = useItem.itemValidate(inventoryResponse.data[item]);
+                                            var notWearing = useItem.itemNotWearing(inventoryResponse.data[item])
+                                            var auctionedItem = false;
+                                            var ItemInQuestion = inventoryResponse.data[item]
+
+                                            if ( itemsMapById[ItemInQuestion.itemid] && itemsMapById[ItemInQuestion.itemid].id === artifactId && !recipeAdded){
+                                                itemsBeingedCombined.push(ItemInQuestion);
+                                                recipeAdded = true;
+                                            }
+                                            else if (itemsMapById[ItemInQuestion.itemid] && itemsMapById[ItemInQuestion.itemid].id === firstArtifact && !firstArtifactAdded){
+                                                itemsBeingedCombined.push(ItemInQuestion);
+                                                firstArtifactAdded = true;
+                                            }
+                                            else if (itemsMapById[ItemInQuestion.itemid] && itemsMapById[ItemInQuestion.itemid].id === secondArtifact && !secondArtifactAdded){
+                                                itemsBeingedCombined.push(ItemInQuestion);
+                                                secondArtifactAdded = true
+                                            }
                                         }
-                                        else if (itemsMapById[ItemInQuestion.itemid] && itemsMapById[ItemInQuestion.itemid].id === firstArtifact && !firstArtifactAdded){
-                                            itemsBeingedCombined.push(ItemInQuestion);
-                                            firstArtifactAdded = true;
+                                        // added all required items - set the artifacts to 'questing'
+
+                                        var itemToCreate = itemsMapById[combineToId];  // maybe create the item and keep it inactive?
+                                        var itemToCreateById = itemsMapById[combineToId].id;
+                                        var itemToCreateByName = itemsMapById[combineToId].itemname
+                                        // enable user to be in quest stage 1 of the quest series (user profile)
+                                        var questName = itemsMapbyShortName[myItemShortName] ? itemsMapbyShortName[myItemShortName].questname : undefined;
+                                        // var questName = "ring" // get from item.questname
+
+                                        if (questName && recipeAdded && firstArtifactAdded && secondArtifactAdded ){
+                                            profileDB.userStartQuest(discordUserId, questName, function(createErr, createRes){
+                                                if (createErr){
+                                                    console.log(createErr);
+                                                }
+                                                else{
+                                                    // console.log(createRes);                                        
+                                                    profileDB.bulkUpdateItemStatus(itemsBeingedCombined, "questing", function(combineErr, combineRes){
+                                                        if (combineErr){
+                                                            console.log(combineErr);
+                                                        }else{
+                                                            // console.log(combineRes);
+                                                            // embed showing the questline has begun
+                                                            var questData = {
+                                                                stage: "start"
+                                                            }
+                                                            var questString = quest.questStringBuilder(questName, questData)
+                                                            quest.questStartEmbedBuilder(message, questName, questString);
+                                                        }
+                                                    })
+                                                }
+                                            })
                                         }
-                                        else if (itemsMapById[ItemInQuestion.itemid] && itemsMapById[ItemInQuestion.itemid].id === secondArtifact && !secondArtifactAdded){
-                                            itemsBeingedCombined.push(ItemInQuestion);
-                                            secondArtifactAdded = true
+                                        else{
+                                            message.channel.send("You do not have all the items required to combine")
                                         }
                                     }
-                                    // added all required items - set the artifacts to 'questing'
-
+                                    */
+                                }
+                                else if (itemsInInventoryCountMap[idOfMyItem] && 
+                                    itemsInInventoryCountMap[idOfMyItem] >= itemCount){
+                                    // combine all the items into a next level item
                                     var itemToCreate = itemsMapById[combineToId];
                                     var itemToCreateById = itemsMapById[combineToId].id;
                                     var itemToCreateByName = itemsMapById[combineToId].itemname
                                     
-                                    // enable user to be in quest stage 1 of the quest series (user profile)
-                                    var questName = "timetravel"
-                                    profileDB.userStartQuest(discordUserId, questName, function(createErr, createRes){
+                                    //create an item of that kind for the user and set all the other items to 'used'
+                                    profileDB.addNewItemToUser(discordUserId, [itemToCreate], function(createErr, createRes){
                                         if (createErr){
                                             // console.log(createErr);
                                         }
                                         else{
                                             // console.log(createRes);                                        
-                                            profileDB.bulkUpdateItemStatus(itemsBeingedCombined, "questing", function(combineErr, combineRes){
+                                            profileDB.bulkUpdateItemStatus(itemsBeingedCombined, "used", function(combineErr, combineRes){
                                                 if (combineErr){
                                                     // console.log(combineErr);
                                                 }else{
                                                     // console.log(combineRes);
-                                                    // embed showing the questline has begun
-                                                    var questString = quest.questStringBuilder(questName)
-                                                    quest.questStartEmbedBuilder(message, questName, questString);
+                                                    combineEmbedBuilder(message, itemToCreateByName, itemToCreate, rarityOfItem);
                                                 }
                                             })
                                         }
                                     })
                                 }
-                                */
-                            }
-                            else if (itemsInInventoryCountMap[idOfMyItem] && 
-                                itemsInInventoryCountMap[idOfMyItem] >= itemCount){
-                                // combine all the items into a next level item
-                                var itemToCreate = itemsMapById[combineToId];
-                                var itemToCreateById = itemsMapById[combineToId].id;
-                                var itemToCreateByName = itemsMapById[combineToId].itemname
-                                
-                                //create an item of that kind for the user and set all the other items to 'used'
-                                profileDB.addNewItemToUser(discordUserId, [itemToCreate], function(createErr, createRes){
-                                    if (createErr){
-                                        // console.log(createErr);
-                                    }
-                                    else{
-                                        // console.log(createRes);                                        
-                                        profileDB.bulkUpdateItemStatus(itemsBeingedCombined, "used", function(combineErr, combineRes){
-                                            if (combineErr){
-                                                // console.log(combineErr);
-                                            }else{
-                                                // console.log(combineRes);
-                                                combineEmbedBuilder(message, itemToCreateByName, itemToCreate, rarityOfItem);
-                                            }
-                                        })
-                                    }
-                                })
-                            }
-                            else{
-                                message.channel.send("unable to combine.. you need " + itemCount);
+                                else{
+                                    message.channel.send("unable to combine.. you need " + itemCount);
+                                }
                             }
                         }
-                    }
-                    else{
-                        message.channel.send("cannot combine that item");
+                        else{
+                            message.channel.send("cannot combine that item");
+                        }
                     }
                 })
             }
@@ -4253,6 +4283,261 @@ module.exports.combineCommand = function(message, args){
     }
 
     // combine rock for boulder, 5 rares to make 1 improved, 5 improved to make 1 refined
+}
+
+function missionCheckCommand(message, discordUserId, command, commandDoneToId, data){
+
+    // if not on ring stage then just check for other regular missions (future)
+    profileDB.getUserProfileData(discordUserId, function(profileErr, profileData){
+        if (profileErr){
+            console.log (profileErr);
+        }else{
+            var stage = profileData.data.ringqueststage;
+
+            if (stage == 2){
+                // on the give 20000 tacos step
+                if (command == "give"){
+                    var questData = {
+                        giveAmount: data.giveAmount,
+                        commandTo: commandDoneToId,
+                        command: command
+                    }
+                    var team = []
+                    quest.questHandler(message, discordUserId, "ring", stage, team, questData, message.channel)
+                }
+                
+            }else if (stage == 3){
+                if (command == "thank"){ // TODO:  || command == "sorry"){
+                    // thank / sorry command
+                    var questData = {
+                        command: command,
+                        commandTo: commandDoneToId
+                    }
+                    var team = []
+                    quest.questHandler(message, discordUserId, "ring", stage, team, questData, message.channel)
+                }
+                
+            }else if (stage == 4){
+                // wedding step - 15 required for reactions (should be done via -marry instead)
+            }
+        }
+    })
+}
+
+module.exports.proposeCommand = function(message, channel){
+    // travel to the specified date in args
+    var discordUserId = message.author.id;
+    var users  = message.mentions.users;
+    var mentionedId;
+    var mentionedUser;
+    users.forEach(function(user){
+        mentionedId = user.id;
+        mentionedUser = user
+    })
+    if (!mentionedUser.bot && mentionedUser != discordUserId){
+        profileDB.getUserProfileData(discordUserId, function(profileErr, profileData){
+            if (profileErr){
+                console.log (profileErr);
+            }else{
+                var stage = profileData.data.ringqueststage;
+
+                if (stage == 1){
+                    // first stage of ring, user proposes
+                    var questData = {
+                        proposedTo: mentionedUser
+                    }
+                    var team = []
+                    quest.questHandler(message, discordUserId, "ring", stage, team, questData, channel)
+                }
+                if (stage >= 2 && stage <= 4){
+                    // create a mission in quest for the user with proposedTo and the data depending on what stage they are on
+                    quest.proposedTo(message, discordUserId, stage, mentionedUser)
+                }
+            }
+        })
+    }else{
+        message.channel.send("You must propose to another user that is not a bot")
+    }
+}
+
+module.exports.weddingCommand = function(message, channel){
+    // travel to the specified date in args
+    var discordUserId = message.author.id;
+    var users  = message.mentions.users;
+    var mentionedId;
+    var mentionedUser;
+    users.forEach(function(user){
+        mentionedId = user.id;
+        mentionedUser = user
+    })
+
+    profileDB.getUserProfileData(discordUserId, function(profileErr, profileData){
+        if (profileErr){
+            console.log (profileErr);
+        }else{
+            var stage = profileData.data.ringqueststage;
+
+            if (stage == 4){
+                // first stage of ring, user proposes
+                var questData = {
+                    proposedTo: mentionedUser
+                }
+                var team = [] 
+                /// TEAM MUST BE > 5
+                quest.questHandler(message, discordUserId, "ring", stage, team, questData, channel)
+            }
+            if (stage == 5){
+                // user marries - creates embed for wedding
+                var questData = {
+                    marriedTo: mentionedUser
+                }
+                var team = []
+                quest.questHandler(message, discordUserId, "ring", stage, team, questData, channel)
+            }
+            // TODO: give, thanks, and sorry should check whether the user is in stages 2, 3 and complete the stages
+            // on stage 4, everyone can react to the embed and receive rewards
+            // stage 5 should be started via -wedding @users
+        }
+    })
+}
+
+module.exports.exploreTombCommand = function(message, args, channel){
+    // travel to the specified date in args
+    var discordUserId = message.author.id;
+
+    var users  = message.mentions.users
+    
+    var team = [];
+    team.push(message.author);
+
+    users.forEach(function(user){
+        if (team.length < 4 && discordUserId != user.id){
+            team.push(user);
+        }
+    })
+    // check to see all the team members are available and not already in an event
+    var validTeam = true;
+    for (var member in team){
+        /*
+        if (usersInRPGEvents["rpg-"+team[member].id]){
+            validTeam = false;
+        }
+        */
+        if (team[member].bot){
+            validTeam = false;
+        }
+    }
+    // TODO: change this to 5
+    if (team.length == 1){
+        profileDB.getUserProfileData(discordUserId, function(profileErr, profileData){
+            if (profileErr){
+                console.log (profileErr);
+            }else{
+                var stage = profileData.data.tombqueststage;
+                var questData = {}
+                if (stage == 1){
+                    // first stage of tomb, enter tomb
+                    quest.questHandler(message, discordUserId, "tomb", stage, team, questData, channel)
+                }
+                else if (stage == 2){
+                    // second stage of tomb
+                    quest.questHandler(message, discordUserId, "tomb", stage, team, questData, channel)
+                }
+                else if (stage == 3){
+                    // third stage of tomb
+                    quest.questHandler(message, discordUserId, "tomb", stage, team, questData, channel)
+                }
+                else if (stage == 4){
+                    // 4th stage, tomb
+                    quest.questHandler(message, discordUserId, "tomb", stage, team, questData, channel)
+                }
+                else if (stage == 5){
+                    // 5th stage, tomb
+                    quest.questHandler(message, discordUserId, "tomb", stage, team, questData, channel)
+                }
+                else if (stage == 6){
+                    // 6th stage, defeat archvampires
+                    quest.questHandler(message, discordUserId, "tomb", stage, team, questData, channel)
+                }
+                else if (stage == 7){
+                    message.channel.send("exploring tomb ")
+                }
+            }
+        })
+    }
+}
+
+module.exports.ritualCommand = function(message, args, channel){
+    
+    var discordUserId = message.author.id;
+
+    var users  = message.mentions.users
+    
+    var team = [];
+    team.push(message.author);
+
+    users.forEach(function(user){
+        if (team.length < 4 && discordUserId != user.id){
+            team.push(user);
+        }
+    })
+    // check to see all the team members are available and not already in an event
+    var validTeam = true;
+    for (var member in team){
+        /*
+        if (usersInRPGEvents["rpg-"+team[member].id]){
+            validTeam = false;
+        }
+        */
+        if (team[member].bot){
+            validTeam = false;
+        }
+    }
+    if (team.length == 1){
+        profileDB.getUserProfileData(discordUserId, function(profileErr, profileData){
+            if (profileErr){
+                console.log (profileErr);
+            }else{
+                var stage = profileData.data.demonicqueststage;
+
+                if (stage == 1){
+                    // first stage of demonic
+                    var questData = {
+
+                    }
+                    quest.questHandler(message, discordUserId, "demonic", stage, team, questData, channel)
+
+                }
+                else if (stage == 2){
+                    // second stage of demonic
+                    var questData = {
+                    }
+                    quest.questHandler(message, discordUserId, "demonic", stage, team, questData, channel)
+                }
+                else if (stage == 3){
+                    // third stage of demonic
+                    var questData = {
+                    }
+                    quest.questHandler(message, discordUserId, "demonic", stage, team, questData, channel)
+                }
+                else if (stage == 4){
+                    // 4th stage, defeat the swarm of demons
+                    var questData = {
+                    }
+                    quest.questHandler(message, discordUserId, "demonic", stage, team, questData, channel)
+                }
+                else if (stage == 5){
+                    // 5th stage, defeat andromalius
+                    var questData = {
+                    }
+                    quest.questHandler(message, discordUserId, "demonic", stage, team, questData, channel)
+                }
+                else{
+                    message.channel.send("performed ritual ")
+                }
+            }
+        })
+    }
 }
 
 module.exports.timeTravelCommand = function(message, args, channel){
@@ -4288,7 +4573,7 @@ module.exports.timeTravelCommand = function(message, args, channel){
         // check that author is on stage 1 of timetravel 
         profileDB.getUserProfileData(discordUserId, function(profileErr, profileData){
             if (profileErr){
-                // console.log (profileErr);
+                console.log (profileErr);
             }else{
                 var stage = profileData.data.timetravelqueststage;
 
@@ -4307,6 +4592,7 @@ module.exports.timeTravelCommand = function(message, args, channel){
                     quest.questHandler(message, discordUserId, "timetravel", stage, team, questData, channel)
                 }
                 else{
+                    // TODO: make this just be a travel in time
                     message.channel.send("traveled to the year " + args[1])
                 }
             }
@@ -4368,20 +4654,14 @@ module.exports.timeTravelCommand = function(message, args, channel){
                 }
             }
         })
-    }else if (args.length > 1 && args[1] >= 325000000 && args[1] <= 326000000 && team.length == 1){
+    }else if (args.length > 1 && args[1] >= 3250000 && args[1] <= 3260000 && team.length == 1){
         profileDB.getUserProfileData(discordUserId, function(profileErr, profileData){
             if (profileErr){
                 // console.log (profileErr);
             }else{
                 var stage = profileData.data.timetravelqueststage;
 
-                if (stage == 7){
-                    var questData = {
-                        year: args[1]
-                    }
-                    quest.questHandler(message, discordUserId, "timetravel", stage, team, questData, channel)
-                }
-                else if (stage == 8){
+                if (stage == 6){
                     var questData = {
                         year: args[1]
                     }
@@ -4463,6 +4743,9 @@ module.exports.amuletsWearingCommand = function(message, args){
                                 if (!itemsInInventoryCountMap[inventoryResponse.data[item].itemid] ){
                                     // item hasnt been added to be counted, add it as 1
                                     itemsInInventoryCountMap[inventoryResponse.data[item].itemid] = 1;
+                                }else{
+                                    // 
+                                    itemsInInventoryCountMap[inventoryResponse.data[item].itemid] = itemsInInventoryCountMap[inventoryResponse.data[item].itemid] + 1
                                 }
                             }
                             // have items mapped by id and items in inventory
@@ -4471,6 +4754,8 @@ module.exports.amuletsWearingCommand = function(message, args){
                             for (var amulet in amuletItemsById){
                                 var idToCheck = amuletItemsById[amulet].id;
                                 if (itemsInInventoryCountMap[idToCheck]){
+                                    var amuletToAdd = amuletItemsById[amulet]
+                                    amuletToAdd.count = itemsInInventoryCountMap[idToCheck]
                                     userAmuletData.push(amuletItemsById[amulet]);
                                 }
                             }
@@ -4680,7 +4965,8 @@ module.exports.putonCommand = function(message, args, retry){
                         discordId : discordUserId,
                         slot1replacing: false,
                         slot2replacing: false,
-                        slot3replacing: false
+                        slot3replacing: false,
+                        slot4replacing: false
                     }
                     profileDB.createUserWearInfo(data, function(error, res){
                         if (error){
@@ -4697,6 +4983,7 @@ module.exports.putonCommand = function(message, args, retry){
                     var currentSlot1Slot = getWearRes.data[0].slot1slot;
                     var currentSlot2Slot = getWearRes.data[0].slot2slot;
                     var currentSlot3Slot = getWearRes.data[0].slot3slot;
+                    var currentSlot4Slot = getWearRes.data[0].slot4slot;
 
                     // is the user replacing the current slot?
                     var replacingCurrentSlot; 
@@ -4708,6 +4995,9 @@ module.exports.putonCommand = function(message, args, retry){
                     }
                     else if (slot == 3){
                         replacingCurrentSlot = getWearRes.data[0].slot3replacing;
+                    }
+                    else if (slot == 4){
+                        replacingCurrentSlot = getWearRes.data[0].slot4replacing;
                     }
 
                     profileDB.getUserItems(discordUserId, function(err, inventoryResponse){
@@ -4805,6 +5095,9 @@ module.exports.putonCommand = function(message, args, retry){
                                             else if (slot == 3 && !currentSlot3Slot){
                                                 validateSlotToWear = validateSlot(itemslot, currentSlot1Slot, currentSlot2Slot)
                                             }
+                                            else if (slot == 4 && !currentSlot4Slot && itemsMapbyName[itemToWear].itemraritycategory == "myth" ){
+                                                validateSlotToWear = true
+                                            }
                                             if (validateSlotToWear){
                                                 // check that the item slot is not already equiped elsewhere
                                                 // console.log("updating: slot: " + slot + " itemslot: " + itemslot + " itemid: " + itemid + " itemuserid: " + itemuserid + " itemstats: " + JSON.stringify(itemstats, null, 2));
@@ -4866,7 +5159,7 @@ module.exports.putonCommand = function(message, args, retry){
             }
         })
     }else{
-        message.channel.send(message.author + " do -puton [1-3] [itemname]");
+        message.channel.send(message.author + " do -puton [1-4] [itemname] Slot 4 is only for artifact+ items or higher");
     }
 }
 
@@ -4908,6 +5201,10 @@ module.exports.takeoffCommand = function(message, args){
             else if (slot == 3 && takeoffRes.data.length > 0){
                 itemId = takeoffRes.data[0].slot3useritemid
                 itemslot = takeoffRes.data[0].slot3slot
+            }
+            else if (slot == 4 && takeoffRes.data.length > 0){
+                itemId = takeoffRes.data[0].slot4useritemid
+                itemslot = takeoffRes.data[0].slot4slot
             }
             // console.log("itemid " + itemId);
             if (itemId){
@@ -5019,7 +5316,7 @@ module.exports.auctionCommand = function(message, args){
                         }
                         //// console.log(itemsInInventoryCountMap);
                         //// console.log(itemsMapbyShortName);
-                        if (itemsMapbyShortName[myItemShortName]){
+                        if (itemsMapbyShortName[myItemShortName] && itemsMapbyShortName[myItemShortName].itemraritycategory != "myth"){
                             var idOfMyItem = itemsMapbyShortName[myItemShortName].id;
                             var itemNameInAuction = itemsMapbyShortName[myItemShortName].itemname
                             // console.log(idOfMyItem);
@@ -5318,7 +5615,7 @@ module.exports.tradeCommand = function(message, args){
                                 
                                 // args[2] is your item(or # of tacos)
                                 // check if myItem exists in items, check if otherItem exists in items, if not then turn the string
-                                if (itemsMapbyShortName[myItemShortName]){
+                                if (itemsMapbyShortName[myItemShortName] && itemsMapbyShortName[myItemShortName].itemraritycategory != "myth" ){
                                     var idOfMyItem = itemsMapbyShortName[myItemShortName].id;
                                     var itemNameInTrade = itemsMapbyShortName[myItemShortName].itemname
                                     // console.log(idOfMyItem);

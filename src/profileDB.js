@@ -386,7 +386,7 @@ module.exports.purchasePickAxe = function(userId, tacosSpent, cb){
     // console.log(query)
     var lastThank = new Date();
     var selectedPickaxe = "basic"
-    if (tacosSpent <= -15000 && tacosSpent >= -5000){
+    if (tacosSpent <= -5000 && tacosSpent >= -15000){
         // improved Pickaxe should always be between 100 and 500
         selectedPickaxe = "improved";
     }
@@ -621,13 +621,19 @@ module.exports.userStartQuest = function(discordUserId, questName, cb){
     var query;
     if (questName == "timetravel"){
         query = 'update ' + config.profileTable + ' set timetravelqueststage=1 where discordid=$1'        
+    }else if (questName == "demonic"){
+        query = 'update ' + config.profileTable + ' set demonicqueststage=1 where discordid=$1'        
+    }else if (questName == "tomb"){
+        query = 'update ' + config.profileTable + ' set tombqueststage=1 where discordid=$1'        
+    }else if (questName == "ring"){
+        query = 'update ' + config.profileTable + ' set ringqueststage=1 where discordid=$1'        
     }
     // do else for all questlines
     db.none(query, [discordUserId])
     .then(function () {
     cb(null, {
         status: 'success',
-        message: 'started quest for demonic'
+        message: 'started quest for ' + questName
         });
     })
     .catch(function (err) {
@@ -639,6 +645,15 @@ module.exports.updateQuestlineStage = function(discordUserId, questline, stage, 
     var query;
     if (questline == "timetravel"){
         query = 'update ' + config.profileTable + ' set timetravelqueststage=$2 where discordid=$1'        
+    }
+    else if (questline == "demonic"){
+        query = 'update ' + config.profileTable + ' set demonicqueststage=$2 where discordid=$1'        
+    }
+    else if (questline == "tomb"){
+        query = 'update ' + config.profileTable + ' set tombqueststage=$2 where discordid=$1'        
+    }
+    else if (questline == "ring"){
+        query = 'update ' + config.profileTable + ' set ringqueststage=$2 where discordid=$1'        
     }
     // do else for all questlines
     db.none(query, [discordUserId, stage])
@@ -1019,6 +1034,9 @@ module.exports.updateUserWearInfo = function(discordId, slot, itemslot, itemid, 
     if (slot == 3){
         query = 'update ' + config.wearTable + ' set slot3slot=$2, slot3itemid=$3, slot3useritemid=$4, activate3date=$6, slot3replacing=$7 where discordid=$5'
     }
+    if (slot == 4){
+        query = 'update ' + config.wearTable + ' set slot4slot=$2, slot4itemid=$3, slot4useritemid=$4, activate4date=$6, slot4replacing=$7 where discordid=$5'
+    }
     db.none(query, [slot, itemslot, itemid, itemuserid, discordId, activateDate, replacingCurrentSlot])
     .then(function () {
     cb(null, {
@@ -1043,6 +1061,9 @@ module.exports.takeOffWear = function(discordId, slot, cb){
     if (slot == 3){
         query = 'update ' + config.wearTable + ' set slot3slot=null, slot3itemid=null, slot3useritemid=null where discordid=$1'
     }
+    if (slot == 4){
+        query = 'update ' + config.wearTable + ' set slot4slot=null, slot4itemid=null, slot4useritemid=null where discordid=$1'
+    }
     db.none(query, [discordId])
     .then(function () {
     cb(null, {
@@ -1057,8 +1078,8 @@ module.exports.takeOffWear = function(discordId, slot, cb){
 
 // create wear info
 module.exports.createUserWearInfo = function(data, cb){
-    var query = 'insert into '+ config.wearTable + '(discordId, slot1replacing, slot2replacing, slot3replacing)' +
-    'values(${discordId}, ${slot1replacing}, ${slot2replacing}, ${slot3replacing} )'
+    var query = 'insert into '+ config.wearTable + '(discordId, slot1replacing, slot2replacing, slot3replacing, slot4replacing))' +
+    'values(${discordId}, ${slot1replacing}, ${slot2replacing}, ${slot3replacing}, ${slot4replacing} )'
     // console.log(query);
     db.none(query, data)
     .then(function () {

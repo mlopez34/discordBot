@@ -55,6 +55,14 @@ module.exports.statsObjectBuilder = function(message, slot1Data, slot2Data, slot
     var scavengeCommandExperience = [];
     var scavengeGuaranteedTacos = []
 
+    var rpgSuccessExtraTacos = []
+    var rpgSuccessExtraExperience = []
+    var rpgSuccessGuaranteedTacos = []
+
+    var slotsWinExtraTacos = []
+    var slotsWinExtraExperience = []
+    var slotsWinGuaranteedTacos = []
+
 
     if (slot1Data && slot1active){
         if (slot1Data.command && slot1Data.command.toLowerCase() == "thank"){
@@ -143,6 +151,34 @@ module.exports.statsObjectBuilder = function(message, slot1Data, slot2Data, slot
             scavengeCommandExperience.push(experienceCalculate);
             scavengeGuaranteedTacos.push(guaranteedTacoChanceCalculate);
         }
+        /*
+        if (slot1Data.command && slot1Data.command.toLowerCase() == "rpgsuccess"){
+            // var cdrCalculate = slot1Data.itembasecdr + (slot1Data.itemcdrperlevel * userLevel)
+            var extraTacosCalculate = slot1Data.itembaseextratacos + (slot1Data.itemextratacosperlevel * userLevel)
+            var extraTacoChanceCalculate = slot1Data.itembasetacochance + (slot1Data.itemtacochanceperlevel * userLevel);
+            var extraTacosPairToCalculate = { extraTacos: extraTacosCalculate, tacoChance: getPercentage([ extraTacoChanceCalculate ]) }
+            var experienceCalculate = slot1Data.experiencegain + ((Math.floor(slot1Data.experienceonlevel / slot1Data.experiencegainperlevel * userLevel)) || 0);
+            var guaranteedTacoChanceCalculate = slot1Data.guaranteedtacos;
+
+            // scavengeCommandCDR.push(cdrCalculate);
+            rpgSuccessExtraTacos.push(extraTacosPairToCalculate);
+            rpgSuccessExtraExperience.push(experienceCalculate);
+            rpgSuccessGuaranteedTacos.push(guaranteedTacoChanceCalculate);
+        }
+        if (slot1Data.command && slot1Data.command.toLowerCase() == "slotswin"){
+            // var cdrCalculate = slot1Data.itembasecdr + (slot1Data.itemcdrperlevel * userLevel)
+            var extraTacosCalculate = slot1Data.itembaseextratacos + (slot1Data.itemextratacosperlevel * userLevel)
+            var extraTacoChanceCalculate = slot1Data.itembasetacochance + (slot1Data.itemtacochanceperlevel * userLevel);
+            var extraTacosPairToCalculate = { extraTacos: extraTacosCalculate, tacoChance: getPercentage([ extraTacoChanceCalculate ]) }
+            var experienceCalculate = slot1Data.experiencegain + ((Math.floor(slot1Data.experienceonlevel / slot1Data.experiencegainperlevel * userLevel)) || 0);
+            var guaranteedTacoChanceCalculate = slot1Data.guaranteedtacos;
+
+            // scavengeCommandCDR.push(cdrCalculate);
+            slotsWinExtraTacos.push(extraTacosPairToCalculate);
+            slotsWinExtraExperience.push(experienceCalculate);
+            slotsWinGuaranteedTacos.push(guaranteedTacoChanceCalculate);
+        }
+        */
     }
 
     if (slot2Data && slot2active){
@@ -233,6 +269,34 @@ module.exports.statsObjectBuilder = function(message, slot1Data, slot2Data, slot
             scavengeCommandExperience.push(experienceCalculate);
             scavengeGuaranteedTacos.push(guaranteedTacoChanceCalculate);
         }
+        /*
+        if (slot2Data.command && slot2Data.command.toLowerCase() == "rpgsuccess"){
+            // var cdrCalculate = slot2Data.itembasecdr + (slot2Data.itemcdrperlevel * userLevel)
+            var extraTacosCalculate = slot2Data.itembaseextratacos + (slot2Data.itemextratacosperlevel * userLevel)
+            var extraTacoChanceCalculate = slot2Data.itembasetacochance + (slot2Data.itemtacochanceperlevel * userLevel);
+            var extraTacosPairToCalculate = { extraTacos: extraTacosCalculate, tacoChance: getPercentage([ extraTacoChanceCalculate ]) }
+            var experienceCalculate = slot2Data.experiencegain + ((Math.floor(slot2Data.experienceonlevel / slot2Data.experiencegainperlevel * userLevel)) || 0);
+            var guaranteedTacoChanceCalculate = slot2Data.guaranteedtacos;
+
+            // scavengeCommandCDR.push(cdrCalculate);
+            rpgSuccessExtraTacos.push(extraTacosPairToCalculate);
+            rpgSuccessExtraExperience.push(experienceCalculate);
+            rpgSuccessGuaranteedTacos.push(guaranteedTacoChanceCalculate);
+        }
+        if (slot2Data.command && slot2Data.command.toLowerCase() == "slotswin"){
+            // var cdrCalculate = slot2Data.itembasecdr + (slot2Data.itemcdrperlevel * userLevel)
+            var extraTacosCalculate = slot2Data.itembaseextratacos + (slot2Data.itemextratacosperlevel * userLevel)
+            var extraTacoChanceCalculate = slot2Data.itembasetacochance + (slot2Data.itemtacochanceperlevel * userLevel);
+            var extraTacosPairToCalculate = { extraTacos: extraTacosCalculate, tacoChance: getPercentage([ extraTacoChanceCalculate ]) }
+            var experienceCalculate = slot2Data.experiencegain + ((Math.floor(slot2Data.experienceonlevel / slot2Data.experiencegainperlevel * userLevel)) || 0);
+            var guaranteedTacoChanceCalculate = slot2Data.guaranteedtacos;
+
+            // scavengeCommandCDR.push(cdrCalculate);
+            slotsWinExtraTacos.push(extraTacosPairToCalculate);
+            slotsWinExtraExperience.push(experienceCalculate);
+            slotsWinGuaranteedTacos.push(guaranteedTacoChanceCalculate);
+        }
+        */
     }
 
     if (slot3Data && slot3active){
@@ -331,7 +395,7 @@ module.exports.statsObjectBuilder = function(message, slot1Data, slot2Data, slot
             var extraTacosCalculate = userAmuletData[amulet].itembaseextratacos + (userAmuletData[amulet].itemextratacosperlevel * userLevel)
             var extraTacoChanceCalculate = userAmuletData[amulet].itembasetacochance + (userAmuletData[amulet].itemtacochanceperlevel * userLevel);
             var extraTacosPairToCalculate = { extraTacos: extraTacosCalculate, tacoChance: getPercentage([ extraTacoChanceCalculate ]) }
-            var experienceCalculate = userAmuletData[amulet].experiencegain + ((Math.floor(userAmuletData[amulet].experienceonlevel / userAmuletData[amulet].experiencegainperlevel * userLevel)) || 0);
+            var experienceCalculate = (userAmuletData[amulet].experiencegain + ((Math.floor(userAmuletData[amulet].experienceonlevel / userAmuletData[amulet].experiencegainperlevel * userLevel)) || 0)) * userAmuletData[amulet].count 
             var guaranteedTacoChanceCalculate = userAmuletData[amulet].guaranteedtacos;
 
             thankCommandCDR.push(cdrCalculate);
@@ -344,7 +408,7 @@ module.exports.statsObjectBuilder = function(message, slot1Data, slot2Data, slot
             var extraTacosCalculate = userAmuletData[amulet].itembaseextratacos + (userAmuletData[amulet].itemextratacosperlevel * userLevel)
             var extraTacoChanceCalculate = userAmuletData[amulet].itembasetacochance + (userAmuletData[amulet].itemtacochanceperlevel * userLevel);
             var extraTacosPairToCalculate = { extraTacos: extraTacosCalculate, tacoChance: getPercentage([ extraTacoChanceCalculate ]) }
-            var experienceCalculate = userAmuletData[amulet].experiencegain + ((Math.floor(userAmuletData[amulet].experienceonlevel / userAmuletData[amulet].experiencegainperlevel * userLevel)) || 0);
+            var experienceCalculate = (userAmuletData[amulet].experiencegain + ((Math.floor(userAmuletData[amulet].experienceonlevel / userAmuletData[amulet].experiencegainperlevel * userLevel)) || 0) ) * userAmuletData[amulet].count 
             var guaranteedTacoChanceCalculate = userAmuletData[amulet].guaranteedtacos;
 
             sorryCommandCDR.push(cdrCalculate);
@@ -358,7 +422,7 @@ module.exports.statsObjectBuilder = function(message, slot1Data, slot2Data, slot
             var extraTacosCalculate = userAmuletData[amulet].itembaseextratacos + (userAmuletData[amulet].itemextratacosperlevel * userLevel)
             var extraTacoChanceCalculate = userAmuletData[amulet].itembasetacochance + (userAmuletData[amulet].itemtacochanceperlevel * userLevel);
             var extraTacosPairToCalculate = { extraTacos: extraTacosCalculate, tacoChance: getPercentage([ extraTacoChanceCalculate ]) }
-            var experienceCalculate = userAmuletData[amulet].experiencegain + ((Math.floor(userAmuletData[amulet].experienceonlevel / userAmuletData[amulet].experiencegainperlevel * userLevel)) || 0);
+            var experienceCalculate = (userAmuletData[amulet].experiencegain + ((Math.floor(userAmuletData[amulet].experienceonlevel / userAmuletData[amulet].experiencegainperlevel * userLevel)) || 0) )  * userAmuletData[amulet].count 
             var guaranteedTacoChanceCalculate = userAmuletData[amulet].guaranteedtacos;
 
             cookCommandCDR.push(cdrCalculate);
@@ -371,7 +435,7 @@ module.exports.statsObjectBuilder = function(message, slot1Data, slot2Data, slot
             var extraTacosCalculate = userAmuletData[amulet].itembaseextratacos + (userAmuletData[amulet].itemextratacosperlevel * userLevel)
             var extraTacoChanceCalculate = userAmuletData[amulet].itembasetacochance + (userAmuletData[amulet].itemtacochanceperlevel * userLevel);
             var extraTacosPairToCalculate = { extraTacos: extraTacosCalculate, tacoChance: getPercentage([ extraTacoChanceCalculate ]) }
-            var experienceCalculate = userAmuletData[amulet].experiencegain + ((Math.floor(userAmuletData[amulet].experienceonlevel / userAmuletData[amulet].experiencegainperlevel * userLevel)) || 0);
+            var experienceCalculate = ( userAmuletData[amulet].experiencegain + ((Math.floor(userAmuletData[amulet].experienceonlevel / userAmuletData[amulet].experiencegainperlevel * userLevel)) || 0) )  * userAmuletData[amulet].count 
             var guaranteedTacoChanceCalculate = userAmuletData[amulet].guaranteedtacos;
 
             prepareCommandCDR.push(cdrCalculate);
@@ -383,7 +447,7 @@ module.exports.statsObjectBuilder = function(message, slot1Data, slot2Data, slot
             var cdrCalculate = userAmuletData[amulet].itembasecdr + (userAmuletData[amulet].itemcdrperlevel * userLevel)
             var extraTacosCalculate = userAmuletData[amulet].itembaseextratacos + (userAmuletData[amulet].itemextratacosperlevel * userLevel)
             var extraTacoChanceCalculate = userAmuletData[amulet].itembasetacochance + (userAmuletData[amulet].itemtacochanceperlevel * userLevel);
-            var experienceCalculate = userAmuletData[amulet].experiencegain + ((Math.floor(userAmuletData[amulet].experienceonlevel / userAmuletData[amulet].experiencegainperlevel * userLevel)) || 0);
+            var experienceCalculate = (userAmuletData[amulet].experiencegain + ((Math.floor(userAmuletData[amulet].experienceonlevel / userAmuletData[amulet].experiencegainperlevel * userLevel)) || 0) )  * userAmuletData[amulet].count 
             var extraTacosPairToCalculate = { extraTacos: extraTacosCalculate, tacoChance: getPercentage([ extraTacoChanceCalculate ]) }
             var extraTacosTimesCD = (userAmuletData[amulet].tacostimescdhours * fetchCount)
             var extraTacosTimesCDChance = 0
@@ -405,7 +469,7 @@ module.exports.statsObjectBuilder = function(message, slot1Data, slot2Data, slot
             var extraTacosCalculate = userAmuletData[amulet].itembaseextratacos + (userAmuletData[amulet].itemextratacosperlevel * userLevel)
             var extraTacoChanceCalculate = userAmuletData[amulet].itembasetacochance + (userAmuletData[amulet].itemtacochanceperlevel * userLevel);
             var extraTacosPairToCalculate = { extraTacos: extraTacosCalculate, tacoChance: getPercentage([ extraTacoChanceCalculate ]) }
-            var experienceCalculate = userAmuletData[amulet].experiencegain + ((Math.floor(userAmuletData[amulet].experienceonlevel / userAmuletData[amulet].experiencegainperlevel * userLevel)) || 0);
+            var experienceCalculate = ( userAmuletData[amulet].experiencegain + ((Math.floor(userAmuletData[amulet].experienceonlevel / userAmuletData[amulet].experiencegainperlevel * userLevel)) || 0) )  * userAmuletData[amulet].count 
             var guaranteedTacoChanceCalculate = userAmuletData[amulet].guaranteedtacos;
 
             scavengeCommandCDR.push(cdrCalculate);
@@ -548,7 +612,7 @@ module.exports.amuletsStringBuilder = function(userAmuletData){
     // name the amulets
     var amuletString = "";
     for (var i = userAmuletData.length - 1; i >= 0; i--){
-        amuletString = amuletString + userAmuletData[i].emoji + " " + userAmuletData[i].itemname + "\n"
+        amuletString = amuletString + userAmuletData[i].emoji + " " + userAmuletData[i].itemname +" x" + userAmuletData[i].count + "\n"
     }
     return amuletString;
 }
@@ -959,6 +1023,9 @@ module.exports.getUserWearingStats = function(message, discordUserId, userData, 
                         if (!itemsInInventoryCountMap[inventoryResponse.data[item].itemid] ){
                             // item hasnt been added to be counted, add it as 1
                             itemsInInventoryCountMap[inventoryResponse.data[item].itemid] = 1;
+                        }else{
+                            // 
+                            itemsInInventoryCountMap[inventoryResponse.data[item].itemid] = itemsInInventoryCountMap[inventoryResponse.data[item].itemid] + 1
                         }
                     }
                     // have items mapped by id and items in inventory
@@ -967,6 +1034,8 @@ module.exports.getUserWearingStats = function(message, discordUserId, userData, 
                     for (var amulet in amuletItemsById){
                         var idToCheck = amuletItemsById[amulet].id;
                         if (itemsInInventoryCountMap[idToCheck]){
+                            var amuletToAdd = amuletItemsById[amulet]
+                            amuletToAdd.count = itemsInInventoryCountMap[idToCheck]
                             userAmuletData.push(amuletItemsById[amulet]);
                         }
                     }
