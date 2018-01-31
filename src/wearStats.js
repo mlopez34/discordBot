@@ -151,6 +151,7 @@ module.exports.statsObjectBuilder = function(message, slot1Data, slot2Data, slot
             scavengeCommandExperience.push(experienceCalculate);
             scavengeGuaranteedTacos.push(guaranteedTacoChanceCalculate);
         }
+        /*
         if (slot1Data.command && slot1Data.command.toLowerCase() == "rpgsuccess"){
             // var cdrCalculate = slot1Data.itembasecdr + (slot1Data.itemcdrperlevel * userLevel)
             var extraTacosCalculate = slot1Data.itembaseextratacos + (slot1Data.itemextratacosperlevel * userLevel)
@@ -177,6 +178,7 @@ module.exports.statsObjectBuilder = function(message, slot1Data, slot2Data, slot
             slotsWinExtraExperience.push(experienceCalculate);
             slotsWinGuaranteedTacos.push(guaranteedTacoChanceCalculate);
         }
+        */
     }
 
     if (slot2Data && slot2active){
@@ -267,6 +269,7 @@ module.exports.statsObjectBuilder = function(message, slot1Data, slot2Data, slot
             scavengeCommandExperience.push(experienceCalculate);
             scavengeGuaranteedTacos.push(guaranteedTacoChanceCalculate);
         }
+        /*
         if (slot2Data.command && slot2Data.command.toLowerCase() == "rpgsuccess"){
             // var cdrCalculate = slot2Data.itembasecdr + (slot2Data.itemcdrperlevel * userLevel)
             var extraTacosCalculate = slot2Data.itembaseextratacos + (slot2Data.itemextratacosperlevel * userLevel)
@@ -293,6 +296,7 @@ module.exports.statsObjectBuilder = function(message, slot1Data, slot2Data, slot
             slotsWinExtraExperience.push(experienceCalculate);
             slotsWinGuaranteedTacos.push(guaranteedTacoChanceCalculate);
         }
+        */
     }
 
     if (slot3Data && slot3active){
