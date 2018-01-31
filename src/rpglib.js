@@ -213,6 +213,24 @@ module.exports = {
                 damageOnExpire: 0
             }
         },
+        poison: {
+            name: "Poison",
+            abilityId: "poison",
+            dmg: 50,
+            mdPercentage: 1,
+            type: "poison",
+            dot: {
+                name: "Poison",
+                dmg: 20,
+                mdPercentage: .8,
+                emoji : "🤢",
+                type: "poison",
+                damageOnDotApply: false,
+                turnsToExpire: 3,
+                damageOnDotExpire: false,
+                damageOnExpire: 0
+            }
+        },
         foodpoisoning: {
             name: "Food Poisoning",
             abilityId: "foodpoisoning",
@@ -393,6 +411,42 @@ module.exports = {
             name: "Haste",
             buff: {
                 name: "Haste",
+                emoji: "💨"
+            }
+        },
+        resistanceaura: {
+            passive: true,
+            abilityId: "resistanceaura",
+            name: "Resistance Aura",
+            buff: {
+                name: "Resistance Aura",
+                emoji: "💨"
+            }
+        },
+        divineaura: {
+            passive: true,
+            abilityId: "divineaura",
+            name: "Divine Aura",
+            buff: {
+                name: "Divine Aura",
+                emoji: "💨"
+            }
+        },
+        fierceshout: {
+            passive: true,
+            abilityId: "fierceshout",
+            name: "Fierce Shout",
+            buff: {
+                name: "Fierce Shout",
+                emoji: "💨"
+            }
+        },
+        rallyingroar: {
+            passive: true,
+            abilityId: "rallyingroar",
+            name: "Rallying Roar",
+            buff: {
+                name: "Rallying Roar",
                 emoji: "💨"
             }
         },
@@ -1251,7 +1305,7 @@ module.exports = {
             },
             angryMobMember: {
                 name: "Angry Mob Member",
-                abilities: ["attack", "attack", "foodpoisoning", "iceshards", "iceshards", "cripple"],
+                abilities: ["attack", "attack", "poison", "iceshards", "iceshards", "cripple"],
                 buffs: [],
                 hpPerPartyMember: 190,
                 adPerPartyMember: 9,
@@ -1266,7 +1320,7 @@ module.exports = {
             },
             badChef: {
                 name: "Bad Chef",
-                abilities: ["attack", "attack", "foodpoisoning", "foodpoisoning", "barrier"],
+                abilities: ["attack", "attack", "poison", "poison", "barrier"],
                 buffs: [],
                 hpPerPartyMember: 190,
                 adPerPartyMember: 9,
@@ -1312,7 +1366,7 @@ module.exports = {
         easy : [
             {
                 name: "Rabbid Wolf",
-                abilities: ["attack", "attack", "foodpoisoning", "foodpoisoning", "tacowall"],
+                abilities: ["attack", "attack", "poison", "poison", "tacowall"],
                 buffs: [],
                 hpPerPartyMember: 170,
                 adPerPartyMember: 9,
@@ -1327,7 +1381,7 @@ module.exports = {
             },
             {
                 name: "Bad Chef",
-                abilities: ["attack", "attack", "foodpoisoning", "foodpoisoning", "barrier"],
+                abilities: ["attack", "attack", "poison", "poison", "barrier"],
                 buffs: [],
                 hpPerPartyMember: 170,
                 adPerPartyMember: 9,
@@ -1345,7 +1399,7 @@ module.exports = {
             },
             {
                 name: "Angry Mob Member",
-                abilities: ["attack", "attack", "foodpoisoning", "iceshards", "iceshards", "cripple"],
+                abilities: ["attack", "attack", "poison", "iceshards", "iceshards", "cripple"],
                 buffs: [],
                 hpPerPartyMember: 170,
                 adPerPartyMember: 9,
@@ -1479,7 +1533,7 @@ module.exports = {
             },
             {
                 name: "Funny Politician",
-                abilities: ["attack" , "attack" , "curse", "foodpoisoning", "shoot", "shoot","freeze"],
+                abilities: ["attack" , "attack" , "curse", "poison", "shoot", "shoot","freeze"],
                 buffs: [
                     {
                         name: "frenzy",
@@ -2770,7 +2824,7 @@ module.exports = {
                 enemies: [
                     {
                         name: "Angry Mob Member",
-                        abilities: ["attack", "attack", "foodpoisoning", "iceshards", "iceshards", "cripple"],
+                        abilities: ["attack", "attack", "poison", "iceshards", "iceshards", "cripple"],
                         buffs: [],
                         hpPerPartyMember: 130,
                         adPerPartyMember: 8,
@@ -2914,7 +2968,7 @@ module.exports = {
                     },
                     {
                         name: "Funny Politician",
-                        abilities: ["attack" , "attack" , "curse", "foodpoisoning", "shoot", "shoot","freeze"],
+                        abilities: ["attack" , "attack" , "curse", "poison", "shoot", "shoot","freeze"],
                         buffs: [
                             {
                                 name: "frenzy",
@@ -3114,7 +3168,7 @@ module.exports = {
                     {
                         name: "Dictator",
                         abilities: [
-                            "attack", "poke", "flameblast", "foodpoisoning", "bomb", "guac"
+                            "attack", "poke", "flameblast", "poison", "bomb", "guac"
                         ],
                         buffs: [
                             {
@@ -3205,7 +3259,7 @@ module.exports = {
                     },
                     {
                         name: "Bad Chef",
-                        abilities: ["attack", "attack", "foodpoisoning", "foodpoisoning", "barrier"],
+                        abilities: ["attack", "attack", "poison", "poison", "barrier"],
                         buffs: [],
                         hpPerPartyMember: 290,
                         adPerPartyMember: 9,
@@ -3223,7 +3277,7 @@ module.exports = {
                     },
                     {
                         name: "Angry Mob Member",
-                        abilities: ["attack", "attack", "foodpoisoning", "iceshards", "iceshards", "cripple"],
+                        abilities: ["attack", "attack", "poison", "iceshards", "iceshards", "cripple"],
                         buffs: [],
                         hpPerPartyMember: 290,
                         adPerPartyMember: 9,

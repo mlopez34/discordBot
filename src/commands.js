@@ -2232,8 +2232,10 @@ function raresEmbedBuilder(message, itemsMap, allItems, long, rarity){
                 // console.log(key + " " + allItems[key].itemname)
                 
                 var emoji = "";
-                
-                if (allItems[key].itemraritycategory === "artifact" 
+                if (allItems[key].itemraritycategory === "myth" ){
+                    emoji = ":cyclone: "
+                }
+                else if (allItems[key].itemraritycategory === "artifact" 
                     || allItems[key].itemraritycategory === "artifact+"){
                     emoji = ":diamond_shape_with_a_dot_inside: "
                 }
@@ -2250,7 +2252,7 @@ function raresEmbedBuilder(message, itemsMap, allItems, long, rarity){
                     emoji = ":large_orange_diamond: "
                 }
                 else if (allItems[key].itemraritycategory === "ancient++"){
-                    emoji = ":diamonds: "
+                    emoji = ":star: "
                 }
                 else if (allItems[key].itemraritycategory === "rare++"){
                     emoji = ":diamonds: "
@@ -2320,7 +2322,7 @@ function raresEmbedBuilder(message, itemsMap, allItems, long, rarity){
             }else if (rarity == "ancient"){
                 emoji = ":star:  "
             }else if (rarity == "artifact"){
-                emoji = ":diamond_shape_with_a_dot_inside: "
+                emoji = ":cyclone:  "
             }
             embed.addField(emoji + " Item Name  |  Count  |  Slot " + emoji, inventoryStringsRefined[invString], true)
         }
@@ -4169,6 +4171,7 @@ module.exports.combineCommand = function(message, args){
                                 if (rarityOfMyItem && rarityOfMyItem == "artifact"){
                                     // take the ids of the other 2 artifacts + artifact recipe and push them onto itemsBeingCombined array
                                     
+                                    /*
                                     var artifactId = ARTIFACT_RECIPE_ID
                                     var recipeAdded = false;
                                     var firstArtifact = itemsMapbyShortName[myItemShortName] ? itemsMapbyShortName[myItemShortName].firstartifact : undefined; 
@@ -4235,7 +4238,7 @@ module.exports.combineCommand = function(message, args){
                                             message.channel.send("You do not have all the items required to combine")
                                         }
                                     }
-                                    
+                                    */
                                 }
                                 else if (itemsInInventoryCountMap[idOfMyItem] && 
                                     itemsInInventoryCountMap[idOfMyItem] >= itemCount){
@@ -4962,7 +4965,8 @@ module.exports.putonCommand = function(message, args, retry){
                         discordId : discordUserId,
                         slot1replacing: false,
                         slot2replacing: false,
-                        slot3replacing: false
+                        slot3replacing: false,
+                        slot4replacing: false
                     }
                     profileDB.createUserWearInfo(data, function(error, res){
                         if (error){
@@ -4979,6 +4983,7 @@ module.exports.putonCommand = function(message, args, retry){
                     var currentSlot1Slot = getWearRes.data[0].slot1slot;
                     var currentSlot2Slot = getWearRes.data[0].slot2slot;
                     var currentSlot3Slot = getWearRes.data[0].slot3slot;
+                    var currentSlot4Slot = getWearRes.data[0].slot4slot;
 
                     // is the user replacing the current slot?
                     var replacingCurrentSlot; 
@@ -4990,6 +4995,9 @@ module.exports.putonCommand = function(message, args, retry){
                     }
                     else if (slot == 3){
                         replacingCurrentSlot = getWearRes.data[0].slot3replacing;
+                    }
+                    else if (slot == 4){
+                        replacingCurrentSlot = getWearRes.data[0].slot4replacing;
                     }
 
                     profileDB.getUserItems(discordUserId, function(err, inventoryResponse){
@@ -5087,6 +5095,9 @@ module.exports.putonCommand = function(message, args, retry){
                                             else if (slot == 3 && !currentSlot3Slot){
                                                 validateSlotToWear = validateSlot(itemslot, currentSlot1Slot, currentSlot2Slot)
                                             }
+                                            else if (slot == 4 && !currentSlot4Slot && itemsMapbyName[itemToWear].itemraritycategory == "myth" ){
+                                                validateSlotToWear = true
+                                            }
                                             if (validateSlotToWear){
                                                 // check that the item slot is not already equiped elsewhere
                                                 // console.log("updating: slot: " + slot + " itemslot: " + itemslot + " itemid: " + itemid + " itemuserid: " + itemuserid + " itemstats: " + JSON.stringify(itemstats, null, 2));
@@ -5148,7 +5159,7 @@ module.exports.putonCommand = function(message, args, retry){
             }
         })
     }else{
-        message.channel.send(message.author + " do -puton [1-3] [itemname]");
+        message.channel.send(message.author + " do -puton [1-4] [itemname] Slot 4 is only for artifact+ items or higher");
     }
 }
 
@@ -5190,6 +5201,10 @@ module.exports.takeoffCommand = function(message, args){
             else if (slot == 3 && takeoffRes.data.length > 0){
                 itemId = takeoffRes.data[0].slot3useritemid
                 itemslot = takeoffRes.data[0].slot3slot
+            }
+            else if (slot == 4 && takeoffRes.data.length > 0){
+                itemId = takeoffRes.data[0].slot4useritemid
+                itemslot = takeoffRes.data[0].slot4slot
             }
             // console.log("itemid " + itemId);
             if (itemId){
@@ -5301,7 +5316,7 @@ module.exports.auctionCommand = function(message, args){
                         }
                         //// console.log(itemsInInventoryCountMap);
                         //// console.log(itemsMapbyShortName);
-                        if (itemsMapbyShortName[myItemShortName]){
+                        if (itemsMapbyShortName[myItemShortName] && itemsMapbyShortName[myItemShortName].itemraritycategory != "myth"){
                             var idOfMyItem = itemsMapbyShortName[myItemShortName].id;
                             var itemNameInAuction = itemsMapbyShortName[myItemShortName].itemname
                             // console.log(idOfMyItem);
@@ -5600,7 +5615,7 @@ module.exports.tradeCommand = function(message, args){
                                 
                                 // args[2] is your item(or # of tacos)
                                 // check if myItem exists in items, check if otherItem exists in items, if not then turn the string
-                                if (itemsMapbyShortName[myItemShortName]){
+                                if (itemsMapbyShortName[myItemShortName] && itemsMapbyShortName[myItemShortName].itemraritycategory != "myth" ){
                                     var idOfMyItem = itemsMapbyShortName[myItemShortName].id;
                                     var itemNameInTrade = itemsMapbyShortName[myItemShortName].itemname
                                     // console.log(idOfMyItem);

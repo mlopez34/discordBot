@@ -1034,6 +1034,9 @@ module.exports.updateUserWearInfo = function(discordId, slot, itemslot, itemid, 
     if (slot == 3){
         query = 'update ' + config.wearTable + ' set slot3slot=$2, slot3itemid=$3, slot3useritemid=$4, activate3date=$6, slot3replacing=$7 where discordid=$5'
     }
+    if (slot == 4){
+        query = 'update ' + config.wearTable + ' set slot4slot=$2, slot4itemid=$3, slot4useritemid=$4, activate4date=$6, slot4replacing=$7 where discordid=$5'
+    }
     db.none(query, [slot, itemslot, itemid, itemuserid, discordId, activateDate, replacingCurrentSlot])
     .then(function () {
     cb(null, {
@@ -1058,6 +1061,9 @@ module.exports.takeOffWear = function(discordId, slot, cb){
     if (slot == 3){
         query = 'update ' + config.wearTable + ' set slot3slot=null, slot3itemid=null, slot3useritemid=null where discordid=$1'
     }
+    if (slot == 4){
+        query = 'update ' + config.wearTable + ' set slot4slot=null, slot4itemid=null, slot4useritemid=null where discordid=$1'
+    }
     db.none(query, [discordId])
     .then(function () {
     cb(null, {
@@ -1072,8 +1078,8 @@ module.exports.takeOffWear = function(discordId, slot, cb){
 
 // create wear info
 module.exports.createUserWearInfo = function(data, cb){
-    var query = 'insert into '+ config.wearTable + '(discordId, slot1replacing, slot2replacing, slot3replacing)' +
-    'values(${discordId}, ${slot1replacing}, ${slot2replacing}, ${slot3replacing} )'
+    var query = 'insert into '+ config.wearTable + '(discordId, slot1replacing, slot2replacing, slot3replacing, slot4replacing))' +
+    'values(${discordId}, ${slot1replacing}, ${slot2replacing}, ${slot3replacing}, ${slot4replacing} )'
     // console.log(query);
     db.none(query, data)
     .then(function () {

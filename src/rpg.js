@@ -7,7 +7,7 @@ var rpglib = require("./rpglib");
 var moment = require("moment");
 var _ = require("lodash");
 
-var RPG_COOLDOWN_HOURS = 0
+var RPG_COOLDOWN_HOURS = 3
 var activeRPGEvents = {};
 var activeRPGItemIds = {};
 var usersInRPGEvents = {};
@@ -23,7 +23,7 @@ module.exports.rpgInitialize = function(message, special){
     team.push(message.author);
 
     users.forEach(function(user){
-        if (team.length < TEAM_MAX_LENGTH ){// && discordUserId != user.id){
+        if (team.length < TEAM_MAX_LENGTH  && discordUserId != user.id){
             team.push(user);
         }
     })
@@ -194,6 +194,9 @@ module.exports.showRpgStats = function(message, itemsAvailable, amuletItemsById)
                             }
                             if (wearingStats.slot3itemid){
                                 items.push(wearingStats.slot3itemid)
+                            }
+                            if (wearingStats.slot4itemid){
+                                items.push(wearingStats.slot4itemid)
                             }
                             // added stats from items
                             
@@ -504,6 +507,13 @@ module.exports.rpgReady = function(message, itemsAvailable, amuletItemsById){
                                             activeRPGItemIds[wearingStats.slot3useritemid] = true;
                                         }
                                     }
+                                    if (wearingStats.slot4itemid){
+                                        if (!activeRPGItemIds[wearingStats.slot4useritemid]){
+                                            items.push(wearingStats.slot4itemid);
+                                            userItemIds.push(wearingStats.slot4useritemid);
+                                            activeRPGItemIds[wearingStats.slot4useritemid] = true;
+                                        }
+                                    }
                                     // added stats from items
                                     for (var i in items){
                                         if (itemsAvailable[items[i]].ability1){
@@ -665,8 +675,8 @@ module.exports.rpgReady = function(message, itemsAvailable, amuletItemsById){
                                                         id: partyMember.id,
                                                         name: partyMember.username,
                                                         username: partyMember.username,
-                                                        hp: 25000 + (27 *  partyMemberStats.level ) + partyMemberHpPlus,
-                                                        attackDmg: 10000 + (9 * partyMemberStats.level) + partyMemberAttackDmgPlus,
+                                                        hp: 250 + (27 *  partyMemberStats.level ) + partyMemberHpPlus,
+                                                        attackDmg: 10 + (9 * partyMemberStats.level) + partyMemberAttackDmgPlus,
                                                         magicDmg:  10 + (9 * partyMemberStats.level) + partyMemberMagicDmgPlus,
                                                         armor: 5 + (partyMemberStats.level * partyMemberStats.level) + partyMemberArmorPlus,
                                                         spirit: 5 + (partyMemberStats.level * partyMemberStats.level) + partyMemberSpiritPlus,
