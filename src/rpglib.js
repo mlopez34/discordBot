@@ -123,49 +123,6 @@ module.exports = {
                 dmgOnExpire: 0
             }
         },
-        bomb: {
-            name:"Bomb",
-            abilityId: "bomb",
-            type:"fire",
-            dot: {
-                name: "Bomb",
-                type:"fire",
-                dmg: 1,
-                mdPercentage: 1,
-                emoji: "💣",
-                dmgOnDotApply: false,
-                turnsToExpire: 6,
-                dmgOnDotExpire: true,
-                dmgOnExpire: 550,
-                dmgOnDotRemove: true,
-                dmgOnRemoveAreaWide: true,
-                mdPercentageOnRemove: 0.25,
-                dmgOnRemove: 100
-            }
-        },
-        decay: {
-            name:"Decay",
-            abilityId: "decay",
-            type:"shadow",
-            abilityId: "decay",
-            processAbility: true,
-            belongsToMember: true,
-            everyNTurns: 8,
-            afterNTurns: 1,
-            currentTurn: 0,
-            dot: {
-                name: "Decay",
-                type:"shadow",
-                dmg: 65,
-                areawide: true,
-                mdPercentage: 1,
-                emoji: "🌑",
-                dmgOnDotApply: false,
-                turnsToExpire: 6,
-                dmgOnDotExpire: false,
-                dmgOnExpire: 0
-            }
-        },
         tacowall: {
             name: "Taco Wall",
             abilityId: "tacowall",
@@ -331,6 +288,9 @@ module.exports = {
             mdPercentage: 1.2,
             type: "electric"
         },
+        /*
+        limit abilities
+        */
         headshot: {
             name: "Headshot",
             abilityId: "headshot",
@@ -442,6 +402,7 @@ module.exports = {
                 emoji: "💨"
             }
         },
+
         resistanceaura: {
             passive: true,
             abilityId: "resistanceaura",
@@ -478,6 +439,139 @@ module.exports = {
                 emoji: "💨"
             }
         },
+
+        /*
+        challenge 3
+        */
+        decay: {
+            name:"Decay",
+            abilityId: "decay",
+            type:"shadow",
+            abilityId: "decay",
+            processAbility: true,
+            belongsToMember: true,
+            everyNTurns: 8,
+            afterNTurns: 1,
+            currentTurn: 0,
+            dot: {
+                name: "Decay",
+                type:"shadow",
+                dmg: 65,
+                areawide: true,
+                mdPercentage: 1,
+                emoji: "🌑",
+                dmgOnDotApply: false,
+                turnsToExpire: 6,
+                dmgOnDotExpire: false,
+                dmgOnExpire: 0
+            }
+        },
+        /*
+        challenge 4
+        */
+        bomb: {
+            name:"Bomb",
+            abilityId: "bomb",
+            type:"fire",
+            dot: {
+                name: "Bomb",
+                type:"fire",
+                dmg: 1,
+                mdPercentage: 1,
+                emoji: "💣",
+                dmgOnDotApply: false,
+                turnsToExpire: 6,
+                dmgOnDotExpire: true,
+                dmgOnExpire: 550,
+                dmgOnDotRemove: true,
+                dmgOnRemoveAreaWide: true,
+                mdPercentageOnRemove: 0.25,
+                dmgOnRemove: 100
+            }
+        },
+        /*
+        challenge 5
+        */
+
+        // aoe hit for ch 5
+        tremor: {
+            belongsToMember: true,
+            name: "Tremor",
+            abilityId: "tremor",
+            everyNTurns: 5,
+            afterNTurns: 2,
+            currentTurn: 0,
+            areawidedmg: {
+                areawide: true,
+                name: "Tremor",
+                dmg: 50,
+                mdPercentage: .9,
+                type: "earth"
+            }
+        },
+        // single targ hit for ch 5
+        electricOrb: {
+            abilityId: "electricOrb",
+            belongsToMember: true,
+            processAbility: true,
+            ignoreFocus: true,
+            name: "Electric Orb",
+            dmg: 50,
+            mdPercentage: 0.6,
+            type: "electric",
+            everyNTurns: 5,
+            afterNTurns: 1,
+            currentTurn: 0,
+            status: {
+                status: true,
+                abilityId: "electricOrb",
+                untargettable: true,
+                name: "Electric Orb",
+                emoji: "⚡",
+                mdPercentage: 1,
+                turnsToExpire: 2,
+                dmgOnStatusExpire: true,
+                dmgOnStatusRemove: true,
+                dmgOnRemove: 150,
+                dmgOnRemoveAreaWide: false,
+                mdPercentageOnRemove: 1,
+                dmgOnExpire: 150
+            }
+        },
+        // summon demon for ch 5
+        summonDemon: {
+            name: "Summon Demon",
+            abilityId: "summonDemon",
+            belongsToMember: true,
+            everyNTurns: 5,
+            afterNTurns: 3,
+            currentTurn: 0,
+            summon: {
+                enemy: "demon",
+                attackDmg: 150,
+                magicDmg: 100,
+                hpPlus: 30
+            }
+        },
+        // heal all enemies when one dies in ch 5
+        healAll: {
+            belongsToMember: true,
+            name: "Heal All",
+            abilityId: "healAll",
+            heal: 20000,
+            areawide: true,
+            mdPercentage: 1,
+        },
+        // transfer ability to the other living enemies
+        transferAbilities: {
+            abilityId: "transferAbilities",
+            belongsToMember: true,
+            name: "transfer abilities",
+            transfer: "endOfTurnEvents"
+        },
+        /*
+        challenge 6
+        */
         rocketStrike : {
             name: "Rocket Strike",
             processAbility: true,
@@ -516,60 +610,6 @@ module.exports = {
             dmg: 50,
             adPercentage: 1,
             type: "physical"
-        },
-
-        // endOfTurnEvents
-        echo: {
-            dmgaura: true,
-            belongsToEvent: true,
-            name: "Echo",
-            abilityId: "echo",
-            areawidedmg: {
-                endOfTurnAura: true,
-                hitsEveryNTurn: 4,
-                dmgPerTurn: 22,
-                name: "Echo",
-                dmg: 85,
-                type: "physical"
-            }
-        },
-        haunt: {
-            afterNTurns: 4,
-            everyNTurns: 2,
-            currentTurn: 0,
-            belongsToMember: true,
-            name: "Haunt",
-            abilityId: "haunt",
-            areawidedmg: {
-                areawide: true,
-                name: "Haunt",
-                dmg: 500,
-                adPercentage: 0.1,
-                type: "physical"
-            }
-        },
-
-        // death effects
-        explode: {
-            onDeathEffect: true,
-            effectDone: false,
-            name: "Explode",
-            abilityId: "explode",
-            areawidedmg : {
-                dmgondeath: true,
-                areawide: true,
-                dmg: 188,
-                mdPercentage: .2,
-                name: "Explode",
-                type: "fire"
-            }
-        },
-        totemOfDoom75: {
-            belongsToMember: true,
-            hppercentage: 0.75,
-            summon: {
-                enemy: "totemOfDoom"
-            }
         },
         absorbEnergyCrystals: {
             abilityId: "absorbEnergyCrystals",
@@ -766,166 +806,6 @@ module.exports = {
                 enemy: "energyCore",
             }
         },
-        footballPlayer75: {
-            belongsToMember: true,
-            hppercentage: 0.75,
-            summon: {
-                enemy: "footballPlayer",
-            }
-        },
-        footballPlayer50: {
-            belongsToMember: true,
-            hppercentage: 0.50,
-            summon: {
-                enemy: "footballPlayer",
-            }
-        },
-        footballPlayer25: {
-            belongsToMember: true,
-            hppercentage: 0.25,
-            summon: {
-                enemy: "footballPlayer",
-            }
-        },
-        slotsGambler75: {
-            belongsToMember: true,
-            hppercentage: 0.75,
-            summon: {
-                enemy: "slotsGambler",
-            }
-        },
-        slotsGambler50: {
-            belongsToMember: true,
-            hppercentage: 0.50,
-            summon: {
-                enemy: "slotsGambler",
-            }
-        },
-        tacoBandit50: {
-            belongsToMember: true,
-            hppercentage: 0.50,
-            summon: {
-                enemy: "tacoBandit",
-            }
-        },
-        badChef75: {
-            belongsToMember: true,
-            hppercentage: 0.75,
-            summon: {
-                enemy: "badChef",
-            }
-        },
-        angryMobMember75: {
-            belongsToMember: true,
-            hppercentage: 0.75,
-            summon: {
-                enemy: "angryMobMember",
-            }
-        },
-        angryMobMember50: {
-            belongsToMember: true,
-            hppercentage: 0.50,
-            summon: {
-                enemy: "angryMobMember",
-            }
-        },
-        angryMobMember25: {
-            belongsToMember: true,
-            hppercentage: 0.25,
-            summon: {
-                enemy: "angryMobMember",
-            }
-        },
-        totemOfDoom50: {
-            belongsToMember: true,
-            hppercentage: 0.50,
-            summon: {
-                enemy: "totemOfDoom",
-            }
-        },
-        totemOfDoom25: {
-            belongsToMember: true,
-            hppercentage: 0.25,
-            summon: {
-                enemy: "totemOfDoom",
-            }
-        },
-        // aoe hit for ch 5
-        tremor: {
-            belongsToMember: true,
-            name: "Tremor",
-            abilityId: "tremor",
-            everyNTurns: 5,
-            afterNTurns: 2,
-            currentTurn: 0,
-            areawidedmg: {
-                areawide: true,
-                name: "Tremor",
-                dmg: 50,
-                mdPercentage: .9,
-                type: "earth"
-            }
-        },
-        // single targ hit for ch 5
-        electricOrb: {
-            abilityId: "electricOrb",
-            belongsToMember: true,
-            processAbility: true,
-            ignoreFocus: true,
-            name: "Electric Orb",
-            dmg: 50,
-            mdPercentage: 0.6,
-            type: "electric",
-            everyNTurns: 5,
-            afterNTurns: 1,
-            currentTurn: 0,
-            status: {
-                status: true,
-                abilityId: "electricOrb",
-                untargettable: true,
-                name: "Electric Orb",
-                emoji: "⚡",
-                mdPercentage: 1,
-                turnsToExpire: 2,
-                dmgOnStatusExpire: true,
-                dmgOnStatusRemove: true,
-                dmgOnRemove: 150,
-                dmgOnRemoveAreaWide: false,
-                mdPercentageOnRemove: 1,
-                dmgOnExpire: 150
-            }
-        },
-        // summon demon for ch 5
-        summonDemon: {
-            name: "Summon Demon",
-            abilityId: "summonDemon",
-            belongsToMember: true,
-            everyNTurns: 5,
-            afterNTurns: 3,
-            currentTurn: 0,
-            summon: {
-                enemy: "demon",
-                attackDmg: 150,
-                magicDmg: 100,
-                hpPlus: 30
-            }
-        },
-        // heal all enemies when one dies in ch 5
-        healAll: {
-            belongsToMember: true,
-            name: "Heal All",
-            abilityId: "healAll",
-            heal: 20000,
-            areawide: true,
-            mdPercentage: 1,
-        },
-        // transfer ability to the other living enemies
-        transferAbilities: {
-            abilityId: "transferAbilities",
-            belongsToMember: true,
-            name: "transfer abilities",
-            transfer: "endOfTurnEvents"
-        },
         removeEnergize: {
             passive: true,
             belongsToMember: true,
@@ -956,7 +836,6 @@ module.exports = {
                 turnsToExpire: 7
             }
         },
-
         radioactive: {
             name: "Radioactive",
             belongsToMember: true,
@@ -981,8 +860,6 @@ module.exports = {
                 special: "after being healed 4 times you will explode for 1500 magic damage"
             }
         },
-
-
         furnace: {
             abilityId: "furnace",
             belongsToMember: true,
@@ -1010,7 +887,6 @@ module.exports = {
                 dmgOnExpire: 150
             }
         },
-
         dismantle: {
             abilityId: "dismantle",
             belongsToMember: true,
@@ -1039,7 +915,245 @@ module.exports = {
                 dmgOnExpire: 150
             }
         },
+        /*
+        endOfTurnEvents
+        */
+        echo: {
+            dmgaura: true,
+            belongsToEvent: true,
+            name: "Echo",
+            abilityId: "echo",
+            areawidedmg: {
+                endOfTurnAura: true,
+                hitsEveryNTurn: 4,
+                dmgPerTurn: 22,
+                name: "Echo",
+                dmg: 85,
+                type: "physical"
+            }
+        },
+        haunt: {
+            afterNTurns: 4,
+            everyNTurns: 2,
+            currentTurn: 0,
+            belongsToMember: true,
+            name: "Haunt",
+            abilityId: "haunt",
+            areawidedmg: {
+                areawide: true,
+                name: "Haunt",
+                dmg: 550,
+                adPercentage: 0.1,
+                type: "physical"
+            }
+        },
+        /*
+        death effects
+        */
+        explode: {
+            onDeathEffect: true,
+            effectDone: false,
+            name: "Explode",
+            abilityId: "explode",
+            areawidedmg : {
+                dmgondeath: true,
+                areawide: true,
+                dmg: 188,
+                mdPercentage: .2,
+                name: "Explode",
+                type: "fire"
+            }
+        },
+        /*
+        special artifact stuff
+        */
+        superNova: {
+            belongsToMember: true,
+            name: "Super Nova",
+            abilityId: "superNova",
+            everyNTurns: 5,
+            afterNTurns: 10,
+            currentTurn: 0,
+            areawidedmg: {
+                areawide: true,
+                name: "Super Nova",
+                dmg: 1200,
+                mdPercentage: .05,
+                type: "earth"
+            }
+        },
+        soulBurn: {
+            abilityId: "soulBurn",
+            belongsToMember: true,
+            processAbility: true,
+            ignoreFocus: true,
+            name: "Soul Burn",
+            dmg: 50,
+            mdPercentage: 0.4,
+            type: "shadow",
+            everyNTurns: 2,
+            afterNTurns: 4,
+            currentTurn: 0,
+            status: {
+                status: true,
+                abilityId: "soulBurn",
+                untargettable: true,
+                name: "Soul Burn",
+                emoji: "👹",
+                mdPercentage: 1,
+                turnsToExpire: 2,
+                dmgOnStatusExpire: true,
+                dmgOnStatusRemove: true,
+                dmgOnRemove: 150,
+                dmgOnRemoveAreaWide: false,
+                mdPercentageOnRemove: 0.8,
+                dmgOnExpire: 150
+            }
+        },
+        summonChupacabra: {
+            name: "Summon Chupacabra",
+            abilityId: "summonChupacabra",
+            belongsToMember: true,
+            everyNTurns: 2,
+            afterNTurns: 7,
+            currentTurn: 0,
+            summon: {
+                enemy: "chupacabra",
+                attackDmg: 150,
+                magicDmg: 100,
+                hpPlus: 30
+            }
+        },
+        /*
+        summon effects
+        */
+        totemOfDoom80: {
+            belongsToMember: true,
+            hppercentage: 0.80,
+            summon: {
+                enemy: "totemOfDoom"
+            }
+        },
+        totemOfDoom60: {
+            belongsToMember: true,
+            hppercentage: 0.60,
+            summon: {
+                enemy: "totemOfDoom"
+            }
+        },
+        totemOfDoom40: {
+            belongsToMember: true,
+            hppercentage: 0.40,
+            summon: {
+                enemy: "totemOfDoom",
+            }
+        },
+        totemOfDoom20: {
+            belongsToMember: true,
+            hppercentage: 0.20,
+            summon: {
+                enemy: "totemOfDoom",
+            }
+        },
 
+    
+        footballPlayer75: {
+            belongsToMember: true,
+            hppercentage: 0.75,
+            summon: {
+                enemy: "footballPlayer",
+            }
+        },
+        footballPlayer50: {
+            belongsToMember: true,
+            hppercentage: 0.50,
+            summon: {
+                enemy: "footballPlayer",
+            }
+        },
+        footballPlayer25: {
+            belongsToMember: true,
+            hppercentage: 0.25,
+            summon: {
+                enemy: "footballPlayer",
+            }
+        },
+
+        vampire75: {
+            belongsToMember: true,
+            hppercentage: 0.75,
+            summon: {
+                enemy: "vampire",
+            }
+        },
+        vampire50: {
+            belongsToMember: true,
+            hppercentage: 0.50,
+            summon: {
+                enemy: "vampire",
+            }
+        },
+        vampire25: {
+            belongsToMember: true,
+            hppercentage: 0.25,
+            summon: {
+                enemy: "vampire",
+            }
+        },
+
+        slotsGambler75: {
+            belongsToMember: true,
+            hppercentage: 0.75,
+            summon: {
+                enemy: "slotsGambler",
+            }
+        },
+        slotsGambler50: {
+            belongsToMember: true,
+            hppercentage: 0.50,
+            summon: {
+                enemy: "slotsGambler",
+            }
+        },
+
+        tacoBandit50: {
+            belongsToMember: true,
+            hppercentage: 0.50,
+            summon: {
+                enemy: "tacoBandit",
+            }
+        },
+
+        badChef75: {
+            belongsToMember: true,
+            hppercentage: 0.75,
+            summon: {
+                enemy: "badChef",
+            }
+        },
+
+        angryMobMember75: {
+            belongsToMember: true,
+            hppercentage: 0.75,
+            summon: {
+                enemy: "angryMobMember",
+            }
+        },
+        angryMobMember50: {
+            belongsToMember: true,
+            hppercentage: 0.50,
+            summon: {
+                enemy: "angryMobMember",
+            }
+        },
+        angryMobMember25: {
+            belongsToMember: true,
+            hppercentage: 0.25,
+            summon: {
+                enemy: "angryMobMember",
+            }
+        },
+        
         // tackle (more damage over 80%)
         // protect (absorb damage)
         // bite (hits harder than attack)
@@ -1113,11 +1227,6 @@ module.exports = {
                 affects: ["magicDmg"],
                 multiplier: 0.8
             }
-        },
-        finalfortune: {
-            special: "take extra turn",
-            special2: "after turn party dies",
-            areaWide: true
         }
     },
     enemiesToEncounter: {
@@ -1278,11 +1387,11 @@ module.exports = {
                 hpPerPartyMember: 0,
                 adPerPartyMember: 0,
                 mdPerPartyMember: 0,
-                hp: 3000,
+                hp: 7000,
                 attackDmg: 0,
                 magicDmg: 0,
-                armor: 750,
-                spirit: 750,
+                armor: 1000,
+                spirit: 1000,
                 difficulty: "summoned",
                 element: "normal"
             },
@@ -1298,6 +1407,21 @@ module.exports = {
                 magicDmg: 180,
                 armor: 700,
                 spirit: 700,
+                difficulty: "summoned",
+                element: "normal"
+            },
+            chupacabra: {
+                name: "Chupacabra",
+                abilities: ["attack", "attack", "attack", "shock"],
+                buffs: [],
+                hpPerPartyMember: 0,
+                adPerPartyMember: 0,
+                mdPerPartyMember: 0,
+                hp: 1300,
+                attackDmg: 290,
+                magicDmg: 230,
+                armor: 1100,
+                spirit: 1100,
                 difficulty: "summoned",
                 element: "normal"
             },
@@ -1387,6 +1511,36 @@ module.exports = {
                 magicDmg: 500,
                 armor: 1000,
                 spirit: 1000,
+                difficulty: "summoned",
+                element: "normal"
+            },
+            vampire: {
+                name: "Vampire",
+                abilities: [
+                   "attack", "attack", "rockthrow", "rockthrow", "shock", "shock", "tacowall"
+                ],
+                buffs: [
+                    {
+                        name: "frenzy",
+                        emoji: "😡",
+                        onTurnEnd: {
+                            attackDmgPlus : 85,
+                            magicDmgPlus : 85,
+                            everyNTurns: 2,
+                            startTurn: 2
+                        }
+                    }
+                ],
+                endOfTurnEvents : [
+                ],
+                hpPerPartyMember: 0,
+                adPerPartyMember: 29,
+                mdPerPartyMember: 29,
+                hp: 7900,
+                attackDmg: 337,
+                magicDmg: 350,
+                armor: 1300,
+                spirit: 900,
                 difficulty: "summoned",
                 element: "normal"
             }
@@ -1824,6 +1978,7 @@ module.exports = {
                             }
                         }
                     ],
+                    // TODO: when one dies the other one deals 30% more damage, one has very high spirit, other has very high armor
                     endOfTurnEvents : [
                         "focus"
                     ],
@@ -1929,7 +2084,7 @@ module.exports = {
                         "focus",
                         "echo"
                     ],
-                    hp: 7600,
+                    hp: 37600,
                     attackDmg: 300,
                     magicDmg: 270,
                     armor: 2350,
@@ -2004,7 +2159,7 @@ module.exports = {
                     element: "earth"
                 },
                 {
-                    name: "Reactivated Robot",
+                    name: "T-1000",
                     abilities: [
                         "attack",
                         "attack",
@@ -2016,8 +2171,8 @@ module.exports = {
                     buffs: [
                     ],
                     hp: 7600,
-                    attackDmg: 300,
-                    magicDmg: 270,
+                    attackDmg: 400,
+                    magicDmg: 370,
                     armor: 1750,
                     spirit: 1500,
                     difficulty: "special",
@@ -2030,12 +2185,10 @@ module.exports = {
                     abilities: [
                         "corrupt",
                         "corrupt",
-                        "rockthrow",
-                        "rockthrow",
-                        "slash",
-                        "slash",
+                        "shock",
+                        "shock",
                         "poke",
-                        "shield"
+                        "freeze"
                     ],
                     buffs: [
                         {
@@ -2049,11 +2202,14 @@ module.exports = {
                             }
                         }
                     ],
+                    //TODO: when an enemy minion dies player receives dot that grows 200, 400, 600, 800, 1000, 1200,
+                    // for every tick lived, the player gets + 20% damage, 
                     endOfTurnEvents : [
                         "focus",
-                        "echo"
+                        "echo",
+                        "superNova"
                     ],
-                    hp: 47600,
+                    hp: 247600,
                     attackDmg: 300,
                     magicDmg: 270,
                     armor: 1750,
@@ -2068,8 +2224,6 @@ module.exports = {
                         "attack",
                         "curse",
                         "curse",
-                        "slash",
-                        "slash",
                         "poke",
                         "scold"
                     ],
@@ -2177,7 +2331,10 @@ module.exports = {
                             }
                         }
                     ],
-                    hp: 8600,
+                    endOfTurnEvents : [
+                        "echo"
+                    ],
+                    hp: 13600,
                     attackDmg: 300,
                     magicDmg: 270,
                     armor: 1750,
@@ -2193,10 +2350,10 @@ module.exports = {
                     adPerPartyMember: 8,
                     mdPerPartyMember: 8,
                     hp: 4350,
-                    attackDmg: 60,
-                    magicDmg: 75,
-                    armor: 450,
-                    spirit: 370,
+                    attackDmg: 160,
+                    magicDmg: 175,
+                    armor: 1450,
+                    spirit: 1370,
                     difficulty: "easy",
                     element: "normal"
                 },
@@ -2208,10 +2365,10 @@ module.exports = {
                     adPerPartyMember: 8,
                     mdPerPartyMember: 8,
                     hp: 4350,
-                    attackDmg: 60,
-                    magicDmg: 75,
-                    armor: 450,
-                    spirit: 370,
+                    attackDmg: 160,
+                    magicDmg: 175,
+                    armor: 1450,
+                    spirit: 1370,
                     difficulty: "easy",
                     element: "normal"
                 },
@@ -2223,10 +2380,10 @@ module.exports = {
                     adPerPartyMember: 8,
                     mdPerPartyMember: 8,
                     hp: 1350,
-                    attackDmg: 60,
-                    magicDmg: 75,
-                    armor: 450,
-                    spirit: 370,
+                    attackDmg: 160,
+                    magicDmg: 175,
+                    armor: 1450,
+                    spirit: 1370,
                     difficulty: "easy",
                     element: "normal"
                 },
@@ -2238,10 +2395,10 @@ module.exports = {
                     adPerPartyMember: 8,
                     mdPerPartyMember: 8,
                     hp: 1350,
-                    attackDmg: 60,
-                    magicDmg: 75,
-                    armor: 450,
-                    spirit: 370,
+                    attackDmg: 160,
+                    magicDmg: 175,
+                    armor: 1450,
+                    spirit: 1370,
                     difficulty: "easy",
                     element: "normal"
                 }
@@ -2275,7 +2432,7 @@ module.exports = {
                         "focus",
                         "echo"
                     ],
-                    hp: 17600,
+                    hp: 27600,
                     attackDmg: 300,
                     magicDmg: 270,
                     armor: 1750,
@@ -2286,7 +2443,7 @@ module.exports = {
                 {
                     name: "Vampire",
                     abilities: [
-                    "attack", "attack", "drain", "drain", "shock", "shock", "tacowall"
+                    "attack", "attack", "drain", "drain", "uppercut", "uppercut", "tacowall"
                     ],
                     buffs: [
                         {
@@ -2306,7 +2463,7 @@ module.exports = {
                     hpPerPartyMember: 0,
                     adPerPartyMember: 29,
                     mdPerPartyMember: 29,
-                    hp: 7800,
+                    hp: 11800,
                     attackDmg: 177,
                     magicDmg: 250,
                     armor: 2300,
@@ -2315,48 +2472,48 @@ module.exports = {
                     element: "normal"
                 },
                 {
-                    name: "Vampiric Minion",
-                    abilities: ["attack", "attack", "drain", "drain", "slash", "freeze"],
+                    name: "Vampiric Knight",
+                    abilities: ["attack", "attack", "drain", "drain", "uppercut", "uppercut", "freeze"],
                     buffs: [],
                     hpPerPartyMember: 130,
                     adPerPartyMember: 8,
                     mdPerPartyMember: 8,
-                    hp: 1350,
+                    hp: 2350,
                     attackDmg: 60,
                     magicDmg: 75,
                     armor: 1450,
                     spirit: 1370,
-                    difficulty: "easy",
+                    difficulty: "medium",
                     element: "normal"
                 },
                 {
-                    name: "Vampiric Minion",
-                    abilities: ["attack", "attack", "rockthrow", "rockthrow", "slash", "freeze"],
+                    name: "Vampiric Knight",
+                    abilities: ["attack", "attack", "drain", "drain", "uppercut", "uppercut", "freeze"],
                     buffs: [],
                     hpPerPartyMember: 130,
                     adPerPartyMember: 8,
                     mdPerPartyMember: 8,
-                    hp: 1350,
+                    hp: 2350,
                     attackDmg: 60,
                     magicDmg: 75,
                     armor: 1450,
                     spirit: 1370,
-                    difficulty: "easy",
+                    difficulty: "medium",
                     element: "normal"
                 },
                 {
-                    name: "Vampiric Minion",
-                    abilities: ["attack", "attack", "rockthrow", "rockthrow", "slash", "freeze"],
+                    name: "Vampiric Knight",
+                    abilities: ["attack", "attack", "drain", "drain", "uppercut", "uppercut", "freeze"],
                     buffs: [],
                     hpPerPartyMember: 130,
                     adPerPartyMember: 8,
                     mdPerPartyMember: 8,
-                    hp: 1350,
+                    hp: 2350,
                     attackDmg: 60,
                     magicDmg: 75,
                     armor: 1450,
                     spirit: 1370,
-                    difficulty: "easy",
+                    difficulty: "medium",
                     element: "normal"
                 }
             ],
@@ -2366,12 +2523,10 @@ module.exports = {
                     abilities: [
                         "attack",
                         "attack",
-                        "iceshards",
-                        "iceshards",
-                        "slash",
-                        "slash",
+                        "crush",
+                        "crush",
                         "poke",
-                        "shield"
+                        "weaken"
                     ],
                     buffs: [
                         {
@@ -2387,9 +2542,12 @@ module.exports = {
                     ],
                     endOfTurnEvents : [
                         "focus",
-                        "echo"
+                        "echo",
+                        "vampire75",
+                        "vampire50",
+                        "vampire25"
                     ],
-                    hp: 57600,
+                    hp: 54600,
                     attackDmg: 300,
                     magicDmg: 270,
                     armor: 2750,
@@ -2423,7 +2581,12 @@ module.exports = {
                             }
                         }
                     ],
-                    hp: 7600,
+                    // TODO: add end of turn aoe drain after 40%, drains 40% of current hp every turn, minimum of 75 dmg?
+                    // TODO: add a dot that lasts 6 turns every 8 turns, first turn deals no damage, then it deals 300 damage
+                    endOfTurnEvents : [
+                        "focus",
+                    ],
+                    hp: 47600,
                     attackDmg: 300,
                     magicDmg: 270,
                     armor: 1750,
@@ -2431,6 +2594,7 @@ module.exports = {
                     difficulty: "special",
                     element: "earth"
                 },
+                // TODO: 2 bosses must die within 2 turns of each other or they revive with full HP
                 {
                     name: "Frenzied Vampire",
                     abilities: [
@@ -2455,7 +2619,7 @@ module.exports = {
                             }
                         }
                     ],
-                    hp: 7600,
+                    hp: 17600,
                     attackDmg: 300,
                     magicDmg: 270,
                     armor: 1750,
@@ -2487,7 +2651,7 @@ module.exports = {
                             }
                         }
                     ],
-                    hp: 7600,
+                    hp: 17600,
                     attackDmg: 300,
                     magicDmg: 270,
                     armor: 1750,
@@ -2551,7 +2715,13 @@ module.exports = {
                             }
                         }
                     ],
-                    hp: 7600,
+                    // summon demons constantly, debuff 3 players curse dot with 3 turns damage??
+                    endOfTurnEvents : [
+                        "focus",
+                        "echo",
+                        "summonChupacabra"
+                    ],
+                    hp: 27600,
                     attackDmg: 300,
                     magicDmg: 270,
                     armor: 1750,
@@ -2645,7 +2815,22 @@ module.exports = {
                             }
                         }
                     ],
-                    hp: 7600,
+                    endOfTurnEvents : [
+                        "focus",
+                        "echo",
+                        "soulBurn",
+                        "totemOfDoom80",
+                        "totemOfDoom60",
+                        "totemOfDoom60",
+                        "totemOfDoom40",
+                        "totemOfDoom40",
+                        "totemOfDoom40",
+                        "totemOfDoom20",
+                        "totemOfDoom20",
+                        "totemOfDoom20",
+                        "totemOfDoom20",
+                    ],
+                    hp: 57600,
                     attackDmg: 300,
                     magicDmg: 270,
                     armor: 1750,
@@ -2660,11 +2845,11 @@ module.exports = {
                     hpPerPartyMember: 130,
                     adPerPartyMember: 8,
                     mdPerPartyMember: 8,
-                    hp: 350,
+                    hp: 2350,
                     attackDmg: 60,
                     magicDmg: 75,
-                    armor: 450,
-                    spirit: 370,
+                    armor: 1450,
+                    spirit: 1370,
                     difficulty: "easy",
                     element: "normal"
                 },
@@ -2675,11 +2860,11 @@ module.exports = {
                     hpPerPartyMember: 130,
                     adPerPartyMember: 8,
                     mdPerPartyMember: 8,
-                    hp: 350,
+                    hp: 2350,
                     attackDmg: 60,
                     magicDmg: 75,
-                    armor: 450,
-                    spirit: 370,
+                    armor: 1450,
+                    spirit: 1370,
                     difficulty: "easy",
                     element: "normal"
                 },
@@ -2690,11 +2875,11 @@ module.exports = {
                     hpPerPartyMember: 130,
                     adPerPartyMember: 8,
                     mdPerPartyMember: 8,
-                    hp: 350,
+                    hp: 2350,
                     attackDmg: 60,
                     magicDmg: 75,
-                    armor: 450,
-                    spirit: 370,
+                    armor: 1450,
+                    spirit: 1370,
                     difficulty: "easy",
                     element: "normal"
                 },
@@ -2705,11 +2890,11 @@ module.exports = {
                     hpPerPartyMember: 130,
                     adPerPartyMember: 8,
                     mdPerPartyMember: 8,
-                    hp: 350,
+                    hp: 2350,
                     attackDmg: 60,
                     magicDmg: 75,
-                    armor: 450,
-                    spirit: 370,
+                    armor: 1450,
+                    spirit: 1370,
                     difficulty: "easy",
                     element: "normal"
                 }
@@ -2739,6 +2924,7 @@ module.exports = {
                             }
                         }
                     ],
+                    //TODO: the evil exes are immune except for the first one, and then they become unimmune after every 3 turns starting at turn 5
                     hp: 7600,
                     attackDmg: 300,
                     magicDmg: 270,
