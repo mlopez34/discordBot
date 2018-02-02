@@ -7,7 +7,7 @@ var rpglib = require("./rpglib");
 var moment = require("moment");
 var _ = require("lodash");
 
-var RPG_COOLDOWN_HOURS = 3
+var RPG_COOLDOWN_HOURS = 0
 var activeRPGEvents = {};
 var activeRPGItemIds = {};
 var usersInRPGEvents = {};
@@ -23,7 +23,7 @@ module.exports.rpgInitialize = function(message, special){
     team.push(message.author);
 
     users.forEach(function(user){
-        if (team.length < TEAM_MAX_LENGTH  && discordUserId != user.id){
+        if (team.length < TEAM_MAX_LENGTH ){// && discordUserId != user.id){
             team.push(user);
         }
     })
@@ -675,14 +675,14 @@ module.exports.rpgReady = function(message, itemsAvailable, amuletItemsById){
                                                         id: partyMember.id,
                                                         name: partyMember.username,
                                                         username: partyMember.username,
-                                                        hp: 250 + (27 *  partyMemberStats.level ) + partyMemberHpPlus,
-                                                        attackDmg: 10 + (9 * partyMemberStats.level) + partyMemberAttackDmgPlus,
+                                                        hp: 250000 + (27 *  partyMemberStats.level ) + partyMemberHpPlus,
+                                                        attackDmg: 10000 + (9 * partyMemberStats.level) + partyMemberAttackDmgPlus,
                                                         magicDmg:  10 + (9 * partyMemberStats.level) + partyMemberMagicDmgPlus,
                                                         armor: 5 + (partyMemberStats.level * partyMemberStats.level) + partyMemberArmorPlus,
                                                         spirit: 5 + (partyMemberStats.level * partyMemberStats.level) + partyMemberSpiritPlus,
                                                         luck: 1 + partyMemberLuckPlus,
                                                         abilitiesMap : {},
-                                                        abilities: ["attack"],
+                                                        abilities: ["attack", "bandaid"],
                                                         passiveAbilities: [],
                                                         statuses: [],
                                                         statBuffs: {
@@ -2315,6 +2315,87 @@ function effectsOnDeath(event, member){
             if (rpgAbility && rpgAbility.buff){
                 
             }
+            ///// effect is a dot applied
+            if (rpgAbility && rpgAbility.dot){
+                if (rpgAbility.targetToApplyOn == "random"){
+                    var validCast = true;
+
+                    if (validCast){
+                        var untargettable = rpgAbility.untargettable;
+                        var abilityPicked = rpgAbility.abilityId
+                        var validTarget = false;
+                        var stuckCount = 0
+                        var target;
+
+                        while(!validTarget && stuckCount < 100){
+                            var targetFocusedMember = false;
+                            var targetRoll = Math.floor(Math.random() * event.members.length);
+                            var targetMember = event.members[targetRoll].id;
+                            if (stuckCount < 5){
+                                for (var member in event.members){
+                                    var idOfMemberBeingChecked = "rpg-" + event.members[member].id;
+                                    for (var statusToCheck in event.membersInParty[idOfMemberBeingChecked].statuses){
+                                        if (rpgAbility && rpgAbility.ignoreFocus){
+                                            console.log("ignoring focus for ability")
+                                            // IGNORE FOCUS EFFECT - check if the person being targetted by the ability is being focused by the caster
+                                            if ( (targetMember == event.members[member].id) 
+                                                &&  event.membersInParty[idOfMemberBeingChecked].statuses[statusToCheck].name == "Focus"
+                                                && event.membersInParty[idOfMemberBeingChecked].statuses[statusToCheck].focusedBy == idOfMember){
+                                                    targetFocusedMember = true;
+                                                }
+                                        }else{
+                                            // check if someone has focus on them if they do then the target should be the focused person 
+                                            if ( event.membersInParty[idOfMemberBeingChecked].statuses[statusToCheck].name == "Focus"
+                                                && event.membersInParty[idOfMemberBeingChecked].statuses[statusToCheck].focusedBy == idOfMember){
+                                                //target roll should be 
+                                                targetMember = event.members[member].id;
+                                                break;
+                                            }
+                                        }
+                                        
+                                    }
+                                }
+                            }
+                            
+                            if (event.membersInParty["rpg-"+targetMember].statuses.indexOf("dead") == -1){
+                                // valid target
+                                if (untargettable && !targetFocusedMember){
+                                    // check that no status contains the id of the ability which the player
+                                    // cannot be targetted by
+                                    target = "rpg-"+targetMember;
+                                    validTarget = true;
+                                    for ( var s in event.membersInParty["rpg-"+targetMember].statuses ){
+                                        var statusToCheck = event.membersInParty["rpg-"+targetMember].statuses[s];
+                                        if ( statusToCheck.abilityId == abilityPicked ){
+                                            validTarget = false;
+                                            target = undefined;
+                                        }
+                                    }
+                                    console.log(stuckCount)
+
+                                }else{
+                                    if (!targetFocusedMember){
+                                        target = "rpg-"+targetMember;
+                                        validTarget = true;
+                                        console.log("stuck count" + stuckCount)
+                                    }
+                                }
+                                
+                            }
+                            stuckCount++;
+                        }
+
+                        var abilityToProcess = {
+                            user: idOfMember,
+                            ability: abilityPicked,
+                            target: target
+                        }
+                        if (abilityToProcess.target != undefined){
+                            onDeathString = onDeathString  + processAbility(abilityToProcess, event);                                        
+                        }
+                    }
+                }
+            }
             ///// effect removes buff from enemy
             if (rpgAbility && rpgAbility.removeEnemyBuff){
                 for (var enemyToCheck in event.enemies){
@@ -2676,6 +2757,10 @@ function processPassiveEffects(event){
                             // player is dead, remove all statuses, add dead
                             passiveEffectsString = passiveEffectsString + hasDied(event, event.membersInParty[member]);
                             break;
+                        }
+                        // the dot increases in damage
+                        if ( event.membersInParty[member].statuses[index].dot.dmgIncreasePerTick ){
+                            event.membersInParty[member].statuses[index].dot.dmg = event.membersInParty[member].statuses[index].dot.dmg + event.membersInParty[member].statuses[index].dot.dmgIncreasePerTick
                         }
                         // remove dot after processing
                         if (event.membersInParty[member].statuses[index].dot.expireOnTurn == event.turn){
@@ -3252,6 +3337,7 @@ function processAbility(abilityObject, event){
     // check that the user of the ability is still alive
     var abilityCaster = abilityObject.user;
     var stillAlive = true;
+    var onDeathAbilityCast = rpgAbility.onDeathEffect
 
     var validAbility = true;
     // if ability has a cooldown, set cooldown to maxcooldown
@@ -3651,7 +3737,7 @@ function processAbility(abilityObject, event){
         }
     }
 
-    if (rpgAbility && rpgAbility.dot && stillAlive && validAbility){
+    if (rpgAbility && rpgAbility.dot && (stillAlive || onDeathAbilityCast) && validAbility){
         // dot has been applied
         // calculate the dot damage based on MD or AD, target armor, special buff
         var dotToAdd = {}
@@ -3962,6 +4048,48 @@ function processAbility(abilityObject, event){
                                     if (event.membersInParty[targetToDealDmg].hp <= 0){
                                         abilityToString = abilityToString + hasDied(event, event.membersInParty[targetToDealDmg]);
                                     }
+                                }
+                            }
+                        }
+                        if ((event.membersInParty[targetToRemoveFrom].statuses[status].dot
+                            && event.membersInParty[targetToRemoveFrom].statuses[status].dot.areaWideBuffOnRemove)){
+                            // process ability 
+                            var dotBeingRemoved = event.membersInParty[targetToRemoveFrom].statuses[status].dot
+                            var abilityIdOfBuff = event.membersInParty[targetToRemoveFrom].statuses[status].dot.areaWideBuffOnRemove
+                            
+                            if (abilityIdOfBuff == "burningAdrenaline"){
+                                // TODO: make a function to process this - processBurningAdrenaline
+                                for ( var m in event.membersInParty ){
+                                    // get the buffs for the user
+                                    var foundBurningAdrenaline = false;
+                                    for (var buff in event.membersInParty[m].buffs){
+                                        var buffToProcess = event.membersInParty[m].buffs[buff];
+                                        if (buffToProcess.abilityId == "burningAdrenaline"){
+                                            // manipulate it here
+                                            // calculate the number of ticks
+                                            var temp = dotBeingRemoved.expireOnTurn - event.turn
+                                            var ticks = dotBeingRemoved.turnsToExpire - temp;
+                                            // edit the multiplier
+                                            buffToProcess.multiplier = buffToProcess.multiplier + ( buffToProcess.multiplierPerDotTurn * ticks )
+
+                                            foundBurningAdrenaline = true;
+                                            break;
+                                        }
+                                    }
+                                    if (!foundBurningAdrenaline){
+                                        var buffBeingAdded = rpgAbilities[abilityIdOfBuff] ? JSON.parse(JSON.stringify(rpgAbilities[abilityIdOfBuff])) : undefined;
+                                        if (buffBeingAdded){
+                                            var statusToAdd = buffBeingAdded.buff;
+                                            let buffCloned = Object.assign({}, statusToAdd);
+                                            var temp = dotBeingRemoved.expireOnTurn - event.turn
+                                            var ticks = dotBeingRemoved.turnsToExpire - temp;
+
+                                            // edit the multiplier
+                                            buffCloned.multiplier = buffCloned.multiplier + ( buffCloned.multiplierPerDotTurn * ticks )
+                                            event.membersInParty[m].buffs.push(buffCloned);
+                                        }
+                                    }
+
                                 }
                             }
                         }

@@ -695,7 +695,7 @@ function handleTimeMachineArtifactStageTwo(message, discordUserId, stage, team, 
             var descriptionString = exports.questStringBuilder("timetravel", questData);
             embed.setDescription(descriptionString)
             sentMessage.edit({embed})
-        }, 5000);
+        }, 500);
         
         var storytell = setTimeout (function(){ 
             questData.storyStep = questData.storyStep + 1;
@@ -703,12 +703,12 @@ function handleTimeMachineArtifactStageTwo(message, discordUserId, stage, team, 
             embed.setDescription(descriptionString)
             sentMessage.edit({embed})
 
-        }, 10000);
+        }, 1000);
 
         var storytell = setTimeout (function(){ 
             rpg.rpgInitialize(message, special);
             playMusicForQuest(channel, "genghisKhan")
-        }, 15000);
+        }, 1500);
     })
 }
 

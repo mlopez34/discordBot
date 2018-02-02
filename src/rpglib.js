@@ -855,7 +855,6 @@ module.exports = {
                 emoji: "☢️",
                 turnsToExpire: 7,
                 count: 0,
-                //TODO: create another ability that keeps count of # of stacks of radioactive
                 abilityId: "radioactive",
                 special: "after being healed 4 times you will explode for 1500 magic damage"
             }
@@ -918,6 +917,16 @@ module.exports = {
         /*
         endOfTurnEvents
         */
+        archvampireRevive: {
+            belongsToEvent: true,
+            name: "Ressurection",
+            abilityId: "archvampireRevive",
+            reviveCheck: [
+                "Frenzied Vampire",
+                "Blood King"
+            ],
+            afterNTurnsFirstDeath: 3
+        },
         echo: {
             dmgaura: true,
             belongsToEvent: true,
@@ -945,6 +954,44 @@ module.exports = {
                 dmg: 550,
                 adPercentage: 0.1,
                 type: "physical"
+            }
+        },
+        radiation: {
+            onDeathEffect: true,
+            effectDone: false,
+            processAbility: true,
+            ignoreFocus: true,
+            targetToApplyOn: "random",
+            name:"Radiation",
+            abilityId: "radiation",
+            type:"shadow",
+            dot: {
+                dotApplyOnDeath: true,
+                areaWideBuffOnRemove: "burningAdrenaline",
+                name: "Radiation",
+                abilityId: "radiation",
+                type:"shadow",
+                dmg: 400,
+                mdPercentage: 0.1,
+                dmgIncreasePerTick: 300,
+                emoji: "✴️",
+                dmgOnDotApply: false,
+                turnsToExpire: 99,
+                dmgOnDotExpire: false,
+                dmgOnExpire: 0
+            }
+        },
+        burningAdrenaline: {
+            name: "Burning Adrenaline",
+            abilityId: "burningAdrenaline",
+            buff: {
+                name: "Burning Adrenaline",
+                abilityId: "burningAdrenaline",
+                emoji: "💥",
+                affects: ["attackDmg", "magicDmg"],
+                multiplier: 1.0,
+                multiplierPerDotTurn: 0.2,
+                checkDotMultiplierPerDotTurn: "radiation"
             }
         },
         /*
@@ -1903,6 +1950,10 @@ module.exports = {
                             }
                         }
                     ],
+                    effectsOnDeath: [
+                        "explode",
+                        "radiation"
+                    ],
                     hp: 8500,
                     attackDmg: 155,
                     magicDmg: 100,
@@ -1920,6 +1971,10 @@ module.exports = {
                         "rockthrow",
                         "drain",
                         "tacowall"
+                    ],
+                    effectsOnDeath: [
+                        "explode",
+                        "radiation"
                     ],
                     buffs: [],
                     hp: 6000,
@@ -1941,7 +1996,8 @@ module.exports = {
                         "weaken"
                     ],
                     effectsOnDeath: [
-                        "explode"
+                        "explode",
+                        "radiation"
                     ],
                     buffs: [],
                     hp: 6000,
@@ -2203,7 +2259,8 @@ module.exports = {
                         }
                     ],
                     //TODO: when an enemy minion dies player receives dot that grows 200, 400, 600, 800, 1000, 1200,
-                    // for every tick lived, the player gets + 20% damage, 
+                    // for every tick lived, the group gets + 20% damage, 
+                    // supernova every 5 turns after 10 turns, deals 1200 damage
                     endOfTurnEvents : [
                         "focus",
                         "echo",
@@ -2239,6 +2296,9 @@ module.exports = {
                             }
                         }
                     ],
+                    effectsOnDeath: [
+                        "radiation"
+                    ],
                     hp: 27600,
                     attackDmg: 300,
                     magicDmg: 270,
@@ -2268,6 +2328,9 @@ module.exports = {
                                 startTurn: 2
                             }
                         }
+                    ],
+                    effectsOnDeath: [
+                        "radiation"
                     ],
                     hp: 27600,
                     attackDmg: 300,
@@ -2299,6 +2362,9 @@ module.exports = {
                                 startTurn: 2
                             }
                         }
+                    ],
+                    effectsOnDeath: [
+                        "radiation"
                     ],
                     hp: 15600,
                     attackDmg: 300,
@@ -2585,6 +2651,7 @@ module.exports = {
                     // TODO: add a dot that lasts 6 turns every 8 turns, first turn deals no damage, then it deals 300 damage
                     endOfTurnEvents : [
                         "focus",
+                        "archvampireRevive"
                     ],
                     hp: 47600,
                     attackDmg: 300,
@@ -3707,12 +3774,10 @@ module.exports = {
                         ],
                         endOfTurnEvents : [
                             "focus", "summonEnergyCrystalsA",
-                            // TODO: Randomize summoning of crystals
                             "summonEnergyCrystalsB", "summonEnergyCrystalsC", "summonEnergyCrystalsD",
                             "summonEnergyCrystalsE", "summonEnergyCrystalsF",
                             "absorbEnergyCrystals", 
                             "rocketStrike",
-                            // TODO: give energy core +dmg to the boss
                             "summonEnergyCore", 
                             "furnace", "furnace",
                             "dismantle", "dismantle",
