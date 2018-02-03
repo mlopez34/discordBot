@@ -263,6 +263,17 @@ client.on('message', function(message){
             else if (commandIs("ready", message)){
                 message.channel.send("use the rpg channel for this")
             }
+            if (commandIs("timetravel", message)){
+                    
+                var channelName;
+                client.channels.forEach(function(channel){
+                    if (channel.type == "voice" && channel.name == "General"){
+                        channelName = channel;
+                    }
+                })
+
+                commands.timeTravelCommand(message, args, channelName);
+            }
             else if (commandIs("propose", message)){
                     
                 var channelName;

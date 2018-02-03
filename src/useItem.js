@@ -6,56 +6,32 @@ var reputation = require("./reputation.js")
 module.exports.useRock = function(message, mentionedUserId, rockToUse, tacosInUse, cb){
     //use the rock at the user
     // create the roll
-    var successThrowRockRoll = Math.floor(Math.random() * 100) + 1;
-    var knockTacoOff = false;
-    if (successThrowRockRoll > 1){
-        knockTacoOff = true
-    }
-    // console.log(successThrowRockRoll)
-    // get the mentionedUser's inventory
-    if (mentionedUserId && knockTacoOff){
-        profileDB.getUserProfileData( mentionedUserId, function(err, getProfileResponse) {
-            if(err){
-                 // user does not exist
-                 // console.log(err);
-                 cb(err);
-            }
-            else{
-                var protection = getProfileResponse.data.protect;
-                // if protection then drop protection by 1
-                if (protection && protection > 0){
-                    profileDB.updateUserProtect(mentionedUserId, -1, protection, function(updateerr, updateResponse) {
-                        if (updateerr){
-                            // console.log(updateerr);
-                            cb(updateerr);
-                        }
-                        else{
-                            // console.log(updateResponse);
-                            profileDB.updateItemStatus(rockToUse.id, "used", function(updateRockStatusErr, updateRockStatusRes){
-                                if (updateRockStatusErr){
-                                    // console.log(updateRockStatusErr);
-                                    cb(updateRockStatusErr);
-                                }
-                                else{
-                                    // console.log(updateRockStatusRes);
-                                    cb(null, "protection")
-                                }
-                            })
-                        }
-                    })
+    if (rockToUse.length == 1){
+        var successThrowRockRoll = Math.floor(Math.random() * 100) + 1;
+        var knockTacoOff = false;
+        if (successThrowRockRoll > 1){
+            knockTacoOff = true
+        }
+        // console.log(successThrowRockRoll)
+        // get the mentionedUser's inventory
+        if (mentionedUserId && knockTacoOff){
+            profileDB.getUserProfileData( mentionedUserId, function(err, getProfileResponse) {
+                if(err){
+                    // user does not exist
+                    // console.log(err);
+                    cb(err);
                 }
-                else if (!protection || getProfileResponse.data.protect == 0){
-                    // user has no protecton, drop tacos
-                    // update the mentioned user's tacos if they have tacos to drop
-                    if (getProfileResponse.data.tacos > 0){
-                        profileDB.updateUserTacos(mentionedUserId, -10, function(updateerr, updateResponse) {
+                else{
+                    var protection = getProfileResponse.data.protect;
+                    // if protection then drop protection by 1
+                    if (protection && protection > 0){
+                        profileDB.updateUserProtect(mentionedUserId, -1, protection, function(updateerr, updateResponse) {
                             if (updateerr){
                                 // console.log(updateerr);
                                 cb(updateerr);
                             }
                             else{
                                 // console.log(updateResponse);
-                                // update users Inventory - remove a rock - mark the rock as used
                                 profileDB.updateItemStatus(rockToUse.id, "used", function(updateRockStatusErr, updateRockStatusRes){
                                     if (updateRockStatusErr){
                                         // console.log(updateRockStatusErr);
@@ -63,22 +39,123 @@ module.exports.useRock = function(message, mentionedUserId, rockToUse, tacosInUs
                                     }
                                     else{
                                         // console.log(updateRockStatusRes);
-                                        cb(null, "success")
+                                        cb(null, "protection")
                                     }
                                 })
                             }
                         })
                     }
-                    else{
-                        cb("user doesn't have tacos to drop");
+                    else if (!protection || getProfileResponse.data.protect == 0){
+                        // user has no protecton, drop tacos
+                        // update the mentioned user's tacos if they have tacos to drop
+                        if (getProfileResponse.data.tacos > 0){
+                            profileDB.updateUserTacos(mentionedUserId, -10, function(updateerr, updateResponse) {
+                                if (updateerr){
+                                    // console.log(updateerr);
+                                    cb(updateerr);
+                                }
+                                else{
+                                    // console.log(updateResponse);
+                                    // update users Inventory - remove a rock - mark the rock as used
+                                    profileDB.updateItemStatus(rockToUse.id, "used", function(updateRockStatusErr, updateRockStatusRes){
+                                        if (updateRockStatusErr){
+                                            // console.log(updateRockStatusErr);
+                                            cb(updateRockStatusErr);
+                                        }
+                                        else{
+                                            // console.log(updateRockStatusRes);
+                                            cb(null, "success")
+                                        }
+                                    })
+                                }
+                            })
+                        }
+                        else{
+                            cb("user doesn't have tacos to drop");
+                        }
                     }
                 }
-            }
-        })
-    }
-    else{
-        // console.log(successThrowRockRoll)
-        cb("failed")
+            })
+        }
+        else{
+            // console.log(successThrowRockRoll)
+            cb("failed")
+        }
+    }else if (rockToUse.length == 10){
+        var discordUserId = mentionedUserId;
+        var rollRockAmulet = Math.floor(Math.random() * 1000) + 1;
+        // console.log(rollRockAmulet);
+        if (rollRockAmulet >= 990){
+            // add an amulet item to user's inventory from all the rares
+            // roll for a rare
+            // console.log(listOfRares);
+            var indexOfRare = Math.floor(Math.random() * listOfRares.length);
+            var rareWon = [listOfRares[indexOfRare]];
+            profileDB.addNewItemToUser(discordUserId, rareWon, function(error, response){
+                if (error){
+                    // console.log("couldnt add item");
+                    cb("error");
+                }
+                else{
+                    // added item, use the terry cloths
+                    profileDB.bulkUpdateItemStatus(rockToUse, "used", function(updateBulkErr, updateBulkRes){
+                        if (updateBulkErr){
+                            // console.log(updateBulkErr);
+                            cb(updateBulkErr);
+                        }
+                        else{
+                            // console.log(updateBulkRes);
+                            cb(null, rareWon);
+                        }
+                    })
+                }
+            });
+        }
+        else if (rollRockAmulet >= 600){
+            // add tacos to user
+            profileDB.updateUserTacos(discordUserId, 50, function(tacosError, tacosRes){
+                if (tacosError){
+                    console.log(tacosError);
+                    cb(tacosError);
+                }
+                else{
+                    console.log(tacosRes);
+                    profileDB.bulkUpdateItemStatus(rockToUse, "used", function(updateBulkErr, updateBulkRes){
+                        if (updateBulkErr){
+                            // console.log(updateBulkErr);
+                            cb(updateBulkErr);
+                        }
+                        else{
+                            // console.log(updateBulkRes);
+                            cb(null, 50)
+                        }
+                    })
+                }
+            })
+            
+        }
+        else{
+            // add tacos to user
+            profileDB.updateUserTacos(discordUserId, 20, function(tacosError, tacosRes){
+                if (tacosError){
+                    // console.log(tacosError);
+                    cb(tacosError);
+                }
+                else{
+                    // console.log(tacosRes);
+                    profileDB.bulkUpdateItemStatus(rockToUse, "used", function(updateBulkErr, updateBulkRes){
+                        if (updateBulkErr){
+                            // console.log(updateBulkErr);
+                            cb(updateBulkErr);
+                        }
+                        else{
+                            // console.log(updateBulkRes);
+                            cb(null, 20)
+                        }
+                    })
+                }
+            })
+        }
     }
 }
 

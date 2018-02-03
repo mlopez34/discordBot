@@ -3579,6 +3579,112 @@ module.exports.useCommand = function(message, args){
     if (NeedsToAgree[discordUserId] && NeedsToAgree[discordUserId].hasNotAgreed){
         message.channel.send("You have not agreed to the terms yet!")
     }
+    else if (args && args.length > 1 && args[1].toLowerCase() == "rock" && !mentionedUser){
+        // create a rare item (chance) if not then receive tacos
+        profileDB.getUserItems(discordUserId, function(error, inventoryResponse){
+            if (error){
+                // console.log(error);
+                agreeToTerms(message, discordUserId);
+            }
+            else{
+                 // map of user's inventory
+                var itemsInInventoryCountMap = {};
+                // map of all items
+                var itemsMapbyId = {};
+
+                // array of item objects for using piece of wood
+                var rocksToUse = []
+                var listOfAmulets = []
+                profileDB.getItemData(function(itemDataError, allItemsResponse){
+                    if (itemDataError){
+                        // console.log(itemDataError);
+                    }
+                    else{
+                        //// console.log(allItemsResponse.data);
+                        for (var item in inventoryResponse.data){
+                            // check the rock hasnt been used
+                            var validItem = useItem.itemValidate(inventoryResponse.data[item]);
+                            var itemBeingAuctioned = false;
+                            if (itemsInAuction[inventoryResponse.data[item].id]){
+                                itemBeingAuctioned = true;
+                            }
+                            var itemBeingTraded = false;
+                            if (activeTradeItems[inventoryResponse.data[item].id]){
+                                itemBeingTraded = true;
+                            }
+                            if (!itemsInInventoryCountMap[inventoryResponse.data[item].itemid] 
+                                && validItem && !itemBeingTraded && !itemBeingAuctioned){
+                                // item hasnt been added to be counted, add it as 1
+                                itemsInInventoryCountMap[inventoryResponse.data[item].itemid] = 1;
+
+                                if (inventoryResponse.data[item].itemid == ROCK_ITEM_ID && rocksToUse.length <= 10){
+                                    // make this the rock use
+                                    rocksToUse.push(inventoryResponse.data[item]);
+                                }
+                            }
+                            else if (validItem && !itemBeingTraded && !itemBeingAuctioned){
+                                itemsInInventoryCountMap[inventoryResponse.data[item].itemid] = itemsInInventoryCountMap[inventoryResponse.data[item].itemid] + 1;
+                                if (inventoryResponse.data[item].itemid == ROCK_ITEM_ID && rocksToUse.length < 10){
+                                    // make this the rock use
+                                    rocksToUse.push(inventoryResponse.data[item]);
+                                }
+                            }
+                        }
+
+                        // console.log(itemsInInventoryCountMap);
+                        for (var index in allItemsResponse.data){
+                            itemsMapbyId[allItemsResponse.data[index].id] = allItemsResponse.data[index];
+                            // console.log(allItemsResponse.data[index]);
+                            if (allItemsResponse.data[index].itemraritycategory == "amulet" && allItemsResponse.data[index].amuletsource == "scavenge"){
+                                // add to list of rares
+                                listOfAmulets.push(allItemsResponse.data[index]);
+                            }
+                        }
+                        // console.log(rocksToUse.length);
+                        // 
+                        if (rocksToUse.length == 10){
+                            // able to use those 20 pieces
+                            useItem.useRock(message, discordUserId, rocksToUse, listOfAmulets, function(useError, useRes){
+                                if (useError){
+                                    // couldnt update the user protect
+                                    // console.log(useError);
+                                }
+                                else{
+                                    // console.log(useRes[0]);
+                                    if (useRes.length && useRes.length > 0 && useRes[0].itemname){
+                                        message.channel.send(message.author + " has polished a **" + useRes[0].itemname + "** -" + "`" + useRes[0].itemdescription + ", " + useRes[0].itemslot + ", " + useRes[0].itemstatistics + "`");
+                                    }
+                                    else if (useRes == 50){
+                                        message.channel.send(message.author + " polished something that Bender really likes, Bender gave you `50` tacos :taco:");
+                                    }
+                                    else if (useRes == 20){
+                                        message.channel.send(message.author + " polished something that Bender likes, Bender gave you `20` tacos :taco:");
+                                    }
+                                    var timeout = setTimeout (function(){ 
+                                        experience.gainExperience(message, message.author, EXPERIENCE_GAINS.useCommonItemFive);
+                                        stats.statisticsManage(discordUserId, "polishcount", 1, function(staterr, statSuccess){
+                                            if (staterr){
+                                                // console.log(staterr);
+                                            }
+                                            else{
+                                                // check achievements??
+                                                // console.log(statSuccess);
+                                                getProfileForAchievement(discordUserId, message) 
+                                            }
+                                        })
+                                    }, 1000);
+                                }
+                            });
+                        }
+                        else{
+                            message.channel.send(message.author + " you need at least `10` rocks to polish something shiny");
+                        }
+                    }
+                })
+            }
+        })
+    }
+
     else if (args && args.length > 1 && args[1].toLowerCase() == "rock"){
         if (mentionedUser && !mentionedUser.bot && mentionedId != message.author.id){
             // use rock
@@ -4171,7 +4277,6 @@ module.exports.combineCommand = function(message, args){
                                 if (rarityOfMyItem && rarityOfMyItem == "artifact"){
                                     // take the ids of the other 2 artifacts + artifact recipe and push them onto itemsBeingCombined array
                                     
-                                    /*
                                     var artifactId = ARTIFACT_RECIPE_ID
                                     var recipeAdded = false;
                                     var firstArtifact = itemsMapbyShortName[myItemShortName] ? itemsMapbyShortName[myItemShortName].firstartifact : undefined; 
@@ -4224,6 +4329,15 @@ module.exports.combineCommand = function(message, args){
                                                         }else{
                                                             // console.log(combineRes);
                                                             // embed showing the questline has begun
+                                                            profileDB.getUserProfileData(discordUserId, function(profileErr, profileRes){
+                                                                if (profileErr){
+                                                                    console.log(profileErr)
+                                                                    message.channel.send("something wrong in getting user profile")
+                                                                }else{
+                                                                    var data = { achievements: profileRes.data.achievements, itemraritycombined: "artifact"}
+                                                                    achiev.checkForAchievements(discordUserId, data, message)
+                                                                }
+                                                            })
                                                             var questData = {
                                                                 stage: "start"
                                                             }
@@ -4238,7 +4352,7 @@ module.exports.combineCommand = function(message, args){
                                             message.channel.send("You do not have all the items required to combine")
                                         }
                                     }
-                                    */
+                                    
                                 }
                                 else if (itemsInInventoryCountMap[idOfMyItem] && 
                                     itemsInInventoryCountMap[idOfMyItem] >= itemCount){
@@ -4349,7 +4463,7 @@ module.exports.proposeCommand = function(message, channel){
                     var team = []
                     quest.questHandler(message, discordUserId, "ring", stage, team, questData, channel)
                 }
-                if (stage >= 2 && stage <= 4){
+                if (stage >= 2 && stage <= 5){
                     // create a mission in quest for the user with proposedTo and the data depending on what stage they are on
                     quest.proposedTo(message, discordUserId, stage, mentionedUser)
                 }
@@ -4428,7 +4542,7 @@ module.exports.exploreTombCommand = function(message, args, channel){
         }
     }
     // TODO: change this to 5
-    if (team.length == 1){
+    if (team.length > 1 && team.length <= 5){
         profileDB.getUserProfileData(discordUserId, function(profileErr, profileData){
             if (profileErr){
                 console.log (profileErr);
@@ -4493,7 +4607,7 @@ module.exports.ritualCommand = function(message, args, channel){
             validTeam = false;
         }
     }
-    if (team.length == 1){
+    if (team.length > 1 && team.length <= 5){
         profileDB.getUserProfileData(discordUserId, function(profileErr, profileData){
             if (profileErr){
                 console.log (profileErr);
@@ -4940,7 +5054,7 @@ module.exports.putonCommand = function(message, args, retry){
     // if replacing an item, it requires 1 command use for it to take effect
     var discordUserId = message.author.id;
     if (args && args.length >= 3 && !retry){
-        var slot = args[1]; // must be a number between 1 and 3
+        var slot = args[1]; // must be a number between 1 and 4
         var itemToWear = args[2]; // must be a valid itemname
         // get the user's wear information, then get their item information, 
         // check user doesnt have the same slot category in 1 and 3, if so then valid command, update slot 2 with all the info for sundress
@@ -5369,7 +5483,7 @@ module.exports.auctionCommand = function(message, args){
                                         // take tax on the item if the item is over 15 tacos
                                         var initialTacoTax = 0;
                                         if (tacosWon > 50){
-                                            initialTacoTax = Math.floor(tacosWon * 0.05);
+                                            initialTacoTax = Math.floor(tacosWon * 0.1);
                                         }
                                         else if (tacosWon >= 5 && tacosWon <= 50){
                                             initialTacoTax = Math.floor(tacosWon * 0.1);

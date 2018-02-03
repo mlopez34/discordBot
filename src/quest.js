@@ -285,9 +285,9 @@ module.exports.questStringBuilder = function(questname, questData){
             if (questData && questData.storyStep == 1){
                 return questData.message.author.username + ", you must show your love the hard way..."
             }else if (questData && questData.storyStep == 2){
-                return questData.message.author.username + ", you must show your love the hard way, give your soulmate 20,000 tacos"
+                return questData.message.author.username + ", you must show your love the hard way, give your soulmate 100,000 tacos"
             }else if (questData && questData.storyStep == 3){
-                return questData.message.author.username + ", you must show your love the hard way, give your soulmate 20,000 tacos ❤️❤️❤️ "
+                return questData.message.author.username + ", you must show your love the hard way, give your soulmate 100,000 tacos ❤️❤️❤️ "
             }
         }
         // gave 20,000 tacos
@@ -488,7 +488,7 @@ function handleRingArtifact(message, discordUserId, stage, team, questData, chan
     fight the evil exes
     ring:
     -stage 1 = * (mission)propose to a member
-    -stage 2 = * (mission)give them 20000 tacos
+    -stage 2 = * (mission)give them 100000 tacos
     -stage 3 = * (mission)thank and sorry them
     -stage 4 = (embed)react to the embed with hearts
     -stage 5 = * (rpg)defeat the 7 evil exes
@@ -695,7 +695,7 @@ function handleTimeMachineArtifactStageTwo(message, discordUserId, stage, team, 
             var descriptionString = exports.questStringBuilder("timetravel", questData);
             embed.setDescription(descriptionString)
             sentMessage.edit({embed})
-        }, 500);
+        }, 5000);
         
         var storytell = setTimeout (function(){ 
             questData.storyStep = questData.storyStep + 1;
@@ -703,12 +703,12 @@ function handleTimeMachineArtifactStageTwo(message, discordUserId, stage, team, 
             embed.setDescription(descriptionString)
             sentMessage.edit({embed})
 
-        }, 1000);
+        }, 10000);
 
         var storytell = setTimeout (function(){ 
             rpg.rpgInitialize(message, special);
             playMusicForQuest(channel, "genghisKhan")
-        }, 1500);
+        }, 15000);
     })
 }
 
@@ -1123,8 +1123,8 @@ function handleDemonicArtifactStageOne(message, discordUserId, stage, team, chan
             }
             
             if (allMembersCollected){
-                //var ritualPositionComplete = handleRitualStandingMission(mission)
-                mission.ritualPositions = [3, 5, 8, 10, 12] // FOR TESTING
+                var ritualPositionComplete = handleRitualStandingMission(mission)
+                //mission.ritualPositions = [3, 5, 8, 10, 12] // FOR TESTING
                 var ritualPositionComplete = handleRitualStandingMission(mission)
                 if (ritualPositionComplete){
                     supplies.stop("Ritual Complete")
@@ -1542,7 +1542,7 @@ function handleRingArtifactStageOne(message, discordUserId, stage, team, propose
                 if (error){
                     console.log(error);
                 }else{
-                    activeMissions["quest-" + discordUserId] = { tacosToGive: 20000  , proposedTo: proposedTo }
+                    activeMissions["quest-" + discordUserId] = { tacosToGive: 100000  , proposedTo: proposedTo }
                     if (activeQuests[idOfQuest]){
                         delete activeQuests[idOfQuest];
                     }
@@ -1584,7 +1584,7 @@ function handleRingArtifactStageTwo(message, discordUserId, stage, team, giveAmo
                     var descriptionString = exports.questStringBuilder("ring", questData);
                     embed.setDescription(descriptionString)
                     sentMessage.edit({embed})
-                }, 5000);
+                }, 500);
 
                 var idOfQuest = "quest-" + sentMessage.id;
                 
@@ -2281,7 +2281,7 @@ function handleTombArtifactStageSix(message, discordUserId, stage, team, channel
 module.exports.proposedTo = function(message, discordUserId, stage, proposedTo){
     if (stage == 2){
         // re propose and create embed that the user needs to give tacos
-        activeMissions["quest-" + discordUserId] = { tacosToGive: 20000  , proposedTo: proposedTo }
+        activeMissions["quest-" + discordUserId] = { tacosToGive: 100000  , proposedTo: proposedTo }
         message.channel.send(message.author + " has proposed to " + proposedTo)
 
     }else if (stage == 3){
@@ -2472,6 +2472,7 @@ function playMusicForQuest(channel, questName){
     if (channel){
         voiceChannel = channel
         var ytLink = youtubeLinks[questName]
+        /*
         if (ytLink){
             voiceChannel.join().then(function(connection){
                 stream = ytdl(ytLink, {
@@ -2484,6 +2485,7 @@ function playMusicForQuest(channel, questName){
                 })
             })
         }
+        */
     }
 }
 
