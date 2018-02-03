@@ -2006,6 +2006,9 @@ function effectsOnTurnEnd(event){
                                         }
                                     }
                                 }
+                                if (eotEvent.eotMessage){
+                                    endOfTurnString = endOfTurnString + eotEvent.eotMessage + "\n"
+                                }
                             }
                             eotEvent.currentTurn++;
                         }
@@ -2173,6 +2176,41 @@ function effectsOnTurnEnd(event){
                     }
                 }
             }
+            // event is ressurrection after N turns
+            if (event.endOfTurnEvents[index].reviveCheck){
+                var enemiesToCheckIfDead = event.endOfTurnEvents[index].reviveCheck
+                var enemiesAlive = enemiesToCheckIfDead.length;
+                for (var e in enemiesToCheckIfDead){
+                    // if both are alive, or if both are dead, do nothing do nothing
+                    for (var k in event.enemies){
+                        if ( event.enemies[k].name == enemiesToCheckIfDead[e] && event.enemies[k].statuses.indexOf("dead") != -1){
+                            // enemy checked is dead
+                            enemiesAlive--
+                        }
+                    }
+                }
+
+                if ( !(enemiesAlive == 0 || enemiesAlive == enemiesToCheckIfDead.length) ){
+                    event.endOfTurnEvents[index].currentTurnsAfterFirstDeath++
+                }
+                if (event.endOfTurnEvents[index].currentTurnsAfterFirstDeath >= event.endOfTurnEvents[index].afterNTurnsFirstDeath){
+                    // revive the dead enemies in enemiesToCheckIfDead
+                    for (var e in enemiesToCheckIfDead){
+                        for (var k in event.enemies){
+                            if ( event.enemies[k].name == enemiesToCheckIfDead[e] && event.enemies[k].statuses.indexOf("dead") != -1){
+                                var deadIndex = event.enemies[k].statuses.indexOf("dead")
+                                var targetToReviveName = event.enemies[k].name
+                                hasRevived(event.enemies[k], deadIndex, .75)
+                                endOfTurnString = endOfTurnString + targetToReviveName + " has been Ressurrected \n" 
+                            }
+                        }
+                        
+                    }
+                    event.endOfTurnEvents[index].currentTurnsAfterFirstDeath = 0
+                }
+            }
+            // event is message
+            
             // event is focus
 
             // event is an aoe aura heal
@@ -2574,6 +2612,52 @@ function processYellowEnergyCrystal(event, active){
             }
         }
     }
+}
+
+function processBurningAdrenaline(event, dotBeingRemoved, abilityIdOfBuff){
+    var burningAdrenalineString = ""
+    var stacksOfAdrenaline = 0;
+    var adrenalineBuffObject;
+    for ( var m in event.membersInParty ){
+        // get the buffs for the user
+        var foundBurningAdrenaline = false;
+        for (var buff in event.membersInParty[m].buffs){
+            var buffToProcess = event.membersInParty[m].buffs[buff];
+            if (buffToProcess.abilityId == "burningAdrenaline"){
+                // manipulate it here
+                // calculate the number of ticks
+                adrenalineBuffObject = buffToProcess;
+                var temp = dotBeingRemoved.expireOnTurn - event.turn
+                var ticks = dotBeingRemoved.turnsToExpire - temp;
+                stacksOfAdrenaline = ticks;
+                // edit the multiplier
+                buffToProcess.multiplier = buffToProcess.multiplier + ( buffToProcess.multiplierPerDotTurn * ticks )
+
+                foundBurningAdrenaline = true;
+                break;
+            }
+        }
+        if (!foundBurningAdrenaline){
+            var buffBeingAdded = rpgAbilities[abilityIdOfBuff] ? JSON.parse(JSON.stringify(rpgAbilities[abilityIdOfBuff])) : undefined;
+            if (buffBeingAdded){
+                var statusToAdd = buffBeingAdded.buff;
+                let buffCloned = Object.assign({}, statusToAdd);
+                var temp = dotBeingRemoved.expireOnTurn - event.turn
+                var ticks = dotBeingRemoved.turnsToExpire - temp;
+                stacksOfAdrenaline = ticks
+                adrenalineBuffObject = buffCloned;
+                // edit the multiplier
+                buffCloned.multiplier = buffCloned.multiplier + ( buffCloned.multiplierPerDotTurn * ticks )
+                event.membersInParty[m].buffs.push(buffCloned);
+            }
+        }
+    }
+    if (adrenalineBuffObject){
+        var percentageGain = stacksOfAdrenaline * adrenalineBuffObject.multiplierPerDotTurn * 100
+        burningAdrenalineString = "The group gains Burning Adrenaline + " + percentageGain.toFixed() + "% 🗡 , ☄️\n"
+    }
+    
+    return burningAdrenalineString
 }
 
 function removeRadiactive(event){
@@ -4058,39 +4142,7 @@ function processAbility(abilityObject, event){
                             var abilityIdOfBuff = event.membersInParty[targetToRemoveFrom].statuses[status].dot.areaWideBuffOnRemove
                             
                             if (abilityIdOfBuff == "burningAdrenaline"){
-                                // TODO: make a function to process this - processBurningAdrenaline
-                                for ( var m in event.membersInParty ){
-                                    // get the buffs for the user
-                                    var foundBurningAdrenaline = false;
-                                    for (var buff in event.membersInParty[m].buffs){
-                                        var buffToProcess = event.membersInParty[m].buffs[buff];
-                                        if (buffToProcess.abilityId == "burningAdrenaline"){
-                                            // manipulate it here
-                                            // calculate the number of ticks
-                                            var temp = dotBeingRemoved.expireOnTurn - event.turn
-                                            var ticks = dotBeingRemoved.turnsToExpire - temp;
-                                            // edit the multiplier
-                                            buffToProcess.multiplier = buffToProcess.multiplier + ( buffToProcess.multiplierPerDotTurn * ticks )
-
-                                            foundBurningAdrenaline = true;
-                                            break;
-                                        }
-                                    }
-                                    if (!foundBurningAdrenaline){
-                                        var buffBeingAdded = rpgAbilities[abilityIdOfBuff] ? JSON.parse(JSON.stringify(rpgAbilities[abilityIdOfBuff])) : undefined;
-                                        if (buffBeingAdded){
-                                            var statusToAdd = buffBeingAdded.buff;
-                                            let buffCloned = Object.assign({}, statusToAdd);
-                                            var temp = dotBeingRemoved.expireOnTurn - event.turn
-                                            var ticks = dotBeingRemoved.turnsToExpire - temp;
-
-                                            // edit the multiplier
-                                            buffCloned.multiplier = buffCloned.multiplier + ( buffCloned.multiplierPerDotTurn * ticks )
-                                            event.membersInParty[m].buffs.push(buffCloned);
-                                        }
-                                    }
-
-                                }
+                                abilityToString = abilityToString + processBurningAdrenaline( event, dotBeingRemoved, abilityIdOfBuff  )
                             }
                         }
                     }

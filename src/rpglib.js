@@ -922,10 +922,11 @@ module.exports = {
             name: "Ressurection",
             abilityId: "archvampireRevive",
             reviveCheck: [
-                "Frenzied Vampire",
-                "Blood King"
+                "Jebe",
+                "Muqali"
             ],
-            afterNTurnsFirstDeath: 3
+            afterNTurnsFirstDeath: 4,
+            currentTurnsAfterFirstDeath: 0
         },
         echo: {
             dmgaura: true,
@@ -940,6 +941,15 @@ module.exports = {
                 dmg: 85,
                 type: "physical"
             }
+        },
+        suckBlood: {
+            belongsToMember: true,
+            name: "Suck Blood",
+            abilityId: "suckBlood",
+            currentHealthPercentageDamage: 0.4,
+            drainDamage : 0.2,
+            areaWideDrain: true,
+            type: "physical"
         },
         haunt: {
             afterNTurns: 4,
@@ -1014,6 +1024,13 @@ module.exports = {
         /*
         special artifact stuff
         */
+        superNovaPrepare: {
+            belongsToMember: true,
+            everyNTurns: 5,
+            afterNTurns: 9,
+            currentTurn: 0,
+            eotMessage: "Corrupted Overmind draws energy for Super Nova"
+        },
         superNova: {
             belongsToMember: true,
             name: "Super Nova",
@@ -1024,9 +1041,93 @@ module.exports = {
             areawidedmg: {
                 areawide: true,
                 name: "Super Nova",
-                dmg: 1200,
-                mdPercentage: .05,
+                dmg: 700,
+                mdPercentage: 1,
                 type: "earth"
+            }
+        },
+        vacum1: {
+            abilityId: "vacum1",
+            belongsToMember: true,
+            processAbility: true,
+            ignoreFocus: true,
+            name: "Vacum",
+            dmg: 50,
+            mdPercentage: 0.4,
+            type: "shadow",
+            everyNTurns: 5,
+            afterNTurns: 11,
+            currentTurn: 0,
+            status: {
+                status: true,
+                abilityId: "vacum1",
+                untargettable: true,
+                name: "Vacum",
+                emoji: "🕳️",
+                mdPercentage: 1,
+                turnsToExpire: 4,
+                dmgOnStatusExpire: true,
+                dmgOnStatusRemove: false,
+                dmgOnRemove: 150,
+                dmgOnRemoveAreaWide: false,
+                mdPercentageOnRemove: 0.8,
+                dmgOnExpire: 150
+            }
+        },
+        vacum2: {
+            abilityId: "vacum2",
+            belongsToMember: true,
+            processAbility: true,
+            ignoreFocus: true,
+            name: "Vacum",
+            dmg: 50,
+            mdPercentage: 0.4,
+            type: "shadow",
+            everyNTurns: 5,
+            afterNTurns: 12,
+            currentTurn: 0,
+            status: {
+                status: true,
+                abilityId: "vacum2",
+                untargettable: true,
+                name: "Vacum",
+                emoji: "🕳️",
+                mdPercentage: 1,
+                turnsToExpire: 4,
+                dmgOnStatusExpire: true,
+                dmgOnStatusRemove: false,
+                dmgOnRemove: 150,
+                dmgOnRemoveAreaWide: false,
+                mdPercentageOnRemove: 0.8,
+                dmgOnExpire: 150
+            }
+        },
+        vacum3: {
+            abilityId: "vacum3",
+            belongsToMember: true,
+            processAbility: true,
+            ignoreFocus: true,
+            name: "Vacum",
+            dmg: 50,
+            mdPercentage: 0.4,
+            type: "shadow",
+            everyNTurns: 5,
+            afterNTurns: 13,
+            currentTurn: 0,
+            status: {
+                status: true,
+                abilityId: "vacum3",
+                untargettable: true,
+                name: "Vacum",
+                emoji: "🕳️",
+                mdPercentage: 1,
+                turnsToExpire: 4,
+                dmgOnStatusExpire: true,
+                dmgOnStatusRemove: false,
+                dmgOnRemove: 150,
+                dmgOnRemoveAreaWide: false,
+                mdPercentageOnRemove: 0.8,
+                dmgOnExpire: 150
             }
         },
         soulBurn: {
@@ -1915,7 +2016,14 @@ module.exports = {
                     ],
                     endOfTurnEvents : [
                         "echo",
-                        "focus"
+                        "focus",
+                        "archvampireRevive",
+                        "soulBurn",
+                        "vacum1",
+                        "vacum2",
+                        "vacum3",
+                        "superNovaPrepare",
+                        "superNova"
                     ],
                     abilityOrder: [
                         0, 6, 1,0,2, 3, [1,2], 0
@@ -2041,8 +2149,8 @@ module.exports = {
                     hp: 15600,
                     attackDmg: 300,
                     magicDmg: 270,
-                    armor: 2750,
-                    spirit: 2500,
+                    armor: 2500,
+                    spirit: 8500,
                     difficulty: "special",
                     element: "earth"
                 },
@@ -2076,7 +2184,7 @@ module.exports = {
                     hp: 15600,
                     attackDmg: 300,
                     magicDmg: 270,
-                    armor: 2750,
+                    armor: 8750,
                     spirit: 2500,
                     difficulty: "special",
                     element: "earth"
@@ -2258,12 +2366,14 @@ module.exports = {
                             }
                         }
                     ],
-                    //TODO: when an enemy minion dies player receives dot that grows 200, 400, 600, 800, 1000, 1200,
-                    // for every tick lived, the group gets + 20% damage, 
-                    // supernova every 5 turns after 10 turns, deals 1200 damage
+                    //TODO:
+                    // supernova every 5 turns after 10 turns, deals areawide damage
                     endOfTurnEvents : [
                         "focus",
-                        "echo",
+                        "vacum1",
+                        "vacum2",
+                        "vacum3",
+                        "superNovaPrepare",
                         "superNova"
                     ],
                     hp: 247600,
@@ -2661,7 +2771,6 @@ module.exports = {
                     difficulty: "special",
                     element: "earth"
                 },
-                // TODO: 2 bosses must die within 2 turns of each other or they revive with full HP
                 {
                     name: "Frenzied Vampire",
                     abilities: [
@@ -3099,10 +3208,6 @@ module.exports = {
             ],
         },
         challenge: {
-            // 1 : 1 boss, 1 hard, 2 mediums, 1 easy
-            // 2 : 1 boss, 2 hard, 2 medium
-            // 3 : 1 new boss, 1 hard, 3 medium (dps check) 30k hp or smt
-            // 4 : 2 new boss, 1 hard, 2 medium  (2 bosses)
             1 :{
                 enemies: [
                     {
