@@ -4681,7 +4681,7 @@ module.exports.timeTravelCommand = function(message, args, channel){
         }
     }
 
-    if (args.length > 1 && args[1] >= 1210 && args[1] <= 1215 && team.length == 1){
+    if (args.length > 1 && args[1] >= 1210 && args[1] <= 1215 && team.length <= 5){
         // travel back in time to the year... 
 
         // check that author is on stage 1 of timetravel 
@@ -4720,7 +4720,7 @@ module.exports.timeTravelCommand = function(message, args, channel){
         // when members succeed and defeat them they will all obtain rewards (group leader advances to stage2) 
 
         // skipping will close the event
-    }else if (args.length > 1 && args[1] >= -66000000 && args[1] <= -64000000 && team.length == 1){
+    }else if (args.length > 1 && args[1] >= -66000000 && args[1] <= -64000000 && team.length <= 5){
         profileDB.getUserProfileData(discordUserId, function(profileErr, profileData){
             if (profileErr){
                 // console.log (profileErr);
@@ -4744,7 +4744,7 @@ module.exports.timeTravelCommand = function(message, args, channel){
                 }
             }
         })
-    }else if (args.length > 1 && args[1] >= 3120 && args[1] <= 3130 && team.length == 1){
+    }else if (args.length > 1 && args[1] >= 3120 && args[1] <= 3130 && team.length <= 5){
         profileDB.getUserProfileData(discordUserId, function(profileErr, profileData){
             if (profileErr){
                 // console.log (profileErr);
@@ -4768,7 +4768,7 @@ module.exports.timeTravelCommand = function(message, args, channel){
                 }
             }
         })
-    }else if (args.length > 1 && args[1] >= 3250000 && args[1] <= 3260000 && team.length == 1){
+    }else if (args.length > 1 && args[1] >= 3250000 && args[1] <= 3260000 && team.length <= 5){
         profileDB.getUserProfileData(discordUserId, function(profileErr, profileData){
             if (profileErr){
                 // console.log (profileErr);
