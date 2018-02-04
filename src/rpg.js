@@ -4164,6 +4164,16 @@ function processAbility(abilityObject, event){
                             ignoreBandaid.push(event.membersInParty[targetToRemoveFrom].statuses[status]);
                         }
                         if ((event.membersInParty[targetToRemoveFrom].statuses[status].dot
+                            && event.membersInParty[targetToRemoveFrom].statuses[status].dot.areaWideBuffOnRemove)){
+                            // process ability 
+                            var dotBeingRemoved = event.membersInParty[targetToRemoveFrom].statuses[status].dot
+                            var abilityIdOfBuff = event.membersInParty[targetToRemoveFrom].statuses[status].dot.areaWideBuffOnRemove
+                            
+                            if (abilityIdOfBuff == "burningAdrenaline"){
+                                abilityToString = abilityToString + processBurningAdrenaline( event, dotBeingRemoved, abilityIdOfBuff  )
+                            }
+                        }
+                        else if ((event.membersInParty[targetToRemoveFrom].statuses[status].dot
                             && event.membersInParty[targetToRemoveFrom].statuses[status].dot.dmgOnDotRemove)
                             || (event.membersInParty[targetToRemoveFrom].statuses[status].dmgOnStatusRemove)){
                             // deal the dmg on dot remove to everyone
@@ -4213,16 +4223,7 @@ function processAbility(abilityObject, event){
                                 }
                             }
                         }
-                        if ((event.membersInParty[targetToRemoveFrom].statuses[status].dot
-                            && event.membersInParty[targetToRemoveFrom].statuses[status].dot.areaWideBuffOnRemove)){
-                            // process ability 
-                            var dotBeingRemoved = event.membersInParty[targetToRemoveFrom].statuses[status].dot
-                            var abilityIdOfBuff = event.membersInParty[targetToRemoveFrom].statuses[status].dot.areaWideBuffOnRemove
-                            
-                            if (abilityIdOfBuff == "burningAdrenaline"){
-                                abilityToString = abilityToString + processBurningAdrenaline( event, dotBeingRemoved, abilityIdOfBuff  )
-                            }
-                        }
+                        
                     }
                     
                     event.membersInParty[targetToRemoveFrom].statuses = []
