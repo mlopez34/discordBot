@@ -1511,9 +1511,10 @@ function eventEndedEmbedBuilder(message, event, partySuccess){
                     if ( event.special.reward.item ){
                         var extraItem = event.special.reward.item
                         // add the artifact item
-                        var rewards = addArtifactItem(getItemResponse, extraItem)
+                        var rewardsArtifact = addArtifactItem(getItemResponse, extraItem)
                         // event.leader.id
-                        artifactEmbedBuilder(message, rewards.items, event.leader)
+                        updateUserRewards(message, event.leader, rewardsArtifact);
+                        artifactEmbedBuilder(message, rewardsArtifact.items, event.leader)
 
                         profileDB.getUserProfileData(event.leader.id, function(profileErr, profileRes){
                             if (profileErr){
@@ -1523,7 +1524,7 @@ function eventEndedEmbedBuilder(message, event, partySuccess){
                                 achiev.checkForAchievements(event.leader.id, achievData, message)
                             }
                         })
-                        updateUserRewards(message, event.leader.id, rewards);
+                        
                     }
                    
                     profileDB.updateQuestlineStage(event.leader.id, event.special.questData.questname, event.special.questData.stage + 1, function(error, updateRes){
