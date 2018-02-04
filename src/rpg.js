@@ -1281,98 +1281,105 @@ function validateTarget(target, abilityToUse, event){
 }
 
 function processRpgTurn(message, event){
-    var order = [];
-    recalculateStatBuffs(event)
-    var passiveEffectsString = processPassiveEffects(event);
-    recalculateStatBuffs(event)
-    enemiesUseAbilities(event);
-    recalculateStatBuffs(event)
-    // check all members and enemies and set an order for abilities to take place
-    // process all abilities, then check if rpg event ended, if it ended then yield results
+    try{
+        var order = [];
+        recalculateStatBuffs(event)
+        var passiveEffectsString = processPassiveEffects(event);
+        recalculateStatBuffs(event)
+        enemiesUseAbilities(event);
+        recalculateStatBuffs(event)
+        // check all members and enemies and set an order for abilities to take place
+        // process all abilities, then check if rpg event ended, if it ended then yield results
 
-    // abilities of members with haste
-    for ( var index = event.memberTurnAbilities.length - 1; index >= 0; index--){
-        var abilityObject = event.memberTurnAbilities[index];
-        for (var i in event.membersInParty["rpg-"+abilityObject.user].buffs){
-            if (event.membersInParty["rpg-"+abilityObject.user].buffs[i].name == "Haste"){
-                order.push(abilityObject);
-                event.memberTurnAbilities.splice(index, 1);
+        // abilities of members with haste
+        for ( var index = event.memberTurnAbilities.length - 1; index >= 0; index--){
+            var abilityObject = event.memberTurnAbilities[index];
+            for (var i in event.membersInParty["rpg-"+abilityObject.user].buffs){
+                if (event.membersInParty["rpg-"+abilityObject.user].buffs[i].name == "Haste"){
+                    order.push(abilityObject);
+                    event.memberTurnAbilities.splice(index, 1);
+                }
             }
         }
-    }
-    // abilities of enemies
-    for ( var abilityIndex in event.enemyTurnAbilities){
-        var abilityObject = event.enemyTurnAbilities[abilityIndex];
+        // abilities of enemies
+        for ( var abilityIndex in event.enemyTurnAbilities){
+            var abilityObject = event.enemyTurnAbilities[abilityIndex];
 
-        order.push(abilityObject);
-    }
-    // remaining abilities of members
-    for ( var abilityIndex in event.memberTurnAbilities){
-        var abilityObject = event.memberTurnAbilities[abilityIndex];
-
-        order.push(abilityObject);
-    }
-    // order for abilities is ready, now use the abilities on targets
-    var turnString = "";
-    recalculateStatBuffs(event)
-
-    while ( order.length > 0 ){
-        var currentAbility = order.shift();
-
-        // do the ability
-        var abilityToString = processAbility(currentAbility, event)
-        recalculateStatBuffs(event)
-        turnString = turnString + abilityToString;
-    }
-    recalculateStatBuffs(event)
-    // the order array is empty, check if the rpg event ended
-    var endOfTurnString = effectsOnTurnEnd(event)
-    recalculateStatBuffs(event)
-    var eventHasEnded = checkRpgEventEnd(event);
-    if (eventHasEnded.enemiesDead && eventHasEnded.partySuccess){
-        // event is over, yield rewards and anouncements
-        //var endOfTurnString = effectsOnTurnEnd(event)
-        turnFinishedEmbedBuilder(message, event, turnString, passiveEffectsString, endOfTurnString);
-        event.status = "ended";
-        eventEndedEmbedBuilder(message, event, eventHasEnded.partySuccess)
-
-        // cleanup
-        // cleanupEventEnded(event);
-    }
-    else if(eventHasEnded.partyDead && !eventHasEnded.partySuccess){
-        // event is over, party did not succeed
-        // var endOfTurnString = effectsOnTurnEnd(event)
-        turnFinishedEmbedBuilder(message, event, turnString, passiveEffectsString, endOfTurnString);
-        event.status = "ended";
-        eventEndedEmbedBuilder(message, event, eventHasEnded.partySuccess)
-
-        // cleanup
-        // cleanupEventEnded(event);
-    }
-    else{
-        // event is not over, continue with event
-        event.enemyTurnAbilities = [];
-        event.memberTurnAbilities = [];
-        // var endOfTurnString = effectsOnTurnEnd(event)
-        event.turn = event.turn + 1;
-        turnFinishedEmbedBuilder(message, event, turnString, passiveEffectsString, endOfTurnString);
-        // attempt to process the next turn if the event is in turn + 1
-        if (event.TIMER){
-            var turnToAttempt = event.turn;
-        
-            var countdownTimeout = setTimeout (function(){ 
-                if (event.turn == turnToAttempt){
-                    message.channel.send("15 seconds")
-                }
-            }, event.TIMER - 15000);
-
-            var turnTimeout = setTimeout (function(){ 
-                if (event.turn == turnToAttempt && event.status != "ended"){
-                    processRpgTurn(message, event)
-                }
-            }, event.TIMER);
+            order.push(abilityObject);
         }
-        
+        // remaining abilities of members
+        for ( var abilityIndex in event.memberTurnAbilities){
+            var abilityObject = event.memberTurnAbilities[abilityIndex];
+
+            order.push(abilityObject);
+        }
+        // order for abilities is ready, now use the abilities on targets
+        var turnString = "";
+        recalculateStatBuffs(event)
+
+        while ( order.length > 0 ){
+            var currentAbility = order.shift();
+
+            // do the ability
+            var abilityToString = processAbility(currentAbility, event)
+            recalculateStatBuffs(event)
+            turnString = turnString + abilityToString;
+        }
+        recalculateStatBuffs(event)
+        // the order array is empty, check if the rpg event ended
+        var endOfTurnString = effectsOnTurnEnd(event)
+        recalculateStatBuffs(event)
+        var eventHasEnded = checkRpgEventEnd(event);
+        if (eventHasEnded.enemiesDead && eventHasEnded.partySuccess){
+            // event is over, yield rewards and anouncements
+            //var endOfTurnString = effectsOnTurnEnd(event)
+            turnFinishedEmbedBuilder(message, event, turnString, passiveEffectsString, endOfTurnString);
+            event.status = "ended";
+            eventEndedEmbedBuilder(message, event, eventHasEnded.partySuccess)
+
+            // cleanup
+            // cleanupEventEnded(event);
+        }
+        else if(eventHasEnded.partyDead && !eventHasEnded.partySuccess){
+            // event is over, party did not succeed
+            // var endOfTurnString = effectsOnTurnEnd(event)
+            turnFinishedEmbedBuilder(message, event, turnString, passiveEffectsString, endOfTurnString);
+            event.status = "ended";
+            eventEndedEmbedBuilder(message, event, eventHasEnded.partySuccess)
+
+            // cleanup
+            // cleanupEventEnded(event);
+        }
+        else{
+            // event is not over, continue with event
+            event.enemyTurnAbilities = [];
+            event.memberTurnAbilities = [];
+            // var endOfTurnString = effectsOnTurnEnd(event)
+            event.turn = event.turn + 1;
+            try {
+                turnFinishedEmbedBuilder(message, event, turnString, passiveEffectsString, endOfTurnString);
+                // attempt to process the next turn if the event is in turn + 1
+                if (event.TIMER){
+                    var turnToAttempt = event.turn;
+                
+                    var countdownTimeout = setTimeout (function(){ 
+                        if (event.turn == turnToAttempt){
+                            message.channel.send("15 seconds")
+                        }
+                    }, event.TIMER - 15000);
+
+                    var turnTimeout = setTimeout (function(){ 
+                        if (event.turn == turnToAttempt && event.status != "ended"){
+                            processRpgTurn(message, event)
+                        }
+                    }, event.TIMER);
+                }
+            }catch(exception){
+                message.channel.send("exception : " + exception)
+            }
+        }
+    }catch(ex){
+        message.channel.send("turn processing exception : " + ex)
     }
 }
 
@@ -1402,10 +1409,14 @@ function cleanupEventEnded(event){
 
 function turnFinishedEmbedBuilder(message, event, turnString, passiveEffectsString, endOfTurnString){
     // create a string of all the events that happened
+    var descriptionString = passiveEffectsString + turnString + endOfTurnString
+    if (descriptionString.length > 1950){
+        descriptionString = descriptionString.substring(0, 1950)
+    }
     const embed = new Discord.RichEmbed()
     .setAuthor("Taco RPG Event")
     .setColor(0xF2E93E)
-    .setDescription(passiveEffectsString + turnString + endOfTurnString)
+    .setDescription( descriptionString )
     // party members
     //var groupString = "";
     var enemiesString = "";

@@ -2411,12 +2411,8 @@ module.exports = {
                     name: "Corrupted Overmind",
                     abilities: [
                         "corrupt",
-                        "corrupt",
-                        "corrupt",
                         "shock",
-                        "shock",
-                        "shock",
-                        "poke",
+                        "curse",
                         "freeze"
                     ],
                     buffs: [
@@ -2430,6 +2426,9 @@ module.exports = {
                                 startTurn: 8
                             }
                         }
+                    ],
+                    abilityOrder: [
+                        0, 1, 0, 1, 2, [0, 1, 3], 0, 1, 1
                     ],
                     endOfTurnEvents : [
                         "focus",
@@ -2723,7 +2722,7 @@ module.exports = {
                     hpPerPartyMember: 130,
                     adPerPartyMember: 8,
                     mdPerPartyMember: 8,
-                    hp: 5350,
+                    hp: 4350,
                     attackDmg: 60,
                     magicDmg: 75,
                     armor: 1450,
@@ -2738,7 +2737,7 @@ module.exports = {
                     hpPerPartyMember: 130,
                     adPerPartyMember: 8,
                     mdPerPartyMember: 8,
-                    hp: 5350,
+                    hp: 4350,
                     attackDmg: 60,
                     magicDmg: 75,
                     armor: 1450,
@@ -2753,7 +2752,7 @@ module.exports = {
                     hpPerPartyMember: 130,
                     adPerPartyMember: 8,
                     mdPerPartyMember: 8,
-                    hp: 5350,
+                    hp: 4350,
                     attackDmg: 60,
                     magicDmg: 75,
                     armor: 1450,
@@ -2782,6 +2781,7 @@ module.exports = {
                             }
                         }
                     ],
+                    // TODO: debuff that makes the user take more damage?
                     abilityOrder: [
                         0, 0, 1, 2, 1, 0, 1, 0, 1
                     ],
@@ -2796,7 +2796,7 @@ module.exports = {
                         "vampire25",
                         "vampire25"
                     ],
-                    hp: 44600,
+                    hp: 41600,
                     attackDmg: 620,
                     magicDmg: 570,
                     armor: 2350,
