@@ -2090,8 +2090,7 @@ module.exports = {
                         }
                     ],
                     effectsOnDeath: [
-                        "explode",
-                        "radiation"
+                        "explode"
                     ],
                     hp: 8500,
                     attackDmg: 555,
@@ -2112,8 +2111,7 @@ module.exports = {
                         "tacowall"
                     ],
                     effectsOnDeath: [
-                        "explode",
-                        "radiation"
+                        "explode"
                     ],
                     buffs: [],
                     hp: 6000,
@@ -2135,8 +2133,7 @@ module.exports = {
                         "weaken"
                     ],
                     effectsOnDeath: [
-                        "explode",
-                        "radiation"
+                        "explode"
                     ],
                     buffs: [],
                     hp: 6000,
