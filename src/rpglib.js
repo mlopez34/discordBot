@@ -997,6 +997,30 @@ module.exports = {
                 dmgOnExpire: 0
             }
         },
+        hex: {
+            name:"Hex",
+            abilityId: "hex",
+            type:"shadow",
+            processAbility: true,
+            belongsToMember: true,
+            everyNTurns: 6,
+            ignoreFocus: true,
+            afterNTurns: 5,
+            currentTurn: 0,
+            dot: {
+                name: "Hex",
+                type:"shadow",
+                dmg: 100,
+                untargettable: true,
+                mdPercentage: 1,
+                emoji: "🎎",
+                dmgOnDotApply: false,
+                ignoreDmgOnTurn: 1,
+                turnsToExpire: 3,
+                dmgOnDotExpire: false,
+                dmgOnExpire: 0
+            }
+        },
         haunt: {
             afterNTurns: 4,
             everyNTurns: 2,
@@ -1077,6 +1101,13 @@ module.exports = {
             currentTurn: 0,
             eotMessage: "Corrupted Overmind draws energy for Super Nova"
         },
+        bendersLastWish: {
+            belongsToMember: true,
+            everyNTurns: 5,
+            afterNTurns: 9,
+            currentTurn: 0,
+            eotMessage: "Bender's robotic being is unable to continue existing in current time.\nBender makes his last wish before fading\nAll players with the radioactive buff gain permanent radioactive.\n"
+        },
         superNova: {
             belongsToMember: true,
             name: "Super Nova",
@@ -1087,7 +1118,7 @@ module.exports = {
             areawidedmg: {
                 areawide: true,
                 name: "Super Nova",
-                dmg: 400,
+                dmg: 500,
                 mdPercentage: 1,
                 type: "earth"
             }
@@ -1185,8 +1216,8 @@ module.exports = {
                 untargettable: true,
                 name: "Soul Burn",
                 emoji: "👹",
-                mdPercentage: 1,
-                turnsToExpire: 2,
+                mdPercentage: 0.8,
+                turnsToExpire: 3,
                 dmgOnStatusExpire: true,
                 dmgOnStatusRemove: true,
                 dmgOnRemove: 150,
@@ -2177,7 +2208,7 @@ module.exports = {
                         "echo"
                     ],
                     hp: 15600,
-                    attackDmg: 500,
+                    attackDmg: 480,
                     magicDmg: 470,
                     armor: 2500,
                     spirit: 10500,
@@ -2214,7 +2245,7 @@ module.exports = {
                         "explode"
                     ],
                     hp: 15600,
-                    attackDmg: 500,
+                    attackDmg: 480,
                     magicDmg: 470,
                     armor: 10750,
                     spirit: 2500,
@@ -2275,6 +2306,7 @@ module.exports = {
                             }
                         }
                     ],
+                    // Robot overlord spawns after the 4 other bosses have been defeated, Robot Overlord health is based off the combined health from the others
                     abilityOrder: [
                         0, 1, 0, 2, 3, 4, 4, 5, 4, 6, 0
                     ],
@@ -2407,7 +2439,7 @@ module.exports = {
                         "superNovaPrepare",
                         "superNova"
                     ],
-                    hp: 227673,
+                    hp: 197673,
                     attackDmg: 700,
                     magicDmg: 370,
                     armor: 2750,
@@ -2441,7 +2473,7 @@ module.exports = {
                         "radiation",
                         "explode"
                     ],
-                    hp: 27600,
+                    hp: 21600,
                     attackDmg: 500,
                     magicDmg: 470,
                     armor: 1750,
@@ -2474,9 +2506,10 @@ module.exports = {
                     ],
                     effectsOnDeath: [
                         "radiation",
+                        "bendersLastWish",
                         "explode"
                     ],
-                    hp: 27600,
+                    hp: 47600,
                     attackDmg: 500,
                     magicDmg: 470,
                     armor: 1750,
@@ -2524,9 +2557,8 @@ module.exports = {
                     name: "Pack Leader",
                     abilities: [
                         "ferociousBite",
-                        "ferociousBite",
                         "claw",
-                        "claw",
+                        "slash",
                         "protect"
                     ],
                     buffs: [
@@ -2534,12 +2566,15 @@ module.exports = {
                             name: "frenzy",
                             emoji: "😡",
                             onTurnEnd: {
-                                attackDmgPlus : 75,
-                                magicDmgPlus : 75,
+                                attackDmgPlus : 90,
+                                magicDmgPlus : 90,
                                 everyNTurns: 2,
                                 startTurn: 3
                             }
                         }
+                    ],
+                    abilityOrder: [
+                        0, 2, 1, 2, 0, 2, 1, 0, [0, 1, 3], 2
                     ],
                     endOfTurnEvents : [
                         "echo"
@@ -2618,11 +2653,8 @@ module.exports = {
                     name: "Enraged Vampire",
                     abilities: [
                         "ferociousBite",
-                        "ferociousBite",
-                        "ferociousBite",
                         "rockthrow",
-                        "rockthrow",
-                        "slash",
+                        "iceshards",
                         "drain",
                         "shield"
                     ],
@@ -2631,12 +2663,15 @@ module.exports = {
                             name: "frenzy",
                             emoji: "😡",
                             onTurnEnd: {
-                                attackDmgPlus : 90,
-                                magicDmgPlus : 90,
+                                attackDmgPlus : 105,
+                                magicDmgPlus : 105,
                                 everyNTurns: 3,
                                 startTurn: 3
                             }
                         }
+                    ],
+                    abilityOrder: [
+                        0, 1, 0, 1, 0, 3, 2, 0, 2
                     ],
                     endOfTurnEvents : [
                         "focus",
@@ -2728,30 +2763,27 @@ module.exports = {
                 }
             ],
             "gateKeeper": [
-                //TODO: add mionions?
                 {
                     name: "The Gatekeeper",
                     abilities: [
                         "attack",
-                        "attack",
-                        "attack",
                         "crush",
-                        "crush",
-                        "crush",
-                        "poke",
-                        "weaken"
+                        "poke"
                     ],
                     buffs: [
                         {
                             name: "frenzy",
                             emoji: "😡",
                             onTurnEnd: {
-                                attackDmgPlus : 80,
-                                magicDmgPlus : 80,
+                                attackDmgPlus : 100,
+                                magicDmgPlus : 100,
                                 everyNTurns: 2,
                                 startTurn: 3
                             }
                         }
+                    ],
+                    abilityOrder: [
+                        0, 0, 1, 2, 1, 0, 1, 0, 1
                     ],
                     endOfTurnEvents : [
                         "focus",
@@ -2764,7 +2796,7 @@ module.exports = {
                         "vampire25",
                         "vampire25"
                     ],
-                    hp: 50600,
+                    hp: 44600,
                     attackDmg: 620,
                     magicDmg: 570,
                     armor: 2350,
@@ -2838,12 +2870,9 @@ module.exports = {
                     name: "Archvampire",
                     abilities: [
                         "ferociousBite",
-                        "ferociousBite",
-                        "ferociousBite",
                         "uppercut",
-                        "uppercut",
-                        "poke",
-                        "protect"
+                        "poison",
+                        "poke"
                     ],
                     buffs: [
                         {
@@ -2856,6 +2885,9 @@ module.exports = {
                                 startTurn: 6
                             }
                         }
+                    ],
+                    abilityOrder: [
+                        0, 1, 2, 3, 0, 0, 1, 2, 0
                     ],
                     endOfTurnEvents : [
                         "focus",
@@ -2971,36 +3003,38 @@ module.exports = {
                     name: "Servant of Andromalius",
                     abilities: [
                         "attack",
-                        "attack",
-                        "rockthrow",
                         "rockthrow",
                         "slash",
-                        "poke",
-                        "shield"
+                        "poke"
                     ],
                     buffs: [
                         {
                             name: "frenzy",
                             emoji: "😡",
                             onTurnEnd: {
-                                attackDmgPlus : 155,
-                                magicDmgPlus : 155,
-                                everyNTurns: 5,
+                                attackDmgPlus : 135,
+                                magicDmgPlus : 135,
+                                everyNTurns: 3,
                                 startTurn: 3
                             }
                         }
                     ],
-                    // TODO: debuff 3 players curse dot with 3 turns damage??
+                    abilityOrder: [
+                        0, 1, 1, 1, 3, 2, 2, 0, 2, 1
+                    ],
                     endOfTurnEvents : [
                         "focus",
                         "echo",
+                        "hex",
+                        "hex",
+                        "hex",
                         "summonChupacabra"
                     ],
-                    hp: 37600,
+                    hp: 30600,
                     attackDmg: 600,
                     magicDmg: 670,
-                    armor: 2750,
-                    spirit: 2500,
+                    armor: 2450,
+                    spirit: 2100,
                     difficulty: "special",
                     element: "earth"
                 },
@@ -3026,7 +3060,7 @@ module.exports = {
                     hpPerPartyMember: 130,
                     adPerPartyMember: 8,
                     mdPerPartyMember: 8,
-                    hp: 5350,
+                    hp: 4350,
                     attackDmg: 260,
                     magicDmg: 275,
                     armor: 1450,
@@ -3041,7 +3075,7 @@ module.exports = {
                     hpPerPartyMember: 130,
                     adPerPartyMember: 8,
                     mdPerPartyMember: 8,
-                    hp: 9350,
+                    hp: 8350,
                     attackDmg: 360,
                     magicDmg: 275,
                     armor: 1450,
@@ -3056,7 +3090,7 @@ module.exports = {
                     hpPerPartyMember: 130,
                     adPerPartyMember: 8,
                     mdPerPartyMember: 8,
-                    hp: 3350,
+                    hp: 2350,
                     attackDmg: 260,
                     magicDmg: 375,
                     armor: 1450,
@@ -3070,11 +3104,8 @@ module.exports = {
                     name: "Andromalius",
                     abilities: [
                         "attack",
-                        "attack",
-                        "flameblast",
                         "flameblast",
                         "poison",
-                        "poke",
                         "poke"
                     ],
                     buffs: [
@@ -3088,6 +3119,9 @@ module.exports = {
                                 startTurn: 4
                             }
                         }
+                    ],
+                    abilityOrder: [
+                        0, 1, 2, 3, 0, 0, 2, 1, 0, 0, 0
                     ],
                     endOfTurnEvents : [
                         "focus",
@@ -3103,7 +3137,7 @@ module.exports = {
                         "totemOfDoom20",
                         "totemOfDoom20",
                     ],
-                    hp: 61600,
+                    hp: 58600,
                     attackDmg: 700,
                     magicDmg: 670,
                     armor: 2350,
