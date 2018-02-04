@@ -1069,6 +1069,7 @@ function handleDemonicArtifactStageOne(message, discordUserId, stage, team, chan
                 
             })
             var mission = activeMissions["quest-" + discordUserId]
+            mission.ritualPositions = []
             collector.collected.forEach(function(reaction){
                 console.log(reaction);
                 reaction.users.forEach(function(collectorUser){
@@ -1121,8 +1122,8 @@ function handleDemonicArtifactStageOne(message, discordUserId, stage, team, chan
                     break
                 }
             }
-            
             if (allMembersCollected){
+                // message.channel.send(mission.ritualPositions + " mission")
                 var ritualPositionComplete = handleRitualStandingMission(mission)
                 //mission.ritualPositions = [3, 5, 8, 10, 12] // FOR TESTING
                 var ritualPositionComplete = handleRitualStandingMission(mission)
