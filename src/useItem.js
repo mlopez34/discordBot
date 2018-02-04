@@ -6,7 +6,7 @@ var reputation = require("./reputation.js")
 module.exports.useRock = function(message, mentionedUserId, rockToUse, tacosInUse, cb){
     //use the rock at the user
     // create the roll
-    if (rockToUse.status == null){
+    if ( rockToUse.length != 10 ){
         var successThrowRockRoll = Math.floor(Math.random() * 100) + 1;
         var knockTacoOff = false;
         if (successThrowRockRoll > 1){
