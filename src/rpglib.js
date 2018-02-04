@@ -2768,8 +2768,8 @@ module.exports = {
                     hp: 50600,
                     attackDmg: 700,
                     magicDmg: 570,
-                    armor: 2750,
-                    spirit: 2500,
+                    armor: 2350,
+                    spirit: 2100,
                     difficulty: "special",
                     element: "earth"
                 },
