@@ -2257,11 +2257,10 @@ module.exports = {
                     name: "Robot Overlord",
                     abilities: [
                         "laserBeam",
-                        "laserBeam",
                         "poke",
                         "crush",
                         "drain",
-                        "drain",
+                        "slash",
                         "shield"
                     ],
                     buffs: [
@@ -2276,11 +2275,14 @@ module.exports = {
                             }
                         }
                     ],
+                    abilityOrder: [
+                        0, 1, 0, 2, 3, 4, 4, 5, 4, 6, 0
+                    ],
                     endOfTurnEvents : [
                         "focus",
                         "echo"
                     ],
-                    hp: 37600,
+                    hp: 47600,
                     attackDmg: 700,
                     magicDmg: 470,
                     armor: 2350,
