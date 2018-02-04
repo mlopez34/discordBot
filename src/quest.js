@@ -127,10 +127,10 @@ module.exports.questStringBuilder = function(questname, questData){
                 return questData.message.author.username + ", Your party prepares itself to travel forward in time"
             }
             else if (questData && questData.storyStep == 2){
-                return questData.message.author.username + ", Your party arrives atht the year 325,000,000 and in a remote planet very close to the center of the galaxy "                
+                return questData.message.author.username + ", Your party arrives at the year 230,000,000 and in a remote planet very close to the center of the galaxy "                
             }
             else if (questData && questData.storyStep == 3){
-                return questData.message.author.username + ", Your party arrives atht the year 325,000,000 and in a remote planet very close to the center of the galaxy. A strong presence is felt... The corrupted overmind emerges from above"                
+                return questData.message.author.username + ", Your party arrives at the year 230,000,000 and in a remote planet very close to the center of the galaxy. A strong presence is felt... The corrupted overmind emerges from above"                
             }
         }
         else{
@@ -906,7 +906,7 @@ function handleTimeMachineArtifactStageFive(message, discordUserId, stage, team,
         reward: {
             type: "note" , // could be item
             fieldTitle: "You found carvings on the walls of the wooden cabin",
-            note: "travel to the year 3,250,000 and defeat the corrupted overmind",
+            note: "One long spin around the milky way corrupted us all.",
             questline: "timetravelqueststage",
             stageAdvance: stage + 1
         }

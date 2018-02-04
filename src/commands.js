@@ -4768,7 +4768,7 @@ module.exports.timeTravelCommand = function(message, args, channel){
                 }
             }
         })
-    }else if (args.length > 1 && args[1] >= 3250000 && args[1] <= 3260000 && team.length <= 5){
+    }else if (args.length > 1 && args[1] >= 220000000 && args[1] <= 240000000 && team.length <= 5){
         profileDB.getUserProfileData(discordUserId, function(profileErr, profileData){
             if (profileErr){
                 // console.log (profileErr);

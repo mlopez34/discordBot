@@ -2765,7 +2765,7 @@ module.exports = {
                         "vampire25"
                     ],
                     hp: 50600,
-                    attackDmg: 700,
+                    attackDmg: 620,
                     magicDmg: 570,
                     armor: 2350,
                     spirit: 2100,
@@ -3103,7 +3103,7 @@ module.exports = {
                         "totemOfDoom20",
                         "totemOfDoom20",
                     ],
-                    hp: 67600,
+                    hp: 61600,
                     attackDmg: 700,
                     magicDmg: 670,
                     armor: 2350,
