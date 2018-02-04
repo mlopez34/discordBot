@@ -1040,7 +1040,7 @@ function handleDemonicArtifactStageOne(message, discordUserId, stage, team, chan
             
         }, 10000);
         
-        var supplies = new Discord.ReactionCollector(sentMessage, function(){ return true; } , { time: 1000000, max: 1000, maxEmojis: 1000, maxUsers: 1000 } );
+        var supplies = new Discord.ReactionCollector(sentMessage, function(){ return true; } , { time: 120000, max: 1000, maxEmojis: 1000, maxUsers: 1000 } );
         supplies.on('collect', function(element, collector){
             // remove the reaction if the user already reacted
             console.log(element)
