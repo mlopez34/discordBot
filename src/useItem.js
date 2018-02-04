@@ -6,7 +6,7 @@ var reputation = require("./reputation.js")
 module.exports.useRock = function(message, mentionedUserId, rockToUse, tacosInUse, cb){
     //use the rock at the user
     // create the roll
-    if (rockToUse.length == 1){
+    if (rockToUse.status == null){
         var successThrowRockRoll = Math.floor(Math.random() * 100) + 1;
         var knockTacoOff = false;
         if (successThrowRockRoll > 1){
@@ -86,7 +86,7 @@ module.exports.useRock = function(message, mentionedUserId, rockToUse, tacosInUs
         var listOfRares = tacosInUse;
         var rollRockAmulet = Math.floor(Math.random() * 1000) + 1;
         // console.log(rollRockAmulet);
-        if (rollRockAmulet >= 992){
+        if (rollRockAmulet >= 995){
             // add an amulet item to user's inventory from all the rares
             // roll for a rare
             // console.log(listOfRares);
