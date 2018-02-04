@@ -1000,7 +1000,7 @@ function handleDemonicArtifactStageOne(message, discordUserId, stage, team, chan
             questData.storyStep = questData.storyStep + 1;
             var descriptionString = exports.questStringBuilder("demonic", questData);
             embed.setDescription(descriptionString)
-            .addField("Ritual of summoning", "follow the stars...  ")
+            .addField("Ritual of summoning", "my hands always tell the truth, I have no fingers but I will point, I have no arms but I will strike, I have no feet but i will run.... follow the stars :star: ...  ")
             sentMessage.edit({embed})
 
             sentMessage.react("🇦")
