@@ -272,6 +272,15 @@ module.exports = {
             areawide: true,
             targets: "enemy"
         },
+        destructionBeam: {
+            name: "Destructive Beam",
+            abilityId: "destructionBeam",
+            dmg: 305,
+            adPercentage: 0.4,
+            type: "physical",
+            areawide: true,
+            targets: "enemy"
+        },
         quake: {
             name: "Quake",
             abilityId: "quake",
@@ -981,6 +990,7 @@ module.exports = {
             belongsToMember: true,
             everyNTurns: 7,
             ignoreFocus: true,
+            ignoreBandaid: true,
             afterNTurns: 8,
             currentTurn: 0,
             dot: {
@@ -993,6 +1003,32 @@ module.exports = {
                 ignoreBandaid: true,
                 ignoreDmgOnTurn: 1,
                 turnsToExpire: 5,
+                dmgOnDotExpire: false,
+                dmgOnExpire: 0
+            }
+        },
+        deepHatred: {
+            name:"Deep Hatred",
+            abilityId: "deepHatred",
+            type:"shadow",
+            processAbility: true,
+            belongsToMember: true,
+            everyNTurns: 10,
+            ignoreFocus: true,
+            ignoreUnique: true,
+            afterNTurns: 9,
+            currentTurn: 0,
+            dot: {
+                name: "Deep Hatred",
+                type:"shadow",
+                dmg: 100,
+                mdPercentage: 30,
+                emoji: "☸️",
+                dmgOnDotApply: false,
+                ignoreBandaid: true,
+                ignoreUnique: true,
+                ignoreDmgOnTurn: 1,
+                turnsToExpire: 100,
                 dmgOnDotExpire: false,
                 dmgOnExpire: 0
             }
@@ -1013,9 +1049,9 @@ module.exports = {
                 dmg: 100,
                 untargettable: true,
                 mdPercentage: 1,
+                ignoreDmgOnTurn: 1,
                 emoji: "🎎",
                 dmgOnDotApply: false,
-                ignoreDmgOnTurn: 1,
                 turnsToExpire: 3,
                 dmgOnDotExpire: false,
                 dmgOnExpire: 0
@@ -1119,7 +1155,7 @@ module.exports = {
                 areawide: true,
                 name: "Super Nova",
                 dmg: 500,
-                mdPercentage: 1,
+                mdPercentage: 0.8,
                 type: "earth"
             }
         },
@@ -1236,6 +1272,20 @@ module.exports = {
             summon: {
                 enemy: "chupacabra",
                 attackDmg: 150,
+                magicDmg: 100,
+                hpPlus: 30
+            }
+        },
+        summonEscapedRobot: {
+            name: "Summon Escaped Robot",
+            abilityId: "summonEscapedRobot",
+            belongsToMember: true,
+            everyNTurns: 20,
+            afterNTurns: 20,
+            currentTurn: 0,
+            summon: {
+                enemy: "escapedRobot",
+                attackDmg: 100,
                 magicDmg: 100,
                 hpPlus: 30
             }
@@ -1728,6 +1778,36 @@ module.exports = {
                 armor: 1000,
                 spirit: 1000,
                 difficulty: "summoned",
+                element: "normal"
+            },
+            escapedRobot: {
+                name: "Escaped Robot",
+                abilities: [
+                    "attack", "attack", "drain", "drain", "iceshards", "iceshards", "shield"
+                ],
+                buffs: [
+                    {
+                        name: "frenzy",
+                        emoji: "😡",
+                        onTurnEnd: {
+                            attackDmgPlus : 85,
+                            magicDmgPlus : 85,
+                            everyNTurns: 2,
+                            startTurn: 2
+                        }
+                    }
+                ],
+                endOfTurnEvents : [
+                ],
+                hpPerPartyMember: 0,
+                adPerPartyMember: 29,
+                mdPerPartyMember: 29,
+                hp: 6900,
+                attackDmg: 310,
+                magicDmg: 310,
+                armor: 1100,
+                spirit: 1000,
+                difficulty: "boss",
                 element: "normal"
             },
             vampire: {
@@ -2290,9 +2370,7 @@ module.exports = {
                         "laserBeam",
                         "poke",
                         "crush",
-                        "drain",
-                        "slash",
-                        "shield"
+                        "destructionBeam"
                     ],
                     buffs: [
                         {
@@ -2306,15 +2384,16 @@ module.exports = {
                             }
                         }
                     ],
-                    // Robot overlord spawns after the 4 other bosses have been defeated, Robot Overlord health is based off the combined health from the others
                     abilityOrder: [
-                        0, 1, 0, 2, 3, 4, 4, 5, 4, 6, 0
+                        0, 1, 0, 2, 0, 2, 0, 0, 2, 0,
+                        3, 3, 3, 3, 3, 3, 3, 3, 3, 3
                     ],
                     endOfTurnEvents : [
                         "focus",
+                        "summonEscapedRobot",
                         "echo"
                     ],
-                    hp: 47600,
+                    hp: 41600,
                     attackDmg: 700,
                     magicDmg: 470,
                     armor: 2350,
@@ -2345,7 +2424,7 @@ module.exports = {
                             }
                         }
                     ],
-                    hp: 8600,
+                    hp: 4600,
                     attackDmg: 500,
                     magicDmg: 470,
                     armor: 2150,
@@ -2397,7 +2476,7 @@ module.exports = {
                     ],
                     buffs: [
                     ],
-                    hp: 7600,
+                    hp: 4600,
                     attackDmg: 400,
                     magicDmg: 370,
                     armor: 1750,
@@ -2418,11 +2497,11 @@ module.exports = {
                     buffs: [
                         {
                             name: "frenzy",
-                            emoji: "😡",
+                            emoji: "😈",
                             onTurnEnd: {
                                 attackDmgPlus : 400,
                                 magicDmgPlus : 400,
-                                everyNTurns: 8,
+                                everyNTurns: 9,
                                 startTurn: 8
                             }
                         }
@@ -2473,8 +2552,8 @@ module.exports = {
                         "explode"
                     ],
                     hp: 21600,
-                    attackDmg: 500,
-                    magicDmg: 470,
+                    attackDmg: 400,
+                    magicDmg: 370,
                     armor: 1750,
                     spirit: 1500,
                     difficulty: "special",
@@ -2505,12 +2584,11 @@ module.exports = {
                     ],
                     effectsOnDeath: [
                         "radiation",
-                        "bendersLastWish",
-                        "explode"
+                        "bendersLastWish"
                     ],
-                    hp: 47600,
-                    attackDmg: 500,
-                    magicDmg: 470,
+                    hp: 41600,
+                    attackDmg: 400,
+                    magicDmg: 370,
                     armor: 1750,
                     spirit: 1500,
                     difficulty: "special",
@@ -2543,7 +2621,7 @@ module.exports = {
                         "radiation"
                     ],
                     hp: 9600,
-                    attackDmg: 400,
+                    attackDmg: 350,
                     magicDmg: 270,
                     armor: 1750,
                     spirit: 1500,
@@ -2590,7 +2668,7 @@ module.exports = {
                     name: "Blood Hound",
                     abilities: ["attack", "attack", "claw", "claw", "tackle", "weaken"],
                     buffs: [],
-                    hpPerPartyMember: 130,
+                    hpPerPartyMember: 0,
                     adPerPartyMember: 8,
                     mdPerPartyMember: 8,
                     hp: 7350,
@@ -2605,7 +2683,7 @@ module.exports = {
                     name: "Blood Hound",
                     abilities: ["attack", "attack", "claw", "claw", "tackle", "weaken"],
                     buffs: [],
-                    hpPerPartyMember: 130,
+                    hpPerPartyMember: 0,
                     adPerPartyMember: 8,
                     mdPerPartyMember: 8,
                     hp: 7350,
@@ -2620,7 +2698,7 @@ module.exports = {
                     name: "Starved Hound",
                     abilities: ["ferociousBite", "ferociousBite", "claw", "claw", "tackle", "cripple"],
                     buffs: [],
-                    hpPerPartyMember: 130,
+                    hpPerPartyMember: 0,
                     adPerPartyMember: 8,
                     mdPerPartyMember: 8,
                     hp: 9350,
@@ -2635,7 +2713,7 @@ module.exports = {
                     name: "Starved Hound",
                     abilities: ["ferociousBite", "ferociousBite", "claw", "claw", "tackle", "cripple"],
                     buffs: [],
-                    hpPerPartyMember: 130,
+                    hpPerPartyMember: 0,
                     adPerPartyMember: 8,
                     mdPerPartyMember: 8,
                     hp: 9350,
@@ -2719,7 +2797,7 @@ module.exports = {
                     name: "Vampiric Knight",
                     abilities: ["attack", "attack", "drain", "drain", "uppercut", "uppercut", "freeze"],
                     buffs: [],
-                    hpPerPartyMember: 130,
+                    hpPerPartyMember: 0,
                     adPerPartyMember: 8,
                     mdPerPartyMember: 8,
                     hp: 4350,
@@ -2734,7 +2812,7 @@ module.exports = {
                     name: "Vampiric Knight",
                     abilities: ["attack", "attack", "drain", "drain", "uppercut", "uppercut", "freeze"],
                     buffs: [],
-                    hpPerPartyMember: 130,
+                    hpPerPartyMember: 0,
                     adPerPartyMember: 8,
                     mdPerPartyMember: 8,
                     hp: 4350,
@@ -2749,7 +2827,7 @@ module.exports = {
                     name: "Vampiric Knight",
                     abilities: ["attack", "attack", "drain", "drain", "uppercut", "uppercut", "freeze"],
                     buffs: [],
-                    hpPerPartyMember: 130,
+                    hpPerPartyMember: 0,
                     adPerPartyMember: 8,
                     mdPerPartyMember: 8,
                     hp: 4350,
@@ -2781,13 +2859,13 @@ module.exports = {
                             }
                         }
                     ],
-                    // TODO: debuff that makes the user take more damage?
                     abilityOrder: [
                         0, 0, 1, 2, 1, 0, 1, 0, 1
                     ],
                     endOfTurnEvents : [
                         "focus",
                         "echo",
+                        "deepHatred",
                         "decay",
                         "vampire75",
                         "vampire50",
@@ -2796,7 +2874,7 @@ module.exports = {
                         "vampire25",
                         "vampire25"
                     ],
-                    hp: 41600,
+                    hp: 35600,
                     attackDmg: 620,
                     magicDmg: 570,
                     armor: 2350,
@@ -2808,14 +2886,14 @@ module.exports = {
                     name: "Vampiric Knight",
                     abilities: ["attack", "attack", "drain", "drain", "uppercut", "uppercut", "freeze"],
                     buffs: [],
-                    hpPerPartyMember: 130,
+                    hpPerPartyMember: 0,
                     adPerPartyMember: 8,
                     mdPerPartyMember: 8,
-                    hp: 3350,
+                    hp: 3150,
                     attackDmg: 360,
                     magicDmg: 475,
-                    armor: 1450,
-                    spirit: 1370,
+                    armor: 1250,
+                    spirit: 1170,
                     difficulty: "medium",
                     element: "normal"
                 },
@@ -2823,14 +2901,14 @@ module.exports = {
                     name: "Starved Hound",
                     abilities: ["ferociousBite", "ferociousBite", "claw", "claw", "tackle", "cripple"],
                     buffs: [],
-                    hpPerPartyMember: 130,
+                    hpPerPartyMember: 0,
                     adPerPartyMember: 8,
                     mdPerPartyMember: 8,
-                    hp: 5350,
+                    hp: 4350,
                     attackDmg: 360,
                     magicDmg: 475,
-                    armor: 1450,
-                    spirit: 1370,
+                    armor: 1150,
+                    spirit: 1270,
                     difficulty: "easy",
                     element: "normal"
                 },
@@ -2838,10 +2916,10 @@ module.exports = {
                     name: "Vampiric Knight",
                     abilities: ["attack", "attack", "drain", "drain", "uppercut", "uppercut", "freeze"],
                     buffs: [],
-                    hpPerPartyMember: 130,
+                    hpPerPartyMember: 0,
                     adPerPartyMember: 8,
                     mdPerPartyMember: 8,
-                    hp: 3350,
+                    hp: 3150,
                     attackDmg: 360,
                     magicDmg: 475,
                     armor: 1450,
@@ -2853,10 +2931,10 @@ module.exports = {
                     name: "Starved Hound",
                     abilities: ["ferociousBite", "ferociousBite", "claw", "claw", "tackle", "cripple"],
                     buffs: [],
-                    hpPerPartyMember: 130,
+                    hpPerPartyMember: 0,
                     adPerPartyMember: 8,
                     mdPerPartyMember: 8,
-                    hp: 5350,
+                    hp: 4350,
                     attackDmg: 360,
                     magicDmg: 475,
                     armor: 1450,
@@ -2895,7 +2973,7 @@ module.exports = {
                         "fever",
                         "suckBlood"
                     ],
-                    hp: 67600,
+                    hp: 51600,
                     attackDmg: 600,
                     magicDmg: 570,
                     armor: 1750,
@@ -2927,7 +3005,7 @@ module.exports = {
                             }
                         }
                     ],
-                    hp: 17600,
+                    hp: 13600,
                     attackDmg: 400,
                     magicDmg: 470,
                     armor: 1750,
@@ -2959,7 +3037,7 @@ module.exports = {
                             }
                         }
                     ],
-                    hp: 17600,
+                    hp: 13600,
                     attackDmg: 300,
                     magicDmg: 470,
                     armor: 1750,
@@ -2971,14 +3049,14 @@ module.exports = {
                     name: "Immortality Seeker",
                     abilities: ["attack", "attack","attack", "flameblast", "flameblast", "iceshards", "freeze"],
                     buffs: [],
-                    hpPerPartyMember: 130,
+                    hpPerPartyMember: 0,
                     adPerPartyMember: 8,
                     mdPerPartyMember: 8,
                     hp: 2350,
                     attackDmg: 360,
                     magicDmg: 375,
-                    armor: 1450,
-                    spirit: 1370,
+                    armor: 1050,
+                    spirit: 1170,
                     difficulty: "easy",
                     element: "normal"
                 },
@@ -2986,14 +3064,14 @@ module.exports = {
                     name: "Immortality Seeker",
                     abilities: ["attack", "attack","attack", "flameblast", "flameblast", "iceshards", "scold"],
                     buffs: [],
-                    hpPerPartyMember: 130,
+                    hpPerPartyMember: 0,
                     adPerPartyMember: 8,
                     mdPerPartyMember: 8,
                     hp: 2350,
                     attackDmg: 360,
                     magicDmg: 375,
-                    armor: 1450,
-                    spirit: 1370,
+                    armor: 1050,
+                    spirit: 1170,
                     difficulty: "easy",
                     element: "normal"
                 }
@@ -3042,14 +3120,14 @@ module.exports = {
                     name: "Chupacabra",
                     abilities: ["attack", "attack", "curse", "curse", "guac", "protect"],
                     buffs: [],
-                    hpPerPartyMember: 130,
+                    hpPerPartyMember: 0,
                     adPerPartyMember: 8,
                     mdPerPartyMember: 8,
                     hp: 2350,
                     attackDmg: 260,
                     magicDmg: 275,
-                    armor: 1450,
-                    spirit: 1370,
+                    armor: 1150,
+                    spirit: 1170,
                     difficulty: "easy",
                     element: "normal"
                 },
@@ -3057,14 +3135,14 @@ module.exports = {
                     name: "Tormentor",
                     abilities: ["attack", "attack", "rockthrow", "rockthrow", "slash", "protect"],
                     buffs: [],
-                    hpPerPartyMember: 130,
+                    hpPerPartyMember: 0,
                     adPerPartyMember: 8,
                     mdPerPartyMember: 8,
                     hp: 4350,
                     attackDmg: 260,
                     magicDmg: 275,
-                    armor: 1450,
-                    spirit: 1370,
+                    armor: 1150,
+                    spirit: 1170,
                     difficulty: "easy",
                     element: "normal"
                 },
@@ -3072,14 +3150,14 @@ module.exports = {
                     name: "Reanimated Headless Chicken",
                     abilities: ["attack", "attack", "curse", "curse", "poison", "protect"],
                     buffs: [],
-                    hpPerPartyMember: 130,
+                    hpPerPartyMember: 0,
                     adPerPartyMember: 8,
                     mdPerPartyMember: 8,
                     hp: 8350,
                     attackDmg: 360,
                     magicDmg: 275,
-                    armor: 1450,
-                    spirit: 1370,
+                    armor: 1150,
+                    spirit: 1170,
                     difficulty: "easy",
                     element: "normal"
                 },
@@ -3087,14 +3165,14 @@ module.exports = {
                     name: "Three Headed Beast",
                     abilities: ["ferociousBite", "ferociousBite", "claw", "claw", "poison", "protect"],
                     buffs: [],
-                    hpPerPartyMember: 130,
+                    hpPerPartyMember: 0,
                     adPerPartyMember: 8,
                     mdPerPartyMember: 8,
                     hp: 2350,
                     attackDmg: 260,
                     magicDmg: 375,
-                    armor: 1450,
-                    spirit: 1370,
+                    armor: 1150,
+                    spirit: 1170,
                     difficulty: "easy",
                     element: "normal"
                 }

@@ -3919,7 +3919,8 @@ function processAbility(abilityObject, event){
                         for (var status in event.enemies[targetToAddDot].statuses){
                             if (event.enemies[targetToAddDot].statuses[status].dot
                                 && event.enemies[targetToAddDot].statuses[status].dot.caster == abilityObject.user
-                                && event.enemies[targetToAddDot].statuses[status].dot.name == dotToAdd.dot.name ){
+                                && event.enemies[targetToAddDot].statuses[status].dot.name == dotToAdd.dot.name
+                                && !event.enemies[targetToAddDot].statuses[status].dot.ignoreUnique ){
                                 alreadyHaveStatus = true;
                             }
                         }
@@ -3937,7 +3938,8 @@ function processAbility(abilityObject, event){
                         var alreadyHaveStatus = false;
                         for (var status in event.membersInParty[targetToAddDot].statuses){
                             if (event.membersInParty[targetToAddDot].statuses[status].dot
-                                && event.membersInParty[targetToAddDot].statuses[status].dot.caster == abilityObject.user ){
+                                && event.membersInParty[targetToAddDot].statuses[status].dot.caster == abilityObject.user
+                                && !event.membersInParty[targetToAddDot].statuses[status].dot.ignoreUnique ){
                                 alreadyHaveStatus = true;
                             }
                         }
@@ -3959,7 +3961,8 @@ function processAbility(abilityObject, event){
                     for (var status in event.membersInParty[targetToAddDot].statuses){
                         if (event.membersInParty[targetToAddDot].statuses[status].dot
                             && event.membersInParty[targetToAddDot].statuses[status].dot.caster == abilityObject.user
-                            && event.membersInParty[targetToAddDot].statuses[status].dot.name == dotToAdd.dot.name ){
+                            && event.membersInParty[targetToAddDot].statuses[status].dot.name == dotToAdd.dot.name
+                            && !event.membersInParty[targetToAddDot].statuses[status].dot.ignoreUnique ){
                             alreadyHaveStatus = true;
                         }
                     }
@@ -3978,7 +3981,8 @@ function processAbility(abilityObject, event){
                     for (var status in event.enemies[targetToAddDot].statuses){
                         if (event.enemies[targetToAddDot].statuses[status].dot
                             && event.enemies[targetToAddDot].statuses[status].dot.caster == abilityObject.user
-                            && event.enemies[targetToAddDot].statuses[status].dot.name == dotToAdd.dot.name ){
+                            && event.enemies[targetToAddDot].statuses[status].dot.name == dotToAdd.dot.name
+                            && !event.enemies[targetToAddDot].statuses[status].dot.ignoreUnique ){
                             alreadyHaveStatus = true;
                         }
                     }
@@ -4161,6 +4165,10 @@ function processAbility(abilityObject, event){
                     var ignoreBandaid = []
                     for (var status in event.membersInParty[targetToRemoveFrom].statuses){
                         if (event.membersInParty[targetToRemoveFrom].statuses[status].ignoreBandaid){
+                            ignoreBandaid.push(event.membersInParty[targetToRemoveFrom].statuses[status]);
+                        }
+                        if (event.membersInParty[targetToRemoveFrom].statuses[status].dot
+                            && event.membersInParty[targetToRemoveFrom].statuses[status].dot.ignoreBandaid){
                             ignoreBandaid.push(event.membersInParty[targetToRemoveFrom].statuses[status]);
                         }
                         if ((event.membersInParty[targetToRemoveFrom].statuses[status].dot
