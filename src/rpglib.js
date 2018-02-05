@@ -8,11 +8,32 @@ module.exports = {
             adPercentage: 1,
             type: "physical"
         },
+        claw : {
+            name: "Claw",
+            abilityId: "claw",
+            dmg: 50,
+            adPercentage: 1,
+            type: "physical"
+        },
+        corrupt : {
+            name: "Corrupt",
+            abilityId: "corrupt",
+            dmg: 50,
+            adPercentage: 1,
+            type: "physical"
+        },
         crush : {
             name: "Crush",
             abilityId: "crush",
             dmg: 50,
             adPercentage: 1.35,
+            type: "physical"
+        },
+        ferociousBite : {
+            name: "Ferocious Bite",
+            abilityId: "ferociousBite",
+            dmg: 50,
+            adPercentage: 1.15,
             type: "physical"
         },
         tacoheal : {
@@ -98,49 +119,6 @@ module.exports = {
                 emoji: "🌑",
                 dmgOnDotApply: false,
                 turnsToExpire: 4,
-                dmgOnDotExpire: false,
-                dmgOnExpire: 0
-            }
-        },
-        bomb: {
-            name:"Bomb",
-            abilityId: "bomb",
-            type:"fire",
-            dot: {
-                name: "Bomb",
-                type:"fire",
-                dmg: 1,
-                mdPercentage: 1,
-                emoji: "💣",
-                dmgOnDotApply: false,
-                turnsToExpire: 6,
-                dmgOnDotExpire: true,
-                dmgOnExpire: 550,
-                dmgOnDotRemove: true,
-                dmgOnRemoveAreaWide: true,
-                mdPercentageOnRemove: 0.25,
-                dmgOnRemove: 100
-            }
-        },
-        decay: {
-            name:"Decay",
-            abilityId: "decay",
-            type:"shadow",
-            abilityId: "decay",
-            processAbility: true,
-            belongsToMember: true,
-            everyNTurns: 8,
-            afterNTurns: 1,
-            currentTurn: 0,
-            dot: {
-                name: "Decay",
-                type:"shadow",
-                dmg: 65,
-                areawide: true,
-                mdPercentage: 1,
-                emoji: "🌑",
-                dmgOnDotApply: false,
-                turnsToExpire: 6,
                 dmgOnDotExpire: false,
                 dmgOnExpire: 0
             }
@@ -285,6 +263,33 @@ module.exports = {
             areawide: true,
             targets: "enemy"
         },
+        meteor: {
+            name: "Meteor",
+            abilityId: "meteor",
+            dmg: 305,
+            mdPercentage: 0.6,
+            type: "shadow",
+            areawide: true,
+            targets: "enemy"
+        },
+        destructionBeam: {
+            name: "Destructive Beam",
+            abilityId: "destructionBeam",
+            dmg: 305,
+            adPercentage: 0.4,
+            type: "physical",
+            areawide: true,
+            targets: "enemy"
+        },
+        quake: {
+            name: "Quake",
+            abilityId: "quake",
+            dmg: 305,
+            adPercentage: 0.6,
+            type: "physical",
+            areawide: true,
+            targets: "enemy"
+        },
         shoot: {
             name: "Shoot",
             abilityId: "shoot",
@@ -303,6 +308,16 @@ module.exports = {
             special: "selfdamage",
             selfdamage: 15
         },
+        disintegrate: {
+            name: "Disintegrate",
+            abilityId: "disintegrate",
+            dmg: 120,
+            mdPercentage: 1.2,
+            type: "electric"
+        },
+        /*
+        limit abilities
+        */
         headshot: {
             name: "Headshot",
             abilityId: "headshot",
@@ -414,6 +429,7 @@ module.exports = {
                 emoji: "💨"
             }
         },
+
         resistanceaura: {
             passive: true,
             abilityId: "resistanceaura",
@@ -450,6 +466,139 @@ module.exports = {
                 emoji: "💨"
             }
         },
+
+        /*
+        challenge 3
+        */
+        decay: {
+            name:"Decay",
+            abilityId: "decay",
+            type:"shadow",
+            abilityId: "decay",
+            processAbility: true,
+            belongsToMember: true,
+            everyNTurns: 8,
+            afterNTurns: 1,
+            currentTurn: 0,
+            dot: {
+                name: "Decay",
+                type:"shadow",
+                dmg: 65,
+                areawide: true,
+                mdPercentage: 1,
+                emoji: "🌑",
+                dmgOnDotApply: false,
+                turnsToExpire: 6,
+                dmgOnDotExpire: false,
+                dmgOnExpire: 0
+            }
+        },
+        /*
+        challenge 4
+        */
+        bomb: {
+            name:"Bomb",
+            abilityId: "bomb",
+            type:"fire",
+            dot: {
+                name: "Bomb",
+                type:"fire",
+                dmg: 1,
+                mdPercentage: 1,
+                emoji: "💣",
+                dmgOnDotApply: false,
+                turnsToExpire: 6,
+                dmgOnDotExpire: true,
+                dmgOnExpire: 550,
+                dmgOnDotRemove: true,
+                dmgOnRemoveAreaWide: true,
+                mdPercentageOnRemove: 0.25,
+                dmgOnRemove: 100
+            }
+        },
+        /*
+        challenge 5
+        */
+
+        // aoe hit for ch 5
+        tremor: {
+            belongsToMember: true,
+            name: "Tremor",
+            abilityId: "tremor",
+            everyNTurns: 5,
+            afterNTurns: 2,
+            currentTurn: 0,
+            areawidedmg: {
+                areawide: true,
+                name: "Tremor",
+                dmg: 50,
+                mdPercentage: .9,
+                type: "earth"
+            }
+        },
+        // single targ hit for ch 5
+        electricOrb: {
+            abilityId: "electricOrb",
+            belongsToMember: true,
+            processAbility: true,
+            ignoreFocus: true,
+            name: "Electric Orb",
+            dmg: 50,
+            mdPercentage: 0.6,
+            type: "electric",
+            everyNTurns: 5,
+            afterNTurns: 1,
+            currentTurn: 0,
+            status: {
+                status: true,
+                abilityId: "electricOrb",
+                untargettable: true,
+                name: "Electric Orb",
+                emoji: "⚡",
+                mdPercentage: 1,
+                turnsToExpire: 2,
+                dmgOnStatusExpire: true,
+                dmgOnStatusRemove: true,
+                dmgOnRemove: 150,
+                dmgOnRemoveAreaWide: false,
+                mdPercentageOnRemove: 1,
+                dmgOnExpire: 150
+            }
+        },
+        // summon demon for ch 5
+        summonDemon: {
+            name: "Summon Demon",
+            abilityId: "summonDemon",
+            belongsToMember: true,
+            everyNTurns: 5,
+            afterNTurns: 3,
+            currentTurn: 0,
+            summon: {
+                enemy: "demon",
+                attackDmg: 150,
+                magicDmg: 100,
+                hpPlus: 30
+            }
+        },
+        // heal all enemies when one dies in ch 5
+        healAll: {
+            belongsToMember: true,
+            name: "Heal All",
+            abilityId: "healAll",
+            heal: 20000,
+            areawide: true,
+            mdPercentage: 1,
+        },
+        // transfer ability to the other living enemies
+        transferAbilities: {
+            abilityId: "transferAbilities",
+            belongsToMember: true,
+            name: "transfer abilities",
+            transfer: "endOfTurnEvents"
+        },
+        /*
+        challenge 6
+        */
         rocketStrike : {
             name: "Rocket Strike",
             processAbility: true,
@@ -488,60 +637,6 @@ module.exports = {
             dmg: 50,
             adPercentage: 1,
             type: "physical"
-        },
-
-        // endOfTurnEvents
-        echo: {
-            dmgaura: true,
-            belongsToEvent: true,
-            name: "Echo",
-            abilityId: "echo",
-            areawidedmg: {
-                endOfTurnAura: true,
-                hitsEveryNTurn: 4,
-                dmgPerTurn: 22,
-                name: "Echo",
-                dmg: 85,
-                type: "physical"
-            }
-        },
-        haunt: {
-            afterNTurns: 4,
-            everyNTurns: 2,
-            currentTurn: 0,
-            belongsToMember: true,
-            name: "Haunt",
-            abilityId: "haunt",
-            areawidedmg: {
-                areawide: true,
-                name: "Haunt",
-                dmg: 500,
-                adPercentage: 0.1,
-                type: "physical"
-            }
-        },
-
-        // death effects
-        explode: {
-            onDeathEffect: true,
-            effectDone: false,
-            name: "Explode",
-            abilityId: "explode",
-            areawidedmg : {
-                dmgondeath: true,
-                areawide: true,
-                dmg: 188,
-                mdPercentage: .2,
-                name: "Explode",
-                type: "fire"
-            }
-        },
-        totemOfDoom75: {
-            belongsToMember: true,
-            hppercentage: 0.75,
-            summon: {
-                enemy: "totemOfDoom"
-            }
         },
         absorbEnergyCrystals: {
             abilityId: "absorbEnergyCrystals",
@@ -738,166 +833,6 @@ module.exports = {
                 enemy: "energyCore",
             }
         },
-        footballPlayer75: {
-            belongsToMember: true,
-            hppercentage: 0.75,
-            summon: {
-                enemy: "footballPlayer",
-            }
-        },
-        footballPlayer50: {
-            belongsToMember: true,
-            hppercentage: 0.50,
-            summon: {
-                enemy: "footballPlayer",
-            }
-        },
-        footballPlayer25: {
-            belongsToMember: true,
-            hppercentage: 0.25,
-            summon: {
-                enemy: "footballPlayer",
-            }
-        },
-        slotsGambler75: {
-            belongsToMember: true,
-            hppercentage: 0.75,
-            summon: {
-                enemy: "slotsGambler",
-            }
-        },
-        slotsGambler50: {
-            belongsToMember: true,
-            hppercentage: 0.50,
-            summon: {
-                enemy: "slotsGambler",
-            }
-        },
-        tacoBandit50: {
-            belongsToMember: true,
-            hppercentage: 0.50,
-            summon: {
-                enemy: "tacoBandit",
-            }
-        },
-        badChef75: {
-            belongsToMember: true,
-            hppercentage: 0.75,
-            summon: {
-                enemy: "badChef",
-            }
-        },
-        angryMobMember75: {
-            belongsToMember: true,
-            hppercentage: 0.75,
-            summon: {
-                enemy: "angryMobMember",
-            }
-        },
-        angryMobMember50: {
-            belongsToMember: true,
-            hppercentage: 0.50,
-            summon: {
-                enemy: "angryMobMember",
-            }
-        },
-        angryMobMember25: {
-            belongsToMember: true,
-            hppercentage: 0.25,
-            summon: {
-                enemy: "angryMobMember",
-            }
-        },
-        totemOfDoom50: {
-            belongsToMember: true,
-            hppercentage: 0.50,
-            summon: {
-                enemy: "totemOfDoom",
-            }
-        },
-        totemOfDoom25: {
-            belongsToMember: true,
-            hppercentage: 0.25,
-            summon: {
-                enemy: "totemOfDoom",
-            }
-        },
-        // aoe hit for ch 5
-        tremor: {
-            belongsToMember: true,
-            name: "Tremor",
-            abilityId: "tremor",
-            everyNTurns: 5,
-            afterNTurns: 2,
-            currentTurn: 0,
-            areawidedmg: {
-                areawide: true,
-                name: "Tremor",
-                dmg: 50,
-                mdPercentage: .9,
-                type: "earth"
-            }
-        },
-        // single targ hit for ch 5
-        electricOrb: {
-            abilityId: "electricOrb",
-            belongsToMember: true,
-            processAbility: true,
-            ignoreFocus: true,
-            name: "Electric Orb",
-            dmg: 50,
-            mdPercentage: 0.6,
-            type: "electric",
-            everyNTurns: 5,
-            afterNTurns: 1,
-            currentTurn: 0,
-            status: {
-                status: true,
-                abilityId: "electricOrb",
-                untargettable: true,
-                name: "Electric Orb",
-                emoji: "⚡",
-                mdPercentage: 1,
-                turnsToExpire: 2,
-                dmgOnStatusExpire: true,
-                dmgOnStatusRemove: true,
-                dmgOnRemove: 150,
-                dmgOnRemoveAreaWide: false,
-                mdPercentageOnRemove: 1,
-                dmgOnExpire: 150
-            }
-        },
-        // summon demon for ch 5
-        summonDemon: {
-            name: "Summon Demon",
-            abilityId: "summonDemon",
-            belongsToMember: true,
-            everyNTurns: 5,
-            afterNTurns: 3,
-            currentTurn: 0,
-            summon: {
-                enemy: "demon",
-                attackDmg: 150,
-                magicDmg: 100,
-                hpPlus: 30
-            }
-        },
-        // heal all enemies when one dies in ch 5
-        healAll: {
-            belongsToMember: true,
-            name: "Heal All",
-            abilityId: "healAll",
-            heal: 20000,
-            areawide: true,
-            mdPercentage: 1,
-        },
-        // transfer ability to the other living enemies
-        transferAbilities: {
-            abilityId: "transferAbilities",
-            belongsToMember: true,
-            name: "transfer abilities",
-            transfer: "endOfTurnEvents"
-        },
         removeEnergize: {
             passive: true,
             belongsToMember: true,
@@ -928,7 +863,6 @@ module.exports = {
                 turnsToExpire: 7
             }
         },
-
         radioactive: {
             name: "Radioactive",
             belongsToMember: true,
@@ -948,13 +882,10 @@ module.exports = {
                 emoji: "☢️",
                 turnsToExpire: 7,
                 count: 0,
-                //TODO: create another ability that keeps count of # of stacks of radioactive
                 abilityId: "radioactive",
                 special: "after being healed 4 times you will explode for 1500 magic damage"
             }
         },
-
-
         furnace: {
             abilityId: "furnace",
             belongsToMember: true,
@@ -982,7 +913,6 @@ module.exports = {
                 dmgOnExpire: 150
             }
         },
-
         dismantle: {
             abilityId: "dismantle",
             belongsToMember: true,
@@ -1011,7 +941,485 @@ module.exports = {
                 dmgOnExpire: 150
             }
         },
+        /*
+        endOfTurnEvents
+        */
+        archvampireRevive: {
+            belongsToEvent: true,
+            name: "Ressurection",
+            abilityId: "archvampireRevive",
+            reviveCheck: [
+                "Frenzied Vampire",
+                "Blood King"
+            ],
+            afterNTurnsFirstDeath: 4,
+            currentTurnsAfterFirstDeath: 0
+        },
+        echo: {
+            dmgaura: true,
+            belongsToEvent: true,
+            name: "Echo",
+            abilityId: "echo",
+            areawidedmg: {
+                endOfTurnAura: true,
+                hitsEveryNTurn: 4,
+                dmgPerTurn: 22,
+                name: "Echo",
+                dmg: 85,
+                type: "physical"
+            }
+        },
+        suckBlood: {
+            belongsToMember: true,
+            name: "Suck Blood",
+            abilityId: "suckBlood",
+            dmgaura: true,
+            currentHealthPercentageDamage: 0.4,
+            everyNTurns: 1,
+            minimumDamageToDeal: 70,
+            hppercentage: 0.4,
+            drainDamage : 0.5,
+            areaWideDrain: true,
+            type: "physical"
+        },
+        fever: {
+            name:"Fever",
+            abilityId: "fever",
+            type:"shadow",
+            processAbility: true,
+            belongsToMember: true,
+            everyNTurns: 7,
+            ignoreFocus: true,
+            ignoreBandaid: true,
+            afterNTurns: 8,
+            currentTurn: 0,
+            dot: {
+                name: "Fever",
+                type:"shadow",
+                dmg: 500,
+                mdPercentage: 0.25,
+                emoji: "🐖",
+                dmgOnDotApply: false,
+                ignoreBandaid: true,
+                ignoreDmgOnTurn: 1,
+                turnsToExpire: 5,
+                dmgOnDotExpire: false,
+                dmgOnExpire: 0
+            }
+        },
+        deepHatred: {
+            name:"Deep Hatred",
+            abilityId: "deepHatred",
+            type:"shadow",
+            processAbility: true,
+            belongsToMember: true,
+            everyNTurns: 10,
+            ignoreFocus: true,
+            ignoreUnique: true,
+            afterNTurns: 9,
+            currentTurn: 0,
+            dot: {
+                name: "Deep Hatred",
+                type:"shadow",
+                dmg: 100,
+                mdPercentage: 30,
+                emoji: "☸️",
+                dmgOnDotApply: false,
+                ignoreBandaid: true,
+                ignoreUnique: true,
+                ignoreDmgOnTurn: 1,
+                turnsToExpire: 100,
+                dmgOnDotExpire: false,
+                dmgOnExpire: 0
+            }
+        },
+        hex: {
+            name:"Hex",
+            abilityId: "hex",
+            type:"shadow",
+            processAbility: true,
+            belongsToMember: true,
+            everyNTurns: 6,
+            ignoreFocus: true,
+            afterNTurns: 5,
+            currentTurn: 0,
+            dot: {
+                name: "Hex",
+                type:"shadow",
+                dmg: 100,
+                untargettable: true,
+                mdPercentage: 1,
+                ignoreDmgOnTurn: 1,
+                emoji: "🎎",
+                dmgOnDotApply: false,
+                turnsToExpire: 3,
+                dmgOnDotExpire: false,
+                dmgOnExpire: 0
+            }
+        },
+        haunt: {
+            afterNTurns: 4,
+            everyNTurns: 2,
+            currentTurn: 0,
+            belongsToMember: true,
+            name: "Haunt",
+            abilityId: "haunt",
+            areawidedmg: {
+                areawide: true,
+                name: "Haunt",
+                dmg: 670,
+                adPercentage: 0.1,
+                type: "physical"
+            }
+        },
+        radiation: {
+            onDeathEffect: true,
+            effectDone: false,
+            processAbility: true,
+            ignoreFocus: true,
+            targetToApplyOn: "random",
+            name:"Radiation",
+            abilityId: "radiation",
+            type:"shadow",
+            dot: {
+                dotApplyOnDeath: true,
+                areaWideBuffOnRemove: "burningAdrenaline",
+                name: "Radiation",
+                abilityId: "radiation",
+                type:"shadow",
+                dmg: 400,
+                mdPercentage: 0.1,
+                dmgIncreasePerTick: 300,
+                emoji: "✴️",
+                dmgOnDotApply: false,
+                turnsToExpire: 99,
+                dmgOnDotExpire: false,
+                dmgOnExpire: 0
+            }
+        },
+        burningAdrenaline: {
+            name: "Burning Adrenaline",
+            abilityId: "burningAdrenaline",
+            buff: {
+                name: "Burning Adrenaline",
+                abilityId: "burningAdrenaline",
+                emoji: "💥",
+                affects: ["attackDmg", "magicDmg"],
+                multiplier: 1.0,
+                multiplierPerDotTurn: 0.2,
+                checkDotMultiplierPerDotTurn: "radiation"
+            }
+        },
+        /*
+        death effects
+        */
+        explode: {
+            onDeathEffect: true,
+            effectDone: false,
+            name: "Explode",
+            abilityId: "explode",
+            areawidedmg : {
+                dmgondeath: true,
+                areawide: true,
+                dmg: 188,
+                mdPercentage: .2,
+                name: "Explode",
+                type: "fire"
+            }
+        },
+        /*
+        special artifact stuff
+        */
+        superNovaPrepare: {
+            belongsToMember: true,
+            everyNTurns: 5,
+            afterNTurns: 9,
+            currentTurn: 0,
+            eotMessage: "Corrupted Overmind draws energy for Super Nova"
+        },
+        bendersLastWish: {
+            belongsToMember: true,
+            everyNTurns: 5,
+            afterNTurns: 9,
+            currentTurn: 0,
+            eotMessage: "Bender's robotic being is unable to continue existing in current time.\nBender makes his last wish before fading\nAll players with the radioactive buff gain permanent radioactive.\n"
+        },
+        superNova: {
+            belongsToMember: true,
+            name: "Super Nova",
+            abilityId: "superNova",
+            everyNTurns: 5,
+            afterNTurns: 10,
+            currentTurn: 0,
+            areawidedmg: {
+                areawide: true,
+                name: "Super Nova",
+                dmg: 500,
+                mdPercentage: 0.8,
+                type: "earth"
+            }
+        },
+        vacum1: {
+            abilityId: "vacum1",
+            belongsToMember: true,
+            processAbility: true,
+            ignoreFocus: true,
+            name: "Vacum",
+            dmg: 50,
+            mdPercentage: 0.2,
+            type: "shadow",
+            everyNTurns: 5,
+            afterNTurns: 11,
+            currentTurn: 0,
+            status: {
+                status: true,
+                abilityId: "vacum1",
+                untargettable: true,
+                name: "Vacum",
+                ignoreUnique: true,
+                emoji: "🕳️",
+                mdPercentage: 0.8,
+                turnsToExpire: 6,
+                dmgOnStatusExpire: true,
+                dmgOnExpire: 150
+            }
+        },
+        vacum2: {
+            abilityId: "vacum2",
+            belongsToMember: true,
+            processAbility: true,
+            ignoreFocus: true,
+            name: "Vacum",
+            dmg: 50,
+            mdPercentage: 0.2,
+            type: "shadow",
+            everyNTurns: 5,
+            afterNTurns: 12,
+            currentTurn: 0,
+            status: {
+                status: true,
+                abilityId: "vacum2",
+                untargettable: true,
+                ignoreUnique: true,
+                name: "Vacum",
+                emoji: "🕳️",
+                mdPercentage: 0.8,
+                turnsToExpire: 6,
+                dmgOnStatusExpire: true,
+                dmgOnExpire: 150
+            }
+        },
+        vacum3: {
+            abilityId: "vacum3",
+            belongsToMember: true,
+            processAbility: true,
+            ignoreFocus: true,
+            name: "Vacum",
+            dmg: 50,
+            mdPercentage: 0.2,
+            type: "shadow",
+            everyNTurns: 5,
+            afterNTurns: 13,
+            currentTurn: 0,
+            status: {
+                status: true,
+                abilityId: "vacum3",
+                untargettable: true,
+                ignoreUnique: true,
+                name: "Vacum",
+                emoji: "🕳️",
+                mdPercentage: 0.8,
+                turnsToExpire: 6,
+                dmgOnStatusExpire: true,
+                dmgOnExpire: 150
+            }
+        },
+        soulBurn: {
+            abilityId: "soulBurn",
+            belongsToMember: true,
+            processAbility: true,
+            ignoreFocus: true,
+            name: "Soul Burn",
+            dmg: 50,
+            mdPercentage: 0.4,
+            type: "shadow",
+            everyNTurns: 2,
+            afterNTurns: 4,
+            currentTurn: 0,
+            status: {
+                status: true,
+                abilityId: "soulBurn",
+                untargettable: true,
+                name: "Soul Burn",
+                emoji: "👹",
+                mdPercentage: 0.8,
+                turnsToExpire: 3,
+                dmgOnStatusExpire: true,
+                dmgOnStatusRemove: true,
+                dmgOnRemove: 150,
+                dmgOnRemoveAreaWide: false,
+                mdPercentageOnRemove: 0.8,
+                dmgOnExpire: 150
+            }
+        },
+        summonChupacabra: {
+            name: "Summon Chupacabra",
+            abilityId: "summonChupacabra",
+            belongsToMember: true,
+            everyNTurns: 3,
+            afterNTurns: 7,
+            currentTurn: 0,
+            summon: {
+                enemy: "chupacabra",
+                attackDmg: 150,
+                magicDmg: 100,
+                hpPlus: 30
+            }
+        },
+        summonEscapedRobot: {
+            name: "Summon Escaped Robot",
+            abilityId: "summonEscapedRobot",
+            belongsToMember: true,
+            everyNTurns: 20,
+            afterNTurns: 20,
+            currentTurn: 0,
+            summon: {
+                enemy: "escapedRobot",
+                attackDmg: 100,
+                magicDmg: 100,
+                hpPlus: 30
+            }
+        },
+        /*
+        summon effects
+        */
+        totemOfDoom80: {
+            belongsToMember: true,
+            hppercentage: 0.80,
+            summon: {
+                enemy: "totemOfDoom"
+            }
+        },
+        totemOfDoom60: {
+            belongsToMember: true,
+            hppercentage: 0.60,
+            summon: {
+                enemy: "totemOfDoom"
+            }
+        },
+        totemOfDoom40: {
+            belongsToMember: true,
+            hppercentage: 0.40,
+            summon: {
+                enemy: "totemOfDoom",
+            }
+        },
+        totemOfDoom20: {
+            belongsToMember: true,
+            hppercentage: 0.20,
+            summon: {
+                enemy: "totemOfDoom",
+            }
+        },
 
+    
+        footballPlayer75: {
+            belongsToMember: true,
+            hppercentage: 0.75,
+            summon: {
+                enemy: "footballPlayer",
+            }
+        },
+        footballPlayer50: {
+            belongsToMember: true,
+            hppercentage: 0.50,
+            summon: {
+                enemy: "footballPlayer",
+            }
+        },
+        footballPlayer25: {
+            belongsToMember: true,
+            hppercentage: 0.25,
+            summon: {
+                enemy: "footballPlayer",
+            }
+        },
+
+        vampire75: {
+            belongsToMember: true,
+            hppercentage: 0.75,
+            summon: {
+                enemy: "vampire",
+            }
+        },
+        vampire50: {
+            belongsToMember: true,
+            hppercentage: 0.50,
+            summon: {
+                enemy: "vampire",
+            }
+        },
+        vampire25: {
+            belongsToMember: true,
+            hppercentage: 0.25,
+            summon: {
+                enemy: "vampire",
+            }
+        },
+
+        slotsGambler75: {
+            belongsToMember: true,
+            hppercentage: 0.75,
+            summon: {
+                enemy: "slotsGambler",
+            }
+        },
+        slotsGambler50: {
+            belongsToMember: true,
+            hppercentage: 0.50,
+            summon: {
+                enemy: "slotsGambler",
+            }
+        },
+
+        tacoBandit50: {
+            belongsToMember: true,
+            hppercentage: 0.50,
+            summon: {
+                enemy: "tacoBandit",
+            }
+        },
+
+        badChef75: {
+            belongsToMember: true,
+            hppercentage: 0.75,
+            summon: {
+                enemy: "badChef",
+            }
+        },
+
+        angryMobMember75: {
+            belongsToMember: true,
+            hppercentage: 0.75,
+            summon: {
+                enemy: "angryMobMember",
+            }
+        },
+        angryMobMember50: {
+            belongsToMember: true,
+            hppercentage: 0.50,
+            summon: {
+                enemy: "angryMobMember",
+            }
+        },
+        angryMobMember25: {
+            belongsToMember: true,
+            hppercentage: 0.25,
+            summon: {
+                enemy: "angryMobMember",
+            }
+        },
+        
         // tackle (more damage over 80%)
         // protect (absorb damage)
         // bite (hits harder than attack)
@@ -1085,11 +1493,6 @@ module.exports = {
                 affects: ["magicDmg"],
                 multiplier: 0.8
             }
-        },
-        finalfortune: {
-            special: "take extra turn",
-            special2: "after turn party dies",
-            areaWide: true
         }
     },
     enemiesToEncounter: {
@@ -1250,11 +1653,11 @@ module.exports = {
                 hpPerPartyMember: 0,
                 adPerPartyMember: 0,
                 mdPerPartyMember: 0,
-                hp: 3000,
+                hp: 7000,
                 attackDmg: 0,
                 magicDmg: 0,
-                armor: 750,
-                spirit: 750,
+                armor: 1000,
+                spirit: 1000,
                 difficulty: "summoned",
                 element: "normal"
             },
@@ -1270,6 +1673,21 @@ module.exports = {
                 magicDmg: 180,
                 armor: 700,
                 spirit: 700,
+                difficulty: "summoned",
+                element: "normal"
+            },
+            chupacabra: {
+                name: "Chupacabra",
+                abilities: ["attack", "attack", "curse", "curse", "guac", "protect"],
+                buffs: [],
+                hpPerPartyMember: 0,
+                adPerPartyMember: 0,
+                mdPerPartyMember: 0,
+                hp: 2350,
+                attackDmg: 290,
+                magicDmg: 230,
+                armor: 1400,
+                spirit: 1300,
                 difficulty: "summoned",
                 element: "normal"
             },
@@ -1359,6 +1777,66 @@ module.exports = {
                 magicDmg: 500,
                 armor: 1000,
                 spirit: 1000,
+                difficulty: "summoned",
+                element: "normal"
+            },
+            escapedRobot: {
+                name: "Escaped Robot",
+                abilities: [
+                    "attack", "attack", "drain", "drain", "iceshards", "iceshards", "shield"
+                ],
+                buffs: [
+                    {
+                        name: "frenzy",
+                        emoji: "😡",
+                        onTurnEnd: {
+                            attackDmgPlus : 85,
+                            magicDmgPlus : 85,
+                            everyNTurns: 2,
+                            startTurn: 2
+                        }
+                    }
+                ],
+                endOfTurnEvents : [
+                ],
+                hpPerPartyMember: 0,
+                adPerPartyMember: 29,
+                mdPerPartyMember: 29,
+                hp: 6900,
+                attackDmg: 310,
+                magicDmg: 310,
+                armor: 1100,
+                spirit: 1000,
+                difficulty: "boss",
+                element: "normal"
+            },
+            vampire: {
+                name: "Vampire",
+                abilities: [
+                   "attack", "attack", "rockthrow", "rockthrow", "shock", "shock", "tacowall"
+                ],
+                buffs: [
+                    {
+                        name: "frenzy",
+                        emoji: "😡",
+                        onTurnEnd: {
+                            attackDmgPlus : 85,
+                            magicDmgPlus : 85,
+                            everyNTurns: 2,
+                            startTurn: 2
+                        }
+                    }
+                ],
+                endOfTurnEvents : [
+                ],
+                hpPerPartyMember: 0,
+                adPerPartyMember: 29,
+                mdPerPartyMember: 29,
+                hp: 7900,
+                attackDmg: 337,
+                magicDmg: 350,
+                armor: 1300,
+                spirit: 900,
                 difficulty: "summoned",
                 element: "normal"
             }
@@ -1664,15 +2142,13 @@ module.exports = {
         special: {
             "genghis khan": [
                 {
-                    name: "Ghenghis Khan",
+                    name: "Genghis Khan",
+                    xp: 43,
                     abilities: [
                         "attack",
-                        "attack",
                         "slash",
-                        "iceshards",
-                        "flameblast",
-                        "empower",
-                        "bomb"
+                        "uppercut",
+                        "empower"
                     ],
                     buffs: [
                         {
@@ -1689,15 +2165,16 @@ module.exports = {
                     endOfTurnEvents : [
                         "echo",
                         "focus"
+                        
                     ],
                     abilityOrder: [
-                        0, 6, 1,0,2, 3, [1,2], 0
+                        0, 2, 1, 0, 2, 3, [1,2], 0
                     ],
-                    hp: 10500,
-                    attackDmg: 240,
-                    magicDmg: 210,
-                    armor: 1750,
-                    spirit: 1500,
+                    hp: 18500,
+                    attackDmg: 740,
+                    magicDmg: 510,
+                    armor: 2750,
+                    spirit: 2500,
                     difficulty: "special",
                     element: "normal"
                 },
@@ -1706,9 +2183,9 @@ module.exports = {
                     abilities: [
                         "attack",
                         "attack",
-                        "shock",
-                        "shock",
-                        "rockthrow",
+                        "tackle",
+                        "tackle",
+                        "poke",
                         "cripple"
                     ],
                     buffs: [
@@ -1723,11 +2200,14 @@ module.exports = {
                             }
                         }
                     ],
-                    hp: 7500,
-                    attackDmg: 155,
-                    magicDmg: 100,
-                    armor: 1500,
-                    spirit: 1300,
+                    effectsOnDeath: [
+                        "explode"
+                    ],
+                    hp: 8500,
+                    attackDmg: 555,
+                    magicDmg: 500,
+                    armor: 2500,
+                    spirit: 2300,
                     difficulty: "special",
                     element: "normal"
                 },
@@ -1741,10 +2221,13 @@ module.exports = {
                         "drain",
                         "tacowall"
                     ],
+                    effectsOnDeath: [
+                        "explode"
+                    ],
                     buffs: [],
-                    hp: 3000,
-                    attackDmg: 110,
-                    magicDmg: 170,
+                    hp: 6000,
+                    attackDmg: 410,
+                    magicDmg: 470,
                     armor: 1800,
                     spirit: 1800,
                     difficulty: "special",
@@ -1764,7 +2247,7 @@ module.exports = {
                         "explode"
                     ],
                     buffs: [],
-                    hp: 2350,
+                    hp: 6000,
                     attackDmg: 130,
                     magicDmg: 110,
                     armor: 1400,
@@ -1776,15 +2259,14 @@ module.exports = {
             "asteroid": [
                 {
                     name: "Asteroid Golem",
+                    xp: 30,
                     abilities: [
                         "attack",
-                        "attack",
                         "rockthrow",
-                        "rockthrow",
-                        "slash",
                         "slash",
                         "poke",
-                        "shield"
+                        "shield",
+                        "meteor"
                     ],
                     buffs: [
                         {
@@ -1798,25 +2280,32 @@ module.exports = {
                             }
                         }
                     ],
-                    hp: 7600,
-                    attackDmg: 300,
-                    magicDmg: 270,
-                    armor: 1750,
-                    spirit: 1500,
+                    abilityOrder: [
+                        0, 1, 3, 2, 4, 1, 0, 5, 1, 5
+                    ],
+                    endOfTurnEvents : [
+                        "focus",
+                        "explode",
+                        "echo"
+                    ],
+                    hp: 15600,
+                    attackDmg: 480,
+                    magicDmg: 470,
+                    armor: 2500,
+                    spirit: 10500,
                     difficulty: "special",
                     element: "earth"
                 },
                 {
                     name: "Stone Giant",
+                    xp: 30,
                     abilities: [
                         "attack",
-                        "attack",
                         "rockthrow",
-                        "rockthrow",
-                        "slash",
                         "slash",
                         "poke",
-                        "tacowall"
+                        "tacowall",
+                        "quake"
                     ],
                     buffs: [
                         {
@@ -1830,11 +2319,18 @@ module.exports = {
                             }
                         }
                     ],
-                    hp: 7600,
-                    attackDmg: 300,
-                    magicDmg: 270,
-                    armor: 1750,
-                    spirit: 1500,
+                    abilityOrder: [
+                        1, 0, 2, 3, 4, 0, 0, 1, 5, 5
+                    ],
+                    endOfTurnEvents : [
+                        "focus",
+                        "explode"
+                    ],
+                    hp: 15600,
+                    attackDmg: 480,
+                    magicDmg: 470,
+                    armor: 10750,
+                    spirit: 2500,
                     difficulty: "special",
                     element: "earth"
                 },
@@ -1845,11 +2341,11 @@ module.exports = {
                     hpPerPartyMember: 130,
                     adPerPartyMember: 8,
                     mdPerPartyMember: 8,
-                    hp: 350,
-                    attackDmg: 60,
-                    magicDmg: 75,
-                    armor: 450,
-                    spirit: 370,
+                    hp: 2350,
+                    attackDmg: 260,
+                    magicDmg: 275,
+                    armor: 1450,
+                    spirit: 1370,
                     difficulty: "easy",
                     element: "normal"
                 },
@@ -1860,11 +2356,11 @@ module.exports = {
                     hpPerPartyMember: 130,
                     adPerPartyMember: 8,
                     mdPerPartyMember: 8,
-                    hp: 350,
-                    attackDmg: 60,
-                    magicDmg: 75,
-                    armor: 450,
-                    spirit: 370,
+                    hp: 2350,
+                    attackDmg: 260,
+                    magicDmg: 275,
+                    armor: 1450,
+                    spirit: 1370,
                     difficulty: "easy",
                     element: "normal"
                 }
@@ -1872,33 +2368,39 @@ module.exports = {
             "island": [
                 {
                     name: "Robot Overlord",
+                    xp: 150,
                     abilities: [
-                        "attack",
-                        "attack",
-                        "rockthrow",
-                        "rockthrow",
-                        "slash",
-                        "slash",
+                        "laserBeam",
                         "poke",
-                        "shield"
+                        "crush",
+                        "destructionBeam"
                     ],
                     buffs: [
                         {
                             name: "frenzy",
                             emoji: "😡",
                             onTurnEnd: {
-                                attackDmgPlus : 105,
-                                magicDmgPlus : 105,
-                                everyNTurns: 2,
-                                startTurn: 3
+                                attackDmgPlus : 95,
+                                magicDmgPlus : 95,
+                                everyNTurns: 3,
+                                startTurn: 4
                             }
                         }
                     ],
-                    hp: 7600,
-                    attackDmg: 300,
-                    magicDmg: 270,
-                    armor: 1750,
-                    spirit: 1500,
+                    abilityOrder: [
+                        0, 1, 0, 2, 0, 2, 0, 0, 2, 0,
+                        3, 3, 3, 3, 3, 3, 3, 3, 3, 3
+                    ],
+                    endOfTurnEvents : [
+                        "focus",
+                        "summonEscapedRobot",
+                        "echo"
+                    ],
+                    hp: 41600,
+                    attackDmg: 700,
+                    magicDmg: 470,
+                    armor: 2350,
+                    spirit: 2100,
                     difficulty: "special",
                     element: "earth"
                 },
@@ -1907,11 +2409,10 @@ module.exports = {
                     abilities: [
                         "attack",
                         "attack",
-                        "rockthrow",
-                        "rockthrow",
-                        "slash",
-                        "slash",
-                        "poke",
+                        "curse",
+                        "curse",
+                        "bomb",
+                        "bomb",
                         "tacowall"
                     ],
                     buffs: [
@@ -1919,18 +2420,18 @@ module.exports = {
                             name: "frenzy",
                             emoji: "😡",
                             onTurnEnd: {
-                                attackDmgPlus : 105,
-                                magicDmgPlus : 105,
-                                everyNTurns: 2,
-                                startTurn: 2
+                                attackDmgPlus : 75,
+                                magicDmgPlus : 75,
+                                everyNTurns: 3,
+                                startTurn: 5
                             }
                         }
                     ],
-                    hp: 7600,
-                    attackDmg: 300,
-                    magicDmg: 270,
-                    armor: 1750,
-                    spirit: 1500,
+                    hp: 4600,
+                    attackDmg: 500,
+                    magicDmg: 470,
+                    armor: 2150,
+                    spirit: 1900,
                     difficulty: "special",
                     element: "earth"
                 },
@@ -1939,60 +2440,48 @@ module.exports = {
                     abilities: [
                         "attack",
                         "attack",
-                        "rockthrow",
-                        "rockthrow",
-                        "slash",
-                        "slash",
-                        "poke",
-                        "tacowall"
+                        "iceshards",
+                        "iceshards",
+                        "drain",
+                        "drain"
                     ],
                     buffs: [
                         {
                             name: "frenzy",
                             emoji: "😡",
                             onTurnEnd: {
-                                attackDmgPlus : 105,
-                                magicDmgPlus : 105,
-                                everyNTurns: 2,
-                                startTurn: 2
+                                attackDmgPlus : 85,
+                                magicDmgPlus : 85,
+                                everyNTurns: 3,
+                                startTurn: 6
                             }
                         }
                     ],
-                    hp: 7600,
-                    attackDmg: 300,
-                    magicDmg: 270,
-                    armor: 1750,
-                    spirit: 1500,
+                    endOfTurnEvents : [
+                        "focus"
+                    ],
+                    hp: 9600,
+                    attackDmg: 500,
+                    magicDmg: 470,
+                    armor: 2350,
+                    spirit: 2100,
                     difficulty: "special",
                     element: "earth"
                 },
                 {
-                    name: "Reactivated Robot",
+                    name: "T-1000",
                     abilities: [
                         "attack",
-                        "attack",
-                        "rockthrow",
-                        "rockthrow",
-                        "slash",
-                        "slash",
+                        "shoot",
+                        "shoot",
                         "poke",
-                        "tacowall"
+                        "barrier"
                     ],
                     buffs: [
-                        {
-                            name: "frenzy",
-                            emoji: "😡",
-                            onTurnEnd: {
-                                attackDmgPlus : 105,
-                                magicDmgPlus : 105,
-                                everyNTurns: 2,
-                                startTurn: 2
-                            }
-                        }
                     ],
-                    hp: 7600,
-                    attackDmg: 300,
-                    magicDmg: 270,
+                    hp: 4600,
+                    attackDmg: 400,
+                    magicDmg: 370,
                     armor: 1750,
                     spirit: 1500,
                     difficulty: "special",
@@ -2002,33 +2491,41 @@ module.exports = {
             "corruptedOvermind": [
                 {
                     name: "Corrupted Overmind",
+                    xp: 1350,
                     abilities: [
-                        "attack",
-                        "attack",
-                        "rockthrow",
-                        "rockthrow",
-                        "slash",
-                        "slash",
-                        "poke",
-                        "shield"
+                        "corrupt",
+                        "shock",
+                        "curse",
+                        "freeze"
                     ],
                     buffs: [
                         {
                             name: "frenzy",
-                            emoji: "😡",
+                            emoji: "😈",
                             onTurnEnd: {
-                                attackDmgPlus : 105,
-                                magicDmgPlus : 105,
-                                everyNTurns: 2,
-                                startTurn: 3
+                                attackDmgPlus : 400,
+                                magicDmgPlus : 400,
+                                everyNTurns: 9,
+                                startTurn: 8
                             }
                         }
                     ],
-                    hp: 7600,
-                    attackDmg: 300,
-                    magicDmg: 270,
-                    armor: 1750,
-                    spirit: 1500,
+                    abilityOrder: [
+                        0, 1, 0, 1, 2, [0, 1, 3], 0, 1, 1
+                    ],
+                    endOfTurnEvents : [
+                        "focus",
+                        "vacum1",
+                        "vacum2",
+                        "vacum3",
+                        "superNovaPrepare",
+                        "superNova"
+                    ],
+                    hp: 197673,
+                    attackDmg: 700,
+                    magicDmg: 370,
+                    armor: 2150,
+                    spirit: 2100,
                     difficulty: "special",
                     element: "earth"
                 },
@@ -2037,28 +2534,30 @@ module.exports = {
                     abilities: [
                         "attack",
                         "attack",
-                        "rockthrow",
-                        "rockthrow",
-                        "slash",
-                        "slash",
-                        "poke",
-                        "tacowall"
+                        "curse",
+                        "curse",
+                        "flameblast",
+                        "scold"
                     ],
                     buffs: [
                         {
                             name: "frenzy",
                             emoji: "😡",
                             onTurnEnd: {
-                                attackDmgPlus : 105,
-                                magicDmgPlus : 105,
+                                attackDmgPlus : 80,
+                                magicDmgPlus : 80,
                                 everyNTurns: 2,
-                                startTurn: 2
+                                startTurn: 3
                             }
                         }
                     ],
-                    hp: 7600,
-                    attackDmg: 300,
-                    magicDmg: 270,
+                    effectsOnDeath: [
+                        "radiation",
+                        "explode"
+                    ],
+                    hp: 21600,
+                    attackDmg: 400,
+                    magicDmg: 370,
                     armor: 1750,
                     spirit: 1500,
                     difficulty: "special",
@@ -2069,11 +2568,10 @@ module.exports = {
                     abilities: [
                         "attack",
                         "attack",
-                        "rockthrow",
-                        "rockthrow",
-                        "slash",
-                        "slash",
-                        "poke",
+                        "disintegrate",
+                        "disintegrate",
+                        "guac",
+                        "curse",
                         "tacowall"
                     ],
                     buffs: [
@@ -2081,16 +2579,20 @@ module.exports = {
                             name: "frenzy",
                             emoji: "😡",
                             onTurnEnd: {
-                                attackDmgPlus : 105,
-                                magicDmgPlus : 105,
+                                attackDmgPlus : 75,
+                                magicDmgPlus : 75,
                                 everyNTurns: 2,
-                                startTurn: 2
+                                startTurn: 4
                             }
                         }
                     ],
-                    hp: 7600,
-                    attackDmg: 300,
-                    magicDmg: 270,
+                    effectsOnDeath: [
+                        "radiation",
+                        "bendersLastWish"
+                    ],
+                    hp: 41600,
+                    attackDmg: 400,
+                    magicDmg: 370,
                     armor: 1750,
                     spirit: 1500,
                     difficulty: "special",
@@ -2101,27 +2603,29 @@ module.exports = {
                     abilities: [
                         "attack",
                         "attack",
-                        "rockthrow",
-                        "rockthrow",
-                        "slash",
-                        "slash",
-                        "poke",
-                        "tacowall"
+                        "poison",
+                        "poison",
+                        "elixir",
+                        "elixir",
+                        "weaken"
                     ],
                     buffs: [
                         {
                             name: "frenzy",
                             emoji: "😡",
                             onTurnEnd: {
-                                attackDmgPlus : 105,
-                                magicDmgPlus : 105,
+                                attackDmgPlus : 55,
+                                magicDmgPlus : 55,
                                 everyNTurns: 2,
-                                startTurn: 2
+                                startTurn: 5
                             }
                         }
                     ],
-                    hp: 7600,
-                    attackDmg: 300,
+                    effectsOnDeath: [
+                        "radiation"
+                    ],
+                    hp: 9600,
+                    attackDmg: 350,
                     magicDmg: 270,
                     armor: 1750,
                     spirit: 1500,
@@ -2132,93 +2636,96 @@ module.exports = {
             "hounds": [
                 {
                     name: "Pack Leader",
+                    xp: 38,
                     abilities: [
-                        "attack",
-                        "attack",
-                        "rockthrow",
-                        "rockthrow",
+                        "ferociousBite",
+                        "claw",
                         "slash",
-                        "slash",
-                        "poke",
-                        "shield"
+                        "protect"
                     ],
                     buffs: [
                         {
                             name: "frenzy",
                             emoji: "😡",
                             onTurnEnd: {
-                                attackDmgPlus : 105,
-                                magicDmgPlus : 105,
+                                attackDmgPlus : 90,
+                                magicDmgPlus : 90,
                                 everyNTurns: 2,
                                 startTurn: 3
                             }
                         }
                     ],
-                    hp: 7600,
-                    attackDmg: 300,
-                    magicDmg: 270,
-                    armor: 1750,
-                    spirit: 1500,
+                    abilityOrder: [
+                        0, 2, 1, 2, 0, 2, 1, 0, [0, 1, 3], 2
+                    ],
+                    endOfTurnEvents : [
+                        "echo"
+                    ],
+                    hp: 18600,
+                    attackDmg: 500,
+                    magicDmg: 470,
+                    armor: 2350,
+                    spirit: 1900,
                     difficulty: "special",
                     element: "earth"
                 },
                 {
                     name: "Blood Hound",
-                    abilities: ["attack", "attack", "rockthrow", "rockthrow", "slash", "protect"],
+                    abilities: ["attack", "attack", "claw", "claw", "tackle", "weaken"],
                     buffs: [],
-                    hpPerPartyMember: 130,
+                    hpPerPartyMember: 0,
                     adPerPartyMember: 8,
                     mdPerPartyMember: 8,
-                    hp: 350,
-                    attackDmg: 60,
-                    magicDmg: 75,
-                    armor: 450,
-                    spirit: 370,
+                    hp: 7350,
+                    attackDmg: 160,
+                    magicDmg: 175,
+                    armor: 1450,
+                    spirit: 1370,
                     difficulty: "easy",
                     element: "normal"
                 },
                 {
                     name: "Blood Hound",
-                    abilities: ["attack", "attack", "rockthrow", "rockthrow", "slash", "protect"],
+                    abilities: ["attack", "attack", "claw", "claw", "tackle", "weaken"],
                     buffs: [],
-                    hpPerPartyMember: 130,
+                    hpPerPartyMember: 0,
                     adPerPartyMember: 8,
                     mdPerPartyMember: 8,
-                    hp: 350,
-                    attackDmg: 60,
-                    magicDmg: 75,
-                    armor: 450,
-                    spirit: 370,
+                    hp: 7350,
+                    attackDmg: 160,
+                    magicDmg: 175,
+                    armor: 1450,
+                    spirit: 1370,
                     difficulty: "easy",
                     element: "normal"
                 },
                 {
                     name: "Starved Hound",
-                    abilities: ["attack", "attack", "rockthrow", "rockthrow", "slash", "protect"],
+                    abilities: ["ferociousBite", "ferociousBite", "claw", "claw", "tackle", "cripple"],
                     buffs: [],
-                    hpPerPartyMember: 130,
+                    hpPerPartyMember: 0,
                     adPerPartyMember: 8,
                     mdPerPartyMember: 8,
-                    hp: 350,
-                    attackDmg: 60,
-                    magicDmg: 75,
-                    armor: 450,
-                    spirit: 370,
+                    hp: 9350,
+                    attackDmg: 160,
+                    magicDmg: 175,
+                    armor: 1450,
+                    spirit: 1370,
                     difficulty: "easy",
                     element: "normal"
                 },
                 {
                     name: "Starved Hound",
-                    abilities: ["attack", "attack", "rockthrow", "rockthrow", "slash", "protect"],
+                    abilities: ["ferociousBite", "ferociousBite", "claw", "claw", "tackle", "cripple"],
                     buffs: [],
-                    hpPerPartyMember: 130,
+                    hpPerPartyMember: 0,
                     adPerPartyMember: 8,
                     mdPerPartyMember: 8,
-                    hp: 350,
-                    attackDmg: 60,
-                    magicDmg: 75,
-                    armor: 450,
-                    spirit: 370,
+                    hp: 9350,
+                    attackDmg: 160,
+                    magicDmg: 175,
+                    armor: 1450,
+                    spirit: 1370,
                     difficulty: "easy",
                     element: "normal"
                 }
@@ -2226,14 +2733,12 @@ module.exports = {
             "vampireSwarm": [
                 {
                     name: "Enraged Vampire",
+                    xp: 73,
                     abilities: [
-                        "attack",
-                        "attack",
+                        "ferociousBite",
                         "rockthrow",
-                        "rockthrow",
-                        "slash",
-                        "slash",
-                        "poke",
+                        "iceshards",
+                        "drain",
                         "shield"
                     ],
                     buffs: [
@@ -2243,23 +2748,30 @@ module.exports = {
                             onTurnEnd: {
                                 attackDmgPlus : 105,
                                 magicDmgPlus : 105,
-                                everyNTurns: 2,
+                                everyNTurns: 3,
                                 startTurn: 3
                             }
                         }
                     ],
-                    hp: 7600,
+                    abilityOrder: [
+                        0, 1, 0, 1, 0, 3, 2, 0, 2
+                    ],
+                    endOfTurnEvents : [
+                        "focus",
+                        "echo"
+                    ],
+                    hp: 31600,
                     attackDmg: 300,
                     magicDmg: 270,
-                    armor: 1750,
-                    spirit: 1500,
+                    armor: 2750,
+                    spirit: 2500,
                     difficulty: "special",
                     element: "earth"
                 },
                 {
                     name: "Vampire",
                     abilities: [
-                    "attack", "attack", "rockthrow", "rockthrow", "shock", "shock", "tacowall"
+                    "attack", "attack", "drain", "drain", "shock", "shock", "tacowall"
                     ],
                     buffs: [
                         {
@@ -2274,128 +2786,204 @@ module.exports = {
                         }
                     ],
                     endOfTurnEvents : [
-                        "echo",
                         "focus"
                     ],
-                    hpPerPartyMember: 1458,
+                    hpPerPartyMember: 0,
                     adPerPartyMember: 29,
                     mdPerPartyMember: 29,
-                    hp: 800,
+                    hp: 12800,
                     attackDmg: 177,
-                    magicDmg: 250,
-                    armor: 1300,
-                    spirit: 900,
-                    difficulty: "boss",
+                    magicDmg: 290,
+                    armor: 2300,
+                    spirit: 1900,
+                    difficulty: "special",
                     element: "normal"
                 },
                 {
-                    name: "Vampiric Minion",
-                    abilities: ["attack", "attack", "rockthrow", "rockthrow", "slash", "protect"],
+                    name: "Vampiric Knight",
+                    abilities: ["attack", "attack", "drain", "drain", "uppercut", "uppercut", "freeze"],
                     buffs: [],
-                    hpPerPartyMember: 130,
+                    hpPerPartyMember: 0,
                     adPerPartyMember: 8,
                     mdPerPartyMember: 8,
-                    hp: 350,
+                    hp: 4350,
                     attackDmg: 60,
                     magicDmg: 75,
-                    armor: 450,
-                    spirit: 370,
-                    difficulty: "easy",
+                    armor: 1450,
+                    spirit: 1370,
+                    difficulty: "medium",
                     element: "normal"
                 },
                 {
-                    name: "Vampiric Minion",
-                    abilities: ["attack", "attack", "rockthrow", "rockthrow", "slash", "protect"],
+                    name: "Vampiric Knight",
+                    abilities: ["attack", "attack", "drain", "drain", "uppercut", "uppercut", "freeze"],
                     buffs: [],
-                    hpPerPartyMember: 130,
+                    hpPerPartyMember: 0,
                     adPerPartyMember: 8,
                     mdPerPartyMember: 8,
-                    hp: 350,
+                    hp: 4350,
                     attackDmg: 60,
                     magicDmg: 75,
-                    armor: 450,
-                    spirit: 370,
-                    difficulty: "easy",
+                    armor: 1450,
+                    spirit: 1370,
+                    difficulty: "medium",
                     element: "normal"
                 },
                 {
-                    name: "Vampiric Minion",
-                    abilities: ["attack", "attack", "rockthrow", "rockthrow", "slash", "protect"],
+                    name: "Vampiric Knight",
+                    abilities: ["attack", "attack", "drain", "drain", "uppercut", "uppercut", "freeze"],
                     buffs: [],
-                    hpPerPartyMember: 130,
+                    hpPerPartyMember: 0,
                     adPerPartyMember: 8,
                     mdPerPartyMember: 8,
-                    hp: 350,
+                    hp: 4350,
                     attackDmg: 60,
                     magicDmg: 75,
-                    armor: 450,
-                    spirit: 370,
-                    difficulty: "easy",
+                    armor: 1450,
+                    spirit: 1370,
+                    difficulty: "medium",
                     element: "normal"
                 }
             ],
             "gateKeeper": [
                 {
                     name: "The Gatekeeper",
+                    xp: 190,
                     abilities: [
                         "attack",
-                        "attack",
-                        "rockthrow",
-                        "rockthrow",
-                        "slash",
-                        "slash",
-                        "poke",
-                        "shield"
+                        "crush",
+                        "poke"
                     ],
                     buffs: [
                         {
                             name: "frenzy",
                             emoji: "😡",
                             onTurnEnd: {
-                                attackDmgPlus : 105,
-                                magicDmgPlus : 105,
+                                attackDmgPlus : 100,
+                                magicDmgPlus : 100,
                                 everyNTurns: 2,
                                 startTurn: 3
                             }
                         }
                     ],
-                    hp: 7600,
-                    attackDmg: 300,
-                    magicDmg: 270,
-                    armor: 1750,
-                    spirit: 1500,
+                    abilityOrder: [
+                        0, 0, 1, 2, 1, 0, 1, 0, 1
+                    ],
+                    endOfTurnEvents : [
+                        "focus",
+                        "echo",
+                        "deepHatred",
+                        "decay",
+                        "vampire75",
+                        "vampire50",
+                        "vampire50",
+                        "vampire25",
+                        "vampire25",
+                        "vampire25"
+                    ],
+                    hp: 35600,
+                    attackDmg: 620,
+                    magicDmg: 570,
+                    armor: 2350,
+                    spirit: 2100,
                     difficulty: "special",
                     element: "earth"
+                },
+                {
+                    name: "Vampiric Knight",
+                    abilities: ["attack", "attack", "drain", "drain", "uppercut", "uppercut", "freeze"],
+                    buffs: [],
+                    hpPerPartyMember: 0,
+                    adPerPartyMember: 8,
+                    mdPerPartyMember: 8,
+                    hp: 3150,
+                    attackDmg: 360,
+                    magicDmg: 475,
+                    armor: 1250,
+                    spirit: 1170,
+                    difficulty: "medium",
+                    element: "normal"
+                },
+                {
+                    name: "Starved Hound",
+                    abilities: ["ferociousBite", "ferociousBite", "claw", "claw", "tackle", "cripple"],
+                    buffs: [],
+                    hpPerPartyMember: 0,
+                    adPerPartyMember: 8,
+                    mdPerPartyMember: 8,
+                    hp: 4350,
+                    attackDmg: 360,
+                    magicDmg: 475,
+                    armor: 1150,
+                    spirit: 1270,
+                    difficulty: "easy",
+                    element: "normal"
+                },
+                {
+                    name: "Vampiric Knight",
+                    abilities: ["attack", "attack", "drain", "drain", "uppercut", "uppercut", "freeze"],
+                    buffs: [],
+                    hpPerPartyMember: 0,
+                    adPerPartyMember: 8,
+                    mdPerPartyMember: 8,
+                    hp: 3150,
+                    attackDmg: 360,
+                    magicDmg: 475,
+                    armor: 1450,
+                    spirit: 1370,
+                    difficulty: "medium",
+                    element: "normal"
+                },
+                {
+                    name: "Starved Hound",
+                    abilities: ["ferociousBite", "ferociousBite", "claw", "claw", "tackle", "cripple"],
+                    buffs: [],
+                    hpPerPartyMember: 0,
+                    adPerPartyMember: 8,
+                    mdPerPartyMember: 8,
+                    hp: 4350,
+                    attackDmg: 360,
+                    magicDmg: 475,
+                    armor: 1450,
+                    spirit: 1370,
+                    difficulty: "easy",
+                    element: "normal"
                 }
             ],
             "vampireCouncil": [
                 {
-                    name: "Archvampire ",
+                    name: "Archvampire",
+                    xp: 1480,
                     abilities: [
-                        "attack",
-                        "attack",
-                        "rockthrow",
-                        "rockthrow",
-                        "slash",
-                        "slash",
-                        "poke",
-                        "shield"
+                        "ferociousBite",
+                        "uppercut",
+                        "poison",
+                        "poke"
                     ],
                     buffs: [
                         {
                             name: "frenzy",
                             emoji: "😡",
                             onTurnEnd: {
-                                attackDmgPlus : 105,
-                                magicDmgPlus : 105,
-                                everyNTurns: 2,
-                                startTurn: 3
+                                attackDmgPlus : 305,
+                                magicDmgPlus : 305,
+                                everyNTurns: 8,
+                                startTurn: 6
                             }
                         }
                     ],
-                    hp: 7600,
-                    attackDmg: 300,
-                    magicDmg: 270,
+                    abilityOrder: [
+                        0, 1, 2, 3, 0, 0, 1, 2, 0
+                    ],
+                    endOfTurnEvents : [
+                        "focus",
+                        "archvampireRevive",
+                        "fever",
+                        "suckBlood"
+                    ],
+                    hp: 51600,
+                    attackDmg: 600,
+                    magicDmg: 570,
                     armor: 1750,
                     spirit: 1500,
                     difficulty: "special",
@@ -2411,23 +2999,23 @@ module.exports = {
                         "slash",
                         "slash",
                         "poke",
-                        "shield"
+                        "protect"
                     ],
                     buffs: [
                         {
                             name: "frenzy",
                             emoji: "😡",
                             onTurnEnd: {
-                                attackDmgPlus : 105,
-                                magicDmgPlus : 105,
-                                everyNTurns: 2,
-                                startTurn: 3
+                                attackDmgPlus : 85,
+                                magicDmgPlus : 85,
+                                everyNTurns: 3,
+                                startTurn: 4
                             }
                         }
                     ],
-                    hp: 7600,
-                    attackDmg: 300,
-                    magicDmg: 270,
+                    hp: 13600,
+                    attackDmg: 400,
+                    magicDmg: 470,
                     armor: 1750,
                     spirit: 1500,
                     difficulty: "special",
@@ -2443,23 +3031,23 @@ module.exports = {
                         "slash",
                         "slash",
                         "poke",
-                        "shield"
+                        "barrier"
                     ],
                     buffs: [
                         {
                             name: "frenzy",
                             emoji: "😡",
                             onTurnEnd: {
-                                attackDmgPlus : 105,
-                                magicDmgPlus : 105,
-                                everyNTurns: 2,
-                                startTurn: 3
+                                attackDmgPlus : 85,
+                                magicDmgPlus : 85,
+                                everyNTurns: 3,
+                                startTurn: 5
                             }
                         }
                     ],
-                    hp: 7600,
+                    hp: 13600,
                     attackDmg: 300,
-                    magicDmg: 270,
+                    magicDmg: 470,
                     armor: 1750,
                     spirit: 1500,
                     difficulty: "special",
@@ -2467,31 +3055,31 @@ module.exports = {
                 },
                 {
                     name: "Immortality Seeker",
-                    abilities: ["attack", "attack", "rockthrow", "rockthrow", "slash", "protect"],
+                    abilities: ["attack", "attack","attack", "flameblast", "flameblast", "iceshards", "freeze"],
                     buffs: [],
-                    hpPerPartyMember: 130,
+                    hpPerPartyMember: 0,
                     adPerPartyMember: 8,
                     mdPerPartyMember: 8,
-                    hp: 350,
-                    attackDmg: 60,
-                    magicDmg: 75,
-                    armor: 450,
-                    spirit: 370,
+                    hp: 2350,
+                    attackDmg: 360,
+                    magicDmg: 375,
+                    armor: 1050,
+                    spirit: 1170,
                     difficulty: "easy",
                     element: "normal"
                 },
                 {
                     name: "Immortality Seeker",
-                    abilities: ["attack", "attack", "rockthrow", "rockthrow", "slash", "protect"],
+                    abilities: ["attack", "attack","attack", "flameblast", "flameblast", "iceshards", "scold"],
                     buffs: [],
-                    hpPerPartyMember: 130,
+                    hpPerPartyMember: 0,
                     adPerPartyMember: 8,
                     mdPerPartyMember: 8,
-                    hp: 350,
-                    attackDmg: 60,
-                    magicDmg: 75,
-                    armor: 450,
-                    spirit: 370,
+                    hp: 2350,
+                    attackDmg: 360,
+                    magicDmg: 375,
+                    armor: 1050,
+                    spirit: 1170,
                     difficulty: "easy",
                     element: "normal"
                 }
@@ -2499,48 +3087,56 @@ module.exports = {
             "legion": [
                 {
                     name: "Servant of Andromalius",
+                    xp: 100,
                     abilities: [
                         "attack",
-                        "attack",
-                        "rockthrow",
                         "rockthrow",
                         "slash",
-                        "slash",
-                        "poke",
-                        "shield"
+                        "poke"
                     ],
                     buffs: [
                         {
                             name: "frenzy",
                             emoji: "😡",
                             onTurnEnd: {
-                                attackDmgPlus : 105,
-                                magicDmgPlus : 105,
-                                everyNTurns: 2,
+                                attackDmgPlus : 135,
+                                magicDmgPlus : 135,
+                                everyNTurns: 3,
                                 startTurn: 3
                             }
                         }
                     ],
-                    hp: 7600,
-                    attackDmg: 300,
-                    magicDmg: 270,
-                    armor: 1750,
-                    spirit: 1500,
+                    abilityOrder: [
+                        0, 1, 1, 1, 3, 2, 2, 0, 2, 1
+                    ],
+                    endOfTurnEvents : [
+                        "focus",
+                        "echo",
+                        "hex",
+                        "hex",
+                        "hex",
+                        "summonChupacabra"
+                    ],
+                    hp: 30600,
+                    attackDmg: 600,
+                    magicDmg: 670,
+                    armor: 2450,
+                    spirit: 2100,
                     difficulty: "special",
                     element: "earth"
                 },
                 {
                     name: "Chupacabra",
-                    abilities: ["attack", "attack", "rockthrow", "rockthrow", "slash", "protect"],
+                    abilities: ["attack", "attack", "curse", "curse", "guac", "protect"],
                     buffs: [],
-                    hpPerPartyMember: 130,
+                    hpPerPartyMember: 0,
                     adPerPartyMember: 8,
                     mdPerPartyMember: 8,
-                    hp: 350,
-                    attackDmg: 60,
-                    magicDmg: 75,
-                    armor: 450,
-                    spirit: 370,
+                    hp: 2350,
+                    attackDmg: 260,
+                    magicDmg: 275,
+                    armor: 1150,
+                    spirit: 1170,
                     difficulty: "easy",
                     element: "normal"
                 },
@@ -2548,44 +3144,44 @@ module.exports = {
                     name: "Tormentor",
                     abilities: ["attack", "attack", "rockthrow", "rockthrow", "slash", "protect"],
                     buffs: [],
-                    hpPerPartyMember: 130,
+                    hpPerPartyMember: 0,
                     adPerPartyMember: 8,
                     mdPerPartyMember: 8,
-                    hp: 350,
-                    attackDmg: 60,
-                    magicDmg: 75,
-                    armor: 450,
-                    spirit: 370,
+                    hp: 4350,
+                    attackDmg: 260,
+                    magicDmg: 275,
+                    armor: 1150,
+                    spirit: 1170,
                     difficulty: "easy",
                     element: "normal"
                 },
                 {
                     name: "Reanimated Headless Chicken",
-                    abilities: ["attack", "attack", "rockthrow", "rockthrow", "slash", "protect"],
+                    abilities: ["attack", "attack", "curse", "curse", "poison", "protect"],
                     buffs: [],
-                    hpPerPartyMember: 130,
+                    hpPerPartyMember: 0,
                     adPerPartyMember: 8,
                     mdPerPartyMember: 8,
-                    hp: 350,
-                    attackDmg: 60,
-                    magicDmg: 75,
-                    armor: 450,
-                    spirit: 370,
+                    hp: 8350,
+                    attackDmg: 360,
+                    magicDmg: 275,
+                    armor: 1150,
+                    spirit: 1170,
                     difficulty: "easy",
                     element: "normal"
                 },
                 {
                     name: "Three Headed Beast",
-                    abilities: ["attack", "attack", "rockthrow", "rockthrow", "slash", "protect"],
+                    abilities: ["ferociousBite", "ferociousBite", "claw", "claw", "poison", "protect"],
                     buffs: [],
-                    hpPerPartyMember: 130,
+                    hpPerPartyMember: 0,
                     adPerPartyMember: 8,
                     mdPerPartyMember: 8,
-                    hp: 350,
-                    attackDmg: 60,
-                    magicDmg: 75,
-                    armor: 450,
-                    spirit: 370,
+                    hp: 2350,
+                    attackDmg: 260,
+                    magicDmg: 375,
+                    armor: 1150,
+                    spirit: 1170,
                     difficulty: "easy",
                     element: "normal"
                 }
@@ -2593,93 +3189,107 @@ module.exports = {
             "andromalius": [
                 {
                     name: "Andromalius",
+                    xp: 580,
                     abilities: [
                         "attack",
-                        "attack",
-                        "rockthrow",
-                        "rockthrow",
-                        "slash",
-                        "slash",
-                        "poke",
-                        "shield"
+                        "flameblast",
+                        "poison",
+                        "poke"
                     ],
                     buffs: [
                         {
                             name: "frenzy",
                             emoji: "😡",
                             onTurnEnd: {
-                                attackDmgPlus : 105,
-                                magicDmgPlus : 105,
-                                everyNTurns: 2,
-                                startTurn: 3
+                                attackDmgPlus : 95,
+                                magicDmgPlus : 95,
+                                everyNTurns: 3,
+                                startTurn: 4
                             }
                         }
                     ],
-                    hp: 7600,
-                    attackDmg: 300,
-                    magicDmg: 270,
-                    armor: 1750,
-                    spirit: 1500,
+                    abilityOrder: [
+                        0, 1, 2, 3, 0, 0, 2, 1, 0, 0, 0
+                    ],
+                    endOfTurnEvents : [
+                        "focus",
+                        "soulBurn",
+                        "totemOfDoom80",
+                        "totemOfDoom60",
+                        "totemOfDoom60",
+                        "totemOfDoom40",
+                        "totemOfDoom40",
+                        "totemOfDoom40",
+                        "totemOfDoom20",
+                        "totemOfDoom20",
+                        "totemOfDoom20",
+                        "totemOfDoom20",
+                    ],
+                    hp: 58600,
+                    attackDmg: 700,
+                    magicDmg: 670,
+                    armor: 2350,
+                    spirit: 2100,
                     difficulty: "special",
                     element: "earth"
                 },
                 {
                     name: "Three Headed Beast",
-                    abilities: ["attack", "attack", "rockthrow", "rockthrow", "slash", "protect"],
+                    abilities: ["ferociousBite", "ferociousBite", "claw", "claw", "poison", "protect"],
                     buffs: [],
                     hpPerPartyMember: 130,
                     adPerPartyMember: 8,
                     mdPerPartyMember: 8,
-                    hp: 350,
-                    attackDmg: 60,
-                    magicDmg: 75,
-                    armor: 450,
-                    spirit: 370,
+                    hp: 8350,
+                    attackDmg: 360,
+                    magicDmg: 275,
+                    armor: 1450,
+                    spirit: 1370,
                     difficulty: "easy",
                     element: "normal"
                 },
                 {
                     name: "Demonic Presence",
-                    abilities: ["attack", "attack", "rockthrow", "rockthrow", "slash", "protect"],
+                    abilities: ["attack", "attack", "poke", "poke", "poke", "protect"],
                     buffs: [],
                     hpPerPartyMember: 130,
                     adPerPartyMember: 8,
                     mdPerPartyMember: 8,
-                    hp: 350,
-                    attackDmg: 60,
-                    magicDmg: 75,
-                    armor: 450,
-                    spirit: 370,
+                    hp: 4350,
+                    attackDmg: 360,
+                    magicDmg: 275,
+                    armor: 1450,
+                    spirit: 1370,
                     difficulty: "easy",
                     element: "normal"
                 },
                 {
                     name: "Diabloic Ghoul",
-                    abilities: ["attack", "attack", "rockthrow", "rockthrow", "slash", "protect"],
+                    abilities: ["attack", "ferociousBite", "rockthrow", "drain", "slash", "barrier"],
                     buffs: [],
                     hpPerPartyMember: 130,
                     adPerPartyMember: 8,
                     mdPerPartyMember: 8,
-                    hp: 350,
-                    attackDmg: 60,
-                    magicDmg: 75,
-                    armor: 450,
-                    spirit: 370,
+                    hp: 5350,
+                    attackDmg: 360,
+                    magicDmg: 275,
+                    armor: 1450,
+                    spirit: 1370,
                     difficulty: "easy",
                     element: "normal"
                 },
                 {
                     name: "Zombie",
-                    abilities: ["attack", "attack", "rockthrow", "rockthrow", "slash", "protect"],
+                    abilities: ["claw", "claw", "rockthrow", "rockthrow", "slash", "protect"],
                     buffs: [],
                     hpPerPartyMember: 130,
                     adPerPartyMember: 8,
                     mdPerPartyMember: 8,
-                    hp: 350,
-                    attackDmg: 60,
-                    magicDmg: 75,
-                    armor: 450,
-                    spirit: 370,
+                    hp: 3350,
+                    attackDmg: 360,
+                    magicDmg: 275,
+                    armor: 1450,
+                    spirit: 1370,
                     difficulty: "easy",
                     element: "normal"
                 }
@@ -2687,11 +3297,12 @@ module.exports = {
             "evilExes": [
                 {
                     name: "Seventh Evil Ex",
+                    xp: 135,
                     abilities: [
                         "attack",
                         "attack",
-                        "rockthrow",
-                        "rockthrow",
+                        "tackle",
+                        "tackle",
                         "slash",
                         "slash",
                         "poke",
@@ -2704,16 +3315,20 @@ module.exports = {
                             onTurnEnd: {
                                 attackDmgPlus : 105,
                                 magicDmgPlus : 105,
-                                everyNTurns: 2,
-                                startTurn: 3
+                                everyNTurns: 4,
+                                startTurn: 4
                             }
                         }
                     ],
-                    hp: 7600,
-                    attackDmg: 300,
-                    magicDmg: 270,
-                    armor: 1750,
-                    spirit: 1500,
+                    endOfTurnEvents : [
+                        "focus",
+                        "echo"
+                    ],
+                    hp: 37600,
+                    attackDmg: 400,
+                    magicDmg: 370,
+                    armor: 2750,
+                    spirit: 2500,
                     difficulty: "special",
                     element: "earth"
                 },
@@ -2722,28 +3337,31 @@ module.exports = {
                     abilities: [
                         "attack",
                         "attack",
-                        "rockthrow",
-                        "rockthrow",
-                        "slash",
-                        "slash",
+                        "flameblast",
+                        "flameblast",
+                        "shoot",
+                        "shoot",
                         "poke",
-                        "shield"
+                        "cripple"
                     ],
                     buffs: [
                         {
                             name: "frenzy",
                             emoji: "😡",
                             onTurnEnd: {
-                                attackDmgPlus : 105,
-                                magicDmgPlus : 105,
-                                everyNTurns: 2,
+                                attackDmgPlus : 70,
+                                magicDmgPlus : 70,
+                                everyNTurns: 4,
                                 startTurn: 3
                             }
                         }
                     ],
-                    hp: 7600,
-                    attackDmg: 300,
-                    magicDmg: 270,
+                    endOfTurnEvents : [
+                        "focus"
+                    ],
+                    hp: 14600,
+                    attackDmg: 400,
+                    magicDmg: 370,
                     armor: 1750,
                     spirit: 1500,
                     difficulty: "special",
@@ -2756,26 +3374,25 @@ module.exports = {
                         "attack",
                         "rockthrow",
                         "rockthrow",
-                        "slash",
-                        "slash",
-                        "poke",
-                        "shield"
+                        "curse",
+                        "bandaid",
+                        "weaken"
                     ],
                     buffs: [
                         {
                             name: "frenzy",
                             emoji: "😡",
                             onTurnEnd: {
-                                attackDmgPlus : 105,
-                                magicDmgPlus : 105,
-                                everyNTurns: 2,
-                                startTurn: 3
+                                attackDmgPlus : 55,
+                                magicDmgPlus : 55,
+                                everyNTurns: 4,
+                                startTurn: 2
                             }
                         }
                     ],
                     hp: 7600,
-                    attackDmg: 300,
-                    magicDmg: 270,
+                    attackDmg: 500,
+                    magicDmg: 370,
                     armor: 1750,
                     spirit: 1500,
                     difficulty: "special",
@@ -2786,40 +3403,36 @@ module.exports = {
                     abilities: [
                         "attack",
                         "attack",
-                        "rockthrow",
-                        "rockthrow",
-                        "slash",
-                        "slash",
+                        "poison",
+                        "poison",
+                        "elixir",
+                        "orchatasip",
                         "poke",
-                        "shield"
+                        "scold"
                     ],
                     buffs: [
                         {
                             name: "frenzy",
                             emoji: "😡",
                             onTurnEnd: {
-                                attackDmgPlus : 105,
-                                magicDmgPlus : 105,
-                                everyNTurns: 2,
-                                startTurn: 3
+                                attackDmgPlus : 55,
+                                magicDmgPlus : 55,
+                                everyNTurns: 4,
+                                startTurn: 1
                             }
                         }
                     ],
                     hp: 7600,
                     attackDmg: 300,
-                    magicDmg: 270,
+                    magicDmg: 470,
                     armor: 1750,
                     spirit: 1500,
                     difficulty: "special",
                     element: "earth"
                 }
-            ],
+            ]
         },
         challenge: {
-            // 1 : 1 boss, 1 hard, 2 mediums, 1 easy
-            // 2 : 1 boss, 2 hard, 2 medium
-            // 3 : 1 new boss, 1 hard, 3 medium (dps check) 30k hp or smt
-            // 4 : 2 new boss, 1 hard, 2 medium  (2 bosses)
             1 :{
                 enemies: [
                     {
@@ -3491,12 +4104,10 @@ module.exports = {
                         ],
                         endOfTurnEvents : [
                             "focus", "summonEnergyCrystalsA",
-                            // TODO: Randomize summoning of crystals
                             "summonEnergyCrystalsB", "summonEnergyCrystalsC", "summonEnergyCrystalsD",
                             "summonEnergyCrystalsE", "summonEnergyCrystalsF",
                             "absorbEnergyCrystals", 
                             "rocketStrike",
-                            // TODO: give energy core +dmg to the boss
                             "summonEnergyCore", 
                             "furnace", "furnace",
                             "dismantle", "dismantle",

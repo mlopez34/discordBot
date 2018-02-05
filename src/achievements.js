@@ -83,6 +83,16 @@ var achievementsData = {
         score: 15,
         description : "Reach level 30"
     },
+    "Archeologist" : {
+        emoji: ":rosette:",
+        score: 15,
+        description : "Successfully combine a set of artifact items"
+    },
+    "Sloppy Eigths" : {
+        emoji: ":gift_heart:",
+        score: 15,
+        description : "Defeat the seven evil exes and obtain a 24 carat ring"
+    },
     "Gambler" : {
         emoji: ":game_die:",
         score: 15,
@@ -344,6 +354,32 @@ module.exports.checkForAchievements = function(discordUserId, data, message, cal
                         }
                         {
                             achievementEmbedBuilder(message, "Devoted", achievementEarner);
+                        }
+                    })
+                }
+
+                if(data.itemraritycombined && 
+                data.itemraritycombined == "artifact" && 
+                (data.achievements === null || data.achievements.indexOf("Archeologist") == -1)){
+                    profileDB.updateAchievements(discordUserId, "{Archeologist}", function(err, r){
+                        if (err){
+                            // console.log(err);
+                        }
+                        {
+                            achievementEmbedBuilder(message, "Archeologist", achievementEarner);
+                        }
+                    })
+                }
+
+                if(data.rpgDefeated && 
+                data.rpgDefeated == "evilExes" && 
+                (data.achievements === null || data.achievements.indexOf("Sloppy Eigths") == -1)){
+                    profileDB.updateAchievements(discordUserId, "{Sloppy Eigths}", function(err, r){
+                        if (err){
+                            // console.log(err); :gift_heart: 
+                        }
+                        {
+                            achievementEmbedBuilder(message, "Sloppy Eigths", achievementEarner);
                         }
                     })
                 }

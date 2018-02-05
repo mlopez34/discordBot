@@ -127,10 +127,10 @@ module.exports.questStringBuilder = function(questname, questData){
                 return questData.message.author.username + ", Your party prepares itself to travel forward in time"
             }
             else if (questData && questData.storyStep == 2){
-                return questData.message.author.username + ", Your party arrives atht the year 325,000,000 and in a remote planet very close to the center of the galaxy "                
+                return questData.message.author.username + ", Your party arrives at the year 230,000,000 and in a remote planet very close to the center of the galaxy "                
             }
             else if (questData && questData.storyStep == 3){
-                return questData.message.author.username + ", Your party arrives atht the year 325,000,000 and in a remote planet very close to the center of the galaxy. A strong presence is felt... The corrupted overmind emerges from above"                
+                return questData.message.author.username + ", Your party arrives at the year 230,000,000 and in a remote planet very close to the center of the galaxy. A strong presence is felt... The corrupted overmind emerges from above"                
             }
         }
         else{
@@ -285,9 +285,9 @@ module.exports.questStringBuilder = function(questname, questData){
             if (questData && questData.storyStep == 1){
                 return questData.message.author.username + ", you must show your love the hard way..."
             }else if (questData && questData.storyStep == 2){
-                return questData.message.author.username + ", you must show your love the hard way, give your soulmate 20,000 tacos"
+                return questData.message.author.username + ", you must show your love the hard way, give your soulmate 100,000 tacos"
             }else if (questData && questData.storyStep == 3){
-                return questData.message.author.username + ", you must show your love the hard way, give your soulmate 20,000 tacos ❤️❤️❤️ "
+                return questData.message.author.username + ", you must show your love the hard way, give your soulmate 100,000 tacos ❤️❤️❤️ "
             }
         }
         // gave 20,000 tacos
@@ -488,7 +488,7 @@ function handleRingArtifact(message, discordUserId, stage, team, questData, chan
     fight the evil exes
     ring:
     -stage 1 = * (mission)propose to a member
-    -stage 2 = * (mission)give them 20000 tacos
+    -stage 2 = * (mission)give them 100000 tacos
     -stage 3 = * (mission)thank and sorry them
     -stage 4 = (embed)react to the embed with hearts
     -stage 5 = * (rpg)defeat the 7 evil exes
@@ -906,7 +906,7 @@ function handleTimeMachineArtifactStageFive(message, discordUserId, stage, team,
         reward: {
             type: "note" , // could be item
             fieldTitle: "You found carvings on the walls of the wooden cabin",
-            note: "travel to the year 3,250,000 and defeat the corrupted overmind",
+            note: "One long spin around the milky way corrupted us all.",
             questline: "timetravelqueststage",
             stageAdvance: stage + 1
         }
@@ -1000,7 +1000,7 @@ function handleDemonicArtifactStageOne(message, discordUserId, stage, team, chan
             questData.storyStep = questData.storyStep + 1;
             var descriptionString = exports.questStringBuilder("demonic", questData);
             embed.setDescription(descriptionString)
-            .addField("Ritual of summoning", "follow the stars...  ")
+            .addField("Ritual of summoning", "my hands always tell the truth, I have no fingers but I will point, I have no arms but I will strike, I have no feet but i will run.... follow the stars :star: ...  ")
             sentMessage.edit({embed})
 
             sentMessage.react("🇦")
@@ -1040,7 +1040,7 @@ function handleDemonicArtifactStageOne(message, discordUserId, stage, team, chan
             
         }, 10000);
         
-        var supplies = new Discord.ReactionCollector(sentMessage, function(){ return true; } , { time: 1000000, max: 1000, maxEmojis: 1000, maxUsers: 1000 } );
+        var supplies = new Discord.ReactionCollector(sentMessage, function(){ return true; } , { time: 120000, max: 1000, maxEmojis: 1000, maxUsers: 1000 } );
         supplies.on('collect', function(element, collector){
             // remove the reaction if the user already reacted
             console.log(element)
@@ -1069,6 +1069,7 @@ function handleDemonicArtifactStageOne(message, discordUserId, stage, team, chan
                 
             })
             var mission = activeMissions["quest-" + discordUserId]
+            mission.ritualPositions = []
             collector.collected.forEach(function(reaction){
                 console.log(reaction);
                 reaction.users.forEach(function(collectorUser){
@@ -1121,10 +1122,10 @@ function handleDemonicArtifactStageOne(message, discordUserId, stage, team, chan
                     break
                 }
             }
-            
             if (allMembersCollected){
-                //var ritualPositionComplete = handleRitualStandingMission(mission)
-                mission.ritualPositions = [3, 5, 8, 10, 12] // FOR TESTING
+                // message.channel.send(mission.ritualPositions + " mission")
+                var ritualPositionComplete = handleRitualStandingMission(mission)
+                //mission.ritualPositions = [3, 5, 8, 10, 12] // FOR TESTING
                 var ritualPositionComplete = handleRitualStandingMission(mission)
                 if (ritualPositionComplete){
                     supplies.stop("Ritual Complete")
@@ -1542,7 +1543,7 @@ function handleRingArtifactStageOne(message, discordUserId, stage, team, propose
                 if (error){
                     console.log(error);
                 }else{
-                    activeMissions["quest-" + discordUserId] = { tacosToGive: 20000  , proposedTo: proposedTo }
+                    activeMissions["quest-" + discordUserId] = { tacosToGive: 100000  , proposedTo: proposedTo }
                     if (activeQuests[idOfQuest]){
                         delete activeQuests[idOfQuest];
                     }
@@ -1584,7 +1585,7 @@ function handleRingArtifactStageTwo(message, discordUserId, stage, team, giveAmo
                     var descriptionString = exports.questStringBuilder("ring", questData);
                     embed.setDescription(descriptionString)
                     sentMessage.edit({embed})
-                }, 5000);
+                }, 500);
 
                 var idOfQuest = "quest-" + sentMessage.id;
                 
@@ -2281,7 +2282,7 @@ function handleTombArtifactStageSix(message, discordUserId, stage, team, channel
 module.exports.proposedTo = function(message, discordUserId, stage, proposedTo){
     if (stage == 2){
         // re propose and create embed that the user needs to give tacos
-        activeMissions["quest-" + discordUserId] = { tacosToGive: 20000  , proposedTo: proposedTo }
+        activeMissions["quest-" + discordUserId] = { tacosToGive: 100000  , proposedTo: proposedTo }
         message.channel.send(message.author + " has proposed to " + proposedTo)
 
     }else if (stage == 3){
@@ -2472,6 +2473,7 @@ function playMusicForQuest(channel, questName){
     if (channel){
         voiceChannel = channel
         var ytLink = youtubeLinks[questName]
+        /*
         if (ytLink){
             voiceChannel.join().then(function(connection){
                 stream = ytdl(ytLink, {
@@ -2484,6 +2486,7 @@ function playMusicForQuest(channel, questName){
                 })
             })
         }
+        */
     }
 }
 
