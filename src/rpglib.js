@@ -3308,18 +3308,20 @@ module.exports = {
                         "poke",
                         "shield"
                     ],
+                    //TODO: debuff that keeps on doing more damage overtime on the tank, if it gets bandaided the enemy gains frenzy, if the tank dies the group explodes
                     buffs: [
                         {
                             name: "frenzy",
                             emoji: "😡",
                             onTurnEnd: {
-                                attackDmgPlus : 105,
-                                magicDmgPlus : 105,
-                                everyNTurns: 4,
+                                attackDmgPlus : 145,
+                                magicDmgPlus : 145,
+                                everyNTurns: 3,
                                 startTurn: 4
                             }
                         }
                     ],
+                    // 
                     endOfTurnEvents : [
                         "focus",
                         "echo"
@@ -3327,8 +3329,8 @@ module.exports = {
                     hp: 37600,
                     attackDmg: 400,
                     magicDmg: 370,
-                    armor: 2750,
-                    spirit: 2500,
+                    armor: 2150,
+                    spirit: 2100,
                     difficulty: "special",
                     element: "earth"
                 },
@@ -3351,7 +3353,7 @@ module.exports = {
                             onTurnEnd: {
                                 attackDmgPlus : 70,
                                 magicDmgPlus : 70,
-                                everyNTurns: 4,
+                                everyNTurns: 2,
                                 startTurn: 3
                             }
                         }
@@ -3385,7 +3387,7 @@ module.exports = {
                             onTurnEnd: {
                                 attackDmgPlus : 55,
                                 magicDmgPlus : 55,
-                                everyNTurns: 4,
+                                everyNTurns: 2,
                                 startTurn: 2
                             }
                         }
@@ -3417,7 +3419,7 @@ module.exports = {
                             onTurnEnd: {
                                 attackDmgPlus : 55,
                                 magicDmgPlus : 55,
-                                everyNTurns: 4,
+                                everyNTurns: 2,
                                 startTurn: 1
                             }
                         }
