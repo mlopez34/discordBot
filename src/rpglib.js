@@ -2142,9 +2142,9 @@ module.exports = {
         special: {
             "genghis khan": [
                 {
-                    name: "Ghenghis Khan",
+                    name: "Genghis Khan",
+                    xp: 43,
                     abilities: [
-                        "attack",
                         "attack",
                         "slash",
                         "uppercut",
@@ -2168,7 +2168,7 @@ module.exports = {
                         
                     ],
                     abilityOrder: [
-                        0, 6, 1,0,2, 3, [1,2], 0
+                        0, 2, 1, 0, 2, 3, [1,2], 0
                     ],
                     hp: 18500,
                     attackDmg: 740,
@@ -2259,6 +2259,7 @@ module.exports = {
             "asteroid": [
                 {
                     name: "Asteroid Golem",
+                    xp: 30,
                     abilities: [
                         "attack",
                         "rockthrow",
@@ -2297,6 +2298,7 @@ module.exports = {
                 },
                 {
                     name: "Stone Giant",
+                    xp: 30,
                     abilities: [
                         "attack",
                         "rockthrow",
@@ -2366,6 +2368,7 @@ module.exports = {
             "island": [
                 {
                     name: "Robot Overlord",
+                    xp: 150,
                     abilities: [
                         "laserBeam",
                         "poke",
@@ -2488,6 +2491,7 @@ module.exports = {
             "corruptedOvermind": [
                 {
                     name: "Corrupted Overmind",
+                    xp: 1350,
                     abilities: [
                         "corrupt",
                         "shock",
@@ -2520,8 +2524,8 @@ module.exports = {
                     hp: 197673,
                     attackDmg: 700,
                     magicDmg: 370,
-                    armor: 2750,
-                    spirit: 2500,
+                    armor: 2150,
+                    spirit: 2100,
                     difficulty: "special",
                     element: "earth"
                 },
@@ -2632,6 +2636,7 @@ module.exports = {
             "hounds": [
                 {
                     name: "Pack Leader",
+                    xp: 38,
                     abilities: [
                         "ferociousBite",
                         "claw",
@@ -2728,6 +2733,7 @@ module.exports = {
             "vampireSwarm": [
                 {
                     name: "Enraged Vampire",
+                    xp: 73,
                     abilities: [
                         "ferociousBite",
                         "rockthrow",
@@ -2842,6 +2848,7 @@ module.exports = {
             "gateKeeper": [
                 {
                     name: "The Gatekeeper",
+                    xp: 190,
                     abilities: [
                         "attack",
                         "crush",
@@ -2946,6 +2953,7 @@ module.exports = {
             "vampireCouncil": [
                 {
                     name: "Archvampire",
+                    xp: 1480,
                     abilities: [
                         "ferociousBite",
                         "uppercut",
@@ -3079,6 +3087,7 @@ module.exports = {
             "legion": [
                 {
                     name: "Servant of Andromalius",
+                    xp: 100,
                     abilities: [
                         "attack",
                         "rockthrow",
@@ -3180,6 +3189,7 @@ module.exports = {
             "andromalius": [
                 {
                     name: "Andromalius",
+                    xp: 580,
                     abilities: [
                         "attack",
                         "flameblast",
@@ -3287,6 +3297,7 @@ module.exports = {
             "evilExes": [
                 {
                     name: "Seventh Evil Ex",
+                    xp: 135,
                     abilities: [
                         "attack",
                         "attack",
@@ -3419,7 +3430,7 @@ module.exports = {
                     difficulty: "special",
                     element: "earth"
                 }
-            ],
+            ]
         },
         challenge: {
             1 :{

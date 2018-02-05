@@ -13,6 +13,7 @@ var activeRPGEvents = {};
 var activeRPGItemIds = {};
 var usersInRPGEvents = {};
 var TEAM_MAX_LENGTH = 5;
+var CURRENT_CHALLENGES_AVAILABLE = 6
 var rpgAbilities = rpglib.rpgAbilities;
 var enemiesToEncounter = rpglib.enemiesToEncounter;
 
@@ -421,12 +422,12 @@ module.exports.rpgReady = function(message, itemsAvailable, amuletItemsById){
                 var challengePicked = (activeRPGEvents[ "rpg-" +  rpgEventId ] && activeRPGEvents[ "rpg-" +  rpgEventId ].challenge) ? activeRPGEvents[ "rpg-" + rpgEventId ].challenge.challenge : false;
                 if ((currentPlayerChallenge + 1) >= (parseInt( challengePicked ) ) 
                     && (parseInt( challengePicked ) ) > 0 
-                    && (parseInt( challengePicked ) ) < 7){
+                    && (parseInt( challengePicked ) ) <= CURRENT_CHALLENGES_AVAILABLE ){
                     activeRPGEvents[ "rpg-" +  rpgEventId ].challenge.valid = true;
                 }
                 oneHourAgo = new Date(oneHourAgo.setHours(oneHourAgo.getHours() - RPG_COOLDOWN_HOURS ));
                 var lastrpgtime = userData.data.lastrpgtime;
-                if ((lastrpgtime && oneHourAgo > lastrpgtime) 
+                if ((lastrpgtime && oneHourAgo > lastrpgtime)
                     || isSpecialEvent 
                     || !lastrpgtime){
                     // get the user profile data
@@ -837,6 +838,7 @@ module.exports.rpgReady = function(message, itemsAvailable, amuletItemsById){
                                                     // get 
                                                     var specialRpg = activeRPGEvents[rpgEvent].special.questName;
                                                     var specialEnemies = enemiesToEncounter.special[specialRpg];
+                                                    var specialXp = 0
                                                     
                                                     for (var i = 0; i < specialEnemies.length; i++){
                                                         enemyFound = JSON.parse(JSON.stringify( specialEnemies[i] ));
@@ -869,6 +871,9 @@ module.exports.rpgReady = function(message, itemsAvailable, amuletItemsById){
 
                                                         if (enemyFound.abilityOrder){
                                                             enemies[enemyIdCount].abilityOrder = enemyFound.abilityOrder
+                                                        }
+                                                        if (enemyFound.xp){
+                                                            specialXp = specialXp + enemyFound.xp
                                                         }
 
                                                         for( var ability in enemies[enemyIdCount].abilities){
@@ -905,6 +910,7 @@ module.exports.rpgReady = function(message, itemsAvailable, amuletItemsById){
                                                         enemies[enemyIdCount].maxhp = enemies[enemyIdCount].hp;
                                                         enemyIdCount++;
                                                     }
+                                                    activeRPGEvents[rpgEvent].special.xp = specialXp
                                                 }
                                                 else{
                                                     var foundBoss = false;
@@ -1044,6 +1050,17 @@ module.exports.rpgReady = function(message, itemsAvailable, amuletItemsById){
                                                     var memberInParty = activeRPGEvents[rpgEvent].membersInParty["rpg-" + memberInRpgEvent.id]
                                                     var playerString = userStatsStringBuilder(memberInParty, memberInRpgEvent.username, false);
                                                     embed.addField( memberInRpgEvent.username, playerString )
+                                                }
+                                                // limit abilities
+                                                var limitsReadyString = "";
+                                                if (activeRPGEvents[rpgEvent].limitOffensiveReady){
+                                                    limitsReadyString = limitsReadyString + ":crossed_swords: ";
+                                                }
+                                                if (activeRPGEvents[rpgEvent].limitDefensiveReady){
+                                                    limitsReadyString = limitsReadyString + " :shield: "
+                                                }
+                                                if (limitsReadyString.length > 0){
+                                                    embed.addField("Limit", limitsReadyString)
                                                 }
                                                 // enemies
                                                 for (var enemy in activeRPGEvents[rpgEvent].enemies){
@@ -1430,6 +1447,17 @@ function turnFinishedEmbedBuilder(message, event, turnString, passiveEffectsStri
         var playerString = userStatsStringBuilder(memberInParty, memberInRpgEvent.username, false);
         embed.addField( memberInRpgEvent.username, playerString )
     }
+    // show limit availables
+    var limitsReadyString = "";
+    if (event.limitOffensiveReady){
+        limitsReadyString = limitsReadyString + ":crossed_swords: ";
+    }
+    if (event.limitDefensiveReady){
+        limitsReadyString = limitsReadyString + " :shield: "
+    }
+    if (limitsReadyString.length > 0){
+        embed.addField("Limit", limitsReadyString)
+    }
     // enemies
     for (var enemy in event.enemies){
         if (enemiesString.length > 950){
@@ -1762,6 +1790,13 @@ function calculateRewards(event, memberInRpgEvent, getItemResponse, numberOfMemb
 
         rewardsForPlayer.xp = rewardsForPlayer.xp + challengePts;
         rewardsForPlayer.rpgPoints = rewardsForPlayer.rpgPoints + challengePts;
+    }
+    if (event.special && event.special.xp){
+        // get the special points, they should be in event.special.
+        var specialPts = event.special.xp;
+
+        rewardsForPlayer.xp = rewardsForPlayer.xp + specialPts;
+        rewardsForPlayer.rpgPoints = rewardsForPlayer.rpgPoints + specialPts;
     }
     // calculate finds based on luck and diff of enemies
     rewardsForPlayer.xp = rewardsForPlayer.xp + additionalExperience + numberOfMembers
