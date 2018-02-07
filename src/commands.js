@@ -4448,7 +4448,7 @@ module.exports.proposeCommand = function(message, channel){
         mentionedId = user.id;
         mentionedUser = user
     })
-    if (!mentionedUser.bot && mentionedUser != discordUserId){
+    if (mentionedUser && !mentionedUser.bot && mentionedUser != discordUserId){
         profileDB.getUserProfileData(discordUserId, function(profileErr, profileData){
             if (profileErr){
                 console.log (profileErr);
@@ -4607,7 +4607,7 @@ module.exports.ritualCommand = function(message, args, channel){
             validTeam = false;
         }
     }
-    if (team.length > 1 && team.length <= 5){
+    if (team.length >= 1 && team.length <= 5){
         profileDB.getUserProfileData(discordUserId, function(profileErr, profileData){
             if (profileErr){
                 console.log (profileErr);
