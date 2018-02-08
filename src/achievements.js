@@ -93,6 +93,11 @@ var achievementsData = {
         score: 15,
         description : "Defeat the seven evil exes and obtain a 24 carat ring"
     },
+    "Exorcist" : {
+        emoji: ":prayer_beads:",
+        score: 15,
+        description : "Defeat Andromalius and obtain a Demonic Bow of Andromalius"
+    },
     "Gambler" : {
         emoji: ":game_die:",
         score: 15,
@@ -383,6 +388,19 @@ module.exports.checkForAchievements = function(discordUserId, data, message, cal
                         }
                     })
                 }
+
+                if(data.rpgDefeated && 
+                    data.rpgDefeated == "andromalius" && 
+                    (data.achievements === null || data.achievements.indexOf("Exorcist") == -1)){
+                        profileDB.updateAchievements(discordUserId, "{Exorcist}", function(err, r){
+                            if (err){
+                                // console.log(err); :gift_heart: 
+                            }
+                            {
+                                achievementEmbedBuilder(message, "Exorcist", achievementEarner);
+                            }
+                        })
+                    }
 
                 if(data.slotsTacosBet && 
                 data.slotsTacosBet >= 50000 && 
