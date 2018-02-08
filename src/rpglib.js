@@ -312,7 +312,7 @@ module.exports = {
             name: "Disintegrate",
             abilityId: "disintegrate",
             dmg: 120,
-            mdPercentage: 1.2,
+            mdPercentage: 1.1,
             type: "electric"
         },
         /*
@@ -1010,19 +1010,19 @@ module.exports = {
         deepHatred: {
             name:"Deep Hatred",
             abilityId: "deepHatred",
-            type:"shadow",
+            type:"physical",
             processAbility: true,
             belongsToMember: true,
-            everyNTurns: 10,
+            everyNTurns: 9,
             ignoreFocus: true,
             ignoreUnique: true,
             afterNTurns: 9,
             currentTurn: 0,
             dot: {
                 name: "Deep Hatred",
-                type:"shadow",
+                type:"physical",
                 dmg: 100,
-                mdPercentage: 30,
+                adPercentage: 30,
                 emoji: "☸️",
                 dmgOnDotApply: false,
                 ignoreBandaid: true,
@@ -1067,7 +1067,7 @@ module.exports = {
             areawidedmg: {
                 areawide: true,
                 name: "Haunt",
-                dmg: 670,
+                dmg: 580,
                 adPercentage: 0.1,
                 type: "physical"
             }
@@ -1178,7 +1178,7 @@ module.exports = {
                 name: "Vacum",
                 ignoreUnique: true,
                 emoji: "🕳️",
-                mdPercentage: 0.8,
+                mdPercentage: 0.6,
                 turnsToExpire: 6,
                 dmgOnStatusExpire: true,
                 dmgOnExpire: 150
@@ -1203,7 +1203,7 @@ module.exports = {
                 ignoreUnique: true,
                 name: "Vacum",
                 emoji: "🕳️",
-                mdPercentage: 0.8,
+                mdPercentage: 0.6,
                 turnsToExpire: 6,
                 dmgOnStatusExpire: true,
                 dmgOnExpire: 150
@@ -1228,7 +1228,7 @@ module.exports = {
                 ignoreUnique: true,
                 name: "Vacum",
                 emoji: "🕳️",
-                mdPercentage: 0.8,
+                mdPercentage: 0.6,
                 turnsToExpire: 6,
                 dmgOnStatusExpire: true,
                 dmgOnExpire: 150
@@ -1243,7 +1243,7 @@ module.exports = {
             dmg: 50,
             mdPercentage: 0.4,
             type: "shadow",
-            everyNTurns: 2,
+            everyNTurns: 3,
             afterNTurns: 4,
             currentTurn: 0,
             status: {
@@ -1653,7 +1653,7 @@ module.exports = {
                 hpPerPartyMember: 0,
                 adPerPartyMember: 0,
                 mdPerPartyMember: 0,
-                hp: 7000,
+                hp: 5500,
                 attackDmg: 0,
                 magicDmg: 0,
                 armor: 1000,
@@ -2505,7 +2505,7 @@ module.exports = {
                             onTurnEnd: {
                                 attackDmgPlus : 400,
                                 magicDmgPlus : 400,
-                                everyNTurns: 9,
+                                everyNTurns: 10,
                                 startTurn: 8
                             }
                         }
@@ -2546,7 +2546,7 @@ module.exports = {
                             onTurnEnd: {
                                 attackDmgPlus : 80,
                                 magicDmgPlus : 80,
-                                everyNTurns: 2,
+                                everyNTurns: 3,
                                 startTurn: 3
                             }
                         }
@@ -2558,8 +2558,8 @@ module.exports = {
                     hp: 21600,
                     attackDmg: 400,
                     magicDmg: 370,
-                    armor: 1750,
-                    spirit: 1500,
+                    armor: 1350,
+                    spirit: 1100,
                     difficulty: "special",
                     element: "earth"
                 },
@@ -2569,10 +2569,9 @@ module.exports = {
                         "attack",
                         "attack",
                         "disintegrate",
-                        "disintegrate",
                         "guac",
                         "curse",
-                        "tacowall"
+                        "weaken"
                     ],
                     buffs: [
                         {
@@ -2581,10 +2580,13 @@ module.exports = {
                             onTurnEnd: {
                                 attackDmgPlus : 75,
                                 magicDmgPlus : 75,
-                                everyNTurns: 2,
+                                everyNTurns: 3,
                                 startTurn: 4
                             }
                         }
+                    ],
+                    endOfTurnEvents : [
+                        "focus"
                     ],
                     effectsOnDeath: [
                         "radiation",
@@ -2593,8 +2595,8 @@ module.exports = {
                     hp: 41600,
                     attackDmg: 400,
                     magicDmg: 370,
-                    armor: 1750,
-                    spirit: 1500,
+                    armor: 1350,
+                    spirit: 1000,
                     difficulty: "special",
                     element: "earth"
                 },
@@ -2607,7 +2609,7 @@ module.exports = {
                         "poison",
                         "elixir",
                         "elixir",
-                        "weaken"
+                        "cripple"
                     ],
                     buffs: [
                         {
@@ -2616,7 +2618,7 @@ module.exports = {
                             onTurnEnd: {
                                 attackDmgPlus : 55,
                                 magicDmgPlus : 55,
-                                everyNTurns: 2,
+                                everyNTurns: 3,
                                 startTurn: 5
                             }
                         }
@@ -2627,8 +2629,8 @@ module.exports = {
                     hp: 9600,
                     attackDmg: 350,
                     magicDmg: 270,
-                    armor: 1750,
-                    spirit: 1500,
+                    armor: 1450,
+                    spirit: 1100,
                     difficulty: "special",
                     element: "earth"
                 }
@@ -2848,7 +2850,7 @@ module.exports = {
             "gateKeeper": [
                 {
                     name: "The Gatekeeper",
-                    xp: 190,
+                    xp: 290,
                     abilities: [
                         "attack",
                         "crush",
@@ -2881,9 +2883,9 @@ module.exports = {
                         "vampire25",
                         "vampire25"
                     ],
-                    hp: 35600,
+                    hp: 38600,
                     attackDmg: 620,
-                    magicDmg: 570,
+                    magicDmg: 470,
                     armor: 2350,
                     spirit: 2100,
                     difficulty: "special",
@@ -2993,13 +2995,10 @@ module.exports = {
                     name: "Frenzied Vampire",
                     abilities: [
                         "attack",
-                        "attack",
                         "rockthrow",
-                        "rockthrow",
-                        "slash",
                         "slash",
                         "poke",
-                        "protect"
+                        "weaken"
                     ],
                     buffs: [
                         {
@@ -3013,11 +3012,14 @@ module.exports = {
                             }
                         }
                     ],
+                    abilityOrder: [
+                        0, 1, 2, 3, 4, 0, 1, 2, 0
+                    ],
                     hp: 13600,
-                    attackDmg: 400,
-                    magicDmg: 470,
-                    armor: 1750,
-                    spirit: 1500,
+                    attackDmg: 470,
+                    magicDmg: 300,
+                    armor: 1450,
+                    spirit: 1200,
                     difficulty: "special",
                     element: "earth"
                 },
@@ -3025,13 +3027,10 @@ module.exports = {
                     name: "Blood King",
                     abilities: [
                         "attack",
-                        "attack",
                         "rockthrow",
-                        "rockthrow",
-                        "slash",
-                        "slash",
+                        "iceshards",
                         "poke",
-                        "barrier"
+                        "cripple"
                     ],
                     buffs: [
                         {
@@ -3045,11 +3044,14 @@ module.exports = {
                             }
                         }
                     ],
+                    abilityOrder: [
+                        0, 2, 1, 3, 4, 0, 2, 1, 0
+                    ],
                     hp: 13600,
                     attackDmg: 300,
                     magicDmg: 470,
-                    armor: 1750,
-                    spirit: 1500,
+                    armor: 1250,
+                    spirit: 1400,
                     difficulty: "special",
                     element: "earth"
                 },
@@ -3225,7 +3227,7 @@ module.exports = {
                         "totemOfDoom20",
                         "totemOfDoom20",
                     ],
-                    hp: 58600,
+                    hp: 52600,
                     attackDmg: 700,
                     magicDmg: 670,
                     armor: 2350,
