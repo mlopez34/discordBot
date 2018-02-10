@@ -81,45 +81,76 @@ module.exports.reduceCommandCooldownByHour = function(userId, command, userProfi
     if (command == "scavenge"){
         commandProperty = "lastscavangetime"
         var currentCommandTime = userProfile.lastscavangetime;
-        newDate = new Date(currentCommandTime.setHours(currentCommandTime.getHours() - HOURS_TO_REDUCE_FOR_COMMAND));        
+        if (!currentCommandTime){
+            cb(null, { status: 'success', message: 'reduced cooldown' } );
+        }else{
+            newDate = new Date(currentCommandTime.setHours(currentCommandTime.getHours() - HOURS_TO_REDUCE_FOR_COMMAND));        
+        }
     }else if (command == "cook"){
         commandProperty = "lastcooktime"
         var currentCommandTime = userProfile.lastcooktime;
-        newDate = new Date(currentCommandTime.setHours(currentCommandTime.getHours() - HOURS_TO_REDUCE_FOR_COMMAND));                
+        if (!currentCommandTime){
+            cb(null, { status: 'success', message: 'reduced cooldown' } );
+        }else{
+            newDate = new Date(currentCommandTime.setHours(currentCommandTime.getHours() - HOURS_TO_REDUCE_FOR_COMMAND));
+        }                
     }else if (command == "RPG"){
         commandProperty = "lastrpgtime"
         var currentCommandTime = userProfile.lastrpgtime;
-        newDate = new Date(currentCommandTime.setHours(currentCommandTime.getHours() - HOURS_TO_REDUCE_FOR_COMMAND));                
+        if (!currentCommandTime){
+            cb(null, { status: 'success', message: 'reduced cooldown' } );
+        }else{
+            newDate = new Date(currentCommandTime.setHours(currentCommandTime.getHours() - HOURS_TO_REDUCE_FOR_COMMAND));                
+        }
     }else if (command == "thank"){
         commandProperty = "lastthanktime"
         var currentCommandTime = userProfile.lastthanktime;
-        newDate = new Date(currentCommandTime.setHours(currentCommandTime.getHours() - HOURS_TO_REDUCE_FOR_COMMAND));                
+        if (!currentCommandTime){
+            cb(null, { status: 'success', message: 'reduced cooldown' } );
+        }else{
+            newDate = new Date(currentCommandTime.setHours(currentCommandTime.getHours() - HOURS_TO_REDUCE_FOR_COMMAND));                
+        }
     }else if (command == "sorry"){
         commandProperty = "lastsorrytime"
         var currentCommandTime = userProfile.lastsorrytime;
-        newDate = new Date(currentCommandTime.setHours(currentCommandTime.getHours() - HOURS_TO_REDUCE_FOR_COMMAND));                
+        if (!currentCommandTime){
+            cb(null, { status: 'success', message: 'reduced cooldown' } );
+        }else{
+            newDate = new Date(currentCommandTime.setHours(currentCommandTime.getHours() - HOURS_TO_REDUCE_FOR_COMMAND));                
+        }
     }else if (command == "prepare"){
         commandProperty = "lastpreparetime"
         var currentCommandTime = userProfile.lastpreparetime;
-        newDate = new Date(currentCommandTime.setHours(currentCommandTime.getHours() - HOURS_TO_REDUCE_FOR_COMMAND));                
+        if (!currentCommandTime){
+            cb(null, { status: 'success', message: 'reduced cooldown' } );
+        }else{
+            newDate = new Date(currentCommandTime.setHours(currentCommandTime.getHours() - HOURS_TO_REDUCE_FOR_COMMAND));                
+        }
     }else if (command == "fetch"){
         commandProperty = "lastfetchtime"
         var currentCommandTime = userProfile.lastfetchtime;
-        newDate = new Date(currentCommandTime.setHours(currentCommandTime.getHours() - HOURS_TO_REDUCE_FOR_COMMAND));                        
+        if (!currentCommandTime){
+            cb(null, { status: 'success', message: 'reduced cooldown' } );
+        }else{
+            newDate = new Date(currentCommandTime.setHours(currentCommandTime.getHours() - HOURS_TO_REDUCE_FOR_COMMAND));                        
+        }
     }
-    var query = 'update ' + config.profileTable + ' set ' + commandProperty + '=$2 where discordid=$1'
+    if (newDate){
+        var query = 'update ' + config.profileTable + ' set ' + commandProperty + '=$2 where discordid=$1'
 
-    //// console.log("new last thank: " + lastThank);
-    db.none(query, [userId, newDate])
-    .then(function () {
-    cb(null, {
-        status: 'success',
-        message: 'reduced cooldown'
+        //// console.log("new last thank: " + lastThank);
+        db.none(query, [userId, newDate])
+        .then(function () {
+        cb(null, {
+            status: 'success',
+            message: 'reduced cooldown'
+            });
+        })
+        .catch(function (err) {
+            cb(err);
         });
-    })
-    .catch(function (err) {
-        cb(err);
-    });
+    }
+    
 }
 
 module.exports.updateUserTacosTrickOrTreat = function(userId, tacos, cb) {

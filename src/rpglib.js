@@ -840,6 +840,13 @@ module.exports = {
             removeEnemyBuff : "Energize",
             name: "De-Energize"
         },
+        removeEntomb: {
+            passive: true,
+            belongsToMember: true,
+            abilityId: "removeEntomb",
+            removeEnemyBuff : "Entomb",
+            name: "De-Entomb"
+        },
         energize: {
             belongsToMember: true,
             abilityId: "energize",
@@ -851,6 +858,65 @@ module.exports = {
                 abilityId: "energize",
                 affects: ["attackDmg", "magicDmg"],
                 additive: 350
+            }
+        },
+        entomb75: {
+            belongsToMember: true,
+            processAbility: true,
+            hppercentage: 0.75,
+            oneTimeCast: true,
+            targetSelf: true,
+            abilityId: "entomb75",
+            name: "Entomb",
+            buff: {
+                name: "Entomb",
+                emoji: "🗿",
+                turnsToExpire: 5,
+                abilityId: "entomb75",
+                setAbleToAttack: false,
+                setAbleToTakeDamage: false,
+                setAbleToBeHealed: false
+                //TODO set abletoattack false, abletotakedamage false, abletoheal false endofturndisable stays false
+            }
+        },
+        entomb50: {
+            belongsToMember: true,
+            processAbility: true,
+            targetSelf: true,
+            hppercentage: 0.5,
+            oneTimeCast: true,
+            targetSelf: true,
+            abilityId: "entomb50",
+            name: "Entomb",
+            buff: {
+                name: "Entomb",
+                emoji: "🗿",
+                turnsToExpire: 8,
+                abilityId: "entomb50",
+                setAbleToAttack: false,
+                setAbleToTakeDamage: false,
+                setAbleToBeHealed: false
+                //TODO set abletoattack false, abletotakedamage false, abletoheal false endofturndisable stays false
+            }
+        },
+        entomb25: {
+            belongsToMember: true,
+            processAbility: true,
+            targetSelf: true,
+            hppercentage: 0.25,
+            oneTimeCast: true,
+            targetSelf: true,
+            abilityId: "entomb25",
+            name: "Entomb",
+            buff: {
+                name: "Entomb",
+                emoji: "🗿",
+                turnsToExpire: 8,
+                abilityId: "entomb25",
+                setAbleToAttack: false,
+                setAbleToTakeDamage: false,
+                setAbleToBeHealed: false
+                //TODO set abletoattack false, abletotakedamage false, abletoheal false endofturndisable stays false
             }
         },
         chaos: {
@@ -1770,8 +1836,8 @@ module.exports = {
                     }
                 ],
                 hpPerPartyMember: 0,
-                adPerPartyMember: 24,
-                mdPerPartyMember: 24,
+                adPerPartyMember: 0,
+                mdPerPartyMember: 0,
                 hp: 6400,
                 attackDmg: 500,
                 magicDmg: 500,
@@ -1800,8 +1866,8 @@ module.exports = {
                 endOfTurnEvents : [
                 ],
                 hpPerPartyMember: 0,
-                adPerPartyMember: 29,
-                mdPerPartyMember: 29,
+                adPerPartyMember: 0,
+                mdPerPartyMember: 0,
                 hp: 6900,
                 attackDmg: 310,
                 magicDmg: 310,
@@ -1829,12 +1895,15 @@ module.exports = {
                 ],
                 endOfTurnEvents : [
                 ],
+                effectsOnDeath: [
+                    "removeEntomb"
+                ],
                 hpPerPartyMember: 0,
-                adPerPartyMember: 29,
-                mdPerPartyMember: 29,
+                adPerPartyMember: 0,
+                mdPerPartyMember: 0,
                 hp: 7900,
-                attackDmg: 337,
-                magicDmg: 350,
+                attackDmg: 437,
+                magicDmg: 410,
                 armor: 1300,
                 spirit: 900,
                 difficulty: "summoned",
@@ -2877,11 +2946,14 @@ module.exports = {
                         "deepHatred",
                         "decay",
                         "vampire75",
+                        "entomb75",
                         "vampire50",
                         "vampire50",
+                        "entomb50",
                         "vampire25",
                         "vampire25",
-                        "vampire25"
+                        "vampire25",
+                        "entomb25"
                     ],
                     hp: 38600,
                     attackDmg: 620,
