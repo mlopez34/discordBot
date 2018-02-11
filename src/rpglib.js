@@ -436,7 +436,7 @@ module.exports = {
             name: "Resistance Aura",
             buff: {
                 name: "Resistance Aura",
-                emoji: "💨"
+                emoji: "🌀"
             }
         },
         divineaura: {
@@ -445,7 +445,7 @@ module.exports = {
             name: "Divine Aura",
             buff: {
                 name: "Divine Aura",
-                emoji: "💨"
+                emoji: "🌀"
             }
         },
         fierceshout: {
@@ -454,7 +454,7 @@ module.exports = {
             name: "Fierce Shout",
             buff: {
                 name: "Fierce Shout",
-                emoji: "💨"
+                emoji: "🌀"
             }
         },
         rallyingroar: {
@@ -463,7 +463,7 @@ module.exports = {
             name: "Rallying Roar",
             buff: {
                 name: "Rallying Roar",
-                emoji: "💨"
+                emoji: "🌀"
             }
         },
 
