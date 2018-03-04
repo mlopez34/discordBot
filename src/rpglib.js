@@ -2590,7 +2590,7 @@ module.exports = {
                         "superNovaPrepare",
                         "superNova"
                     ],
-                    hp: 197673,
+                    hp: 337673,
                     attackDmg: 700,
                     magicDmg: 370,
                     armor: 2150,
