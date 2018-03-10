@@ -4206,7 +4206,7 @@ module.exports = {
                         adPerPartyMember: 0,
                         mdPerPartyMember: 0,
                         attackDmg: 1100,
-                        magicDmg: 800,
+                        magicDmg: 1000,
                         armor: 2650,
                         spirit: 2650,
                         difficulty: "boss",
