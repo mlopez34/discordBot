@@ -19,7 +19,7 @@ module.exports = {
             name: "Corrupt",
             abilityId: "corrupt",
             dmg: 50,
-            adPercentage: 1,
+            adPercentage: 1.2,
             type: "physical"
         },
         crush : {
@@ -608,7 +608,7 @@ module.exports = {
             currentTurn: 0,
             abilityId: "rocketStrike",
             dmg: 50,
-            mdPercentage: 0.6,
+            mdPercentage: 0.8,
             type: "magical"
         },
         rocketStrikeAreaWide : {
@@ -620,14 +620,14 @@ module.exports = {
             currentTurn: 0,
             abilityId: "rocketStrikeAreaWide",
             dmg: 50,
-            mdPercentage: 0.6,
+            mdPercentage: 0.8,
             type: "magical",
             areawide: true,
             areawidedmg: {
                 areawide: true,
                 name: "Rocket Strike",
                 dmg: 50,
-                mdPercentage: 0.6,
+                mdPercentage: 0.8,
                 type: "magical"
             }
         },
@@ -635,7 +635,7 @@ module.exports = {
             name: "Laser Beam",
             abilityId: "laserBeam",
             dmg: 50,
-            adPercentage: 1,
+            adPercentage: 1.35,
             type: "physical"
         },
         absorbEnergyCrystals: {
@@ -976,7 +976,7 @@ module.exports = {
                 dmgOnRemove: 150,
                 dmgOnRemoveAreaWide: false,
                 mdPercentageOnRemove: 1,
-                dmgOnExpire: 150
+                dmgOnExpire: 200
             }
         },
         dismantle: {
@@ -1004,7 +1004,7 @@ module.exports = {
                 dmgOnRemove: 150,
                 dmgOnRemoveAreaWide: false,
                 adPercentageOnRemove: 1,
-                dmgOnExpire: 150
+                dmgOnExpire: 200
             }
         },
         /*
@@ -1221,7 +1221,7 @@ module.exports = {
                 areawide: true,
                 name: "Super Nova",
                 dmg: 500,
-                mdPercentage: 0.8,
+                mdPercentage: 0.9,
                 type: "earth"
             }
         },
@@ -1244,7 +1244,7 @@ module.exports = {
                 name: "Vacum",
                 ignoreUnique: true,
                 emoji: "🕳️",
-                mdPercentage: 0.6,
+                mdPercentage: 0.8,
                 turnsToExpire: 6,
                 dmgOnStatusExpire: true,
                 dmgOnExpire: 150
@@ -1269,7 +1269,7 @@ module.exports = {
                 ignoreUnique: true,
                 name: "Vacum",
                 emoji: "🕳️",
-                mdPercentage: 0.6,
+                mdPercentage: 0.8,
                 turnsToExpire: 6,
                 dmgOnStatusExpire: true,
                 dmgOnExpire: 150
@@ -1294,7 +1294,7 @@ module.exports = {
                 ignoreUnique: true,
                 name: "Vacum",
                 emoji: "🕳️",
-                mdPercentage: 0.6,
+                mdPercentage: 0.8,
                 turnsToExpire: 6,
                 dmgOnStatusExpire: true,
                 dmgOnExpire: 150
@@ -1571,8 +1571,8 @@ module.exports = {
                 adPerPartyMember: 0,
                 mdPerPartyMember: 0,
                 hp: 3300,
-                attackDmg: 110,
-                magicDmg: 110,
+                attackDmg: 190,
+                magicDmg: 160,
                 armor: 700,
                 spirit: 700,
                 difficulty: "summoned",
@@ -1592,11 +1592,11 @@ module.exports = {
                 hpPerPartyMember: 0,
                 adPerPartyMember: 0,
                 mdPerPartyMember: 0,
-                hp: 5500,
+                hp: 7500,
                 attackDmg: 0,
                 magicDmg: 0,
-                armor: 950,
-                spirit: 950,
+                armor: 1650,
+                spirit: 1650,
                 difficulty: "summoned",
                 element: "normal"
             },
@@ -1613,8 +1613,8 @@ module.exports = {
                 hp: 8000,
                 attackDmg: 0,
                 magicDmg: 0,
-                armor: 500,
-                spirit: 500,
+                armor: 1200,
+                spirit: 1200,
                 difficulty: "summoned",
                 element: "normal"
             },
@@ -1631,8 +1631,8 @@ module.exports = {
                 hp: 8000,
                 attackDmg: 0,
                 magicDmg: 0,
-                armor: 500,
-                spirit: 500,
+                armor: 1200,
+                spirit: 1200,
                 difficulty: "summoned",
                 element: "normal"
             },
@@ -1649,8 +1649,8 @@ module.exports = {
                 hp: 8000,
                 attackDmg: 0,
                 magicDmg: 0,
-                armor: 500,
-                spirit: 500,
+                armor: 1200,
+                spirit: 1200,
                 difficulty: "summoned",
                 element: "normal"
             },
@@ -1667,8 +1667,8 @@ module.exports = {
                 hp: 8000,
                 attackDmg: 0,
                 magicDmg: 0,
-                armor: 500,
-                spirit: 500,
+                armor: 1200,
+                spirit: 1200,
                 difficulty: "summoned",
                 element: "normal"
             },
@@ -1685,8 +1685,8 @@ module.exports = {
                 hp: 8000,
                 attackDmg: 0,
                 magicDmg: 0,
-                armor: 500,
-                spirit: 500,
+                armor: 1200,
+                spirit: 1200,
                 difficulty: "summoned",
                 element: "normal"
             },
@@ -1703,8 +1703,8 @@ module.exports = {
                 hp: 8000,
                 attackDmg: 0,
                 magicDmg: 0,
-                armor: 500,
-                spirit: 500,
+                armor: 1200,
+                spirit: 1200,
                 difficulty: "summoned",
                 element: "normal"
             },
@@ -3056,8 +3056,8 @@ module.exports = {
                         "suckBlood"
                     ],
                     hp: 51600,
-                    attackDmg: 600,
-                    magicDmg: 570,
+                    attackDmg: 800,
+                    magicDmg: 770,
                     armor: 1750,
                     spirit: 1500,
                     difficulty: "special",
