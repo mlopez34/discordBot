@@ -635,7 +635,7 @@ module.exports = {
             name: "Laser Beam",
             abilityId: "laserBeam",
             dmg: 50,
-            adPercentage: 1.35,
+            adPercentage: 1.5,
             type: "physical"
         },
         absorbEnergyCrystals: {
