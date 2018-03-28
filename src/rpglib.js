@@ -4232,8 +4232,8 @@ module.exports = {
                                 name: "frenzy",
                                 emoji: "😡",
                                 onTurnEnd: {
-                                    attackDmgPlus : 135,
-                                    magicDmgPlus : 135,
+                                    attackDmgPlus : 155,
+                                    magicDmgPlus : 155,
                                     everyNTurns: 2,
                                     startTurn: 3
                                 }
@@ -4273,7 +4273,7 @@ module.exports = {
                         adPerPartyMember: 8,
                         mdPerPartyMember: 8,
                         hp: 3150,
-                        attackDmg: 360,
+                        attackDmg: 560,
                         magicDmg: 475,
                         armor: 1250,
                         spirit: 1170,
@@ -4288,7 +4288,7 @@ module.exports = {
                         adPerPartyMember: 8,
                         mdPerPartyMember: 8,
                         hp: 4350,
-                        attackDmg: 360,
+                        attackDmg: 560,
                         magicDmg: 475,
                         armor: 1150,
                         spirit: 1270,
@@ -4303,7 +4303,7 @@ module.exports = {
                         adPerPartyMember: 8,
                         mdPerPartyMember: 8,
                         hp: 3150,
-                        attackDmg: 360,
+                        attackDmg: 560,
                         magicDmg: 475,
                         armor: 1450,
                         spirit: 1370,
@@ -4318,7 +4318,7 @@ module.exports = {
                         adPerPartyMember: 8,
                         mdPerPartyMember: 8,
                         hp: 4350,
-                        attackDmg: 360,
+                        attackDmg: 560,
                         magicDmg: 475,
                         armor: 1450,
                         spirit: 1370,
@@ -4345,8 +4345,8 @@ module.exports = {
                                 name: "frenzy",
                                 emoji: "😡",
                                 onTurnEnd: {
-                                    attackDmgPlus : 405,
-                                    magicDmgPlus : 405,
+                                    attackDmgPlus : 455,
+                                    magicDmgPlus : 455,
                                     everyNTurns: 8,
                                     startTurn: 6
                                 }
@@ -4362,8 +4362,8 @@ module.exports = {
                             "suckBlood"
                         ],
                         hp: 58600,
-                        attackDmg: 1150,
-                        magicDmg: 970,
+                        attackDmg: 1350,
+                        magicDmg: 1170,
                         armor: 1750,
                         spirit: 1500,
                         difficulty: "special",
