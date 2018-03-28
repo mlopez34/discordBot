@@ -4232,8 +4232,8 @@ module.exports = {
                                 name: "frenzy",
                                 emoji: "😡",
                                 onTurnEnd: {
-                                    attackDmgPlus : 155,
-                                    magicDmgPlus : 155,
+                                    attackDmgPlus : 175,
+                                    magicDmgPlus : 175,
                                     everyNTurns: 2,
                                     startTurn: 3
                                 }
@@ -4262,7 +4262,7 @@ module.exports = {
                         magicDmg: 870,
                         armor: 2350,
                         spirit: 2100,
-                        difficulty: "special",
+                        difficulty: "boss",
                         element: "earth"
                     },
                     {
@@ -4345,8 +4345,8 @@ module.exports = {
                                 name: "frenzy",
                                 emoji: "😡",
                                 onTurnEnd: {
-                                    attackDmgPlus : 455,
-                                    magicDmgPlus : 455,
+                                    attackDmgPlus : 555,
+                                    magicDmgPlus : 555,
                                     everyNTurns: 8,
                                     startTurn: 6
                                 }
@@ -4366,7 +4366,7 @@ module.exports = {
                         magicDmg: 1170,
                         armor: 1750,
                         spirit: 1500,
-                        difficulty: "special",
+                        difficulty: "boss",
                         element: "earth"
                     },
                     {
@@ -4398,7 +4398,7 @@ module.exports = {
                         magicDmg: 400,
                         armor: 1450,
                         spirit: 1200,
-                        difficulty: "special",
+                        difficulty: "boss",
                         element: "earth"
                     },
                     {
@@ -4430,7 +4430,7 @@ module.exports = {
                         magicDmg: 670,
                         armor: 1250,
                         spirit: 1400,
-                        difficulty: "special",
+                        difficulty: "boss",
                         element: "earth"
                     },
                     {
@@ -4483,8 +4483,8 @@ module.exports = {
                                 name: "frenzy",
                                 emoji: "😈",
                                 onTurnEnd: {
-                                    attackDmgPlus : 550,
-                                    magicDmgPlus : 550,
+                                    attackDmgPlus : 650,
+                                    magicDmgPlus : 650,
                                     everyNTurns: 10,
                                     startTurn: 8
                                 }
@@ -4506,7 +4506,7 @@ module.exports = {
                         magicDmg: 670,
                         armor: 2150,
                         spirit: 2100,
-                        difficulty: "special",
+                        difficulty: "boss",
                         element: "earth"
                     },
                     {
@@ -4540,7 +4540,7 @@ module.exports = {
                         magicDmg: 470,
                         armor: 1350,
                         spirit: 1100,
-                        difficulty: "special",
+                        difficulty: "boss",
                         element: "earth"
                     },
                     {
@@ -4577,7 +4577,7 @@ module.exports = {
                         magicDmg: 570,
                         armor: 1350,
                         spirit: 1000,
-                        difficulty: "special",
+                        difficulty: "boss",
                         element: "earth"
                     },
                     {
@@ -4611,7 +4611,7 @@ module.exports = {
                         magicDmg: 470,
                         armor: 1450,
                         spirit: 1100,
-                        difficulty: "special",
+                        difficulty: "boss",
                         element: "earth"
                     }
                 ],
