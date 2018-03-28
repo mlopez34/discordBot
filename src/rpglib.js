@@ -4214,6 +4214,407 @@ module.exports = {
                     }
                 ],
                 points: 929
+            },
+            7: {
+                timed: true,
+                timedPerTurn: 180000,
+                points: 1300,
+                enemies: [
+                    {
+                        name: "The Gatekeeper",
+                        abilities: [
+                            "attack",
+                            "crush",
+                            "poke"
+                        ],
+                        buffs: [
+                            {
+                                name: "frenzy",
+                                emoji: "😡",
+                                onTurnEnd: {
+                                    attackDmgPlus : 135,
+                                    magicDmgPlus : 135,
+                                    everyNTurns: 2,
+                                    startTurn: 3
+                                }
+                            }
+                        ],
+                        abilityOrder: [
+                            0, 0, 1, 2, 1, 0, 1, 0, 1
+                        ],
+                        endOfTurnEvents : [
+                            "focus",
+                            "echo",
+                            "deepHatred",
+                            "decay",
+                            "vampire75",
+                            "entomb75",
+                            "vampire50",
+                            "vampire50",
+                            "entomb50",
+                            "vampire25",
+                            "vampire25",
+                            "vampire25",
+                            "entomb25"
+                        ],
+                        hp: 47600,
+                        attackDmg: 860,
+                        magicDmg: 670,
+                        armor: 2350,
+                        spirit: 2100,
+                        difficulty: "special",
+                        element: "earth"
+                    },
+                    {
+                        name: "Vampiric Knight",
+                        abilities: ["attack", "attack", "drain", "drain", "uppercut", "uppercut", "freeze"],
+                        buffs: [],
+                        hpPerPartyMember: 0,
+                        adPerPartyMember: 8,
+                        mdPerPartyMember: 8,
+                        hp: 3150,
+                        attackDmg: 360,
+                        magicDmg: 475,
+                        armor: 1250,
+                        spirit: 1170,
+                        difficulty: "medium",
+                        element: "normal"
+                    },
+                    {
+                        name: "Starved Hound",
+                        abilities: ["ferociousBite", "ferociousBite", "claw", "claw", "tackle", "cripple"],
+                        buffs: [],
+                        hpPerPartyMember: 0,
+                        adPerPartyMember: 8,
+                        mdPerPartyMember: 8,
+                        hp: 4350,
+                        attackDmg: 360,
+                        magicDmg: 475,
+                        armor: 1150,
+                        spirit: 1270,
+                        difficulty: "easy",
+                        element: "normal"
+                    },
+                    {
+                        name: "Vampiric Knight",
+                        abilities: ["attack", "attack", "drain", "drain", "uppercut", "uppercut", "freeze"],
+                        buffs: [],
+                        hpPerPartyMember: 0,
+                        adPerPartyMember: 8,
+                        mdPerPartyMember: 8,
+                        hp: 3150,
+                        attackDmg: 360,
+                        magicDmg: 475,
+                        armor: 1450,
+                        spirit: 1370,
+                        difficulty: "medium",
+                        element: "normal"
+                    },
+                    {
+                        name: "Starved Hound",
+                        abilities: ["ferociousBite", "ferociousBite", "claw", "claw", "tackle", "cripple"],
+                        buffs: [],
+                        hpPerPartyMember: 0,
+                        adPerPartyMember: 8,
+                        mdPerPartyMember: 8,
+                        hp: 4350,
+                        attackDmg: 360,
+                        magicDmg: 475,
+                        armor: 1450,
+                        spirit: 1370,
+                        difficulty: "easy",
+                        element: "normal"
+                    }
+                ],
+            },
+            8: {
+                timed: true,
+                timedPerTurn: 180000,
+                points: 1600,
+                enemies: [
+                    {
+                        name: "Archvampire",
+                        abilities: [
+                            "ferociousBite",
+                            "uppercut",
+                            "poison",
+                            "poke"
+                        ],
+                        buffs: [
+                            {
+                                name: "frenzy",
+                                emoji: "😡",
+                                onTurnEnd: {
+                                    attackDmgPlus : 405,
+                                    magicDmgPlus : 405,
+                                    everyNTurns: 8,
+                                    startTurn: 6
+                                }
+                            }
+                        ],
+                        abilityOrder: [
+                            0, 1, 2, 3, 0, 0, 1, 2, 0
+                        ],
+                        endOfTurnEvents : [
+                            "focus",
+                            "archvampireRevive",
+                            "fever",
+                            "suckBlood"
+                        ],
+                        hp: 58600,
+                        attackDmg: 1150,
+                        magicDmg: 970,
+                        armor: 1750,
+                        spirit: 1500,
+                        difficulty: "special",
+                        element: "earth"
+                    },
+                    {
+                        name: "Frenzied Vampire",
+                        abilities: [
+                            "attack",
+                            "rockthrow",
+                            "slash",
+                            "poke",
+                            "weaken"
+                        ],
+                        buffs: [
+                            {
+                                name: "frenzy",
+                                emoji: "😡",
+                                onTurnEnd: {
+                                    attackDmgPlus : 85,
+                                    magicDmgPlus : 85,
+                                    everyNTurns: 3,
+                                    startTurn: 4
+                                }
+                            }
+                        ],
+                        abilityOrder: [
+                            0, 1, 2, 3, 4, 0, 1, 2, 0
+                        ],
+                        hp: 13600,
+                        attackDmg: 570,
+                        magicDmg: 400,
+                        armor: 1450,
+                        spirit: 1200,
+                        difficulty: "special",
+                        element: "earth"
+                    },
+                    {
+                        name: "Blood King",
+                        abilities: [
+                            "attack",
+                            "rockthrow",
+                            "iceshards",
+                            "poke",
+                            "cripple"
+                        ],
+                        buffs: [
+                            {
+                                name: "frenzy",
+                                emoji: "😡",
+                                onTurnEnd: {
+                                    attackDmgPlus : 85,
+                                    magicDmgPlus : 85,
+                                    everyNTurns: 3,
+                                    startTurn: 5
+                                }
+                            }
+                        ],
+                        abilityOrder: [
+                            0, 2, 1, 3, 4, 0, 2, 1, 0
+                        ],
+                        hp: 13600,
+                        attackDmg: 500,
+                        magicDmg: 670,
+                        armor: 1250,
+                        spirit: 1400,
+                        difficulty: "special",
+                        element: "earth"
+                    },
+                    {
+                        name: "Immortality Seeker",
+                        abilities: ["attack", "attack","attack", "flameblast", "flameblast", "iceshards", "freeze"],
+                        buffs: [],
+                        hpPerPartyMember: 0,
+                        adPerPartyMember: 8,
+                        mdPerPartyMember: 8,
+                        hp: 2350,
+                        attackDmg: 360,
+                        magicDmg: 375,
+                        armor: 1050,
+                        spirit: 1170,
+                        difficulty: "easy",
+                        element: "normal"
+                    },
+                    {
+                        name: "Immortality Seeker",
+                        abilities: ["attack", "attack","attack", "flameblast", "flameblast", "iceshards", "scold"],
+                        buffs: [],
+                        hpPerPartyMember: 0,
+                        adPerPartyMember: 8,
+                        mdPerPartyMember: 8,
+                        hp: 2350,
+                        attackDmg: 360,
+                        magicDmg: 375,
+                        armor: 1050,
+                        spirit: 1170,
+                        difficulty: "easy",
+                        element: "normal"
+                    }
+                ]
+            },
+            9: {
+                timed: true,
+                timedPerTurn: 180000,
+                points: 1900,
+                enemies: [
+                    {
+                        name: "Corrupted Overmind",
+                        abilities: [
+                            "corrupt",
+                            "shock",
+                            "curse",
+                            "freeze"
+                        ],
+                        buffs: [
+                            {
+                                name: "frenzy",
+                                emoji: "😈",
+                                onTurnEnd: {
+                                    attackDmgPlus : 550,
+                                    magicDmgPlus : 550,
+                                    everyNTurns: 10,
+                                    startTurn: 8
+                                }
+                            }
+                        ],
+                        abilityOrder: [
+                            0, 1, 0, 1, 2, [0, 1, 3], 0, 1, 1
+                        ],
+                        endOfTurnEvents : [
+                            "focus",
+                            "vacum1",
+                            "vacum2",
+                            "vacum3",
+                            "superNovaPrepare",
+                            "superNova"
+                        ],
+                        hp: 477673,
+                        attackDmg: 1000,
+                        magicDmg: 670,
+                        armor: 2150,
+                        spirit: 2100,
+                        difficulty: "special",
+                        element: "earth"
+                    },
+                    {
+                        name: "Overmind Minion",
+                        abilities: [
+                            "attack",
+                            "attack",
+                            "curse",
+                            "curse",
+                            "flameblast",
+                            "scold"
+                        ],
+                        buffs: [
+                            {
+                                name: "frenzy",
+                                emoji: "😡",
+                                onTurnEnd: {
+                                    attackDmgPlus : 100,
+                                    magicDmgPlus : 100,
+                                    everyNTurns: 3,
+                                    startTurn: 3
+                                }
+                            }
+                        ],
+                        effectsOnDeath: [
+                            "radiation",
+                            "explode"
+                        ],
+                        hp: 29600,
+                        attackDmg: 400,
+                        magicDmg: 470,
+                        armor: 1350,
+                        spirit: 1100,
+                        difficulty: "special",
+                        element: "earth"
+                    },
+                    {
+                        name: "Dark Matter",
+                        abilities: [
+                            "attack",
+                            "attack",
+                            "disintegrate",
+                            "guac",
+                            "curse",
+                            "weaken"
+                        ],
+                        buffs: [
+                            {
+                                name: "frenzy",
+                                emoji: "😡",
+                                onTurnEnd: {
+                                    attackDmgPlus : 95,
+                                    magicDmgPlus : 95,
+                                    everyNTurns: 3,
+                                    startTurn: 4
+                                }
+                            }
+                        ],
+                        endOfTurnEvents : [
+                            "focus"
+                        ],
+                        effectsOnDeath: [
+                            "radiation",
+                            "bendersLastWish"
+                        ],
+                        hp: 56600,
+                        attackDmg: 600,
+                        magicDmg: 570,
+                        armor: 1350,
+                        spirit: 1000,
+                        difficulty: "special",
+                        element: "earth"
+                    },
+                    {
+                        name: "Overcharged Neutrino",
+                        abilities: [
+                            "attack",
+                            "attack",
+                            "poison",
+                            "poison",
+                            "elixir",
+                            "elixir",
+                            "cripple"
+                        ],
+                        buffs: [
+                            {
+                                name: "frenzy",
+                                emoji: "😡",
+                                onTurnEnd: {
+                                    attackDmgPlus : 85,
+                                    magicDmgPlus : 85,
+                                    everyNTurns: 3,
+                                    startTurn: 5
+                                }
+                            }
+                        ],
+                        effectsOnDeath: [
+                            "radiation"
+                        ],
+                        hp: 9600,
+                        attackDmg: 450,
+                        magicDmg: 470,
+                        armor: 1450,
+                        spirit: 1100,
+                        difficulty: "special",
+                        element: "earth"
+                    }
+                ],
             }
         }
     }    

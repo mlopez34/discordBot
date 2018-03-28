@@ -13,7 +13,7 @@ var activeRPGEvents = {};
 var activeRPGItemIds = {};
 var usersInRPGEvents = {};
 var TEAM_MAX_LENGTH = 5;
-var CURRENT_CHALLENGES_AVAILABLE = 6
+var CURRENT_CHALLENGES_AVAILABLE = 9
 var rpgAbilities = rpglib.rpgAbilities;
 var enemiesToEncounter = rpglib.enemiesToEncounter;
 
