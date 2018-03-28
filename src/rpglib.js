@@ -4258,6 +4258,9 @@ module.exports = {
                             "entomb25"
                         ],
                         hp: 47600,
+                        hpPerPartyMember: 0,
+                        adPerPartyMember: 0,
+                        mdPerPartyMember: 0,
                         attackDmg: 1060,
                         magicDmg: 870,
                         armor: 2350,
@@ -4362,6 +4365,9 @@ module.exports = {
                             "suckBlood"
                         ],
                         hp: 58600,
+                        hpPerPartyMember: 0,
+                        adPerPartyMember: 0,
+                        mdPerPartyMember: 0,
                         attackDmg: 1350,
                         magicDmg: 1170,
                         armor: 1750,
@@ -4394,6 +4400,9 @@ module.exports = {
                             0, 1, 2, 3, 4, 0, 1, 2, 0
                         ],
                         hp: 13600,
+                        hpPerPartyMember: 0,
+                        adPerPartyMember: 0,
+                        mdPerPartyMember: 0,
                         attackDmg: 570,
                         magicDmg: 400,
                         armor: 1450,
@@ -4426,6 +4435,9 @@ module.exports = {
                             0, 2, 1, 3, 4, 0, 2, 1, 0
                         ],
                         hp: 13600,
+                        hpPerPartyMember: 0,
+                        adPerPartyMember: 0,
+                        mdPerPartyMember: 0,
                         attackDmg: 500,
                         magicDmg: 670,
                         armor: 1250,
@@ -4502,6 +4514,9 @@ module.exports = {
                             "superNova"
                         ],
                         hp: 477673,
+                        hpPerPartyMember: 0,
+                        adPerPartyMember: 0,
+                        mdPerPartyMember: 0,
                         attackDmg: 1000,
                         magicDmg: 670,
                         armor: 2150,
@@ -4536,6 +4551,9 @@ module.exports = {
                             "explode"
                         ],
                         hp: 29600,
+                        hpPerPartyMember: 0,
+                        adPerPartyMember: 0,
+                        mdPerPartyMember: 0,
                         attackDmg: 400,
                         magicDmg: 470,
                         armor: 1350,
@@ -4558,8 +4576,8 @@ module.exports = {
                                 name: "frenzy",
                                 emoji: "😡",
                                 onTurnEnd: {
-                                    attackDmgPlus : 95,
-                                    magicDmgPlus : 95,
+                                    attackDmgPlus : 195,
+                                    magicDmgPlus : 195,
                                     everyNTurns: 3,
                                     startTurn: 4
                                 }
@@ -4573,6 +4591,9 @@ module.exports = {
                             "bendersLastWish"
                         ],
                         hp: 56600,
+                        hpPerPartyMember: 0,
+                        adPerPartyMember: 0,
+                        mdPerPartyMember: 0,
                         attackDmg: 600,
                         magicDmg: 570,
                         armor: 1350,
@@ -4607,6 +4628,9 @@ module.exports = {
                             "radiation"
                         ],
                         hp: 9600,
+                        hpPerPartyMember: 0,
+                        adPerPartyMember: 0,
+                        mdPerPartyMember: 0,
                         attackDmg: 450,
                         magicDmg: 470,
                         armor: 1450,
