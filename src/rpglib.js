@@ -4258,8 +4258,8 @@ module.exports = {
                             "entomb25"
                         ],
                         hp: 47600,
-                        attackDmg: 860,
-                        magicDmg: 670,
+                        attackDmg: 1060,
+                        magicDmg: 870,
                         armor: 2350,
                         spirit: 2100,
                         difficulty: "special",
