@@ -4348,8 +4348,8 @@ module.exports = {
                                 name: "frenzy",
                                 emoji: "😡",
                                 onTurnEnd: {
-                                    attackDmgPlus : 555,
-                                    magicDmgPlus : 555,
+                                    attackDmgPlus : 655,
+                                    magicDmgPlus : 655,
                                     everyNTurns: 8,
                                     startTurn: 6
                                 }
@@ -4368,8 +4368,8 @@ module.exports = {
                         hpPerPartyMember: 0,
                         adPerPartyMember: 0,
                         mdPerPartyMember: 0,
-                        attackDmg: 1350,
-                        magicDmg: 1170,
+                        attackDmg: 1550,
+                        magicDmg: 1370,
                         armor: 1750,
                         spirit: 1500,
                         difficulty: "boss",
@@ -4389,8 +4389,8 @@ module.exports = {
                                 name: "frenzy",
                                 emoji: "😡",
                                 onTurnEnd: {
-                                    attackDmgPlus : 85,
-                                    magicDmgPlus : 85,
+                                    attackDmgPlus : 185,
+                                    magicDmgPlus : 185,
                                     everyNTurns: 3,
                                     startTurn: 4
                                 }
@@ -4403,7 +4403,7 @@ module.exports = {
                         hpPerPartyMember: 0,
                         adPerPartyMember: 0,
                         mdPerPartyMember: 0,
-                        attackDmg: 570,
+                        attackDmg: 770,
                         magicDmg: 400,
                         armor: 1450,
                         spirit: 1200,
@@ -4424,8 +4424,8 @@ module.exports = {
                                 name: "frenzy",
                                 emoji: "😡",
                                 onTurnEnd: {
-                                    attackDmgPlus : 85,
-                                    magicDmgPlus : 85,
+                                    attackDmgPlus : 185,
+                                    magicDmgPlus : 185,
                                     everyNTurns: 3,
                                     startTurn: 5
                                 }
@@ -4438,7 +4438,7 @@ module.exports = {
                         hpPerPartyMember: 0,
                         adPerPartyMember: 0,
                         mdPerPartyMember: 0,
-                        attackDmg: 500,
+                        attackDmg: 700,
                         magicDmg: 670,
                         armor: 1250,
                         spirit: 1400,
@@ -4495,8 +4495,8 @@ module.exports = {
                                 name: "frenzy",
                                 emoji: "😈",
                                 onTurnEnd: {
-                                    attackDmgPlus : 650,
-                                    magicDmgPlus : 650,
+                                    attackDmgPlus : 750,
+                                    magicDmgPlus : 750,
                                     everyNTurns: 10,
                                     startTurn: 8
                                 }
@@ -4513,14 +4513,14 @@ module.exports = {
                             "superNovaPrepare",
                             "superNova"
                         ],
-                        hp: 477673,
+                        hp: 507673,
                         hpPerPartyMember: 0,
                         adPerPartyMember: 0,
                         mdPerPartyMember: 0,
-                        attackDmg: 1000,
-                        magicDmg: 670,
-                        armor: 2150,
-                        spirit: 2100,
+                        attackDmg: 1800,
+                        magicDmg: 1070,
+                        armor: 2350,
+                        spirit: 2300,
                         difficulty: "boss",
                         element: "earth"
                     },
@@ -4554,8 +4554,8 @@ module.exports = {
                         hpPerPartyMember: 0,
                         adPerPartyMember: 0,
                         mdPerPartyMember: 0,
-                        attackDmg: 400,
-                        magicDmg: 470,
+                        attackDmg: 600,
+                        magicDmg: 670,
                         armor: 1350,
                         spirit: 1100,
                         difficulty: "boss",
@@ -4590,12 +4590,12 @@ module.exports = {
                             "radiation",
                             "bendersLastWish"
                         ],
-                        hp: 56600,
+                        hp: 86600,
                         hpPerPartyMember: 0,
                         adPerPartyMember: 0,
                         mdPerPartyMember: 0,
-                        attackDmg: 600,
-                        magicDmg: 570,
+                        attackDmg: 800,
+                        magicDmg: 770,
                         armor: 1350,
                         spirit: 1000,
                         difficulty: "boss",
@@ -4631,8 +4631,8 @@ module.exports = {
                         hpPerPartyMember: 0,
                         adPerPartyMember: 0,
                         mdPerPartyMember: 0,
-                        attackDmg: 450,
-                        magicDmg: 470,
+                        attackDmg: 650,
+                        magicDmg: 670,
                         armor: 1450,
                         spirit: 1100,
                         difficulty: "boss",
