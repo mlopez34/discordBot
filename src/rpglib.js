@@ -4218,7 +4218,7 @@ module.exports = {
             7: {
                 timed: true,
                 timedPerTurn: 180000,
-                points: 1300,
+                points: 1900,
                 enemies: [
                     {
                         name: "The Gatekeeper",
@@ -4333,7 +4333,7 @@ module.exports = {
             8: {
                 timed: true,
                 timedPerTurn: 180000,
-                points: 1600,
+                points: 2500,
                 enemies: [
                     {
                         name: "Archvampire",
@@ -4480,7 +4480,7 @@ module.exports = {
             9: {
                 timed: true,
                 timedPerTurn: 180000,
-                points: 1900,
+                points: 3200,
                 enemies: [
                     {
                         name: "Corrupted Overmind",
