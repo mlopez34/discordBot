@@ -1099,6 +1099,35 @@ module.exports = {
                 dmgOnExpire: 0
             }
         },
+        deepHatredChallenge: {
+            name:"Deep Hatred",
+            abilityId: "deepHatredChallenge",
+            type:"physical",
+            processAbility: true,
+            belongsToMember: true,
+            everyNTurns: 9,
+            ignoreFocus: true,
+            ignoreUnique: true,
+            afterNTurns: 9,
+            currentTurn: 0,
+            dot: {
+                name: "Deep Hatred",
+                type:"physical",
+                dmg: 100,
+                adPercentage: 30,
+                emoji: "☸️",
+                dmgOnDotApply: false,
+                ignoreBandaid: true,
+                ignoreDmgOnTurn: 1,
+                turnsToExpire: 100,
+                dmgOnDotExpire: false,
+                dmgOnDotRemove: true,
+                dmgOnRemoveAreaWide: true,
+                adPercentageOnRemove: 0.25,
+                dmgOnRemove: 100,
+                dmgOnExpire: 0
+            }
+        },
         hex: {
             name:"Hex",
             abilityId: "hex",
@@ -4280,7 +4309,7 @@ module.exports = {
                         magicDmg: 475,
                         armor: 1250,
                         spirit: 1170,
-                        difficulty: "medium",
+                        difficulty: "boss",
                         element: "normal"
                     },
                     {
@@ -4295,7 +4324,7 @@ module.exports = {
                         magicDmg: 475,
                         armor: 1150,
                         spirit: 1270,
-                        difficulty: "easy",
+                        difficulty: "boss",
                         element: "normal"
                     },
                     {
@@ -4310,7 +4339,7 @@ module.exports = {
                         magicDmg: 475,
                         armor: 1450,
                         spirit: 1370,
-                        difficulty: "medium",
+                        difficulty: "boss",
                         element: "normal"
                     },
                     {
@@ -4325,7 +4354,7 @@ module.exports = {
                         magicDmg: 475,
                         armor: 1450,
                         spirit: 1370,
-                        difficulty: "easy",
+                        difficulty: "boss",
                         element: "normal"
                     }
                 ],
@@ -4457,7 +4486,7 @@ module.exports = {
                         magicDmg: 375,
                         armor: 1050,
                         spirit: 1170,
-                        difficulty: "easy",
+                        difficulty: "boss",
                         element: "normal"
                     },
                     {
@@ -4472,7 +4501,7 @@ module.exports = {
                         magicDmg: 375,
                         armor: 1050,
                         spirit: 1170,
-                        difficulty: "easy",
+                        difficulty: "boss",
                         element: "normal"
                     }
                 ]
