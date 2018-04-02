@@ -1109,7 +1109,7 @@ module.exports.takeOffWear = function(discordId, slot, cb){
 
 // create wear info
 module.exports.createUserWearInfo = function(data, cb){
-    var query = 'insert into '+ config.wearTable + '(discordId, slot1replacing, slot2replacing, slot3replacing, slot4replacing))' +
+    var query = 'insert into '+ config.wearTable + '(discordId, slot1replacing, slot2replacing, slot3replacing, slot4replacing)' +
     'values(${discordId}, ${slot1replacing}, ${slot2replacing}, ${slot3replacing}, ${slot4replacing} )'
     // console.log(query);
     db.none(query, data)
