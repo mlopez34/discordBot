@@ -1105,10 +1105,10 @@ module.exports = {
             type:"physical",
             processAbility: true,
             belongsToMember: true,
-            everyNTurns: 9,
+            everyNTurns: 10,
             ignoreFocus: true,
             ignoreUnique: true,
-            afterNTurns: 9,
+            afterNTurns: 10,
             currentTurn: 0,
             dot: {
                 name: "Deep Hatred",
@@ -1124,7 +1124,7 @@ module.exports = {
                 dmgOnDotRemove: true,
                 dmgOnRemoveAreaWide: true,
                 adPercentageOnRemove: 0.25,
-                dmgOnRemove: 100,
+                dmgOnRemove: 800,
                 dmgOnExpire: 0
             }
         },
@@ -4261,10 +4261,10 @@ module.exports = {
                                 name: "frenzy",
                                 emoji: "😡",
                                 onTurnEnd: {
-                                    attackDmgPlus : 175,
-                                    magicDmgPlus : 175,
+                                    attackDmgPlus : 145,
+                                    magicDmgPlus : 145,
                                     everyNTurns: 2,
-                                    startTurn: 3
+                                    startTurn: 5
                                 }
                             }
                         ],
@@ -4274,7 +4274,7 @@ module.exports = {
                         endOfTurnEvents : [
                             "focus",
                             "echo",
-                            "deepHatred",
+                            "deepHatredChallenge",
                             "decay",
                             "vampire75",
                             "entomb75",
@@ -4290,8 +4290,8 @@ module.exports = {
                         hpPerPartyMember: 0,
                         adPerPartyMember: 0,
                         mdPerPartyMember: 0,
-                        attackDmg: 1060,
-                        magicDmg: 870,
+                        attackDmg: 760,
+                        magicDmg: 670,
                         armor: 2350,
                         spirit: 2100,
                         difficulty: "boss",
