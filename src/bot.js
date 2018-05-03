@@ -258,7 +258,7 @@ client.on('message', function(message){
             }
             else if (commandIs("rpgstart", message)){
                 if (message.channel.type == "text" && (RPG_CHANNELS.indexOf(message.channel.name) != -1) && !message.author.bot){
-                    commands.rpgReadyCommand(message);
+                    commands.rpgBattleCommand(message);
                 }else{
                     message.channel.send("use the rpg channel for this")
                 }
@@ -314,13 +314,6 @@ client.on('message', function(message){
             }
             else if (commandIs("rpgstats", message)){
                 commands.rpgstatsCommand(message);
-            }
-            else if (commandIs("ready", message)){
-                if (message.channel.type == "text" && (RPG_CHANNELS.indexOf(message.channel.name) != -1) && !message.author.bot){
-                    commands.rpgBattleCommand(message);
-                }else{
-                    message.channel.send("use the rpg channel for this")
-                }
             }
             if (commandIs("timetravel", message)){
                     
