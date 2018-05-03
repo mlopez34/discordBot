@@ -20,23 +20,13 @@ var TURN_ON_MSG = config.turnOn;
 
 var tacoTuesdayEnabled = false;
 var botEnabled = true;
-var mainChannel;
 
 client.on('ready', function(err) {
     if (err){
         // console.log(err);
     } 
     console.log('The bot is online'); 
-    var channelName;
-    client.channels.forEach(function(channel){
-        // // console.log(channel);
-        if (channel.type == "text" && BOT_CHANNELS.indexOf(channel.name) != -1){
-            channelName = channel;
-        }
-        if (channel.type == "text" && MAIN_CHANNELS.indexOf(channel.name) != -1){
-            mainChannel = channel;
-        }
-    })
+    
     //steal(channelName);
 });
 
@@ -54,7 +44,19 @@ function commandIs(str, msg){
 }
 
 client.on('message', function(message){
+    var mainChannel;
     //// console.log(message);
+    var channelName;
+    client.channels.forEach(function(channel){
+        // // console.log(channel);
+        if (channel.type == "text" && BOT_CHANNELS.indexOf(channel.name) != -1){
+            channelName = channel;
+        }
+        if (channel.type == "text" && MAIN_CHANNELS.indexOf(channel.name) != -1){
+            mainChannel = channel;
+        }
+    })
+
     if (botEnabled){
         // console.log(message.author.id); // id of the user that created the message
         var args = message.content.split(/[ ]+/);
@@ -255,13 +257,70 @@ client.on('message', function(message){
                 commands.createTableCommand(message, mainChannel);
             }
             else if (commandIs("rpgstart", message)){
-                message.channel.send("use the rpg channel for this")
+                if (message.channel.type == "text" && (RPG_CHANNELS.indexOf(message.channel.name) != -1) && !message.author.bot){
+                    commands.rpgReadyCommand(message);
+                }else{
+                    message.channel.send("use the rpg channel for this")
+                }
+            }
+            else if (commandIs("rpgchallenge", message)){
+                if (message.channel.type == "text" && (RPG_CHANNELS.indexOf(message.channel.name) != -1) && !message.author.bot){
+                    commands.rpgChallengeCommand(message, args);
+                }else{
+                    message.channel.send("use the rpg channel for this")
+                }
+            }
+            else if (commandIs("ready", message)){
+                if (message.channel.type == "text" && (RPG_CHANNELS.indexOf(message.channel.name) != -1) && !message.author.bot){
+                    commands.rpgReadyCommand(message);
+                }else{
+                    message.channel.send("use the rpg channel for this")
+                }
+            }
+            else if (commandIs("skip", message)){
+                if (message.channel.type == "text" && (RPG_CHANNELS.indexOf(message.channel.name) != -1) && !message.author.bot){
+                    commands.rpgSkipCommand(message);
+                }else{
+                    message.channel.send("use the rpg channel for this")
+                }
+            }
+            else if (commandIs("cast", message)){
+                if (message.channel.type == "text" && (RPG_CHANNELS.indexOf(message.channel.name) != -1) && !message.author.bot){
+                    commands.castCommand(message, args);
+                }else{
+                    message.channel.send("use the rpg channel for this")
+                }
+            }
+            else if (commandIs("rpghelp", message)){
+                if (message.channel.type == "text" && (RPG_CHANNELS.indexOf(message.channel.name) != -1) && !message.author.bot){
+                    commands.rpghelpCommand(message);
+                }else{
+                    message.channel.send("use the rpg channel for this")
+                }
+            }
+            
+            else if (commandIs("fruits", message)){
+                if (message.channel.type == "text" && (RPG_CHANNELS.indexOf(message.channel.name) != -1) && !message.author.bot){
+                    commands.miniGameCommand(message);
+                }else{
+                    message.channel.send("use the rpg channel for this")
+                }
+            }else if (commandIs("take", message)){
+                if (message.channel.type == "text" && (RPG_CHANNELS.indexOf(message.channel.name) != -1) && !message.author.bot){
+                    commands.miniGamePlay(message, args);
+                }else{
+                    message.channel.send("use the rpg channel for this")
+                }
             }
             else if (commandIs("rpgstats", message)){
                 commands.rpgstatsCommand(message);
             }
             else if (commandIs("ready", message)){
-                message.channel.send("use the rpg channel for this")
+                if (message.channel.type == "text" && (RPG_CHANNELS.indexOf(message.channel.name) != -1) && !message.author.bot){
+                    commands.rpgBattleCommand(message);
+                }else{
+                    message.channel.send("use the rpg channel for this")
+                }
             }
             if (commandIs("timetravel", message)){
                     
