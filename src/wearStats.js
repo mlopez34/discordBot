@@ -597,7 +597,7 @@ module.exports.statsObjectBuilder = function(message, slot1Data, slot2Data, slot
 
     userItemStats.scavengeCommandCDRPercentage = scavengeCommandCDRPercentage;
     userItemStats.scavengeCommandExtraTacos = scavengeCommandExtraTacos
-    userItemStats.sacengeCommandExperienceGain = scavengeCommandExperienceGain;
+    userItemStats.scavengeCommandExperienceGain = scavengeCommandExperienceGain;
     userItemStats.scavengeCommandGuaranteedTacos = scavengeCommandGuaranteedTacos;
 
 
