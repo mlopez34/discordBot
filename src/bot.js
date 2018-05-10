@@ -256,6 +256,12 @@ client.on('message', function(message){
             else if (commandIs("party", message)){
                 commands.createTableCommand(message, mainChannel);
             }
+            else if (commandIs("plant", message)){
+                message.channel.send(":herb:")
+            }
+            else if (commandIs("harvest", message)){
+                message.channel.send(":tractor:")
+            }
             else if (commandIs("rpgstart", message)){
                 if (message.channel.type == "text" && (RPG_CHANNELS.indexOf(message.channel.name) != -1) && !message.author.bot){
                     commands.rpgBattleCommand(message);
