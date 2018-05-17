@@ -2561,14 +2561,7 @@ module.exports.scavangeCommand = function (message){
                                 var itemsObtainedArray = [];
                                 var highestRarityFound = 1
 				
-				if (discordUserId == "248946965633564673"){
-                                    rollsCount++
-                                    if (rollsCount < 4){
-                                        rollsCount++
-                                    }
-                                }
-
-                                if (discordUserId == "233396644039622658"){
+                                if (discordUserId == "248946965633564673"){
                                     rollsCount++
                                     if (rollsCount < 4){
                                         rollsCount++
