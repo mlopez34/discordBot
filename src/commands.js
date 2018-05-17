@@ -2806,7 +2806,7 @@ module.exports.slotsCommand = function(message, tacosBet){
                                         achiev.checkForAchievements(discordUserId, data, message);
 
                                         // get experience from winning
-                                        if ( tacosWon >= 10000 ){
+                                        if ( tacosWon + extraTacosFromItems >= 10000 ){
                                             experience.gainExperience(message, message.author, experienceFromItems, getProfileResponse);
                                         }
                                     }
