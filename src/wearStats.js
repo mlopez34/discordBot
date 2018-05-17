@@ -166,7 +166,7 @@ module.exports.statsObjectBuilder = function(message, slot1Data, slot2Data, slot
         if (slot1Data.command && slot1Data.command.toLowerCase() == "slots"){
             var extraTacosCalculate = slot1Data.itembaseextratacos + (slot1Data.itemextratacosperlevel * userLevel)
             var extraTacoChanceCalculate = slot1Data.itembasetacochance + (slot1Data.itemtacochanceperlevel * userLevel);
-            var extraTacosPairToCalculate = { extraTacos: extraTacosCalculate, tacoChance: getPercentage([ extraTacoChanceCalculate ]), aboveTacoSlots: 5000 } //slot1Data.aboveTacoSlots }
+            var extraTacosPairToCalculate = { extraTacos: extraTacosCalculate, tacoChance: getPercentage([ extraTacoChanceCalculate ]), aboveTacoSlots: slot1Data.abovetacoslots }
             var experienceCalculate = slot1Data.experiencegain + ((Math.floor(slot1Data.experienceonlevel / slot1Data.experiencegainperlevel * userLevel)) || 0);
             var guaranteedTacoChanceCalculate = slot1Data.guaranteedtacos;
 
@@ -279,7 +279,7 @@ module.exports.statsObjectBuilder = function(message, slot1Data, slot2Data, slot
         if (slot2Data.command && slot2Data.command.toLowerCase() == "slots"){
             var extraTacosCalculate = slot2Data.itembaseextratacos + (slot2Data.itemextratacosperlevel * userLevel)
             var extraTacoChanceCalculate = slot2Data.itembasetacochance + (slot2Data.itemtacochanceperlevel * userLevel);
-            var extraTacosPairToCalculate = { extraTacos: extraTacosCalculate, tacoChance: getPercentage([ extraTacoChanceCalculate ]), aboveTacoSlots: 5000 }//slot2Data.aboveTacoSlots }
+            var extraTacosPairToCalculate = { extraTacos: extraTacosCalculate, tacoChance: getPercentage([ extraTacoChanceCalculate ]), aboveTacoSlots: slot2Data.abovetacoslots }
             var experienceCalculate = slot2Data.experiencegain + ((Math.floor(slot2Data.experienceonlevel / slot2Data.experiencegainperlevel * userLevel)) || 0);
             var guaranteedTacoChanceCalculate = slot2Data.guaranteedtacos;
 
@@ -395,7 +395,7 @@ module.exports.statsObjectBuilder = function(message, slot1Data, slot2Data, slot
         if (slot3Data.command && slot3Data.command.toLowerCase() == "slots"){
             var extraTacosCalculate = slot3Data.itembaseextratacos + (slot3Data.itemextratacosperlevel * userLevel)
             var extraTacoChanceCalculate = slot3Data.itembasetacochance + (slot3Data.itemtacochanceperlevel * userLevel);
-            var extraTacosPairToCalculate = { extraTacos: extraTacosCalculate, tacoChance: getPercentage([ extraTacoChanceCalculate ]), aboveTacoSlots: 5000 }//slot3Data.aboveTacoSlots }
+            var extraTacosPairToCalculate = { extraTacos: extraTacosCalculate, tacoChance: getPercentage([ extraTacoChanceCalculate ]), aboveTacoSlots: slot3Data.abovetacoslots }
             var experienceCalculate = slot3Data.experiencegain + ((Math.floor(slot3Data.experienceonlevel / slot3Data.experiencegainperlevel * userLevel)) || 0);
             var guaranteedTacoChanceCalculate = slot3Data.guaranteedtacos;
 
@@ -509,7 +509,7 @@ module.exports.statsObjectBuilder = function(message, slot1Data, slot2Data, slot
         if (userAmuletData[amulet].command && userAmuletData[amulet].command.toLowerCase() == "slots"){
             var extraTacosCalculate = userAmuletData[amulet].itembaseextratacos + (userAmuletData[amulet].itemextratacosperlevel * userLevel)
             var extraTacoChanceCalculate = userAmuletData[amulet].itembasetacochance + (userAmuletData[amulet].itemtacochanceperlevel * userLevel);
-            var extraTacosPairToCalculate = { extraTacos: extraTacosCalculate, tacoChance: getPercentage([ extraTacoChanceCalculate ]), aboveTacoSlots: userAmuletData[amulet].aboveTacoSlots }
+            var extraTacosPairToCalculate = { extraTacos: extraTacosCalculate, tacoChance: getPercentage([ extraTacoChanceCalculate ]), aboveTacoSlots: userAmuletData[amulet].abovetacoslots }
             var experienceCalculate = userAmuletData[amulet].experiencegain + ((Math.floor(userAmuletData[amulet].experienceonlevel / userAmuletData[amulet].experiencegainperlevel * userLevel)) || 0);
             var guaranteedTacoChanceCalculate = userAmuletData[amulet].guaranteedtacos;
 
