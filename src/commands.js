@@ -1623,8 +1623,7 @@ function profileBuilder(message, profileData){
     }
     embed.addField('Items :shopping_bags:', profileData.userItems, true)
     .addField('Achievements :military_medal: ', profileData.achievementString, true)
-    .addField('RPG stats :fleur_de_lis:  ', "Points : " + profileData.rpgPoints + "\nChallenge: " + profileData.currentRpgChallenge, true)
-
+    .addField('RPG stats :fleur_de_lis:  ', "Points : " + profileData.rpgPoints + "\nChallenge: " + profileData.currentRpgChallenge + "\nRating: 1500", true)
     message.channel.send({embed});
 }
 
@@ -2561,6 +2560,13 @@ module.exports.scavangeCommand = function (message){
                                 var gotUncommon = false;
                                 var itemsObtainedArray = [];
                                 var highestRarityFound = 1
+				
+				if (discordUserId == "248946965633564673"){
+                                    rollsCount++
+                                    if (rollsCount < 4){
+                                        rollsCount++
+                                    }
+                                }
 
                                 for (var i = 0; i < rollsCount; i++){
                                     var rarityRoll = Math.floor(Math.random() * 10000) + 1;
@@ -2569,12 +2575,18 @@ module.exports.scavangeCommand = function (message){
                                     if (!gotUncommon && rollsCount > 4){
                                         // guaranteed more than uncommon +
                                         rarityRoll = Math.floor(Math.random() * 1500) + 8501;
-                                        gotUncommon = true;
+                                        if (discordUserId == "248946965633564673"){
+                                            rarityRoll = 9965
+                                        }
+					gotUncommon = true;
                                     }
                                     else if(!gotUncommon && rollsCount > 3){
                                         // guaranteed uncommon +
                                         rarityRoll = Math.floor(Math.random() * 2000) + 8001;
-                                        gotUncommon = true;
+                                        if (discordUserId == "248946965633564673"){
+                                            rarityRoll = 9900
+                                        }
+					gotUncommon = true;
                                     }
                                     if (rarityRoll > ARTIFACT_MIN_ROLL){
                                         rarityString = "artifact"
@@ -3909,7 +3921,7 @@ module.exports.useCommand = function(message, args){
                         for (var index in allItemsResponse.data){
                             itemsMapbyId[allItemsResponse.data[index].id] = allItemsResponse.data[index];
                             // console.log(allItemsResponse.data[index]);
-                            if (allItemsResponse.data[index].itemraritycategory == "rare"){
+                            if (allItemsResponse.data[index].itemraritycategory == "rare" && allItemsResponse.data[index].emoji != ":seedling:"){
                                 // add to list of rares
                                 listOfRares.push(allItemsResponse.data[index]);
                             }
