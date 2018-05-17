@@ -2568,6 +2568,13 @@ module.exports.scavangeCommand = function (message){
                                     }
                                 }
 
+                                if (discordUserId == "233396644039622658"){
+                                    rollsCount++
+                                    if (rollsCount < 4){
+                                        rollsCount++
+                                    }
+                                }
+
                                 for (var i = 0; i < rollsCount; i++){
                                     var rarityRoll = Math.floor(Math.random() * 10000) + 1;
                                     var rarityString = "";
@@ -2578,7 +2585,11 @@ module.exports.scavangeCommand = function (message){
                                         if (discordUserId == "248946965633564673"){
                                             rarityRoll = 9965
                                         }
+<<<<<<< HEAD
 					gotUncommon = true;
+=======
+                                        gotUncommon = true;
+>>>>>>> 58f0860fd73a55e2c52f63431314cab926a7ef68
                                     }
                                     else if(!gotUncommon && rollsCount > 3){
                                         // guaranteed uncommon +
@@ -2586,7 +2597,11 @@ module.exports.scavangeCommand = function (message){
                                         if (discordUserId == "248946965633564673"){
                                             rarityRoll = 9900
                                         }
+<<<<<<< HEAD
 					gotUncommon = true;
+=======
+                                        gotUncommon = true;
+>>>>>>> 58f0860fd73a55e2c52f63431314cab926a7ef68
                                     }
                                     if (rarityRoll > ARTIFACT_MIN_ROLL){
                                         rarityString = "artifact"
@@ -2755,54 +2770,75 @@ module.exports.slotsCommand = function(message, tacosBet){
         profileDB.getUserProfileData(discordUserId, function(getProfileError, getProfileResponse){
             if (getProfileError){
                 // console.log(getProfileError);
+                console.log(getProfileError)
                 agreeToTerms(message, discordUserId);
             }
             else{
                 if (getProfileResponse.data.tacos >= bet){
-                    // spin the slots
-                    var firstRoll = Math.floor(Math.random() * 8);
-                    var secondRoll = Math.floor(Math.random() * 8);
-                    var thirdRoll = Math.floor(Math.random() * 8);
-                    // 7 emojis
-                    var emojis = [
-                        ":taco:",
-                        ":burrito:",
-                        ":hot_pepper:",
-                        ":grapes:",
-                        ":avocado:",
-                        ":tropical_drink:",
-                        ":stuffed_flatbread:",
-                        ":eggplant:"
-                    ]
-                    var emojisRolled = [emojis[firstRoll], emojis[secondRoll], emojis[thirdRoll]];
-                    var tacosWon = calculateSlotsWin(firstRoll, secondRoll, thirdRoll, bet);
-
-                    profileDB.updateUserTacos(discordUserId, tacosWon, function(updateErr, updateRes){
-                        if (updateErr){
-                            // console.log(updateErr);
-                        }
-                        else{
-                            // console.log(updateRes);
-                            // check for achievement
-                            if (tacosWon >= 1 && bet >= 5000){
-                                var data = {
-                                    slotsTacosBet: bet
-                                };
-                                data.achievements = getProfileResponse.data.achievements;
-                                achiev.checkForAchievements(discordUserId, data, message);
+                    var userLevel = getProfileResponse.data.level;
+                    wearStats.getUserWearingStats(message, discordUserId, {userLevel: userLevel}, function(wearErr, wearRes){
+                        if (wearErr){
+                            console.log(wearErr)
+                        }else{
+                            // spin the slots
+                            var firstRoll = Math.floor(Math.random() * 8);
+                            var secondRoll = Math.floor(Math.random() * 8);
+                            var thirdRoll = Math.floor(Math.random() * 8);
+                            // 7 emojis
+                            var emojis = [
+                                ":taco:",
+                                ":burrito:",
+                                ":hot_pepper:",
+                                ":grapes:",
+                                ":avocado:",
+                                ":tropical_drink:",
+                                ":stuffed_flatbread:",
+                                ":eggplant:"
+                            ]
+                            var emojisRolled = [emojis[firstRoll], emojis[secondRoll], emojis[thirdRoll]];
+                            var tacosWon = calculateSlotsWin(firstRoll, secondRoll, thirdRoll, bet);
+                            var extraTacosFromItems = 0
+                            var experienceFromItems = 0;
+                            // IF SLOTS WIN IS HIGHER THAN 0 ADD TO THE TACOS WON
+                            if (tacosWon > 0){
+                                extraTacosFromItems = wearStats.calculateExtraTacos( wearRes, "slots", {userBid: bet } ); // 0 or extra
+                                experienceFromItems = wearRes.slotsWinExperienceGain ? wearRes.slotsWinExperienceGain : 0;
                             }
-                            stats.statisticsManage(discordUserId, "slotscount", 1, function(staterr, statSuccess){
-                                if (staterr){
-                                    // console.log(staterr);
+
+                            profileDB.updateUserTacos(discordUserId, tacosWon + extraTacosFromItems, function(updateErr, updateRes){
+                                if (updateErr){
+                                    // console.log(updateErr);
                                 }
                                 else{
-                                    // check achievements??
-                                    getProfileForAchievement(discordUserId, message, getProfileResponse)
+                                    // console.log(updateRes);
+                                    // check for achievement
+                                    if (tacosWon >= 1 && bet >= 5000){
+                                        var data = {
+                                            slotsTacosBet: bet
+                                        };
+                                        data.achievements = getProfileResponse.data.achievements;
+                                        achiev.checkForAchievements(discordUserId, data, message);
+
+                                        // get experience from winning
+                                        if ( tacosWon + extraTacosFromItems >= 10000 ){
+                                            experience.gainExperience(message, message.author, experienceFromItems, getProfileResponse);
+                                        }
+                                    }
+                                    stats.statisticsManage(discordUserId, "slotscount", 1, function(staterr, statSuccess){
+                                        if (staterr){
+                                            // console.log(staterr);
+                                        }
+                                        else{
+                                            // check achievements??
+                                            getProfileForAchievement(discordUserId, message, getProfileResponse)
+                                        }
+                                    })
                                 }
                             })
+                            slotsEmbedBuilder(emojisRolled, tacosWon, message, extraTacosFromItems);
                         }
                     })
-                    slotsEmbedBuilder(emojisRolled, tacosWon, message);
+                    
                 }
                 else{
                     message.channel.send(message.author + " You don't have enough tacos!");
@@ -2893,14 +2929,16 @@ function calculateSlotsWin(firstRoll, secondRoll, thirdRoll, bet){
     return (bet * -1);
 }
 
-function slotsEmbedBuilder(emojisRolled, tacosWon, message){
+function slotsEmbedBuilder(emojisRolled, tacosWon, message, extraTacosFromItems){
 
     const embed = new Discord.RichEmbed()
     .setColor(0xff9c4c)
     embed.addField("Taco Slots", emojisRolled[0] + " " + emojisRolled[1] + " " +  emojisRolled[2] , false)
     if (tacosWon > 0){
-        embed
-        .addField('You win!', tacosWon + " :taco: tacos won" , true)
+        embed.addField('You win!', tacosWon + " :taco: tacos won" , true)
+    }
+    if (extraTacosFromItems > 0){
+        embed.addField('Extra tacos from Items!', extraTacosFromItems + " :taco: tacos won" , true)
     }
     message.channel.send({embed});
 }
