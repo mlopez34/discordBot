@@ -1654,6 +1654,9 @@ function shopBuilder(message, shopData, long){
             embed.addField('Ethereal Pickaxe', pickaxeCost, true)
         }
         embed.addField('Pasta', PASTA_COST + " :taco:", true)
+        embed.addField('Stable', 123456789 + " :taco:", true)
+        embed.addField('Temple', 987654321 + " :taco:", true)
+        embed.addField('Green House', 546372819 + " :taco:", true)
         
         // allow for pet to be purchased
         if (shopData.repstatus && (REPUTATIONS[shopData.repstatus.toLowerCase()]) ){
