@@ -4387,7 +4387,7 @@ module.exports = {
             8: {
                 timed: true,
                 timedPerTurn: 180000,
-                points: 3600,
+                points: 4600,
                 enemies: [
                     {
                         name: "Archvampire",
@@ -4534,7 +4534,7 @@ module.exports = {
             9: {
                 timed: true,
                 timedPerTurn: 180000,
-                points: 5900,
+                points: 6901,
                 enemies: [
                     {
                         name: "Corrupted Overmind",
