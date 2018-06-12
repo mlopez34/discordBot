@@ -1073,6 +1073,31 @@ module.exports = {
                 dmgOnExpire: 0
             }
         },
+        feverChallenge: {
+            name:"Fever",
+            abilityId: "feverChallenge",
+            type:"shadow",
+            processAbility: true,
+            belongsToMember: true,
+            everyNTurns: 7,
+            ignoreFocus: true,
+            ignoreBandaid: true,
+            afterNTurns: 8,
+            currentTurn: 0,
+            dot: {
+                name: "Fever",
+                type:"shadow",
+                dmg: 500,
+                mdPercentage: 0.25,
+                emoji: "🐖",
+                dmgOnDotApply: false,
+                ignoreBandaid: true,
+                ignoreDmgOnTurn: 1,
+                turnsToExpire: 5,
+                dmgOnDotExpire: false,
+                dmgOnExpire: 0
+            }
+        },
         deepHatred: {
             name:"Deep Hatred",
             abilityId: "deepHatred",
@@ -4362,7 +4387,7 @@ module.exports = {
             8: {
                 timed: true,
                 timedPerTurn: 180000,
-                points: 2500,
+                points: 3600,
                 enemies: [
                     {
                         name: "Archvampire",
@@ -4467,8 +4492,8 @@ module.exports = {
                         hpPerPartyMember: 0,
                         adPerPartyMember: 0,
                         mdPerPartyMember: 0,
-                        attackDmg: 700,
-                        magicDmg: 670,
+                        attackDmg: 600,
+                        magicDmg: 570,
                         armor: 1250,
                         spirit: 1400,
                         difficulty: "boss",
@@ -4509,7 +4534,7 @@ module.exports = {
             9: {
                 timed: true,
                 timedPerTurn: 180000,
-                points: 3200,
+                points: 5900,
                 enemies: [
                     {
                         name: "Corrupted Overmind",
