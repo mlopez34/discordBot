@@ -151,7 +151,7 @@ function extraLevelRewards(message, discordUser, userLeveledUpTo){
                 message.channel.send({embed});
             }
         })
-    }else if (userLeveledUpTo == 36){
+    }else if (userLeveledUpTo == 36 || userLeveledUpTo == 35){
         // give them 1 of 5 of the amulets
 
         profileDB.getItemData(function(err, getItemResponse){
