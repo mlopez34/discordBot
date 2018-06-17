@@ -315,6 +315,13 @@ module.exports = {
             mdPercentage: 1.1,
             type: "electric"
         },
+        slap: {
+            name: "Slap",
+            abilityId: "slap",
+            dmg: 120,
+            mdPercentage: 1,
+            type: "electric"
+        },
         /*
         limit abilities
         */
@@ -577,6 +584,20 @@ module.exports = {
                 enemy: "demon",
                 attackDmg: 150,
                 magicDmg: 100,
+                hpPlus: 30
+            }
+        },
+        summonTentacle: {
+            name: "Summon Tentacle",
+            abilityId: "summonTentacle",
+            belongsToMember: true,
+            everyNTurns: 6,
+            afterNTurns: 20,
+            currentTurn: 0,
+            summon: {
+                enemy: "tentacle",
+                attackDmg: 550,
+                magicDmg: 700,
                 hpPlus: 30
             }
         },
@@ -1793,6 +1814,45 @@ module.exports = {
                 magicDmg: 180,
                 armor: 700,
                 spirit: 700,
+                difficulty: "summoned",
+                element: "normal"
+            },
+            tentacle: {
+                name: "Tentacle",
+                abilities: [
+                    "attack",
+                    "attack",
+                    "slap",
+                    "guac",
+                    "curse"
+                ],
+                endOfTurnEvents : [
+                    "focus"
+                ],
+                buffs: [
+                    {
+                        name: "frenzy",
+                        emoji: "😡",
+                        onTurnEnd: {
+                            attackDmgPlus : 195,
+                            magicDmgPlus : 195,
+                            everyNTurns: 2,
+                            startTurn: 2
+                        }
+                    }
+                ],
+                effectsOnDeath: [
+                    "radiation",
+                    "explode"
+                ],
+                hpPerPartyMember: 0,
+                adPerPartyMember: 0,
+                mdPerPartyMember: 0,
+                hp: 21300,
+                attackDmg: 360,
+                magicDmg: 380,
+                armor: 1300,
+                spirit: 1300,
                 difficulty: "summoned",
                 element: "normal"
             },
@@ -4565,9 +4625,12 @@ module.exports = {
                             "vacum2",
                             "vacum3",
                             "superNovaPrepare",
+                            "summonTentacle",
+                            "summonTentacle",
+                            "summonTentacle",
                             "superNova"
                         ],
-                        hp: 507673,
+                        hp: 1207673,
                         hpPerPartyMember: 0,
                         adPerPartyMember: 0,
                         mdPerPartyMember: 0,
