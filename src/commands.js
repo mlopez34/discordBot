@@ -2418,8 +2418,7 @@ function inventoryEmbedBuilder(message, itemsMap, allItems){
         if (itemsMap.hasOwnProperty(key)) {
             // 
             if (allItems[key] && (allItems[key].itemraritycategory == "common" 
-                || allItems[key].itemraritycategory == "uncommon" 
-                || allItems[key].itemraritycategory == "amulet" 
+                || allItems[key].itemraritycategory == "uncommon"
                 || allItems[key].itemraritycategory == "uncommon+" )){
                 // console.log(key + " " + allItems[key].itemname)
                 inventoryString = "**"+allItems[key].itemname + "** - " +  itemsMap[key] + " - " + allItems[key].itemslot +"\n" + inventoryString;

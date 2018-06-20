@@ -596,8 +596,8 @@ module.exports = {
             currentTurn: 0,
             summon: {
                 enemy: "tentacle",
-                attackDmg: 550,
-                magicDmg: 700,
+                attackDmg: 350,
+                magicDmg: 300,
                 hpPlus: 30
             }
         },
@@ -1834,8 +1834,8 @@ module.exports = {
                         name: "frenzy",
                         emoji: "😡",
                         onTurnEnd: {
-                            attackDmgPlus : 195,
-                            magicDmgPlus : 195,
+                            attackDmgPlus : 95,
+                            magicDmgPlus : 95,
                             everyNTurns: 2,
                             startTurn: 2
                         }
