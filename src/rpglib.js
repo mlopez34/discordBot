@@ -3732,7 +3732,8 @@ module.exports = {
                         element: "normal"
                     },
                 ],
-                points: 23
+                points: 23,
+                difficulty: 1
             },
             2: {
                 enemies: [
@@ -3857,7 +3858,8 @@ module.exports = {
                         element: "normal"
                     }
                 ],
-                points: 49
+                points: 49,
+                difficulty: 2
             },
             3: {
                 enemies: [
@@ -3964,7 +3966,8 @@ module.exports = {
                         element: "normal"
                     }
                 ],
-                points: 93
+                points: 93,
+                difficulty: 3
             },
             4: {
                 enemies: [
@@ -4094,7 +4097,8 @@ module.exports = {
                         element: "normal"
                     },
                 ],
-                points: 139
+                points: 139,
+                difficulty: 5,
             },
             5: {
                 enemies: [
@@ -4253,7 +4257,8 @@ module.exports = {
                         element: "normal"
                     },
                 ],
-                points: 681
+                points: 681,
+                difficulty: 25
             },
             6: {
                 // 4 energy crystals
@@ -4327,12 +4332,14 @@ module.exports = {
                         element: "normal"
                     }
                 ],
-                points: 929
+                points: 929,
+                difficulty: 41
             },
             7: {
                 timed: true,
                 timedPerTurn: 180000,
                 points: 1900,
+                difficulty: 83,
                 enemies: [
                     {
                         name: "The Gatekeeper",
@@ -4448,6 +4455,7 @@ module.exports = {
                 timed: true,
                 timedPerTurn: 180000,
                 points: 4600,
+                difficulty: 175,
                 enemies: [
                     {
                         name: "Archvampire",
@@ -4595,6 +4603,7 @@ module.exports = {
                 timed: true,
                 timedPerTurn: 180000,
                 points: 6901,
+                difficulty: 220,
                 enemies: [
                     {
                         name: "Corrupted Overmind",
