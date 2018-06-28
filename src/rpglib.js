@@ -8,6 +8,126 @@ module.exports = {
             adPercentage: 1,
             type: "physical"
         },
+        // new abiltiies
+        impale : {
+            name: "Impale",
+            abilityId: "impale",
+            dmg: 125,
+            adPercentage: 1,
+            special: {
+                name: "Impale",
+                abilityId: "impale",
+                randomTargets: 1,
+                dmg: 125,
+                adPercentage: 0.25
+            },
+            type: "physical"
+        },
+        assist: {
+            name: "Assist", // binding heal
+            abilityId: "assist",
+            heal: 50,
+            mdPercentage: 0.85,
+            special: {
+                name: "Assist",
+                abilityId: "assist",
+                selfHeal: 50,
+                mdPercentage: 0.85,
+            }
+        },
+
+        chainHeal: {
+            name: "Chain Heal",
+            abilityId: "chainHeal",
+            heal: 50,
+            mdPercentage: 0.8,
+            special: {
+                name: "Chain Heal",
+                abilityId: "chainHeal",
+                prioritizeLowestHp: true,
+                targets: 2,
+                mdPercentages: [0.5, 0.25],
+
+            }
+        },
+
+        absorb: {
+            name: "Absorb",
+            abilityId: "absorb",
+            absorb: 50,
+            mdPercentage: 0.45,
+        },
+
+        shell : {
+            name : "Shell",
+            abilityId: "shell",
+            buff: {
+                name: "Shell",
+                emoji : "🔰",
+                affectsGlobal: ["damageTakenPercentage"],
+                turnsToExpire: 3,
+                multiplier: 0.33
+            }
+        },
+
+        overload : {
+            name : "Overload",
+            abilityId: "overload",
+            buff: {
+                name: "Overloading",
+                abilityId: "overloading",
+                emoji : "🎛️",
+                turnsToExpire: 1,
+                addDamageTaken: true,
+                damageOnExpireFromDamageTaken: true
+            }
+        },
+        recover: {
+            name:"Recover",
+            abilityId: "recover",
+            hot: {
+                name: "Recover",
+                heal: 50,
+                emoji: "💉",
+                arOrSpPercentage: 1.3,
+                healingOnHotApply: false,
+                turnsToExpire: 4,
+                healingOnDotExpire: false,
+                healingOnExpire: 0
+            }
+        },
+
+        lastStand: {
+            name:"Last Stand",
+            abilityId: "lastStand",
+            cooldown: 0,
+            maxcooldown: 8,
+            hot: {
+                name: "Last Stand",
+                abilityId: "lastStand",
+                emoji : "❇️",
+                turnsToExpire: 3,
+                affects: ["hp"],
+                multiplier: 1.15
+            }
+        },
+
+        paralyze: {
+            name: "Paralyze",
+            abilityId: "paralyze",
+            maxcooldown: 3,
+            cooldown: 0,
+            status: {
+                status: true,
+                abilityId: "paralyze",
+                name: "Paralyze",
+                emoji: "🛌",
+                turnsToExpire: 2,
+                setAbleToAttack: false,
+            }
+        },
+
+        // new abilities end
         claw : {
             name: "Claw",
             abilityId: "claw",
@@ -596,8 +716,8 @@ module.exports = {
             currentTurn: 0,
             summon: {
                 enemy: "tentacle",
-                attackDmg: 350,
-                magicDmg: 300,
+                attackDmg: 240,
+                magicDmg: 240,
                 hpPlus: 30
             }
         },
@@ -1827,7 +1947,6 @@ module.exports = {
                     "curse"
                 ],
                 endOfTurnEvents : [
-                    "focus"
                 ],
                 buffs: [
                     {
@@ -1849,8 +1968,8 @@ module.exports = {
                 adPerPartyMember: 0,
                 mdPerPartyMember: 0,
                 hp: 21300,
-                attackDmg: 360,
-                magicDmg: 380,
+                attackDmg: 260,
+                magicDmg: 280,
                 armor: 1300,
                 spirit: 1300,
                 difficulty: "summoned",
@@ -4618,8 +4737,8 @@ module.exports = {
                                 name: "frenzy",
                                 emoji: "😈",
                                 onTurnEnd: {
-                                    attackDmgPlus : 750,
-                                    magicDmgPlus : 750,
+                                    attackDmgPlus : 670,
+                                    magicDmgPlus : 670,
                                     everyNTurns: 10,
                                     startTurn: 8
                                 }
