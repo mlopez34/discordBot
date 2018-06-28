@@ -9,7 +9,7 @@ var achiev = require("./achievements")
 var moment = require("moment");
 var _ = require("lodash");
 
-var RPG_COOLDOWN_HOURS = 3
+var RPG_COOLDOWN_HOURS = 2
 var activeRPGEvents = {};
 var activeRPGItemIds = {};
 var usersInRPGEvents = {};
@@ -493,122 +493,123 @@ module.exports.rpgReady = function(message, itemsAvailable, amuletItemsById){
                                     console.log(wearErr);
                                     message.channel.send(wearErr + " something went wrong [wearing] - someone doesn't have a wearing profile");
                                 }else{
-                                    // get the wearing data
-                                    var wearingStats = wearData.data[0];
-                                    var items = [];
-                                    var userItemIds = [];
-
-                                    var abilities = [];
-                                    var statisticsFromItemsAndLevel = {
-                                        hpPlus: 0,
-                                        attackDmgPlus: 0,
-                                        magicDmgPlus: 0,
-                                        armorPlus: 0,
-                                        spiritPlus: 0,
-                                        luckPlus: 0,
-                                        statuses: [],
-                                        buffs: []
-                                    }
-                                    
-                                    if (wearingStats.slot1itemid){
-                                        // check that the itemid is not already being used
-                                        if (!activeRPGItemIds[wearingStats.slot1useritemid]){
-                                            items.push(wearingStats.slot1itemid);
-                                            userItemIds.push(wearingStats.slot1useritemid);
-                                            activeRPGItemIds[wearingStats.slot1useritemid] = true;
-                                        }
-                                    }
-                                    if (wearingStats.slot2itemid){
-                                        if (!activeRPGItemIds[wearingStats.slot2useritemid]){
-                                            items.push(wearingStats.slot2itemid);
-                                            userItemIds.push(wearingStats.slot2useritemid);
-                                            activeRPGItemIds[wearingStats.slot2useritemid] = true;
-                                        }
-                                    }
-                                    if (wearingStats.slot3itemid){
-                                        if (!activeRPGItemIds[wearingStats.slot3useritemid]){
-                                            items.push(wearingStats.slot3itemid);
-                                            userItemIds.push(wearingStats.slot3useritemid);
-                                            activeRPGItemIds[wearingStats.slot3useritemid] = true;
-                                        }
-                                    }
-                                    if (wearingStats.slot4itemid){
-                                        if (!activeRPGItemIds[wearingStats.slot4useritemid]){
-                                            items.push(wearingStats.slot4itemid);
-                                            userItemIds.push(wearingStats.slot4useritemid);
-                                            activeRPGItemIds[wearingStats.slot4useritemid] = true;
-                                        }
-                                    }
-                                    // added stats from items
-                                    for (var i in items){
-                                        if (itemsAvailable[items[i]].ability1){
-                                            abilities.push(itemsAvailable[items[i]].ability1);
-                                        }
-                                        if (itemsAvailable[items[i]].ability2){
-                                            abilities.push(itemsAvailable[items[i]].ability2);
-                                        }
-                                        if (itemsAvailable[items[i]].specialability){
-                                            abilities.push(itemsAvailable[items[i]].specialability)
-                                        }
-                                        if (itemsAvailable[items[i]].passiveability){
-                                            abilities.push(itemsAvailable[items[i]].passiveability);
-                                        }
-
-                                        var hpPlus = itemsAvailable[items[i]].hpplus ? itemsAvailable[items[i]].hpplus : 0;
-                                        var attackDmgPlus = itemsAvailable[items[i]].attackdmgplus ? itemsAvailable[items[i]].attackdmgplus : 0;
-                                        var magicDmgPlus = itemsAvailable[items[i]].magicdmgplus ? itemsAvailable[items[i]].magicdmgplus : 0;
-                                        var armorPlus = itemsAvailable[items[i]].armorplus ? itemsAvailable[items[i]].armorplus : 0;
-                                        var spiritPlus = itemsAvailable[items[i]].spiritplus ? itemsAvailable[items[i]].spiritplus : 0;
-                                        var luckPlus = itemsAvailable[items[i]].luckplus ? itemsAvailable[items[i]].luckplus : 0;
-
-                                        statisticsFromItemsAndLevel.hpPlus = statisticsFromItemsAndLevel.hpPlus + hpPlus;
-                                        statisticsFromItemsAndLevel.attackDmgPlus = statisticsFromItemsAndLevel.attackDmgPlus + attackDmgPlus;
-                                        statisticsFromItemsAndLevel.magicDmgPlus = statisticsFromItemsAndLevel.magicDmgPlus + magicDmgPlus;
-                                        statisticsFromItemsAndLevel.armorPlus = statisticsFromItemsAndLevel.armorPlus + armorPlus;
-                                        statisticsFromItemsAndLevel.spiritPlus = statisticsFromItemsAndLevel.spiritPlus + spiritPlus;
-                                        statisticsFromItemsAndLevel.luckPlus = statisticsFromItemsAndLevel.luckPlus + luckPlus;
-                                    }
-
-                                    for (var i in userAmuletData){
-
-                                        var hpPlus = itemsAvailable[userAmuletData[i].id].hpplus ? itemsAvailable[userAmuletData[i].id].hpplus * userAmuletData[i].count : 0;
-                                        var attackDmgPlus = itemsAvailable[userAmuletData[i].id].attackdmgplus ? itemsAvailable[userAmuletData[i].id].attackdmgplus * userAmuletData[i].count : 0;
-                                        var magicDmgPlus = itemsAvailable[userAmuletData[i].id].magicdmgplus ? itemsAvailable[userAmuletData[i].id].magicdmgplus * userAmuletData[i].count : 0;
-                                        var armorPlus = itemsAvailable[userAmuletData[i].id].armorplus ? itemsAvailable[userAmuletData[i].id].armorplus * userAmuletData[i].count : 0;
-                                        var spiritPlus = itemsAvailable[userAmuletData[i].id].spiritplus ? itemsAvailable[userAmuletData[i].id].spiritplus * userAmuletData[i].count : 0;
-                                        var luckPlus = itemsAvailable[userAmuletData[i].id].luckplus ? itemsAvailable[userAmuletData[i].id].luckplus * userAmuletData[i].count : 0;
-
-                                        statisticsFromItemsAndLevel.hpPlus = statisticsFromItemsAndLevel.hpPlus + hpPlus;
-                                        statisticsFromItemsAndLevel.attackDmgPlus = statisticsFromItemsAndLevel.attackDmgPlus + attackDmgPlus;
-                                        statisticsFromItemsAndLevel.magicDmgPlus = statisticsFromItemsAndLevel.magicDmgPlus + magicDmgPlus;
-                                        statisticsFromItemsAndLevel.armorPlus = statisticsFromItemsAndLevel.armorPlus + armorPlus;
-                                        statisticsFromItemsAndLevel.spiritPlus = statisticsFromItemsAndLevel.spiritPlus + spiritPlus;
-                                        statisticsFromItemsAndLevel.luckPlus = statisticsFromItemsAndLevel.luckPlus + luckPlus;
-
-                                    }
-
-                                    // added stats from level
-                                    statisticsFromItemsAndLevel.hpPlus = statisticsFromItemsAndLevel.hpPlus + userStats.level
-                                    statisticsFromItemsAndLevel.attackDmgPlus = statisticsFromItemsAndLevel.attackDmgPlus + userStats.level
-                                    statisticsFromItemsAndLevel.magicDmgPlus = statisticsFromItemsAndLevel.magicDmgPlus + userStats.level
-                                    statisticsFromItemsAndLevel.armorPlus = statisticsFromItemsAndLevel.armorPlus + userStats.level
-                                    statisticsFromItemsAndLevel.spiritPlus = statisticsFromItemsAndLevel.spiritPlus + userStats.level
-                                    statisticsFromItemsAndLevel.luckPlus = statisticsFromItemsAndLevel.luckPlus + userStats.level
-
-
-                                    // get the abilities the user will have
-                                    
-                                    // get the extra stats obtained from level, item+ stats, 
                                     var userLevel = userStats.level;
-                                    // insert the data to the event info to be able to use it once the team is ready
                                     wearStats.getUserWearingStats(message, discordUserId, {userLevel: userLevel}, function(wearErr, wearRes){
                                         if (wearErr){
                                             console.log(wearErr)
                                         }else{
+                                            // get the wearing data
+                                            var wearingStats = wearData.data[0];
+                                            var items = [];
+                                            var userItemIds = [];
+
+                                            var abilities = [];
+                                            var statisticsFromItemsAndLevel = {
+                                                hpPlus: 0,
+                                                attackDmgPlus: 0,
+                                                magicDmgPlus: 0,
+                                                armorPlus: 0,
+                                                spiritPlus: 0,
+                                                luckPlus: 0,
+                                                statuses: [],
+                                                buffs: []
+                                            }
+                                            
+                                            if (wearingStats.slot1itemid){
+                                                // check that the itemid is not already being used
+                                                if (!activeRPGItemIds[wearingStats.slot1useritemid]){
+                                                    items.push(wearingStats.slot1itemid);
+                                                    userItemIds.push(wearingStats.slot1useritemid);
+                                                    activeRPGItemIds[wearingStats.slot1useritemid] = true;
+                                                }
+                                            }
+                                            if (wearingStats.slot2itemid){
+                                                if (!activeRPGItemIds[wearingStats.slot2useritemid]){
+                                                    items.push(wearingStats.slot2itemid);
+                                                    userItemIds.push(wearingStats.slot2useritemid);
+                                                    activeRPGItemIds[wearingStats.slot2useritemid] = true;
+                                                }
+                                            }
+                                            if (wearingStats.slot3itemid){
+                                                if (!activeRPGItemIds[wearingStats.slot3useritemid]){
+                                                    items.push(wearingStats.slot3itemid);
+                                                    userItemIds.push(wearingStats.slot3useritemid);
+                                                    activeRPGItemIds[wearingStats.slot3useritemid] = true;
+                                                }
+                                            }
+                                            if (wearingStats.slot4itemid){
+                                                if (!activeRPGItemIds[wearingStats.slot4useritemid]){
+                                                    items.push(wearingStats.slot4itemid);
+                                                    userItemIds.push(wearingStats.slot4useritemid);
+                                                    activeRPGItemIds[wearingStats.slot4useritemid] = true;
+                                                }
+                                            }
+                                            // added stats from items
+                                            for (var i in items){
+                                                console.log("i")
+                                                console.log(i)
+                                                if (itemsAvailable[items[i]].ability1){
+                                                    abilities.push(itemsAvailable[items[i]].ability1);
+                                                }
+                                                if (itemsAvailable[items[i]].ability2){
+                                                    abilities.push(itemsAvailable[items[i]].ability2);
+                                                }
+                                                if (itemsAvailable[items[i]].specialability){
+                                                    abilities.push(itemsAvailable[items[i]].specialability)
+                                                }
+                                                if (itemsAvailable[items[i]].passiveability){
+                                                    abilities.push(itemsAvailable[items[i]].passiveability);
+                                                }
+
+                                                var hpPlus = itemsAvailable[items[i]].hpplus ? itemsAvailable[items[i]].hpplus : 0;
+                                                var attackDmgPlus = itemsAvailable[items[i]].attackdmgplus ? itemsAvailable[items[i]].attackdmgplus : 0;
+                                                var magicDmgPlus = itemsAvailable[items[i]].magicdmgplus ? itemsAvailable[items[i]].magicdmgplus : 0;
+                                                var armorPlus = itemsAvailable[items[i]].armorplus ? itemsAvailable[items[i]].armorplus : 0;
+                                                var spiritPlus = itemsAvailable[items[i]].spiritplus ? itemsAvailable[items[i]].spiritplus : 0;
+                                                var luckPlus = itemsAvailable[items[i]].luckplus ? itemsAvailable[items[i]].luckplus : 0;
+
+                                                statisticsFromItemsAndLevel.hpPlus = statisticsFromItemsAndLevel.hpPlus + hpPlus;
+                                                statisticsFromItemsAndLevel.attackDmgPlus = statisticsFromItemsAndLevel.attackDmgPlus + attackDmgPlus;
+                                                statisticsFromItemsAndLevel.magicDmgPlus = statisticsFromItemsAndLevel.magicDmgPlus + magicDmgPlus;
+                                                statisticsFromItemsAndLevel.armorPlus = statisticsFromItemsAndLevel.armorPlus + armorPlus;
+                                                statisticsFromItemsAndLevel.spiritPlus = statisticsFromItemsAndLevel.spiritPlus + spiritPlus;
+                                                statisticsFromItemsAndLevel.luckPlus = statisticsFromItemsAndLevel.luckPlus + luckPlus;
+                                            }
+
+                                            for (var i in userAmuletData){
+
+                                                var hpPlus = itemsAvailable[userAmuletData[i].id].hpplus ? itemsAvailable[userAmuletData[i].id].hpplus * userAmuletData[i].count : 0;
+                                                var attackDmgPlus = itemsAvailable[userAmuletData[i].id].attackdmgplus ? itemsAvailable[userAmuletData[i].id].attackdmgplus * userAmuletData[i].count : 0;
+                                                var magicDmgPlus = itemsAvailable[userAmuletData[i].id].magicdmgplus ? itemsAvailable[userAmuletData[i].id].magicdmgplus * userAmuletData[i].count : 0;
+                                                var armorPlus = itemsAvailable[userAmuletData[i].id].armorplus ? itemsAvailable[userAmuletData[i].id].armorplus * userAmuletData[i].count : 0;
+                                                var spiritPlus = itemsAvailable[userAmuletData[i].id].spiritplus ? itemsAvailable[userAmuletData[i].id].spiritplus * userAmuletData[i].count : 0;
+                                                var luckPlus = itemsAvailable[userAmuletData[i].id].luckplus ? itemsAvailable[userAmuletData[i].id].luckplus * userAmuletData[i].count : 0;
+
+                                                statisticsFromItemsAndLevel.hpPlus = statisticsFromItemsAndLevel.hpPlus + hpPlus;
+                                                statisticsFromItemsAndLevel.attackDmgPlus = statisticsFromItemsAndLevel.attackDmgPlus + attackDmgPlus;
+                                                statisticsFromItemsAndLevel.magicDmgPlus = statisticsFromItemsAndLevel.magicDmgPlus + magicDmgPlus;
+                                                statisticsFromItemsAndLevel.armorPlus = statisticsFromItemsAndLevel.armorPlus + armorPlus;
+                                                statisticsFromItemsAndLevel.spiritPlus = statisticsFromItemsAndLevel.spiritPlus + spiritPlus;
+                                                statisticsFromItemsAndLevel.luckPlus = statisticsFromItemsAndLevel.luckPlus + luckPlus;
+
+                                            }
+
+                                            // added stats from level
+                                            statisticsFromItemsAndLevel.hpPlus = statisticsFromItemsAndLevel.hpPlus + userStats.level
+                                            statisticsFromItemsAndLevel.attackDmgPlus = statisticsFromItemsAndLevel.attackDmgPlus + userStats.level
+                                            statisticsFromItemsAndLevel.magicDmgPlus = statisticsFromItemsAndLevel.magicDmgPlus + userStats.level
+                                            statisticsFromItemsAndLevel.armorPlus = statisticsFromItemsAndLevel.armorPlus + userStats.level
+                                            statisticsFromItemsAndLevel.spiritPlus = statisticsFromItemsAndLevel.spiritPlus + userStats.level
+                                            statisticsFromItemsAndLevel.luckPlus = statisticsFromItemsAndLevel.luckPlus + userStats.level
+
+
+                                            // get the abilities the user will have
+                                            // get the extra stats obtained from level, item+ stats, 
+                                            // insert the data to the event info to be able to use it once the team is ready
+                                            
                                             var experienceFromItems = wearRes.rpgSuccessExtraExperienceGain ? wearRes.rpgSuccessExtraExperienceGain : 0;
                                             var extraTacosFromItems = wearStats.calculateExtraTacos(wearRes, "rpg"); // 0 or extra
                                             
-                                            // TODO: if user has RPG SUCCESS ITEMS add extra experience, and extra tacos to the user
                                             usersInRPGEvents["rpg-" + discordUserId].memberStats = {
                                                 level: userStats.level,
                                                 currentchallenge: currentPlayerChallenge,
