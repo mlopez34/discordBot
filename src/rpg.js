@@ -3675,11 +3675,11 @@ function calculateHealingDone(event, caster, target, rpgAbility){
                     var armor = userStats.armor + userStats.statBuffs.armor
                     var spirit = userStats.spirit + userStats.statBuffs.spirit
                     if (armor > spirit){
-                        healingToDo = healingToDo + ((userStats.armor + userStats.statBuffs.armor) * rpgAbility.arOrSpPercentage);
-                        baseHealing = baseHealing + Math.floor(healingToDo)
+                        healingToDo = healingToDo + ((userStats.armor + userStats.statBuffs.armor));
+                        baseHealing = baseHealing + Math.floor((healingToDo / rpgAbility.turnsToExpire) * rpgAbility.arOrSpPercentage)
                     }else{
-                        healingToDo = healingToDo + ((userStats.spirit + userStats.statBuffs.spirit) * rpgAbility.arOrSpPercentage);
-                        baseHealing = baseHealing + Math.floor(healingToDo)
+                        healingToDo = healingToDo + ((userStats.spirit + userStats.statBuffs.spirit));
+                        baseHealing = baseHealing + Math.floor((healingToDo / rpgAbility.turnsToExpire) * rpgAbility.arOrSpPercentage)
                     }
                 }else{
                     healingToDo = healingToDo + (userStats.magicDmg + userStats.statBuffs.magicDmg);
@@ -3737,11 +3737,11 @@ function calculateHealingDone(event, caster, target, rpgAbility){
                     var armor = userStats.armor + userStats.statBuffs.armor
                     var spirit = userStats.spirit + userStats.statBuffs.spirit
                     if (armor > spirit){
-                        healingToDo = healingToDo + ((userStats.armor + userStats.statBuffs.armor) * rpgAbility.arOrSpPercentage);
-                        baseHealing = baseHealing + Math.floor(healingToDo)
+                        healingToDo = healingToDo + ((userStats.armor + userStats.statBuffs.armor));
+                        baseHealing = baseHealing + Math.floor((healingToDo / rpgAbility.turnsToExpire) * rpgAbility.arOrSpPercentage)
                     }else{
-                        healingToDo = healingToDo + ((userStats.spirit + userStats.statBuffs.spirit) * rpgAbility.arOrSpPercentage);
-                        baseHealing = baseHealing + Math.floor(healingToDo)
+                        healingToDo = healingToDo + ((userStats.spirit + userStats.statBuffs.spirit));
+                        baseHealing = baseHealing + Math.floor((healingToDo / rpgAbility.turnsToExpire) * rpgAbility.arOrSpPercentage)
                     }
                 }else{
                     healingToDo = healingToDo + (userStats.magicDmg + userStats.statBuffs.magicDmg);

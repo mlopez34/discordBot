@@ -52,7 +52,7 @@ module.exports = {
                 heal: 50,
                 additionalTargets: 3,
                 mdPercentage: 0,
-                mdPercentages: [0.7, 0.3, 0.15],
+                mdPercentages: [0.5, 0.3, 0.1],
             }
         },
 
@@ -62,9 +62,9 @@ module.exports = {
             selfTarget: true,
             hot: {
                 name: "Recover",
-                heal: 100,
+                heal: 50,
                 emoji: "💉",
-                arOrSpPercentage: 0.1,
+                arOrSpPercentage: 0.2,
                 healingOnHotApply: false,
                 turnsToExpire: 3,
                 healingOnDotExpire: false,
