@@ -40,14 +40,14 @@ module.exports = {
             }
         },
 
-        chainHeal: {
-            name: "Chain Heal",
-            abilityId: "chainHeal",
+        nourish: {
+            name: "Nourish",
+            abilityId: "nourish",
             heal: 50,
             mdPercentage: 0.8,
             special: {
-                name: "Chain Heal",
-                abilityId: "chainHeal",
+                name: "Nourish",
+                abilityId: "nourish",
                 prioritizeLowestHp: true,
                 heal: 50,
                 additionalTargets: 2,
