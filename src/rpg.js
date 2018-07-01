@@ -4567,7 +4567,7 @@ function processAbility(abilityObject, event){
                             healTarget( event.membersInParty[targetsToHeal[i].targetId], hpToHeal)
                             // gain stack of radioactive
                             abilityToString = abilityToString + checkRadioactive(event, event.membersInParty[targetsToHeal[i].targetId])
-                            abilityToString = abilityToString + targetToHealName + " was healed for " + hpToHeal + "\n"
+                            abilityToString = abilityToString + targetToHealName + " was healed for " + hpToHeal + " From " + rpgAbility.special.name + "\n"
                             if (event.membersInParty[targetsToHeal[i].targetId].hp > event.membersInParty[targetsToHeal[i].targetId].maxhp){
                                 event.membersInParty[targetsToHeal[i].targetId].hp = event.membersInParty[targetsToHeal[i].targetId].maxhp
                             }
