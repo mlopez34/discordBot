@@ -1147,7 +1147,7 @@ module.exports.calculateSecondsReduced = function (userItemStats, command){
 module.exports.getUserWearingStats = function(message, discordUserId, userData, cb){
     profileDB.getItemData(function(err, getItemResponse){
         if (err){
-            // console.log(err);
+            console.log(err);
         }
         else{
             var allItems = getItemResponse.data
@@ -1190,7 +1190,7 @@ module.exports.getUserWearingStats = function(message, discordUserId, userData, 
                     }
                     profileDB.getUserWearInfo(discordUserId, function(getWearErr, getWearRes){
                         if (getWearErr){
-                            // console.log(getWearErr);
+                            console.log(getWearErr);
                         }
                         else{
                             // console.log(getWearRes);
@@ -1221,7 +1221,7 @@ module.exports.getUserWearingStats = function(message, discordUserId, userData, 
                                 // console.log(slot1Id);
                                 profileDB.getItemByIdsWear(slot1Id, slot2Id, slot3Id, function(error, itemResponse){
                                     if (error){
-                                        // console.log(error);
+                                        console.log(error);
                                     }
                                     else{
                                         // console.log(itemResponse);

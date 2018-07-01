@@ -13,13 +13,15 @@ module.exports = {
             name: "Impale",
             abilityId: "impale",
             dmg: 125,
-            adPercentage: 1,
+            adPercentage: 1.1,
+            type: "physical",
             special: {
                 name: "Impale",
                 abilityId: "impale",
                 randomTargets: 1,
                 dmg: 125,
-                adPercentage: 0.25
+                adPercentage: 0.3,
+                type: "physical"
             },
             type: "physical"
         },
@@ -28,9 +30,11 @@ module.exports = {
             abilityId: "assist",
             heal: 50,
             mdPercentage: 0.85,
+            selfUntargettable: true,
             special: {
                 name: "Assist",
                 abilityId: "assist",
+                heal: 50,
                 selfHeal: 50,
                 mdPercentage: 0.85,
             }
@@ -45,9 +49,26 @@ module.exports = {
                 name: "Chain Heal",
                 abilityId: "chainHeal",
                 prioritizeLowestHp: true,
-                targets: 2,
+                heal: 50,
+                additionalTargets: 2,
+                mdPercentage: 0,
                 mdPercentages: [0.5, 0.25],
+            }
+        },
 
+        recover: {
+            name:"Recover",
+            abilityId: "recover",
+            selfTarget: true,
+            hot: {
+                name: "Recover",
+                heal: 100,
+                emoji: "💉",
+                arOrSpPercentage: 0.1,
+                healingOnHotApply: false,
+                turnsToExpire: 3,
+                healingOnDotExpire: false,
+                healingOnExpire: 0
             }
         },
 
@@ -66,7 +87,7 @@ module.exports = {
                 emoji : "🔰",
                 affectsGlobal: ["damageTakenPercentage"],
                 turnsToExpire: 3,
-                multiplier: 0.33
+                multiplier: 0.67
             }
         },
 
@@ -80,20 +101,6 @@ module.exports = {
                 turnsToExpire: 1,
                 addDamageTaken: true,
                 damageOnExpireFromDamageTaken: true
-            }
-        },
-        recover: {
-            name:"Recover",
-            abilityId: "recover",
-            hot: {
-                name: "Recover",
-                heal: 50,
-                emoji: "💉",
-                arOrSpPercentage: 1.3,
-                healingOnHotApply: false,
-                turnsToExpire: 4,
-                healingOnDotExpire: false,
-                healingOnExpire: 0
             }
         },
 
@@ -457,6 +464,15 @@ module.exports = {
         execute: {
             name: "Execute",
             abilityId: "execute",
+            limitOffensive: true,
+            dmg: 480,
+            adPercentage: 2,
+            type: "physical"
+            
+        },
+        decapitate: {
+            name: "Decapitate",
+            abilityId: "decapitate",
             limitOffensive: true,
             dmg: 480,
             adPercentage: 2,
@@ -4737,8 +4753,8 @@ module.exports = {
                                 name: "frenzy",
                                 emoji: "😈",
                                 onTurnEnd: {
-                                    attackDmgPlus : 670,
-                                    magicDmgPlus : 670,
+                                    attackDmgPlus : 640,
+                                    magicDmgPlus : 640,
                                     everyNTurns: 10,
                                     startTurn: 8
                                 }
@@ -4763,7 +4779,7 @@ module.exports = {
                         adPerPartyMember: 0,
                         mdPerPartyMember: 0,
                         attackDmg: 1800,
-                        magicDmg: 1070,
+                        magicDmg: 1010,
                         armor: 2350,
                         spirit: 2300,
                         difficulty: "boss",
