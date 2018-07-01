@@ -5287,12 +5287,15 @@ function getPrioritizedTargets(event, numberOfTargets){
     var prioritizedTargets = [];
     // check event members, check their hp, order them in an array by hp, return the lowest numberOfTargets
     for (var m in event.membersInParty){
-        if (event.membersInParty[m].statuses.indexOf("dead")){
-            prioritizedTargets.push({
-                targetId: m,
-                target: event.membersInParty[m],
-                hp: event.membersInParty[m].hp
-            })
+        if (numberOfTargets > 0){
+            if (event.membersInParty[m].statuses.indexOf("dead")){
+                prioritizedTargets.push({
+                    targetId: m,
+                    target: event.membersInParty[m],
+                    hp: event.membersInParty[m].hp
+                })
+                numberOfTargets--;
+            }
         }
     }
     prioritizedTargets.sort(function(a, b){
