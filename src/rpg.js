@@ -1297,7 +1297,7 @@ module.exports.useRpgAbility = function(message, args){
                                 alreadyUsedAbility = true;
                             }
                         }
-                        var validTarget = validateTarget(target, abilityToUse, activeRPGEvents["rpg-"+idOfEventUserIsIn]);
+                        var validTarget = validateTarget(target, abilityToUse, activeRPGEvents["rpg-"+idOfEventUserIsIn], abilityToProcess.user);
                         if (validTarget && !alreadyUsedAbility){
                             activeRPGEvents["rpg-"+idOfEventUserIsIn].memberTurnAbilities.push(abilityToProcess);
                             // if all users have used their abilities the turn should be processed
@@ -1345,14 +1345,19 @@ module.exports.useRpgAbility = function(message, args){
     }
 }
 
-function validateTarget(target, abilityToUse, event){
+function validateTarget(target, abilityToUse, event, caster){
     if (!target){
         // check to see if it is an areawide ability
-        if (rpgAbilities[abilityToUse] && rpgAbilities[abilityToUse].areawide){
+        if (rpgAbilities[abilityToUse] && (rpgAbilities[abilityToUse].areawide || rpgAbilities[abilityToUse].selfTarget)){
             return true;
         }
         else{
             return false;
+        }
+    }
+    if (rpgAbilities[abilityToUse].selfUntargettable){
+        if (target == caster){
+            return false
         }
     }
     // check that target is valid
@@ -3666,8 +3671,20 @@ function calculateHealingDone(event, caster, target, rpgAbility){
             var healingToDo = 0
 
             if (rpgAbility.turnsToExpire){
-                healingToDo = healingToDo + (userStats.magicDmg + userStats.statBuffs.magicDmg);
-                baseHealing = baseHealing + Math.floor(( healingToDo / rpgAbility.turnsToExpire ) * rpgAbility.mdPercentage)
+                if (rpgAbility.arOrSpPercentage){
+                    var armor = userStats.armor + userStats.statBuffs.armor
+                    var spirit = userStats.spirit + userStats.statBuffs.spirit
+                    if (armor > spirit){
+                        healingToDo = healingToDo + ((userStats.armor + userStats.statBuffs.armor) * rpgAbility.arOrSpPercentage);
+                        baseHealing = baseHealing + Math.floor(healingToDo)
+                    }else{
+                        healingToDo = healingToDo + ((userStats.spirit + userStats.statBuffs.spirit) * rpgAbility.arOrSpPercentage);
+                        baseHealing = baseHealing + Math.floor(healingToDo)
+                    }
+                }else{
+                    healingToDo = healingToDo + (userStats.magicDmg + userStats.statBuffs.magicDmg);
+                    baseHealing = baseHealing + Math.floor(( healingToDo / rpgAbility.turnsToExpire ) * rpgAbility.mdPercentage)    
+                }
             }else{
                 if (rpgAbility.areawide){
                     healingToDo = healingToDo + (userStats.magicDmg + userStats.statBuffs.magicDmg);
@@ -3716,13 +3733,26 @@ function calculateHealingDone(event, caster, target, rpgAbility){
             var healingToDo = 0
 
             if (rpgAbility.turnsToExpire){
-                healingToDo = healingToDo + (userStats.magicDmg + userStats.statBuffs.magicDmg);
-                baseHealing = baseHealing + Math.floor(( healingToDo / rpgAbility.turnsToExpire ) * rpgAbility.mdPercentage)
+                if (rpgAbility.arOrSpPercentage){
+                    var armor = userStats.armor + userStats.statBuffs.armor
+                    var spirit = userStats.spirit + userStats.statBuffs.spirit
+                    if (armor > spirit){
+                        healingToDo = healingToDo + ((userStats.armor + userStats.statBuffs.armor) * rpgAbility.arOrSpPercentage);
+                        baseHealing = baseHealing + Math.floor(healingToDo)
+                    }else{
+                        healingToDo = healingToDo + ((userStats.spirit + userStats.statBuffs.spirit) * rpgAbility.arOrSpPercentage);
+                        baseHealing = baseHealing + Math.floor(healingToDo)
+                    }
+                }else{
+                    healingToDo = healingToDo + (userStats.magicDmg + userStats.statBuffs.magicDmg);
+                    baseHealing = baseHealing + Math.floor(( healingToDo / rpgAbility.turnsToExpire ) * rpgAbility.mdPercentage)    
+                }
             }else{
                 if (rpgAbility.areawide){
                     healingToDo = healingToDo + (userStats.magicDmg + userStats.statBuffs.magicDmg);
                     baseHealing = baseHealing + Math.floor(healingToDo * rpgAbility.mdPercentage)
-                }else{
+                }
+                else{
                     healingToDo = healingToDo + (userStats.magicDmg + userStats.statBuffs.magicDmg);
                     baseHealing = baseHealing + Math.floor(healingToDo * rpgAbility.mdPercentage)
                 }
@@ -4306,6 +4336,9 @@ function processAbility(abilityObject, event){
         var hotToAdd = {}
         hotToAdd.hot = rpgAbility.hot;
         var targetToAddHot = abilityObject.target
+        if (rpgAbility.selfTarget){
+            var targetToAddHot =  "rpg-" + abilityCaster
+        }
         hotToAdd.hot.expireOnTurn = currentTurn + hotToAdd.hot.turnsToExpire;
         hotToAdd.hot.caster = abilityCaster // id of caster
         // enemy added a hot to party member
@@ -4460,6 +4493,76 @@ function processAbility(abilityObject, event){
                 if (event.enemies[abilityCaster].hp <= 0){
                     abilityToString = abilityToString + hasDied(event, event.enemies[abilityCaster]);
                 }              
+            }
+        }
+        if (rpgAbility.special && rpgAbility.special.selfHeal){
+            // caster heals themselves
+            if (rpgAbility.special.heal){
+                var targetToHeal = abilityObject.user;
+                if (targetToHeal > 1000){
+                    targetToHeal = "rpg-" + targetToHeal
+                }
+                if (event.membersInParty[targetToHeal]){
+                    var targetToHealName = event.membersInParty[targetToHeal].name;
+                    if (event.membersInParty[targetToHeal].statuses.indexOf("dead") == -1){
+                        // target is not dead
+                        //event.membersInParty[targetToHeal].hp = event.membersInParty[targetToHeal].hp + hpToHeal;
+                        healTarget( event.membersInParty[targetToHeal], hpToHeal)
+                        // gain stack of radioactive
+                        abilityToString = abilityToString + checkRadioactive(event, event.membersInParty[targetToHeal])
+                        abilityToString = abilityToString + targetToHealName + " was healed for " + hpToHeal + "\n"
+                        if (event.membersInParty[targetToHeal].hp > event.membersInParty[targetToHeal].maxhp){
+                            event.membersInParty[targetToHeal].hp = event.membersInParty[targetToHeal].maxhp
+                        }
+                    }
+                }
+            }
+        }
+        if (rpgAbility.special && rpgAbility.special.randomTargets){
+            if (rpgAbility.special.dmg){
+                // get a random target to deal damage
+                for (var i = 0; i < rpgAbility.special.randomTargets; i ++){
+                    
+                    var targetToDealDmg = getRandomLivingEnemy(event)
+                    var damageToDeal = rpgAbility.special.dmg;
+                    damageToDeal = calculateDamageDealt( event, abilityCaster, targetToDealDmg, rpgAbility.special )
+                    
+                    // dealing damage to enemies
+                    if (event.enemies[targetToDealDmg]){
+                        var targetToDealDmgName = event.enemies[targetToDealDmg].name;
+                        // event.enemies[targetToDealDmg].hp = event.enemies[targetToDealDmg].hp - damageToDeal;
+                        dealDamageTo(event.enemies[targetToDealDmg], damageToDeal)
+                        abilityToString = abilityToString + targetToDealDmgName + " took " + damageToDeal + " damage from " + rpgAbility.special.name + "\n";
+                        if (event.enemies[targetToDealDmg].hp <= 0){
+                            abilityToString = abilityToString + hasDied(event, event.enemies[targetToDealDmg]);
+                        }
+                    }
+                    // dealing damage to members of party (friendly fire or enemy attacking)
+                    else if (event.membersInParty[targetToDealDmg]){
+                        var targetToDealDmgName = event.membersInParty[targetToDealDmg].name;
+                        //event.membersInParty[targetToDealDmg].hp = event.membersInParty[targetToDealDmg].hp - damageToDeal;
+                        dealDamageTo( event.membersInParty[targetToDealDmg], damageToDeal )
+                        abilityToString = abilityToString + targetToDealDmgName + " took " + damageToDeal + " damage from " + rpgAbility.special.name + "\n";
+                        if (event.membersInParty[targetToDealDmg].hp <= 0){
+                            abilityToString = abilityToString + hasDied(event, event.membersInParty[targetToDealDmg]);
+                        }
+                    }
+                }
+            }
+        }
+        if (rpgAbility.special && rpgAbility.special.additionalTargets){
+            if (rpgAbility.special.heal){
+                if (rpgAbility.special.prioritizeLowestHp){
+                    var targetsToHeal = getPrioritizedTargets(event, rpgAbility.special.additionalTargets)
+                    for (var i = 0; i < targetsToHeal.length; i ++){
+                        // targetsToHeal is an array
+                        // mdPercentages should use i as well
+                        // heal the targets one by one
+                        rpgAbility.special.mdPercentage = rpgAbility.special.mdPercentages[i]
+                        var hpToHeal = calculateHealingDone(event, abilityCaster, targetsToHeal[i], rpgAbility.special);
+
+                    }
+                }
             }
         }
         if (ability == "bandaid"){
@@ -5144,6 +5247,54 @@ function recalculateStatBuffs(event){
         }
     }
 }
+
+function getRandomLivingEnemy(event){
+    var randomEnemy = 1;
+    for (var enemy in event.enemies){
+        if (event.enemies[enemy].hp > 0){
+            randomEnemy = enemy
+        }
+    }
+    var rand = Math.floor(Math.random() * event.enemiesCount) + 1
+    var validTarget = false
+    var stuckCount = 0
+    while(!validTarget && stuckCount < 50){
+        if (event.enemies[rand].hp > 0){
+            randomEnemy = rand
+            validTarget = true
+        }else{
+            rand = Math.floor(Math.random() * event.enemiesCount) + 1
+            stuckCount++
+        }
+    }
+
+    return randomEnemy
+}
+
+function getPrioritizedTargets(event, numberOfTargets){
+    // caster should be prioritized first
+    var prioritizedTargets = [];
+    // check event members, check their hp, order them in an array by hp, return the lowest numberOfTargets
+    for (var m in event.membersInParty){
+        if (event.membersInParty[m].statuses.indexOf("dead")){
+            prioritizedTargets.push({
+                targetId: m,
+                target: event.membersInParty[m],
+                hp: event.membersInParty[m].hp
+            })
+        }
+    }
+    prioritizedTargets.sort(function(a, b){
+        var keyA = new Date(a.hp)
+        var keyB = new Date(b.hp)
+        if(keyA < keyB) return -1;
+        if(keyA > keyB) return 1;
+        return 0;    
+    })
+
+    return prioritizedTargets
+}
+
 
 function enemiesUseAbilities(event){
     // for each enemy in the event, pick out an ability to use, pick a valid target for the ability
