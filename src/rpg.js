@@ -4559,8 +4559,19 @@ function processAbility(abilityObject, event){
                         // mdPercentages should use i as well
                         // heal the targets one by one
                         rpgAbility.special.mdPercentage = rpgAbility.special.mdPercentages[i]
-                        var hpToHeal = calculateHealingDone(event, abilityCaster, targetsToHeal[i], rpgAbility.special);
-
+                        var hpToHeal = calculateHealingDone(event, abilityCaster, targetsToHeal[i].targetId, rpgAbility.special);
+                        
+                        var targetToHealName = event.membersInParty[targetsToHeal[i].targetId].name;
+                        if (event.membersInParty[targetsToHeal[i].targetId].statuses.indexOf("dead") == -1){
+                            // target is not dead
+                            healTarget( event.membersInParty[targetsToHeal[i].targetId], hpToHeal)
+                            // gain stack of radioactive
+                            abilityToString = abilityToString + checkRadioactive(event, event.membersInParty[targetsToHeal[i].targetId])
+                            abilityToString = abilityToString + targetToHealName + " was healed for " + hpToHeal + "\n"
+                            if (event.membersInParty[targetsToHeal[i].targetId].hp > event.membersInParty[targetsToHeal[i].targetId].maxhp){
+                                event.membersInParty[targetsToHeal[i].targetId].hp = event.membersInParty[targetsToHeal[i].targetId].maxhp
+                            }
+                        }
                     }
                 }
             }

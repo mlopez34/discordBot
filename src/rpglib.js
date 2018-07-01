@@ -50,9 +50,9 @@ module.exports = {
                 abilityId: "nourish",
                 prioritizeLowestHp: true,
                 heal: 50,
-                additionalTargets: 2,
+                additionalTargets: 3,
                 mdPercentage: 0,
-                mdPercentages: [0.5, 0.25],
+                mdPercentages: [0.7, 0.3, 0.15],
             }
         },
 
