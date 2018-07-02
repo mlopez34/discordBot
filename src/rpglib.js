@@ -122,7 +122,7 @@ module.exports = {
                 emoji : "❇️",
                 turnsToExpire: 3,
                 affects: ["maxhp", "hp"],
-                multiplier: 2
+                multiplier: 1.2
             }
         },
 
