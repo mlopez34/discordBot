@@ -82,7 +82,11 @@ module.exports = {
         shell : {
             name : "Shell",
             abilityId: "shell",
+            cooldown: 0,
+            maxcooldown: 5,
             buff: {
+                selfbuff: true,
+                buff: true,
                 name: "Shell",
                 emoji : "🔰",
                 affectsGlobal: ["damageTakenPercentage"],
@@ -104,33 +108,42 @@ module.exports = {
             }
         },
 
-        lastStand: {
-            name:"Last Stand",
-            abilityId: "lastStand",
-            cooldown: 0,
-            maxcooldown: 8,
-            hot: {
-                name: "Last Stand",
-                abilityId: "lastStand",
+        charge: {
+            name:"Charge",
+            abilityId: "charge",
+            limitDefensive : true,
+            areawide: true,
+            targets: "friendly",
+            buff: {
+                buff: true,
+                areawide: true,
+                name: "Charge",
+                abilityId: "charge",
                 emoji : "❇️",
                 turnsToExpire: 3,
-                affects: ["hp"],
-                multiplier: 1.15
+                affects: ["maxhp", "hp"],
+                multiplier: 2
             }
         },
 
         paralyze: {
             name: "Paralyze",
             abilityId: "paralyze",
-            maxcooldown: 3,
+            maxcooldown: 5,
             cooldown: 0,
+            difficultiesAllowed: [
+                "easy",
+                "medium",
+                "summoned"
+            ],
             status: {
                 status: true,
                 abilityId: "paralyze",
                 name: "Paralyze",
                 emoji: "🛌",
-                turnsToExpire: 2,
+                turnsToExpire: 3,
                 setAbleToAttack: false,
+                invalidOnDamage: true
             }
         },
 
