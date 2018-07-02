@@ -83,7 +83,7 @@ module.exports = {
             name : "Shell",
             abilityId: "shell",
             cooldown: 0,
-            maxcooldown: 5,
+            maxcooldown: 8,
             buff: {
                 selfbuff: true,
                 buff: true,
