@@ -30,6 +30,8 @@ client.on('ready', function(err) {
     //steal(channelName);
 });
 
+client.on("error", (e) => console.error(e));
+
 function commandIs(str, msg){
     if ((str === "thank" || str === "sorry" || str === "welcome")){
         if (msg.content.toLowerCase().startsWith(config.commandString)){
