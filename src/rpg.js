@@ -1829,6 +1829,36 @@ function calculateRewards(event, memberInRpgEvent, getItemResponse, numberOfMemb
 
     var itemsObtainedArray = [];
     // calculate xp based on level and difficulty of enemies and items
+    if (event.challenge &&  event.challenge.challenge == 6){
+        var rarityRoll = undefined;
+        var numberOfRolls = [0,1,2,3,4]
+        for (var enemy in numberOfRolls){
+            rarityRoll = Math.floor(Math.random() * 2000) + 8000;
+            if (rarityRoll){
+                if(rarityRoll > ANCIENT_MIN_ROLL ){
+                    var itemRoll = Math.floor(Math.random() * ancientItems.length);
+                    console.log(ancientItems[itemRoll]);
+                    itemsObtainedArray.push(ancientItems[itemRoll])
+                }
+                else if(rarityRoll > RARE_MIN_ROLL && rarityRoll <= RARE_MAX_ROLL){
+                    var itemRoll = Math.floor(Math.random() * rareItems.length);
+                    console.log(rareItems[itemRoll]);
+                    itemsObtainedArray.push(rareItems[itemRoll]);
+                }
+                else if (rarityRoll > UNCOMMON_MIN_ROLL && rarityRoll <= UNCOMMON_MAX_ROLL){
+                    var itemRoll = Math.floor(Math.random() * uncommonItems.length);
+                    console.log(uncommonItems[itemRoll]);
+                    itemsObtainedArray.push( uncommonItems[itemRoll] );
+                }
+                else {
+                    var itemRoll = Math.floor(Math.random() * commonItems.length);
+                    console.log(commonItems[itemRoll]);
+                    commonItems[itemRoll].itemAmount = COMMON_ITEMS_TO_OBTAIN
+                    itemsObtainedArray.push( commonItems[itemRoll] );
+                }
+            }
+        }
+    }
     for (var enemy in event.enemies){
         var rarityRoll = undefined;
         var enemyDifficulty =  event.enemies[enemy].difficulty
