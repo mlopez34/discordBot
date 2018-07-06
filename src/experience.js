@@ -234,7 +234,7 @@ function extraLevelRewards(message, discordUser, userLeveledUpTo){
                 console.log(ancientItems[ancientRoll]);
                 itemsObtainedArray.push(ancientItems[ancientRoll])
 
-                var artifactRoll = Math.floor(Math.random() * artifactRoll.length);
+                var artifactRoll = Math.floor(Math.random() * artifactItems.length);
                 console.log(artifactItems[artifactRoll]);
                 itemsObtainedArray.push(artifactItems[artifactRoll])
                 
