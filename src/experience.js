@@ -218,7 +218,7 @@ function extraLevelRewards(message, discordUser, userLeveledUpTo){
                     if(allItems[item].itemraritycategory == "ancient"){
                         ancientItems.push(allItems[item]);
                     }
-                    else if(allItems[item].itemraritycategory == "artifact"){
+                    else if(allItems[item].itemraritycategory == "artifact+" && allItems[item].amuletsource == "levelup37"){
                         artifactItems.push(allItems[item]);
                     }
                     else if(allItems[item].itemraritycategory == "amulet" && allItems[item].amuletsource == "levelup35"){
