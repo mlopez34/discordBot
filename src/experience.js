@@ -209,12 +209,20 @@ function extraLevelRewards(message, discordUser, userLeveledUpTo){
             }else{
                 var allItems = getItemResponse.data
                 var ancientItems = [];
+                var artifactItems = []
                 var amuletItems = [];
+                var lesserAmuletItems = []
 
                 for (var item in allItems){
                     
                     if(allItems[item].itemraritycategory == "ancient"){
                         ancientItems.push(allItems[item]);
+                    }
+                    else if(allItems[item].itemraritycategory == "artifact"){
+                        artifactItems.push(allItems[item]);
+                    }
+                    else if(allItems[item].itemraritycategory == "amulet" && allItems[item].amuletsource == "levelup35"){
+                        lesserAmuletItems.push(allItems[item]);
                     }
                     else if(allItems[item].itemraritycategory == "amulet" && allItems[item].amuletsource == "levelup37"){
                         amuletItems.push(allItems[item]);
@@ -225,11 +233,20 @@ function extraLevelRewards(message, discordUser, userLeveledUpTo){
                 var ancientRoll = Math.floor(Math.random() * ancientItems.length);
                 console.log(ancientItems[ancientRoll]);
                 itemsObtainedArray.push(ancientItems[ancientRoll])
+
+                var artifactRoll = Math.floor(Math.random() * artifactRoll.length);
+                console.log(artifactItems[artifactRoll]);
+                itemsObtainedArray.push(artifactItems[artifactRoll])
                 
                 // roll for amulet
                 var amuletRoll = Math.floor(Math.random() * amuletItems.length);
                 console.log(amuletItems[amuletRoll]);
                 itemsObtainedArray.push(amuletItems[amuletRoll])
+
+                var lesserAmuletRoll = Math.floor(Math.random() * lesserAmuletItems.length);
+                console.log(lesserAmuletItems[lesserAmuletRoll]);
+                itemsObtainedArray.push(lesserAmuletItems[lesserAmuletRoll])
+
                 if (itemsObtainedArray.length > 0){
                     addToUserInventory(discordUser.id, itemsObtainedArray);
                 }
