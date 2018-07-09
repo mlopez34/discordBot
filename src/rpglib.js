@@ -121,7 +121,7 @@ module.exports = {
                 abilityId: "charge",
                 emoji : "❇️",
                 turnsToExpire: 3,
-                affects: ["maxhp", "hp"],
+                affects: ["maxhp"],
                 multiplier: 1.2
             }
         },
@@ -306,11 +306,29 @@ module.exports = {
         empower: {
             name: "Empower",
             abilityId: "empower",
+            areawide: true,
+            targets: "friendly",
+            cooldown: 0,
+            maxcooldown: 10,
             buff: {
+                buff: true,
+                areawide: true,
                 name: "Empower",
+                abilityId: "empower",
                 emoji: "💪🏼",
+                turnsToExpire: 4,
                 affects: ["attackDmg", "magicDmg"],
-                multiplier: 1.3
+                multiplier: 1.5
+            },
+            status: {
+                name: "Exhausted",
+                status: true,
+                areawide: true,
+                ignoreBandaid: true,
+                selfDebuff: true,
+                emoji: "💢",
+                buffToStop: "empower",
+                turnsToExpire: 10,
             }
         },
         flameblast: {
@@ -591,8 +609,13 @@ module.exports = {
             abilityId: "resistanceaura",
             name: "Resistance Aura",
             buff: {
+                aura: true,
+                // spirit
+                abilityId: "resistanceaura",
+                affects: ["armor", "spirit"],
+                multiplier: 1.1,
                 name: "Resistance Aura",
-                emoji: "🌀"
+                emoji: "🔘"
             }
         },
         divineaura: {
@@ -600,8 +623,13 @@ module.exports = {
             abilityId: "divineaura",
             name: "Divine Aura",
             buff: {
+                aura: true,
+                abilityId: "divineaura",
+                // armor
+                affects: [, "magicDmg"],
+                multiplier: 1.1,
                 name: "Divine Aura",
-                emoji: "🌀"
+                emoji: "🕯️"
             }
         },
         fierceshout: {
@@ -609,6 +637,10 @@ module.exports = {
             abilityId: "fierceshout",
             name: "Fierce Shout",
             buff: {
+                aura: true,
+                affects: ["attackDmg"],
+                multiplier: 1.1,
+                abilityId: "fierceshout",
                 name: "Fierce Shout",
                 emoji: "🌀"
             }
@@ -618,8 +650,13 @@ module.exports = {
             abilityId: "rallyingroar",
             name: "Rallying Roar",
             buff: {
+                // hp
+                aura: true,
+                abilityId: "rallyingroar",
+                affects: ["maxhp"],
+                multiplier: 1.1,
                 name: "Rallying Roar",
-                emoji: "🌀"
+                emoji: "🎺"
             }
         },
 
