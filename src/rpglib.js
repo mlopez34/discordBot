@@ -309,7 +309,7 @@ module.exports = {
             areawide: true,
             targets: "friendly",
             cooldown: 0,
-            maxcooldown: 10,
+            maxcooldown: 5,
             buff: {
                 buff: true,
                 areawide: true,
