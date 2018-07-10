@@ -318,7 +318,7 @@ module.exports = {
                 emoji: "💪🏼",
                 turnsToExpire: 4,
                 affects: ["attackDmg", "magicDmg"],
-                multiplier: 1.5
+                multiplier: 1.6
             },
             status: {
                 name: "Exhausted",
