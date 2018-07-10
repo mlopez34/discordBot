@@ -1463,7 +1463,7 @@ function processRpgTurn(message, event){
             event.memberTurnAbilities = [];
             event.turn = event.turn + 1;
             //////// permanent statuses for players and users reset here, they get recalculated before dots / hots next turn
-            resetGlobalStatuses(event)
+            recalculateStatBuffs(event)
             try {
                 turnFinishedEmbedBuilder(message, event, turnString, passiveEffectsString, endOfTurnString);
                 // attempt to process the next turn if the event is in turn + 1
@@ -5264,7 +5264,7 @@ function userStatsStringBuilder(userStats, name, isEnemy){
         userString = ":heart_decoration: "  + (userStats.hp + userStats.statBuffs.hp) + "/" + (userStats.maxhp + userStats.statBuffs.maxhp)
         userString = userString + " - **" + userStats.id + "** **" + name + "**" + "\n"
     }else{
-        userString = " :green_heart:  " + (userStats.hp + userStats.statBuffs.maxhp) + "/" + (userStats.maxhp + userStats.statBuffs.maxhp) + " "
+        userString = " :green_heart:  " + (userStats.hp + userStats.statBuffs.maxhp) + "/" + (userStats.maxhp + userStats.statBuffs.maxhp) + " " + userStats.auras 
         userString = userString + " 🛡️ " + (userStats.armor + userStats.statBuffs.armor)
         userString = userString + " 🙌 " + (userStats.spirit + userStats.statBuffs.spirit)
         userString = userString + " 🗡 " + (userStats.attackDmg + userStats.statBuffs.attackDmg)
@@ -5346,7 +5346,16 @@ function resetGlobalStatuses(event){
 
 function processAura(event, buffToProcess, statToAffect, index, statToAffectArrayLength){
     for ( var memberToGiveAura in event.membersInParty){
+        // just push a buff into the user, keep it invisible 
         var userToBuff = event.membersInParty[memberToGiveAura];
+
+        // var abilityToProcess = {
+        //     user: idOfMember, //id
+        //     ability: abilityPicked, //abilityId
+        //     target: userToBuff.id //id
+        // }
+        // auraString = auraString  + processAbility(abilityToProcess, event); 
+
         var statToBuff = userToBuff[statToAffect] + userToBuff.statBuffs[statToAffect];
         // member doesnt have the unique aura given to them yet
         if (event.membersInParty[memberToGiveAura].auras.indexOf(buffToProcess.abilityId) == -1){
