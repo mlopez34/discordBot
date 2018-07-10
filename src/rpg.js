@@ -5264,7 +5264,7 @@ function userStatsStringBuilder(userStats, name, isEnemy){
         userString = ":heart_decoration: "  + (userStats.hp + userStats.statBuffs.hp) + "/" + (userStats.maxhp + userStats.statBuffs.maxhp)
         userString = userString + " - **" + userStats.id + "** **" + name + "**" + "\n"
     }else{
-        userString = " :green_heart:  " + (userStats.hp + userStats.statBuffs.maxhp) + "/" + (userStats.maxhp + userStats.statBuffs.maxhp) + " " + userStats.auras 
+        userString = " :green_heart:  " + (userStats.hp + userStats.statBuffs.maxhp) + "/" + (userStats.maxhp + userStats.statBuffs.maxhp) + " "
         userString = userString + " 🛡️ " + (userStats.armor + userStats.statBuffs.armor)
         userString = userString + " 🙌 " + (userStats.spirit + userStats.statBuffs.spirit)
         userString = userString + " 🗡 " + (userStats.attackDmg + userStats.statBuffs.attackDmg)
@@ -5358,7 +5358,8 @@ function processAura(event, buffToProcess, statToAffect, index, statToAffectArra
 
         var statToBuff = userToBuff[statToAffect] + userToBuff.statBuffs[statToAffect];
         // member doesnt have the unique aura given to them yet
-        if (event.membersInParty[memberToGiveAura].auras.indexOf(buffToProcess.abilityId) == -1){
+        if (event.membersInParty[memberToGiveAura].auras.indexOf(buffToProcess.abilityId) == -1
+            && event.membersInParty[memberToGiveAura].statuses.indexOf("dead") == -1){
             var userToGiveAura = event.membersInParty[memberToGiveAura]
             if (buffToProcess.multiplier){
                 userToGiveAura.statBuffs[statToAffect] = userToGiveAura.statBuffs[statToAffect] + (Math.floor((buffToProcess.multiplier * statToBuff) - statToBuff));
