@@ -5344,13 +5344,15 @@ function resetGlobalStatuses(event){
     }
 }
 
-function processAura(event, buffToProcess, statToAffect, currentStat, index, statToAffectArrayLength){
+function processAura(event, buffToProcess, statToAffect, index, statToAffectArrayLength){
     for ( var memberToGiveAura in event.membersInParty){
+        var userToBuff = event.membersInParty[memberToGiveAura];
+        var statToBuff = userToBuff[statToAffect] + userToBuff.statBuffs[statToAffect];
         // member doesnt have the unique aura given to them yet
         if (event.membersInParty[memberToGiveAura].auras.indexOf(buffToProcess.abilityId) == -1){
             var userToGiveAura = event.membersInParty[memberToGiveAura]
             if (buffToProcess.multiplier){
-                userToGiveAura.statBuffs[statToAffect] = userToGiveAura.statBuffs[statToAffect] + (Math.floor((buffToProcess.multiplier * currentStat) - currentStat));
+                userToGiveAura.statBuffs[statToAffect] = userToGiveAura.statBuffs[statToAffect] + (Math.floor((buffToProcess.multiplier * statToBuff) - statToBuff));
             }else if (buffToProcess.additive){
                 userToGiveAura.statBuffs[statToAffect] = userToGiveAura.statBuffs[statToAffect] + (Math.floor(buffToProcess.additive));
             }
@@ -5388,7 +5390,7 @@ function recalculateStatBuffs(event){
                     if (buffToProcess.aura){
                         var currentStat = userToProcess[statToAffect] + userToProcess.statBuffs[statToAffect];
                         if (currentStat){
-                            processAura(event, buffToProcess, statToAffect, currentStat, index, statToAffectArray.length)
+                            processAura(event, buffToProcess, statToAffect, index, statToAffectArray.length)
                         }
                     }else{
                         var currentStat = userToProcess[statToAffect] + userToProcess.statBuffs[statToAffect];
@@ -5404,7 +5406,7 @@ function recalculateStatBuffs(event){
                     if (buffToProcess.aura){
                         var currentStat = userToProcess[statToAffect] + userToProcess.statBuffs[statToAffect];
                         if (currentStat){
-                            processAura(event, buffToProcess, statToAffect, currentStat, index, statToAffectArray.length)
+                            processAura(event, buffToProcess, statToAffect, index, statToAffectArray.length)
                         }
                     }else{
                         var currentStat = userToProcess[statToAffect] + userToProcess.statBuffs[statToAffect];
