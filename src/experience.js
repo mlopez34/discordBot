@@ -102,7 +102,7 @@ function extraLevelRewards(message, discordUser, userLeveledUpTo){
     // = peridot amulet - armor 78
     // = garnet amulet - spirit 78
 
-    if (userLeveledUpTo == 30){
+    if (userLeveledUpTo >= 30 && userLeveledUpTo <= 34){
         // give them 1 of 5 of the amulets
 
         profileDB.getItemData(function(err, getItemResponse){
@@ -200,7 +200,7 @@ function extraLevelRewards(message, discordUser, userLeveledUpTo){
                 message.channel.send({embed});
             }
         })
-    }else if (userLeveledUpTo == 37){
+    }else if (userLeveledUpTo >= 37){
         // give them 1 of 5 of the amulets
 
         profileDB.getItemData(function(err, getItemResponse){

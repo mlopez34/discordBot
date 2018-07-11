@@ -3327,8 +3327,7 @@ function processPassiveEffects(event){
                         }
                     }
                     if (event.membersInParty[member].buffs[index].buff){
-                        // process the buff
-
+                        
                         if (event.membersInParty[member].buffs[index].expireOnTurn == event.turn){
                             event.membersInParty[member].buffs.splice(index, 1);
                             continue;
@@ -5345,32 +5344,40 @@ function resetGlobalStatuses(event){
     }
 }
 
-function processAura(event, buffToProcess, statToAffect, index, statToAffectArrayLength){
-    for ( var memberToGiveAura in event.membersInParty){
-        // just push a buff into the user, keep it invisible 
-        var userToBuff = event.membersInParty[memberToGiveAura];
 
-        // var abilityToProcess = {
-        //     user: idOfMember, //id
-        //     ability: abilityPicked, //abilityId
-        //     target: userToBuff.id //id
-        // }
-        // auraString = auraString  + processAbility(abilityToProcess, event); 
-
-        var statToBuff = userToBuff[statToAffect] + userToBuff.statBuffs[statToAffect];
-        // member doesnt have the unique aura given to them yet
-        if (event.membersInParty[memberToGiveAura].auras.indexOf(buffToProcess.abilityId) == -1
-            && event.membersInParty[memberToGiveAura].statuses.indexOf("dead") == -1){
-            var userToGiveAura = event.membersInParty[memberToGiveAura]
-            if (buffToProcess.multiplier){
-                userToGiveAura.statBuffs[statToAffect] = userToGiveAura.statBuffs[statToAffect] + (Math.floor((buffToProcess.multiplier * statToBuff) - statToBuff));
-            }else if (buffToProcess.additive){
-                userToGiveAura.statBuffs[statToAffect] = userToGiveAura.statBuffs[statToAffect] + (Math.floor(buffToProcess.additive));
+function processAuras(event){
+    var aurasInGroup = {}
+    // first check for all the auras that exist
+    for(var member in event.membersInParty){
+        // check their buffs
+        if (event.membersInParty[member].statuses.indexOf("dead") == -1){
+            for (var buff in event.membersInParty[member].buffs){
+                if (event.membersInParty[member].buffs[buff].aura){
+                    var aura = event.membersInParty[member].buffs[buff]
+                    aurasInGroup[aura.abilityId] = aura
+                }
             }
+        }
+    }
 
-            // only push the aura until all the stats have been buffed
-            if (index == statToAffectArrayLength - 1){
-                event.membersInParty[memberToGiveAura].auras.push(buffToProcess.abilityId)
+    // for each aura, do its effect on the group (these are unique since its a map)
+    for (var aura in aurasInGroup){
+        for ( var memberToGiveAura in event.membersInParty){
+            var userToBuff = event.membersInParty[memberToGiveAura];
+            var statsToAffect = aurasInGroup[aura].affects
+            // go through each stat and affect it
+            for (var stat in statsToAffect){
+                var statToAffect = statsToAffect[stat]
+                var statToBuff = userToBuff[statToAffect] + userToBuff.statBuffs[statToAffect];
+                // if user is not dead, buff the user with the stat
+                if (userToBuff.statuses.indexOf("dead") == -1){
+                    var buffToProcess = aurasInGroup[aura]
+                    if (buffToProcess.multiplier){
+                        userToBuff.statBuffs[statToAffect] = userToBuff.statBuffs[statToAffect] + (Math.floor((buffToProcess.multiplier * statToBuff) - statToBuff));
+                    }else if (buffToProcess.additive){
+                        userToBuff.statBuffs[statToAffect] = userToBuff.statBuffs[statToAffect] + (Math.floor(buffToProcess.additive));
+                    }
+                }
             }
         }
     }
@@ -5396,41 +5403,26 @@ function recalculateStatBuffs(event){
             for (var index in statToAffectArray){
                 var statToAffect = statToAffectArray[index]
                 // if it is an aura, do it to every user, else just do it to userToProcess
-                if (buffToProcess.multiplier){
+                if (buffToProcess.multiplier && !buffToProcess.aura){
                     // do a multiplier of the user's current stat
-                    if (buffToProcess.aura){
-                        var currentStat = userToProcess[statToAffect] + userToProcess.statBuffs[statToAffect];
-                        if (currentStat){
-                            processAura(event, buffToProcess, statToAffect, index, statToAffectArray.length)
-                        }
-                    }else{
-                        var currentStat = userToProcess[statToAffect] + userToProcess.statBuffs[statToAffect];
-                        if (currentStat){
-                            userToProcess.statBuffs[statToAffect] = userToProcess.statBuffs[statToAffect] + (Math.floor((buffToProcess.multiplier * currentStat) - currentStat));
-                        }
+                    var currentStat = userToProcess[statToAffect] + userToProcess.statBuffs[statToAffect];
+                    if (currentStat){
+                        userToProcess.statBuffs[statToAffect] = userToProcess.statBuffs[statToAffect] + (Math.floor((buffToProcess.multiplier * currentStat) - currentStat));
                     }
-                    
                 }
     
                 if (buffToProcess.additive){
                     // do an additive of the user's current stat
-                    if (buffToProcess.aura){
-                        var currentStat = userToProcess[statToAffect] + userToProcess.statBuffs[statToAffect];
-                        if (currentStat){
-                            processAura(event, buffToProcess, statToAffect, index, statToAffectArray.length)
-                        }
-                    }else{
-                        var currentStat = userToProcess[statToAffect] + userToProcess.statBuffs[statToAffect];
-                        if (currentStat){
-                            userToProcess.statBuffs[statToAffect] = userToProcess.statBuffs[statToAffect] + (Math.floor(buffToProcess.additive));
-                        }
+                    var currentStat = userToProcess[statToAffect] + userToProcess.statBuffs[statToAffect];
+                    if (currentStat){
+                        userToProcess.statBuffs[statToAffect] = userToProcess.statBuffs[statToAffect] + (Math.floor(buffToProcess.additive));
                     }
                 }
             }
             var globalStatToAffectArray = buffToProcess.affectsGlobal;
             for (var index in globalStatToAffectArray){
                 var globalStatToAffect = globalStatToAffectArray[index]
-                if (buffToProcess.multiplier){
+                if (buffToProcess.multiplier && !buffToProcess.aura){
                     // do a multiplier of the user's current stat
                     var currentGlobalStat = userToProcess.globalStatuses[globalStatToAffect];
                     
@@ -5588,6 +5580,11 @@ function recalculateStatBuffs(event){
             }
         }
     }
+
+    // during recalculate stat buffs
+    // check for the existence of a certain aura in the group, if the aura exists in at least one player
+    // go through each player and recalculate their stat
+    processAuras(event)
 }
 
 function getRandomLivingEnemy(event){

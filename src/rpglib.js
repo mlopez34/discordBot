@@ -609,6 +609,7 @@ module.exports = {
             abilityId: "resistanceaura",
             name: "Resistance Aura",
             buff: {
+                buff: true,
                 aura: true,
                 // spirit
                 abilityId: "resistanceaura",
@@ -623,6 +624,7 @@ module.exports = {
             abilityId: "divineaura",
             name: "Divine Aura",
             buff: {
+                buff: true,
                 aura: true,
                 abilityId: "divineaura",
                 // armor
@@ -637,6 +639,7 @@ module.exports = {
             abilityId: "fierceshout",
             name: "Fierce Shout",
             buff: {
+                buff: true,
                 aura: true,
                 affects: ["attackDmg"],
                 multiplier: 1.1,
@@ -651,10 +654,11 @@ module.exports = {
             name: "Rallying Roar",
             buff: {
                 // hp
+                buff: true,
                 aura: true,
                 abilityId: "rallyingroar",
                 affects: ["maxhp"],
-                multiplier: 1.1,
+                multiplier: 1.05,
                 name: "Rallying Roar",
                 emoji: "🎺"
             }
