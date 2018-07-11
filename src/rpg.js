@@ -1461,9 +1461,10 @@ function processRpgTurn(message, event){
             // event NOT OVER, continue with event
             event.enemyTurnAbilities = [];
             event.memberTurnAbilities = [];
-            event.turn = event.turn + 1;
             //////// permanent statuses for players and users reset here, they get recalculated before dots / hots next turn
             recalculateStatBuffs(event)
+
+            event.turn = event.turn + 1;
             try {
                 turnFinishedEmbedBuilder(message, event, turnString, passiveEffectsString, endOfTurnString);
                 // attempt to process the next turn if the event is in turn + 1

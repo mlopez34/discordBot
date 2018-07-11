@@ -4561,7 +4561,7 @@ module.exports.exploreTombCommand = function(message, args, channel){
     team.push(message.author);
 
     users.forEach(function(user){
-        if (team.length < 4 && discordUserId != user.id){
+        if (team.length < 5 && discordUserId != user.id){
             team.push(user);
         }
     })
@@ -4627,7 +4627,7 @@ module.exports.ritualCommand = function(message, args, channel){
     team.push(message.author);
 
     users.forEach(function(user){
-        if (team.length < 4 && discordUserId != user.id){
+        if (team.length < 5 && discordUserId != user.id){
             team.push(user);
         }
     })
@@ -4700,7 +4700,7 @@ module.exports.timeTravelCommand = function(message, args, channel){
     team.push(message.author);
 
     users.forEach(function(user){
-        if (team.length < 4 && discordUserId != user.id){
+        if (team.length < 5 && discordUserId != user.id){
             team.push(user);
         }
     })
