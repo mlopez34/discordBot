@@ -3593,9 +3593,9 @@ function calculateDamageDealt(event, caster, target, rpgAbility){
 
                 if (damageToReduce > 0.75){
                     damageToReduce = 0.75
-                }else{
-                    baseDamage = baseDamage * (1 - damageToReduce);
                 }
+                baseDamage = baseDamage * (1 - damageToReduce);
+                
                 // additional RNG
                 var rngDmgRoll = Math.floor(Math.random() * Math.floor(baseDamage * 0.07)) + 1;
                 baseDamage = baseDamage  + rngDmgRoll;
