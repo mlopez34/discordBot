@@ -610,7 +610,8 @@ module.exports.createUserStatistics = function(userId, columnName, statisticCoun
         poisonedtacoscount: 0,
         tacospickedup: 0,
         slotscount: 0,
-        soilcount: 0
+        soilcount: 0,
+        polishcount: 0
     }
     if (columnName){
         userStatistics[columnName] = statisticCount;

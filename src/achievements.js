@@ -126,7 +126,7 @@ module.exports.checkForAchievements = function(discordUserId, data, message, cal
                 // cant find the user's statistics create the user's statistics and check for achievements
                 profileDB.createUserStatistics(discordUserId, null, null, function(createError, statsSuccess){
                     if(createError){
-                        // console.log(createError);
+                        console.log(createError);
                     }
                     else{
                         exports.checkForAchievements(discordUserId, data, message, true, mentionedUser);

@@ -857,7 +857,7 @@ module.exports.welcomeCommand = function(message){
             else{
                 // user exists, check if user has already been welcomed
                 if ( !welcomeResponse.data.welcomed ){
-                    profileDB.updateUserTacosWelcome(mentionedId, 1, function(err, updateResponse) {
+                    profileDB.updateUserTacosWelcome(mentionedId, 50, function(err, updateResponse) {
                         if (err){
                             // console.log(err);
                         }
@@ -6032,6 +6032,7 @@ module.exports.denyTermsCommand = function(message, args){
 function agreeToTerms(message, discordUserId){
     NeedsToAgree[discordUserId] = {};
     NeedsToAgree[discordUserId].hasNotAgreed = true;
+    NeedsToAgree[discordUserId].hostUser = "Bender";
     message.channel.send("Hey " + message.author + " Bender will be storing and encrypting your discord id to bring you the best experience. Please type -agree to accept these terms, or -deny to decline them!")
 }
 
@@ -6140,7 +6141,7 @@ function calculateRaffleWinner(message){
 // 200 rep: reward: casserole, buy: artifact recipe 
 // 1000 rep: buy: potions, reward: empowered taco rune  5000 rep : achievement, artifact
 
-module.exports.createTableCommand = function(message, mainChannel){
+module.exports.createTableCommand = function(message){
 
     var discordUserId = message.author.id;
     var IDS_OF_UNCOMMONS_FOR_PARTY = [];
@@ -6223,7 +6224,7 @@ module.exports.createTableCommand = function(message, mainChannel){
                                 }
                             }
                         }
-                        createParty(message, discordUserId, uncommonsToUse, mainChannel);
+                        createParty(message, discordUserId, uncommonsToUse);
                     }
                     else{
                         message.channel.send("Missing ingredients for the Taco Party!!");
@@ -6234,7 +6235,7 @@ module.exports.createTableCommand = function(message, mainChannel){
     })
 }
 
-function createParty(message, discordUserId, uncommonsToUse, mainChannel){
+function createParty(message, discordUserId, uncommonsToUse){
     
     const embed = new Discord.RichEmbed()
     .setThumbnail("https://i.imgur.com/dI1PWNo.png")
@@ -6248,10 +6249,7 @@ function createParty(message, discordUserId, uncommonsToUse, mainChannel){
         else{
             // console.log(useRes);
             if (useRes == "success"){
-                if (!mainChannel){
-                    mainChannel = message.channel;
-                }
-                mainChannel.send({embed})
+                message.channel.send({embed})
                 .then(function (sentMessage) {
                     // match the sent message to the discord user that sent it
                     activeTables["table-"+sentMessage.id] = { id: discordUserId, username: message.author.username };
@@ -6338,7 +6336,7 @@ function createParty(message, discordUserId, uncommonsToUse, mainChannel){
                                         else{
                                             // console.log(res);
                                             experience.gainExperience(message, ownerOfTable, reactionCount, userData);
-                                            mainChannel.send("The party for `" + ownerOfTableUsername + "` was a great success! There were `" + attendees + "` guests that showed up")
+                                            message.channel.send("The party for `" + ownerOfTableUsername + "` was a great success! There were `" + attendees + "` guests that showed up")
                                             var achievements = getDataRes.data.achievements;
                                             var data = {}
                                             data.achievements = achievements;
