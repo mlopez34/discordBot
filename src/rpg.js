@@ -2449,7 +2449,7 @@ function effectsOnTurnEnd(event){
                                                 damageToDealToPlayer = dealDamageTo( event.membersInParty[targetToDealDmg] , damageToDeal, event)
                                                 //// CHECK if damage should be drained
                                                 if (event.enemies[enemy].endOfTurnEvents[index].drainDamage){
-                                                    damageDrained = damageDrained + Math.floor( damageDrained + (damageToDeal * event.enemies[enemy].endOfTurnEvents[index].drainDamage) )
+                                                    damageDrained = damageDrained + Math.floor( damageToDeal * event.enemies[enemy].endOfTurnEvents[index].drainDamage )
                                                     event.enemies[enemy].hp = event.enemies[enemy].hp + Math.floor( damageToDeal * event.enemies[enemy].endOfTurnEvents[index].drainDamage )
                                                     if (event.enemies[enemy].hp > event.enemies[enemy].maxhp){
                                                         event.enemies[enemy].hp = event.enemies[enemy].maxhp

@@ -187,13 +187,13 @@ client.on('message', function(message){
                     commands.raresCommand(message, args, "artifact");
                 }
                 else if (commandIs("standings", message)){
-                    commands.standingsCommand(message, client.users);
+                    commands.standingsCommand(message, message.channel.guild.members);
                 }
                 else if (commandIs("toplist", message)){
-                    commands.toplistCommand(message, client.users);
+                    commands.toplistCommand(message, message.channel.guild.members); // client.users FOR GLOBAL
                 }
                 else if (commandIs("toprpg", message)){
-                    commands.rpgTopListCommand(message, client.users);
+                    commands.rpgTopListCommand(message, message.channel.guild.members);
                 }
                 else if (commandIs("slots", message)){
                     if (args.length > 1){
@@ -592,13 +592,13 @@ client.on('message', function(message){
                     commands.raresCommand(message, args, "artifact");
                 }
                 else if (commandIs("standings", message)){
-                    commands.standingsCommand(message, client.users);
+                    commands.standingsCommand(message, message.guild.users);
                 }
                 else if (commandIs("toplist", message)){
-                    commands.toplistCommand(message, client.users);
+                    commands.toplistCommand(message, message.guild.users);
                 }
                 else if (commandIs("toprpg", message)){
-                    commands.rpgTopListCommand(message, client.users);
+                    commands.rpgTopListCommand(message, message.guild.users);
                 }
                 else if (commandIs("slots", message)){
                     if (args.length > 1){

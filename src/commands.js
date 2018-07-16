@@ -51,6 +51,7 @@ var RAFFLE_USER_SIZE = 7
 var ARTIFACT_RECIPE_COST = 35000;
 var FLASK_COST = 500;
 var ARTIFACT_RECIPE_ID = 69;
+var TRANSFORMIUM_ID = 155;
 var TACO_PARTY_TIME_TO_LIVE = 300000
 
 
@@ -81,7 +82,7 @@ var EXPERIENCE_GAINS = {
     useCommonItemFive: 5,
     buyStand: 5,
     buyStandPerStand: 2,
-    buyPickaxe: 4,
+    buyPickaxe: 4
 
 }
 
@@ -3195,7 +3196,8 @@ module.exports.toplistCommand = function(message, listOfUsers){
                         // user is not on the server currently - just skip them
                         continue;
                     }
-                    var toplistUsername = toplistUser.username;
+                    //var toplistUsername = toplistUser.username;  FOR GLOBAL
+                    var toplistUsername = toplistUser.user.username;
                     var toplistXP = user.experience;
                     var userLevel = user.level;
                     toplistMap[toplistCount] = {username: toplistUsername, experience: toplistXP, level: userLevel}
@@ -3246,7 +3248,7 @@ module.exports.rpgTopListCommand = function(message, listOfUsers){
                         // user is not on the server currently - just skip them
                         continue;
                     }
-                    var toplistUsername = toplistUser.username;
+                    var toplistUsername = toplistUser.user.username; // toplistUser.username FOR GLOBAL
                     var toplistChallenge = user.currentchallenge || 0;
                     var toplistRpg = user.rpgpoints;
                     toplistMap[toplistCount] = { username: toplistUsername, rpgPoints: toplistRpg, challengedefeated: toplistChallenge }
@@ -3296,7 +3298,7 @@ module.exports.standingsCommand = function(message, listOfUsers){
                         // user is not on the server currently - just skip them
                         continue;
                     }
-                    var topTenUsername = topTenUser.username;
+                    var topTenUsername = topTenUser.user.username; // topTenUser.username FOR GLOBAL
                     var topTenTacos = user.tacos;
                     topTenMap[topTenCount] = {username: topTenUsername, tacos: topTenTacos}
                     topTenCount++;
@@ -4277,6 +4279,9 @@ module.exports.combineCommand = function(message, args){
                                     else if (rarityOfItem == "rare+"){
                                         itemCount = 5
                                     }
+                                    else if (rarityOfItem == "rare++"){
+                                        itemCount = 5
+                                    }
                                     else if (rarityOfItem == "ancient+"){
                                         itemCount = 4
                                     }
@@ -4389,8 +4394,46 @@ module.exports.combineCommand = function(message, args){
                                         }
                                     }
                                     
-                                }
-                                else if (itemsInInventoryCountMap[idOfMyItem] && 
+                                }else if (rarityOfMyItem && rarityOfMyItem == "rare++"
+                                    && itemsInInventoryCountMap[idOfMyItem] 
+                                    && itemsInInventoryCountMap[idOfMyItem] >= itemCount){
+                                    // use transformium
+                                    var transId = TRANSFORMIUM_ID
+                                    var transAdded = false;
+                                    if (itemsInInventoryCountMap[transId] >= 1){
+                                        for (var item in inventoryResponse.data){
+                                            var ItemInQuestion = inventoryResponse.data[item]
+                                            if ( itemsMapById[ItemInQuestion.itemid] && itemsMapById[ItemInQuestion.itemid].id === transId && !transAdded){
+                                                itemsBeingedCombined.push(ItemInQuestion);
+                                                transAdded = true;
+                                            }
+                                        }
+                                        var itemToCreate = itemsMapById[combineToId];  // maybe create the item and keep it inactive?
+                                        var itemToCreateById = itemsMapById[combineToId].id;
+                                        var itemToCreateByName = itemsMapById[combineToId].itemname
+                                        // use the transformium
+                                        if (transAdded){
+                                            profileDB.addNewItemToUser(discordUserId, [itemToCreate], function(createErr, createRes){
+                                                if (createErr){
+                                                    // console.log(createErr);
+                                                }
+                                                else{
+                                                    // console.log(createRes);                                        
+                                                    profileDB.bulkUpdateItemStatus(itemsBeingedCombined, "used", function(combineErr, combineRes){
+                                                        if (combineErr){
+                                                            // console.log(combineErr);
+                                                        }else{
+                                                            // console.log(combineRes);
+                                                            combineEmbedBuilder(message, itemToCreateByName, itemToCreate, rarityOfItem);
+                                                        }
+                                                    })
+                                                }
+                                            })        
+                                        }
+                                    }
+                                    
+
+                                }else if (itemsInInventoryCountMap[idOfMyItem] && 
                                     itemsInInventoryCountMap[idOfMyItem] >= itemCount){
                                     // combine all the items into a next level item
                                     var itemToCreate = itemsMapById[combineToId];
@@ -6102,6 +6145,7 @@ function calculateRaffleWinner(message){
             }
         }
     }
+    //// TODO: after collecting the channels that were used for the raffle, send the message below to all of those channels
     message.channel.send(":ticket: Congratulations " + raffleWinnerUser + " You are the winner of the taco raffle! You win `" + (RAFFLE_ENTRY_COST * (activeRaffle.entriesId.length - 2)) + "` tacos :taco:");
     // update the user tacos for all entrants of the raffle
     profileDB.updateUserTacos(raffleWinner, (RAFFLE_ENTRY_COST * (activeRaffle.entriesId.length - 2)), function(updateErr, updateRes){

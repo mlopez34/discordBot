@@ -831,14 +831,14 @@ module.exports = {
             currentTurn: 0,
             abilityId: "rocketStrikeAreaWide",
             dmg: 50,
-            mdPercentage: 0.8,
+            mdPercentage: 0.85,
             type: "magical",
             areawide: true,
             areawidedmg: {
                 areawide: true,
                 name: "Rocket Strike",
                 dmg: 50,
-                mdPercentage: 0.8,
+                mdPercentage: 0.85,
                 type: "magical"
             }
         },
@@ -1157,7 +1157,7 @@ module.exports = {
                 ignoreUnique: true,
                 ignoreBandaid: true,
                 emoji: "☢️",
-                turnsToExpire: 7,
+                turnsToExpire: 8,
                 count: 0,
                 abilityId: "radioactive",
                 special: "after being healed 4 times you will explode for 1500 magic damage"
@@ -1187,7 +1187,7 @@ module.exports = {
                 dmgOnRemove: 150,
                 dmgOnRemoveAreaWide: false,
                 mdPercentageOnRemove: 1,
-                dmgOnExpire: 200
+                dmgOnExpire: 250
             }
         },
         dismantle: {
@@ -1215,7 +1215,7 @@ module.exports = {
                 dmgOnRemove: 150,
                 dmgOnRemoveAreaWide: false,
                 adPercentageOnRemove: 1,
-                dmgOnExpire: 200
+                dmgOnExpire: 250
             }
         },
         /*
@@ -1836,10 +1836,10 @@ module.exports = {
                 adPerPartyMember: 0,
                 mdPerPartyMember: 0,
                 hp: 3300,
-                attackDmg: 190,
+                attackDmg: 230,
                 magicDmg: 160,
-                armor: 700,
-                spirit: 700,
+                armor: 1300,
+                spirit: 1300,
                 difficulty: "summoned",
                 element: "normal"
             },
@@ -4515,8 +4515,8 @@ module.exports = {
                         mdPerPartyMember: 0,
                         attackDmg: 1100,
                         magicDmg: 1000,
-                        armor: 2650,
-                        spirit: 2650,
+                        armor: 2750,
+                        spirit: 2750,
                         difficulty: "boss",
                         element: "normal"
                     }
