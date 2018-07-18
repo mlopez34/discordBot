@@ -2087,41 +2087,50 @@ module.exports.buyPastaCommand = function(message, pasta){
 module.exports.helpCommand = function(message){
     var commandsList = "List of commands \n ____________ \n "
     var profile = config.commandString + "profile - display users profile \n "
-    var thank = config.commandString + "thank [user] - thank a user and they get 1 taco! \n "
+    var thank = config.commandString + "thank [user] - thank a user and they get 10 tacos! \n "
     var sorry = config.commandString + "sorry [user] - say sorry to a user and they get 10 tacos! \n "
-    var welcome = config.commandString + "welcome [user] - welcome a user and they get 20 tacoss! \n "
+    var welcome = config.commandString + "welcome [user] - welcome a user and they get 50 tacoss! \n "
     var cook = config.commandString + "cook - cook some tacos! \n "
     var give = config.commandString + "give [user] number - give the mentioned user some number of tacos! \n "
-    var shop = config.commandString + "shop - enter Benders shop! \n "
+    var shop = config.commandString + "shop OR -shop long - enter Benders shop! \n "
     var prepare = config.commandString + "prepare - prepare some tacos from your taco stands! \n "
     var throwTaco = config.commandString + "throw [user] - throw a taco at the mentioned user \n "
-    var scavenge = config.commandString + "scavenge - use your pickaxe \n "
+    var scavenge = config.commandString + "scavenge - use your pickaxe to scavenge! \n "
     var standings = config.commandString + "standings - show taco standings \n "
+    var ach = config.commandString + "ach - show your achievements completed \n "
     var itemHelp = config.commandString + "itemhelp - show item help \n "
     var useItem = config.commandString + "use [item name] [user](if applicable) - uses an item \n "
     var slots = config.commandString + "slots [number] - play slots and bet [number] of tacos "
     var raffle = config.commandString + "raffle - enter the raffle, costs 50 tacos, raffle ends when 7 players are in "
     //var commandsList = "```xl Uppercase lowercase 123 ```"
-    var commandsList = "```css\n" + commandsList + profile + thank + sorry + welcome + cook + give + shop + prepare + throwTaco + scavenge + standings + itemHelp + useItem + slots + raffle + "```";
+    var commandsList = "```css\n" + commandsList + profile + thank + sorry + welcome + cook + give + shop + prepare + throwTaco + scavenge + ach + standings + itemHelp + useItem + slots + raffle + "```";
     message.channel.send(commandsList);
 }
 
 module.exports.itemhelpCommand = function(message){
     var commandsList = "```css\nList of commands \n ____________ \n"
-    var puton =   " -puton [1-3] [first word of item] - you will wear the item!\n"
+    var inventory =   " -inventory, shows your commons or uncommons collected!\n"
+    var party =   " -party, create a 5 minute party with uncommons collected!\n"
+    var rares =   " -rares OR -rares long, shows your rares collected!\n"
+    var ancients =   " -ancients OR -ancients long, shows your ancients collected!\n"
+    var artifacts =   " -artifacts OR -artifacts long, shows your artifacts collected!\n"
+    var amulets =   " -amulets, shows your amulets collected!\n"
+    var rpghelp =   " -rpghelp, show rpg help\n"
+    var puton =   " -puton [1-3] [item code, ie running OR runningimproved] - you will wear the item!\n"
     var takeoff = " -takeoff [1-3] - you will take off the item!\n"
     var wearing = " -wearing - list of all the items you are wearing, and a summary\n"
     var combine = " -combine - combine the item into an improved or refined item - you need 5 for rares, and 4 for ancients\n"
-    var trade =   " -trade [user] [first word of item] [amount] or -trade [user] [first word of item] [amount] tacos [amount] to trade an item with a user\n"
+    var trade =   " -trade [user] [first word of item] [amount] or -trade [user] [item code, ie running OR runningimproved] [amount] tacos [amount] to trade an item with a user\n"
     var auction = " -auction [first word of item] create an auction for an item where users can bid \n"
     var bid =     " -bid [user] [amount] bid for the item the user is auctioning for the amount of tacos\n"
     var rules = " \nRules: You can only wear 3 items MAX at a time, you cannot wear an item of the same item slot as another item. \nItem bonuses take effect after the number of hours the command they affect. \nItems must be taken off before putting on another item on the same slot. \nThe tag [ACTIVE] means the item is now affecting your commands!```"
-    commandsList = commandsList + puton + takeoff + wearing + combine + trade + auction + bid + rules
+    commandsList = commandsList + inventory + party + rares + ancients + artifacts + amulets + rpghelp + puton + takeoff + wearing + combine + trade + auction + bid + rules
     message.channel.send(commandsList);
 }
 
 module.exports.rpghelpCommand = function(message){
     var commandsList = "```css\nList of commands \n ____________ \n"
+    var rpgchallenge = " -rpgchallenge [user] [user] [user] start an rpg challenge event with the mentioned users [ 2-4 mentions required (5 player intended)]\n"
     var rpg =   " -rpgstart [user] [user] [user] start an rpg event with the mentioned users [ 2-4 mentions required]\n"
     var cast = " -cast [ability] [target] - eg: -cast tacoheal [user] OR -cast attack 2 OR -cast iceshards\n"
     var rules = " abilities and stats come from the items you are wearing and level\n"
@@ -2129,7 +2138,7 @@ module.exports.rpghelpCommand = function(message){
     var buffsStatuses = " buffs = helpful abilities, statuses = harmful abilities \n"
     var death = " 💀 = dead, can no longer use abilities unless revived \n"
     var allMustUseAbilities = " all users must use one ability per event turn```"
-    commandsList = commandsList + rpg + cast + rules + stats + buffsStatuses + death + allMustUseAbilities 
+    commandsList = commandsList + rpg + rpgchallenge + cast + rules + stats + buffsStatuses + death + allMustUseAbilities 
     message.channel.send(commandsList);
 }
 
@@ -5352,7 +5361,7 @@ module.exports.putonCommand = function(message, args, retry){
             }
         })
     }else{
-        message.channel.send(message.author + " do -puton [1-4] [itemname] Slot 4 is only for artifact+ items or higher");
+        message.channel.send(message.author + " do -puton [1-4] [itemname] \n example: -puton 2 loincloth OR -puton 2 loinclothimproved \n Slot 4 is only for artifact+ items or higher");
     }
 }
 

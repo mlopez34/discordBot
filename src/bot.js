@@ -49,8 +49,7 @@ client.on('message', function(message){
     var mainChannel;
     //// console.log(message);
     var channelName;
-    if (message.channel.guild.id == "362998481176100864" 
-        || message.channel.guild.id == "167298338905915393"
+    if ( message.channel.guild.id == "167298338905915393"
         || message.channel.guild.id == "231378019292282880"){
             
         client.channels.forEach(function(channel){
