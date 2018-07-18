@@ -20,6 +20,7 @@ var TURN_ON_MSG = config.turnOn;
 
 var tacoTuesdayEnabled = false;
 var botEnabled = true;
+var guildsRegistered = {}
 
 client.on('ready', function(err) {
     if (err){
@@ -46,21 +47,40 @@ function commandIs(str, msg){
 }
 
 client.on('message', function(message){
+    // log the guild that this message came from into guildactivity table
     var mainChannel;
     //// console.log(message);
     var channelName;
-    if ( message.channel.guild.id == "167298338905915393"
-        || message.channel.guild.id == "231378019292282880"){
-            
-        client.channels.forEach(function(channel){
-            // // console.log(channel);
-            if (channel.type == "text" && BOT_CHANNELS.indexOf(channel.name) != -1){
-                channelName = channel;
-            }
-            if (channel.type == "text" && MAIN_CHANNELS.indexOf(channel.name) != -1){
-                mainChannel = channel;
+    if (!guildsRegistered[message.channel.guild.id]){
+        profileDB.getGuildData(message.channel.guild.id, function(gErr, gData){
+            if (gErr){
+                // create guild
+                var d = {
+                    guildId: message.channel.guild.id
+                }
+                profileDB.createGuildProfile(d, function(gE, gD){
+                    console.log("created guild in db")
+                    guildsRegistered[message.channel.guild.id] = true
+                })
+            }else{
+                guildsRegistered[message.channel.guild.id] = true
+                console.log("guild in db")
             }
         })
+    }
+    
+        
+    client.channels.forEach(function(channel){
+        // // console.log(channel);
+        if (channel.type == "text" && BOT_CHANNELS.indexOf(channel.name) != -1){
+            channelName = channel;
+        }
+        if (channel.type == "text" && MAIN_CHANNELS.indexOf(channel.name) != -1){
+            mainChannel = channel;
+        }
+    })
+    if ( message.channel.guild.id == "167298338905915393"
+        || message.channel.guild.id == "231378019292282880"){
     
         if (botEnabled){
             // console.log(message.author.id); // id of the user that created the message
@@ -466,7 +486,7 @@ client.on('message', function(message){
         
         channelName = message.channel.name;
         mainChannel = message.channel.name;
-    
+
         if (botEnabled){
             // console.log(message.author.id); // id of the user that created the message
             var args = message.content.split(/[ ]+/);

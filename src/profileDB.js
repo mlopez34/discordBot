@@ -41,6 +41,38 @@ module.exports.createUserProfile = function(data, cb) {
     });
 }
 
+module.exports.getGuildData = function(guildId, cb) {
+    var query = 'select * from ' + config.activityTable + ' where guildId = $1'
+    db.one(query, [guildId])
+    .then(function (data) {
+        //// console.log(data);
+        cb(null, {
+            status: 'success',
+            data: data,
+            message: 'Retrieved ONE guild'
+            });
+        })
+        .catch(function (err) {
+            // console.log(err);
+            cb(err);
+    });
+}
+
+module.exports.createGuildProfile = function(data, cb) {
+    var query = 'insert into '+ config.activityTable + '(guildId)' +
+        'values(${guildId})'
+    db.none(query, data)
+    .then(function () {
+    cb(null, {
+        status: 'success',
+        message: 'Inserted one guild'
+        });
+    })
+    .catch(function (err) {
+    cb(err);
+    });
+}
+
 module.exports.updateUserTacosThank = function(userId, tacos, cb) {
     var query = 'update ' + config.profileTable + ' set tacos=tacos+$1, lastthanktime=$3 where discordid=$2'
     var lastThank = new Date();
