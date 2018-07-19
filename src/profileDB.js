@@ -556,7 +556,7 @@ module.exports.getToplistUsers = function(cb) {
         });
     })
     .catch(function (err) {
-        // console.log(err);
+        console.log(err);
         cb(err);
     });
 }

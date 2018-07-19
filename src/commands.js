@@ -3186,7 +3186,7 @@ module.exports.toplistCommand = function(message, listOfUsers){
     profileDB.getToplistUsers(function(error, toplistResponse){
         if (error){
             // console.log(error);
-            agreeToTerms(message, discordUserId);
+            agreeToTerms(message, message.author.id);
         }
         else{
             //create embed
