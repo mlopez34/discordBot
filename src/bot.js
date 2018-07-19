@@ -209,7 +209,11 @@ client.on('message', function(message){
                     commands.standingsCommand(message, message.channel.guild.members);
                 }
                 else if (commandIs("toplist", message)){
-                    commands.toplistCommand(message, message.channel.guild.members); // client.users FOR GLOBAL
+                    if (message.channel.guild.members){
+                        commands.toplistCommand(message, message.channel.guild.members); // client.users FOR GLOBAL
+                    }else if (message.guild.members){
+                        commands.toplistCommand(message, message.guild.members); // client.users FOR GLOBAL
+                    }
                 }
                 else if (commandIs("toprpg", message)){
                     commands.rpgTopListCommand(message, message.channel.guild.members);
