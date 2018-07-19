@@ -210,8 +210,10 @@ client.on('message', function(message){
                 }
                 else if (commandIs("toplist", message)){
                     if (message.channel.guild.members){
+                        console.log("1")
                         commands.toplistCommand(message, message.channel.guild.members); // client.users FOR GLOBAL
                     }else if (message.guild.members){
+                        console.log("2")
                         commands.toplistCommand(message, message.guild.members); // client.users FOR GLOBAL
                     }
                 }
