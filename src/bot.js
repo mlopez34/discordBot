@@ -33,6 +33,39 @@ client.on('ready', function(err) {
 
 client.on("error", (e) => console.error(e));
 
+client.on("guildCreate", guild => {
+    let defaultChannel = "";
+    guild.channels.forEach((channel) => {
+    if(channel.type == "text" && defaultChannel == "") {
+        if(channel.permissionsFor(guild.me).has("SEND_MESSAGES")) {
+        defaultChannel = channel;
+        }
+    }
+    })
+    //defaultChannel will be the channel object that it first finds the bot has permissions for
+    defaultChannel.send(`Hello I am Bender type -help for more info!`, {
+        embed:{
+            title: ':robot: Prefix',
+            color: 0x2471a3, 
+            description: "The prefix for all my commands is -, e.g: -help OR -profile OR -cook",
+            fields:[
+                {
+                    name: ':taco: Warning',
+                    value: 'Most of my commands are highly interactive so I advice you only allow me to send messages in specific bot channels'
+                },
+                {
+                    name: ':exclamation: Warning',
+                    value: 'Most of my commands are highly interactive so I advice you only allow me to send messages in specific bot channels'
+                }
+            ],
+
+            footer: {
+                text: 'Bender created and developed by shakyrax'
+            }
+        }
+    })
+})
+
 function commandIs(str, msg){
     if ((str === "thank" || str === "sorry" || str === "welcome")){
         if (msg.content.toLowerCase().startsWith(config.commandString)){
