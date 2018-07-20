@@ -79,6 +79,11 @@ client.on('message', function(message){
             mainChannel = channel;
         }
     })
+    var data = {
+        guildId: message.channel.guild.id,
+        discordId: message.author.id,
+        username: message.author.username
+    }
     if ( message.channel.guild.id == "167298338905915393"
         || message.channel.guild.id == "231378019292282880"){
     
@@ -523,6 +528,8 @@ client.on('message', function(message){
                 if( commandIs("thank", message )){
                     try{
                         commands.thankCommand(message);
+                        data.command = "thank"
+                        profileDB.createUserActivity(data)
                     }
                     catch(error){
                         message.channel.send(error);
@@ -539,57 +546,93 @@ client.on('message', function(message){
                 */
                 else if( commandIs("sorry", message )){
                     commands.sorryCommand(message);
+                    data.command = "sorry"
+                    profileDB.createUserActivity(data)
                 }
                 else if( commandIs("help", message )){
                     commands.helpCommand(message);
+                    data.command = "help"
+                    profileDB.createUserActivity(data)
                 }
                 else if (commandIs("itemhelp", message )){
                     commands.itemhelpCommand(message);
+                    data.command = "itemhelp"
+                    profileDB.createUserActivity(data)
                 }
                 else if( commandIs("buystand", message )){
                     commands.buyStandCommand(message);
+                    data.command = "buystand"
+                    profileDB.createUserActivity(data)
                 }
                 else if( commandIs("prepare", message)){
                     commands.prepareCommand(message);
+                    data.command = "prepare"
+                    profileDB.createUserActivity(data)
                 }
                 else if( commandIs("welcome", message)){
                     commands.welcomeCommand(message);
+                    data.command = "welcome"
+                    profileDB.createUserActivity(data)
                 }
                 else if (commandIs("give", message)){
                     commands.giveCommand(message, args[2]);
+                    data.command = "give"
+                    profileDB.createUserActivity(data)
                 }
                 else if (commandIs("cook", message)){
                     commands.cookCommand(message);
+                    data.command = "cook"
+                    profileDB.createUserActivity(data)
                 }
                 else if (commandIs("profile", message)){
                     commands.profileCommand(message);
+                    data.command = "profile"
+                    profileDB.createUserActivity(data)
                 }
                 else if(commandIs("tacos", message)){
                     commands.tacosCommand(message);
+                    data.command = "tacos"
+                    profileDB.createUserActivity(data)
                 }
                 else if(commandIs("stands", message)){
                     commands.tacoStandsCommand(message);
+                    data.command = "stands"
+                    profileDB.createUserActivity(data)
                 }
                 else if(commandIs("throw", message)){
                     commands.throwCommand(message);
+                    data.command = "throw"
+                    profileDB.createUserActivity(data)
                 }
                 else if(commandIs("shop", message)){
                     commands.shopCommand(message, args);
+                    data.command = "shop"
+                    profileDB.createUserActivity(data)
                 }
                 else if(commandIs("repshop", message)){
                     commands.repShopCommand(message);
+                    data.command = "repshop"
+                    profileDB.createUserActivity(data)
                 }
                 else if(commandIs("buyrecipe", message)){
                     commands.buyRecipeCommand(message);
+                    data.command = "buyrecipe"
+                    profileDB.createUserActivity(data)
                 }
                 else if(commandIs("buyflask", message)){
                     commands.buyFlaskCommand(message);
+                    data.command = "buyflask"
+                    profileDB.createUserActivity(data)
                 }
                 else if(commandIs("createpotion", message)){
                     commands.createPotionCommand(message);
+                    data.command = "createpotion"
+                    profileDB.createUserActivity(data)
                 }
                 else if(commandIs("buypickaxe", message)){
                     commands.buyPickaxeCommand(message);
+                    data.command = "buypickaxe"
+                    profileDB.createUserActivity(data)
                 }
                 else if(commandIs("buypasta", message)){
                     var pasta = "";
@@ -600,24 +643,38 @@ client.on('message', function(message){
                     }
                     // console.log(pasta);
                     commands.buyPastaCommand(message, pasta);
+                    data.command = "buypasta"
+                    profileDB.createUserActivity(data)
                 }
                 else if (commandIs("scavenge", message)){
                     commands.scavangeCommand(message);
+                    data.command = "scavenge"
+                    profileDB.createUserActivity(data)
                 }
                 else if (commandIs("inventory", message)){
                     commands.inventoryCommand(message);
+                    data.command = "inventory"
+                    profileDB.createUserActivity(data)
                 }
                 else if (commandIs("rares", message)){
                     commands.raresCommand(message, args, "rare");
+                    data.command = "rares"
+                    profileDB.createUserActivity(data)
                 }
                 else if (commandIs("ancients", message)){
                     commands.raresCommand(message, args, "ancient");
+                    data.command = "ancients"
+                    profileDB.createUserActivity(data)
                 }
                 else if (commandIs("artifacts", message)){
                     commands.raresCommand(message, args, "artifact");
+                    data.command = "artifacts"
+                    profileDB.createUserActivity(data)
                 }
                 else if (commandIs("standings", message)){
                     commands.standingsCommand(message, message.channel.guild.members);
+                    data.command = "standings"
+                    profileDB.createUserActivity(data)
                 }
                 else if (commandIs("toplist", message)){
                     if (message.channel.guild.members){
@@ -627,76 +684,122 @@ client.on('message', function(message){
                         console.log("2")
                         commands.toplistCommand(message, message.guild.members); // client.users FOR GLOBAL
                     }
+                    data.command = "toplist"
+                    profileDB.createUserActivity(data)
                 }
                 else if (commandIs("toprpg", message)){
                     commands.rpgTopListCommand(message, message.channel.guild.members);
+                    data.command = "toprpg"
+                    profileDB.createUserActivity(data)
                 }
                 else if (commandIs("slots", message)){
                     if (args.length > 1){
                         var bet = args[1];
                         // console.log(args[1])
                         commands.slotsCommand(message, bet);
+                        data.command = "slots"
+                    profileDB.createUserActivity(data)
                     }
                 }
                 else if (commandIs("use", message)){
                     commands.useCommand(message, args);
+                    data.command = "use"
+                    profileDB.createUserActivity(data)
                 }
                 else if (commandIs("pickup", message)){
                     commands.pickupCommand(message);
+                    data.command = "pickup"
+                    profileDB.createUserActivity(data)
                 }
                 else if (commandIs("buypet", message)){
                     commands.buypetCommand(message, args);
+                    data.command = "buypet"
+                    profileDB.createUserActivity(data)
                 }
                 else if (commandIs("fetch", message)){
                     commands.fetchCommand(message);
+                    data.command = "fetch"
+                    profileDB.createUserActivity(data)
                 }
                 else if (commandIs("xp", message)){
                     commands.xpCommand(message);
+                    data.command = "xp"
+                    profileDB.createUserActivity(data)
                 }
                 else if (commandIs("ach", message)){
                     commands.achievementsCommand(message);
+                    data.command = "ach"
+                    profileDB.createUserActivity(data)
                 }
                 else if (commandIs("puton", message)){
                     commands.putonCommand(message, args);
+                    data.command = "puton"
+                    profileDB.createUserActivity(data)
                 }
                 else if (commandIs("wearing", message)){
                     commands.wearingCommand(message, args);
+                    data.command = "wearing"
+                    profileDB.createUserActivity(data)
                 }
                 else if (commandIs("amulets", message)){
                     commands.amuletsWearingCommand(message, args);
+                    data.command = "amulets"
+                    profileDB.createUserActivity(data)
                 }
                 else if (commandIs("takeoff", message)){
                     commands.takeoffCommand(message, args);
+                    data.command = "takeoff"
+                    profileDB.createUserActivity(data)
                 }
                 else if (commandIs("auction", message)){
                     commands.auctionCommand(message, args);
+                    data.command = "auction"
+                    profileDB.createUserActivity(data)
                 }
                 else if (commandIs("bid", message)){
                     commands.bidCommand(message, args);
+                    data.command = "bid"
+                    profileDB.createUserActivity(data)
                 }
                 else if (commandIs("trade", message)){
                     commands.tradeCommand(message, args);
+                    data.command = "trade"
+                    profileDB.createUserActivity(data)
                 }
                 else if (commandIs("accept", message)){
                     commands.acceptTradeCommand(message, args);
+                    data.command = "accept"
+                    profileDB.createUserActivity(data)
                 }
                 else if (commandIs("cancel", message)){
                     commands.cancelTradeCommand(message, args);
+                    data.command = "cancel"
+                    profileDB.createUserActivity(data)
                 }
                 else if (commandIs("combine", message)){
                     commands.combineCommand(message, args);
+                    data.command = "combine"
+                    profileDB.createUserActivity(data)
                 }
                 else if (commandIs("agree", message)){
                     commands.agreeTermsCommand(message, args);
+                    data.command = "agree"
+                    profileDB.createUserActivity(data)
                 }
                 else if (commandIs("deny", message)){
                     commands.denyTermsCommand(message, args);
+                    data.command = "deny"
+                    profileDB.createUserActivity(data)
                 }
                 else if (commandIs("raffle", message)){
                     commands.enterRaffleCommand(message);
+                    data.command = "raffle"
+                    profileDB.createUserActivity(data)
                 }
                 else if (commandIs("party", message)){
                     commands.createTableCommand(message, mainChannel);
+                    data.command = "party"
+                    profileDB.createUserActivity(data)
                 }
                 else if (commandIs("plant", message)){
                     message.channel.send(":herb:")
@@ -707,6 +810,8 @@ client.on('message', function(message){
                 else if (commandIs("rpgstart", message)){
                     if (message.channel.type == "text" && !message.author.bot){
                         commands.rpgBattleCommand(message);
+                        data.command = "rpgstart"
+                    profileDB.createUserActivity(data)
                     }else{
                         message.channel.send("use the rpg channel for this")
                     }
@@ -721,6 +826,8 @@ client.on('message', function(message){
                 else if (commandIs("rpgchallenge", message)){
                     if (message.channel.type == "text" && !message.author.bot){
                         commands.rpgChallengeCommand(message, args);
+                        data.command = "rpgchallenge"
+                    profileDB.createUserActivity(data)
                     }else{
                         message.channel.send("use the rpg channel for this")
                     }
@@ -728,6 +835,8 @@ client.on('message', function(message){
                 else if (commandIs("ready", message)){
                     if (message.channel.type == "text" && !message.author.bot){
                         commands.rpgReadyCommand(message);
+                        data.command = "ready"
+                    profileDB.createUserActivity(data)
                     }else{
                         message.channel.send("use the rpg channel for this")
                     }
@@ -735,6 +844,8 @@ client.on('message', function(message){
                 else if (commandIs("skip", message)){
                     if (message.channel.type == "text" && !message.author.bot){
                         commands.rpgSkipCommand(message);
+                        data.command = "skip"
+                    profileDB.createUserActivity(data)
                     }else{
                         message.channel.send("use the rpg channel for this")
                     }
@@ -742,6 +853,8 @@ client.on('message', function(message){
                 else if (commandIs("cast", message)){
                     if (message.channel.type == "text" && !message.author.bot){
                         commands.castCommand(message, args);
+                        data.command = "cast"
+                        profileDB.createUserActivity(data)
                     }else{
                         message.channel.send("use the rpg channel for this")
                     }
@@ -749,6 +862,8 @@ client.on('message', function(message){
                 else if (commandIs("rpghelp", message)){
                     if (message.channel.type == "text" && !message.author.bot){
                         commands.rpghelpCommand(message);
+                        data.command = "rpghelp"
+                        profileDB.createUserActivity(data)
                     }else{
                         message.channel.send("use the rpg channel for this")
                     }
@@ -757,18 +872,24 @@ client.on('message', function(message){
                 else if (commandIs("fruits", message)){
                     if (message.channel.type == "text" && !message.author.bot){
                         commands.miniGameCommand(message);
+                        data.command = "fruits"
+                        profileDB.createUserActivity(data)
                     }else{
                         message.channel.send("use the rpg channel for this")
                     }
                 }else if (commandIs("take", message)){
                     if (message.channel.type == "text"  && !message.author.bot){
                         commands.miniGamePlay(message, args);
+                        data.command = "take"
+                        profileDB.createUserActivity(data)
                     }else{
                         message.channel.send("use the rpg channel for this")
                     }
                 }
                 else if (commandIs("rpgstats", message)){
                     commands.rpgstatsCommand(message);
+                    data.command = "rpgstats"
+                    profileDB.createUserActivity(data)
                 }
                 if (commandIs("timetravel", message)){
                         
@@ -780,6 +901,8 @@ client.on('message', function(message){
                     })
     
                     commands.timeTravelCommand(message, args, channelName);
+                    data.command = "timetravel"
+                    profileDB.createUserActivity(data)
                 }
                 else if (commandIs("propose", message)){
                         
@@ -791,6 +914,8 @@ client.on('message', function(message){
                     })
     
                     commands.proposeCommand(message, channelName);
+                    data.command = "propose"
+                    profileDB.createUserActivity(data)
                 }
                 else if (commandIs("wedding", message)){
                         
@@ -802,6 +927,8 @@ client.on('message', function(message){
                     })
     
                     commands.weddingCommand(message, channelName);
+                    data.command = "wedding"
+                    profileDB.createUserActivity(data)
                 }
                 else if (commandIs("explore", message)){
                         
@@ -813,6 +940,8 @@ client.on('message', function(message){
                     })
     
                     commands.exploreTombCommand(message, channelName);
+                    data.command = "explore"
+                    profileDB.createUserActivity(data)
                 }
                 else if (commandIs("ritual", message)){
                         
@@ -824,6 +953,8 @@ client.on('message', function(message){
                     })
     
                     commands.ritualCommand(message, channelName);
+                    data.command = "ritual"
+                    profileDB.createUserActivity(data)
                 }
             }
         }

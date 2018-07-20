@@ -73,6 +73,21 @@ module.exports.createGuildProfile = function(data, cb) {
     });
 }
 
+module.exports.createUserActivity = function(data) {
+    var query = 'insert into '+ config.userActivityTable + '(guildId, discordid, username, command)' +
+        'values(${guildId}, ${discordId}, ${username}, ${command})'
+    db.none(query, data)
+    .then(function () {
+    console.log( {
+        status: 'success',
+        message: 'Inserted one command activity'
+        });
+    })
+    .catch(function (err) {
+        console.log(err);
+    });
+}
+
 module.exports.updateUserTacosThank = function(userId, tacos, cb) {
     var query = 'update ' + config.profileTable + ' set tacos=tacos+$1, lastthanktime=$3 where discordid=$2'
     var lastThank = new Date();
