@@ -83,11 +83,11 @@ function commandIs(str, msg){
 
 client.on('message', function(message){
     // log the guild that this message came from into guildactivity table
-    var mainChannel;
+    var mainChannel; //
     //// console.log(message);
     var channelName;
     try{
-        if (!guildsRegistered[message.channel.guild.id]){
+        if (message.channel && message.channel.guild && message.channel.guild.id && !guildsRegistered[message.channel.guild.id]){
             profileDB.getGuildData(message.channel.guild.id, function(gErr, gData){
                 if (gErr){
                     // create guild
