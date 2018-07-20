@@ -86,23 +86,28 @@ client.on('message', function(message){
     var mainChannel;
     //// console.log(message);
     var channelName;
-    if (!guildsRegistered[message.channel.guild.id]){
-        profileDB.getGuildData(message.channel.guild.id, function(gErr, gData){
-            if (gErr){
-                // create guild
-                var d = {
-                    guildId: message.channel.guild.id
-                }
-                profileDB.createGuildProfile(d, function(gE, gD){
-                    console.log("created guild in db")
+    try{
+        if (!guildsRegistered[message.channel.guild.id]){
+            profileDB.getGuildData(message.channel.guild.id, function(gErr, gData){
+                if (gErr){
+                    // create guild
+                    var d = {
+                        guildId: message.channel.guild.id
+                    }
+                    profileDB.createGuildProfile(d, function(gE, gD){
+                        console.log("created guild in db")
+                        guildsRegistered[message.channel.guild.id] = true
+                    })
+                }else{
                     guildsRegistered[message.channel.guild.id] = true
-                })
-            }else{
-                guildsRegistered[message.channel.guild.id] = true
-                console.log("guild in db")
-            }
-        })
+                    console.log("guild in db")
+                }
+            })
+        }
+    }catch(ex){
+        console.log(ex)
     }
+    
     
         
     client.channels.forEach(function(channel){
