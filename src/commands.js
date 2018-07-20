@@ -2130,7 +2130,7 @@ module.exports.itemhelpCommand = function(message){
 
 module.exports.rpghelpCommand = function(message){
     var commandsList = "```css\nList of commands \n ____________ \n"
-    var rpgchallenge = " -rpgchallenge [user] [user] [user] start an rpg challenge event with the mentioned users [ 2-4 mentions required (5 player intended)]\n"
+    var rpgchallenge = " -rpgchallenge [1-10] [user] [user] [user] start an rpg challenge event with the mentioned users [ 2-4 mentions required (5 player intended)] example: -rpgchallenge 1 [user] [user]\n"
     var rpg =   " -rpgstart [user] [user] [user] start an rpg event with the mentioned users [ 2-4 mentions required]\n"
     var cast = " -cast [ability] [target] - eg: -cast tacoheal [user] OR -cast attack 2 OR -cast iceshards\n"
     var rules = " abilities and stats come from the items you are wearing and level\n"
