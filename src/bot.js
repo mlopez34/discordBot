@@ -43,27 +43,29 @@ client.on("guildCreate", guild => {
     }
     })
     //defaultChannel will be the channel object that it first finds the bot has permissions for
-    defaultChannel.send(`Hello I am Bender type -help for more info!`, {
-        embed:{
-            title: ':robot: Prefix',
-            color: 0x2471a3, 
-            description: "The prefix for all my commands is -, e.g: -help OR -profile OR -cook",
-            fields:[
-                {
-                    name: ':taco: Currency',
-                    value: 'Tacos are my main form of currency'
-                },
-                {
-                    name: ':exclamation: Warning',
-                    value: 'Most of my commands are highly interactive so I advise you only allow me to send messages in specific bot channels'
+    if (defaultChannel){
+        defaultChannel.send(`Hello I am Bender type -help for more info!`, {
+            embed:{
+                title: ':robot: Prefix',
+                color: 0x2471a3, 
+                description: "The prefix for all my commands is -, e.g: -help OR -profile OR -cook",
+                fields:[
+                    {
+                        name: ':taco: Currency',
+                        value: 'Tacos are my main form of currency'
+                    },
+                    {
+                        name: ':exclamation: Warning',
+                        value: 'Most of my commands are highly interactive so I advise you only allow me to send messages in specific bot channels'
+                    }
+                ],
+    
+                footer: {
+                    text: 'Bender created and developed by shakyrax'
                 }
-            ],
-
-            footer: {
-                text: 'Bender created and developed by shakyrax'
             }
-        }
-    })
+        })
+    }
 })
 
 function commandIs(str, msg){
