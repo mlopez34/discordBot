@@ -50,8 +50,8 @@ client.on("guildCreate", guild => {
             description: "The prefix for all my commands is -, e.g: -help OR -profile OR -cook",
             fields:[
                 {
-                    name: ':taco: Warning',
-                    value: 'Most of my commands are highly interactive so I advice you only allow me to send messages in specific bot channels'
+                    name: ':taco: Currency',
+                    value: 'Tacos are my main form of currency'
                 },
                 {
                     name: ':exclamation: Warning',
