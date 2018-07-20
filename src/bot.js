@@ -55,7 +55,7 @@ client.on("guildCreate", guild => {
                 },
                 {
                     name: ':exclamation: Warning',
-                    value: 'Most of my commands are highly interactive so I advice you only allow me to send messages in specific bot channels'
+                    value: 'Most of my commands are highly interactive so I advise you only allow me to send messages in specific bot channels'
                 }
             ],
 
