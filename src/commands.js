@@ -2097,10 +2097,11 @@ module.exports.helpCommand = function(message){
     var ach = config.commandString + "ach - show your achievements completed \n "
     var itemHelp = config.commandString + "itemhelp - show item help \n "
     var useItem = config.commandString + "use [item name] [user](if applicable) - uses an item \n "
-    var slots = config.commandString + "slots [number] - play slots and bet [number] of tacos "
-    var raffle = config.commandString + "raffle - enter the raffle, costs 50 tacos, raffle ends when 7 players are in "
+    var slots = config.commandString + "slots [number] - play slots and bet [number] of tacos \n"
+    var fruits = config.commandString + "fruits [user] [user] [user].. up to 10 users to play a game of fruits. -take 1 OR -take 2 last player alive wins \n"
+    var raffle = config.commandString + "raffle - enter the raffle, costs 50 tacos, raffle ends when 7 players are in \n"
     //var commandsList = "```xl Uppercase lowercase 123 ```"
-    var commandsList = "```css\n" + commandsList + profile + thank + sorry + welcome + cook + give + shop + prepare + throwTaco + scavenge + ach + standings + itemHelp + useItem + slots + raffle + "```";
+    var commandsList = "```css\n" + commandsList + profile + thank + sorry + fruits + welcome + cook + give + shop + prepare + throwTaco + scavenge + ach + standings + itemHelp + useItem + slots + raffle + "```";
     message.channel.send(commandsList);
 }
 
@@ -2971,7 +2972,7 @@ module.exports.miniGameCommand = function(message) {
             }
             
         }
-        if (listOfPlayers.length > 3 && validGroup){
+        if (listOfPlayers.length >= 2 && validGroup){
             var currentGame = new miniboard(listOfPlayers);
             
             for (var user in team){
