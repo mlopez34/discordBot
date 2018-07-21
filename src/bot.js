@@ -119,13 +119,20 @@ client.on('message', function(message){
             mainChannel = channel;
         }
     })
+    var guildId;
+    if (message.channel && message.channel.guild && message.channel.guild.id){
+        guildId = message.channel.guild.id
+    }else {
+        guildId = 1234567890
+    }
     var data = {
-        guildId: message.channel.guild.id,
+        guildId: guildId,
         discordId: message.author.id,
         username: message.author.username
     }
-    if ( message.channel.guild.id == "167298338905915393"
-        || message.channel.guild.id == "231378019292282880"){
+    if (message.channel && message.channel.guild && 
+        (message.channel.guild.id == "167298338905915393"
+        || message.channel.guild.id == "231378019292282880")){
     
         if (botEnabled){
             // console.log(message.author.id); // id of the user that created the message
