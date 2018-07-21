@@ -74,8 +74,8 @@ module.exports.createGuildProfile = function(data, cb) {
 }
 
 module.exports.createUserActivity = function(data) {
-    var query = 'insert into '+ config.userActivityTable + '(guildId, discordid, username, command)' +
-        'values(${guildId}, ${discordId}, ${username}, ${command})'
+    var query = 'insert into '+ config.userActivityTable + '(guildId, discordid, username, command, message)' +
+        'values(${guildId}, ${discordId}, ${username}, ${command}, ${message})'
     db.none(query, data)
     .then(function () {
     console.log( {
@@ -543,7 +543,7 @@ module.exports.prepareTacos = function(userId, tacosToPrepare, cb){
 }
 
 module.exports.getTopTenTacoUsers = function(cb) {
-  var query = 'select * from ' + config.profileTable + ' order by tacos DESC LIMIT 50'
+  var query = 'select * from ' + config.profileTable + ' order by tacos DESC LIMIT 1000'
   db.query(query)
     .then(function (data) {
       //// console.log(data);
@@ -560,7 +560,7 @@ module.exports.getTopTenTacoUsers = function(cb) {
 }
 
 module.exports.getToplistUsers = function(cb) {
-    var query = 'select * from ' + config.profileTable + ' where experience is not null order by experience DESC LIMIT 50'
+    var query = 'select * from ' + config.profileTable + ' where experience is not null order by experience DESC LIMIT 1000'
     db.query(query)
     .then(function (data) {
     //// console.log(data);
@@ -577,7 +577,7 @@ module.exports.getToplistUsers = function(cb) {
 }
 
 module.exports.getRpgTopList = function(cb) {
-var query = 'select *  from ' + config.profileTable + ' where rpgpoints is not null ORDER BY currentchallenge DESC NULLS LAST, rpgpoints DESC NULLS LAST LIMIT 100'
+var query = 'select *  from ' + config.profileTable + ' where rpgpoints is not null ORDER BY currentchallenge DESC NULLS LAST, rpgpoints DESC NULLS LAST LIMIT 1000'
 db.query(query)
     .then(function (data) {
     //// console.log(data);

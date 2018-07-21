@@ -128,7 +128,8 @@ client.on('message', function(message){
     var data = {
         guildId: guildId,
         discordId: message.author.id,
-        username: message.author.username
+        username: message.author.username,
+        message: message.content
     }
     if (message.channel && message.channel.guild && 
         (message.channel.guild.id == "167298338905915393"

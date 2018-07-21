@@ -25,7 +25,7 @@ var moment = require("moment");
 
 var BASE_TACO_COST = 500;
 var BASE_TACO_PREPARE = 100;
-var PICKAXE_COST = 350;
+var PICKAXE_COST = 250;
 var IMPROVED_PICKAXE_COST = 10000;
 var MASTER_PICKAXE_COST = 750000;
 var ETHEREAL_PICKAXE_COST = 12500000
@@ -953,7 +953,7 @@ module.exports.giveCommand = function(message, giveTacoAmount){
                                 lastcooktime: threedaysAgo,
                                 lastsorrytime: threedaysAgo,
                                 lastscavangetime: threedaysAgo,
-                                tacostands: 0,
+                                tacostands: 1,
                                 welcomed: false,
                                 lastpreparetime: threedaysAgo,
                                 pickaxe: "none",
@@ -2082,27 +2082,48 @@ module.exports.buyPastaCommand = function(message, pasta){
 // TODO: mission logic
 
 module.exports.helpCommand = function(message){
-    var commandsList = "List of commands \n ____________ \n "
-    var profile = config.commandString + "profile - display users profile \n "
-    var thank = config.commandString + "thank [user] - thank a user and they get 10 tacos! \n "
-    var sorry = config.commandString + "sorry [user] - say sorry to a user and they get 10 tacos! \n "
-    var welcome = config.commandString + "welcome [user] - welcome a user and they get 50 tacoss! \n "
-    var cook = config.commandString + "cook - cook some tacos! \n "
-    var give = config.commandString + "give [user] number - give the mentioned user some number of tacos! \n "
-    var shop = config.commandString + "shop OR -shop long - enter Benders shop! \n "
-    var prepare = config.commandString + "prepare - prepare some tacos from your taco stands! \n "
-    var throwTaco = config.commandString + "throw [user] - throw a taco at the mentioned user \n "
-    var scavenge = config.commandString + "scavenge - use your pickaxe to scavenge! \n "
-    var standings = config.commandString + "standings - show taco standings \n "
-    var ach = config.commandString + "ach - show your achievements completed \n "
-    var itemHelp = config.commandString + "itemhelp - show item help  \n"
-    var useItem = config.commandString + "use [item name] [user](if applicable) - uses an item (common or uncommon) do -inventory \n"
-    var slots = config.commandString + "slots [number] - play slots and bet [number] of tacos \n"
-    var fruits = config.commandString + "fruits [user] [user] [user].. up to 10 users to play a game of fruits. -take 1 OR -take 2 last player alive wins \n"
-    var raffle = config.commandString + "raffle - enter the raffle, costs 50 tacos, raffle ends when 7 players are in \n"
-    //var commandsList = "```xl Uppercase lowercase 123 ```"
-    var commandsList = "```css\n" + commandsList + profile + thank + sorry + fruits + welcome + cook + give + shop + prepare + throwTaco + scavenge + ach + standings + itemHelp + useItem + slots + raffle + "```";
-    message.channel.send(commandsList);
+    // var commandsList = "List of commands \n ____________ \n "
+    // var profile = config.commandString + "profile - display users profile \n "
+    // var thank = config.commandString + "thank [user] - thank a user and they get 10 tacos! \n "
+    // var sorry = config.commandString + "sorry [user] - say sorry to a user and they get 10 tacos! \n "
+    // var welcome = config.commandString + "welcome [user] - welcome a user and they get 50 tacoss! \n "
+    // var cook = config.commandString + "cook - cook some tacos! \n "
+    // var give = config.commandString + "give [user] number - give the mentioned user some number of tacos! \n "
+    // var shop = config.commandString + "shop OR -shop long - enter Benders shop! \n "
+    // var prepare = config.commandString + "prepare - prepare some tacos from your taco stands! \n "
+    // var throwTaco = config.commandString + "throw [user] - throw a taco at the mentioned user \n "
+    // var scavenge = config.commandString + "scavenge - use your pickaxe to scavenge! \n "
+    // var standings = config.commandString + "standings - show taco standings \n "
+    // var ach = config.commandString + "ach - show your achievements completed \n "
+    // var itemHelp = config.commandString + "itemhelp - show item help  \n"
+    // var useItem = config.commandString + "use [item name] [user](if applicable) - uses an item (common or uncommon) do -inventory \n"
+    // var slots = config.commandString + "slots [number] - play slots and bet [number] of tacos \n"
+    // var fruits = config.commandString + "fruits [user] [user] [user].. up to 10 users to play a game of fruits. -take 1 OR -take 2 last player alive wins \n"
+    // var raffle = config.commandString + "raffle - enter the raffle, costs 50 tacos, raffle ends when 7 players are in \n"
+    // //var commandsList = "```xl Uppercase lowercase 123 ```"
+    // var commandsList = "```css\n" + commandsList + profile + thank + sorry + fruits + welcome + cook + give + shop + prepare + throwTaco + scavenge + ach + standings + itemHelp + useItem + slots + raffle + "```";
+    // message.channel.send(commandsList);
+    const embed = {
+        "description": "Don't know where to start? No idea what to do?\nCheck out our [Website](http://benderdiscord.com/) and join our [Support Server](https://discord.gg/sHdKrHW)!",
+        "color": 11795163,
+        "author": {
+          "name": "Bender Help",
+          "url": "http://benderdiscord.com/",
+          "icon_url": "https://cdn.discordapp.com/avatars/320703328730349578/af68d11f9ecf74bd3f9bf99cebcfe107.jpg"
+        },
+        "fields": [
+          {
+            "name": "Command List",
+            "value": "`-profile [user]        >` Display someone's profile!\n`-ach                   >` Display your achievements!\n`-standings             >` Display your local leaderboard!\n\n`-welcome [user]        >` Welcome a user and they get **50** tacos!\n`-thank [user]          >` Thank a user and they get **10** tacos!\n`-sorry [user]          >` Say sorry to a user and they get **10** tacos!\n\n`-shop (long)           >` Display the (detailed) shop!\n`-repshop               >` Display the Reputation shop!\n\n`-scavenge              >` Scavenge items using your pickaxe!\n`-prepare               >` Prepare tacos using your stands!\n`-cook                  >` Cook some tacos!\n\n`-give [user] [number]  >` Give a user a certain amount of your tacos!\n`-throw [user]          >` Throw **10** tacos at a user!\n`-pickup                >` Pick up tacos off the ground!\n\n`-slots [number]        >` Play slots and lose or win tacos!\n`-raffle                >` Enter the raffle, joining costs for **50** tacos!\n`-fruits [max 9 users]  >` Play fruits!"
+          },
+          {
+            "name": "Other Help Commands",
+            "value": "`-itemhelp              >` Display all commands related to items!\n`-rpghelp               >` Display all commands related to RPGs!",
+            "inline": true
+          }
+        ]
+      };
+      message.channel.send({ embed });      
 }
 
 module.exports.itemhelpCommand = function(message){
@@ -3343,7 +3364,7 @@ function initialUserProfile(discordUserId){
         lastcooktime: threedaysAgo,
         lastsorrytime: threedaysAgo,
         lastscavangetime: threedaysAgo,
-        tacostands: 0,
+        tacostands: 1,
         welcomed: false,
         lastpreparetime: threedaysAgo,
         pickaxe: "none",
