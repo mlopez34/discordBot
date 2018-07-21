@@ -800,7 +800,7 @@ module.exports.prepareCommand = function (message){
                             })
                         }
                         else{
-                            message.channel.send(message.author + " You do not have any stands to prepare tacos with!");
+                            message.channel.send(message.author + " You do not have any stands to prepare tacos with! buy some from the shop. Do -shop to see what you can buy");
                         }
                     }
                     else{
@@ -2095,8 +2095,8 @@ module.exports.helpCommand = function(message){
     var scavenge = config.commandString + "scavenge - use your pickaxe to scavenge! \n "
     var standings = config.commandString + "standings - show taco standings \n "
     var ach = config.commandString + "ach - show your achievements completed \n "
-    var itemHelp = config.commandString + "itemhelp - show item help \n "
-    var useItem = config.commandString + "use [item name] [user](if applicable) - uses an item \n "
+    var itemHelp = config.commandString + "itemhelp - show item help  \n"
+    var useItem = config.commandString + "use [item name] [user](if applicable) - uses an item (common or uncommon) do -inventory \n"
     var slots = config.commandString + "slots [number] - play slots and bet [number] of tacos \n"
     var fruits = config.commandString + "fruits [user] [user] [user].. up to 10 users to play a game of fruits. -take 1 OR -take 2 last player alive wins \n"
     var raffle = config.commandString + "raffle - enter the raffle, costs 50 tacos, raffle ends when 7 players are in \n"
@@ -2113,7 +2113,7 @@ module.exports.itemhelpCommand = function(message){
     var ancients =   " -ancients OR -ancients long, shows your ancients collected!\n"
     var artifacts =   " -artifacts OR -artifacts long, shows your artifacts collected!\n"
     var amulets =   " -amulets, shows your amulets collected!\n"
-    var rpghelp =   " -rpghelp, show rpg help\n"
+    var rpghelp =   " **** -rpghelp, show rpg help ****\n"
     var puton =   " -puton [1-3] [item code, ie running OR runningimproved] - you will wear the item!\n"
     var takeoff = " -takeoff [1-3] - you will take off the item!\n"
     var wearing = " -wearing - list of all the items you are wearing, and a summary\n"
@@ -2721,7 +2721,7 @@ module.exports.scavangeCommand = function (message){
             
         }
         else{
-            message.channel.send(message.author + " You need a pickaxe!");
+            message.channel.send(message.author + " You need a pickaxe! buy one from the shop, do `-shop` OR `-shop long` to see what you can buy");
         }
     })
 }
