@@ -849,7 +849,7 @@ module.exports.welcomeCommand = function(message){
         profileDB.getUserProfileData( mentionedId, function(err, welcomeResponse) {
             if(err){
                 // user doesnt exist, create their profile first
-                if(err.code === 0 && !NeedsToAgree[mentionedId] ){
+                if(err.code === 0 && ( !NeedsToAgree[mentionedId] && !NeedsToAgree[mentionedId].hostUser == "Bender") ){
                     welcomeAgreeToTerms(message, mentionedId, mentionedUser, message.author);
                 }
                 else{
