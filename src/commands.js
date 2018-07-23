@@ -1814,7 +1814,7 @@ module.exports.createPotionCommand = function(message){
         
                         for (var item in allItems){
                             
-                            if(allItems[item].itemraritycategory == "uncommon+"){
+                            if(allItems[item].itemraritycategory == "uncommon+" && allItems[item].amuletsource == "createpotion"){
                                 potionItems.push(allItems[item]);
                             }
                         }
