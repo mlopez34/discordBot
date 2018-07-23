@@ -31,10 +31,19 @@ module.exports.createUserProfile = function(data, cb) {
       'values(${discordId}, ${tacos}, ${birthdate}, ${lastthanktime},  ${lastsorrytime}, ${lastcooktime}, ${lastscavangetime}, ${tacostands}, ${welcomed}, ${lastpreparetime}, ${pickaxe}, ${map}, ${phone})'
   db.none(query, data)
     .then(function () {
-      cb(null, {
-          status: 'success',
-          message: 'Inserted one user'
-        });
+        var d = {
+            discordId : data.discordId,
+            slot1replacing: false,
+            slot2replacing: false,
+            slot3replacing: false,
+            slot4replacing: false
+        }
+        exports.createUserWearInfo(d, function(e, r){
+            cb(null, {
+                status: 'success',
+                message: 'Inserted one user'
+            });
+        })
     })
     .catch(function (err) {
       cb(err);

@@ -191,6 +191,11 @@ client.on('message', function(message){
                 else if( commandIs("buystand", message )){
                     commands.buyStandCommand(message);
                 }
+                else if( commandIs("buyitem", message )){
+                    commands.buyShopItem(message, args);
+                    data.command = "buyitem"
+                    profileDB.createUserActivity(data)
+                }
                 else if( commandIs("prepare", message)){
                     commands.prepareCommand(message);
                 }
@@ -610,6 +615,11 @@ client.on('message', function(message){
                 else if( commandIs("buystand", message )){
                     commands.buyStandCommand(message);
                     data.command = "buystand"
+                    profileDB.createUserActivity(data)
+                }
+                else if( commandIs("buyitem", message )){
+                    commands.buyShopItem(message, args);
+                    data.command = "buyitem"
                     profileDB.createUserActivity(data)
                 }
                 else if( commandIs("prepare", message)){

@@ -53,6 +53,7 @@ var FLASK_COST = 500;
 var ARTIFACT_RECIPE_ID = 69;
 var TRANSFORMIUM_ID = 155;
 var TACO_PARTY_TIME_TO_LIVE = 300000
+var SHOP_ITEM_COST = 125
 
 
 var activeAuctions = {};
@@ -1655,6 +1656,12 @@ function shopBuilder(message, shopData, long){
             embed.addField('Ethereal Pickaxe', pickaxeCost, true)
         }
         embed.addField('Pasta', PASTA_COST + " :taco:", true)
+        embed.addField('Knife',  SHOP_ITEM_COST + " :taco:", true)
+        embed.addField('Shorts', SHOP_ITEM_COST + " :taco:", true)
+        embed.addField('T-Shirt', SHOP_ITEM_COST + " :taco:", true)
+        embed.addField('Skirt',  SHOP_ITEM_COST + " :taco:", true)
+        embed.addField('Belt', SHOP_ITEM_COST + " :taco:", true)
+        embed.addField('Socks', SHOP_ITEM_COST + " :taco:", true)
         
         // allow for pet to be purchased
         if (shopData.repstatus && (REPUTATIONS[shopData.repstatus.toLowerCase()]) ){
@@ -1665,6 +1672,7 @@ function shopBuilder(message, shopData, long){
             }
         }
         embed.addField('Your current tacos', shopData.userTacos + " :taco:", false)   
+        embed.addField('Descriptions', "-shop long to see descriptions", false)   
         message.channel.send({embed});        
     }
     else {
@@ -1732,7 +1740,10 @@ function shopBuilder(message, shopData, long){
         .addField('Description', pastaDescription, true)
         .addField('Cost', PASTA_COST + " :taco:", true)
         .addField('Command', config.commandString + "buyPasta", true)
-        
+        embed.addBlankField(true)
+        embed.addField('Wearable Items', "Knife - " + SHOP_ITEM_COST + " :taco: gives chance at additional tacos when thanking  \nShorts - " + SHOP_ITEM_COST + " :taco: gives chance at additional tacos when sorrying \nT-shirt - " + SHOP_ITEM_COST + " :taco: gives chance at additional tacos when cooking \nAll above items also provide rpg stats \nKnife/Socks specializes in physical damage and abilities. \nShorts/Skirt specialize in magical damage and abilities \nT-shirt/Belt specializes in resistance abilities", true)
+        .addField('Command', config.commandString + "buyitem [itemname] \n**example**: -buyitem knife", true)
+
         // allow for pet to be purchased
         if (shopData.repstatus && (REPUTATIONS[shopData.repstatus.toLowerCase()]) ){
             var userRepLevel = REPUTATIONS[shopData.repstatus.toLowerCase()].level;
@@ -1839,6 +1850,64 @@ module.exports.createPotionCommand = function(message){
                 })
             }else{
                 message.channel.send("You need a flask to create a potion")
+            }
+        }
+    })
+}
+
+module.exports.buyShopItem = function(message, args){
+    var discordUserId = message.author.id;
+    var itemShortName = args[1]
+
+    profileDB.getUserProfileData( discordUserId, function(err, buyItemRes) {
+        if(err){
+            // user doesnt exist
+            // console.log(err);
+        }else{
+            var userTacos = buyItemRes.data.tacos
+            if (userTacos >= SHOP_ITEM_COST){
+                profileDB.getItemData(function(err, getItemResponse){
+                    if (err){
+                        // console.log(err);
+                    }
+                    else{
+                        var SHOP_ITEM_ID;
+                        if (itemShortName.toLowerCase() == "knife"){
+                            SHOP_ITEM_ID = 201
+                        }else if (itemShortName.toLowerCase() == "t-shirt"){
+                            SHOP_ITEM_ID = 202
+                        }else if (itemShortName.toLowerCase() == "shorts"){
+                            SHOP_ITEM_ID = 203
+                        }else if (itemShortName.toLowerCase() == "skirt"){
+                            SHOP_ITEM_ID = 204
+                        }else if (itemShortName.toLowerCase() == "belt"){
+                            SHOP_ITEM_ID = 205
+                        }else if (itemShortName.toLowerCase() == "socks"){
+                            SHOP_ITEM_ID = 206
+                        }
+                        if (SHOP_ITEM_ID){
+                            var itemsToAddToInventory = [];
+                            for (var item in getItemResponse.data){
+                                if (getItemResponse.data[item].id == SHOP_ITEM_ID){
+                                    itemsToAddToInventory.push(getItemResponse.data[item])
+                                }
+                            }
+                            addToUserInventory(discordUserId, itemsToAddToInventory);
+                            profileDB.updateUserTacos(discordUserId, SHOP_ITEM_COST * -1, function(updateLSErr, updateLSres){
+                                if(updateLSErr){
+                                    console.log(updateLSErr);
+                                }
+                                else{
+                                    var tacosFound = 0
+                                    shopItemEmbedBuilder(message, itemsToAddToInventory, tacosFound);
+                                    message.channel.send(message.author + " successfully purchased `" + itemShortName.toLowerCase() + "`! \ndo -puton 1 " + itemShortName.toLowerCase() + " OR -puton 2 " + itemShortName.toLowerCase() + "  OR -puton 3 " + itemShortName.toLowerCase() + " \ndo -wearing to check your new item bonuses!")
+                                }
+                            })
+                        }else{
+                            message.channel.send("that is not an item you can buy!")
+                        }
+                    }
+                })
             }
         }
     })
@@ -2127,38 +2196,89 @@ module.exports.helpCommand = function(message){
 }
 
 module.exports.itemhelpCommand = function(message){
-    var commandsList = "```css\nList of commands \n ____________ \n"
-    var inventory =   " -inventory, shows your commons or uncommons collected!\n"
-    var party =   " -party, create a 5 minute party with uncommons collected!\n"
-    var rares =   " -rares OR -rares long, shows your rares collected!\n"
-    var ancients =   " -ancients OR -ancients long, shows your ancients collected!\n"
-    var artifacts =   " -artifacts OR -artifacts long, shows your artifacts collected!\n"
-    var amulets =   " -amulets, shows your amulets collected!\n"
-    var rpghelp =   " **** -rpghelp, show rpg help ****\n"
-    var puton =   " -puton [1-3] [item code, ie running OR runningimproved] - you will wear the item!\n"
-    var takeoff = " -takeoff [1-3] - you will take off the item!\n"
-    var wearing = " -wearing - list of all the items you are wearing, and a summary\n"
-    var combine = " -combine - combine the item into an improved or refined item - you need 5 for rares, and 4 for ancients\n"
-    var trade =   " -trade [user] [first word of item] [amount] or -trade [user] [item code, ie running OR runningimproved] [amount] tacos [amount] to trade an item with a user\n"
-    var auction = " -auction [first word of item] create an auction for an item where users can bid \n"
-    var bid =     " -bid [user] [amount] bid for the item the user is auctioning for the amount of tacos\n"
-    var rules = " \nRules: You can only wear 3 items MAX at a time, you cannot wear an item of the same item slot as another item. \nItem bonuses take effect after the number of hours the command they affect. \nItems must be taken off before putting on another item on the same slot. \nThe tag [ACTIVE] means the item is now affecting your commands!```"
-    commandsList = commandsList + inventory + party + rares + ancients + artifacts + amulets + rpghelp + puton + takeoff + wearing + combine + trade + auction + bid + rules
-    message.channel.send(commandsList);
+    // var commandsList = "```css\nList of commands \n ____________ \n"
+    // var inventory =   " -inventory, shows your commons or uncommons collected!\n"
+    // var party =   " -party, create a 5 minute party with uncommons collected!\n"
+    // var rares =   " -rares OR -rares long, shows your rares collected!\n"
+    // var ancients =   " -ancients OR -ancients long, shows your ancients collected!\n"
+    // var artifacts =   " -artifacts OR -artifacts long, shows your artifacts collected!\n"
+    // var amulets =   " -amulets, shows your amulets collected!\n"
+    // var rpghelp =   " **** -rpghelp, show rpg help ****\n"
+    // var puton =   " -puton [1-3] [item code, ie running OR runningimproved] - you will wear the item!\n"
+    // var takeoff = " -takeoff [1-3] - you will take off the item!\n"
+    // var wearing = " -wearing - list of all the items you are wearing, and a summary\n"
+    // var combine = " -combine - combine the item into an improved or refined item - you need 5 for rares, and 4 for ancients\n"
+    // var trade =   " -trade [user] [first word of item] [amount] or -trade [user] [item code, ie running OR runningimproved] [amount] tacos [amount] to trade an item with a user\n"
+    // var auction = " -auction [first word of item] create an auction for an item where users can bid \n"
+    // var bid =     " -bid [user] [amount] bid for the item the user is auctioning for the amount of tacos\n"
+    // var rules = " \nRules: You can only wear 3 items MAX at a time, you cannot wear an item of the same item slot as another item. \nItem bonuses take effect after the number of hours the command they affect. \nItems must be taken off before putting on another item on the same slot. \nThe tag [ACTIVE] means the item is now affecting your commands!```"
+    // commandsList = commandsList + inventory + party + rares + ancients + artifacts + amulets + rpghelp + puton + takeoff + wearing + combine + trade + auction + bid + rules
+    const embed = {
+        "description": "Don't know where to start? No idea what to do?\nCheck out our [Website](http://benderdiscord.com/) and join our [Support Server](https://discord.gg/sHdKrHW)!",
+        "color": 11795163,
+        "author": {
+          "name": "Bender Item Help",
+          "url": "http://benderdiscord.com/",
+          "icon_url": "https://cdn.discordapp.com/avatars/320703328730349578/af68d11f9ecf74bd3f9bf99cebcfe107.jpg"
+        },
+        "fields": [
+          {
+            "name": "Inventories",
+            "value": "`-inventory             >` Display all your common and uncommon items!\n`-rares (long)          >` Display all your rare items (with their details)!\n`-ancients (long)       >` Display all your ancient items (with their details)!\n`-artifacts (long)      >` Display all your artifacts (with their details)!\n`-amulets               >` Display all your amulets!"
+          },
+          {
+            "name": "Wearing Items",
+            "value": "`-puton [1-3] [ItemID]  >` Put on a rare or ancient item to wear it!\n`-takeoff [1-3]         >` Take off an item from one of the slots!\n`-wearing               >` Display all items you're wearing with their stats!\n`-combine [ItemID]      >` Combine 5 rares or 4 ancients of the same kind!"
+          },
+          {
+            "name": "Trading Items",
+            "value": "`-auction [ItemID] [Amount]      >` Put up one or more items for auction!\n`-bid [user] [amount]            >` Bid tacos on someones auctioned item!\n`-trade [user] [ItemID] [Amount] >` Trade items with someone!\n⤷ Alternatively:\n`-trade [user] [ItemID] [Amount] tacos [amount] >` to trade in exchange for tacos!"
+          },
+          {
+            "name": "Item Rules",
+            "value": "You can only wear three items at a time, one in each slot.\n\nEach item belongs to a respective body part *(Chest, Wrist, etc.)*, you cannot wear two items that would go on the same part.\n\nEach item gives certain bonuses, those will activate after a certain amount of time after putting on the item.\n\nThe tag **[ACTIVE]** when displaying the items you are wearing indicates that said bonus currently applies.\n\nThe Item ID of any item is mostly the first word of its name, though there are few exceptions where the second word is used instead. (E.g. Running Shoes -> running)"
+          }
+        ]
+      };
+      message.channel.send({ embed });
 }
 
 module.exports.rpghelpCommand = function(message){
-    var commandsList = "```css\nList of commands \n ____________ \n"
-    var rpgchallenge = " -rpgchallenge [1-10] [user] [user] [user] start an rpg challenge event with the mentioned users [ 2-4 mentions required (5 player intended)] example: -rpgchallenge 1 [user] [user]\n"
-    var rpg =   " -rpgstart [user] [user] [user] start an rpg event with the mentioned users [ 2-4 mentions required]\n"
-    var cast = " -cast [ability] [target] - eg: -cast tacoheal [user] OR -cast attack 2 OR -cast iceshards\n"
-    var rules = " abilities and stats come from the items you are wearing and level\n"
-    var stats = " 👕 = armor (reduces damage from attacks) \n 🙌 = spirit (reduces damage from magic attacks) \n 🗡 = attack dmg (increases damage from attacks) \n ☄️ = magic dmg (increases damage from magic attacks) \n"
-    var buffsStatuses = " buffs = helpful abilities, statuses = harmful abilities \n"
-    var death = " 💀 = dead, can no longer use abilities unless revived \n"
-    var allMustUseAbilities = " all users must use one ability per event turn```"
-    commandsList = commandsList + rpg + rpgchallenge + cast + rules + stats + buffsStatuses + death + allMustUseAbilities 
-    message.channel.send(commandsList);
+    // var commandsList = "```css\nList of commands \n ____________ \n"
+    // var rpgchallenge = " -rpgchallenge [1-10] [user] [user] [user] start an rpg challenge event with the mentioned users [ 2-4 mentions required (5 player intended)] example: -rpgchallenge 1 [user] [user]\n"
+    // var rpg =   " -rpgstart [user] [user] [user] start an rpg event with the mentioned users [ 2-4 mentions required]\n"
+    // var cast = " -cast [ability] [target] - eg: -cast tacoheal [user] OR -cast attack 2 OR -cast iceshards\n"
+    // var rules = " abilities and stats come from the items you are wearing and level\n"
+    // var stats = " 👕 = armor (reduces damage from attacks) \n 🙌 = spirit (reduces damage from magic attacks) \n 🗡 = attack dmg (increases damage from attacks) \n ☄️ = magic dmg (increases damage from magic attacks) \n"
+    // var buffsStatuses = " buffs = helpful abilities, statuses = harmful abilities \n"
+    // var death = " 💀 = dead, can no longer use abilities unless revived \n"
+    // var allMustUseAbilities = " all users must use one ability per event turn```"
+    // commandsList = commandsList + rpg + rpgchallenge + cast + rules + stats + buffsStatuses + death + allMustUseAbilities 
+    // message.channel.send(commandsList);
+    const embed = {
+        "description": "Don't know where to start? No idea what to do?\nCheck out our [Website](http://benderdiscord.com/) and join our [Support Server](https://discord.gg/sHdKrHW)!",
+        "color": 11795163,
+        "author": {
+          "name": "Bender RPG Help",
+          "url": "http://benderdiscord.com/",
+          "icon_url": "https://cdn.discordapp.com/avatars/320703328730349578/af68d11f9ecf74bd3f9bf99cebcfe107.jpg"
+        },
+        "fields": [
+          {
+            "name": "Inventories",
+            "value": "`-rpgstats                       >` Display your abilities and rpg stats!\n`-rpgstart [1-4 user mentions]   >` Start an rpg with up to four other people!\n`-rpgchallege [1-10] [1-4 users] >` Start an rpg challenge with four other people!\n`-cast [ability] [target number/user]   >` Cast an ability on a target or user!"
+          },
+          {
+            "name": "Abilities",
+            "value": "You will get different abilities and stats depending on what items you are wearing.\nAll users must cast one ability per event turn."
+          },
+          {
+            "name": "Stats",
+            "value": ":green_heart: = Health (The amount of  HP you have.)\n:shield: = Armor (Reduces damage taken from physical attacks.)\n:raised_hands: = Spirit (Reduces damage taken from magical attacks.)\n:dagger: = Physical Strength\n:comet: = Magical Strength "
+          }
+        ]
+      };
+      message.channel.send({ embed });
 }
 
 function getProfileForAchievement(discordUserId, message, profileResponse){
@@ -2761,6 +2881,25 @@ function scavengeEmbedBuilder(message, itemsScavenged, tacosFound){
 
     const embed = new Discord.RichEmbed()
     .addField("[" + message.author.username +"'s Scavenge] :pick: Items found: ", itemsMessage, true)
+    .setThumbnail(message.author.avatarURL)
+    .setColor(0xbfa5ff)
+    message.channel.send({embed});
+}
+
+function shopItemEmbedBuilder(message, itemsScavenged, tacosFound){
+    // create a quoted message of all the items
+    var itemsMessage = ""
+    for (var item in itemsScavenged){
+        var itemAmount = itemsScavenged[item].itemAmount ? itemsScavenged[item].itemAmount : 1;
+        itemsMessage = itemsMessage + "**" +itemAmount + "**x " + "**"  + itemsScavenged[item].itemname + "** - " + itemsScavenged[item].itemdescription + ", " +
+        itemsScavenged[item].itemslot + ", " +itemsScavenged[item].itemstatistics + " \n";
+    }
+    if (tacosFound > 0){
+        itemsMessage = itemsMessage + "**Tacos Found**: :taco: " + tacosFound;
+    }
+
+    const embed = new Discord.RichEmbed()
+    .addField("Items purchased: ", itemsMessage, true)
     .setThumbnail(message.author.avatarURL)
     .setColor(0xbfa5ff)
     message.channel.send({embed});
