@@ -2183,15 +2183,19 @@ module.exports.helpCommand = function(message){
         "fields": [
           {
             "name": "Command List",
-            "value": "`-profile [user]        >` Display someone's profile!\n`-ach                   >` Display your achievements!\n`-standings             >` Display your local leaderboard!\n\n`-welcome [user]        >` Welcome a user and they get **50** tacos!\n`-thank [user]          >` Thank a user and they get **10** tacos!\n`-sorry [user]          >` Say sorry to a user and they get **10** tacos!\n\n`-shop (long)           >` Display the (detailed) shop!\n`-repshop               >` Display the Reputation shop!\n\n`-scavenge              >` Scavenge items using your pickaxe!\n`-prepare               >` Prepare tacos using your stands!\n`-cook                  >` Cook some tacos!\n\n`-give [user] [number]  >` Give a user a certain amount of your tacos!\n`-throw [user]          >` Throw **10** tacos at a user!\n`-pickup                >` Pick up tacos off the ground!\n\n`-slots [number]        >` Play slots and lose or win tacos!\n`-raffle                >` Enter the raffle, joining costs for **50** tacos!\n`-fruits [max 9 users]  >` Play fruits!"
+            "value": "`-profile [user]        >` Display someone's profile!\n`-ach                   >` Display your achievements!\n`-standings             >` Display your local leaderboard!\n\n`-welcome [user]        >` Welcome a user and they get **50** tacos!\n`-thank [user]          >` Thank a user and they get **10** tacos!\n`-sorry [user]          >` Say sorry to a user and they get **10** tacos!\n\n`-shop (long)           >` Display the (detailed) shop!\n`-repshop               >` Display the Reputation shop!\n\n`-scavenge              >` Scavenge items using your pickaxe!\n`-prepare               >` Prepare tacos using your stands!\n`-cook                  >` Cook some tacos!\n\n`-give [user] [number]  >` Give a user a certain amount of your tacos!\n`-throw [user]          >` Throw **10** tacos at a user!\n`-pickup                >` Pick up tacos off the ground!\n\n`-slots [number]        >` Play slots and lose or win tacos!\n`-raffle                >` Enter the raffle, joining costs for **50** tacos!\n"
+          },
+          {
+            "name": "-fruits [user] [user] [user] ...",
+            "value": "Play a game of fruits by tagging up to 9 other people with this command!\nTake one or two fruits and attempt to force your opponents to take a bomb!"
           },
           {
             "name": "Other Help Commands",
-            "value": "`-itemhelp              >` Display all commands related to items!\n`-rpghelp               >` Display all commands related to RPGs!",
-            "inline": true
+            "value": "`-itemhelp              >` Display all commands related to items!\n`-rpghelp               >` Display all commands related to RPGs!"
           }
         ]
       };
+      
       message.channel.send({ embed });      
 }
 
