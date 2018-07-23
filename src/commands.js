@@ -6256,7 +6256,9 @@ module.exports.denyTermsCommand = function(message, args){
 function agreeToTerms(message, discordUserId){
     NeedsToAgree[discordUserId] = {};
     NeedsToAgree[discordUserId].hasNotAgreed = true;
-    NeedsToAgree[discordUserId].hostUser = "Bender";
+    if (!NeedsToAgree[discordUserId].hostUser){
+        NeedsToAgree[discordUserId].hostUser = "Bender";
+    }
     message.channel.send("Hey " + message.author + " Bender will be storing and encrypting your discord id to bring you the best experience. Please type -agree to accept these terms, or -deny to decline them!")
 }
 
