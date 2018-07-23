@@ -6207,7 +6207,7 @@ module.exports.agreeTermsCommand = function(message, args){
                         message.channel.send("user already exists")
                     }
                     else{
-                        profileDB.updateUserTacosWelcome(discordUserId, 1, function(err, updateResponse) {
+                        profileDB.updateUserTacosWelcome(discordUserId, 50, function(err, updateResponse) {
                             if (err){
                                 // console.log(err);
                             }
@@ -6254,7 +6254,8 @@ module.exports.denyTermsCommand = function(message, args){
 }
 
 function agreeToTerms(message, discordUserId){
-    if (!NeedsToAgree[discordUserId] || (NeedsToAgree[discordUserId] && NeedsToAgree[discordUserId].hostUser == "Bender")){
+    // only create or replace in needstoagree if doesnt exist or exists but the hostUser is bender
+    if (!NeedsToAgree[discordUserId]){
         NeedsToAgree[discordUserId] = {};
         NeedsToAgree[discordUserId].hasNotAgreed = true;
         if (!NeedsToAgree[discordUserId].hostUser){
