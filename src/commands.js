@@ -4338,6 +4338,13 @@ module.exports.useCommand = function(message, args){
                 }
             }
         })
+    }else if (args && args.length > 1 && args[1].toLowerCase() == "chicken"
+            || args[1].toLowerCase() == "tortilla"
+            || args[1].toLowerCase() == "steak"
+            || args[1].toLowerCase() == "beef"
+            || args[1].toLowerCase() == "salsa"
+            || args[1].toLowerCase() == "orchata"){
+            message.channel.send("These are ingredients for a party, when you have all 6 uncommons do -party to create a party for everyone!")
     }else{
         // use the item based on itemshortname
         var itemShortName = (args.length >= 2) ? args[1] : undefined;
