@@ -869,7 +869,7 @@ module.exports.welcomeCommand = function(message){
                             if (Last_Five_Welcomes.length >= 5){
                                 Last_Five_Welcomes.shift();
                             }
-                            message.channel.send(mentionedUser + " Welcome! You now have " + (welcomeResponse.data.tacos + 2) + " tacos! :taco:");
+                            message.channel.send(mentionedUser + " Welcome! You now have " + (welcomeResponse.data.tacos + 50) + " tacos! :taco:");
                             stats.statisticsManage(discordUserId, "welcomecount", 1, function(err, statSuccess){
                                 if (err){
                                     // console.log(err);
@@ -6254,11 +6254,14 @@ module.exports.denyTermsCommand = function(message, args){
 }
 
 function agreeToTerms(message, discordUserId){
-    NeedsToAgree[discordUserId] = {};
-    NeedsToAgree[discordUserId].hasNotAgreed = true;
-    if (!NeedsToAgree[discordUserId].hostUser){
-        NeedsToAgree[discordUserId].hostUser = "Bender";
+    if (!NeedsToAgree[discordUserId]){
+        NeedsToAgree[discordUserId] = {};
+        NeedsToAgree[discordUserId].hasNotAgreed = true;
+        if (!NeedsToAgree[discordUserId].hostUser){
+            NeedsToAgree[discordUserId].hostUser = "Bender";
+        }
     }
+    
     message.channel.send("Hey " + message.author + " Bender will be storing and encrypting your discord id to bring you the best experience. Please type -agree to accept these terms, or -deny to decline them!")
 }
 
