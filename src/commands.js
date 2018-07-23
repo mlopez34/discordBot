@@ -6254,7 +6254,7 @@ module.exports.denyTermsCommand = function(message, args){
 }
 
 function agreeToTerms(message, discordUserId){
-    if (!NeedsToAgree[discordUserId]){
+    if (!NeedsToAgree[discordUserId] || (NeedsToAgree[discordUserId] && NeedsToAgree[discordUserId].hostUser == "Bender")){
         NeedsToAgree[discordUserId] = {};
         NeedsToAgree[discordUserId].hasNotAgreed = true;
         if (!NeedsToAgree[discordUserId].hostUser){
