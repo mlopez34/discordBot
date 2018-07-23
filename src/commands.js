@@ -1713,11 +1713,11 @@ function shopBuilder(message, shopData, long){
         }
         else if (shopData.pickaxe == "improved"){
             // improved pickaxe
-            pickaxeDescription = "The Ethereal Pickaxe can be used to scavenge. This is the master pickaxe, your adventures will be rewarded with the greatest treasures :diamond_shape_with_a_dot_inside: .";
+            pickaxeDescription = "The Master Pickaxe can be used to scavenge. This is the master pickaxe, your adventures will be rewarded with the greatest treasures :diamond_shape_with_a_dot_inside: ."
             pickaxeCost = MASTER_PICKAXE_COST + " :taco:";
             embed.addBlankField(true)
             .addBlankField(false)
-            .addField('Ethereal Pickaxe', ":diamond_shape_with_a_dot_inside::pick:", true)
+            .addField('Master Pickaxe', ":diamond_shape_with_a_dot_inside::pick:", true)
             .addField('Description', pickaxeDescription, true)
             .addField('Cost', pickaxeCost, true)
             .addField('Command', config.commandString + "buypickaxe", true)
