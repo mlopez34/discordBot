@@ -5257,7 +5257,7 @@ module.exports.wearingCommand = function(message, args){
                         })
                     }
                     else{
-                        message.channel.send(message.author + " you are not wearing any items!")
+                        message.channel.send(message.author + " you are not wearing any items. if you are new, check the shop for cheap starter items!")
                     }
                 }
             })
@@ -5284,6 +5284,9 @@ function wearingEmbedBuilder(message, profileData, statsString, activeSlots){
     }
     if (statsString && statsString.length > 0){
         embed.addField('Stats Summary', statsString, false)
+    }
+    if (statsString.length == 0){
+        message.channel.send("You are not wearing any items! check the shop for starter items.")
     }
     message.channel.send({embed});
 }
