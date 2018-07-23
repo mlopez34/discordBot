@@ -1874,9 +1874,9 @@ module.exports.buyShopItem = function(message, args){
                         var SHOP_ITEM_ID;
                         if (itemShortName.toLowerCase() == "knife"){
                             SHOP_ITEM_ID = 201
-                        }else if (itemShortName.toLowerCase() == "t-shirt"){
-                            SHOP_ITEM_ID = 202
                         }else if (itemShortName.toLowerCase() == "shorts"){
+                            SHOP_ITEM_ID = 202
+                        }else if (itemShortName.toLowerCase() == "t-shirt"){
                             SHOP_ITEM_ID = 203
                         }else if (itemShortName.toLowerCase() == "skirt"){
                             SHOP_ITEM_ID = 204
