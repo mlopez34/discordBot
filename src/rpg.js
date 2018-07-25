@@ -1697,7 +1697,7 @@ function eventEndedEmbedBuilder(message, event, partySuccess){
                     for (var item in rewards.items){
                         rewardString = rewardString + rewards.items[item].itemname + " \n";
                     }
-                    
+                    // TODO: report the rpg result: success or fail, userIds and levels of players, rewards, enemy names + average group
                 }
                 else{
                     rewards = "No rewards :skull_crossbones:"

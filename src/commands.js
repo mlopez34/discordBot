@@ -6245,15 +6245,17 @@ module.exports.agreeTermsCommand = function(message, args){
                                     Last_Five_Welcomes.shift();
                                 }
                                 message.channel.send("welcome aboard ! " + message.author + " your profile has been created. " + host + " will be your host!" );
-                                stats.statisticsManage(host.id, "welcomecount", 1, function(err, statSuccess){
-                                    if (err){
-                                        // console.log(err);
-                                    }
-                                    else{
-                                        // check achievements??
-                                        getProfileForAchievement(host.id, message)
-                                    }
-                                })
+                                if (host.id){
+                                    stats.statisticsManage(host.id, "welcomecount", 1, function(err, statSuccess){
+                                        if (err){
+                                            // console.log(err);
+                                        }
+                                        else{
+                                            // check achievements??
+                                            getProfileForAchievement(host.id, message)
+                                        }
+                                    })
+                                }
                             }
                         })
                         delete NeedsToAgree[discordUserId]
