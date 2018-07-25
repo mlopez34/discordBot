@@ -477,8 +477,8 @@ module.exports = {
             name: "Slap",
             abilityId: "slap",
             dmg: 120,
-            mdPercentage: 1,
-            type: "electric"
+            adPercentage: 1,
+            type: "physical"
         },
         /*
         limit abilities
@@ -2248,6 +2248,42 @@ module.exports = {
                 element: "normal"
             },
             {
+                name: "Vagabond",
+                abilities: ["attack", "attack", "flameblast", "flameblast", "barrier"],
+                buffs: [],
+                hpPerPartyMember: 170,
+                adPerPartyMember: 7,
+                mdPerPartyMember: 7,
+                hp: 390,
+                effectsOnDeath: [
+                    
+                ],
+                attackDmg: 75,
+                magicDmg: 97,
+                armor: 400,
+                spirit: 320,
+                difficulty: "easy",
+                element: "normal"
+            },
+            {
+                name: "Coyote",
+                abilities: ["attack", "attack", "claw", "claw", "barrier"],
+                buffs: [],
+                hpPerPartyMember: 170,
+                adPerPartyMember: 7,
+                mdPerPartyMember: 7,
+                hp: 390,
+                effectsOnDeath: [
+                  
+                ],
+                attackDmg: 75,
+                magicDmg: 97,
+                armor: 400,
+                spirit: 320,
+                difficulty: "easy",
+                element: "normal"
+            },
+            {
                 name: "Angry Mob Member",
                 abilities: ["attack", "attack", "poison", "iceshards", "iceshards", "cripple"],
                 buffs: [],
@@ -2265,6 +2301,36 @@ module.exports = {
             {
                 name: "Taco Dealer",
                 abilities: ["attack", "attack", "drain", "drain", "freeze"],
+                buffs: [],
+                hpPerPartyMember: 170,
+                adPerPartyMember: 9,
+                mdPerPartyMember: 9,
+                hp: 230,
+                attackDmg: 60,
+                magicDmg: 79,
+                armor: 290,
+                spirit: 400,
+                difficulty: "easy",
+                element: "normal"
+            },
+            {
+                name: "Burrito Hustler",
+                abilities: ["attack", "attack", "slap", "slap", "freeze"],
+                buffs: [],
+                hpPerPartyMember: 170,
+                adPerPartyMember: 9,
+                mdPerPartyMember: 9,
+                hp: 230,
+                attackDmg: 60,
+                magicDmg: 79,
+                armor: 290,
+                spirit: 400,
+                difficulty: "easy",
+                element: "normal"
+            },
+            {
+                name: "Ruffian",
+                abilities: ["attack", "attack", "tackle", "tackle", "scold"],
                 buffs: [],
                 hpPerPartyMember: 170,
                 adPerPartyMember: 9,
@@ -2326,6 +2392,21 @@ module.exports = {
                 spirit: 550,
                 difficulty: "medium",
                 element: "normal"
+            },
+            {
+                name: "Fruits Counter",
+                abilities: ["attack", "attack", "uppercut", "uppercut", "cripple"],
+                buffs: [],
+                hpPerPartyMember: 190,
+                adPerPartyMember: 14,
+                mdPerPartyMember: 14,
+                hp: 640,
+                attackDmg: 90,
+                magicDmg: 90,
+                armor: 350,
+                spirit: 550,
+                difficulty: "medium",
+                element: "normal"
             }
         ],
         hard: [
@@ -2358,6 +2439,32 @@ module.exports = {
             {
                 name: "Samurai Warrior",
                 abilities: ["attack", "attack", "iceshards", "iceshards", "drain", "drain", "bandaid"],
+                buffs: [
+                    {
+                        name: "frenzy",
+                        emoji: "😡",
+                        onTurnEnd: {
+                            attackDmgPlus : 60,
+                            magicDmgPlus : 60,
+                            everyNTurns: 2,
+                            startTurn: 2
+                        }
+                    }
+                ],
+                hpPerPartyMember: 1090,
+                adPerPartyMember: 21,
+                mdPerPartyMember: 21,
+                hp: 700,
+                attackDmg: 170,
+                magicDmg: 123,
+                armor: 750,
+                spirit: 600,
+                difficulty: "hard",
+                element: "normal"
+            },
+            {
+                name: "Warewolf",
+                abilities: ["attack", "attack", "ferociousBite", "ferociousBite", "uppercut"],
                 buffs: [
                     {
                         name: "frenzy",
@@ -2441,6 +2548,38 @@ module.exports = {
                 magicDmg: 250,
                 armor: 1300,
                 spirit: 900,
+                difficulty: "boss",
+                element: "normal"
+            },
+            {
+                name: "Viking",
+                abilities: [
+                   "attack", "attack", "tackle", "tackle", "tackle", "slash", "slash", "slash","empower"
+                ],
+                buffs: [
+                    {
+                        name: "frenzy",
+                        emoji: "😡",
+                        onTurnEnd: {
+                            attackDmgPlus : 95,
+                            magicDmgPlus : 95,
+                            everyNTurns: 2,
+                            startTurn: 2
+                        }
+                    }
+                ],
+                endOfTurnEvents : [
+                    "echo",
+                    "focus"
+                ],
+                hpPerPartyMember: 1458,
+                adPerPartyMember: 29,
+                mdPerPartyMember: 29,
+                hp: 900,
+                attackDmg: 250,
+                magicDmg: 170,
+                armor: 1200,
+                spirit: 1100,
                 difficulty: "boss",
                 element: "normal"
             },
