@@ -1859,10 +1859,10 @@ module.exports.createPotionCommand = function(message){
 function shopItemDetailsBuilder(message){
     const embed = new Discord.RichEmbed()
     .setColor(0x87CEFA)
-    .addField('Knife ', SHOP_ITEM_COST + " :taco: \ngives chance at additional tacos when **thanking**\n💚24 🗡️30 ☄️0 👕25 🙌25 \nbarrier - increase your target's spirit by 650\npoke - deal physical damage over time to your target", true)
+    .addField('Knife ', SHOP_ITEM_COST + " :taco: \ngives chance at additional tacos when **thanking**\n💚24 🗡️30 ☄️0 👕25 🙌25 \nbarrier - increase your target's spirit by 650\nstab - deal physical damage to your target", true)
     .addField('Shorts ', SHOP_ITEM_COST + ":taco: \ngives chance at additional tacos when **sorrying**\n💚24 🗡️0 ☄️30 👕25 🙌25 \nprotect - increase your target's armor by 650 \npoison - deal magical damage and magical damage over time for 3 turns", true)
     .addField('T-Shirt ', SHOP_ITEM_COST + ":taco: \ngives chance at additional tacos when **cooking**\n💚52 🗡️5 ☄️5 👕43 🙌43 \ntacoheal - heal your target\nhaste - your abilities are cast before enemy abilities", true)
-    .addField('Skirt ', SHOP_ITEM_COST + " :taco: \ngives chance at additional tacos when **sorrying**\n💚24 🗡️0 ☄️30 👕25 🙌25 \nbarrier - increase your target's spirit by 650\npoke - deal physical damage over time to your target", true)
+    .addField('Skirt ', SHOP_ITEM_COST + " :taco: \ngives chance at additional tacos when **sorrying**\n💚24 🗡️0 ☄️30 👕25 🙌25 \nweaken - reduce your targets magical damage by 20%\ncurse - deal magical damage over time to your target", true)
     .addField('Belt ', SHOP_ITEM_COST + " :taco: \ngives chance at additional tacos when **cooking**\n💚52 🗡️5 ☄️5 👕43 🙌43 \nassist - heal yourself and your target\nfreeze - reduce target's armor by 20%", true)
     .addField('Socks ', SHOP_ITEM_COST + " :taco: \ngives chance at additional tacos when **thanking**\n💚24 🗡️30 ☄️0 👕25 🙌25 \nscold - reduce your targets spirit by 20%\nslash - deal physical damage to all enemies (60% of your physical damage)", true)
     .setTimestamp()

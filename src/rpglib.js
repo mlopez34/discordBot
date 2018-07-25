@@ -8,6 +8,13 @@ module.exports = {
             adPercentage: 1,
             type: "physical"
         },
+        stab : {
+            name: "Stab",
+            abilityId: "stab",
+            dmg: 85,
+            adPercentage: 1,
+            type: "physical"
+        },
         // new abiltiies
         impale : {
             name: "Impale",
@@ -2249,7 +2256,7 @@ module.exports = {
             },
             {
                 name: "Vagabond",
-                abilities: ["attack", "attack", "flameblast", "flameblast", "barrier"],
+                abilities: ["attack", "attack", "flameblast", "flameblast", "cripple"],
                 buffs: [],
                 hpPerPartyMember: 170,
                 adPerPartyMember: 7,
@@ -2267,7 +2274,7 @@ module.exports = {
             },
             {
                 name: "Coyote",
-                abilities: ["attack", "attack", "claw", "claw", "barrier"],
+                abilities: ["attack", "attack", "claw", "claw", "cripple"],
                 buffs: [],
                 hpPerPartyMember: 170,
                 adPerPartyMember: 7,
@@ -2315,7 +2322,7 @@ module.exports = {
             },
             {
                 name: "Burrito Hustler",
-                abilities: ["attack", "attack", "slap", "slap", "freeze"],
+                abilities: ["attack", "attack", "slap", "slap", "weaken"],
                 buffs: [],
                 hpPerPartyMember: 170,
                 adPerPartyMember: 9,
@@ -2330,7 +2337,7 @@ module.exports = {
             },
             {
                 name: "Ruffian",
-                abilities: ["attack", "attack", "tackle", "tackle", "scold"],
+                abilities: ["attack", "attack", "tackle", "tackle", "weaken"],
                 buffs: [],
                 hpPerPartyMember: 170,
                 adPerPartyMember: 9,
@@ -2395,7 +2402,7 @@ module.exports = {
             },
             {
                 name: "Fruits Counter",
-                abilities: ["attack", "attack", "uppercut", "uppercut", "cripple"],
+                abilities: ["attack", "attack", "uppercut", "uppercut", "weaken"],
                 buffs: [],
                 hpPerPartyMember: 190,
                 adPerPartyMember: 14,
