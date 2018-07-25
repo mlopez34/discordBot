@@ -252,7 +252,7 @@ client.on('message', function(message){
                 else if (commandIs("scavenge", message)){
                     commands.scavangeCommand(message);
                 }
-                else if (commandIs("inventory", message)){
+                else if (commandIs("inventory", message) || commandIs("inv", message)){
                     commands.inventoryCommand(message);
                 }
                 else if (commandIs("rares", message)){
@@ -710,7 +710,7 @@ client.on('message', function(message){
                     data.command = "scavenge"
                     profileDB.createUserActivity(data)
                 }
-                else if (commandIs("inventory", message)){
+                else if (commandIs("inventory", message) || commandIs("inv", message)){
                     commands.inventoryCommand(message);
                     data.command = "inventory"
                     profileDB.createUserActivity(data)
