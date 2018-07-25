@@ -2900,7 +2900,11 @@ function scavengeEmbedBuilder(message, itemsScavenged, tacosFound){
     for (var item in itemsScavenged){
         var itemAmount = itemsScavenged[item].itemAmount ? itemsScavenged[item].itemAmount : 1;
         itemsMessage = itemsMessage + "**" +itemAmount + "**x " + "[**" + itemsScavenged[item].itemraritycategory +"**] " + "**"  + itemsScavenged[item].itemname + "** - " + itemsScavenged[item].itemdescription + ", " +
-        itemsScavenged[item].itemslot + ", " +itemsScavenged[item].itemstatistics + " \n";
+        itemsScavenged[item].itemslot + ", " +itemsScavenged[item].itemstatistics
+        if (itemsScavenged[item].itemraritycategory == "ancient" || (itemsScavenged[item].itemraritycategory == "rare" && itemsScavenged[item].itemslot != "consumable" ) || itemsScavenged[item].itemraritycategory == "artifact"){
+            itemsMessage = itemsMessage + ". **to wear** -puton [1-3] " + itemsScavenged[item].itemshortname
+        }
+        itemsMessage = itemsMessage + " \n";
     }
     if (tacosFound > 0){
         itemsMessage = itemsMessage + "**Tacos Found**: :taco: " + tacosFound;
