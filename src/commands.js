@@ -891,6 +891,8 @@ module.exports.welcomeCommand = function(message){
                 }
             }
         }) 
+    }else{
+        message.channel.send("You must mention the user that you want to welcome! example: `-welcome @user`")
     }
 }
 
