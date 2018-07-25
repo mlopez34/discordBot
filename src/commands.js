@@ -1741,7 +1741,7 @@ function shopBuilder(message, shopData, long){
         .addField('Cost', PASTA_COST + " :taco:", true)
         .addField('Command', config.commandString + "buyPasta", true)
         embed.addBlankField(true)
-        embed.addField('Wearable Items', "Knife - " + SHOP_ITEM_COST + " :taco: gives chance at additional tacos when thanking  \nShorts - " + SHOP_ITEM_COST + " :taco: gives chance at additional tacos when sorrying \nT-shirt - " + SHOP_ITEM_COST + " :taco: gives chance at additional tacos when cooking \nAll above items also provide rpg stats \nKnife/Socks specializes in physical damage and abilities. \nShorts/Skirt specialize in magical damage and abilities \nT-shirt/Belt specializes in resistance abilities", true)
+        embed.addField('Wearable Items', "Knife/Socks: " + SHOP_ITEM_COST + " :taco: gives chance at additional tacos when thanking\nShorts/Skirt: " + SHOP_ITEM_COST + ":taco: gives chance at additional tacos when sorrying\nT-shirt/Belt: " + SHOP_ITEM_COST + ":taco: gives chance at additional tacos when cooking\ndo `-buyitem details` for more info on these items ", true)
         .addField('Command', config.commandString + "buyitem [itemname] \n**example**: -buyitem knife", true)
 
         // allow for pet to be purchased
@@ -1774,6 +1774,7 @@ module.exports.shopCommand = function(message, args){
     profileDB.getUserProfileData( discordUserId, function(err, shopResponse) {
         if(err){
             // user doesnt exist tell the user they should get some tacos
+            console.log(err)
             agreeToTerms(message, discordUserId);
         }
         else{
@@ -1855,6 +1856,19 @@ module.exports.createPotionCommand = function(message){
     })
 }
 
+function shopItemDetailsBuilder(message){
+    const embed = new Discord.RichEmbed()
+    .setColor(0x87CEFA)
+    .addField('Knife ', SHOP_ITEM_COST + " :taco: \ngives chance at additional tacos when **thanking**\n💚24 🗡️30 ☄️0 👕25 🙌25 \nbarrier - increase your target's spirit by 650\npoke - deal physical damage over time to your target", true)
+    .addField('Shorts ', SHOP_ITEM_COST + ":taco: \ngives chance at additional tacos when **sorrying**\n💚24 🗡️0 ☄️30 👕25 🙌25 \nprotect - increase your target's armor by 650 \npoison - deal magical damage and magical damage over time for 3 turns", true)
+    .addField('T-Shirt ', SHOP_ITEM_COST + ":taco: \ngives chance at additional tacos when **cooking**\n💚52 🗡️5 ☄️5 👕43 🙌43 \ntacoheal - heal your target\nhaste - your abilities are cast before enemy abilities", true)
+    .addField('Skirt ', SHOP_ITEM_COST + " :taco: \ngives chance at additional tacos when **sorrying**\n💚24 🗡️0 ☄️30 👕25 🙌25 \nbarrier - increase your target's spirit by 650\npoke - deal physical damage over time to your target", true)
+    .addField('Belt ', SHOP_ITEM_COST + " :taco: \ngives chance at additional tacos when **cooking**\n💚52 🗡️5 ☄️5 👕43 🙌43 \nassist - heal yourself and your target\nfreeze - reduce target's armor by 20%", true)
+    .addField('Socks ', SHOP_ITEM_COST + " :taco: \ngives chance at additional tacos when **thanking**\n💚24 🗡️30 ☄️0 👕25 🙌25 \nscold - reduce your targets spirit by 20%\nslash - deal physical damage to all enemies (60% of your physical damage)", true)
+    .setTimestamp()
+    message.channel.send({embed});
+}
+
 module.exports.buyShopItem = function(message, args){
     var discordUserId = message.author.id;
     var itemShortName = args[1]
@@ -1862,13 +1876,13 @@ module.exports.buyShopItem = function(message, args){
     profileDB.getUserProfileData( discordUserId, function(err, buyItemRes) {
         if(err){
             // user doesnt exist
-            // console.log(err);
+            console.log(err);
         }else{
             var userTacos = buyItemRes.data.tacos
             if (userTacos >= SHOP_ITEM_COST){
                 profileDB.getItemData(function(err, getItemResponse){
                     if (err){
-                        // console.log(err);
+                        console.log(err);
                     }
                     else{
                         var SHOP_ITEM_ID;
@@ -1884,6 +1898,9 @@ module.exports.buyShopItem = function(message, args){
                             SHOP_ITEM_ID = 205
                         }else if (itemShortName.toLowerCase() == "socks"){
                             SHOP_ITEM_ID = 206
+                        }else if (itemShortName.toLowerCase() == "details"){
+                            // display shop builder
+                            shopItemDetailsBuilder(message)
                         }
                         if (SHOP_ITEM_ID){
                             var itemsToAddToInventory = [];
@@ -1904,14 +1921,20 @@ module.exports.buyShopItem = function(message, args){
                                 }
                             })
                         }else{
-                            message.channel.send("that is not an item you can buy!")
+                            if (itemShortName.toLowerCase() != "details"){
+                                message.channel.send("that is not an item you can buy!")
+                            }
                         }
                     }
                 })
+            }else if (itemShortName.toLowerCase() == "details"){
+                shopItemDetailsBuilder(message)
             }
         }
     })
 }
+
+
 
 module.exports.buyFlaskCommand = function(message){
     var discordUserId = message.author.id;
@@ -2270,7 +2293,7 @@ module.exports.rpghelpCommand = function(message){
         "fields": [
           {
             "name": "Inventories",
-            "value": "`-rpgstats                       >` Display your abilities and rpg stats!\n`-rpgstart [1-4 user mentions]   >` Start an rpg with up to four other people!\n`-rpgchallege [1-10] [1-4 users] >` Start an rpg challenge with four other people!\n`-cast [ability] [target number/user]   >` Cast an ability on a target or user!"
+            "value": "`-rpgstats                       >` Display your abilities and rpg stats!\n`-rpgstart [1-4 user mentions]   >` Start an rpg with up to four other people!\n`-rpgchallege [1-10] [1-4 users] >` Start an rpg challenge with four other people!\n`-cast [ability] [target number/user]   >` Cast an ability on a target or user!\n**example**: -cast attack 1 (attacks enemy 1)\n-cast barrier @user (casts barrier on the user mentioned)\n-cast slash (deals damage to all enemies)"
           },
           {
             "name": "Abilities",

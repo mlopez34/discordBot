@@ -987,6 +987,13 @@ module.exports.rpgReady = function(message, itemsAvailable, amuletItemsById){
                                                                 // roll for enemy rarity, then roll for the actual enemy
                                                                 var rollForRarity;
                                                                 if (!foundBoss){
+                                                                    if (averageLevelInParty < 12){
+                                                                        // only easy enemies before level 12
+                                                                        rollForRarity = 3000; 
+                                                                    }else if (averageLevelInParty < 17){
+                                                                        // able to get bosses at level 16
+                                                                        rollForRarity = Math.floor(Math.random() * 9650) + 1;
+                                                                    }
                                                                     rollForRarity = Math.floor(Math.random() * 10000) + 1;
                                                                 }
                                                                 else{
