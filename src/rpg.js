@@ -78,7 +78,7 @@ module.exports.rpgInitialize = function(message, special){
         })
     }
     else{
-        message.channel.send("not enough members in your party for this event or someone is already in an event")
+        message.channel.send("not enough members in your party for this event or someone is already in an event, \ndo `-rpgstart @user @user ...` to start an rpg event with a group (2 minimum, 5 maximum) OR `-rpgchallenge 1 @user @user ..`")
     }
 }
 
