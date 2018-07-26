@@ -2606,7 +2606,7 @@ function inventoryEmbedBuilder(message, itemsMap, allItems){
     embed
     .addField("Item Name  |  Count  |  Slot", inventoryString, true)
     .setAuthor(message.author.username +"'s Inventory ")
-    .setDescription( ":left_luggage:" )
+    .setDescription( ":left_luggage: \n-rares | -rares long to view your rare items\n-ancients | -ancients long to view your ancient items\n-artifacts | -artifacts long to view your artifacts\n-amulets to view your amulets " )
     .setThumbnail(message.author.avatarURL)
     .setColor(0x06e8e8)
     message.channel.send({embed});
@@ -3372,7 +3372,7 @@ module.exports.playCommand = function(message){
 }
 
 
-module.exports.toplistCommand = function(message, listOfUsers){
+module.exports.toplistCommand = function(message, listOfUsers, global){
     // query for top 10 then build the embed for top ten users
     profileDB.getToplistUsers(function(error, toplistResponse){
         if (error){
@@ -3396,8 +3396,12 @@ module.exports.toplistCommand = function(message, listOfUsers){
                         // user is not on the server currently - just skip them
                         continue;
                     }
-                    //var toplistUsername = toplistUser.username;  FOR GLOBAL
-                    var toplistUsername = toplistUser.user.username;
+                    var toplistUsername;
+                    if (global){
+                        toplistUsername = toplistUser.username
+                    }else{
+                        toplistUsername = toplistUser.user.username; 
+                    }
                     var toplistXP = user.experience;
                     var userLevel = user.level;
                     toplistMap[toplistCount] = {username: toplistUsername, experience: toplistXP, level: userLevel}
@@ -3424,11 +3428,11 @@ function topListEmbedBuilder(topXpString, message){
     message.channel.send({embed});
 }
 
-module.exports.rpgTopListCommand = function(message, listOfUsers){
+module.exports.rpgTopListCommand = function(message, listOfUsers, global){
     // query for top 10 then build the embed for top ten users
     profileDB.getRpgTopList(function(error, toplistResponse){
         if (error){
-            // console.log(error);
+            console.log(error);
             agreeToTerms(message, discordUserId);
         }
         else{
@@ -3448,7 +3452,12 @@ module.exports.rpgTopListCommand = function(message, listOfUsers){
                         // user is not on the server currently - just skip them
                         continue;
                     }
-                    var toplistUsername = toplistUser.user.username; // toplistUser.username FOR GLOBAL
+                    var toplistUsername;
+                    if (global){
+                        toplistUsername = toplistUser.username
+                    }else{
+                        toplistUsername = toplistUser.user.username; 
+                    }
                     var toplistChallenge = user.currentchallenge || 0;
                     var toplistRpg = user.rpgpoints;
                     toplistMap[toplistCount] = { username: toplistUsername, rpgPoints: toplistRpg, challengedefeated: toplistChallenge }
@@ -3474,11 +3483,11 @@ function rpgTopListEmbedBuilder(topRpgString, message){
     message.channel.send({embed});
 }
 
-module.exports.standingsCommand = function(message, listOfUsers){
+module.exports.standingsCommand = function(message, listOfUsers, global){
     // query for top 10 then build the embed for top ten users
     profileDB.getTopTenTacoUsers(function(error, topTenResponse){
         if (error){
-            // console.log(error);
+            console.log(error);
             agreeToTerms(message, discordUserId);
         }
         else{
@@ -3498,9 +3507,14 @@ module.exports.standingsCommand = function(message, listOfUsers){
                         // user is not on the server currently - just skip them
                         continue;
                     }
-                    var topTenUsername = topTenUser.user.username; // topTenUser.username FOR GLOBAL
+                    var toplistUsername;
+                    if (global){
+                        toplistUsername = topTenUser.username
+                    }else{
+                        toplistUsername = topTenUser.user.username; 
+                    }
                     var topTenTacos = user.tacos;
-                    topTenMap[topTenCount] = {username: topTenUsername, tacos: topTenTacos}
+                    topTenMap[topTenCount] = {username: toplistUsername, tacos: topTenTacos}
                     topTenCount++;
                 }
             }

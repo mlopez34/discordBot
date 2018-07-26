@@ -650,6 +650,37 @@ module.exports.updateSingleStatistic = function(userId, columnName, statisticCou
     });
 }
 
+module.exports.createRpgStatistics = function(rpgStatData, cb){
+    if (!rpgStatData.user2){
+        rpgStatData.user2 = null
+        rpgStatData.user2stats = null
+    }
+    if (!rpgStatData.user3){
+        rpgStatData.user3 = null
+        rpgStatData.user3stats = null
+    }
+    if (!rpgStatData.user4){
+        rpgStatData.user4 = null
+        rpgStatData.user4stats = null
+    }
+    if (!rpgStatData.user5){
+        rpgStatData.user5 = null
+        rpgStatData.user5stats = null
+    }
+    var query = 'insert into '+ config.rpgStatisticsTable + '(user1, user1stats, user2, user2stats, user3, user3stats, user4, user4stats, user5, user5stats, enemies, averagelevel, xp, rewards, success )' +
+        'values(${user1}, ${user1stats}, ${user2}, ${user2stats}, ${user3}, ${user3stats}, ${user4},  ${user4stats}, ${user5}, ${user5stats}, ${enemies}, ${averagelevel}, ${xp}, ${rewards}, ${success})'
+    db.none(query, rpgStatData)
+    .then(function () {
+        cb(null, {
+            status: 'success',
+            message: 'Inserted one user into rpg statistics'
+            });
+        })
+    .catch(function (err) {
+        cb(err);
+    });
+}
+
 module.exports.createUserStatistics = function(userId, columnName, statisticCount, cb) {
     var userStatistics = {
         discordId: userId,

@@ -265,19 +265,31 @@ client.on('message', function(message){
                     commands.raresCommand(message, args, "artifact");
                 }
                 else if (commandIs("standings", message)){
-                    commands.standingsCommand(message, message.channel.guild.members);
+                    if (args.length > 1 && args[1] == "global"){
+                        commands.standingsCommand(message, client.users, true);
+                    }else{
+                        commands.standingsCommand(message, message.channel.guild.members, false);
+                    }
                 }
                 else if (commandIs("toplist", message)){
-                    if (message.channel.guild.members){
-                        console.log("1")
-                        commands.toplistCommand(message, message.channel.guild.members); // client.users FOR GLOBAL
-                    }else if (message.guild.members){
-                        console.log("2")
-                        commands.toplistCommand(message, message.guild.members); // client.users FOR GLOBAL
+                    if (args.length > 1 && args[1] == "global"){
+                        commands.toplistCommand(message, client.users, true); // client.users FOR GLOBAL
+                    }else{
+                        if (message.channel.guild.members){
+                            console.log("1")
+                            commands.toplistCommand(message, message.channel.guild.members, false); // client.users FOR GLOBAL
+                        }else if (message.guild.members){
+                            console.log("2")
+                            commands.toplistCommand(message, message.guild.members, false); // client.users FOR GLOBAL
+                        }
                     }
                 }
                 else if (commandIs("toprpg", message)){
-                    commands.rpgTopListCommand(message, message.channel.guild.members);
+                    if (args.length > 1 && args[1] == "global"){
+                        commands.rpgTopListCommand(message, client.users, true);
+                    }else{
+                        commands.rpgTopListCommand(message, message.channel.guild.members, false);
+                    }
                 }
                 else if (commandIs("slots", message)){
                     if (args.length > 1){
@@ -731,23 +743,35 @@ client.on('message', function(message){
                     profileDB.createUserActivity(data)
                 }
                 else if (commandIs("standings", message)){
-                    commands.standingsCommand(message, message.channel.guild.members);
+                    if (args.length > 1 && args[1] == "global"){
+                        commands.standingsCommand(message, client.users, true);
+                    }else{
+                        commands.standingsCommand(message, message.channel.guild.members, false);
+                    }
                     data.command = "standings"
                     profileDB.createUserActivity(data)
                 }
                 else if (commandIs("toplist", message)){
-                    if (message.channel.guild.members){
-                        console.log("1")
-                        commands.toplistCommand(message, message.channel.guild.members); // client.users FOR GLOBAL
-                    }else if (message.guild.members){
-                        console.log("2")
-                        commands.toplistCommand(message, message.guild.members); // client.users FOR GLOBAL
+                    if (args.length > 1 && args[1] == "global"){
+                        commands.toplistCommand(message, client.users, true); // client.users FOR GLOBAL
+                    }else{
+                        if (message.channel.guild.members){
+                            console.log("1")
+                            commands.toplistCommand(message, message.channel.guild.members, false); // client.users FOR GLOBAL
+                        }else if (message.guild.members){
+                            console.log("2")
+                            commands.toplistCommand(message, message.guild.members, false); // client.users FOR GLOBAL
+                        }
                     }
                     data.command = "toplist"
                     profileDB.createUserActivity(data)
                 }
                 else if (commandIs("toprpg", message)){
-                    commands.rpgTopListCommand(message, message.channel.guild.members);
+                    if (args.length > 1 && args[1] == "global"){
+                        commands.rpgTopListCommand(message, client.users, true);
+                    }else{
+                        commands.rpgTopListCommand(message, message.channel.guild.members, false);
+                    }
                     data.command = "toprpg"
                     profileDB.createUserActivity(data)
                 }

@@ -993,8 +993,9 @@ module.exports.rpgReady = function(message, itemsAvailable, amuletItemsById){
                                                                     }else if (averageLevelInParty < 17){
                                                                         // able to get bosses at level 16
                                                                         rollForRarity = Math.floor(Math.random() * 9650) + 1;
+                                                                    }else{
+                                                                        rollForRarity = Math.floor(Math.random() * 10000) + 1;
                                                                     }
-                                                                    rollForRarity = Math.floor(Math.random() * 10000) + 1;
                                                                 }
                                                                 else{
                                                                     if (enemyCount > 3){
@@ -1675,6 +1676,7 @@ function eventEndedEmbedBuilder(message, event, partySuccess){
                 }
             }
             var numberOfMembers = event.members.length;
+            event.experienceHandedOut = 0
             for (var member in event.members){
                 var memberInRpgEvent = event.members[member];
                 var memberInParty = event.membersInParty["rpg-" + memberInRpgEvent.id];
@@ -1693,23 +1695,68 @@ function eventEndedEmbedBuilder(message, event, partySuccess){
                         rewardString = rewardString + "**Tacos:** " + rewards.extraTacos + "\n"
                     }
                     rewardString = rewardString + "**Experience:** " + rewards.xp + "\n**Rpg Points**: " + rewards.rpgPoints + "\n**Items:** \n";
-                    
+                    event.experienceHandedOut = event.experienceHandedOut + rewards.xp
                     for (var item in rewards.items){
                         rewardString = rewardString + rewards.items[item].itemname + " \n";
                     }
-                    // TODO: report the rpg result: success or fail, userIds and levels of players, rewards, enemy names + average group
                 }
                 else{
                     rewards = "No rewards :skull_crossbones:"
                     rewardString = rewardString + " " + rewards + " \n";
                 }
+                
                 embed.addField(memberInRpgEvent.username,  rewardString, true);
                 // TODO: check for achievments, timed, special kills, 
             }
+            var rpgStatData = createRpgStatData(rewardString, event, partySuccess)
+            profileDB.createRpgStatistics(rpgStatData, function(statErr, statRes){
+                if (statErr){
+                    console.log(statErr)
+                }else{
+                    console.log(statRes)
+                }
+            })
             message.channel.send({embed})
             cleanupEventEnded(event);
         }
     })
+}
+
+function createRpgStatData(rewardString, event, partySuccess){
+    var dataToReturn = {}
+    dataToReturn.success = partySuccess
+    dataToReturn.rewards = rewardString
+    dataToReturn.averagelevel = event.averageLevelInParty
+    dataToReturn.xp = event.experienceHandedOut || 0
+    var enemyString = ""
+    for (var enemy in event.enemies){
+        enemyString = enemyString + " " + event.enemies[enemy].name
+    }
+    for (var member in event.membersInParty){
+        if (!dataToReturn.user1){
+            dataToReturn.user1 = event.membersInParty[member].id
+            dataToReturn.user1stats = event.membersInParty[member].maxhp + ", " + event.membersInParty[member].attackDmg + ", "+ event.membersInParty[member].magicDmg + ", " + event.membersInParty[member].armor + ", " + event.membersInParty[member].spirit + ", " + event.membersInParty[member].abilities
+            continue;
+        }else if (!dataToReturn.user2){
+            dataToReturn.user2 = event.membersInParty[member].id
+            dataToReturn.user2stats = event.membersInParty[member].maxhp + ", " + event.membersInParty[member].attackDmg + ", "+ event.membersInParty[member].magicDmg + ", " + event.membersInParty[member].armor + ", " + event.membersInParty[member].spirit + ", " + event.membersInParty[member].abilities
+            continue;
+        }else if (!dataToReturn.user3){
+            dataToReturn.user3 = event.membersInParty[member].id
+            dataToReturn.user3stats = event.membersInParty[member].maxhp + ", " + event.membersInParty[member].attackDmg + ", "+ event.membersInParty[member].magicDmg + ", " + event.membersInParty[member].armor + ", " + event.membersInParty[member].spirit + ", " + event.membersInParty[member].abilities
+            continue;
+        }else if (!dataToReturn.user4){
+            dataToReturn.user4 = event.membersInParty[member].id
+            dataToReturn.user4stats = event.membersInParty[member].maxhp + ", " + event.membersInParty[member].attackDmg + ", "+ event.membersInParty[member].magicDmg + ", " + event.membersInParty[member].armor + ", " + event.membersInParty[member].spirit + ", " + event.membersInParty[member].abilities
+            continue;
+        }else if (!dataToReturn.user5){
+            dataToReturn.user5 = event.membersInParty[member].id
+            dataToReturn.user5stats = event.membersInParty[member].maxhp + ", " + event.membersInParty[member].attackDmg + ", "+ event.membersInParty[member].magicDmg + ", " + event.membersInParty[member].armor + ", " + event.membersInParty[member].spirit + ", " + event.membersInParty[member].abilities
+            continue;
+        }
+    }
+    dataToReturn.enemies = enemyString
+    return dataToReturn
 }
 
 function updateUserRewards(message, memberInParty, rewards){
