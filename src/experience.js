@@ -102,7 +102,7 @@ function extraLevelRewards(message, discordUser, userLeveledUpTo){
     // = peridot amulet - armor 78
     // = garnet amulet - spirit 78
 
-    if (userLeveledUpTo == 30){
+    if (userLeveledUpTo >= 30 && userLeveledUpTo <= 34){
         // give them 1 of 5 of the amulets
 
         profileDB.getItemData(function(err, getItemResponse){
@@ -132,6 +132,121 @@ function extraLevelRewards(message, discordUser, userLeveledUpTo){
                 var amuletRoll = Math.floor(Math.random() * amuletItems.length);
                 console.log(amuletItems[amuletRoll]);
                 itemsObtainedArray.push(amuletItems[amuletRoll])
+                if (itemsObtainedArray.length > 0){
+                    addToUserInventory(discordUser.id, itemsObtainedArray);
+                }
+
+                const embed = new Discord.RichEmbed()
+                .setColor(0xF2E93E)
+                var rewardString = "";
+                rewardString = rewardString + "\n**Items:** \n";
+
+                for (var item in itemsObtainedArray){
+                    var itemAmount = itemsObtainedArray[item].itemAmount ? itemsObtainedArray[item].itemAmount : 1;
+                    rewardString = rewardString + "**" +itemAmount + "**x " + "[**" + itemsObtainedArray[item].itemraritycategory +"**] " + "**"  + itemsObtainedArray[item].itemname + "** - " + itemsObtainedArray[item].itemdescription + ", " +
+                    itemsObtainedArray[item].itemslot + ", " +itemsObtainedArray[item].itemstatistics + " \n";
+                }
+                embed.addField("Level Up Rewards", rewardString, true)
+                .setThumbnail(discordUser.avatarURL)
+                message.channel.send({embed});
+            }
+        })
+    }else if (userLeveledUpTo == 36 || userLeveledUpTo == 35){
+        // give them 1 of 5 of the amulets
+
+        profileDB.getItemData(function(err, getItemResponse){
+            if (err){
+                console.log(err);
+            }else{
+                var allItems = getItemResponse.data
+                var ancientItems = [];
+                var amuletItems = [];
+
+                for (var item in allItems){
+                    
+                    if(allItems[item].itemraritycategory == "ancient"){
+                        ancientItems.push(allItems[item]);
+                    }
+                    else if(allItems[item].itemraritycategory == "amulet" && allItems[item].amuletsource == "levelup35"){
+                        amuletItems.push(allItems[item]);
+                    }
+                }
+                var itemsObtainedArray = [];
+                // roll for ancient
+                var ancientRoll = Math.floor(Math.random() * ancientItems.length);
+                console.log(ancientItems[ancientRoll]);
+                itemsObtainedArray.push(ancientItems[ancientRoll])
+                
+                // roll for amulet
+                var amuletRoll = Math.floor(Math.random() * amuletItems.length);
+                console.log(amuletItems[amuletRoll]);
+                itemsObtainedArray.push(amuletItems[amuletRoll])
+                if (itemsObtainedArray.length > 0){
+                    addToUserInventory(discordUser.id, itemsObtainedArray);
+                }
+
+                const embed = new Discord.RichEmbed()
+                .setColor(0xF2E93E)
+                var rewardString = "";
+                rewardString = rewardString + "\n**Items:** \n";
+
+                for (var item in itemsObtainedArray){
+                    var itemAmount = itemsObtainedArray[item].itemAmount ? itemsObtainedArray[item].itemAmount : 1;
+                    rewardString = rewardString + "**" +itemAmount + "**x " + "[**" + itemsObtainedArray[item].itemraritycategory +"**] " + "**"  + itemsObtainedArray[item].itemname + "** - " + itemsObtainedArray[item].itemdescription + ", " +
+                    itemsObtainedArray[item].itemslot + ", " +itemsObtainedArray[item].itemstatistics + " \n";
+                }
+                embed.addField("Level Up Rewards", rewardString, true)
+                .setThumbnail(discordUser.avatarURL)
+                message.channel.send({embed});
+            }
+        })
+    }else if (userLeveledUpTo >= 37){
+        // give them 1 of 5 of the amulets
+
+        profileDB.getItemData(function(err, getItemResponse){
+            if (err){
+                console.log(err);
+            }else{
+                var allItems = getItemResponse.data
+                var ancientItems = [];
+                var artifactItems = []
+                var amuletItems = [];
+                var lesserAmuletItems = []
+
+                for (var item in allItems){
+                    
+                    if(allItems[item].itemraritycategory == "ancient"){
+                        ancientItems.push(allItems[item]);
+                    }
+                    else if(allItems[item].itemraritycategory == "artifact+" && allItems[item].amuletsource == "levelup37"){
+                        artifactItems.push(allItems[item]);
+                    }
+                    else if(allItems[item].itemraritycategory == "amulet" && allItems[item].amuletsource == "levelup35"){
+                        lesserAmuletItems.push(allItems[item]);
+                    }
+                    else if(allItems[item].itemraritycategory == "amulet" && allItems[item].amuletsource == "levelup37"){
+                        amuletItems.push(allItems[item]);
+                    }
+                }
+                var itemsObtainedArray = [];
+                // roll for ancient
+                var ancientRoll = Math.floor(Math.random() * ancientItems.length);
+                console.log(ancientItems[ancientRoll]);
+                itemsObtainedArray.push(ancientItems[ancientRoll])
+
+                var artifactRoll = Math.floor(Math.random() * artifactItems.length);
+                console.log(artifactItems[artifactRoll]);
+                itemsObtainedArray.push(artifactItems[artifactRoll])
+                
+                // roll for amulet
+                var amuletRoll = Math.floor(Math.random() * amuletItems.length);
+                console.log(amuletItems[amuletRoll]);
+                itemsObtainedArray.push(amuletItems[amuletRoll])
+
+                var lesserAmuletRoll = Math.floor(Math.random() * lesserAmuletItems.length);
+                console.log(lesserAmuletItems[lesserAmuletRoll]);
+                itemsObtainedArray.push(lesserAmuletItems[lesserAmuletRoll])
+
                 if (itemsObtainedArray.length > 0){
                     addToUserInventory(discordUser.id, itemsObtainedArray);
                 }

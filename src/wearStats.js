@@ -151,34 +151,30 @@ module.exports.statsObjectBuilder = function(message, slot1Data, slot2Data, slot
             scavengeCommandExperience.push(experienceCalculate);
             scavengeGuaranteedTacos.push(guaranteedTacoChanceCalculate);
         }
-        /*
-        if (slot1Data.command && slot1Data.command.toLowerCase() == "rpgsuccess"){
-            // var cdrCalculate = slot1Data.itembasecdr + (slot1Data.itemcdrperlevel * userLevel)
+        
+        if (slot1Data.command && slot1Data.command.toLowerCase() == "rpg"){
             var extraTacosCalculate = slot1Data.itembaseextratacos + (slot1Data.itemextratacosperlevel * userLevel)
             var extraTacoChanceCalculate = slot1Data.itembasetacochance + (slot1Data.itemtacochanceperlevel * userLevel);
             var extraTacosPairToCalculate = { extraTacos: extraTacosCalculate, tacoChance: getPercentage([ extraTacoChanceCalculate ]) }
             var experienceCalculate = slot1Data.experiencegain + ((Math.floor(slot1Data.experienceonlevel / slot1Data.experiencegainperlevel * userLevel)) || 0);
             var guaranteedTacoChanceCalculate = slot1Data.guaranteedtacos;
 
-            // scavengeCommandCDR.push(cdrCalculate);
             rpgSuccessExtraTacos.push(extraTacosPairToCalculate);
             rpgSuccessExtraExperience.push(experienceCalculate);
             rpgSuccessGuaranteedTacos.push(guaranteedTacoChanceCalculate);
         }
-        if (slot1Data.command && slot1Data.command.toLowerCase() == "slotswin"){
-            // var cdrCalculate = slot1Data.itembasecdr + (slot1Data.itemcdrperlevel * userLevel)
+        if (slot1Data.command && slot1Data.command.toLowerCase() == "slots"){
             var extraTacosCalculate = slot1Data.itembaseextratacos + (slot1Data.itemextratacosperlevel * userLevel)
             var extraTacoChanceCalculate = slot1Data.itembasetacochance + (slot1Data.itemtacochanceperlevel * userLevel);
-            var extraTacosPairToCalculate = { extraTacos: extraTacosCalculate, tacoChance: getPercentage([ extraTacoChanceCalculate ]) }
+            var extraTacosPairToCalculate = { extraTacos: extraTacosCalculate, tacoChance: getPercentage([ extraTacoChanceCalculate ]), aboveTacoSlots: slot1Data.abovetacoslots }
             var experienceCalculate = slot1Data.experiencegain + ((Math.floor(slot1Data.experienceonlevel / slot1Data.experiencegainperlevel * userLevel)) || 0);
             var guaranteedTacoChanceCalculate = slot1Data.guaranteedtacos;
 
-            // scavengeCommandCDR.push(cdrCalculate);
             slotsWinExtraTacos.push(extraTacosPairToCalculate);
             slotsWinExtraExperience.push(experienceCalculate);
             slotsWinGuaranteedTacos.push(guaranteedTacoChanceCalculate);
         }
-        */
+        
     }
 
     if (slot2Data && slot2active){
@@ -269,34 +265,29 @@ module.exports.statsObjectBuilder = function(message, slot1Data, slot2Data, slot
             scavengeCommandExperience.push(experienceCalculate);
             scavengeGuaranteedTacos.push(guaranteedTacoChanceCalculate);
         }
-        /*
-        if (slot2Data.command && slot2Data.command.toLowerCase() == "rpgsuccess"){
-            // var cdrCalculate = slot2Data.itembasecdr + (slot2Data.itemcdrperlevel * userLevel)
+        if (slot2Data.command && slot2Data.command.toLowerCase() == "rpg"){
             var extraTacosCalculate = slot2Data.itembaseextratacos + (slot2Data.itemextratacosperlevel * userLevel)
             var extraTacoChanceCalculate = slot2Data.itembasetacochance + (slot2Data.itemtacochanceperlevel * userLevel);
             var extraTacosPairToCalculate = { extraTacos: extraTacosCalculate, tacoChance: getPercentage([ extraTacoChanceCalculate ]) }
             var experienceCalculate = slot2Data.experiencegain + ((Math.floor(slot2Data.experienceonlevel / slot2Data.experiencegainperlevel * userLevel)) || 0);
             var guaranteedTacoChanceCalculate = slot2Data.guaranteedtacos;
 
-            // scavengeCommandCDR.push(cdrCalculate);
             rpgSuccessExtraTacos.push(extraTacosPairToCalculate);
             rpgSuccessExtraExperience.push(experienceCalculate);
             rpgSuccessGuaranteedTacos.push(guaranteedTacoChanceCalculate);
         }
-        if (slot2Data.command && slot2Data.command.toLowerCase() == "slotswin"){
-            // var cdrCalculate = slot2Data.itembasecdr + (slot2Data.itemcdrperlevel * userLevel)
+        if (slot2Data.command && slot2Data.command.toLowerCase() == "slots"){
             var extraTacosCalculate = slot2Data.itembaseextratacos + (slot2Data.itemextratacosperlevel * userLevel)
             var extraTacoChanceCalculate = slot2Data.itembasetacochance + (slot2Data.itemtacochanceperlevel * userLevel);
-            var extraTacosPairToCalculate = { extraTacos: extraTacosCalculate, tacoChance: getPercentage([ extraTacoChanceCalculate ]) }
+            var extraTacosPairToCalculate = { extraTacos: extraTacosCalculate, tacoChance: getPercentage([ extraTacoChanceCalculate ]), aboveTacoSlots: slot2Data.abovetacoslots }
             var experienceCalculate = slot2Data.experiencegain + ((Math.floor(slot2Data.experienceonlevel / slot2Data.experiencegainperlevel * userLevel)) || 0);
             var guaranteedTacoChanceCalculate = slot2Data.guaranteedtacos;
 
-            // scavengeCommandCDR.push(cdrCalculate);
             slotsWinExtraTacos.push(extraTacosPairToCalculate);
             slotsWinExtraExperience.push(experienceCalculate);
             slotsWinGuaranteedTacos.push(guaranteedTacoChanceCalculate);
         }
-        */
+        
     }
 
     if (slot3Data && slot3active){
@@ -387,6 +378,32 @@ module.exports.statsObjectBuilder = function(message, slot1Data, slot2Data, slot
             scavengeCommandExperience.push(experienceCalculate);
             scavengeGuaranteedTacos.push(guaranteedTacoChanceCalculate);
         }
+        
+        if (slot3Data.command && slot3Data.command.toLowerCase() == "rpg"){
+            // var cdrCalculate = slot3Data.itembasecdr + (slot3Data.itemcdrperlevel * userLevel)
+            var extraTacosCalculate = slot3Data.itembaseextratacos + (slot3Data.itemextratacosperlevel * userLevel)
+            var extraTacoChanceCalculate = slot3Data.itembasetacochance + (slot3Data.itemtacochanceperlevel * userLevel);
+            var extraTacosPairToCalculate = { extraTacos: extraTacosCalculate, tacoChance: getPercentage([ extraTacoChanceCalculate ]) }
+            var experienceCalculate = slot3Data.experiencegain + ((Math.floor(slot3Data.experienceonlevel / slot3Data.experiencegainperlevel * userLevel)) || 0);
+            var guaranteedTacoChanceCalculate = slot3Data.guaranteedtacos;
+
+            // scavengeCommandCDR.push(cdrCalculate);
+            rpgSuccessExtraTacos.push(extraTacosPairToCalculate);
+            rpgSuccessExtraExperience.push(experienceCalculate);
+            rpgSuccessGuaranteedTacos.push(guaranteedTacoChanceCalculate);
+        }
+        if (slot3Data.command && slot3Data.command.toLowerCase() == "slots"){
+            var extraTacosCalculate = slot3Data.itembaseextratacos + (slot3Data.itemextratacosperlevel * userLevel)
+            var extraTacoChanceCalculate = slot3Data.itembasetacochance + (slot3Data.itemtacochanceperlevel * userLevel);
+            var extraTacosPairToCalculate = { extraTacos: extraTacosCalculate, tacoChance: getPercentage([ extraTacoChanceCalculate ]), aboveTacoSlots: slot3Data.abovetacoslots }
+            var experienceCalculate = slot3Data.experiencegain + ((Math.floor(slot3Data.experienceonlevel / slot3Data.experiencegainperlevel * userLevel)) || 0);
+            var guaranteedTacoChanceCalculate = slot3Data.guaranteedtacos;
+
+            slotsWinExtraTacos.push(extraTacosPairToCalculate);
+            slotsWinExtraExperience.push(experienceCalculate);
+            slotsWinGuaranteedTacos.push(guaranteedTacoChanceCalculate);
+        }
+        
     }
 
     for (var amulet in userAmuletData){
@@ -477,6 +494,30 @@ module.exports.statsObjectBuilder = function(message, slot1Data, slot2Data, slot
             scavengeCommandExperience.push(experienceCalculate);
             scavengeGuaranteedTacos.push(guaranteedTacoChanceCalculate);
         }
+        
+        if (userAmuletData[amulet].command && userAmuletData[amulet].command.toLowerCase() == "rpg"){
+            var extraTacosCalculate = userAmuletData[amulet].itembaseextratacos + (userAmuletData[amulet].itemextratacosperlevel * userLevel)
+            var extraTacoChanceCalculate = userAmuletData[amulet].itembasetacochance + (userAmuletData[amulet].itemtacochanceperlevel * userLevel);
+            var extraTacosPairToCalculate = { extraTacos: extraTacosCalculate, tacoChance: getPercentage([ extraTacoChanceCalculate ]) }
+            var experienceCalculate = userAmuletData[amulet].experiencegain + ((Math.floor(userAmuletData[amulet].experienceonlevel / userAmuletData[amulet].experiencegainperlevel * userLevel)) || 0);
+            var guaranteedTacoChanceCalculate = userAmuletData[amulet].guaranteedtacos;
+
+            rpgSuccessExtraTacos.push(extraTacosPairToCalculate);
+            rpgSuccessExtraExperience.push(experienceCalculate);
+            rpgSuccessGuaranteedTacos.push(guaranteedTacoChanceCalculate);
+        }
+        if (userAmuletData[amulet].command && userAmuletData[amulet].command.toLowerCase() == "slots"){
+            var extraTacosCalculate = userAmuletData[amulet].itembaseextratacos + (userAmuletData[amulet].itemextratacosperlevel * userLevel)
+            var extraTacoChanceCalculate = userAmuletData[amulet].itembasetacochance + (userAmuletData[amulet].itemtacochanceperlevel * userLevel);
+            var extraTacosPairToCalculate = { extraTacos: extraTacosCalculate, tacoChance: getPercentage([ extraTacoChanceCalculate ]), aboveTacoSlots: userAmuletData[amulet].abovetacoslots }
+            var experienceCalculate = userAmuletData[amulet].experiencegain + ((Math.floor(userAmuletData[amulet].experienceonlevel / userAmuletData[amulet].experiencegainperlevel * userLevel)) || 0);
+            var guaranteedTacoChanceCalculate = userAmuletData[amulet].guaranteedtacos;
+
+            slotsWinExtraTacos.push(extraTacosPairToCalculate);
+            slotsWinExtraExperience.push(experienceCalculate);
+            slotsWinGuaranteedTacos.push(guaranteedTacoChanceCalculate);
+        }
+        
     }
 
     thankCommandCDR.sort().reverse();
@@ -511,6 +552,14 @@ module.exports.statsObjectBuilder = function(message, slot1Data, slot2Data, slot
     scavengeCommandExtraTacos.sort().reverse();
     scavengeCommandExperience.sort().reverse();
     scavengeGuaranteedTacos.sort().reverse();
+
+    rpgSuccessExtraTacos.sort().reverse();
+    rpgSuccessExtraExperience.sort().reverse();
+    rpgSuccessGuaranteedTacos.sort().reverse();
+
+    slotsWinExtraTacos.sort().reverse();
+    slotsWinExtraExperience.sort().reverse();
+    slotsWinGuaranteedTacos.sort().reverse();
 
     // have all the arrays populated with the data now  create the string for individual commands
 
@@ -597,7 +646,7 @@ module.exports.statsObjectBuilder = function(message, slot1Data, slot2Data, slot
 
     userItemStats.scavengeCommandCDRPercentage = scavengeCommandCDRPercentage;
     userItemStats.scavengeCommandExtraTacos = scavengeCommandExtraTacos
-    userItemStats.sacengeCommandExperienceGain = scavengeCommandExperienceGain;
+    userItemStats.scavengeCommandExperienceGain = scavengeCommandExperienceGain;
     userItemStats.scavengeCommandGuaranteedTacos = scavengeCommandGuaranteedTacos;
 
 
@@ -606,6 +655,26 @@ module.exports.statsObjectBuilder = function(message, slot1Data, slot2Data, slot
     // console.log(scavengeCommandExtraTacosChancePercentage)
     // console.log(scavengeCommandExperienceGain);
     // console.log("user item stats ! " + JSON.stringify(userItemStats, null, 2));
+
+    //////// RPG
+
+    var rpgSuccessExtraExperienceGain = getTotal(rpgSuccessExtraExperience);
+    var rpgGuaranteedTacos = getTotal(rpgSuccessGuaranteedTacos);
+
+    userItemStats.rpgSuccessExtraTacos = rpgSuccessExtraTacos
+    userItemStats.rpgSuccessExtraExperienceGain = rpgSuccessExtraExperienceGain;
+    userItemStats.rpgSuccessGuaranteedTacos = rpgGuaranteedTacos;
+
+    //////// SLOTS
+
+    var slotsWinExperienceGain = getTotal(slotsWinExtraExperience);
+    var slotsGuaranteedTacos = getTotal(slotsWinGuaranteedTacos);
+
+    userItemStats.slotsWinExtraTacos = slotsWinExtraTacos
+    userItemStats.slotsWinExperienceGain = slotsWinExperienceGain;
+    userItemStats.slotsWinGuaranteedTacos = slotsGuaranteedTacos;
+
+    console.log(userItemStats)
     return userItemStats;
 }
 module.exports.amuletsStringBuilder = function(userAmuletData){
@@ -625,6 +694,8 @@ module.exports.statsStringBuilder = function(message, userItemStats){
     var prepareCommandString = "";
     var fetchCommandString = "";
     var scavengeCommandString = "";
+    var rpgSuccessString = "";
+    var slotsWinString = "";
     var statsString = "";
     
     if (userItemStats.thankCommandCDRPercentage){
@@ -748,12 +819,50 @@ module.exports.statsStringBuilder = function(message, userItemStats){
         scavengeCommandString = scavengeCommandString + "On Scavenge +Guaranteed Tacos (100% chance): " + userItemStats.scavengeCommandGuaranteedTacos + " \n"
     }
 
+    /// RPG
+    
+    if (userItemStats.rpgSuccessExtraTacos){
+        if (userItemStats.rpgSuccessExtraTacos.length > 0){
+            for (var pair in userItemStats.rpgSuccessExtraTacos){
+                if ( userItemStats.rpgSuccessExtraTacos[pair].extraTacos > 0 ){
+                    rpgSuccessString = rpgSuccessString + "On RPG Success +Tacos: " + userItemStats.rpgSuccessExtraTacos[pair].extraTacos + " Chance: " + (userItemStats.rpgSuccessExtraTacos[pair].tacoChance * 100).toFixed(0) + "% \n"
+                }
+            }
+        }
+    }
+    if (userItemStats.rpgSuccessExtraExperienceGain){
+        rpgSuccessString = rpgSuccessString + "On RPG Success +Experience: " + userItemStats.rpgSuccessExtraExperienceGain + " \n"
+    }
+    if (userItemStats.rpgSuccessGuaranteedTacos){
+        rpgSuccessString = rpgSuccessString + "On RPG Success +Guaranteed Tacos (100% chance): " + userItemStats.rpgSuccessGuaranteedTacos + " \n"
+    }
+
+    /// SLOTS
+    
+    if (userItemStats.slotsWinExtraTacos){
+        if (userItemStats.slotsWinExtraTacos.length > 0){
+            for (var pair in userItemStats.slotsWinExtraTacos){
+                if ( userItemStats.slotsWinExtraTacos[pair].extraTacos > 0 ){
+                    slotsWinString = slotsWinString + "On Slots Win +Tacos: " + userItemStats.slotsWinExtraTacos[pair].extraTacos + " Chance: " + (userItemStats.slotsWinExtraTacos[pair].tacoChance * 100).toFixed(0) + "% \n"
+                }
+            }
+        }
+    }
+    if (userItemStats.slotsWinExperienceGain){
+        slotsWinString = slotsWinString + "On Slots Win +Experience: " + userItemStats.slotsWinExperienceGain + " \n"
+    }
+    if (userItemStats.slotsWinGuaranteedTacos){
+        slotsWinString = slotsWinString + "On Slots Win +Guaranteed Tacos (100% chance): " + userItemStats.slotsWinGuaranteedTacos + " \n"
+    }
+
     statsString = statsString + thankCommandString;
     statsString = statsString + sorryCommandString;
     statsString = statsString + cookCommandString;
     statsString = statsString + prepareCommandString;
     statsString = statsString + fetchCommandString;
     statsString = statsString + scavengeCommandString;
+    statsString = statsString + rpgSuccessString;
+    statsString = statsString + slotsWinString
 
     // console.log(statsString);
     return statsString;
@@ -849,22 +958,36 @@ module.exports.slotStringBuilder = function(message, slotData, slotActive){
     }
 }
 
-function calculateIndividualPairExtraTacos(extraTacosChancePairs){
+function calculateIndividualPairExtraTacos(extraTacosChancePairs, extraParams){
 
     var extraTacos = 0;
     for (var index in extraTacosChancePairs){
-        var pair = extraTacosChancePairs[index];
-        var extraTacosToRollOver = 1000 - (pair.tacoChance * 1000);
-        var extraTacosRoll = Math.floor(Math.random() * 1000) + 1;
+        if (extraParams && extraParams.userBid){
+            var pair = extraTacosChancePairs[index];
 
-        if (extraTacosRoll > extraTacosToRollOver){
-            extraTacos = extraTacos + extraTacosChancePairs[index].extraTacos;
-        }
+            if (extraParams.userBid >= pair.aboveTacoSlots){
+                var extraTacosToRollOver = 1000 - (pair.tacoChance * 1000);
+                var extraTacosRoll = Math.floor(Math.random() * 1000) + 1;
+
+                if (extraTacosRoll > extraTacosToRollOver){
+                    extraTacos = extraTacos + extraTacosChancePairs[index].extraTacos;
+                }
+            }
+        }else{
+            var pair = extraTacosChancePairs[index];
+            var extraTacosToRollOver = 1000 - (pair.tacoChance * 1000);
+            var extraTacosRoll = Math.floor(Math.random() * 1000) + 1;
+
+            if (extraTacosRoll > extraTacosToRollOver){
+                extraTacos = extraTacos + extraTacosChancePairs[index].extraTacos;
+            }
+        }   
+        
     }
     return extraTacos;
 }
 
-module.exports.calculateExtraTacos = function(userItemStats, command){
+module.exports.calculateExtraTacos = function(userItemStats, command, extraParams){
     // use the command to figure out the extra tacos, calculate the extra tacos gained
     var extraTacos = 0;
 
@@ -949,6 +1072,32 @@ module.exports.calculateExtraTacos = function(userItemStats, command){
         // return the extra tacos gained
         return extraTacos;
     }
+
+    else if (command == "rpg"){
+        // roll for extra tacos
+        var extraTacosChancePairs = userItemStats.rpgSuccessExtraTacos;
+        extraTacos = extraTacos + calculateIndividualPairExtraTacos( extraTacosChancePairs );
+        
+        var rpgSuccessGuaranteedTacos = userItemStats.rpgSuccessGuaranteedTacos;
+        if (rpgSuccessGuaranteedTacos){
+            extraTacos = extraTacos + rpgSuccessGuaranteedTacos;
+        }
+        // return the extra tacos gained
+        return extraTacos;
+    }
+
+    else if (command == "slots"){
+        // roll for extra tacos
+        var extraTacosChancePairs = userItemStats.slotsWinExtraTacos;
+        extraTacos = extraTacos + calculateIndividualPairExtraTacos( extraTacosChancePairs, extraParams );
+        
+        var slotsWinGuaranteedTacos = userItemStats.slotsWinGuaranteedTacos;
+        if (slotsWinGuaranteedTacos){
+            extraTacos = extraTacos + slotsWinGuaranteedTacos;
+        }
+        // return the extra tacos gained
+        return extraTacos;
+    }
     else{
         return extraTacos
     }
@@ -998,7 +1147,7 @@ module.exports.calculateSecondsReduced = function (userItemStats, command){
 module.exports.getUserWearingStats = function(message, discordUserId, userData, cb){
     profileDB.getItemData(function(err, getItemResponse){
         if (err){
-            // console.log(err);
+            console.log(err);
         }
         else{
             var allItems = getItemResponse.data
@@ -1041,7 +1190,7 @@ module.exports.getUserWearingStats = function(message, discordUserId, userData, 
                     }
                     profileDB.getUserWearInfo(discordUserId, function(getWearErr, getWearRes){
                         if (getWearErr){
-                            // console.log(getWearErr);
+                            console.log(getWearErr);
                         }
                         else{
                             // console.log(getWearRes);
@@ -1072,7 +1221,7 @@ module.exports.getUserWearingStats = function(message, discordUserId, userData, 
                                 // console.log(slot1Id);
                                 profileDB.getItemByIdsWear(slot1Id, slot2Id, slot3Id, function(error, itemResponse){
                                     if (error){
-                                        // console.log(error);
+                                        console.log(error);
                                     }
                                     else{
                                         // console.log(itemResponse);
@@ -1130,6 +1279,15 @@ module.exports.getUserWearingStats = function(message, discordUserId, userData, 
                                 userItemStats.scavengeCommandExtraTacos = []
                                 userItemStats.scavengeCommandExperienceGain = 0
                                 userItemStats.scavengeCommandGuaranteedTacos = 0
+
+                                // RPG
+                                userItemStats.rpgSuccessExtraTacos = []
+                                userItemStats.rpgSuccessExtraExperienceGain = 0
+                                userItemStats.rpgSuccessGuaranteedTacos = 0
+                                // SLOTS
+                                userItemStats.slotsWinExtraTacos = []
+                                userItemStats.slotsWinExperienceGain = 0
+                                userItemStats.slotsWinGuaranteedTacos = 0
                             
                                 cb(null, userItemStats);
                             }

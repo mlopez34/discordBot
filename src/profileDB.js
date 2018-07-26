@@ -31,13 +31,69 @@ module.exports.createUserProfile = function(data, cb) {
       'values(${discordId}, ${tacos}, ${birthdate}, ${lastthanktime},  ${lastsorrytime}, ${lastcooktime}, ${lastscavangetime}, ${tacostands}, ${welcomed}, ${lastpreparetime}, ${pickaxe}, ${map}, ${phone})'
   db.none(query, data)
     .then(function () {
-      cb(null, {
-          status: 'success',
-          message: 'Inserted one user'
-        });
+        var d = {
+            discordId : data.discordId,
+            slot1replacing: false,
+            slot2replacing: false,
+            slot3replacing: false,
+            slot4replacing: false
+        }
+        exports.createUserWearInfo(d, function(e, r){
+            cb(null, {
+                status: 'success',
+                message: 'Inserted one user'
+            });
+        })
     })
     .catch(function (err) {
       cb(err);
+    });
+}
+
+module.exports.getGuildData = function(guildId, cb) {
+    var query = 'select * from ' + config.activityTable + ' where guildId = $1'
+    db.one(query, [guildId])
+    .then(function (data) {
+        //// console.log(data);
+        cb(null, {
+            status: 'success',
+            data: data,
+            message: 'Retrieved ONE guild'
+            });
+        })
+        .catch(function (err) {
+            // console.log(err);
+            cb(err);
+    });
+}
+
+module.exports.createGuildProfile = function(data, cb) {
+    var query = 'insert into '+ config.activityTable + '(guildId)' +
+        'values(${guildId})'
+    db.none(query, data)
+    .then(function () {
+    cb(null, {
+        status: 'success',
+        message: 'Inserted one guild'
+        });
+    })
+    .catch(function (err) {
+    cb(err);
+    });
+}
+
+module.exports.createUserActivity = function(data) {
+    var query = 'insert into '+ config.userActivityTable + '(guildId, discordid, username, command, message)' +
+        'values(${guildId}, ${discordId}, ${username}, ${command}, ${message})'
+    db.none(query, data)
+    .then(function () {
+    console.log( {
+        status: 'success',
+        message: 'Inserted one command activity'
+        });
+    })
+    .catch(function (err) {
+        console.log(err);
     });
 }
 
@@ -81,45 +137,76 @@ module.exports.reduceCommandCooldownByHour = function(userId, command, userProfi
     if (command == "scavenge"){
         commandProperty = "lastscavangetime"
         var currentCommandTime = userProfile.lastscavangetime;
-        newDate = new Date(currentCommandTime.setHours(currentCommandTime.getHours() - HOURS_TO_REDUCE_FOR_COMMAND));        
+        if (!currentCommandTime){
+            cb(null, { status: 'success', message: 'reduced cooldown' } );
+        }else{
+            newDate = new Date(currentCommandTime.setHours(currentCommandTime.getHours() - HOURS_TO_REDUCE_FOR_COMMAND));        
+        }
     }else if (command == "cook"){
         commandProperty = "lastcooktime"
         var currentCommandTime = userProfile.lastcooktime;
-        newDate = new Date(currentCommandTime.setHours(currentCommandTime.getHours() - HOURS_TO_REDUCE_FOR_COMMAND));                
+        if (!currentCommandTime){
+            cb(null, { status: 'success', message: 'reduced cooldown' } );
+        }else{
+            newDate = new Date(currentCommandTime.setHours(currentCommandTime.getHours() - HOURS_TO_REDUCE_FOR_COMMAND));
+        }                
     }else if (command == "RPG"){
         commandProperty = "lastrpgtime"
         var currentCommandTime = userProfile.lastrpgtime;
-        newDate = new Date(currentCommandTime.setHours(currentCommandTime.getHours() - HOURS_TO_REDUCE_FOR_COMMAND));                
+        if (!currentCommandTime){
+            cb(null, { status: 'success', message: 'reduced cooldown' } );
+        }else{
+            newDate = new Date(currentCommandTime.setHours(currentCommandTime.getHours() - HOURS_TO_REDUCE_FOR_COMMAND));                
+        }
     }else if (command == "thank"){
         commandProperty = "lastthanktime"
         var currentCommandTime = userProfile.lastthanktime;
-        newDate = new Date(currentCommandTime.setHours(currentCommandTime.getHours() - HOURS_TO_REDUCE_FOR_COMMAND));                
+        if (!currentCommandTime){
+            cb(null, { status: 'success', message: 'reduced cooldown' } );
+        }else{
+            newDate = new Date(currentCommandTime.setHours(currentCommandTime.getHours() - HOURS_TO_REDUCE_FOR_COMMAND));                
+        }
     }else if (command == "sorry"){
         commandProperty = "lastsorrytime"
         var currentCommandTime = userProfile.lastsorrytime;
-        newDate = new Date(currentCommandTime.setHours(currentCommandTime.getHours() - HOURS_TO_REDUCE_FOR_COMMAND));                
+        if (!currentCommandTime){
+            cb(null, { status: 'success', message: 'reduced cooldown' } );
+        }else{
+            newDate = new Date(currentCommandTime.setHours(currentCommandTime.getHours() - HOURS_TO_REDUCE_FOR_COMMAND));                
+        }
     }else if (command == "prepare"){
         commandProperty = "lastpreparetime"
         var currentCommandTime = userProfile.lastpreparetime;
-        newDate = new Date(currentCommandTime.setHours(currentCommandTime.getHours() - HOURS_TO_REDUCE_FOR_COMMAND));                
+        if (!currentCommandTime){
+            cb(null, { status: 'success', message: 'reduced cooldown' } );
+        }else{
+            newDate = new Date(currentCommandTime.setHours(currentCommandTime.getHours() - HOURS_TO_REDUCE_FOR_COMMAND));                
+        }
     }else if (command == "fetch"){
         commandProperty = "lastfetchtime"
         var currentCommandTime = userProfile.lastfetchtime;
-        newDate = new Date(currentCommandTime.setHours(currentCommandTime.getHours() - HOURS_TO_REDUCE_FOR_COMMAND));                        
+        if (!currentCommandTime){
+            cb(null, { status: 'success', message: 'reduced cooldown' } );
+        }else{
+            newDate = new Date(currentCommandTime.setHours(currentCommandTime.getHours() - HOURS_TO_REDUCE_FOR_COMMAND));                        
+        }
     }
-    var query = 'update ' + config.profileTable + ' set ' + commandProperty + '=$2 where discordid=$1'
+    if (newDate){
+        var query = 'update ' + config.profileTable + ' set ' + commandProperty + '=$2 where discordid=$1'
 
-    //// console.log("new last thank: " + lastThank);
-    db.none(query, [userId, newDate])
-    .then(function () {
-    cb(null, {
-        status: 'success',
-        message: 'reduced cooldown'
+        //// console.log("new last thank: " + lastThank);
+        db.none(query, [userId, newDate])
+        .then(function () {
+        cb(null, {
+            status: 'success',
+            message: 'reduced cooldown'
+            });
+        })
+        .catch(function (err) {
+            cb(err);
         });
-    })
-    .catch(function (err) {
-        cb(err);
-    });
+    }
+    
 }
 
 module.exports.updateUserTacosTrickOrTreat = function(userId, tacos, cb) {
@@ -465,7 +552,7 @@ module.exports.prepareTacos = function(userId, tacosToPrepare, cb){
 }
 
 module.exports.getTopTenTacoUsers = function(cb) {
-  var query = 'select * from ' + config.profileTable + ' order by tacos DESC LIMIT 50'
+  var query = 'select * from ' + config.profileTable + ' order by tacos DESC LIMIT 1000'
   db.query(query)
     .then(function (data) {
       //// console.log(data);
@@ -482,7 +569,7 @@ module.exports.getTopTenTacoUsers = function(cb) {
 }
 
 module.exports.getToplistUsers = function(cb) {
-    var query = 'select * from ' + config.profileTable + ' where experience is not null order by experience DESC LIMIT 50'
+    var query = 'select * from ' + config.profileTable + ' where experience is not null order by experience DESC LIMIT 1000'
     db.query(query)
     .then(function (data) {
     //// console.log(data);
@@ -493,13 +580,13 @@ module.exports.getToplistUsers = function(cb) {
         });
     })
     .catch(function (err) {
-        // console.log(err);
+        console.log(err);
         cb(err);
     });
 }
 
 module.exports.getRpgTopList = function(cb) {
-var query = 'select *  from ' + config.profileTable + ' where rpgpoints is not null ORDER BY currentchallenge DESC NULLS LAST, rpgpoints DESC NULLS LAST LIMIT 100'
+var query = 'select *  from ' + config.profileTable + ' where rpgpoints is not null ORDER BY currentchallenge DESC NULLS LAST, rpgpoints DESC NULLS LAST LIMIT 1000'
 db.query(query)
     .then(function (data) {
     //// console.log(data);
@@ -563,6 +650,37 @@ module.exports.updateSingleStatistic = function(userId, columnName, statisticCou
     });
 }
 
+module.exports.createRpgStatistics = function(rpgStatData, cb){
+    if (!rpgStatData.user2){
+        rpgStatData.user2 = null
+        rpgStatData.user2stats = null
+    }
+    if (!rpgStatData.user3){
+        rpgStatData.user3 = null
+        rpgStatData.user3stats = null
+    }
+    if (!rpgStatData.user4){
+        rpgStatData.user4 = null
+        rpgStatData.user4stats = null
+    }
+    if (!rpgStatData.user5){
+        rpgStatData.user5 = null
+        rpgStatData.user5stats = null
+    }
+    var query = 'insert into '+ config.rpgStatisticsTable + '(user1, user1stats, user2, user2stats, user3, user3stats, user4, user4stats, user5, user5stats, enemies, averagelevel, xp, rewards, success )' +
+        'values(${user1}, ${user1stats}, ${user2}, ${user2stats}, ${user3}, ${user3stats}, ${user4},  ${user4stats}, ${user5}, ${user5stats}, ${enemies}, ${averagelevel}, ${xp}, ${rewards}, ${success})'
+    db.none(query, rpgStatData)
+    .then(function () {
+        cb(null, {
+            status: 'success',
+            message: 'Inserted one user into rpg statistics'
+            });
+        })
+    .catch(function (err) {
+        cb(err);
+    });
+}
+
 module.exports.createUserStatistics = function(userId, columnName, statisticCount, cb) {
     var userStatistics = {
         discordId: userId,
@@ -579,7 +697,8 @@ module.exports.createUserStatistics = function(userId, columnName, statisticCoun
         poisonedtacoscount: 0,
         tacospickedup: 0,
         slotscount: 0,
-        soilcount: 0
+        soilcount: 0,
+        polishcount: 0
     }
     if (columnName){
         userStatistics[columnName] = statisticCount;
@@ -1078,7 +1197,7 @@ module.exports.takeOffWear = function(discordId, slot, cb){
 
 // create wear info
 module.exports.createUserWearInfo = function(data, cb){
-    var query = 'insert into '+ config.wearTable + '(discordId, slot1replacing, slot2replacing, slot3replacing, slot4replacing))' +
+    var query = 'insert into '+ config.wearTable + '(discordId, slot1replacing, slot2replacing, slot3replacing, slot4replacing)' +
     'values(${discordId}, ${slot1replacing}, ${slot2replacing}, ${slot3replacing}, ${slot4replacing} )'
     // console.log(query);
     db.none(query, data)

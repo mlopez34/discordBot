@@ -25,7 +25,7 @@ var moment = require("moment");
 
 var BASE_TACO_COST = 500;
 var BASE_TACO_PREPARE = 100;
-var PICKAXE_COST = 350;
+var PICKAXE_COST = 250;
 var IMPROVED_PICKAXE_COST = 10000;
 var MASTER_PICKAXE_COST = 750000;
 var ETHEREAL_PICKAXE_COST = 12500000
@@ -51,7 +51,9 @@ var RAFFLE_USER_SIZE = 7
 var ARTIFACT_RECIPE_COST = 35000;
 var FLASK_COST = 500;
 var ARTIFACT_RECIPE_ID = 69;
+var TRANSFORMIUM_ID = 155;
 var TACO_PARTY_TIME_TO_LIVE = 300000
+var SHOP_ITEM_COST = 125
 
 
 var activeAuctions = {};
@@ -81,7 +83,7 @@ var EXPERIENCE_GAINS = {
     useCommonItemFive: 5,
     buyStand: 5,
     buyStandPerStand: 2,
-    buyPickaxe: 4,
+    buyPickaxe: 4
 
 }
 
@@ -457,7 +459,7 @@ module.exports.thankCommand = function(message){
     })
     
     // check the user mentioned someone, and the user is not the same user
-    if ( message.mentions.users.size > 0 && discordUserId != mentionedId && !NeedsToAgree[mentionedId] && !mentionedUser.bot){
+    if ( message.mentions.users.size > 0 && discordUserId != mentionedId && !NeedsToAgree[mentionedId]){
         profileDB.getUserProfileData( discordUserId, function(err, thankResponse) {
             if(err){
                 // console.log("in error : " + err.code);
@@ -514,10 +516,10 @@ module.exports.thankCommand = function(message){
                                     })
                                     // send message that the user has 1 more taco
                                     if (extraTacosFromItems > 0){
-                                        message.channel.send(message.author + " thanked " + mentionedUser.username + ", they received 10 tacos! :taco:" + " you received `" + extraTacosFromItems + "` extra tacos");
+                                        message.channel.send(message.author + " thanked " + mentionedUser.username + ", they received `10` tacos! :taco:" + " you received `" + extraTacosFromItems + "` extra tacos");
                                     }
                                     else{
-                                        message.channel.send(message.author + " thanked " + mentionedUser.username + ", they received 10 tacos! :taco: ");
+                                        message.channel.send(message.author + " thanked " + mentionedUser.username + ", they received `10` tacos! :taco: ");
                                     }
                                 }
                             })
@@ -799,7 +801,7 @@ module.exports.prepareCommand = function (message){
                             })
                         }
                         else{
-                            message.channel.send(message.author + " You do not have any stands to prepare tacos with!");
+                            message.channel.send(message.author + " You do not have any stands to prepare tacos with! buy some from the shop. Do -shop to see what you can buy");
                         }
                     }
                     else{
@@ -847,7 +849,7 @@ module.exports.welcomeCommand = function(message){
         profileDB.getUserProfileData( mentionedId, function(err, welcomeResponse) {
             if(err){
                 // user doesnt exist, create their profile first
-                if(err.code === 0 && !NeedsToAgree[mentionedId] ){
+                if(err.code === 0 && ( !NeedsToAgree[mentionedId] || (NeedsToAgree[mentionedId] && NeedsToAgree[mentionedId].hostUser == "Bender")) ){
                     welcomeAgreeToTerms(message, mentionedId, mentionedUser, message.author);
                 }
                 else{
@@ -857,7 +859,7 @@ module.exports.welcomeCommand = function(message){
             else{
                 // user exists, check if user has already been welcomed
                 if ( !welcomeResponse.data.welcomed ){
-                    profileDB.updateUserTacosWelcome(mentionedId, 1, function(err, updateResponse) {
+                    profileDB.updateUserTacosWelcome(mentionedId, 50, function(err, updateResponse) {
                         if (err){
                             // console.log(err);
                         }
@@ -867,7 +869,7 @@ module.exports.welcomeCommand = function(message){
                             if (Last_Five_Welcomes.length >= 5){
                                 Last_Five_Welcomes.shift();
                             }
-                            message.channel.send(mentionedUser + " Welcome! You now have " + (welcomeResponse.data.tacos + 2) + " tacos! :taco:");
+                            message.channel.send(mentionedUser + " Welcome! You now have " + (welcomeResponse.data.tacos + 50) + " tacos! :taco:");
                             stats.statisticsManage(discordUserId, "welcomecount", 1, function(err, statSuccess){
                                 if (err){
                                     // console.log(err);
@@ -889,6 +891,8 @@ module.exports.welcomeCommand = function(message){
                 }
             }
         }) 
+    }else{
+        message.channel.send("You must mention the user that you want to welcome! example: `-welcome @user`")
     }
 }
 
@@ -952,7 +956,7 @@ module.exports.giveCommand = function(message, giveTacoAmount){
                                 lastcooktime: threedaysAgo,
                                 lastsorrytime: threedaysAgo,
                                 lastscavangetime: threedaysAgo,
-                                tacostands: 0,
+                                tacostands: 1,
                                 welcomed: false,
                                 lastpreparetime: threedaysAgo,
                                 pickaxe: "none",
@@ -1623,8 +1627,7 @@ function profileBuilder(message, profileData){
     }
     embed.addField('Items :shopping_bags:', profileData.userItems, true)
     .addField('Achievements :military_medal: ', profileData.achievementString, true)
-    .addField('RPG stats :fleur_de_lis:  ', "Points : " + profileData.rpgPoints + "\nChallenge: " + profileData.currentRpgChallenge, true)
-
+    .addField('RPG stats :fleur_de_lis:  ', "Points : " + profileData.rpgPoints + "\nChallenge: " + profileData.currentRpgChallenge + "\nRating: 1500 ", true)
     message.channel.send({embed});
 }
 
@@ -1655,6 +1658,12 @@ function shopBuilder(message, shopData, long){
             embed.addField('Ethereal Pickaxe', pickaxeCost, true)
         }
         embed.addField('Pasta', PASTA_COST + " :taco:", true)
+        embed.addField('Knife',  SHOP_ITEM_COST + " :taco:", true)
+        embed.addField('Shorts', SHOP_ITEM_COST + " :taco:", true)
+        embed.addField('T-Shirt', SHOP_ITEM_COST + " :taco:", true)
+        embed.addField('Skirt',  SHOP_ITEM_COST + " :taco:", true)
+        embed.addField('Belt', SHOP_ITEM_COST + " :taco:", true)
+        embed.addField('Socks', SHOP_ITEM_COST + " :taco:", true)
         
         // allow for pet to be purchased
         if (shopData.repstatus && (REPUTATIONS[shopData.repstatus.toLowerCase()]) ){
@@ -1665,6 +1674,7 @@ function shopBuilder(message, shopData, long){
             }
         }
         embed.addField('Your current tacos', shopData.userTacos + " :taco:", false)   
+        embed.addField('Descriptions', "-shop long to see descriptions", false)   
         message.channel.send({embed});        
     }
     else {
@@ -1705,11 +1715,11 @@ function shopBuilder(message, shopData, long){
         }
         else if (shopData.pickaxe == "improved"){
             // improved pickaxe
-            pickaxeDescription = "The Ethereal Pickaxe can be used to scavenge. This is the master pickaxe, your adventures will be rewarded with the greatest treasures :diamond_shape_with_a_dot_inside: .";
+            pickaxeDescription = "The Master Pickaxe can be used to scavenge. This is the master pickaxe, your adventures will be rewarded with the greatest treasures :diamond_shape_with_a_dot_inside: ."
             pickaxeCost = MASTER_PICKAXE_COST + " :taco:";
             embed.addBlankField(true)
             .addBlankField(false)
-            .addField('Ethereal Pickaxe', ":diamond_shape_with_a_dot_inside::pick:", true)
+            .addField('Master Pickaxe', ":diamond_shape_with_a_dot_inside::pick:", true)
             .addField('Description', pickaxeDescription, true)
             .addField('Cost', pickaxeCost, true)
             .addField('Command', config.commandString + "buypickaxe", true)
@@ -1732,7 +1742,10 @@ function shopBuilder(message, shopData, long){
         .addField('Description', pastaDescription, true)
         .addField('Cost', PASTA_COST + " :taco:", true)
         .addField('Command', config.commandString + "buyPasta", true)
-        
+        embed.addBlankField(true)
+        embed.addField('Wearable Items', "Knife/Socks: " + SHOP_ITEM_COST + " :taco: gives chance at additional tacos when thanking\nShorts/Skirt: " + SHOP_ITEM_COST + ":taco: gives chance at additional tacos when sorrying\nT-shirt/Belt: " + SHOP_ITEM_COST + ":taco: gives chance at additional tacos when cooking\ndo `-buyitem details` for more info on these items ", true)
+        .addField('Command', config.commandString + "buyitem [itemname] \n**example**: -buyitem knife", true)
+
         // allow for pet to be purchased
         if (shopData.repstatus && (REPUTATIONS[shopData.repstatus.toLowerCase()]) ){
             var userRepLevel = REPUTATIONS[shopData.repstatus.toLowerCase()].level;
@@ -1763,6 +1776,7 @@ module.exports.shopCommand = function(message, args){
     profileDB.getUserProfileData( discordUserId, function(err, shopResponse) {
         if(err){
             // user doesnt exist tell the user they should get some tacos
+            console.log(err)
             agreeToTerms(message, discordUserId);
         }
         else{
@@ -1803,7 +1817,7 @@ module.exports.createPotionCommand = function(message){
         
                         for (var item in allItems){
                             
-                            if(allItems[item].itemraritycategory == "uncommon+"){
+                            if(allItems[item].itemraritycategory == "uncommon+" && allItems[item].amuletsource == "createpotion"){
                                 potionItems.push(allItems[item]);
                             }
                         }
@@ -1843,6 +1857,89 @@ module.exports.createPotionCommand = function(message){
         }
     })
 }
+
+function shopItemDetailsBuilder(message){
+    const embed = new Discord.RichEmbed()
+    .setColor(0x87CEFA)
+    .addField('Knife ', SHOP_ITEM_COST + " :taco: \ngives chance at additional tacos when **thanking**\n💚24 🗡️30 ☄️0 👕25 🙌25 \nbarrier - increase your target's spirit by 650\nstab - deal physical damage to your target", true)
+    .addField('Shorts ', SHOP_ITEM_COST + ":taco: \ngives chance at additional tacos when **sorrying**\n💚24 🗡️0 ☄️30 👕25 🙌25 \nprotect - increase your target's armor by 650 \npoison - deal magical damage and magical damage over time for 3 turns", true)
+    .addField('T-Shirt ', SHOP_ITEM_COST + ":taco: \ngives chance at additional tacos when **cooking**\n💚52 🗡️5 ☄️5 👕43 🙌43 \ntacoheal - heal your target\nhaste - your abilities are cast before enemy abilities", true)
+    .addField('Skirt ', SHOP_ITEM_COST + " :taco: \ngives chance at additional tacos when **sorrying**\n💚24 🗡️0 ☄️30 👕25 🙌25 \nweaken - reduce your targets magical damage by 20%\ncurse - deal magical damage over time to your target", true)
+    .addField('Belt ', SHOP_ITEM_COST + " :taco: \ngives chance at additional tacos when **cooking**\n💚52 🗡️5 ☄️5 👕43 🙌43 \nassist - heal yourself and your target\nfreeze - reduce target's armor by 20%", true)
+    .addField('Socks ', SHOP_ITEM_COST + " :taco: \ngives chance at additional tacos when **thanking**\n💚24 🗡️30 ☄️0 👕25 🙌25 \nscold - reduce your targets spirit by 20%\nslash - deal physical damage to all enemies (60% of your physical damage)", true)
+    .setTimestamp()
+    message.channel.send({embed});
+}
+
+module.exports.buyShopItem = function(message, args){
+    var discordUserId = message.author.id;
+    var itemShortName = args[1]
+
+    profileDB.getUserProfileData( discordUserId, function(err, buyItemRes) {
+        if(err){
+            // user doesnt exist
+            console.log(err);
+        }else{
+            var userTacos = buyItemRes.data.tacos
+            if (userTacos >= SHOP_ITEM_COST){
+                profileDB.getItemData(function(err, getItemResponse){
+                    if (err){
+                        console.log(err);
+                    }
+                    else{
+                        var SHOP_ITEM_ID;
+                        if (itemShortName.toLowerCase() == "knife"){
+                            SHOP_ITEM_ID = 201
+                        }else if (itemShortName.toLowerCase() == "shorts"){
+                            SHOP_ITEM_ID = 202
+                        }else if (itemShortName.toLowerCase() == "t-shirt"){
+                            SHOP_ITEM_ID = 203
+                        }else if (itemShortName.toLowerCase() == "skirt"){
+                            SHOP_ITEM_ID = 204
+                        }else if (itemShortName.toLowerCase() == "belt"){
+                            SHOP_ITEM_ID = 205
+                        }else if (itemShortName.toLowerCase() == "socks"){
+                            SHOP_ITEM_ID = 206
+                        }
+                        else if (itemShortName.toLowerCase() == "pickaxe"){
+                            message.channel.send("to buy a pickaxe type `-buypickaxe`")
+                        }else if (itemShortName.toLowerCase() == "details"){
+                            // display shop builder
+                            shopItemDetailsBuilder(message)
+                        }
+                        if (SHOP_ITEM_ID){
+                            var itemsToAddToInventory = [];
+                            for (var item in getItemResponse.data){
+                                if (getItemResponse.data[item].id == SHOP_ITEM_ID){
+                                    itemsToAddToInventory.push(getItemResponse.data[item])
+                                }
+                            }
+                            addToUserInventory(discordUserId, itemsToAddToInventory);
+                            profileDB.updateUserTacos(discordUserId, SHOP_ITEM_COST * -1, function(updateLSErr, updateLSres){
+                                if(updateLSErr){
+                                    console.log(updateLSErr);
+                                }
+                                else{
+                                    var tacosFound = 0
+                                    shopItemEmbedBuilder(message, itemsToAddToInventory, tacosFound);
+                                    message.channel.send(message.author + " successfully purchased `" + itemShortName.toLowerCase() + "`! \ndo -puton 1 " + itemShortName.toLowerCase() + " OR -puton 2 " + itemShortName.toLowerCase() + "  OR -puton 3 " + itemShortName.toLowerCase() + " \ndo -wearing to check your new item bonuses!")
+                                }
+                            })
+                        }else{
+                            if (itemShortName.toLowerCase() != "details"){
+                                message.channel.send("that is not an item you can buy!")
+                            }
+                        }
+                    }
+                })
+            }else if (itemShortName.toLowerCase() == "details"){
+                shopItemDetailsBuilder(message)
+            }
+        }
+    })
+}
+
+
 
 module.exports.buyFlaskCommand = function(message){
     var discordUserId = message.author.id;
@@ -2082,52 +2179,138 @@ module.exports.buyPastaCommand = function(message, pasta){
 // TODO: mission logic
 
 module.exports.helpCommand = function(message){
-    var commandsList = "List of commands \n ____________ \n "
-    var profile = config.commandString + "profile - display users profile \n "
-    var thank = config.commandString + "thank [user] - thank a user and they get 1 taco! \n "
-    var sorry = config.commandString + "sorry [user] - say sorry to a user and they get 10 tacos! \n "
-    var welcome = config.commandString + "welcome [user] - welcome a user and they get 20 tacoss! \n "
-    var cook = config.commandString + "cook - cook some tacos! \n "
-    var give = config.commandString + "give [user] number - give the mentioned user some number of tacos! \n "
-    var shop = config.commandString + "shop - enter Benders shop! \n "
-    var prepare = config.commandString + "prepare - prepare some tacos from your taco stands! \n "
-    var throwTaco = config.commandString + "throw [user] - throw a taco at the mentioned user \n "
-    var scavenge = config.commandString + "scavenge - use your pickaxe \n "
-    var standings = config.commandString + "standings - show taco standings \n "
-    var itemHelp = config.commandString + "itemhelp - show item help \n "
-    var useItem = config.commandString + "use [item name] [user](if applicable) - uses an item \n "
-    var slots = config.commandString + "slots [number] - play slots and bet [number] of tacos "
-    var raffle = config.commandString + "raffle - enter the raffle, costs 50 tacos, raffle ends when 7 players are in "
-    //var commandsList = "```xl Uppercase lowercase 123 ```"
-    var commandsList = "```css\n" + commandsList + profile + thank + sorry + welcome + cook + give + shop + prepare + throwTaco + scavenge + standings + itemHelp + useItem + slots + raffle + "```";
-    message.channel.send(commandsList);
+    // var commandsList = "List of commands \n ____________ \n "
+    // var profile = config.commandString + "profile - display users profile \n "
+    // var thank = config.commandString + "thank [user] - thank a user and they get 10 tacos! \n "
+    // var sorry = config.commandString + "sorry [user] - say sorry to a user and they get 10 tacos! \n "
+    // var welcome = config.commandString + "welcome [user] - welcome a user and they get 50 tacoss! \n "
+    // var cook = config.commandString + "cook - cook some tacos! \n "
+    // var give = config.commandString + "give [user] number - give the mentioned user some number of tacos! \n "
+    // var shop = config.commandString + "shop OR -shop long - enter Benders shop! \n "
+    // var prepare = config.commandString + "prepare - prepare some tacos from your taco stands! \n "
+    // var throwTaco = config.commandString + "throw [user] - throw a taco at the mentioned user \n "
+    // var scavenge = config.commandString + "scavenge - use your pickaxe to scavenge! \n "
+    // var standings = config.commandString + "standings - show taco standings \n "
+    // var ach = config.commandString + "ach - show your achievements completed \n "
+    // var itemHelp = config.commandString + "itemhelp - show item help  \n"
+    // var useItem = config.commandString + "use [item name] [user](if applicable) - uses an item (common or uncommon) do -inventory \n"
+    // var slots = config.commandString + "slots [number] - play slots and bet [number] of tacos \n"
+    // var fruits = config.commandString + "fruits [user] [user] [user].. up to 10 users to play a game of fruits. -take 1 OR -take 2 last player alive wins \n"
+    // var raffle = config.commandString + "raffle - enter the raffle, costs 50 tacos, raffle ends when 7 players are in \n"
+    // //var commandsList = "```xl Uppercase lowercase 123 ```"
+    // var commandsList = "```css\n" + commandsList + profile + thank + sorry + fruits + welcome + cook + give + shop + prepare + throwTaco + scavenge + ach + standings + itemHelp + useItem + slots + raffle + "```";
+    // message.channel.send(commandsList);
+    const embed = {
+        "description": "Don't know where to start? No idea what to do?\nCheck out our [Website](http://benderdiscord.com/) and join our [Support Server](https://discord.gg/sHdKrHW)!",
+        "color": 11795163,
+        "author": {
+          "name": "Bender Help",
+          "url": "http://benderdiscord.com/",
+          "icon_url": "https://cdn.discordapp.com/avatars/320703328730349578/af68d11f9ecf74bd3f9bf99cebcfe107.jpg"
+        },
+        "fields": [
+          {
+            "name": "Command List",
+            "value": "`-profile [user]        >` Display someone's profile!\n`-ach                   >` Display your achievements!\n`-standings             >` Display your local leaderboard!\n\n`-welcome [user]        >` Welcome a user and they get **50** tacos!\n`-thank [user]          >` Thank a user and they get **10** tacos!\n`-sorry [user]          >` Say sorry to a user and they get **10** tacos!\n\n`-shop (long)           >` Display the (detailed) shop!\n`-repshop               >` Display the Reputation shop!\n\n`-scavenge              >` Scavenge items using your pickaxe!\n`-prepare               >` Prepare tacos using your stands!\n`-cook                  >` Cook some tacos!\n\n`-give [user] [number]  >` Give a user a certain amount of your tacos!\n`-throw [user]          >` Throw **10** tacos at a user!\n`-pickup                >` Pick up tacos off the ground!\n\n`-slots [number]        >` Play slots and lose or win tacos!\n`-raffle                >` Enter the raffle, joining costs for **50** tacos!\n"
+          },
+          {
+            "name": "-fruits [user] [user] [user] ...",
+            "value": "Play a game of fruits by tagging up to 9 other people with this command!\nTake one or two fruits and attempt to force your opponents to take a bomb!"
+          },
+          {
+            "name": "Other Help Commands",
+            "value": "`-itemhelp              >` Display all commands related to items!\n`-rpghelp               >` Display all commands related to RPGs!"
+          }
+        ]
+      };
+      
+      message.channel.send({ embed });      
 }
 
 module.exports.itemhelpCommand = function(message){
-    var commandsList = "```css\nList of commands \n ____________ \n"
-    var puton =   " -puton [1-3] [first word of item] - you will wear the item!\n"
-    var takeoff = " -takeoff [1-3] - you will take off the item!\n"
-    var wearing = " -wearing - list of all the items you are wearing, and a summary\n"
-    var combine = " -combine - combine the item into an improved or refined item - you need 5 for rares, and 4 for ancients\n"
-    var trade =   " -trade [user] [first word of item] [amount] or -trade [user] [first word of item] [amount] tacos [amount] to trade an item with a user\n"
-    var auction = " -auction [first word of item] create an auction for an item where users can bid \n"
-    var bid =     " -bid [user] [amount] bid for the item the user is auctioning for the amount of tacos\n"
-    var rules = " \nRules: You can only wear 3 items MAX at a time, you cannot wear an item of the same item slot as another item. \nItem bonuses take effect after the number of hours the command they affect. \nItems must be taken off before putting on another item on the same slot. \nThe tag [ACTIVE] means the item is now affecting your commands!```"
-    commandsList = commandsList + puton + takeoff + wearing + combine + trade + auction + bid + rules
-    message.channel.send(commandsList);
+    // var commandsList = "```css\nList of commands \n ____________ \n"
+    // var inventory =   " -inventory, shows your commons or uncommons collected!\n"
+    // var party =   " -party, create a 5 minute party with uncommons collected!\n"
+    // var rares =   " -rares OR -rares long, shows your rares collected!\n"
+    // var ancients =   " -ancients OR -ancients long, shows your ancients collected!\n"
+    // var artifacts =   " -artifacts OR -artifacts long, shows your artifacts collected!\n"
+    // var amulets =   " -amulets, shows your amulets collected!\n"
+    // var rpghelp =   " **** -rpghelp, show rpg help ****\n"
+    // var puton =   " -puton [1-3] [item code, ie running OR runningimproved] - you will wear the item!\n"
+    // var takeoff = " -takeoff [1-3] - you will take off the item!\n"
+    // var wearing = " -wearing - list of all the items you are wearing, and a summary\n"
+    // var combine = " -combine - combine the item into an improved or refined item - you need 5 for rares, and 4 for ancients\n"
+    // var trade =   " -trade [user] [first word of item] [amount] or -trade [user] [item code, ie running OR runningimproved] [amount] tacos [amount] to trade an item with a user\n"
+    // var auction = " -auction [first word of item] create an auction for an item where users can bid \n"
+    // var bid =     " -bid [user] [amount] bid for the item the user is auctioning for the amount of tacos\n"
+    // var rules = " \nRules: You can only wear 3 items MAX at a time, you cannot wear an item of the same item slot as another item. \nItem bonuses take effect after the number of hours the command they affect. \nItems must be taken off before putting on another item on the same slot. \nThe tag [ACTIVE] means the item is now affecting your commands!```"
+    // commandsList = commandsList + inventory + party + rares + ancients + artifacts + amulets + rpghelp + puton + takeoff + wearing + combine + trade + auction + bid + rules
+    const embed = {
+        "description": "Don't know where to start? No idea what to do?\nCheck out our [Website](http://benderdiscord.com/) and join our [Support Server](https://discord.gg/sHdKrHW)!",
+        "color": 11795163,
+        "author": {
+          "name": "Bender Item Help",
+          "url": "http://benderdiscord.com/",
+          "icon_url": "https://cdn.discordapp.com/avatars/320703328730349578/af68d11f9ecf74bd3f9bf99cebcfe107.jpg"
+        },
+        "fields": [
+          {
+            "name": "Inventories",
+            "value": "`-inventory             >` Display all your common and uncommon items!\n`-rares (long)          >` Display all your rare items (with their details)!\n`-ancients (long)       >` Display all your ancient items (with their details)!\n`-artifacts (long)      >` Display all your artifacts (with their details)!\n`-amulets               >` Display all your amulets!"
+          },
+          {
+            "name": "Wearing Items",
+            "value": "`-puton [1-3] [ItemID]  >` Put on a rare or ancient item to wear it!\n`-takeoff [1-3]         >` Take off an item from one of the slots!\n`-wearing               >` Display all items you're wearing with their stats!\n`-combine [ItemID]      >` Combine 5 rares or 4 ancients of the same kind!"
+          },
+          {
+            "name": "Trading Items",
+            "value": "`-auction [ItemID] [Amount]      >` Put up one or more items for auction!\n`-bid [user] [amount]            >` Bid tacos on someones auctioned item!\n`-trade [user] [ItemID] [Amount] >` Trade items with someone!\n⤷ Alternatively:\n`-trade [user] [ItemID] [Amount] tacos [amount] >` to trade in exchange for tacos!"
+          },
+          {
+            "name": "Item Rules",
+            "value": "You can only wear three items at a time, one in each slot.\n\nEach item belongs to a respective body part *(Chest, Wrist, etc.)*, you cannot wear two items that would go on the same part.\n\nEach item gives certain bonuses, those will activate after a certain amount of time after putting on the item.\n\nThe tag **[ACTIVE]** when displaying the items you are wearing indicates that said bonus currently applies.\n\nThe Item ID of any item is mostly the first word of its name, though there are few exceptions where the second word is used instead. (E.g. Running Shoes -> running)"
+          }
+        ]
+      };
+      message.channel.send({ embed });
 }
 
 module.exports.rpghelpCommand = function(message){
-    var commandsList = "```css\nList of commands \n ____________ \n"
-    var rpg =   " -rpgstart [user] [user] [user] start an rpg event with the mentioned users [ 2-4 mentions required]\n"
-    var cast = " -cast [ability] [target] - eg: -cast tacoheal [user] OR -cast attack 2 OR -cast iceshards\n"
-    var rules = " abilities and stats come from the items you are wearing and level\n"
-    var stats = " 👕 = armor (reduces damage from attacks) \n 🙌 = spirit (reduces damage from magic attacks) \n 🗡 = attack dmg (increases damage from attacks) \n ☄️ = magic dmg (increases damage from magic attacks) \n"
-    var buffsStatuses = " buffs = helpful abilities, statuses = harmful abilities \n"
-    var death = " 💀 = dead, can no longer use abilities unless revived \n"
-    var allMustUseAbilities = " all users must use one ability per event turn```"
-    commandsList = commandsList + rpg + cast + rules + stats + buffsStatuses + death + allMustUseAbilities 
-    message.channel.send(commandsList);
+    // var commandsList = "```css\nList of commands \n ____________ \n"
+    // var rpgchallenge = " -rpgchallenge [1-10] [user] [user] [user] start an rpg challenge event with the mentioned users [ 2-4 mentions required (5 player intended)] example: -rpgchallenge 1 [user] [user]\n"
+    // var rpg =   " -rpgstart [user] [user] [user] start an rpg event with the mentioned users [ 2-4 mentions required]\n"
+    // var cast = " -cast [ability] [target] - eg: -cast tacoheal [user] OR -cast attack 2 OR -cast iceshards\n"
+    // var rules = " abilities and stats come from the items you are wearing and level\n"
+    // var stats = " 👕 = armor (reduces damage from attacks) \n 🙌 = spirit (reduces damage from magic attacks) \n 🗡 = attack dmg (increases damage from attacks) \n ☄️ = magic dmg (increases damage from magic attacks) \n"
+    // var buffsStatuses = " buffs = helpful abilities, statuses = harmful abilities \n"
+    // var death = " 💀 = dead, can no longer use abilities unless revived \n"
+    // var allMustUseAbilities = " all users must use one ability per event turn```"
+    // commandsList = commandsList + rpg + rpgchallenge + cast + rules + stats + buffsStatuses + death + allMustUseAbilities 
+    // message.channel.send(commandsList);
+    const embed = {
+        "description": "Don't know where to start? No idea what to do?\nCheck out our [Website](http://benderdiscord.com/) and join our [Support Server](https://discord.gg/sHdKrHW)!",
+        "color": 11795163,
+        "author": {
+          "name": "Bender RPG Help",
+          "url": "http://benderdiscord.com/",
+          "icon_url": "https://cdn.discordapp.com/avatars/320703328730349578/af68d11f9ecf74bd3f9bf99cebcfe107.jpg"
+        },
+        "fields": [
+          {
+            "name": "Inventories",
+            "value": "`-rpgstats                       >` Display your abilities and rpg stats!\n`-rpgstart [1-4 user mentions]   >` Start an rpg with up to four other people!\n`-rpgchallege [1-10] [1-4 users] >` Start an rpg challenge with four other people!\n`-cast [ability] [target number/user]   >` Cast an ability on a target or user!\n**example**: -cast attack 1 (attacks enemy 1)\n-cast barrier @user (casts barrier on the user mentioned)\n-cast slash (deals damage to all enemies)"
+          },
+          {
+            "name": "Abilities",
+            "value": "You will get different abilities and stats depending on what items you are wearing.\nAll users must cast one ability per event turn."
+          },
+          {
+            "name": "Stats",
+            "value": ":green_heart: = Health (The amount of  HP you have.)\n:shield: = Armor (Reduces damage taken from physical attacks.)\n:raised_hands: = Spirit (Reduces damage taken from magical attacks.)\n:dagger: = Physical Strength\n:comet: = Magical Strength "
+          }
+        ]
+      };
+      message.channel.send({ embed });
 }
 
 function getProfileForAchievement(discordUserId, message, profileResponse){
@@ -2416,8 +2599,7 @@ function inventoryEmbedBuilder(message, itemsMap, allItems){
         if (itemsMap.hasOwnProperty(key)) {
             // 
             if (allItems[key] && (allItems[key].itemraritycategory == "common" 
-                || allItems[key].itemraritycategory == "uncommon" 
-                || allItems[key].itemraritycategory == "amulet" 
+                || allItems[key].itemraritycategory == "uncommon"
                 || allItems[key].itemraritycategory == "uncommon+" )){
                 // console.log(key + " " + allItems[key].itemname)
                 inventoryString = "**"+allItems[key].itemname + "** - " +  itemsMap[key] + " - " + allItems[key].itemslot +"\n" + inventoryString;
@@ -2427,7 +2609,7 @@ function inventoryEmbedBuilder(message, itemsMap, allItems){
     embed
     .addField("Item Name  |  Count  |  Slot", inventoryString, true)
     .setAuthor(message.author.username +"'s Inventory ")
-    .setDescription( ":left_luggage:" )
+    .setDescription( ":left_luggage: \n-rares | -rares long to view your rare items\n-ancients | -ancients long to view your ancient items\n-artifacts | -artifacts long to view your artifacts\n-amulets to view your amulets " )
     .setThumbnail(message.author.avatarURL)
     .setColor(0x06e8e8)
     message.channel.send({embed});
@@ -2561,6 +2743,12 @@ module.exports.scavangeCommand = function (message){
                                 var gotUncommon = false;
                                 var itemsObtainedArray = [];
                                 var highestRarityFound = 1
+				
+                                if (discordUserId == "248946965633564673"){
+                                    if (rollsCount < 4){
+                                        rollsCount++
+                                    }
+                                }
 
                                 for (var i = 0; i < rollsCount; i++){
                                     var rarityRoll = Math.floor(Math.random() * 10000) + 1;
@@ -2569,11 +2757,17 @@ module.exports.scavangeCommand = function (message){
                                     if (!gotUncommon && rollsCount > 4){
                                         // guaranteed more than uncommon +
                                         rarityRoll = Math.floor(Math.random() * 1500) + 8501;
+                                        if (discordUserId == "248946965633564673"){
+                                            rarityRoll = 9965
+                                        }
                                         gotUncommon = true;
                                     }
                                     else if(!gotUncommon && rollsCount > 3){
                                         // guaranteed uncommon +
                                         rarityRoll = Math.floor(Math.random() * 2000) + 8001;
+                                        if (discordUserId == "248946965633564673"){
+                                            rarityRoll = 9900
+                                        }
                                         gotUncommon = true;
                                     }
                                     if (rarityRoll > ARTIFACT_MIN_ROLL){
@@ -2700,7 +2894,7 @@ module.exports.scavangeCommand = function (message){
             
         }
         else{
-            message.channel.send(message.author + " You need a pickaxe!");
+            message.channel.send(message.author + " You need a pickaxe! buy one from the shop, do `-shop` OR `-shop long` to see what you can buy");
         }
     })
 }
@@ -2711,7 +2905,11 @@ function scavengeEmbedBuilder(message, itemsScavenged, tacosFound){
     for (var item in itemsScavenged){
         var itemAmount = itemsScavenged[item].itemAmount ? itemsScavenged[item].itemAmount : 1;
         itemsMessage = itemsMessage + "**" +itemAmount + "**x " + "[**" + itemsScavenged[item].itemraritycategory +"**] " + "**"  + itemsScavenged[item].itemname + "** - " + itemsScavenged[item].itemdescription + ", " +
-        itemsScavenged[item].itemslot + ", " +itemsScavenged[item].itemstatistics + " \n";
+        itemsScavenged[item].itemslot + ", " +itemsScavenged[item].itemstatistics
+        if (itemsScavenged[item].itemraritycategory == "ancient" || (itemsScavenged[item].itemraritycategory == "rare" && itemsScavenged[item].itemslot != "consumable" ) || itemsScavenged[item].itemraritycategory == "artifact"){
+            itemsMessage = itemsMessage + ". **to wear** -puton [1-3] " + itemsScavenged[item].itemshortname
+        }
+        itemsMessage = itemsMessage + " \n";
     }
     if (tacosFound > 0){
         itemsMessage = itemsMessage + "**Tacos Found**: :taco: " + tacosFound;
@@ -2719,6 +2917,25 @@ function scavengeEmbedBuilder(message, itemsScavenged, tacosFound){
 
     const embed = new Discord.RichEmbed()
     .addField("[" + message.author.username +"'s Scavenge] :pick: Items found: ", itemsMessage, true)
+    .setThumbnail(message.author.avatarURL)
+    .setColor(0xbfa5ff)
+    message.channel.send({embed});
+}
+
+function shopItemEmbedBuilder(message, itemsScavenged, tacosFound){
+    // create a quoted message of all the items
+    var itemsMessage = ""
+    for (var item in itemsScavenged){
+        var itemAmount = itemsScavenged[item].itemAmount ? itemsScavenged[item].itemAmount : 1;
+        itemsMessage = itemsMessage + "**" +itemAmount + "**x " + "**"  + itemsScavenged[item].itemname + "** - " + itemsScavenged[item].itemdescription + ", " +
+        itemsScavenged[item].itemslot + ", " +itemsScavenged[item].itemstatistics + " \n";
+    }
+    if (tacosFound > 0){
+        itemsMessage = itemsMessage + "**Tacos Found**: :taco: " + tacosFound;
+    }
+
+    const embed = new Discord.RichEmbed()
+    .addField("Items purchased: ", itemsMessage, true)
     .setThumbnail(message.author.avatarURL)
     .setColor(0xbfa5ff)
     message.channel.send({embed});
@@ -2743,54 +2960,75 @@ module.exports.slotsCommand = function(message, tacosBet){
         profileDB.getUserProfileData(discordUserId, function(getProfileError, getProfileResponse){
             if (getProfileError){
                 // console.log(getProfileError);
+                console.log(getProfileError)
                 agreeToTerms(message, discordUserId);
             }
             else{
                 if (getProfileResponse.data.tacos >= bet){
-                    // spin the slots
-                    var firstRoll = Math.floor(Math.random() * 8);
-                    var secondRoll = Math.floor(Math.random() * 8);
-                    var thirdRoll = Math.floor(Math.random() * 8);
-                    // 7 emojis
-                    var emojis = [
-                        ":taco:",
-                        ":burrito:",
-                        ":hot_pepper:",
-                        ":grapes:",
-                        ":avocado:",
-                        ":tropical_drink:",
-                        ":stuffed_flatbread:",
-                        ":eggplant:"
-                    ]
-                    var emojisRolled = [emojis[firstRoll], emojis[secondRoll], emojis[thirdRoll]];
-                    var tacosWon = calculateSlotsWin(firstRoll, secondRoll, thirdRoll, bet);
-
-                    profileDB.updateUserTacos(discordUserId, tacosWon, function(updateErr, updateRes){
-                        if (updateErr){
-                            // console.log(updateErr);
-                        }
-                        else{
-                            // console.log(updateRes);
-                            // check for achievement
-                            if (tacosWon >= 1 && bet >= 5000){
-                                var data = {
-                                    slotsTacosBet: bet
-                                };
-                                data.achievements = getProfileResponse.data.achievements;
-                                achiev.checkForAchievements(discordUserId, data, message);
+                    var userLevel = getProfileResponse.data.level;
+                    wearStats.getUserWearingStats(message, discordUserId, {userLevel: userLevel}, function(wearErr, wearRes){
+                        if (wearErr){
+                            console.log(wearErr)
+                        }else{
+                            // spin the slots
+                            var firstRoll = Math.floor(Math.random() * 8);
+                            var secondRoll = Math.floor(Math.random() * 8);
+                            var thirdRoll = Math.floor(Math.random() * 8);
+                            // 7 emojis
+                            var emojis = [
+                                ":taco:",
+                                ":burrito:",
+                                ":hot_pepper:",
+                                ":grapes:",
+                                ":avocado:",
+                                ":tropical_drink:",
+                                ":stuffed_flatbread:",
+                                ":eggplant:"
+                            ]
+                            var emojisRolled = [emojis[firstRoll], emojis[secondRoll], emojis[thirdRoll]];
+                            var tacosWon = calculateSlotsWin(firstRoll, secondRoll, thirdRoll, bet);
+                            var extraTacosFromItems = 0
+                            var experienceFromItems = 0;
+                            // IF SLOTS WIN IS HIGHER THAN 0 ADD TO THE TACOS WON
+                            if (tacosWon > 0){
+                                extraTacosFromItems = wearStats.calculateExtraTacos( wearRes, "slots", {userBid: bet } ); // 0 or extra
+                                experienceFromItems = wearRes.slotsWinExperienceGain ? wearRes.slotsWinExperienceGain : 0;
                             }
-                            stats.statisticsManage(discordUserId, "slotscount", 1, function(staterr, statSuccess){
-                                if (staterr){
-                                    // console.log(staterr);
+
+                            profileDB.updateUserTacos(discordUserId, tacosWon + extraTacosFromItems, function(updateErr, updateRes){
+                                if (updateErr){
+                                    // console.log(updateErr);
                                 }
                                 else{
-                                    // check achievements??
-                                    getProfileForAchievement(discordUserId, message, getProfileResponse)
+                                    // console.log(updateRes);
+                                    // check for achievement
+                                    if (tacosWon >= 1 && bet >= 5000){
+                                        var data = {
+                                            slotsTacosBet: bet
+                                        };
+                                        data.achievements = getProfileResponse.data.achievements;
+                                        achiev.checkForAchievements(discordUserId, data, message);
+
+                                        // get experience from winning
+                                        if ( tacosWon + extraTacosFromItems >= 10000 ){
+                                            experience.gainExperience(message, message.author, experienceFromItems, getProfileResponse);
+                                        }
+                                    }
+                                    stats.statisticsManage(discordUserId, "slotscount", 1, function(staterr, statSuccess){
+                                        if (staterr){
+                                            // console.log(staterr);
+                                        }
+                                        else{
+                                            // check achievements??
+                                            getProfileForAchievement(discordUserId, message, getProfileResponse)
+                                        }
+                                    })
                                 }
                             })
+                            slotsEmbedBuilder(emojisRolled, tacosWon, message, extraTacosFromItems);
                         }
                     })
-                    slotsEmbedBuilder(emojisRolled, tacosWon, message);
+                    
                 }
                 else{
                     message.channel.send(message.author + " You don't have enough tacos!");
@@ -2881,14 +3119,16 @@ function calculateSlotsWin(firstRoll, secondRoll, thirdRoll, bet){
     return (bet * -1);
 }
 
-function slotsEmbedBuilder(emojisRolled, tacosWon, message){
+function slotsEmbedBuilder(emojisRolled, tacosWon, message, extraTacosFromItems){
 
     const embed = new Discord.RichEmbed()
     .setColor(0xff9c4c)
     embed.addField("Taco Slots", emojisRolled[0] + " " + emojisRolled[1] + " " +  emojisRolled[2] , false)
     if (tacosWon > 0){
-        embed
-        .addField('You win!', tacosWon + " :taco: tacos won" , true)
+        embed.addField('You win!', tacosWon + " :taco: tacos won" , true)
+    }
+    if (extraTacosFromItems > 0){
+        embed.addField('Extra tacos from Items!', extraTacosFromItems + " :taco: tacos won" , true)
     }
     message.channel.send({embed});
 }
@@ -2928,7 +3168,7 @@ module.exports.miniGameCommand = function(message) {
             }
             
         }
-        if (listOfPlayers.length > 3 && validGroup){
+        if (listOfPlayers.length >= 2 && validGroup){
             var currentGame = new miniboard(listOfPlayers);
             
             for (var user in team){
@@ -3135,12 +3375,12 @@ module.exports.playCommand = function(message){
 }
 
 
-module.exports.toplistCommand = function(message, listOfUsers){
+module.exports.toplistCommand = function(message, listOfUsers, global){
     // query for top 10 then build the embed for top ten users
     profileDB.getToplistUsers(function(error, toplistResponse){
         if (error){
             // console.log(error);
-            agreeToTerms(message, discordUserId);
+            agreeToTerms(message, message.author.id);
         }
         else{
             //create embed
@@ -3159,7 +3399,12 @@ module.exports.toplistCommand = function(message, listOfUsers){
                         // user is not on the server currently - just skip them
                         continue;
                     }
-                    var toplistUsername = toplistUser.username;
+                    var toplistUsername;
+                    if (global){
+                        toplistUsername = toplistUser.username
+                    }else{
+                        toplistUsername = toplistUser.user.username; 
+                    }
                     var toplistXP = user.experience;
                     var userLevel = user.level;
                     toplistMap[toplistCount] = {username: toplistUsername, experience: toplistXP, level: userLevel}
@@ -3186,11 +3431,11 @@ function topListEmbedBuilder(topXpString, message){
     message.channel.send({embed});
 }
 
-module.exports.rpgTopListCommand = function(message, listOfUsers){
+module.exports.rpgTopListCommand = function(message, listOfUsers, global){
     // query for top 10 then build the embed for top ten users
     profileDB.getRpgTopList(function(error, toplistResponse){
         if (error){
-            // console.log(error);
+            console.log(error);
             agreeToTerms(message, discordUserId);
         }
         else{
@@ -3210,7 +3455,12 @@ module.exports.rpgTopListCommand = function(message, listOfUsers){
                         // user is not on the server currently - just skip them
                         continue;
                     }
-                    var toplistUsername = toplistUser.username;
+                    var toplistUsername;
+                    if (global){
+                        toplistUsername = toplistUser.username
+                    }else{
+                        toplistUsername = toplistUser.user.username; 
+                    }
                     var toplistChallenge = user.currentchallenge || 0;
                     var toplistRpg = user.rpgpoints;
                     toplistMap[toplistCount] = { username: toplistUsername, rpgPoints: toplistRpg, challengedefeated: toplistChallenge }
@@ -3236,11 +3486,11 @@ function rpgTopListEmbedBuilder(topRpgString, message){
     message.channel.send({embed});
 }
 
-module.exports.standingsCommand = function(message, listOfUsers){
+module.exports.standingsCommand = function(message, listOfUsers, global){
     // query for top 10 then build the embed for top ten users
     profileDB.getTopTenTacoUsers(function(error, topTenResponse){
         if (error){
-            // console.log(error);
+            console.log(error);
             agreeToTerms(message, discordUserId);
         }
         else{
@@ -3260,9 +3510,14 @@ module.exports.standingsCommand = function(message, listOfUsers){
                         // user is not on the server currently - just skip them
                         continue;
                     }
-                    var topTenUsername = topTenUser.username;
+                    var toplistUsername;
+                    if (global){
+                        toplistUsername = topTenUser.username
+                    }else{
+                        toplistUsername = topTenUser.user.username; 
+                    }
                     var topTenTacos = user.tacos;
-                    topTenMap[topTenCount] = {username: topTenUsername, tacos: topTenTacos}
+                    topTenMap[topTenCount] = {username: toplistUsername, tacos: topTenTacos}
                     topTenCount++;
                 }
             }
@@ -3298,7 +3553,7 @@ function initialUserProfile(discordUserId){
         lastcooktime: threedaysAgo,
         lastsorrytime: threedaysAgo,
         lastscavangetime: threedaysAgo,
-        tacostands: 0,
+        tacostands: 1,
         welcomed: false,
         lastpreparetime: threedaysAgo,
         pickaxe: "none",
@@ -3909,7 +4164,7 @@ module.exports.useCommand = function(message, args){
                         for (var index in allItemsResponse.data){
                             itemsMapbyId[allItemsResponse.data[index].id] = allItemsResponse.data[index];
                             // console.log(allItemsResponse.data[index]);
-                            if (allItemsResponse.data[index].itemraritycategory == "rare"){
+                            if (allItemsResponse.data[index].itemraritycategory == "rare" && allItemsResponse.data[index].emoji != ":seedling:"){
                                 // add to list of rares
                                 listOfRares.push(allItemsResponse.data[index]);
                             }
@@ -4133,6 +4388,13 @@ module.exports.useCommand = function(message, args){
                 }
             }
         })
+    }else if (args && args.length > 1 && (args[1].toLowerCase() == "chicken"
+            || args[1].toLowerCase() == "tortilla"
+            || args[1].toLowerCase() == "steak"
+            || args[1].toLowerCase() == "beef"
+            || args[1].toLowerCase() == "salsa"
+            || args[1].toLowerCase() == "orchata" )){
+            message.channel.send("These are ingredients for a party, when you have all 6 uncommons do -party to create a party for everyone!")
     }else{
         // use the item based on itemshortname
         var itemShortName = (args.length >= 2) ? args[1] : undefined;
@@ -4239,6 +4501,9 @@ module.exports.combineCommand = function(message, args){
                                         itemCount = 4
                                     }
                                     else if (rarityOfItem == "rare+"){
+                                        itemCount = 5
+                                    }
+                                    else if (rarityOfItem == "rare++"){
                                         itemCount = 5
                                     }
                                     else if (rarityOfItem == "ancient+"){
@@ -4353,8 +4618,46 @@ module.exports.combineCommand = function(message, args){
                                         }
                                     }
                                     
-                                }
-                                else if (itemsInInventoryCountMap[idOfMyItem] && 
+                                }else if (rarityOfMyItem && rarityOfMyItem == "rare++"
+                                    && itemsInInventoryCountMap[idOfMyItem] 
+                                    && itemsInInventoryCountMap[idOfMyItem] >= itemCount){
+                                    // use transformium
+                                    var transId = TRANSFORMIUM_ID
+                                    var transAdded = false;
+                                    if (itemsInInventoryCountMap[transId] >= 1){
+                                        for (var item in inventoryResponse.data){
+                                            var ItemInQuestion = inventoryResponse.data[item]
+                                            if ( itemsMapById[ItemInQuestion.itemid] && itemsMapById[ItemInQuestion.itemid].id === transId && !transAdded){
+                                                itemsBeingedCombined.push(ItemInQuestion);
+                                                transAdded = true;
+                                            }
+                                        }
+                                        var itemToCreate = itemsMapById[combineToId];  // maybe create the item and keep it inactive?
+                                        var itemToCreateById = itemsMapById[combineToId].id;
+                                        var itemToCreateByName = itemsMapById[combineToId].itemname
+                                        // use the transformium
+                                        if (transAdded){
+                                            profileDB.addNewItemToUser(discordUserId, [itemToCreate], function(createErr, createRes){
+                                                if (createErr){
+                                                    // console.log(createErr);
+                                                }
+                                                else{
+                                                    // console.log(createRes);                                        
+                                                    profileDB.bulkUpdateItemStatus(itemsBeingedCombined, "used", function(combineErr, combineRes){
+                                                        if (combineErr){
+                                                            // console.log(combineErr);
+                                                        }else{
+                                                            // console.log(combineRes);
+                                                            combineEmbedBuilder(message, itemToCreateByName, itemToCreate, rarityOfItem);
+                                                        }
+                                                    })
+                                                }
+                                            })        
+                                        }
+                                    }
+                                    
+
+                                }else if (itemsInInventoryCountMap[idOfMyItem] && 
                                     itemsInInventoryCountMap[idOfMyItem] >= itemCount){
                                     // combine all the items into a next level item
                                     var itemToCreate = itemsMapById[combineToId];
@@ -4448,7 +4751,7 @@ module.exports.proposeCommand = function(message, channel){
         mentionedId = user.id;
         mentionedUser = user
     })
-    if (!mentionedUser.bot && mentionedUser != discordUserId){
+    if (mentionedUser && !mentionedUser.bot && mentionedUser != discordUserId){
         profileDB.getUserProfileData(discordUserId, function(profileErr, profileData){
             if (profileErr){
                 console.log (profileErr);
@@ -4525,7 +4828,7 @@ module.exports.exploreTombCommand = function(message, args, channel){
     team.push(message.author);
 
     users.forEach(function(user){
-        if (team.length < 4 && discordUserId != user.id){
+        if (team.length < 5 && discordUserId != user.id){
             team.push(user);
         }
     })
@@ -4591,7 +4894,7 @@ module.exports.ritualCommand = function(message, args, channel){
     team.push(message.author);
 
     users.forEach(function(user){
-        if (team.length < 4 && discordUserId != user.id){
+        if (team.length < 5 && discordUserId != user.id){
             team.push(user);
         }
     })
@@ -4607,7 +4910,7 @@ module.exports.ritualCommand = function(message, args, channel){
             validTeam = false;
         }
     }
-    if (team.length > 1 && team.length <= 5){
+    if (team.length >= 1 && team.length <= 5){
         profileDB.getUserProfileData(discordUserId, function(profileErr, profileData){
             if (profileErr){
                 console.log (profileErr);
@@ -4664,7 +4967,7 @@ module.exports.timeTravelCommand = function(message, args, channel){
     team.push(message.author);
 
     users.forEach(function(user){
-        if (team.length < 4 && discordUserId != user.id){
+        if (team.length < 5 && discordUserId != user.id){
             team.push(user);
         }
     })
@@ -5004,7 +5307,7 @@ module.exports.wearingCommand = function(message, args){
                         })
                     }
                     else{
-                        message.channel.send(message.author + " you are not wearing any items!")
+                        message.channel.send(message.author + " you are not wearing any items. if you are new, check the shop for cheap starter items!")
                     }
                 }
             })
@@ -5031,6 +5334,9 @@ function wearingEmbedBuilder(message, profileData, statsString, activeSlots){
     }
     if (statsString && statsString.length > 0){
         embed.addField('Stats Summary', statsString, false)
+    }
+    if (statsString.length == 0){
+        message.channel.send("You are not wearing any items! check the shop for starter items.")
     }
     message.channel.send({embed});
 }
@@ -5273,7 +5579,7 @@ module.exports.putonCommand = function(message, args, retry){
             }
         })
     }else{
-        message.channel.send(message.author + " do -puton [1-4] [itemname] Slot 4 is only for artifact+ items or higher");
+        message.channel.send(message.author + " do -puton [1-4] [itemname] \n example: -puton 2 loincloth OR -puton 2 loinclothimproved \n Slot 4 is only for artifact+ items or higher");
     }
 }
 
@@ -5947,7 +6253,7 @@ module.exports.agreeTermsCommand = function(message, args){
                         message.channel.send("user already exists")
                     }
                     else{
-                        profileDB.updateUserTacosWelcome(discordUserId, 1, function(err, updateResponse) {
+                        profileDB.updateUserTacosWelcome(discordUserId, 50, function(err, updateResponse) {
                             if (err){
                                 // console.log(err);
                             }
@@ -5958,15 +6264,17 @@ module.exports.agreeTermsCommand = function(message, args){
                                     Last_Five_Welcomes.shift();
                                 }
                                 message.channel.send("welcome aboard ! " + message.author + " your profile has been created. " + host + " will be your host!" );
-                                stats.statisticsManage(host.id, "welcomecount", 1, function(err, statSuccess){
-                                    if (err){
-                                        // console.log(err);
-                                    }
-                                    else{
-                                        // check achievements??
-                                        getProfileForAchievement(host.id, message)
-                                    }
-                                })
+                                if (host.id){
+                                    stats.statisticsManage(host.id, "welcomecount", 1, function(err, statSuccess){
+                                        if (err){
+                                            // console.log(err);
+                                        }
+                                        else{
+                                            // check achievements??
+                                            getProfileForAchievement(host.id, message)
+                                        }
+                                    })
+                                }
                             }
                         })
                         delete NeedsToAgree[discordUserId]
@@ -5994,8 +6302,15 @@ module.exports.denyTermsCommand = function(message, args){
 }
 
 function agreeToTerms(message, discordUserId){
-    NeedsToAgree[discordUserId] = {};
-    NeedsToAgree[discordUserId].hasNotAgreed = true;
+    // only create or replace in needstoagree if doesnt exist or exists but the hostUser is bender
+    if (!NeedsToAgree[discordUserId]){
+        NeedsToAgree[discordUserId] = {};
+        NeedsToAgree[discordUserId].hasNotAgreed = true;
+        if (!NeedsToAgree[discordUserId].hostUser){
+            NeedsToAgree[discordUserId].hostUser = "Bender";
+        }
+    }
+    
     message.channel.send("Hey " + message.author + " Bender will be storing and encrypting your discord id to bring you the best experience. Please type -agree to accept these terms, or -deny to decline them!")
 }
 
@@ -6065,6 +6380,7 @@ function calculateRaffleWinner(message){
             }
         }
     }
+    //// TODO: after collecting the channels that were used for the raffle, send the message below to all of those channels
     message.channel.send(":ticket: Congratulations " + raffleWinnerUser + " You are the winner of the taco raffle! You win `" + (RAFFLE_ENTRY_COST * (activeRaffle.entriesId.length - 2)) + "` tacos :taco:");
     // update the user tacos for all entrants of the raffle
     profileDB.updateUserTacos(raffleWinner, (RAFFLE_ENTRY_COST * (activeRaffle.entriesId.length - 2)), function(updateErr, updateRes){
@@ -6104,7 +6420,7 @@ function calculateRaffleWinner(message){
 // 200 rep: reward: casserole, buy: artifact recipe 
 // 1000 rep: buy: potions, reward: empowered taco rune  5000 rep : achievement, artifact
 
-module.exports.createTableCommand = function(message, mainChannel){
+module.exports.createTableCommand = function(message){
 
     var discordUserId = message.author.id;
     var IDS_OF_UNCOMMONS_FOR_PARTY = [];
@@ -6187,7 +6503,7 @@ module.exports.createTableCommand = function(message, mainChannel){
                                 }
                             }
                         }
-                        createParty(message, discordUserId, uncommonsToUse, mainChannel);
+                        createParty(message, discordUserId, uncommonsToUse);
                     }
                     else{
                         message.channel.send("Missing ingredients for the Taco Party!!");
@@ -6198,7 +6514,7 @@ module.exports.createTableCommand = function(message, mainChannel){
     })
 }
 
-function createParty(message, discordUserId, uncommonsToUse, mainChannel){
+function createParty(message, discordUserId, uncommonsToUse){
     
     const embed = new Discord.RichEmbed()
     .setThumbnail("https://i.imgur.com/dI1PWNo.png")
@@ -6212,10 +6528,7 @@ function createParty(message, discordUserId, uncommonsToUse, mainChannel){
         else{
             // console.log(useRes);
             if (useRes == "success"){
-                if (!mainChannel){
-                    mainChannel = message.channel;
-                }
-                mainChannel.send({embed})
+                message.channel.send({embed})
                 .then(function (sentMessage) {
                     // match the sent message to the discord user that sent it
                     activeTables["table-"+sentMessage.id] = { id: discordUserId, username: message.author.username };
@@ -6302,7 +6615,7 @@ function createParty(message, discordUserId, uncommonsToUse, mainChannel){
                                         else{
                                             // console.log(res);
                                             experience.gainExperience(message, ownerOfTable, reactionCount, userData);
-                                            mainChannel.send("The party for `" + ownerOfTableUsername + "` was a great success! There were `" + attendees + "` guests that showed up")
+                                            message.channel.send("The party for `" + ownerOfTableUsername + "` was a great success! There were `" + attendees + "` guests that showed up")
                                             var achievements = getDataRes.data.achievements;
                                             var data = {}
                                             data.achievements = achievements;

@@ -512,8 +512,9 @@ function handleRingArtifact(message, discordUserId, stage, team, questData, chan
     }
     else if (stage == 4){
         // react to embed with hearts
-        if (activeMissions["quest-" + discordUserId] && activeMissions["quest-" + discordUserId].proposedTo){
+        if (activeMissions["quest-" + discordUserId] && activeMissions["quest-" + discordUserId].proposedTo && activeMissions["quest-" + discordUserId].wedding){
             var marriedTo = questData.marriedTo
+            activeMissions["quest-" + discordUserId].wedding = false // to prevent multiple weddings spam
             handleRingArtifactStageFour(message, discordUserId, stage, team, marriedTo, channel)
         }
     }
@@ -1650,7 +1651,7 @@ function handleRingArtifactStageThree(message, discordUserId, stage, team, comma
                             console.log(error);
                         }else{
                             var proposedTo = activeMissions["quest-" + discordUserId].commandTo
-                            activeMissions["quest-" + discordUserId] = { proposedTo: proposedTo }
+                            activeMissions["quest-" + discordUserId] = { proposedTo: proposedTo, wedding: true }
 
                             if (activeQuests[idOfQuest]){
                                 delete activeQuests[idOfQuest];
@@ -2292,7 +2293,7 @@ module.exports.proposedTo = function(message, discordUserId, stage, proposedTo){
 
     }else if (stage == 4 || stage == 5){
         // re propose and create embed that wedding should happen via -wedding
-        activeMissions["quest-" + discordUserId] = { proposedTo: proposedTo }
+        activeMissions["quest-" + discordUserId] = { proposedTo: proposedTo, wedding: true }
         message.channel.send(message.author + " has proposed to " + proposedTo)
     }else{
         message.channel.send("You cannot propose to anyone at this time.")

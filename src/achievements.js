@@ -91,7 +91,22 @@ var achievementsData = {
     "Sloppy Eigths" : {
         emoji: ":gift_heart:",
         score: 15,
-        description : "Defeat the seven evil exes and obtain a 24 carat ring"
+        description : "Defeat the seven evil exes and obtain a 24 Carat Ring"
+    },
+    "Exorcist" : {
+        emoji: ":prayer_beads:",
+        score: 15,
+        description : "Defeat Andromalius and obtain a Demonic Bow of Andromalius"
+    },
+    "Vampire Slayer" : {
+        emoji: ":nut_and_bolt:",
+        score: 15,
+        description : "Defeat The Archvampire and obtain Abraham Lincoln's Vampire Slaying Pike"
+    },
+    "Closing Your Loop" : {
+        emoji: ":hourglass_flowing_sand:",
+        score: 15,
+        description : "Defeat The Corrupted Overmind and obtain a Time Machine"
     },
     "Gambler" : {
         emoji: ":game_die:",
@@ -121,7 +136,7 @@ module.exports.checkForAchievements = function(discordUserId, data, message, cal
                 // cant find the user's statistics create the user's statistics and check for achievements
                 profileDB.createUserStatistics(discordUserId, null, null, function(createError, statsSuccess){
                     if(createError){
-                        // console.log(createError);
+                        console.log(createError);
                     }
                     else{
                         exports.checkForAchievements(discordUserId, data, message, true, mentionedUser);
@@ -384,6 +399,42 @@ module.exports.checkForAchievements = function(discordUserId, data, message, cal
                     })
                 }
 
+                if(data.rpgDefeated && 
+                    data.rpgDefeated == "andromalius" && 
+                    (data.achievements === null || data.achievements.indexOf("Exorcist") == -1)){
+                        profileDB.updateAchievements(discordUserId, "{Exorcist}", function(err, r){
+                            if (err){
+                                // console.log(err); :gift_heart: 
+                            }
+                            {
+                                achievementEmbedBuilder(message, "Exorcist", achievementEarner);
+                            }
+                        })
+                    }
+                if(data.rpgDefeated && 
+                    data.rpgDefeated == "vampireCouncil" && 
+                    (data.achievements === null || data.achievements.indexOf("Vampire Slayer") == -1)){
+                        profileDB.updateAchievements(discordUserId, "{Vampire Slayer}", function(err, r){
+                            if (err){
+                                // console.log(err); :gift_heart: 
+                            }
+                            {
+                                achievementEmbedBuilder(message, "Vampire Slayer", achievementEarner);
+                            }
+                        })
+                    }
+                if(data.rpgDefeated && 
+                    data.rpgDefeated == "corruptedOvermind" && 
+                    (data.achievements === null || data.achievements.indexOf("Closing Your Loop") == -1)){
+                        profileDB.updateAchievements(discordUserId, "{Closing Your Loop}", function(err, r){
+                            if (err){
+                                // console.log(err); :gift_heart: 
+                            }
+                            {
+                                achievementEmbedBuilder(message, "Closing Your Loop", achievementEarner);
+                            }
+                        })
+                    }
                 if(data.slotsTacosBet && 
                 data.slotsTacosBet >= 50000 && 
                 (data.achievements === null || data.achievements.indexOf("Gambler") == -1)){
