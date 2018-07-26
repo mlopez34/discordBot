@@ -2760,9 +2760,11 @@ function effectsOnDeath(event, member){
     var currentTurn = event.turn;
     // do effect on death
     var idOfMember = member.id
+    var effectsToRemove = []
     if ( event.enemies[idOfMember] && event.enemies[idOfMember].effectsOnDeath){
         // the enemy has an effect on death, get the rpgAbility based on name
         for (var effect in event.enemies[idOfMember].effectsOnDeath){
+            
             var rpgAbility = JSON.parse(JSON.stringify( rpgAbilities[ event.enemies[idOfMember].effectsOnDeath[effect] ] ));
             
             /////// death effect is aoe dmg
@@ -2801,7 +2803,6 @@ function effectsOnDeath(event, member){
             if (rpgAbility && rpgAbility.dot){
                 if (rpgAbility.targetToApplyOn == "random"){
                     var validCast = true;
-
                     if (validCast){
                         var untargettable = rpgAbility.untargettable;
                         var abilityPicked = rpgAbility.abilityId
@@ -2873,7 +2874,11 @@ function effectsOnDeath(event, member){
                             target: target
                         }
                         if (abilityToProcess.target != undefined){
-                            onDeathString = onDeathString  + processAbility(abilityToProcess, event);                                        
+                            onDeathString = onDeathString  + processAbility(abilityToProcess, event);  
+                            if ( rpgAbility.effectDone == false ){
+                                // remove this effect from effectsOnDeath Array
+                                effectsToRemove.push(rpgAbility.abilityId)
+                            }                                    
                         }
                     }
                 }
@@ -3005,6 +3010,15 @@ function effectsOnDeath(event, member){
             }
         }
     }
+    if (event.enemies[idOfMember] && event.enemies[idOfMember].effectsOnDeath){
+        for (var index = event.enemies[idOfMember].effectsOnDeath.length - 1; index >= 0; index--){
+            var effectBeingChecked = event.enemies[idOfMember].effectsOnDeath[index]
+            if (effectsToRemove.indexOf(effectBeingChecked) > -1){
+                event.enemies[idOfMember].effectsOnDeath.splice(index, 1)
+            }
+        }
+    }
+    
     return onDeathString;
 }
 
@@ -4175,7 +4189,7 @@ function processAbility(abilityObject, event){
                 var caster = event.membersInParty["rpg-"+abilityCaster] ? event.membersInParty["rpg-"+abilityCaster].name : undefined;
                 abilityToString = abilityToString + caster +  " healed the group for " + hpToHeal + " with " + rpgAbility.name + "\n";                
                 for (var targetToHeal in event.membersInParty){
-                    if (event.membersInParty[targetToHeal].hp > 0
+                    if (event.membersInParty[targetToHeal].hp + event.membersInParty[targetToHeal].statBuffs.maxhp > 0
                     && event.membersInParty[targetToHeal].statuses.indexOf("dead") == -1){
                         //event.membersInParty[targetToHeal].hp = event.membersInParty[targetToHeal].hp + hpToHeal;
                         healTarget( event.membersInParty[targetToHeal] , hpToHeal)

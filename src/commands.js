@@ -1900,6 +1900,9 @@ module.exports.buyShopItem = function(message, args){
                             SHOP_ITEM_ID = 205
                         }else if (itemShortName.toLowerCase() == "socks"){
                             SHOP_ITEM_ID = 206
+                        }
+                        else if (itemShortName.toLowerCase() == "pickaxe"){
+                            message.channel.send("to buy a pickaxe type `-buypickaxe`")
                         }else if (itemShortName.toLowerCase() == "details"){
                             // display shop builder
                             shopItemDetailsBuilder(message)
