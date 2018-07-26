@@ -3427,7 +3427,7 @@ function topListEmbedBuilder(topXpString, message){
         }
     }
 
-    //.addField('Top Ten Tacos:', topTenString, true)
+    embed.setDescription("-toplist global to view global toplist standings")
     message.channel.send({embed});
 }
 
@@ -3482,7 +3482,7 @@ function rpgTopListEmbedBuilder(topRpgString, message){
             embed.addField("#" + key + ": `" + topRpgString[key].username+"`","**Challenges:** " + topRpgString[key].challengedefeated +  "\n**Points:  **" +topRpgString[key].rpgPoints , true)
         }
     }
-
+    embed.setDescription("-toprpg global to view global rpg standings")
     message.channel.send({embed});
 }
 
@@ -3536,7 +3536,7 @@ function topTenEmbedBuilder(topTenString, message){
             embed.addField("#" + key + ": `" + topTenString[key].username+"`", topTenString[key].tacos, true)
         }
     }
-
+    embed.setDescription("-standings global to view global standings")
     //.addField('Top Ten Tacos:', topTenString, true)
     message.channel.send({embed});
 }
