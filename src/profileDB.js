@@ -113,6 +113,20 @@ module.exports.updateUserTacosThank = function(userId, tacos, cb) {
     });
 }
 
+module.exports.updateUserTacosEarly = function(userId, tacos, cb) {
+    var query = 'update ' + config.profileTable + ' set tacos=tacos+$1, earlyadopt=$3 where discordid=$2'
+    db.none(query, [tacos, userId, true])
+    .then(function () {
+    cb(null, {
+        status: 'success',
+        message: 'added tacos'
+        });
+    })
+    .catch(function (err) {
+        cb(err);
+    });
+}
+
 module.exports.updateUserTacosPresent = function(userId, tacos, cb) {
     var query = 'update ' + config.profileTable + ' set tacos=tacos+$1, lastpresenttime=$3 where discordid=$2'
     var lastPresent = new Date();
