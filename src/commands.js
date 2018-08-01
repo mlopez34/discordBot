@@ -2843,6 +2843,19 @@ module.exports.scavangeCommand = function (message){
                                 if (extraTacosFromItems > 0){
                                     message.channel.send(message.author + " received `" + extraTacosFromItems + "` for scavenging! :taco:" + " received `" + extraTacosFromItems + "` extra tacos" );
                                 }
+                                // early adopter ids to get tacos
+                                var earlyAdopterIds = config.earlyAdopterIds
+                                if (earlyAdopterIds.indexOf(discordUserId) > -1 && !getUserResponse.data.earlyadopt){
+                                    message.channel.send("hey " + message.author + " thanks for being an early adopter here's :taco: `1000` for you to feed me with! make sure to vote on discordbots.org for me")
+                                    profileDB.updateUserTacosEarly(discordUserId, 1000, function(earlyErr, earlyRes){
+                                        if (earlyErr){
+                                            console.log(earlyErr)
+                                        }else{
+                                            console.log(earlyRes)
+                                        }
+                                    })
+                                }
+
                                 profileDB.updateUserTacos(discordUserId, tacosFound + extraTacosFromItems, function(updateLSErr, updateLSres){
                                     if(updateLSErr){
                                         // console.log(updateLSErr);
@@ -3427,7 +3440,7 @@ function topListEmbedBuilder(topXpString, message){
         }
     }
 
-    //.addField('Top Ten Tacos:', topTenString, true)
+    embed.setDescription("-toplist global to view global toplist standings")
     message.channel.send({embed});
 }
 
@@ -3482,7 +3495,7 @@ function rpgTopListEmbedBuilder(topRpgString, message){
             embed.addField("#" + key + ": `" + topRpgString[key].username+"`","**Challenges:** " + topRpgString[key].challengedefeated +  "\n**Points:  **" +topRpgString[key].rpgPoints , true)
         }
     }
-
+    embed.setDescription("-toprpg global to view global rpg standings")
     message.channel.send({embed});
 }
 
@@ -3536,7 +3549,7 @@ function topTenEmbedBuilder(topTenString, message){
             embed.addField("#" + key + ": `" + topTenString[key].username+"`", topTenString[key].tacos, true)
         }
     }
-
+    embed.setDescription("-standings global to view global standings")
     //.addField('Top Ten Tacos:', topTenString, true)
     message.channel.send({embed});
 }
@@ -3562,6 +3575,29 @@ function initialUserProfile(discordUserId){
     }
     return userData;
 }
+
+// hints
+/*
+- tacos can be given, throw, used for shopping, or collecting. `-standings` lets you see who has the most tacos.
+- rpg enemies scale as you level up. the higher your level the more enemies you will encounter
+- rpg enemies have different difficulties. easy, medium, hard, boss, and boss+. boss+ can only be found in challenges.
+- welcoming a user will award them 50 tacos upon agreeing to bender terms
+- you can wear up to 3 regular items using `-puton 1,2,3 itemid` to check their bonuses do `-wearing` and `-rpgstats`
+- amulets are not worn, you can have as many amulets as you want and their bonuses stack. amulets are not tradeable
+- stands get more expensive the more you buy, but also award more experience and tacos when preparing.
+- common items can be consumed for different purposes, uncommon items can be used for parties.
+- rares can be combined by having 5 of the same rare, ancients can be combined by having 4 of the same ancient, artifacts must be combined with a set of items to start a quest.
+- achievements can be obtained through many different means, try thanking lots of friends
+- when you throw a taco, or use a rock on someone, neither you or the other person can pick it up, but everyone else can.
+- more people working together means higher chances at finding the items you want via scavenge
+- rpg events provide rewards when your group succeeds. you can have up to 5 players in an rpg group.
+- the reputation shop opens when you reach liked status with bender
+- slots are dangerous
+- if you want to trade an item for tacos do `-trade @user rock 1 tacos 5` this will trade the rock for 5 tacos
+- leveling up awards rpg stats, each level gives 21 HP, 10 AD and MD, and armor/spirit based on your current level
+- most items give higher bonuses the higher level you are.
+- 
+*/
 
 module.exports.pickupCommand = function (message){
     // check the queueOfTacos and if there are tacos pick them up - updateUserTacos by +1

@@ -101,8 +101,54 @@ function extraLevelRewards(message, discordUser, userLeveledUpTo){
     // = amethyst amulet - md 12
     // = peridot amulet - armor 78
     // = garnet amulet - spirit 78
+    if (userLeveledUpTo == 10 || userLeveledUpTo == 15){
+        // give them 1 of 5 of the amulets
 
-    if (userLeveledUpTo >= 30 && userLeveledUpTo <= 34){
+        profileDB.getItemData(function(err, getItemResponse){
+            if (err){
+                console.log(err);
+            }else{
+                var allItems = getItemResponse.data
+                var rareItems = [];
+
+                for (var item in allItems){
+                    
+                    if(allItems[item].itemraritycategory == "rare" && allItems[item].itemslot != "consumable"){
+                        rareItems.push(allItems[item]);
+                    }
+                }
+                var itemsObtainedArray = [];
+                // roll for rare
+                var rareRoll = Math.floor(Math.random() * rareItems.length);
+                console.log(rareItems[rareRoll]);
+                itemsObtainedArray.push(rareItems[rareRoll])
+
+                // roll for second rare
+                rareRoll = Math.floor(Math.random() * rareItems.length);
+                console.log(rareItems[rareRoll]);
+                itemsObtainedArray.push(rareItems[rareRoll])
+                
+                if (itemsObtainedArray.length > 0){
+                    addToUserInventory(discordUser.id, itemsObtainedArray);
+                }
+
+                const embed = new Discord.RichEmbed()
+                .setColor(0xF2E93E)
+                var rewardString = "";
+                rewardString = rewardString + "\n**Items:** \n";
+
+                for (var item in itemsObtainedArray){
+                    var itemAmount = itemsObtainedArray[item].itemAmount ? itemsObtainedArray[item].itemAmount : 1;
+                    rewardString = rewardString + "**" +itemAmount + "**x " + "[**" + itemsObtainedArray[item].itemraritycategory +"**] " + "**"  + itemsObtainedArray[item].itemname + "** - " + itemsObtainedArray[item].itemdescription + ", " +
+                    itemsObtainedArray[item].itemslot + ", " +itemsObtainedArray[item].itemstatistics + " \n";
+                }
+                embed.addField("Level Up Rewards", rewardString, true)
+                .setThumbnail(discordUser.avatarURL)
+                message.channel.send({embed});
+            }
+        })
+    }
+    else if (userLeveledUpTo >= 30 && userLeveledUpTo <= 34){
         // give them 1 of 5 of the amulets
 
         profileDB.getItemData(function(err, getItemResponse){

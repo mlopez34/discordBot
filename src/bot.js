@@ -70,7 +70,9 @@ client.on("guildCreate", guild => {
 })
 
 function commandIs(str, msg){
-    if ((str === "thank" || str === "sorry" || str === "welcome")){
+    if (( (str === "thank" || str === "sorry" || str === "welcome") && 
+    (msg.channel.guild.id == "167298338905915393"
+    || msg.channel.guild.id == "231378019292282880" ) )){
         if (msg.content.toLowerCase().startsWith(config.commandString)){
             return  msg.content.toLowerCase().startsWith(config.commandString + str);
         }
