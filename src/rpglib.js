@@ -5138,7 +5138,7 @@ module.exports = {
                             "explode",
                             "echo"
                         ],
-                        hp: 55600,
+                        hp: 155600,
                         attackDmg: 2480,
                         magicDmg: 2470,
                         armor: 2500,
@@ -5176,7 +5176,7 @@ module.exports = {
                             "focus",
                             "explode"
                         ],
-                        hp: 55600,
+                        hp: 155600,
                         attackDmg: 2480,
                         magicDmg: 2470,
                         armor: 10750,
