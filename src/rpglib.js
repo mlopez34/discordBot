@@ -5100,6 +5100,127 @@ module.exports = {
                         element: "earth"
                     }
                 ],
+            },
+            10: {
+                timed: true,
+                timedPerTurn: 180000,
+                points: 9901,
+                difficulty: 290,
+                enemies: [
+                    {
+                        name: "Asteroid Golem",
+                        xp: 30,
+                        abilities: [
+                            "attack",
+                            "rockthrow",
+                            "slash",
+                            "poke",
+                            "shield",
+                            "meteor"
+                        ],
+                        buffs: [
+                            {
+                                name: "frenzy",
+                                emoji: "😡",
+                                onTurnEnd: {
+                                    attackDmgPlus : 1005,
+                                    magicDmgPlus : 1005,
+                                    everyNTurns: 6,
+                                    startTurn: 3
+                                }
+                            }
+                        ],
+                        abilityOrder: [
+                            0, 1, 3, 2, 4, 1, 0, 5, 1, 5
+                        ],
+                        endOfTurnEvents : [
+                            "focus",
+                            "explode",
+                            "echo"
+                        ],
+                        hp: 55600,
+                        attackDmg: 2480,
+                        magicDmg: 2470,
+                        armor: 2500,
+                        spirit: 10500,
+                        difficulty: "special",
+                        element: "earth"
+                    },
+                    {
+                        name: "Stone Giant",
+                        xp: 30,
+                        abilities: [
+                            "attack",
+                            "rockthrow",
+                            "slash",
+                            "poke",
+                            "tacowall",
+                            "quake"
+                        ],
+                        buffs: [
+                            {
+                                name: "frenzy",
+                                emoji: "😡",
+                                onTurnEnd: {
+                                    attackDmgPlus : 1005,
+                                    magicDmgPlus : 1005,
+                                    everyNTurns: 6,
+                                    startTurn: 2
+                                }
+                            }
+                        ],
+                        abilityOrder: [
+                            1, 0, 2, 3, 4, 0, 0, 1, 5, 5
+                        ],
+                        endOfTurnEvents : [
+                            "focus",
+                            "explode"
+                        ],
+                        hp: 55600,
+                        attackDmg: 2480,
+                        magicDmg: 2470,
+                        armor: 10750,
+                        spirit: 2500,
+                        difficulty: "special",
+                        element: "earth"
+                    },
+                    {
+                        name: "Lava",
+                        xp: 150,
+                        abilities: [
+                            "laserBeam",
+                            "poke",
+                            "crush",
+                            "destructionBeam"
+                        ],
+                        buffs: [
+                            {
+                                name: "frenzy",
+                                emoji: "😡",
+                                onTurnEnd: {
+                                    attackDmgPlus : 950,
+                                    magicDmgPlus : 950,
+                                    everyNTurns: 3,
+                                    startTurn: 4
+                                }
+                            }
+                        ],
+                        abilityOrder: [
+                            0, 1, 0, 2, 0, 2, 0, 0, 2, 0,
+                            3, 3, 3, 3, 3, 3, 3, 3, 3, 3
+                        ],
+                        endOfTurnEvents : [
+                            
+                        ],
+                        hp: 41600,
+                        attackDmg: 1700,
+                        magicDmg: 1470,
+                        armor: 2350,
+                        spirit: 2100,
+                        difficulty: "special",
+                        element: "earth"
+                    },
+                ]
             }
         }
     }    
