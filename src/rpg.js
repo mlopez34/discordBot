@@ -452,7 +452,8 @@ module.exports.rpgReady = function(message, itemsAvailable, amuletItemsById){
                 var lastrpgtime = userData.data.lastrpgtime;
                 if ((lastrpgtime && oneHourAgo > lastrpgtime)
                     || isSpecialEvent 
-                    || !lastrpgtime){
+                    || !lastrpgtime
+                    || challengePicked == 9){
                     // get the user profile data
                     var userStats = userData.data;
 
