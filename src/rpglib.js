@@ -1226,6 +1226,383 @@ module.exports = {
             }
         },
         /*
+        challenge 10
+        */
+       entombAll20: {
+            belongsToMember: true,
+            processAbility: true,
+            hppercentage: 0.20,
+            oneTimeCast: true,
+            targetSelf: true,
+            abilityId: "entombAll20",
+            name: "Entomb",
+            buff: {
+                name: "Entomb",
+                areawide: true,
+                emoji: "🗿",
+                turnsToExpire: 500,
+                abilityId: "entombAll20",
+                setAbleToAttack: false,
+                setAbleToTakeDamage: false,
+                setAbleToBeHealed: false,
+                removeEndOfTurn: true,
+                removeBuffs: true
+                //TODO set abletoattack false, abletotakedamage false, abletoheal false endofturndisable stays false
+            }
+        },
+
+        killAllEntomb: {
+            passive: true,
+            belongsToMember: true,
+            abilityId: "killAllEntomb",
+            killIfEnemyBuff : "Entomb",
+            name: "KillAll-Entomb" // on death, kill anything with entomb
+        },
+        // stone giant, deals damage, if bandaided stone giant gets +15% damage
+        shatter: {
+            name:"Shatter",
+            abilityId: "shatter",
+            type:"earth",
+            processAbility: true,
+            belongsToMember: true,
+            everyNTurns: 2,
+            ignoreFocus: true,
+            afterNTurns: 3,
+            currentTurn: 0,
+            dot: {
+                name: "Shatter",
+                type:"earth",
+                dmg: 100,
+                untargettable: true,
+                mdPercentage: 1,
+                emoji: "a",
+                // TODO: on bandaid trigger effect
+                onBandaidCasterGainsBuff: "strength",
+
+                dmgOnDotApply: false,
+                turnsToExpire: 25,
+                dmgOnDotExpire: false,
+                dmgOnExpire: 0
+            }
+        },
+        // TODO: create the onbandaidtrigger effect to gain 15% damage
+
+        // asteroid golem puts a dot on the tank every 2 turns, lowers armor by 10% per stack
+        // if bandaid asteroid golem gains 15% damage
+        break: {
+            // ignore unique
+            name:"Break",
+            abilityId: "break",
+            type:"earth",
+            processAbility: true,
+            belongsToMember: true,
+            everyNTurns: 2,
+            afterNTurns: 3,
+            currentTurn: 0,
+            status: {
+                name: "Break",
+                emoji: "s",
+                onBandaidCasterGainsBuff: "strength",
+                affects: ["spirit"],
+                multiplier: 0.49
+            }
+        },
+        // TODO: create the onbandaidtrigger effect to gain 15% damage
+        strength: {
+            name: "Strength",
+            abilityId: "strength",
+            buff: {
+                buff: true,
+                name: "Strength",
+                abilityId: "strength",
+                emoji: "💪🏼",
+                turnsToExpire: 10,
+                affects: ["attackDmg", "magicDmg"],
+                multiplier: 1.15
+            }
+        },
+
+        // summon Lava and Sky elemental
+        // summoned upon entomb / 20% HP
+        summonLavaElemental: {
+            name: "Summon Lava Elemental",
+            abilityId: "summonLavaElemental",
+            belongsToMember: true,
+            hppercentage: 0.20,
+            summon: {
+                enemy: "lavaElemental",
+                attackDmg: 1400,
+                magicDmg: 1500,
+                hpPlus: 3000
+            }
+        },
+        summonSkyElemental: {
+            name: "Summon Sky Elemental",
+            abilityId: "summonSkyElemental",
+            belongsToMember: true,
+            hppercentage: 0.20,
+            summon: {
+                enemy: "skyElemental",
+                attackDmg: 1400,
+                magicDmg: 1500,
+                hpPlus: 3000
+            }
+        },
+        // whenever sky or lava reach 20%
+        // the anomaly is the HP of sky, lava, and golems combined
+        summonAnomaly: {
+            name: "Summon Anomaly",
+            abilityId: "summonAnomaly",
+            belongsToMember: true,
+            hppercentage: 0.20,
+            summon: {
+                enemy: "anomaly",
+                // HP based on hp of 4 enemies
+                drainHpFrom: ["Sky Elemental", "Lava Elementa", "Asteroid Golem", "Stone Giant"],
+                hpMultiplier: 4,
+                attackDmg: 2400,
+                magicDmg: 2500,
+                hpPlus: 80000
+            }
+        },
+
+        // deal damage to self (lava elemental) every turn
+        anger: {
+            name: "Anger",
+            abilityId: "anger",
+            adPercentage: 1,
+            dmg: 100,
+            type: "physical",
+            special: "selfdamage",
+            selfdamage: 10000
+        },
+
+        // every 4 turns
+        rampage: {
+            name: "Rampage",
+            abilityId: "rampage",
+            belongsToMember: true,
+            ignoreBandaid: true,
+            everyNTurns: 7,
+            afterNTurns: 4,
+            currentTurn: 0,
+            status: {
+                focusedBy: "",
+                ignoreBandaid: true,
+                name: "Rampage",
+                turnsToExpire: 4,
+                emoji: "🚨",
+                abilityTriggerOnDeath: "healAllRampage",
+                //TODO: if player dies, heal all enemies
+                
+            }
+        },
+        // 
+        healAllRampage: {
+            belongsToMember: true,
+            name: "Heal All",
+            abilityId: "healAllRampage",
+            heal: 100000,
+            areawide: true,
+            mdPercentage: 1,
+        },
+        igniteLava: {
+            name : "Ignite Lava",
+            belongsToMember: true,
+            processAbility: true,
+            abilityId: "igniteLava",
+            everyNTurns: 1,
+            afterNTurns: 1,
+            currentTurn: 0,
+            targetWithName: "Lava Elemental",
+            dmg: 400,
+            mdPercentage: 1
+        },
+
+        // at end of turn, calculate % of health lost, gain that much % damage on multiplier
+        fury : {
+            name : "Fury",
+            belongsToMember: true,
+            processAbility: true,
+            abilityId: "fury",
+            everyNTurns: 100,
+            afterNTurns: 1,
+            currentTurn: 0,
+            buff: {
+                selfbuff: true,
+                buff: true,
+                name: "Fury",
+                emoji : "😠",
+                affects: ["attackDmg", "magicDmg"],
+                turnsToExpire: 300,
+                multiplierBasedOnLostHp: .02
+            }
+        },
+
+        // lava and sky elemental aoes (need buffs to counter these)
+        hurricane: {
+            belongsToMember: true,
+            name: "Hurricane",
+            abilityId: "hurricane",
+            everyNTurns: 4,
+            afterNTurns: 8,
+            currentTurn: 0,
+            areawidedmg: {
+                areawide: true,
+                name: "Hurricane",
+                dmg: 1500,
+                adPercentage: 1,
+                type: "physical"
+            }
+        },
+
+        engulf: {
+            belongsToMember: true,
+            name: "Engulf",
+            abilityId: "engulf",
+            everyNTurns: 4,
+            afterNTurns: 4,
+            currentTurn: 0,
+            areawidedmg: {
+                areawide: true,
+                name: "engulf",
+                dmg: 1500,
+                mdPercentage: 1,
+                type: "fire"
+            }
+        },
+        // reduces physical damage by 50% - applied when damaging sky elemental
+        // removes amplify
+        dampen: {
+            // reduce magic dmg by 50%
+            name : "Dampen",
+            abilityId: "dampen",
+            buff: {
+                buff: true,
+                name: "Dampen",
+                emoji : "🔰",
+                affectsGlobal: ["physicalDamageTakenPercentage"],
+                turnsToExpire: 10,
+                multiplier: 0.5
+            },
+            removeBuff: "amplify"
+        },
+        // reduces magical damage by 50% - applied when damaging lava elemental
+        // removes dampen 
+        amplify: {
+            // reduce magic dmg by 50%
+            name : "Amplify",
+            abilityId: "amplify",
+            buff: {
+                buff: true,
+                name: "Amplify",
+                emoji : "🔰",
+                affectsGlobal: ["magicDamageTakenPercentage"],
+                turnsToExpire: 10,
+                multiplier: 0.5
+            },
+            removeBuff: "dampen"
+        },
+
+        // sky elemental summons this enemy 
+        summonSmokeScreen: {
+            name: "Summon Smoke Screen",
+            abilityId: "summonSmokeScreen",
+            belongsToMember: true,
+            everyNTurns: 3,
+            afterNTurns: 3,
+            currentTurn: 0,
+            summon: {
+                enemy: "smokeScreen",
+                attackDmg: 500,
+                magicDmg: 500,
+                hpPlus: 1000
+            }
+        },
+        // smoke screen deals damage to the lava elemental at end of turn
+
+        // morph 
+        // aoe every turn
+        consume: {
+            belongsToMember: true,
+            name: "Consume",
+            abilityId: "consume",
+            everyNTurns: 1,
+            afterNTurns: 1,
+            currentTurn: 1,
+            areawidedmg: {
+                areawide: true,
+                name: "consume",
+                dmg: 10,
+                mdPercentage: .25,
+                type: "fire"
+            }
+        },
+        // anomaly cast on 2 or 3 players
+        burst: {
+            belongsToMember: true,
+            processAbility: true,
+            //-cast attack 3-cast attack 3ignoreFocus: true,
+            ignoreBandaid: true,
+            targetToApplyOn: "random",
+            name:"Burst",
+            everyNTurns: 5,
+            afterNTurns: 2,
+            currentTurn: 0,
+            abilityId: "burst",
+            type:"shadow",
+            dot: {
+                name: "Burst",
+                abilityId: "burst",
+                ignoreBandaid: true,
+                // TODO: dot can only be removed upon being healed to full
+                removeDotOnHpPercentage: .95,
+
+                type:"shadow",
+                dmg: 400,
+                mdPercentage: 0.1,
+                dmgIncreasePerTick: 400,
+                emoji: "✴️",
+                dmgOnDotApply: false,
+                turnsToExpire: 99,
+                dmgOnDotExpire: false,
+                dmgOnExpire: 0
+            }
+        },
+
+        summonFiends: {
+            name: "summonFiends",
+            belongsToMember: true,
+            everyNTurns: 6,
+            afterNTurns: 4,
+            currentTurn: 0,
+            summon: {
+                enemies: [
+                    "fiend",
+                    "fiend",
+                    "fiend",
+                    "fiend",
+                    "fiend",
+                    "fiend",
+                    "fiend"
+                ]
+            }
+        },
+
+        // soak the fiends
+        absorbFiends: {
+            abilityId: "absorbFiends",
+            belongsToMember: true,
+            processAbility: true,
+            everyNTurns: 6,
+            afterNTurns: 7,
+            currentTurn: 0,
+            special: "absorb fiends" // heals for their remaining health
+        },
+
+        // kill all entomed 
+
+        /*
         endOfTurnEvents
         */
         archvampireRevive: {
@@ -1847,6 +2224,168 @@ module.exports = {
                 magicDmg: 160,
                 armor: 1300,
                 spirit: 1300,
+                difficulty: "summoned",
+                element: "normal"
+            },
+            lavaElemental: {
+                name: "Lava Elemental",
+                xp: 150,
+                abilities: [
+                    "anger",
+                    "slash",
+                    "flameblast"
+                ],
+                buffs: [
+                    {
+                        name: "frenzy",
+                        emoji: "😡",
+                        onTurnEnd: {
+                            attackDmgPlus : 950,
+                            magicDmgPlus : 950,
+                            everyNTurns: 8,
+                            startTurn: 5
+                        }
+                    }
+                ],
+                abilityOrder: [
+                    0, 2, 1, 0, 0, 0, 0
+                ],
+                endOfTurnEvents : [
+                    "focus",
+                    "fury",
+                    "rampage",
+                    "summonAnomaly",
+                    "engulf",
+                    "entombAll20"
+                ],
+                hp: 41600,
+                attackDmg: 1700,
+                magicDmg: 1470,
+                armor: 2350,
+                spirit: 2100,
+                hpPerPartyMember: 0,
+                adPerPartyMember: 0,
+                mdPerPartyMember: 0,
+                difficulty: "boss",
+                element: "earth"
+            },
+            skyElemental: {
+                name: "Sky Elemental",
+                xp: 150,
+                abilities: [
+                    "attack",
+                    "crush",
+                    "iceshards"
+                ],
+                buffs: [
+                    {
+                        name: "frenzy",
+                        emoji: "😡",
+                        onTurnEnd: {
+                            attackDmgPlus : 950,
+                            magicDmgPlus : 950,
+                            everyNTurns: 8,
+                            startTurn: 5
+                        }
+                    }
+
+                ],
+                abilityOrder: [
+                    0, 0, 1, 0, 2, 2, 0, 1
+                ],
+                endOfTurnEvents : [
+                    "focus",
+                    "summonAnomaly",
+                    "hurricane",
+                    "entombAll20",
+                    "summonSmokeScreen"
+                ],
+                hp: 41600,
+                attackDmg: 1700,
+                magicDmg: 1470,
+                armor: 2350,
+                spirit: 2100,
+                hpPerPartyMember: 0,
+                adPerPartyMember: 0,
+                mdPerPartyMember: 0,
+                difficulty: "boss",
+                element: "earth"
+            },
+            anomaly: {
+                name: "Anomaly",
+                xp: 150,
+                abilities: [
+                    "attack",
+                    "poke",
+                    "uppercut",
+                    "tackle"
+                ],
+                buffs: [
+                    {
+                        name: "frenzy",
+                        emoji: "😡",
+                        onTurnEnd: {
+                            attackDmgPlus : 100,
+                            magicDmgPlus : 750,
+                            everyNTurns: 1,
+                            startTurn: 1
+                        }
+                    }
+                ],
+                abilityOrder: [
+                    0, 1, 2, 0, 0, 0, 2, 3
+                ],
+                endOfTurnEvents : [
+                    "focus",
+                    "consume",
+                    "burst",
+                    "burst",
+                    "summonFiends",
+                ],
+                effectsOnDeath: [
+                    "killAllEntomb"
+                ],
+                hp: 41600,
+                attackDmg: 2000,
+                magicDmg: 1470,
+                armor: 2350,
+                spirit: 2100,
+                hpPerPartyMember: 0,
+                adPerPartyMember: 0,
+                mdPerPartyMember: 0,
+                difficulty: "boss",
+                element: "earth"
+            },
+            fiend: {
+                name: "Fiend",
+                abilities: ["attack"],
+                buffs: [],
+                hpPerPartyMember: 0,
+                adPerPartyMember: 0,
+                mdPerPartyMember: 0,
+                hp: 4300,
+                attackDmg: 430,
+                magicDmg: 360,
+                armor: 1300,
+                spirit: 1300,
+                difficulty: "summoned",
+                element: "normal"
+            },
+            smokeScreen: {
+                name: "Smoke Screen",
+                abilities: ["attack", "claw"],
+                buffs: [],
+                hpPerPartyMember: 0,
+                adPerPartyMember: 0,
+                mdPerPartyMember: 0,
+                hp: 54300,
+                attackDmg: 430,
+                magicDmg: 360,
+                armor: 1300,
+                spirit: 1300,
+                endOfTurnEvents : [
+                    "igniteLava"
+                ],
                 difficulty: "summoned",
                 element: "normal"
             },
@@ -5101,6 +5640,31 @@ module.exports = {
                     }
                 ],
             },
+            // --- asteroid golem and stone giant, same as in quest however get stronger faster and have one additional ability each
+            // -- asteroid golem puts a dot on the tank every 2 turns, lowers the armor of the tank by 10% per stack (EOT), if bandaided asteroid golem gains 15% damage
+            // -- stone giant puts a status on anyone every 2 turns, deals phys damage every turn, if bandaided stone giant gains +15% damage
+
+            // -------- at 20% of either reaching, both will entomb, no more damage will be dealt to them, or healing. 
+
+            // -- 2 new enemies are summoned, Lava and Sky elemental spawn Lava has 30k and sky elemental has 70k
+            // -- (anger) (engulf)lava elemental loses 2k damage every turn, aoe damage every 4 turns,
+            // -- (fury) for every % of health lost gains damage equal to it at 50%, 50% increased damage 
+            // -- rampages every 4 turns for 3 turns on someone random 
+            // -- (dampen) (deals physical) (if damaged, reduces damage from magical by 50%)
+
+            // ------ (hurricane) sky elemental focuses tank, aoe damage every 4 turns,  
+            // -- (amplify) (deals magical) (if hit reduces damage from physical by 50%)
+            // (create this)summons a smoke screen every 3 turns the smoke screen has 50k HP and deals 500 damage to the Lava elemental and impales off the tank?
+
+            // -- (healallrampage) if player dies to rampage, they heal all the way to full
+
+            // -- (summonAnomaly) when both reach 20%, all 4 morph into one enemy and ~80k hp (consume) the enemy will deal increasing area effect damage every turn start 100 up by 75
+            // -- (summonFiend) (absorbFiend) summons enemies every 6 and after 3 turns, the enemies get soaked and for each hp point it heals (7 enemies 3K hp each) if left at 500 boss heals for 3500
+            // -- (crack + explode) if the enemies die they explode for 500 damage and increase damage taken by 20% on the boss
+
+            // -- (burst) every 4 turns the boss puts a dot on 2 players that can only be removed by healing to full
+            // -- (killallentomb) -kills all entombed targets
+
             10: {
                 timed: true,
                 timedPerTurn: 180000,
@@ -5126,23 +5690,39 @@ module.exports = {
                                     attackDmgPlus : 1005,
                                     magicDmgPlus : 1005,
                                     everyNTurns: 6,
-                                    startTurn: 3
+                                    startTurn: 8
+                                }
+                            },
+                            {
+                                name: "amp",
+                                emoji: "+",
+                                onDamageTakenGiveBuff: {
+                                    buffId: "dampen"
                                 }
                             }
                         ],
                         abilityOrder: [
-                            0, 1, 3, 2, 4, 1, 0, 5, 1, 5
+                            0, 1, 3, 2, 5, 1, 5
                         ],
                         endOfTurnEvents : [
                             "focus",
-                            "explode",
-                            "echo"
+                            "burst",
+                            "summonLavaElemental",
+                            "summonSkyElemental",
+                            "break",
+                            "entombAll20"
                         ],
-                        hp: 155600,
-                        attackDmg: 2480,
-                        magicDmg: 2470,
+                        effectsOnDeath: [
+                            
+                        ],
+                        hp: 125600,
+                        attackDmg: 1480,
+                        magicDmg: 1470,
                         armor: 2500,
                         spirit: 10500,
+                        hpPerPartyMember: 0,
+                        adPerPartyMember: 0,
+                        mdPerPartyMember: 0,
                         difficulty: "special",
                         element: "earth"
                     },
@@ -5165,61 +5745,34 @@ module.exports = {
                                     attackDmgPlus : 1005,
                                     magicDmgPlus : 1005,
                                     everyNTurns: 6,
-                                    startTurn: 2
+                                    startTurn: 9
                                 }
                             }
                         ],
                         abilityOrder: [
-                            1, 0, 2, 3, 4, 0, 0, 1, 5, 5
+                            1, 0, 2, 3, 1, 5, 5
                         ],
                         endOfTurnEvents : [
                             "focus",
-                            "explode"
+                            "summonLavaElemental",
+                            "summonSkyElemental",
+                            "shatter",
+                            "entombAll20"
                         ],
-                        hp: 155600,
-                        attackDmg: 2480,
-                        magicDmg: 2470,
-                        armor: 10750,
-                        spirit: 2500,
-                        difficulty: "special",
-                        element: "earth"
-                    },
-                    {
-                        name: "Lava",
-                        xp: 150,
-                        abilities: [
-                            "laserBeam",
-                            "poke",
-                            "crush",
-                            "destructionBeam"
-                        ],
-                        buffs: [
-                            {
-                                name: "frenzy",
-                                emoji: "😡",
-                                onTurnEnd: {
-                                    attackDmgPlus : 950,
-                                    magicDmgPlus : 950,
-                                    everyNTurns: 3,
-                                    startTurn: 4
-                                }
-                            }
-                        ],
-                        abilityOrder: [
-                            0, 1, 0, 2, 0, 2, 0, 0, 2, 0,
-                            3, 3, 3, 3, 3, 3, 3, 3, 3, 3
-                        ],
-                        endOfTurnEvents : [
+                        effectsOnDeath: [
                             
                         ],
-                        hp: 41600,
-                        attackDmg: 1700,
+                        hp: 25600,
+                        attackDmg: 1480,
                         magicDmg: 1470,
-                        armor: 2350,
-                        spirit: 2100,
+                        armor: 10750,
+                        spirit: 2500,
+                        hpPerPartyMember: 0,
+                        adPerPartyMember: 0,
+                        mdPerPartyMember: 0,
                         difficulty: "special",
                         element: "earth"
-                    },
+                    }
                 ]
             }
         }
