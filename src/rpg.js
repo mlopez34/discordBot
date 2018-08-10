@@ -1430,6 +1430,7 @@ function processRpgTurn(message, event){
                 if (event.membersInParty["rpg-"+abilityObject.user].buffs[i].name == "Haste"){
                     order.push(abilityObject);
                     event.memberTurnAbilities.splice(index, 1);
+                    break;
                 }
             }
         }
