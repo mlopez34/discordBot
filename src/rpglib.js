@@ -459,8 +459,8 @@ module.exports = {
             name: "Shoot",
             abilityId: "shoot",
             dmg: 125,
-            charges: 4,
-            maxcharges: 4,
+            charges: 6,
+            maxcharges: 6,
             adPercentage: 1.2,
             type: "physical"
         },
@@ -1234,6 +1234,9 @@ module.exports = {
             hppercentage: 0.20,
             oneTimeCast: true,
             targetSelf: true,
+            onDeathEffect: true,
+            effectDone: false,
+            invalidIfBuff: "entombAll20",
             abilityId: "entombAll20",
             name: "Entomb",
             buff: {
@@ -1267,27 +1270,27 @@ module.exports = {
             belongsToMember: true,
             everyNTurns: 2,
             ignoreFocus: true,
-            afterNTurns: 3,
+            afterNTurns: 2,
             currentTurn: 0,
             dot: {
                 name: "Shatter",
                 type:"earth",
-                dmg: 100,
+                dmg: 1000,
                 untargettable: true,
                 mdPercentage: 1,
-                emoji: "a",
+                emoji: "⚫",
                 // TODO: on bandaid trigger effect
                 onBandaidCasterGainsBuff: "strength",
-
+                ignoreUnique: true,
                 dmgOnDotApply: false,
-                turnsToExpire: 25,
+                turnsToExpire: 15,
                 dmgOnDotExpire: false,
                 dmgOnExpire: 0
             }
         },
         // TODO: create the onbandaidtrigger effect to gain 15% damage
 
-        // asteroid golem puts a dot on the tank every 2 turns, lowers armor by 10% per stack
+        // asteroid golem puts a dot on the tank every 2 turns, lowers spirit by 10% per stack
         // if bandaid asteroid golem gains 15% damage
         break: {
             // ignore unique
@@ -1297,14 +1300,16 @@ module.exports = {
             processAbility: true,
             belongsToMember: true,
             everyNTurns: 2,
-            afterNTurns: 3,
+            afterNTurns: 2,
             currentTurn: 0,
             status: {
                 name: "Break",
-                emoji: "s",
+                emoji: "🔵",
                 onBandaidCasterGainsBuff: "strength",
+                ignoreUnique: true,
+                turnsToExpire: 15,
                 affects: ["spirit"],
-                multiplier: 0.49
+                additive: -1000
             }
         },
         // TODO: create the onbandaidtrigger effect to gain 15% damage
@@ -1316,7 +1321,7 @@ module.exports = {
                 name: "Strength",
                 abilityId: "strength",
                 emoji: "💪🏼",
-                turnsToExpire: 10,
+                turnsToExpire: 20,
                 affects: ["attackDmg", "magicDmg"],
                 multiplier: 1.15
             }
@@ -1328,24 +1333,52 @@ module.exports = {
             name: "Summon Lava Elemental",
             abilityId: "summonLavaElemental",
             belongsToMember: true,
+            effectDone: false,
             hppercentage: 0.20,
             summon: {
                 enemy: "lavaElemental",
-                attackDmg: 1400,
-                magicDmg: 1500,
-                hpPlus: 3000
+                attackDmg: 100,
+                magicDmg: 100,
+                hpPlus: 300
+            }
+        },
+        summonLavaElementalDeath: {
+            name: "Summon Lava Elemental",
+            abilityId: "summonLavaElementalDeath",
+            belongsToMember: true,
+            onDeathEffect: true,
+            effectDone: false,
+            summon: {
+                enemy: "lavaElemental",
+                attackDmg: 100,
+                magicDmg: 100,
+                hpPlus: 300
             }
         },
         summonSkyElemental: {
             name: "Summon Sky Elemental",
             abilityId: "summonSkyElemental",
             belongsToMember: true,
+            effectDone: false,
             hppercentage: 0.20,
             summon: {
                 enemy: "skyElemental",
-                attackDmg: 1400,
-                magicDmg: 1500,
-                hpPlus: 3000
+                attackDmg: 100,
+                magicDmg: 100,
+                hpPlus: 300
+            }
+        },
+        summonSkyElementalDeath: {
+            name: "Summon Sky Elemental",
+            abilityId: "summonSkyElementalDeath",
+            belongsToMember: true,
+            onDeathEffect: true,
+            effectDone: false,
+            summon: {
+                enemy: "skyElemental",
+                attackDmg: 100,
+                magicDmg: 100,
+                hpPlus: 300
             }
         },
         // whenever sky or lava reach 20%
@@ -1354,15 +1387,17 @@ module.exports = {
             name: "Summon Anomaly",
             abilityId: "summonAnomaly",
             belongsToMember: true,
+            onDeathEffect: true,
+            effectDone: false,
             hppercentage: 0.20,
             summon: {
                 enemy: "anomaly",
                 // HP based on hp of 4 enemies
                 drainHpFrom: ["Sky Elemental", "Lava Elementa", "Asteroid Golem", "Stone Giant"],
                 hpMultiplier: 4,
-                attackDmg: 2400,
-                magicDmg: 2500,
-                hpPlus: 80000
+                attackDmg: 240,
+                magicDmg: 250,
+                hpPlus: 800
             }
         },
 
@@ -1374,7 +1409,7 @@ module.exports = {
             dmg: 100,
             type: "physical",
             special: "selfdamage",
-            selfdamage: 10000
+            selfdamage: 15000
         },
 
         // every 4 turns
@@ -1388,6 +1423,7 @@ module.exports = {
             currentTurn: 0,
             status: {
                 focusedBy: "",
+                status: true,
                 ignoreBandaid: true,
                 name: "Rampage",
                 turnsToExpire: 4,
@@ -1415,7 +1451,20 @@ module.exports = {
             afterNTurns: 1,
             currentTurn: 0,
             targetWithName: "Lava Elemental",
-            dmg: 400,
+            dmg: 300,
+            mdPercentage: 1
+        },
+
+        igniteAir: {
+            name : "Ignite Air",
+            belongsToMember: true,
+            processAbility: true,
+            abilityId: "igniteAir",
+            everyNTurns: 3,
+            afterNTurns: 2,
+            currentTurn: 0,
+            targetWithName: "Sky Elemental",
+            dmg: 100,
             mdPercentage: 1
         },
 
@@ -1435,7 +1484,7 @@ module.exports = {
                 emoji : "😠",
                 affects: ["attackDmg", "magicDmg"],
                 turnsToExpire: 300,
-                multiplierBasedOnLostHp: .02
+                multiplierBasedOnLostHp: .01
             }
         },
 
@@ -1444,13 +1493,14 @@ module.exports = {
             belongsToMember: true,
             name: "Hurricane",
             abilityId: "hurricane",
-            everyNTurns: 4,
+            everyNTurns: 8,
             afterNTurns: 8,
             currentTurn: 0,
+            type: "physical",
             areawidedmg: {
                 areawide: true,
                 name: "Hurricane",
-                dmg: 1500,
+                dmg: 1200,
                 adPercentage: 1,
                 type: "physical"
             }
@@ -1460,13 +1510,13 @@ module.exports = {
             belongsToMember: true,
             name: "Engulf",
             abilityId: "engulf",
-            everyNTurns: 4,
+            everyNTurns: 8,
             afterNTurns: 4,
             currentTurn: 0,
             areawidedmg: {
                 areawide: true,
                 name: "engulf",
-                dmg: 1500,
+                dmg: 1200,
                 mdPercentage: 1,
                 type: "fire"
             }
@@ -1480,12 +1530,12 @@ module.exports = {
             buff: {
                 buff: true,
                 name: "Dampen",
-                emoji : "🔰",
+                emoji : "🛢️",
                 affectsGlobal: ["physicalDamageTakenPercentage"],
                 turnsToExpire: 10,
                 multiplier: 0.5
             },
-            removeBuff: "amplify"
+            removeBuff: "Amplify"
         },
         // reduces magical damage by 50% - applied when damaging lava elemental
         // removes dampen 
@@ -1496,12 +1546,12 @@ module.exports = {
             buff: {
                 buff: true,
                 name: "Amplify",
-                emoji : "🔰",
+                emoji : "💡",
                 affectsGlobal: ["magicDamageTakenPercentage"],
                 turnsToExpire: 10,
                 multiplier: 0.5
             },
-            removeBuff: "dampen"
+            removeBuff: "Dampen"
         },
 
         // sky elemental summons this enemy 
@@ -1509,7 +1559,7 @@ module.exports = {
             name: "Summon Smoke Screen",
             abilityId: "summonSmokeScreen",
             belongsToMember: true,
-            everyNTurns: 3,
+            everyNTurns: 6,
             afterNTurns: 3,
             currentTurn: 0,
             summon: {
@@ -1519,15 +1569,41 @@ module.exports = {
                 hpPlus: 1000
             }
         },
+        summonDweller: {
+            name: "Summon Dweller",
+            abilityId: "summonDweller",
+            belongsToMember: true,
+            everyNTurns: 6,
+            afterNTurns: 6,
+            currentTurn: 0,
+            summon: {
+                enemy: "dweller",
+                attackDmg: 500,
+                magicDmg: 500,
+                hpPlus: 1000
+            }
+        },
         // smoke screen deals damage to the lava elemental at end of turn
 
-        // morph 
+        // morph  - base the hp of the caster on the hp of certain enemies
+        // anomalyMorph: {
+        //     belongsToMember: true,
+        //     abilityId: "anomalyMorph",
+        //     name: "Morph",
+            
+        // },
         // aoe every turn
+        morphAnomalyMessage: {
+            belongsToMember: true,
+            hppercentage: 0.20,
+            eotMessage: "The golems and elementals morph into an Anomaly",
+            deathMessage: "The golems and elementals morph into an Anomaly"
+        },
         consume: {
             belongsToMember: true,
             name: "Consume",
             abilityId: "consume",
-            everyNTurns: 1,
+            everyNTurns: 2,
             afterNTurns: 1,
             currentTurn: 1,
             areawidedmg: {
@@ -1542,29 +1618,29 @@ module.exports = {
         burst: {
             belongsToMember: true,
             processAbility: true,
-            //-cast attack 3-cast attack 3ignoreFocus: true,
+            ignoreFocus: true,
             ignoreBandaid: true,
             targetToApplyOn: "random",
             name:"Burst",
             everyNTurns: 5,
-            afterNTurns: 2,
+            afterNTurns: 1,
             currentTurn: 0,
             abilityId: "burst",
-            type:"shadow",
+            type:"physical",
             dot: {
                 name: "Burst",
                 abilityId: "burst",
                 ignoreBandaid: true,
                 // TODO: dot can only be removed upon being healed to full
-                removeDotOnHpPercentage: .95,
+                removeDotOnHpPercentage: .99,
 
-                type:"shadow",
-                dmg: 400,
-                mdPercentage: 0.1,
+                type:"physical",
+                dmg: 1000,
+                adPercentage: 0.2,
                 dmgIncreasePerTick: 400,
                 emoji: "✴️",
                 dmgOnDotApply: false,
-                turnsToExpire: 99,
+                turnsToExpire: 12,
                 dmgOnDotExpire: false,
                 dmgOnExpire: 0
             }
@@ -1599,8 +1675,6 @@ module.exports = {
             currentTurn: 0,
             special: "absorb fiends" // heals for their remaining health
         },
-
-        // kill all entomed 
 
         /*
         endOfTurnEvents
@@ -2229,6 +2303,7 @@ module.exports = {
             },
             lavaElemental: {
                 name: "Lava Elemental",
+                uniqueEnemy: true,
                 xp: 150,
                 abilities: [
                     "anger",
@@ -2240,10 +2315,18 @@ module.exports = {
                         name: "frenzy",
                         emoji: "😡",
                         onTurnEnd: {
-                            attackDmgPlus : 950,
-                            magicDmgPlus : 950,
+                            attackDmgPlus : 1050,
+                            magicDmgPlus : 1050,
                             everyNTurns: 8,
+                            currentTurn: 1,
                             startTurn: 5
+                        }
+                    },
+                    {
+                        name: "amp",
+                        emoji: "💡",
+                        onDamageTakenGiveBuff: {
+                            buffId: "amplify"
                         }
                     }
                 ],
@@ -2252,13 +2335,20 @@ module.exports = {
                 ],
                 endOfTurnEvents : [
                     "focus",
+                    "morphAnomalyMessage",
+                    "summonAnomaly",
+                    "entombAll20",
                     "fury",
                     "rampage",
-                    "summonAnomaly",
                     "engulf",
-                    "entombAll20"
+                    "igniteAir"
                 ],
-                hp: 41600,
+                effectsOnDeath: [
+                    "entombAll20",
+                    "morphAnomalyMessage",
+                    "summonAnomaly"
+                ],
+                hp: 27600,
                 attackDmg: 1700,
                 magicDmg: 1470,
                 armor: 2350,
@@ -2271,6 +2361,7 @@ module.exports = {
             },
             skyElemental: {
                 name: "Sky Elemental",
+                uniqueEnemy: true,
                 xp: 150,
                 abilities: [
                     "attack",
@@ -2282,10 +2373,18 @@ module.exports = {
                         name: "frenzy",
                         emoji: "😡",
                         onTurnEnd: {
-                            attackDmgPlus : 950,
-                            magicDmgPlus : 950,
+                            attackDmgPlus : 1050,
+                            magicDmgPlus : 1050,
                             everyNTurns: 8,
+                            currentTurn: 1,
                             startTurn: 5
+                        }
+                    },
+                    {
+                        name: "damp",
+                        emoji: "🛢️",
+                        onDamageTakenGiveBuff: {
+                            buffId: "dampen"
                         }
                     }
 
@@ -2295,12 +2394,19 @@ module.exports = {
                 ],
                 endOfTurnEvents : [
                     "focus",
+                    "morphAnomalyMessage",
                     "summonAnomaly",
                     "hurricane",
                     "entombAll20",
-                    "summonSmokeScreen"
+                    "summonSmokeScreen",
+                    "summonDweller"
                 ],
-                hp: 41600,
+                effectsOnDeath: [
+                    "entombAll20",
+                    "morphAnomalyMessage",
+                    "summonAnomaly",
+                ],
+                hp: 74600,
                 attackDmg: 1700,
                 magicDmg: 1470,
                 armor: 2350,
@@ -2313,6 +2419,7 @@ module.exports = {
             },
             anomaly: {
                 name: "Anomaly",
+                uniqueEnemy: true,
                 xp: 150,
                 abilities: [
                     "attack",
@@ -2325,7 +2432,7 @@ module.exports = {
                         name: "frenzy",
                         emoji: "😡",
                         onTurnEnd: {
-                            attackDmgPlus : 100,
+                            attackDmgPlus : 200,
                             magicDmgPlus : 750,
                             everyNTurns: 1,
                             startTurn: 1
@@ -2341,11 +2448,19 @@ module.exports = {
                     "burst",
                     "burst",
                     "summonFiends",
+                    "absorbFiends"
                 ],
                 effectsOnDeath: [
                     "killAllEntomb"
                 ],
-                hp: 41600,
+                hp: 750000,
+                baseHpOn: [
+                    "Asteroid Golem",
+                    "Stone Giant",
+                    "Lava Elemental",
+                    "Sky Elemental"
+                ],
+                baseHpOnMultiplier: 3,
                 attackDmg: 2000,
                 magicDmg: 1470,
                 armor: 2350,
@@ -2364,8 +2479,11 @@ module.exports = {
                 adPerPartyMember: 0,
                 mdPerPartyMember: 0,
                 hp: 4300,
-                attackDmg: 430,
-                magicDmg: 360,
+                effectsOnDeath: [
+                    "explode"
+                ],
+                attackDmg: 630,
+                magicDmg: 1060,
                 armor: 1300,
                 spirit: 1300,
                 difficulty: "summoned",
@@ -2373,19 +2491,37 @@ module.exports = {
             },
             smokeScreen: {
                 name: "Smoke Screen",
-                abilities: ["attack", "claw"],
+                abilities: ["attack", "igniteLava"],
                 buffs: [],
                 hpPerPartyMember: 0,
                 adPerPartyMember: 0,
                 mdPerPartyMember: 0,
                 hp: 54300,
-                attackDmg: 430,
-                magicDmg: 360,
+                abilityOrder: [
+                    0, 1, 0, 1
+                ],
+                attackDmg: 830,
+                magicDmg: 1060,
                 armor: 1300,
                 spirit: 1300,
-                endOfTurnEvents : [
-                    "igniteLava"
+                difficulty: "summoned",
+                element: "normal"
+            },
+            dweller: {
+                name: "Dweller",
+                abilities: ["attack", "igniteLava"],
+                buffs: [],
+                hpPerPartyMember: 0,
+                adPerPartyMember: 0,
+                mdPerPartyMember: 0,
+                hp: 54300,
+                abilityOrder: [
+                    1, 0, 1, 0
                 ],
+                attackDmg: 830,
+                magicDmg: 1060,
+                armor: 1300,
+                spirit: 1300,
                 difficulty: "summoned",
                 element: "normal"
             },
@@ -5679,7 +5815,6 @@ module.exports = {
                             "rockthrow",
                             "slash",
                             "poke",
-                            "shield",
                             "meteor"
                         ],
                         buffs: [
@@ -5687,35 +5822,29 @@ module.exports = {
                                 name: "frenzy",
                                 emoji: "😡",
                                 onTurnEnd: {
-                                    attackDmgPlus : 1005,
-                                    magicDmgPlus : 1005,
+                                    attackDmgPlus : 705,
+                                    magicDmgPlus : 705,
                                     everyNTurns: 6,
                                     startTurn: 8
-                                }
-                            },
-                            {
-                                name: "amp",
-                                emoji: "+",
-                                onDamageTakenGiveBuff: {
-                                    buffId: "dampen"
                                 }
                             }
                         ],
                         abilityOrder: [
-                            0, 1, 3, 2, 5, 1, 5
+                            0, 1, 3, 2, 4, 1, 4
                         ],
                         endOfTurnEvents : [
                             "focus",
-                            "burst",
                             "summonLavaElemental",
                             "summonSkyElemental",
                             "break",
                             "entombAll20"
                         ],
                         effectsOnDeath: [
-                            
+                            "entombAll20",
+                            "summonSkyElementalDeath",
+                            "summonLavaElementalDeath",
                         ],
-                        hp: 125600,
+                        hp: 42600,
                         attackDmg: 1480,
                         magicDmg: 1470,
                         armor: 2500,
@@ -5734,7 +5863,6 @@ module.exports = {
                             "rockthrow",
                             "slash",
                             "poke",
-                            "tacowall",
                             "quake"
                         ],
                         buffs: [
@@ -5742,15 +5870,15 @@ module.exports = {
                                 name: "frenzy",
                                 emoji: "😡",
                                 onTurnEnd: {
-                                    attackDmgPlus : 1005,
-                                    magicDmgPlus : 1005,
+                                    attackDmgPlus : 705,
+                                    magicDmgPlus : 705,
                                     everyNTurns: 6,
                                     startTurn: 9
                                 }
                             }
                         ],
                         abilityOrder: [
-                            1, 0, 2, 3, 1, 5, 5
+                            1, 0, 2, 3, 1, 4, 4
                         ],
                         endOfTurnEvents : [
                             "focus",
@@ -5760,9 +5888,11 @@ module.exports = {
                             "entombAll20"
                         ],
                         effectsOnDeath: [
-                            
+                            "entombAll20",
+                            "summonSkyElementalDeath",
+                            "summonLavaElementalDeath",
                         ],
-                        hp: 25600,
+                        hp: 42600,
                         attackDmg: 1480,
                         magicDmg: 1470,
                         armor: 10750,
