@@ -2545,7 +2545,7 @@ module.exports.itemDetailsCommand = function(message, args){
     var discordUserId = message.author.id;
     if (args && args.length >= 2){
         var itemToWear = args[1]; // must be a valid itemname
-        profileDB.getUserItems(discordUserId, function(err, inventoryResponse){
+        profileDB.getUserItemsForInfo(discordUserId, function(err, inventoryResponse){
             if (err){
                 // console.log(err);
             }
