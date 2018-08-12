@@ -2216,7 +2216,7 @@ module.exports.helpCommand = function(message){
           },
           {
             "name": "-fruits [user] [user] [user] ...",
-            "value": "Play a game of fruits by tagging up to 9 other people with this command!\nTake one or two fruits and attempt to force your opponents to take a bomb!"
+            "value": "Play a game of fruits by tagging up to 9 other people with this command!\nTake one or two fruits and attempt to force your opponents to take a bomb!\n`-hint                >` Bender tells you a hint!"
           },
           {
             "name": "Other Help Commands",
@@ -2257,7 +2257,7 @@ module.exports.itemhelpCommand = function(message){
         "fields": [
           {
             "name": "Inventories",
-            "value": "`-inventory             >` Display all your common and uncommon items!\n`-rares (long)          >` Display all your rare items (with their details)!\n`-ancients (long)       >` Display all your ancient items (with their details)!\n`-artifacts (long)      >` Display all your artifacts (with their details)!\n`-amulets               >` Display all your amulets!"
+            "value": "`-inventory             >` Display all your common and uncommon items!\n`-rares (long)          >` Display all your rare items (with their details)!\n`-ancients (long)       >` Display all your ancient items (with their details)!\n`-artifacts (long)      >` Display all your artifacts (with their details)!\n`-amulets               >` Display all your amulets!\n`-iteminfo (name of item)               >` Display information about the item!"
           },
           {
             "name": "Wearing Items",
