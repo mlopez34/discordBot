@@ -13,6 +13,7 @@ module.exports = {
             abilityId: "stab",
             dmg: 85,
             adPercentage: 1,
+            description: "Deal 85 physical damage + 100% of your attack damage",
             type: "physical"
         },
         // new abiltiies
@@ -21,12 +22,13 @@ module.exports = {
             abilityId: "impale",
             dmg: 125,
             adPercentage: 1.1,
+            description: "Deal 125 physical damage + 110% of your attack damage and 40 physical damage + 30% to 1 random enemy",
             type: "physical",
             special: {
                 name: "Impale",
                 abilityId: "impale",
                 randomTargets: 1,
-                dmg: 125,
+                dmg: 40,
                 adPercentage: 0.3,
                 type: "physical"
             },
@@ -37,6 +39,7 @@ module.exports = {
             abilityId: "assist",
             heal: 50,
             mdPercentage: 0.85,
+            description: "Heal your target for 50 + 85% of your magical damage and heal your target for 50 + 85% of your magical damage",
             selfUntargettable: true,
             special: {
                 name: "Assist",
@@ -52,6 +55,7 @@ module.exports = {
             abilityId: "nourish",
             heal: 50,
             mdPercentage: 0.8,
+            description: "Heal your target for 50 + 80% of your magical damage and 3 additional friendly players for 50%, 30%, and 10%",
             special: {
                 name: "Nourish",
                 abilityId: "nourish",
@@ -67,6 +71,7 @@ module.exports = {
             name:"Recover",
             abilityId: "recover",
             selfTarget: true,
+            description: "Heal yourself for 50 + 20% of your armor or spirit, whichever is higher, lasts 3 turns",
             hot: {
                 name: "Recover",
                 heal: 50,
@@ -91,6 +96,7 @@ module.exports = {
             abilityId: "shell",
             cooldown: 0,
             maxcooldown: 8,
+            description: "Reduce all damage taken by 33% for 3 turns 8 turn cooldown",
             buff: {
                 selfbuff: true,
                 buff: true,
@@ -121,6 +127,7 @@ module.exports = {
             limitDefensive : true,
             areawide: true,
             targets: "friendly",
+            description: "Limit ability - increase your groups max hp by 20% lasts 3 turns",
             buff: {
                 buff: true,
                 areawide: true,
@@ -138,6 +145,7 @@ module.exports = {
             abilityId: "paralyze",
             maxcooldown: 5,
             cooldown: 0,
+            description: "Paralyze a player or easy, medium, summoned difficulty enemy for 3 turns, 5 turn cooldown, invalid if damage is taken",
             difficultiesAllowed: [
                 "easy",
                 "medium",
@@ -186,6 +194,7 @@ module.exports = {
         tacoheal : {
             name: "Heal",
             abilityId: "tacoheal",
+            description: "Heal your target for 70 + 127% of your current magical damage",
             heal: 70,
             mdPercentage: 1.27
         },
@@ -193,6 +202,7 @@ module.exports = {
             name: "Replenish",
             abilityId: "replenish",
             special: "remove death",
+            description: "Limit ability - Heal your target for 450 + 190% of your current magical damage - if your target is dead you will revive them",
             heal: 450,
             mdPercentage: 1.9,
             limitDefensive : true
@@ -200,6 +210,7 @@ module.exports = {
         bandaid : {
             name: "Bandaid",
             abilityId: "bandaid",
+            description: "Heal your target for 20 + 60% of your current magical damage and remove all basic statuses",
             heal: 20,
             mdPercentage: 0.6,
             special: "remove status"
@@ -207,6 +218,7 @@ module.exports = {
         orchatasip: {
             name:"Orchata Sip",
             abilityId: "orchatasip",
+            description: "Heal your target over time for 50 + 145% of your magical damage over 5 turns",
             hot: {
                 name: "Orchata Sip",
                 heal: 50,
@@ -221,6 +233,7 @@ module.exports = {
         elixir: {
             name: "Elixir",
             abilityId: "elixir",
+            description: "Heal the group for 35 + 60% of your current magical damage, 1 turn cooldown",
             heal: 35,
             cooldown: 0,
             maxcooldown: 1,
@@ -231,6 +244,7 @@ module.exports = {
         megaelixir: {
             name: "Mega Elixir",
             abilityId: "megaelixir",
+            description: "Limit ability - Heal the group for 200 + 100% of your current magical damage",
             heal: 200,
             specialCharge: 1,
             mdPercentage: 1,
@@ -242,6 +256,7 @@ module.exports = {
             name:"Poke",
             abilityId: "poke",
             type:"physical",
+            description: "deal 75 damage + 115% of your physical damage over 4 turns",
             dot: {
                 name: "Poke",
                 type:"physical",
@@ -258,6 +273,7 @@ module.exports = {
             name:"Curse",
             abilityId: "curse",
             type:"shadow",
+            description: "Deal 75 damage + 115% of your magical damage over 4 turns",
             dot: {
                 name: "Curse",
                 type:"shadow",
@@ -273,6 +289,7 @@ module.exports = {
         tacowall: {
             name: "Taco Wall",
             abilityId: "tacowall",
+            description: "Increase your target's spirit by 100%",
             buff: {
                 name: "Taco Wall",
                 emoji : "🏛",
@@ -283,6 +300,7 @@ module.exports = {
         shield: {
             name: "Shield",
             abilityId: "shield",
+            description: "Increase your target's armor by 100%",
             buff: {
                 name: "Shield",
                 emoji: "🛡️",
@@ -293,6 +311,7 @@ module.exports = {
         barrier: {
             name: "Barrier",
             abilityId: "barrier",
+            description: "Increase your target's spirit by 650",
             buff: {
                 name: "Barrier",
                 emoji: "🚧",
@@ -303,6 +322,7 @@ module.exports = {
         protect: {
             name: "Protect",
             abilityId: "protect",
+            description: "Increase your target's armor by 650",
             buff: {
                 name: "Protect",
                 emoji: "🥅",
@@ -317,6 +337,7 @@ module.exports = {
             targets: "friendly",
             cooldown: 0,
             maxcooldown: 5,
+            description: "Increase the group's magical damage and attack damage by 60% for 4 turns - 10 turn cooldown, applies Exhausted",
             buff: {
                 buff: true,
                 areawide: true,
@@ -343,6 +364,7 @@ module.exports = {
             abilityId: "flameblast",
             dmg: 50,
             mdPercentage: 1,
+            description: "Deal 50 damage + 100% of your magical damage, applies burning which deals 20 damage + 90% of your magical damage over 5 turns",
             type: "fire",
             dot: {
                 name: "Burning",
@@ -362,6 +384,7 @@ module.exports = {
             dmg: 50,
             mdPercentage: 1,
             type: "poison",
+            description: "Deal 50 damage + 100% of your magical damage, applies poison which deals 20 damage + 80% of your magical damage over 3 turns",
             dot: {
                 name: "Poison",
                 dmg: 20,
@@ -380,6 +403,7 @@ module.exports = {
             dmg: 50,
             mdPercentage: 1,
             type: "poison",
+            description: "Deal 50 damage + 100% of your magical damage, applies food poisoning which deals 20 damage + 80% of your magical damage over 3 turns",
             dot: {
                 name: "Food Poisoning",
                 dmg: 20,
@@ -398,6 +422,7 @@ module.exports = {
             dmg: 50,
             adPercentage: 1,
             type: "physical",
+            description: "Deal 50 damage + 100% of your attack damage, applies uppercut which deals 20 damage + 80% of your attack damage over 3 turns",
             dot: {
                 name: "Uppercut",
                 dmg: 20,
@@ -414,6 +439,7 @@ module.exports = {
             name: "Ice Shards",
             abilityId: "iceshards",
             dmg: 45,
+            description: "Deal 45 damage + 60% of your magic damage to all enemies",
             mdPercentage: 0.6,
             type: "ice",
             areawide: true,
@@ -424,6 +450,7 @@ module.exports = {
             abilityId: "slash",
             dmg: 45,
             adPercentage: 0.6,
+            description: "Deal 45 damage + 60% of your attack damage to all enemies",
             type: "physical",
             areawide: true,
             targets: "enemy"
@@ -458,6 +485,7 @@ module.exports = {
         shoot: {
             name: "Shoot",
             abilityId: "shoot",
+            description: "Deal 125 damage + 120% of your attack damage, 6 charges",
             dmg: 125,
             charges: 6,
             maxcharges: 6,
@@ -469,6 +497,7 @@ module.exports = {
             abilityId: "shock",
             dmg: 120,
             mdPercentage: 1.2,
+            description: "Deal 120 damage + 120% of your attack damage, deal 20% damage dealt to yourself",
             type: "electric",
             special: "selfdamage",
             selfdamage: 15
@@ -494,6 +523,7 @@ module.exports = {
             name: "Headshot",
             abilityId: "headshot",
             limitOffensive: true,
+            description: "Limit ability - Deal 480 damage + 200% of your attack damage",
             dmg: 480,
             adPercentage: 2,
             type: "physical"
@@ -503,6 +533,7 @@ module.exports = {
             name: "Execute",
             abilityId: "execute",
             limitOffensive: true,
+            description: "Limit ability - Deal 480 damage + 200% of your attack damage",
             dmg: 480,
             adPercentage: 2,
             type: "physical"
@@ -512,6 +543,7 @@ module.exports = {
             name: "Decapitate",
             abilityId: "decapitate",
             limitOffensive: true,
+            description: "Limit ability - Deal 480 damage + 200% of your attack damage",
             dmg: 480,
             adPercentage: 2,
             type: "physical"
@@ -521,6 +553,7 @@ module.exports = {
             name: "Flare",
             abilityId: "flare",
             limitOffensive: true,
+            description: "Limit ability - Deal 480 damage + 200% of your magical damage",
             dmg: 480,
             mdPercentage: 2,
             type: "fire"
@@ -532,6 +565,7 @@ module.exports = {
             limitOffensive: true,
             dmg: 120,
             mdPercentage: 1.5,
+            description: "Limit ability - Deal 120 damage + 150% of your magical damage",
             type: "electric",
             areawide: true,
             targets: "enemy"
@@ -543,6 +577,7 @@ module.exports = {
             limitOffensive: true,
             dmg: 120,
             adPercentage: 1.5,
+            description: "Limit ability - Deal 120 damage + 150% of your attack damage",
             type: "physical",
             areawide: true,
             targets: "enemy"
@@ -553,6 +588,7 @@ module.exports = {
             abilityId: "rockthrow",
             type: "physical",
             adPercentage: 0.8,
+            description: "Deal 45 damage + 80% of your attack damage, gain a stack of warmup, at 5 stacks deal an extra rockthrow for 130% of attack damage",
             special: "warm up",
             name: "Rock Throw",
             buff: {
@@ -569,6 +605,7 @@ module.exports = {
             name: "Drain",
             abilityId: "drain",
             type: "physical",
+            description: "Deal 40 damage + 100% of your attack damage, heal yourself for 50 + 55% of your magical damage",
             special: {
                 name: "Drain",
                 adPercentage: 1,
@@ -582,6 +619,7 @@ module.exports = {
             name: "Guac",
             abilityId: "guac",
             type: "shadow",
+            description: "Deal 85 damage + 80% of your magical damage, deal an additional 20% of your magical damage per damage over time on the target",
             special: {
                 name: "Guac",
                 mdPerDot: 0.2,
@@ -593,6 +631,7 @@ module.exports = {
             name: "Tackle",
             abilityId: "tackle",
             type: "physical",
+            description: "Deal 85 damage + 80% of your attack damage, deal an additional 20% of your attack damage per damage over time on the target",
             special: {
                 name: "Tackle",
                 adPerDot: 0.2,
@@ -605,6 +644,7 @@ module.exports = {
             passive: true,
             abilityId: "haste",
             name: "Haste",
+            description: "Your spells are cast before the enemy spells",
             buff: {
                 name: "Haste",
                 emoji: "💨"
@@ -615,6 +655,7 @@ module.exports = {
             passive: true,
             abilityId: "resistanceaura",
             name: "Resistance Aura",
+            description: "Aura - increase the group's armor and spirit by 10%",
             buff: {
                 buff: true,
                 aura: true,
@@ -630,6 +671,7 @@ module.exports = {
             passive: true,
             abilityId: "divineaura",
             name: "Divine Aura",
+            description: "Aura - increase the group's magic damage by 10%",
             buff: {
                 buff: true,
                 aura: true,
@@ -645,6 +687,7 @@ module.exports = {
             passive: true,
             abilityId: "fierceshout",
             name: "Fierce Shout",
+            description: "Aura - increase the group's attack damage by 10%",
             buff: {
                 buff: true,
                 aura: true,
@@ -659,6 +702,7 @@ module.exports = {
             passive: true,
             abilityId: "rallyingroar",
             name: "Rallying Roar",
+            description: "Aura - increase the group's max hp by 5%",
             buff: {
                 // hp
                 buff: true,
@@ -2227,6 +2271,7 @@ module.exports = {
 
         revive: {
             name: "Revive",
+            description: "Revive your target",
             abilityId: "revive",
             special: "remove death",
             cooldown: 0,
@@ -2245,6 +2290,7 @@ module.exports = {
         },
         freeze: {
             name: "Freeze",
+            description: "Reduce your target's armor by 30%",
             abilityId: "freeze",
             status: {
                 name: "Frozen",
@@ -2256,6 +2302,7 @@ module.exports = {
         scold: {
             name: "Scold",
             abilityId: "scold",
+            description: "Reduce your target's spirit by 30%",
             status: {
                 name: "Scold",
                 emoji: "☔️",
@@ -2266,6 +2313,7 @@ module.exports = {
         cripple: {
             name: "Cripple",
             abilityId: "cripple",
+            description: "Reduce your target's attack damage by 20%",
             status: {
                 name: "Crippled",
                 emoji: "🤕",
@@ -2276,6 +2324,7 @@ module.exports = {
         weaken: {
             name: "Weaken",
             abilityId: "weaken",
+            description: "Reduce your target's magical damage by 20%",
             status: {
                 name: "Weakened",
                 emoji: "😵 ",

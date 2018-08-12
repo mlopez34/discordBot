@@ -998,7 +998,7 @@ module.exports.rpgReady = function(message, itemsAvailable, amuletItemsById){
                                                                         // only easy enemies before level 12
                                                                         rollForRarity = 3000; 
                                                                     }else if (averageLevelInParty < 17){
-                                                                        // able to get bosses at level 16
+                                                                        // able to get bosses at level 18
                                                                         rollForRarity = Math.floor(Math.random() * 9650) + 1;
                                                                     }else{
                                                                         rollForRarity = Math.floor(Math.random() * 10000) + 1;
@@ -1074,6 +1074,11 @@ module.exports.rpgReady = function(message, itemsAvailable, amuletItemsById){
 
                                                                 if (enemyFound.abilityOrder){
                                                                     enemies[enemyIdCount].abilityOrder = enemyFound.abilityOrder
+                                                                }
+
+                                                                if (averageLevelInParty < 12){
+                                                                    enemies[enemyIdCount].attackDmg = Math.floor(enemies[enemyIdCount].attackDmg / 2 )
+                                                                    enemies[enemyIdCount].magicDmg = Math.floor(enemies[enemyIdCount].magicDmg / 2 )
                                                                 }
 
                                                                 for( var ability in enemies[enemyIdCount].abilities){
