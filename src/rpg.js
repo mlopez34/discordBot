@@ -3435,6 +3435,7 @@ function processStrength(event, target, dotBeingRemoved, abilityIdOfBuff){
     // strength is removed, get the caster and then give the caster the buff
     var BREAK = "Break"
     var SHATTER = "Shatter"
+    var FEVER = "feverChallenge"
     var addedBreak = false
     var addedShatter = false
     for (var s in target.statuses){
@@ -3451,6 +3452,18 @@ function processStrength(event, target, dotBeingRemoved, abilityIdOfBuff){
         }
         if ( target.statuses[s].dot && 
             SHATTER == target.statuses[s].dot.name && !addedShatter){
+            // get the caster of this debuff
+            var caster = target.statuses[s].dot.caster
+            var buffToAdd = JSON.parse( JSON.stringify( rpgAbilities[target.statuses[s].dot.onBandaidCasterGainsBuff] ))
+            buffToAdd.buff.expireOnTurn = event.turn + buffToAdd.buff.turnsToExpire
+            if (caster < 1000){
+                event.enemies[caster].buffs.push(buffToAdd.buff)
+            }
+            addedShatter = true
+            strengthString = strengthString + event.enemies[caster].name + " Gains " + buffToAdd.name + "\n"
+        }
+        if ( target.statuses[s].dot && 
+            FEVER == target.statuses[s].dot.abilityId){
             // get the caster of this debuff
             var caster = target.statuses[s].dot.caster
             var buffToAdd = JSON.parse( JSON.stringify( rpgAbilities[target.statuses[s].dot.onBandaidCasterGainsBuff] ))
@@ -3690,9 +3703,14 @@ function hasDied(event, member){
                             }
                         }
                     }
-                }else if (member.statuses[status].abilityTriggerOnDeath){
+                }else if (member.statuses[status].abilityTriggerOnDeath || (member.statuses[status].dot && member.statuses[status].dot.abilityTriggerOnDeath)){
                     // get the ability that triggered
-                    var rpgAbility = JSON.parse(JSON.stringify(rpgAbilities[member.statuses[status].abilityTriggerOnDeath]))
+                    var rpgAbility;
+                    if (member.statuses[status].abilityTriggerOnDeath){
+                        rpgAbility = JSON.parse(JSON.stringify(rpgAbilities[member.statuses[status].abilityTriggerOnDeath]))
+                    }else{
+                        rpgAbility = JSON.parse(JSON.stringify(rpgAbilities[member.statuses[status].dot.abilityTriggerOnDeath]))
+                    }
 
                     if (rpgAbility.name == "Heal All"){
                         // heal all enemies
@@ -3707,6 +3725,14 @@ function hasDied(event, member){
                             }
                         }
                         deathString = deathString + " The enemies have healed for " + rpgAbility.heal + "\n"
+                    }
+                    if (rpgAbility.abilityId == "strengthFever"){
+                        // heal all enemies
+                        var strengthString = processStrength( event, member  )
+                        if (strengthString.length > 5){
+                            checkedStrength = true
+                        }
+                        deathString = deathString + strengthString
                     }
                 }
             }catch(err){

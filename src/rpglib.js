@@ -1370,6 +1370,19 @@ module.exports = {
                 multiplier: 1.15
             }
         },
+        strengthFever: {
+            name: "Strength",
+            abilityId: "strengthFever",
+            buff: {
+                buff: true,
+                name: "Strength",
+                abilityId: "strengthFever",
+                emoji: "💪🏼",
+                turnsToExpire: 50,
+                affects: ["attackDmg", "magicDmg"],
+                multiplier: 1.2
+            }
+        },
 
         // summon Lava and Sky elemental
         // summoned upon entomb / 20% HP
@@ -1799,10 +1812,13 @@ module.exports = {
             currentTurn: 0,
             dot: {
                 name: "Fever",
+                abilityId: "feverChallenge",
                 type:"shadow",
                 dmg: 500,
                 mdPercentage: 0.25,
                 emoji: "🐖",
+                onBandaidCasterGainsBuff: "strengthFever",
+                abilityTriggerOnDeath: "strengthFever",
                 dmgOnDotApply: false,
                 ignoreBandaid: true,
                 ignoreDmgOnTurn: 1,
@@ -5542,7 +5558,7 @@ module.exports = {
                         endOfTurnEvents : [
                             "focus",
                             "archvampireRevive",
-                            "fever",
+                            "feverChallenge",
                             "suckBlood"
                         ],
                         hp: 58600,
