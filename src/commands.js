@@ -2593,9 +2593,15 @@ module.exports.itemDetailsCommand = function(message, args){
                         }
 
                         if (itemsMapbyName[itemToWear]){
-                            var itemToDisplay = itemsMapbyName[itemToWear]
-                            var rpgItemInfoString = rpgInfoStringBuilder(message, itemToDisplay)
-                            itemInfoEmbedBuilder(message, itemToDisplay, rpgItemInfoString)
+                            // check that i have the item
+                            var idOfItemChosen = itemsMapbyName[itemToWear].id
+                            if (itemsInInventoryCountMap[idOfItemChosen]){
+                                var itemToDisplay = itemsMapbyName[itemToWear]
+                                var rpgItemInfoString = rpgInfoStringBuilder(message, itemToDisplay)
+                                itemInfoEmbedBuilder(message, itemToDisplay, rpgItemInfoString)    
+                            }else{
+                                message.channel.send("you do not own that item or item does not exist")
+                            }
                         }else{
                             message.channel.send("you do not own that item or item does not exist")
                         }
@@ -3724,11 +3730,11 @@ module.exports.hintCommand = function(message){
         "rpg events provide rewards when your group succeeds. you can have up to 5 players in an rpg group.",
         "the reputation shop opens when you reach liked status with bender",
         "slots are dangerous",
-        "if you want to trade an item for tacos do `-trade @user rock 1 tacos 5` this will trade the rock for 5 tacos",
+        "if you want to trade an item for tacos do -trade @user rock 1 tacos 5 this will trade the rock for 5 tacos",
         "leveling up awards rpg stats, each level gives 21 HP, 10 AD and MD, and armor/spirit based on your current level",
         "most items give higher bonuses the higher level you are."
     ]
-    var hintRoll = Math.floor(Math.random() * listOfHints.length -1 )
+    var hintRoll = Math.floor(Math.random() * (listOfHints.length -1) )
     var hintPicked = listOfHints[hintRoll]
     // get one of the hints at random
 
