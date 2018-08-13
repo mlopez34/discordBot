@@ -1380,7 +1380,7 @@ module.exports = {
                 emoji: "💪🏼",
                 turnsToExpire: 50,
                 affects: ["attackDmg", "magicDmg"],
-                multiplier: 1.2
+                multiplier: 1.33
             }
         },
 
