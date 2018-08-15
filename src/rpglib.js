@@ -75,7 +75,7 @@ module.exports = {
             hot: {
                 name: "Recover",
                 heal: 50,
-                emoji: "💉",
+                emoji: "<:recover:479296605237805056>",
                 arOrSpPercentage: 0.2,
                 healingOnHotApply: false,
                 turnsToExpire: 3,
@@ -101,7 +101,7 @@ module.exports = {
                 selfbuff: true,
                 buff: true,
                 name: "Shell",
-                emoji : "🔰",
+                emoji : "<:shell:479293276462252042>",
                 affectsGlobal: ["damageTakenPercentage"],
                 turnsToExpire: 3,
                 multiplier: 0.67
@@ -114,7 +114,7 @@ module.exports = {
             buff: {
                 name: "Overloading",
                 abilityId: "overloading",
-                emoji : "🎛️",
+                emoji : "<:overload:479301622275637248>",
                 turnsToExpire: 1,
                 addDamageTaken: true,
                 damageOnExpireFromDamageTaken: true
@@ -133,7 +133,7 @@ module.exports = {
                 areawide: true,
                 name: "Charge",
                 abilityId: "charge",
-                emoji : "❇️",
+                emoji : "<:charge:479293276461989908>",
                 turnsToExpire: 3,
                 affects: ["maxhp"],
                 multiplier: 1.2
@@ -155,7 +155,7 @@ module.exports = {
                 status: true,
                 abilityId: "paralyze",
                 name: "Paralyze",
-                emoji: "🛌",
+                emoji: "<:paralyze:479294904900517888>",
                 turnsToExpire: 3,
                 setAbleToAttack: false,
                 invalidOnDamage: true
@@ -222,7 +222,7 @@ module.exports = {
             hot: {
                 name: "Orchata Sip",
                 heal: 50,
-                emoji: "🥛",
+                emoji: "<:orchatasip:479296604831219714>",
                 mdPercentage: 1.45,
                 healingOnHotApply: false,
                 turnsToExpire: 5,
@@ -262,7 +262,7 @@ module.exports = {
                 type:"physical",
                 dmg: 75,
                 adPercentage: 1.15,
-                emoji: "📌",
+                emoji: "<:poke:479296559121432576>",
                 dmgOnDotApply: false,
                 turnsToExpire: 4,
                 dmgOnDotExpire: false,
@@ -279,7 +279,7 @@ module.exports = {
                 type:"shadow",
                 dmg: 75,
                 mdPercentage: 1.15,
-                emoji: "🌑",
+                emoji: "<:curse:479296558794407936>",
                 dmgOnDotApply: false,
                 turnsToExpire: 4,
                 dmgOnDotExpire: false,
@@ -292,7 +292,7 @@ module.exports = {
             description: "Increase your target's spirit by 100%",
             buff: {
                 name: "Taco Wall",
-                emoji : "🏛",
+                emoji : "<:tacowall:479293276424372255>",
                 affects: ["spirit"],
                 multiplier: 2
             }
@@ -303,7 +303,7 @@ module.exports = {
             description: "Increase your target's armor by 100%",
             buff: {
                 name: "Shield",
-                emoji: "🛡️",
+                emoji: "<:shield:479293276751659039>",
                 affects: ["armor"],
                 multiplier: 2
             }
@@ -314,7 +314,7 @@ module.exports = {
             description: "Increase your target's spirit by 650",
             buff: {
                 name: "Barrier",
-                emoji: "🚧",
+                emoji: "<:barrier:479293276491350047>",
                 affects: ["spirit"],
                 additive: 650
             }
@@ -325,7 +325,7 @@ module.exports = {
             description: "Increase your target's armor by 650",
             buff: {
                 name: "Protect",
-                emoji: "🥅",
+                emoji: "<:protect:479293276378103825>",
                 affects: ["armor"],
                 additive: 650
             }
@@ -343,7 +343,7 @@ module.exports = {
                 areawide: true,
                 name: "Empower",
                 abilityId: "empower",
-                emoji: "💪🏼",
+                emoji: "<:empower:479293276298412033>",
                 turnsToExpire: 4,
                 affects: ["attackDmg", "magicDmg"],
                 multiplier: 1.6
@@ -354,7 +354,7 @@ module.exports = {
                 areawide: true,
                 ignoreBandaid: true,
                 selfDebuff: true,
-                emoji: "💢",
+                emoji: "<:exhausted:479294904858836992>",
                 buffToStop: "empower",
                 turnsToExpire: 10,
             }
@@ -371,7 +371,7 @@ module.exports = {
                 dmg: 20,
                 mdPercentage: .9,
                 type: "fire",
-                emoji: "🔥",
+                emoji: "<:burning:479296552230191113>",
                 damageOnDotApply: false,
                 turnsToExpire: 5,
                 damageOnDotExpire: false,
@@ -389,7 +389,7 @@ module.exports = {
                 name: "Poison",
                 dmg: 20,
                 mdPercentage: .8,
-                emoji : "🤢",
+                emoji : "<:foodpoisoning:479296558672773120>",
                 type: "poison",
                 damageOnDotApply: false,
                 turnsToExpire: 3,
@@ -408,7 +408,7 @@ module.exports = {
                 name: "Food Poisoning",
                 dmg: 20,
                 mdPercentage: .8,
-                emoji : "🤢",
+                emoji : "<:foodpoisoning:479296558672773120>",
                 type: "poison",
                 damageOnDotApply: false,
                 turnsToExpire: 3,
@@ -427,7 +427,7 @@ module.exports = {
                 name: "Uppercut",
                 dmg: 20,
                 adPercentage: .8,
-                emoji : "🥊",
+                emoji : "<:uppercut:479296568034590730>",
                 type: "physical",
                 damageOnDotApply: false,
                 turnsToExpire: 3,
@@ -594,7 +594,7 @@ module.exports = {
             buff: {
                 selfbuff: true,
                 stacksOfWarmUp: 1,
-                emoji: "🤾",
+                emoji: "<:warmup:479293276579430430>",
                 name: "Warm Up",
                 maxStacks: 4,
                 adPercentageAtMaxStacks: 1.3,
@@ -647,7 +647,7 @@ module.exports = {
             description: "Your spells are cast before the enemy spells",
             buff: {
                 name: "Haste",
-                emoji: "💨"
+                emoji: "<:haste:479293276424241163>"
             }
         },
 
@@ -664,7 +664,7 @@ module.exports = {
                 affects: ["armor", "spirit"],
                 multiplier: 1.1,
                 name: "Resistance Aura",
-                emoji: "🔘"
+                emoji: "<:resistance_aura:479287371242799114>"
             }
         },
         divineaura: {
@@ -680,7 +680,7 @@ module.exports = {
                 affects: [, "magicDmg"],
                 multiplier: 1.1,
                 name: "Divine Aura",
-                emoji: "🕯️"
+                emoji: "<:divine_aura:479287370789683210>"
             }
         },
         fierceshout: {
@@ -695,7 +695,7 @@ module.exports = {
                 multiplier: 1.1,
                 abilityId: "fierceshout",
                 name: "Fierce Shout",
-                emoji: "🌀"
+                emoji: "<:fierce_shout:479287370970169364>"
             }
         },
         rallyingroar: {
@@ -711,7 +711,7 @@ module.exports = {
                 affects: ["maxhp"],
                 multiplier: 1.05,
                 name: "Rallying Roar",
-                emoji: "🎺"
+                emoji: "<:rallying_roar:479287371045535755>"
             }
         },
 
@@ -734,7 +734,7 @@ module.exports = {
                 dmg: 65,
                 areawide: true,
                 mdPercentage: 1,
-                emoji: "🌑",
+                emoji: "<:decay:479296558748270601>",
                 dmgOnDotApply: false,
                 turnsToExpire: 6,
                 dmgOnDotExpire: false,
@@ -753,7 +753,7 @@ module.exports = {
                 type:"fire",
                 dmg: 1,
                 mdPercentage: 1,
-                emoji: "💣",
+                emoji: "<:bomb:479296552096235520>",
                 dmgOnDotApply: false,
                 turnsToExpire: 6,
                 dmgOnDotExpire: true,
@@ -802,7 +802,7 @@ module.exports = {
                 abilityId: "electricOrb",
                 untargettable: true,
                 name: "Electric Orb",
-                emoji: "⚡",
+                emoji: "<:electricorb:479296558375108610>",
                 mdPercentage: 1,
                 turnsToExpire: 2,
                 dmgOnStatusExpire: true,
@@ -915,7 +915,7 @@ module.exports = {
             buff: {
                 name: "blackEnergyCrystal",
                 turnsToExpire: 7,
-                emoji: "⚫"
+                emoji: "<:black_energy_crystal:479287999075450912>"
             }
         },
         blueEnergyCrystal: {
@@ -924,7 +924,7 @@ module.exports = {
             buff: {
                 name: "blueEnergyCrystal",
                 turnsToExpire: 7,
-                emoji: "🔵"
+                emoji: "<:blue_energy_crystal:479287999243354112>"
             }
         },
         yellowEnergyCrystal: {
@@ -939,7 +939,7 @@ module.exports = {
                 reduceEveryNTurnsSummonTorturedRobot: 5,
                 reduceEveryNTurnsRocketStrike: 1,
                 rocketStrikeAreawide: true,
-                emoji: "☀️"
+                emoji: "<:yellow_energy_crystal:479287999285166093>"
             }
         },
         purpleEnergyCrystal: {
@@ -948,7 +948,7 @@ module.exports = {
             buff: {
                 name: "purpleEnergyCrystal",
                 turnsToExpire: 7,
-                emoji: "🌑",
+                emoji: "<:purple_energy_crystal:479287999297880074>",
                 specialOnExpire: true,
                 onExpireRemoveMemberStatus: "Radioactive"
             }
@@ -959,7 +959,7 @@ module.exports = {
             buff: {
                 name: "greenEnergyCrystal",
                 turnsToExpire: 7,
-                emoji: "🎾"
+                emoji: "<:green_energy_crystal:479287999125913600>"
             }
         },
         redEnergyCrystal: {
@@ -968,7 +968,7 @@ module.exports = {
             buff: {
                 name: "redEnergyCrystal",
                 turnsToExpire: 7,
-                emoji: "🔴"
+                emoji: "<:red_energy_crystal:479287999138627584>"
             }
         },
         summonEnergyCrystalsA: {
@@ -1115,7 +1115,7 @@ module.exports = {
             name: "Energize",
             buff: {
                 name: "Energize",
-                emoji: "🤖",
+                emoji: "<:energize:479288026485227530>",
                 turnsToExpire: 7,
                 abilityId: "energize",
                 affects: ["attackDmg", "magicDmg"],
@@ -1132,7 +1132,7 @@ module.exports = {
             name: "Entomb",
             buff: {
                 name: "Entomb",
-                emoji: "🗿",
+                emoji: "<:entomb:479288026388889621>",
                 turnsToExpire: 5,
                 abilityId: "entomb75",
                 setAbleToAttack: false,
@@ -1152,7 +1152,7 @@ module.exports = {
             name: "Entomb",
             buff: {
                 name: "Entomb",
-                emoji: "🗿",
+                emoji: "<:entomb:479288026388889621>",
                 turnsToExpire: 8,
                 abilityId: "entomb50",
                 setAbleToAttack: false,
@@ -1172,7 +1172,7 @@ module.exports = {
             name: "Entomb",
             buff: {
                 name: "Entomb",
-                emoji: "🗿",
+                emoji: "<:entomb:479288026388889621>",
                 turnsToExpire: 8,
                 abilityId: "entomb25",
                 setAbleToAttack: false,
@@ -1187,7 +1187,7 @@ module.exports = {
             name: "Chaos",
             buff: {
                 name: "Chaos",
-                emoji: "💊",
+                emoji: "<:chaos:479288026569244673>",
                 turnsToExpire: 7
             }
         },
@@ -1207,7 +1207,7 @@ module.exports = {
                 areawide: true,
                 ignoreUnique: true,
                 ignoreBandaid: true,
-                emoji: "☢️",
+                emoji: "<:radioactive:479288026669776916>",
                 turnsToExpire: 8,
                 count: 0,
                 abilityId: "radioactive",
@@ -1230,7 +1230,7 @@ module.exports = {
                 abilityId: "furnace",
                 untargettable: true,
                 name: "Furnace",
-                emoji: "♨️",
+                emoji: "<:furnace:479288026527432716>",
                 mdPercentage: 1,
                 turnsToExpire: 1,
                 dmgOnStatusExpire: true,
@@ -1257,7 +1257,7 @@ module.exports = {
                 abilityId: "dismantle",
                 untargettable: true,
                 name: "Dismantle",
-                emoji: "✂️",
+                emoji: "<:dismantle:479288026833354752>",
                 type: "physical",
                 adPercentage: 1,
                 turnsToExpire: 1,
@@ -1286,7 +1286,7 @@ module.exports = {
             buff: {
                 name: "Entomb",
                 areawide: true,
-                emoji: "🗿",
+                emoji: "<:entomb:479288026388889621>",
                 turnsToExpire: 500,
                 abilityId: "entombAll20",
                 setAbleToAttack: false,
@@ -1322,7 +1322,7 @@ module.exports = {
                 dmg: 1000,
                 untargettable: true,
                 mdPercentage: 1,
-                emoji: "⚫",
+                emoji: "<:shatter:479347500751388687>",
                 // TODO: on bandaid trigger effect
                 onBandaidCasterGainsBuff: "strength",
                 ignoreUnique: true,
@@ -1348,7 +1348,7 @@ module.exports = {
             currentTurn: 0,
             status: {
                 name: "Break",
-                emoji: "🔵",
+                emoji: "<:break:479347734722379777>",
                 onBandaidCasterGainsBuff: "strength",
                 ignoreUnique: true,
                 turnsToExpire: 15,
@@ -1364,7 +1364,7 @@ module.exports = {
                 buff: true,
                 name: "Strength",
                 abilityId: "strength",
-                emoji: "💪🏼",
+                emoji: "<:strength:479298214294716416>",
                 turnsToExpire: 20,
                 affects: ["attackDmg", "magicDmg"],
                 multiplier: 1.15
@@ -1377,7 +1377,7 @@ module.exports = {
                 buff: true,
                 name: "Strength",
                 abilityId: "strengthFever",
-                emoji: "💪🏼",
+                emoji: "<:strength:479298214294716416>",
                 turnsToExpire: 50,
                 affects: ["attackDmg", "magicDmg"],
                 multiplier: 1.33
@@ -1484,7 +1484,7 @@ module.exports = {
                 ignoreBandaid: true,
                 name: "Rampage",
                 turnsToExpire: 4,
-                emoji: "🚨",
+                emoji: "<:rampage:479348722782830603>",
                 abilityTriggerOnDeath: "healAllRampage",
                 //TODO: if player dies, heal all enemies
                 
@@ -1538,7 +1538,7 @@ module.exports = {
                 selfbuff: true,
                 buff: true,
                 name: "Fury",
-                emoji : "😠",
+                emoji : "<:fury:479349359281176577>",
                 affects: ["attackDmg", "magicDmg"],
                 turnsToExpire: 300,
                 multiplierBasedOnLostHp: .01
@@ -1587,7 +1587,7 @@ module.exports = {
             buff: {
                 buff: true,
                 name: "Dampen",
-                emoji : "🛢️",
+                emoji : "<:dampen:479301622246408233>",
                 affectsGlobal: ["physicalDamageTakenPercentage"],
                 turnsToExpire: 10,
                 multiplier: 0.5
@@ -1603,7 +1603,7 @@ module.exports = {
             buff: {
                 buff: true,
                 name: "Amplify",
-                emoji : "💡",
+                emoji : "<:amplify:479301622233563136>",
                 affectsGlobal: ["magicDamageTakenPercentage"],
                 turnsToExpire: 10,
                 multiplier: 0.5
@@ -1695,7 +1695,7 @@ module.exports = {
                 dmg: 1000,
                 adPercentage: 0.2,
                 dmgIncreasePerTick: 400,
-                emoji: "✴️",
+                emoji: "<:burst:479349927764426782>",
                 dmgOnDotApply: false,
                 turnsToExpire: 12,
                 dmgOnDotExpire: false,
@@ -1790,7 +1790,7 @@ module.exports = {
                 type:"shadow",
                 dmg: 500,
                 mdPercentage: 0.25,
-                emoji: "🐖",
+                emoji: "<:fever:479298214088933386>",
                 dmgOnDotApply: false,
                 ignoreBandaid: true,
                 ignoreDmgOnTurn: 1,
@@ -1816,7 +1816,7 @@ module.exports = {
                 type:"shadow",
                 dmg: 500,
                 mdPercentage: 0.25,
-                emoji: "🐖",
+                emoji: "<:fever:479298214088933386>",
                 onBandaidCasterGainsBuff: "strengthFever",
                 abilityTriggerOnDeath: "strengthFever",
                 dmgOnDotApply: false,
@@ -1843,7 +1843,7 @@ module.exports = {
                 type:"physical",
                 dmg: 100,
                 adPercentage: 30,
-                emoji: "☸️",
+                emoji: "<:deep_hatred:479298214340591626>",
                 dmgOnDotApply: false,
                 ignoreBandaid: true,
                 ignoreUnique: true,
@@ -1869,7 +1869,7 @@ module.exports = {
                 type:"physical",
                 dmg: 100,
                 adPercentage: 30,
-                emoji: "☸️",
+                emoji: "<:deep_hatred:479298214340591626>",
                 dmgOnDotApply: false,
                 ignoreBandaid: true,
                 ignoreDmgOnTurn: 1,
@@ -1899,7 +1899,7 @@ module.exports = {
                 untargettable: true,
                 mdPercentage: 1,
                 ignoreDmgOnTurn: 1,
-                emoji: "🎎",
+                emoji: "<:hex:479301622732816403>",
                 dmgOnDotApply: false,
                 turnsToExpire: 3,
                 dmgOnDotExpire: false,
@@ -1939,7 +1939,7 @@ module.exports = {
                 dmg: 400,
                 mdPercentage: 0.1,
                 dmgIncreasePerTick: 300,
-                emoji: "✴️",
+                emoji: "<:radiation:479298213774491649>",
                 dmgOnDotApply: false,
                 turnsToExpire: 99,
                 dmgOnDotExpire: false,
@@ -1952,7 +1952,7 @@ module.exports = {
             buff: {
                 name: "Burning Adrenaline",
                 abilityId: "burningAdrenaline",
-                emoji: "💥",
+                emoji: "<:burning_adrenalin:479298214143459358>",
                 affects: ["attackDmg", "magicDmg"],
                 multiplier: 1.0,
                 multiplierPerDotTurn: 0.2,
@@ -2026,7 +2026,7 @@ module.exports = {
                 untargettable: true,
                 name: "Vacum",
                 ignoreUnique: true,
-                emoji: "🕳️",
+                emoji: "<:vacuum:479298214042796032>",
                 mdPercentage: 0.8,
                 turnsToExpire: 6,
                 dmgOnStatusExpire: true,
@@ -2051,7 +2051,7 @@ module.exports = {
                 untargettable: true,
                 ignoreUnique: true,
                 name: "Vacum",
-                emoji: "🕳️",
+                emoji: "<:vacuum:479298214042796032>",
                 mdPercentage: 0.8,
                 turnsToExpire: 6,
                 dmgOnStatusExpire: true,
@@ -2076,7 +2076,7 @@ module.exports = {
                 untargettable: true,
                 ignoreUnique: true,
                 name: "Vacum",
-                emoji: "🕳️",
+                emoji: "<:vacuum:479298214042796032>",
                 mdPercentage: 0.8,
                 turnsToExpire: 6,
                 dmgOnStatusExpire: true,
@@ -2100,7 +2100,7 @@ module.exports = {
                 abilityId: "soulBurn",
                 untargettable: true,
                 name: "Soul Burn",
-                emoji: "👹",
+                emoji: "<:soulburn:479301622057402380>",
                 mdPercentage: 0.8,
                 turnsToExpire: 3,
                 dmgOnStatusExpire: true,
@@ -2300,7 +2300,7 @@ module.exports = {
             status: {
                 focusedBy: "",
                 name: "Focus",
-                emoji: "👁️",
+                emoji: "<:focus:479298214588317707>",
                 special: "focus member"
             }
         },
@@ -2310,7 +2310,7 @@ module.exports = {
             abilityId: "freeze",
             status: {
                 name: "Frozen",
-                emoji: "❄️",
+                emoji: "<:freeze:479294904946655254>",
                 affects: ["armor"],
                 multiplier: 0.7
             }
@@ -2321,7 +2321,7 @@ module.exports = {
             description: "Reduce your target's spirit by 30%",
             status: {
                 name: "Scold",
-                emoji: "☔️",
+                emoji: "<:scold:479294904611110924>",
                 affects: ["spirit"],
                 multiplier: 0.7
             }
@@ -2332,7 +2332,7 @@ module.exports = {
             description: "Reduce your target's attack damage by 20%",
             status: {
                 name: "Crippled",
-                emoji: "🤕",
+                emoji: "<:cripple:479294904741396480>",
                 affects: ["attackDmg"],
                 multiplier: 0.8
             }
@@ -2343,7 +2343,7 @@ module.exports = {
             description: "Reduce your target's magical damage by 20%",
             status: {
                 name: "Weakened",
-                emoji: "😵 ",
+                emoji: "<:weaken:479294904942460951>",
                 affects: ["magicDmg"],
                 multiplier: 0.8
             }
@@ -2378,7 +2378,7 @@ module.exports = {
                 buffs: [
                     {
                         name: "frenzy",
-                        emoji: "😡",
+                        emoji: "<:frenzy:479298214453968896>",
                         onTurnEnd: {
                             attackDmgPlus : 1050,
                             magicDmgPlus : 1050,
@@ -2389,7 +2389,7 @@ module.exports = {
                     },
                     {
                         name: "amp",
-                        emoji: "💡",
+                        emoji: "<:amplify:479301622233563136>",
                         onDamageTakenGiveBuff: {
                             buffId: "amplify"
                         }
@@ -2436,7 +2436,7 @@ module.exports = {
                 buffs: [
                     {
                         name: "frenzy",
-                        emoji: "😡",
+                        emoji: "<:frenzy:479298214453968896>",
                         onTurnEnd: {
                             attackDmgPlus : 1050,
                             magicDmgPlus : 1050,
@@ -2447,7 +2447,7 @@ module.exports = {
                     },
                     {
                         name: "damp",
-                        emoji: "🛢️",
+                        emoji: "<:dampen:479301622246408233>",
                         onDamageTakenGiveBuff: {
                             buffId: "dampen"
                         }
@@ -2495,7 +2495,7 @@ module.exports = {
                 buffs: [
                     {
                         name: "frenzy",
-                        emoji: "😡",
+                        emoji: "<:frenzy:479298214453968896>",
                         onTurnEnd: {
                             attackDmgPlus : 200,
                             magicDmgPlus : 750,
@@ -2768,7 +2768,7 @@ module.exports = {
                 buffs: [
                     {
                         name: "frenzy",
-                        emoji: "😡",
+                        emoji: "<:frenzy:479298214453968896>",
                         onTurnEnd: {
                             attackDmgPlus : 95,
                             magicDmgPlus : 95,
@@ -2876,7 +2876,7 @@ module.exports = {
                 buffs: [
                     {
                         name: "frenzy",
-                        emoji: "😡",
+                        emoji: "<:frenzy:479298214453968896>",
                         onTurnEnd: {
                             attackDmgPlus : 145,
                             magicDmgPlus : 145,
@@ -2904,7 +2904,7 @@ module.exports = {
                 buffs: [
                     {
                         name: "frenzy",
-                        emoji: "😡",
+                        emoji: "<:frenzy:479298214453968896>",
                         onTurnEnd: {
                             attackDmgPlus : 85,
                             magicDmgPlus : 85,
@@ -2934,7 +2934,7 @@ module.exports = {
                 buffs: [
                     {
                         name: "frenzy",
-                        emoji: "😡",
+                        emoji: "<:frenzy:479298214453968896>",
                         onTurnEnd: {
                             attackDmgPlus : 85,
                             magicDmgPlus : 85,
@@ -3163,7 +3163,7 @@ module.exports = {
                 buffs: [
                     {
                         name: "frenzy",
-                        emoji: "😡",
+                        emoji: "<:frenzy:479298214453968896>",
                         onTurnEnd: {
                             attackDmgPlus : 60,
                             magicDmgPlus : 60,
@@ -3189,7 +3189,7 @@ module.exports = {
                 buffs: [
                     {
                         name: "frenzy",
-                        emoji: "😡",
+                        emoji: "<:frenzy:479298214453968896>",
                         onTurnEnd: {
                             attackDmgPlus : 60,
                             magicDmgPlus : 60,
@@ -3215,7 +3215,7 @@ module.exports = {
                 buffs: [
                     {
                         name: "frenzy",
-                        emoji: "😡",
+                        emoji: "<:frenzy:479298214453968896>",
                         onTurnEnd: {
                             attackDmgPlus : 60,
                             magicDmgPlus : 60,
@@ -3241,7 +3241,7 @@ module.exports = {
                 buffs: [
                     {
                         name: "frenzy",
-                        emoji: "😡",
+                        emoji: "<:frenzy:479298214453968896>",
                         onTurnEnd: {
                             attackDmgPlus : 60,
                             magicDmgPlus : 60,
@@ -3274,7 +3274,7 @@ module.exports = {
                 buffs: [
                     {
                         name: "frenzy",
-                        emoji: "😡",
+                        emoji: "<:frenzy:479298214453968896>",
                         onTurnEnd: {
                             attackDmgPlus : 85,
                             magicDmgPlus : 85,
@@ -3306,7 +3306,7 @@ module.exports = {
                 buffs: [
                     {
                         name: "frenzy",
-                        emoji: "😡",
+                        emoji: "<:frenzy:479298214453968896>",
                         onTurnEnd: {
                             attackDmgPlus : 95,
                             magicDmgPlus : 95,
@@ -3338,7 +3338,7 @@ module.exports = {
                 buffs: [
                     {
                         name: "frenzy",
-                        emoji: "😡",
+                        emoji: "<:frenzy:479298214453968896>",
                         onTurnEnd: {
                             attackDmgPlus : 85,
                             magicDmgPlus : 85,
@@ -3370,7 +3370,7 @@ module.exports = {
                 buffs: [
                     {
                         name: "frenzy",
-                        emoji: "😡",
+                        emoji: "<:frenzy:479298214453968896>",
                         onTurnEnd: {
                             attackDmgPlus : 85,
                             magicDmgPlus : 85,
@@ -3411,7 +3411,7 @@ module.exports = {
                     buffs: [
                         {
                             name: "frenzy",
-                            emoji: "😡",
+                            emoji: "<:frenzy:479298214453968896>",
                             onTurnEnd: {
                                 attackDmgPlus : 95,
                                 magicDmgPlus : 95,
@@ -3449,7 +3449,7 @@ module.exports = {
                     buffs: [
                         {
                             name: "frenzy",
-                            emoji: "😡",
+                            emoji: "<:frenzy:479298214453968896>",
                             onTurnEnd: {
                                 attackDmgPlus : 60,
                                 magicDmgPlus : 60,
@@ -3529,7 +3529,7 @@ module.exports = {
                     buffs: [
                         {
                             name: "frenzy",
-                            emoji: "😡",
+                            emoji: "<:frenzy:479298214453968896>",
                             onTurnEnd: {
                                 attackDmgPlus : 105,
                                 magicDmgPlus : 105,
@@ -3568,7 +3568,7 @@ module.exports = {
                     buffs: [
                         {
                             name: "frenzy",
-                            emoji: "😡",
+                            emoji: "<:frenzy:479298214453968896>",
                             onTurnEnd: {
                                 attackDmgPlus : 105,
                                 magicDmgPlus : 105,
@@ -3636,7 +3636,7 @@ module.exports = {
                     buffs: [
                         {
                             name: "frenzy",
-                            emoji: "😡",
+                            emoji: "<:frenzy:479298214453968896>",
                             onTurnEnd: {
                                 attackDmgPlus : 95,
                                 magicDmgPlus : 95,
@@ -3676,7 +3676,7 @@ module.exports = {
                     buffs: [
                         {
                             name: "frenzy",
-                            emoji: "😡",
+                            emoji: "<:frenzy:479298214453968896>",
                             onTurnEnd: {
                                 attackDmgPlus : 75,
                                 magicDmgPlus : 75,
@@ -3706,7 +3706,7 @@ module.exports = {
                     buffs: [
                         {
                             name: "frenzy",
-                            emoji: "😡",
+                            emoji: "<:frenzy:479298214453968896>",
                             onTurnEnd: {
                                 attackDmgPlus : 85,
                                 magicDmgPlus : 85,
@@ -3759,7 +3759,7 @@ module.exports = {
                     buffs: [
                         {
                             name: "frenzy",
-                            emoji: "😈",
+                            emoji: "<:overmind:479298213904646147>",
                             onTurnEnd: {
                                 attackDmgPlus : 400,
                                 magicDmgPlus : 400,
@@ -3800,7 +3800,7 @@ module.exports = {
                     buffs: [
                         {
                             name: "frenzy",
-                            emoji: "😡",
+                            emoji: "<:frenzy:479298214453968896>",
                             onTurnEnd: {
                                 attackDmgPlus : 80,
                                 magicDmgPlus : 80,
@@ -3834,7 +3834,7 @@ module.exports = {
                     buffs: [
                         {
                             name: "frenzy",
-                            emoji: "😡",
+                            emoji: "<:frenzy:479298214453968896>",
                             onTurnEnd: {
                                 attackDmgPlus : 75,
                                 magicDmgPlus : 75,
@@ -3872,7 +3872,7 @@ module.exports = {
                     buffs: [
                         {
                             name: "frenzy",
-                            emoji: "😡",
+                            emoji: "<:frenzy:479298214453968896>",
                             onTurnEnd: {
                                 attackDmgPlus : 55,
                                 magicDmgPlus : 55,
@@ -3906,7 +3906,7 @@ module.exports = {
                     buffs: [
                         {
                             name: "frenzy",
-                            emoji: "😡",
+                            emoji: "<:frenzy:479298214453968896>",
                             onTurnEnd: {
                                 attackDmgPlus : 90,
                                 magicDmgPlus : 90,
@@ -4004,7 +4004,7 @@ module.exports = {
                     buffs: [
                         {
                             name: "frenzy",
-                            emoji: "😡",
+                            emoji: "<:frenzy:479298214453968896>",
                             onTurnEnd: {
                                 attackDmgPlus : 105,
                                 magicDmgPlus : 105,
@@ -4036,7 +4036,7 @@ module.exports = {
                     buffs: [
                         {
                             name: "frenzy",
-                            emoji: "😡",
+                            emoji: "<:frenzy:479298214453968896>",
                             onTurnEnd: {
                                 attackDmgPlus : 85,
                                 magicDmgPlus : 85,
@@ -4117,7 +4117,7 @@ module.exports = {
                     buffs: [
                         {
                             name: "frenzy",
-                            emoji: "😡",
+                            emoji: "<:frenzy:479298214453968896>",
                             onTurnEnd: {
                                 attackDmgPlus : 100,
                                 magicDmgPlus : 100,
@@ -4226,7 +4226,7 @@ module.exports = {
                     buffs: [
                         {
                             name: "frenzy",
-                            emoji: "😡",
+                            emoji: "<:frenzy:479298214453968896>",
                             onTurnEnd: {
                                 attackDmgPlus : 305,
                                 magicDmgPlus : 305,
@@ -4264,7 +4264,7 @@ module.exports = {
                     buffs: [
                         {
                             name: "frenzy",
-                            emoji: "😡",
+                            emoji: "<:frenzy:479298214453968896>",
                             onTurnEnd: {
                                 attackDmgPlus : 85,
                                 magicDmgPlus : 85,
@@ -4296,7 +4296,7 @@ module.exports = {
                     buffs: [
                         {
                             name: "frenzy",
-                            emoji: "😡",
+                            emoji: "<:frenzy:479298214453968896>",
                             onTurnEnd: {
                                 attackDmgPlus : 85,
                                 magicDmgPlus : 85,
@@ -4360,7 +4360,7 @@ module.exports = {
                     buffs: [
                         {
                             name: "frenzy",
-                            emoji: "😡",
+                            emoji: "<:frenzy:479298214453968896>",
                             onTurnEnd: {
                                 attackDmgPlus : 135,
                                 magicDmgPlus : 135,
@@ -4462,7 +4462,7 @@ module.exports = {
                     buffs: [
                         {
                             name: "frenzy",
-                            emoji: "😡",
+                            emoji: "<:frenzy:479298214453968896>",
                             onTurnEnd: {
                                 attackDmgPlus : 95,
                                 magicDmgPlus : 95,
@@ -4575,7 +4575,7 @@ module.exports = {
                     buffs: [
                         {
                             name: "frenzy",
-                            emoji: "😡",
+                            emoji: "<:frenzy:479298214453968896>",
                             onTurnEnd: {
                                 attackDmgPlus : 145,
                                 magicDmgPlus : 145,
@@ -4612,7 +4612,7 @@ module.exports = {
                     buffs: [
                         {
                             name: "frenzy",
-                            emoji: "😡",
+                            emoji: "<:frenzy:479298214453968896>",
                             onTurnEnd: {
                                 attackDmgPlus : 70,
                                 magicDmgPlus : 70,
@@ -4646,7 +4646,7 @@ module.exports = {
                     buffs: [
                         {
                             name: "frenzy",
-                            emoji: "😡",
+                            emoji: "<:frenzy:479298214453968896>",
                             onTurnEnd: {
                                 attackDmgPlus : 55,
                                 magicDmgPlus : 55,
@@ -4678,7 +4678,7 @@ module.exports = {
                     buffs: [
                         {
                             name: "frenzy",
-                            emoji: "😡",
+                            emoji: "<:frenzy:479298214453968896>",
                             onTurnEnd: {
                                 attackDmgPlus : 55,
                                 magicDmgPlus : 55,
@@ -4754,7 +4754,7 @@ module.exports = {
                         buffs: [
                             {
                                 name: "frenzy",
-                                emoji: "😡",
+                                emoji: "<:frenzy:479298214453968896>",
                                 onTurnEnd: {
                                     attackDmgPlus : 65,
                                     magicDmgPlus : 65,
@@ -4782,7 +4782,7 @@ module.exports = {
                         buffs: [
                             {
                                 name: "frenzy",
-                                emoji: "😡",
+                                emoji: "<:frenzy:479298214453968896>",
                                 onTurnEnd: {
                                     attackDmgPlus : 85,
                                     magicDmgPlus : 85,
@@ -4851,7 +4851,7 @@ module.exports = {
                         buffs: [
                             {
                                 name: "frenzy",
-                                emoji: "😡",
+                                emoji: "<:frenzy:479298214453968896>",
                                 onTurnEnd: {
                                     attackDmgPlus : 65,
                                     magicDmgPlus : 65,
@@ -4880,7 +4880,7 @@ module.exports = {
                         buffs: [
                             {
                                 name: "frenzy",
-                                emoji: "😡",
+                                emoji: "<:frenzy:479298214453968896>",
                                 onTurnEnd: {
                                     attackDmgPlus : 65,
                                     magicDmgPlus : 65,
@@ -4908,7 +4908,7 @@ module.exports = {
                         buffs: [
                             {
                                 name: "frenzy",
-                                emoji: "😡",
+                                emoji: "<:frenzy:479298214453968896>",
                                 onTurnEnd: {
                                     attackDmgPlus : 85,
                                     magicDmgPlus : 85,
@@ -4979,7 +4979,7 @@ module.exports = {
                         buffs: [
                             {
                                 name: "frenzy",
-                                emoji: "😡",
+                                emoji: "<:frenzy:479298214453968896>",
                                 onTurnEnd: {
                                     attackDmgPlus : 95,
                                     magicDmgPlus : 95,
@@ -5054,7 +5054,7 @@ module.exports = {
                         buffs: [
                             {
                                 name: "frenzy",
-                                emoji: "😡",
+                                emoji: "<:frenzy:479298214453968896>",
                                 onTurnEnd: {
                                     attackDmgPlus : 75,
                                     magicDmgPlus : 75,
@@ -5091,7 +5091,7 @@ module.exports = {
                         buffs: [
                             {
                                 name: "frenzy",
-                                emoji: "😡",
+                                emoji: "<:frenzy:479298214453968896>",
                                 onTurnEnd: {
                                     attackDmgPlus : 75,
                                     magicDmgPlus : 75,
@@ -5219,7 +5219,7 @@ module.exports = {
                         buffs: [
                             {
                                 name: "frenzy",
-                                emoji: "😡",
+                                emoji: "<:frenzy:479298214453968896>",
                                 onTurnEnd: {
                                     attackDmgPlus : 85,
                                     magicDmgPlus : 85,
@@ -5259,7 +5259,7 @@ module.exports = {
                         buffs: [
                             {
                                 name: "frenzy",
-                                emoji: "😡",
+                                emoji: "<:frenzy:479298214453968896>",
                                 onTurnEnd: {
                                     attackDmgPlus : 85,
                                     magicDmgPlus : 85,
@@ -5299,7 +5299,7 @@ module.exports = {
                         buffs: [
                             {
                                 name: "frenzy",
-                                emoji: "😡",
+                                emoji: "<:frenzy:479298214453968896>",
                                 onTurnEnd: {
                                     attackDmgPlus : 85,
                                     magicDmgPlus : 85,
@@ -5354,7 +5354,7 @@ module.exports = {
                         buffs: [
                             {
                                 name: "frenzy",
-                                emoji: "😡",
+                                emoji: "<:frenzy:479298214453968896>",
                                 onTurnEnd: {
                                     attackDmgPlus : 10000,
                                     magicDmgPlus : 10000,
@@ -5426,7 +5426,7 @@ module.exports = {
                         buffs: [
                             {
                                 name: "frenzy",
-                                emoji: "😡",
+                                emoji: "<:frenzy:479298214453968896>",
                                 onTurnEnd: {
                                     attackDmgPlus : 145,
                                     magicDmgPlus : 145,
@@ -5543,7 +5543,7 @@ module.exports = {
                         buffs: [
                             {
                                 name: "frenzy",
-                                emoji: "😡",
+                                emoji: "<:frenzy:479298214453968896>",
                                 onTurnEnd: {
                                     attackDmgPlus : 655,
                                     magicDmgPlus : 655,
@@ -5584,7 +5584,7 @@ module.exports = {
                         buffs: [
                             {
                                 name: "frenzy",
-                                emoji: "😡",
+                                emoji: "<:frenzy:479298214453968896>",
                                 onTurnEnd: {
                                     attackDmgPlus : 185,
                                     magicDmgPlus : 185,
@@ -5619,7 +5619,7 @@ module.exports = {
                         buffs: [
                             {
                                 name: "frenzy",
-                                emoji: "😡",
+                                emoji: "<:frenzy:479298214453968896>",
                                 onTurnEnd: {
                                     attackDmgPlus : 185,
                                     magicDmgPlus : 185,
@@ -5691,7 +5691,7 @@ module.exports = {
                         buffs: [
                             {
                                 name: "frenzy",
-                                emoji: "😈",
+                                emoji: "<:overmind:479298213904646147>",
                                 onTurnEnd: {
                                     attackDmgPlus : 640,
                                     magicDmgPlus : 640,
@@ -5738,7 +5738,7 @@ module.exports = {
                         buffs: [
                             {
                                 name: "frenzy",
-                                emoji: "😡",
+                                emoji: "<:frenzy:479298214453968896>",
                                 onTurnEnd: {
                                     attackDmgPlus : 100,
                                     magicDmgPlus : 100,
@@ -5775,7 +5775,7 @@ module.exports = {
                         buffs: [
                             {
                                 name: "frenzy",
-                                emoji: "😡",
+                                emoji: "<:frenzy:479298214453968896>",
                                 onTurnEnd: {
                                     attackDmgPlus : 195,
                                     magicDmgPlus : 195,
@@ -5816,7 +5816,7 @@ module.exports = {
                         buffs: [
                             {
                                 name: "frenzy",
-                                emoji: "😡",
+                                emoji: "<:frenzy:479298214453968896>",
                                 onTurnEnd: {
                                     attackDmgPlus : 85,
                                     magicDmgPlus : 85,
@@ -5885,7 +5885,7 @@ module.exports = {
                         buffs: [
                             {
                                 name: "frenzy",
-                                emoji: "😡",
+                                emoji: "<:frenzy:479298214453968896>",
                                 onTurnEnd: {
                                     attackDmgPlus : 705,
                                     magicDmgPlus : 705,
@@ -5933,7 +5933,7 @@ module.exports = {
                         buffs: [
                             {
                                 name: "frenzy",
-                                emoji: "😡",
+                                emoji: "<:frenzy:479298214453968896>",
                                 onTurnEnd: {
                                     attackDmgPlus : 705,
                                     magicDmgPlus : 705,
