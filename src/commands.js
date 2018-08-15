@@ -1,6 +1,7 @@
 
 var achiev = require("./achievements.js");
 var rpg = require("./rpg.js")
+var rpglib = require("./rpglib");
 var profileDB = require("./profileDB.js");
 var stats = require("./statistics.js");
 const Discord = require("discord.js");
@@ -2215,7 +2216,7 @@ module.exports.helpCommand = function(message){
           },
           {
             "name": "-fruits [user] [user] [user] ...",
-            "value": "Play a game of fruits by tagging up to 9 other people with this command!\nTake one or two fruits and attempt to force your opponents to take a bomb!"
+            "value": "Play a game of fruits by tagging up to 9 other people with this command!\nTake one or two fruits and attempt to force your opponents to take a bomb!\n`-hint                >` Bender tells you a hint!"
           },
           {
             "name": "Other Help Commands",
@@ -2256,7 +2257,7 @@ module.exports.itemhelpCommand = function(message){
         "fields": [
           {
             "name": "Inventories",
-            "value": "`-inventory             >` Display all your common and uncommon items!\n`-rares (long)          >` Display all your rare items (with their details)!\n`-ancients (long)       >` Display all your ancient items (with their details)!\n`-artifacts (long)      >` Display all your artifacts (with their details)!\n`-amulets               >` Display all your amulets!"
+            "value": "`-inventory             >` Display all your common and uncommon items!\n`-rares (long)          >` Display all your rare items (with their details)!\n`-ancients (long)       >` Display all your ancient items (with their details)!\n`-artifacts (long)      >` Display all your artifacts (with their details)!\n`-amulets               >` Display all your amulets!\n`-iteminfo (name of item)               >` Display information about the item!"
           },
           {
             "name": "Wearing Items",
@@ -2537,6 +2538,141 @@ function raresEmbedBuilder(message, itemsMap, allItems, long, rarity){
     .setDescription( ":left_luggage:" )
     .setThumbnail(message.author.avatarURL)
     .setColor(0x06e8e8)
+    message.channel.send({embed});
+}
+
+module.exports.itemDetailsCommand = function(message, args){
+    var discordUserId = message.author.id;
+    if (args && args.length >= 2){
+        var itemToWear = args[1]; // must be a valid itemname
+        profileDB.getUserItemsForInfo(discordUserId, function(err, inventoryResponse){
+            if (err){
+                // console.log(err);
+            }
+            else{
+                // console.log(inventoryResponse.data);
+                // get all the data for each item
+                var itemsInInventoryCountMap = {}
+                var itemsMapbyId = {}
+                var itemsMapbyName = {}
+                profileDB.getItemData(function(error, allItemsResponse){
+                    if (error){
+                        // console.log(error);
+                    }
+                    else{
+                        // console.log("allitemsres " + allItemsResponse.data);
+                        for (var item in inventoryResponse.data){
+                            var ItemInQuestion = inventoryResponse.data[item];
+                            var validItem = useItem.itemValidate(ItemInQuestion);
+                            var itemBeingAuctioned = false;
+                            if (itemsInAuction[ItemInQuestion.id]){
+                                itemBeingAuctioned = true;
+                            }
+                            var itemBeingTraded = false;
+                            if (activeTradeItems[inventoryResponse.data[item].id]){
+                                itemBeingTraded = true;
+                            }
+                            if (!itemsInInventoryCountMap[inventoryResponse.data[item].itemid] 
+                                && validItem 
+                                && !itemBeingAuctioned
+                                && !itemBeingTraded){
+                                // item hasnt been added to be counted, add it as 1
+                                itemsInInventoryCountMap[inventoryResponse.data[item].itemid] = 1;
+                            }
+                            else if (validItem && !itemBeingAuctioned && !itemBeingTraded){
+                                itemsInInventoryCountMap[inventoryResponse.data[item].itemid] = itemsInInventoryCountMap[inventoryResponse.data[item].itemid] + 1
+                            }
+                        }
+                        // console.log(itemsInInventoryCountMap);
+                        for (var index in allItemsResponse.data){
+                            itemsMapbyId[allItemsResponse.data[index].id] = allItemsResponse.data[index];
+                        }
+
+                        for (var index in allItemsResponse.data){
+                            itemsMapbyName[allItemsResponse.data[index].itemshortname] = allItemsResponse.data[index];
+                        }
+
+                        if (itemsMapbyName[itemToWear]){
+                            // check that i have the item
+                            var idOfItemChosen = itemsMapbyName[itemToWear].id
+                            if (itemsInInventoryCountMap[idOfItemChosen]){
+                                var itemToDisplay = itemsMapbyName[itemToWear]
+                                var rpgItemInfoString = rpgInfoStringBuilder(message, itemToDisplay)
+                                itemInfoEmbedBuilder(message, itemToDisplay, rpgItemInfoString)    
+                            }else{
+                                message.channel.send("you do not own that item or item does not exist")
+                            }
+                        }else{
+                            message.channel.send("you do not own that item or item does not exist")
+                        }
+                    }
+                })
+            }
+        })
+    }
+}
+
+// build the string for rpgstats and abilities
+function rpgInfoStringBuilder(message, item){
+    if (item.hpplus || item.attackdmgplus || item.magicdmgplus || item.armorplus || item.spiritplus){
+        var hp = item.hpplus || 0
+        var attackdmg = item.attackdmgplus || 0
+        var magicdmg = item.magicdmgplus || 0
+        var armor = item.armorplus || 0 
+        var spirit = item.spiritplus || 0
+
+        var rpgItemInfoString = " 💚 " + hp + " 🗡️ " + attackdmg + " ☄️ " + magicdmg + " 🛡️ " + armor + " 🙌 " + spirit + "\n"
+        // TODO: get the ability descriptions and append to itemToDisplay
+        rpgItemInfoString = rpgItemInfoString + "**Abilities:**\n"
+        var rpgAbilities = rpglib.rpgAbilities
+        if (item.ability1){
+            var abilityName = rpgAbilities[item.ability1].name
+            var abilityDescription = rpgAbilities[item.ability1].description
+            rpgItemInfoString = rpgItemInfoString + "**" + abilityName + "** - " + abilityDescription + "\n"
+        }
+        if (item.ability2){
+            var abilityName = rpgAbilities[item.ability2].name
+            var abilityDescription = rpgAbilities[item.ability2].description
+            rpgItemInfoString = rpgItemInfoString + "**" + abilityName + "** - " + abilityDescription + "\n"
+        }
+        if (item.specialability){
+            var abilityName = rpgAbilities[item.specialability].name
+            var abilityDescription = rpgAbilities[item.specialability].description
+            rpgItemInfoString = rpgItemInfoString + "**" + abilityName + "** - " + abilityDescription + "\n"
+        }
+        if (item.passiveability){
+            var abilityName = rpgAbilities[item.passiveability].name
+            var abilityDescription = rpgAbilities[item.passiveability].description
+            rpgItemInfoString = rpgItemInfoString + "**" + abilityName + "** - " + abilityDescription + "\n"
+        }
+        return rpgItemInfoString
+    }else{
+        return ""
+    }
+    
+
+}
+
+function itemInfoEmbedBuilder(message, item, rpgItemInfoString){
+    const embed = new Discord.RichEmbed()
+    console.log(item)
+    embed
+    .setAuthor( item.itemname )
+    .addField("Command Stats", item.itemstatistics, false)
+    .setColor(0x04e8e8)
+    if (item.itemslot){
+        embed.addField("Slot", item.itemslot, false )
+    }
+    if (rpgItemInfoString.length > 1){
+        //embed.addField("Putting on", "`-puton " + item.itemshortname + "`", false)
+        embed.addField("RPG Stats", rpgItemInfoString, false )
+    }
+    if (item.itemimage){
+        embed.setThumbnail(item.itemimage)
+    }
+    // .setAuthor(message.author.username +"'s Inventory ")
+    // .setDescription( ":left_luggage: \n-rares | -rares long to view your rare items\n-ancients | -ancients long to view your ancient items\n-artifacts | -artifacts long to view your artifacts\n-amulets to view your amulets " )
+    // TODO: create an image? .setThumbnail(message.author.avatarURL)
     message.channel.send({embed});
 }
 
@@ -3577,6 +3713,33 @@ function initialUserProfile(discordUserId){
 }
 
 // hints
+module.exports.hintCommand = function(message){
+    var listOfHints = [
+        "tacos can be given, throw, used for shopping, or collecting. -standings lets you see who has the most tacos.",
+        "rpg enemies scale as you level up. the higher your level the more enemies you will encounter",
+        "rpg enemies have different difficulties. easy, medium, hard, boss, and boss+. boss+ can only be found in challenges.",
+        "welcoming a user will award them 50 tacos upon agreeing to bender terms",
+        "you can wear up to 3 regular items using -puton 1,2,3 itemid to check their bonuses do -wearing and -rpgstats",
+        "amulets are not worn, you can have as many amulets as you want and their bonuses stack. amulets are not tradeable",
+        "stands get more expensive the more you buy, but also award more experience and tacos when preparing.",
+        "common items can be consumed for different purposes, uncommon items can be used for parties.",
+        "rares can be combined by having 5 of the same rare, ancients can be combined by having 4 of the same ancient, artifacts must be combined with a set of items to start a quest.",
+        "achievements can be obtained through many different means, try thanking lots of friends",
+        "when you throw a taco, or use a rock on someone, neither you or the other person can pick it up, but everyone else can.",
+        "more people working together means higher chances at finding the items you want via scavenge",
+        "rpg events provide rewards when your group succeeds. you can have up to 5 players in an rpg group.",
+        "the reputation shop opens when you reach liked status with bender",
+        "slots are dangerous",
+        "if you want to trade an item for tacos do -trade @user rock 1 tacos 5 this will trade the rock for 5 tacos",
+        "leveling up awards rpg stats, each level gives 21 HP, 10 AD and MD, and armor/spirit based on your current level",
+        "most items give higher bonuses the higher level you are."
+    ]
+    var hintRoll = Math.floor(Math.random() * (listOfHints.length -1) )
+    var hintPicked = listOfHints[hintRoll]
+    // get one of the hints at random
+
+    message.channel.send("`" + hintPicked + "`")
+}
 /*
 - tacos can be given, throw, used for shopping, or collecting. `-standings` lets you see who has the most tacos.
 - rpg enemies scale as you level up. the higher your level the more enemies you will encounter
@@ -3596,7 +3759,6 @@ function initialUserProfile(discordUserId){
 - if you want to trade an item for tacos do `-trade @user rock 1 tacos 5` this will trade the rock for 5 tacos
 - leveling up awards rpg stats, each level gives 21 HP, 10 AD and MD, and armor/spirit based on your current level
 - most items give higher bonuses the higher level you are.
-- 
 */
 
 module.exports.pickupCommand = function (message){

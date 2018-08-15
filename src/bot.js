@@ -266,6 +266,14 @@ client.on('message', function(message){
                 else if (commandIs("artifacts", message)){
                     commands.raresCommand(message, args, "artifact");
                 }
+                else if (commandIs("iteminfo", message)){
+                    commands.itemDetailsCommand(message, args);
+                }
+                else if (commandIs("hint", message)){
+                    commands.hintCommand(message);
+                    data.command = "hint"
+                    profileDB.createUserActivity(data)
+                }
                 else if (commandIs("standings", message)){
                     if (args.length > 1 && args[1] == "global"){
                         commands.standingsCommand(message, client.users, true);
@@ -742,6 +750,16 @@ client.on('message', function(message){
                 else if (commandIs("artifacts", message)){
                     commands.raresCommand(message, args, "artifact");
                     data.command = "artifacts"
+                    profileDB.createUserActivity(data)
+                }
+                else if (commandIs("iteminfo", message)){
+                    commands.itemDetailsCommand(message, args);
+                    data.command = "iteminfo"
+                    profileDB.createUserActivity(data)
+                }
+                else if (commandIs("hint", message)){
+                    commands.hintCommand(message);
+                    data.command = "hint"
                     profileDB.createUserActivity(data)
                 }
                 else if (commandIs("standings", message)){
