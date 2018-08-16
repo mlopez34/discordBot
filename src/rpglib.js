@@ -5545,8 +5545,8 @@ module.exports = {
                                 name: "frenzy",
                                 emoji: "😡",
                                 onTurnEnd: {
-                                    attackDmgPlus : 655,
-                                    magicDmgPlus : 655,
+                                    attackDmgPlus : 755,
+                                    magicDmgPlus : 755,
                                     everyNTurns: 8,
                                     startTurn: 6
                                 }

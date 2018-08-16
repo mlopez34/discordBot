@@ -2407,6 +2407,7 @@ function raresEmbedBuilder(message, itemsMap, allItems, long, rarity){
                 ( (allItems[key].itemraritycategory == "rare" && rarity == "rare")
                 || (allItems[key].itemraritycategory == "rare+" && rarity == "rare")
                 || (allItems[key].itemraritycategory == "rare++" && rarity == "rare")
+                || (allItems[key].itemraritycategory == "rare+++" && rarity == "rare")
                 || (allItems[key].itemraritycategory == "ancient" && rarity == "ancient")
                 || (allItems[key].itemraritycategory == "ancient+" && rarity == "ancient")
                 || (allItems[key].itemraritycategory == "ancient++" && rarity == "ancient")
@@ -2438,7 +2439,7 @@ function raresEmbedBuilder(message, itemsMap, allItems, long, rarity){
                 else if (allItems[key].itemraritycategory === "ancient++"){
                     emoji = ":star: "
                 }
-                else if (allItems[key].itemraritycategory === "rare++"){
+                else if (allItems[key].itemraritycategory === "rare++" || allItems[key].itemraritycategory === "rare+++"){
                     emoji = ":diamonds: "
                 }
                 
@@ -2471,6 +2472,7 @@ function raresEmbedBuilder(message, itemsMap, allItems, long, rarity){
                         }
 
                     }else if (allItems[key].itemraritycategory == "rare++" 
+                        || allItems[key].itemraritycategory == "rare+++" 
                         || allItems[key].itemraritycategory == "ancient++" 
                         || allItems[key].itemraritycategory == "myth" ){
 
