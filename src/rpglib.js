@@ -5545,8 +5545,8 @@ module.exports = {
                                 name: "frenzy",
                                 emoji: "😡",
                                 onTurnEnd: {
-                                    attackDmgPlus : 755,
-                                    magicDmgPlus : 755,
+                                    attackDmgPlus : 855,
+                                    magicDmgPlus : 855,
                                     everyNTurns: 8,
                                     startTurn: 6
                                 }
@@ -5677,7 +5677,7 @@ module.exports = {
             9: {
                 timed: true,
                 timedPerTurn: 180000,
-                points: 7901,
+                points: 9901,
                 difficulty: 220,
                 enemies: [
                     {
