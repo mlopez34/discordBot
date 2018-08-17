@@ -1137,6 +1137,23 @@ module.exports.getUserItems = function(discordId, cb) {
       cb(err);
     });
 }
+// items for iteminfo
+module.exports.getUserItemsForInfo = function(discordId, cb) {
+    var query = 'select * from ' + config.inventoryTable + ' where discordId = $1 AND (status is null OR status = \'wearing\' ) '
+    // console.log(query);
+    db.query(query, [discordId])
+      .then(function (data) {
+        cb(null, {
+            status: 'success',
+            data: data,
+            message: 'Retrieved All User Items'
+          });
+      })
+      .catch(function (err) {
+        // console.log(err);
+        cb(err);
+      });
+  }
 // get wear info
 module.exports.getUserWearInfo = function(discordId, cb){
     var query = 'select * from ' + config.wearTable + ' where discordId = $1'

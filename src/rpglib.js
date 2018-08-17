@@ -13,6 +13,7 @@ module.exports = {
             abilityId: "stab",
             dmg: 85,
             adPercentage: 1,
+            description: "Deal 85 physical damage + 100% of your attack damage",
             type: "physical"
         },
         // new abiltiies
@@ -21,12 +22,13 @@ module.exports = {
             abilityId: "impale",
             dmg: 125,
             adPercentage: 1.1,
+            description: "Deal 125 physical damage + 110% of your attack damage and 40 physical damage + 30% to 1 random enemy",
             type: "physical",
             special: {
                 name: "Impale",
                 abilityId: "impale",
                 randomTargets: 1,
-                dmg: 125,
+                dmg: 40,
                 adPercentage: 0.3,
                 type: "physical"
             },
@@ -37,6 +39,7 @@ module.exports = {
             abilityId: "assist",
             heal: 50,
             mdPercentage: 0.85,
+            description: "Heal your target for 50 + 85% of your magical damage and heal your target for 50 + 85% of your magical damage",
             selfUntargettable: true,
             special: {
                 name: "Assist",
@@ -52,6 +55,7 @@ module.exports = {
             abilityId: "nourish",
             heal: 50,
             mdPercentage: 0.8,
+            description: "Heal your target for 50 + 80% of your magical damage and 3 additional friendly players for 50%, 30%, and 10%",
             special: {
                 name: "Nourish",
                 abilityId: "nourish",
@@ -67,10 +71,11 @@ module.exports = {
             name:"Recover",
             abilityId: "recover",
             selfTarget: true,
+            description: "Heal yourself for 50 + 20% of your armor or spirit, whichever is higher, lasts 3 turns",
             hot: {
                 name: "Recover",
                 heal: 50,
-                emoji: "💉",
+                emoji: "<:recover:479296605237805056>",
                 arOrSpPercentage: 0.2,
                 healingOnHotApply: false,
                 turnsToExpire: 3,
@@ -91,11 +96,12 @@ module.exports = {
             abilityId: "shell",
             cooldown: 0,
             maxcooldown: 8,
+            description: "Reduce all damage taken by 33% for 3 turns 8 turn cooldown",
             buff: {
                 selfbuff: true,
                 buff: true,
                 name: "Shell",
-                emoji : "🔰",
+                emoji : "<:shell:479293276462252042>",
                 affectsGlobal: ["damageTakenPercentage"],
                 turnsToExpire: 3,
                 multiplier: 0.67
@@ -108,7 +114,7 @@ module.exports = {
             buff: {
                 name: "Overloading",
                 abilityId: "overloading",
-                emoji : "🎛️",
+                emoji : "<:overload:479301622275637248>",
                 turnsToExpire: 1,
                 addDamageTaken: true,
                 damageOnExpireFromDamageTaken: true
@@ -121,12 +127,13 @@ module.exports = {
             limitDefensive : true,
             areawide: true,
             targets: "friendly",
+            description: "Limit ability - increase your groups max hp by 20% lasts 3 turns",
             buff: {
                 buff: true,
                 areawide: true,
                 name: "Charge",
                 abilityId: "charge",
-                emoji : "❇️",
+                emoji : "<:charge:479293276461989908>",
                 turnsToExpire: 3,
                 affects: ["maxhp"],
                 multiplier: 1.2
@@ -138,6 +145,7 @@ module.exports = {
             abilityId: "paralyze",
             maxcooldown: 5,
             cooldown: 0,
+            description: "Paralyze a player or easy, medium, summoned difficulty enemy for 3 turns, 5 turn cooldown, invalid if damage is taken",
             difficultiesAllowed: [
                 "easy",
                 "medium",
@@ -147,7 +155,7 @@ module.exports = {
                 status: true,
                 abilityId: "paralyze",
                 name: "Paralyze",
-                emoji: "🛌",
+                emoji: "<:paralyze:479294904900517888>",
                 turnsToExpire: 3,
                 setAbleToAttack: false,
                 invalidOnDamage: true
@@ -186,6 +194,7 @@ module.exports = {
         tacoheal : {
             name: "Heal",
             abilityId: "tacoheal",
+            description: "Heal your target for 70 + 127% of your current magical damage",
             heal: 70,
             mdPercentage: 1.27
         },
@@ -193,6 +202,7 @@ module.exports = {
             name: "Replenish",
             abilityId: "replenish",
             special: "remove death",
+            description: "Limit ability - Heal your target for 450 + 190% of your current magical damage - if your target is dead you will revive them",
             heal: 450,
             mdPercentage: 1.9,
             limitDefensive : true
@@ -200,6 +210,7 @@ module.exports = {
         bandaid : {
             name: "Bandaid",
             abilityId: "bandaid",
+            description: "Heal your target for 20 + 60% of your current magical damage and remove all basic statuses",
             heal: 20,
             mdPercentage: 0.6,
             special: "remove status"
@@ -207,10 +218,11 @@ module.exports = {
         orchatasip: {
             name:"Orchata Sip",
             abilityId: "orchatasip",
+            description: "Heal your target over time for 50 + 145% of your magical damage over 5 turns",
             hot: {
                 name: "Orchata Sip",
                 heal: 50,
-                emoji: "🥛",
+                emoji: "<:orchatasip:479296604831219714>",
                 mdPercentage: 1.45,
                 healingOnHotApply: false,
                 turnsToExpire: 5,
@@ -221,6 +233,7 @@ module.exports = {
         elixir: {
             name: "Elixir",
             abilityId: "elixir",
+            description: "Heal the group for 35 + 60% of your current magical damage, 1 turn cooldown",
             heal: 35,
             cooldown: 0,
             maxcooldown: 1,
@@ -231,6 +244,7 @@ module.exports = {
         megaelixir: {
             name: "Mega Elixir",
             abilityId: "megaelixir",
+            description: "Limit ability - Heal the group for 200 + 100% of your current magical damage",
             heal: 200,
             specialCharge: 1,
             mdPercentage: 1,
@@ -242,12 +256,13 @@ module.exports = {
             name:"Poke",
             abilityId: "poke",
             type:"physical",
+            description: "deal 75 damage + 115% of your physical damage over 4 turns",
             dot: {
                 name: "Poke",
                 type:"physical",
                 dmg: 75,
                 adPercentage: 1.15,
-                emoji: "📌",
+                emoji: "<:poke:479296559121432576>",
                 dmgOnDotApply: false,
                 turnsToExpire: 4,
                 dmgOnDotExpire: false,
@@ -258,12 +273,13 @@ module.exports = {
             name:"Curse",
             abilityId: "curse",
             type:"shadow",
+            description: "Deal 75 damage + 115% of your magical damage over 4 turns",
             dot: {
                 name: "Curse",
                 type:"shadow",
                 dmg: 75,
                 mdPercentage: 1.15,
-                emoji: "🌑",
+                emoji: "<:curse:479296558794407936>",
                 dmgOnDotApply: false,
                 turnsToExpire: 4,
                 dmgOnDotExpire: false,
@@ -273,9 +289,10 @@ module.exports = {
         tacowall: {
             name: "Taco Wall",
             abilityId: "tacowall",
+            description: "Increase your target's spirit by 100%",
             buff: {
                 name: "Taco Wall",
-                emoji : "🏛",
+                emoji : "<:tacowall:479293276424372255>",
                 affects: ["spirit"],
                 multiplier: 2
             }
@@ -283,9 +300,10 @@ module.exports = {
         shield: {
             name: "Shield",
             abilityId: "shield",
+            description: "Increase your target's armor by 100%",
             buff: {
                 name: "Shield",
-                emoji: "🛡️",
+                emoji: "<:shield:479293276751659039>",
                 affects: ["armor"],
                 multiplier: 2
             }
@@ -293,9 +311,10 @@ module.exports = {
         barrier: {
             name: "Barrier",
             abilityId: "barrier",
+            description: "Increase your target's spirit by 650",
             buff: {
                 name: "Barrier",
-                emoji: "🚧",
+                emoji: "<:barrier:479293276491350047>",
                 affects: ["spirit"],
                 additive: 650
             }
@@ -303,9 +322,10 @@ module.exports = {
         protect: {
             name: "Protect",
             abilityId: "protect",
+            description: "Increase your target's armor by 650",
             buff: {
                 name: "Protect",
-                emoji: "🥅",
+                emoji: "<:protect:479293276378103825>",
                 affects: ["armor"],
                 additive: 650
             }
@@ -317,12 +337,13 @@ module.exports = {
             targets: "friendly",
             cooldown: 0,
             maxcooldown: 5,
+            description: "Increase the group's magical damage and attack damage by 60% for 4 turns - 10 turn cooldown, applies Exhausted",
             buff: {
                 buff: true,
                 areawide: true,
                 name: "Empower",
                 abilityId: "empower",
-                emoji: "💪🏼",
+                emoji: "<:empower:479293276298412033>",
                 turnsToExpire: 4,
                 affects: ["attackDmg", "magicDmg"],
                 multiplier: 1.6
@@ -333,7 +354,7 @@ module.exports = {
                 areawide: true,
                 ignoreBandaid: true,
                 selfDebuff: true,
-                emoji: "💢",
+                emoji: "<:exhausted:479294904858836992>",
                 buffToStop: "empower",
                 turnsToExpire: 10,
             }
@@ -343,13 +364,14 @@ module.exports = {
             abilityId: "flameblast",
             dmg: 50,
             mdPercentage: 1,
+            description: "Deal 50 damage + 100% of your magical damage, applies burning which deals 20 damage + 90% of your magical damage over 5 turns",
             type: "fire",
             dot: {
                 name: "Burning",
                 dmg: 20,
                 mdPercentage: .9,
                 type: "fire",
-                emoji: "🔥",
+                emoji: "<:burning:479296552230191113>",
                 damageOnDotApply: false,
                 turnsToExpire: 5,
                 damageOnDotExpire: false,
@@ -362,11 +384,12 @@ module.exports = {
             dmg: 50,
             mdPercentage: 1,
             type: "poison",
+            description: "Deal 50 damage + 100% of your magical damage, applies poison which deals 20 damage + 80% of your magical damage over 3 turns",
             dot: {
                 name: "Poison",
                 dmg: 20,
                 mdPercentage: .8,
-                emoji : "🤢",
+                emoji : "<:foodpoisoning:479296558672773120>",
                 type: "poison",
                 damageOnDotApply: false,
                 turnsToExpire: 3,
@@ -380,11 +403,12 @@ module.exports = {
             dmg: 50,
             mdPercentage: 1,
             type: "poison",
+            description: "Deal 50 damage + 100% of your magical damage, applies food poisoning which deals 20 damage + 80% of your magical damage over 3 turns",
             dot: {
                 name: "Food Poisoning",
                 dmg: 20,
                 mdPercentage: .8,
-                emoji : "🤢",
+                emoji : "<:foodpoisoning:479296558672773120>",
                 type: "poison",
                 damageOnDotApply: false,
                 turnsToExpire: 3,
@@ -398,11 +422,12 @@ module.exports = {
             dmg: 50,
             adPercentage: 1,
             type: "physical",
+            description: "Deal 50 damage + 100% of your attack damage, applies uppercut which deals 20 damage + 80% of your attack damage over 3 turns",
             dot: {
                 name: "Uppercut",
                 dmg: 20,
                 adPercentage: .8,
-                emoji : "🥊",
+                emoji : "<:uppercut:479296568034590730>",
                 type: "physical",
                 damageOnDotApply: false,
                 turnsToExpire: 3,
@@ -414,6 +439,7 @@ module.exports = {
             name: "Ice Shards",
             abilityId: "iceshards",
             dmg: 45,
+            description: "Deal 45 damage + 60% of your magic damage to all enemies",
             mdPercentage: 0.6,
             type: "ice",
             areawide: true,
@@ -424,6 +450,7 @@ module.exports = {
             abilityId: "slash",
             dmg: 45,
             adPercentage: 0.6,
+            description: "Deal 45 damage + 60% of your attack damage to all enemies",
             type: "physical",
             areawide: true,
             targets: "enemy"
@@ -458,9 +485,10 @@ module.exports = {
         shoot: {
             name: "Shoot",
             abilityId: "shoot",
+            description: "Deal 125 damage + 120% of your attack damage, 6 charges",
             dmg: 125,
-            charges: 4,
-            maxcharges: 4,
+            charges: 6,
+            maxcharges: 6,
             adPercentage: 1.2,
             type: "physical"
         },
@@ -469,6 +497,7 @@ module.exports = {
             abilityId: "shock",
             dmg: 120,
             mdPercentage: 1.2,
+            description: "Deal 120 damage + 120% of your attack damage, deal 20% damage dealt to yourself",
             type: "electric",
             special: "selfdamage",
             selfdamage: 15
@@ -494,6 +523,7 @@ module.exports = {
             name: "Headshot",
             abilityId: "headshot",
             limitOffensive: true,
+            description: "Limit ability - Deal 480 damage + 200% of your attack damage",
             dmg: 480,
             adPercentage: 2,
             type: "physical"
@@ -503,6 +533,7 @@ module.exports = {
             name: "Execute",
             abilityId: "execute",
             limitOffensive: true,
+            description: "Limit ability - Deal 480 damage + 200% of your attack damage",
             dmg: 480,
             adPercentage: 2,
             type: "physical"
@@ -512,6 +543,7 @@ module.exports = {
             name: "Decapitate",
             abilityId: "decapitate",
             limitOffensive: true,
+            description: "Limit ability - Deal 480 damage + 200% of your attack damage",
             dmg: 480,
             adPercentage: 2,
             type: "physical"
@@ -521,6 +553,7 @@ module.exports = {
             name: "Flare",
             abilityId: "flare",
             limitOffensive: true,
+            description: "Limit ability - Deal 480 damage + 200% of your magical damage",
             dmg: 480,
             mdPercentage: 2,
             type: "fire"
@@ -532,6 +565,7 @@ module.exports = {
             limitOffensive: true,
             dmg: 120,
             mdPercentage: 1.5,
+            description: "Limit ability - Deal 120 damage + 150% of your magical damage",
             type: "electric",
             areawide: true,
             targets: "enemy"
@@ -543,6 +577,7 @@ module.exports = {
             limitOffensive: true,
             dmg: 120,
             adPercentage: 1.5,
+            description: "Limit ability - Deal 120 damage + 150% of your attack damage",
             type: "physical",
             areawide: true,
             targets: "enemy"
@@ -553,12 +588,13 @@ module.exports = {
             abilityId: "rockthrow",
             type: "physical",
             adPercentage: 0.8,
+            description: "Deal 45 damage + 80% of your attack damage, gain a stack of warmup, at 5 stacks deal an extra rockthrow for 130% of attack damage",
             special: "warm up",
             name: "Rock Throw",
             buff: {
                 selfbuff: true,
                 stacksOfWarmUp: 1,
-                emoji: "🤾",
+                emoji: "<:warmup:479293276579430430>",
                 name: "Warm Up",
                 maxStacks: 4,
                 adPercentageAtMaxStacks: 1.3,
@@ -569,6 +605,7 @@ module.exports = {
             name: "Drain",
             abilityId: "drain",
             type: "physical",
+            description: "Deal 40 damage + 100% of your attack damage, heal yourself for 50 + 55% of your magical damage",
             special: {
                 name: "Drain",
                 adPercentage: 1,
@@ -582,6 +619,7 @@ module.exports = {
             name: "Guac",
             abilityId: "guac",
             type: "shadow",
+            description: "Deal 85 damage + 80% of your magical damage, deal an additional 20% of your magical damage per damage over time on the target",
             special: {
                 name: "Guac",
                 mdPerDot: 0.2,
@@ -593,6 +631,7 @@ module.exports = {
             name: "Tackle",
             abilityId: "tackle",
             type: "physical",
+            description: "Deal 85 damage + 80% of your attack damage, deal an additional 20% of your attack damage per damage over time on the target",
             special: {
                 name: "Tackle",
                 adPerDot: 0.2,
@@ -605,9 +644,10 @@ module.exports = {
             passive: true,
             abilityId: "haste",
             name: "Haste",
+            description: "Your spells are cast before the enemy spells",
             buff: {
                 name: "Haste",
-                emoji: "💨"
+                emoji: "<:haste:479293276424241163>"
             }
         },
 
@@ -615,6 +655,7 @@ module.exports = {
             passive: true,
             abilityId: "resistanceaura",
             name: "Resistance Aura",
+            description: "Aura - increase the group's armor and spirit by 10%",
             buff: {
                 buff: true,
                 aura: true,
@@ -623,13 +664,14 @@ module.exports = {
                 affects: ["armor", "spirit"],
                 multiplier: 1.1,
                 name: "Resistance Aura",
-                emoji: "🔘"
+                emoji: "<:resistance_aura:479287371242799114>"
             }
         },
         divineaura: {
             passive: true,
             abilityId: "divineaura",
             name: "Divine Aura",
+            description: "Aura - increase the group's magic damage by 10%",
             buff: {
                 buff: true,
                 aura: true,
@@ -638,13 +680,14 @@ module.exports = {
                 affects: [, "magicDmg"],
                 multiplier: 1.1,
                 name: "Divine Aura",
-                emoji: "🕯️"
+                emoji: "<:divine_aura:479287370789683210>"
             }
         },
         fierceshout: {
             passive: true,
             abilityId: "fierceshout",
             name: "Fierce Shout",
+            description: "Aura - increase the group's attack damage by 10%",
             buff: {
                 buff: true,
                 aura: true,
@@ -652,13 +695,14 @@ module.exports = {
                 multiplier: 1.1,
                 abilityId: "fierceshout",
                 name: "Fierce Shout",
-                emoji: "🌀"
+                emoji: "<:fierce_shout:479287370970169364>"
             }
         },
         rallyingroar: {
             passive: true,
             abilityId: "rallyingroar",
             name: "Rallying Roar",
+            description: "Aura - increase the group's max hp by 5%",
             buff: {
                 // hp
                 buff: true,
@@ -667,7 +711,7 @@ module.exports = {
                 affects: ["maxhp"],
                 multiplier: 1.05,
                 name: "Rallying Roar",
-                emoji: "🎺"
+                emoji: "<:rallying_roar:479287371045535755>"
             }
         },
 
@@ -690,7 +734,7 @@ module.exports = {
                 dmg: 65,
                 areawide: true,
                 mdPercentage: 1,
-                emoji: "🌑",
+                emoji: "<:decay:479296558748270601>",
                 dmgOnDotApply: false,
                 turnsToExpire: 6,
                 dmgOnDotExpire: false,
@@ -709,7 +753,7 @@ module.exports = {
                 type:"fire",
                 dmg: 1,
                 mdPercentage: 1,
-                emoji: "💣",
+                emoji: "<:bomb:479296552096235520>",
                 dmgOnDotApply: false,
                 turnsToExpire: 6,
                 dmgOnDotExpire: true,
@@ -758,7 +802,7 @@ module.exports = {
                 abilityId: "electricOrb",
                 untargettable: true,
                 name: "Electric Orb",
-                emoji: "⚡",
+                emoji: "<:electricorb:479296558375108610>",
                 mdPercentage: 1,
                 turnsToExpire: 2,
                 dmgOnStatusExpire: true,
@@ -871,7 +915,7 @@ module.exports = {
             buff: {
                 name: "blackEnergyCrystal",
                 turnsToExpire: 7,
-                emoji: "⚫"
+                emoji: "<:black_energy_crystal:479287999075450912>"
             }
         },
         blueEnergyCrystal: {
@@ -880,7 +924,7 @@ module.exports = {
             buff: {
                 name: "blueEnergyCrystal",
                 turnsToExpire: 7,
-                emoji: "🔵"
+                emoji: "<:blue_energy_crystal:479287999243354112>"
             }
         },
         yellowEnergyCrystal: {
@@ -895,7 +939,7 @@ module.exports = {
                 reduceEveryNTurnsSummonTorturedRobot: 5,
                 reduceEveryNTurnsRocketStrike: 1,
                 rocketStrikeAreawide: true,
-                emoji: "☀️"
+                emoji: "<:yellow_energy_crystal:479287999285166093>"
             }
         },
         purpleEnergyCrystal: {
@@ -904,7 +948,7 @@ module.exports = {
             buff: {
                 name: "purpleEnergyCrystal",
                 turnsToExpire: 7,
-                emoji: "🌑",
+                emoji: "<:purple_energy_crystal:479287999297880074>",
                 specialOnExpire: true,
                 onExpireRemoveMemberStatus: "Radioactive"
             }
@@ -915,7 +959,7 @@ module.exports = {
             buff: {
                 name: "greenEnergyCrystal",
                 turnsToExpire: 7,
-                emoji: "🎾"
+                emoji: "<:green_energy_crystal:479287999125913600>"
             }
         },
         redEnergyCrystal: {
@@ -924,7 +968,7 @@ module.exports = {
             buff: {
                 name: "redEnergyCrystal",
                 turnsToExpire: 7,
-                emoji: "🔴"
+                emoji: "<:red_energy_crystal:479287999138627584>"
             }
         },
         summonEnergyCrystalsA: {
@@ -1071,7 +1115,7 @@ module.exports = {
             name: "Energize",
             buff: {
                 name: "Energize",
-                emoji: "🤖",
+                emoji: "<:energize:479288026485227530>",
                 turnsToExpire: 7,
                 abilityId: "energize",
                 affects: ["attackDmg", "magicDmg"],
@@ -1088,7 +1132,7 @@ module.exports = {
             name: "Entomb",
             buff: {
                 name: "Entomb",
-                emoji: "🗿",
+                emoji: "<:entomb:479288026388889621>",
                 turnsToExpire: 5,
                 abilityId: "entomb75",
                 setAbleToAttack: false,
@@ -1108,7 +1152,7 @@ module.exports = {
             name: "Entomb",
             buff: {
                 name: "Entomb",
-                emoji: "🗿",
+                emoji: "<:entomb:479288026388889621>",
                 turnsToExpire: 8,
                 abilityId: "entomb50",
                 setAbleToAttack: false,
@@ -1128,7 +1172,7 @@ module.exports = {
             name: "Entomb",
             buff: {
                 name: "Entomb",
-                emoji: "🗿",
+                emoji: "<:entomb:479288026388889621>",
                 turnsToExpire: 8,
                 abilityId: "entomb25",
                 setAbleToAttack: false,
@@ -1143,7 +1187,7 @@ module.exports = {
             name: "Chaos",
             buff: {
                 name: "Chaos",
-                emoji: "💊",
+                emoji: "<:chaos:479288026569244673>",
                 turnsToExpire: 7
             }
         },
@@ -1163,7 +1207,7 @@ module.exports = {
                 areawide: true,
                 ignoreUnique: true,
                 ignoreBandaid: true,
-                emoji: "☢️",
+                emoji: "<:radioactive:479288026669776916>",
                 turnsToExpire: 8,
                 count: 0,
                 abilityId: "radioactive",
@@ -1186,7 +1230,7 @@ module.exports = {
                 abilityId: "furnace",
                 untargettable: true,
                 name: "Furnace",
-                emoji: "♨️",
+                emoji: "<:furnace:479288026527432716>",
                 mdPercentage: 1,
                 turnsToExpire: 1,
                 dmgOnStatusExpire: true,
@@ -1213,7 +1257,7 @@ module.exports = {
                 abilityId: "dismantle",
                 untargettable: true,
                 name: "Dismantle",
-                emoji: "✂️",
+                emoji: "<:dismantle:479288026833354752>",
                 type: "physical",
                 adPercentage: 1,
                 turnsToExpire: 1,
@@ -1225,6 +1269,470 @@ module.exports = {
                 dmgOnExpire: 250
             }
         },
+        /*
+        challenge 10
+        */
+       entombAll20: {
+            belongsToMember: true,
+            processAbility: true,
+            hppercentage: 0.20,
+            oneTimeCast: true,
+            targetSelf: true,
+            onDeathEffect: true,
+            effectDone: false,
+            invalidIfBuff: "entombAll20",
+            abilityId: "entombAll20",
+            name: "Entomb",
+            buff: {
+                name: "Entomb",
+                areawide: true,
+                emoji: "<:entomb:479288026388889621>",
+                turnsToExpire: 500,
+                abilityId: "entombAll20",
+                setAbleToAttack: false,
+                setAbleToTakeDamage: false,
+                setAbleToBeHealed: false,
+                removeEndOfTurn: true,
+                removeBuffs: true
+                //TODO set abletoattack false, abletotakedamage false, abletoheal false endofturndisable stays false
+            }
+        },
+
+        killAllEntomb: {
+            passive: true,
+            belongsToMember: true,
+            abilityId: "killAllEntomb",
+            killIfEnemyBuff : "Entomb",
+            name: "KillAll-Entomb" // on death, kill anything with entomb
+        },
+        // stone giant, deals damage, if bandaided stone giant gets +15% damage
+        shatter: {
+            name:"Shatter",
+            abilityId: "shatter",
+            type:"earth",
+            processAbility: true,
+            belongsToMember: true,
+            everyNTurns: 2,
+            ignoreFocus: true,
+            afterNTurns: 2,
+            currentTurn: 0,
+            dot: {
+                name: "Shatter",
+                type:"earth",
+                dmg: 1000,
+                untargettable: true,
+                mdPercentage: 1,
+                emoji: "<:shatter:479347500751388687>",
+                // TODO: on bandaid trigger effect
+                onBandaidCasterGainsBuff: "strength",
+                ignoreUnique: true,
+                dmgOnDotApply: false,
+                turnsToExpire: 15,
+                dmgOnDotExpire: false,
+                dmgOnExpire: 0
+            }
+        },
+        // TODO: create the onbandaidtrigger effect to gain 15% damage
+
+        // asteroid golem puts a dot on the tank every 2 turns, lowers spirit by 10% per stack
+        // if bandaid asteroid golem gains 15% damage
+        break: {
+            // ignore unique
+            name:"Break",
+            abilityId: "break",
+            type:"earth",
+            processAbility: true,
+            belongsToMember: true,
+            everyNTurns: 2,
+            afterNTurns: 2,
+            currentTurn: 0,
+            status: {
+                name: "Break",
+                emoji: "<:break:479347734722379777>",
+                onBandaidCasterGainsBuff: "strength",
+                ignoreUnique: true,
+                turnsToExpire: 15,
+                affects: ["spirit"],
+                additive: -1000
+            }
+        },
+        // TODO: create the onbandaidtrigger effect to gain 15% damage
+        strength: {
+            name: "Strength",
+            abilityId: "strength",
+            buff: {
+                buff: true,
+                name: "Strength",
+                abilityId: "strength",
+                emoji: "<:strength:479298214294716416>",
+                turnsToExpire: 20,
+                affects: ["attackDmg", "magicDmg"],
+                multiplier: 1.15
+            }
+        },
+        strengthFever: {
+            name: "Strength",
+            abilityId: "strengthFever",
+            buff: {
+                buff: true,
+                name: "Strength",
+                abilityId: "strengthFever",
+                emoji: "<:strength:479298214294716416>",
+                turnsToExpire: 50,
+                affects: ["attackDmg", "magicDmg"],
+                multiplier: 1.33
+            }
+        },
+
+        // summon Lava and Sky elemental
+        // summoned upon entomb / 20% HP
+        summonLavaElemental: {
+            name: "Summon Lava Elemental",
+            abilityId: "summonLavaElemental",
+            belongsToMember: true,
+            effectDone: false,
+            hppercentage: 0.20,
+            summon: {
+                enemy: "lavaElemental",
+                attackDmg: 100,
+                magicDmg: 100,
+                hpPlus: 300
+            }
+        },
+        summonLavaElementalDeath: {
+            name: "Summon Lava Elemental",
+            abilityId: "summonLavaElementalDeath",
+            belongsToMember: true,
+            onDeathEffect: true,
+            effectDone: false,
+            summon: {
+                enemy: "lavaElemental",
+                attackDmg: 100,
+                magicDmg: 100,
+                hpPlus: 300
+            }
+        },
+        summonSkyElemental: {
+            name: "Summon Sky Elemental",
+            abilityId: "summonSkyElemental",
+            belongsToMember: true,
+            effectDone: false,
+            hppercentage: 0.20,
+            summon: {
+                enemy: "skyElemental",
+                attackDmg: 100,
+                magicDmg: 100,
+                hpPlus: 300
+            }
+        },
+        summonSkyElementalDeath: {
+            name: "Summon Sky Elemental",
+            abilityId: "summonSkyElementalDeath",
+            belongsToMember: true,
+            onDeathEffect: true,
+            effectDone: false,
+            summon: {
+                enemy: "skyElemental",
+                attackDmg: 100,
+                magicDmg: 100,
+                hpPlus: 300
+            }
+        },
+        // whenever sky or lava reach 20%
+        // the anomaly is the HP of sky, lava, and golems combined
+        summonAnomaly: {
+            name: "Summon Anomaly",
+            abilityId: "summonAnomaly",
+            belongsToMember: true,
+            onDeathEffect: true,
+            effectDone: false,
+            hppercentage: 0.20,
+            summon: {
+                enemy: "anomaly",
+                // HP based on hp of 4 enemies
+                drainHpFrom: ["Sky Elemental", "Lava Elementa", "Asteroid Golem", "Stone Giant"],
+                hpMultiplier: 4,
+                attackDmg: 240,
+                magicDmg: 250,
+                hpPlus: 800
+            }
+        },
+
+        // deal damage to self (lava elemental) every turn
+        anger: {
+            name: "Anger",
+            abilityId: "anger",
+            adPercentage: 1,
+            dmg: 100,
+            type: "physical",
+            special: "selfdamage",
+            selfdamage: 15000
+        },
+
+        // every 4 turns
+        rampage: {
+            name: "Rampage",
+            abilityId: "rampage",
+            belongsToMember: true,
+            ignoreBandaid: true,
+            everyNTurns: 7,
+            afterNTurns: 4,
+            currentTurn: 0,
+            status: {
+                focusedBy: "",
+                status: true,
+                ignoreBandaid: true,
+                name: "Rampage",
+                turnsToExpire: 4,
+                emoji: "<:rampage:479348722782830603>",
+                abilityTriggerOnDeath: "healAllRampage",
+                //TODO: if player dies, heal all enemies
+                
+            }
+        },
+        // 
+        healAllRampage: {
+            belongsToMember: true,
+            name: "Heal All",
+            abilityId: "healAllRampage",
+            heal: 100000,
+            areawide: true,
+            mdPercentage: 1,
+        },
+        igniteLava: {
+            name : "Ignite Lava",
+            belongsToMember: true,
+            processAbility: true,
+            abilityId: "igniteLava",
+            everyNTurns: 1,
+            afterNTurns: 1,
+            currentTurn: 0,
+            targetWithName: "Lava Elemental",
+            dmg: 300,
+            mdPercentage: 1
+        },
+
+        igniteAir: {
+            name : "Ignite Air",
+            belongsToMember: true,
+            processAbility: true,
+            abilityId: "igniteAir",
+            everyNTurns: 3,
+            afterNTurns: 2,
+            currentTurn: 0,
+            targetWithName: "Sky Elemental",
+            dmg: 100,
+            mdPercentage: 1
+        },
+
+        // at end of turn, calculate % of health lost, gain that much % damage on multiplier
+        fury : {
+            name : "Fury",
+            belongsToMember: true,
+            processAbility: true,
+            abilityId: "fury",
+            everyNTurns: 100,
+            afterNTurns: 1,
+            currentTurn: 0,
+            buff: {
+                selfbuff: true,
+                buff: true,
+                name: "Fury",
+                emoji : "<:fury:479349359281176577>",
+                affects: ["attackDmg", "magicDmg"],
+                turnsToExpire: 300,
+                multiplierBasedOnLostHp: .01
+            }
+        },
+
+        // lava and sky elemental aoes (need buffs to counter these)
+        hurricane: {
+            belongsToMember: true,
+            name: "Hurricane",
+            abilityId: "hurricane",
+            everyNTurns: 8,
+            afterNTurns: 8,
+            currentTurn: 0,
+            type: "physical",
+            areawidedmg: {
+                areawide: true,
+                name: "Hurricane",
+                dmg: 1200,
+                adPercentage: 1,
+                type: "physical"
+            }
+        },
+
+        engulf: {
+            belongsToMember: true,
+            name: "Engulf",
+            abilityId: "engulf",
+            everyNTurns: 8,
+            afterNTurns: 4,
+            currentTurn: 0,
+            areawidedmg: {
+                areawide: true,
+                name: "engulf",
+                dmg: 1200,
+                mdPercentage: 1,
+                type: "fire"
+            }
+        },
+        // reduces physical damage by 50% - applied when damaging sky elemental
+        // removes amplify
+        dampen: {
+            // reduce magic dmg by 50%
+            name : "Dampen",
+            abilityId: "dampen",
+            buff: {
+                buff: true,
+                name: "Dampen",
+                emoji : "<:dampen:479301622246408233>",
+                affectsGlobal: ["physicalDamageTakenPercentage"],
+                turnsToExpire: 10,
+                multiplier: 0.5
+            },
+            removeBuff: "Amplify"
+        },
+        // reduces magical damage by 50% - applied when damaging lava elemental
+        // removes dampen 
+        amplify: {
+            // reduce magic dmg by 50%
+            name : "Amplify",
+            abilityId: "amplify",
+            buff: {
+                buff: true,
+                name: "Amplify",
+                emoji : "<:amplify:479301622233563136>",
+                affectsGlobal: ["magicDamageTakenPercentage"],
+                turnsToExpire: 10,
+                multiplier: 0.5
+            },
+            removeBuff: "Dampen"
+        },
+
+        // sky elemental summons this enemy 
+        summonSmokeScreen: {
+            name: "Summon Smoke Screen",
+            abilityId: "summonSmokeScreen",
+            belongsToMember: true,
+            everyNTurns: 6,
+            afterNTurns: 3,
+            currentTurn: 0,
+            summon: {
+                enemy: "smokeScreen",
+                attackDmg: 500,
+                magicDmg: 500,
+                hpPlus: 1000
+            }
+        },
+        summonDweller: {
+            name: "Summon Dweller",
+            abilityId: "summonDweller",
+            belongsToMember: true,
+            everyNTurns: 6,
+            afterNTurns: 6,
+            currentTurn: 0,
+            summon: {
+                enemy: "dweller",
+                attackDmg: 500,
+                magicDmg: 500,
+                hpPlus: 1000
+            }
+        },
+        // smoke screen deals damage to the lava elemental at end of turn
+
+        // morph  - base the hp of the caster on the hp of certain enemies
+        // anomalyMorph: {
+        //     belongsToMember: true,
+        //     abilityId: "anomalyMorph",
+        //     name: "Morph",
+            
+        // },
+        // aoe every turn
+        morphAnomalyMessage: {
+            belongsToMember: true,
+            hppercentage: 0.20,
+            eotMessage: "The golems and elementals morph into an Anomaly",
+            deathMessage: "The golems and elementals morph into an Anomaly"
+        },
+        consume: {
+            belongsToMember: true,
+            name: "Consume",
+            abilityId: "consume",
+            everyNTurns: 2,
+            afterNTurns: 1,
+            currentTurn: 1,
+            areawidedmg: {
+                areawide: true,
+                name: "consume",
+                dmg: 10,
+                mdPercentage: .25,
+                type: "fire"
+            }
+        },
+        // anomaly cast on 2 or 3 players
+        burst: {
+            belongsToMember: true,
+            processAbility: true,
+            ignoreFocus: true,
+            ignoreBandaid: true,
+            targetToApplyOn: "random",
+            name:"Burst",
+            everyNTurns: 5,
+            afterNTurns: 1,
+            currentTurn: 0,
+            abilityId: "burst",
+            type:"physical",
+            dot: {
+                name: "Burst",
+                abilityId: "burst",
+                ignoreBandaid: true,
+                // TODO: dot can only be removed upon being healed to full
+                removeDotOnHpPercentage: .99,
+
+                type:"physical",
+                dmg: 1000,
+                adPercentage: 0.2,
+                dmgIncreasePerTick: 400,
+                emoji: "<:burst:479349927764426782>",
+                dmgOnDotApply: false,
+                turnsToExpire: 12,
+                dmgOnDotExpire: false,
+                dmgOnExpire: 0
+            }
+        },
+
+        summonFiends: {
+            name: "summonFiends",
+            belongsToMember: true,
+            everyNTurns: 6,
+            afterNTurns: 4,
+            currentTurn: 0,
+            summon: {
+                enemies: [
+                    "fiend",
+                    "fiend",
+                    "fiend",
+                    "fiend",
+                    "fiend",
+                    "fiend",
+                    "fiend"
+                ]
+            }
+        },
+
+        // soak the fiends
+        absorbFiends: {
+            abilityId: "absorbFiends",
+            belongsToMember: true,
+            processAbility: true,
+            everyNTurns: 6,
+            afterNTurns: 7,
+            currentTurn: 0,
+            special: "absorb fiends" // heals for their remaining health
+        },
+
         /*
         endOfTurnEvents
         */
@@ -1282,7 +1790,7 @@ module.exports = {
                 type:"shadow",
                 dmg: 500,
                 mdPercentage: 0.25,
-                emoji: "🐖",
+                emoji: "<:fever:479298214088933386>",
                 dmgOnDotApply: false,
                 ignoreBandaid: true,
                 ignoreDmgOnTurn: 1,
@@ -1304,10 +1812,13 @@ module.exports = {
             currentTurn: 0,
             dot: {
                 name: "Fever",
+                abilityId: "feverChallenge",
                 type:"shadow",
                 dmg: 500,
                 mdPercentage: 0.25,
-                emoji: "🐖",
+                emoji: "<:fever:479298214088933386>",
+                onBandaidCasterGainsBuff: "strengthFever",
+                abilityTriggerOnDeath: "strengthFever",
                 dmgOnDotApply: false,
                 ignoreBandaid: true,
                 ignoreDmgOnTurn: 1,
@@ -1332,7 +1843,7 @@ module.exports = {
                 type:"physical",
                 dmg: 100,
                 adPercentage: 30,
-                emoji: "☸️",
+                emoji: "<:deep_hatred:479298214340591626>",
                 dmgOnDotApply: false,
                 ignoreBandaid: true,
                 ignoreUnique: true,
@@ -1358,7 +1869,7 @@ module.exports = {
                 type:"physical",
                 dmg: 100,
                 adPercentage: 30,
-                emoji: "☸️",
+                emoji: "<:deep_hatred:479298214340591626>",
                 dmgOnDotApply: false,
                 ignoreBandaid: true,
                 ignoreDmgOnTurn: 1,
@@ -1388,7 +1899,7 @@ module.exports = {
                 untargettable: true,
                 mdPercentage: 1,
                 ignoreDmgOnTurn: 1,
-                emoji: "🎎",
+                emoji: "<:hex:479301622732816403>",
                 dmgOnDotApply: false,
                 turnsToExpire: 3,
                 dmgOnDotExpire: false,
@@ -1428,7 +1939,7 @@ module.exports = {
                 dmg: 400,
                 mdPercentage: 0.1,
                 dmgIncreasePerTick: 300,
-                emoji: "✴️",
+                emoji: "<:radiation:479298213774491649>",
                 dmgOnDotApply: false,
                 turnsToExpire: 99,
                 dmgOnDotExpire: false,
@@ -1441,7 +1952,7 @@ module.exports = {
             buff: {
                 name: "Burning Adrenaline",
                 abilityId: "burningAdrenaline",
-                emoji: "💥",
+                emoji: "<:burning_adrenalin:479298214143459358>",
                 affects: ["attackDmg", "magicDmg"],
                 multiplier: 1.0,
                 multiplierPerDotTurn: 0.2,
@@ -1515,7 +2026,7 @@ module.exports = {
                 untargettable: true,
                 name: "Vacum",
                 ignoreUnique: true,
-                emoji: "🕳️",
+                emoji: "<:vacuum:479298214042796032>",
                 mdPercentage: 0.8,
                 turnsToExpire: 6,
                 dmgOnStatusExpire: true,
@@ -1540,7 +2051,7 @@ module.exports = {
                 untargettable: true,
                 ignoreUnique: true,
                 name: "Vacum",
-                emoji: "🕳️",
+                emoji: "<:vacuum:479298214042796032>",
                 mdPercentage: 0.8,
                 turnsToExpire: 6,
                 dmgOnStatusExpire: true,
@@ -1565,7 +2076,7 @@ module.exports = {
                 untargettable: true,
                 ignoreUnique: true,
                 name: "Vacum",
-                emoji: "🕳️",
+                emoji: "<:vacuum:479298214042796032>",
                 mdPercentage: 0.8,
                 turnsToExpire: 6,
                 dmgOnStatusExpire: true,
@@ -1589,7 +2100,7 @@ module.exports = {
                 abilityId: "soulBurn",
                 untargettable: true,
                 name: "Soul Burn",
-                emoji: "👹",
+                emoji: "<:soulburn:479301622057402380>",
                 mdPercentage: 0.8,
                 turnsToExpire: 3,
                 dmgOnStatusExpire: true,
@@ -1776,6 +2287,7 @@ module.exports = {
 
         revive: {
             name: "Revive",
+            description: "Revive your target",
             abilityId: "revive",
             special: "remove death",
             cooldown: 0,
@@ -1788,16 +2300,17 @@ module.exports = {
             status: {
                 focusedBy: "",
                 name: "Focus",
-                emoji: "👁️",
+                emoji: "<:focus:479298214588317707>",
                 special: "focus member"
             }
         },
         freeze: {
             name: "Freeze",
+            description: "Reduce your target's armor by 30%",
             abilityId: "freeze",
             status: {
                 name: "Frozen",
-                emoji: "❄️",
+                emoji: "<:freeze:479294904946655254>",
                 affects: ["armor"],
                 multiplier: 0.7
             }
@@ -1805,9 +2318,10 @@ module.exports = {
         scold: {
             name: "Scold",
             abilityId: "scold",
+            description: "Reduce your target's spirit by 30%",
             status: {
                 name: "Scold",
-                emoji: "☔️",
+                emoji: "<:scold:479294904611110924>",
                 affects: ["spirit"],
                 multiplier: 0.7
             }
@@ -1815,9 +2329,10 @@ module.exports = {
         cripple: {
             name: "Cripple",
             abilityId: "cripple",
+            description: "Reduce your target's attack damage by 20%",
             status: {
                 name: "Crippled",
-                emoji: "🤕",
+                emoji: "<:cripple:479294904741396480>",
                 affects: ["attackDmg"],
                 multiplier: 0.8
             }
@@ -1825,9 +2340,10 @@ module.exports = {
         weaken: {
             name: "Weaken",
             abilityId: "weaken",
+            description: "Reduce your target's magical damage by 20%",
             status: {
                 name: "Weakened",
-                emoji: "😵 ",
+                emoji: "<:weaken:479294904942460951>",
                 affects: ["magicDmg"],
                 multiplier: 0.8
             }
@@ -1845,6 +2361,230 @@ module.exports = {
                 hp: 3300,
                 attackDmg: 230,
                 magicDmg: 160,
+                armor: 1300,
+                spirit: 1300,
+                difficulty: "summoned",
+                element: "normal"
+            },
+            lavaElemental: {
+                name: "Lava Elemental",
+                uniqueEnemy: true,
+                xp: 150,
+                abilities: [
+                    "anger",
+                    "slash",
+                    "flameblast"
+                ],
+                buffs: [
+                    {
+                        name: "frenzy",
+                        emoji: "<:frenzy:479298214453968896>",
+                        onTurnEnd: {
+                            attackDmgPlus : 1050,
+                            magicDmgPlus : 1050,
+                            everyNTurns: 8,
+                            currentTurn: 1,
+                            startTurn: 5
+                        }
+                    },
+                    {
+                        name: "amp",
+                        emoji: "<:amplify:479301622233563136>",
+                        onDamageTakenGiveBuff: {
+                            buffId: "amplify"
+                        }
+                    }
+                ],
+                abilityOrder: [
+                    0, 2, 1, 0, 0, 0, 0
+                ],
+                endOfTurnEvents : [
+                    "focus",
+                    "morphAnomalyMessage",
+                    "summonAnomaly",
+                    "entombAll20",
+                    "fury",
+                    "rampage",
+                    "engulf",
+                    "igniteAir"
+                ],
+                effectsOnDeath: [
+                    "entombAll20",
+                    "morphAnomalyMessage",
+                    "summonAnomaly"
+                ],
+                hp: 27600,
+                attackDmg: 1700,
+                magicDmg: 1470,
+                armor: 2350,
+                spirit: 2100,
+                hpPerPartyMember: 0,
+                adPerPartyMember: 0,
+                mdPerPartyMember: 0,
+                difficulty: "boss",
+                element: "earth"
+            },
+            skyElemental: {
+                name: "Sky Elemental",
+                uniqueEnemy: true,
+                xp: 150,
+                abilities: [
+                    "attack",
+                    "crush",
+                    "iceshards"
+                ],
+                buffs: [
+                    {
+                        name: "frenzy",
+                        emoji: "<:frenzy:479298214453968896>",
+                        onTurnEnd: {
+                            attackDmgPlus : 1050,
+                            magicDmgPlus : 1050,
+                            everyNTurns: 8,
+                            currentTurn: 1,
+                            startTurn: 5
+                        }
+                    },
+                    {
+                        name: "damp",
+                        emoji: "<:dampen:479301622246408233>",
+                        onDamageTakenGiveBuff: {
+                            buffId: "dampen"
+                        }
+                    }
+
+                ],
+                abilityOrder: [
+                    0, 0, 1, 0, 2, 2, 0, 1
+                ],
+                endOfTurnEvents : [
+                    "focus",
+                    "morphAnomalyMessage",
+                    "summonAnomaly",
+                    "hurricane",
+                    "entombAll20",
+                    "summonSmokeScreen",
+                    "summonDweller"
+                ],
+                effectsOnDeath: [
+                    "entombAll20",
+                    "morphAnomalyMessage",
+                    "summonAnomaly",
+                ],
+                hp: 74600,
+                attackDmg: 1700,
+                magicDmg: 1470,
+                armor: 2350,
+                spirit: 2100,
+                hpPerPartyMember: 0,
+                adPerPartyMember: 0,
+                mdPerPartyMember: 0,
+                difficulty: "boss",
+                element: "earth"
+            },
+            anomaly: {
+                name: "Anomaly",
+                uniqueEnemy: true,
+                xp: 150,
+                abilities: [
+                    "attack",
+                    "poke",
+                    "uppercut",
+                    "tackle"
+                ],
+                buffs: [
+                    {
+                        name: "frenzy",
+                        emoji: "<:frenzy:479298214453968896>",
+                        onTurnEnd: {
+                            attackDmgPlus : 200,
+                            magicDmgPlus : 750,
+                            everyNTurns: 1,
+                            startTurn: 1
+                        }
+                    }
+                ],
+                abilityOrder: [
+                    0, 1, 2, 0, 0, 0, 2, 3
+                ],
+                endOfTurnEvents : [
+                    "focus",
+                    "consume",
+                    "burst",
+                    "burst",
+                    "summonFiends",
+                    "absorbFiends"
+                ],
+                effectsOnDeath: [
+                    "killAllEntomb"
+                ],
+                hp: 750000,
+                baseHpOn: [
+                    "Asteroid Golem",
+                    "Stone Giant",
+                    "Lava Elemental",
+                    "Sky Elemental"
+                ],
+                baseHpOnMultiplier: 3,
+                attackDmg: 2000,
+                magicDmg: 1470,
+                armor: 2350,
+                spirit: 2100,
+                hpPerPartyMember: 0,
+                adPerPartyMember: 0,
+                mdPerPartyMember: 0,
+                difficulty: "boss",
+                element: "earth"
+            },
+            fiend: {
+                name: "Fiend",
+                abilities: ["attack"],
+                buffs: [],
+                hpPerPartyMember: 0,
+                adPerPartyMember: 0,
+                mdPerPartyMember: 0,
+                hp: 4300,
+                effectsOnDeath: [
+                    "explode"
+                ],
+                attackDmg: 630,
+                magicDmg: 1060,
+                armor: 1300,
+                spirit: 1300,
+                difficulty: "summoned",
+                element: "normal"
+            },
+            smokeScreen: {
+                name: "Smoke Screen",
+                abilities: ["attack", "igniteLava"],
+                buffs: [],
+                hpPerPartyMember: 0,
+                adPerPartyMember: 0,
+                mdPerPartyMember: 0,
+                hp: 54300,
+                abilityOrder: [
+                    0, 1, 0, 1
+                ],
+                attackDmg: 830,
+                magicDmg: 1060,
+                armor: 1300,
+                spirit: 1300,
+                difficulty: "summoned",
+                element: "normal"
+            },
+            dweller: {
+                name: "Dweller",
+                abilities: ["attack", "igniteLava"],
+                buffs: [],
+                hpPerPartyMember: 0,
+                adPerPartyMember: 0,
+                mdPerPartyMember: 0,
+                hp: 54300,
+                abilityOrder: [
+                    1, 0, 1, 0
+                ],
+                attackDmg: 830,
+                magicDmg: 1060,
                 armor: 1300,
                 spirit: 1300,
                 difficulty: "summoned",
@@ -2028,7 +2768,7 @@ module.exports = {
                 buffs: [
                     {
                         name: "frenzy",
-                        emoji: "😡",
+                        emoji: "<:frenzy:479298214453968896>",
                         onTurnEnd: {
                             attackDmgPlus : 95,
                             magicDmgPlus : 95,
@@ -2136,7 +2876,7 @@ module.exports = {
                 buffs: [
                     {
                         name: "frenzy",
-                        emoji: "😡",
+                        emoji: "<:frenzy:479298214453968896>",
                         onTurnEnd: {
                             attackDmgPlus : 145,
                             magicDmgPlus : 145,
@@ -2164,7 +2904,7 @@ module.exports = {
                 buffs: [
                     {
                         name: "frenzy",
-                        emoji: "😡",
+                        emoji: "<:frenzy:479298214453968896>",
                         onTurnEnd: {
                             attackDmgPlus : 85,
                             magicDmgPlus : 85,
@@ -2194,7 +2934,7 @@ module.exports = {
                 buffs: [
                     {
                         name: "frenzy",
-                        emoji: "😡",
+                        emoji: "<:frenzy:479298214453968896>",
                         onTurnEnd: {
                             attackDmgPlus : 85,
                             magicDmgPlus : 85,
@@ -2423,7 +3163,7 @@ module.exports = {
                 buffs: [
                     {
                         name: "frenzy",
-                        emoji: "😡",
+                        emoji: "<:frenzy:479298214453968896>",
                         onTurnEnd: {
                             attackDmgPlus : 60,
                             magicDmgPlus : 60,
@@ -2449,7 +3189,7 @@ module.exports = {
                 buffs: [
                     {
                         name: "frenzy",
-                        emoji: "😡",
+                        emoji: "<:frenzy:479298214453968896>",
                         onTurnEnd: {
                             attackDmgPlus : 60,
                             magicDmgPlus : 60,
@@ -2475,7 +3215,7 @@ module.exports = {
                 buffs: [
                     {
                         name: "frenzy",
-                        emoji: "😡",
+                        emoji: "<:frenzy:479298214453968896>",
                         onTurnEnd: {
                             attackDmgPlus : 60,
                             magicDmgPlus : 60,
@@ -2501,7 +3241,7 @@ module.exports = {
                 buffs: [
                     {
                         name: "frenzy",
-                        emoji: "😡",
+                        emoji: "<:frenzy:479298214453968896>",
                         onTurnEnd: {
                             attackDmgPlus : 60,
                             magicDmgPlus : 60,
@@ -2534,7 +3274,7 @@ module.exports = {
                 buffs: [
                     {
                         name: "frenzy",
-                        emoji: "😡",
+                        emoji: "<:frenzy:479298214453968896>",
                         onTurnEnd: {
                             attackDmgPlus : 85,
                             magicDmgPlus : 85,
@@ -2566,7 +3306,7 @@ module.exports = {
                 buffs: [
                     {
                         name: "frenzy",
-                        emoji: "😡",
+                        emoji: "<:frenzy:479298214453968896>",
                         onTurnEnd: {
                             attackDmgPlus : 95,
                             magicDmgPlus : 95,
@@ -2598,7 +3338,7 @@ module.exports = {
                 buffs: [
                     {
                         name: "frenzy",
-                        emoji: "😡",
+                        emoji: "<:frenzy:479298214453968896>",
                         onTurnEnd: {
                             attackDmgPlus : 85,
                             magicDmgPlus : 85,
@@ -2630,7 +3370,7 @@ module.exports = {
                 buffs: [
                     {
                         name: "frenzy",
-                        emoji: "😡",
+                        emoji: "<:frenzy:479298214453968896>",
                         onTurnEnd: {
                             attackDmgPlus : 85,
                             magicDmgPlus : 85,
@@ -2671,7 +3411,7 @@ module.exports = {
                     buffs: [
                         {
                             name: "frenzy",
-                            emoji: "😡",
+                            emoji: "<:frenzy:479298214453968896>",
                             onTurnEnd: {
                                 attackDmgPlus : 95,
                                 magicDmgPlus : 95,
@@ -2709,7 +3449,7 @@ module.exports = {
                     buffs: [
                         {
                             name: "frenzy",
-                            emoji: "😡",
+                            emoji: "<:frenzy:479298214453968896>",
                             onTurnEnd: {
                                 attackDmgPlus : 60,
                                 magicDmgPlus : 60,
@@ -2789,7 +3529,7 @@ module.exports = {
                     buffs: [
                         {
                             name: "frenzy",
-                            emoji: "😡",
+                            emoji: "<:frenzy:479298214453968896>",
                             onTurnEnd: {
                                 attackDmgPlus : 105,
                                 magicDmgPlus : 105,
@@ -2828,7 +3568,7 @@ module.exports = {
                     buffs: [
                         {
                             name: "frenzy",
-                            emoji: "😡",
+                            emoji: "<:frenzy:479298214453968896>",
                             onTurnEnd: {
                                 attackDmgPlus : 105,
                                 magicDmgPlus : 105,
@@ -2896,7 +3636,7 @@ module.exports = {
                     buffs: [
                         {
                             name: "frenzy",
-                            emoji: "😡",
+                            emoji: "<:frenzy:479298214453968896>",
                             onTurnEnd: {
                                 attackDmgPlus : 95,
                                 magicDmgPlus : 95,
@@ -2936,7 +3676,7 @@ module.exports = {
                     buffs: [
                         {
                             name: "frenzy",
-                            emoji: "😡",
+                            emoji: "<:frenzy:479298214453968896>",
                             onTurnEnd: {
                                 attackDmgPlus : 75,
                                 magicDmgPlus : 75,
@@ -2966,7 +3706,7 @@ module.exports = {
                     buffs: [
                         {
                             name: "frenzy",
-                            emoji: "😡",
+                            emoji: "<:frenzy:479298214453968896>",
                             onTurnEnd: {
                                 attackDmgPlus : 85,
                                 magicDmgPlus : 85,
@@ -3019,7 +3759,7 @@ module.exports = {
                     buffs: [
                         {
                             name: "frenzy",
-                            emoji: "😈",
+                            emoji: "<:overmind:479298213904646147>",
                             onTurnEnd: {
                                 attackDmgPlus : 400,
                                 magicDmgPlus : 400,
@@ -3060,7 +3800,7 @@ module.exports = {
                     buffs: [
                         {
                             name: "frenzy",
-                            emoji: "😡",
+                            emoji: "<:frenzy:479298214453968896>",
                             onTurnEnd: {
                                 attackDmgPlus : 80,
                                 magicDmgPlus : 80,
@@ -3094,7 +3834,7 @@ module.exports = {
                     buffs: [
                         {
                             name: "frenzy",
-                            emoji: "😡",
+                            emoji: "<:frenzy:479298214453968896>",
                             onTurnEnd: {
                                 attackDmgPlus : 75,
                                 magicDmgPlus : 75,
@@ -3132,7 +3872,7 @@ module.exports = {
                     buffs: [
                         {
                             name: "frenzy",
-                            emoji: "😡",
+                            emoji: "<:frenzy:479298214453968896>",
                             onTurnEnd: {
                                 attackDmgPlus : 55,
                                 magicDmgPlus : 55,
@@ -3166,7 +3906,7 @@ module.exports = {
                     buffs: [
                         {
                             name: "frenzy",
-                            emoji: "😡",
+                            emoji: "<:frenzy:479298214453968896>",
                             onTurnEnd: {
                                 attackDmgPlus : 90,
                                 magicDmgPlus : 90,
@@ -3264,7 +4004,7 @@ module.exports = {
                     buffs: [
                         {
                             name: "frenzy",
-                            emoji: "😡",
+                            emoji: "<:frenzy:479298214453968896>",
                             onTurnEnd: {
                                 attackDmgPlus : 105,
                                 magicDmgPlus : 105,
@@ -3296,7 +4036,7 @@ module.exports = {
                     buffs: [
                         {
                             name: "frenzy",
-                            emoji: "😡",
+                            emoji: "<:frenzy:479298214453968896>",
                             onTurnEnd: {
                                 attackDmgPlus : 85,
                                 magicDmgPlus : 85,
@@ -3377,7 +4117,7 @@ module.exports = {
                     buffs: [
                         {
                             name: "frenzy",
-                            emoji: "😡",
+                            emoji: "<:frenzy:479298214453968896>",
                             onTurnEnd: {
                                 attackDmgPlus : 100,
                                 magicDmgPlus : 100,
@@ -3486,7 +4226,7 @@ module.exports = {
                     buffs: [
                         {
                             name: "frenzy",
-                            emoji: "😡",
+                            emoji: "<:frenzy:479298214453968896>",
                             onTurnEnd: {
                                 attackDmgPlus : 305,
                                 magicDmgPlus : 305,
@@ -3524,7 +4264,7 @@ module.exports = {
                     buffs: [
                         {
                             name: "frenzy",
-                            emoji: "😡",
+                            emoji: "<:frenzy:479298214453968896>",
                             onTurnEnd: {
                                 attackDmgPlus : 85,
                                 magicDmgPlus : 85,
@@ -3556,7 +4296,7 @@ module.exports = {
                     buffs: [
                         {
                             name: "frenzy",
-                            emoji: "😡",
+                            emoji: "<:frenzy:479298214453968896>",
                             onTurnEnd: {
                                 attackDmgPlus : 85,
                                 magicDmgPlus : 85,
@@ -3620,7 +4360,7 @@ module.exports = {
                     buffs: [
                         {
                             name: "frenzy",
-                            emoji: "😡",
+                            emoji: "<:frenzy:479298214453968896>",
                             onTurnEnd: {
                                 attackDmgPlus : 135,
                                 magicDmgPlus : 135,
@@ -3722,7 +4462,7 @@ module.exports = {
                     buffs: [
                         {
                             name: "frenzy",
-                            emoji: "😡",
+                            emoji: "<:frenzy:479298214453968896>",
                             onTurnEnd: {
                                 attackDmgPlus : 95,
                                 magicDmgPlus : 95,
@@ -3835,7 +4575,7 @@ module.exports = {
                     buffs: [
                         {
                             name: "frenzy",
-                            emoji: "😡",
+                            emoji: "<:frenzy:479298214453968896>",
                             onTurnEnd: {
                                 attackDmgPlus : 145,
                                 magicDmgPlus : 145,
@@ -3872,7 +4612,7 @@ module.exports = {
                     buffs: [
                         {
                             name: "frenzy",
-                            emoji: "😡",
+                            emoji: "<:frenzy:479298214453968896>",
                             onTurnEnd: {
                                 attackDmgPlus : 70,
                                 magicDmgPlus : 70,
@@ -3906,7 +4646,7 @@ module.exports = {
                     buffs: [
                         {
                             name: "frenzy",
-                            emoji: "😡",
+                            emoji: "<:frenzy:479298214453968896>",
                             onTurnEnd: {
                                 attackDmgPlus : 55,
                                 magicDmgPlus : 55,
@@ -3938,7 +4678,7 @@ module.exports = {
                     buffs: [
                         {
                             name: "frenzy",
-                            emoji: "😡",
+                            emoji: "<:frenzy:479298214453968896>",
                             onTurnEnd: {
                                 attackDmgPlus : 55,
                                 magicDmgPlus : 55,
@@ -4014,7 +4754,7 @@ module.exports = {
                         buffs: [
                             {
                                 name: "frenzy",
-                                emoji: "😡",
+                                emoji: "<:frenzy:479298214453968896>",
                                 onTurnEnd: {
                                     attackDmgPlus : 65,
                                     magicDmgPlus : 65,
@@ -4042,7 +4782,7 @@ module.exports = {
                         buffs: [
                             {
                                 name: "frenzy",
-                                emoji: "😡",
+                                emoji: "<:frenzy:479298214453968896>",
                                 onTurnEnd: {
                                     attackDmgPlus : 85,
                                     magicDmgPlus : 85,
@@ -4111,7 +4851,7 @@ module.exports = {
                         buffs: [
                             {
                                 name: "frenzy",
-                                emoji: "😡",
+                                emoji: "<:frenzy:479298214453968896>",
                                 onTurnEnd: {
                                     attackDmgPlus : 65,
                                     magicDmgPlus : 65,
@@ -4140,7 +4880,7 @@ module.exports = {
                         buffs: [
                             {
                                 name: "frenzy",
-                                emoji: "😡",
+                                emoji: "<:frenzy:479298214453968896>",
                                 onTurnEnd: {
                                     attackDmgPlus : 65,
                                     magicDmgPlus : 65,
@@ -4168,7 +4908,7 @@ module.exports = {
                         buffs: [
                             {
                                 name: "frenzy",
-                                emoji: "😡",
+                                emoji: "<:frenzy:479298214453968896>",
                                 onTurnEnd: {
                                     attackDmgPlus : 85,
                                     magicDmgPlus : 85,
@@ -4239,7 +4979,7 @@ module.exports = {
                         buffs: [
                             {
                                 name: "frenzy",
-                                emoji: "😡",
+                                emoji: "<:frenzy:479298214453968896>",
                                 onTurnEnd: {
                                     attackDmgPlus : 95,
                                     magicDmgPlus : 95,
@@ -4314,7 +5054,7 @@ module.exports = {
                         buffs: [
                             {
                                 name: "frenzy",
-                                emoji: "😡",
+                                emoji: "<:frenzy:479298214453968896>",
                                 onTurnEnd: {
                                     attackDmgPlus : 75,
                                     magicDmgPlus : 75,
@@ -4351,7 +5091,7 @@ module.exports = {
                         buffs: [
                             {
                                 name: "frenzy",
-                                emoji: "😡",
+                                emoji: "<:frenzy:479298214453968896>",
                                 onTurnEnd: {
                                     attackDmgPlus : 75,
                                     magicDmgPlus : 75,
@@ -4479,7 +5219,7 @@ module.exports = {
                         buffs: [
                             {
                                 name: "frenzy",
-                                emoji: "😡",
+                                emoji: "<:frenzy:479298214453968896>",
                                 onTurnEnd: {
                                     attackDmgPlus : 85,
                                     magicDmgPlus : 85,
@@ -4519,7 +5259,7 @@ module.exports = {
                         buffs: [
                             {
                                 name: "frenzy",
-                                emoji: "😡",
+                                emoji: "<:frenzy:479298214453968896>",
                                 onTurnEnd: {
                                     attackDmgPlus : 85,
                                     magicDmgPlus : 85,
@@ -4559,7 +5299,7 @@ module.exports = {
                         buffs: [
                             {
                                 name: "frenzy",
-                                emoji: "😡",
+                                emoji: "<:frenzy:479298214453968896>",
                                 onTurnEnd: {
                                     attackDmgPlus : 85,
                                     magicDmgPlus : 85,
@@ -4614,7 +5354,7 @@ module.exports = {
                         buffs: [
                             {
                                 name: "frenzy",
-                                emoji: "😡",
+                                emoji: "<:frenzy:479298214453968896>",
                                 onTurnEnd: {
                                     attackDmgPlus : 10000,
                                     magicDmgPlus : 10000,
@@ -4686,7 +5426,7 @@ module.exports = {
                         buffs: [
                             {
                                 name: "frenzy",
-                                emoji: "😡",
+                                emoji: "<:frenzy:479298214453968896>",
                                 onTurnEnd: {
                                     attackDmgPlus : 145,
                                     magicDmgPlus : 145,
@@ -4803,10 +5543,10 @@ module.exports = {
                         buffs: [
                             {
                                 name: "frenzy",
-                                emoji: "😡",
+                                emoji: "<:frenzy:479298214453968896>",
                                 onTurnEnd: {
-                                    attackDmgPlus : 655,
-                                    magicDmgPlus : 655,
+                                    attackDmgPlus : 855,
+                                    magicDmgPlus : 855,
                                     everyNTurns: 8,
                                     startTurn: 6
                                 }
@@ -4818,7 +5558,7 @@ module.exports = {
                         endOfTurnEvents : [
                             "focus",
                             "archvampireRevive",
-                            "fever",
+                            "feverChallenge",
                             "suckBlood"
                         ],
                         hp: 58600,
@@ -4844,7 +5584,7 @@ module.exports = {
                         buffs: [
                             {
                                 name: "frenzy",
-                                emoji: "😡",
+                                emoji: "<:frenzy:479298214453968896>",
                                 onTurnEnd: {
                                     attackDmgPlus : 185,
                                     magicDmgPlus : 185,
@@ -4879,7 +5619,7 @@ module.exports = {
                         buffs: [
                             {
                                 name: "frenzy",
-                                emoji: "😡",
+                                emoji: "<:frenzy:479298214453968896>",
                                 onTurnEnd: {
                                     attackDmgPlus : 185,
                                     magicDmgPlus : 185,
@@ -4937,7 +5677,7 @@ module.exports = {
             9: {
                 timed: true,
                 timedPerTurn: 180000,
-                points: 6901,
+                points: 9901,
                 difficulty: 220,
                 enemies: [
                     {
@@ -4951,7 +5691,7 @@ module.exports = {
                         buffs: [
                             {
                                 name: "frenzy",
-                                emoji: "😈",
+                                emoji: "<:overmind:479298213904646147>",
                                 onTurnEnd: {
                                     attackDmgPlus : 640,
                                     magicDmgPlus : 640,
@@ -4998,7 +5738,7 @@ module.exports = {
                         buffs: [
                             {
                                 name: "frenzy",
-                                emoji: "😡",
+                                emoji: "<:frenzy:479298214453968896>",
                                 onTurnEnd: {
                                     attackDmgPlus : 100,
                                     magicDmgPlus : 100,
@@ -5035,7 +5775,7 @@ module.exports = {
                         buffs: [
                             {
                                 name: "frenzy",
-                                emoji: "😡",
+                                emoji: "<:frenzy:479298214453968896>",
                                 onTurnEnd: {
                                     attackDmgPlus : 195,
                                     magicDmgPlus : 195,
@@ -5076,7 +5816,7 @@ module.exports = {
                         buffs: [
                             {
                                 name: "frenzy",
-                                emoji: "😡",
+                                emoji: "<:frenzy:479298214453968896>",
                                 onTurnEnd: {
                                     attackDmgPlus : 85,
                                     magicDmgPlus : 85,
@@ -5100,6 +5840,135 @@ module.exports = {
                         element: "earth"
                     }
                 ],
+            },
+            // --- asteroid golem and stone giant, same as in quest however get stronger faster and have one additional ability each
+            // -- asteroid golem puts a dot on the tank every 2 turns, lowers the armor of the tank by 10% per stack (EOT), if bandaided asteroid golem gains 15% damage
+            // -- stone giant puts a status on anyone every 2 turns, deals phys damage every turn, if bandaided stone giant gains +15% damage
+
+            // -------- at 20% of either reaching, both will entomb, no more damage will be dealt to them, or healing. 
+
+            // -- 2 new enemies are summoned, Lava and Sky elemental spawn Lava has 30k and sky elemental has 70k
+            // -- (anger) (engulf)lava elemental loses 2k damage every turn, aoe damage every 4 turns,
+            // -- (fury) for every % of health lost gains damage equal to it at 50%, 50% increased damage 
+            // -- rampages every 4 turns for 3 turns on someone random 
+            // -- (dampen) (deals physical) (if damaged, reduces damage from magical by 50%)
+
+            // ------ (hurricane) sky elemental focuses tank, aoe damage every 4 turns,  
+            // -- (amplify) (deals magical) (if hit reduces damage from physical by 50%)
+            // (create this)summons a smoke screen every 3 turns the smoke screen has 50k HP and deals 500 damage to the Lava elemental and impales off the tank?
+
+            // -- (healallrampage) if player dies to rampage, they heal all the way to full
+
+            // -- (summonAnomaly) when both reach 20%, all 4 morph into one enemy and ~80k hp (consume) the enemy will deal increasing area effect damage every turn start 100 up by 75
+            // -- (summonFiend) (absorbFiend) summons enemies every 6 and after 3 turns, the enemies get soaked and for each hp point it heals (7 enemies 3K hp each) if left at 500 boss heals for 3500
+            // -- (crack + explode) if the enemies die they explode for 500 damage and increase damage taken by 20% on the boss
+
+            // -- (burst) every 4 turns the boss puts a dot on 2 players that can only be removed by healing to full
+            // -- (killallentomb) -kills all entombed targets
+
+            10: {
+                timed: true,
+                timedPerTurn: 180000,
+                points: 9901,
+                difficulty: 290,
+                enemies: [
+                    {
+                        name: "Asteroid Golem",
+                        xp: 30,
+                        abilities: [
+                            "attack",
+                            "rockthrow",
+                            "slash",
+                            "poke",
+                            "meteor"
+                        ],
+                        buffs: [
+                            {
+                                name: "frenzy",
+                                emoji: "<:frenzy:479298214453968896>",
+                                onTurnEnd: {
+                                    attackDmgPlus : 705,
+                                    magicDmgPlus : 705,
+                                    everyNTurns: 6,
+                                    startTurn: 8
+                                }
+                            }
+                        ],
+                        abilityOrder: [
+                            0, 1, 3, 2, 4, 1, 4
+                        ],
+                        endOfTurnEvents : [
+                            "focus",
+                            "summonLavaElemental",
+                            "summonSkyElemental",
+                            "break",
+                            "entombAll20"
+                        ],
+                        effectsOnDeath: [
+                            "entombAll20",
+                            "summonSkyElementalDeath",
+                            "summonLavaElementalDeath",
+                        ],
+                        hp: 42600,
+                        attackDmg: 1480,
+                        magicDmg: 1470,
+                        armor: 2500,
+                        spirit: 10500,
+                        hpPerPartyMember: 0,
+                        adPerPartyMember: 0,
+                        mdPerPartyMember: 0,
+                        difficulty: "special",
+                        element: "earth"
+                    },
+                    {
+                        name: "Stone Giant",
+                        xp: 30,
+                        abilities: [
+                            "attack",
+                            "rockthrow",
+                            "slash",
+                            "poke",
+                            "quake"
+                        ],
+                        buffs: [
+                            {
+                                name: "frenzy",
+                                emoji: "<:frenzy:479298214453968896>",
+                                onTurnEnd: {
+                                    attackDmgPlus : 705,
+                                    magicDmgPlus : 705,
+                                    everyNTurns: 6,
+                                    startTurn: 9
+                                }
+                            }
+                        ],
+                        abilityOrder: [
+                            1, 0, 2, 3, 1, 4, 4
+                        ],
+                        endOfTurnEvents : [
+                            "focus",
+                            "summonLavaElemental",
+                            "summonSkyElemental",
+                            "shatter",
+                            "entombAll20"
+                        ],
+                        effectsOnDeath: [
+                            "entombAll20",
+                            "summonSkyElementalDeath",
+                            "summonLavaElementalDeath",
+                        ],
+                        hp: 42600,
+                        attackDmg: 1480,
+                        magicDmg: 1470,
+                        armor: 10750,
+                        spirit: 2500,
+                        hpPerPartyMember: 0,
+                        adPerPartyMember: 0,
+                        mdPerPartyMember: 0,
+                        difficulty: "special",
+                        element: "earth"
+                    }
+                ]
             }
         }
     }    
