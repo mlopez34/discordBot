@@ -1906,9 +1906,12 @@ function calculateRewards(event, memberInRpgEvent, getItemResponse, numberOfMemb
 
     var itemsObtainedArray = [];
     // calculate xp based on level and difficulty of enemies and items
-    if (event.challenge &&  event.challenge.challenge == 6){
+    if (event.challenge &&  event.challenge.challenge == 6 || event.challenge.challenge == 9){
         var rarityRoll = undefined;
         var numberOfRolls = [0,1,2,3,4]
+        if (event.challenge.challenge == 9){
+            numberOfRolls = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21]
+        }
         for (var enemy in numberOfRolls){
             rarityRoll = Math.floor(Math.random() * 2000) + 8000;
             if (rarityRoll){

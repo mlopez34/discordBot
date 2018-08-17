@@ -5677,7 +5677,7 @@ module.exports = {
             9: {
                 timed: true,
                 timedPerTurn: 180000,
-                points: 6901,
+                points: 7901,
                 difficulty: 220,
                 enemies: [
                     {
