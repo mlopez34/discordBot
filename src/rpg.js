@@ -1418,7 +1418,7 @@ function validateTarget(target, abilityToUse, event, caster){
 }
 
 function processRpgTurn(message, event){
-    //try{
+    try{
         var order = [];
         recalculateStatBuffs(event)
         var passiveEffectsString = processPassiveEffects(event);
@@ -1510,10 +1510,10 @@ function processRpgTurn(message, event){
                 message.channel.send("exception : " + exception)
             }
         }
-    
-    // catch(ex){
-    //     message.channel.send("turn processing exception : " + ex)
-    // }
+    }
+    catch(ex){
+        message.channel.send("turn processing exception : " + ex)
+    }
 }
 
 function cleanupEventEnded(event){
@@ -1906,7 +1906,7 @@ function calculateRewards(event, memberInRpgEvent, getItemResponse, numberOfMemb
 
     var itemsObtainedArray = [];
     // calculate xp based on level and difficulty of enemies and items
-    if (event.challenge &&  event.challenge.challenge == 6 || event.challenge.challenge >= 9){
+    if (event.challenge &&  (event.challenge.challenge == 6 || event.challenge.challenge >= 9)){
         var rarityRoll = undefined;
         var numberOfRolls = [0,1,2,3,4]
         if (event.challenge.challenge == 9){
