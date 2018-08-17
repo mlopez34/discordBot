@@ -1294,7 +1294,6 @@ module.exports = {
                 setAbleToBeHealed: false,
                 removeEndOfTurn: true,
                 removeBuffs: true
-                //TODO set abletoattack false, abletotakedamage false, abletoheal false endofturndisable stays false
             }
         },
 
@@ -1305,7 +1304,6 @@ module.exports = {
             killIfEnemyBuff : "Entomb",
             name: "KillAll-Entomb" // on death, kill anything with entomb
         },
-        // stone giant, deals damage, if bandaided stone giant gets +15% damage
         shatter: {
             name:"Shatter",
             abilityId: "shatter",
@@ -1323,7 +1321,6 @@ module.exports = {
                 untargettable: true,
                 mdPercentage: 1,
                 emoji: "<:shatter:479347500751388687>",
-                // TODO: on bandaid trigger effect
                 onBandaidCasterGainsBuff: "strength",
                 ignoreUnique: true,
                 dmgOnDotApply: false,
@@ -1332,10 +1329,6 @@ module.exports = {
                 dmgOnExpire: 0
             }
         },
-        // TODO: create the onbandaidtrigger effect to gain 15% damage
-
-        // asteroid golem puts a dot on the tank every 2 turns, lowers spirit by 10% per stack
-        // if bandaid asteroid golem gains 15% damage
         break: {
             // ignore unique
             name:"Break",
@@ -1356,7 +1349,6 @@ module.exports = {
                 additive: -1000
             }
         },
-        // TODO: create the onbandaidtrigger effect to gain 15% damage
         strength: {
             name: "Strength",
             abilityId: "strength",
@@ -1384,8 +1376,7 @@ module.exports = {
             }
         },
 
-        // summon Lava and Sky elemental
-        // summoned upon entomb / 20% HP
+        // summon Lava and Sky elemental summoned upon entomb / 20% HP
         summonLavaElemental: {
             name: "Summon Lava Elemental",
             abilityId: "summonLavaElemental",
@@ -1438,8 +1429,7 @@ module.exports = {
                 hpPlus: 300
             }
         },
-        // whenever sky or lava reach 20%
-        // the anomaly is the HP of sky, lava, and golems combined
+        // whenever sky or lava reach 20% the anomaly is the HP of sky, lava, and golems combined
         summonAnomaly: {
             name: "Summon Anomaly",
             abilityId: "summonAnomaly",
@@ -1485,12 +1475,9 @@ module.exports = {
                 name: "Rampage",
                 turnsToExpire: 4,
                 emoji: "<:rampage:479348722782830603>",
-                abilityTriggerOnDeath: "healAllRampage",
-                //TODO: if player dies, heal all enemies
-                
+                abilityTriggerOnDeath: "healAllRampage"                
             }
         },
-        // 
         healAllRampage: {
             belongsToMember: true,
             name: "Heal All",
@@ -1525,7 +1512,6 @@ module.exports = {
             mdPercentage: 1
         },
 
-        // at end of turn, calculate % of health lost, gain that much % damage on multiplier
         fury : {
             name : "Fury",
             belongsToMember: true,
@@ -1545,7 +1531,7 @@ module.exports = {
             }
         },
 
-        // lava and sky elemental aoes (need buffs to counter these)
+        // lava and sky elemental aoe
         hurricane: {
             belongsToMember: true,
             name: "Hurricane",
@@ -1581,7 +1567,6 @@ module.exports = {
         // reduces physical damage by 50% - applied when damaging sky elemental
         // removes amplify
         dampen: {
-            // reduce magic dmg by 50%
             name : "Dampen",
             abilityId: "dampen",
             buff: {
@@ -1597,7 +1582,6 @@ module.exports = {
         // reduces magical damage by 50% - applied when damaging lava elemental
         // removes dampen 
         amplify: {
-            // reduce magic dmg by 50%
             name : "Amplify",
             abilityId: "amplify",
             buff: {
@@ -1640,15 +1624,7 @@ module.exports = {
                 hpPlus: 1000
             }
         },
-        // smoke screen deals damage to the lava elemental at end of turn
 
-        // morph  - base the hp of the caster on the hp of certain enemies
-        // anomalyMorph: {
-        //     belongsToMember: true,
-        //     abilityId: "anomalyMorph",
-        //     name: "Morph",
-            
-        // },
         // aoe every turn
         morphAnomalyMessage: {
             belongsToMember: true,
@@ -1688,7 +1664,6 @@ module.exports = {
                 name: "Burst",
                 abilityId: "burst",
                 ignoreBandaid: true,
-                // TODO: dot can only be removed upon being healed to full
                 removeDotOnHpPercentage: .99,
 
                 type:"physical",
@@ -1721,8 +1696,6 @@ module.exports = {
                 ]
             }
         },
-
-        // soak the fiends
         absorbFiends: {
             abilityId: "absorbFiends",
             belongsToMember: true,
@@ -1730,7 +1703,7 @@ module.exports = {
             everyNTurns: 6,
             afterNTurns: 7,
             currentTurn: 0,
-            special: "absorb fiends" // heals for their remaining health
+            special: "absorb fiends" 
         },
 
         /*
@@ -5677,7 +5650,7 @@ module.exports = {
             9: {
                 timed: true,
                 timedPerTurn: 180000,
-                points: 9901,
+                points: 22901,
                 difficulty: 220,
                 enemies: [
                     {
@@ -5841,35 +5814,10 @@ module.exports = {
                     }
                 ],
             },
-            // --- asteroid golem and stone giant, same as in quest however get stronger faster and have one additional ability each
-            // -- asteroid golem puts a dot on the tank every 2 turns, lowers the armor of the tank by 10% per stack (EOT), if bandaided asteroid golem gains 15% damage
-            // -- stone giant puts a status on anyone every 2 turns, deals phys damage every turn, if bandaided stone giant gains +15% damage
-
-            // -------- at 20% of either reaching, both will entomb, no more damage will be dealt to them, or healing. 
-
-            // -- 2 new enemies are summoned, Lava and Sky elemental spawn Lava has 30k and sky elemental has 70k
-            // -- (anger) (engulf)lava elemental loses 2k damage every turn, aoe damage every 4 turns,
-            // -- (fury) for every % of health lost gains damage equal to it at 50%, 50% increased damage 
-            // -- rampages every 4 turns for 3 turns on someone random 
-            // -- (dampen) (deals physical) (if damaged, reduces damage from magical by 50%)
-
-            // ------ (hurricane) sky elemental focuses tank, aoe damage every 4 turns,  
-            // -- (amplify) (deals magical) (if hit reduces damage from physical by 50%)
-            // (create this)summons a smoke screen every 3 turns the smoke screen has 50k HP and deals 500 damage to the Lava elemental and impales off the tank?
-
-            // -- (healallrampage) if player dies to rampage, they heal all the way to full
-
-            // -- (summonAnomaly) when both reach 20%, all 4 morph into one enemy and ~80k hp (consume) the enemy will deal increasing area effect damage every turn start 100 up by 75
-            // -- (summonFiend) (absorbFiend) summons enemies every 6 and after 3 turns, the enemies get soaked and for each hp point it heals (7 enemies 3K hp each) if left at 500 boss heals for 3500
-            // -- (crack + explode) if the enemies die they explode for 500 damage and increase damage taken by 20% on the boss
-
-            // -- (burst) every 4 turns the boss puts a dot on 2 players that can only be removed by healing to full
-            // -- (killallentomb) -kills all entombed targets
-
             10: {
                 timed: true,
                 timedPerTurn: 180000,
-                points: 9901,
+                points: 49901,
                 difficulty: 290,
                 enemies: [
                     {
