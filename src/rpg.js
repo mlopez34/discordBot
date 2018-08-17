@@ -3211,7 +3211,10 @@ function effectsOnDeath(event, member){
             }
             // process it as an ability
             if (rpgAbility.processAbility && validEOD){
-                
+                ////// FIX FOR RADIO
+                if (effectsToRemove.indexOf(rpgAbility.abilityId) > -1){
+                    continue
+                }
 
                 var validCast = true;
                 // if (event.enemies[enemy].endOfTurnEvents[index].validIfBuff){
