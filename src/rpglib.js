@@ -1348,7 +1348,7 @@ module.exports = {
                 ignoreUnique: true,
                 turnsToExpire: 15,
                 affects: ["spirit"],
-                additive: -1000
+                additive: -800
             }
         },
         strength: {
@@ -1361,7 +1361,7 @@ module.exports = {
                 emoji: "<:strength:479298214294716416>",
                 turnsToExpire: 20,
                 affects: ["attackDmg", "magicDmg"],
-                multiplier: 1.15
+                multiplier: 1.1
             }
         },
         strengthFever: {

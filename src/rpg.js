@@ -3736,7 +3736,7 @@ function hasDied(event, member){
                         }
                         deathString = deathString + " The enemies have healed for " + rpgAbility.heal + "\n"
                     }
-                    if (rpgAbility.abilityId == "strengthFever"){
+                    if (rpgAbility.abilityId == "strengthFever" || rpgAbility.abilityId == "strength"){
                         // heal all enemies
                         var strengthString = processStrength( event, member  )
                         if (strengthString.length > 5){
