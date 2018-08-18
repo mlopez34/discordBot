@@ -6336,26 +6336,56 @@ function getPrioritizedTargets(event, numberOfTargets){
     var prioritizedTargets = [];
     // check event members, check their hp, order them in an array by hp, return the lowest numberOfTargets
     for (var m in event.membersInParty){
-        if (numberOfTargets > 0){
-            if (event.membersInParty[m].statuses.indexOf("dead")){
-                prioritizedTargets.push({
-                    targetId: m,
-                    target: event.membersInParty[m],
-                    hp: event.membersInParty[m].hp
-                })
-                numberOfTargets--;
-            }
+        if (event.membersInParty[m].statuses.indexOf("dead")){
+            prioritizedTargets.push({
+                targetId: m,
+                target: event.membersInParty[m],
+                hp: event.membersInParty[m].hp
+            })
         }
     }
+    /////////////// for testing
+    /*
+    prioritizedTargets.push({
+        targetId: m,
+        target: event.membersInParty[m],
+        hp: 105
+    })
+    prioritizedTargets.push({
+        targetId: m,
+        target: event.membersInParty[m],
+        hp: 10000
+    })
+    prioritizedTargets.push({
+        targetId: m,
+        target: event.membersInParty[m],
+        hp: 2
+    })
+    */
+
     prioritizedTargets.sort(function(a, b){
         var keyA = a.hp
         var keyB = b.hp
-        if(keyA < keyB) return -1;
-        if(keyA > keyB) return 1;
-        return 0;    
+        if(keyA < keyB) {
+            return -1;
+        }
+        else if(keyA > keyB) {
+            return 1;
+        }else{
+            return 0;    
+        }
     })
+    var finalPrioritizedTargets = []
+    for (var p in prioritizedTargets){
+        if (numberOfTargets > 0){
+            finalPrioritizedTargets.push(prioritizedTargets[p])
+            numberOfTargets--;
+        }else{
+            break;
+        }
+    }
 
-    return prioritizedTargets
+    return finalPrioritizedTargets
 }
 
 
