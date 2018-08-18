@@ -1576,7 +1576,7 @@ function turnFinishedEmbedBuilder(message, event, turnString, passiveEffectsStri
     }
     // enemies
     for (var enemy in event.enemies){
-        if (enemiesString.length > 950){
+        if (enemiesString.length > 700){
             embed.addField( "Enemy", enemiesString )
             enemiesString = "";
             if (event.enemies[enemy].difficulty == "summoned"){
