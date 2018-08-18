@@ -3616,7 +3616,7 @@ function checkIfDamageTakenGiveBuff(event, target, caster){
                     }
                 }
 
-                if (buffToGive.buff.turnsToExpire){
+                if (buffToGive.buff && buffToGive.buff.turnsToExpire){
                     buffToGive.buff.caster = caster // id of the caster
                     buffToGive.buff.expireOnTurn = event.turn + buffToGive.buff.turnsToExpire;
                 }
@@ -3632,7 +3632,11 @@ function checkIfDamageTakenGiveBuff(event, target, caster){
                             }
                         }
                     }
-                    return memberToGiveBuff.name + " was affected with " + buffToGive.name + "\n"
+                    if (buffToGive.buff && buffToGive.buff.additionalDescription){
+                        return memberToGiveBuff.name + " was affected with " + buffToGive.name + "\n" + memberToGiveBuff.name + buffToGive.buff.additionalDescription + "\n"
+                    }else{
+                        return memberToGiveBuff.name + " was affected with " + buffToGive.name + "\n"
+                    }
                 }else{
                     // check if theres ignore unique
                     if (buffToGive.ignoreUnique){
@@ -3646,7 +3650,11 @@ function checkIfDamageTakenGiveBuff(event, target, caster){
                                 }
                             }
                         }
-                        return memberToGiveBuff.name + " was affected with " + buffToGive.name + "\n"
+                        if (buffToGive.buff && buffToGive.buff.additionalDescription){
+                            return memberToGiveBuff.name + " was affected with " + buffToGive.name + "\n" + memberToGiveBuff.name + buffToGive.buff.additionalDescription + "\n"
+                        }else{
+                            return memberToGiveBuff.name + " was affected with " + buffToGive.name + "\n"
+                        }
                     }else{
                         console.log("have buff already")
                         return ""
@@ -4892,7 +4900,10 @@ function processAbility(abilityObject, event){
                             buffCloned.expireOnTurn = currentTurn + buffCloned.turnsToExpire;
                         }
                         event.membersInParty[targetToAddStatus].buffs.push(buffCloned);
-                        abilityToString = abilityToString + targetToAddStatusName + " was affected with " + statusToAdd.name + "\n"    
+                        abilityToString = abilityToString + targetToAddStatusName + " was affected with " + statusToAdd.name + "\n"  
+                        if (statusToAdd.additionalDescription){
+                            abilityToString = abilityToString + targetToAddStatusName + statusToAdd.additionalDescription + "\n"
+                        }     
                     }
                     else{
                         // only add it if we dont find it
@@ -4929,6 +4940,9 @@ function processAbility(abilityObject, event){
                         }
                         event.enemies[targetToAddStatus].buffs.push(buffCloned);
                         abilityToString = abilityToString + targetToAddStatusName + " was affected with " + statusToAdd.name + " \n"
+                        if (statusToAdd.additionalDescription){
+                            abilityToString = abilityToString + targetToAddStatusName + statusToAdd.additionalDescription + "\n"
+                        }   
                     }
                     else{
                         var foundBuff = false;
@@ -4941,7 +4955,7 @@ function processAbility(abilityObject, event){
                         if (!foundBuff){
                             let buffCloned = Object.assign({}, statusToAdd);
                             event.enemies[targetToAddStatus].buffs.push(buffCloned);
-                            abilityToString = abilityToString + targetToAddStatusName + " was affected with " + statusToAdd.name + " \n"     
+                            abilityToString = abilityToString + targetToAddStatusName + " was affected with " + statusToAdd.name + " \n" 
                         }
                     }
                 }
