@@ -6332,8 +6332,8 @@ function getPrioritizedTargets(event, numberOfTargets){
         }
     }
     prioritizedTargets.sort(function(a, b){
-        var keyA = new Date(a.hp)
-        var keyB = new Date(b.hp)
+        var keyA = a.hp
+        var keyB = b.hp
         if(keyA < keyB) return -1;
         if(keyA > keyB) return 1;
         return 0;    
