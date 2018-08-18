@@ -1605,7 +1605,9 @@ function turnFinishedEmbedBuilder(message, event, turnString, passiveEffectsStri
         }
     }
     //embed.addField( "Group", groupString )
-    embed.addField( "Enemy", enemiesString )
+    if (enemiesString.length > 0 ){
+        embed.addField( "Enemy", enemiesString )
+    }
     message.channel.send({embed})
     .then(function (sentMessage) {
         var lastMessage = event.lastEmbedMessage
