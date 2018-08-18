@@ -2470,7 +2470,7 @@ module.exports = {
                 buffs: [
                     {
                         name: "frenzy",
-                        emoji: "<:frenzy:479298214453968896>",
+                        emoji: "<:overmind:479298213904646147>",
                         onTurnEnd: {
                             attackDmgPlus : 200,
                             magicDmgPlus : 750,
