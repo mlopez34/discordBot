@@ -3716,7 +3716,7 @@ function hasDied(event, member){
                         var targetToDealDmgName = event.membersInParty[targetToDealDmg].name
                         if (event.membersInParty[targetToDealDmg].statuses.indexOf("dead") == -1){
                             //event.membersInParty[targetToDealDmg].hp = event.membersInParty[targetToDealDmg].hp - damageToDeal;
-                            var abType = eabilityObject.ability.type
+                            var abType = abilityObject.ability.type
                             damageToDealToPlayer = dealDamageTo(event.membersInParty[targetToDealDmg], damageToDeal, event, abType)
                             if ( checkHasDied(event.membersInParty[targetToDealDmg])){
                                 deathString = deathString + hasDied(event, event.membersInParty[targetToDealDmg]);
