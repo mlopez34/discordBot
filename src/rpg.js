@@ -14,7 +14,7 @@ var activeRPGEvents = {};
 var activeRPGItemIds = {};
 var usersInRPGEvents = {};
 var TEAM_MAX_LENGTH = 5;
-var CURRENT_CHALLENGES_AVAILABLE = 10
+var CURRENT_CHALLENGES_AVAILABLE = 11
 var rpgAbilities = rpglib.rpgAbilities;
 var enemiesToEncounter = rpglib.enemiesToEncounter;
 
@@ -453,7 +453,7 @@ module.exports.rpgReady = function(message, itemsAvailable, amuletItemsById){
                 if ((lastrpgtime && oneHourAgo > lastrpgtime)
                     || isSpecialEvent 
                     || !lastrpgtime
-                    || challengePicked >= 9){
+                    || challengePicked >= 10){
                     // get the user profile data
                     var userStats = userData.data;
 

@@ -71,12 +71,12 @@ module.exports = {
             name:"Recover",
             abilityId: "recover",
             selfTarget: true,
-            description: "Heal yourself for 50 + 20% of your armor or spirit, whichever is higher, lasts 3 turns",
+            description: "Heal yourself for 50 + 30% of your armor or spirit, whichever is higher, lasts 3 turns",
             hot: {
                 name: "Recover",
                 heal: 50,
                 emoji: "<:recover:479296605237805056>",
-                arOrSpPercentage: 0.2,
+                arOrSpPercentage: 0.3,
                 healingOnHotApply: false,
                 turnsToExpire: 3,
                 healingOnDotExpire: false,
@@ -2117,6 +2117,205 @@ module.exports = {
                 hpPlus: 30
             }
         },
+
+        /*
+        challenge 11
+        */
+       summonAthos: {
+            name: "Summon Athos",
+            abilityId: "summonAthos",
+            belongsToMember: true,
+            effectDone: false,
+            hppercentage: 0.3,
+            summon: {
+                enemy: "athos",
+                attackDmg: 240,
+                magicDmg: 250,
+                hpPlus: 0
+            }
+        },
+        summonPorthos: {
+            name: "Summon Porthos",
+            abilityId: "summonPorthos",
+            belongsToMember: true,
+            effectDone: false,
+            hppercentage: 0.3,
+            summon: {
+                enemy: "porthos",
+                attackDmg: 240,
+                magicDmg: 250,
+                hpPlus: 0
+            }
+        },
+        summonAramis: {
+            name: "Summon Aramis",
+            abilityId: "summonAramis",
+            belongsToMember: true,
+            effectDone: false,
+            hppercentage: 0.3,
+            summon: {
+                enemy: "aramis",
+                attackDmg: 240,
+                magicDmg: 250,
+                hpPlus: 0
+            }
+        },
+
+        // deal 25% of current health
+        overpower: {
+            belongsToMember: true,
+            name: "Overpower",
+            abilityId: "overpower",
+            dmgaura: true,
+            currentHealthPercentageDamage: 0.25,
+            everyNTurns: 1,
+            hppercentage: 0.25,
+            type: "physical"
+        },
+
+        // summon 4 elemental pillars at the start of the fight
+        // when they reach 50% they begin to radiate aoe damage, when dead they give buff to stop elemental order
+        // summon 4 more every so often
+        shackle: {
+            // ignore unique
+            name:"Shackle",
+            abilityId: "shackle",
+            processAbility: true,
+            belongsToMember: true,
+            everyNTurns: 2,
+            afterNTurns: 2,
+            currentTurn: 0,
+            status: {
+                name: "Shackle",
+                emoji: "<:break:479347734722379777>",
+                ignoreUnique: true,
+                turnsToExpire: 65,
+                affects: ["armor"],
+                additive: -800
+            }
+        },
+
+        arrowVolley: {
+            name:"Arrow Volley",
+            abilityId: "arrowVolley",
+            type:"physical",
+            processAbility: true,
+            belongsToMember: true,
+            everyNTurns: 6,
+            ignoreFocus: true,
+            afterNTurns: 5,
+            currentTurn: 0,
+            dot: {
+                name: "Arrow Volley",
+                type:"physical",
+                dmg: 100,
+                untargettable: true,
+                adPercentage: 1,
+                emoji: "<:hex:479301622732816403>", ///
+                dmgOnDotApply: false,
+                turnsToExpire: 1,
+                dmgOnDotExpire: true,
+                adPercentageOnRemove: 1,
+                dmgOnExpire: 600
+            }
+        },
+
+        shrink : {
+            name : "Shrink",
+            abilityId: "shrink",
+            description: "Reduce all damage done by 50% for 3 turns 8 turn cooldown",
+            status: {
+                status: true,
+                name: "Shell",
+                emoji : "<:shell:479293276462252042>", //
+                affectsGlobal: ["damageDealtPercentage", "healingDonePercentage"],
+                turnsToExpire: 2,
+                multiplier: 0.5
+            }
+        },
+
+        summonApparition: {
+            name: "Summon Apparition",
+            abilityId: "summonApparition",
+            belongsToMember: true,
+            everyNTurns: 8,
+            afterNTurns: 2,
+            currentTurn: 0,
+            summon: {
+                enemy: "apparition",
+                attackDmg: 500,
+                magicDmg: 500,
+                hpPlus: 1000
+            }
+        },
+        // shield explodes for 50k upon taking direct damage
+        shadowShield: {
+            // ignore unique
+            name:"Shadow Shield",
+            abilityId: "shadowShield",
+            processAbility: true,
+            belongsToMember: true,
+            everyNTurns: 7,
+            afterNTurns: 7,
+            currentTurn: 0,
+            status: {
+                name: "Shadow Shield",
+                emoji: "<:break:479347734722379777>",
+                ignoreUnique: true,
+                turnsToExpire: 65
+            }
+        },
+        // gain buff that deals damage to everyone else based on damage dealt to target
+        maniac: {
+            // ignore unique
+            name:"Maniac",
+            abilityId: "maniac",
+            processAbility: true,
+            belongsToMember: true,
+            everyNTurns: 7,
+            afterNTurns: 7,
+            currentTurn: 0,
+            buff: {
+                name: "Maniac",
+                emoji: "<:break:479347734722379777>",
+                ignoreUnique: true,
+                turnsToExpire: 4
+            }
+        },
+        // reflect damage back to the attacker 50%
+        reflect: {
+            name:"Reflect",
+            abilityId: "reflect",
+            processAbility: true,
+            belongsToMember: true,
+            everyNTurns: 7,
+            afterNTurns: 7,
+            currentTurn: 0,
+            buff: {
+                name: "Reflect",
+                emoji: "<:break:479347734722379777>",
+                ignoreUnique: true,
+                turnsToExpire: 4
+            }
+        },
+
+        summonEnabler: {
+            name: "Summon Enabler",
+            abilityId: "summonEnabler",
+            belongsToMember: true,
+            everyNTurns: 8,
+            afterNTurns: 2,
+            currentTurn: 0,
+            summon: {
+                // after 4 turns increases damage on boss by 10% and dies
+                enemy: "enabler",
+                attackDmg: 500,
+                magicDmg: 500,
+                hpPlus: 1000
+            }
+        },
+
+
         /*
         summon effects
         */
@@ -2563,6 +2762,193 @@ module.exports = {
                 ],
                 attackDmg: 830,
                 magicDmg: 1060,
+                armor: 1300,
+                spirit: 1300,
+                difficulty: "summoned",
+                element: "normal"
+            },
+            athos: {
+                // all physical dmg (deals high physical) attack / uppercut / crush / volley (2 plyr) - furnace for 3 turns for ~ 1500 dmg every 8 turns
+                // EOT stacking debuff on tank that reduces their armor every 2 turns by 800 
+                // **** reduce dmg by 50% if dealing physical / magical for 2 turns every 3 turns
+                name: "Athos",
+                uniqueEnemy: true,
+                xp: 150,
+                abilities: [
+                    "attack",
+                    "poke",
+                    "uppercut",
+                    "crush"
+                ],
+                buffs: [
+                    {
+                        name: "frenzy",
+                        emoji: "<:overmind:479298213904646147>",
+                        onTurnEnd: {
+                            attackDmgPlus : 2200,
+                            magicDmgPlus : 1970,
+                            everyNTurns: 20,
+                            currentTurn: 1,
+                            startTurn: 21
+                        }
+                    }
+                ],
+                abilityOrder: [
+                    0, 1, 2, 0, 0, 0, 2, 3
+                ],
+                endOfTurnEvents : [
+                    "focus",
+                    "summonPorthos",
+                    "shackle",
+                    "arrowVolley"
+                    // "reducePhysMag2Turns"
+                ],
+                effectsOnDeath: [
+                    
+                ],
+                hp: 50000,
+                attackDmg: 2200,
+                magicDmg: 1970,
+                armor: 2100,
+                spirit: 2100,
+                hpPerPartyMember: 0,
+                adPerPartyMember: 0,
+                mdPerPartyMember: 0,
+                difficulty: "boss",
+                element: "earth"
+            },
+            porthos: {
+                // all magic damage (deals high single target magical)
+                // curse / shadow bolt / iceshards
+                //  EOT shadow shield (debuff) must be bandaided or explodes for 50000 on raid with direct hits every 8 turns 
+                // EOT summon shadow orb *****focuses a player - can only be killed by that player deals damage to that player every 6 turns 
+                // (killable in ~3 high dps, 4 med dps) revives after 6 turns of being dead
+                name: "Porthos",
+                uniqueEnemy: true,
+                xp: 150,
+                abilities: [
+                    "attack",
+                    "curse",
+                    "iceshards",
+                    "corrupt"
+                ],
+                buffs: [
+                    {
+                        name: "frenzy",
+                        emoji: "<:overmind:479298213904646147>",
+                        onTurnEnd: {
+                            attackDmgPlus : 1700,
+                            magicDmgPlus : 2670,
+                            everyNTurns: 20,
+                            currentTurn: 1,
+                            startTurn: 21
+                        }
+                    }
+                ],
+                abilityOrder: [
+                    0, 1, 2, 0, 0, 0, 2, 3
+                ],
+                endOfTurnEvents : [
+                    "focus",
+                    "summonAramis",
+                    "summonApparition"
+                    // "shadowShield"
+                ],
+                // shadow shield every 6 turns
+                effectsOnDeath: [
+                    // clear apparitions
+                ],
+                hp: 50000,
+                attackDmg: 1700,
+                magicDmg: 2670,
+                armor: 1800,
+                spirit: 2100,
+                hpPerPartyMember: 0,
+                adPerPartyMember: 0,
+                mdPerPartyMember: 0,
+                difficulty: "boss",
+                element: "earth"
+            },
+            aramis: {
+                // all magic damage ( deals moderate magical)
+                // maniac - attacks on tank do same damage to group (4 turns) every 10 turns + *** 1-4  ---- 5 free
+                // EOT damage reflect, deal 50% damage back to you after dealing it to boss - 4 turns every 10 turns 6-9 ----- 10 free
+                // EOT summon enemies that need to be killed or else they buff the boss with frenzy after 3 turns
+                name: "Aramis",
+                uniqueEnemy: true,
+                xp: 150,
+                abilities: [
+                    "attack",
+                    "poke",
+                    "uppercut",
+                    "tackle"
+                ],
+                buffs: [
+                    {
+                        name: "frenzy",
+                        emoji: "<:overmind:479298213904646147>",
+                        onTurnEnd: {
+                            attackDmgPlus : 1700,
+                            magicDmgPlus : 1970,
+                            everyNTurns: 20,
+                            currentTurn: 1,
+                            startTurn: 21
+                        }
+                    }
+                ],
+                abilityOrder: [
+                    0, 1, 2, 0, 0, 0, 2, 3
+                ],
+                endOfTurnEvents : [
+                    "focus",
+                    "summonEnabler"
+                    // "reflectDamage",
+                    // "maniac"
+                ],
+                effectsOnDeath: [
+                ],
+                hp: 50000,
+                attackDmg: 1700,
+                magicDmg: 1970,
+                armor: 1800,
+                spirit: 2100,
+                hpPerPartyMember: 0,
+                adPerPartyMember: 0,
+                mdPerPartyMember: 0,
+                difficulty: "boss",
+                element: "earth"
+            },
+            apparition: {
+                name: "Apparition",
+                abilities: ["attack"],
+                buffs: [],
+                hpPerPartyMember: 0,
+                adPerPartyMember: 0,
+                mdPerPartyMember: 0,
+                hp: 5300,
+                abilityOrder: [
+                    0, 0, 0
+                ],
+                attackDmg: 830,
+                magicDmg: 1460,
+                armor: 1300,
+                spirit: 1300,
+                difficulty: "summoned",
+                element: "normal"
+            },
+            enabler: {
+                name: "Enabler",
+                abilities: ["attack"],
+                buffs: [],
+                hpPerPartyMember: 0,
+                adPerPartyMember: 0,
+                mdPerPartyMember: 0,
+                hp: 10300,
+                abilityOrder: [
+                    0, 0, 0
+                ],
+                attackDmg: 1430,
+                magicDmg: 860,
                 armor: 1300,
                 spirit: 1300,
                 difficulty: "summoned",
@@ -5862,7 +6248,7 @@ module.exports = {
                             "summonSkyElementalDeath",
                             "summonLavaElementalDeath",
                         ],
-                        hp: 42600,
+                        hp: 40600,
                         attackDmg: 1480,
                         magicDmg: 1470,
                         armor: 2500,
@@ -5910,7 +6296,7 @@ module.exports = {
                             "summonSkyElementalDeath",
                             "summonLavaElementalDeath",
                         ],
-                        hp: 42600,
+                        hp: 40600,
                         attackDmg: 1480,
                         magicDmg: 1470,
                         armor: 10750,
@@ -5920,6 +6306,128 @@ module.exports = {
                         mdPerPartyMember: 0,
                         difficulty: "special",
                         element: "earth"
+                    }
+                ]
+            },
+            /*
+            */
+            11: {
+                // transitions
+                // 1 - 25% max hp (every 2 turns) + arrow volley(for 3 turns after second turn) + flanking orders (every 7 turns) + damage reduction (every 2 turns after 4 turns)
+                // on second enemy - arrow volley + damage reduction + flanking orders
+                // 2 - arrow volley + damage reduction + apparition + iceshards + explosion shield + flanking orders
+                // on third enemy - apparition + shield + iceshards + flanking orders + damage reduct
+                // 3 - apparition + iceshards + explosion shield + maniac + damage reflection + add spawn after 4 turns + flanking order + damage reduction
+                // on last enemy - maniac + reflect + enabler + flanking orders + damage reduct + apparition
+                timed: true,
+                timedPerTurn: 180000,
+                points: 67901,
+                difficulty: 334,
+                enemies: [
+                    {
+                        // deals moderate physical
+                        // crush / poke / attack
+                        // EOT - deals 25% of max HP
+                        // special ***flanking orders lightning, fire, water, earth(7 turns)
+                        // dps race, gains frenzy of + 4k after 20 turns
+                        name: "D'Artagnan",
+                        xp: 30,
+                        abilities: [
+                            "attack",
+                            "uppercut",
+                            "crush"
+                        ],
+                        buffs: [
+                            {
+                                name: "frenzy",
+                                emoji: "<:frenzy:479298214453968896>",
+                                onTurnEnd: {
+                                    attackDmgPlus : 2100,
+                                    magicDmgPlus : 2100,
+                                    everyNTurns: 6,
+                                    startTurn: 20
+                                }
+                            }
+                        ],
+                        abilityOrder: [
+                            0, 1, 2, 2, 0, 1, 0
+                        ],
+                        endOfTurnEvents : [
+                            "focus",
+                            "summonAthos"
+                        ],
+                        effectsOnDeath: [
+                        ],
+                        hp: 54600,
+                        attackDmg: 2180,
+                        magicDmg: 2170,
+                        armor: 2100,
+                        spirit: 2100,
+                        hpPerPartyMember: 0,
+                        adPerPartyMember: 0,
+                        mdPerPartyMember: 0,
+                        difficulty: "special",
+                        element: "normal"
+                    },
+                    {
+                        name: "Planchet",
+                        abilities: ["attack", "attack","attack", "flameblast", "flameblast", "iceshards", "scold"],
+                        buffs: [],
+                        hpPerPartyMember: 0,
+                        adPerPartyMember: 8,
+                        mdPerPartyMember: 8,
+                        hp: 2350,
+                        attackDmg: 360,
+                        magicDmg: 375,
+                        armor: 1050,
+                        spirit: 1170,
+                        difficulty: "boss",
+                        element: "normal"
+                    },
+                    {
+                        name: "Grimaud",
+                        abilities: ["attack", "attack","attack", "flameblast", "flameblast", "iceshards", "scold"],
+                        buffs: [],
+                        hpPerPartyMember: 0,
+                        adPerPartyMember: 8,
+                        mdPerPartyMember: 8,
+                        hp: 2350,
+                        attackDmg: 360,
+                        magicDmg: 375,
+                        armor: 1050,
+                        spirit: 1170,
+                        difficulty: "boss",
+                        element: "normal"
+                    },
+                    {
+                        name: "Mousqueton",
+                        abilities: ["attack", "attack","attack", "flameblast", "flameblast", "iceshards", "scold"],
+                        buffs: [],
+                        hpPerPartyMember: 0,
+                        adPerPartyMember: 8,
+                        mdPerPartyMember: 8,
+                        hp: 2350,
+                        attackDmg: 360,
+                        magicDmg: 375,
+                        armor: 1050,
+                        spirit: 1170,
+                        difficulty: "boss",
+                        element: "normal"
+                    },
+                    {
+                        name: "Bazin",
+                        abilities: ["attack", "attack","attack", "flameblast", "flameblast", "iceshards", "scold"],
+                        buffs: [],
+                        hpPerPartyMember: 0,
+                        adPerPartyMember: 8,
+                        mdPerPartyMember: 8,
+                        hp: 2350,
+                        attackDmg: 360,
+                        magicDmg: 375,
+                        armor: 1050,
+                        spirit: 1170,
+                        difficulty: "boss",
+                        element: "normal"
                     }
                 ]
             }
