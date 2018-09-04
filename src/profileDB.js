@@ -494,8 +494,11 @@ module.exports.purchasePickAxe = function(userId, tacosSpent, cb){
     else if (tacosSpent <= -50000 && tacosSpent >= -5000000){
         selectedPickaxe = "master";
     }
-    else if (tacosSpent <= -50000000 ){
+    else if (tacosSpent <= -5000000 && tacosSpent >= -50000000){
         selectedPickaxe = "ethereal";
+    }
+    else if (tacosSpent <= -50000000 && tacosSpent >= -500000000){
+        selectedPickaxe = "zeus";
     }
     //// console.log("new last thank: " + lastThank);
     db.none(query, [tacosSpent, userId, selectedPickaxe])

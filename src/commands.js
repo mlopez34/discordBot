@@ -30,6 +30,7 @@ var PICKAXE_COST = 250;
 var IMPROVED_PICKAXE_COST = 10000;
 var MASTER_PICKAXE_COST = 750000;
 var ETHEREAL_PICKAXE_COST = 12500000
+var ZEUS_TRIDENT_COST = 175000000
 var PASTA_COST = 2500
 var SCAVENGE_TACO_FIND_CHANCE_HIGHER = 94
 var SCAVENGE_TACO_FIND_CHANCE = 75;
@@ -1297,6 +1298,9 @@ module.exports.profileCommand = function(message){
                 else if(profileResponse.data.pickaxe == "ethereal"){
                     profileData.userItems = "Ethereal Pickaxe :cyclone::pick: \n"
                 }
+                else if(profileResponse.data.pickaxe == "zeus"){
+                    profileData.userItems = "Zeus' Trident :sparkles::pick: \n"
+                }
                 if (profileResponse.data.casserole == true){
                     profileData.userItems = profileData.userItems + "Casserole :shallow_pan_of_food: \n"
                 }
@@ -1373,6 +1377,9 @@ module.exports.profileCommand = function(message){
                 }
                 else if(profileResponse.data.pickaxe == "ethereal"){
                     profileData.userItems = "Ethereal Pickaxe :cyclone::pick: \n"
+                }
+                else if(profileResponse.data.pickaxe == "zeus"){
+                    profileData.userItems = "Zeus' Trident :sparkles::pick: \n"
                 }
                 if (profileResponse.data.casserole == true){
                     profileData.userItems = profileData.userItems + "Casserole :shallow_pan_of_food: \n"
@@ -1594,6 +1601,25 @@ module.exports.buyPickaxeCommand = function(message){
                     message.channel.send(message.author + " You cannot afford the `Ethereal Pickaxe`");
                 }
             }
+            else if (pickaxeResponse.data.pickaxe == "ethereal"){
+                if (pickaxeResponse.data.tacos >= ZEUS_TRIDENT_COST){
+                    // purchaseStand
+                    var tacosSpent = ZEUS_TRIDENT_COST * -1;
+                    profileDB.purchasePickAxe(discordUserId, tacosSpent, function(err, data){
+                        if (err){
+                            // console.log(err);
+                            // couldn't purchase stand
+                        }
+                        else{
+                            experience.gainExperience(message, message.author, EXPERIENCE_GAINS.buyPickaxe * 500 , pickaxeResponse);
+                            message.channel.send(message.author + " Congratulations, you have purchased Zeus' Trident :pick:!");
+                        }
+                    })
+                }
+                else{
+                    message.channel.send(message.author + " You cannot afford `Zeus' Trident`");
+                }
+            }
         }
     })
 }
@@ -1657,6 +1683,11 @@ function shopBuilder(message, shopData, long){
             // improved pickaxe
             pickaxeCost = ETHEREAL_PICKAXE_COST + " :taco:";
             embed.addField('Ethereal Pickaxe', pickaxeCost, true)
+        }
+        else if (shopData.pickaxe == "ethereal"){
+            // improved pickaxe
+            pickaxeCost = ZEUS_TRIDENT_COST + " :taco:";
+            embed.addField("Zeus' Trident", pickaxeCost, true)
         }
         embed.addField('Pasta', PASTA_COST + " :taco:", true)
         embed.addField('Knife',  SHOP_ITEM_COST + " :taco:", true)
@@ -1732,6 +1763,17 @@ function shopBuilder(message, shopData, long){
             embed.addBlankField(true)
             .addBlankField(false)
             .addField('Ethereal Pickaxe', ":cyclone::pick:", true)
+            .addField('Description', pickaxeDescription, true)
+            .addField('Cost', pickaxeCost, true)
+            .addField('Command', config.commandString + "buypickaxe", true)
+        }
+        else if (shopData.pickaxe == "ethereal"){
+            // improved pickaxe
+            pickaxeDescription = "Zeus' Trident can be used to scavenge. This is the Ultimate Pickaxe, the gods will grant you the power to find mankind's most valuable treasures :sparkles: .";
+            pickaxeCost = ZEUS_TRIDENT_COST + " :taco:";
+            embed.addBlankField(true)
+            .addBlankField(false)
+            .addField("Zeus' Trident", ":sparkles::pick:", true)
             .addField('Description', pickaxeDescription, true)
             .addField('Cost', pickaxeCost, true)
             .addField('Command', config.commandString + "buypickaxe", true)
