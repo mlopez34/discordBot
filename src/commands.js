@@ -2886,6 +2886,19 @@ module.exports.scavangeCommand = function (message){
                                     EXPERIENCE_MULTIPLIER = 6
                                     rollsCount++
                                 }
+                                else if (getUserResponse.data.pickaxe == "ethereal"){
+                                    ARTIFACT_MIN_ROLL = 9978
+                                    ANCIENT_MAX_ROLL = 9978;
+                                    ANCIENT_MIN_ROLL = 9925;
+                                    RARE_MAX_ROLL = 9925;
+                                    RARE_MIN_ROLL = 9700;
+                                    UNCOMMON_MAX_ROLL = 9700;
+                                    COMMON_ITEMS_TO_OBTAIN = 7
+                                    UNCOMMON_ITEMS_TO_OBTAIN = 4
+                                    TACOS_FOUND_MULTIPLIER = 12
+                                    EXPERIENCE_MULTIPLIER = 12
+                                    rollsCount++
+                                }
 
                                 var allItems = getItemResponse.data
                                 var commonItems = [];
