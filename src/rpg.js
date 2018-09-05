@@ -15,6 +15,7 @@ var activeRPGItemIds = {};
 var usersInRPGEvents = {};
 var TEAM_MAX_LENGTH = 5;
 var CURRENT_CHALLENGES_AVAILABLE = 11
+var CHALLENGE_TO_TEST = 10
 var rpgAbilities = rpglib.rpgAbilities;
 var enemiesToEncounter = rpglib.enemiesToEncounter;
 
@@ -83,7 +84,6 @@ module.exports.rpgInitialize = function(message, special){
 }
 
 module.exports.rpgSkip = function(message){
-    // create an embed saying that b is about to happen, for users MAX of 5 users and they must all say -ready to start costs 5 tacos per person
     var discordUserId = message.author.id;
     var idOfUserInEvent = usersInRPGEvents["rpg-" + discordUserId] ? usersInRPGEvents["rpg-" + discordUserId].id : undefined;
     var idOfActiveRPGEvent = activeRPGEvents["rpg-"+idOfUserInEvent] ? activeRPGEvents["rpg-"+idOfUserInEvent] : undefined;
@@ -453,7 +453,7 @@ module.exports.rpgReady = function(message, itemsAvailable, amuletItemsById){
                 if ((lastrpgtime && oneHourAgo > lastrpgtime)
                     || isSpecialEvent 
                     || !lastrpgtime
-                    || challengePicked >= 10){
+                    || challengePicked >= CHALLENGE_TO_TEST){
                     // get the user profile data
                     var userStats = userData.data;
 
@@ -608,6 +608,7 @@ module.exports.rpgReady = function(message, itemsAvailable, amuletItemsById){
                                             // get the extra stats obtained from level, item+ stats, 
                                             // insert the data to the event info to be able to use it once the team is ready
                                             
+                                            // check to see if the items are active and
                                             var experienceFromItems = wearRes.rpgSuccessExtraExperienceGain ? wearRes.rpgSuccessExtraExperienceGain : 0;
                                             var extraTacosFromItems = wearStats.calculateExtraTacos(wearRes, "rpg"); // 0 or extra
                                             
@@ -648,14 +649,16 @@ module.exports.rpgReady = function(message, itemsAvailable, amuletItemsById){
                                                                 var partyMember = activeRPGEvents[rpgEvent].members[member];
                                                                 // if the user is the last user needed to be ready, create the RPG event
                                                                 if (!partyMember.bot){
-                                                                    profileDB.updateLastRpgTime(partyMember.id, function(updateLSErr, updateLSres){
-                                                                        if(updateLSErr){
-                                                                            console.log(updateLSErr);
-                                                                        }
-                                                                        else{
-                                                                            console.log(updateLSres)
-                                                                        }
-                                                                    })
+                                                                    if (challengePicked < CHALLENGE_TO_TEST){
+                                                                        profileDB.updateLastRpgTime(partyMember.id, function(updateLSErr, updateLSres){
+                                                                            if(updateLSErr){
+                                                                                console.log(updateLSErr);
+                                                                            }
+                                                                            else{
+                                                                                console.log(updateLSres)
+                                                                            }
+                                                                        })
+                                                                    }
                                                                 }
                                                             }
                                                         }
@@ -6164,6 +6167,9 @@ function recalculateStatBuffs(event){
                     var currentStat = userToProcess[statToAffect] + userToProcess.statBuffs[statToAffect];
                     if (currentStat){
                         userToProcess.statBuffs[statToAffect] = userToProcess.statBuffs[statToAffect] + (Math.floor(statusToProcess.additive));
+                        if (userToProcess.statBuffs[statToAffect] + userToProcess[statToAffect] < 0 ){
+                            userToProcess.statBuffs[statToAffect] = ( userToProcess[statToAffect] * -1 ) // this should = 0
+                        }
                     }
                 }
             }

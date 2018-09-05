@@ -1312,6 +1312,7 @@ module.exports = {
             belongsToMember: true,
             everyNTurns: 2,
             ignoreFocus: true,
+            targetToApplyOn: "random",
             afterNTurns: 2,
             currentTurn: 0,
             dot: {
@@ -1647,8 +1648,8 @@ module.exports = {
             areawidedmg: {
                 areawide: true,
                 name: "consume",
-                dmg: 10,
-                mdPercentage: .25,
+                dmg: 100,
+                mdPercentage: .4,
                 type: "fire"
             }
         },

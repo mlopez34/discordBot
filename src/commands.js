@@ -90,6 +90,7 @@ var EXPERIENCE_GAINS = {
 }
 
 var commandHoursToActivate = {
+    rpg: 2,
     thank: 2,
     sorry: 5,
     cook: 12,
@@ -1282,7 +1283,10 @@ module.exports.profileCommand = function(message){
                     profileData.nextReputation = "glorified"
                 }
                 else if (profileData.reputationStatus.toLowerCase() == "glorified"){
-                    profileData.nextReputation = "glorified"
+                    profileData.nextReputation = "sanctified"
+                }
+                else if (profileData.reputationStatus.toLowerCase() == "sanctified"){
+                    profileData.nextReputation = "sanctified"
                 }
                 profileData.achievementString = achiev.achievementStringBuilder(profileResponse.data.achievements, false);
                 if (profileResponse.data.pickaxe == "basic"){
@@ -1362,7 +1366,10 @@ module.exports.profileCommand = function(message){
                     profileData.nextReputation = "glorified"
                 }
                 else if (profileData.reputationStatus.toLowerCase() == "glorified"){
-                    profileData.nextReputation = "glorified"
+                    profileData.nextReputation = "sanctified"
+                }
+                else if (profileData.reputationStatus.toLowerCase() == "sanctified"){
+                    profileData.nextReputation = "sanctified"
                 }
                 profileData.achievementString = achiev.achievementStringBuilder(profileResponse.data.achievements, false);
                 if (profileResponse.data.pickaxe == "basic"){
