@@ -2558,8 +2558,8 @@ module.exports = {
                         name: "frenzy",
                         emoji: "<:frenzy:479298214453968896>",
                         onTurnEnd: {
-                            attackDmgPlus : 1050,
-                            magicDmgPlus : 1050,
+                            attackDmgPlus : 850,
+                            magicDmgPlus : 850,
                             everyNTurns: 8,
                             currentTurn: 1,
                             startTurn: 5
@@ -2616,8 +2616,8 @@ module.exports = {
                         name: "frenzy",
                         emoji: "<:frenzy:479298214453968896>",
                         onTurnEnd: {
-                            attackDmgPlus : 1050,
-                            magicDmgPlus : 1050,
+                            attackDmgPlus : 750,
+                            magicDmgPlus : 750,
                             everyNTurns: 8,
                             currentTurn: 1,
                             startTurn: 5
@@ -6227,8 +6227,8 @@ module.exports = {
                                 name: "frenzy",
                                 emoji: "<:frenzy:479298214453968896>",
                                 onTurnEnd: {
-                                    attackDmgPlus : 705,
-                                    magicDmgPlus : 705,
+                                    attackDmgPlus : 505,
+                                    magicDmgPlus : 505,
                                     everyNTurns: 6,
                                     startTurn: 8
                                 }
@@ -6275,8 +6275,8 @@ module.exports = {
                                 name: "frenzy",
                                 emoji: "<:frenzy:479298214453968896>",
                                 onTurnEnd: {
-                                    attackDmgPlus : 705,
-                                    magicDmgPlus : 705,
+                                    attackDmgPlus : 505,
+                                    magicDmgPlus : 505,
                                     everyNTurns: 6,
                                     startTurn: 9
                                 }

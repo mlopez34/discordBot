@@ -2206,9 +2206,12 @@ function effectsOnTurnEnd(event){
                                     }
                                     if (validCast){
                                         var abilityPicked = event.enemies[enemy].endOfTurnEvents[index].abilityId
-                                        var untargettable = event.enemies[enemy].endOfTurnEvents[index].status ? event.enemies[enemy].endOfTurnEvents[index].status.untargettable : undefined;
                                         // get the rpgAbility from lib
                                         var rpgAbility = rpgAbilities[abilityPicked] ? JSON.parse(JSON.stringify(rpgAbilities[abilityPicked])) : undefined; 
+                                        var untargettable = event.enemies[enemy].endOfTurnEvents[index].status ? event.enemies[enemy].endOfTurnEvents[index].status.untargettable : undefined;
+                                        if (!untargettable){
+                                            untargettable = event.enemies[enemy].endOfTurnEvents[index].dot ? event.enemies[enemy].endOfTurnEvents[index].dot.untargettable : undefined;
+                                        }
 
                                         var validTarget = false;
                                         var stuckCount = 0
@@ -2236,6 +2239,10 @@ function effectsOnTurnEnd(event){
                                                         if (rpgAbility && rpgAbility.ignoreFocus){
                                                             console.log("ignoring focus for ability")
                                                             // IGNORE FOCUS EFFECT - check if the person being targetted by the ability is being focused by the caster
+                                                            if (rpgAbility.targetToApplyOn == "random"){
+                                                                // ignore anything focus related randomize the target by just going with whatever was used for target
+                                                                break;
+                                                            }
                                                             if ( (targetMember == event.members[member].id) 
                                                                 &&  event.membersInParty[idOfMemberBeingChecked].statuses[statusToCheck].name == "Focus"
                                                                 && event.membersInParty[idOfMemberBeingChecked].statuses[statusToCheck].focusedBy == enemy){
