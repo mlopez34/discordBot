@@ -987,6 +987,38 @@ function calculateIndividualPairExtraTacos(extraTacosChancePairs, extraParams){
     return extraTacos;
 }
 
+module.exports.calculateExtraExperienceGained = function(userItemStats, command, extraParams){
+    // TODO: have the enemy rpg difficulty in extra params so everything is calculated here
+    var extraExperience = 0
+    if (command == "thank"){
+        extraExperience = extraExperience + userItemStats.thankCommandExperienceGain;
+    }
+    else if (command == "sorry"){
+        extraExperience = extraExperience + userItemStats.sorryCommandExperienceGain;
+    }
+    else if (command == "cook"){
+        extraExperience = extraExperience + userItemStats.cookCommandExperienceGain;
+    }
+    else if (command == "prepare"){
+        extraExperience = extraExperience + userItemStats.prepareCommandExperienceGain;
+    }
+    else if (command == "fetch"){
+        extraExperience = extraExperience + userItemStats.fetchCommandExperienceGain;
+    }
+    else if (command == "scavenge"){
+        extraExperience = extraExperience + userItemStats.scavengeCommandExperienceGain;
+    }
+    else if (command == "rpg"){
+        // roll for extra tacos
+        extraExperience = extraExperience + userItemStats.rpgSuccessExtraExperienceGain;
+    }
+    else if (command == "slots"){
+        extraExperience = extraExperience + userItemStats.slotsWinExperienceGain;
+    }
+    return extraExperience
+    
+}
+
 module.exports.calculateExtraTacos = function(userItemStats, command, extraParams){
     // use the command to figure out the extra tacos, calculate the extra tacos gained
     var extraTacos = 0;

@@ -499,7 +499,7 @@ module.exports.thankCommand = function(message){
                                         }
                                         else{
                                             // // console.log(updateResponse);
-                                            var experienceFromItems = wearRes.thankCommandExperienceGain ? wearRes.thankCommandExperienceGain : 0;
+                                            var experienceFromItems = wearStats.calculateExtraExperienceGained(wearRes, "thank", null);
                                             ///// For Artifact or Missions
                                             var dataForMission = {}
                                             missionCheckCommand(message, discordUserId, "thank", mentionedId, dataForMission)
@@ -592,7 +592,7 @@ module.exports.sorryCommand = function(message){
                                             // console.log(createerr); // cant create user RIP
                                         }
                                         else{
-                                            var experienceFromItems = wearRes.sorryCommandExperienceGain ? wearRes.sorryCommandExperienceGain : 0;
+                                            var experienceFromItems = wearStats.calculateExtraExperienceGained(wearRes, "sorry", null);
                                             experience.gainExperience(message, message.author, (EXPERIENCE_GAINS.sorry + experienceFromItems) , sorryResponse);
                                             ///// For Artifact or Missions
                                             var dataForMission = {}
@@ -781,7 +781,7 @@ module.exports.prepareCommand = function (message){
                                             }else{
                                                 message.channel.send(message.author + " You have prepared `" + tacosToPrepare + "` tacos :taco:! `" + soiledToTaco +"` were from soiled crops. The tacos also come with `1` warranty protection");
                                             }
-                                            var experienceFromItems = wearRes.prepareCommandExperienceGain ? wearRes.prepareCommandExperienceGain : 0;
+                                            var experienceFromItems = wearStats.calculateExtraExperienceGained(wearRes, "prepare", null)
                                             experience.gainExperience(message, message.author, (EXPERIENCE_GAINS.prepare + (EXPERIENCE_GAINS.preparePerStand * userTacoStands) + experienceFromItems) , prepareResponse);
                                             stats.statisticsManage(discordUserId, "maxextratacos", soiledToTaco, function(staterr, statSuccess){
                                                 if (staterr){
@@ -1115,7 +1115,7 @@ module.exports.cookCommand = function(message){
                                 data.cookcount = cookRoll
                                 // console.log(data);
                                 achiev.checkForAchievements(discordUserId, data, message);
-                                var experienceFromItems = wearRes.cookCommandExperienceGain ? wearRes.cookCommandExperienceGain : 0;
+                                var experienceFromItems = wearStats.calculateExtraExperienceGained(wearRes, "cook", null);
                                 experience.gainExperience(message, message.author, (EXPERIENCE_GAINS.cook + experienceFromItems), cookResponse);
                             }
                         })
@@ -3033,7 +3033,7 @@ module.exports.scavangeCommand = function (message){
                                     }
                                     else{
                                         // console.log(updateLSres);
-                                        var experienceFromItems = wearRes.scavengeCommandExperienceGain ? wearRes.scavengeCommandExperienceGain : 0;                                        
+                                        var experienceFromItems = wearStats.calculateExtraExperienceGained(wearRes, "scavenge", null);                                     
                                         experience.gainExperience(message, message.author, ((EXPERIENCE_GAINS.scavenge * EXPERIENCE_MULTIPLIER) + experienceFromItems), getUserResponse);
                                     }
                                 })
@@ -3205,7 +3205,7 @@ module.exports.slotsCommand = function(message, tacosBet){
                             // IF SLOTS WIN IS HIGHER THAN 0 ADD TO THE TACOS WON
                             if (tacosWon > 0){
                                 extraTacosFromItems = wearStats.calculateExtraTacos( wearRes, "slots", {userBid: bet } ); // 0 or extra
-                                experienceFromItems = wearRes.slotsWinExperienceGain ? wearRes.slotsWinExperienceGain : 0;
+                                experienceFromItems = wearStats.calculateExtraExperienceGained(wearRes, "slots", null);
                             }
 
                             profileDB.updateUserTacos(discordUserId, tacosWon + extraTacosFromItems, function(updateErr, updateRes){
@@ -4028,7 +4028,7 @@ module.exports.fetchCommand = function(message){
                                         // console.log(err);
                                     }
                                     else{
-                                        var experienceFromItems = wearRes.fetchCommandExperienceGain ? wearRes.fetchCommandExperienceGain : 0;                                                                                
+                                        var experienceFromItems = wearStats.calculateExtraExperienceGained(wearRes, "fetch", null);                                                                             
                                         experience.gainExperience(message, message.author, (( (EXPERIENCE_GAINS.perFetchCd * PETS_AVAILABLE[userPet].fetch) / 10) + experienceFromItems) , fetchResponse);
                                         // user's pet fetched some tacos
                                         if (extraTacosFromItems > 0){

@@ -609,7 +609,8 @@ module.exports.rpgReady = function(message, itemsAvailable, amuletItemsById){
                                             // insert the data to the event info to be able to use it once the team is ready
                                             
                                             // check to see if the items are active and
-                                            var experienceFromItems = wearRes.rpgSuccessExtraExperienceGain ? wearRes.rpgSuccessExtraExperienceGain : 0;
+                                            // var experienceFromItems = wearRes.rpgSuccessExtraExperienceGain ? wearRes.rpgSuccessExtraExperienceGain : 0;
+                                            var experienceFromItems = wearStats.calculateExtraExperienceGained(wearRes, "rpg", null)
                                             var extraTacosFromItems = wearStats.calculateExtraTacos(wearRes, "rpg"); // 0 or extra
                                             
                                             usersInRPGEvents["rpg-" + discordUserId].memberStats = {
