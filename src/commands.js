@@ -776,9 +776,9 @@ module.exports.prepareCommand = function (message){
                                             //// console.log(updateResponse);
                                             if (extraTacosFromItems > 0 && soiledToTaco > 0){
                                                 message.channel.send(message.author + " You have prepared `" + tacosToPrepare + "` tacos :taco:! `" + soiledToTaco +"` were from soiled crops. The tacos also come with `1` warranty protection." + " You received `" + extraTacosFromItems + "` extra tacos!");
-                                            }else if (extraTacosFromItems > 0 && soiledToTaco = 0){
+                                            }else if (extraTacosFromItems > 0 && soiledToTaco == 0){
                                                 message.channel.send(message.author + " You have prepared `" + tacosToPrepare + "` tacos :taco:! The tacos also come with `1` warranty protection." + " You received `" + extraTacosFromItems + "` extra tacos!");
-                                            }else if (extraTacosFromItems = 0 && soiledToTaco > 0){
+                                            }else if (extraTacosFromItems == 0 && soiledToTaco > 0){
                                                 message.channel.send(message.author + " You have prepared `" + tacosToPrepare + "` tacos :taco:! `" + soiledToTaco +"` were from soiled crops. The tacos also come with `1` warranty protection.");
                                             }else{ 
                                                 message.channel.send(message.author + " You have prepared `" + tacosToPrepare + "` tacos :taco:! The tacos also come with `1` warranty protection.");
