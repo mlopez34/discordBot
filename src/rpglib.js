@@ -1312,7 +1312,6 @@ module.exports = {
             belongsToMember: true,
             everyNTurns: 2,
             ignoreFocus: true,
-            targetToApplyOn: "random",
             afterNTurns: 2,
             currentTurn: 0,
             dot: {
@@ -1447,7 +1446,7 @@ module.exports = {
                 hpMultiplier: 4,
                 attackDmg: 240,
                 magicDmg: 250,
-                hpPlus: 800
+                hpPlus: 0
             }
         },
 
@@ -1547,7 +1546,7 @@ module.exports = {
             areawidedmg: {
                 areawide: true,
                 name: "Hurricane",
-                dmg: 1200,
+                dmg: 900,
                 adPercentage: 1,
                 type: "physical"
             }
@@ -1563,7 +1562,7 @@ module.exports = {
             areawidedmg: {
                 areawide: true,
                 name: "engulf",
-                dmg: 1200,
+                dmg: 900,
                 mdPercentage: 1,
                 type: "fire"
             }
@@ -6249,7 +6248,7 @@ module.exports = {
                             "summonSkyElementalDeath",
                             "summonLavaElementalDeath",
                         ],
-                        hp: 40600,
+                        hp: 30600,
                         attackDmg: 1480,
                         magicDmg: 1470,
                         armor: 2500,
@@ -6297,7 +6296,7 @@ module.exports = {
                             "summonSkyElementalDeath",
                             "summonLavaElementalDeath",
                         ],
-                        hp: 40600,
+                        hp: 30600,
                         attackDmg: 1480,
                         magicDmg: 1470,
                         armor: 10750,
