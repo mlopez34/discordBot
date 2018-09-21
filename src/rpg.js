@@ -4130,8 +4130,24 @@ function getDamageToReduceFromArmor( rpgAbility, event, targetStats, damageToRed
             checkGroupArmor = event.enemies
         }
         for (var member in checkGroupArmor){
-            numberOfMembers++;
-            totalArmor = totalArmor + (checkGroupArmor[member].armor + checkGroupArmor[member].statBuffs.armor);
+            if (target == "enemy"){
+                var foundEntomb = false
+                // TODO: check if dead also, why should we check dead enemies armor ??
+                for (var b = checkGroupArmor[member].buffs.length - 1; b >= 0; b--){
+                    if (checkGroupArmor[member].buffs[b].name == "Entomb"){
+                        foundEntomb = true
+                        break;
+                    }
+                }
+                if (!foundEntomb){
+                    numberOfMembers++;
+                    totalArmor = totalArmor + (checkGroupArmor[member].armor + checkGroupArmor[member].statBuffs.armor);    
+                }
+            }
+            else{
+                numberOfMembers++;
+                totalArmor = totalArmor + (checkGroupArmor[member].armor + checkGroupArmor[member].statBuffs.armor);    
+            }
         }
         var averageArmor = totalArmor / numberOfMembers;
         damageToReduce = calculateDamageReduced( averageArmor );
@@ -4158,8 +4174,24 @@ function getDamageToReduceFromSpirit( rpgAbility, event, targetStats, damageToRe
             checkGroupArmor = event.enemies
         }
         for (var member in checkGroupArmor){
-            numberOfMembers++;
-            totalSpirit = totalSpirit + (checkGroupArmor[member].spirit + checkGroupArmor[member].statBuffs.spirit);
+            if (target == "enemy"){
+                var foundEntomb = false
+                // TODO: check if dead also, why should we check dead enemies armor ??
+                for (var b = checkGroupArmor[member].buffs.length - 1; b >= 0; b--){
+                    if (checkGroupArmor[member].buffs[b].name == "Entomb"){
+                        foundEntomb = true
+                        break;
+                    }
+                }
+                if (!foundEntomb){
+                    numberOfMembers++;
+                    totalSpirit = totalSpirit + (checkGroupArmor[member].spirit + checkGroupArmor[member].statBuffs.spirit);    
+                }
+            }
+            else{
+                numberOfMembers++;
+                totalSpirit = totalSpirit + (checkGroupArmor[member].spirit + checkGroupArmor[member].statBuffs.spirit);    
+            }
         }
         var averageSpirit = totalSpirit / numberOfMembers;
         damageToReduce = calculateDamageReduced( averageSpirit );

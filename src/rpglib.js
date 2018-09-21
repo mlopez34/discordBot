@@ -1648,7 +1648,7 @@ module.exports = {
                 areawide: true,
                 name: "consume",
                 dmg: 100,
-                mdPercentage: .4,
+                mdPercentage: .3,
                 type: "fire"
             }
         },
@@ -2720,14 +2720,14 @@ module.exports = {
                 hpPerPartyMember: 0,
                 adPerPartyMember: 0,
                 mdPerPartyMember: 0,
-                hp: 4300,
+                hp: 3250,
                 effectsOnDeath: [
                     "explode"
                 ],
                 attackDmg: 630,
                 magicDmg: 1060,
-                armor: 1300,
-                spirit: 1300,
+                armor: 1100,
+                spirit: 1100,
                 difficulty: "summoned",
                 element: "normal"
             },
@@ -2807,8 +2807,8 @@ module.exports = {
                     
                 ],
                 hp: 50000,
-                attackDmg: 2200,
-                magicDmg: 1970,
+                attackDmg: 202200,
+                magicDmg: 201970,
                 armor: 2100,
                 spirit: 2100,
                 hpPerPartyMember: 0,
@@ -2859,8 +2859,8 @@ module.exports = {
                     // clear apparitions
                 ],
                 hp: 50000,
-                attackDmg: 1700,
-                magicDmg: 2670,
+                attackDmg: 201700,
+                magicDmg: 202670,
                 armor: 1800,
                 spirit: 2100,
                 hpPerPartyMember: 0,
@@ -6359,8 +6359,8 @@ module.exports = {
                         effectsOnDeath: [
                         ],
                         hp: 54600,
-                        attackDmg: 2180,
-                        magicDmg: 2170,
+                        attackDmg: 21080,
+                        magicDmg: 20170,
                         armor: 2100,
                         spirit: 2100,
                         hpPerPartyMember: 0,
