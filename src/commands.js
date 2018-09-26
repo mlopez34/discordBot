@@ -4757,7 +4757,10 @@ module.exports.combineCommand = function(message, args){
                                     && itemsMapById[ItemInQuestion.itemid]
                                     && itemsMapById[ItemInQuestion.itemid].itemshortname === myItemShortName ){
                                     var rarityOfItem = itemsMapbyShortName[myItemShortName].itemraritycategory
-                                    if (rarityOfItem == "rare"){
+                                    if (rarityOfItem == "uncommon"){
+                                        itemCount = 5
+                                    }
+                                    else if (rarityOfItem == "rare"){
                                         itemCount = 5
                                     }else if (rarityOfItem == "ancient"){
                                         itemCount = 4
@@ -4772,7 +4775,7 @@ module.exports.combineCommand = function(message, args){
                                         itemCount = 4
                                     }
                                     else if (rarityOfItem == "artifact"){
-                                        itemCount = 1
+                                        itemCount = 4
                                     }
                                 }
                                 // console.log(ItemInQuestion);
