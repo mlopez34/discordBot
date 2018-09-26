@@ -1793,7 +1793,7 @@ function shopBuilder(message, shopData, long){
         .addField('Cost', PASTA_COST + " :taco:", true)
         .addField('Command', config.commandString + "buyPasta", true)
         embed.addBlankField(true)
-        embed.addField('Wearable Items', "Knife/Socks: " + SHOP_ITEM_COST + " :taco: gives chance at additional tacos when thanking\nShorts/Skirt: " + SHOP_ITEM_COST + ":taco: gives chance at additional tacos when sorrying\nT-shirt/Belt: " + SHOP_ITEM_COST + ":taco: gives chance at additional tacos when cooking\ndo `-buyitem details` for more info on these items ", true)
+        embed.addField('Wearable Items', "Knife/Socks: " + SHOP_ITEM_COST + " :taco: gives chance at additional tacos when thanking\nShorts/Skirt: " + SHOP_ITEM_COST + ":taco: gives chance at additional tacos when sorrying\nT-shirt/Belt: " + SHOP_ITEM_COST + ":taco: gives chance at additional tacos when cooking\ndo `-buyitem details` for more info on these items\n****Each of these items can be combined into improved versions (requires 5 of the same item to combine | use command `-combine [itemname]`) ", true)
         .addField('Command', config.commandString + "buyitem [itemname] \n**example**: -buyitem knife", true)
 
         // allow for pet to be purchased
@@ -4757,7 +4757,7 @@ module.exports.combineCommand = function(message, args){
                                     && itemsMapById[ItemInQuestion.itemid]
                                     && itemsMapById[ItemInQuestion.itemid].itemshortname === myItemShortName ){
                                     var rarityOfItem = itemsMapbyShortName[myItemShortName].itemraritycategory
-                                    if (rarityOfItem == "uncommon"){
+                                    if (rarityOfItem == "uncommon+"){
                                         itemCount = 5
                                     }
                                     else if (rarityOfItem == "rare"){
