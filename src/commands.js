@@ -2460,6 +2460,7 @@ function raresEmbedBuilder(message, itemsMap, allItems, long, rarity){
                 || (allItems[key].itemraritycategory == "ancient" && rarity == "ancient")
                 || (allItems[key].itemraritycategory == "ancient+" && rarity == "ancient")
                 || (allItems[key].itemraritycategory == "ancient++" && rarity == "ancient")
+                || (allItems[key].itemraritycategory == "ancient+++" && rarity == "ancient")
                 || (allItems[key].itemraritycategory == "artifact" && rarity == "artifact")
                 || (allItems[key].itemraritycategory == "artifact+" && rarity == "artifact")
                 || (allItems[key].itemraritycategory == "myth" && rarity == "artifact")) ){
@@ -2485,7 +2486,7 @@ function raresEmbedBuilder(message, itemsMap, allItems, long, rarity){
                 else if (allItems[key].itemraritycategory === "ancient+"){
                     emoji = ":large_orange_diamond: "
                 }
-                else if (allItems[key].itemraritycategory === "ancient++"){
+                else if (allItems[key].itemraritycategory === "ancient++" || allItems[key].itemraritycategory === "ancient+++"){
                     emoji = ":star: "
                 }
                 else if (allItems[key].itemraritycategory === "rare++" || allItems[key].itemraritycategory === "rare+++"){
@@ -2523,6 +2524,7 @@ function raresEmbedBuilder(message, itemsMap, allItems, long, rarity){
                     }else if (allItems[key].itemraritycategory == "rare++" 
                         || allItems[key].itemraritycategory == "rare+++" 
                         || allItems[key].itemraritycategory == "ancient++" 
+                        || allItems[key].itemraritycategory == "ancient+++" 
                         || allItems[key].itemraritycategory == "myth" ){
 
                         if (inventoryStringRefined.length > 900){
@@ -4772,6 +4774,9 @@ module.exports.combineCommand = function(message, args){
                                         itemCount = 5
                                     }
                                     else if (rarityOfItem == "ancient+"){
+                                        itemCount = 4
+                                    }
+                                    else if (rarityOfItem == "ancient++"){
                                         itemCount = 4
                                     }
                                     else if (rarityOfItem == "artifact"){
