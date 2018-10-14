@@ -54,6 +54,7 @@ var ARTIFACT_RECIPE_COST = 35000;
 var FLASK_COST = 500;
 var ARTIFACT_RECIPE_ID = 69;
 var TRANSFORMIUM_ID = 155;
+var ETHEREUM_ID = 200;
 var TACO_PARTY_TIME_TO_LIVE = 300000
 var SHOP_ITEM_COST = 125
 
@@ -4927,7 +4928,46 @@ module.exports.combineCommand = function(message, args){
                                     }
                                     
 
-                                }else if (itemsInInventoryCountMap[idOfMyItem] && 
+                                }
+                                else if (rarityOfMyItem && rarityOfMyItem == "ancient++"
+                                    && itemsInInventoryCountMap[idOfMyItem] 
+                                    && itemsInInventoryCountMap[idOfMyItem] >= itemCount){
+                                    // use transformium
+                                    var ethereumId = ETHEREUM_ID
+                                    var transAdded = false;
+                                    if (itemsInInventoryCountMap[ethereumId] >= 1){
+                                        for (var item in inventoryResponse.data){
+                                            var ItemInQuestion = inventoryResponse.data[item]
+                                            if ( itemsMapById[ItemInQuestion.itemid] && itemsMapById[ItemInQuestion.itemid].id === ethereumId && !transAdded){
+                                                itemsBeingedCombined.push(ItemInQuestion);
+                                                transAdded = true;
+                                            }
+                                        }
+                                        var itemToCreate = itemsMapById[combineToId];  // maybe create the item and keep it inactive?
+                                        var itemToCreateById = itemsMapById[combineToId].id;
+                                        var itemToCreateByName = itemsMapById[combineToId].itemname
+                                        // use the transformium
+                                        if (transAdded){
+                                            profileDB.addNewItemToUser(discordUserId, [itemToCreate], function(createErr, createRes){
+                                                if (createErr){
+                                                    // console.log(createErr);
+                                                }
+                                                else{
+                                                    // console.log(createRes);                                        
+                                                    profileDB.bulkUpdateItemStatus(itemsBeingedCombined, "used", function(combineErr, combineRes){
+                                                        if (combineErr){
+                                                            // console.log(combineErr);
+                                                        }else{
+                                                            // console.log(combineRes);
+                                                            combineEmbedBuilder(message, itemToCreateByName, itemToCreate, rarityOfItem);
+                                                        }
+                                                    })
+                                                }
+                                            })        
+                                        }
+                                    }
+                                }
+                                else if (itemsInInventoryCountMap[idOfMyItem] && 
                                     itemsInInventoryCountMap[idOfMyItem] >= itemCount){
                                     // combine all the items into a next level item
                                     var itemToCreate = itemsMapById[combineToId];
