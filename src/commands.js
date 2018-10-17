@@ -304,12 +304,12 @@ module.exports.trickOrTreatCommand = function(message){
                     trickOrTreatMap["tot-" + discordUserId] = {
                         tot: "trick"
                     };
-                    profileDB.updateUserTacosTrickOrTreat(discordUserId, -5, function(updateerr, updateResponse) {
+                    profileDB.updateUserTacosTrickOrTreat(discordUserId, -50, function(updateerr, updateResponse) {
                         if (updateerr){
                             // console.log(updateerr);
                         }
                         else{
-                            message.channel.send("You have been tricked! 👻 Bender took 5 tacos from your candy bag");
+                            message.channel.send("You have been tricked! 👻 Bender took 50 tacos from your candy bag");
                             // update lasttrickortreattime
                             
                         }
@@ -321,12 +321,12 @@ module.exports.trickOrTreatCommand = function(message){
                         tot: "treat"
                     };
                     
-                    profileDB.updateUserTacosTrickOrTreat(discordUserId, 10, function(updateerr, updateResponse) {
+                    profileDB.updateUserTacosTrickOrTreat(discordUserId, 100, function(updateerr, updateResponse) {
                         if (updateerr){
                             // console.log(updateerr);
                         }
                         else{
-                            message.channel.send("You have been treated! 🎃 Bender put 10 tacos in your candy bag");
+                            message.channel.send("You have been treated! 🎃 Bender put 100 tacos in your candy bag");
                             // update lasttrickortreattime
                         }
                     })
