@@ -5412,6 +5412,7 @@ function processAbility(abilityObject, event){
                 }
             }
             // heal the caster for total hp to drain
+            totalHpToDrain = Math.floor( totalHpToDrain / 2 )
             healTarget( event.enemies[abilityCaster], totalHpToDrain)
             if (event.enemies[abilityCaster].hp > event.enemies[abilityCaster].maxhp){
                 event.enemies[abilityCaster].hp = event.enemies[abilityCaster].maxhp

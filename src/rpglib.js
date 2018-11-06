@@ -1498,7 +1498,7 @@ module.exports = {
             afterNTurns: 1,
             currentTurn: 0,
             targetWithName: "Lava Elemental",
-            dmg: 300,
+            dmg: 700,
             mdPercentage: 1
         },
 
@@ -1547,7 +1547,7 @@ module.exports = {
             areawidedmg: {
                 areawide: true,
                 name: "Hurricane",
-                dmg: 900,
+                dmg: 1300,
                 adPercentage: 1,
                 type: "physical"
             }
@@ -1563,7 +1563,7 @@ module.exports = {
             areawidedmg: {
                 areawide: true,
                 name: "engulf",
-                dmg: 900,
+                dmg: 1300,
                 mdPercentage: 1,
                 type: "fire"
             }
@@ -1649,7 +1649,7 @@ module.exports = {
                 areawide: true,
                 name: "consume",
                 dmg: 100,
-                mdPercentage: .3,
+                mdPercentage: .25,
                 type: "fire"
             }
         },
@@ -2726,7 +2726,7 @@ module.exports = {
                     "explode"
                 ],
                 attackDmg: 630,
-                magicDmg: 1060,
+                magicDmg: 660,
                 armor: 1000,
                 spirit: 1000,
                 difficulty: "summoned",
