@@ -2124,12 +2124,12 @@ function repShopBuilder(message, shopData){
         var userRepLevel = REPUTATIONS[shopData.repstatus.toLowerCase()].level;
         if (userRepLevel >= REWARDS["Flask"].repLevel){
             var flaskDescription = "Purchase a Flask! used to create potions for random effects, not tradeable."
-
+            var flaskCostForUser = FLASK_COST + (30 * (shopData.userLevel - 20 ))
             embed.addBlankField(true)
             .addBlankField(false)
             .addField('Flask (Admired Reputation or Better Only)', ":alembic:", true)
             .addField('Description', flaskDescription, true)
-            .addField('Cost', FLASK_COST + " :taco:", true)
+            .addField('Cost', flaskCostForUser + " :taco:", true)
             .addField('Command', config.commandString + "buyflask", true)
         }
     }
@@ -2151,6 +2151,7 @@ module.exports.repShopCommand = function(message){
             var shopData = {};
             var userTacoStands = 0;
             var userTacos = shopResponse.data.tacos;
+            var userLevel = shopResponse.data.level
             shopData.userTacos = userTacos;
             shopData.pickaxe = shopResponse.data.pickaxe;
             if (shopResponse.data.tacostands && shopResponse.data.tacostands > -1){
@@ -2158,6 +2159,7 @@ module.exports.repShopCommand = function(message){
             }
             shopData.repstatus = shopResponse.data.repstatus
             shopData.userTacoCost = userTacoStands;
+            shopData.userLevel = userLevel
             repShopBuilder(message, shopData);
         }
     })
