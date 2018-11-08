@@ -1021,10 +1021,10 @@ module.exports.updateUserSoiledCrops = function(discordId, soiledCrops, currentS
     });
 }
 
-module.exports.buyFlask = function(discordId, currentFlask, cb){
+module.exports.buyFlask = function(discordId, currentFlask, flaskCostForUser, cb){
     var query = ""
     var flask = 1;
-    var flaskCost = 500;
+    var flaskCost = flaskCostForUser;
     if (!currentFlask){
         query = 'update ' + config.profileTable + ' set flasks=$1, tacos=tacos-$3 where discordid=$2'
     }

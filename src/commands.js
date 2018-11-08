@@ -2006,9 +2006,10 @@ module.exports.buyFlaskCommand = function(message){
             var userRepLevel = REPUTATIONS[userReputation.toLowerCase()] ? REPUTATIONS[userReputation.toLowerCase()].level : 1;
             if (userRepLevel >= REWARDS["Flask"].repLevel){
                 // able to shop, spend the tacos and then create the item and store it in the user's inventory
-                if (buyFlaskResponse.data.tacos >= FLASK_COST){
+                var flaskCostForUser = FLASK_COST + (30 * (buyFlaskResponse.data.level - 20 ))
+                if (buyFlaskResponse.data.tacos >= flaskCostForUser){
                     // add a flask to the user's profile
-                    profileDB.buyFlask(discordUserId, currentFlasks, function(flaskErr, flaskRes){
+                    profileDB.buyFlask(discordUserId, currentFlasks, flaskCostForUser, function(flaskErr, flaskRes){
                         if (flaskErr){
                             console.log(flaskErr);
                         }else{
@@ -2903,11 +2904,15 @@ module.exports.scavangeCommand = function (message){
                                     RARE_MAX_ROLL = 9925;
                                     RARE_MIN_ROLL = 9700;
                                     UNCOMMON_MAX_ROLL = 9700;
-                                    COMMON_ITEMS_TO_OBTAIN = 7
+                                    COMMON_ITEMS_TO_OBTAIN = 9
                                     UNCOMMON_ITEMS_TO_OBTAIN = 4
-                                    TACOS_FOUND_MULTIPLIER = 12
-                                    EXPERIENCE_MULTIPLIER = 12
+                                    TACOS_FOUND_MULTIPLIER = 20
+                                    EXPERIENCE_MULTIPLIER = 20
                                     rollsCount++
+                                    var extraExtraRoll = Math.floor(Math.random() * 10000) + 1;
+                                    if (extraExtraRoll > 7500){
+                                        rollsCount++
+                                    }
                                 }
 
                                 var allItems = getItemResponse.data

@@ -5063,7 +5063,7 @@ module.exports = {
             ]
         },
         challenge: {
-            1 :{
+            1: {
                 enemies: [
                     {
                         name: "Angry Mob Member",
@@ -5698,7 +5698,7 @@ module.exports = {
                     },
                 ],
                 points: 681,
-                difficulty: 25
+                difficulty: 11
             },
             6: {
                 // 4 energy crystals
@@ -5773,13 +5773,13 @@ module.exports = {
                     }
                 ],
                 points: 929,
-                difficulty: 41
+                difficulty: 25
             },
             7: {
                 timed: true,
                 timedPerTurn: 180000,
                 points: 1900,
-                difficulty: 83,
+                difficulty: 46,
                 enemies: [
                     {
                         name: "The Gatekeeper",
@@ -5895,7 +5895,7 @@ module.exports = {
                 timed: true,
                 timedPerTurn: 180000,
                 points: 4600,
-                difficulty: 175,
+                difficulty: 79,
                 enemies: [
                     {
                         name: "Archvampire",
@@ -6043,7 +6043,7 @@ module.exports = {
                 timed: true,
                 timedPerTurn: 180000,
                 points: 22901,
-                difficulty: 220,
+                difficulty: 110,
                 enemies: [
                     {
                         name: "Corrupted Overmind",
@@ -6210,7 +6210,7 @@ module.exports = {
                 timed: true,
                 timedPerTurn: 180000,
                 points: 49901,
-                difficulty: 290,
+                difficulty: 141,
                 enemies: [
                     {
                         name: "Asteroid Golem",
@@ -6323,7 +6323,7 @@ module.exports = {
                 timed: true,
                 timedPerTurn: 180000,
                 points: 67901,
-                difficulty: 334,
+                difficulty: 186,
                 enemies: [
                     {
                         // deals moderate physical
