@@ -1454,9 +1454,9 @@ module.exports = {
         anger: {
             name: "Anger",
             abilityId: "anger",
-            adPercentage: 1,
+            mdPercentage: 1,
             dmg: 100,
-            type: "physical",
+            type: "fire",
             special: "selfdamage",
             selfdamage: 15000
         },
