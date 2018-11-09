@@ -2176,7 +2176,57 @@ function effectsOnTurnEnd(event){
                                     var rpgAbility =  JSON.parse(JSON.stringify ( rpgAbilities[ "rampage" ].status ));
                                     rpgAbility.focusedBy = enemy;
                                     rpgAbility.expireOnTurn = currentTurn + rpgAbility.turnsToExpire
-        
+                                    
+                                    // must pick a random target but use ignore
+                                    var validTarget = false;
+                                    var stuckCount = 0
+                                    var target = 0;
+
+                                    while(!validTarget && stuckCount < 100){
+                                        var targetRoll = Math.floor(Math.random() * event.members.length);
+                                        var targetMember = event.members[targetRoll].id;
+                                        var targetFocusedMember = false;
+                                        if (stuckCount < 5){
+                                            for (var member in event.members){
+                                                var idOfMemberBeingChecked = "rpg-" + event.members[member].id;
+                                                for (var statusToCheck in event.membersInParty[idOfMemberBeingChecked].statuses){
+                                                    if (rpgAbility && rpgAbility.ignoreFocus){
+                                                        console.log("ignoring focus for ability")
+                                                        // IGNORE FOCUS EFFECT - check if the person being targetted by the ability is being focused by the caster
+                                                        if (rpgAbility.targetToApplyOn == "random"){
+                                                            // ignore anything focus related randomize the target by just going with whatever was used for target
+                                                            break;
+                                                        }
+                                                        if ( (targetMember == event.members[member].id) 
+                                                            &&  event.membersInParty[idOfMemberBeingChecked].statuses[statusToCheck].name == "Focus"
+                                                            && event.membersInParty[idOfMemberBeingChecked].statuses[statusToCheck].focusedBy == enemy){
+                                                                targetFocusedMember = true;
+                                                            }
+                                                    }else{
+                                                        // check if someone has focus on them if they do then the target should be the focused person 
+                                                        if ( event.membersInParty[idOfMemberBeingChecked].statuses[statusToCheck].name == "Focus"
+                                                            && event.membersInParty[idOfMemberBeingChecked].statuses[statusToCheck].focusedBy == enemy){
+                                                            //target roll should be 
+                                                            targetMember = event.members[member].id;
+                                                            break;
+                                                        }
+                                                    }
+                                                    
+                                                }
+                                            }
+                                        }
+                                        
+                                        if (event.membersInParty["rpg-"+targetMember].statuses.indexOf("dead") == -1){
+                                            // valid target
+                                            if (!targetFocusedMember){
+                                                target = "rpg-"+targetMember;
+                                                validTarget = true;
+                                                console.log("stuck count" + stuckCount)
+                                            }
+                                        }
+                                        stuckCount++;
+                                    }
+
                                     if (target == 0 ){
                                         // no valid targets left, everyone is dead TODO: figure this out later
                                     }else{
@@ -2417,6 +2467,10 @@ function effectsOnTurnEnd(event){
                                     }
                                     if (enemyFound.abilityOrder){
                                         enemySummoned.abilityOrder = enemyFound.abilityOrder
+                                        // align the ability order to the turn the enemy was summoned
+                                        for (var c = 0; c < currentTurn; c++){
+                                            enemySummoned.abilityOrder.unshift(enemySummoned.abilityOrder.pop())
+                                        }
                                     }
                                     for( var ability in enemySummoned.abilities){
                                         var abilityName = enemySummoned.abilities[ability]
@@ -6456,7 +6510,7 @@ function enemiesUseAbilities(event){
             var abilityPicked;
             var abilityRoll;
             if (event.enemies[enemy].abilityOrder){
-                var indexToPickInOrder = (event.turn -1) % event.enemies[enemy].abilityOrder.length;
+                var indexToPickInOrder = (event.turn - 1) % event.enemies[enemy].abilityOrder.length;
                 abilityRoll = event.enemies[enemy].abilityOrder[indexToPickInOrder];
                 ///// abilityRoll is an array of abilities to chose at random
                 if (Array.isArray(abilityRoll)){
@@ -6501,6 +6555,7 @@ function enemiesUseAbilities(event){
                     var targetRoll = Math.floor(Math.random() * event.members.length);
                     var targetMember = event.members[targetRoll].id;
                     if (stuckCount < 5){
+                        var rampaging = false
                         for (var member in event.members){
                             // 
                             var idOfMemberBeingChecked = "rpg-" + event.members[member].id;
@@ -6511,22 +6566,23 @@ function enemiesUseAbilities(event){
                                     && event.membersInParty[idOfMemberBeingChecked].statuses[statusToCheck].focusedBy == enemy){
                                     //target roll should be 
                                     targetMember = event.members[member].id;
+                                    rampaging = true;
                                     break;
                                 }
                             }
                         }
-
-                        for (var member in event.members){
-                            // 
-                            var idOfMemberBeingChecked = "rpg-" + event.members[member].id;
-                            // then check if someone has focus
-                            for (var statusToCheck in event.membersInParty[idOfMemberBeingChecked].statuses){
-                                // check if someone has focus on them if they do then the target should be the focused person 
-                                if ( event.membersInParty[idOfMemberBeingChecked].statuses[statusToCheck].name == "Focus"
-                                    && event.membersInParty[idOfMemberBeingChecked].statuses[statusToCheck].focusedBy == enemy){
-                                    //target roll should be 
-                                    targetMember = event.members[member].id;
-                                    break;
+                        if (!rampaging){
+                            for (var member in event.members){
+                                var idOfMemberBeingChecked = "rpg-" + event.members[member].id;
+                                // then check if someone has focus
+                                for (var statusToCheck in event.membersInParty[idOfMemberBeingChecked].statuses){
+                                    // check if someone has focus on them if they do then the target should be the focused person 
+                                    if ( event.membersInParty[idOfMemberBeingChecked].statuses[statusToCheck].name == "Focus"
+                                        && event.membersInParty[idOfMemberBeingChecked].statuses[statusToCheck].focusedBy == enemy){
+                                        //target roll should be 
+                                        targetMember = event.members[member].id;
+                                        break;
+                                    }
                                 }
                             }
                         }

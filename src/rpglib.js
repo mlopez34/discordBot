@@ -1466,6 +1466,7 @@ module.exports = {
             name: "Rampage",
             abilityId: "rampage",
             belongsToMember: true,
+            processAbility: true,
             ignoreFocus: true,
             ignoreBandaid: true,
             everyNTurns: 7,
@@ -1473,7 +1474,9 @@ module.exports = {
             currentTurn: 0,
             status: {
                 focusedBy: "",
+                abilityId: "rampage",
                 status: true,
+                ignoreFocus: true,
                 ignoreBandaid: true,
                 name: "Rampage",
                 turnsToExpire: 4,
