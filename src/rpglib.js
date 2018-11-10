@@ -2686,7 +2686,7 @@ module.exports = {
                     }
                 ],
                 abilityOrder: [
-                    1, 0, 2, 0, 0, 0, 2, 3
+                    1, 0, 2, 0, 0, 2, 0, 3
                 ],
                 endOfTurnEvents : [
                     "focus",
