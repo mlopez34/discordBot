@@ -262,7 +262,7 @@ module.exports = {
                 type:"physical",
                 dmg: 75,
                 adPercentage: 1.15,
-                emoji: "<:poke:479296559121432576>",
+                emoji: "📌",
                 dmgOnDotApply: false,
                 turnsToExpire: 4,
                 dmgOnDotExpire: false,
@@ -279,7 +279,7 @@ module.exports = {
                 type:"shadow",
                 dmg: 75,
                 mdPercentage: 1.15,
-                emoji: "<:curse:479296558794407936>",
+                emoji: "🌑",
                 dmgOnDotApply: false,
                 turnsToExpire: 4,
                 dmgOnDotExpire: false,
@@ -371,7 +371,7 @@ module.exports = {
                 dmg: 20,
                 mdPercentage: .9,
                 type: "fire",
-                emoji: "<:burning:479296552230191113>",
+                emoji: "🔥",
                 damageOnDotApply: false,
                 turnsToExpire: 5,
                 damageOnDotExpire: false,
@@ -389,7 +389,7 @@ module.exports = {
                 name: "Poison",
                 dmg: 20,
                 mdPercentage: .8,
-                emoji : "<:foodpoisoning:479296558672773120>",
+                emoji : "🤢",
                 type: "poison",
                 damageOnDotApply: false,
                 turnsToExpire: 3,
@@ -427,7 +427,7 @@ module.exports = {
                 name: "Uppercut",
                 dmg: 20,
                 adPercentage: .8,
-                emoji : "<:uppercut:479296568034590730>",
+                emoji : "🥊",
                 type: "physical",
                 damageOnDotApply: false,
                 turnsToExpire: 3,
@@ -1679,7 +1679,7 @@ module.exports = {
                 dmg: 1000,
                 adPercentage: 0.2,
                 dmgIncreasePerTick: 400,
-                emoji: "<:burst:479349927764426782>",
+                emoji: "🎇",
                 dmgOnDotApply: false,
                 turnsToExpire: 12,
                 dmgOnDotExpire: false,
@@ -2686,7 +2686,7 @@ module.exports = {
                     }
                 ],
                 abilityOrder: [
-                    0, 1, 2, 0, 0, 0, 2, 3
+                    1, 0, 2, 0, 0, 0, 2, 3
                 ],
                 endOfTurnEvents : [
                     "focus",
