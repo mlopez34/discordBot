@@ -9,7 +9,7 @@ var achiev = require("./achievements")
 var moment = require("moment");
 var _ = require("lodash");
 
-var RPG_COOLDOWN_HOURS = 2
+var RPG_COOLDOWN_HOURS = 0
 var activeRPGEvents = {};
 var activeRPGItemIds = {};
 var usersInRPGEvents = {};
@@ -27,7 +27,7 @@ module.exports.rpgInitialize = function(message, special){
     team.push(message.author);
 
     users.forEach(function(user){
-        if (team.length < TEAM_MAX_LENGTH && discordUserId != user.id){
+        if (team.length < TEAM_MAX_LENGTH ){//&& discordUserId != user.id){
             team.push(user);
         }
     })
@@ -716,8 +716,8 @@ module.exports.rpgReady = function(message, itemsAvailable, amuletItemsById){
                                                                 id: partyMember.id,
                                                                 name: partyMember.username,
                                                                 username: partyMember.username,
-                                                                hp: 250 + (27 *  partyMemberStats.level ) + partyMemberHpPlus,
-                                                                attackDmg: 10 + (9 * partyMemberStats.level) + partyMemberAttackDmgPlus,
+                                                                hp: 250000 + (27 *  partyMemberStats.level ) + partyMemberHpPlus,
+                                                                attackDmg: 10000 + (9 * partyMemberStats.level) + partyMemberAttackDmgPlus,
                                                                 magicDmg:  10 + (9 * partyMemberStats.level) + partyMemberMagicDmgPlus,
                                                                 armor: 5 + (partyMemberStats.level * partyMemberStats.level) + partyMemberArmorPlus,
                                                                 spirit: 5 + (partyMemberStats.level * partyMemberStats.level) + partyMemberSpiritPlus,

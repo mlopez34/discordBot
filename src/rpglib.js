@@ -2316,6 +2316,7 @@ module.exports = {
             onDeathEffect: true,
             areawide: true,
             processAbility: true,
+            targetToApplyOn: "random",
             name:"Elemental Barrier",
             abilityId: "elementalBarrier",
             buff: {
@@ -2337,6 +2338,7 @@ module.exports = {
             onDeathEffect: true,
             processAbility: true,
             areawide: true,
+            targetToApplyOn: "random",
             name:"Physical Barrier",
             abilityId: "physicalBarrier",
             buff: {
