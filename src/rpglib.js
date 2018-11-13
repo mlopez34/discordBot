@@ -2356,13 +2356,15 @@ module.exports = {
             }
         },
         pillarAOEmagic: {
-            everyNTurns: 1,
             hppercentage: 0.50,
             belongsToMember: true,
+            dmgaura: true,
             name: "Pillar Radiation",
             abilityId: "pillarAOEmagic",
             areawidedmg: {
-                areawide: true,
+                endOfTurnAura: true,
+                dmgPerTurn: 22,
+                hitsEveryNTurn: 1,
                 name: "Pillar Radiation",
                 dmg: 680,
                 mdPercentage: 0.1,
@@ -2371,14 +2373,16 @@ module.exports = {
         },
 
         pillarAOE: {
-            everyNTurns: 1,
             belongsToMember: true,
             hppercentage: 0.50,
+            dmgaura: true,
             name: "Pillar Radiation",
             abilityId: "pillarAOE",
             areawidedmg: {
-                areawide: true,
+                endOfTurnAura: true,
+                dmgPerTurn: 22,
                 name: "Pillar Radiation",
+                hitsEveryNTurn: 1,
                 dmg: 680,
                 adPercentage: 0.1,
                 type: "physical"
@@ -6765,8 +6769,8 @@ module.exports = {
                             "transferDartagnanAbilities",
                         ],
                         hp: 54600,
-                        attackDmg: 4780,
-                        magicDmg: 4770,
+                        attackDmg: 4580,
+                        magicDmg: 4570,
                         armor: 2100,
                         spirit: 2100,
                         hpPerPartyMember: 0,

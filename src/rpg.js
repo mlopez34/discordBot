@@ -9,7 +9,7 @@ var achiev = require("./achievements")
 var moment = require("moment");
 var _ = require("lodash");
 
-var RPG_COOLDOWN_HOURS = 0
+var RPG_COOLDOWN_HOURS = 2
 var activeRPGEvents = {};
 var activeRPGItemIds = {};
 var usersInRPGEvents = {};
@@ -27,7 +27,7 @@ module.exports.rpgInitialize = function(message, special){
     team.push(message.author);
 
     users.forEach(function(user){
-        if (team.length < TEAM_MAX_LENGTH ){//&& discordUserId != user.id){
+        if (team.length < TEAM_MAX_LENGTH && discordUserId != user.id){
             team.push(user);
         }
     })
@@ -716,8 +716,8 @@ module.exports.rpgReady = function(message, itemsAvailable, amuletItemsById){
                                                                 id: partyMember.id,
                                                                 name: partyMember.username,
                                                                 username: partyMember.username,
-                                                                hp: 250000 + (27 *  partyMemberStats.level ) + partyMemberHpPlus,
-                                                                attackDmg: 10000 + (9 * partyMemberStats.level) + partyMemberAttackDmgPlus,
+                                                                hp: 250 + (27 *  partyMemberStats.level ) + partyMemberHpPlus,
+                                                                attackDmg: 10 + (9 * partyMemberStats.level) + partyMemberAttackDmgPlus,
                                                                 magicDmg:  10 + (9 * partyMemberStats.level) + partyMemberMagicDmgPlus,
                                                                 armor: 5 + (partyMemberStats.level * partyMemberStats.level) + partyMemberArmorPlus,
                                                                 spirit: 5 + (partyMemberStats.level * partyMemberStats.level) + partyMemberSpiritPlus,
@@ -2708,6 +2708,43 @@ function effectsOnTurnEnd(event){
                                         }
                                         if (damageDrained > 0){
                                             endOfTurnString = endOfTurnString + event.enemies[enemy].name + " was healed for " + damageDrained + " from " + nameOfEndOfTurnAbility + "\n"
+                                        }
+                                    }
+                                }else{
+                                    var ability = event.enemies[enemy].endOfTurnEvents[index].abilityId;
+                                    var nameOfEndOfTurnAbility = event.enemies[enemy].endOfTurnEvents[index].name;
+                                    // check that the event should be done this turn
+                                    var rpgAbility = rpgAbilities[ability] ? JSON.parse(JSON.stringify(rpgAbilities[ability])) : undefined;                
+                                    var damageToDeal = 1;
+                                    
+                                    var abilityObject = {
+                                        user: 0, // aura
+                                        ability: ability
+                                    }
+                                    var abilityCaster = abilityObject.user;
+                                    var rpgAbility = rpgAbilities[ability] ? JSON.parse(JSON.stringify(rpgAbilities[ability])) : undefined;
+                                    if (rpgAbility && rpgAbility.areawidedmg && rpgAbility.areawidedmg.dmgPerTurn){
+                                        if (rpgAbility.rpgAbilityStartTurn){
+                                            rpgAbility.areawidedmg.dmg = rpgAbility.areawidedmg.dmg + (rpgAbility.areawidedmg.dmgPerTurn * (event.turn - rpgAbilityStartTurn))
+                                        }else{
+                                            rpgAbility.areawidedmg.dmg = rpgAbility.areawidedmg.dmg + rpgAbility.areawidedmg.dmgPerTurn * event.turn
+                                        }
+                                    }
+                                    if (rpgAbility && rpgAbility.areawidedmg && (event.turn % rpgAbility.areawidedmg.hitsEveryNTurn  == 0)){
+                                        // deal the damage to all the users
+                                        damageToDeal = calculateDamageDealt(event, abilityCaster, abilityObject.target, rpgAbility.areawidedmg)
+                                        endOfTurnString = endOfTurnString + "The group suffered " + damageToDeal + " damage from " + nameOfEndOfTurnAbility +"\n"
+                                        for (var targetToDealDmg in event.membersInParty){
+                                            var targetToDealDmgName = event.membersInParty[targetToDealDmg].name
+                                            if (event.membersInParty[targetToDealDmg].statuses.indexOf("dead") == -1
+                                                && !event.membersInParty[targetToDealDmg].immuneToAoe){
+                                                // event.membersInParty[targetToDealDmg].hp = event.membersInParty[targetToDealDmg].hp - damageToDeal;
+                                                var abType = rpgAbility.areawidedmg.type
+                                                damageToDealToPlayer = dealDamageTo(event.membersInParty[targetToDealDmg], damageToDeal, event, abType)
+                                                if (checkHasDied(event.membersInParty[targetToDealDmg])){
+                                                    endOfTurnString = endOfTurnString + hasDied(event, event.membersInParty[targetToDealDmg]);
+                                                }
+                                            }
                                         }
                                     }
                                 }
