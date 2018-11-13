@@ -2165,20 +2165,227 @@ module.exports = {
             }
         },
 
+        transferDartagnanAbilities: {
+            abilityId: "transferDartagnanAbilities",
+            belongsToMember: true,
+            name: "transfer abilities",
+            abilitiesToTransfer: [
+                "hammerdownProtocol",
+                "hammerdownPrepare",
+                "elementalOrder",
+                "elementalOrderPrepare"
+            ],
+            transferTo: [
+                "Athos",
+                "Porthos",
+                "Aramis"
+            ]
+        },
+        transferAthosAbilities: {
+            abilityId: "transferAthosAbilities",
+            belongsToMember: true,
+            name: "transfer abilities",
+            abilitiesToTransfer: [
+                "shrink"
+            ],
+            transferTo: [
+                "Porthos",
+                "Aramis"
+            ]
+        },
+        transferPortosAbilities: {
+            abilityId: "transferPortosAbilities",
+            belongsToMember: true,
+            name: "transfer abilities",
+            abilitiesToTransfer: [
+                "summonApparition",
+            ],
+            transferTo: [
+                "Aramis"
+            ]
+        },
+
         // deal 25% of current health
         overpower: {
             belongsToMember: true,
             name: "Overpower",
             abilityId: "overpower",
             dmgaura: true,
-            currentHealthPercentageDamage: 0.25,
+            hppercentage: .90,
+            currentHealthPercentageDamage: 0.20,
             everyNTurns: 1,
-            hppercentage: 0.25,
+            currentTurn: 0,
+            afterNTurns: 1,
             type: "physical"
         },
 
-        // summon 4 elemental pillars at the start of the fight
-        // when they reach 50% they begin to radiate aoe damage, when dead they give buff to stop elemental order
+        // summon 4 elemental pillars at the start of the fight turn 2
+        // same as summons of 4 on challenge 6
+        // DONE radiate aoe at 50% - aoe is 250 dmg
+        // check if all are dead every end of turn, if they are, revive them all
+        // DONE 2 are physical, 2 are magical
+
+        // on death reduce all damage taken by 50% from either physical or magical
+        // multiplicative
+
+        // DONE hammerdown protocol and elemental order - phys / magical
+        // DONE deals 1700 physical or 1700 magical
+
+        summonPillars: {
+            name: "summonPillars",
+            belongsToMember: true,
+            oneTimeCast: true,
+            everyNTurns: 1000,
+            afterNTurns: 1,
+            currentTurn: 1,
+            summon: {
+                enemies: [
+                    "planchet",
+                    "grimaud",
+                    "mousqueton",
+                    "bazin"
+                ]
+            }
+        },
+        // revive the pillars whenever they are all dead
+        pillarRevive: {
+            belongsToEvent: true,
+            everyNTurns: 30,
+            afterNTurns: 30,
+            currentTurn: 0,
+            name: "Ressurection",
+            abilityId: "pillarRevive",
+            reviveCheck: [
+                "planchet",
+                "grimaud",
+                "mousqueton",
+                "bazin"
+            ]
+        },
+
+        hammerdownProtocol: {
+            belongsToMember: true,
+            name: "Hammerdown Protocol",
+            abilityId: "hammerdownProtocol",
+            everyNTurns: 14,
+            afterNTurns: 7,
+            currentTurn: 0,
+            areawidedmg: {
+                areawide: true,
+                name: "Hammerdown Protocol",
+                dmg: 5500,
+                adPercentage: 0.05,
+                type: "physical"
+            }
+        },
+        hammerdownPrepare: {
+            abilityId: "hammerdownPrepare",
+            belongsToMember: true,
+            everyNTurns: 14,
+            afterNTurns: 5,
+            currentTurn: 0,
+            eotMessage: "The enemy prepares for a hammerdown protocol"
+        },
+
+        elementalOrder: {
+            belongsToMember: true,
+            name: "Elemental Order",
+            abilityId: "elementalOrder",
+            everyNTurns: 14,
+            afterNTurns: 14,
+            currentTurn: 0,
+            areawidedmg: {
+                areawide: true,
+                name: "Elemental Order",
+                dmg: 5500,
+                mdPercentage: 0.05,
+                type: "lightning"
+            }
+        },
+
+        elementalOrderPrepare: {
+            abilityId: "elementalOrderPrepare",
+            belongsToMember: true,
+            everyNTurns: 14,
+            afterNTurns: 12,
+            currentTurn: 0,
+            eotMessage: "The enemy prepares for a an elemental order"
+        },
+
+        elementalBarrier: {
+            onDeathEffect: true,
+            areawide: true,
+            processAbility: true,
+            name:"Elemental Barrier",
+            abilityId: "elementalBarrier",
+            buff: {
+                buff: true,
+                areawide: true,
+                ignoreUnique: true,
+                buffPartyMembers: true,
+                name: "Elemental Barrier",
+                abilityId: "elementalBarrier",
+                emoji: "🔶",
+                additionalDescription: " is reducing magical damage taken by 50%",
+                affectsGlobal: ["magicDamageTakenPercentage"],
+                turnsToExpire: 2,
+                multiplier: 0.5
+            }
+        },
+
+        physicalBarrier: {
+            onDeathEffect: true,
+            processAbility: true,
+            areawide: true,
+            name:"Physical Barrier",
+            abilityId: "physicalBarrier",
+            buff: {
+                buff: true,
+                name: "Physical Barrier",
+                areawide: true,
+                ignoreUnique: true,
+                buffPartyMembers: true,
+                abilityId: "physicalBarrier",
+                emoji: "🔷",
+                additionalDescription: " is reducing magical damage taken by 50%",
+                affectsGlobal: ["physicalDamageTakenPercentage"],
+                turnsToExpire: 2,
+                multiplier: 0.5
+            }
+        },
+        pillarAOEmagic: {
+            everyNTurns: 1,
+            hppercentage: 0.50,
+            belongsToMember: true,
+            name: "Pillar Radiation",
+            abilityId: "pillarAOEmagic",
+            areawidedmg: {
+                areawide: true,
+                name: "Pillar Radiation",
+                dmg: 680,
+                mdPercentage: 0.1,
+                type: "fire"
+            }
+        },
+
+        pillarAOE: {
+            everyNTurns: 1,
+            belongsToMember: true,
+            hppercentage: 0.50,
+            name: "Pillar Radiation",
+            abilityId: "pillarAOE",
+            areawidedmg: {
+                areawide: true,
+                name: "Pillar Radiation",
+                dmg: 680,
+                adPercentage: 0.1,
+                type: "physical"
+            }
+        },
+
+        // TODO: transfer the elemental orders and hammerdown protocol to next enemy
+
+
         // summon 4 more every so often
         shackle: {
             // ignore unique
@@ -2193,7 +2400,7 @@ module.exports = {
                 name: "Shackle",
                 emoji: "<:break:479347734722379777>",
                 ignoreUnique: true,
-                turnsToExpire: 65,
+                turnsToExpire: 25,
                 affects: ["armor"],
                 additive: -800
             }
@@ -2209,17 +2416,19 @@ module.exports = {
             ignoreFocus: true,
             afterNTurns: 5,
             currentTurn: 0,
-            dot: {
+            status: {
+                status: true,
+                abilityId: "arrowVolley",
                 name: "Arrow Volley",
                 type:"physical",
                 dmg: 100,
                 untargettable: true,
                 adPercentage: 1,
-                emoji: "<:hex:479301622732816403>", ///
+                emoji: "🏹",
                 dmgOnDotApply: false,
                 turnsToExpire: 1,
-                dmgOnDotExpire: true,
-                adPercentageOnRemove: 1,
+                dmgOnStatusExpire: true,
+                adPercentageOnRemove: .9,
                 dmgOnExpire: 600
             }
         },
@@ -2227,13 +2436,20 @@ module.exports = {
         shrink : {
             name : "Shrink",
             abilityId: "shrink",
+            processAbility: true,
+            belongsToMember: true,
+            everyNTurns: 6,
+            ignoreFocus: true,
+            afterNTurns: 5,
+            currentTurn: 0,
             description: "Reduce all damage done by 50% for 3 turns 8 turn cooldown",
             status: {
                 status: true,
-                name: "Shell",
-                emoji : "<:shell:479293276462252042>", //
+                ignoreBandaid: true,
+                name: "Shrink",
+                emoji : "👾", 
                 affectsGlobal: ["damageDealtPercentage", "healingDonePercentage"],
-                turnsToExpire: 2,
+                turnsToExpire: 3,
                 multiplier: 0.5
             }
         },
@@ -2247,11 +2463,49 @@ module.exports = {
             currentTurn: 0,
             summon: {
                 enemy: "apparition",
-                attackDmg: 500,
-                magicDmg: 500,
+                attackDmg: 200,
+                magicDmg: 200,
                 hpPlus: 1000
             }
         },
+
+        glare: {
+            name: "Glare",
+            abilityId: "glare",
+            belongsToMember: true,
+            processAbility: true,
+            ignoreFocus: true,
+            ignoreUnique: true, 
+            ignoreBandaid: true,
+            everyNTurns: 50,
+            afterNTurns: 1,
+            currentTurn: 1,
+            status: {
+                focusedBy: "",
+                abilityId: "glare",
+                status: true,
+                ignoreUnique: true, 
+                ignoreFocus: true,
+                ignoreBandaid: true,
+                name: "Glare",
+                turnsToExpire: 50,
+                emoji: "<:rampage:479348722782830603>"              
+            }
+        },
+
+        glaring: {
+            name: "Glaring",
+            abilityId: "glaring",
+            buff: {
+                name: "Glaring",
+                abilityId: "glaring",
+                emoji : "🐸",
+                turnsToExpire: 50,
+                buff: true,
+                onlyTargettableBy: []
+            }
+        },
+        
         // shield explodes for 50k upon taking direct damage
         shadowShield: {
             // ignore unique
@@ -2262,13 +2516,29 @@ module.exports = {
             everyNTurns: 7,
             afterNTurns: 7,
             currentTurn: 0,
+            targetWithName: "Porthos",
             status: {
                 name: "Shadow Shield",
-                emoji: "<:break:479347734722379777>",
+                emoji: "❌",
+                targetWithName: "Porthos",
                 ignoreUnique: true,
+                onDamageTakenCastAbility: "shadowExplosion",
                 turnsToExpire: 65
             }
         },
+        shadowExplosion: {
+            belongsToMember: true,
+            name: "Shadow Explosion",
+            abilityId: "shadowExplosion",
+            areawidedmg: {
+                areawide: true,
+                name: "Shadow Explosion",
+                dmg: 2550,
+                mdPercentage: .1,
+                type: "shadow"
+            }
+        },
+
         // gain buff that deals damage to everyone else based on damage dealt to target
         maniac: {
             // ignore unique
@@ -2316,6 +2586,27 @@ module.exports = {
                 attackDmg: 500,
                 magicDmg: 500,
                 hpPlus: 1000
+            }
+        },
+
+        enable: {
+            name: "Enable",
+            abilityId: "enable",
+            processAbility: true,
+            belongsToMember: true,
+            everyNTurns: 3,
+            targetWithName: "Aramis",
+            afterNTurns: 3,
+            currentTurn: 0,
+            buff: {
+                buff: true,
+                ignoreUnique: true,
+                name: "Enable",
+                abilityId: "enable",
+                emoji: "<:strength:479298214294716416>",
+                turnsToExpire: 200,
+                affects: ["attackDmg", "magicDmg"],
+                multiplier: 1.1
             }
         },
 
@@ -2771,6 +3062,94 @@ module.exports = {
                 difficulty: "summoned",
                 element: "normal"
             },
+            planchet: {
+                name: "Planchet",
+                passive: true,
+                abilities: [],
+                buffs: [],
+                endOfTurnEvents : [
+                    "pillarAOEmagic"
+                ],
+                effectsOnDeath: [
+                    "elementalBarrier"
+                ],
+                hpPerPartyMember: 0,
+                adPerPartyMember: 0,
+                mdPerPartyMember: 0,
+                hp: 10000,
+                attackDmg: 0,
+                magicDmg: 0,
+                armor: 1200,
+                spirit: 1200,
+                difficulty: "summoned",
+                element: "normal"
+            },
+            grimaud: {
+                name: "Grimaud",
+                passive: true,
+                abilities: [],
+                buffs: [],
+                endOfTurnEvents : [
+                    "pillarAOEmagic"
+                ],
+                effectsOnDeath: [
+                    "elementalBarrier"
+                ],
+                hpPerPartyMember: 0,
+                adPerPartyMember: 0,
+                mdPerPartyMember: 0,
+                hp: 10000,
+                attackDmg: 0,
+                magicDmg: 0,
+                armor: 1200,
+                spirit: 1200,
+                difficulty: "summoned",
+                element: "normal"
+            },
+            mousqueton: {
+                name: "Mousqueton",
+                passive: true,
+                abilities: [],
+                buffs: [],
+                endOfTurnEvents : [
+                    "pillarAOE"
+                ],
+                effectsOnDeath: [
+                    "physicalBarrier"
+                ],
+                hpPerPartyMember: 0,
+                adPerPartyMember: 0,
+                mdPerPartyMember: 0,
+                hp: 10000,
+                attackDmg: 0,
+                magicDmg: 0,
+                armor: 1200,
+                spirit: 1200,
+                difficulty: "summoned",
+                element: "normal"
+            },
+            bazin : {
+                name: "Bazin",
+                passive: true,
+                abilities: [],
+                buffs: [],
+                endOfTurnEvents : [
+                    "pillarAOE"
+                ],
+                effectsOnDeath: [
+                    "physicalBarrier"
+                ],
+                hpPerPartyMember: 0,
+                adPerPartyMember: 0,
+                mdPerPartyMember: 0,
+                hp: 10000,
+                attackDmg: 0,
+                magicDmg: 0,
+                armor: 1200,
+                spirit: 1200,
+                difficulty: "summoned",
+                element: "normal"
+            },
             athos: {
                 // all physical dmg (deals high physical) attack / uppercut / crush / volley (2 plyr) - furnace for 3 turns for ~ 1500 dmg every 8 turns
                 // EOT stacking debuff on tank that reduces their armor every 2 turns by 800 
@@ -2804,15 +3183,17 @@ module.exports = {
                     "focus",
                     "summonPorthos",
                     "shackle",
-                    "arrowVolley"
-                    // "reducePhysMag2Turns"
+                    "arrowVolley",
+                    "arrowVolley",
+                    "shrink"
                 ],
                 effectsOnDeath: [
-                    
+                    "transferDartagnanAbilities",
+                    "transferAthosAbilities"
                 ],
-                hp: 50000,
-                attackDmg: 202200,
-                magicDmg: 201970,
+                hp: 60000,
+                attackDmg: 5220,
+                magicDmg: 4970,
                 armor: 2100,
                 spirit: 2100,
                 hpPerPartyMember: 0,
@@ -2850,22 +3231,25 @@ module.exports = {
                     }
                 ],
                 abilityOrder: [
-                    0, 1, 2, 0, 0, 0, 2, 3
+                    1, 0, 2, 0, 0, 0, 2, 3
                 ],
                 endOfTurnEvents : [
                     "focus",
                     "summonAramis",
-                    "summonApparition"
-                    // "shadowShield"
+                    "summonApparition",
+                    "shadowShield"
                 ],
                 // shadow shield every 6 turns
                 effectsOnDeath: [
                     // clear apparitions
+                    "transferDartagnanAbilities",
+                    "transferAthosAbilities",
+                    "transferPortosAbilities"
                 ],
-                hp: 50000,
-                attackDmg: 201700,
-                magicDmg: 202670,
-                armor: 1800,
+                hp: 60000,
+                attackDmg: 4170,
+                magicDmg: 5267,
+                armor: 2100,
                 spirit: 2100,
                 hpPerPartyMember: 0,
                 adPerPartyMember: 0,
@@ -2883,9 +3267,10 @@ module.exports = {
                 xp: 150,
                 abilities: [
                     "attack",
-                    "poke",
-                    "uppercut",
-                    "tackle"
+                    "flameblast",
+                    "poison",
+                    "tackle",
+                    "curse"
                 ],
                 buffs: [
                     {
@@ -2893,7 +3278,7 @@ module.exports = {
                         emoji: "<:overmind:479298213904646147>",
                         onTurnEnd: {
                             attackDmgPlus : 1700,
-                            magicDmgPlus : 1970,
+                            magicDmgPlus : 2670,
                             everyNTurns: 20,
                             currentTurn: 1,
                             startTurn: 21
@@ -2901,7 +3286,8 @@ module.exports = {
                     }
                 ],
                 abilityOrder: [
-                    0, 1, 2, 0, 0, 0, 2, 3
+                    4, 0, 1, 2, 0, 0, 1, 2, 3,
+                    0, 1, 2, 0, 0, 1, 2, 3, 3
                 ],
                 endOfTurnEvents : [
                     "focus",
@@ -2911,10 +3297,10 @@ module.exports = {
                 ],
                 effectsOnDeath: [
                 ],
-                hp: 50000,
-                attackDmg: 1700,
-                magicDmg: 1970,
-                armor: 1800,
+                hp: 60000,
+                attackDmg: 4700,
+                magicDmg: 5970,
+                armor: 2100,
                 spirit: 2100,
                 hpPerPartyMember: 0,
                 adPerPartyMember: 0,
@@ -2924,16 +3310,19 @@ module.exports = {
             },
             apparition: {
                 name: "Apparition",
-                abilities: ["attack"],
+                abilities: [ "attack", "curse"],
                 buffs: [],
                 hpPerPartyMember: 0,
                 adPerPartyMember: 0,
                 mdPerPartyMember: 0,
-                hp: 5300,
+                hp: 6300,
                 abilityOrder: [
-                    0, 0, 0
+                    1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
                 ],
-                attackDmg: 830,
+                endOfTurnEvents : [
+                    "glare"
+                ],
+                attackDmg: 1330,
                 magicDmg: 1460,
                 armor: 1300,
                 spirit: 1300,
@@ -2942,16 +3331,16 @@ module.exports = {
             },
             enabler: {
                 name: "Enabler",
-                abilities: ["attack"],
+                abilities: ["attack", "enable"],
                 buffs: [],
                 hpPerPartyMember: 0,
                 adPerPartyMember: 0,
                 mdPerPartyMember: 0,
-                hp: 10300,
+                hp: 9300,
                 abilityOrder: [
-                    0, 0, 0
+                    0, 0, 0, 1
                 ],
-                attackDmg: 1430,
+                attackDmg: 1330,
                 magicDmg: 860,
                 armor: 1300,
                 spirit: 1300,
@@ -6212,7 +6601,7 @@ module.exports = {
             10: {
                 timed: true,
                 timedPerTurn: 180000,
-                points: 49901,
+                points: 75901,
                 difficulty: 141,
                 enemies: [
                     {
@@ -6325,7 +6714,7 @@ module.exports = {
                 // on last enemy - maniac + reflect + enabler + flanking orders + damage reduct + apparition
                 timed: true,
                 timedPerTurn: 180000,
-                points: 67901,
+                points: 117901,
                 difficulty: 186,
                 enemies: [
                     {
@@ -6339,7 +6728,8 @@ module.exports = {
                         abilities: [
                             "attack",
                             "uppercut",
-                            "crush"
+                            "crush",
+                            "poke"
                         ],
                         buffs: [
                             {
@@ -6348,89 +6738,39 @@ module.exports = {
                                 onTurnEnd: {
                                     attackDmgPlus : 2100,
                                     magicDmgPlus : 2100,
-                                    everyNTurns: 6,
+                                    everyNTurns: 20,
                                     startTurn: 20
                                 }
                             }
                         ],
                         abilityOrder: [
-                            0, 1, 2, 2, 0, 1, 0
+                            3, 1, 2, 2, 0, 1, 0, 0, 2, 1, 0, 0
                         ],
                         endOfTurnEvents : [
                             "focus",
-                            "summonAthos"
+                            "summonAthos",
+                            "overpower",
+                            // testing these
+                            "summonPillars",
+                            "pillarRevive",
+                            "hammerdownProtocol",
+                            "hammerdownPrepare",
+                            "elementalOrder",
+                            "elementalOrderPrepare"
                         ],
                         effectsOnDeath: [
+                            // TODO: Transfer pillarRevive, hammerdownProtocol etc to athos
+                            "transferDartagnanAbilities",
                         ],
                         hp: 54600,
-                        attackDmg: 21080,
-                        magicDmg: 20170,
+                        attackDmg: 4780,
+                        magicDmg: 4770,
                         armor: 2100,
                         spirit: 2100,
                         hpPerPartyMember: 0,
                         adPerPartyMember: 0,
                         mdPerPartyMember: 0,
                         difficulty: "special",
-                        element: "normal"
-                    },
-                    {
-                        name: "Planchet",
-                        abilities: ["attack", "attack","attack", "flameblast", "flameblast", "iceshards", "scold"],
-                        buffs: [],
-                        hpPerPartyMember: 0,
-                        adPerPartyMember: 8,
-                        mdPerPartyMember: 8,
-                        hp: 2350,
-                        attackDmg: 360,
-                        magicDmg: 375,
-                        armor: 1050,
-                        spirit: 1170,
-                        difficulty: "boss",
-                        element: "normal"
-                    },
-                    {
-                        name: "Grimaud",
-                        abilities: ["attack", "attack","attack", "flameblast", "flameblast", "iceshards", "scold"],
-                        buffs: [],
-                        hpPerPartyMember: 0,
-                        adPerPartyMember: 8,
-                        mdPerPartyMember: 8,
-                        hp: 2350,
-                        attackDmg: 360,
-                        magicDmg: 375,
-                        armor: 1050,
-                        spirit: 1170,
-                        difficulty: "boss",
-                        element: "normal"
-                    },
-                    {
-                        name: "Mousqueton",
-                        abilities: ["attack", "attack","attack", "flameblast", "flameblast", "iceshards", "scold"],
-                        buffs: [],
-                        hpPerPartyMember: 0,
-                        adPerPartyMember: 8,
-                        mdPerPartyMember: 8,
-                        hp: 2350,
-                        attackDmg: 360,
-                        magicDmg: 375,
-                        armor: 1050,
-                        spirit: 1170,
-                        difficulty: "boss",
-                        element: "normal"
-                    },
-                    {
-                        name: "Bazin",
-                        abilities: ["attack", "attack","attack", "flameblast", "flameblast", "iceshards", "scold"],
-                        buffs: [],
-                        hpPerPartyMember: 0,
-                        adPerPartyMember: 8,
-                        mdPerPartyMember: 8,
-                        hp: 2350,
-                        attackDmg: 360,
-                        magicDmg: 375,
-                        armor: 1050,
-                        spirit: 1170,
-                        difficulty: "boss",
                         element: "normal"
                     }
                 ]
