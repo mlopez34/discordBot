@@ -1544,7 +1544,7 @@ function handleRingArtifactStageOne(message, discordUserId, stage, team, propose
                 if (error){
                     console.log(error);
                 }else{
-                    activeMissions["quest-" + discordUserId] = { tacosToGive: 100000  , proposedTo: proposedTo }
+                    activeMissions["quest-" + discordUserId] = { tacosToGive: 10000  , proposedTo: proposedTo }
                     if (activeQuests[idOfQuest]){
                         delete activeQuests[idOfQuest];
                     }
