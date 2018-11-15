@@ -597,8 +597,26 @@ module.exports = {
                 emoji: "<:warmup:479293276579430430>",
                 name: "Warm Up",
                 maxStacks: 4,
+                onMaxStacksGainBuff: "safeGuard",
                 adPercentageAtMaxStacks: 1.3,
                 atMaxStacksDealDamage: 175
+            }
+        },
+        safeGuard : {
+            name : "Safe Guard",
+            abilityId: "safeGuard",
+            cooldown: 0,
+            maxcooldown: 8,
+            description: "Reduce all damage taken by 4%",
+            buff: {
+                buff: true,
+                name: "Safe Guard",
+                emoji : "✝️",
+                affectsGlobal: ["damageTakenPercentage"],
+                maxAllowedStacks : 4,
+                currentStacks: 1,
+                multiplierPerStack: -0.04,
+                multiplier: 0.96
             }
         },
         drain: {
@@ -2616,6 +2634,60 @@ module.exports = {
             }
         },
 
+        deathSentence: {
+            abilityId: "deathSentence",
+            belongsToMember: true,
+            processAbility: true,
+            ignoreFocus: true,
+            areawide: true,
+            name: "Death Sentence",
+            type: "physical",
+            everyNTurns: 100,
+            afterNTurns: 1,
+            currentTurn: 0,
+            status: {
+                status: true,
+                areawide: true,
+                abilityId: "deathSentence",
+                untargettable: true,
+                name: "Death Sentence",
+                emoji: "⚰️",
+                type: "physical",
+                adPercentage: 10,
+                ignoreBandaid: true,
+                turnsToExpire: 25,
+                dmgOnStatusExpire: true,
+                dmgOnRemoveAreaWide: false,
+                dmgOnExpire: 500250
+            }
+        },
+
+        deathSentenceMessage: {
+            abilityId: "deathSentenceMessage",
+            belongsToMember: true,
+            everyNTurns: 100,
+            afterNTurns: 1,
+            currentTurn: 0,
+            eotMessage: "You have angered the emperor.. the sentence.. is.. DEATH"
+        },
+
+        spawnPorthos: {
+            abilityId: "spawnPorthos",
+            belongsToMember: true,
+            everyNTurns: 200,
+            afterNTurns: 1,
+            currentTurn: 0,
+            eotMessage: "Soon.. you will understand why my subjects fear the shadows"
+        },
+        spawnAthos: {
+            abilityId: "spawnAthos",
+            belongsToMember: true,
+            everyNTurns: 200,
+            afterNTurns: 1,
+            currentTurn: 0,
+            eotMessage: "I will crush you.. in body and spirit"
+        },
+
 
         /*
         summon effects
@@ -3082,7 +3154,7 @@ module.exports = {
                 hpPerPartyMember: 0,
                 adPerPartyMember: 0,
                 mdPerPartyMember: 0,
-                hp: 10000,
+                hp: 6000,
                 attackDmg: 0,
                 magicDmg: 0,
                 armor: 1200,
@@ -3104,7 +3176,7 @@ module.exports = {
                 hpPerPartyMember: 0,
                 adPerPartyMember: 0,
                 mdPerPartyMember: 0,
-                hp: 10000,
+                hp: 6000,
                 attackDmg: 0,
                 magicDmg: 0,
                 armor: 1200,
@@ -3126,7 +3198,7 @@ module.exports = {
                 hpPerPartyMember: 0,
                 adPerPartyMember: 0,
                 mdPerPartyMember: 0,
-                hp: 10000,
+                hp: 6000,
                 attackDmg: 0,
                 magicDmg: 0,
                 armor: 1200,
@@ -3148,7 +3220,7 @@ module.exports = {
                 hpPerPartyMember: 0,
                 adPerPartyMember: 0,
                 mdPerPartyMember: 0,
-                hp: 10000,
+                hp: 6000,
                 attackDmg: 0,
                 magicDmg: 0,
                 armor: 1200,
@@ -3188,6 +3260,7 @@ module.exports = {
                 endOfTurnEvents : [
                     "focus",
                     "summonPorthos",
+                    "spawnAthos",
                     "shackle",
                     "arrowVolley",
                     "arrowVolley",
@@ -3243,6 +3316,7 @@ module.exports = {
                     "focus",
                     "summonAramis",
                     "summonApparition",
+                    "spawnPorthos",
                     "shadowShield"
                 ],
                 // shadow shield every 6 turns
@@ -3297,9 +3371,14 @@ module.exports = {
                 ],
                 endOfTurnEvents : [
                     "focus",
-                    "summonEnabler"
-                    // "reflectDamage",
-                    // "maniac"
+                    "summonEnabler",
+                    "deathSentenceMessage",
+                    "deathSentence",
+                    // "reflectDamage", 
+                    // any damage dealt by caster should be reflected back at the attacker
+                    // status: 
+                    // "maniac" // direct damage done also deals the rest of the group the same damage
+                    // create function that checks for a buff ?
                 ],
                 effectsOnDeath: [
                 ],

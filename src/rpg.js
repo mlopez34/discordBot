@@ -3693,6 +3693,50 @@ function processYellowEnergyCrystal(event, active){
     }
 }
 
+function processReflect(event, casterToDealDamageTo, damage){
+    // only reflect damage back at the caster if the caster has a debuff that should be reflected back at or the target has a reflection shield buff
+
+    // process during dots, and during regular damage dealt as well as special (guac, rockthrow)
+
+    // return back a string stating who took damage reflected
+    // 
+
+}
+
+function processSafeGuard(event, targetToCheck, abilityObject, rpgAbility){
+    var safeGuardString = ""
+
+    // check if the caster already has safeguard, if they dont then add the buff, if they do add the buff and add 4% more until reaching max number of stacks available
+    if (event.membersInParty[targetToCheck]){
+        // check their statuses
+        var foundSafeGuard = false;
+        for (var s in event.membersInParty[targetToCheck].buffs){
+            if (event.membersInParty[targetToCheck].buffs[s].multiplierPerStack){
+                // found the buff that needs to be edited
+                foundSafeGuard = true;
+                // DIRECTLY editing the buff
+                var currentMultiplier = event.membersInParty[targetToCheck].buffs[s].multiplier
+                var currentStacks = event.membersInParty[targetToCheck].buffs[s].currentStacks
+                var maxAllowedStacks = event.membersInParty[targetToCheck].buffs[s].maxAllowedStacks
+                if (currentStacks < maxAllowedStacks){
+                    event.membersInParty[targetToCheck].buffs[s].multiplier = currentMultiplier + event.membersInParty[targetToCheck].buffs[s].multiplierPerStack
+                    event.membersInParty[targetToCheck].buffs[s].currentStacks = event.membersInParty[targetToCheck].buffs[s].currentStacks + 1
+                    var buffName = event.membersInParty[targetToCheck].buffs[s].name
+                    safeGuardString = safeGuardString + event.membersInParty[targetToCheck].name + " Gains " + buffName + "\n" 
+                    break;
+                }
+            }
+        }
+        if (!foundSafeGuard){
+            // add a damage reduction buff
+            var buffToAdd = JSON.parse( JSON.stringify( rpgAbilities[rpgAbility.buff.onMaxStacksGainBuff] ))
+            event.membersInParty[targetToCheck].buffs.push(buffToAdd.buff)
+            safeGuardString = safeGuardString + event.membersInParty[targetToCheck].name + " Gains " + buffToAdd.name + "\n" 
+        }
+    }
+    return safeGuardString
+}
+
 function processStrength(event, target, dotBeingRemoved, abilityIdOfBuff){
     var strengthString = ""
     // strength is removed, get the caster and then give the caster the buff
@@ -5753,7 +5797,7 @@ function processAbility(abilityObject, event){
                 rpgAbility.dmg = tempDamage
                 if ( checkHasDied(event.membersInParty["rpg-"+abilityCaster])){
                     abilityToString = abilityToString + hasDied(event, event.membersInParty["rpg-"+abilityCaster])
-                }              
+                }
             }
             // deal self damage to the enemy
             if (event.enemies[abilityCaster] 
@@ -6079,6 +6123,9 @@ function processAbility(abilityObject, event){
                                 if ( checkHasDied(event.enemies[targetToDealDmg])){
                                     abilityToString = abilityToString + hasDied(event, event.enemies[targetToDealDmg]);
                                 }
+                                abilityToString = abilityToString + processSafeGuard(event, targetToCheck, abilityObject, rpgAbility)
+                                                         
+    
                             }
                             // dealing damage to members of party (friendly fire or enemy attacking)
                             else if (event.membersInParty[targetToDealDmg]){
