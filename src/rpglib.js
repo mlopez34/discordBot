@@ -2230,7 +2230,7 @@ module.exports = {
             abilityId: "overpower",
             dmgaura: true,
             hppercentage: .90,
-            currentHealthPercentageDamage: 0.20,
+            currentHealthPercentageDamage: 0.80,
             everyNTurns: 1,
             currentTurn: 0,
             afterNTurns: 1,

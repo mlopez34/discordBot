@@ -2681,7 +2681,7 @@ function effectsOnTurnEnd(event){
                                         // deal damage depending on target's current health areawide
                                         var damageDrained = 0;
                                         for (var targetToDealDmg in event.membersInParty){
-                                            var targetCurrentHp = event.membersInParty[targetToDealDmg].hp
+                                            var targetCurrentHp = event.membersInParty[targetToDealDmg].hp + event.membersInParty[targetToDealDmg].statBuffs.maxhp
                                             var targetToDealDmgName = event.membersInParty[targetToDealDmg].name
                                             damageToDeal = Math.floor( targetCurrentHp * (1 - percentageToDeal) )
                                             if (rpgAbility.minimumDamageToDeal && damageToDeal < rpgAbility.minimumDamageToDeal){
