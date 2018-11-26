@@ -491,7 +491,7 @@ module.exports.thankCommand = function(message){
                             profileDB.updateUserTacos(mentionedId, 10, function(updateerr, updateResponse) {
                                 if (updateerr){
                                     // console.log(updateerr);
-                                    message.channel.send("The user has not yet agreed to the terms");
+                                    message.channel.send("The user has not yet agreed to the terms!");
                                 }
                                 else{
                                     profileDB.updateUserTacosThank(discordUserId, extraTacosFromItems, function(updateerr, updateResponse) {
@@ -520,7 +520,7 @@ module.exports.thankCommand = function(message){
                                     })
                                     // send message that the user has 1 more taco
                                     if (extraTacosFromItems > 0){
-                                        message.channel.send(message.author + " thanked " + mentionedUser.username + ", they received `10` tacos! :taco:" + " you received `" + extraTacosFromItems + "` extra tacos");
+                                        message.channel.send(message.author + " thanked " + mentionedUser.username + ", they received `10` tacos! :taco:" + " You received `" + extraTacosFromItems + "` extra tacos!");
                                     }
                                     else{
                                         message.channel.send(message.author + " thanked " + mentionedUser.username + ", they received `10` tacos! :taco: ");
@@ -633,7 +633,7 @@ module.exports.sorryCommand = function(message){
                                     })
                                     // send message that the user has 1 more taco
                                     if (extraTacosFromItems > 0){
-                                        message.channel.send(message.author + " apologized to " + mentionedUser + ", they received `10` tacos! :taco:" + " " + " received `" + extraTacosFromItems + "` extra tacos");
+                                        message.channel.send(message.author + " apologized to " + mentionedUser + ", they received `10` tacos! :taco:" + " " + "You received `" + extraTacosFromItems + "` extra tacos!");
                                     }else{
                                         message.channel.send(message.author + " apologized to " + mentionedUser + ", they received `10` tacos! :taco:");
                                     }
@@ -776,11 +776,14 @@ module.exports.prepareCommand = function (message){
                                         }
                                         else{
                                             //// console.log(updateResponse);
-                                            
-                                            if (extraTacosFromItems > 0){
-                                                message.channel.send(message.author + " You have prepared `" + tacosToPrepare + "` tacos :taco:! `" + soiledToTaco +"` were from soiled crops. The tacos also come with `1` warranty protection" + " received `" + extraTacosFromItems + "` extra tacos");
-                                            }else{
-                                                message.channel.send(message.author + " You have prepared `" + tacosToPrepare + "` tacos :taco:! `" + soiledToTaco +"` were from soiled crops. The tacos also come with `1` warranty protection");
+                                            if (extraTacosFromItems > 0 && soiledToTaco > 0){
+                                                message.channel.send(message.author + " You have prepared `" + tacosToPrepare + "` tacos :taco:! `" + soiledToTaco +"` were from soiled crops. The tacos also come with `1` warranty protection." + " You received `" + extraTacosFromItems + "` extra tacos!");
+                                            }else if (extraTacosFromItems > 0 && soiledToTaco == 0){
+                                                message.channel.send(message.author + " You have prepared `" + tacosToPrepare + "` tacos :taco:! The tacos also come with `1` warranty protection." + " You received `" + extraTacosFromItems + "` extra tacos!");
+                                            }else if (extraTacosFromItems == 0 && soiledToTaco > 0){
+                                                message.channel.send(message.author + " You have prepared `" + tacosToPrepare + "` tacos :taco:! `" + soiledToTaco +"` were from soiled crops. The tacos also come with `1` warranty protection.");
+                                            }else{ 
+                                                message.channel.send(message.author + " You have prepared `" + tacosToPrepare + "` tacos :taco:! The tacos also come with `1` warranty protection.");
                                             }
                                             var experienceFromItems = wearStats.calculateExtraExperienceGained(wearRes, "prepare", null)
                                             experience.gainExperience(message, message.author, (EXPERIENCE_GAINS.prepare + (EXPERIENCE_GAINS.preparePerStand * userTacoStands) + experienceFromItems) , prepareResponse);
@@ -805,13 +808,13 @@ module.exports.prepareCommand = function (message){
                             })
                         }
                         else{
-                            message.channel.send(message.author + " You do not have any stands to prepare tacos with! buy some from the shop. Do -shop to see what you can buy");
+                            message.channel.send(message.author + " You do not have any stands to prepare tacos with, buy some from the shop! Do -shop to see what you can buy. ");
                         }
                     }
                     else{
                         now = new Date(now.setSeconds(now.getSeconds() + secondsToRemove));
                         var numberOfHours = getDateDifference(prepareResponse.data.lastpreparetime, now, 48);
-                        message.channel.send(message.author + " You ran out of ingredients! Please wait `" + numberOfHours + "` ");
+                        message.channel.send(message.author + " You ran out of ingredients! Please wait `" + numberOfHours + "`. ");
                     }
                 }
             })
@@ -1124,7 +1127,7 @@ module.exports.cookCommand = function(message){
                         // six hours have not passed, tell the user they need to wait 
                         now = new Date(now.setSeconds(now.getSeconds() + secondsToRemove));
                         var numberOfHours = getDateDifference(cookResponse.data.lastcooktime, now, 24);
-                        message.channel.send(message.author + " You cannot cook tacos currently! Please wait `" + numberOfHours + "` ");
+                        message.channel.send(message.author + " You cannot cook tacos currently! Please wait `" + numberOfHours + "`. ");
                     }
                 }
             })
@@ -3051,12 +3054,12 @@ module.exports.scavangeCommand = function (message){
                                 ///////// CALCULATE THE EXTRA TACOS HERE 
                                 var extraTacosFromItems = wearStats.calculateExtraTacos(wearRes, "scavenge"); // 0 or extra
                                 if (extraTacosFromItems > 0){
-                                    message.channel.send(message.author + " received `" + extraTacosFromItems + "` for scavenging! :taco:" + " received `" + extraTacosFromItems + "` extra tacos" );
+                                    message.channel.send(message.author + " received `" + extraTacosFromItems + "` extra tacos for scavenging! :taco:" );
                                 }
                                 // early adopter ids to get tacos
                                 var earlyAdopterIds = config.earlyAdopterIds
                                 if (earlyAdopterIds.indexOf(discordUserId) > -1 && !getUserResponse.data.earlyadopt){
-                                    message.channel.send("hey " + message.author + " thanks for being an early adopter here's :taco: `1000` for you to feed me with! make sure to vote on discordbots.org for me")
+                                    message.channel.send("Hey " + message.author + " thanks for being an early adopter, here's :taco: `1000` for you to feed me with Make sure to vote on discordbots.org for me!")
                                     profileDB.updateUserTacosEarly(discordUserId, 1000, function(earlyErr, earlyRes){
                                         if (earlyErr){
                                             console.log(earlyErr)
@@ -3110,14 +3113,14 @@ module.exports.scavangeCommand = function (message){
                     else{
                         now = new Date(now.setSeconds(now.getSeconds() + secondsToRemove));
                         var numberOfHours = getDateDifference(getUserResponse.data.lastscavangetime, now, 1);
-                        message.channel.send(message.author + " You have scavenged too recently! Please wait `" + numberOfHours +"` ");
+                        message.channel.send(message.author + " You have scavenged too recently! Please wait `" + numberOfHours +"`. ");
                     }
                 }
             })
             
         }
         else{
-            message.channel.send(message.author + " You need a pickaxe! buy one from the shop, do `-shop` OR `-shop long` to see what you can buy");
+            message.channel.send(message.author + " You need a pickaxe! buy one from the shop, do `-shop` OR `-shop long` to see what you can buy!");
         }
     })
 }
@@ -3962,7 +3965,7 @@ module.exports.buypetCommand = function(message, args){
                                                 }
                                                 else{
                                                     // anounce the user has a new pet!
-                                                    message.channel.send(" Congratulations! " + message.author + " has a new " + pet + " called: `" + petName + "` \n" + PETS_AVAILABLE[pet].emoji + " " + PETS_AVAILABLE[pet].speak + "\n use -fetch while your pet is not tired!");
+                                                    message.channel.send(" Congratulations! " + message.author + " has a new " + pet + " called: `" + petName + "` \n" + PETS_AVAILABLE[pet].emoji + " " + PETS_AVAILABLE[pet].speak + "\n Use -fetch while your pet is not tired!");
                                                 }
                                             })
                                         }
@@ -4049,7 +4052,7 @@ module.exports.fetchCommand = function(message){
 
                                             }else{
                                                 */
-                                            message.channel.send("**" + userPetName + "** fetched:` " + fetchTacos + "` tacos :taco: \n" + PETS_AVAILABLE[userPet].emoji + " " + PETS_AVAILABLE[userPet].speak + " you received `" + extraTacosFromItems + "` extra tacos");                                                
+                                            message.channel.send(message.author + " **" + userPetName + "** fetched:` " + fetchTacos + "` tacos. :taco: \n" + PETS_AVAILABLE[userPet].emoji + " " + PETS_AVAILABLE[userPet].speak + "\nYou received `" + extraTacosFromItems + "` extra tacos!");                                                
                                             //}
                                         }else{
                                             /* SEASONAL
@@ -4059,7 +4062,7 @@ module.exports.fetchCommand = function(message){
                                                 message.channel.send("**" + userPetName + "** fetched:` " + fetchTacos + "` tacos :taco: \n 🎃 HEEEHEEEHEHEHEE " + PETS_AVAILABLE[userPet].speak);                                                
                                             }else{
                                                 */
-                                            message.channel.send("**" + userPetName + "** fetched:` " + fetchTacos + "` tacos :taco: \n" + PETS_AVAILABLE[userPet].emoji + " " + PETS_AVAILABLE[userPet].speak);                                                
+                                            message.channel.send(message.author + " **" + userPetName + "** fetched:` " + fetchTacos + "` tacos :taco: \n" + PETS_AVAILABLE[userPet].emoji + " " + PETS_AVAILABLE[userPet].speak);                                                
                                             //}
                                         }
                                     }
@@ -4069,7 +4072,7 @@ module.exports.fetchCommand = function(message){
                                 // console.log("cd " + PETS_AVAILABLE[userPet].cooldown)
                                 now = new Date(now.setSeconds(now.getSeconds() + secondsToRemove));
                                 var numberOfHours = getDateDifference(fetchResponse.data.lastfetchtime, now, PETS_AVAILABLE[userPet].cooldown);
-                                message.channel.send(message.author + " **" + userPetName + "** needs to rest and cannot fetch currently! Please wait `" + numberOfHours + "` ");
+                                message.channel.send(message.author + " **" + userPetName + "** needs to rest and cannot fetch currently! Please wait `" + numberOfHours + "`. ");
                             }
                         }
                         else{
