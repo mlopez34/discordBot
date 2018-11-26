@@ -430,7 +430,7 @@ module.exports.openPresentCommand = function(message){
                 }
                 else if (roll < 50){
                     // give the user tacos           
-                    tacosFound = 25;
+                    tacosFound = 250;
                     profileDB.updateUserTacosPresent(discordUserId, tacosFound, function(updateerr, updateResponse) {
                         if (updateerr){
                             console.log(updateerr);
