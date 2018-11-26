@@ -488,7 +488,7 @@ module.exports.thankCommand = function(message){
                             ///////// CALCULATE THE EXTRA TACOS HERE 
                             var extraTacosFromItems = wearStats.calculateExtraTacos(wearRes, "thank"); // 0 or extra
                             // add tacos to user's profile if they got extra tacos
-                            profileDB.updateUserTacos(mentionedId, 100, function(updateerr, updateResponse) {
+                            profileDB.updateUserTacos(mentionedId, 10, function(updateerr, updateResponse) {
                                 if (updateerr){
                                     // console.log(updateerr);
                                     message.channel.send("The user has not yet agreed to the terms");
@@ -520,10 +520,10 @@ module.exports.thankCommand = function(message){
                                     })
                                     // send message that the user has 1 more taco
                                     if (extraTacosFromItems > 0){
-                                        message.channel.send(message.author + " thanked " + mentionedUser.username + ", they received `100` tacos! 🦃 :taco:" + " you received `" + extraTacosFromItems + "` extra tacos");
+                                        message.channel.send(message.author + " thanked " + mentionedUser.username + ", they received `10` tacos! :taco:" + " you received `" + extraTacosFromItems + "` extra tacos");
                                     }
                                     else{
-                                        message.channel.send(message.author + " thanked " + mentionedUser.username + ", they received `100` tacos! 🦃 :taco: ");
+                                        message.channel.send(message.author + " thanked " + mentionedUser.username + ", they received `10` tacos! :taco: ");
                                     }
                                 }
                             })
