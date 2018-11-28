@@ -71,12 +71,12 @@ module.exports = {
             name:"Recover",
             abilityId: "recover",
             selfTarget: true,
-            description: "Heal yourself for 50 + 30% of your armor or spirit, whichever is higher, lasts 3 turns",
+            description: "Heal yourself for 50 + 20% of your armor and spirit, lasts 3 turns",
             hot: {
                 name: "Recover",
                 heal: 50,
                 emoji: "<:recover:479296605237805056>",
-                arOrSpPercentage: 0.3,
+                arAndSpPercentage: 0.2,
                 healingOnHotApply: false,
                 turnsToExpire: 3,
                 healingOnDotExpire: false,
@@ -176,6 +176,20 @@ module.exports = {
             dmg: 50,
             adPercentage: 1.2,
             type: "physical"
+        },
+        shadowBurst : {
+            name: "Shadow Burst",
+            abilityId: "shadowBurst",
+            dmg: 50,
+            mdPercentage: 1.5,
+            type: "shadow"
+        },
+        frostBlast : {
+            name: "Frost Blast",
+            abilityId: "frostBlast",
+            dmg: 50,
+            mdPercentage: 1.2,
+            type: "ice"
         },
         crush : {
             name: "Crush",
@@ -2545,6 +2559,7 @@ module.exports = {
                 name: "Shadow Shield",
                 emoji: "❌",
                 targetWithName: "Porthos",
+                additionalDescription: " taking damagen will cause a Shadow Explosion",
                 ignoreUnique: true,
                 onDamageTakenCastAbility: "shadowExplosion",
                 turnsToExpire: 65
@@ -2570,11 +2585,14 @@ module.exports = {
             abilityId: "maniac",
             processAbility: true,
             belongsToMember: true,
-            everyNTurns: 7,
+            everyNTurns: 9,
             afterNTurns: 7,
             currentTurn: 0,
             buff: {
                 name: "Maniac",
+                buff: true,
+                selfbuff: true,
+                dealToRestOfParty: true,
                 emoji: "<:break:479347734722379777>",
                 ignoreUnique: true,
                 turnsToExpire: 4
@@ -3294,7 +3312,7 @@ module.exports = {
                     "attack",
                     "curse",
                     "iceshards",
-                    "corrupt"
+                    "shadowBurst"
                 ],
                 buffs: [
                     {
@@ -3310,7 +3328,7 @@ module.exports = {
                     }
                 ],
                 abilityOrder: [
-                    1, 0, 2, 0, 0, 0, 2, 3
+                    1, 0, 2, 0, 3, 3, 2, 0, 0
                 ],
                 endOfTurnEvents : [
                     "focus",
@@ -3326,7 +3344,7 @@ module.exports = {
                     "transferAthosAbilities",
                     "transferPortosAbilities"
                 ],
-                hp: 60000,
+                hp: 62000,
                 attackDmg: 4170,
                 magicDmg: 5267,
                 armor: 2100,
@@ -3346,10 +3364,10 @@ module.exports = {
                 uniqueEnemy: true,
                 xp: 150,
                 abilities: [
-                    "attack",
+                    "frostBlast",
                     "flameblast",
                     "poison",
-                    "tackle",
+                    "guac",
                     "curse"
                 ],
                 buffs: [
@@ -3366,23 +3384,18 @@ module.exports = {
                     }
                 ],
                 abilityOrder: [
-                    4, 0, 1, 2, 0, 0, 1, 2, 3,
-                    0, 1, 2, 0, 0, 1, 2, 3, 3
+                    4, 1, 2, 0, 0, 0, 1, 2, 3, 3
                 ],
                 endOfTurnEvents : [
                     "focus",
                     "summonEnabler",
                     "deathSentenceMessage",
                     "deathSentence",
-                    // "reflectDamage", 
-                    // any damage dealt by caster should be reflected back at the attacker
-                    // status: 
-                    // "maniac" // direct damage done also deals the rest of the group the same damage
-                    // create function that checks for a buff ?
+                    "maniac"
                 ],
                 effectsOnDeath: [
                 ],
-                hp: 60000,
+                hp: 64000,
                 attackDmg: 4700,
                 magicDmg: 5970,
                 armor: 2100,
@@ -6795,8 +6808,8 @@ module.exports = {
                 // on second enemy - arrow volley + damage reduction + flanking orders
                 // 2 - arrow volley + damage reduction + apparition + iceshards + explosion shield + flanking orders
                 // on third enemy - apparition + shield + iceshards + flanking orders + damage reduct
-                // 3 - apparition + iceshards + explosion shield + maniac + damage reflection + add spawn after 4 turns + flanking order + damage reduction
-                // on last enemy - maniac + reflect + enabler + flanking orders + damage reduct + apparition
+                // 3 - apparition + iceshards + explosion shield + maniac + add spawn after 4 turns + flanking order + damage reduction
+                // on last enemy - maniac + enabler + flanking orders + damage reduct + apparition
                 timed: true,
                 timedPerTurn: 180000,
                 points: 117901,
@@ -6835,7 +6848,6 @@ module.exports = {
                             "focus",
                             "summonAthos",
                             "overpower",
-                            // testing these
                             "summonPillars",
                             "pillarRevive",
                             "hammerdownProtocol",
