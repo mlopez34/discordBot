@@ -654,7 +654,7 @@ module.exports.rpgReady = function(message, itemsAvailable, amuletItemsById){
                                                                 var partyMembersetRPGcooldown = usersInRPGEvents["rpg-" + partyMember.id].setRPGcooldown
                                                                 // if the user is the last user needed to be ready, create the RPG event
                                                                 if (!partyMember.bot){
-                                                                    if (challengePicked < CHALLENGE_TO_TEST || partyMembersetRPGcooldown ){
+                                                                    if (challengePicked < CHALLENGE_TO_TEST && partyMembersetRPGcooldown ){
                                                                         profileDB.updateLastRpgTime(partyMember.id, function(updateLSErr, updateLSres){
                                                                             if(updateLSErr){
                                                                                 console.log(updateLSErr);
