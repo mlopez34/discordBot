@@ -71,12 +71,12 @@ module.exports = {
             name:"Recover",
             abilityId: "recover",
             selfTarget: true,
-            description: "Heal yourself for 50 + 20% of your armor or spirit, whichever is higher, lasts 3 turns",
+            description: "Heal yourself for 50 + 20% of your armor and spirit, lasts 3 turns",
             hot: {
                 name: "Recover",
                 heal: 50,
                 emoji: "<:recover:479296605237805056>",
-                arOrSpPercentage: 0.2,
+                arAndSpPercentage: 0.2,
                 healingOnHotApply: false,
                 turnsToExpire: 3,
                 healingOnDotExpire: false,
@@ -177,6 +177,20 @@ module.exports = {
             adPercentage: 1.2,
             type: "physical"
         },
+        shadowBurst : {
+            name: "Shadow Burst",
+            abilityId: "shadowBurst",
+            dmg: 50,
+            mdPercentage: 1.5,
+            type: "shadow"
+        },
+        frostBlast : {
+            name: "Frost Blast",
+            abilityId: "frostBlast",
+            dmg: 50,
+            mdPercentage: 1.2,
+            type: "ice"
+        },
         crush : {
             name: "Crush",
             abilityId: "crush",
@@ -262,7 +276,7 @@ module.exports = {
                 type:"physical",
                 dmg: 75,
                 adPercentage: 1.15,
-                emoji: "<:poke:479296559121432576>",
+                emoji: "📌",
                 dmgOnDotApply: false,
                 turnsToExpire: 4,
                 dmgOnDotExpire: false,
@@ -279,7 +293,7 @@ module.exports = {
                 type:"shadow",
                 dmg: 75,
                 mdPercentage: 1.15,
-                emoji: "<:curse:479296558794407936>",
+                emoji: "🌑",
                 dmgOnDotApply: false,
                 turnsToExpire: 4,
                 dmgOnDotExpire: false,
@@ -371,7 +385,7 @@ module.exports = {
                 dmg: 20,
                 mdPercentage: .9,
                 type: "fire",
-                emoji: "<:burning:479296552230191113>",
+                emoji: "🔥",
                 damageOnDotApply: false,
                 turnsToExpire: 5,
                 damageOnDotExpire: false,
@@ -389,7 +403,7 @@ module.exports = {
                 name: "Poison",
                 dmg: 20,
                 mdPercentage: .8,
-                emoji : "<:foodpoisoning:479296558672773120>",
+                emoji : "🤢",
                 type: "poison",
                 damageOnDotApply: false,
                 turnsToExpire: 3,
@@ -427,7 +441,7 @@ module.exports = {
                 name: "Uppercut",
                 dmg: 20,
                 adPercentage: .8,
-                emoji : "<:uppercut:479296568034590730>",
+                emoji : "🥊",
                 type: "physical",
                 damageOnDotApply: false,
                 turnsToExpire: 3,
@@ -597,8 +611,26 @@ module.exports = {
                 emoji: "<:warmup:479293276579430430>",
                 name: "Warm Up",
                 maxStacks: 4,
+                onMaxStacksGainBuff: "safeGuard",
                 adPercentageAtMaxStacks: 1.3,
                 atMaxStacksDealDamage: 175
+            }
+        },
+        safeGuard : {
+            name : "Safe Guard",
+            abilityId: "safeGuard",
+            cooldown: 0,
+            maxcooldown: 8,
+            description: "Reduce all damage taken by 4%",
+            buff: {
+                buff: true,
+                name: "Safe Guard",
+                emoji : "✝️",
+                affectsGlobal: ["damageTakenPercentage"],
+                maxAllowedStacks : 4,
+                currentStacks: 1,
+                multiplierPerStack: -0.04,
+                multiplier: 0.96
             }
         },
         drain: {
@@ -1294,7 +1326,6 @@ module.exports = {
                 setAbleToBeHealed: false,
                 removeEndOfTurn: true,
                 removeBuffs: true
-                //TODO set abletoattack false, abletotakedamage false, abletoheal false endofturndisable stays false
             }
         },
 
@@ -1305,7 +1336,6 @@ module.exports = {
             killIfEnemyBuff : "Entomb",
             name: "KillAll-Entomb" // on death, kill anything with entomb
         },
-        // stone giant, deals damage, if bandaided stone giant gets +15% damage
         shatter: {
             name:"Shatter",
             abilityId: "shatter",
@@ -1323,8 +1353,8 @@ module.exports = {
                 untargettable: true,
                 mdPercentage: 1,
                 emoji: "<:shatter:479347500751388687>",
-                // TODO: on bandaid trigger effect
                 onBandaidCasterGainsBuff: "strength",
+                abilityTriggerOnDeath: "strength",
                 ignoreUnique: true,
                 dmgOnDotApply: false,
                 turnsToExpire: 15,
@@ -1332,10 +1362,6 @@ module.exports = {
                 dmgOnExpire: 0
             }
         },
-        // TODO: create the onbandaidtrigger effect to gain 15% damage
-
-        // asteroid golem puts a dot on the tank every 2 turns, lowers spirit by 10% per stack
-        // if bandaid asteroid golem gains 15% damage
         break: {
             // ignore unique
             name:"Break",
@@ -1350,13 +1376,13 @@ module.exports = {
                 name: "Break",
                 emoji: "<:break:479347734722379777>",
                 onBandaidCasterGainsBuff: "strength",
+                abilityTriggerOnDeath: "strength",
                 ignoreUnique: true,
                 turnsToExpire: 15,
                 affects: ["spirit"],
-                additive: -1000
+                additive: -800
             }
         },
-        // TODO: create the onbandaidtrigger effect to gain 15% damage
         strength: {
             name: "Strength",
             abilityId: "strength",
@@ -1367,7 +1393,7 @@ module.exports = {
                 emoji: "<:strength:479298214294716416>",
                 turnsToExpire: 20,
                 affects: ["attackDmg", "magicDmg"],
-                multiplier: 1.15
+                multiplier: 1.1
             }
         },
         strengthFever: {
@@ -1384,8 +1410,7 @@ module.exports = {
             }
         },
 
-        // summon Lava and Sky elemental
-        // summoned upon entomb / 20% HP
+        // summon Lava and Sky elemental summoned upon entomb / 20% HP
         summonLavaElemental: {
             name: "Summon Lava Elemental",
             abilityId: "summonLavaElemental",
@@ -1438,8 +1463,7 @@ module.exports = {
                 hpPlus: 300
             }
         },
-        // whenever sky or lava reach 20%
-        // the anomaly is the HP of sky, lava, and golems combined
+        // whenever sky or lava reach 20% the anomaly is the HP of sky, lava, and golems combined
         summonAnomaly: {
             name: "Summon Anomaly",
             abilityId: "summonAnomaly",
@@ -1454,7 +1478,7 @@ module.exports = {
                 hpMultiplier: 4,
                 attackDmg: 240,
                 magicDmg: 250,
-                hpPlus: 800
+                hpPlus: 0
             }
         },
 
@@ -1462,9 +1486,9 @@ module.exports = {
         anger: {
             name: "Anger",
             abilityId: "anger",
-            adPercentage: 1,
+            mdPercentage: 1,
             dmg: 100,
-            type: "physical",
+            type: "fire",
             special: "selfdamage",
             selfdamage: 15000
         },
@@ -1474,23 +1498,24 @@ module.exports = {
             name: "Rampage",
             abilityId: "rampage",
             belongsToMember: true,
+            processAbility: true,
+            ignoreFocus: true,
             ignoreBandaid: true,
             everyNTurns: 7,
             afterNTurns: 4,
             currentTurn: 0,
             status: {
                 focusedBy: "",
+                abilityId: "rampage",
                 status: true,
+                ignoreFocus: true,
                 ignoreBandaid: true,
                 name: "Rampage",
                 turnsToExpire: 4,
                 emoji: "<:rampage:479348722782830603>",
-                abilityTriggerOnDeath: "healAllRampage",
-                //TODO: if player dies, heal all enemies
-                
+                abilityTriggerOnDeath: "healAllRampage"                
             }
         },
-        // 
         healAllRampage: {
             belongsToMember: true,
             name: "Heal All",
@@ -1508,7 +1533,7 @@ module.exports = {
             afterNTurns: 1,
             currentTurn: 0,
             targetWithName: "Lava Elemental",
-            dmg: 300,
+            dmg: 700,
             mdPercentage: 1
         },
 
@@ -1525,7 +1550,6 @@ module.exports = {
             mdPercentage: 1
         },
 
-        // at end of turn, calculate % of health lost, gain that much % damage on multiplier
         fury : {
             name : "Fury",
             belongsToMember: true,
@@ -1538,6 +1562,7 @@ module.exports = {
                 selfbuff: true,
                 buff: true,
                 name: "Fury",
+                additionalDescription: " is gaining damage based on lost health",
                 emoji : "<:fury:479349359281176577>",
                 affects: ["attackDmg", "magicDmg"],
                 turnsToExpire: 300,
@@ -1545,7 +1570,7 @@ module.exports = {
             }
         },
 
-        // lava and sky elemental aoes (need buffs to counter these)
+        // lava and sky elemental aoe
         hurricane: {
             belongsToMember: true,
             name: "Hurricane",
@@ -1557,7 +1582,7 @@ module.exports = {
             areawidedmg: {
                 areawide: true,
                 name: "Hurricane",
-                dmg: 1200,
+                dmg: 1300,
                 adPercentage: 1,
                 type: "physical"
             }
@@ -1573,7 +1598,7 @@ module.exports = {
             areawidedmg: {
                 areawide: true,
                 name: "engulf",
-                dmg: 1200,
+                dmg: 1300,
                 mdPercentage: 1,
                 type: "fire"
             }
@@ -1581,12 +1606,12 @@ module.exports = {
         // reduces physical damage by 50% - applied when damaging sky elemental
         // removes amplify
         dampen: {
-            // reduce magic dmg by 50%
             name : "Dampen",
             abilityId: "dampen",
             buff: {
                 buff: true,
                 name: "Dampen",
+                additionalDescription: " is reducing physical damage taken by 50%",
                 emoji : "<:dampen:479301622246408233>",
                 affectsGlobal: ["physicalDamageTakenPercentage"],
                 turnsToExpire: 10,
@@ -1597,13 +1622,13 @@ module.exports = {
         // reduces magical damage by 50% - applied when damaging lava elemental
         // removes dampen 
         amplify: {
-            // reduce magic dmg by 50%
             name : "Amplify",
             abilityId: "amplify",
             buff: {
                 buff: true,
                 name: "Amplify",
                 emoji : "<:amplify:479301622233563136>",
+                additionalDescription: " is reducing magical damage taken by 50%",
                 affectsGlobal: ["magicDamageTakenPercentage"],
                 turnsToExpire: 10,
                 multiplier: 0.5
@@ -1640,15 +1665,7 @@ module.exports = {
                 hpPlus: 1000
             }
         },
-        // smoke screen deals damage to the lava elemental at end of turn
 
-        // morph  - base the hp of the caster on the hp of certain enemies
-        // anomalyMorph: {
-        //     belongsToMember: true,
-        //     abilityId: "anomalyMorph",
-        //     name: "Morph",
-            
-        // },
         // aoe every turn
         morphAnomalyMessage: {
             belongsToMember: true,
@@ -1666,7 +1683,7 @@ module.exports = {
             areawidedmg: {
                 areawide: true,
                 name: "consume",
-                dmg: 10,
+                dmg: 100,
                 mdPercentage: .25,
                 type: "fire"
             }
@@ -1688,14 +1705,13 @@ module.exports = {
                 name: "Burst",
                 abilityId: "burst",
                 ignoreBandaid: true,
-                // TODO: dot can only be removed upon being healed to full
                 removeDotOnHpPercentage: .99,
 
                 type:"physical",
                 dmg: 1000,
                 adPercentage: 0.2,
                 dmgIncreasePerTick: 400,
-                emoji: "<:burst:479349927764426782>",
+                emoji: "🎇",
                 dmgOnDotApply: false,
                 turnsToExpire: 12,
                 dmgOnDotExpire: false,
@@ -1721,8 +1737,6 @@ module.exports = {
                 ]
             }
         },
-
-        // soak the fiends
         absorbFiends: {
             abilityId: "absorbFiends",
             belongsToMember: true,
@@ -1730,7 +1744,7 @@ module.exports = {
             everyNTurns: 6,
             afterNTurns: 7,
             currentTurn: 0,
-            special: "absorb fiends" // heals for their remaining health
+            special: "absorb fiends" 
         },
 
         /*
@@ -2139,6 +2153,560 @@ module.exports = {
                 hpPlus: 30
             }
         },
+
+        /*
+        challenge 11
+        */
+       summonAthos: {
+            name: "Summon Athos",
+            abilityId: "summonAthos",
+            belongsToMember: true,
+            effectDone: false,
+            hppercentage: 0.3,
+            summon: {
+                enemy: "athos",
+                attackDmg: 240,
+                magicDmg: 250,
+                hpPlus: 0
+            }
+        },
+        summonPorthos: {
+            name: "Summon Porthos",
+            abilityId: "summonPorthos",
+            belongsToMember: true,
+            effectDone: false,
+            hppercentage: 0.3,
+            summon: {
+                enemy: "porthos",
+                attackDmg: 240,
+                magicDmg: 250,
+                hpPlus: 0
+            }
+        },
+        summonAramis: {
+            name: "Summon Aramis",
+            abilityId: "summonAramis",
+            belongsToMember: true,
+            effectDone: false,
+            hppercentage: 0.3,
+            summon: {
+                enemy: "aramis",
+                attackDmg: 240,
+                magicDmg: 250,
+                hpPlus: 0
+            }
+        },
+
+        transferDartagnanAbilities: {
+            abilityId: "transferDartagnanAbilities",
+            belongsToMember: true,
+            name: "transfer abilities",
+            abilitiesToTransfer: [
+                "hammerdownProtocol",
+                "hammerdownPrepare",
+                "elementalOrder",
+                "elementalOrderPrepare"
+            ],
+            transferTo: [
+                "Athos",
+                "Porthos",
+                "Aramis"
+            ]
+        },
+        transferAthosAbilities: {
+            abilityId: "transferAthosAbilities",
+            belongsToMember: true,
+            name: "transfer abilities",
+            abilitiesToTransfer: [
+                "shrink"
+            ],
+            transferTo: [
+                "Porthos",
+                "Aramis"
+            ]
+        },
+        transferPortosAbilities: {
+            abilityId: "transferPortosAbilities",
+            belongsToMember: true,
+            name: "transfer abilities",
+            abilitiesToTransfer: [
+                "summonApparition",
+            ],
+            transferTo: [
+                "Aramis"
+            ]
+        },
+
+        // deal 25% of current health
+        overpower: {
+            belongsToMember: true,
+            name: "Overpower",
+            abilityId: "overpower",
+            dmgaura: true,
+            hppercentage: .90,
+            currentHealthPercentageDamage: 0.80,
+            everyNTurns: 1,
+            currentTurn: 0,
+            afterNTurns: 1,
+            type: "physical"
+        },
+
+        // summon 4 elemental pillars at the start of the fight turn 2
+        // same as summons of 4 on challenge 6
+        // DONE radiate aoe at 50% - aoe is 250 dmg
+        // check if all are dead every end of turn, if they are, revive them all
+        // DONE 2 are physical, 2 are magical
+
+        // on death reduce all damage taken by 50% from either physical or magical
+        // multiplicative
+
+        // DONE hammerdown protocol and elemental order - phys / magical
+        // DONE deals 1700 physical or 1700 magical
+
+        summonPillars: {
+            name: "summonPillars",
+            belongsToMember: true,
+            oneTimeCast: true,
+            everyNTurns: 1000,
+            afterNTurns: 1,
+            currentTurn: 1,
+            summon: {
+                enemies: [
+                    "planchet",
+                    "grimaud",
+                    "mousqueton",
+                    "bazin"
+                ]
+            }
+        },
+        // revive the pillars whenever they are all dead
+        pillarRevive: {
+            belongsToEvent: true,
+            everyNTurns: 30,
+            afterNTurns: 30,
+            currentTurn: 0,
+            name: "Ressurection",
+            abilityId: "pillarRevive",
+            reviveCheck: [
+                "planchet",
+                "grimaud",
+                "mousqueton",
+                "bazin"
+            ]
+        },
+
+        hammerdownProtocol: {
+            belongsToMember: true,
+            name: "Hammerdown Protocol",
+            abilityId: "hammerdownProtocol",
+            everyNTurns: 14,
+            afterNTurns: 7,
+            currentTurn: 0,
+            areawidedmg: {
+                areawide: true,
+                name: "Hammerdown Protocol",
+                dmg: 5500,
+                adPercentage: 0.05,
+                type: "physical"
+            }
+        },
+        hammerdownPrepare: {
+            abilityId: "hammerdownPrepare",
+            belongsToMember: true,
+            everyNTurns: 14,
+            afterNTurns: 5,
+            currentTurn: 0,
+            eotMessage: "The enemy prepares for a hammerdown protocol"
+        },
+
+        elementalOrder: {
+            belongsToMember: true,
+            name: "Elemental Order",
+            abilityId: "elementalOrder",
+            everyNTurns: 14,
+            afterNTurns: 14,
+            currentTurn: 0,
+            areawidedmg: {
+                areawide: true,
+                name: "Elemental Order",
+                dmg: 5500,
+                mdPercentage: 0.05,
+                type: "lightning"
+            }
+        },
+
+        elementalOrderPrepare: {
+            abilityId: "elementalOrderPrepare",
+            belongsToMember: true,
+            everyNTurns: 14,
+            afterNTurns: 12,
+            currentTurn: 0,
+            eotMessage: "The enemy prepares for a an elemental order"
+        },
+
+        elementalBarrier: {
+            onDeathEffect: true,
+            areawide: true,
+            processAbility: true,
+            targetToApplyOn: "random",
+            name:"Elemental Barrier",
+            abilityId: "elementalBarrier",
+            buff: {
+                buff: true,
+                areawide: true,
+                ignoreUnique: true,
+                buffPartyMembers: true,
+                name: "Elemental Barrier",
+                abilityId: "elementalBarrier",
+                emoji: "🔶",
+                additionalDescription: " is reducing magical damage taken by 50%",
+                affectsGlobal: ["magicDamageTakenPercentage"],
+                turnsToExpire: 2,
+                multiplier: 0.5
+            }
+        },
+
+        physicalBarrier: {
+            onDeathEffect: true,
+            processAbility: true,
+            areawide: true,
+            targetToApplyOn: "random",
+            name:"Physical Barrier",
+            abilityId: "physicalBarrier",
+            buff: {
+                buff: true,
+                name: "Physical Barrier",
+                areawide: true,
+                ignoreUnique: true,
+                buffPartyMembers: true,
+                abilityId: "physicalBarrier",
+                emoji: "🔷",
+                additionalDescription: " is reducing magical damage taken by 50%",
+                affectsGlobal: ["physicalDamageTakenPercentage"],
+                turnsToExpire: 2,
+                multiplier: 0.5
+            }
+        },
+        pillarAOEmagic: {
+            hppercentage: 0.50,
+            belongsToMember: true,
+            dmgaura: true,
+            name: "Pillar Radiation",
+            abilityId: "pillarAOEmagic",
+            areawidedmg: {
+                endOfTurnAura: true,
+                dmgPerTurn: 22,
+                hitsEveryNTurn: 1,
+                name: "Pillar Radiation",
+                dmg: 680,
+                mdPercentage: 0.1,
+                type: "fire"
+            }
+        },
+
+        pillarAOE: {
+            belongsToMember: true,
+            hppercentage: 0.50,
+            dmgaura: true,
+            name: "Pillar Radiation",
+            abilityId: "pillarAOE",
+            areawidedmg: {
+                endOfTurnAura: true,
+                dmgPerTurn: 22,
+                name: "Pillar Radiation",
+                hitsEveryNTurn: 1,
+                dmg: 680,
+                adPercentage: 0.1,
+                type: "physical"
+            }
+        },
+
+        // TODO: transfer the elemental orders and hammerdown protocol to next enemy
+
+
+        // summon 4 more every so often
+        shackle: {
+            // ignore unique
+            name:"Shackle",
+            abilityId: "shackle",
+            processAbility: true,
+            belongsToMember: true,
+            everyNTurns: 2,
+            afterNTurns: 2,
+            currentTurn: 0,
+            status: {
+                name: "Shackle",
+                emoji: "<:break:479347734722379777>",
+                ignoreUnique: true,
+                turnsToExpire: 25,
+                affects: ["armor"],
+                additive: -800
+            }
+        },
+
+        arrowVolley: {
+            name:"Arrow Volley",
+            abilityId: "arrowVolley",
+            type:"physical",
+            processAbility: true,
+            belongsToMember: true,
+            everyNTurns: 6,
+            ignoreFocus: true,
+            afterNTurns: 5,
+            currentTurn: 0,
+            status: {
+                status: true,
+                abilityId: "arrowVolley",
+                name: "Arrow Volley",
+                type:"physical",
+                dmg: 100,
+                untargettable: true,
+                adPercentage: 1,
+                emoji: "🏹",
+                dmgOnDotApply: false,
+                turnsToExpire: 1,
+                dmgOnStatusExpire: true,
+                adPercentageOnRemove: .9,
+                dmgOnExpire: 600
+            }
+        },
+
+        shrink : {
+            name : "Shrink",
+            abilityId: "shrink",
+            processAbility: true,
+            belongsToMember: true,
+            everyNTurns: 6,
+            ignoreFocus: true,
+            afterNTurns: 5,
+            currentTurn: 0,
+            description: "Reduce all damage done by 50% for 3 turns 8 turn cooldown",
+            status: {
+                status: true,
+                ignoreBandaid: true,
+                name: "Shrink",
+                emoji : "👾", 
+                affectsGlobal: ["damageDealtPercentage", "healingDonePercentage"],
+                turnsToExpire: 3,
+                multiplier: 0.5
+            }
+        },
+
+        summonApparition: {
+            name: "Summon Apparition",
+            abilityId: "summonApparition",
+            belongsToMember: true,
+            everyNTurns: 8,
+            afterNTurns: 2,
+            currentTurn: 0,
+            summon: {
+                enemy: "apparition",
+                attackDmg: 200,
+                magicDmg: 200,
+                hpPlus: 1000
+            }
+        },
+
+        glare: {
+            name: "Glare",
+            abilityId: "glare",
+            belongsToMember: true,
+            processAbility: true,
+            ignoreFocus: true,
+            ignoreUnique: true, 
+            ignoreBandaid: true,
+            everyNTurns: 50,
+            afterNTurns: 1,
+            currentTurn: 1,
+            status: {
+                focusedBy: "",
+                abilityId: "glare",
+                status: true,
+                ignoreUnique: true, 
+                ignoreFocus: true,
+                ignoreBandaid: true,
+                name: "Glare",
+                turnsToExpire: 50,
+                emoji: "<:rampage:479348722782830603>"              
+            }
+        },
+
+        glaring: {
+            name: "Glaring",
+            abilityId: "glaring",
+            buff: {
+                name: "Glaring",
+                abilityId: "glaring",
+                emoji : "🐸",
+                turnsToExpire: 50,
+                buff: true,
+                onlyTargettableBy: []
+            }
+        },
+        
+        // shield explodes for 50k upon taking direct damage
+        shadowShield: {
+            // ignore unique
+            name:"Shadow Shield",
+            abilityId: "shadowShield",
+            processAbility: true,
+            belongsToMember: true,
+            everyNTurns: 7,
+            afterNTurns: 7,
+            currentTurn: 0,
+            targetWithName: "Porthos",
+            status: {
+                name: "Shadow Shield",
+                emoji: "❌",
+                targetWithName: "Porthos",
+                additionalDescription: " taking damagen will cause a Shadow Explosion",
+                ignoreUnique: true,
+                onDamageTakenCastAbility: "shadowExplosion",
+                turnsToExpire: 65
+            }
+        },
+        shadowExplosion: {
+            belongsToMember: true,
+            name: "Shadow Explosion",
+            abilityId: "shadowExplosion",
+            areawidedmg: {
+                areawide: true,
+                name: "Shadow Explosion",
+                dmg: 2550,
+                mdPercentage: .1,
+                type: "shadow"
+            }
+        },
+
+        // gain buff that deals damage to everyone else based on damage dealt to target
+        maniac: {
+            // ignore unique
+            name:"Maniac",
+            abilityId: "maniac",
+            processAbility: true,
+            belongsToMember: true,
+            everyNTurns: 9,
+            afterNTurns: 7,
+            currentTurn: 0,
+            buff: {
+                name: "Maniac",
+                buff: true,
+                selfbuff: true,
+                dealToRestOfParty: true,
+                emoji: "<:break:479347734722379777>",
+                ignoreUnique: true,
+                turnsToExpire: 4
+            }
+        },
+        // reflect damage back to the attacker 50%
+        reflect: {
+            name:"Reflect",
+            abilityId: "reflect",
+            processAbility: true,
+            belongsToMember: true,
+            everyNTurns: 7,
+            afterNTurns: 7,
+            currentTurn: 0,
+            buff: {
+                name: "Reflect",
+                emoji: "<:break:479347734722379777>",
+                ignoreUnique: true,
+                turnsToExpire: 4
+            }
+        },
+
+        summonEnabler: {
+            name: "Summon Enabler",
+            abilityId: "summonEnabler",
+            belongsToMember: true,
+            everyNTurns: 8,
+            afterNTurns: 2,
+            currentTurn: 0,
+            summon: {
+                // after 4 turns increases damage on boss by 10% and dies
+                enemy: "enabler",
+                attackDmg: 500,
+                magicDmg: 500,
+                hpPlus: 1000
+            }
+        },
+
+        enable: {
+            name: "Enable",
+            abilityId: "enable",
+            processAbility: true,
+            belongsToMember: true,
+            everyNTurns: 3,
+            targetWithName: "Aramis",
+            afterNTurns: 3,
+            currentTurn: 0,
+            buff: {
+                buff: true,
+                ignoreUnique: true,
+                name: "Enable",
+                abilityId: "enable",
+                emoji: "<:strength:479298214294716416>",
+                turnsToExpire: 200,
+                affects: ["attackDmg", "magicDmg"],
+                multiplier: 1.1
+            }
+        },
+
+        deathSentence: {
+            abilityId: "deathSentence",
+            belongsToMember: true,
+            processAbility: true,
+            ignoreFocus: true,
+            areawide: true,
+            name: "Death Sentence",
+            type: "physical",
+            everyNTurns: 100,
+            afterNTurns: 1,
+            currentTurn: 0,
+            status: {
+                status: true,
+                areawide: true,
+                abilityId: "deathSentence",
+                untargettable: true,
+                name: "Death Sentence",
+                emoji: "⚰️",
+                type: "physical",
+                adPercentage: 10,
+                ignoreBandaid: true,
+                turnsToExpire: 25,
+                dmgOnStatusExpire: true,
+                dmgOnRemoveAreaWide: false,
+                dmgOnExpire: 500250
+            }
+        },
+
+        deathSentenceMessage: {
+            abilityId: "deathSentenceMessage",
+            belongsToMember: true,
+            everyNTurns: 100,
+            afterNTurns: 1,
+            currentTurn: 0,
+            eotMessage: "You have angered the emperor.. the sentence.. is.. DEATH"
+        },
+
+        spawnPorthos: {
+            abilityId: "spawnPorthos",
+            belongsToMember: true,
+            everyNTurns: 200,
+            afterNTurns: 1,
+            currentTurn: 0,
+            eotMessage: "Soon.. you will understand why my subjects fear the shadows"
+        },
+        spawnAthos: {
+            abilityId: "spawnAthos",
+            belongsToMember: true,
+            everyNTurns: 200,
+            afterNTurns: 1,
+            currentTurn: 0,
+            eotMessage: "I will crush you.. in body and spirit"
+        },
+
+
         /*
         summon effects
         */
@@ -2380,8 +2948,8 @@ module.exports = {
                         name: "frenzy",
                         emoji: "<:frenzy:479298214453968896>",
                         onTurnEnd: {
-                            attackDmgPlus : 1050,
-                            magicDmgPlus : 1050,
+                            attackDmgPlus : 850,
+                            magicDmgPlus : 850,
                             everyNTurns: 8,
                             currentTurn: 1,
                             startTurn: 5
@@ -2416,7 +2984,7 @@ module.exports = {
                 hp: 27600,
                 attackDmg: 1700,
                 magicDmg: 1470,
-                armor: 2350,
+                armor: 2150,
                 spirit: 2100,
                 hpPerPartyMember: 0,
                 adPerPartyMember: 0,
@@ -2438,8 +3006,8 @@ module.exports = {
                         name: "frenzy",
                         emoji: "<:frenzy:479298214453968896>",
                         onTurnEnd: {
-                            attackDmgPlus : 1050,
-                            magicDmgPlus : 1050,
+                            attackDmgPlus : 750,
+                            magicDmgPlus : 750,
                             everyNTurns: 8,
                             currentTurn: 1,
                             startTurn: 5
@@ -2474,7 +3042,7 @@ module.exports = {
                 hp: 74600,
                 attackDmg: 1700,
                 magicDmg: 1470,
-                armor: 2350,
+                armor: 2150,
                 spirit: 2100,
                 hpPerPartyMember: 0,
                 adPerPartyMember: 0,
@@ -2495,7 +3063,7 @@ module.exports = {
                 buffs: [
                     {
                         name: "frenzy",
-                        emoji: "<:frenzy:479298214453968896>",
+                        emoji: "<:overmind:479298213904646147>",
                         onTurnEnd: {
                             attackDmgPlus : 200,
                             magicDmgPlus : 750,
@@ -2505,7 +3073,7 @@ module.exports = {
                     }
                 ],
                 abilityOrder: [
-                    0, 1, 2, 0, 0, 0, 2, 3
+                    1, 0, 2, 0, 0, 2, 0, 3
                 ],
                 endOfTurnEvents : [
                     "focus",
@@ -2526,10 +3094,10 @@ module.exports = {
                     "Sky Elemental"
                 ],
                 baseHpOnMultiplier: 3,
-                attackDmg: 2000,
-                magicDmg: 1470,
-                armor: 2350,
-                spirit: 2100,
+                attackDmg: 1800,
+                magicDmg: 1170,
+                armor: 1850,
+                spirit: 1850,
                 hpPerPartyMember: 0,
                 adPerPartyMember: 0,
                 mdPerPartyMember: 0,
@@ -2543,14 +3111,14 @@ module.exports = {
                 hpPerPartyMember: 0,
                 adPerPartyMember: 0,
                 mdPerPartyMember: 0,
-                hp: 4300,
+                hp: 3250,
                 effectsOnDeath: [
                     "explode"
                 ],
                 attackDmg: 630,
-                magicDmg: 1060,
-                armor: 1300,
-                spirit: 1300,
+                magicDmg: 660,
+                armor: 1000,
+                spirit: 1000,
                 difficulty: "summoned",
                 element: "normal"
             },
@@ -2585,6 +3153,293 @@ module.exports = {
                 ],
                 attackDmg: 830,
                 magicDmg: 1060,
+                armor: 1300,
+                spirit: 1300,
+                difficulty: "summoned",
+                element: "normal"
+            },
+            planchet: {
+                name: "Planchet",
+                passive: true,
+                abilities: [],
+                buffs: [],
+                endOfTurnEvents : [
+                    "pillarAOEmagic"
+                ],
+                effectsOnDeath: [
+                    "elementalBarrier"
+                ],
+                hpPerPartyMember: 0,
+                adPerPartyMember: 0,
+                mdPerPartyMember: 0,
+                hp: 6000,
+                attackDmg: 0,
+                magicDmg: 0,
+                armor: 1200,
+                spirit: 1200,
+                difficulty: "summoned",
+                element: "normal"
+            },
+            grimaud: {
+                name: "Grimaud",
+                passive: true,
+                abilities: [],
+                buffs: [],
+                endOfTurnEvents : [
+                    "pillarAOEmagic"
+                ],
+                effectsOnDeath: [
+                    "elementalBarrier"
+                ],
+                hpPerPartyMember: 0,
+                adPerPartyMember: 0,
+                mdPerPartyMember: 0,
+                hp: 6000,
+                attackDmg: 0,
+                magicDmg: 0,
+                armor: 1200,
+                spirit: 1200,
+                difficulty: "summoned",
+                element: "normal"
+            },
+            mousqueton: {
+                name: "Mousqueton",
+                passive: true,
+                abilities: [],
+                buffs: [],
+                endOfTurnEvents : [
+                    "pillarAOE"
+                ],
+                effectsOnDeath: [
+                    "physicalBarrier"
+                ],
+                hpPerPartyMember: 0,
+                adPerPartyMember: 0,
+                mdPerPartyMember: 0,
+                hp: 6000,
+                attackDmg: 0,
+                magicDmg: 0,
+                armor: 1200,
+                spirit: 1200,
+                difficulty: "summoned",
+                element: "normal"
+            },
+            bazin : {
+                name: "Bazin",
+                passive: true,
+                abilities: [],
+                buffs: [],
+                endOfTurnEvents : [
+                    "pillarAOE"
+                ],
+                effectsOnDeath: [
+                    "physicalBarrier"
+                ],
+                hpPerPartyMember: 0,
+                adPerPartyMember: 0,
+                mdPerPartyMember: 0,
+                hp: 6000,
+                attackDmg: 0,
+                magicDmg: 0,
+                armor: 1200,
+                spirit: 1200,
+                difficulty: "summoned",
+                element: "normal"
+            },
+            athos: {
+                // all physical dmg (deals high physical) attack / uppercut / crush / volley (2 plyr) - furnace for 3 turns for ~ 1500 dmg every 8 turns
+                // EOT stacking debuff on tank that reduces their armor every 2 turns by 800 
+                // **** reduce dmg by 50% if dealing physical / magical for 2 turns every 3 turns
+                name: "Athos",
+                uniqueEnemy: true,
+                xp: 150,
+                abilities: [
+                    "attack",
+                    "poke",
+                    "uppercut",
+                    "crush"
+                ],
+                buffs: [
+                    {
+                        name: "frenzy",
+                        emoji: "<:overmind:479298213904646147>",
+                        onTurnEnd: {
+                            attackDmgPlus : 2200,
+                            magicDmgPlus : 1970,
+                            everyNTurns: 20,
+                            currentTurn: 1,
+                            startTurn: 21
+                        }
+                    }
+                ],
+                abilityOrder: [
+                    1, 0, 2, 0, 0, 0, 2, 3
+                ],
+                endOfTurnEvents : [
+                    "focus",
+                    "summonPorthos",
+                    "spawnAthos",
+                    "shackle",
+                    "arrowVolley",
+                    "arrowVolley",
+                    "shrink"
+                ],
+                effectsOnDeath: [
+                    "transferDartagnanAbilities",
+                    "transferAthosAbilities"
+                ],
+                hp: 60000,
+                attackDmg: 5220,
+                magicDmg: 4970,
+                armor: 2100,
+                spirit: 2100,
+                hpPerPartyMember: 0,
+                adPerPartyMember: 0,
+                mdPerPartyMember: 0,
+                difficulty: "boss",
+                element: "earth"
+            },
+            porthos: {
+                // all magic damage (deals high single target magical)
+                // curse / shadow bolt / iceshards
+                //  EOT shadow shield (debuff) must be bandaided or explodes for 50000 on raid with direct hits every 8 turns 
+                // EOT summon shadow orb *****focuses a player - can only be killed by that player deals damage to that player every 6 turns 
+                // (killable in ~3 high dps, 4 med dps) revives after 6 turns of being dead
+                name: "Porthos",
+                uniqueEnemy: true,
+                xp: 150,
+                abilities: [
+                    "attack",
+                    "curse",
+                    "iceshards",
+                    "shadowBurst"
+                ],
+                buffs: [
+                    {
+                        name: "frenzy",
+                        emoji: "<:overmind:479298213904646147>",
+                        onTurnEnd: {
+                            attackDmgPlus : 1700,
+                            magicDmgPlus : 2670,
+                            everyNTurns: 20,
+                            currentTurn: 1,
+                            startTurn: 21
+                        }
+                    }
+                ],
+                abilityOrder: [
+                    1, 0, 2, 0, 3, 3, 2, 0, 0
+                ],
+                endOfTurnEvents : [
+                    "focus",
+                    "summonAramis",
+                    "summonApparition",
+                    "spawnPorthos",
+                    "shadowShield"
+                ],
+                // shadow shield every 6 turns
+                effectsOnDeath: [
+                    // clear apparitions
+                    "transferDartagnanAbilities",
+                    "transferAthosAbilities",
+                    "transferPortosAbilities"
+                ],
+                hp: 62000,
+                attackDmg: 4170,
+                magicDmg: 5267,
+                armor: 2100,
+                spirit: 2100,
+                hpPerPartyMember: 0,
+                adPerPartyMember: 0,
+                mdPerPartyMember: 0,
+                difficulty: "boss",
+                element: "earth"
+            },
+            aramis: {
+                // all magic damage ( deals moderate magical)
+                // maniac - attacks on tank do same damage to group (4 turns) every 10 turns + *** 1-4  ---- 5 free
+                // EOT damage reflect, deal 50% damage back to you after dealing it to boss - 4 turns every 10 turns 6-9 ----- 10 free
+                // EOT summon enemies that need to be killed or else they buff the boss with frenzy after 3 turns
+                name: "Aramis",
+                uniqueEnemy: true,
+                xp: 150,
+                abilities: [
+                    "frostBlast",
+                    "flameblast",
+                    "poison",
+                    "guac",
+                    "curse"
+                ],
+                buffs: [
+                    {
+                        name: "frenzy",
+                        emoji: "<:overmind:479298213904646147>",
+                        onTurnEnd: {
+                            attackDmgPlus : 1700,
+                            magicDmgPlus : 2670,
+                            everyNTurns: 20,
+                            currentTurn: 1,
+                            startTurn: 21
+                        }
+                    }
+                ],
+                abilityOrder: [
+                    4, 1, 2, 0, 0, 0, 1, 2, 3, 3
+                ],
+                endOfTurnEvents : [
+                    "focus",
+                    "summonEnabler",
+                    "deathSentenceMessage",
+                    "deathSentence",
+                    "maniac"
+                ],
+                effectsOnDeath: [
+                ],
+                hp: 64000,
+                attackDmg: 4700,
+                magicDmg: 5970,
+                armor: 2100,
+                spirit: 2100,
+                hpPerPartyMember: 0,
+                adPerPartyMember: 0,
+                mdPerPartyMember: 0,
+                difficulty: "boss",
+                element: "earth"
+            },
+            apparition: {
+                name: "Apparition",
+                abilities: [ "attack", "curse"],
+                buffs: [],
+                hpPerPartyMember: 0,
+                adPerPartyMember: 0,
+                mdPerPartyMember: 0,
+                hp: 6300,
+                abilityOrder: [
+                    1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+                ],
+                endOfTurnEvents : [
+                    "glare"
+                ],
+                attackDmg: 1330,
+                magicDmg: 1460,
+                armor: 1300,
+                spirit: 1300,
+                difficulty: "summoned",
+                element: "normal"
+            },
+            enabler: {
+                name: "Enabler",
+                abilities: ["attack", "enable"],
+                buffs: [],
+                hpPerPartyMember: 0,
+                adPerPartyMember: 0,
+                mdPerPartyMember: 0,
+                hp: 9300,
+                abilityOrder: [
+                    0, 0, 0, 1
+                ],
+                attackDmg: 1330,
+                magicDmg: 860,
                 armor: 1300,
                 spirit: 1300,
                 difficulty: "summoned",
@@ -4698,7 +5553,7 @@ module.exports = {
             ]
         },
         challenge: {
-            1 :{
+            1: {
                 enemies: [
                     {
                         name: "Angry Mob Member",
@@ -5333,7 +6188,7 @@ module.exports = {
                     },
                 ],
                 points: 681,
-                difficulty: 25
+                difficulty: 11
             },
             6: {
                 // 4 energy crystals
@@ -5408,13 +6263,13 @@ module.exports = {
                     }
                 ],
                 points: 929,
-                difficulty: 41
+                difficulty: 25
             },
             7: {
                 timed: true,
                 timedPerTurn: 180000,
                 points: 1900,
-                difficulty: 83,
+                difficulty: 46,
                 enemies: [
                     {
                         name: "The Gatekeeper",
@@ -5530,7 +6385,7 @@ module.exports = {
                 timed: true,
                 timedPerTurn: 180000,
                 points: 4600,
-                difficulty: 175,
+                difficulty: 79,
                 enemies: [
                     {
                         name: "Archvampire",
@@ -5677,8 +6532,8 @@ module.exports = {
             9: {
                 timed: true,
                 timedPerTurn: 180000,
-                points: 9901,
-                difficulty: 220,
+                points: 22901,
+                difficulty: 110,
                 enemies: [
                     {
                         name: "Corrupted Overmind",
@@ -5841,36 +6696,11 @@ module.exports = {
                     }
                 ],
             },
-            // --- asteroid golem and stone giant, same as in quest however get stronger faster and have one additional ability each
-            // -- asteroid golem puts a dot on the tank every 2 turns, lowers the armor of the tank by 10% per stack (EOT), if bandaided asteroid golem gains 15% damage
-            // -- stone giant puts a status on anyone every 2 turns, deals phys damage every turn, if bandaided stone giant gains +15% damage
-
-            // -------- at 20% of either reaching, both will entomb, no more damage will be dealt to them, or healing. 
-
-            // -- 2 new enemies are summoned, Lava and Sky elemental spawn Lava has 30k and sky elemental has 70k
-            // -- (anger) (engulf)lava elemental loses 2k damage every turn, aoe damage every 4 turns,
-            // -- (fury) for every % of health lost gains damage equal to it at 50%, 50% increased damage 
-            // -- rampages every 4 turns for 3 turns on someone random 
-            // -- (dampen) (deals physical) (if damaged, reduces damage from magical by 50%)
-
-            // ------ (hurricane) sky elemental focuses tank, aoe damage every 4 turns,  
-            // -- (amplify) (deals magical) (if hit reduces damage from physical by 50%)
-            // (create this)summons a smoke screen every 3 turns the smoke screen has 50k HP and deals 500 damage to the Lava elemental and impales off the tank?
-
-            // -- (healallrampage) if player dies to rampage, they heal all the way to full
-
-            // -- (summonAnomaly) when both reach 20%, all 4 morph into one enemy and ~80k hp (consume) the enemy will deal increasing area effect damage every turn start 100 up by 75
-            // -- (summonFiend) (absorbFiend) summons enemies every 6 and after 3 turns, the enemies get soaked and for each hp point it heals (7 enemies 3K hp each) if left at 500 boss heals for 3500
-            // -- (crack + explode) if the enemies die they explode for 500 damage and increase damage taken by 20% on the boss
-
-            // -- (burst) every 4 turns the boss puts a dot on 2 players that can only be removed by healing to full
-            // -- (killallentomb) -kills all entombed targets
-
             10: {
                 timed: true,
                 timedPerTurn: 180000,
-                points: 9901,
-                difficulty: 290,
+                points: 75901,
+                difficulty: 141,
                 enemies: [
                     {
                         name: "Asteroid Golem",
@@ -5887,8 +6717,8 @@ module.exports = {
                                 name: "frenzy",
                                 emoji: "<:frenzy:479298214453968896>",
                                 onTurnEnd: {
-                                    attackDmgPlus : 705,
-                                    magicDmgPlus : 705,
+                                    attackDmgPlus : 505,
+                                    magicDmgPlus : 505,
                                     everyNTurns: 6,
                                     startTurn: 8
                                 }
@@ -5909,7 +6739,7 @@ module.exports = {
                             "summonSkyElementalDeath",
                             "summonLavaElementalDeath",
                         ],
-                        hp: 42600,
+                        hp: 30600,
                         attackDmg: 1480,
                         magicDmg: 1470,
                         armor: 2500,
@@ -5935,8 +6765,8 @@ module.exports = {
                                 name: "frenzy",
                                 emoji: "<:frenzy:479298214453968896>",
                                 onTurnEnd: {
-                                    attackDmgPlus : 705,
-                                    magicDmgPlus : 705,
+                                    attackDmgPlus : 505,
+                                    magicDmgPlus : 505,
                                     everyNTurns: 6,
                                     startTurn: 9
                                 }
@@ -5957,7 +6787,7 @@ module.exports = {
                             "summonSkyElementalDeath",
                             "summonLavaElementalDeath",
                         ],
-                        hp: 42600,
+                        hp: 30600,
                         attackDmg: 1480,
                         magicDmg: 1470,
                         armor: 10750,
@@ -5967,6 +6797,78 @@ module.exports = {
                         mdPerPartyMember: 0,
                         difficulty: "special",
                         element: "earth"
+                    }
+                ]
+            },
+            /*
+            */
+            11: {
+                // transitions
+                // 1 - 25% max hp (every 2 turns) + arrow volley(for 3 turns after second turn) + flanking orders (every 7 turns) + damage reduction (every 2 turns after 4 turns)
+                // on second enemy - arrow volley + damage reduction + flanking orders
+                // 2 - arrow volley + damage reduction + apparition + iceshards + explosion shield + flanking orders
+                // on third enemy - apparition + shield + iceshards + flanking orders + damage reduct
+                // 3 - apparition + iceshards + explosion shield + maniac + add spawn after 4 turns + flanking order + damage reduction
+                // on last enemy - maniac + enabler + flanking orders + damage reduct + apparition
+                timed: true,
+                timedPerTurn: 180000,
+                points: 117901,
+                difficulty: 186,
+                enemies: [
+                    {
+                        // deals moderate physical
+                        // crush / poke / attack
+                        // EOT - deals 25% of max HP
+                        // special ***flanking orders lightning, fire, water, earth(7 turns)
+                        // dps race, gains frenzy of + 4k after 20 turns
+                        name: "D'Artagnan",
+                        xp: 30,
+                        abilities: [
+                            "attack",
+                            "uppercut",
+                            "crush",
+                            "poke"
+                        ],
+                        buffs: [
+                            {
+                                name: "frenzy",
+                                emoji: "<:frenzy:479298214453968896>",
+                                onTurnEnd: {
+                                    attackDmgPlus : 2100,
+                                    magicDmgPlus : 2100,
+                                    everyNTurns: 20,
+                                    startTurn: 20
+                                }
+                            }
+                        ],
+                        abilityOrder: [
+                            3, 1, 2, 2, 0, 1, 0, 0, 2, 1, 0, 0
+                        ],
+                        endOfTurnEvents : [
+                            "focus",
+                            "summonAthos",
+                            "overpower",
+                            "summonPillars",
+                            "pillarRevive",
+                            "hammerdownProtocol",
+                            "hammerdownPrepare",
+                            "elementalOrder",
+                            "elementalOrderPrepare"
+                        ],
+                        effectsOnDeath: [
+                            // TODO: Transfer pillarRevive, hammerdownProtocol etc to athos
+                            "transferDartagnanAbilities",
+                        ],
+                        hp: 54600,
+                        attackDmg: 4580,
+                        magicDmg: 4570,
+                        armor: 2100,
+                        spirit: 2100,
+                        hpPerPartyMember: 0,
+                        adPerPartyMember: 0,
+                        mdPerPartyMember: 0,
+                        difficulty: "special",
+                        element: "normal"
                     }
                 ]
             }

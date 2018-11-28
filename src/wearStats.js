@@ -499,7 +499,7 @@ module.exports.statsObjectBuilder = function(message, slot1Data, slot2Data, slot
             var extraTacosCalculate = userAmuletData[amulet].itembaseextratacos + (userAmuletData[amulet].itemextratacosperlevel * userLevel)
             var extraTacoChanceCalculate = userAmuletData[amulet].itembasetacochance + (userAmuletData[amulet].itemtacochanceperlevel * userLevel);
             var extraTacosPairToCalculate = { extraTacos: extraTacosCalculate, tacoChance: getPercentage([ extraTacoChanceCalculate ]) }
-            var experienceCalculate = userAmuletData[amulet].experiencegain + ((Math.floor(userAmuletData[amulet].experienceonlevel / userAmuletData[amulet].experiencegainperlevel * userLevel)) || 0);
+            var experienceCalculate = ( userAmuletData[amulet].experiencegain + ((Math.floor(userAmuletData[amulet].experienceonlevel / userAmuletData[amulet].experiencegainperlevel * userLevel)) || 0) ) * userAmuletData[amulet].count 
             var guaranteedTacoChanceCalculate = userAmuletData[amulet].guaranteedtacos;
 
             rpgSuccessExtraTacos.push(extraTacosPairToCalculate);
@@ -510,7 +510,7 @@ module.exports.statsObjectBuilder = function(message, slot1Data, slot2Data, slot
             var extraTacosCalculate = userAmuletData[amulet].itembaseextratacos + (userAmuletData[amulet].itemextratacosperlevel * userLevel)
             var extraTacoChanceCalculate = userAmuletData[amulet].itembasetacochance + (userAmuletData[amulet].itemtacochanceperlevel * userLevel);
             var extraTacosPairToCalculate = { extraTacos: extraTacosCalculate, tacoChance: getPercentage([ extraTacoChanceCalculate ]), aboveTacoSlots: userAmuletData[amulet].abovetacoslots }
-            var experienceCalculate = userAmuletData[amulet].experiencegain + ((Math.floor(userAmuletData[amulet].experienceonlevel / userAmuletData[amulet].experiencegainperlevel * userLevel)) || 0);
+            var experienceCalculate = ( userAmuletData[amulet].experiencegain + ((Math.floor(userAmuletData[amulet].experienceonlevel / userAmuletData[amulet].experiencegainperlevel * userLevel)) || 0) ) * userAmuletData[amulet].count 
             var guaranteedTacoChanceCalculate = userAmuletData[amulet].guaranteedtacos;
 
             slotsWinExtraTacos.push(extraTacosPairToCalculate);
@@ -985,6 +985,38 @@ function calculateIndividualPairExtraTacos(extraTacosChancePairs, extraParams){
         
     }
     return extraTacos;
+}
+
+module.exports.calculateExtraExperienceGained = function(userItemStats, command, extraParams){
+    // TODO: have the enemy rpg difficulty in extra params so everything is calculated here
+    var extraExperience = 0
+    if (command == "thank"){
+        extraExperience = extraExperience + userItemStats.thankCommandExperienceGain;
+    }
+    else if (command == "sorry"){
+        extraExperience = extraExperience + userItemStats.sorryCommandExperienceGain;
+    }
+    else if (command == "cook"){
+        extraExperience = extraExperience + userItemStats.cookCommandExperienceGain;
+    }
+    else if (command == "prepare"){
+        extraExperience = extraExperience + userItemStats.prepareCommandExperienceGain;
+    }
+    else if (command == "fetch"){
+        extraExperience = extraExperience + userItemStats.fetchCommandExperienceGain;
+    }
+    else if (command == "scavenge"){
+        extraExperience = extraExperience + userItemStats.scavengeCommandExperienceGain;
+    }
+    else if (command == "rpg"){
+        // roll for extra tacos
+        extraExperience = extraExperience + userItemStats.rpgSuccessExtraExperienceGain;
+    }
+    else if (command == "slots"){
+        extraExperience = extraExperience + userItemStats.slotsWinExperienceGain;
+    }
+    return extraExperience
+    
 }
 
 module.exports.calculateExtraTacos = function(userItemStats, command, extraParams){

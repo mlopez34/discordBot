@@ -173,15 +173,15 @@ client.on('message', function(message){
                         message.channel.send(error);
                     }
                 }
-                /* SEASONAL
-                else if (commandIs("trickortreat", message)){
-                    commands.trickOrTreatCommand(message);
-                }
                 
+                // else if (commandIs("trickortreat", message)){
+                //     commands.trickOrTreatCommand(message);
+                // }
+                //SEASONAL
                 else if (commandIs("present", message)){
                     commands.openPresentCommand(message);
                 }
-                */
+                
                 else if( commandIs("sorry", message )){
                     commands.sorryCommand(message);
                 }
@@ -611,15 +611,15 @@ client.on('message', function(message){
                         message.channel.send(error);
                     }
                 }
-                /* SEASONAL
-                else if (commandIs("trickortreat", message)){
-                    commands.trickOrTreatCommand(message);
-                }
                 
+                // else if (commandIs("trickortreat", message)){
+                //     commands.trickOrTreatCommand(message);
+                // }
+                // SEASONAL
                 else if (commandIs("present", message)){
                     commands.openPresentCommand(message);
                 }
-                */
+                
                 else if( commandIs("sorry", message )){
                     commands.sorryCommand(message);
                     data.command = "sorry"

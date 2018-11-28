@@ -494,8 +494,11 @@ module.exports.purchasePickAxe = function(userId, tacosSpent, cb){
     else if (tacosSpent <= -50000 && tacosSpent >= -5000000){
         selectedPickaxe = "master";
     }
-    else if (tacosSpent <= -50000000 ){
+    else if (tacosSpent <= -5000000 && tacosSpent >= -50000000){
         selectedPickaxe = "ethereal";
+    }
+    else if (tacosSpent <= -50000000 && tacosSpent >= -500000000){
+        selectedPickaxe = "zeus";
     }
     //// console.log("new last thank: " + lastThank);
     db.none(query, [tacosSpent, userId, selectedPickaxe])
@@ -1018,10 +1021,10 @@ module.exports.updateUserSoiledCrops = function(discordId, soiledCrops, currentS
     });
 }
 
-module.exports.buyFlask = function(discordId, currentFlask, cb){
+module.exports.buyFlask = function(discordId, currentFlask, flaskCostForUser, cb){
     var query = ""
     var flask = 1;
-    var flaskCost = 500;
+    var flaskCost = flaskCostForUser;
     if (!currentFlask){
         query = 'update ' + config.profileTable + ' set flasks=$1, tacos=tacos-$3 where discordid=$2'
     }

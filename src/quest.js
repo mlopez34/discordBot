@@ -285,9 +285,9 @@ module.exports.questStringBuilder = function(questname, questData){
             if (questData && questData.storyStep == 1){
                 return questData.message.author.username + ", you must show your love the hard way..."
             }else if (questData && questData.storyStep == 2){
-                return questData.message.author.username + ", you must show your love the hard way, give your soulmate 100,000 tacos"
+                return questData.message.author.username + ", you must show your love the hard way, give your soulmate 10,000 tacos"
             }else if (questData && questData.storyStep == 3){
-                return questData.message.author.username + ", you must show your love the hard way, give your soulmate 100,000 tacos ❤️❤️❤️ "
+                return questData.message.author.username + ", you must show your love the hard way, give your soulmate 10,000 tacos ❤️❤️❤️ "
             }
         }
         // gave 20,000 tacos
@@ -1544,7 +1544,7 @@ function handleRingArtifactStageOne(message, discordUserId, stage, team, propose
                 if (error){
                     console.log(error);
                 }else{
-                    activeMissions["quest-" + discordUserId] = { tacosToGive: 100000  , proposedTo: proposedTo }
+                    activeMissions["quest-" + discordUserId] = { tacosToGive: 10000  , proposedTo: proposedTo }
                     if (activeQuests[idOfQuest]){
                         delete activeQuests[idOfQuest];
                     }
@@ -2283,7 +2283,7 @@ function handleTombArtifactStageSix(message, discordUserId, stage, team, channel
 module.exports.proposedTo = function(message, discordUserId, stage, proposedTo){
     if (stage == 2){
         // re propose and create embed that the user needs to give tacos
-        activeMissions["quest-" + discordUserId] = { tacosToGive: 100000  , proposedTo: proposedTo }
+        activeMissions["quest-" + discordUserId] = { tacosToGive: 10000  , proposedTo: proposedTo }
         message.channel.send(message.author + " has proposed to " + proposedTo)
 
     }else if (stage == 3){

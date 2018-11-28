@@ -30,6 +30,7 @@ var PICKAXE_COST = 250;
 var IMPROVED_PICKAXE_COST = 10000;
 var MASTER_PICKAXE_COST = 750000;
 var ETHEREAL_PICKAXE_COST = 12500000
+var ZEUS_TRIDENT_COST = 175000000
 var PASTA_COST = 2500
 var SCAVENGE_TACO_FIND_CHANCE_HIGHER = 94
 var SCAVENGE_TACO_FIND_CHANCE = 75;
@@ -53,6 +54,7 @@ var ARTIFACT_RECIPE_COST = 35000;
 var FLASK_COST = 500;
 var ARTIFACT_RECIPE_ID = 69;
 var TRANSFORMIUM_ID = 155;
+var ETHEREUM_ID = 200;
 var TACO_PARTY_TIME_TO_LIVE = 300000
 var SHOP_ITEM_COST = 125
 
@@ -89,6 +91,7 @@ var EXPERIENCE_GAINS = {
 }
 
 var commandHoursToActivate = {
+    rpg: 2,
     thank: 2,
     sorry: 5,
     cook: 12,
@@ -301,12 +304,12 @@ module.exports.trickOrTreatCommand = function(message){
                     trickOrTreatMap["tot-" + discordUserId] = {
                         tot: "trick"
                     };
-                    profileDB.updateUserTacosTrickOrTreat(discordUserId, -5, function(updateerr, updateResponse) {
+                    profileDB.updateUserTacosTrickOrTreat(discordUserId, -50, function(updateerr, updateResponse) {
                         if (updateerr){
                             // console.log(updateerr);
                         }
                         else{
-                            message.channel.send("You have been tricked! 👻 Bender took 5 tacos from your candy bag");
+                            message.channel.send("You have been tricked! 👻 Bender took 50 tacos from your candy bag");
                             // update lasttrickortreattime
                             
                         }
@@ -318,12 +321,12 @@ module.exports.trickOrTreatCommand = function(message){
                         tot: "treat"
                     };
                     
-                    profileDB.updateUserTacosTrickOrTreat(discordUserId, 10, function(updateerr, updateResponse) {
+                    profileDB.updateUserTacosTrickOrTreat(discordUserId, 100, function(updateerr, updateResponse) {
                         if (updateerr){
                             // console.log(updateerr);
                         }
                         else{
-                            message.channel.send("You have been treated! 🎃 Bender put 10 tacos in your candy bag");
+                            message.channel.send("You have been treated! 🎃 Bender put 100 tacos in your candy bag");
                             // update lasttrickortreattime
                         }
                     })
@@ -427,7 +430,7 @@ module.exports.openPresentCommand = function(message){
                 }
                 else if (roll < 50){
                     // give the user tacos           
-                    tacosFound = 25;
+                    tacosFound = 250;
                     profileDB.updateUserTacosPresent(discordUserId, tacosFound, function(updateerr, updateResponse) {
                         if (updateerr){
                             console.log(updateerr);
@@ -497,7 +500,7 @@ module.exports.thankCommand = function(message){
                                         }
                                         else{
                                             // // console.log(updateResponse);
-                                            var experienceFromItems = wearRes.thankCommandExperienceGain ? wearRes.thankCommandExperienceGain : 0;
+                                            var experienceFromItems = wearStats.calculateExtraExperienceGained(wearRes, "thank", null);
                                             ///// For Artifact or Missions
                                             var dataForMission = {}
                                             missionCheckCommand(message, discordUserId, "thank", mentionedId, dataForMission)
@@ -590,7 +593,7 @@ module.exports.sorryCommand = function(message){
                                             // console.log(createerr); // cant create user RIP
                                         }
                                         else{
-                                            var experienceFromItems = wearRes.sorryCommandExperienceGain ? wearRes.sorryCommandExperienceGain : 0;
+                                            var experienceFromItems = wearStats.calculateExtraExperienceGained(wearRes, "sorry", null);
                                             experience.gainExperience(message, message.author, (EXPERIENCE_GAINS.sorry + experienceFromItems) , sorryResponse);
                                             ///// For Artifact or Missions
                                             var dataForMission = {}
@@ -779,7 +782,7 @@ module.exports.prepareCommand = function (message){
                                             }else{
                                                 message.channel.send(message.author + " You have prepared `" + tacosToPrepare + "` tacos :taco:! `" + soiledToTaco +"` were from soiled crops. The tacos also come with `1` warranty protection");
                                             }
-                                            var experienceFromItems = wearRes.prepareCommandExperienceGain ? wearRes.prepareCommandExperienceGain : 0;
+                                            var experienceFromItems = wearStats.calculateExtraExperienceGained(wearRes, "prepare", null)
                                             experience.gainExperience(message, message.author, (EXPERIENCE_GAINS.prepare + (EXPERIENCE_GAINS.preparePerStand * userTacoStands) + experienceFromItems) , prepareResponse);
                                             stats.statisticsManage(discordUserId, "maxextratacos", soiledToTaco, function(staterr, statSuccess){
                                                 if (staterr){
@@ -1113,7 +1116,7 @@ module.exports.cookCommand = function(message){
                                 data.cookcount = cookRoll
                                 // console.log(data);
                                 achiev.checkForAchievements(discordUserId, data, message);
-                                var experienceFromItems = wearRes.cookCommandExperienceGain ? wearRes.cookCommandExperienceGain : 0;
+                                var experienceFromItems = wearStats.calculateExtraExperienceGained(wearRes, "cook", null);
                                 experience.gainExperience(message, message.author, (EXPERIENCE_GAINS.cook + experienceFromItems), cookResponse);
                             }
                         })
@@ -1281,7 +1284,10 @@ module.exports.profileCommand = function(message){
                     profileData.nextReputation = "glorified"
                 }
                 else if (profileData.reputationStatus.toLowerCase() == "glorified"){
-                    profileData.nextReputation = "glorified"
+                    profileData.nextReputation = "sanctified"
+                }
+                else if (profileData.reputationStatus.toLowerCase() == "sanctified"){
+                    profileData.nextReputation = "sanctified"
                 }
                 profileData.achievementString = achiev.achievementStringBuilder(profileResponse.data.achievements, false);
                 if (profileResponse.data.pickaxe == "basic"){
@@ -1296,6 +1302,9 @@ module.exports.profileCommand = function(message){
                 }
                 else if(profileResponse.data.pickaxe == "ethereal"){
                     profileData.userItems = "Ethereal Pickaxe :cyclone::pick: \n"
+                }
+                else if(profileResponse.data.pickaxe == "zeus"){
+                    profileData.userItems = "Zeus' Trident :sparkles::pick: \n"
                 }
                 if (profileResponse.data.casserole == true){
                     profileData.userItems = profileData.userItems + "Casserole :shallow_pan_of_food: \n"
@@ -1358,7 +1367,10 @@ module.exports.profileCommand = function(message){
                     profileData.nextReputation = "glorified"
                 }
                 else if (profileData.reputationStatus.toLowerCase() == "glorified"){
-                    profileData.nextReputation = "glorified"
+                    profileData.nextReputation = "sanctified"
+                }
+                else if (profileData.reputationStatus.toLowerCase() == "sanctified"){
+                    profileData.nextReputation = "sanctified"
                 }
                 profileData.achievementString = achiev.achievementStringBuilder(profileResponse.data.achievements, false);
                 if (profileResponse.data.pickaxe == "basic"){
@@ -1373,6 +1385,9 @@ module.exports.profileCommand = function(message){
                 }
                 else if(profileResponse.data.pickaxe == "ethereal"){
                     profileData.userItems = "Ethereal Pickaxe :cyclone::pick: \n"
+                }
+                else if(profileResponse.data.pickaxe == "zeus"){
+                    profileData.userItems = "Zeus' Trident :sparkles::pick: \n"
                 }
                 if (profileResponse.data.casserole == true){
                     profileData.userItems = profileData.userItems + "Casserole :shallow_pan_of_food: \n"
@@ -1594,6 +1609,25 @@ module.exports.buyPickaxeCommand = function(message){
                     message.channel.send(message.author + " You cannot afford the `Ethereal Pickaxe`");
                 }
             }
+            else if (pickaxeResponse.data.pickaxe == "ethereal"){
+                if (pickaxeResponse.data.tacos >= ZEUS_TRIDENT_COST){
+                    // purchaseStand
+                    var tacosSpent = ZEUS_TRIDENT_COST * -1;
+                    profileDB.purchasePickAxe(discordUserId, tacosSpent, function(err, data){
+                        if (err){
+                            // console.log(err);
+                            // couldn't purchase stand
+                        }
+                        else{
+                            experience.gainExperience(message, message.author, EXPERIENCE_GAINS.buyPickaxe * 500 , pickaxeResponse);
+                            message.channel.send(message.author + " Congratulations, you have purchased Zeus' Trident :pick:!");
+                        }
+                    })
+                }
+                else{
+                    message.channel.send(message.author + " You cannot afford `Zeus' Trident`");
+                }
+            }
         }
     })
 }
@@ -1657,6 +1691,11 @@ function shopBuilder(message, shopData, long){
             // improved pickaxe
             pickaxeCost = ETHEREAL_PICKAXE_COST + " :taco:";
             embed.addField('Ethereal Pickaxe', pickaxeCost, true)
+        }
+        else if (shopData.pickaxe == "ethereal"){
+            // improved pickaxe
+            pickaxeCost = ZEUS_TRIDENT_COST + " :taco:";
+            embed.addField("Zeus' Trident", pickaxeCost, true)
         }
         embed.addField('Pasta', PASTA_COST + " :taco:", true)
         embed.addField('Knife',  SHOP_ITEM_COST + " :taco:", true)
@@ -1736,6 +1775,17 @@ function shopBuilder(message, shopData, long){
             .addField('Cost', pickaxeCost, true)
             .addField('Command', config.commandString + "buypickaxe", true)
         }
+        else if (shopData.pickaxe == "ethereal"){
+            // improved pickaxe
+            pickaxeDescription = "Zeus' Trident can be used to scavenge. This is the Ultimate Pickaxe, the gods will grant you the power to find mankind's most valuable treasures :sparkles: .";
+            pickaxeCost = ZEUS_TRIDENT_COST + " :taco:";
+            embed.addBlankField(true)
+            .addBlankField(false)
+            .addField("Zeus' Trident", ":sparkles::pick:", true)
+            .addField('Description', pickaxeDescription, true)
+            .addField('Cost', pickaxeCost, true)
+            .addField('Command', config.commandString + "buypickaxe", true)
+        }
         
         embed.addBlankField(true)
         .addBlankField(false)
@@ -1744,7 +1794,7 @@ function shopBuilder(message, shopData, long){
         .addField('Cost', PASTA_COST + " :taco:", true)
         .addField('Command', config.commandString + "buyPasta", true)
         embed.addBlankField(true)
-        embed.addField('Wearable Items', "Knife/Socks: " + SHOP_ITEM_COST + " :taco: gives chance at additional tacos when thanking\nShorts/Skirt: " + SHOP_ITEM_COST + ":taco: gives chance at additional tacos when sorrying\nT-shirt/Belt: " + SHOP_ITEM_COST + ":taco: gives chance at additional tacos when cooking\ndo `-buyitem details` for more info on these items ", true)
+        embed.addField('Wearable Items', "Knife/Socks: " + SHOP_ITEM_COST + " :taco: gives chance at additional tacos when thanking\nShorts/Skirt: " + SHOP_ITEM_COST + ":taco: gives chance at additional tacos when sorrying\nT-shirt/Belt: " + SHOP_ITEM_COST + ":taco: gives chance at additional tacos when cooking\ndo `-buyitem details` for more info on these items\n****Each of these items can be combined into improved versions (requires 5 of the same item to combine | use command `-combine [itemname]`) ", true)
         .addField('Command', config.commandString + "buyitem [itemname] \n**example**: -buyitem knife", true)
 
         // allow for pet to be purchased
@@ -1956,9 +2006,10 @@ module.exports.buyFlaskCommand = function(message){
             var userRepLevel = REPUTATIONS[userReputation.toLowerCase()] ? REPUTATIONS[userReputation.toLowerCase()].level : 1;
             if (userRepLevel >= REWARDS["Flask"].repLevel){
                 // able to shop, spend the tacos and then create the item and store it in the user's inventory
-                if (buyFlaskResponse.data.tacos >= FLASK_COST){
+                var flaskCostForUser = FLASK_COST + (30 * (buyFlaskResponse.data.level - 20 ))
+                if (buyFlaskResponse.data.tacos >= flaskCostForUser){
                     // add a flask to the user's profile
-                    profileDB.buyFlask(discordUserId, currentFlasks, function(flaskErr, flaskRes){
+                    profileDB.buyFlask(discordUserId, currentFlasks, flaskCostForUser, function(flaskErr, flaskRes){
                         if (flaskErr){
                             console.log(flaskErr);
                         }else{
@@ -2073,12 +2124,12 @@ function repShopBuilder(message, shopData){
         var userRepLevel = REPUTATIONS[shopData.repstatus.toLowerCase()].level;
         if (userRepLevel >= REWARDS["Flask"].repLevel){
             var flaskDescription = "Purchase a Flask! used to create potions for random effects, not tradeable."
-
+            var flaskCostForUser = FLASK_COST + (30 * (shopData.userLevel - 20 ))
             embed.addBlankField(true)
             .addBlankField(false)
             .addField('Flask (Admired Reputation or Better Only)', ":alembic:", true)
             .addField('Description', flaskDescription, true)
-            .addField('Cost', FLASK_COST + " :taco:", true)
+            .addField('Cost', flaskCostForUser + " :taco:", true)
             .addField('Command', config.commandString + "buyflask", true)
         }
     }
@@ -2100,6 +2151,7 @@ module.exports.repShopCommand = function(message){
             var shopData = {};
             var userTacoStands = 0;
             var userTacos = shopResponse.data.tacos;
+            var userLevel = shopResponse.data.level
             shopData.userTacos = userTacos;
             shopData.pickaxe = shopResponse.data.pickaxe;
             if (shopResponse.data.tacostands && shopResponse.data.tacostands > -1){
@@ -2107,6 +2159,7 @@ module.exports.repShopCommand = function(message){
             }
             shopData.repstatus = shopResponse.data.repstatus
             shopData.userTacoCost = userTacoStands;
+            shopData.userLevel = userLevel
             repShopBuilder(message, shopData);
         }
     })
@@ -2411,6 +2464,7 @@ function raresEmbedBuilder(message, itemsMap, allItems, long, rarity){
                 || (allItems[key].itemraritycategory == "ancient" && rarity == "ancient")
                 || (allItems[key].itemraritycategory == "ancient+" && rarity == "ancient")
                 || (allItems[key].itemraritycategory == "ancient++" && rarity == "ancient")
+                || (allItems[key].itemraritycategory == "ancient+++" && rarity == "ancient")
                 || (allItems[key].itemraritycategory == "artifact" && rarity == "artifact")
                 || (allItems[key].itemraritycategory == "artifact+" && rarity == "artifact")
                 || (allItems[key].itemraritycategory == "myth" && rarity == "artifact")) ){
@@ -2436,7 +2490,7 @@ function raresEmbedBuilder(message, itemsMap, allItems, long, rarity){
                 else if (allItems[key].itemraritycategory === "ancient+"){
                     emoji = ":large_orange_diamond: "
                 }
-                else if (allItems[key].itemraritycategory === "ancient++"){
+                else if (allItems[key].itemraritycategory === "ancient++" || allItems[key].itemraritycategory === "ancient+++"){
                     emoji = ":star: "
                 }
                 else if (allItems[key].itemraritycategory === "rare++" || allItems[key].itemraritycategory === "rare+++"){
@@ -2474,6 +2528,7 @@ function raresEmbedBuilder(message, itemsMap, allItems, long, rarity){
                     }else if (allItems[key].itemraritycategory == "rare++" 
                         || allItems[key].itemraritycategory == "rare+++" 
                         || allItems[key].itemraritycategory == "ancient++" 
+                        || allItems[key].itemraritycategory == "ancient+++" 
                         || allItems[key].itemraritycategory == "myth" ){
 
                         if (inventoryStringRefined.length > 900){
@@ -2844,6 +2899,23 @@ module.exports.scavangeCommand = function (message){
                                     EXPERIENCE_MULTIPLIER = 6
                                     rollsCount++
                                 }
+                                else if (getUserResponse.data.pickaxe == "ethereal"){
+                                    ARTIFACT_MIN_ROLL = 9978
+                                    ANCIENT_MAX_ROLL = 9978;
+                                    ANCIENT_MIN_ROLL = 9925;
+                                    RARE_MAX_ROLL = 9925;
+                                    RARE_MIN_ROLL = 9700;
+                                    UNCOMMON_MAX_ROLL = 9700;
+                                    COMMON_ITEMS_TO_OBTAIN = 12
+                                    UNCOMMON_ITEMS_TO_OBTAIN = 4
+                                    TACOS_FOUND_MULTIPLIER = 20
+                                    EXPERIENCE_MULTIPLIER = 20
+                                    rollsCount++
+                                    var extraExtraRoll = Math.floor(Math.random() * 10000) + 1;
+                                    if (extraExtraRoll > 7500){
+                                        rollsCount++
+                                    }
+                                }
 
                                 var allItems = getItemResponse.data
                                 var commonItems = [];
@@ -2971,7 +3043,7 @@ module.exports.scavangeCommand = function (message){
                                     }
                                     else{
                                         // console.log(updateLSres);
-                                        var experienceFromItems = wearRes.scavengeCommandExperienceGain ? wearRes.scavengeCommandExperienceGain : 0;                                        
+                                        var experienceFromItems = wearStats.calculateExtraExperienceGained(wearRes, "scavenge", null);                                     
                                         experience.gainExperience(message, message.author, ((EXPERIENCE_GAINS.scavenge * EXPERIENCE_MULTIPLIER) + experienceFromItems), getUserResponse);
                                     }
                                 })
@@ -3143,7 +3215,7 @@ module.exports.slotsCommand = function(message, tacosBet){
                             // IF SLOTS WIN IS HIGHER THAN 0 ADD TO THE TACOS WON
                             if (tacosWon > 0){
                                 extraTacosFromItems = wearStats.calculateExtraTacos( wearRes, "slots", {userBid: bet } ); // 0 or extra
-                                experienceFromItems = wearRes.slotsWinExperienceGain ? wearRes.slotsWinExperienceGain : 0;
+                                experienceFromItems = wearStats.calculateExtraExperienceGained(wearRes, "slots", null);
                             }
 
                             profileDB.updateUserTacos(discordUserId, tacosWon + extraTacosFromItems, function(updateErr, updateRes){
@@ -3966,7 +4038,7 @@ module.exports.fetchCommand = function(message){
                                         // console.log(err);
                                     }
                                     else{
-                                        var experienceFromItems = wearRes.fetchCommandExperienceGain ? wearRes.fetchCommandExperienceGain : 0;                                                                                
+                                        var experienceFromItems = wearStats.calculateExtraExperienceGained(wearRes, "fetch", null);                                                                             
                                         experience.gainExperience(message, message.author, (( (EXPERIENCE_GAINS.perFetchCd * PETS_AVAILABLE[userPet].fetch) / 10) + experienceFromItems) , fetchResponse);
                                         // user's pet fetched some tacos
                                         if (extraTacosFromItems > 0){
@@ -4695,7 +4767,10 @@ module.exports.combineCommand = function(message, args){
                                     && itemsMapById[ItemInQuestion.itemid]
                                     && itemsMapById[ItemInQuestion.itemid].itemshortname === myItemShortName ){
                                     var rarityOfItem = itemsMapbyShortName[myItemShortName].itemraritycategory
-                                    if (rarityOfItem == "rare"){
+                                    if (rarityOfItem == "uncommon+"){
+                                        itemCount = 5
+                                    }
+                                    else if (rarityOfItem == "rare"){
                                         itemCount = 5
                                     }else if (rarityOfItem == "ancient"){
                                         itemCount = 4
@@ -4709,8 +4784,11 @@ module.exports.combineCommand = function(message, args){
                                     else if (rarityOfItem == "ancient+"){
                                         itemCount = 4
                                     }
+                                    else if (rarityOfItem == "ancient++"){
+                                        itemCount = 4
+                                    }
                                     else if (rarityOfItem == "artifact"){
-                                        itemCount = 1
+                                        itemCount = 4
                                     }
                                 }
                                 // console.log(ItemInQuestion);
@@ -4857,7 +4935,46 @@ module.exports.combineCommand = function(message, args){
                                     }
                                     
 
-                                }else if (itemsInInventoryCountMap[idOfMyItem] && 
+                                }
+                                else if (rarityOfMyItem && rarityOfMyItem == "ancient++"
+                                    && itemsInInventoryCountMap[idOfMyItem] 
+                                    && itemsInInventoryCountMap[idOfMyItem] >= itemCount){
+                                    // use transformium
+                                    var ethereumId = ETHEREUM_ID
+                                    var transAdded = false;
+                                    if (itemsInInventoryCountMap[ethereumId] >= 1){
+                                        for (var item in inventoryResponse.data){
+                                            var ItemInQuestion = inventoryResponse.data[item]
+                                            if ( itemsMapById[ItemInQuestion.itemid] && itemsMapById[ItemInQuestion.itemid].id === ethereumId && !transAdded){
+                                                itemsBeingedCombined.push(ItemInQuestion);
+                                                transAdded = true;
+                                            }
+                                        }
+                                        var itemToCreate = itemsMapById[combineToId];  // maybe create the item and keep it inactive?
+                                        var itemToCreateById = itemsMapById[combineToId].id;
+                                        var itemToCreateByName = itemsMapById[combineToId].itemname
+                                        // use the transformium
+                                        if (transAdded){
+                                            profileDB.addNewItemToUser(discordUserId, [itemToCreate], function(createErr, createRes){
+                                                if (createErr){
+                                                    // console.log(createErr);
+                                                }
+                                                else{
+                                                    // console.log(createRes);                                        
+                                                    profileDB.bulkUpdateItemStatus(itemsBeingedCombined, "used", function(combineErr, combineRes){
+                                                        if (combineErr){
+                                                            // console.log(combineErr);
+                                                        }else{
+                                                            // console.log(combineRes);
+                                                            combineEmbedBuilder(message, itemToCreateByName, itemToCreate, rarityOfItem);
+                                                        }
+                                                    })
+                                                }
+                                            })        
+                                        }
+                                    }
+                                }
+                                else if (itemsInInventoryCountMap[idOfMyItem] && 
                                     itemsInInventoryCountMap[idOfMyItem] >= itemCount){
                                     // combine all the items into a next level item
                                     var itemToCreate = itemsMapById[combineToId];

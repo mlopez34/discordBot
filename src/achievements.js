@@ -83,6 +83,11 @@ var achievementsData = {
         score: 15,
         description : "Reach level 30"
     },
+    "The Machine" : {
+        emoji: ":snowboarder:",
+        score: 15,
+        description : "Reach level 40"
+    },
     "Archeologist" : {
         emoji: ":rosette:",
         score: 15,
@@ -372,6 +377,19 @@ module.exports.checkForAchievements = function(discordUserId, data, message, cal
                         }
                     })
                 }
+
+                if(data.levelObtained && 
+                    data.levelObtained >= 40 && 
+                    (data.achievements === null || data.achievements.indexOf("The Machine") == -1)){
+                        profileDB.updateAchievements(discordUserId, "{The Machine}", function(err, r){
+                            if (err){
+                                // console.log(err);
+                            }
+                            {
+                                achievementEmbedBuilder(message, "The Machine", achievementEarner);
+                            }
+                        })
+                    }
 
                 if(data.itemraritycombined && 
                 data.itemraritycombined == "artifact" && 
