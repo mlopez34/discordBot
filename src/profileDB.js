@@ -1246,6 +1246,20 @@ module.exports.createUserWearInfo = function(data, cb){
     });
 }
 
+// get hacksaw, and improvements
+
+// rpg keystone unlock 1 - x
+
+// feed pet
+
+// train pet
+
+// update plant slot
+
+// create cake??
+
+// obtain shears
+
 // Concatenates an array of objects or arrays of values, according to the template,
 // to use with insert queries. Can be used either as a class type or as a function.
 //

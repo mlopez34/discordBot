@@ -8,6 +8,7 @@ const Discord = require("discord.js");
 var Promise = require('bluebird');
 var config = require("./config.js");
 var useItem = require("./useItem.js")
+var disassembleItem = require("./disassemble.js")
 var experience = require("./experience.js")
 var wearStats = require("./wearStats.js")
 var quest = require("./quest.js")
@@ -4713,6 +4714,206 @@ module.exports.useCommand = function(message, args){
     }
 }
 
+module.exports.disassembleCommand = function(message, args){
+    // disassemble the item that you want via args id
+    // console.log(args);
+    var discordUserId = message.author.id;
+    if (args && args.length > 1 ){
+        var myItemShortName =  args[1];
+
+        // TODO: Check for hacksaw
+
+        profileDB.getUserItems(discordUserId, function(err, inventoryResponse){
+            if (err){
+                // console.log(err);
+                agreeToTerms(message, discordUserId);
+            }
+            else{
+                var itemsInInventoryCountMap = {};
+                var itemsMapbyShortName = {};
+                var itemsMapById = {};
+                var IdsOfItemsBeingedDisassembled = []
+
+                profileDB.getItemData(function(error, allItemsResponse){
+                    if (error){
+                        console.log(error)
+                    }else{
+                        for (var index in allItemsResponse.data){
+                            itemsMapbyShortName[allItemsResponse.data[index].itemshortname] = allItemsResponse.data[index];
+                        }
+                        for (var index in allItemsResponse.data){
+                            itemsMapById[allItemsResponse.data[index].id] = allItemsResponse.data[index];
+                        }
+                        for (var item in inventoryResponse.data){
+                            var validItem = useItem.itemValidate(inventoryResponse.data[item]);
+                            var notWearing = useItem.itemNotWearing(inventoryResponse.data[item])
+                            var auctionedItem = false;
+                            var ItemInQuestion = inventoryResponse.data[item]
+
+                            if (itemsInAuction[inventoryResponse.data[item].id]){
+                                auctionedItem = true;
+                            }
+                            var itemBeingDisassembled = false;
+                            if (activeTradeItems[inventoryResponse.data[item].id]){
+                                itemBeingDisassembled = true;
+                            }
+                            if (!itemsInInventoryCountMap[inventoryResponse.data[item].itemid] 
+                                && validItem && notWearing && !auctionedItem && !itemBeingDisassembled){
+                                // item hasnt been added to be counted, add it as 1
+                                itemsInInventoryCountMap[inventoryResponse.data[item].itemid] = 1;
+
+                                // console.log(ItemInQuestion);
+                                if (itemsMapbyShortName[myItemShortName] 
+                                    && itemsMapById[ItemInQuestion.itemid].itemshortname === myItemShortName){
+                                        IdsOfItemsBeingedDisassembled.push(ItemInQuestion.id);
+                                }
+                            }
+                        }
+                        // console.log(itemsInInventoryCountMap);
+                        for (var index in allItemsResponse.data){
+                            itemsMapbyId[allItemsResponse.data[index].id] = allItemsResponse.data[index];
+                            // console.log(allItemsResponse.data[index]);
+                            if (allItemsResponse.data[index].itemraritycategory == "rare" && allItemsResponse.data[index].emoji != ":seedling:"){
+                                // add to list of rares
+                                listOfRares.push(allItemsResponse.data[index]);
+                            }
+                        }
+                        // have items to disassemble
+                        if (IdsOfItemsBeingedDisassembled.length > 0){
+                            disassembleItem.performDisassemble(message, discordUserId, IdsOfItemsBeingedDisassembled, listOfRares, function(useError, daRes){
+                                if (useError){
+                                    console.log(useError);
+                                }
+                                else{
+                                    console.log(daRes[0]);
+
+                                    // TODO: create embed like scavenge 
+                                    // TODO: should this have a cooldown?
+
+
+                                    // if (daRes.length && daRes.length > 0 && daRes[0].itemname){
+                                    //     message.channel.send(message.author + " has tailored a **" + daRes[0].itemname + "** -" + "`" + daRes[0].itemdescription + ", " + daRes[0].itemslot + ", " + daRes[0].itemstatistics + "`");
+                                    // }
+                                }
+                            })
+                        }
+                    }
+                })
+
+            }
+        })
+    }
+
+}
+
+module.exports.greenHouseCommand = function(message){
+    // display your greenhouse, and greenhouse information
+
+    // get user profile and greenhouse info
+
+    // create embed based off of their greenhouse info stats | visual representation
+    // a bunch of plants - watering item - shears - soil available
+
+}
+
+module.exports.stableCommand = function(message){
+    // display your stable, and stable information
+
+    // get user profile and stable info
+
+    // create embed based off of their stable info stats | visual representation
+    // a bunch of animals and shit - brush - fishing rod - lures
+    
+}
+
+module.exports.templeCommand = function(message){
+    // display your temple, and temple information
+
+    // get user profile and temple info
+
+    // create embed based off of their temple info stats | visual representation
+    // a bunch of random shit - sanctum? - recipes? 
+    // (recipes are artifacts - but contain blueprints for rares, and ancients)
+    // 
+}
+
+module.exports.plantCommand = function(message, args){
+    var discordUserId = message.author.id;
+    // arguments will be, seednameid, greenhouse slot
+    // -plant bambooseed 5
+    // plant a bamboo seed in slot 5 of your greenhouse
+    if (args && args.length > 1 ){
+        var myItemShortName =  args[1];
+
+        // plant a seed
+
+    }
+
+}
+
+module.exports.harvestCommand = function(message, args){
+    var discordUserId = message.author.id;
+    // harvest your greenhouse plots of land
+    profileDB.getUserProfileData( discordUserId, function(err, prepareResponse) {
+        if(err){
+            // user doesnt exist, they cannot prepare
+            var userData = initialUserProfile(discordUserId);
+            agreeToTerms(message, discordUserId);
+        }
+        else{
+
+        }
+    })
+}
+
+module.exports.craftCommand = function(message, args){
+    var discordUserId = message.author.id;
+
+    // create an item based on itemnameid
+    if (args && args.length > 1 ){
+        var myItemShortName =  args[1];
+
+        // craft the item if you have the materials required, and are able to craft it
+        // materials required will vary, you can only craft the item if you own the recipe
+
+    }
+}
+
+module.exports.upgradeCommand = function(message, args){
+    var discordUserId = message.author.id;
+
+    // upgrade a specific building - stable, greenhouse, temple
+    if (args && args.length > 1 ){
+        var buildingName =  args[1];
+
+        // must have the materials required to upgrade the building
+        // must have the reputation required to upgrade the building
+    }
+}
+
+module.exports.fishCommand = function(message, args){
+    var discordUserId = message.author.id;
+
+    // go fishing 
+    if (args && args.length > 1 ){
+        var lureName =  args[1];
+
+        // check the lure you're using
+
+        // add the fish to your fishies
+    }
+}
+
+module.exports.raceCommand = function(message, args){
+    var discordUserId = message.author.id;
+
+    // go racing 
+    if (args && args.length > 1 ){
+        var petName =  args[1];
+
+        // check the pet you are using to race
+    }
+}
 
 module.exports.combineCommand = function(message, args){
     // combine certain things (only terry cloth, and soil for now?)

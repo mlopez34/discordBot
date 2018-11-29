@@ -374,6 +374,26 @@ client.on('message', function(message){
                 else if (commandIs("harvest", message)){
                     message.channel.send(":tractor:")
                 }
+                else if (commandIs("disassemble", message)){
+                    // disassemble items - mark them as used - obtain items based on the item disassembled
+                    commands.disassembleCommand(message, args);
+                }
+                else if (commandIs("fish", message)){
+                    // go fishing - catch a big fish!
+                    message.channel.send(":tractor:")
+                }
+                else if (commandIs("upgrade", message)){
+                    // can be stable or greenhouse or temple
+                    message.channel.send(":tractor:")
+                }
+                else if (commandIs("craft", message)){
+                    // craft a specific item via id
+                    message.channel.send(":tractor:")
+                }
+                else if (commandIs("race", message)){
+                    // enter an upcoming race
+                    message.channel.send(":tractor:")
+                }
                 else if (commandIs("rpgstart", message)){
                     if (message.channel.type == "text" && (RPG_CHANNELS.indexOf(message.channel.name) != -1) && !message.author.bot){
                         commands.rpgBattleCommand(message);
