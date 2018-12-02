@@ -188,7 +188,7 @@ module.exports = {
             name: "Frost Blast",
             abilityId: "frostBlast",
             dmg: 50,
-            mdPercentage: 1.2,
+            mdPercentage: 1.5,
             type: "ice"
         },
         crush : {
@@ -2203,6 +2203,7 @@ module.exports = {
             name: "transfer abilities",
             abilitiesToTransfer: [
                 "hammerdownProtocol",
+                "pillarRevive",
                 "hammerdownPrepare",
                 "elementalOrder",
                 "elementalOrderPrepare"
@@ -2559,7 +2560,7 @@ module.exports = {
                 name: "Shadow Shield",
                 emoji: "❌",
                 targetWithName: "Porthos",
-                additionalDescription: " taking damagen will cause a Shadow Explosion",
+                additionalDescription: " taking direct damage will cause a Shadow Explosion",
                 ignoreUnique: true,
                 onDamageTakenCastAbility: "shadowExplosion",
                 turnsToExpire: 65
@@ -2585,8 +2586,8 @@ module.exports = {
             abilityId: "maniac",
             processAbility: true,
             belongsToMember: true,
-            everyNTurns: 9,
-            afterNTurns: 7,
+            everyNTurns: 8,
+            afterNTurns: 3,
             currentTurn: 0,
             buff: {
                 name: "Maniac",
@@ -2648,7 +2649,7 @@ module.exports = {
                 emoji: "<:strength:479298214294716416>",
                 turnsToExpire: 200,
                 affects: ["attackDmg", "magicDmg"],
-                multiplier: 1.1
+                multiplier: 1.2
             }
         },
 
@@ -2673,7 +2674,7 @@ module.exports = {
                 type: "physical",
                 adPercentage: 10,
                 ignoreBandaid: true,
-                turnsToExpire: 25,
+                turnsToExpire: 23,
                 dmgOnStatusExpire: true,
                 dmgOnRemoveAreaWide: false,
                 dmgOnExpire: 500250
