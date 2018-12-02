@@ -368,6 +368,9 @@ client.on('message', function(message){
                 else if (commandIs("party", message)){
                     commands.createTableCommand(message, mainChannel);
                 }
+                else if (commandIs("greenhouse", message)){
+                    commands.greenHouseCommand(message)
+                }
                 else if (commandIs("plant", message)){
                     message.channel.send(":herb:")
                 }
@@ -924,11 +927,14 @@ client.on('message', function(message){
                     data.command = "party"
                     profileDB.createUserActivity(data)
                 }
+                else if (commandIs("greenhouse", message)){
+                    commands.greenHouseCommand(message)
+                }
                 else if (commandIs("plant", message)){
                     message.channel.send(":herb:")
                 }
                 else if (commandIs("harvest", message)){
-                    message.channel.send(":tractor:")
+                    commands.harvestCommand(message)
                 }
                 else if (commandIs("rpgstart", message)){
                     if (message.channel.type == "text" && !message.author.bot){

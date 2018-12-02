@@ -4808,13 +4808,82 @@ module.exports.disassembleCommand = function(message, args){
 
 module.exports.greenHouseCommand = function(message){
     // display your greenhouse, and greenhouse information
-
+    var discordUserId = message.author.id;
     // get user profile and greenhouse info
+    profileDB.getGreenHouseData(discordUserId, function(ghErr, ghRes){
+        if (ghErr){
+            console.log(ghErr)
+        }else{
+            var greenHouseData = {
+                plots: ghRes.data.plotsoflandplantid,
+                plotsItemIds: ghRes.data.plotsoflanditemid,
+                lastharvest: ghRes.data.lastharvest,
+                plotsItemIds: ghRes.data.timesharvested,
+                name: message.author.username
+            }
 
+            profileDB.getItemData(function(error, allItemsResponse){
+                if (error){
+                    console.log(error)
+                }else{
+                    var itemsMapById = {}
+                    for (var index in allItemsResponse.data){
+                        itemsMapById[allItemsResponse.data[index].id] = allItemsResponse.data[index];
+                    }
+                    greenHouseEmbedBuilder(message, greenHouseData, itemsMapById)
+                }
+            })
+        }
+    })
     // create embed based off of their greenhouse info stats | visual representation
     // a bunch of plants - watering item - shears - soil available
 
 }
+
+function greenHouseEmbedBuilder(message, greenHouseData, itemsMapById){
+            
+    // show short shop
+    var greenHousePlotVisual = plotsVisualBuilder(greenHouseData, itemsMapById)
+    var weather = ":sunny:"
+    var harvestTimeRemaining = "1 hour" // GET the harvest time, should be every 24 hours
+    var shears = ":scissors:"
+
+    const embed = new Discord.RichEmbed()
+    .setColor(0x87CEFA)
+    .setTitle(greenHouseData.name + "'s Green House :house_with_garden:")
+    //.setThumbnail()
+    .setDescription("")
+    .setColor(0x87CEFA)
+    .addField('Plots', greenHousePlotVisual, false)
+    .addField('Weather', weather, true)
+    .addField('harvestTimeRemaining', harvestTimeRemaining, true)
+    .addField('shears', shears, true)
+    message.channel.send({embed});
+}
+
+function plotsVisualBuilder(greenHouseData, itemsMapById){
+    // make it look like ..
+    // plant, plant, plant plant, plant, 📥, 📥, 📥, 📥, 
+    // 
+    var plotVisual = ""
+    var plotCount = 1
+    for (var i in greenHouseData.plots){
+        // plots[i] has an emoji in items table
+        var plotId = greenHouseData.plots[i]
+        var plotEmoji = itemsMapById[plotId] ? itemsMapById[plotId].emoji : null
+        if (!plotEmoji){
+            plotEmoji = "📥"
+        }
+        if (plotCount > 9){
+            plotVisual = plotVisual + "\n"
+        }
+        plotVisual = plotVisual + plotEmoji + " | "
+        plotCount++
+    }
+
+    return plotVisual
+}
+
 
 module.exports.stableCommand = function(message){
     // display your stable, and stable information
@@ -4846,24 +4915,95 @@ module.exports.plantCommand = function(message, args){
         var myItemShortName =  args[1];
 
         // plant a seed
-
+        
     }
+}
 
+// TODO: Finish these
+var itemHarvested = {
+    "pear": "pears",
+    "tulip": "tulips",
+    "cactus": "cacti"
 }
 
 module.exports.harvestCommand = function(message, args){
     var discordUserId = message.author.id;
     // harvest your greenhouse plots of land
-    profileDB.getUserProfileData( discordUserId, function(err, prepareResponse) {
+    profileDB.getGreenHouseData(discordUserId, function(err, profileData) {
         if(err){
-            // user doesnt exist, they cannot prepare
-            var userData = initialUserProfile(discordUserId);
-            agreeToTerms(message, discordUserId);
-        }
-        else{
+            console.log(err)
+        }else{
+            var greenHouseData = {
+                plots: profileData.data.plotsoflandplantid,
+                harvestCounts: profileData.data.timesharvested,
+                plotsItemIds: profileData.data.plotsoflanditemid,
+                lastharvest: profileData.data.lastharvest,
+                plotsItemIds: profileData.data.timesharvested,
+                name: message.author.username
+            }
+            profileDB.getItemData(function(error, allItemsResponse){
+                if (error){
+                    console.log(error)
+                }else{
+                    var itemsMapById = {}
+                    for (var index in allItemsResponse.data){
+                        itemsMapById[allItemsResponse.data[index].id] = allItemsResponse.data[index];
+                    }
+                    var fruitsHarvested = harvestPlotsOfLand(greenHouseData, itemsMapById)
+                    // harvest your plots of land
+                    var fruitsColumnsWithCount = {}
+                    for (var f in fruitsHarvested){
+                        if ( itemHarvested[f] ){
+                            var actualFruitColumnId = itemHarvested[f]
+                            fruitsColumnsWithCount[actualFruitColumnId] = fruitsHarvested[f]
+                        }
+                    }
+                    var newHarvestCounts = []
+                    for (var h in greenHouseData.harvestCounts){
+                        var currentCount = greenHouseData.harvestCounts[h]
+                        newHarvestCounts.push(currentCount + 1)
+                    }
 
+                    // go through all the plants in your garden, harvest them, and then add them to your fruits profile
+                    profileDB.bulkupdateUserFruits(discordUserId, fruitsColumnsWithCount, function(err, bulkRes){
+                        if (err){
+                            console.log(err)
+                        }else{
+                            console.log(bulkRes)
+                            // TODO: update total harvests on greenhouse table and lastharvest to now
+                            var now = new Date();
+                            profileDB.updatePlotInfo(discordUserId, { lastharvest: now, timesharvested: newHarvestCounts }, function(plotErr, plotRes){
+                                if (plotErr){
+                                    console.log(plotErr)
+                                }else{
+                                    console.log(plotRes)
+                                }
+                            })
+                        }
+                    })
+                }
+            })
         }
     })
+}
+
+function harvestPlotsOfLand(greenHouseData, itemsMapById){
+    // return an object with all the plants harvested, and the count harvested
+    var fruitsObject = {}
+    for (var i in greenHouseData.plots){
+        // plots[i] has an emoji in items table
+        var plotId = greenHouseData.plots[i]
+        // get the shortname of that item
+        if (plotId){
+            var plotShortName = itemsMapById[plotId].itemshortname
+            if (!fruitsObject[plotShortName]){
+                fruitsObject[plotShortName] = 1
+            }else{
+                fruitsObject[plotShortName] = fruitsObject[plotShortName] + 1
+            }
+        }
+    }
+    return fruitsObject
 }
 
 module.exports.craftCommand = function(message, args){

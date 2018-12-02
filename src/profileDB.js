@@ -1246,6 +1246,84 @@ module.exports.createUserWearInfo = function(data, cb){
     });
 }
 
+module.exports.getGreenHouseData = function(discordId, cb){
+    var query = 'select * from ' + config.greenhouseTable + ',' + config.profileTable + ' where ' + config.greenhouseTable + '.discordId = $1 AND ' + config.profileTable + '.discordId = $1'
+    console.log(query)
+    db.one(query, [discordId])
+      .then(function (data) {
+        //// console.log(data);
+        cb(null, {
+            status: 'success',
+            data: data,
+            message: 'Retrieved ONE user greenhouse'
+          });
+      })
+      .catch(function (err) {
+        // console.log(err);
+        cb(err);
+      });
+}
+
+module.exports.updatePlotInfo = function(userId, plotInfo, cb) {
+    // plotsofland	lastharvest	timesharvested	plotsoflanditemid	plotsoflandplantid
+    var plotColumns = []
+    for (var column in plotInfo){
+        plotColumns.push(column)
+    }
+    const query = pgp.helpers.update(plotInfo, plotColumns, config.greenhouseTable) + ' WHERE discordid = ' + userId;
+    db.none(query)
+    .then(function () {
+        cb(null, { status: 'success', message: 'updated columns in greenhouse' });
+    })
+    .catch(function (err) {
+        cb(err);
+    });
+}
+
+module.exports.getFruitData = function(discordId, cb){
+    var query = 'select * from ' + config.userFruitTable + ',' + config.profileTable + ' where ' + config.userFruitTable + '.discordId = $1 AND ' + config.profileTable + '.discordId = $1'
+    console.log(query)
+    db.one(query, [discordId])
+      .then(function (data) {
+        cb(null, {
+            status: 'success',
+            data: data,
+            message: 'Retrieved ONE user greenhouse'
+          });
+      })
+      .catch(function (err) {
+        cb(err);
+      });
+}
+
+// update a single fruit column in fruits table
+module.exports.updateUserFruits = function(userId, fruit, fruitcount, cb) {
+    var query = 'update ' + config.userFruitTable + ' set $3=$3+$1 where discordid=$2'
+    db.none(query, [fruitcount, userId, fruit])
+    .then(function () {
+        cb(null, { status: 'success', message: 'added fruits' });
+    })
+    .catch(function (err) {
+        cb(err);
+    });
+}
+
+module.exports.bulkupdateUserFruits = function(userId, fruits, cb){
+    var fruitNames = []
+    for (var fruit in fruits){
+        fruitNames.push(fruit)
+    }
+    const query = pgp.helpers.update(fruits, fruitNames, config.userFruitTable) + ' WHERE discordid = ' + userId;
+    db.none(query)
+    .then(function () {
+        cb(null, { status: 'success', message: 'updated columns' });
+    })
+    .catch(function (err) {
+        // console.log(err);
+        cb(err);
+    });
+}
+
 // get hacksaw, and improvements
 
 // rpg keystone unlock 1 - x
