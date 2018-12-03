@@ -3600,7 +3600,6 @@ function giveFruitsRewards(discordUserId, message ){
         }else{
             console.log("middle")
             console.log(discordUserId)
-            discordUser = usersMinigames[discordUserId].mapOfUsers[discordUserId].user
             let itemsObtainedArray = usersMinigames[discordUserId].mapOfUsers[discordUserId].itemsObtained 
             let tacosFound = usersMinigames[discordUserId].mapOfUsers[discordUserId].tacosEarned
             let extraTacosFound = usersMinigames[discordUserId].mapOfUsers[discordUserId].extraTacosEarned
