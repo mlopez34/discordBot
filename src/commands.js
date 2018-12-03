@@ -3568,18 +3568,23 @@ function takeFruits(message, playerTakingTurn, currentGame, amount){
             var discordUserId = usersToCleanUp[user]
             console.log("before")
             console.log(discordUserId)
-            let discordUser = usersMinigames[discordUserId].mapOfUsers[discordUserId].user
-            let itemsObtainedArray = usersMinigames[discordUserId].mapOfUsers[discordUserId].itemsObtained 
-            let tacosFound = usersMinigames[discordUserId].mapOfUsers[discordUserId].tacosEarned
-            let extraTacosFound = usersMinigames[discordUserId].mapOfUsers[discordUserId].extraTacosEarned
-            let xpGained = usersMinigames[discordUserId].mapOfUsers[discordUserId].experienceGained
-            let extraXpGained = usersMinigames[discordUserId].mapOfUsers[discordUserId].extraExperienceGained
             
             // do a get to the user and then give them the experience
             profileDB.getUserProfileData(discordUserId, function(getProfileError, getProfileResponse){
                 if (getProfileError){
                     console.log(getProfileError)
                 }else{
+                    var discordUserId = discordUserId
+                    console.log("middle")
+                    console.log(discordUserId)
+                    let discordUser = usersMinigames[discordUserId].mapOfUsers[discordUserId].user
+                    let itemsObtainedArray = usersMinigames[discordUserId].mapOfUsers[discordUserId].itemsObtained 
+                    let tacosFound = usersMinigames[discordUserId].mapOfUsers[discordUserId].tacosEarned
+                    let extraTacosFound = usersMinigames[discordUserId].mapOfUsers[discordUserId].extraTacosEarned
+                    let xpGained = usersMinigames[discordUserId].mapOfUsers[discordUserId].experienceGained
+                    let extraXpGained = usersMinigames[discordUserId].mapOfUsers[discordUserId].extraExperienceGained 
+                    let discordUser = usersMinigames[discordUserId].mapOfUsers[discordUserId].user
+       
                     if (itemsObtainedArray.length > 0 || tacosFound > 0 ){
                         addToUserInventory(discordUserId, itemsObtainedArray);
                         fruitsRewardsEmbedBuilder(message, itemsObtainedArray, tacosFound + ( extraTacosFound * getProfileResponse.data.level ), discordUser);
