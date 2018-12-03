@@ -4753,12 +4753,12 @@ module.exports.disassembleCommand = function(message, args){
                             if (itemsInAuction[inventoryResponse.data[item].id]){
                                 auctionedItem = true;
                             }
-                            var itemBeingDisassembled = false;
+                            var itemBeingTraded = false;
                             if (activeTradeItems[inventoryResponse.data[item].id]){
-                                itemBeingDisassembled = true;
+                                itemBeingTraded = true;
                             }
                             if (!itemsInInventoryCountMap[inventoryResponse.data[item].itemid] 
-                                && validItem && notWearing && !auctionedItem && !itemBeingDisassembled){
+                                && validItem && notWearing && !auctionedItem && !itemBeingTraded){
                                 // item hasnt been added to be counted, add it as 1
                                 itemsInInventoryCountMap[inventoryResponse.data[item].itemid] = 1;
 
@@ -4911,12 +4911,94 @@ module.exports.plantCommand = function(message, args){
     // arguments will be, seednameid, greenhouse slot
     // -plant bambooseed 5
     // plant a bamboo seed in slot 5 of your greenhouse
-    if (args && args.length > 1 ){
+    if (args && args.length > 2 ){
         var myItemShortName =  args[1];
+        var plotOfLand = args[2];  // in an array this will always be -1 of index
 
-        // plant a seed
-        
+        //  
+        profileDB.getUserItems(discordUserId, function(err, inventoryResponse){
+            if (err){
+                // console.log(err);
+                agreeToTerms(message, discordUserId);
+            }
+            else{
+                var itemsInInventoryCountMap = {};
+                var itemsMapbyShortName = {};
+                var itemsMapById = {};
+                var plantBeingPlanted = []
+                profileDB.getItemData(function(error, allItemsResponse){
+                    if (error){
+                        console.log(error)
+                    }else{
+                        for (var index in allItemsResponse.data){
+                            itemsMapbyShortName[allItemsResponse.data[index].itemshortname] = allItemsResponse.data[index];
+                        }
+                        for (var index in allItemsResponse.data){
+                            itemsMapById[allItemsResponse.data[index].id] = allItemsResponse.data[index];
+                        }
+
+                        for (var item in inventoryResponse.data){
+                            var validItem = useItem.itemValidate(inventoryResponse.data[item]);
+                            var notWearing = useItem.itemNotWearing(inventoryResponse.data[item])
+                            var auctionedItem = false;
+                            var ItemInQuestion = inventoryResponse.data[item]
+
+                            if (itemsInAuction[inventoryResponse.data[item].id]){
+                                auctionedItem = true;
+                            }
+                            var itemBeingTraded = false;
+                            if (activeTradeItems[inventoryResponse.data[item].id]){
+                                itemBeingTraded = true;
+                            }
+                            if (!itemsInInventoryCountMap[inventoryResponse.data[item].itemid] 
+                                && validItem && notWearing && !auctionedItem && !itemBeingTraded){
+                                // item hasnt been added to be counted, add it as 1
+                                itemsInInventoryCountMap[inventoryResponse.data[item].itemid] = 1;
+
+                                // console.log(ItemInQuestion);
+                                if (itemsMapbyShortName[myItemShortName] 
+                                    && itemsMapById[ItemInQuestion.itemid].itemshortname === myItemShortName){
+                                        plantBeingPlanted.push(ItemInQuestion.id);
+                                }
+                            }
+                        }
+
+                        // get the user's inventory, make sure they have the seed, 
+                        if (plantBeingPlanted.length > 0){
+                            // 
+                            profileDB.getGreenHouseData(discordUserId, function(ghError, ghRes){
+                                if (ghError){
+                                    console.log(ghError)
+                                }else{
+                                    var greenHouseData = {
+                                        numberOfPlots: ghRes.data.plotsofland,
+                                        plots: ghRes.data.plotsoflandplantid,
+                                        plotsItemIds: ghRes.data.plotsoflanditemid,
+                                        lastharvest: ghRes.data.lastharvest,
+                                        plotsItemIds: ghRes.data.timesharvested,
+                                        name: message.author.username
+                                    }
+
+                                    // if they do get the user's greenhouse, check that the slot is available (not higher than their #ofplots)
+                                    if ( plotOfLand > 0 && plotOfLand <= numberOfPlots){
+                                        // plant on plot an update
+                                        plantOnPlotOfLand(discordUserId, plotOfLand, greenHouseData, plantBeingPlanted)
+                                    }
+                                    // if available, plant the seed in the plot of land, insert itemid, plantid, and set total harv = 0
+
+                                }
+                            })
+                        }
+                    }
+                })
+            }
+        })
     }
+}
+
+function plantOnPlotOfLand(discordUserId, plotOfLand, greenHouseData, plantBeingPlanted){
+    // set the timesharvested to 0 plotsoflanditemid to inventoryid plotsoflandplantid itemid
+    
 }
 
 // TODO: Finish these

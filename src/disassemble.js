@@ -258,7 +258,7 @@ module.exports.performDisassemble =  function(message, discordUserId, itemsToDis
             }
             else{
                 // added item, use the disassembled item
-                profileDB.bulkUpdateItemStatus(itemsToDisassemble, "used", function(updateBulkErr, updateBulkRes){
+                profileDB.bulkUpdateItemStatus(itemsToDisassemble, "disassembled", function(updateBulkErr, updateBulkRes){
                     if (updateBulkErr){
                         // console.log(updateBulkErr);
                         cb(updateBulkErr);
