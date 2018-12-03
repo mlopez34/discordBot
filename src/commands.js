@@ -3570,46 +3570,7 @@ function takeFruits(message, playerTakingTurn, currentGame, amount){
             console.log(discordUserId)
             
             // do a get to the user and then give them the experience
-            profileDB.getUserProfileData(discordUserId, function(getProfileError, getProfileResponse){
-                if (getProfileError){
-                    console.log(getProfileError)
-                }else{
-                    var discordUserId = discordUserId
-                    console.log("middle")
-                    console.log(discordUserId)
-                    discordUser = usersMinigames[discordUserId].mapOfUsers[discordUserId].user
-                    let itemsObtainedArray = usersMinigames[discordUserId].mapOfUsers[discordUserId].itemsObtained 
-                    let tacosFound = usersMinigames[discordUserId].mapOfUsers[discordUserId].tacosEarned
-                    let extraTacosFound = usersMinigames[discordUserId].mapOfUsers[discordUserId].extraTacosEarned
-                    let xpGained = usersMinigames[discordUserId].mapOfUsers[discordUserId].experienceGained
-                    let extraXpGained = usersMinigames[discordUserId].mapOfUsers[discordUserId].extraExperienceGained 
-                    let discordUser = usersMinigames[discordUserId].mapOfUsers[discordUserId].user
-       
-                    if (itemsObtainedArray.length > 0 || tacosFound > 0 ){
-                        addToUserInventory(discordUserId, itemsObtainedArray);
-                        fruitsRewardsEmbedBuilder(message, itemsObtainedArray, tacosFound + ( extraTacosFound * getProfileResponse.data.level ), discordUser);
-                        profileDB.updateUserTacos(discordUserId, tacosFound + (extraTacosFound * getProfileResponse.data.level), function(err, res){
-                            if (err){
-                                console.log(err)
-                            }else{
-                                console.log(res)
-                            }
-                        })
-                    }
-                    
-                    if (xpGained || extraXpGained){
-                        experience.gainExperience(message, discordUser, xpGained + (extraXpGained * getProfileResponse.data.level), getProfileResponse);
-                    }
-                    ///// Finalize cleanup
-                    console.log("after")
-                    console.log(discordUserId)
-                    console.log(JSON.stringify(usersToCleanUp, null, 2))
-                    if (usersMinigames[discordUserId]){
-                        delete usersMinigames[discordUserId];
-                        console.log("SUCCESSFUL CLEANUP")
-                    }
-                }
-            })
+            giveFruitsRewards(discordUserId, message)
         }
     }else{
         miniGameEmbedBuilder(message, data);
@@ -3629,6 +3590,50 @@ function takeFruits(message, playerTakingTurn, currentGame, amount){
             
         }, 15000);
     }
+}
+
+function giveFruitsRewards(discordUserId, message ){
+
+    profileDB.getUserProfileData(discordUserId, function(getProfileError, getProfileResponse){
+        if (getProfileError){
+            console.log(getProfileError)
+        }else{
+            var discordUserId = discordUserId
+            console.log("middle")
+            console.log(discordUserId)
+            discordUser = usersMinigames[discordUserId].mapOfUsers[discordUserId].user
+            let itemsObtainedArray = usersMinigames[discordUserId].mapOfUsers[discordUserId].itemsObtained 
+            let tacosFound = usersMinigames[discordUserId].mapOfUsers[discordUserId].tacosEarned
+            let extraTacosFound = usersMinigames[discordUserId].mapOfUsers[discordUserId].extraTacosEarned
+            let xpGained = usersMinigames[discordUserId].mapOfUsers[discordUserId].experienceGained
+            let extraXpGained = usersMinigames[discordUserId].mapOfUsers[discordUserId].extraExperienceGained 
+            let discordUser = usersMinigames[discordUserId].mapOfUsers[discordUserId].user
+
+            if (itemsObtainedArray.length > 0 || tacosFound > 0 ){
+                addToUserInventory(discordUserId, itemsObtainedArray);
+                fruitsRewardsEmbedBuilder(message, itemsObtainedArray, tacosFound + ( extraTacosFound * getProfileResponse.data.level ), discordUser);
+                profileDB.updateUserTacos(discordUserId, tacosFound + (extraTacosFound * getProfileResponse.data.level), function(err, res){
+                    if (err){
+                        console.log(err)
+                    }else{
+                        console.log(res)
+                    }
+                })
+            }
+            
+            if (xpGained || extraXpGained){
+                experience.gainExperience(message, discordUser, xpGained + (extraXpGained * getProfileResponse.data.level), getProfileResponse);
+            }
+            ///// Finalize cleanup
+            console.log("after")
+            console.log(discordUserId)
+            console.log(JSON.stringify(usersToCleanUp, null, 2))
+            if (usersMinigames[discordUserId]){
+                delete usersMinigames[discordUserId];
+                console.log("SUCCESSFUL CLEANUP")
+            }
+        }
+    })
 }
 
 module.exports.gameCommand = function(message){
