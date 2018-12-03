@@ -3565,7 +3565,7 @@ function takeFruits(message, playerTakingTurn, currentGame, amount){
         // do cleanup and handout rewards
         var usersToCleanUp = currentGame.cleanup();
         for(var user in usersToCleanUp){
-            var discordUserId = usersToCleanUp[user]
+            let discordUserId = usersToCleanUp[user]
             console.log("before")
             console.log(discordUserId)
             
@@ -3598,7 +3598,6 @@ function giveFruitsRewards(discordUserId, message ){
         if (getProfileError){
             console.log(getProfileError)
         }else{
-            var discordUserId = discordUserId
             console.log("middle")
             console.log(discordUserId)
             discordUser = usersMinigames[discordUserId].mapOfUsers[discordUserId].user
