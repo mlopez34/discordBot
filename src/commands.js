@@ -3566,6 +3566,8 @@ function takeFruits(message, playerTakingTurn, currentGame, amount){
         var usersToCleanUp = currentGame.cleanup();
         for(var user in usersToCleanUp){
             var discordUserId = usersToCleanUp[user]
+            console.log("before")
+            console.log(discordUserId)
             var discordUser = usersMinigames[discordUserId].mapOfUsers[discordUserId].user
             var itemsObtainedArray = usersMinigames[discordUserId].mapOfUsers[discordUserId].itemsObtained 
             var tacosFound = usersMinigames[discordUserId].mapOfUsers[discordUserId].tacosEarned
@@ -3594,6 +3596,7 @@ function takeFruits(message, playerTakingTurn, currentGame, amount){
                         experience.gainExperience(message, discordUser, xpGained + (extraXpGained * getProfileResponse.data.level), getProfileResponse);
                     }
                     ///// Finalize cleanup
+                    console.log("after")
                     console.log(discordUserId)
                     console.log(JSON.stringify(usersToCleanUp, null, 2))
                     if (usersMinigames[discordUserId]){
