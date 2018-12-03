@@ -3568,12 +3568,12 @@ function takeFruits(message, playerTakingTurn, currentGame, amount){
             var discordUserId = usersToCleanUp[user]
             console.log("before")
             console.log(discordUserId)
-            var discordUser = usersMinigames[discordUserId].mapOfUsers[discordUserId].user
-            var itemsObtainedArray = usersMinigames[discordUserId].mapOfUsers[discordUserId].itemsObtained 
-            var tacosFound = usersMinigames[discordUserId].mapOfUsers[discordUserId].tacosEarned
-            var extraTacosFound = usersMinigames[discordUserId].mapOfUsers[discordUserId].extraTacosEarned
-            var xpGained = usersMinigames[discordUserId].mapOfUsers[discordUserId].experienceGained
-            var extraXpGained = usersMinigames[discordUserId].mapOfUsers[discordUserId].extraExperienceGained
+            let discordUser = usersMinigames[discordUserId].mapOfUsers[discordUserId].user
+            let itemsObtainedArray = usersMinigames[discordUserId].mapOfUsers[discordUserId].itemsObtained 
+            let tacosFound = usersMinigames[discordUserId].mapOfUsers[discordUserId].tacosEarned
+            let extraTacosFound = usersMinigames[discordUserId].mapOfUsers[discordUserId].extraTacosEarned
+            let xpGained = usersMinigames[discordUserId].mapOfUsers[discordUserId].experienceGained
+            let extraXpGained = usersMinigames[discordUserId].mapOfUsers[discordUserId].extraExperienceGained
             
             // do a get to the user and then give them the experience
             profileDB.getUserProfileData(discordUserId, function(getProfileError, getProfileResponse){
