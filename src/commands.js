@@ -3570,7 +3570,7 @@ function takeFruits(message, playerTakingTurn, currentGame, amount){
             console.log(discordUserId)
             
             // do a get to the user and then give them the experience
-            giveFruitsRewards(discordUserId, message)
+            giveFruitsRewards(discordUserId, message, usersToCleanUp)
         }
     }else{
         miniGameEmbedBuilder(message, data);
@@ -3592,7 +3592,7 @@ function takeFruits(message, playerTakingTurn, currentGame, amount){
     }
 }
 
-function giveFruitsRewards(discordUserId, message ){
+function giveFruitsRewards(discordUserId, message, usersToCleanUp ){
 
     profileDB.getUserProfileData(discordUserId, function(getProfileError, getProfileResponse){
         if (getProfileError){
