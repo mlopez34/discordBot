@@ -3565,10 +3565,7 @@ function takeFruits(message, playerTakingTurn, currentGame, amount){
         // do cleanup and handout rewards
         var usersToCleanUp = currentGame.cleanup();
         for(var user in usersToCleanUp){
-            let discordUserId = usersToCleanUp[user]
-            console.log("before")
-            console.log(discordUserId)
-            
+            let discordUserId = usersToCleanUp[user]            
             // do a get to the user and then give them the experience
             giveFruitsRewards(discordUserId, message, usersToCleanUp)
         }
@@ -3598,8 +3595,6 @@ function giveFruitsRewards(discordUserId, message, usersToCleanUp ){
         if (getProfileError){
             console.log(getProfileError)
         }else{
-            console.log("middle")
-            console.log(discordUserId)
             let itemsObtainedArray = usersMinigames[discordUserId].mapOfUsers[discordUserId].itemsObtained 
             let tacosFound = usersMinigames[discordUserId].mapOfUsers[discordUserId].tacosEarned
             let extraTacosFound = usersMinigames[discordUserId].mapOfUsers[discordUserId].extraTacosEarned
@@ -3623,9 +3618,6 @@ function giveFruitsRewards(discordUserId, message, usersToCleanUp ){
                 experience.gainExperience(message, discordUser, xpGained + (extraXpGained * getProfileResponse.data.level), getProfileResponse);
             }
             ///// Finalize cleanup
-            console.log("after")
-            console.log(discordUserId)
-            console.log(JSON.stringify(usersToCleanUp, null, 2))
             if (usersMinigames[discordUserId]){
                 delete usersMinigames[discordUserId];
                 console.log("SUCCESSFUL CLEANUP")
