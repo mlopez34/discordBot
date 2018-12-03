@@ -2939,10 +2939,6 @@ module.exports.scavangeCommand = function (message){
                                     else if(allItems[item].itemraritycategory == "ancient"){
                                         ancientItems.push(allItems[item]);
                                     }
-                                    else if(allItems[item].itemraritycategory == "amulet" 
-                                        && allItems[item].amuletsource == "scavenge"){
-                                        ancientItems.push(allItems[item]);
-                                    }
                                     else if(allItems[item].itemraritycategory == "artifact"){
                                         artifactItems.push(allItems[item]);
                                     }
@@ -2950,6 +2946,19 @@ module.exports.scavangeCommand = function (message){
                                         mythItems.push(allItems[item]);
                                     }
                                 }
+                                // roll to randomly get only 5 amulets in the pool of amulets
+                                var poolOfAmulets = []
+                                for (var item in allItems){
+                                    if(allItems[item].itemraritycategory == "amulet" 
+                                    && allItems[item].amuletsource == "scavenge"){
+                                        poolOfAmulets.push(allItems[item]);
+                                    }
+                                }
+                                for (var i = 0; i < 5; i++){
+                                    var amuletRoll = Math.floor(Math.random() * poolOfAmulets.length - 1)
+                                    ancientItems.push(poolOfAmulets[amuletRoll])
+                                }
+                                
                                 // roll rarity, roll item from rarity
                                 var gotUncommon = false;
                                 var itemsObtainedArray = [];
@@ -3374,7 +3383,7 @@ module.exports.miniGameCommand = function(message) {
         team.push(message.author);
 
         users.forEach(function(user){
-            if (team.length < 11  && discordUserId != user.id){
+            if (team.length < 11 && discordUserId != user.id){
                 team.push(user);
             }
         })
@@ -3392,15 +3401,42 @@ module.exports.miniGameCommand = function(message) {
             }
             
         }
-        if (listOfPlayers.length >= 2 && validGroup){
-            var currentGame = new miniboard(listOfPlayers);
-            
-            for (var user in team){
-                usersMinigames[team[user].id] = currentGame;
-            }
-            message.channel.send(message.author + " has started a game of fruits :strawberry: type -ready to start!")
+        if (listOfPlayers.length >= 3 && validGroup){
+            // TODO: get rares available, amulets available, ancients available
+            profileDB.getItemData(function(err, getItemResponse){
+                if (err){
+                    // console.log(err);
+                    message.channel.send("something went terribly wrong please save me")
+                }else{
+                    var allItems = getItemResponse.data
+                    var raresAvailable = []
+                    var ancientsAvailable = []
+                    var amuletsAvailable = []
+                    for (var item in allItems){
+                        if(allItems[item].itemraritycategory == "rare"){
+                            raresAvailable.push(allItems[item]);
+                        }
+                        else if(allItems[item].itemraritycategory == "ancient"){
+                            ancientsAvailable.push(allItems[item]);
+                        }
+                        else if(allItems[item].itemraritycategory == "amulet"
+                        && allItems[item].amuletsource == "scavenge"){
+                            amuletsAvailable.push(allItems[item]);
+                        }
+                    }
+
+                    var currentGame = new miniboard(listOfPlayers, message, raresAvailable, amuletsAvailable, ancientsAvailable );
+                    
+                    for (var user in team){
+                        usersMinigames[team[user].id] = currentGame;
+                    }
+                    message.channel.send(message.author + " has started a game of fruits :strawberry: type -ready to start!")
+                }
+            })
+
+
         }else{
-            message.channel.send("there must be more than 2 players in the game! OR your someone is already in a game")
+            message.channel.send("there must be more than 3 players in the game! OR your someone is already in a game")
         }
     }
     catch(error){
@@ -3484,6 +3520,29 @@ module.exports.miniGamePlay = function(message, args){
     }
 }
 
+function fruitsRewardsEmbedBuilder(message, itemsScavenged, tacosFound, user){
+    // create a quoted message of all the items
+    var itemsMessage = ""
+    for (var item in itemsScavenged){
+        var itemAmount = itemsScavenged[item].itemAmount ? itemsScavenged[item].itemAmount : 1;
+        itemsMessage = itemsMessage + "**" +itemAmount + "**x " + "[**" + itemsScavenged[item].itemraritycategory +"**] " + "**"  + itemsScavenged[item].itemname + "** - " + itemsScavenged[item].itemdescription + ", " +
+        itemsScavenged[item].itemslot + ", " +itemsScavenged[item].itemstatistics
+        if (itemsScavenged[item].itemraritycategory == "ancient" || (itemsScavenged[item].itemraritycategory == "rare" && itemsScavenged[item].itemslot != "consumable" ) || itemsScavenged[item].itemraritycategory == "artifact"){
+            itemsMessage = itemsMessage + ". **to wear** -puton [1-3] " + itemsScavenged[item].itemshortname
+        }
+        itemsMessage = itemsMessage + " \n";
+    }
+    if (tacosFound > 0){
+        itemsMessage = itemsMessage + "**Tacos Found**: :taco: " + tacosFound;
+    }
+
+    const embed = new Discord.RichEmbed()
+    .addField("[" + user.username +" :strawberry: Fruits Rewards]  ", itemsMessage, true)
+    .setThumbnail(user.avatarURL)
+    .setColor(0xbfa5ff)
+    message.channel.send({embed});
+}
+
 function takeFruits(message, playerTakingTurn, currentGame, amount){
     var playerThatLost = playerTakingTurn.takeTurn(amount, currentGame);
     var gameEnded = currentGame.gameEnded();
@@ -3504,12 +3563,12 @@ function takeFruits(message, playerTakingTurn, currentGame, amount){
         miniGameEmbedBuilder(message, data);
         var winner = currentGame.checkWinner();
         message.channel.send("game is over! **" + winner.username + "** wins!");
-        // do cleanup
+        // do cleanup and handout rewards
         var usersToCleanUp = currentGame.cleanup();
         for(var user in usersToCleanUp){
-            if (usersMinigames[usersToCleanUp[user]]){
-                delete usersMinigames[usersToCleanUp[user]];
-            }
+            let discordUserId = usersToCleanUp[user]            
+            // do a get to the user and then give them the experience
+            giveFruitsRewards(discordUserId, message, usersToCleanUp)
         }
     }else{
         miniGameEmbedBuilder(message, data);
@@ -3529,6 +3588,43 @@ function takeFruits(message, playerTakingTurn, currentGame, amount){
             
         }, 15000);
     }
+}
+
+function giveFruitsRewards(discordUserId, message, usersToCleanUp ){
+
+    profileDB.getUserProfileData(discordUserId, function(getProfileError, getProfileResponse){
+        if (getProfileError){
+            console.log(getProfileError)
+        }else{
+            let itemsObtainedArray = usersMinigames[discordUserId].mapOfUsers[discordUserId].itemsObtained 
+            let tacosFound = usersMinigames[discordUserId].mapOfUsers[discordUserId].tacosEarned
+            let extraTacosFound = usersMinigames[discordUserId].mapOfUsers[discordUserId].extraTacosEarned
+            let xpGained = usersMinigames[discordUserId].mapOfUsers[discordUserId].experienceGained
+            let extraXpGained = usersMinigames[discordUserId].mapOfUsers[discordUserId].extraExperienceGained 
+            let discordUser = usersMinigames[discordUserId].mapOfUsers[discordUserId].user
+
+            if (itemsObtainedArray.length > 0 || tacosFound > 0 ){
+                addToUserInventory(discordUserId, itemsObtainedArray);
+                fruitsRewardsEmbedBuilder(message, itemsObtainedArray, tacosFound + ( extraTacosFound * getProfileResponse.data.level ), discordUser);
+                profileDB.updateUserTacos(discordUserId, tacosFound + (extraTacosFound * getProfileResponse.data.level), function(err, res){
+                    if (err){
+                        console.log(err)
+                    }else{
+                        console.log(res)
+                    }
+                })
+            }
+            
+            if (xpGained || extraXpGained){
+                experience.gainExperience(message, discordUser, xpGained + (extraXpGained * getProfileResponse.data.level), getProfileResponse);
+            }
+            ///// Finalize cleanup
+            if (usersMinigames[discordUserId]){
+                delete usersMinigames[discordUserId];
+                console.log("SUCCESSFUL CLEANUP")
+            }
+        }
+    })
 }
 
 module.exports.gameCommand = function(message){
