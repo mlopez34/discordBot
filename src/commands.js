@@ -3594,6 +3594,7 @@ function takeFruits(message, playerTakingTurn, currentGame, amount){
                         experience.gainExperience(message, discordUser, xpGained + (extraXpGained * getProfileResponse.data.level), getProfileResponse);
                     }
                     ///// Finalize cleanup
+                    console.log(discordUserId)
                     console.log(JSON.stringify(usersToCleanUp, null, 2))
                     if (usersMinigames[discordUserId]){
                         delete usersMinigames[discordUserId];
