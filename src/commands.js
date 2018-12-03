@@ -3577,7 +3577,7 @@ function takeFruits(message, playerTakingTurn, currentGame, amount){
                     var discordUserId = discordUserId
                     console.log("middle")
                     console.log(discordUserId)
-                    let discordUser = usersMinigames[discordUserId].mapOfUsers[discordUserId].user
+                    discordUser = usersMinigames[discordUserId].mapOfUsers[discordUserId].user
                     let itemsObtainedArray = usersMinigames[discordUserId].mapOfUsers[discordUserId].itemsObtained 
                     let tacosFound = usersMinigames[discordUserId].mapOfUsers[discordUserId].tacosEarned
                     let extraTacosFound = usersMinigames[discordUserId].mapOfUsers[discordUserId].extraTacosEarned
