@@ -6,6 +6,11 @@ module.exports = class Player {
         this.user = discordUser
         this.status = "active"
         this.ready = false;
+        // new
+        this.itemsObtained = []
+        this.experienceGained = 3
+        this.extraExperienceGained = 0
+        this.tacosEarned = 3
     }
     // take turn
     takeTurn(numberTaken, Board){

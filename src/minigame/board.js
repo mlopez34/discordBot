@@ -2,14 +2,12 @@
 var _ = require("lodash");
 
 module.exports = class Board {
-    constructor(listOfPlayers, message) {
+    constructor(listOfPlayers, message, raresAvailable, amuletsAvailable, ancientsAvailable) {
         // create the board, array of all the fruits, bombs, possible items
         // number of bombs should be number of players in game -1
         // the last item should be a bomb
         // there should be at least 4 players in the game 
-        var numberOfPlayers = listOfPlayers.length;
         this.mapOfUsers = {};
-        // TODO: randomize the order
         this.playerOrder = []
         for (var i = 0; i < listOfPlayers.length; i++){
             var userId = listOfPlayers[i].user.id;
@@ -17,15 +15,45 @@ module.exports = class Board {
             this.playerOrder.push(userId);
         }
         this.playerOrder = _.shuffle(this.playerOrder);
+        this.raresAvailable = raresAvailable
+        this.ancientsAvailable = ancientsAvailable
+        this.amuletsAvailable = amuletsAvailable
+
+        var numberOfPlayers = listOfPlayers.length;
         var fruitEmojis = [":tangerine:", ":pineapple:", ":watermelon:", ":strawberry:", ":cherries:", ":banana:"];
         var bombEmoji = ":bomb:";
+        var amulet = ":gem:";
+        var box = ":package:";
+        var taco = ":taco:";
+        var experience = ":trident:";
+
         var boardArray = [];
         for (var i = 1; i < numberOfPlayers; i++){
             // get random number of fruits between 5-8 to add, then add a bomb at the end
-            var numberOfFruits = Math.floor(Math.random() * 4) + (numberOfPlayers * 2);
+            var numberOfFruits = Math.floor(Math.random() * 5) + (numberOfPlayers * 2);
             for (var j = 1; j <= numberOfFruits; j++){
-                var fruitPicked = Math.floor(Math.random() * fruitEmojis.length);
-                boardArray.push(fruitEmojis[fruitPicked]);
+                var fruitRoll = Math.floor(Math.random() * 10000) + 1
+
+                if (fruitRoll >= 9996){
+                    // add an amulet
+                    boardArray.push(amulet);
+                }else if (fruitRoll >= 9950 && fruitRoll < 9996){
+                    // add a rare or experience
+                    var rareOrXpRoll = Math.floor(Math.random() * 100) + 1
+                    if (rareOrXpRoll > 50){
+                        // experience
+                        boardArray.push(experience);
+                    }else{
+                        // package
+                        boardArray.push(box);
+                    }
+                    
+                }else if (fruitRoll >= 9800 && fruitRoll < 9950){
+                    boardArray.push(taco);
+                }else{
+                    var fruitPicked = Math.floor(Math.random() * fruitEmojis.length);
+                    boardArray.push(fruitEmojis[fruitPicked]);
+                }
             }
             // push a bomb in
             boardArray.push(bombEmoji);
@@ -122,13 +150,29 @@ module.exports = class Board {
                         // player lost
                         playerHasLost = true;
                     }
+                    // cases for eating certain fruits
+                    if (fruitEaten == ":gem:"){
+                        // add a random amulet
+                        var itemRoll = Math.floor(Math.random() * this.amuletsAvailable.length);
+                        player.itemsObtained.push(this.amuletsAvailable[itemRoll])
+                    }else if (fruitEaten == ":package:"){
+                        // add a random rare
+                        var itemRoll = Math.floor(Math.random() * this.raresAvailable.length);
+                        player.itemsObtained.push(this.raresAvailable[itemRoll])
+                    }else if (fruitEaten == ":taco:"){
+                        // add tacos
+                        player.tacosEarned = player.tacosEarned + 10
+                    }else if (fruitEaten == ":trident:"){
+                        // add experience equivalent to player's level
+                        player.extraExperienceGained = player.extraExperienceGained + 1
+                    }
                 }else{
                     this.status = "ended";
                 }
             }
             if (!playerHasLost){
                 this.playerOrder.push(this.playerOrder.shift());
-                this.currentTurn++;  
+                this.currentTurn++;
                 return null 
             }else{
                 // player lost remove from order
