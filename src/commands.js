@@ -3519,7 +3519,7 @@ module.exports.miniGamePlay = function(message, args){
     }
 }
 
-function fruitsRewardsEmbedBuilder(message, itemsScavenged, tacosFound){
+function fruitsRewardsEmbedBuilder(message, itemsScavenged, tacosFound, user){
     // create a quoted message of all the items
     var itemsMessage = ""
     for (var item in itemsScavenged){
@@ -3536,8 +3536,8 @@ function fruitsRewardsEmbedBuilder(message, itemsScavenged, tacosFound){
     }
 
     const embed = new Discord.RichEmbed()
-    .addField("[" + message.author.username +" Fruits Rewards]  ", itemsMessage, true)
-    .setThumbnail(message.author.avatarURL)
+    .addField("[" + user.username +" :strawberry: Fruits Rewards]  ", itemsMessage, true)
+    .setThumbnail(user.avatarURL)
     .setColor(0xbfa5ff)
     message.channel.send({embed});
 }
@@ -3569,25 +3569,27 @@ function takeFruits(message, playerTakingTurn, currentGame, amount){
             var discordUser = usersMinigames[discordUserId].mapOfUsers[discordUserId].user
             var itemsObtainedArray = usersMinigames[discordUserId].mapOfUsers[discordUserId].itemsObtained 
             var tacosFound = usersMinigames[discordUserId].mapOfUsers[discordUserId].tacosEarned
+            var extraTacosFound = usersMinigames[discordUserId].mapOfUsers[discordUserId].extraTacosEarned
             var xpGained = usersMinigames[discordUserId].mapOfUsers[discordUserId].experienceGained
             var extraXpGained = usersMinigames[discordUserId].mapOfUsers[discordUserId].extraExperienceGained
-            if (itemsObtainedArray.length > 0 || tacosFound > 0){
-                addToUserInventory(discordUserId, itemsObtainedArray);
-                fruitsRewardsEmbedBuilder(message, itemsObtainedArray, tacosFound);
-
-                profileDB.updateUserTacos(discordUserId, tacosFound, function(err, res){
-                    if (err){
-                        console.log(err)
-                    }else{
-                        console.log(res)
-                    }
-                })  
-            }
+            
             // do a get to the user and then give them the experience
             profileDB.getUserProfileData(discordUserId, function(getProfileError, getProfileResponse){
                 if (getProfileError){
                     console.log(getProfileError)
                 }else{
+                    if (itemsObtainedArray.length > 0 || tacosFound > 0 ){
+                        addToUserInventory(discordUserId, itemsObtainedArray);
+                        fruitsRewardsEmbedBuilder(message, itemsObtainedArray, tacosFound + ( extraTacosFound * getProfileResponse.data.level ), discordUser);
+                        profileDB.updateUserTacos(discordUserId, tacosFound + (extraTacosFound * getProfileResponse.data.level), function(err, res){
+                            if (err){
+                                console.log(err)
+                            }else{
+                                console.log(res)
+                            }
+                        })
+                    }
+                    
                     if (xpGained || extraXpGained){
                         experience.gainExperience(message, discordUser, xpGained + (extraXpGained * getProfileResponse.data.level), getProfileResponse);
                     }

@@ -161,7 +161,7 @@ module.exports = class Board {
                         player.itemsObtained.push(this.raresAvailable[itemRoll])
                     }else if (fruitEaten == ":taco:"){
                         // add tacos
-                        player.tacosEarned = player.tacosEarned + 10
+                        player.extraTacosEarned = player.extraTacosEarned + 10
                     }else if (fruitEaten == ":trident:"){
                         // add experience equivalent to player's level
                         player.extraExperienceGained = player.extraExperienceGained + 1

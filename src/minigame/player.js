@@ -10,7 +10,8 @@ module.exports = class Player {
         this.itemsObtained = []
         this.experienceGained = 3
         this.extraExperienceGained = 0
-        this.tacosEarned = 3
+        this.tacosEarned = 5
+        this.extraTacosEarned = 0
     }
     // take turn
     takeTurn(numberTaken, Board){
