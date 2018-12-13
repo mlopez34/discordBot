@@ -1123,6 +1123,24 @@ module.exports.updateItemStatus = function(itemId, status, cb){
     });
 }
 
+// get market items
+module.exports.getMarketItems = function(cb) {
+    var query = 'select * from ' + config.inventoryTable + ' where status = $1 LIMIT 20'
+    // console.log(query);
+    db.query(query, [ "market" ])
+      .then(function (data) {
+        cb(null, {
+            status: 'success',
+            data: data,
+            message: 'Retrieved All User Items'
+          });
+      })
+      .catch(function (err) {
+        // console.log(err);
+        cb(err);
+      });
+  }
+
 // get user's inventory
 module.exports.getUserItems = function(discordId, cb) {
   var query = 'select * from ' + config.inventoryTable + ' where discordId = $1 AND status is null '

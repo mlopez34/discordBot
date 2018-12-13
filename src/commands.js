@@ -5078,7 +5078,7 @@ module.exports.plantCommand = function(message, args){
                                     // if they do get the user's greenhouse, check that the slot is available (not higher than their #ofplots)
                                     if ( plotOfLand > 0 && plotOfLand <= numberOfPlots){
                                         // plant on plot an update
-                                        plantOnPlotOfLand(discordUserId, plotOfLand, greenHouseData, plantBeingPlanted)
+                                        plantOnPlotOfLand(message, discordUserId, plotOfLand, greenHouseData, plantBeingPlanted)
                                     }
                                     // if available, plant the seed in the plot of land, insert itemid, plantid, and set total harv = 0
 
@@ -5092,9 +5092,27 @@ module.exports.plantCommand = function(message, args){
     }
 }
 
-function plantOnPlotOfLand(discordUserId, plotOfLand, greenHouseData, plantBeingPlanted){
+function plantOnPlotOfLand(message, discordUserId, plotOfLand, greenHouseData, plantBeingPlanted){
     // set the timesharvested to 0 plotsoflanditemid to inventoryid plotsoflandplantid itemid
-    
+    var now = new Date();
+    // plotOfLand is the slot for all the arrays that will be edited
+    // greenHouseData mainly remainds the same
+    // plantBeingPlanted will be the item object - the id will be the inventoryid
+    // column: value
+    var updateInfoObject = {
+        timesharvested: [],
+        plotsoflanditemid: [],
+        plotsoflandplantid: []
+
+    }
+    profileDB.updatePlotInfo(discordUserId, { lastharvest: now, timesharvested: newHarvestCounts }, function(plotErr, plotRes){
+        if (plotErr){
+            console.log(plotErr)
+        }else{
+            console.log(plotRes)
+            message.channel.send(message.author + " has planted a " + plantBeingPlanted.name + " !")
+        }
+    })
 }
 
 // TODO: Finish these
@@ -5148,7 +5166,6 @@ module.exports.harvestCommand = function(message, args){
                             console.log(err)
                         }else{
                             console.log(bulkRes)
-                            // TODO: update total harvests on greenhouse table and lastharvest to now
                             var now = new Date();
                             profileDB.updatePlotInfo(discordUserId, { lastharvest: now, timesharvested: newHarvestCounts }, function(plotErr, plotRes){
                                 if (plotErr){
@@ -6501,6 +6518,159 @@ module.exports.takeoffCommand = function(message, args){
     })
 }
 
+var marketItems = {}
+var client;
+
+module.exports.initializeMarketPlace = function(client){
+    client = client
+    profileDB.getMarketItems(function(error, marketRes){
+        if (error){
+            console.log(error)
+        }else{
+            console.log(marketRes)
+            var itemsMapbyShortName = {};
+            var itemsMapById = {};
+            profileDB.getItemData(function(error, allItemsResponse){
+                for (var index in allItemsResponse.data){
+                    itemsMapbyShortName[allItemsResponse.data[index].itemshortname] = allItemsResponse.data[index];
+                }
+                for (var index in allItemsResponse.data){
+                    itemsMapById[allItemsResponse.data[index].id] = allItemsResponse.data[index];
+                }
+                var items = marketRes.data
+                for (var i in items){
+                    var individualItem = items[i]
+                    var itemDetails = itemsMapById[individualItem.itemid]
+
+                    var emoji = "";
+                    if (itemDetails.itemraritycategory === "myth" ){
+                        emoji = ":cyclone: "
+                    }
+                    else if (itemDetails.itemraritycategory === "artifact" 
+                        || itemDetails.itemraritycategory === "artifact+"){
+                        emoji = ":diamond_shape_with_a_dot_inside: "
+                    }
+                    else if (itemDetails.itemraritycategory === "ancient"){
+                        emoji = ":small_orange_diamond: "
+                    }
+                    else if (itemDetails.itemraritycategory === "rare"){
+                        emoji = ":small_blue_diamond: "
+                    }
+                    else if (itemDetails.itemraritycategory === "rare+"){
+                        emoji = ":large_blue_diamond: "
+                    }
+                    else if (itemDetails.itemraritycategory === "ancient+"){
+                        emoji = ":large_orange_diamond: "
+                    }
+                    else if (itemDetails.itemraritycategory === "ancient++" || itemDetails.itemraritycategory === "ancient+++"){
+                        emoji = ":star: "
+                    }
+                    else if (itemDetails.itemraritycategory === "rare++" || itemDetails.itemraritycategory === "rare+++"){
+                        emoji = ":diamonds: "
+                    }
+
+                    marketItems[individualItem.id] = {
+                        emoji: emoji,
+                        name: itemDetails.itemname,
+                        currentBid: individualItem.currentbid,
+                        buyout: individualItem.buyout,
+                        currentBidUserId: individualItem.currentbiduserId,
+                        auctionEndDate: individualItem.auctionenddate
+                    }
+                    setTimeoutForAuctionItem(individualItem)
+
+                    // set a timeout on this auction for milisecondsUntilEnd
+                }
+                // TODO: if an item auctionenddate is past now, and it still is in status waiting
+                // award it to the last bid
+                console.log("Market Initialized")
+            })
+        }
+    })
+}
+
+function setTimeoutForAuctionItem(individualItem){
+    // TODO: create a timeout for each of these items that ends on auctionenddate
+    var auctionEnd = new Date(individualItem.auctionenddate)
+    var now = new Date();
+    var milisecondsUntilEnd = auctionEnd.getDate() - now.getDate()
+
+    var itemAuctionTimeout = setTimeout (function(){
+
+        // do things here
+        console.log(marketItems[individualItem.id].name + " " + individualItem.id + " has finished" )
+        client.channels.get("<ID of the channel you want to send to>").send("<your message content here>")
+        // send a message to the channel the user created the auction initially to announce their auction ended
+        // send a message to the winners channel that they won the auction
+
+    }, 5000)
+
+    marketItems[individualItem.id].auctionTimeout = itemAuctionTimeout
+}
+
+module.exports.marketCommand = function(message, args){
+    var discordUserId = message.author.id;
+
+    if (args && args.length > 1){
+        var long = args[1];
+        if (long == "long"){
+            includeDescriptions = true;
+        }
+    }
+    profileDB.getUserProfileData( discordUserId, function(err, userResponse) {
+        if(err){
+            // user doesnt exist tell the user they should get some tacos
+            console.log(err)
+            agreeToTerms(message, discordUserId);
+        }else{
+            // create an embed that displays any items that are currently in the market
+            var marketData = {
+                userTacos: userResponse.data.tacos
+            }
+            var long = false
+            marketBuilder(message, marketData, long)
+        }
+    })
+}
+
+function marketBuilder(message, marketData, long){
+    var marketString = "**Item** | **Current Bid** :taco: | **Buyout** :taco: | **Time Left** \n"
+    for (var item in marketItems){
+        // TODO: calculate the date string left
+        var auctionEnd = new Date(marketItems[item].auctionEndDate)
+        var now = new Date();
+        var milisecondsAuction = auctionEnd.getTime()
+        var milisecondsNow = now.getTime()
+        var milisecondsUntilEnd = milisecondsAuction - milisecondsNow
+        
+        var dateString = ""
+        if (milisecondsUntilEnd >= 43200000){
+            dateString = "Long"
+        }else if (milisecondsUntilEnd >= 1800000 && milisecondsUntilEnd < 43200000){
+            dateString = "Medium"
+        }else if (milisecondsUntilEnd < 1800000){
+            dateString = "Short"
+        }
+        marketString = marketString + marketItems[item].emoji + " " + item + " - " + marketItems[item].name + " | " + marketItems[item].currentBid + " | " + marketItems[item].buyout + " | " + dateString + "\n"
+    }
+    if (!long){
+        // show short shop
+        const embed = new Discord.RichEmbed()
+        .setColor(0x000000)
+        .addField("Market Items :shinto_shrine:", marketString , false)
+        .addField('Your current tacos', marketData.userTacos + " :taco:", false)
+        .setTimestamp()
+        message.channel.send({embed});
+    }else{
+        const embed = new Discord.RichEmbed()
+        .setColor(0x000000)
+        .addField("Market Items :shinto_shrine:", marketString , false)
+        .addField('Your current tacos', marketData.userTacos + " :taco:", false)
+        .setTimestamp()
+        message.channel.send({embed});
+    }
+}
+
 module.exports.auctionCommand = function(message, args){
     var discordUserId = message.author.id;
     var discordUserIdString = "auction-" + message.author.id;
@@ -6520,7 +6690,6 @@ module.exports.auctionCommand = function(message, args){
                     // console.log(err);
                 }
                 else{
-                    // 
                     // get all the data for each item
                     var itemsInInventoryCountMap = {};
                     var itemsMapbyShortName = {};

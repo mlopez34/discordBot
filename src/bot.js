@@ -28,7 +28,8 @@ client.on('ready', function(err) {
     } 
     console.log("in guilds: " + client.guilds.size)
     console.log('The bot is online'); 
-    
+    // initialize market
+    commands.initializeMarketPlace(client)
     //steal(channelName);
 });
 
@@ -134,6 +135,10 @@ client.on('message', function(message){
         username: message.author.username,
         message: message.content
     }
+    var messagesByUserCount = {}
+    // every message being inserted should add 1 to the user
+    // start at 0, add +1 to the count if the count is at 0, no wait, otherwise do timeout  500 * count
+    // when the timeout goes off subtract -1
     if (message.channel && message.channel.guild && 
         (message.channel.guild.id == "167298338905915393"
         || message.channel.guild.id == "231378019292282880")){
@@ -929,6 +934,9 @@ client.on('message', function(message){
                 }
                 else if (commandIs("greenhouse", message)){
                     commands.greenHouseCommand(message)
+                }
+                else if (commandIs("market", message)){
+                    commands.marketCommand(message, args)
                 }
                 else if (commandIs("plant", message)){
                     message.channel.send(":herb:")
