@@ -6920,7 +6920,7 @@ module.exports.marketAuctionCommand = function(message, args){
                                     creatorchannel: message.channel.id,
                                     lastHighestbidderchannel: null,
                                     item: individualItem,
-                                    itemId: idOfMyItem
+                                    itemId: individualItem.id
                                 }
                                 individualItem.auctionenddate = auctionenddate
                                 individualItem.currentbid = startBid
