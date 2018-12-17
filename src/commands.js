@@ -6787,11 +6787,14 @@ function marketBuilder(message, marketData, long){
         }else{
             buyoutString = marketItems[item].buyout
         }
-        var itemString = marketItems[item].name
+        var itemNameString = marketItems[item].name
         if (marketItems[item].seller == message.author.id){
-            itemString = "**" + marketItems[item].name + "**"
+            itemNameString = "**" + marketItems[item].name + "**"
         }
-        marketString = marketString + marketItems[item].emoji + " " + item + " - " + itemString + " | " + marketItems[item].currentbid + " | " + buyoutString + " | " + dateString + "\n"
+        if (marketItems[item].currentbiduserid == message.author.id){
+            itemNameString = "__" + itemNameString + "__"
+        }
+        marketString = marketString + marketItems[item].emoji + " " + item + " - " + itemNameString + " | " + marketItems[item].currentbid + " | " + buyoutString + " | " + dateString + "\n"
     }
     if (!long){
         // show short shop
