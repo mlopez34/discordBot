@@ -6612,6 +6612,8 @@ function getEmojiBasedOnRarityCategory(itemDetails){
     }
     else if (itemDetails.itemraritycategory === "rare++" || itemDetails.itemraritycategory === "rare+++"){
         emoji = ":diamonds: "
+    }else{
+        emoji = ":black_small_square:"
     }
     return emoji
 }
@@ -6794,7 +6796,9 @@ function marketBuilder(message, marketData, long){
         if (marketItems[item].currentbiduserid == message.author.id){
             itemNameString = "__" + itemNameString + "__"
         }
-        marketString = marketString + marketItems[item].emoji + " " + item + " - " + itemNameString + " | " + marketItems[item].currentbid + " | " + buyoutString + " | " + dateString + "\n"
+        if (marketString.length < 950){
+            marketString = marketString + marketItems[item].emoji + " " + item + " - " + itemNameString + " | " + marketItems[item].currentbid + " | " + buyoutString + " | " + dateString + "\n"
+        }
     }
     if (!long){
         // show short shop
