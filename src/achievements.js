@@ -489,7 +489,8 @@ module.exports.achievementStringBuilder = function(achievements, long){
             if (achievementString.length > 900){
                 achievementStrings.push(achievementString);
                 achievementString = "";
-                achievementString = achievementString + (achievementsData[achievements[ach]].emoji) + " **" + achievements[ach] + "** - " + achievementsData[achievements[ach]].description +  " \n"                
+                // removes duplicates
+                //achievementString = achievementString + (achievementsData[achievements[ach]].emoji) + " **" + achievements[ach] + "** - " + achievementsData[achievements[ach]].description +  " \n"                
             }
             if (achievementsData[achievements[ach]]){
                 achievementString = achievementString + (achievementsData[achievements[ach]].emoji) + " **" + achievements[ach] + "** - " + achievementsData[achievements[ach]].description +  " \n"

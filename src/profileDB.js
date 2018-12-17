@@ -1142,7 +1142,7 @@ module.exports.updateMarketItemSold = function(item, newOwner, cb){
 
 // get market items
 module.exports.getMarketItems = function(cb) {
-    var query = 'select * from ' + config.inventoryTable + ' where status = $1 LIMIT 20'
+    var query = 'select * from ' + config.inventoryTable + ' where status = $1 ORDER BY auctionenddate desc LIMIT 100'
     // console.log(query);
     db.query(query, [ "market" ])
     .then(function (data) {

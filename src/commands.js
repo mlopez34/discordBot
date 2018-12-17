@@ -6766,6 +6766,7 @@ module.exports.marketCommand = function(message, args){
 }
 
 function marketBuilder(message, marketData, long){
+    var marketItemsByPage = []
     var marketString = "**Item** | **Current Bid** :taco: | **Buyout** :taco: | **Time Left** \n"
     for (var item in marketItems){
         // TODO: calculate the date string left
@@ -6798,13 +6799,16 @@ function marketBuilder(message, marketData, long){
         }
         if (marketString.length < 950){
             marketString = marketString + marketItems[item].emoji + " " + item + " - " + itemNameString + " | " + marketItems[item].currentbid + " | " + buyoutString + " | " + dateString + "\n"
+        }else{
+            marketItemsByPage.push(marketString)
+            marketString = "**Item** | **Current Bid** :taco: | **Buyout** :taco: | **Time Left** \n"
         }
     }
     if (!long){
         // show short shop
         const embed = new Discord.RichEmbed()
         .setColor(0x000000)
-        .addField("Market Items :shinto_shrine:", marketString , false)
+        .addField("Market Items :shinto_shrine:", marketItemsByPage[0] , false)
         .addField('Your current tacos', marketData.userTacos + " :taco:", false)
         .setTimestamp()
         message.channel.send({embed});
@@ -6983,7 +6987,9 @@ module.exports.marketAuctionCommand = function(message, args){
                                 }
                             }
                         }
-                        if (itemsMapbyShortName[myItemShortName] && itemsMapbyShortName[myItemShortName].itemraritycategory != "myth"){
+                        if (itemsMapbyShortName[myItemShortName] 
+                            && itemsMapbyShortName[myItemShortName].itemraritycategory != "myth"
+                            && itemsMapbyShortName[myItemShortName].itemraritycategory != "artifact+"){
                             var idOfMyItem = itemsMapbyShortName[myItemShortName].id;
                             var itemNameInMarket = itemsMapbyShortName[myItemShortName].itemname
                             // console.log(idOfMyItem);
@@ -7132,7 +7138,9 @@ module.exports.auctionCommand = function(message, args){
                         }
                         //// console.log(itemsInInventoryCountMap);
                         //// console.log(itemsMapbyShortName);
-                        if (itemsMapbyShortName[myItemShortName] && itemsMapbyShortName[myItemShortName].itemraritycategory != "myth"){
+                        if (itemsMapbyShortName[myItemShortName] 
+                            && itemsMapbyShortName[myItemShortName].itemraritycategory != "myth"
+                            && itemsMapbyShortName[myItemShortName].itemraritycategory != "artifact+"){
                             var idOfMyItem = itemsMapbyShortName[myItemShortName].id;
                             var itemNameInAuction = itemsMapbyShortName[myItemShortName].itemname
                             // console.log(idOfMyItem);
@@ -7517,7 +7525,9 @@ module.exports.tradeCommand = function(message, args){
                                 
                                 // args[2] is your item(or # of tacos)
                                 // check if myItem exists in items, check if otherItem exists in items, if not then turn the string
-                                if (itemsMapbyShortName[myItemShortName] && itemsMapbyShortName[myItemShortName].itemraritycategory != "myth" ){
+                                if (itemsMapbyShortName[myItemShortName] 
+                                    && itemsMapbyShortName[myItemShortName].itemraritycategory != "myth"
+                                    && itemsMapbyShortName[myItemShortName].itemraritycategory != "artifact+" ){
                                     var idOfMyItem = itemsMapbyShortName[myItemShortName].id;
                                     var itemNameInTrade = itemsMapbyShortName[myItemShortName].itemname
                                     // console.log(idOfMyItem);
