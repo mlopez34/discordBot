@@ -6807,7 +6807,7 @@ module.exports.marketAuctionCommand = function(message, args){
             var startBid = 10
             var buyout = 10
             var timeToEnd = "long"
-            if (args.length > 4){
+            if (args.length >= 4){
                 startBid = Math.floor(args[2])
                 buyout = Math.floor(args[3])
                 if (startBid < 10 ){
@@ -6816,7 +6816,7 @@ module.exports.marketAuctionCommand = function(message, args){
                 if (buyout < 10 ){
                     buyout = 10
                 }
-            }else if (args.length > 3){
+            }else if (args.length >= 3){
                 buyout = Math.floor(args[2] )
                 startBid = Math.floor(args[2] )
                 if (startBid < 10 ){
