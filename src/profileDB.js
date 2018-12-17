@@ -1176,9 +1176,9 @@ module.exports.unsoldMarketItem = function(itemId, cb){
 module.exports.postItemToMarket = function(params, cb){
     var status = "market"
     var buyout = params.buyout
-    var currentbid = params.currentBid
-    var creatorchannel = params.creatorChannel
-    var auctionEndDate = params.auctionEndDate
+    var currentbid = params.currentbid
+    var creatorchannel = params.creatorchannel
+    var auctionEndDate = params.auctionenddate
     var itemId = params.id
     
     var query = 'update ' + config.inventoryTable + ' set status=$1, currentbid=$3, buyout=$4,auctionenddate=$5,auctioncreatorchannel=$6 where id=$2'
@@ -1195,9 +1195,9 @@ module.exports.postItemToMarket = function(params, cb){
 }
 
 module.exports.bidOnMarketItem = function(params, cb){
-    var currentbid = params.currentBid
-    var bidderId = params.currentBidUserId
-    var bidderChannel =  params.lastHighestBidderChannel
+    var currentbid = params.currentbid
+    var bidderId = params.currentbiduserid
+    var bidderChannel =  params.lastHighestbidderchannel
     var itemId = params.itemId
 
     var query = 'update ' + config.inventoryTable + ' set currentbid=$2,currentbiduserid=$3, lastbidchannel=$4 where id=$1'
