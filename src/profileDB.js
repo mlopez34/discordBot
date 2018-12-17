@@ -1123,23 +1123,95 @@ module.exports.updateItemStatus = function(itemId, status, cb){
     });
 }
 
+module.exports.updateMarketItemSold = function(item, newOwner, cb){
+    var itemId = item[0]
+    var status = null
+    var query = 'update ' + config.inventoryTable + ' set status=$1, discordid=$3,currentbid=$1,buyout=$1,currentbiduserid=$1,auctionenddate=$1,auctioncreatorchannel=$1,lastbidchannel=$1 where id=$2'
+    db.none(query, [status, itemId, newOwner])
+    .then(function () {
+    cb(null, {
+        status: 'success',
+        message: 'set new owner for item: ' + itemId
+        });
+    })
+    .catch(function (err) {
+        // console.log(err);
+        cb(err);
+    });
+}
+
 // get market items
 module.exports.getMarketItems = function(cb) {
     var query = 'select * from ' + config.inventoryTable + ' where status = $1 LIMIT 20'
     // console.log(query);
     db.query(query, [ "market" ])
-      .then(function (data) {
-        cb(null, {
-            status: 'success',
-            data: data,
-            message: 'Retrieved All User Items'
-          });
-      })
-      .catch(function (err) {
-        // console.log(err);
+    .then(function (data) {
+    cb(null, {
+        status: 'success',
+        data: data,
+        message: 'Retrieved All User Items'
+        });
+    })
+    .catch(function (err) {
+    // console.log(err);
+    cb(err);
+    });
+}
+
+module.exports.unsoldMarketItem = function(itemId, cb){
+    var status = null
+    var query = 'update ' + config.inventoryTable + ' set status=$1, currentbid=$1, buyout=$1, currentbiduserid=$1,auctionenddate=$1,auctioncreatorchannel=$1,lastbidchannel=$1 where id=$2'
+    db.none(query, [status, itemId])
+    .then(function () {
+    cb(null, {
+        status: 'success',
+        message: 'reset market item' + itemId
+        });
+    })
+    .catch(function (err) {
         cb(err);
-      });
-  }
+    });
+}
+
+module.exports.postItemToMarket = function(params, cb){
+    var status = "market"
+    var buyout = params.buyout
+    var currentbid = params.currentBid
+    var creatorchannel = params.creatorChannel
+    var auctionEndDate = params.auctionEndDate
+    var itemId = params.id
+    
+    var query = 'update ' + config.inventoryTable + ' set status=$1, currentbid=$3, buyout=$4,auctionenddate=$5,auctioncreatorchannel=$6 where id=$2'
+    db.none(query, [status, itemId, currentbid, buyout , auctionEndDate, creatorchannel ])
+    .then(function () {
+    cb(null, {
+        status: 'success',
+        message: 'posted market item' + itemId
+        });
+    })
+    .catch(function (err) {
+        cb(err);
+    });
+}
+
+module.exports.bidOnMarketItem = function(params, cb){
+    var currentbid = params.currentBid
+    var bidderId = params.currentBidUserId
+    var bidderChannel =  params.lastHighestBidderChannel
+    var itemId = params.itemId
+
+    var query = 'update ' + config.inventoryTable + ' set currentbid=$2,currentbiduserid=$3, lastbidchannel=$4 where id=$1'
+    db.none(query, [itemId, currentbid, bidderId, bidderChannel ])
+    .then(function () {
+    cb(null, {
+        status: 'success',
+        message: 'posted market item' + itemId
+        });
+    })
+    .catch(function (err) {
+        cb(err);
+    });
+}
 
 // get user's inventory
 module.exports.getUserItems = function(discordId, cb) {
