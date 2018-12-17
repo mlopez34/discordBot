@@ -6567,6 +6567,12 @@ module.exports.initializeMarketPlace = function(c){
                         }
                         tacosInUseAuction[individualItem.currentbiduserid] = tacosInUseAuction[individualItem.currentbiduserid] + individualItem.currentbid
                     }
+
+                    if ( marketItemsUserCount[individualItem.discordid] == undefined){
+                        marketItemsUserCount[individualItem.discordid] = 1
+                    }else{
+                        marketItemsUserCount[individualItem.discordid] = marketItemsUserCount[individualItem.discordid] + 1
+                    }
                     
                     handleAuctionItem(individualItem)
 
@@ -6705,6 +6711,13 @@ function handleMarketItemAuctionEnded(individualItem){
 }
 
 function removeItemFromMarket(individualItem){
+    if ( marketItemsUserCount[individualItem.discordid] == undefined){
+        marketItemsUserCount[individualItem.discordid] = 0
+    }else if (marketItemsUserCount[individualItem.discordid] < 0){
+        marketItemsUserCount[individualItem.discordid] = 0
+    }else{
+        marketItemsUserCount[individualItem.discordid] = marketItemsUserCount[individualItem.discordid] - 1
+    }
     if (marketItems[individualItem.id]){
         if (marketItems[individualItem.id].auctionTimeout){
             clearTimeout(marketItems[individualItem.id].auctionTimeout)
@@ -6794,41 +6807,114 @@ function marketBuilder(message, marketData, long){
     }
 }
 
+function extractItemName(args){
+    return args[1].toLowerCase();
+}
+
+function extractStartBid(args){
+    var startBid = 100
+    if (args.length == 4 &&  args[2].toLowerCase() == "bid"){
+        startBid = Math.floor( args[3] )
+    }else if (args.length == 6 && args[4].toLowerCase() == "bid"){
+        startBid = Math.floor( args[5] )
+    }else if (args.length == 6 && args[2].toLowerCase() == "bid"){
+        startBid = Math.floor( args[3] )
+    }else if (args.length == 8 && args[6].toLowerCase() == "bid"){
+        startBid = Math.floor( args[7] )
+    }else if (args.length == 8 && args[4].toLowerCase() == "bid"){
+        startBid = Math.floor( args[5] )
+    }else if (args.length == 8 && args[2].toLowerCase() == "bid"){
+        startBid = Math.floor( args[3] )
+    }
+    if ( isNaN( startBid) ){
+        return 100
+    }else{
+        return startBid
+
+    }
+}
+
+function extractBuyout(args){
+    var buyout = 100000000
+    if (args.length == 4 && args[2].toLowerCase() == "buyout"){
+        buyout = Math.floor( args[3] )
+    }else if (args.length == 6 && args[4].toLowerCase() == "buyout"){
+        buyout = Math.floor( args[5] )
+    }else if (args.length == 6 && args[2].toLowerCase() == "buyout"){
+        buyout = Math.floor( args[3] )
+    }else if (args.length == 8 && args[6].toLowerCase() == "buyout"){
+        buyout = Math.floor( args[7] )
+    }else if (args.length == 8 && args[4].toLowerCase() == "buyout"){
+        buyout = Math.floor( args[5] )
+    }else if (args.length == 8 && args[2].toLowerCase() == "buyout"){
+        buyout = Math.floor( args[3] )
+    }
+    if ( isNaN( buyout) ){
+        return 100000000
+    }else{
+        return buyout
+
+    }
+}
+
+function extractTimeToEnd(args){
+    var timeToEnd = "medium"
+    if (args.length == 4 && args[2].toLowerCase() == "time"){
+        if (args[3].toLowerCase() == "short" || args[3].toLowerCase() == "long"){
+            timeToEnd = args[3].toLowerCase()
+        }
+    }else if (args.length == 6 && args[4].toLowerCase() == "time"){
+        if (args[5].toLowerCase() == "short" || args[5].toLowerCase() == "long"){
+            timeToEnd = args[5].toLowerCase()
+        }
+    }else if (args.length == 6 && args[2].toLowerCase() == "time"){
+        if (args[3].toLowerCase() == "short" || args[3].toLowerCase() == "long"){
+            timeToEnd = args[3].toLowerCase()
+        }
+    }else if (args.length == 8 && args[6].toLowerCase() == "time"){
+        if (args[7].toLowerCase() == "short" || args[7].toLowerCase() == "long"){
+            timeToEnd = args[7].toLowerCase()
+        }
+    }else if (args.length == 8 && args[4].toLowerCase() == "time"){
+        if (args[5].toLowerCase() == "short" || args[5].toLowerCase() == "long"){
+            timeToEnd = args[5].toLowerCase()
+        }
+    }else if (args.length == 8 && args[2].toLowerCase() == "time"){
+        if (args[3].toLowerCase() == "short" || args[3].toLowerCase() == "long"){
+            timeToEnd = args[3].toLowerCase()
+        }
+    }
+    return timeToEnd
+}
+
+function marketAuctionPostCommand(args){
+    // POSTING AN AUCTION SHOULD INCLUDE THE FOLLOWING PARAMS
+    // -mkauction {name} bid 500 buyout 1000 time short
+    var auctionPostObj = {
+        valid: false
+    }
+    if (args.length == 2 || args.length == 4 || args.length == 6 || args.length == 8){
+        auctionPostObj.myItemShortName = extractItemName(args)
+        auctionPostObj.startBid = extractStartBid(args)
+        auctionPostObj.buyout = extractBuyout(args)
+        auctionPostObj.timeToEnd = extractTimeToEnd(args)
+        auctionPostObj.valid = true
+    }
+    return auctionPostObj
+}
+
 module.exports.marketAuctionCommand = function(message, args){
     var discordUserId = message.author.id;
     // only allow the user to put up 10 auctions
-    // -mkauction thug short
-    // -mkauction thug 500 short
-    // -mkauction thug 500 1000 short
-    if (marketItemsUserCount[discordUserId] == undefined || marketItemsUserCount[discordUserId] <= 10){
+    var auctionPost = marketAuctionPostCommand(args)
+    if (auctionPost.valid && (marketItemsUserCount[discordUserId] == undefined || marketItemsUserCount[discordUserId] <= 10)){
         if ( args && args.length > 1){
-            var myItemShortName = args[1].toLowerCase();
+            var myItemShortName = auctionPost.myItemShortName;
             var itemCount = 1;
-            var startBid = 10
-            var buyout = 10
-            var timeToEnd = "long"
-            if (args.length >= 4){
-                startBid = Math.floor(args[2])
-                buyout = Math.floor(args[3])
-                if (startBid < 10 ){
-                    startBid = 10
-                }
-                if (buyout < 10 ){
-                    buyout = 10
-                }
-            }else if (args.length >= 3){
-                buyout = Math.floor(args[2] )
-                startBid = Math.floor(args[2] )
-                if (startBid < 10 ){
-                    startBid = 10
-                }
-                if (buyout < 10 ){
-                    buyout = 10
-                }
-            }else{
-                // no limit
-                buyout = 100000000
-            }
+            var startBid = auctionPost.startBid
+            var buyout = auctionPost.buyout
+            var timeToEnd = auctionPost.timeToEnd
+
             profileDB.getUserItems(discordUserId, function(err, inventoryResponse){
                 if (err){
                     console.log(err);
@@ -7207,12 +7293,17 @@ module.exports.marketBidCommand = function(message, args){
                         var lastHighestBidder = auctionToBidOn.currentbiduserid;
                         if (lastHighestBidder){
                             tacosInUseAuction[lastHighestBidder] = tacosInUseAuction[lastHighestBidder] - auctionToBidOn.currentbid
+                            // tell the user they have been outbid
+                            try{
+                                var outBidUser = client.users.get(lastHighestBidder)
+                                client.channels.get(auctionToBidOn.lastHighestbidderchannel).send(outBidUser + " You were outbid on **" + auctionToBidOn.name + "** in the marketplace")
+                            }catch(ex){
+                                console.log(ex)
+                            }
                         }
 
                         // edit local marketItems and database
-
-                        // if the bid >= buyout cost then award the user the item and close the auction 
-                        // and stop the timeout
+                        // if the bid >= buyout cost then award the user the item and close the auction and stop the timeout
                         auctionToBidOn.currentbid = biddingTacos;
                         auctionToBidOn.currentbiduserid = discordUserId;
                         auctionToBidOn.lastHighestbidderchannel = message.channel.id
