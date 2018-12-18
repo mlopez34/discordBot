@@ -6874,6 +6874,7 @@ function filterMarketItemsByShortName(itemshortname){
 }
 
 function marketBuilder(message, marketData, long){
+    var marketItemsCount = Object.keys(marketItems).length
     var marketItemsByPage = []
     var marketString = "**Item** | **Current Bid** :taco: | **Buyout** :taco: | **Time Left** \n"
     var filteredMarketItems = {}
@@ -6937,7 +6938,7 @@ function marketBuilder(message, marketData, long){
         // show short shop
         const embed = new Discord.RichEmbed()
         .setColor(0x000000)
-        .setDescription("-markethelp for more info!")
+        .setDescription("-markethelp for more info!\nThere are `" + marketItemsCount + "` items in the market currently \nYou are viewing page: " + (page + 1))
         .addField("Market Items :shinto_shrine:", marketItemsByPage[page] , false)
         .addField('Your current tacos', marketData.userTacos + " :taco:", false)
         .setTimestamp()
