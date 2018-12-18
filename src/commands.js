@@ -7214,7 +7214,12 @@ module.exports.marketAuctionCommand = function(message, args){
         }
 
     }else{
-        message.channel.send("You have reached the maximum allowed auctions in the market")
+        if (!auctionPost.valid){
+            message.channel.send("Your auction is not valid try: -mkauction [itemname] to start off with a simple auction!")
+
+        }else{
+            message.channel.send("You have reached the maximum allowed auctions in the market!")
+        }
     }
 
 }
