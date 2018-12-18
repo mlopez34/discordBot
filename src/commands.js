@@ -6915,7 +6915,7 @@ function marketBuilder(message, marketData, long){
         if (filteredMarketItems[item].currentbiduserid == message.author.id){
             itemNameString = "__" + itemNameString + "__"
         }
-        if (marketString.length < 950){
+        if (marketString.length < 875){
             marketString = marketString + filteredMarketItems[item].emoji + " " + item + " - " + itemNameString + " | " + filteredMarketItems[item].currentbid + " | " + buyoutString + " | " + dateString + "\n"
         }else{
             marketItemsByPage.push(marketString)
