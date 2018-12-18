@@ -7509,6 +7509,8 @@ module.exports.marketBidCommand = function(message, args){
                             message.channel.send(message.author + " your bid is lower than the current highest bid. Highest bid is `" + adjustedCurrentBid + "` tacos!")                            
                         }
                     }
+                }else{
+                    message.channel.send("You do not have the tacos to bid on this auction")
                 }
             }
         })
