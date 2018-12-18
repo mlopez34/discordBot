@@ -6937,6 +6937,7 @@ function marketBuilder(message, marketData, long){
         // show short shop
         const embed = new Discord.RichEmbed()
         .setColor(0x000000)
+        .setDescription("-markethelp for more info!")
         .addField("Market Items :shinto_shrine:", marketItemsByPage[page] , false)
         .addField('Your current tacos', marketData.userTacos + " :taco:", false)
         .setTimestamp()
@@ -6949,6 +6950,21 @@ function marketBuilder(message, marketData, long){
         .setTimestamp()
         message.channel.send({embed});
     }
+}
+
+module.exports.marketHelpCommand = function(message){
+
+    const embed = {
+        "description": "Want to sell an item in the market? See an item in the market that you'd like to buy? use these commands!",
+        "color": 11795163,
+        "fields": [
+          {
+            "name": "Market",
+            "value": "`-mkauction [itemname] bid [bid] buyout [buyout] time [short/medium/long]                       >` Create an auction in the market!\n**example**: -mkauction sundress bid 500 buyout 2000 time medium\n**NOTE**:   bid, buyout, and time parameters are optional\n`-mkbid [id] tacos [bid]   >` Bid on an item in the market!\n**example**: -mkbid 74832 tacos 500\n`-market rares,\n -market ancients,\n -market artifacts,\n -market commons,\n -market uncommons >` Display market items based on rarity!\n`-market [item short name]   >` Display market items based on their name id!\n**example**: -market sundress\n`-market page [page number]                       >` Display a different page of the Market!"
+          }
+        ]
+      };
+      message.channel.send({ embed });
 }
 
 function extractItemName(args){
@@ -7044,6 +7060,10 @@ function marketAuctionPostCommand(args){
         auctionPostObj.buyout = extractBuyout(args)
         auctionPostObj.timeToEnd = extractTimeToEnd(args)
         auctionPostObj.valid = true
+    }
+    // bid is always less than or equal to buyout price
+    if (auctionPostObj.startBid && auctionPostObj.startBid > auctionPostObj.buyout){
+        auctionPostObj.startBid = auctionPostObj.buyout
     }
     return auctionPostObj
 }
