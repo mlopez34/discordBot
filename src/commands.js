@@ -4916,7 +4916,7 @@ module.exports.greenHouseCommand = function(message){
                 plots: ghRes.data.plotsoflandplantid,
                 plotsItemIds: ghRes.data.plotsoflanditemid,
                 lastharvest: ghRes.data.lastharvest,
-                plotsItemIds: ghRes.data.timesharvested,
+                timesharvested: ghRes.data.timesharvested,
                 name: message.author.username
             }
 
@@ -5004,6 +5004,14 @@ module.exports.templeCommand = function(message){
     // 
 }
 
+module.exports.bakeCommand = function(message, args){
+    // use fruits harvested in order to bake things
+    // can bake to:
+    // increase stats for 2 hours in RPG
+    // increase chances to get tacos
+    // miscellanous collections
+}
+
 module.exports.plantCommand = function(message, args){
     var discordUserId = message.author.id;
     // arguments will be, seednameid, greenhouse slot
@@ -5011,9 +5019,8 @@ module.exports.plantCommand = function(message, args){
     // plant a bamboo seed in slot 5 of your greenhouse
     if (args && args.length > 2 ){
         var myItemShortName =  args[1];
-        var plotOfLand = args[2];  // in an array this will always be -1 of index
+        var plotOfLand = Math.floor( args[2] );  // in an array this will always be -1 of index
 
-        //  
         profileDB.getUserItems(discordUserId, function(err, inventoryResponse){
             if (err){
                 // console.log(err);
@@ -5056,7 +5063,7 @@ module.exports.plantCommand = function(message, args){
                                 // console.log(ItemInQuestion);
                                 if (itemsMapbyShortName[myItemShortName] 
                                     && itemsMapById[ItemInQuestion.itemid].itemshortname === myItemShortName){
-                                        plantBeingPlanted.push(ItemInQuestion.id);
+                                        plantBeingPlanted.push(ItemInQuestion);
                                 }
                             }
                         }
@@ -5073,46 +5080,63 @@ module.exports.plantCommand = function(message, args){
                                         plots: ghRes.data.plotsoflandplantid,
                                         plotsItemIds: ghRes.data.plotsoflanditemid,
                                         lastharvest: ghRes.data.lastharvest,
-                                        plotsItemIds: ghRes.data.timesharvested,
+                                        timesharvested: ghRes.data.timesharvested,
+                                        plantName: itemsMapById[plantBeingPlanted[0].itemid].itemname,
                                         name: message.author.username
                                     }
 
                                     // if they do get the user's greenhouse, check that the slot is available (not higher than their #ofplots)
-                                    if ( plotOfLand > 0 && plotOfLand <= numberOfPlots){
+                                    if ( plotOfLand > 0 && plotOfLand <= greenHouseData.numberOfPlots){
                                         // plant on plot an update
-                                        plantOnPlotOfLand(message, discordUserId, plotOfLand, greenHouseData, plantBeingPlanted)
+                                        plantOnPlotOfLand(message, discordUserId, plotOfLand, greenHouseData, plantBeingPlanted[0])
+                                    }else{
+                                        message.channel.send("Invalid plot of land, try planting in a slot that is available to you")
                                     }
                                     // if available, plant the seed in the plot of land, insert itemid, plantid, and set total harv = 0
 
                                 }
                             })
+                        }else{
+                            message.channel.send("missing plant seed")
                         }
                     }
                 })
             }
         })
+    }else{
+        message.channel.send("example: `-plant [seed] [plot of land #]")
     }
 }
 
 function plantOnPlotOfLand(message, discordUserId, plotOfLand, greenHouseData, plantBeingPlanted){
     // set the timesharvested to 0 plotsoflanditemid to inventoryid plotsoflandplantid itemid
-    var now = new Date();
     // plotOfLand is the slot for all the arrays that will be edited
     // greenHouseData mainly remainds the same
     // plantBeingPlanted will be the item object - the id will be the inventoryid
     // column: value
+    var index = plotOfLand - 1
     var updateInfoObject = {
-        timesharvested: [],
-        plotsoflanditemid: [],
-        plotsoflandplantid: []
+        timesharvested: greenHouseData.timesharvested,
+        plotsoflanditemid: greenHouseData.plotsItemIds,
+        plotsoflandplantid: greenHouseData.plots
 
     }
-    profileDB.updatePlotInfo(discordUserId, { lastharvest: now, timesharvested: newHarvestCounts }, function(plotErr, plotRes){
-        if (plotErr){
-            console.log(plotErr)
+    updateInfoObject.timesharvested[index] = 0;
+    updateInfoObject.plotsoflandplantid[index] = plantBeingPlanted.itemid
+    updateInfoObject.plotsoflanditemid[index] = plantBeingPlanted.id
+
+    profileDB.updateItemStatus(plantBeingPlanted.id, "used", function(err, res){
+        if (err){
+            console.log(err)
         }else{
-            console.log(plotRes)
-            message.channel.send(message.author + " has planted a " + plantBeingPlanted.name + " !")
+            profileDB.updatePlotInfo(discordUserId, updateInfoObject, function(plotErr, plotRes){
+                if (plotErr){
+                    console.log(plotErr)
+                }else{
+                    console.log(plotRes)
+                    message.channel.send(message.author + " has planted a " + greenHouseData.plantName + " !")
+                }
+            })
         }
     })
 }
@@ -5136,7 +5160,7 @@ module.exports.harvestCommand = function(message, args){
                 harvestCounts: profileData.data.timesharvested,
                 plotsItemIds: profileData.data.plotsoflanditemid,
                 lastharvest: profileData.data.lastharvest,
-                plotsItemIds: profileData.data.timesharvested,
+                timesharvested: profileData.data.timesharvested,
                 name: message.author.username
             }
             profileDB.getItemData(function(error, allItemsResponse){
@@ -6790,7 +6814,6 @@ module.exports.marketCommand = function(message, args){
     var marketParams = marketBuilderParamsBuilder(args)
     profileDB.getUserProfileData( discordUserId, function(err, userResponse) {
         if(err){
-            // user doesnt exist tell the user they should get some tacos
             console.log(err)
             agreeToTerms(message, discordUserId);
         }else{
@@ -6950,6 +6973,9 @@ function extractStartBid(args){
     if ( isNaN( startBid) ){
         return 100
     }else{
+        if (startBid >= 100000000){
+            startBid = 100
+        }
         return startBid
 
     }
@@ -7009,8 +7035,6 @@ function extractTimeToEnd(args){
 }
 
 function marketAuctionPostCommand(args){
-    // POSTING AN AUCTION SHOULD INCLUDE THE FOLLOWING PARAMS
-    // -mkauction {name} bid 500 buyout 1000 time short
     var auctionPostObj = {
         valid: false
     }
@@ -7145,8 +7169,6 @@ module.exports.marketAuctionCommand = function(message, args){
                                     if (postErr){
                                         console.log(postErr)
                                     }else{
-                                        
-                                        // handle the auction item
                                         if ( marketItemsUserCount[discordUserId] == undefined){
                                             marketItemsUserCount[discordUserId] = 1
                                         }else{
@@ -7160,12 +7182,10 @@ module.exports.marketAuctionCommand = function(message, args){
                             }
                             else{
                                 message.channel.send(message.author + " example: `-mkauction [item] bid [minimum bid] buyout [maximum bid] time [short/medium/long]`")  
-                                // console.log("items in auction " + JSON.stringify(itemsInAuction, null, 2));
                             }
                         }
                         else{
                             message.channel.send(message.author + " invalid item! example: `-mkauction [item] bid [minimum bid] buyout [maximum bid] time [short/medium/long]`")  
-                            // console.log("items in auction " + JSON.stringify(itemsInAuction, null, 2));
                         }
                     })
                 }

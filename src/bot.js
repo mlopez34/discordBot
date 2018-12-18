@@ -374,7 +374,7 @@ client.on('message', function(message){
                     commands.createTableCommand(message, mainChannel);
                 }
                 else if (commandIs("greenhouse", message)){
-                    //commands.greenHouseCommand(message)
+                    commands.greenHouseCommand(message)
                 }
                 else if (commandIs("market", message)){
                     commands.marketCommand(message, args)
@@ -941,7 +941,7 @@ client.on('message', function(message){
                     profileDB.createUserActivity(data)
                 }
                 else if (commandIs("greenhouse", message)){
-                    //commands.greenHouseCommand(message)
+                    commands.greenHouseCommand(message)
                 }
                 else if (commandIs("market", message)){
                     commands.marketCommand(message, args)
@@ -952,10 +952,10 @@ client.on('message', function(message){
                     commands.marketAuctionCommand(message, args)
                 }
                 else if (commandIs("plant", message)){
-                    message.channel.send(":herb:")
+                    commands.plantCommand(message, args)
                 }
                 else if (commandIs("harvest", message)){
-                    //commands.harvestCommand(message)
+                    commands.harvestCommand(message)
                 }
                 else if (commandIs("rpgstart", message)){
                     if (message.channel.type == "text" && !message.author.bot){
