@@ -6903,7 +6903,7 @@ function marketBuilder(message, marketData, long){
             dateString = "Short"
         }
         var buyoutString = ""
-        if (filteredMarketItems[item].buyout == 100000000){
+        if (filteredMarketItems[item].buyout == 100000000000){
             buyoutString = "N/A"
         }else{
             buyoutString = filteredMarketItems[item].buyout
@@ -6990,8 +6990,8 @@ function extractStartBid(args){
     if ( isNaN( startBid) ){
         return 100
     }else{
-        if (startBid >= 100000000){
-            startBid = 100
+        if (startBid >= 100000000000){
+            startBid = 10000000
         }
         return startBid
 
@@ -6999,7 +6999,7 @@ function extractStartBid(args){
 }
 
 function extractBuyout(args){
-    var buyout = 100000000
+    var buyout = 100000000000
     if (args.length == 4 && args[2].toLowerCase() == "buyout"){
         buyout = Math.floor( args[3] )
     }else if (args.length == 6 && args[4].toLowerCase() == "buyout"){
@@ -7014,7 +7014,7 @@ function extractBuyout(args){
         buyout = Math.floor( args[3] )
     }
     if ( isNaN( buyout) ){
-        return 100000000
+        return 100000000000
     }else{
         return buyout
 
