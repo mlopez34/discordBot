@@ -6554,6 +6554,8 @@ module.exports.initializeMarketPlace = function(c){
                         creatorchannel: individualItem.auctioncreatorchannel,
                         lastHighestbidderchannel: individualItem.lastbidchannel,
                         item: individualItem,
+                        itemraritycategory: itemDetails.itemraritycategory,
+                        itemshortname: itemDetails.itemshortname,
                         itemId: individualItem.id
                     }
                     if (marketItems[individualItem.id].currentbid == null){
@@ -6740,15 +6742,52 @@ function itemDidNotSell(itemId, cb){
     })
 }
 
-module.exports.marketCommand = function(message, args){
-    var discordUserId = message.author.id;
-    var includeDescriptions = false
-    if (args && args.length > 1){
-        var long = args[1];
-        if (long == "long"){
-            includeDescriptions = true;
+function marketBuilderParamsBuilder(args){
+    // check for rarity, item name, page
+    var marketParams = {}
+    if (args.length >= 2){
+        // check the first parameter
+        if (args[1].toLowerCase() == "rares"){
+            marketParams.rarityCategory = "rare"
+        }else if (args[1].toLowerCase() == "ancients"){
+            marketParams.rarityCategory = "ancient"
+        }else if (args[1].toLowerCase() == "artifacts"){
+            marketParams.rarityCategory = "artifact"
+        }else if (args[1].toLowerCase() == "uncommons"){
+            marketParams.rarityCategory = "uncommon"
+        }else if (args[1].toLowerCase() == "commons"){
+            marketParams.rarityCategory = "common"
+        }else if(args[1].toLowerCase() != "page"){
+            marketParams.itemshortname = args[1].toLowerCase()
+        }
+
+        if ( args.length == 3 && args[1].toLowerCase() == "page" ){
+            // no name or rarity argument
+            marketParams.marketPage = Math.floor( args[2] )
+            
+        }else if ( args.length == 4 && args[2].toLowerCase() == "page" ){
+            // first argument is either name or rarity
+            marketParams.marketPage = Math.floor( args[3] )
         }
     }
+
+    if (marketParams.marketPage && marketParams.marketPage <= 0){
+        marketParams.marketPage = 1
+    }
+
+    return marketParams
+}
+
+module.exports.marketCommand = function(message, args){
+    var discordUserId = message.author.id;
+    // var includeDescriptions = false
+    // if (args && args.length > 1){
+    //     var long = args[1];
+    //     if (long == "long"){
+    //         includeDescriptions = true;
+    //     }
+    // }
+    var marketParams = marketBuilderParamsBuilder(args)
     profileDB.getUserProfileData( discordUserId, function(err, userResponse) {
         if(err){
             // user doesnt exist tell the user they should get some tacos
@@ -6757,7 +6796,8 @@ module.exports.marketCommand = function(message, args){
         }else{
             // create an embed that displays any items that are currently in the market
             var marketData = {
-                userTacos: userResponse.data.tacos
+                userTacos: userResponse.data.tacos,
+                marketParams: marketParams
             }
             var long = false
             marketBuilder(message, marketData, long)
@@ -6765,12 +6805,66 @@ module.exports.marketCommand = function(message, args){
     })
 }
 
+function filterMarketItemsByRarity(rarityCategory){
+    var itemsByRarityMap = {}
+    for (var item in marketItems){
+        if (rarityCategory == "rare"){
+            // check for rares only
+            if (marketItems[item].itemraritycategory == "rare"
+                || marketItems[item].itemraritycategory == "rare+"
+                || marketItems[item].itemraritycategory == "rare++"
+                || marketItems[item].itemraritycategory == "rare+++"){
+                    itemsByRarityMap[item] = marketItems[item]
+            }
+        }else if (rarityCategory == "ancient"){
+            if (marketItems[item].itemraritycategory == "ancient"
+            || marketItems[item].itemraritycategory == "ancient+"
+            || marketItems[item].itemraritycategory == "ancient++"
+            || marketItems[item].itemraritycategory == "ancient+++"){
+                itemsByRarityMap[item] = marketItems[item]
+            }
+        }else if (rarityCategory == "artifact"){
+            if (marketItems[item].itemraritycategory == "artifact"){
+                itemsByRarityMap[item] = marketItems[item]
+            }
+        }else if (rarityCategory == "common"){
+            if (marketItems[item].itemraritycategory == "common"){
+                itemsByRarityMap[item] = marketItems[item]
+            }
+        }else if (rarityCategory == "uncommon"){
+            if (marketItems[item].itemraritycategory == "uncommon"){
+                itemsByRarityMap[item] = marketItems[item]
+            }
+        }
+    }
+    return itemsByRarityMap
+}
+
+function filterMarketItemsByShortName(itemshortname){
+    var itemsByNameMap = {}
+    for (var item in marketItems){
+        if (marketItems[item].itemshortname == itemshortname){
+            itemsByNameMap[item] = marketItems[item]
+        }
+    }
+    return itemsByNameMap
+}
+
 function marketBuilder(message, marketData, long){
     var marketItemsByPage = []
     var marketString = "**Item** | **Current Bid** :taco: | **Buyout** :taco: | **Time Left** \n"
-    for (var item in marketItems){
-        // TODO: calculate the date string left
-        var auctionEnd = new Date(marketItems[item].auctionenddate)
+    var filteredMarketItems = {}
+    if (marketData.marketParams.itemshortname){
+        filteredMarketItems = filterMarketItemsByShortName(marketData.marketParams.itemshortname)
+    }
+    else if (marketData.marketParams.rarityCategory){
+        filteredMarketItems = filterMarketItemsByRarity(marketData.marketParams.rarityCategory)
+    }else{
+        filteredMarketItems = marketItems
+    }
+    for (var item in filteredMarketItems){
+        
+        var auctionEnd = new Date(filteredMarketItems[item].auctionenddate)
         var now = new Date();
         var milisecondsAuction = auctionEnd.getTime()
         var milisecondsNow = now.getTime()
@@ -6785,30 +6879,42 @@ function marketBuilder(message, marketData, long){
             dateString = "Short"
         }
         var buyoutString = ""
-        if (marketItems[item].buyout == 100000000){
+        if (filteredMarketItems[item].buyout == 100000000){
             buyoutString = "N/A"
         }else{
-            buyoutString = marketItems[item].buyout
+            buyoutString = filteredMarketItems[item].buyout
         }
-        var itemNameString = marketItems[item].name
-        if (marketItems[item].seller == message.author.id){
-            itemNameString = "**" + marketItems[item].name + "**"
+        var itemNameString = filteredMarketItems[item].name
+        if (filteredMarketItems[item].seller == message.author.id){
+            itemNameString = "**" + filteredMarketItems[item].name + "**"
         }
-        if (marketItems[item].currentbiduserid == message.author.id){
+        if (filteredMarketItems[item].currentbiduserid == message.author.id){
             itemNameString = "__" + itemNameString + "__"
         }
         if (marketString.length < 950){
-            marketString = marketString + marketItems[item].emoji + " " + item + " - " + itemNameString + " | " + marketItems[item].currentbid + " | " + buyoutString + " | " + dateString + "\n"
+            marketString = marketString + filteredMarketItems[item].emoji + " " + item + " - " + itemNameString + " | " + filteredMarketItems[item].currentbid + " | " + buyoutString + " | " + dateString + "\n"
         }else{
             marketItemsByPage.push(marketString)
             marketString = "**Item** | **Current Bid** :taco: | **Buyout** :taco: | **Time Left** \n"
+            marketString = marketString + filteredMarketItems[item].emoji + " " + item + " - " + itemNameString + " | " + filteredMarketItems[item].currentbid + " | " + buyoutString + " | " + dateString + "\n"
         }
     }
+    if (marketString.length > 0 ){
+        marketItemsByPage.push(marketString)
+    }
+    // dictate the page we will show the user
+    var page = 0
+    if (marketData.marketParams.marketPage){
+        if (marketItemsByPage.length >= marketData.marketParams.marketPage){
+            page = marketData.marketParams.marketPage - 1
+        }
+    }
+
     if (!long){
         // show short shop
         const embed = new Discord.RichEmbed()
         .setColor(0x000000)
-        .addField("Market Items :shinto_shrine:", marketItemsByPage[0] , false)
+        .addField("Market Items :shinto_shrine:", marketItemsByPage[page] , false)
         .addField('Your current tacos', marketData.userTacos + " :taco:", false)
         .setTimestamp()
         message.channel.send({embed});
@@ -6997,6 +7103,8 @@ module.exports.marketAuctionCommand = function(message, args){
                                 itemsInInventoryCountMap[idOfMyItem] >= itemCount){
                                 // if so, then I can put the item in the market
                                 var emoji = getEmojiBasedOnRarityCategory(itemsMapbyShortName[myItemShortName]);
+                                var rarityCategory = itemsMapbyShortName[myItemShortName].itemraritycategory
+                                var itemshortname = itemsMapbyShortName[myItemShortName].itemshortname
                                 individualItem = individualItem[0]
                                 ////////////////
                                 // this is where marketItems[individualItem.id] gets set
@@ -7023,6 +7131,8 @@ module.exports.marketAuctionCommand = function(message, args){
                                     creatorchannel: message.channel.id,
                                     lastHighestbidderchannel: null,
                                     item: individualItem,
+                                    itemraritycategory: rarityCategory,
+                                    itemshortname: itemshortname,
                                     itemId: individualItem.id
                                 }
                                 individualItem.auctionenddate = auctionenddate
@@ -7049,12 +7159,12 @@ module.exports.marketAuctionCommand = function(message, args){
                                 })
                             }
                             else{
-                                message.channel.send(message.author + " example: -mkauction sundress 1000 2000 medium")  
+                                message.channel.send(message.author + " example: `-mkauction [item] bid [minimum bid] buyout [maximum bid] time [short/medium/long]`")  
                                 // console.log("items in auction " + JSON.stringify(itemsInAuction, null, 2));
                             }
                         }
                         else{
-                            message.channel.send(message.author + " invalid item! example here")  
+                            message.channel.send(message.author + " invalid item! example: `-mkauction [item] bid [minimum bid] buyout [maximum bid] time [short/medium/long]`")  
                             // console.log("items in auction " + JSON.stringify(itemsInAuction, null, 2));
                         }
                     })
@@ -7358,6 +7468,7 @@ module.exports.marketBidCommand = function(message, args){
         })
     }else{
         // print example on how to bid on the market
+        message.channel.send(message.author + " example: `-mkbid [id] tacos [bid]` "  )
     }
 }
 
