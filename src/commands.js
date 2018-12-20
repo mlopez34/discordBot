@@ -4989,7 +4989,7 @@ module.exports.stableCommand = function(message){
     // get user profile and stable info
 
     // create embed based off of their stable info stats | visual representation
-    // a bunch of animals and shit - brush - fishing rod - lures
+    // a bunch of animal - brush - fishing rod - lures
     
 }
 
@@ -5000,7 +5000,7 @@ module.exports.templeCommand = function(message){
 
     // create embed based off of their temple info stats | visual representation
     // a bunch of random shit - sanctum? - recipes? 
-    // (recipes are artifacts - but contain blueprints for rares, and ancients)
+    // ( blueprints for rares, and ancients )
     // 
 }
 
@@ -5010,6 +5010,30 @@ module.exports.bakeCommand = function(message, args){
     // increase stats for 2 hours in RPG
     // increase chances to get tacos
     // miscellanous collections
+    
+
+    // each day you can bake 1 of 4 recipes
+    // they will require a combination of fruits
+    // pie : apple + pear
+    // cookies : etc
+
+    // vials create potions:
+    // rat, ox, tiger, rabbit, dragon, snake
+    // horse, goat, monkey, rooster, dog, pig
+    // these come from: tulips	roses	evergreens	cacti	palms	blossoms	bamboos sunflowers
+    // give RPG boosts and taco boosts and experience boosts - (Wow flasks) - long term small boost
+    // 1,2,3 % of magic etc
+
+    // baking creates treats: 
+    // apple pie, banana cake, banana cookie, tangerine sundae
+    // chocolate cookie, brownie, banana pudding, cupcake, pear dumpling, wedding cake, donut
+    // come from:  hibiscuses bananas pears tangerines
+    // give RPG boosts and taco boosts and experience boosts - (Wow flasks) - long term small boost
+    // // 1,2,3 % of magic etc
+    
+    // individual plants and fruits are also materials used to upgrade stable and temple
+
+    // 
 }
 
 module.exports.plantCommand = function(message, args){
@@ -5228,6 +5252,7 @@ function harvestPlotsOfLand(greenHouseData, itemsMapById){
 }
 
 module.exports.craftCommand = function(message, args){
+    // TEMPLE COMMAND
     var discordUserId = message.author.id;
 
     // create an item based on itemnameid
@@ -5236,7 +5261,6 @@ module.exports.craftCommand = function(message, args){
 
         // craft the item if you have the materials required, and are able to craft it
         // materials required will vary, you can only craft the item if you own the recipe
-
     }
 }
 
@@ -5244,15 +5268,37 @@ module.exports.upgradeCommand = function(message, args){
     var discordUserId = message.author.id;
 
     // upgrade a specific building - stable, greenhouse, temple
+    // 15 upgrades in total currently
+    // commons required per upgrade: first upgrade should be ~175 commons,  final upgrade currently should be 50k commons
     if (args && args.length > 1 ){
         var buildingName =  args[1];
 
-        // must have the materials required to upgrade the building
-        // must have the reputation required to upgrade the building
+            // must have the materials required to upgrade the building
+            // must have the reputation required to upgrade the building
+        
+        if (buildingName.toLowerCase() == "stable"){
+            // uses items from greenhouse and commons to feed, and upgrade
+            // increase the slots for pets
+            // increase the maximum stats the pet can gain
+        }else if (buildingName.toLowerCase() == "greenhouse"){
+            // uses commons to upgrade
+            // increase the plots of land you can obtain
+            // increase the number of times harvested allowed
+        }else if (buildingName.toLowerCase() == "temple"){
+            // uses items from greenhouse and commons to upgrade
+            // increase tacos given to others via sorry / thank
+            // unlock ability to craft rares
+            // increase tacos given to others via sorry / thank
+            // unlock ability to craft ancients
+            // increase tacos given to others via sorry / thank
+            // unlock ability to craft amulets
+            // unlock pool of items to craft, and be able to craft lvl 35+ items
+        }
     }
 }
 
 module.exports.fishCommand = function(message, args){
+    // STABLES COMMAND
     var discordUserId = message.author.id;
 
     // go fishing 
@@ -5266,6 +5312,7 @@ module.exports.fishCommand = function(message, args){
 }
 
 module.exports.raceCommand = function(message, args){
+    // STABLES COMMAND
     var discordUserId = message.author.id;
 
     // go racing 

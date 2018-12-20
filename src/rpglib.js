@@ -6812,7 +6812,7 @@ module.exports = {
                 // 3 - apparition + iceshards + explosion shield + maniac + add spawn after 4 turns + flanking order + damage reduction
                 // on last enemy - maniac + enabler + flanking orders + damage reduct + apparition
                 timed: true,
-                timedPerTurn: 180000,
+                timedPerTurn: 360000,
                 points: 117901,
                 difficulty: 186,
                 enemies: [
