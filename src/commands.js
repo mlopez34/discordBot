@@ -4989,6 +4989,28 @@ module.exports.stableCommand = function(message){
     
 }
 
+function stableEmbedBuilder(message, stableData){
+            
+    var stablesPlotVisual = plotsVisualBuilder(stableData)
+
+    const embed = new Discord.RichEmbed()
+    .setColor(0x87CEFA)
+    .setTitle(greenHouseData.name + "'s Stables")
+    //.setThumbnail()
+    .setDescription("")
+    .setColor(0x87CEFA)
+    .addField('Stables', stablesPlotVisual, false)
+    message.channel.send({embed});
+}
+
+function stablesVisualBuilder(stableData){
+    // make it look like ..
+    // pet, pet, pet, pet etc
+    var stablesVisual = ""
+    
+    return stablesVisual
+}
+
 module.exports.templeCommand = function(message){
     // display your temple, and temple information
 
@@ -5000,32 +5022,31 @@ module.exports.templeCommand = function(message){
     // 
 }
 
+function templeEmbedBuilder(message, templeData){
+            
+    var templePlotVisual = templeVisualBuilder(templeData)
+
+    const embed = new Discord.RichEmbed()
+    .setColor(0x87CEFA)
+    .setTitle(greenHouseData.name + "'s Temple")
+    //.setThumbnail()
+    .setDescription("")
+    .setColor(0x87CEFA)
+    .addField('Temple', templePlotVisual, false)
+    message.channel.send({embed});
+}
+
+function templeVisualBuilder(templeData){
+    // make it look like ..
+    // recipes active | dust collected
+    var templeVisual = ""
+    
+    return templeVisual
+}
+
 module.exports.bakeCommand = function(message, args){
     // use fruits harvested in order to bake things
-    // can bake to:
-    // increase stats for 2 hours in RPG
-    // increase chances to get tacos
-    // miscellanous collections
     
-
-    // each day you can bake 1 of 4 recipes
-    // they will require a combination of fruits
-    // pie : apple + pear
-    // cookies : etc
-
-    // vials create potions:
-    // rat, ox, tiger, rabbit, dragon, snake
-    // horse, goat, monkey, rooster, dog, pig
-    // these come from: tulips	roses	evergreens	cacti	palms	blossoms	bamboos sunflowers
-    // give RPG boosts and taco boosts and experience boosts - (Wow flasks) - long term small boost
-    // 1,2,3 % of magic etc
-
-    // baking creates treats: 
-    // apple pie, banana cake, banana cookie, tangerine sundae
-    // chocolate cookie, brownie, banana pudding, cupcake, pear dumpling, wedding cake, donut
-    // come from:  hibiscuses bananas pears tangerines
-    // give RPG boosts and taco boosts and experience boosts - (Wow flasks) - long term small boost
-    // // 1,2,3 % of magic etc
     
     // individual plants and fruits are also materials used to upgrade stable and temple
 
