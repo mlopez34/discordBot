@@ -3370,9 +3370,6 @@ function slotsEmbedBuilder(emojisRolled, tacosWon, message, extraTacosFromItems)
     message.channel.send({embed});
 }
 
-// by discordUserId
-var challengesHappening = {};
-
 module.exports.miniGameCommand = function(message) {
     try{
         // create a game where users get to pick between the numbers 1 or 2
@@ -4940,7 +4937,6 @@ module.exports.greenHouseCommand = function(message){
 
 function greenHouseEmbedBuilder(message, greenHouseData, itemsMapById){
             
-    // show short shop
     var greenHousePlotVisual = plotsVisualBuilder(greenHouseData, itemsMapById)
     var weather = ":sunny:"
     var harvestTimeRemaining = "1 hour" // GET the harvest time, should be every 24 hours
@@ -5324,7 +5320,6 @@ module.exports.raceCommand = function(message, args){
 }
 
 module.exports.combineCommand = function(message, args){
-    // combine certain things (only terry cloth, and soil for now?)
     // console.log(args);
     var discordUserId = message.author.id;
 
@@ -8119,12 +8114,6 @@ function calculateRaffleWinner(message){
         }
     })
 }
-
-
-// TODO: mario party game, artifact quests, RPG battle, rewards for lvl 15, 25, 40
-// add achievements embed
-// 200 rep: reward: casserole, buy: artifact recipe 
-// 1000 rep: buy: potions, reward: empowered taco rune  5000 rep : achievement, artifact
 
 module.exports.createTableCommand = function(message){
 
