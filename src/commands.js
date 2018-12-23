@@ -5367,7 +5367,7 @@ module.exports.combineCommand = function(message, args){
     // console.log(args);
     var discordUserId = message.author.id;
 
-    if (args && args.length > 1 && useItem.getItemsLock(discordUserId)){
+    if (args && args.length > 1 && !useItem.getItemsLock(discordUserId)){
         var myItemShortName =  args[1];
         var itemCount = 1
         // get all the items available
