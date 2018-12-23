@@ -4202,14 +4202,17 @@ module.exports.useCommand = function(message, args){
     if (NeedsToAgree[discordUserId] && NeedsToAgree[discordUserId].hasNotAgreed){
         message.channel.send("You have not agreed to the terms yet!")
     }
-    else if (args && args.length > 1 && args[1].toLowerCase() == "rock" && !mentionedUser){
+    else if (args && args.length > 1 && args[1].toLowerCase() == "rock" && !mentionedUser && !useItem.getItemsLock(discordUserId)){
         // create a rare item (chance) if not then receive tacos
+        useItem.setItemsLock(discordUserId, true)
         profileDB.getUserItems(discordUserId, function(error, inventoryResponse){
             if (error){
                 // console.log(error);
+                useItem.setItemsLock(discordUserId, false)
                 agreeToTerms(message, discordUserId);
             }
             else{
+                console.log("got item")
                  // map of user's inventory
                 var itemsInInventoryCountMap = {};
                 // map of all items
@@ -4308,13 +4311,14 @@ module.exports.useCommand = function(message, args){
         })
     }
 
-    else if (args && args.length > 1 && args[1].toLowerCase() == "rock"){
+    else if (args && args.length > 1 && args[1].toLowerCase() == "rock" && !useItem.getItemsLock(discordUserId)){
         if (mentionedUser && !mentionedUser.bot && mentionedId != message.author.id){
             // use rock
+            useItem.setItemsLock(discordUserId, true)
             profileDB.getUserItems(discordUserId, function(error, inventoryResponse){
                 if (error){
                     // console.log(error);
-                    message.channel.send(inventoryResponse);
+                    useItem.setItemsLock(discordUserId, false)
                     agreeToTerms(message, discordUserId);
                 }
                 else{
@@ -4360,9 +4364,11 @@ module.exports.useCommand = function(message, args){
                         useItem.useRock(message, mentionedId, rockToUse, tacosInUse, function(throwRockError, throwRes){
                             if (throwRockError){
                                 // console.log(throwRockError);
+                                useItem.setItemsLock(discordUserId, false)
                             }
                             else{
                                 // console.log(throwRes);
+                                useItem.setItemsLock(discordUserId, false)
                                 if (throwRes == "success"){
                                     message.channel.send( message.author + " threw a rock at " + mentionedUserName + ", they became dizzy and dropped `10` tacos :taco:");
                                     // if they drop a taco someone else can pick it up
@@ -4406,11 +4412,13 @@ module.exports.useCommand = function(message, args){
             message.channel.send("mention a user to throw a rock at, you cannot throw rocks at bots or yourself... grind");
         }
     }
-    else if(args && args.length > 1 && (args[1].toLowerCase() == "pieceofwood" || args[1].toLowerCase() == "wood")){
+    else if(args && args.length > 1 && !useItem.getItemsLock(discordUserId) && (args[1].toLowerCase() == "pieceofwood" || args[1].toLowerCase() == "wood")){
         // use pieces of wood - protect against rocks being thrown at you (uses 6 pieces, protects against 3)
+        useItem.setItemsLock(discordUserId, true)
         profileDB.getUserItems(discordUserId, function(error, inventoryResponse){
             if (error){
                 // console.log(error);
+                useItem.setItemsLock(discordUserId, false)
                 agreeToTerms(message, discordUserId);
             }
             else{
@@ -4459,6 +4467,7 @@ module.exports.useCommand = function(message, args){
                         if (useError){
                             // couldnt update the user protect
                             // console.log(useError);
+                            useItem.setItemsLock(discordUserId, false)
                         }
                         else{
                             // console.log(useRes);
@@ -4475,11 +4484,13 @@ module.exports.useCommand = function(message, args){
             }
         })
     }
-    else if (args && args.length > 1 && (args[1].toLowerCase() == "terrycloth" || args[1].toLowerCase() == "terry")){
+    else if (args && args.length > 1 && !useItem.getItemsLock(discordUserId) && (args[1].toLowerCase() == "terrycloth" || args[1].toLowerCase() == "terry")){
         // create a rare item (chance) if not then receive tacos
+        useItem.setItemsLock(discordUserId, true)
         profileDB.getUserItems(discordUserId, function(error, inventoryResponse){
             if (error){
                 // console.log(error);
+                useItem.setItemsLock(discordUserId, false)
                 agreeToTerms(message, discordUserId);
             }
             else{
@@ -4545,6 +4556,7 @@ module.exports.useCommand = function(message, args){
                                 if (useError){
                                     // couldnt update the user protect
                                     // console.log(useError);
+                                    useItem.setItemsLock(discordUserId, false)
                                 }
                                 else{
                                     // console.log(useRes[0]);
@@ -4585,19 +4597,22 @@ module.exports.useCommand = function(message, args){
     }
 
     
-    else if (args && args.length > 1 && (args[1].toLowerCase() == "sodacan" || args[1].toLowerCase() == "soda")){
+    else if (args && args.length > 1 && !useItem.getItemsLock(discordUserId) && (args[1].toLowerCase() == "sodacan" || args[1].toLowerCase() == "soda")){
         // recycle for an item only obtainable by recycling - reputation with Bender allows u to shop for
         // 50 - pet, 175 - 20% reduced price benders shop, 400 - 50 tacos (casserole, triple cooked tacos), 1000 (server title on profile, roll one of the rarest items)
         var cansToUse = args[2] ? args[2] : 1;
         if (typeof cansToUse == "string" && cansToUse.toLowerCase() == "all"){
             cansToUse = 999999
         }
+        useItem.setItemsLock(discordUserId, true)
         profileDB.getUserItems(discordUserId, function(error, inventoryResponse){
             if (error){
                 // console.log(error);
+                useItem.setItemsLock(discordUserId, false)
                 agreeToTerms(message, discordUserId);
             }
             else{
+                
                 var itemsInInventoryCountMap = {};
                 // array of item objects for using sodacan
                 var sodaCansToUse = [];
@@ -4642,6 +4657,7 @@ module.exports.useCommand = function(message, args){
                     useItem.useSodaCan(message, discordUserId, sodaCansToUse, function(useError, useRes){
                         if (useError){
                             // console.log(useError);
+                            useItem.setItemsLock(discordUserId, false)
                             message.channel.send(useError);
                         }
                         else{
@@ -4664,7 +4680,7 @@ module.exports.useCommand = function(message, args){
         })
     }
     
-    else if (args && args.length > 1 && args[1].toLowerCase() == "soil"){
+    else if (args && args.length > 1 && args[1].toLowerCase() == "soil" && !useItem.getItemsLock(discordUserId)){
         // soil your land -  bender seeds ur soil - use before preparing to get + 1 more taco per soil used
 
         // get inventory and get the soil that will be used
@@ -4675,10 +4691,11 @@ module.exports.useCommand = function(message, args){
         if (typeof soilsCountToUse == "string" && soilsCountToUse.toLowerCase() == "all"){
             soilsCountToUse = 999999
         }
-
+        useItem.setItemsLock(discordUserId, true)
         profileDB.getUserItems(discordUserId, function(error, inventoryResponse){
             if (error){
                 // console.log(error);
+                useItem.setItemsLock(discordUserId, false)
                 agreeToTerms(message, discordUserId);
             }
             else{
@@ -4727,6 +4744,7 @@ module.exports.useCommand = function(message, args){
                     useItem.useSoil(message, discordUserId, soilToUse, function(useError, useRes){
                         if (useError){
                             // console.log(useError);
+                            useItem.setItemsLock(discordUserId, false)
                             message.channel.send(useError);
                         }
                         else{
@@ -4766,46 +4784,51 @@ module.exports.useCommand = function(message, args){
     }else{
         // use the item based on itemshortname
         var itemShortName = (args.length >= 2) ? args[1] : undefined;
-
-        profileDB.getUserItems(discordUserId, function(error, inventoryResponse){
-            if (error){
-                // console.log(error);
-                agreeToTerms(message, discordUserId);
-            }
-            else{
-                var itemsInInventoryCountMap = {};
-                var userInventory = inventoryResponse.data
-                for (var item in inventoryResponse.data){
-                    // check the rock hasnt been used
-                    var validItem = useItem.itemValidate(inventoryResponse.data[item]);
-                    var itemBeingAuctioned = false;
-                    if (itemsInAuction[inventoryResponse.data[item].id]){
-                        itemBeingAuctioned = true;
-                    }
-                    var itemBeingTraded = false;
-                    if (activeTradeItems[inventoryResponse.data[item].id]){
-                        itemBeingTraded = true;
-                    }
-                    if (!itemsInInventoryCountMap[inventoryResponse.data[item].itemid] 
-                        && validItem && !itemBeingTraded && !itemBeingAuctioned){
-                        // item hasnt been added to be counted, add it as 1
-                        itemsInInventoryCountMap[inventoryResponse.data[item].itemid] = 1;
-                    }
-                    else if (validItem && !itemBeingTraded && !itemBeingAuctioned){
-                        itemsInInventoryCountMap[inventoryResponse.data[item].itemid] = itemsInInventoryCountMap[inventoryResponse.data[item].itemid] + 1;
-                    }
+        if (!useItem.getItemsLock(discordUserId)){
+            useItem.setItemsLock(discordUserId, true)
+            profileDB.getUserItems(discordUserId, function(error, inventoryResponse){
+                if (error){
+                    // console.log(error);
+                    useItem.setItemsLock(discordUserId, false)
+                    agreeToTerms(message, discordUserId);
                 }
-
-                // have the inventory done, now call 
-                useItem.useBasedOnShortName(message, discordUserId, itemShortName, itemsInInventoryCountMap, userInventory, function(err, res){
-                    if (err){
-                        console.log(err);
-                    }else{
-                        console.log(res);
+                else{
+                    var itemsInInventoryCountMap = {};
+                    var userInventory = inventoryResponse.data
+                    for (var item in inventoryResponse.data){
+                        // check the rock hasnt been used
+                        var validItem = useItem.itemValidate(inventoryResponse.data[item]);
+                        var itemBeingAuctioned = false;
+                        if (itemsInAuction[inventoryResponse.data[item].id]){
+                            itemBeingAuctioned = true;
+                        }
+                        var itemBeingTraded = false;
+                        if (activeTradeItems[inventoryResponse.data[item].id]){
+                            itemBeingTraded = true;
+                        }
+                        if (!itemsInInventoryCountMap[inventoryResponse.data[item].itemid] 
+                            && validItem && !itemBeingTraded && !itemBeingAuctioned){
+                            // item hasnt been added to be counted, add it as 1
+                            itemsInInventoryCountMap[inventoryResponse.data[item].itemid] = 1;
+                        }
+                        else if (validItem && !itemBeingTraded && !itemBeingAuctioned){
+                            itemsInInventoryCountMap[inventoryResponse.data[item].itemid] = itemsInInventoryCountMap[inventoryResponse.data[item].itemid] + 1;
+                        }
                     }
-                })
-            }
-        })
+    
+                    // have the inventory done, now call 
+                    useItem.useBasedOnShortName(message, discordUserId, itemShortName, itemsInInventoryCountMap, userInventory, function(err, res){
+                        if (err){
+                            useItem.setItemsLock(discordUserId, false)
+                            console.log(err);
+                        }else{
+                            useItem.setItemsLock(discordUserId, false)
+                            console.log(res);
+                        }
+                    })
+                }
+            })
+        }
     }
 }
 
@@ -4813,11 +4836,11 @@ module.exports.disassembleCommand = function(message, args){
     // disassemble the item that you want via args id
     // console.log(args);
     var discordUserId = message.author.id;
-    if (args && args.length > 1 ){
+    if (args && args.length > 1 && !useItem.getItemsLock(discordUserId)){
         var myItemShortName =  args[1];
 
         // TODO: Check for hacksaw
-
+        useItem.setItemsLock(discordUserId, true)
         profileDB.getUserItems(discordUserId, function(err, inventoryResponse){
             if (err){
                 // console.log(err);
@@ -5323,14 +5346,16 @@ module.exports.combineCommand = function(message, args){
     // console.log(args);
     var discordUserId = message.author.id;
 
-    if (args && args.length > 1 ){
+    if (args && args.length > 1 && useItem.getItemsLock(discordUserId)){
         var myItemShortName =  args[1];
         var itemCount = 1
         // get all the items available
+        useItem.setItemsLock(discordUserId, true)
         profileDB.getUserItems(discordUserId, function(err, inventoryResponse){
             if (err){
                 // console.log(err);
                 agreeToTerms(message, discordUserId);
+                useItem.setItemsLock(discordUserId, false)
             }
             else{
                 // 
@@ -5341,6 +5366,7 @@ module.exports.combineCommand = function(message, args){
                 var itemsBeingedCombined = []
                 profileDB.getItemData(function(error, allItemsResponse){
                     if (error){
+                        useItem.setItemsLock(discordUserId, false)
                         console.log(error)
                     }else{
                         for (var index in allItemsResponse.data){
@@ -5466,6 +5492,7 @@ module.exports.combineCommand = function(message, args){
                                         if (questName && recipeAdded && firstArtifactAdded && secondArtifactAdded ){
                                             profileDB.userStartQuest(discordUserId, questName, function(createErr, createRes){
                                                 if (createErr){
+                                                    useItem.setItemsLock(discordUserId, false)
                                                     console.log(createErr);
                                                 }
                                                 else{
@@ -5473,14 +5500,17 @@ module.exports.combineCommand = function(message, args){
                                                     profileDB.bulkUpdateItemStatus(itemsBeingedCombined, "questing", function(combineErr, combineRes){
                                                         if (combineErr){
                                                             console.log(combineErr);
+                                                            useItem.setItemsLock(discordUserId, false)
                                                         }else{
                                                             // console.log(combineRes);
                                                             // embed showing the questline has begun
                                                             profileDB.getUserProfileData(discordUserId, function(profileErr, profileRes){
                                                                 if (profileErr){
                                                                     console.log(profileErr)
+                                                                    useItem.setItemsLock(discordUserId, false)
                                                                     message.channel.send("something wrong in getting user profile")
                                                                 }else{
+                                                                    useItem.setItemsLock(discordUserId, false)
                                                                     var data = { achievements: profileRes.data.achievements, itemraritycombined: "artifact"}
                                                                     achiev.checkForAchievements(discordUserId, data, message)
                                                                 }
@@ -5522,14 +5552,17 @@ module.exports.combineCommand = function(message, args){
                                             profileDB.addNewItemToUser(discordUserId, [itemToCreate], function(createErr, createRes){
                                                 if (createErr){
                                                     // console.log(createErr);
+                                                    useItem.setItemsLock(discordUserId, false)
                                                 }
                                                 else{
                                                     // console.log(createRes);                                        
                                                     profileDB.bulkUpdateItemStatus(itemsBeingedCombined, "used", function(combineErr, combineRes){
                                                         if (combineErr){
                                                             // console.log(combineErr);
+                                                            useItem.setItemsLock(discordUserId, false)
                                                         }else{
                                                             // console.log(combineRes);
+                                                            useItem.setItemsLock(discordUserId, false)
                                                             combineEmbedBuilder(message, itemToCreateByName, itemToCreate, rarityOfItem);
                                                         }
                                                     })
@@ -5562,14 +5595,17 @@ module.exports.combineCommand = function(message, args){
                                             profileDB.addNewItemToUser(discordUserId, [itemToCreate], function(createErr, createRes){
                                                 if (createErr){
                                                     // console.log(createErr);
+                                                    useItem.setItemsLock(discordUserId, false)
                                                 }
                                                 else{
                                                     // console.log(createRes);                                        
                                                     profileDB.bulkUpdateItemStatus(itemsBeingedCombined, "used", function(combineErr, combineRes){
                                                         if (combineErr){
+                                                            useItem.setItemsLock(discordUserId, false)
                                                             // console.log(combineErr);
                                                         }else{
                                                             // console.log(combineRes);
+                                                            useItem.setItemsLock(discordUserId, false)
                                                             combineEmbedBuilder(message, itemToCreateByName, itemToCreate, rarityOfItem);
                                                         }
                                                     })
@@ -5588,6 +5624,7 @@ module.exports.combineCommand = function(message, args){
                                     //create an item of that kind for the user and set all the other items to 'used'
                                     profileDB.addNewItemToUser(discordUserId, [itemToCreate], function(createErr, createRes){
                                         if (createErr){
+                                            useItem.setItemsLock(discordUserId, false)
                                             // console.log(createErr);
                                         }
                                         else{
@@ -5595,8 +5632,10 @@ module.exports.combineCommand = function(message, args){
                                             profileDB.bulkUpdateItemStatus(itemsBeingedCombined, "used", function(combineErr, combineRes){
                                                 if (combineErr){
                                                     // console.log(combineErr);
+                                                    useItem.setItemsLock(discordUserId, false)
                                                 }else{
                                                     // console.log(combineRes);
+                                                    useItem.setItemsLock(discordUserId, false)
                                                     combineEmbedBuilder(message, itemToCreateByName, itemToCreate, rarityOfItem);
                                                 }
                                             })
@@ -8121,92 +8160,98 @@ module.exports.createTableCommand = function(message){
     var IDS_OF_UNCOMMONS_FOR_PARTY = [];
     var uncommonsToUse = [];
     // get the user's inventory and use up 1 of each of the 6 items that are uncommon items
-    profileDB.getUserItems(discordUserId, function(err, inventoryResponse){
-        if (err){
-            // console.log(err);
-        }
-        else{
-            // console.log(inventoryResponse.data);
-            // get all the data for each item
-            var itemsInInventoryCountMap = {};
-            var itemsMapbyId = {};
-            profileDB.getItemData(function(error, allItemsResponse){
-                if (error){
-                    console.log(error);
-                }
-                else{
-                    // console.log("allitemsres " + allItemsResponse.data);
-                    for (var item in inventoryResponse.data){
-                        var ItemInQuestion = inventoryResponse.data[item];
-                        var validItem = useItem.itemValidate(ItemInQuestion);
-                        var itemBeingAuctioned = false;
-                        if (itemsInAuction[ItemInQuestion.id]){
-                            itemBeingAuctioned = true;
-                        }
-                        var itemBeingTraded = false;
-                        if (activeTradeItems[inventoryResponse.data[item].id]){
-                            itemBeingTraded = true;
-                        }
-                        if (!itemsInInventoryCountMap[inventoryResponse.data[item].itemid] 
-                            && validItem 
-                            && !itemBeingAuctioned
-                            && !itemBeingTraded){
-                            // item hasnt been added to be counted, add it as 1
-                            itemsInInventoryCountMap[inventoryResponse.data[item].itemid] = 1;
-                        }
-                        else if (validItem && !itemBeingAuctioned && !itemBeingTraded){
-                            itemsInInventoryCountMap[inventoryResponse.data[item].itemid] = itemsInInventoryCountMap[inventoryResponse.data[item].itemid] + 1
-                        }
-                    }
-                    // console.log(itemsInInventoryCountMap);
-                    for (var index in allItemsResponse.data){
-                        itemsMapbyId[allItemsResponse.data[index].id] = allItemsResponse.data[index];
-                        if (allItemsResponse.data[index].itemraritycategory == "uncommon"){
-                            IDS_OF_UNCOMMONS_FOR_PARTY.push(allItemsResponse.data[index].id);
-                        }
-                    }
-                    // have items map by id for all items, and itemsInInventoryCountMap itemid : count
-                    // only create table if we have > 1 of the uncommons ids
-                    var ableToCreateTable = true;
-                    for (var uncommon in IDS_OF_UNCOMMONS_FOR_PARTY){
-                        if (!itemsInInventoryCountMap[IDS_OF_UNCOMMONS_FOR_PARTY[uncommon]] 
-                            || itemsInInventoryCountMap[IDS_OF_UNCOMMONS_FOR_PARTY[uncommon]] == 0){
-                            ableToCreateTable = false;
-                        }
-                    }
-
-                    if (ableToCreateTable){
-                        // go through list of uncommons
-                        for (var uncommon in IDS_OF_UNCOMMONS_FOR_PARTY){
-                            // go through list of items in my inventory
-                            for (var item in inventoryResponse.data){
-                                // only need 1 item
-                                var ItemInQuestion = inventoryResponse.data[item];
-                                var validItem = useItem.itemValidate(ItemInQuestion);
-                                var itemBeingAuctioned = false;
-                                if (itemsInAuction[ItemInQuestion.id]){
-                                    itemBeingAuctioned = true;
-                                }
-                                var itemBeingTraded = false;
-                                if (activeTradeItems[inventoryResponse.data[item].id]){
-                                    itemBeingTraded = true;
-                                }
-                                if (inventoryResponse.data[item].itemid == IDS_OF_UNCOMMONS_FOR_PARTY[uncommon]
-                                    && validItem && !itemBeingAuctioned && !itemBeingTraded){
-                                    uncommonsToUse.push(inventoryResponse.data[item]);
-                                    break;
-                                }
-                            }
-                        }
-                        createParty(message, discordUserId, uncommonsToUse);
+    if (!useItem.getItemsLock(discordUserId)){
+        useItem.setItemsLock(discordUserId, true)
+        profileDB.getUserItems(discordUserId, function(err, inventoryResponse){
+            if (err){
+                // console.log(err);
+                useItem.setItemsLock(discordUserId, false)
+            }
+            else{
+                // console.log(inventoryResponse.data);
+                // get all the data for each item
+                var itemsInInventoryCountMap = {};
+                var itemsMapbyId = {};
+                profileDB.getItemData(function(error, allItemsResponse){
+                    if (error){
+                        console.log(error);
+                        useItem.setItemsLock(discordUserId, false)
                     }
                     else{
-                        message.channel.send("Missing ingredients for the Taco Party!!");
+                        // console.log("allitemsres " + allItemsResponse.data);
+                        for (var item in inventoryResponse.data){
+                            var ItemInQuestion = inventoryResponse.data[item];
+                            var validItem = useItem.itemValidate(ItemInQuestion);
+                            var itemBeingAuctioned = false;
+                            if (itemsInAuction[ItemInQuestion.id]){
+                                itemBeingAuctioned = true;
+                            }
+                            var itemBeingTraded = false;
+                            if (activeTradeItems[inventoryResponse.data[item].id]){
+                                itemBeingTraded = true;
+                            }
+                            if (!itemsInInventoryCountMap[inventoryResponse.data[item].itemid] 
+                                && validItem 
+                                && !itemBeingAuctioned
+                                && !itemBeingTraded){
+                                // item hasnt been added to be counted, add it as 1
+                                itemsInInventoryCountMap[inventoryResponse.data[item].itemid] = 1;
+                            }
+                            else if (validItem && !itemBeingAuctioned && !itemBeingTraded){
+                                itemsInInventoryCountMap[inventoryResponse.data[item].itemid] = itemsInInventoryCountMap[inventoryResponse.data[item].itemid] + 1
+                            }
+                        }
+                        // console.log(itemsInInventoryCountMap);
+                        for (var index in allItemsResponse.data){
+                            itemsMapbyId[allItemsResponse.data[index].id] = allItemsResponse.data[index];
+                            if (allItemsResponse.data[index].itemraritycategory == "uncommon"){
+                                IDS_OF_UNCOMMONS_FOR_PARTY.push(allItemsResponse.data[index].id);
+                            }
+                        }
+                        // have items map by id for all items, and itemsInInventoryCountMap itemid : count
+                        // only create table if we have > 1 of the uncommons ids
+                        var ableToCreateTable = true;
+                        for (var uncommon in IDS_OF_UNCOMMONS_FOR_PARTY){
+                            if (!itemsInInventoryCountMap[IDS_OF_UNCOMMONS_FOR_PARTY[uncommon]] 
+                                || itemsInInventoryCountMap[IDS_OF_UNCOMMONS_FOR_PARTY[uncommon]] == 0){
+                                ableToCreateTable = false;
+                            }
+                        }
+    
+                        if (ableToCreateTable){
+                            // go through list of uncommons
+                            for (var uncommon in IDS_OF_UNCOMMONS_FOR_PARTY){
+                                // go through list of items in my inventory
+                                for (var item in inventoryResponse.data){
+                                    // only need 1 item
+                                    var ItemInQuestion = inventoryResponse.data[item];
+                                    var validItem = useItem.itemValidate(ItemInQuestion);
+                                    var itemBeingAuctioned = false;
+                                    if (itemsInAuction[ItemInQuestion.id]){
+                                        itemBeingAuctioned = true;
+                                    }
+                                    var itemBeingTraded = false;
+                                    if (activeTradeItems[inventoryResponse.data[item].id]){
+                                        itemBeingTraded = true;
+                                    }
+                                    if (inventoryResponse.data[item].itemid == IDS_OF_UNCOMMONS_FOR_PARTY[uncommon]
+                                        && validItem && !itemBeingAuctioned && !itemBeingTraded){
+                                        uncommonsToUse.push(inventoryResponse.data[item]);
+                                        break;
+                                    }
+                                }
+                            }
+                            createParty(message, discordUserId, uncommonsToUse);
+                        }
+                        else{
+                            message.channel.send("Missing ingredients for the Taco Party!!");
+                        }
                     }
-                }
-            })
-        }
-    })
+                })
+            }
+        })
+    }
+    
 }
 
 function createParty(message, discordUserId, uncommonsToUse){
@@ -8218,6 +8263,7 @@ function createParty(message, discordUserId, uncommonsToUse){
 
     useItem.useUncommons(message, discordUserId, uncommonsToUse, function(useError, useRes){
         if (useError){
+            useItem.setItemsLock(discordUserId, false)
             console.log(useError);
         }
         else{

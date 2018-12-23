@@ -21,6 +21,7 @@ var TURN_ON_MSG = config.turnOn;
 var tacoTuesdayEnabled = false;
 var botEnabled = true;
 var guildsRegistered = {}
+var messagesByUserCount = {}
 
 client.on('ready', function(err) {
     if (err){
@@ -135,7 +136,6 @@ client.on('message', function(message){
         username: message.author.username,
         message: message.content
     }
-    var messagesByUserCount = {}
     // every message being inserted should add 1 to the user
     // start at 0, add +1 to the count if the count is at 0, no wait, otherwise do timeout  500 * count
     // when the timeout goes off subtract -1
@@ -172,7 +172,7 @@ client.on('message', function(message){
             if (message.channel.type == "text" && (BOT_CHANNELS.indexOf(message.channel.name) != -1) && !message.author.bot){
                 if( commandIs("thank", message )){
                     try{
-                        commands.thankCommand(message);
+                        messagesByUserTimeout(commands.thankCommand, message)
                     }
                     catch(error){
                         message.channel.send(error);
@@ -184,11 +184,11 @@ client.on('message', function(message){
                 // }
                 //SEASONAL
                 else if (commandIs("present", message)){
-                    commands.openPresentCommand(message);
+                    messagesByUserTimeout(commands.openPresentCommand, message)
                 }
                 
                 else if( commandIs("sorry", message )){
-                    commands.sorryCommand(message);
+                    messagesByUserTimeout(commands.sorryCommand, message)
                 }
                 else if( commandIs("help", message )){
                     commands.helpCommand(message);
@@ -205,7 +205,7 @@ client.on('message', function(message){
                     profileDB.createUserActivity(data)
                 }
                 else if( commandIs("prepare", message)){
-                    commands.prepareCommand(message);
+                    messagesByUserTimeout(commands.prepareCommand, message)
                 }
                 else if( commandIs("welcome", message)){
                     commands.welcomeCommand(message);
@@ -214,7 +214,7 @@ client.on('message', function(message){
                     commands.giveCommand(message, args[2]);
                 }
                 else if (commandIs("cook", message)){
-                    commands.cookCommand(message);
+                    messagesByUserTimeout(commands.cookCommand, message)
                 }
                 else if (commandIs("profile", message)){
                     commands.profileCommand(message);
@@ -257,7 +257,7 @@ client.on('message', function(message){
                     commands.buyPastaCommand(message, pasta);
                 }
                 else if (commandIs("scavenge", message)){
-                    commands.scavangeCommand(message);
+                    messagesByUserTimeout(commands.scavangeCommand, message)
                 }
                 else if (commandIs("inventory", message) || commandIs("inv", message)){
                     commands.inventoryCommand(message);
@@ -314,7 +314,7 @@ client.on('message', function(message){
                     }
                 }
                 else if (commandIs("use", message)){
-                    commands.useCommand(message, args);
+                    messagesByUserTimeoutArgs(commands.useCommand, message, args)
                 }
                 else if (commandIs("pickup", message)){
                     commands.pickupCommand(message);
@@ -323,7 +323,7 @@ client.on('message', function(message){
                     commands.buypetCommand(message, args);
                 }
                 else if (commandIs("fetch", message)){
-                    commands.fetchCommand(message);
+                    messagesByUserTimeout(commands.fetchCommand, message)
                 }
                 else if (commandIs("xp", message)){
                     commands.xpCommand(message);
@@ -584,10 +584,10 @@ client.on('message', function(message){
             }
             else if (message.channel.type == "text" && (MAIN_CHANNELS.indexOf(message.channel.name) != -1) && !message.author.bot){
                  if( commandIs("thank", message )){
-                    commands.thankCommand(message);
+                    messagesByUserTimeout(commands.thankCommand, message)
                 }
                 else if( commandIs("sorry", message )){
-                    commands.sorryCommand(message);
+                    messagesByUserTimeout(commands.sorryCommand, message)
                 }
                 else if( commandIs("welcome", message)){
                     commands.welcomeCommand(message);
@@ -642,7 +642,7 @@ client.on('message', function(message){
             if (message.channel.type == "text" && !message.author.bot){
                 if( commandIs("thank", message )){
                     try{
-                        commands.thankCommand(message);
+                        messagesByUserTimeout(commands.thankCommand, message)
                         data.command = "thank"
                         profileDB.createUserActivity(data)
                     }
@@ -656,11 +656,11 @@ client.on('message', function(message){
                 // }
                 // SEASONAL
                 else if (commandIs("present", message)){
-                    commands.openPresentCommand(message);
+                    messagesByUserTimeout(commands.openPresentCommand, message)
                 }
                 
                 else if( commandIs("sorry", message )){
-                    commands.sorryCommand(message);
+                    messagesByUserTimeout(commands.sorryCommand, message)
                     data.command = "sorry"
                     profileDB.createUserActivity(data)
                 }
@@ -685,7 +685,7 @@ client.on('message', function(message){
                     profileDB.createUserActivity(data)
                 }
                 else if( commandIs("prepare", message)){
-                    commands.prepareCommand(message);
+                    messagesByUserTimeout(commands.prepareCommand, message)
                     data.command = "prepare"
                     profileDB.createUserActivity(data)
                 }
@@ -700,7 +700,7 @@ client.on('message', function(message){
                     profileDB.createUserActivity(data)
                 }
                 else if (commandIs("cook", message)){
-                    commands.cookCommand(message);
+                    messagesByUserTimeout(commands.cookCommand, message)
                     data.command = "cook"
                     profileDB.createUserActivity(data)
                 }
@@ -767,7 +767,7 @@ client.on('message', function(message){
                     profileDB.createUserActivity(data)
                 }
                 else if (commandIs("scavenge", message)){
-                    commands.scavangeCommand(message);
+                    messagesByUserTimeout(commands.scavangeCommand, message)
                     data.command = "scavenge"
                     profileDB.createUserActivity(data)
                 }
@@ -844,7 +844,7 @@ client.on('message', function(message){
                     }
                 }
                 else if (commandIs("use", message)){
-                    commands.useCommand(message, args);
+                    messagesByUserTimeoutArgs(commands.useCommand, message, args)
                     data.command = "use"
                     profileDB.createUserActivity(data)
                 }
@@ -859,7 +859,7 @@ client.on('message', function(message){
                     profileDB.createUserActivity(data)
                 }
                 else if (commandIs("fetch", message)){
-                    commands.fetchCommand(message);
+                    messagesByUserTimeout(commands.fetchCommand, message)
                     data.command = "fetch"
                     profileDB.createUserActivity(data)
                 }
@@ -919,7 +919,7 @@ client.on('message', function(message){
                     profileDB.createUserActivity(data)
                 }
                 else if (commandIs("combine", message)){
-                    commands.combineCommand(message, args);
+                    messagesByUserTimeoutArgs(commands.combineCommand, message, args)
                     data.command = "combine"
                     profileDB.createUserActivity(data)
                 }
@@ -1137,6 +1137,60 @@ function tacoTuesdayAnnouncement(message){
     //.addField('Tacos  :taco:', profileData.userTacos, true)
     //.setFooter('use !give @user to give a user some tacos!')
     message.channel.send({embed});
+}
+
+function messagesByUserTimeout(commandFunction, message){
+    if (messagesByUserCount[message.author.id] && messagesByUserCount[message.author.id].count > -1){
+        var timeoutCount = messagesByUserCount[message.author.id].count
+        if (timeoutCount < 0 ){
+            timeoutCount = 0
+        }
+        var messageTimeout = setTimeout(function(){
+            commandFunction(message);
+            messagesByUserCount[message.author.id].count = messagesByUserCount[message.author.id].count - 1
+        }, 300 * (timeoutCount + 1)) 
+        messagesByUserCount[message.author.id].count = messagesByUserCount[message.author.id].count + 1
+        messagesByUserCount[message.author.id].timeout = messageTimeout
+    }else{
+        messagesByUserCount[message.author.id] = { count: 0 }
+        commandFunction(message);
+    }
+}
+
+function messagesByUserTimeoutArgs(commandFunction, message, args){
+    if (messagesByUserCount[message.author.id] && messagesByUserCount[message.author.id].count > -1){
+        var timeoutCount = messagesByUserCount[message.author.id].count
+        if (timeoutCount < 0 ){
+            timeoutCount = 0
+        }
+        var messageTimeout = setTimeout(function(){
+            commandFunction(message, args);
+            messagesByUserCount[message.author.id].count = messagesByUserCount[message.author.id].count - 1
+        }, 300 * (timeoutCount + 1)) 
+        messagesByUserCount[message.author.id].count = messagesByUserCount[message.author.id].count + 1
+        messagesByUserCount[message.author.id].timeout = messageTimeout
+    }else{
+        messagesByUserCount[message.author.id] = { count: 0 }
+        commandFunction(message, args);
+    }
+}
+
+function messagesByUserTimeoutArgsRarity(commandFunction, message, args, rarity){
+    if (messagesByUserCount[message.author.id] && messagesByUserCount[message.author.id].count > -1){
+        var timeoutCount = messagesByUserCount[message.author.id].count
+        if (timeoutCount < 0 ){
+            timeoutCount = 0
+        }
+        var messageTimeout = setTimeout(function(){
+            commandFunction(message, args, rarity);
+            messagesByUserCount[message.author.id].count = messagesByUserCount[message.author.id].count - 1
+        }, 300 * (timeoutCount + 1)) 
+        messagesByUserCount[message.author.id].count = messagesByUserCount[message.author.id].count + 1
+        messagesByUserCount[message.author.id].timeout = messageTimeout
+    }else{
+        messagesByUserCount[message.author.id] = { count: 0 }
+        commandFunction(message, args, rarity);
+    }
 }
 
 function steal(channelName){
