@@ -4303,6 +4303,7 @@ module.exports.useCommand = function(message, args){
                             });
                         }
                         else{
+                            useItem.setItemsLock(discordUserId, false)
                             message.channel.send(message.author + " you need at least `10` rocks to polish something shiny");
                         }
                     }
@@ -4402,6 +4403,7 @@ module.exports.useCommand = function(message, args){
                     }
                     else{
                         // tell the user they don't have enough rocks
+                        useItem.setItemsLock(discordUserId, false)
                         message.channel.send("don't have enough rocks to throw...");
                     }
                 }
@@ -4479,6 +4481,7 @@ module.exports.useCommand = function(message, args){
                     });
                 }
                 else{
+                    useItem.setItemsLock(discordUserId, false)
                     message.channel.send(message.author + " you need at least `5` pieces of wood to build a fence");
                 }
             }
@@ -4588,6 +4591,7 @@ module.exports.useCommand = function(message, args){
                             });
                         }
                         else{
+                            useItem.setItemsLock(discordUserId, false)
                             message.channel.send(message.author + " you need at least `5` terry cloths to tailor some clothes");
                         }
                     }
@@ -4671,9 +4675,11 @@ module.exports.useCommand = function(message, args){
                     })
                 }
                 else if (sodaCansToUse.length < cansToUse && sodaCansToUse.length == 0){
+                    useItem.setItemsLock(discordUserId, false)
                     message.channel.send(message.author + " you do not have any soda cans to recycle..")
                 }
                 else if (sodaCansToUse.length < cansToUse){
+                    useItem.setItemsLock(discordUserId, false)
                     message.channel.send(message.author + " you do not have that many soda cans to recycle..")
                 }
             }
@@ -4767,9 +4773,11 @@ module.exports.useCommand = function(message, args){
                     })
                 }
                 else if (soilToUse.length < soilsCountToUse && soilToUse.length == 0){
+                    useItem.setItemsLock(discordUserId, false)
                     message.channel.send(message.author + " you do not have any soil to use..")
                 }
                 else if (soilToUse.length < soilsCountToUse){
+                    useItem.setItemsLock(discordUserId, false)
                     message.channel.send(message.author + " you do not have that many soil to use..")
                 }
             }
@@ -8265,6 +8273,7 @@ module.exports.createTableCommand = function(message){
                             createParty(message, discordUserId, uncommonsToUse);
                         }
                         else{
+                            useItem.setItemsLock(discordUserId, false)
                             message.channel.send("Missing ingredients for the Taco Party!!");
                         }
                     }

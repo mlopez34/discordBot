@@ -454,13 +454,16 @@ module.exports.useBasedOnShortName = function(message, discordid, itemshortname,
                                 }
                             })
                         }else{
+                            exports.setItemsLock(discordUserId, false)
                             cb("failed")
                         }
                     }else{
+                        exports.setItemsLock(discordUserId, false)
                         cb("failed");
                     }
                 }
             }else{
+                exports.setItemsLock(discordUserId, false)
                 cb("failed");
             }
         }
@@ -501,6 +504,8 @@ module.exports.useUncommons = function(message, discordid, uncommons, cb){
                 cb(null, "success")
             }
         })
+    }else{
+        exports.setItemsLock(discordUserId, false)
     }
 }
 
