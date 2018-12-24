@@ -5555,8 +5555,11 @@ module.exports.combineCommand = function(message, args){
                                             })
                                         }
                                         else{
+                                            useItem.setItemsLock(discordUserId, false)
                                             message.channel.send("You do not have all the items required to combine")
                                         }
+                                    }else{
+                                        useItem.setItemsLock(discordUserId, false)
                                     }
                                     
                                 }else if (rarityOfMyItem && rarityOfMyItem == "rare++"
@@ -5597,10 +5600,12 @@ module.exports.combineCommand = function(message, args){
                                                     })
                                                 }
                                             })        
+                                        }else{
+                                            useItem.setItemsLock(discordUserId, false)
                                         }
+                                    }else{
+                                        useItem.setItemsLock(discordUserId, false)
                                     }
-                                    
-
                                 }
                                 else if (rarityOfMyItem && rarityOfMyItem == "ancient++"
                                     && itemsInInventoryCountMap[idOfMyItem] 
@@ -5640,7 +5645,11 @@ module.exports.combineCommand = function(message, args){
                                                     })
                                                 }
                                             })        
+                                        }else{
+                                            useItem.setItemsLock(discordUserId, false)
                                         }
+                                    }else{
+                                        useItem.setItemsLock(discordUserId, false)
                                     }
                                 }
                                 else if (itemsInInventoryCountMap[idOfMyItem] && 
@@ -5672,11 +5681,13 @@ module.exports.combineCommand = function(message, args){
                                     })
                                 }
                                 else{
+                                    useItem.setItemsLock(discordUserId, false)
                                     message.channel.send("unable to combine.. you need " + itemCount);
                                 }
                             }
                         }
                         else{
+                            useItem.setItemsLock(discordUserId, false)
                             message.channel.send("cannot combine that item");
                         }
                     }
