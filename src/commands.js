@@ -7586,6 +7586,9 @@ module.exports.marketBidCommand = function(message, args){
                     if (adjustedCurrentBid >= auctionToBidOn.buyout || adjustedCurrentBid == 0){
                         adjustedCurrentBid = auctionToBidOn.buyout
                     }
+                    if (biddingTacos > auctionToBidOn.buyout){
+                        biddingTacos = auctionToBidOn.buyout
+                    }
                     if (biddingTacos > 0 && auctionToBidOn && biddingTacos >= adjustedCurrentBid && auctionToBidOn.seller != discordUserId){
 
                         var lastHighestBidder = auctionToBidOn.currentbiduserid;

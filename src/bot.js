@@ -1148,7 +1148,7 @@ function messagesByUserTimeout(commandFunction, message){
         var messageTimeout = setTimeout(function(){
             commandFunction(message);
             messagesByUserCount[message.author.id].count = messagesByUserCount[message.author.id].count - 1
-        }, 300 * (timeoutCount + 1)) 
+        }, 1500 * (timeoutCount + 1)) 
         messagesByUserCount[message.author.id].count = messagesByUserCount[message.author.id].count + 1
         messagesByUserCount[message.author.id].timeout = messageTimeout
     }else{
@@ -1166,7 +1166,7 @@ function messagesByUserTimeoutArgs(commandFunction, message, args){
         var messageTimeout = setTimeout(function(){
             commandFunction(message, args);
             messagesByUserCount[message.author.id].count = messagesByUserCount[message.author.id].count - 1
-        }, 300 * (timeoutCount + 1)) 
+        }, 1500 * (timeoutCount + 1)) 
         messagesByUserCount[message.author.id].count = messagesByUserCount[message.author.id].count + 1
         messagesByUserCount[message.author.id].timeout = messageTimeout
     }else{
@@ -1184,7 +1184,7 @@ function messagesByUserTimeoutArgsRarity(commandFunction, message, args, rarity)
         var messageTimeout = setTimeout(function(){
             commandFunction(message, args, rarity);
             messagesByUserCount[message.author.id].count = messagesByUserCount[message.author.id].count - 1
-        }, 300 * (timeoutCount + 1)) 
+        }, 1500 * (timeoutCount + 1)) 
         messagesByUserCount[message.author.id].count = messagesByUserCount[message.author.id].count + 1
         messagesByUserCount[message.author.id].timeout = messageTimeout
     }else{
