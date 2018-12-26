@@ -4272,7 +4272,7 @@ module.exports.useCommand = function(message, args){
                             // able to use those 20 pieces
                             useItem.useRock(message, discordUserId, rocksToUse, listOfAmulets, function(useError, useRes){
                                 if (useError){
-                                    // couldnt update the user protect
+                                    useItem.setItemsLock(discordUserId, false)
                                     // console.log(useError);
                                 }
                                 else{
@@ -5684,6 +5684,8 @@ module.exports.combineCommand = function(message, args){
                                     useItem.setItemsLock(discordUserId, false)
                                     message.channel.send("unable to combine.. you need " + itemCount);
                                 }
+                            }else{
+                                useItem.setItemsLock(discordUserId, false)
                             }
                         }
                         else{

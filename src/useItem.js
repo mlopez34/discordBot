@@ -88,8 +88,11 @@ module.exports.useRock = function(message, mentionedUserId, rockToUse, tacosInUs
                             })
                         }
                         else{
+                            exports.setItemsLock(message.author.id, false)
                             cb("user doesn't have tacos to drop");
                         }
+                    }else{
+                        exports.setItemsLock(message.author.id, false)
                     }
                 }
             })
@@ -112,7 +115,7 @@ module.exports.useRock = function(message, mentionedUserId, rockToUse, tacosInUs
             profileDB.addNewItemToUser(discordUserId, rareWon, function(error, response){
                 if (error){
                     // console.log("couldnt add item");
-                    exports.setItemsLock(message.author.id, false)
+                    exports.setItemsLock(discordUserId, false)
                     cb("error");
                 }
                 else{
@@ -120,7 +123,7 @@ module.exports.useRock = function(message, mentionedUserId, rockToUse, tacosInUs
                     profileDB.bulkUpdateItemStatus(rockToUse, "used", function(updateBulkErr, updateBulkRes){
                         if (updateBulkErr){
                             // console.log(updateBulkErr);
-                            exports.setItemsLock(message.author.id, false)
+                            exports.setItemsLock(discordUserId, false)
                             cb(updateBulkErr);
                         }
                         else{
@@ -135,7 +138,7 @@ module.exports.useRock = function(message, mentionedUserId, rockToUse, tacosInUs
             // add tacos to user
             profileDB.updateUserTacos(discordUserId, 50, function(tacosError, tacosRes){
                 if (tacosError){
-                    exports.setItemsLock(message.author.id, false)
+                    exports.setItemsLock(discordUserId, false)
                     cb(tacosError);
                 }
                 else{
@@ -143,7 +146,7 @@ module.exports.useRock = function(message, mentionedUserId, rockToUse, tacosInUs
                     profileDB.bulkUpdateItemStatus(rockToUse, "used", function(updateBulkErr, updateBulkRes){
                         if (updateBulkErr){
                             // console.log(updateBulkErr);
-                            exports.setItemsLock(message.author.id, false)
+                            exports.setItemsLock(discordUserId, false)
                             cb(updateBulkErr);
                         }
                         else{
@@ -159,7 +162,7 @@ module.exports.useRock = function(message, mentionedUserId, rockToUse, tacosInUs
             // add tacos to user
             profileDB.updateUserTacos(discordUserId, 20, function(tacosError, tacosRes){
                 if (tacosError){
-                    exports.setItemsLock(message.author.id, false)
+                    exports.setItemsLock(discordUserId, false)
                     cb(tacosError);
                 }
                 else{
@@ -167,7 +170,7 @@ module.exports.useRock = function(message, mentionedUserId, rockToUse, tacosInUs
                     profileDB.bulkUpdateItemStatus(rockToUse, "used", function(updateBulkErr, updateBulkRes){
                         if (updateBulkErr){
                             // console.log(updateBulkErr);
-                            exports.setItemsLock(message.author.id, false)
+                            exports.setItemsLock(discordUserId, false)
                             cb(updateBulkErr);
                         }
                         else{
@@ -178,6 +181,8 @@ module.exports.useRock = function(message, mentionedUserId, rockToUse, tacosInUs
                 }
             })
         }
+    }else{
+        exports.setItemsLock(message.author.id, false)
     }
 }
 
@@ -222,6 +227,8 @@ module.exports.usePieceOfWood = function(message, discordUserId, piecesOfWoodToU
             }
         })
        
+    }else{
+        exports.setItemsLock(discordUserId, false)
     }
 }
 
@@ -239,7 +246,7 @@ module.exports.useTerryCloth =  function(message, discordUserId, terryClothToUse
             profileDB.addNewItemToUser(discordUserId, rareWon, function(error, response){
                 if (error){
                     // console.log("couldnt add item");
-                    exports.setItemsLock(message.author.id, false)
+                    exports.setItemsLock(discordUserId, false)
                     cb("error");
                 }
                 else{
@@ -247,12 +254,12 @@ module.exports.useTerryCloth =  function(message, discordUserId, terryClothToUse
                     profileDB.bulkUpdateItemStatus(terryClothToUse, "used", function(updateBulkErr, updateBulkRes){
                         if (updateBulkErr){
                             // console.log(updateBulkErr);
-                            exports.setItemsLock(message.author.id, false)
+                            exports.setItemsLock(discordUserId, false)
                             cb(updateBulkErr);
                         }
                         else{
                             // console.log(updateBulkRes);
-                            exports.setItemsLock(message.author.id, false)
+                            exports.setItemsLock(discordUserId, false)
                             cb(null, rareWon);
                         }
                     })
@@ -264,7 +271,7 @@ module.exports.useTerryCloth =  function(message, discordUserId, terryClothToUse
             profileDB.updateUserTacos(discordUserId, 50, function(tacosError, tacosRes){
                 if (tacosError){
                     // console.log(tacosError);
-                    exports.setItemsLock(message.author.id, false)
+                    exports.setItemsLock(discordUserId, false)
                     cb(tacosError);
                 }
                 else{
@@ -272,12 +279,12 @@ module.exports.useTerryCloth =  function(message, discordUserId, terryClothToUse
                     profileDB.bulkUpdateItemStatus(terryClothToUse, "used", function(updateBulkErr, updateBulkRes){
                         if (updateBulkErr){
                             // console.log(updateBulkErr);
-                            exports.setItemsLock(message.author.id, false)
+                            exports.setItemsLock(discordUserId, false)
                             cb(updateBulkErr);
                         }
                         else{
                             // console.log(updateBulkRes);
-                            exports.setItemsLock(message.author.id, false)
+                            exports.setItemsLock(discordUserId, false)
                             cb(null, 50)
                         }
                     })
@@ -290,7 +297,7 @@ module.exports.useTerryCloth =  function(message, discordUserId, terryClothToUse
             profileDB.updateUserTacos(discordUserId, 20, function(tacosError, tacosRes){
                 if (tacosError){
                     // console.log(tacosError);
-                    exports.setItemsLock(message.author.id, false)
+                    exports.setItemsLock(discordUserId, false)
                     cb(tacosError);
                 }
                 else{
@@ -298,18 +305,20 @@ module.exports.useTerryCloth =  function(message, discordUserId, terryClothToUse
                     profileDB.bulkUpdateItemStatus(terryClothToUse, "used", function(updateBulkErr, updateBulkRes){
                         if (updateBulkErr){
                             // console.log(updateBulkErr);
-                            exports.setItemsLock(message.author.id, false)
+                            exports.setItemsLock(discordUserId, false)
                             cb(updateBulkErr);
                         }
                         else{
                             // console.log(updateBulkRes);
-                            exports.setItemsLock(message.author.id, false)
+                            exports.setItemsLock(discordUserId, false)
                             cb(null, 20)
                         }
                     })
                 }
             })
         }
+    }else{
+        exports.setItemsLock(discordUserId, false)
     }
 }
 
@@ -319,7 +328,7 @@ module.exports.useSodaCan = function(message, discordUserId, sodaCansToUse, cb){
     reputation.gainReputation(message, discordUserId, (REP_GAIN_PER_CAN * sodaCansToUse.length) , function(error, response){
         if (error){
             // console.log(error);
-            exports.setItemsLock(message.author.id, false)
+            exports.setItemsLock(discordUserId, false)
             cb(error);
         }
         else{
@@ -329,12 +338,12 @@ module.exports.useSodaCan = function(message, discordUserId, sodaCansToUse, cb){
             profileDB.bulkUpdateItemStatus( sodaCansToUse, "used", function(updateSodaCanStatusErr, updateSodaCanStatusRes ){
                 if (updateSodaCanStatusErr){
                     // console.log(updateSodaCanStatusErr);
-                    exports.setItemsLock(message.author.id, false)
+                    exports.setItemsLock(discordUserId, false)
                     cb(updateSodaCanStatusErr);
                 }
                 else{
                     // console.log(updateSodaCanStatusRes);
-                    exports.setItemsLock(message.author.id, false)
+                    exports.setItemsLock(discordUserId, false)
                     cb(null, response);
                 }
             })
@@ -348,7 +357,7 @@ module.exports.useSoil = function(message, discordUserId, soilToUse, cb){
         profileDB.getUserProfileData(discordUserId, function(getProfileErr, getProfileRes){
             if (getProfileErr){
                 // console.log(getProfileErr);
-                exports.setItemsLock(message.author.id, false)
+                exports.setItemsLock(discordUserId, false)
                 cb(getProfileErr);
             }
             else{
@@ -357,7 +366,7 @@ module.exports.useSoil = function(message, discordUserId, soilToUse, cb){
                 profileDB.updateUserSoiledCrops(discordUserId, soiledCrops, currentCropsSoiled, function(error, response){
                     if (error){
                         // console.log(error);
-                        exports.setItemsLock(message.author.id, false)
+                        exports.setItemsLock(discordUserId, false)
                         cb(error);
                     }
                     else{
@@ -366,17 +375,16 @@ module.exports.useSoil = function(message, discordUserId, soilToUse, cb){
                         profileDB.bulkUpdateItemStatus(soilToUse, "used", function(updateSodaCanStatusErr, updateSodaCanStatusRes){
                             if (updateSodaCanStatusErr){
                                 // console.log(updateSodaCanStatusErr);
-                                exports.setItemsLock(message.author.id, false)
+                                exports.setItemsLock(discordUserId, false)
                                 cb(updateSodaCanStatusErr);
                             }
                             else{
                                 // console.log(updateSodaCanStatusRes);
-                                exports.setItemsLock(message.author.id, false)
+                                exports.setItemsLock(discordUserId, false)
                                 var cropsCount;
                                 if (currentCropsSoiled){
                                     cropsCount = currentCropsSoiled + soiledCrops;
-                                }
-                                else{
+                                }else{
                                     cropsCount = soiledCrops;
                                 }
                                 cb(null, cropsCount)
@@ -388,6 +396,7 @@ module.exports.useSoil = function(message, discordUserId, soilToUse, cb){
         })
     }
     else{
+        exports.setItemsLock(discordUserId, false)
         cb("failed");
     }
 }
@@ -397,6 +406,7 @@ module.exports.useBasedOnShortName = function(message, discordid, itemshortname,
     profileDB.getItemData(function(error, allItemsResponse){
         if (error){
             // console.log(error);
+            exports.setItemsLock(discordid, false)
             cb("failed");
         }
         else{
@@ -454,16 +464,19 @@ module.exports.useBasedOnShortName = function(message, discordid, itemshortname,
                                 }
                             })
                         }else{
-                            exports.setItemsLock(discordUserId, false)
+                            exports.setItemsLock(discordid, false)
                             cb("failed")
                         }
                     }else{
-                        exports.setItemsLock(discordUserId, false)
+                        exports.setItemsLock(discordid, false)
                         cb("failed");
                     }
+                }else{
+                    exports.setItemsLock(discordid, false)
+                    cb("failed");
                 }
             }else{
-                exports.setItemsLock(discordUserId, false)
+                exports.setItemsLock(discordid, false)
                 cb("failed");
             }
         }
@@ -505,7 +518,8 @@ module.exports.useUncommons = function(message, discordid, uncommons, cb){
             }
         })
     }else{
-        exports.setItemsLock(discordUserId, false)
+        cb("failed")
+        exports.setItemsLock(discordid, false)
     }
 }
 
