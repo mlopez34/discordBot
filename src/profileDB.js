@@ -220,7 +220,22 @@ module.exports.reduceCommandCooldownByHour = function(userId, command, userProfi
             cb(err);
         });
     }
-    
+}
+
+module.exports.updateUserRPGBuff = function(userId, itemid, buffHours, cb) {
+    var query = 'update ' + config.profileTable + ' set rpgbuffitemid=$1, rpgbuffactivatetime=$3 where discordid=$2'
+    var activateTime = new Date();
+    activateTime = new Date(activateTime.setHours(activateTime.getHours() + buffHours))
+    db.none(query, [itemid, userId, activateTime])
+    .then(function () {
+    cb(null, {
+        status: 'success',
+        message: 'added RPG buff'
+        });
+    })
+    .catch(function (err) {
+        cb(err);
+    });
 }
 
 module.exports.updateUserTacosTrickOrTreat = function(userId, tacos, cb) {

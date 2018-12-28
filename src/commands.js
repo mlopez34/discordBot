@@ -8,6 +8,7 @@ const Discord = require("discord.js");
 var Promise = require('bluebird');
 var config = require("./config.js");
 var useItem = require("./useItem.js")
+var baking = require("./baking.js")
 var disassembleItem = require("./disassemble.js")
 var experience = require("./experience.js")
 var wearStats = require("./wearStats.js")
@@ -5077,10 +5078,43 @@ function templeVisualBuilder(templeData){
 
 module.exports.bakeCommand = function(message, args){
     // use fruits harvested in order to bake things
-    
-    
+    var discordUserId = message.author.id
     // individual plants and fruits are also materials used to upgrade stable and temple
+    if (args && args.length > 2 ){
+        var itemToBake =  args[1];
+        // validate the item via baking.js
 
+        profileDB.getFruitData(discordUserId, function(err, fruitData){
+            if (err){
+                // console.log(err);
+                agreeToTerms(message, discordUserId);
+            }
+            else{
+                var userFruitsCount = obtainFruitsCountObject( fruitData.data )
+                var itemsMapById = {};
+                // pass the full inventory to bakeItem
+                profileDB.getItemData(function(error, allItemsResponse){
+                    if (error){
+                        console.log(error)
+                    }else{
+                        
+                        for (var index in allItemsResponse.data){
+                            itemsMapById[allItemsResponse.data[index].id] = allItemsResponse.data[index];
+                        }
+                        baking.bakeItem(discordUserId, itemToBake, itemsMapById, userFruitsCount, function(error, res){
+                            if (error){
+                                console.log(error)
+                            }else{
+
+                            }
+                        })
+                    }
+                })
+            }
+        })
+    }else{
+        message.channel.send("cannot bake that item")
+    }
     // 
 }
 
@@ -8534,7 +8568,13 @@ module.exports.rpgReadyCommand = function(message){
                         amuletItemsById[allItemsResponse.data[item].id] = allItemsResponse.data[item];
                     }
                 }
-                rpg.rpgReady(message, itemsMapbyId, amuletItemsById);
+                var buffItemsById = {}
+                for (var item in allItemsResponse.data){
+                    if (allItemsResponse.data[item].itemraritycategory == "uncommon+" && allItemsResponse.data[item].amuletsource == 'rpgbuff'){
+                        buffItemsById[allItemsResponse.data[item].id] = allItemsResponse.data[item];
+                    }
+                }
+                rpg.rpgReady(message, itemsMapbyId, amuletItemsById, buffItemsById);
             }
         });
     }

@@ -29,15 +29,64 @@ const Discord = require("discord.js");
 // // 1,2,3 % of magic etc
 
 // recipes are listed here | recipes change every day of the month 
+module.exports.bakeItem = function(discordUserId, itemToBake, itemsMapById, userFruitsCount, cb){
+    if (bakingRecipes[itemToBake]){
+        // attempt to bake the item | check fruit requirements 
+        // check its the right day  
+        // if all requirements are met, set all items to used + insert new item into DB for user
+        var itemRequirements = bakingRecipes[itemToBake].items
+        var ableToBake = true;
+        for (var item in itemRequirements){
+            var singleItem = itemRequirements[item]
+            // here we check for the user fruits
+            if (userFruitsCount[singleItem.fruit] <= singleItem.itemCount){
+                ableToBake = false
+                break;
+            }
+        }
+
+        if (ableToBake){
+            var itemToCreateId = bakingRecipes[itemToBake].itemToCreateId
+            var itemToCreate = itemsMapById[itemToCreateId]
+
+            // take away the fruits required
+
+            // add the item to user's inventory
+        }
+    }else{
+        cb("failed")
+    }
+}
+
+module.exports.obtainFruitsCountObject = function(userFruitsData){
+    var fruitsCountObject = {
+        tulips: userFruitsData.tulips || 0,
+        roses: userFruitsData.roses || 0,
+        evergreens : userFruitsData.evergreens || 0,	
+        cacti: userFruitsData.cacti || 0,
+        palms: userFruitsData.palms || 0,
+        blossoms: userFruitsData.blossoms || 0,
+        bamboos: userFruitsData.bamboos || 0,
+        sunflowers: userFruitsData.sunflowers || 0,
+        hibiscuses: userFruitsData.hibiscuses || 0,
+        bananas: userFruitsData.bananas || 0,
+        pears: userFruitsData.pears || 0,
+        tangerines: userFruitsData.tangerines || 0
+    }
+
+    return fruitsCountObject
+}
+
 const bakingRecipes = {
     ratvial: {
+        itemToCreateId: 257,
         items: [
             {
-                itemId: 184,
+                fruit: "tulips",
                 itemCount: 3
             },
             {
-                itemId: 185,
+                itemId: "sunflowers",
                 itemCount: 4
             }
         ]
@@ -45,11 +94,11 @@ const bakingRecipes = {
     applepie : {
         items: [
             {
-                itemId: 186,
+                itemId: "bananas",
                 itemCount: 3
             },
             {
-                itemId: 187,
+                itemId: "tangerines",
                 itemCount: 4
             }
         ]

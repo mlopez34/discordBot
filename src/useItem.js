@@ -471,6 +471,54 @@ module.exports.useBasedOnShortName = function(message, discordid, itemshortname,
                         exports.setItemsLock(discordid, false)
                         cb("failed");
                     }
+                }else if (itemshortname == "applepie"
+                    || itemshortname == "bananacake"){
+                    // use a pie from inventory
+                    var idOfItemToUse = itemsMapbyName[itemshortname].id;
+                    var itemInInventoryCount = userInventoryCountMap[idOfItemToUse]
+                    if (itemInInventoryCount > 0){
+                        var bakeToUse = undefined;
+                        for (var item in userInventory){
+                            // check the rock hasnt been used
+                            var validItem = exports.itemValidate(userInventory[item]);
+                            if (validItem){
+                                // item hasnt been added to be counted, add it as 1
+                                if (userInventory[item].itemid == idOfItemToUse){
+                                    bakeToUse = userInventory[item];
+                                    break;
+                                }
+                            }
+                        }
+                        if (bakeToUse){
+                            // set the item to used
+                            profileDB.updateItemStatus(bakeToUse.id, "used", function(updatePotionErr, updatePotionRes){
+                                if (updatePotionErr){
+                                    exports.setItemsLock(discordid, false)
+                                    cb(updatePotionErr);
+                                }
+                                else{
+                                    // add the buff to the user profile. itemid + itemactivatetime
+                                    addRPGBuffToUser(discordid, bakeToUse.itemid, 2, function(buffErr, buffRes){
+                                        if (buffErr){
+                                            exports.setItemsLock(discordid, false)
+                                            message.channel.send("Something went wrong, call 911")
+                                            cb("failed");
+                                        }else{
+                                            exports.setItemsLock(discordid, false)
+                                            message.channel.send( "gained buff" ); // message that user gained buff                                                           
+                                            cb(null, "success")
+                                        }
+                                    })
+                                }
+                            })
+                        }else{
+                            exports.setItemsLock(discordid, false)
+                            cb("failed")
+                        }
+                    }else{
+                        exports.setItemsLock(discordid, false)
+                        cb("failed");
+                    }
                 }else{
                     exports.setItemsLock(discordid, false)
                     cb("failed");
@@ -501,6 +549,17 @@ function reduceCommandCooldown(discordUserId, command, cb){
         }
     })
     
+}
+
+function addRPGBuffToUser(discordUserId, itemid, hours, cb){
+    profileDB.updateUserRPGBuff(discordUserId, itemid, hours, function(err, res){
+        if (err){
+            console.log(err)
+            cb(err)
+        }else{
+            cb(null, "success")
+        }
+    })
 }
 
 module.exports.useUncommons = function(message, discordid, uncommons, cb){

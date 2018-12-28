@@ -424,7 +424,7 @@ module.exports.pvpReady = function(message, itemsAvailable, amuletItemsById){
     // add if pvp statement to turnfinishedEmbedBuilder, 
 }
 
-module.exports.rpgReady = function(message, itemsAvailable, amuletItemsById){
+module.exports.rpgReady = function(message, itemsAvailable, amuletItemsById, buffItemsById){
     // create an embed saying that b is about to happen, for users MAX of 5 users and they must all say -ready to start costs 5 tacos per person
     var discordUserId = message.author.id;
     
@@ -487,7 +487,20 @@ module.exports.rpgReady = function(message, itemsAvailable, amuletItemsById){
                                     amuletToAdd.count = itemsInInventoryCountMap[idToCheck]        
                                     userAmuletData.push(amuletItemsById[amulet]);
                                 }
-                            }        
+                            }
+                            var userTemporaryBuffData = []
+                            for (var buffItem in buffItemsById){
+                                var idToCheck = buffItemsById[buffItem].id
+                                var buffTime = userStats.rpgbuffactivatetime
+                                var now = new Date()
+                                if (now <= buffTime){
+                                    // buff is still active
+                                    if (userStats.rpgbuffitemid == idToCheck){
+                                        // add the buff to the stats
+                                        userTemporaryBuffData.push(buffItemsById[buffItem])
+                                    }
+                                }
+                            }
 
                             profileDB.getUserWearInfo(discordUserId, function(wearErr, wearData){
                                 if (wearErr){
@@ -603,6 +616,30 @@ module.exports.rpgReady = function(message, itemsAvailable, amuletItemsById){
                                             statisticsFromItemsAndLevel.spiritPlus = statisticsFromItemsAndLevel.spiritPlus + userStats.level
                                             statisticsFromItemsAndLevel.luckPlus = statisticsFromItemsAndLevel.luckPlus + userStats.level
 
+
+                                            // now include any RPG buffs
+                                            for (var i in userTemporaryBuffData){
+                                                var hppluspercentage = itemsAvailable[userTemporaryBuffData[i].id].hppluspercentage ? itemsAvailable[userTemporaryBuffData[i].id].hppluspercentage : 0
+                                                var attackdmgpluspercentage = itemsAvailable[userTemporaryBuffData[i].id].attackdmgpluspercentage ? itemsAvailable[userTemporaryBuffData[i].id].attackdmgpluspercentage : 0
+                                                var magicdmgpluspercentage = itemsAvailable[userTemporaryBuffData[i].id].magicdmgpluspercentage ? itemsAvailable[userTemporaryBuffData[i].id].magicdmgpluspercentage : 0
+                                                var armorpluspercentage = itemsAvailable[userTemporaryBuffData[i].id].armorpluspercentage ? itemsAvailable[userTemporaryBuffData[i].id].armorpluspercentage : 0
+                                                var spiritpluspercentage = itemsAvailable[userTemporaryBuffData[i].id].spiritpluspercentage ? itemsAvailable[userTemporaryBuffData[i].id].spiritpluspercentage : 0
+                                                var luckpluspercentage = itemsAvailable[userTemporaryBuffData[i].id].luckpluspercentage ? itemsAvailable[userTemporaryBuffData[i].id].luckpluspercentage : 0
+
+                                                hppluspercentage = hppluspercentage / 100
+                                                attackdmgpluspercentage = attackdmgpluspercentage / 100
+                                                magicdmgpluspercentage = magicdmgpluspercentage / 100
+                                                armorpluspercentage = armorpluspercentage / 100
+                                                spiritpluspercentage = spiritpluspercentage / 100
+                                                luckpluspercentage = luckpluspercentage / 100
+                                                
+                                                statisticsFromItemsAndLevel.hpPlus = statisticsFromItemsAndLevel.hpPlus + Math.floor(statisticsFromItemsAndLevel.hpPlus * hppluspercentage);
+                                                statisticsFromItemsAndLevel.attackDmgPlus = statisticsFromItemsAndLevel.attackDmgPlus + Math.floor(statisticsFromItemsAndLevel.attackDmgPlus * attackdmgpluspercentage);
+                                                statisticsFromItemsAndLevel.magicDmgPlus = statisticsFromItemsAndLevel.magicDmgPlus + Math.floor(statisticsFromItemsAndLevel.magicDmgPlus * magicdmgpluspercentage);
+                                                statisticsFromItemsAndLevel.armorPlus = statisticsFromItemsAndLevel.armorPlus + Math.floor(statisticsFromItemsAndLevel.armorPlus * armorpluspercentage);
+                                                statisticsFromItemsAndLevel.spiritPlus = statisticsFromItemsAndLevel.spiritPlus + Math.floor(statisticsFromItemsAndLevel.spiritPlus * spiritpluspercentage);
+                                                statisticsFromItemsAndLevel.luckPlus = statisticsFromItemsAndLevel.luckPlus + Math.floor(statisticsFromItemsAndLevel.luckPlus * luckpluspercentage);
+                                            }
 
                                             // get the abilities the user will have
                                             // get the extra stats obtained from level, item+ stats, 
