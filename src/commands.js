@@ -5027,7 +5027,7 @@ function stableEmbedBuilder(message, stableData){
 
     const embed = new Discord.RichEmbed()
     .setColor(0x87CEFA)
-    .setTitle(greenHouseData.name + "'s Stables")
+    .setTitle(stableData.name + "'s Stables")
     //.setThumbnail()
     .setDescription("")
     .setColor(0x87CEFA)
@@ -5059,7 +5059,7 @@ function templeEmbedBuilder(message, templeData){
 
     const embed = new Discord.RichEmbed()
     .setColor(0x87CEFA)
-    .setTitle(greenHouseData.name + "'s Temple")
+    .setTitle(templeData.name + "'s Temple")
     //.setThumbnail()
     .setDescription("")
     .setColor(0x87CEFA)
