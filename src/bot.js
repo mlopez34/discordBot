@@ -397,7 +397,10 @@ client.on('message', function(message){
                     // disassemble items - mark them as used - obtain items based on the item disassembled
                     commands.disassembleCommand(message, args);
                 }
-                else if (commandIs("fish", message)){
+                else if (commandIs("bake", message)){
+                    // disassemble items - mark them as used - obtain items based on the item disassembled
+                    commands.bakeCommand(message, args);
+                }else if (commandIs("fish", message)){
                     // go fishing - catch a big fish!
                     message.channel.send(":tractor:")
                 }
@@ -944,7 +947,7 @@ client.on('message', function(message){
                     profileDB.createUserActivity(data)
                 }
                 else if (commandIs("greenhouse", message)){
-                    //commands.greenHouseCommand(message)
+                    commands.greenHouseCommand(message)
                 }
                 else if (commandIs("markethelp", message)){
                     commands.marketHelpCommand(message)
@@ -958,10 +961,14 @@ client.on('message', function(message){
                     commands.marketAuctionCommand(message, args)
                 }
                 else if (commandIs("plant", message)){
-                    //commands.plantCommand(message, args)
+                    commands.plantCommand(message, args)
                 }
                 else if (commandIs("harvest", message)){
-                    //commands.harvestCommand(message)
+                    commands.harvestCommand(message)
+                }
+                else if (commandIs("bake", message)){
+                    // disassemble items - mark them as used - obtain items based on the item disassembled
+                    commands.bakeCommand(message, args);
                 }
                 else if (commandIs("rpgstart", message)){
                     if (message.channel.type == "text" && !message.author.bot){

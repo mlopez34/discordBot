@@ -5051,7 +5051,6 @@ module.exports.templeCommand = function(message){
     // create embed based off of their temple info stats | visual representation
     // a bunch of random shit - sanctum? - recipes? 
     // ( blueprints for rares, and ancients )
-    // 
 }
 
 function templeEmbedBuilder(message, templeData){
@@ -5080,7 +5079,7 @@ module.exports.bakeCommand = function(message, args){
     // use fruits harvested in order to bake things
     var discordUserId = message.author.id
     // individual plants and fruits are also materials used to upgrade stable and temple
-    if (args && args.length > 2 ){
+    if (args && args.length >= 2 ){
         var itemToBake =  args[1];
         // validate the item via baking.js
 
@@ -5090,7 +5089,7 @@ module.exports.bakeCommand = function(message, args){
                 agreeToTerms(message, discordUserId);
             }
             else{
-                var userFruitsCount = obtainFruitsCountObject( fruitData.data )
+                var userFruitsCount = baking.obtainFruitsCountObject( fruitData.data )
                 var itemsMapById = {};
                 // pass the full inventory to bakeItem
                 profileDB.getItemData(function(error, allItemsResponse){
@@ -5103,9 +5102,15 @@ module.exports.bakeCommand = function(message, args){
                         }
                         baking.bakeItem(discordUserId, itemToBake, itemsMapById, userFruitsCount, function(error, res){
                             if (error){
+                                if (error == "doesn't exist"){
+                                    message.channel.send("Item doesnt exist")
+                                }else if (error == "failed"){
+                                    message.channel.send("Do not have the ingredients")
+                                }
                                 console.log(error)
                             }else{
-
+                                var itemBaked = res[0].itemname
+                                message.channel.send(message.author + " has created a `" + itemBaked + "`!")
                             }
                         })
                     }
@@ -5115,7 +5120,6 @@ module.exports.bakeCommand = function(message, args){
     }else{
         message.channel.send("cannot bake that item")
     }
-    // 
 }
 
 module.exports.plantCommand = function(message, args){
@@ -5247,11 +5251,20 @@ function plantOnPlotOfLand(message, discordUserId, plotOfLand, greenHouseData, p
     })
 }
 
-// TODO: Finish these
 var itemHarvested = {
     "pear": "pears",
     "tulip": "tulips",
-    "cactus": "cacti"
+    "cactus": "cacti",
+    "rose" : "roses",
+    "evergreen": "evergreens",
+    "palm" : "palms",
+    "blossom" : "blossoms",
+    "apple" : "apples",
+    "sunflower" : "sunflowers",
+    "hibiscus" : "hibiscuses",
+    "banana" : "bananas",
+    "tangerine" : "tangerines",
+    "eggplant" : "eggplants"
 }
 
 module.exports.harvestCommand = function(message, args){
@@ -5293,7 +5306,7 @@ module.exports.harvestCommand = function(message, args){
                     }
 
                     // go through all the plants in your garden, harvest them, and then add them to your fruits profile
-                    profileDB.bulkupdateUserFruits(discordUserId, fruitsColumnsWithCount, function(err, bulkRes){
+                    profileDB.bulkupdateUserFruits(discordUserId, fruitsColumnsWithCount, true, function(err, bulkRes){
                         if (err){
                             console.log(err)
                         }else{

@@ -138,6 +138,7 @@ function updateUserRewards(message, discordId, repstatus, cb){
             
         case "admired":
             // give user sprinting shoes on their profile
+            // stable
             profileDB.obtainSprintingShoes(discordId, function(error, res){
                 if (error){
                     console.log(error);
@@ -148,7 +149,7 @@ function updateUserRewards(message, discordId, repstatus, cb){
             })
             break;
         case "glorified":
-            // TODO: give the user reward, one rewrd should be a jewel, sorry gives an extra scavenge, artifacts can be obtained via 
+            // temple + able to upgrade past level 5 on all buildings + able to improve artifacts
             profileDB.obtainSprintingShoes(discordId, function(error, res){
                 if (error){
                     console.log(error);
@@ -159,7 +160,7 @@ function updateUserRewards(message, discordId, repstatus, cb){
             })
             break;
         case "sanctified":
-            // TODO: give the user reward
+            // able to upgrade past level 9 on all buildings + able to refine artifacts
             profileDB.obtainSprintingShoes(discordId, function(error, res){
                 if (error){
                     console.log(error);

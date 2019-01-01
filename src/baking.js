@@ -39,10 +39,14 @@ module.exports.bakeItem = function(discordUserId, itemToBake, itemsMapById, user
         for (var item in itemRequirements){
             var singleItem = itemRequirements[item]
             // here we check for the user fruits
-            if (userFruitsCount[singleItem.fruit] <= singleItem.itemCount){
+            if (userFruitsCount[singleItem.itemId] < singleItem.itemCount){
                 ableToBake = false
                 break;
             }
+        }
+        var fruitsToRemove = {}
+        for (var i in itemRequirements){
+            fruitsToRemove[itemRequirements[i].itemId] = itemRequirements[i].itemCount
         }
 
         if (ableToBake){
@@ -50,12 +54,33 @@ module.exports.bakeItem = function(discordUserId, itemToBake, itemsMapById, user
             var itemToCreate = itemsMapById[itemToCreateId]
 
             // take away the fruits required
-
-            // add the item to user's inventory
+            profileDB.bulkupdateUserFruits(discordUserId, fruitsToRemove, false, function(err, bulkRes){
+                if (err){
+                    console.log(err)
+                }else{
+                    // add the item to user's inventory
+                    var itemsToAdd = [itemToCreate]
+                    addToUserInventory(discordUserId, itemsToAdd)
+                    cb(null, itemsToAdd)
+                }
+            })
+        }else{
+            cb("failed")
         }
     }else{
-        cb("failed")
+        cb("doesn't exist")
     }
+}
+
+function addToUserInventory(discordUserId, items){
+    profileDB.addNewItemToUser(discordUserId, items, function(itemError, itemAddResponse){
+        if (itemError){
+            // console.log(itemError);
+        }
+        else{
+            // console.log(itemAddResponse);
+        }
+    })
 }
 
 module.exports.obtainFruitsCountObject = function(userFruitsData){
@@ -66,17 +91,18 @@ module.exports.obtainFruitsCountObject = function(userFruitsData){
         cacti: userFruitsData.cacti || 0,
         palms: userFruitsData.palms || 0,
         blossoms: userFruitsData.blossoms || 0,
-        bamboos: userFruitsData.bamboos || 0,
+        apples: userFruitsData.apples || 0,
         sunflowers: userFruitsData.sunflowers || 0,
         hibiscuses: userFruitsData.hibiscuses || 0,
         bananas: userFruitsData.bananas || 0,
         pears: userFruitsData.pears || 0,
-        tangerines: userFruitsData.tangerines || 0
+        tangerines: userFruitsData.tangerines || 0,
+        eggplants: userFruitsData.eggplants || 0
     }
 
     return fruitsCountObject
 }
-
+// TODO: finish the recipes
 const bakingRecipes = {
     ratvial: {
         itemToCreateId: 257,
@@ -92,6 +118,7 @@ const bakingRecipes = {
         ]
     },
     applepie : {
+        itemToCreateId: 257,
         items: [
             {
                 itemId: "bananas",

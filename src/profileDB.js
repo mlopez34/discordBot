@@ -1413,12 +1413,21 @@ module.exports.updateUserFruits = function(userId, fruit, fruitcount, cb) {
     });
 }
 
-module.exports.bulkupdateUserFruits = function(userId, fruits, cb){
+module.exports.bulkupdateUserFruits = function(userId, fruits, increment, cb){
+    
     var fruitNames = []
+    var columnSymbol = increment ? '+' : '-'
     for (var fruit in fruits){
-        fruitNames.push(fruit)
+        fruitNames.push(
+        {
+            name: fruit,
+            init: c => c.name + columnSymbol + c.value,
+            mod: ':raw'
+        })
     }
-    const query = pgp.helpers.update(fruits, fruitNames, config.userFruitTable) + ' WHERE discordid = ' + userId;
+    const Column = pgp.helpers.ColumnSet(fruitNames)
+    const query = pgp.helpers.update(fruits, Column, config.userFruitTableNoQuotes) + ' WHERE discordid = ' + userId
+
     db.none(query)
     .then(function () {
         cb(null, { status: 'success', message: 'updated columns' });
