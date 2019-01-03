@@ -323,7 +323,7 @@ client.on('message', function(message){
                     commands.buypetCommand(message, args);
                 }
                 else if (commandIs("fetch", message)){
-                    messagesByUserTimeout(commands.fetchCommand, message)
+                    messagesByUserTimeoutArgs(commands.fetchCommand, message, args)
                 }
                 else if (commandIs("xp", message)){
                     commands.xpCommand(message);
@@ -862,7 +862,7 @@ client.on('message', function(message){
                     profileDB.createUserActivity(data)
                 }
                 else if (commandIs("fetch", message)){
-                    messagesByUserTimeout(commands.fetchCommand, message)
+                    messagesByUserTimeoutArgs(commands.fetchCommand, message, args)
                     data.command = "fetch"
                     profileDB.createUserActivity(data)
                 }
@@ -948,6 +948,9 @@ client.on('message', function(message){
                 }
                 else if (commandIs("greenhouse", message)){
                     commands.greenHouseCommand(message)
+                }
+                else if (commandIs("stable", message)){
+                    commands.stableCommand(message)
                 }
                 else if (commandIs("markethelp", message)){
                     commands.marketHelpCommand(message)

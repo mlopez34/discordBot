@@ -2,7 +2,33 @@
 var profileDB = require("./profileDB.js");
 const Discord = require("discord.js");
 
-var upgradeRequirements = {
+var upgradeLock = {}
+
+module.exports.setupgradeLock = function(discordUserId, set){
+    upgradeLock[discordUserId] = set
+}
+
+module.exports.getupgradeLock = function(discordUserId){
+    return upgradeLock[discordUserId]
+}
+
+module.exports.upgradeGreenHouse = function(message, params){
+    // check level of greenhouse - get requirements for next level - check upgrade requirements
+    var greenHouseNextLevel = params.greenHouseLevel + 1
+    var requirements = upgradeRequirements[greenHouseNextLevel]
+    // check reputation level 
+    if (params.userTacos >= requirements.tacos && params.replevel >= reputationLevel){
+        // check inventory items
+
+        // check fruits?
+
+        // if both are met - consume items, remove fruits, add level to greenhouse
+    }else{
+        message.channel.send("missing requirements")
+    }
+}
+
+const upgradeRequirements = {
     1: {
         items: [
             {

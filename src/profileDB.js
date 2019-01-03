@@ -1351,6 +1351,63 @@ module.exports.createUserWearInfo = function(data, cb){
     });
 }
 
+module.exports.getStableData = function(discordId, cb){
+    var query = 'select * from ' + config.stablesTable + ',' + config.profileTable + ' where ' + config.stablesTable + '.discordId = $1 AND ' + config.profileTable + '.discordId = $1'
+    console.log(query)
+    db.one(query, [discordId])
+      .then(function (data) {
+        //// console.log(data);
+        cb(null, {
+            status: 'success',
+            data: data,
+            message: 'Retrieved ONE user stables'
+          });
+      })
+      .catch(function (err) {
+        // console.log(err);
+        cb(err);
+      });
+}
+
+module.exports.getTempleData = function(discordId, cb){
+    var query = 'select * from ' + config.templeTable + ',' + config.profileTable + ' where ' + config.templeTable + '.discordId = $1 AND ' + config.profileTable + '.discordId = $1'
+    console.log(query)
+    db.one(query, [discordId])
+      .then(function (data) {
+        //// console.log(data);
+        cb(null, {
+            status: 'success',
+            data: data,
+            message: 'Retrieved ONE user temple'
+          });
+      })
+      .catch(function (err) {
+        // console.log(err);
+        cb(err);
+      });
+}
+
+module.exports.updateTempleRecipes = function(userId, recipeInfo, cb) {
+    // templecraft1id	templecraft2id	templecraft3id	
+    var recipeColumns = []
+    for (var column in recipeInfo){
+        recipeColumns.push(column)
+    }
+    if (recipeColumns.length > 0){
+        const query = pgp.helpers.update(recipeInfo, recipeColumns, config.templeTable) + ' WHERE discordid = ' + userId;
+        db.none(query)
+        .then(function () {
+            cb(null, { status: 'success', message: 'updated columns in temple' });
+        })
+        .catch(function (err) {
+            cb(err);
+        });
+    }else{
+        cb("no columns");
+    }
+    
+}
+
 module.exports.getGreenHouseData = function(discordId, cb){
     var query = 'select * from ' + config.greenhouseTable + ',' + config.profileTable + ' where ' + config.greenhouseTable + '.discordId = $1 AND ' + config.profileTable + '.discordId = $1'
     console.log(query)

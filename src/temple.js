@@ -2,6 +2,32 @@
 var profileDB = require("./profileDB.js");
 const Discord = require("discord.js");
 
+var upgradeLock = {}
+
+module.exports.setupgradeLock = function(discordUserId, set){
+    upgradeLock[discordUserId] = set
+}
+
+module.exports.getupgradeLock = function(discordUserId){
+    return upgradeLock[discordUserId]
+}
+
+module.exports.upgradeTemple = function(message, params){
+    // check level of temple - get requirements for next level - check upgrade requirements
+    var templeNextLevel = params.templeLevel + 1
+    var requirements = upgradeRequirements[templeNextLevel]
+    // check reputation level 
+    if (params.userTacos >= requirements.tacos && params.replevel >= reputationLevel){
+        // check inventory items
+
+        // check fruits?
+
+        // if both are met - consume items, remove fruits, add level to temple
+    }else{
+        message.channel.send("missing requirements")
+    }
+}
+
 var upgradeRequirements = {
     1: {
         items: [
