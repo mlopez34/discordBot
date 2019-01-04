@@ -1442,6 +1442,42 @@ module.exports.updatePlotInfo = function(userId, plotInfo, cb) {
     });
 }
 
+module.exports.upgradeGreenHouse = function(userId, cb) {
+    
+    var query = 'update ' + config.greenhouseTable + ' set greenhouselevel=greenhouselevel+1 where discordid=$2'
+    db.none(query)
+    .then(function () {
+        cb(null, { status: 'success', message: 'upgraded greenhouse' });
+    })
+    .catch(function (err) {
+        cb(err);
+    });
+}
+
+module.exports.upgradeStable = function(userId, cb) {
+    
+    var query = 'update ' + config.stablesTable + ' set stablelevel=stablelevel+1 where discordid=$2'
+    db.none(query)
+    .then(function () {
+        cb(null, { status: 'success', message: 'upgraded stable' });
+    })
+    .catch(function (err) {
+        cb(err);
+    });
+}
+
+module.exports.upgradeTemple = function(userId, cb) {
+    
+    var query = 'update ' + config.templeTable + ' set templelevel=templelevel+1 where discordid=$2'
+    db.none(query)
+    .then(function () {
+        cb(null, { status: 'success', message: 'upgraded temple' });
+    })
+    .catch(function (err) {
+        cb(err);
+    });
+}
+
 module.exports.getFruitData = function(discordId, cb){
     var query = 'select * from ' + config.userFruitTable + ',' + config.profileTable + ' where ' + config.userFruitTable + '.discordId = $1 AND ' + config.profileTable + '.discordId = $1'
     console.log(query)

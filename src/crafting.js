@@ -64,17 +64,8 @@ module.exports.rollForRecipes = function(message, params){
             recipesObj.templecraft1id = recipe1
         }
         // update temple profile with the recipes in each slot
-        profileDB.updateTempleRecipes(params.discordUserId, recipesObj, function(err, res){
-            if (err){
-                console.log(err)
-                if (err == "no columns"){
-                    message.channel.send("temple not high enough lvl")
-                }
-            }else{
-                // send message displaying the new recipes aquired
-                message.channel.send("got new recipes")
-            }
-        })
+        setRecipesOnTemple(message, params, recipesObj)
+        
     }else{
         // didnt roll for new recipes
     }
@@ -157,12 +148,26 @@ function getItemRollChance(userLevel, categoryLevel, templeLevel){
     return chance;
 }
 
-function setRecipesOnTemple(){
-
+function setRecipesOnTemple(message, params, recipesObj){
+    profileDB.updateTempleRecipes(params.discordUserId, recipesObj, function(err, res){
+        if (err){
+            console.log(err)
+            if (err == "no columns"){
+                message.channel.send("temple not high enough lvl")
+            }
+        }else{
+            // send message displaying the new recipes aquired
+            message.channel.send("got new recipes")
+        }
+    })
 }
 
 module.exports.craftRecipe = function(){
+    // check that the recipe is owned first via name
 
+    // check recipe requirements
+
+    // craft the recipe - (insert the item to inventory just like scavenge)
 }
 
 const availableRecipes = {
