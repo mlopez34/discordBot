@@ -406,7 +406,7 @@ client.on('message', function(message){
                 }
                 else if (commandIs("upgrade", message)){
                     // can be stable or greenhouse or temple
-                    message.channel.send(":tractor:")
+                    commands.upgradeCommand(message, args);
                 }
                 else if (commandIs("craft", message)){
                     // craft a specific item via id
@@ -952,6 +952,9 @@ client.on('message', function(message){
                 else if (commandIs("stable", message)){
                     commands.stableCommand(message)
                 }
+                else if (commandIs("temple", message)){
+                    commands.templeCommand(message)
+                }
                 else if (commandIs("markethelp", message)){
                     commands.marketHelpCommand(message)
                 }
@@ -972,6 +975,10 @@ client.on('message', function(message){
                 else if (commandIs("bake", message)){
                     // disassemble items - mark them as used - obtain items based on the item disassembled
                     commands.bakeCommand(message, args);
+                }
+                else if (commandIs("upgrade", message)){
+                    // can be stable or greenhouse or temple
+                    commands.upgradeCommand(message, args);
                 }
                 else if (commandIs("rpgstart", message)){
                     if (message.channel.type == "text" && !message.author.bot){

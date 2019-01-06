@@ -17,7 +17,7 @@ module.exports.checkRequirements = function(params){
     var requirementsMet = true;
     var requirements = upgradeRequirements[params.nextLevel]
     // check reputation level 
-    if (params.userTacos >= requirements.tacos && params.replevel >= requirements.reputationLevel){
+    if (params.tacos >= requirements.tacos && params.reputationLevel >= requirements.reputationLevel){
         // check fruits and check items now 
         if (requirements.fruits){
             // check params.fruits contains all the fruits
@@ -32,7 +32,7 @@ module.exports.checkRequirements = function(params){
             for (var i in requirements.items){
                 // check params.itemsToUse contains all the items
                 var itemToCheck = requirements.items[i]
-                if (params.itemsInInventoryCountMap[itemToCheck.itemId] < itemToCheck.itemCount){
+                if (params.inventoryCountMap[itemToCheck.itemId] < itemToCheck.itemCount){
                     requirementsMet = false
                     break;
                 }
@@ -45,22 +45,23 @@ module.exports.checkRequirements = function(params){
 }
 
 module.exports.upgradeStable = function(message, params){
-    consumeTacos(params, function(error, res){
+    var discordUserId = message.author.id
+    consumeTacos(discordUserId, params, function(error, res){
         if (error){
-
+            console.log(error)
         }else{
-            removeFruits(params, function(error, res){
+            removeFruits(discordUserId, params, function(error, res){
                 if (error){
-                    
+                    console.log(error)
                 }else{
                     useItems(params, function(error, res){
                         if (error){
-                            
+                            console.log(error)
                         }else{
                             // SET building level higher
-                            profileDB.upgradeStable(message.author.id, function(err, res){
+                            profileDB.upgradeStable(discordUserId, function(err, res){
                                 if (err){
-
+                                    console.log(err)
                                 }else{
                                     message.channel.send("upgraded stable")
                                 }
@@ -73,8 +74,8 @@ module.exports.upgradeStable = function(message, params){
     })
 }
 
-function consumeTacos(params, cb){
-    profileDB.updateUserTacos(message.author.id, params.upgradeRequirements.tacos, function(err, res){
+function consumeTacos(discordUserId, params, cb){
+    profileDB.updateUserTacos(discordUserId, (params.upgradeRequirements.tacos * -1), function(err, res){
         if (err){
             cb(err)
         }else{
@@ -93,19 +94,60 @@ function useItems(params, cb){
     })
 }
 
-function removeFruits(params, cb){
+function removeFruits(discordUserId, params, cb){
     // TODO: get object of fruits to remove
-    profileDB.bulkupdateUserFruits(message.author.id, params.upgradeRequirements.fruits, false, function(err, res){
-        if (err){
-            cb(err)
-        }else{
-            cb(null, res)
-        }
-    })
+    if (params.upgradeRequirements.fruits){
+        profileDB.bulkupdateUserFruits(discordUserId, params.upgradeRequirements.fruits, false, function(err, res){
+            if (err){
+                cb(err)
+            }else{
+                cb(null, res)
+            }
+        })
+    }else{
+        cb(null, "no fruits to remove")
+    }
 }
 
 module.exports.getUpgradeRequirements = function(level){
     return upgradeRequirements[level]
+}
+
+module.exports.validateStablePetSlot = function(stableLevel, slot){
+    if (slot == 5){
+        if (stableLevel >= 12 ){
+            return true
+        }else{
+            return false
+        }
+    }else if (slot == 4){
+        if (stableLevel >= 9){
+            return true
+        }else{
+            return false
+        }
+    }else if (slot == 3){
+        if (stableLevel >= 6 ){
+            return true
+        }else{
+            return false
+        }
+    }else if (slot == 2){
+        if (stableLevel >= 3){
+            return true
+        }else{
+            return false
+        }
+    }else if (slot == 1){
+        if (stableLevel >= 1){
+            return true
+        }else{
+            return false
+        }
+    }else{
+        return false
+    }
+
 }
 
 const upgradeRequirements = {

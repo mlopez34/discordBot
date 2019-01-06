@@ -65,9 +65,6 @@ module.exports.rollForRecipes = function(message, params){
         }
         // update temple profile with the recipes in each slot
         setRecipesOnTemple(message, params, recipesObj)
-        
-    }else{
-        // didnt roll for new recipes
     }
 }
 
@@ -111,13 +108,10 @@ function rollForItemInRecipeBasedCategory(itemObject, userLevel, categoryLevel, 
     if (templeLevel < 3 && ( rarityLevel == "rares" || rarityLevel == "ancients" || rarityLevel == "artifacts" || rarityLevel == "amulets" )){
         return false
     }
-
     // passed all requirements, now roll
     if (rollAboveChance >= rollForItem){
-        // do include the item
         return true
     }else{
-        // do not include the item
         return false
     }    
 }
@@ -148,6 +142,38 @@ function getItemRollChance(userLevel, categoryLevel, templeLevel){
     return chance;
 }
 
+module.exports.checkRequirements = function(params){
+    // check level of temple - get requirements for next level - check upgrade requirements
+    var requirementsMet = true;
+    var requirements = upgradeRequirements[params.nextLevel]
+    // check reputation level 
+    if (params.tacos >= requirements.tacos && params.reputationLevel >= requirements.reputationLevel){
+        // check fruits and check items now 
+        if (requirements.fruits){
+            // check params.fruits contains all the fruits
+            for (var f in requirements.fruits){
+                if (params.fruitData[f] && params.fruitData[f] < requirements.fruits[f]){
+                    requirementsMet = false
+                    break;
+                }
+            }
+        }
+        if (requirements.items){
+            for (var i in requirements.items){
+                // check params.itemsToUse contains all the items
+                var itemToCheck = requirements.items[i]
+                if (params.inventoryCountMap[itemToCheck.itemId] < itemToCheck.itemCount){
+                    requirementsMet = false
+                    break;
+                }
+            }
+        }
+    }else{
+        requirementsMet = false
+    }
+    return requirementsMet
+}
+
 function setRecipesOnTemple(message, params, recipesObj){
     profileDB.updateTempleRecipes(params.discordUserId, recipesObj, function(err, res){
         if (err){
@@ -162,12 +188,56 @@ function setRecipesOnTemple(message, params, recipesObj){
     })
 }
 
-module.exports.craftRecipe = function(){
-    // check that the recipe is owned first via name
+module.exports.getRecipeRequirements = function(itemshortname){
+    // TODO: get requirements based on shortname
+    return availableRecipes[itemshortname]
+}
 
-    // check recipe requirements
+module.exports.craftRecipe = function(message, params){
+    var discordUserId = message.author.id
+    consumeTacos(discordUserId, params, function(error, res){
+        if (error){
+            console.log(error)
+        }else{
+            useItems(params, function(error, res){
+                if (error){
+                    console.log(error)
+                }else{
+                    addToUserInventory(discordUserId, params.itemsToUse)
+                }
+            })
+        }
+    })
+}
 
-    // craft the recipe - (insert the item to inventory just like scavenge)
+function consumeTacos(discordUserId, params, cb){
+    profileDB.updateUserTacos(discordUserId, (params.upgradeRequirements.tacos * -1), function(err, res){
+        if (err){
+            cb(err)
+        }else{
+            cb(null, res)
+        }
+    })
+}
+
+function useItems(params, cb){
+    profileDB.bulkUpdateItemStatus(params.itemsToUse, "used", function(err, res){
+        if (err){
+            cb(err)
+        }else{
+            cb(null, res)
+        }
+    })
+}
+
+function addToUserInventory(discordUserId, items){
+    profileDB.addNewItemToUser(discordUserId, items, function(itemError, itemAddResponse){
+        if (itemError){
+            // console.log(itemError);
+        }else{
+            // console.log(itemAddResponse);
+        }
+    })
 }
 
 const availableRecipes = {

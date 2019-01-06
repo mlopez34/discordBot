@@ -330,6 +330,37 @@ module.exports.updateUserTacosFetch = function(userId, tacos, cb) {
     });
 }
 
+module.exports.updateUserTacosStableFetch = function(userId, tacos, stableSlot, cb) {
+    var query;
+    if (stableSlot == 5){
+        query = 'update ' + config.profileTable + ' set tacos=tacos+$1 where discordid=$2;\n'
+        query = query + 'update ' + config.stablesTable + ' set stableslot5lastfetchtime=$3 where discordid=$2;'
+    }else if (stableSlot == 4){
+        query = 'update ' + config.profileTable + ' set tacos=tacos+$1 where discordid=$2;\n'
+        query = query + 'update ' + config.stablesTable + ' set stableslot4lastfetchtime=$3 where discordid=$2;'
+    }else if (stableSlot == 3){
+        query = 'update ' + config.profileTable + ' set tacos=tacos+$1 where discordid=$2;\n'
+        query = query + 'update ' + config.stablesTable + ' set stableslot3lastfetchtime=$3 where discordid=$2;'
+    }else if (stableSlot == 2){
+        query = 'update ' + config.profileTable + ' set tacos=tacos+$1 where discordid=$2;\n'
+        query = query + 'update ' + config.stablesTable + ' set stableslot2lastfetchtime=$3 where discordid=$2;'
+    }else if (stableSlot == 1){
+        query = 'update ' + config.profileTable + ' set tacos=tacos+$1 where discordid=$2;\n'
+        query = query + 'update ' + config.stablesTable + ' set stableslot1lastfetchtime=$3 where discordid=$2;'
+    }
+    var lastFetch = new Date();
+    db.none(query, [tacos, userId, lastFetch])
+    .then(function () {
+    cb(null, {
+        status: 'success',
+        message: 'added tacos stable fetch'
+        });
+    })
+    .catch(function (err) {
+        cb(err);
+    });
+}
+
 module.exports.updateLastScavengeTime = function(userId, cb) {
     var query = 'update ' + config.profileTable + ' set lastscavangetime=$2 where discordid=$1'
     var lastScavenge = new Date();
@@ -484,6 +515,34 @@ module.exports.updateUserProtect = function(userId, protectNumber, protection , 
 // update pet
 module.exports.updateUserPet = function(userId, pet, petName, threedaysAgo, cb) {
     var query = 'update ' + config.profileTable + ' set pet=$1, petname=$3, lastfetchtime=$4 where discordid=$2'
+    db.none(query, [pet, userId, petName, threedaysAgo])
+    .then(function () {
+    cb(null, {
+        status: 'success',
+        message: 'updated pet'
+        });
+    })
+    .catch(function (err) {
+        // console.log(err);
+        cb(err);
+    });
+}
+
+module.exports.updateStablePet = function(userId, pet, petName, stableSlot, threedaysAgo, cb) {
+    var query;
+    if (stableSlot == 1){
+        query = 'update ' + config.stablesTable + ' set stableslot1pet=$1, stableslot1name=$3, stableslot1lastfetchtime=$4 where discordid=$2'
+    }else if (stableSlot == 2){
+        query = 'update ' + config.stablesTable + ' set stableslot2pet=$1, stableslot2name=$3, stableslot2lastfetchtime=$4 where discordid=$2'
+    }else if (stableSlot == 3){
+        query = 'update ' + config.stablesTable + ' set stableslot3pet=$1, stableslot3name=$3, stableslot3lastfetchtime=$4 where discordid=$2'
+    }else if (stableSlot == 4){
+        query = 'update ' + config.stablesTable + ' set stableslot4pet=$1, stableslot4name=$3, stableslot4lastfetchtime=$4 where discordid=$2'
+    }else if (stableSlot == 5){
+        query = 'update ' + config.stablesTable + ' set stableslot5pet=$1, stableslot5name=$3, stableslot5lastfetchtime=$4 where discordid=$2'
+    }else{
+        cb("failed")
+    }
     db.none(query, [pet, userId, petName, threedaysAgo])
     .then(function () {
     cb(null, {
@@ -1394,7 +1453,7 @@ module.exports.updateTempleRecipes = function(userId, recipeInfo, cb) {
         recipeColumns.push(column)
     }
     if (recipeColumns.length > 0){
-        const query = pgp.helpers.update(recipeInfo, recipeColumns, config.templeTable) + ' WHERE discordid = ' + userId;
+        const query = pgp.helpers.update(recipeInfo, recipeColumns, config.templeTableNoQuotes) + ' WHERE discordid = ' + userId;
         db.none(query)
         .then(function () {
             cb(null, { status: 'success', message: 'updated columns in temple' });
@@ -1444,8 +1503,8 @@ module.exports.updatePlotInfo = function(userId, plotInfo, cb) {
 
 module.exports.upgradeGreenHouse = function(userId, cb) {
     
-    var query = 'update ' + config.greenhouseTable + ' set greenhouselevel=greenhouselevel+1 where discordid=$2'
-    db.none(query)
+    var query = 'update ' + config.greenhouseTable + ' set greenhouselevel=greenhouselevel+1 where discordid=$1'
+    db.none(query, [userId])
     .then(function () {
         cb(null, { status: 'success', message: 'upgraded greenhouse' });
     })
@@ -1456,8 +1515,8 @@ module.exports.upgradeGreenHouse = function(userId, cb) {
 
 module.exports.upgradeStable = function(userId, cb) {
     
-    var query = 'update ' + config.stablesTable + ' set stablelevel=stablelevel+1 where discordid=$2'
-    db.none(query)
+    var query = 'update ' + config.stablesTable + ' set stablelevel=stablelevel+1 where discordid=$1'
+    db.none(query, [userId])
     .then(function () {
         cb(null, { status: 'success', message: 'upgraded stable' });
     })
@@ -1468,8 +1527,8 @@ module.exports.upgradeStable = function(userId, cb) {
 
 module.exports.upgradeTemple = function(userId, cb) {
     
-    var query = 'update ' + config.templeTable + ' set templelevel=templelevel+1 where discordid=$2'
-    db.none(query)
+    var query = 'update ' + config.templeTable + ' set templelevel=templelevel+1 where discordid=$1'
+    db.none(query, [userId])
     .then(function () {
         cb(null, { status: 'success', message: 'upgraded temple' });
     })

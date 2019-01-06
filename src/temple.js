@@ -17,7 +17,7 @@ module.exports.checkRequirements = function(params){
     var requirementsMet = true;
     var requirements = upgradeRequirements[params.nextLevel]
     // check reputation level 
-    if (params.userTacos >= requirements.tacos && params.replevel >= requirements.reputationLevel){
+    if (params.tacos >= requirements.tacos && params.reputationLevel >= requirements.reputationLevel){
         // check fruits and check items now 
         if (requirements.fruits){
             // check params.fruits contains all the fruits
@@ -32,7 +32,7 @@ module.exports.checkRequirements = function(params){
             for (var i in requirements.items){
                 // check params.itemsToUse contains all the items
                 var itemToCheck = requirements.items[i]
-                if (params.itemsInInventoryCountMap[itemToCheck.itemId] < itemToCheck.itemCount){
+                if (params.inventoryCountMap[itemToCheck.itemId] < itemToCheck.itemCount){
                     requirementsMet = false
                     break;
                 }
@@ -45,22 +45,23 @@ module.exports.checkRequirements = function(params){
 }
 
 module.exports.upgradeTemple = function(message, params){
-    consumeTacos(params, function(error, res){
+    var discordUserId = message.author.id
+    consumeTacos(discordUserId, params, function(error, res){
         if (error){
-
+            console.log(error)
         }else{
-            removeFruits(params, function(error, res){
+            removeFruits(discordUserId, params, function(error, res){
                 if (error){
-                    
+                    console.log(error)
                 }else{
                     useItems(params, function(error, res){
                         if (error){
-                            
+                            console.log(error)
                         }else{
                             // SET building level higher
-                            profileDB.upgradeTemple(message.author.id, function(err, res){
+                            profileDB.upgradeTemple(discordUserId, function(err, res){
                                 if (err){
-
+                                    console.log(err)
                                 }else{
                                     message.channel.send("upgraded temple")
                                 }
@@ -73,8 +74,8 @@ module.exports.upgradeTemple = function(message, params){
     })
 }
 
-function consumeTacos(params, cb){
-    profileDB.updateUserTacos(message.author.id, params.upgradeRequirements.tacos, function(err, res){
+function consumeTacos(discordUserId, params, cb){
+    profileDB.updateUserTacos(discordUserId, (params.upgradeRequirements.tacos * -1), function(err, res){
         if (err){
             cb(err)
         }else{
@@ -95,13 +96,17 @@ function useItems(params, cb){
 
 function removeFruits(params, cb){
     // TODO: get object of fruits to remove
-    profileDB.bulkupdateUserFruits(message.author.id, params.upgradeRequirements.fruits, false, function(err, res){
-        if (err){
-            cb(err)
-        }else{
-            cb(null, res)
-        }
-    })
+    if (params.upgradeRequirements.fruits){
+        profileDB.bulkupdateUserFruits(discordUserId, params.upgradeRequirements.fruits, false, function(err, res){
+            if (err){
+                cb(err)
+            }else{
+                cb(null, res)
+            }
+        })
+    }else{
+        cb(null, "no fruits to remove")
+    }
 }
 
 module.exports.getUpgradeRequirements = function(level){

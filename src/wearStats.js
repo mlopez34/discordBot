@@ -1163,6 +1163,9 @@ module.exports.calculateSecondsReduced = function (userItemStats, command){
     }
     else if (command == "fetch"){
         var commandBaseTimeInSeconds = FETCH_BASE_SECONDS;
+        if (userItemStats.fetchCD){
+            commandBaseTimeInSeconds = 60 * 60 * userItemStats.fetchCD
+        }
         secondsReduced = commandBaseTimeInSeconds * userItemStats.fetchCommandCDRPercentage;
         return secondsReduced
     }

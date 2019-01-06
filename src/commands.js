@@ -4030,10 +4030,18 @@ module.exports.pickupCommand = function (message){
 module.exports.buypetCommand = function(message, args){
     // console.log(args);
     var discordUserId = message.author.id;
-    if (args.length > 3){
+    var buyingForStable = false;
+    var stableSlot;
+    if ( (args.length > 3 && args.length < 5) || args.length > 5){
         message.channel.send(" Pet names should be only 1 word long");
     }
-    else if (args.length == 3){
+    else if (args.length == 5 && args[3].toLowerCase() == "stable"){
+        stableSlot = Math.floor(args[4])
+        if (stableSlot >= 1 && stableSlot <= 5){
+            buyingForStable = true
+        }
+    }
+    if (args.length == 3 || buyingForStable){
         var pet = args[1];
         var petName = args[2] // 15 characters or less, more than 0 characters
 
@@ -4051,7 +4059,7 @@ module.exports.buypetCommand = function(message, args){
                 message.channel.send(" Name contains invalid characters")
             }
             else{
-                profileDB.getUserProfileData( discordUserId, function(err, buyPetResponse) {
+                profileDB.getStableData( discordUserId, function(err, buyPetResponse) {
                     if(err){
                         // user doesnt exist
                         // console.log(err);
@@ -4072,25 +4080,51 @@ module.exports.buypetCommand = function(message, args){
                                     }else{
                                         threedaysAgo = buyPetResponse.data.lastfetchtime
                                     }
-                                    profileDB.updateUserPet(discordUserId, pet, petName, threedaysAgo, function( petError, petResponse){
-                                        if (petError){
-                                            // console.log(petError);
-                                        }
-                                        else{
-                                            // take away tacos from user
-                                            profileDB.updateUserTacos(discordUserId, (PET_COST * -1), function(updateErr, updateRes){
-                                                if (updateErr){
-                                                    // TODO: create user profile
-                                                    // console.log(updateErr)
-                                                    message.channel.send(" error, check bender now");
+                                    if (!buyingForStable){
+                                        profileDB.updateUserPet(discordUserId, pet, petName, threedaysAgo, function( petError, petResponse){
+                                            if (petError){
+                                                // console.log(petError);
+                                            }
+                                            else{
+                                                // take away tacos from user
+                                                profileDB.updateUserTacos(discordUserId, (PET_COST * -1), function(updateErr, updateRes){
+                                                    if (updateErr){
+                                                        // TODO: create user profile
+                                                        // console.log(updateErr)
+                                                        message.channel.send(" error, check bender now");
+                                                    }
+                                                    else{
+                                                        // anounce the user has a new pet!
+                                                        message.channel.send(" Congratulations! " + message.author + " has a new " + pet + " called: `" + petName + "` \n" + PETS_AVAILABLE[pet].emoji + " " + PETS_AVAILABLE[pet].speak + "\n use -fetch while your pet is not tired!");
+                                                    }
+                                                })
+                                            }
+                                        })
+                                    }else{
+                                        var myStableLevel = buyPetResponse.data.stablelevel
+                                        var validStableSlot = stable.validateStablePetSlot(myStableLevel, stableSlot)
+                                        if (validStableSlot){
+                                            // update the pet to the stable slot,
+                                            profileDB.updateStablePet(discordUserId, pet, petName, stableSlot, threedaysAgo, function( petError, petResponse){
+                                                if (petError){
+                                                    //console.log(petError);
                                                 }
                                                 else{
-                                                    // anounce the user has a new pet!
-                                                    message.channel.send(" Congratulations! " + message.author + " has a new " + pet + " called: `" + petName + "` \n" + PETS_AVAILABLE[pet].emoji + " " + PETS_AVAILABLE[pet].speak + "\n use -fetch while your pet is not tired!");
+                                                    // take away tacos from user
+                                                    profileDB.updateUserTacos(discordUserId, (PET_COST * -1), function(updateErr, updateRes){
+                                                        if (updateErr){
+                                                            message.channel.send(" error, check bender now");
+                                                        }
+                                                        else{
+                                                            message.channel.send(" Congratulations! " + message.author + " has a new " + pet + " called: `" + petName + "` \n" + PETS_AVAILABLE[pet].emoji + " " + PETS_AVAILABLE[pet].speak + "\n use -fetch " + petName +" while your pet is not tired!");
+                                                        }
+                                                    })
                                                 }
                                             })
+                                        }else{
+                                            message.channel.send("invalid stable slot to purchase pet for")
                                         }
-                                    })
+                                    }
                                 }
                                 else{
                                     message.channel.send(" That pet is not available.. ");
@@ -4129,30 +4163,35 @@ module.exports.fetchCommand = function(message, args){
             if (fetchError){
                 console.log(fetchError)
             }else{
-                // TODO: match the pet name with the slot // use the pet data for cooldowns etc
                 var userPet;
                 var userPetName;
                 var lastFetchTime;
+                var stableSlot;
                 if (fetchResponse.data.stableslot1name && fetchResponse.data.stableslot1name.toLowerCase() == petName){
                     userPet = fetchResponse.data.stableslot1pet ? fetchResponse.data.stableslot1pet : undefined;
                     userPetName = fetchResponse.data.stableslot1name ? fetchResponse.data.stableslot1name : undefined; 
-                    lastFetchTime = fetchResponse.data.stableslot1lastfetch ? fetchResponse.data.stableslot1lastfetch : undefined; 
+                    lastFetchTime = fetchResponse.data.stableslot1lastfetchtime ? fetchResponse.data.stableslot1lastfetchtime : undefined; 
+                    stableSlot = 1
                 }else if (fetchResponse.data.stableslot2name && fetchResponse.data.stableslot2name.toLowerCase() == petName){
                     userPet = fetchResponse.data.stableslot2pet ? fetchResponse.data.stableslot2pet : undefined;
                     userPetName = fetchResponse.data.stableslot2name ? fetchResponse.data.stableslot2name : undefined; 
-                    lastFetchTime = fetchResponse.data.stableslot2lastfetch ? fetchResponse.data.stableslot2lastfetch : undefined;    
+                    lastFetchTime = fetchResponse.data.stableslot2lastfetchtime ? fetchResponse.data.stableslot2lastfetchtime : undefined;    
+                    stableSlot = 2
                 }else if (fetchResponse.data.stableslot3name && fetchResponse.data.stableslot3name.toLowerCase() == petName){
                     userPet = fetchResponse.data.stableslot3pet ? fetchResponse.data.stableslot3pet : undefined;
                     userPetName = fetchResponse.data.stableslot3name ? fetchResponse.data.stableslot3name : undefined;    
-                    lastFetchTime = fetchResponse.data.stableslot3lastfetch ? fetchResponse.data.stableslot3lastfetch : undefined; 
+                    lastFetchTime = fetchResponse.data.stableslot3lastfetchtime ? fetchResponse.data.stableslot3lastfetchtime : undefined; 
+                    stableSlot = 3
                 }else if (fetchResponse.data.stableslot4name && fetchResponse.data.stableslot4name.toLowerCase() == petName){
                     userPet = fetchResponse.data.stableslot4pet ? fetchResponse.data.stableslot4pet : undefined;
                     userPetName = fetchResponse.data.stableslot4name ? fetchResponse.data.stableslot4name : undefined;    
-                    lastFetchTime = fetchResponse.data.stableslot4lastfetch ? fetchResponse.data.stableslot4lastfetch : undefined; 
+                    lastFetchTime = fetchResponse.data.stableslot4lastfetchtime ? fetchResponse.data.stableslot4lastfetchtime : undefined; 
+                    stableSlot = 4
                 }else if (fetchResponse.data.stableslot5name && fetchResponse.data.stableslot5name.toLowerCase() == petName){
                     userPet = fetchResponse.data.stableslot5pet ? fetchResponse.data.stableslot5pet : undefined;
                     userPetName = fetchResponse.data.stableslot5name ? fetchResponse.data.stableslot5name : undefined;    
-                    lastFetchTime = fetchResponse.data.stableslot5lastfetch ? fetchResponse.data.stableslot5lastfetch : undefined; 
+                    lastFetchTime = fetchResponse.data.stableslot5lastfetchtime ? fetchResponse.data.stableslot5lastfetchtime : undefined; 
+                    stableSlot = 5
                 }
                 var userLevel = fetchResponse.data.level;
                 if (userPet){
@@ -4167,6 +4206,7 @@ module.exports.fetchCommand = function(message, args){
                         }else{
                             var now = new Date();
                             if (userPet){
+                                wearRes.fetchCD = userData.fetchCD
                                 var secondsToRemove = wearStats.calculateSecondsReduced(wearRes, "fetch");
                                 var cooldownDate = new Date();
                                 cooldownDate = new Date(cooldownDate.setHours(cooldownDate.getHours() - PETS_AVAILABLE[userPet].cooldown));
@@ -4179,7 +4219,7 @@ module.exports.fetchCommand = function(message, args){
                                     ///////// CALCULATE THE EXTRA TACOS HERE 
                                     var extraTacosFromItems = wearStats.calculateExtraTacos(wearRes, "fetch"); // 0 or extra
                                     // TODO: change this to be stables slot fetch - NOT profile fetch
-                                    profileDB.updateUserTacosFetch(discordUserId, fetchTacos + extraTacosFromItems, function(err, updateResponse) {
+                                    profileDB.updateUserTacosStableFetch(discordUserId, fetchTacos + extraTacosFromItems, stableSlot, function(err, updateResponse) {
                                         if (err){
                                             // console.log(err);
                                         }
@@ -4232,6 +4272,7 @@ module.exports.fetchCommand = function(message, args){
                         }else{
                             var now = new Date();
                             if (userPet){
+                                wearRes.fetchCD = userData.fetchCD
                                 var secondsToRemove = wearStats.calculateSecondsReduced(wearRes, "fetch");
 
                                 var cooldownDate = new Date();
@@ -5187,32 +5228,43 @@ function stableEmbedBuilder(message, stableData){
     .setDescription("")
     .setColor(0x87CEFA)
     .addField('Pets', stablesPlotVisual, false)
+    .addField('Stable Level', stableData.stableLevel, false)
+    .addField('Stable Info', "info", false)
+    .addField('Next Level Info', "info", false)
     message.channel.send({embed});
 }
 
 function stablesVisualBuilder(stableData){
-    // make it look like ..
-    // pet, pet, pet, pet etc
     var stablesVisual = ""
     if (stableData.pet1name && stableData.pet1type){
         var emoji = PETS_AVAILABLE[stableData.pet1type].emoji
-        stablesVisual = stablesVisual + emoji + stableData.pet1name + "\n"
+        stablesVisual = stablesVisual + emoji + " " + stableData.pet1name + "\n"
+    }else if (stable.validateStablePetSlot(stableData.stableLevel, 1)){
+        stablesVisual = stablesVisual + "🚪\n"
     }
     if (stableData.pet2name && stableData.pet2type){
         var emoji = PETS_AVAILABLE[stableData.pet2type].emoji
-        stablesVisual = stablesVisual + emoji + stableData.pet2name + "\n"
+        stablesVisual = stablesVisual + emoji + " " + stableData.pet2name + "\n"
+    }else if (stable.validateStablePetSlot(stableData.stableLevel, 2)){
+        stablesVisual = stablesVisual + "🚪\n"
     }
     if (stableData.pet3name && stableData.pet3type){
         var emoji = PETS_AVAILABLE[stableData.pet3type].emoji
-        stablesVisual = stablesVisual + emoji + stableData.pet3name + "\n"
+        stablesVisual = stablesVisual + emoji + " " + stableData.pet3name + "\n"
+    }else if (stable.validateStablePetSlot(stableData.stableLevel, 3)){
+        stablesVisual = stablesVisual + "🚪\n"
     }
     if (stableData.pet4name && stableData.pet4type){
         var emoji = PETS_AVAILABLE[stableData.pet4type].emoji
-        stablesVisual = stablesVisual + emoji + stableData.pet4name + "\n"
+        stablesVisual = stablesVisual + emoji + " " + stableData.pet4name + "\n"
+    }else if (stable.validateStablePetSlot(stableData.stableLevel, 4)){
+        stablesVisual = stablesVisual + "🚪\n"
     }
     if (stableData.pet5name && stableData.pet5type){
         var emoji = PETS_AVAILABLE[stableData.pet5type].emoji
-        stablesVisual = stablesVisual + emoji + stableData.pet5name + "\n"
+        stablesVisual = stablesVisual + emoji + " " + stableData.pet5name + "\n"
+    }else if (stable.validateStablePetSlot(stableData.stableLevel, 5)){
+        stablesVisual = stablesVisual + "🚪\n"
     }
     
     return stablesVisual
@@ -5220,9 +5272,6 @@ function stablesVisualBuilder(stableData){
 
 module.exports.templeCommand = function(message){
     // display your temple, and temple information
-
-    // get user profile and temple info
-
     // create embed based off of their temple info stats | visual representation
     // a bunch of random shit - sanctum? - recipes? 
     // ( blueprints for rares, and ancients )
@@ -5249,22 +5298,33 @@ module.exports.templeCommand = function(message){
 
 function templeEmbedBuilder(message, templeData){
             
-    var templePlotVisual = templeVisualBuilder(templeData)
-
+    var templeVisual = templeVisualBuilder(templeData)
+    var gemString = gemStringBuilder(templeData)
     const embed = new Discord.RichEmbed()
     .setColor(0x87CEFA)
-    .setTitle(templeData.name + "'s Temple")
+    .setTitle(templeData.name + "'s Temple 🕍")
     //.setThumbnail()
-    .setDescription("")
+    .setDescription("info")
     .setColor(0x87CEFA)
-    .addField('Temple', templePlotVisual, false)
+    .addField('Recipe', templeVisual, false)
+    .addField('Temple Info', templeVisual, false)
+    .addField('Next Level Info', "info", false)
+    .addField('Gems', gemString, false)
     message.channel.send({embed});
+}
+
+function gemStringBuilder(templeData){
+    // make it look like ..
+    // recipes active | dust collected
+    var gemString = "gems list"
+    
+    return gemString
 }
 
 function templeVisualBuilder(templeData){
     // make it look like ..
     // recipes active | dust collected
-    var templeVisual = ""
+    var templeVisual = "temple"
     
     return templeVisual
 }
@@ -5549,10 +5609,123 @@ module.exports.craftCommand = function(message, args){
         var myItemShortName =  args[1];
 
         // craft the item if you have the materials required, and are able to craft it
-        
+        profileDB.getTempleData(discordUserId, function(err, craftRes){
+            if (err){
+                console.log(err)
+            }else{
+                // match recipevia itemshortname
+                var availableRecipes = []
+                if (craftRes.data.templecraft1name){
+                    availableRecipes.push(craftRes.data.templecraft1name)
+                }
+                if (craftRes.data.templecraft2name){
+                    availableRecipes.push(craftRes.data.templecraft2name)
+                }
+                if (craftRes.data.templecraft3name){
+                    availableRecipes.push(craftRes.data.templecraft3name)
+                }
+
+                if (availableRecipes.indexOf(myItemShortName) > -1){
+                    // have the recipe from command
+                    var recipeData = {}
+                    var recipeRequirements = crafting.getRecipeRequirements(myItemShortName)
+                    craftItem(message, discordUserId, recipeRequirements, recipeData)
+                }
+            }
+        })
         // materials required will vary, you can only craft the item if you own the recipe
     }
 }
+
+function craftItem(message, discordUserId, recipeRequirements, recipeData){
+    var upgradeItemsToCheck = recipeRequirements.items
+    var itemsToCheckMap = {}
+    // map the item requirements
+    for (var i in upgradeItemsToCheck){
+        itemsToCheckMap[upgradeItemsToCheck[i].itemId] = upgradeItemsToCheck[i].itemCount
+    }
+    var itemsToUse = []
+    profileDB.getUserItems(discordUserId, function(err, inventoryResponse){
+        if (err){
+            // console.log(err);
+            agreeToTerms(message, discordUserId);
+            useItem.setItemsLock(discordUserId, false)
+        }else{
+            // must have the materials required to upgrade the building
+            var itemsInInventoryCountMap = {}
+            var itemsMapbyId = {}
+            var itemsMapbyName = {}
+            profileDB.getItemData(function(error, allItemsResponse){
+                if (error){
+                    // console.log(error);
+                }
+                else{
+                    // console.log("allitemsres " + allItemsResponse.data);
+                    for (var item in inventoryResponse.data){
+                        var ItemInQuestion = inventoryResponse.data[item];
+                        var validItem = useItem.itemValidate(ItemInQuestion);
+                        var itemBeingAuctioned = false;
+                        if (itemsInAuction[ItemInQuestion.id]){
+                            itemBeingAuctioned = true;
+                        }
+                        var itemBeingTraded = false;
+                        if (activeTradeItems[inventoryResponse.data[item].id]){
+                            itemBeingTraded = true;
+                        }
+                        if (!itemsInInventoryCountMap[inventoryResponse.data[item].itemid] 
+                            && validItem 
+                            && !itemBeingAuctioned
+                            && !itemBeingTraded){
+                            // item hasnt been added to be counted, add it as 1
+                            itemsInInventoryCountMap[inventoryResponse.data[item].itemid] = 1;
+                            if (itemsToCheckMap[ItemInQuestion.itemid] 
+                                && itemsInInventoryCountMap[ItemInQuestion.itemid] <= itemsToCheckMap[ItemInQuestion.itemid]){
+                                    itemsToUse.push(ItemInQuestion)
+                            }
+                        }
+                        else if (validItem && !itemBeingAuctioned && !itemBeingTraded){
+                            itemsInInventoryCountMap[inventoryResponse.data[item].itemid] = itemsInInventoryCountMap[inventoryResponse.data[item].itemid] + 1
+                            if (itemsToCheckMap[ItemInQuestion.itemid] 
+                                && itemsInInventoryCountMap[ItemInQuestion.itemid] <= itemsToCheckMap[ItemInQuestion.itemid]){
+                                    itemsToUse.push(ItemInQuestion)
+                            }
+                        }
+                    }
+                    // console.log(itemsInInventoryCountMap);
+                    for (var index in allItemsResponse.data){
+                        itemsMapbyId[allItemsResponse.data[index].id] = allItemsResponse.data[index];
+                    }
+
+                    for (var index in allItemsResponse.data){
+                        itemsMapbyName[allItemsResponse.data[index].itemshortname] = allItemsResponse.data[index];
+                    }
+
+                    // CHECK here if requirements are met
+                    var params = {
+                        userLevel : buildingData.level, // my level
+                        reputationLevel: REPUTATIONS[buildingData.repstatus.toLowerCase()].level, // my rep
+                        tacos: buildingData.tacos, // my tacos
+                        inventoryCountMap: itemsInInventoryCountMap,
+                        itemsToUse: itemsToUse,  // items to use for upgrade
+                        upgradeRequirements: upgradeRequirements,
+                        nextLevel: nextLevel
+                    }
+
+                    var requirementsMet = false;
+
+                    crafting.checkRequirements(params)
+
+                    if (requirementsMet){
+                        crafting.craftRecipe(message, params)
+                    }else{
+                        message.channel.send("requirements not met")
+                    }
+                }
+            })
+        }
+    })
+}
+
 
 function getUpgradeRequirements(buildingName, nextLevel){
     if (buildingName.toLowerCase() == "stable" ){
@@ -5579,7 +5752,7 @@ module.exports.upgradeCommand = function(message, args){
                 }else{
                     var nextLevel = profileRes.data.stablelevel + 1
                     var upgradeRequirementsObj = getUpgradeRequirements(buildingName, nextLevel)
-                    upgradeBuilding(discordUserId, buildingName, upgradeRequirementsObj, profileRes.data)
+                    upgradeBuilding(message, discordUserId, buildingName, upgradeRequirementsObj, profileRes.data, nextLevel)
                 }
             })
         }else if (buildingName.toLowerCase() == "greenhouse"){
@@ -5589,7 +5762,7 @@ module.exports.upgradeCommand = function(message, args){
                 }else{
                     var nextLevel = profileRes.data.greenhouselevel + 1
                     var upgradeRequirementsObj = getUpgradeRequirements(buildingName, nextLevel)
-                    upgradeBuilding(discordUserId, buildingName, upgradeRequirementsObj, profileRes.data)
+                    upgradeBuilding(message, discordUserId, buildingName, upgradeRequirementsObj, profileRes.data, nextLevel)
                 }
             })
         }else if (buildingName.toLowerCase() == "temple"){
@@ -5599,7 +5772,7 @@ module.exports.upgradeCommand = function(message, args){
                 }else{
                     var nextLevel = profileRes.data.templelevel + 1
                     var upgradeRequirementsObj = getUpgradeRequirements(buildingName, nextLevel)
-                    upgradeBuilding(discordUserId, buildingName, upgradeRequirementsObj, profileRes.data)
+                    upgradeBuilding(message, discordUserId, buildingName, upgradeRequirementsObj, profileRes.data, nextLevel)
                 }
             })
         }
@@ -5610,12 +5783,12 @@ module.exports.upgradeCommand = function(message, args){
     }
 }
 
-function upgradeBuilding(discordUserId, buildingName, upgradeRequirements, buildingData){
+function upgradeBuilding(message, discordUserId, buildingName, upgradeRequirements, buildingData, nextLevel){
     var upgradeItemsToCheck = upgradeRequirements.items
     var itemsToCheckMap = {}
     // map the item requirements
     for (var i in upgradeItemsToCheck){
-        itemsToCheckMap[i] = upgradeItemsToCheck[i].itemCount
+        itemsToCheckMap[upgradeItemsToCheck[i].itemId] = upgradeItemsToCheck[i].itemCount
     }
     var itemsToUse = []
     profileDB.getUserItems(discordUserId, function(err, inventoryResponse){
@@ -5684,7 +5857,7 @@ function upgradeBuilding(discordUserId, buildingName, upgradeRequirements, build
                             // CHECK here if requirements are met
                             var params = {
                                 userLevel : buildingData.level, // my level
-                                reputationLevel: buildingData.replevel, // my rep
+                                reputationLevel: REPUTATIONS[buildingData.repstatus.toLowerCase()].level, // my rep
                                 tacos: buildingData.tacos, // my tacos 
                                 fruitData: userFruitsCount, // my fruit data
                                 inventoryCountMap: itemsInInventoryCountMap,
@@ -5695,13 +5868,12 @@ function upgradeBuilding(discordUserId, buildingName, upgradeRequirements, build
 
                             var requirementsMet = false;
                             if (buildingName.toLowerCase() == "stable"){
-                                stable.checkRequirementsMet(params)
+                                stable.checkRequirements(params)
                             }else if (buildingName.toLowerCase() == "greenhouse"){
-                                greenhouse.checkRequirementsMet(params)
+                                greenhouse.checkRequirements(params)
                             }else if (buildingName.toLowerCase() == "temple" ){
-                                temple.checkRequirementsMet(params)
+                                temple.checkRequirements(params)
                             }
-
                             if (requirementsMet){
                                 // use items - use plants - use tacos
                                 if (buildingName.toLowerCase() == "stable"){
