@@ -3229,7 +3229,7 @@ module.exports.slotsCommand = function(message, tacosBet){
                 agreeToTerms(message, discordUserId);
             }
             else{
-                if (adjustedTacosForUser(discordUserId, getProfileRes.data.tacos) >= bet){
+                if (adjustedTacosForUser(discordUserId, getProfileResponse.data.tacos) >= bet){
                     var userLevel = getProfileResponse.data.level;
                     wearStats.getUserWearingStats(message, discordUserId, {userLevel: userLevel}, function(wearErr, wearRes){
                         if (wearErr){
