@@ -7579,7 +7579,7 @@ module.exports.marketBidCommand = function(message, args){
                 agreeToTerms(message, discordUserId);
             }else{
                 var userTacosToBid = profileRes.data.tacos;
-                if (userTacosToBid - tacosInUseAuction[discordUserId] >= biddingTacos){
+                if (userTacosToBid - ( tacosInUseAuction[discordUserId] || 0 ) >= biddingTacos){
                     var auctionToBidOn = marketItems[idOfItemToBid] ? marketItems[idOfItemToBid] : 0;
                     // your bid has to be higher than current bid + 5% of current bid
                     var adjustedCurrentBid = Math.floor( auctionToBidOn.currentbid + (auctionToBidOn.currentbid * .03) )
