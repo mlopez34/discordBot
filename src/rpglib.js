@@ -2289,10 +2289,10 @@ module.exports = {
             name: "Ressurection",
             abilityId: "pillarRevive",
             reviveCheck: [
-                "planchet",
-                "grimaud",
-                "mousqueton",
-                "bazin"
+                "Planchet",
+                "Grimaud",
+                "Mousqueton",
+                "Bazin"
             ]
         },
 

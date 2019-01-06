@@ -721,9 +721,8 @@ module.exports.buyStandCommand = function (message){
             if (buyStandResponse.data.tacostands && buyStandResponse.data.tacostands > -1){
                 userTacoStands = buyStandResponse.data.tacostands;
             }
-            //// console.log(buyStandResponse.data.tacos);
             var standCost = BASE_TACO_COST + (userTacoStands * 250);
-            if (buyStandResponse.data.tacos >= standCost){
+            if (adjustedTacosForUser(discordUserId, buyStandResponse.data.tacos) >= standCost){
                 // purchaseStand
                 var tacosSpent = standCost * -1
                 profileDB.purchaseTacoStand(discordUserId, tacosSpent, buyStandResponse.data.tacostands, function(err, data){
@@ -959,10 +958,6 @@ module.exports.giveCommand = function(message, giveTacoAmount){
         mentionedId = user.id;
         mentionedUser = user
     })
-    var tacosInUse = 0;
-    if (tacosInUseAuction[discordUserId] && tacosInUseAuction[discordUserId] > 0){
-        tacosInUse = tacosInUseAuction[discordUserId];
-    }
     // get user
     if (!mentionedId || !mentionedUser){
         message.channel.send(message.author + " You must mention a user whom you want to give your tacos to!")
@@ -988,7 +983,7 @@ module.exports.giveCommand = function(message, giveTacoAmount){
             else{
                 // check if user has enough tacos to give
                 var achievements = giveResponse.data.achievements;
-                if (giveResponse.data.tacos - tacosInUse - giveTacoAmount >= 0 ){
+                if (adjustedTacosForUser(discordUserId, giveResponse.data.tacos) - giveTacoAmount >= 0 ){
                     // console.log("have enough");
                     profileDB.getUserProfileData( mentionedId, function(mentionederr, giveMentionedResponse) {
                         if(mentionederr){
@@ -1147,15 +1142,15 @@ module.exports.cookCommand = function(message){
                             else{
                                 // send message that the user has 1 more taco
                                 if (extraTacosFromItems > 0 && HAS_CASSEROLE){
-                                    message.channel.send(message.author + " Cooked `" + cookRoll + "` tacos! you now have `" + (cookResponse.data.tacos + cookRoll) + "` tacos :taco:" + "! received `" + extraTacosFromCasserole + "` extra tacos :taco: from your casserole " + " and received `" + extraTacosFromItems + "` extra tacos from items" );
+                                    message.channel.send(message.author + " Cooked `" + cookRoll + "` tacos! you now have `" + ( adjustedTacosForUser(discordUserId, cookResponse.data.tacos) + cookRoll) + "` tacos :taco:" + "! received `" + extraTacosFromCasserole + "` extra tacos :taco: from your casserole " + " and received `" + extraTacosFromItems + "` extra tacos from items" );
                                 }
                                 else if (extraTacosFromItems > 0 && !HAS_CASSEROLE){
-                                    message.channel.send(message.author + " Cooked `" + cookRoll + "` tacos! you now have `" + (cookResponse.data.tacos + cookRoll) + "` tacos :taco:" + "! " + "received `" + extraTacosFromItems + "` extra tacos");
+                                    message.channel.send(message.author + " Cooked `" + cookRoll + "` tacos! you now have `" + ( adjustedTacosForUser(discordUserId, cookResponse.data.tacos) + cookRoll) + "` tacos :taco:" + "! " + "received `" + extraTacosFromItems + "` extra tacos");
                                 }
                                 else if (HAS_CASSEROLE){
-                                    message.channel.send(message.author + " Cooked `" + cookRoll + "` tacos! you now have `" + (cookResponse.data.tacos + cookRoll) + "` tacos :taco:" + "! received `" + extraTacosFromCasserole + "` extra tacos :taco: from your casserole" );
+                                    message.channel.send(message.author + " Cooked `" + cookRoll + "` tacos! you now have `" + ( adjustedTacosForUser(discordUserId, cookResponse.data.tacos) + cookRoll) + "` tacos :taco:" + "! received `" + extraTacosFromCasserole + "` extra tacos :taco: from your casserole" );
                                 }else{
-                                    message.channel.send(message.author + " Cooked `" + cookRoll + "` tacos! you now have `" + (cookResponse.data.tacos + cookRoll) + "` tacos :taco:" );
+                                    message.channel.send(message.author + " Cooked `" + cookRoll + "` tacos! you now have `" + ( adjustedTacosForUser(discordUserId, cookResponse.data.tacos) + cookRoll) + "` tacos :taco:" );
                                 }
                                 var data = {}
                                 data.achievements = achievements;
@@ -1195,11 +1190,6 @@ module.exports.throwCommand = function(message){
         mentionedUser = user
         mentionedDiscriminator = user.discriminator;
     })
-    var tacosInUse = 0;
-    if (tacosInUseAuction[discordUserId] && tacosInUseAuction[discordUserId] > 0){
-        tacosInUse = tacosInUseAuction[discordUserId];
-    }
-    
     // throw a taco at someone
     if ( message.mentions.users.size > 0 && discordUserId != mentionedId){
         // 
@@ -1215,8 +1205,7 @@ module.exports.throwCommand = function(message){
             else{
                 // user exists, subtract 1 taco 
                 var achievements = throwResponse.data.achievements;
-                // console.log("asdfasfsd " + throwResponse.data.tacos)
-                if (throwResponse.data.tacos - tacosInUse >= 1){
+                if (adjustedTacosForUser(discordUserId, throwResponse.data.tacos) >= 1){
                     profileDB.updateUserTacosThrow(discordUserId, -10, function(err, updateResponse) {
                         if (err){
                             // console.log(err);
@@ -1274,6 +1263,13 @@ module.exports.throwCommand = function(message){
     }
 }
 
+function adjustedTacosForUser(discordUserId, profileTacos){
+    if (tacosInUseAuction[discordUserId] && tacosInUseAuction[discordUserId] > 0){
+        profileTacos = profileTacos - tacosInUseAuction[discordUserId];
+    }
+    return profileTacos
+}
+
 module.exports.profileCommand = function(message){
     // console.log(message);
     var discordUserId = message.author.id;
@@ -1298,10 +1294,7 @@ module.exports.profileCommand = function(message){
                 var profileData = {}
                 profileData.userName = mentionedUser;
                 profileData.avatarURL = mentionedUserAvatarURL;
-                profileData.userTacos = profileResponse.data.tacos;
-                if (tacosInUseAuction[discordUserId] && tacosInUseAuction[discordUserId] > 0){
-                    profileData.userTacos = profileData.userTacos - tacosInUseAuction[discordUserId];
-                }
+                profileData.userTacos = adjustedTacosForUser(mentionedId, profileResponse.data.tacos)
                 profileData.userTacoStands = profileResponse.data.tacostands ? profileResponse.data.tacostands : 0;
                 profileData.userItems = "none";
                 profileData.pasta = profileResponse.data.pasta;
@@ -1381,10 +1374,7 @@ module.exports.profileCommand = function(message){
                 var profileData = {}
                 profileData.userName = message.author.username;
                 profileData.avatarURL = message.author.avatarURL;
-                profileData.userTacos = profileResponse.data.tacos;
-                if (tacosInUseAuction[discordUserId] && tacosInUseAuction[discordUserId] > 0){
-                    profileData.userTacos = profileData.userTacos - tacosInUseAuction[discordUserId];
-                }
+                profileData.userTacos = adjustedTacosForUser(discordUserId, profileResponse.data.tacos)
                 profileData.userTacoStands = profileResponse.data.tacostands ? profileResponse.data.tacostands : 0;
                 profileData.userItems = "none";
                 profileData.pasta = profileResponse.data.pasta;
@@ -1523,10 +1513,7 @@ module.exports.tacosCommand = function(message){
         else{
             var profileData = {}
             profileData.userName = message.author.username;
-            profileData.userTacos = profileResponse.data.tacos;
-            if (tacosInUseAuction[discordUserId] && tacosInUseAuction[discordUserId] > 0){
-                profileData.userTacos = profileData.userTacos - tacosInUseAuction[discordUserId];
-            }
+            profileData.userTacos = adjustedTacosForUser(discordUserId, profileResponse.data.tacos)
             tacoEmbedBuilder(message, profileData);
         }
     })
@@ -1580,7 +1567,7 @@ module.exports.buyPickaxeCommand = function(message){
         }
         else{
             if (pickaxeResponse.data.pickaxe == "none"){
-                if (pickaxeResponse.data.tacos >= PICKAXE_COST){
+                if ( adjustedTacosForUser(discordUserId, pickaxeResponse.data.tacos) >= PICKAXE_COST){
                     // purchaseStand
                     var tacosSpent = PICKAXE_COST * -1;
                     profileDB.purchasePickAxe(discordUserId, tacosSpent, function(err, data){
@@ -1599,7 +1586,7 @@ module.exports.buyPickaxeCommand = function(message){
                 }
             }
             else if (pickaxeResponse.data.pickaxe == "basic"){
-                if (pickaxeResponse.data.tacos >= IMPROVED_PICKAXE_COST){
+                if ( adjustedTacosForUser(discordUserId, pickaxeResponse.data.tacos) >= IMPROVED_PICKAXE_COST){
                     // purchaseStand
                     var tacosSpent = IMPROVED_PICKAXE_COST * -1;
                     profileDB.purchasePickAxe(discordUserId, tacosSpent, function(err, data){
@@ -1618,7 +1605,7 @@ module.exports.buyPickaxeCommand = function(message){
                 }
             }
             else if (pickaxeResponse.data.pickaxe == "improved"){
-                if (pickaxeResponse.data.tacos >= MASTER_PICKAXE_COST){
+                if ( adjustedTacosForUser(discordUserId, pickaxeResponse.data.tacos) >= MASTER_PICKAXE_COST){
                     // purchaseStand
                     var tacosSpent = MASTER_PICKAXE_COST * -1;
                     profileDB.purchasePickAxe(discordUserId, tacosSpent, function(err, data){
@@ -1637,7 +1624,7 @@ module.exports.buyPickaxeCommand = function(message){
                 }
             }
             else if (pickaxeResponse.data.pickaxe == "master"){
-                if (pickaxeResponse.data.tacos >= ETHEREAL_PICKAXE_COST){
+                if (adjustedTacosForUser(discordUserId, pickaxeResponse.data.tacos) >= ETHEREAL_PICKAXE_COST){
                     // purchaseStand
                     var tacosSpent = ETHEREAL_PICKAXE_COST * -1;
                     profileDB.purchasePickAxe(discordUserId, tacosSpent, function(err, data){
@@ -1656,7 +1643,7 @@ module.exports.buyPickaxeCommand = function(message){
                 }
             }
             else if (pickaxeResponse.data.pickaxe == "ethereal"){
-                if (pickaxeResponse.data.tacos >= ZEUS_TRIDENT_COST){
+                if (adjustedTacosForUser(discordUserId, pickaxeResponse.data.tacos) >= ZEUS_TRIDENT_COST){
                     // purchaseStand
                     var tacosSpent = ZEUS_TRIDENT_COST * -1;
                     profileDB.purchasePickAxe(discordUserId, tacosSpent, function(err, data){
@@ -1880,7 +1867,7 @@ module.exports.shopCommand = function(message, args){
             // if user has enough tacos to purchase the tree, add 1 tree, subtract x tacos
             var shopData = {};
             var userTacoStands = 0;
-            var userTacos = shopResponse.data.tacos;
+            var userTacos = adjustedTacosForUser(discordUserId, shopResponse.data.tacos)
             shopData.userTacos = userTacos;
             shopData.pickaxe = shopResponse.data.pickaxe;
             if (shopResponse.data.tacostands && shopResponse.data.tacostands > -1){
@@ -1977,7 +1964,7 @@ module.exports.buyShopItem = function(message, args){
             // user doesnt exist
             console.log(err);
         }else{
-            var userTacos = buyItemRes.data.tacos
+            var userTacos = adjustedTacosForUser(discordUserId, buyItemRes.data.tacos)
             if (userTacos >= SHOP_ITEM_COST){
                 profileDB.getItemData(function(err, getItemResponse){
                     if (err){
@@ -2053,7 +2040,7 @@ module.exports.buyFlaskCommand = function(message){
             if (userRepLevel >= REWARDS["Flask"].repLevel){
                 // able to shop, spend the tacos and then create the item and store it in the user's inventory
                 var flaskCostForUser = FLASK_COST + (30 * (buyFlaskResponse.data.level - 20 ))
-                if (buyFlaskResponse.data.tacos >= flaskCostForUser){
+                if (adjustedTacosForUser(discordUserId, buyFlaskResponse.data.tacos) >= flaskCostForUser){
                     // add a flask to the user's profile
                     profileDB.buyFlask(discordUserId, currentFlasks, flaskCostForUser, function(flaskErr, flaskRes){
                         if (flaskErr){
@@ -2083,7 +2070,7 @@ module.exports.buyRecipeCommand = function(message){
             var userRepLevel = REPUTATIONS[userReputation.toLowerCase()] ? REPUTATIONS[userReputation.toLowerCase()].level : 1;
             if (userRepLevel >= REWARDS["ArtifactRecipe"].repLevel){
                 // able to shop, spend the tacos and then create the item and store it in the user's inventory
-                if (buyRecipeResponse.data.tacos >= ARTIFACT_RECIPE_COST){
+                if (adjustedTacosForUser(discordUserId, buyRecipeResponse.data.tacos) >= ARTIFACT_RECIPE_COST){
                     // check that user has enough tacos, if they do, create the item and add it to user
                     profileDB.getItemData(function(err, getItemResponse){
                         if (err){
@@ -2196,7 +2183,7 @@ module.exports.repShopCommand = function(message){
             // if user has enough tacos to purchase the tree, add 1 tree, subtract x tacos
             var shopData = {};
             var userTacoStands = 0;
-            var userTacos = shopResponse.data.tacos;
+            var userTacos = adjustedTacosForUser(discordUserId, shopResponse.data.tacos)
             var userLevel = shopResponse.data.level
             shopData.userTacos = userTacos;
             shopData.pickaxe = shopResponse.data.pickaxe;
@@ -2253,7 +2240,7 @@ module.exports.buyPastaCommand = function(message, pasta){
             agreeToTerms(message, discordUserId);
         }
         else{
-            if ( pastaRespond.data.tacos >= PASTA_COST && pasta.length > 0 && pasta.length < 125){
+            if ( adjustedTacosForUser(discordUserId, pastaRespond.data.tacos) >= PASTA_COST && pasta.length > 0 && pasta.length < 125){
                 // user can buy the pasta, insert the pasta message into the user's pasta column
                 profileDB.updateUserPasta( discordUserId, PASTA_COST * -1, pasta, function(err, pastaRespond) {
                     if(err){
@@ -2265,7 +2252,7 @@ module.exports.buyPastaCommand = function(message, pasta){
                     }
                 });
             }
-            else if (pastaRespond.data.tacos >= PASTA_COST){
+            else if (adjustedTacosForUser(discordUserId, pastaRespond.data.tacos) >= PASTA_COST){
                 message.channel.send(message.author + " You do not have enough tacos to purchase a pasta!");
             }
             else if(pasta.length > 125){
@@ -3242,7 +3229,7 @@ module.exports.slotsCommand = function(message, tacosBet){
                 agreeToTerms(message, discordUserId);
             }
             else{
-                if (getProfileResponse.data.tacos >= bet){
+                if (adjustedTacosForUser(discordUserId, getProfileRes.data.tacos) >= bet){
                     var userLevel = getProfileResponse.data.level;
                     wearStats.getUserWearingStats(message, discordUserId, {userLevel: userLevel}, function(wearErr, wearRes){
                         if (wearErr){
@@ -4075,7 +4062,7 @@ module.exports.buypetCommand = function(message, args){
                         if (userReputation && (REPUTATIONS[userReputation.toLowerCase()]) ){
                             // if user has enough tacos to purchase the stand, add 1 tree, subtract x tacos
                             var achievements = buyPetResponse.data.achievements;
-                            var userTacos = buyPetResponse.data.tacos;
+                            var userTacos = adjustedTacosForUser(discordUserId, buyPetResponse.data.tacos)
                             if (userTacos >= PET_COST){
                                 if (PETS_AVAILABLE[pet] != undefined && userRepLevel && userRepLevel >= PETS_AVAILABLE[pet].repLevel){
                                     // can afford the pet update user pet, take away tacos.
@@ -7332,7 +7319,7 @@ module.exports.marketCommand = function(message, args){
         }else{
             // create an embed that displays any items that are currently in the market
             var marketData = {
-                userTacos: userResponse.data.tacos,
+                userTacos: adjustedTacosForUser(discordUserId, userResponse.data.tacos),
                 marketParams: marketParams
             }
             var long = false
@@ -7968,7 +7955,7 @@ module.exports.marketBidCommand = function(message, args){
                 // console.log(profileErr);
                 agreeToTerms(message, discordUserId);
             }else{
-                var userTacosToBid = profileRes.data.tacos;
+                var userTacosToBid = adjustedTacosForUser(discordUserId, profileRes.data.tacos)
                 if (userTacosToBid >= biddingTacos){
                     var auctionToBidOn = marketItems[idOfItemToBid] ? marketItems[idOfItemToBid] : 0;
                     // your bid has to be higher than current bid + 5% of current bid
@@ -8059,7 +8046,7 @@ module.exports.bidCommand = function(message, args){
                 agreeToTerms(message, discordUserId);
             }
             else{
-                var userTacosToBid = profileRes.data.tacos;
+                var userTacosToBid = adjustedTacosForUser(discordUserId, profileRes.data.tacos)
                 if (userTacosToBid >= biddingTacos){
                     // can bid, get the auction that the mentioned user has available
                     var auctionToBidOn = activeAuctions[mentionedIdString] ? activeAuctions[mentionedIdString] : 0;
@@ -8305,7 +8292,7 @@ module.exports.acceptTradeCommand = function(message, args){
             // there is an active trade with the user
             if (activeTrades[discordUserIdString] && hasOpenTrade[discordUserIdString]){
                 var mentionedId = hasOpenTrade[discordUserIdString].substr(8);
-                var currentTacos = profileRes.data.tacos;
+                var currentTacos = adjustedTacosForUser(discordUserId, profileRes.data.tacos)
                 var tacosToPay = activeTrades[discordUserIdString].tacoAsk;
                 var tacosAuctioned = 0
                 var itemsArray = activeTrades[discordUserIdString].idsToTransfer;
@@ -8507,7 +8494,7 @@ module.exports.enterRaffleCommand = function(message, args){
                 // they need to agree to terms
             }
             else{
-                var userTacos = profileRes.data.tacos
+                var userTacos = adjustedTacosForUser(discordUserId, profileRes.data.tacos)
                 if (userTacos >= RAFFLE_ENTRY_COST){
                     // add the user to the raffle
                     activeRaffle.users[discordUserId] = message.author;
