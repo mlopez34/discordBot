@@ -5627,9 +5627,13 @@ module.exports.craftCommand = function(message, args){
 
                 if (availableRecipes.indexOf(myItemShortName) > -1){
                     // have the recipe from command
-                    var recipeData = {}
+                    var recipeData = craftRes.data
                     var recipeRequirements = crafting.getRecipeRequirements(myItemShortName)
-                    craftItem(message, discordUserId, recipeRequirements, recipeData)
+                    if (recipeRequirements){
+                        craftItem(message, discordUserId, recipeRequirements, recipeData, myItemShortName)
+                    }
+                }else{
+                    message.channel.send("you cannot craft that item")
                 }
             }
         })
@@ -5637,7 +5641,7 @@ module.exports.craftCommand = function(message, args){
     }
 }
 
-function craftItem(message, discordUserId, recipeRequirements, recipeData){
+function craftItem(message, discordUserId, recipeRequirements, recipeData, myItemShortName){
     var upgradeItemsToCheck = recipeRequirements.items
     var itemsToCheckMap = {}
     // map the item requirements
@@ -5645,6 +5649,7 @@ function craftItem(message, discordUserId, recipeRequirements, recipeData){
         itemsToCheckMap[upgradeItemsToCheck[i].itemId] = upgradeItemsToCheck[i].itemCount
     }
     var itemsToUse = []
+    var itemToCreate;
     profileDB.getUserItems(discordUserId, function(err, inventoryResponse){
         if (err){
             // console.log(err);
@@ -5701,19 +5706,19 @@ function craftItem(message, discordUserId, recipeRequirements, recipeData){
                     }
 
                     // CHECK here if requirements are met
+                    itemToCreate = itemsMapbyName[myItemShortName]
+                    itemToCreate.itemAmount = 1
                     var params = {
-                        userLevel : buildingData.level, // my level
-                        reputationLevel: REPUTATIONS[buildingData.repstatus.toLowerCase()].level, // my rep
-                        tacos: buildingData.tacos, // my tacos
+                        userLevel : recipeData.level, // my level
+                        reputationLevel: REPUTATIONS[recipeData.repstatus.toLowerCase()].level, // my rep
+                        tacos: recipeData.tacos, // my tacos
                         inventoryCountMap: itemsInInventoryCountMap,
                         itemsToUse: itemsToUse,  // items to use for upgrade
-                        upgradeRequirements: upgradeRequirements,
-                        nextLevel: nextLevel
+                        recipeRequirements: recipeRequirements,
+                        itemToCreate: [ itemToCreate ]
                     }
 
-                    var requirementsMet = false;
-
-                    crafting.checkRequirements(params)
+                    var requirementsMet = crafting.checkRequirements(params)
 
                     if (requirementsMet){
                         crafting.craftRecipe(message, params)
@@ -5868,11 +5873,11 @@ function upgradeBuilding(message, discordUserId, buildingName, upgradeRequiremen
 
                             var requirementsMet = false;
                             if (buildingName.toLowerCase() == "stable"){
-                                stable.checkRequirements(params)
+                                requirementsMet = stable.checkRequirements(params)
                             }else if (buildingName.toLowerCase() == "greenhouse"){
-                                greenhouse.checkRequirements(params)
+                                requirementsMet = greenhouse.checkRequirements(params)
                             }else if (buildingName.toLowerCase() == "temple" ){
-                                temple.checkRequirements(params)
+                                requirementsMet = temple.checkRequirements(params)
                             }
                             if (requirementsMet){
                                 // use items - use plants - use tacos

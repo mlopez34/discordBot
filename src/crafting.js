@@ -145,9 +145,9 @@ function getItemRollChance(userLevel, categoryLevel, templeLevel){
 module.exports.checkRequirements = function(params){
     // check level of temple - get requirements for next level - check upgrade requirements
     var requirementsMet = true;
-    var requirements = upgradeRequirements[params.nextLevel]
+    var requirements = params.recipeRequirements
     // check reputation level 
-    if (params.tacos >= requirements.tacos && params.reputationLevel >= requirements.reputationLevel){
+    if (params.tacos >= requirements.tacos ){
         // check fruits and check items now 
         if (requirements.fruits){
             // check params.fruits contains all the fruits
@@ -190,7 +190,7 @@ function setRecipesOnTemple(message, params, recipesObj){
 
 module.exports.getRecipeRequirements = function(itemshortname){
     // TODO: get requirements based on shortname
-    return availableRecipes[itemshortname]
+    return availableRecipesByShortName[itemshortname]
 }
 
 module.exports.craftRecipe = function(message, params){
@@ -203,7 +203,7 @@ module.exports.craftRecipe = function(message, params){
                 if (error){
                     console.log(error)
                 }else{
-                    addToUserInventory(discordUserId, params.itemsToUse)
+                    addToUserInventory(discordUserId, params.itemToCreate)
                 }
             })
         }
@@ -211,7 +211,7 @@ module.exports.craftRecipe = function(message, params){
 }
 
 function consumeTacos(discordUserId, params, cb){
-    profileDB.updateUserTacos(discordUserId, (params.upgradeRequirements.tacos * -1), function(err, res){
+    profileDB.updateUserTacos(discordUserId, (params.recipeRequirements.tacos * -1), function(err, res){
         if (err){
             cb(err)
         }else{
@@ -233,9 +233,9 @@ function useItems(params, cb){
 function addToUserInventory(discordUserId, items){
     profileDB.addNewItemToUser(discordUserId, items, function(itemError, itemAddResponse){
         if (itemError){
-            // console.log(itemError);
+            console.log(itemError);
         }else{
-            // console.log(itemAddResponse);
+            console.log(itemAddResponse);
         }
     })
 }
@@ -366,5 +366,22 @@ const availableRecipes = {
         45:{
             
         }
+    }
+}
+
+const availableRecipesByShortName = {
+    roman: {
+        itemId: 13,
+        tacos: 3500,
+        items: [
+            {
+                itemId: 4,
+                itemCount: 1
+            }
+            // {
+            //     itemId: "someDustId",
+            //     itemCount: 1
+            // }
+        ]
     }
 }
