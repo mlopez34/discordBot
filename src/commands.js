@@ -4668,6 +4668,10 @@ module.exports.useCommand = function(message, args){
                 else if (sodaCansToUse.length < cansToUse){
                     useItem.setItemsLock(discordUserId, false)
                     message.channel.send(message.author + " you do not have that many soda cans to recycle..")
+                }else{
+                    useItem.setItemsLock(discordUserId, false)
+                    message.channel.send(message.author + " invalid number of cans to use")
+
                 }
             }
         })
@@ -4766,6 +4770,9 @@ module.exports.useCommand = function(message, args){
                 else if (soilToUse.length < soilsCountToUse){
                     useItem.setItemsLock(discordUserId, false)
                     message.channel.send(message.author + " you do not have that many soil to use..")
+                }else{
+                    useItem.setItemsLock(discordUserId, false)
+                    message.channel.send(message.author + " invalid number of soils to use")
                 }
             }
         })
