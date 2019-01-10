@@ -2557,11 +2557,13 @@ module.exports = {
             currentTurn: 0,
             targetWithName: "Porthos",
             status: {
+                status: true,
                 name: "Shadow Shield",
                 emoji: "❌",
                 targetWithName: "Porthos",
                 additionalDescription: " taking direct damage will cause a Shadow Explosion",
                 ignoreUnique: true,
+                onBandaidCasterGainsBuff: "headache",
                 onDamageTakenCastAbility: "shadowExplosion",
                 turnsToExpire: 65
             }
@@ -2576,6 +2578,18 @@ module.exports = {
                 dmg: 2550,
                 mdPercentage: .1,
                 type: "shadow"
+            }
+        },
+        headache : {
+            name : "Headache",
+            abilityId: "headache",
+            buff: {
+                buff: true,
+                name: "Headache",
+                emoji : "🤕",
+                affectsGlobal: ["damageTakenPercentage"],
+                turnsToExpire: 4,
+                multiplier: 1.5
             }
         },
 
@@ -6849,6 +6863,7 @@ module.exports = {
                             "focus",
                             "summonAthos",
                             "overpower",
+                            "shadowShield",
                             "summonPillars",
                             "pillarRevive",
                             "hammerdownProtocol",
