@@ -8498,11 +8498,7 @@ module.exports.acceptTradeCommand = function(message, args){
                 var mentionedId = hasOpenTrade[discordUserIdString].substr(8);
                 var currentTacos = adjustedTacosForUser(discordUserId, profileRes.data.tacos)
                 var tacosToPay = activeTrades[discordUserIdString].tacoAsk;
-                var tacosAuctioned = 0
                 var itemsArray = activeTrades[discordUserIdString].idsToTransfer;
-                if (tacosInUseAuction[discordUserId]){
-                    tacosAuctioned = tacosInUseAuction[discordUserId]
-                }
                 var tradeTax = Math.floor(tacosToPay * 0.1);
                 var tacoTax = tradeTax;
                 // console.log(tacoTax);
@@ -8512,7 +8508,7 @@ module.exports.acceptTradeCommand = function(message, args){
                 if (tradeTax >= 1){
                     tacoTax = tacoTax + 1
                 }
-                if (currentTacos - tacosAuctioned - tacosToPay >= 0 && tacosToPay == tacosAgreedOn){
+                if (currentTacos - tacosToPay >= 0 && tacosToPay == tacosAgreedOn){
                     // accept the trade and transfer the item
                     message.channel.send(":handshake:  " + message.author + " has accepted the trade of **" + activeTrades[discordUserIdString].fullItemName + "** ! " + " Bender kept `" + tacoTax + "` tacos for tax purposes.") 
                     transferItemsAndTacos(discordUserId, mentionedId, itemsArray, tacosToPay, tacosToPay-tacoTax, function(transErr, transRes){
