@@ -2557,11 +2557,13 @@ module.exports = {
             currentTurn: 0,
             targetWithName: "Porthos",
             status: {
+                status: true,
                 name: "Shadow Shield",
                 emoji: "❌",
                 targetWithName: "Porthos",
                 additionalDescription: " taking direct damage will cause a Shadow Explosion",
                 ignoreUnique: true,
+                onBandaidCasterGainsBuff: "headache",
                 onDamageTakenCastAbility: "shadowExplosion",
                 turnsToExpire: 65
             }
@@ -2578,6 +2580,18 @@ module.exports = {
                 type: "shadow"
             }
         },
+        headache : {
+            name : "Headache",
+            abilityId: "headache",
+            buff: {
+                buff: true,
+                name: "Headache",
+                emoji : "🤕",
+                affectsGlobal: ["damageTakenPercentage"],
+                turnsToExpire: 4,
+                multiplier: 1.5
+            }
+        },
 
         // gain buff that deals damage to everyone else based on damage dealt to target
         maniac: {
@@ -2587,7 +2601,7 @@ module.exports = {
             processAbility: true,
             belongsToMember: true,
             everyNTurns: 8,
-            afterNTurns: 3,
+            afterNTurns: 4,
             currentTurn: 0,
             buff: {
                 name: "Maniac",
@@ -2674,7 +2688,7 @@ module.exports = {
                 type: "physical",
                 adPercentage: 10,
                 ignoreBandaid: true,
-                turnsToExpire: 23,
+                turnsToExpire: 25,
                 dmgOnStatusExpire: true,
                 dmgOnRemoveAreaWide: false,
                 dmgOnExpire: 500250
@@ -3421,7 +3435,7 @@ module.exports = {
                     }
                 ],
                 abilityOrder: [
-                    4, 1, 2, 0, 0, 0, 1, 2, 3, 3
+                    4, 1, 2, 0, 0, 0, 1, 2, 3
                 ],
                 endOfTurnEvents : [
                     "focus",
@@ -6885,6 +6899,7 @@ module.exports = {
                             "focus",
                             "summonAthos",
                             "overpower",
+                            "shadowShield",
                             "summonPillars",
                             "pillarRevive",
                             "hammerdownProtocol",
