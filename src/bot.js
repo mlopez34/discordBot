@@ -31,6 +31,7 @@ client.on('ready', function(err) {
     console.log('The bot is online'); 
     // initialize market
     commands.initializeMarketPlace(client)
+    //commands.initializeItemsMaps()
     //steal(channelName);
 });
 
@@ -398,7 +399,6 @@ client.on('message', function(message){
                     commands.disassembleCommand(message, args);
                 }
                 else if (commandIs("bake", message)){
-                    // disassemble items - mark them as used - obtain items based on the item disassembled
                     commands.bakeCommand(message, args);
                 }else if (commandIs("fish", message)){
                     // go fishing - catch a big fish!
@@ -972,8 +972,11 @@ client.on('message', function(message){
                 else if (commandIs("harvest", message)){
                     commands.harvestCommand(message)
                 }
-                else if (commandIs("bake", message)){
+                else if (commandIs("disassemble", message)){
                     // disassemble items - mark them as used - obtain items based on the item disassembled
+                    commands.disassembleCommand(message, args);
+                }
+                else if (commandIs("bake", message)){
                     commands.bakeCommand(message, args);
                 }
                 else if (commandIs("upgrade", message)){

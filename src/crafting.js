@@ -33,35 +33,47 @@ module.exports.rollForRecipes = function(message, params){
         if (params.templeLevel >= 11){
             var recipesToRoll = 3
             var rollForRecipe1 = Math.floor(Math.random() * possibleRecipesToRollFrom.length)
-            var recipe1 = possibleRecipesToRollFrom[rollForRecipe1].itemId
+            var recipe1id = possibleRecipesToRollFrom[rollForRecipe1].itemId
+            var recipe1name = possibleRecipesToRollFrom[rollForRecipe1].itemshortname
             var rollForRecipe2 = Math.floor(Math.random() * possibleRecipesToRollFrom.length)
-            var recipe2 = possibleRecipesToRollFrom[rollForRecipe2].itemId
+            var recipe2id = possibleRecipesToRollFrom[rollForRecipe2].itemId
+            var recipe2name = possibleRecipesToRollFrom[rollForRecipe2].itemshortname
             var rollForRecipe3 = Math.floor(Math.random() * possibleRecipesToRollFrom.length)
-            var recipe3 = possibleRecipesToRollFrom[rollForRecipe3].itemId
+            var recipe3id = possibleRecipesToRollFrom[rollForRecipe3].itemId
+            var recipe3name = possibleRecipesToRollFrom[rollForRecipe3].itemshortname
 
             // these should be itemids
-            recipesObj.templecraft1id = recipe1
-            recipesObj.templecraft2id = recipe2
-            recipesObj.templecraft3id = recipe3
+            recipesObj.templecraft1id = recipe1id
+            recipesObj.templecraft1name = recipe1name
+            recipesObj.templecraft2id = recipe2id
+            recipesObj.templecraft2name = recipe2name
+            recipesObj.templecraft3id = recipe3id
+            recipesObj.templecraft3name = recipe3name
 
         }else if (params.templeLevel >= 7){
             var recipesToRoll = 2
             var recipesObj = {}
             var rollForRecipe1 = Math.floor(Math.random() * possibleRecipesToRollFrom.length)
-            var recipe1 = possibleRecipesToRollFrom[rollForRecipe1].itemId
+            var recipe1id = possibleRecipesToRollFrom[rollForRecipe1].itemId
+            var recipe1name = possibleRecipesToRollFrom[rollForRecipe1].itemshortname
             var rollForRecipe2 = Math.floor(Math.random() * possibleRecipesToRollFrom.length)
-            var recipe2 = possibleRecipesToRollFrom[rollForRecipe2].itemId
+            var recipe2id = possibleRecipesToRollFrom[rollForRecipe2].itemId
+            var recipe2name = possibleRecipesToRollFrom[rollForRecipe2].itemshortname
 
-            recipesObj.templecraft1id = recipe1
-            recipesObj.templecraft2id = recipe2
+            recipesObj.templecraft1id = recipe1id
+            recipesObj.templecraft1name = recipe1name
+            recipesObj.templecraft2id = recipe2id
+            recipesObj.templecraft2name = recipe2name
 
         }else if (params.templeLevel >= 3){
             var recipesToRoll = 1
             var recipesObj = {}
             var rollForRecipe1 = Math.floor(Math.random() * possibleRecipesToRollFrom.length)
-            var recipe1 = possibleRecipesToRollFrom[rollForRecipe1].itemId
+            var recipe1id = possibleRecipesToRollFrom[rollForRecipe1].itemId
+            var recipe1name = possibleRecipesToRollFrom[rollForRecipe1].itemshortname
 
-            recipesObj.templecraft1id = recipe1
+            recipesObj.templecraft1id = recipe1id
+            recipesObj.templecraft1name = recipe1name
         }
         // update temple profile with the recipes in each slot
         setRecipesOnTemple(message, params, recipesObj)
@@ -245,6 +257,7 @@ const availableRecipes = {
         10: [
             {
                 recipeName: "level 10 sword",
+                itemshortname: "roman",
                 itemId: 13,
                 itemRequirements: [
                     {
@@ -265,6 +278,7 @@ const availableRecipes = {
             {
                 recipeName: "level 15 sword",
                 itemId: 14,
+                itemshortname: "roman",
                 itemRequirements: [
 
                 ]

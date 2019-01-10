@@ -4656,13 +4656,13 @@ module.exports.useCommand = function(message, args){
                 agreeToTerms(message, discordUserId);
             }
             else{
-                // check the user has enough pieces of wood
+                // check the user has enough terries
                  // map of user's inventory
                 var itemsInInventoryCountMap = {};
                 // map of all items
                 var itemsMapbyId = {};
 
-                // array of item objects for using piece of wood
+                // array of item objects for using terry
                 var terryClothToUse = []
                 var listOfRares = []
                 profileDB.getItemData(function(itemDataError, allItemsResponse){
@@ -5024,8 +5024,8 @@ module.exports.disassembleCommand = function(message, args){
                 var itemsInInventoryCountMap = {};
                 var itemsMapbyShortName = {};
                 var itemsMapById = {};
-                var IdsOfItemsBeingedDisassembled = []
-
+                var itemsBeingedDisassembled = []
+                var listOfRares = []
                 profileDB.getItemData(function(error, allItemsResponse){
                     if (error){
                         console.log(error)
@@ -5057,22 +5057,20 @@ module.exports.disassembleCommand = function(message, args){
                                 // console.log(ItemInQuestion);
                                 if (itemsMapbyShortName[myItemShortName] 
                                     && itemsMapById[ItemInQuestion.itemid].itemshortname === myItemShortName){
-                                        IdsOfItemsBeingedDisassembled.push(ItemInQuestion.id);
+                                        itemsBeingedDisassembled.push(ItemInQuestion);
                                 }
                             }
                         }
                         // console.log(itemsInInventoryCountMap);
                         for (var index in allItemsResponse.data){
-                            itemsMapbyId[allItemsResponse.data[index].id] = allItemsResponse.data[index];
-                            // console.log(allItemsResponse.data[index]);
                             if (allItemsResponse.data[index].itemraritycategory == "rare" && allItemsResponse.data[index].emoji != ":seedling:"){
                                 // add to list of rares
                                 listOfRares.push(allItemsResponse.data[index]);
                             }
                         }
                         // have items to disassemble
-                        if (IdsOfItemsBeingedDisassembled.length > 0){
-                            disassembleItem.performDisassemble(message, discordUserId, IdsOfItemsBeingedDisassembled, listOfRares, function(useError, daRes){
+                        if (itemsBeingedDisassembled.length > 0){
+                            disassembleItem.performDisassemble(message, discordUserId, itemsBeingedDisassembled[0], listOfRares, function(useError, daRes){
                                 if (useError){
                                     console.log(useError);
                                 }
@@ -5080,8 +5078,6 @@ module.exports.disassembleCommand = function(message, args){
                                     console.log(daRes[0]);
 
                                     // TODO: create embed like scavenge 
-                                    // TODO: should this have a cooldown?
-
 
                                     // if (daRes.length && daRes.length > 0 && daRes[0].itemname){
                                     //     message.channel.send(message.author + " has tailored a **" + daRes[0].itemname + "** -" + "`" + daRes[0].itemdescription + ", " + daRes[0].itemslot + ", " + daRes[0].itemstatistics + "`");
@@ -7228,6 +7224,38 @@ module.exports.takeoffCommand = function(message, args){
     })
 }
 
+module.exports.initializeItemsMaps = function(c, cb){
+    client = c
+    // console.log(inventoryResponse.data);
+    // get all the data for each item
+    var itemsInInventoryCountMap = {}
+    var itemsMapbyId = {}
+    var itemsMapbyName = {}
+    profileDB.getItemData(function(error, allItemsResponse){
+        if (error){
+            // console.log(error);
+        }
+        else{
+            // console.log(itemsInInventoryCountMap);
+            for (var index in allItemsResponse.data){
+                itemsMapbyId[allItemsResponse.data[index].id] = allItemsResponse.data[index];
+            }
+
+            for (var index in allItemsResponse.data){
+                itemsMapbyName[allItemsResponse.data[index].itemshortname] = allItemsResponse.data[index];
+            }
+        }
+    })
+    // query database for allItems
+    // map them by id
+    // map them by shortname
+    // initialize crafting recipes
+    // initialize disassemble itemsmap
+    // initialize building upgrade requirements
+    // initialize baking recipes
+    cb(null, "success")
+}
+
 module.exports.initializeMarketPlace = function(c){
     client = c
     profileDB.getMarketItems(function(error, marketRes){
@@ -7285,11 +7313,7 @@ module.exports.initializeMarketPlace = function(c){
                     }
                     
                     handleAuctionItem(individualItem)
-
-                    // set a timeout on this auction for milisecondsUntilEnd
                 }
-                // TODO: if an item auctionenddate is past now, and it still is in status waiting
-                // award it to the last bid
                 console.log("Market Initialized")
             })
         }
@@ -7329,7 +7353,6 @@ function getEmojiBasedOnRarityCategory(itemDetails){
 }
 
 function handleAuctionItem(individualItem){
-    // TODO: create a timeout for each of these items that ends on auctionenddate
     var auctionEnd = new Date(individualItem.auctionenddate)
     var now = new Date();
     var milisecondsUntilEnd = auctionEnd.getTime() - now.getTime()
@@ -7337,17 +7360,14 @@ function handleAuctionItem(individualItem){
     if (milisecondsUntilEnd > 1){
         // auction has not ended, just reinitialize
         var itemAuctionTimeout = setTimeout(function(){
-            // do things here
             console.log(marketItems[individualItem.id].name + " " + individualItem.id + " has ended" )
-            // someone has bid on the item - announce, and change item to belong to them
             handleMarketItemAuctionEnded(individualItem)
     
-        }, milisecondsUntilEnd) // replace this with milisecondsuntilend
+        }, milisecondsUntilEnd)
     
         marketItems[individualItem.id].auctionTimeout = itemAuctionTimeout
     }else{
         // auction has ended - either return the item to its owner and set its status to null
-        // or transfer the items and tacos right there and then
         handleMarketItemAuctionEnded(individualItem)
     }
 }
