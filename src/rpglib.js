@@ -2601,7 +2601,7 @@ module.exports = {
             processAbility: true,
             belongsToMember: true,
             everyNTurns: 8,
-            afterNTurns: 3,
+            afterNTurns: 4,
             currentTurn: 0,
             buff: {
                 name: "Maniac",
@@ -2688,7 +2688,7 @@ module.exports = {
                 type: "physical",
                 adPercentage: 10,
                 ignoreBandaid: true,
-                turnsToExpire: 23,
+                turnsToExpire: 25,
                 dmgOnStatusExpire: true,
                 dmgOnRemoveAreaWide: false,
                 dmgOnExpire: 500250
@@ -3399,7 +3399,7 @@ module.exports = {
                     }
                 ],
                 abilityOrder: [
-                    4, 1, 2, 0, 0, 0, 1, 2, 3, 3
+                    4, 1, 2, 0, 0, 0, 1, 2, 3
                 ],
                 endOfTurnEvents : [
                     "focus",
