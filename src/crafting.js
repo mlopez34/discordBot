@@ -252,150 +252,139 @@ function addToUserInventory(discordUserId, items){
     })
 }
 
-const availableRecipes = {
-    rares: {
-        10: [
-            {
-                recipeName: "level 10 sword",
-                itemshortname: "roman",
-                itemId: 13,
-                itemRequirements: [
-                    {
-                        tacos: 3500
-                    },
-                    {
-                        itemId: 4,
-                        itemCount: 250
-                    },
-                    {
-                        itemId: "someDustId",
-                        itemCount: 1
-                    }
-                ]
+function createRecipeObject(recipe, itemToCraftId){
+
+    var individualRecipe = {
+        recipeName: recipe.recipename,
+        itemshortname: recipe.recipeshortname,
+        itemId: itemToCraftId,
+        tacos: recipe.tacos ? recipe.tacos : 0,
+        reputationlevel: recipe.reputationlevel ? recipe.reputationlevel : 1,
+        itemRequirements: []
+    }
+
+    if (recipe.item1id){
+        recipeConverted.itemRequirements.push({
+            itemId: recipe.item1id,
+            itemCount: recipe.item1count ? recipe.item1count : 1
+        })
+    }
+    if (recipe.item2id){
+        recipeConverted.itemRequirements.push({
+            itemId: recipe.item2id,
+            itemCount: recipe.item2count ? recipe.item2count : 1
+        })
+    }
+    if (recipe.item3id){
+        recipeConverted.itemRequirements.push({
+            itemId: recipe.item3id,
+            itemCount: recipe.item3count ? recipe.item3count : 1
+        })
+    }
+    if (recipe.item4id){
+        recipeConverted.itemRequirements.push({
+            itemId: recipe.item4id,
+            itemCount: recipe.item4count ? recipe.item4count : 1
+        })
+    }
+    if (recipe.item5id){
+        recipeConverted.itemRequirements.push({
+            itemId: recipe.item5id,
+            itemCount: recipe.item5count ? recipe.item5count : 1
+        })
+    }
+    if (recipe.item6id){
+        recipeConverted.itemRequirements.push({
+            itemId: recipe.item6id,
+            itemCount: recipe.item6count ? recipe.item6count : 1
+        })
+    }
+    if (recipe.item7id){
+        recipeConverted.itemRequirements.push({
+            itemId: recipe.item7id,
+            itemCount: recipe.item7count ? recipe.item7count : 1
+        })
+    }
+    return individualRecipe
+}
+
+module.exports.initializeCraftingRecipes = function(recipes, itemsMapbyId, callback){
+    // get the crafting recipes from itemrecipesprod
+    // compare them with itemsMapById
+    
+    for (var r in recipes){
+        var recipe = recipes[r]
+        if (recipe.type == "crafting"){
+            var itemToCraftId = recipes[r].itemid
+            var recipeCraftingLevel = recipes[r].craftinglevel
+            var itemToCraft = itemsMapbyId[itemToCraftId]
+            var raritylevel = itemToCraft.itemraritycategory
+
+            var recipeConverted = createRecipeObject(recipe, itemToCraftId )
+            availableRecipesByShortName[recipe.recipeshortname] = recipeConverted
+            if (raritylevel == "rare"){
+                if (recipesToCraftMap.rares[recipeCraftingLevel]){
+                    recipesToCraftMap.rares[recipeCraftingLevel].push(recipeConverted)
+                }
+            }else if (raritylevel == "ancient"){
+                if (recipesToCraftMap.ancients[recipeCraftingLevel]){
+                    recipesToCraftMap.ancients[recipeCraftingLevel].push(recipeConverted)
+                }
+            }else if(raritylevel == "amulet"){
+                if (recipesToCraftMap.amulets[recipeCraftingLevel]){
+                    recipesToCraftMap.amulets[recipeCraftingLevel].push(recipeConverted)
+                }
+            }else if (raritylevel == "artifact"){
+                if (recipesToCraftMap.artifacts[recipeCraftingLevel]){
+                    recipesToCraftMap.artifacts[recipeCraftingLevel].push(recipeConverted)
+                }
             }
-        ],
-        15: [
-            {
-                recipeName: "level 15 sword",
-                itemId: 14,
-                itemshortname: "roman",
-                itemRequirements: [
-
-                ]
-            }
-        ],
-        20: {
-
-        },
-        25: {
-
-        },
-        30: {
-
-        },
-        35:{
-
-        },
-        40:{
-
-        },
-        45:{
-
         }
+    }
+    callback()
+}
+
+var recipesToCraftMap = {
+    rares:{
+        10: [],
+        15: [],
+        20: [],
+        25: [],
+        30: [],
+        35: [],
+        40: [],
+        45: []
     },
-    ancients: {
-        10: {
-
-        },
-        15: {
-
-        },
-        20: {
-
-        },
-        25: {
-
-        },
-        30: {
-
-        },
-        35:{
-
-        },
-        40:{
-
-        },
-        45:{
-            
-        }
+    ancients:{
+        10: [],
+        15: [],
+        20: [],
+        25: [],
+        30: [],
+        35: [],
+        40: [],
+        45: []
     },
-    artifacts: {
-        10: {
-
-        },
-        15: {
-
-        },
-        20: {
-
-        },
-        25: {
-
-        },
-        30: {
-
-        },
-        35:{
-
-        },
-        40:{
-
-        },
-        45:{
-            
-        }
+    amulets:{
+        10: [],
+        15: [],
+        20: [],
+        25: [],
+        30: [],
+        35: [],
+        40: [],
+        45: []
     },
-    amulets: {
-        10: {
-
-        },
-        15: {
-
-        },
-        20: {
-
-        },
-        25: {
-
-        },
-        30: {
-
-        },
-        35:{
-
-        },
-        40:{
-
-        },
-        45:{
-            
-        }
+    artifacts:{
+        10: [],
+        15: [],
+        20: [],
+        25: [],
+        30: [],
+        35: [],
+        40: [],
+        45: []
     }
 }
 
-const availableRecipesByShortName = {
-    roman: {
-        itemId: 13,
-        tacos: 3500,
-        items: [
-            {
-                itemId: 4,
-                itemCount: 1
-            }
-            // {
-            //     itemId: "someDustId",
-            //     itemCount: 1
-            // }
-        ]
-    }
-}
+var availableRecipesByShortName = {}

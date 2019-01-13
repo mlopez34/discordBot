@@ -113,6 +113,54 @@ module.exports.getUpgradeRequirements = function(level){
     return upgradeRequirements[level]
 }
 
+function createUpgradeObject(upgrade){
+
+    var individualUpgrade = {
+        tacos: upgrade.tacos ? upgrade.tacos : 0,
+        reputationlevel: upgrade.reputationlevel ? upgrade.reputationlevel : 1,
+        itemRequirements: []
+    }
+
+    if (upgrade.item1id){
+        individualUpgrade.itemRequirements.push({
+            itemId: upgrade.item1id,
+            itemCount: upgrade.item1count ? upgrade.item1count : 1
+        })
+    }
+    if (upgrade.item2id){
+        individualUpgrade.itemRequirements.push({
+            itemId: upgrade.item2id,
+            itemCount: upgrade.item2count ? upgrade.item2count : 1
+        })
+    }
+    if (upgrade.item3id){
+        individualUpgrade.itemRequirements.push({
+            itemId: upgrade.item3id,
+            itemCount: upgrade.item3count ? upgrade.item3count : 1
+        })
+    }
+    if (upgrade.item4id){
+        individualUpgrade.itemRequirements.push({
+            itemId: upgrade.item4id,
+            itemCount: upgrade.item4count ? upgrade.item4count : 1
+        })
+    }
+
+    return individualUpgrade
+}
+
+module.exports.initializeUpgradeRequirements = function( upgradeReqs, callback){
+
+    for (var u in upgradeReqs){
+        var requirement = upgradeReqs[u]
+        if (requirement.building == "temple"){
+            var prepareUpgrade = createUpgradeObject(requirement)
+            upgradeRequirements[requirement.buildinglevel] = prepareUpgrade
+        }
+    }
+    callback()
+}
+
 const upgradeRequirements = {
     1: {
         items: [

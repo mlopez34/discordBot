@@ -897,6 +897,41 @@ module.exports.getItemData = function(cb) {
     });
 }
 
+module.exports.getItemRecipes = function(cb) {
+    var query = 'select * from ' + config.recipesTable
+    // console.log(query);
+    db.query(query)
+      .then(function (data) {
+        //// console.log(data);
+        cb(null, {
+            status: 'success',
+            data: data,
+            message: 'Retrieved All recipes'
+          });
+      })
+      .catch(function (err) {
+        // console.log(err);
+        cb(err);
+      });
+}
+
+module.exports.getUpgradeRequirements = function(cb) {
+    var query = 'select * from ' + config.upgradeTable
+    db.query(query)
+    .then(function (data) {
+    //// console.log(data);
+    cb(null, {
+        status: 'success',
+        data: data,
+        message: 'Retrieved All upgrade reqs'
+        });
+    })
+    .catch(function (err) {
+    // console.log(err);
+    cb(err);
+    });
+}
+
 // get specific item via id
 module.exports.getItemById = function(itemId, cb) {
   var query = 'select * from ' + config.itemsTable + ' where id =$1'

@@ -30,8 +30,10 @@ client.on('ready', function(err) {
     console.log("in guilds: " + client.guilds.size)
     console.log('The bot is online'); 
     // initialize market
-    commands.initializeMarketPlace(client)
-    //commands.initializeItemsMaps()
+    commands.initializeItemsMaps(client, function(err, res){
+        commands.initializeMarketPlace()
+        console.log(res)
+    })
     //steal(channelName);
 });
 

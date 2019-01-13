@@ -102,67 +102,52 @@ module.exports.obtainFruitsCountObject = function(userFruitsData){
 
     return fruitsCountObject
 }
-// TODO: finish the recipes
-const bakingRecipes = {
-    ratvial: {
-        itemToCreateId: 257,
-        items: [
-            {
-                fruit: "tulips",
-                itemCount: 3
-            },
-            {
-                itemId: "sunflowers",
-                itemCount: 4
-            }
-        ]
-    },
-    applepie : {
-        itemToCreateId: 257,
-        items: [
-            {
-                itemId: "bananas",
-                itemCount: 3
-            },
-            {
-                itemId: "tangerines",
-                itemCount: 4
-            }
-        ]
-    },
-    bananacake : {
 
-    },
-    bananacookie : {
+function createRecipeObject(recipe, itemToCraftId){
 
-    },
-    tangerinesundae : {
-
-    },
-    chocolatecookie : {
-
-    },
-    brownie : {
-
-    },
-    bananapudding: {
-
-    },
-    cupcake:{
-
-    },
-    peardumpling: {
-
-    },
-    weddingcake: {
-
-    },
-    donut: {
-
+    var individualRecipe = {
+        recipeName: recipe.recipename,
+        itemshortname: recipe.recipeshortname,
+        itemId: itemToCraftId,
+        tacos: recipe.tacos ? recipe.tacos : 0,
+        reputationlevel: recipe.reputationlevel ? recipe.reputationlevel : 1,
+        itemRequirements: []
     }
 
+    if (recipe.fruit1name){
+        recipeConverted.itemRequirements.push({
+            itemId: recipe.fruit1name,
+            itemCount: recipe.fruit1count ? recipe.fruit1count : 1
+        })
+    }
+    if (recipe.fruit2name){
+        recipeConverted.itemRequirements.push({
+            itemId: recipe.fruit2name,
+            itemCount: recipe.fruit2count ? recipe.fruit2count : 1
+        })
+    }
+    if (recipe.fruit3name){
+        recipeConverted.itemRequirements.push({
+            itemId: recipe.fruit3name,
+            itemCount: recipe.fruit3count ? recipe.fruit3count : 1
+        })
+    }
+    return individualRecipe
 }
 
-// vials are also listed here
+module.exports.initializeBakingRecipes = function(recipes, callback){
+    // get the baking recipes from itemrecipesprod
+    // compare them with itemsMapById
 
-// uses fruits + plants from greenhouse + tacos + uncommon items
+    for (var r in recipes){
+        var recipe = recipes[r]
+        if (recipe.type == "baking"){
+            var itemToCraftId = recipes[r].itemid
+            var recipeConverted = createRecipeObject( recipe, itemToCraftId )
+            bakingRecipes[recipe.recipeshortname] = recipeConverted
+        }
+    }
+    callback()
+}
+
+const bakingRecipes = {}

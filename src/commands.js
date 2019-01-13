@@ -83,6 +83,9 @@ var usersMinigames = {};
 
 var NeedsToAgree = {}
 
+var itemsMapbyId = {}
+var itemsMapbyName = {}
+
 var EXPERIENCE_GAINS = {
     thank: 2,
     sorry: 5,
@@ -5094,6 +5097,18 @@ module.exports.disassembleCommand = function(message, args){
 
 }
 
+module.exports.createArmament = function(){
+    // create an armament for the itemshortname specified
+    // the armament requirements are based on the shortname
+    // it will affect all versions of that item down and use the same stats
+    // each slot is armament1slot, armament2slot etc
+    // cannot be traded, 
+}
+
+module.exports.armamentsCommand = function(){
+    // display available armaments
+}
+
 module.exports.greenHouseCommand = function(message){
     // display your greenhouse, and greenhouse information
     var discordUserId = message.author.id;
@@ -7226,17 +7241,11 @@ module.exports.takeoffCommand = function(message, args){
 
 module.exports.initializeItemsMaps = function(c, cb){
     client = c
-    // console.log(inventoryResponse.data);
-    // get all the data for each item
-    var itemsInInventoryCountMap = {}
-    var itemsMapbyId = {}
-    var itemsMapbyName = {}
     profileDB.getItemData(function(error, allItemsResponse){
         if (error){
-            // console.log(error);
+            console.log(error);
         }
         else{
-            // console.log(itemsInInventoryCountMap);
             for (var index in allItemsResponse.data){
                 itemsMapbyId[allItemsResponse.data[index].id] = allItemsResponse.data[index];
             }
@@ -7244,20 +7253,48 @@ module.exports.initializeItemsMaps = function(c, cb){
             for (var index in allItemsResponse.data){
                 itemsMapbyName[allItemsResponse.data[index].itemshortname] = allItemsResponse.data[index];
             }
+            profileDB.getItemRecipes(function(error, recipeResponse){
+                var recipes = recipeResponse.data
+                crafting.initializeCraftingRecipes(recipes, itemsMapbyId, function(err, res){
+                    baking.initializeBakingRecipes(recipes, function(err, res){
+                        profileDB.getUpgradeRequirements(function(error, upgradeResponse){
+                            if (error){
+                                console.log(error)
+                            }
+                            var upgradeReqs = upgradeResponse.data
+                            stable.initializeUpgradeRequirements(upgradeReqs, function(err, res){
+                                greenhouse.initializeUpgradeRequirements(upgradeReqs, function(err, res){
+                                    temple.initializeUpgradeRequirements(upgradeReqs, function(err, res){
+                                        disassembleItem.initializeDissassembleItems(itemsMapbyId, function(err, res){
+                                            if (err){
+                                                console.log(err)
+                                            }
+                                            cb(null, "success")
+                                        })
+                                    })
+                                })
+                            })
+                        })
+                    })
+                })
+            })
         }
     })
     // query database for allItems
-    // map them by id
-    // map them by shortname
-    // initialize crafting recipes
+    // DONE map them by id
+    // DONE map them by shortname
+    // initialize crafting recipes, baking recipes
+    // new table called itemsrecipe
+
     // initialize disassemble itemsmap
+    // map will have all items obtainable via disassemble
+
     // initialize building upgrade requirements
-    // initialize baking recipes
-    cb(null, "success")
+    // new table called upgradeprod
+    
 }
 
-module.exports.initializeMarketPlace = function(c){
-    client = c
+module.exports.initializeMarketPlace = function(){
     profileDB.getMarketItems(function(error, marketRes){
         if (error){
             console.log(error)
