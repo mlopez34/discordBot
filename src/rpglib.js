@@ -6863,7 +6863,7 @@ module.exports = {
                 // on last enemy - maniac + enabler + flanking orders + damage reduct + apparition
                 timed: true,
                 timedPerTurn: 360000,
-                points: 257901,
+                points: 317901,
                 difficulty: 186,
                 enemies: [
                     {
