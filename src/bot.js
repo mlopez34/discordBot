@@ -387,6 +387,8 @@ client.on('message', function(message){
                 }
                 else if (commandIs("mkbid", message)){
                     commands.marketBidCommand(message, args)
+                }else if (commandIs("mkcancel", message)){
+                    commands.marketCancelCommand(message, args)
                 }else if (commandIs("mkauction", message)){
                     commands.marketAuctionCommand(message, args)
                 }
@@ -965,6 +967,8 @@ client.on('message', function(message){
                 }
                 else if (commandIs("mkbid", message)){
                     commands.marketBidCommand(message, args)
+                }else if (commandIs("mkcancel", message)){
+                    commands.marketCancelCommand(message, args)
                 }else if (commandIs("mkauction", message)){
                     commands.marketAuctionCommand(message, args)
                 }

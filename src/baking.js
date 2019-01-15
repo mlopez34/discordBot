@@ -115,19 +115,19 @@ function createRecipeObject(recipe, itemToCraftId){
     }
 
     if (recipe.fruit1name){
-        recipeConverted.itemRequirements.push({
+        individualRecipe.itemRequirements.push({
             itemId: recipe.fruit1name,
             itemCount: recipe.fruit1count ? recipe.fruit1count : 1
         })
     }
     if (recipe.fruit2name){
-        recipeConverted.itemRequirements.push({
+        individualRecipe.itemRequirements.push({
             itemId: recipe.fruit2name,
             itemCount: recipe.fruit2count ? recipe.fruit2count : 1
         })
     }
     if (recipe.fruit3name){
-        recipeConverted.itemRequirements.push({
+        individualRecipe.itemRequirements.push({
             itemId: recipe.fruit3name,
             itemCount: recipe.fruit3count ? recipe.fruit3count : 1
         })
@@ -137,8 +137,6 @@ function createRecipeObject(recipe, itemToCraftId){
 
 module.exports.initializeBakingRecipes = function(recipes, callback){
     // get the baking recipes from itemrecipesprod
-    // compare them with itemsMapById
-
     for (var r in recipes){
         var recipe = recipes[r]
         if (recipe.type == "baking"){

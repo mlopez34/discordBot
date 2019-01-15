@@ -401,134 +401,120 @@ module.exports.useSoil = function(message, discordUserId, soilToUse, cb){
     }
 }
 
-module.exports.useBasedOnShortName = function(message, discordid, itemshortname, userInventoryCountMap, userInventory, cb){
-    // get all items, map by itemshortname as key, if it matches an item then use the item
-    profileDB.getItemData(function(error, allItemsResponse){
-        if (error){
-            // console.log(error);
-            exports.setItemsLock(discordid, false)
-            cb("failed");
-        }
-        else{
-            var itemsMapbyName = {};
-            for (var index in allItemsResponse.data){
-                itemsMapbyName[allItemsResponse.data[index].itemshortname] = allItemsResponse.data[index];
-            }
-            // 
-            if (itemsMapbyName[itemshortname]){
-                // item exists, use the item and remove from user inventory
-                if (itemshortname == "adventurer"
-                    || itemshortname == "culinary"
-                    || itemshortname == "roleplaying"
-                    || itemshortname == "wild"
-                    || itemshortname == "satisfying"
-                    || itemshortname == "guilt"
-                    || itemshortname == "productivity"){
-                    // use a potion from inventory
-                    var idOfItemToUse = itemsMapbyName[itemshortname].id;
-                    var itemInInventoryCount = userInventoryCountMap[idOfItemToUse]
-                    // look for an item in my inventory that has the above id
-                    if (itemInInventoryCount > 0){
-                        var potionToUse = undefined;
-                        for (var item in userInventory){
-                            // check the rock hasnt been used
-                            var validItem = exports.itemValidate(userInventory[item]);
-                            if (validItem){
-                                // item hasnt been added to be counted, add it as 1
-                                if (userInventory[item].itemid == idOfItemToUse){
-                                    potionToUse = userInventory[item];
-                                    break;
-                                }
-                            }
+module.exports.useBasedOnShortName = function(message, discordid, itemshortname, userInventoryCountMap, userInventory, itemsMapbyShortName, cb){
+    
+    if (itemsMapbyShortName[itemshortname]){
+        // item exists, use the item and remove from user inventory
+        if (itemshortname == "adventurer"
+            || itemshortname == "culinary"
+            || itemshortname == "roleplaying"
+            || itemshortname == "wild"
+            || itemshortname == "satisfying"
+            || itemshortname == "guilt"
+            || itemshortname == "productivity"){
+            // use a potion from inventory
+            var idOfItemToUse = itemsMapbyShortName[itemshortname].id;
+            var itemInInventoryCount = userInventoryCountMap[idOfItemToUse]
+            // look for an item in my inventory that has the above id
+            if (itemInInventoryCount > 0){
+                var potionToUse = undefined;
+                for (var item in userInventory){
+                    // check the rock hasnt been used
+                    var validItem = exports.itemValidate(userInventory[item]);
+                    if (validItem){
+                        // item hasnt been added to be counted, add it as 1
+                        if (userInventory[item].itemid == idOfItemToUse){
+                            potionToUse = userInventory[item];
+                            break;
                         }
-                        // use the potion
-                        if (potionToUse){
-                            profileDB.updateItemStatus(potionToUse.id, "used", function(updatePotionErr, updatePotionRes){
-                                if (updatePotionErr){
+                    }
+                }
+                // use the potion
+                if (potionToUse){
+                    profileDB.updateItemStatus(potionToUse.id, "used", function(updatePotionErr, updatePotionRes){
+                        if (updatePotionErr){
+                            exports.setItemsLock(discordid, false)
+                            cb(updatePotionErr);
+                        }
+                        else{
+                            // used the potion, reduce the command that the potion affects by 1 hour
+                            reduceCommandCooldown(discordid, itemsMapbyShortName[itemshortname].command, function(reduceErr, reduceRes){
+                                if (reduceErr){
                                     exports.setItemsLock(discordid, false)
-                                    cb(updatePotionErr);
-                                }
-                                else{
-                                    // used the potion, reduce the command that the potion affects by 1 hour
-                                    reduceCommandCooldown(discordid, itemsMapbyName[itemshortname].command, function(reduceErr, reduceRes){
-                                        if (reduceErr){
-                                            exports.setItemsLock(discordid, false)
-                                            message.channel.send("Something went wrong, call 911")
-                                            cb("failed");
-                                        }else{
-                                            exports.setItemsLock(discordid, false)
-                                            message.channel.send( message.author + " used a **" + itemsMapbyName[itemshortname].itemname + "**, they reduced their " + itemsMapbyName[itemshortname].command + " command cooldown by `1 hour`");                                                                
-                                            cb(null, "success")
-                                        }
-                                    })
+                                    message.channel.send("Something went wrong, call 911")
+                                    cb("failed");
+                                }else{
+                                    exports.setItemsLock(discordid, false)
+                                    message.channel.send( message.author + " used a **" + itemsMapbyShortName[itemshortname].itemname + "**, they reduced their " + itemsMapbyShortName[itemshortname].command + " command cooldown by `1 hour`");                                                                
+                                    cb(null, "success")
                                 }
                             })
-                        }else{
-                            exports.setItemsLock(discordid, false)
-                            cb("failed")
                         }
-                    }else{
-                        exports.setItemsLock(discordid, false)
-                        cb("failed");
-                    }
-                }else if (itemshortname == "applepie"
-                    || itemshortname == "bananacake"){
-                    // use a pie from inventory
-                    var idOfItemToUse = itemsMapbyName[itemshortname].id;
-                    var itemInInventoryCount = userInventoryCountMap[idOfItemToUse]
-                    if (itemInInventoryCount > 0){
-                        var bakeToUse = undefined;
-                        for (var item in userInventory){
-                            // check the rock hasnt been used
-                            var validItem = exports.itemValidate(userInventory[item]);
-                            if (validItem){
-                                // item hasnt been added to be counted, add it as 1
-                                if (userInventory[item].itemid == idOfItemToUse){
-                                    bakeToUse = userInventory[item];
-                                    break;
-                                }
-                            }
-                        }
-                        if (bakeToUse){
-                            // set the item to used
-                            profileDB.updateItemStatus(bakeToUse.id, "used", function(updatePotionErr, updatePotionRes){
-                                if (updatePotionErr){
-                                    exports.setItemsLock(discordid, false)
-                                    cb(updatePotionErr);
-                                }
-                                else{
-                                    // add the buff to the user profile. itemid + itemactivatetime
-                                    addRPGBuffToUser(discordid, bakeToUse.itemid, 2, function(buffErr, buffRes){
-                                        if (buffErr){
-                                            exports.setItemsLock(discordid, false)
-                                            message.channel.send("Something went wrong, call 911")
-                                            cb("failed");
-                                        }else{
-                                            exports.setItemsLock(discordid, false)
-                                            message.channel.send( "gained buff" ); // message that user gained buff                                                           
-                                            cb(null, "success")
-                                        }
-                                    })
-                                }
-                            })
-                        }else{
-                            exports.setItemsLock(discordid, false)
-                            cb("failed")
-                        }
-                    }else{
-                        exports.setItemsLock(discordid, false)
-                        cb("failed");
-                    }
+                    })
                 }else{
                     exports.setItemsLock(discordid, false)
-                    cb("failed");
+                    cb("failed")
                 }
             }else{
                 exports.setItemsLock(discordid, false)
                 cb("failed");
             }
+        }else if (itemshortname == "applepie"
+            || itemshortname == "bananacake"){
+            // use a pie from inventory
+            var idOfItemToUse = itemsMapbyShortName[itemshortname].id;
+            var itemInInventoryCount = userInventoryCountMap[idOfItemToUse]
+            if (itemInInventoryCount > 0){
+                var bakeToUse = undefined;
+                for (var item in userInventory){
+                    // check the rock hasnt been used
+                    var validItem = exports.itemValidate(userInventory[item]);
+                    if (validItem){
+                        // item hasnt been added to be counted, add it as 1
+                        if (userInventory[item].itemid == idOfItemToUse){
+                            bakeToUse = userInventory[item];
+                            break;
+                        }
+                    }
+                }
+                if (bakeToUse){
+                    // set the item to used
+                    profileDB.updateItemStatus(bakeToUse.id, "used", function(updatePotionErr, updatePotionRes){
+                        if (updatePotionErr){
+                            exports.setItemsLock(discordid, false)
+                            cb(updatePotionErr);
+                        }
+                        else{
+                            // add the buff to the user profile. itemid + itemactivatetime
+                            addRPGBuffToUser(discordid, bakeToUse.itemid, 2, function(buffErr, buffRes){
+                                if (buffErr){
+                                    exports.setItemsLock(discordid, false)
+                                    message.channel.send("Something went wrong, call 911")
+                                    cb("failed");
+                                }else{
+                                    exports.setItemsLock(discordid, false)
+                                    message.channel.send( "gained buff" ); // message that user gained buff                                                           
+                                    cb(null, "success")
+                                }
+                            })
+                        }
+                    })
+                }else{
+                    exports.setItemsLock(discordid, false)
+                    cb("failed")
+                }
+            }else{
+                exports.setItemsLock(discordid, false)
+                cb("failed");
+            }
+        }else{
+            exports.setItemsLock(discordid, false)
+            cb("failed");
         }
-    })
+    }else{
+        exports.setItemsLock(discordid, false)
+        cb("failed");
+    }
 }
 
 function reduceCommandCooldown(discordUserId, command, cb){

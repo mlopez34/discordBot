@@ -335,11 +335,11 @@ module.exports.performDisassemble =  function(message, discordUserId, itemsToDis
     }
 }
 
-module.exports.initializeDissassembleItems = function(itemsMapbyId, callback){
+module.exports.initializeDissassembleItems = function(itemsMapById, callback){
     // go through all items, if they are essences or crystals then add to list
-    for (var i in itemsMapbyId){
-        if (itemsMapbyId[i].essencerarity){
-            listOfObtainableItems.push(itemsMapbyId[i])
+    for (var i in itemsMapById){
+        if (itemsMapById[i].essencerarity){
+            listOfObtainableItems.push(itemsMapById[i])
         }
     }
     callback()

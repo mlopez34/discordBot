@@ -6,6 +6,7 @@ var config = require("./config");
 var rpglib = require("./rpglib");
 var wearStats = require("./wearStats.js")
 var achiev = require("./achievements")
+var commands = require("./commands.js")
 var moment = require("moment");
 var _ = require("lodash");
 
@@ -27,7 +28,7 @@ module.exports.rpgInitialize = function(message, special){
     team.push(message.author);
 
     users.forEach(function(user){
-        if (team.length < TEAM_MAX_LENGTH && discordUserId != user.id){
+        if (team.length < TEAM_MAX_LENGTH ){//&& discordUserId != user.id){
             team.push(user);
         }
     })
@@ -69,6 +70,7 @@ module.exports.rpgInitialize = function(message, special){
             if (special && special.challenge){
                 activeRPGEvents["rpg-" + sentMessage.id].challenge = {
                     challenge: special.challenge,
+                    keystone: special.keystone,
                     valid: false
                 };
                 activeRPGEvents["rpg-" + sentMessage.id].leader = message.author;
@@ -143,15 +145,12 @@ module.exports.showRpgStats = function(message, itemsAvailable, amuletItemsById)
                     // console.log(inventoryResponse.data);
                     // get all the data for each item
                     var itemsInInventoryCountMap = {};
-                    var itemsMapbyId = {};
 
                     for (var item in inventoryResponse.data){
-
                         if (!itemsInInventoryCountMap[inventoryResponse.data[item].itemid] ){
                             // item hasnt been added to be counted, add it as 1
                             itemsInInventoryCountMap[inventoryResponse.data[item].itemid] = 1;
                         }else{
-                            // 
                             itemsInInventoryCountMap[inventoryResponse.data[item].itemid] = itemsInInventoryCountMap[inventoryResponse.data[item].itemid] + 1
                         }
                     }
@@ -442,8 +441,11 @@ module.exports.rpgReady = function(message, itemsAvailable, amuletItemsById, buf
                 var rpgEventId = usersInRPGEvents["rpg-" + discordUserId].id;
                 var isSpecialEvent = activeRPGEvents[ "rpg-" +  rpgEventId ] ? activeRPGEvents[ "rpg-" + rpgEventId ].special : false;
                 var currentPlayerChallenge = userData.data.currentchallenge || 0 ;
+                var currentPlayerKeystone = userData.data.currentkeystone || 1;
                 var challengePicked = (activeRPGEvents[ "rpg-" +  rpgEventId ] && activeRPGEvents[ "rpg-" +  rpgEventId ].challenge) ? activeRPGEvents[ "rpg-" + rpgEventId ].challenge.challenge : false;
-                if ((currentPlayerChallenge + 1) >= (parseInt( challengePicked ) ) 
+                var keystonePicked = (activeRPGEvents[ "rpg-" +  rpgEventId ] && activeRPGEvents[ "rpg-" +  rpgEventId ].challenge) ? activeRPGEvents[ "rpg-" + rpgEventId ].challenge.keystone : false;
+                if ((currentPlayerChallenge + 1) >= (parseInt( challengePicked ) )
+                    && (currentPlayerKeystone) >= (parseInt( keystonePicked ) ) 
                     && (parseInt( challengePicked ) ) > 0 
                     && (parseInt( challengePicked ) ) <= CURRENT_CHALLENGES_AVAILABLE ){
                     activeRPGEvents[ "rpg-" +  rpgEventId ].challenge.valid = true;
@@ -462,18 +464,14 @@ module.exports.rpgReady = function(message, itemsAvailable, amuletItemsById, buf
                             console.log(err);
                         }
                         else{
-                            // console.log(inventoryResponse.data);
                             // get all the data for each item
                             var itemsInInventoryCountMap = {};
-                            var itemsMapbyId = {};
-        
                             for (var item in inventoryResponse.data){
         
                                 if (!itemsInInventoryCountMap[inventoryResponse.data[item].itemid] ){
                                     // item hasnt been added to be counted, add it as 1
                                     itemsInInventoryCountMap[inventoryResponse.data[item].itemid] = 1;
                                 }else{
-                                    // 
                                     itemsInInventoryCountMap[inventoryResponse.data[item].itemid] = itemsInInventoryCountMap[inventoryResponse.data[item].itemid] + 1
                                 }
                             }
@@ -828,6 +826,7 @@ module.exports.rpgReady = function(message, itemsAvailable, amuletItemsById, buf
                                                         if (activeRPGEvents[rpgEvent].challenge){
                                                             
                                                             var challengeNum = activeRPGEvents[rpgEvent].challenge.challenge;
+                                                            var keystoneNum = activeRPGEvents[rpgEvent].challenge.keystone;
                                                             var specialEnemies = enemiesToEncounter.challenge[challengeNum].enemies;
                                                             if (enemiesToEncounter.challenge[challengeNum].description){
                                                                 embedDescription = enemiesToEncounter.challenge[challengeNum].description;
@@ -837,7 +836,8 @@ module.exports.rpgReady = function(message, itemsAvailable, amuletItemsById, buf
                                                             }
                                                             for (var i = 0; i < specialEnemies.length; i++){
                                                                 enemyFound = JSON.parse(JSON.stringify( specialEnemies[i] ));
-
+                                                                // TODO: SCALE BASED ON KEYSTONE HERE
+                                                                // Possible to gain new abilities, new enemies, different stats
                                                                 enemies[enemyIdCount] = {
                                                                     id: enemyIdCount,
                                                                     name: enemyFound.name,
@@ -1669,120 +1669,115 @@ function turnFinishedEmbedBuilder(message, event, turnString, passiveEffectsStri
 }
 
 function eventEndedEmbedBuilder(message, event, partySuccess){
-    profileDB.getItemData(function(err, getItemResponse){
-        if (err){
-            console.log(err);
-        }else{
-            const embed = new Discord.RichEmbed()
-            .setAuthor("Event has ended")
-            .setColor(0xF2E93E)
-            if (event.special && event.special.avatar){
-                embed.setThumbnail(event.special.avatar);
-            }
-            if (event.challenge && partySuccess){
-                for (var member in event.members){
-                    var memberInRpgEvent = event.members[member];
-                    var memberInParty = event.membersInParty["rpg-" + memberInRpgEvent.id];
-                    // get members current challenge
-                    var challengenumber = usersInRPGEvents["rpg-" + memberInParty.id].memberStats.currentchallenge;
-                    if ( (challengenumber + 1) == event.challenge.challenge ){
-                        profileDB.updateCurrentChallenge( memberInParty.id, challengenumber + 1, function(error, challengeRes){
-                            if (error){
-                                console.log(error);
-                            }else{
-                                console.log(challengeRes);
-                                //embed.addField("Challenge complete", challengenumber);
-                            }
-                        })
+    var allItems = commands.getAllItems()
+    const embed = new Discord.RichEmbed()
+    .setAuthor("Event has ended")
+    .setColor(0xF2E93E)
+    if (event.special && event.special.avatar){
+        embed.setThumbnail(event.special.avatar);
+    }
+    if (event.challenge && partySuccess){
+        for (var member in event.members){
+            var memberInRpgEvent = event.members[member];
+            var memberInParty = event.membersInParty["rpg-" + memberInRpgEvent.id];
+            // get members current challenge
+            var challengenumber = usersInRPGEvents["rpg-" + memberInParty.id].memberStats.currentchallenge;
+            if ( (challengenumber + 1) == event.challenge.challenge ){
+                profileDB.updateCurrentChallenge( memberInParty.id, challengenumber + 1, function(error, challengeRes){
+                    if (error){
+                        console.log(error);
+                    }else{
+                        console.log(challengeRes);
+                        //embed.addField("Challenge complete", challengenumber);
                     }
-                    
-                }
+                })
             }
-            else if (event.special && event.special.reward && partySuccess){
-                if (event.special.reward.type == "note"){
-                    embed.addField(event.special.reward.fieldTitle, event.special.reward.note)
-                }
+            
+        }
+    }
+    else if (event.special && event.special.reward && partySuccess){
+        if (event.special.reward.type == "note"){
+            embed.addField(event.special.reward.fieldTitle, event.special.reward.note)
+        }
 
-                if (event.special.reward.questline && event.special.reward.stageAdvance){
-                    // TODO: advance the user to the next step of the questline, create in artifacts case
-                    // Create the artifact for the user, timetravel = time machine
-                    // demonic = bow of andromalius
-                    // diamond = ring (linked souls)
-                    // abraham = vampire slaying pike
-                    
-                    if ( event.special.reward.item ){
-                        var extraItem = event.special.reward.item
-                        // add the artifact item
-                        var rewardsArtifact = addArtifactItem(getItemResponse, extraItem)
-                        // event.leader.id
-                        updateUserRewards(message, event.leader, rewardsArtifact);
-                        artifactEmbedBuilder(message, rewardsArtifact.items, event.leader)
+        if (event.special.reward.questline && event.special.reward.stageAdvance){
+            // TODO: advance the user to the next step of the questline, create in artifacts case
+            // Create the artifact for the user, timetravel = time machine
+            // demonic = bow of andromalius
+            // diamond = ring (linked souls)
+            // abraham = vampire slaying pike
+            
+            if ( event.special.reward.item ){
+                var extraItem = event.special.reward.item
+                // add the artifact item
+                var rewardsArtifact = addArtifactItem(allItems, extraItem)
+                // event.leader.id
+                updateUserRewards(message, event.leader, rewardsArtifact);
+                artifactEmbedBuilder(message, rewardsArtifact.items, event.leader)
 
-                        profileDB.getUserProfileData(event.leader.id, function(profileErr, profileRes){
-                            if (profileErr){
-                                console.log("FAILURE SOMETHING WENT WRONG")
-                            }else{
-                                var achievData = { achievements: profileRes.data.achievements, rpgDefeated: event.special.questName }
-                                achiev.checkForAchievements(event.leader.id, achievData, message)
-                            }
-                        })
-                        
+                profileDB.getUserProfileData(event.leader.id, function(profileErr, profileRes){
+                    if (profileErr){
+                        console.log("FAILURE SOMETHING WENT WRONG")
+                    }else{
+                        var achievData = { achievements: profileRes.data.achievements, rpgDefeated: event.special.questName }
+                        achiev.checkForAchievements(event.leader.id, achievData, message)
                     }
-                   
-                    profileDB.updateQuestlineStage(event.leader.id, event.special.questData.questname, event.special.questData.stage + 1, function(error, updateRes){
-                        if (error){
-                            console.log(error);
-                        }else{
-                            console.log("advanced special rpg ");
-                        }
-                    })
-                }
-            }
-            var numberOfMembers = event.members.length;
-            event.experienceHandedOut = 0
-            for (var member in event.members){
-                var memberInRpgEvent = event.members[member];
-                var memberInParty = event.membersInParty["rpg-" + memberInRpgEvent.id];
-                var rewards;
-                var rewardString = "";
-                if (partySuccess){
-                    var extraTacosForUser = usersInRPGEvents["rpg-" + memberInParty.id].memberStats.extraTacos;
-                    var extraXp = usersInRPGEvents["rpg-" + memberInParty.id].memberStats.extraExperience;
-                    memberInRpgEvent.extraTacosForUser = extraTacosForUser
-                    memberInRpgEvent.extraXp = extraXp
-                    
-                    var rewards =  calculateRewards( event, memberInRpgEvent, getItemResponse, numberOfMembers)
-                    // add experience and rpgpoints to user
-                    updateUserRewards(message, memberInParty, rewards);
-                    if (rewards.extraTacos && rewards.extraTacos > 0 ){
-                        rewardString = rewardString + "**Tacos:** " + rewards.extraTacos + "\n"
-                    }
-                    rewardString = rewardString + "**Experience:** " + rewards.xp + "\n**Rpg Points**: " + rewards.rpgPoints + "\n**Items:** \n";
-                    event.experienceHandedOut = event.experienceHandedOut + rewards.xp
-                    for (var item in rewards.items){
-                        rewardString = rewardString + rewards.items[item].itemname + " \n";
-                    }
-                }
-                else{
-                    rewards = "No rewards :skull_crossbones:"
-                    rewardString = rewardString + " " + rewards + " \n";
-                }
+                })
                 
-                embed.addField(memberInRpgEvent.username,  rewardString, true);
-                // TODO: check for achievments, timed, special kills, 
             }
-            var rpgStatData = createRpgStatData(rewardString, event, partySuccess)
-            profileDB.createRpgStatistics(rpgStatData, function(statErr, statRes){
-                if (statErr){
-                    console.log(statErr)
+            
+            profileDB.updateQuestlineStage(event.leader.id, event.special.questData.questname, event.special.questData.stage + 1, function(error, updateRes){
+                if (error){
+                    console.log(error);
                 }else{
-                    console.log(statRes)
+                    console.log("advanced special rpg ");
                 }
             })
-            message.channel.send({embed})
-            cleanupEventEnded(event);
+        }
+    }
+    var numberOfMembers = event.members.length;
+    event.experienceHandedOut = 0
+    for (var member in event.members){
+        var memberInRpgEvent = event.members[member];
+        var memberInParty = event.membersInParty["rpg-" + memberInRpgEvent.id];
+        var rewards;
+        var rewardString = "";
+        if (partySuccess){
+            var extraTacosForUser = usersInRPGEvents["rpg-" + memberInParty.id].memberStats.extraTacos;
+            var extraXp = usersInRPGEvents["rpg-" + memberInParty.id].memberStats.extraExperience;
+            memberInRpgEvent.extraTacosForUser = extraTacosForUser
+            memberInRpgEvent.extraXp = extraXp
+            
+            var rewards =  calculateRewards( event, memberInRpgEvent, allItems, numberOfMembers)
+            // add experience and rpgpoints to user
+            updateUserRewards(message, memberInParty, rewards);
+            if (rewards.extraTacos && rewards.extraTacos > 0 ){
+                rewardString = rewardString + "**Tacos:** " + rewards.extraTacos + "\n"
+            }
+            rewardString = rewardString + "**Experience:** " + rewards.xp + "\n**Rpg Points**: " + rewards.rpgPoints + "\n**Items:** \n";
+            event.experienceHandedOut = event.experienceHandedOut + rewards.xp
+            for (var item in rewards.items){
+                rewardString = rewardString + rewards.items[item].itemname + " \n";
+            }
+        }
+        else{
+            rewards = "No rewards :skull_crossbones:"
+            rewardString = rewardString + " " + rewards + " \n";
+        }
+        
+        embed.addField(memberInRpgEvent.username,  rewardString, true);
+        // TODO: check for achievments, timed, special kills, 
+    }
+    var rpgStatData = createRpgStatData(rewardString, event, partySuccess)
+    profileDB.createRpgStatistics(rpgStatData, function(statErr, statRes){
+        if (statErr){
+            console.log(statErr)
+        }else{
+            console.log(statRes)
         }
     })
+    message.channel.send({embed})
+    cleanupEventEnded(event);
 }
 
 function createRpgStatData(rewardString, event, partySuccess){
@@ -1867,13 +1862,12 @@ function addToUserInventory(discordUserId, items){
     })
 }
 
-function addArtifactItem( getItemResponse, extraItem){
+function addArtifactItem( allItems, extraItem){
     var rewardsForPlayer =  {
         xp: 0,
         rpgPoints: 0,
         items: []
     }
-    var allItems = getItemResponse.data
     var itemsObtainedArray = [];
     if (extraItem){
         for (var i in allItems){
@@ -1902,7 +1896,7 @@ function artifactEmbedBuilder(message, artifactItems, user){
     message.channel.send({embed});
 }
 
-function calculateRewards(event, memberInRpgEvent, getItemResponse, numberOfMembers){
+function calculateRewards(event, memberInRpgEvent, allItems, numberOfMembers){
     var rewardsForPlayer =  {
         xp: 1,
         extraTacos: 0,
@@ -1922,7 +1916,6 @@ function calculateRewards(event, memberInRpgEvent, getItemResponse, numberOfMemb
     var COMMON_MAX_ROLL = 8000;
     var COMMON_ITEMS_TO_OBTAIN = 1;
 
-    var allItems = getItemResponse.data
     var commonItems = [];
     var uncommonItems = [];
     var rareItems = [];

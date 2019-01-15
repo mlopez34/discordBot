@@ -264,43 +264,43 @@ function createRecipeObject(recipe, itemToCraftId){
     }
 
     if (recipe.item1id){
-        recipeConverted.itemRequirements.push({
+        individualRecipe.itemRequirements.push({
             itemId: recipe.item1id,
             itemCount: recipe.item1count ? recipe.item1count : 1
         })
     }
     if (recipe.item2id){
-        recipeConverted.itemRequirements.push({
+        individualRecipe.itemRequirements.push({
             itemId: recipe.item2id,
             itemCount: recipe.item2count ? recipe.item2count : 1
         })
     }
     if (recipe.item3id){
-        recipeConverted.itemRequirements.push({
+        individualRecipe.itemRequirements.push({
             itemId: recipe.item3id,
             itemCount: recipe.item3count ? recipe.item3count : 1
         })
     }
     if (recipe.item4id){
-        recipeConverted.itemRequirements.push({
+        individualRecipe.itemRequirements.push({
             itemId: recipe.item4id,
             itemCount: recipe.item4count ? recipe.item4count : 1
         })
     }
     if (recipe.item5id){
-        recipeConverted.itemRequirements.push({
+        individualRecipe.itemRequirements.push({
             itemId: recipe.item5id,
             itemCount: recipe.item5count ? recipe.item5count : 1
         })
     }
     if (recipe.item6id){
-        recipeConverted.itemRequirements.push({
+        individualRecipe.itemRequirements.push({
             itemId: recipe.item6id,
             itemCount: recipe.item6count ? recipe.item6count : 1
         })
     }
     if (recipe.item7id){
-        recipeConverted.itemRequirements.push({
+        individualRecipe.itemRequirements.push({
             itemId: recipe.item7id,
             itemCount: recipe.item7count ? recipe.item7count : 1
         })
@@ -308,16 +308,15 @@ function createRecipeObject(recipe, itemToCraftId){
     return individualRecipe
 }
 
-module.exports.initializeCraftingRecipes = function(recipes, itemsMapbyId, callback){
+module.exports.initializeCraftingRecipes = function(recipes, itemsMapById, callback){
     // get the crafting recipes from itemrecipesprod
-    // compare them with itemsMapById
     
     for (var r in recipes){
         var recipe = recipes[r]
         if (recipe.type == "crafting"){
             var itemToCraftId = recipes[r].itemid
             var recipeCraftingLevel = recipes[r].craftinglevel
-            var itemToCraft = itemsMapbyId[itemToCraftId]
+            var itemToCraft = itemsMapById[itemToCraftId]
             var raritylevel = itemToCraft.itemraritycategory
 
             var recipeConverted = createRecipeObject(recipe, itemToCraftId )
