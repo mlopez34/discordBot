@@ -2421,7 +2421,7 @@ module.exports.raresCommand = function(message, args, rarity){
     }
     profileDB.getUserItems(discordUserId, function(err, inventoryResponse){
         if (err){
-            // console.log(err);
+            console.log(err);
         }
         else{
             // console.log(inventoryResponse.data);
@@ -2447,7 +2447,11 @@ module.exports.raresCommand = function(message, args, rarity){
                     itemsInInventoryCountMap[inventoryResponse.data[item].itemid] = itemsInInventoryCountMap[inventoryResponse.data[item].itemid] + 1
                 }
             }
-            raresEmbedBuilder(message, itemsInInventoryCountMap, itemsMapById, includeDescriptions, rarity);
+            if (rarity == "armament"){
+                armamentsEmbedBuilder(message, inventoryResponse.data, itemsMapById, includeDescriptions, rarity)
+            }else{
+                raresEmbedBuilder(message, itemsInInventoryCountMap, itemsMapById, includeDescriptions, rarity);
+            }
         }
     })
 }
@@ -2512,7 +2516,7 @@ function raresEmbedBuilder(message, itemsMap, allItems, long, rarity){
                 }else{
                     if (allItems[key].itemraritycategory == "rare" 
                         || allItems[key].itemraritycategory == "ancient" 
-                        || allItems[key].itemraritycategory == "artifact" ){
+                        || allItems[key].itemraritycategory == "artifact"){
 
                         if (inventoryStringRegular.length > 900){
                             inventoryStringsRegular.push(inventoryStringRegular);
@@ -4984,9 +4988,7 @@ module.exports.createArmament = function(message, args){
     var discordUserId = message.author.id;
 
     if (args && args.length > 1 && !useItem.getItemsLock(discordUserId)){
-        var itemToCreateArmament =  args[1].toLowerCase()
-        var itemCount = 1
-        // get all the items available
+        var myItemShortName =  args[1].toLowerCase()
         useItem.setItemsLock(discordUserId, true)
         profileDB.getUserItems(discordUserId, function(err, inventoryResponse){
             if (err){
@@ -4996,25 +4998,148 @@ module.exports.createArmament = function(message, args){
             }
             else{
                 // get the requirements for the armament to create
+                var itemsInInventoryCountMap = {}
+                var itemToCreateArmament = itemsMapbyShortName[myItemShortName]
+                var armamentTemplateItem;
+                // find the armament template to obtain based on the rarity of the itemToCreateArmament
+                if (itemToCreateArmament){
+                    for (var i in allItems){
+                        if (allItems[i].armamentcategory && allItems[i].armamentcategory == itemToCreateArmament.itemraritycategory){
+                            armamentTemplateItem = allItems[i]
+                        }
+                    }
+    
+                    // if we have an item that meets the requirements then use that item to create the armament
+                    var itemBeingUsedForArmament = []
+                    for (var item in inventoryResponse.data){
+                        var validItem = useItem.itemValidate(inventoryResponse.data[item]);
+                        var notWearing = useItem.itemNotWearing(inventoryResponse.data[item])
+                        var auctionedItem = false;
+                        var ItemInQuestion = inventoryResponse.data[item]
+    
+                        if (itemsInAuction[inventoryResponse.data[item].id]){
+                            auctionedItem = true;
+                        }
+                        var itemBeingTraded = false;
+                        if (activeTradeItems[inventoryResponse.data[item].id]){
+                            itemBeingTraded = true;
+                        }
+                        if (!itemsInInventoryCountMap[inventoryResponse.data[item].itemid] 
+                            && validItem && notWearing && !auctionedItem && !itemBeingTraded){
+                            // item hasnt been added to be counted, add it as 1
+                            itemsInInventoryCountMap[inventoryResponse.data[item].itemid] = 1;
+    
+                            // check if the current item meets the criteria of armamentReqs
+                            var armamentCheck = disassembleItem.checkRequirements( itemsMapById[ ItemInQuestion.itemid ], itemToCreateArmament)
+                            // console.log(ItemInQuestion);
+                            if (armamentCheck){
+                                itemBeingUsedForArmament.push(ItemInQuestion);
+                                break;
+                            }
+                        }
+                    }
+                    if (itemBeingUsedForArmament.length > 0 ){
+                        console.log(itemBeingUsedForArmament)
+                        // the armaments in itemstable is just armament, improvedarmament, refinedarmament, masterarmament
+                        // in inventory table we define what item the armament is for, armamentforitemid -> actual item in itemstable
+                        var idToAppendToArmament = itemToCreateArmament.id
+                        // roll the armament 
+                        if (armamentTemplateItem){
+                            armamentTemplateItem.armamentforitemid = idToAppendToArmament
+                            // append the rest of the stats - hp,ad,md,sp,ar
+                            // stats adjustment are in inventory table, hp, md, ad, arm, spi, crit, luck
+                            // when putting on the item the stats come from these hpplus etc stats
+                            var armamentStats = disassembleItem.rollForArmamentStats(itemToCreateArmament)
+                            armamentTemplateItem.hpplus = armamentStats.hpplus
+                            armamentTemplateItem.adplus = armamentStats.adplus
+                            armamentTemplateItem.mdplus = armamentStats.mdplus
+                            armamentTemplateItem.armorplus = armamentStats.armorplus
+                            armamentTemplateItem.spiritplus = armamentStats.spiritplus
+                            armamentTemplateItem.critplus = armamentStats.critplus
+                            armamentTemplateItem.luckplus = armamentStats.luckplus
 
-                // requirements are on rarityEssenceLevels
-
-                // if we have an item that meets the requirements then use that item to create the armament
-
-                // add the armament to the user's inventory
-                // armaments are "armament" rarity
-
-                // TODO: add armament slots to wearing profile
-                // armaments are always active
-                // cannot trade armaments
-                
+                            // use the essence
+                            profileDB.updateItemStatus(itemBeingUsedForArmament[0].id, "used", function(err, res){
+                                if (err){
+                                    useItem.setItemsLock(discordUserId, false)
+                                    console.log(err)
+                                }else{
+                                    useItem.setItemsLock(discordUserId, false)
+                                    // add the armament to inventory - armaments are "armament" rarity
+                                    addToUserInventory(discordUserId, [ armamentTemplateItem ]);
+                                    message.channel.send(message.author + " created an armament " + JSON.stringify(armamentTemplateItem))
+                                }
+                            })
+                        }else{
+                            message.channel.send("no armament template for this item")
+                            useItem.setItemsLock(discordUserId, false)
+                        }
+                    }else{
+                        useItem.setItemsLock(discordUserId, false)
+                        message.channel.send("missing requirements to create armament for this item")
+                    }
+                }else{
+                    useItem.setItemsLock(discordUserId, false)
+                    message.channel.send("invalid item name")
+                }
             }
         })
     }
 }
 
-module.exports.armamentsCommand = function(){
+function armamentsEmbedBuilder(message, userItems, itemsMapById, long, rarity){
     // display available armaments
+    const embed = new Discord.RichEmbed()
+    var fieldCount = 0
+    var inventoryStringRegular = "";
+    var inventoryStringsRegular = [];
+    var mapOfArmaments = {}
+    // go through all items in the user inventory that are armaments
+    // check if the itemid in itemsInInventoryCountMap is > 0
+    // generate the string based on the itemsMapById that corresponds to the item in inventory armamentitemid
+    for (var item in userItems) {
+        var idOfItemInMap = userItems[item].itemid
+        if (itemsMapById[idOfItemInMap].itemraritycategory == "armament"
+            && !mapOfArmaments[idOfItemTheArmamentIsFor]){
+            var idOfItemTheArmamentIsFor = userItems[item].armamentforitemid
+            var statsFromArmament = " 💚 " + userItems[item].hpplus + " 🗡️ "  + userItems[item].adplus + " ☄️ " + userItems[item].mdplus + " 🛡️ " + userItems[item].armorplus + " 🙌 " + userItems[item].spiritplus + " 💥 " + userItems[item].critplus + " 🌟 " + userItems[item].luckplus 
+            var itemOfArmament = itemsMapById[idOfItemTheArmamentIsFor]
+            var emoji = ":gear:";
+            if (long && fieldCount < 25){
+                embed.addField(emoji + " " + itemOfArmament.itemname + " Armament", itemsMapById[idOfItemInMap].itemslot + " - " + itemsMapById[idOfItemInMap].itemstatistics, true)
+                fieldCount++
+            }else{
+                if (inventoryStringRegular.length > 900){
+                    inventoryStringsRegular.push(inventoryStringRegular);
+                    inventoryStringRegular = "";
+                    inventoryStringRegular = "**" + itemOfArmament.itemname + " Armament** - " +  statsFromArmament + "\n" + inventoryStringRegular;                        
+                }else{
+                    inventoryStringRegular = "**" + itemOfArmament.itemname + " Armament** - " +  statsFromArmament + "\n" + inventoryStringRegular;                        
+                }
+            }
+            mapOfArmaments[idOfItemTheArmamentIsFor] = true
+        }
+    }
+    // push the leftover
+    if (inventoryStringRegular.length > 0){
+        inventoryStringsRegular.push(inventoryStringRegular);
+    }
+    if (!long){
+        for (var invString = inventoryStringsRegular.length -1; invString >= 0; invString--){
+            var emoji = ""
+            if ( rarity == "armament"){
+                emoji = ":gear:"
+            }
+            embed.addField(emoji + " Item Name  |  STATS " + emoji, inventoryStringsRegular[invString], true)
+        }
+    }
+
+    embed
+    .setAuthor(message.author.username +"'s Armaments")
+    .setDescription( "armament description")
+    .setThumbnail(message.author.avatarURL)
+    .setColor(0x06e8e8)
+    message.channel.send({embed});
 }
 
 module.exports.greenHouseCommand = function(message){
@@ -6777,6 +6902,7 @@ module.exports.putonCommand = function(message, args, retry){
                             // 
                             // get all the data for each item
                             var itemsInInventoryCountMap = {};
+                            var userItemsById = {}
                             for (var item in inventoryResponse.data){
                                 var validItem = useItem.itemValidate(inventoryResponse.data[item]);
                                 // item not being auctioned
@@ -6971,7 +7097,6 @@ module.exports.takeoffCommand = function(message, args){
             }
             else if (!itemId && itemslot){
                 // have an item lingering, just take off everything
-
                 //user wearing slot to null
                 profileDB.takeOffWear(discordUserId, slot, function(err, res){
                     if (err){
@@ -7177,7 +7302,6 @@ function handleMarketItemAuctionEnded(individualItem){
                     console.log(transferErr)
                 }
                 else{
-                    
                     try{
                         if (marketItems[individualItem.id].lastHighestbidderchannel){
                             // send a message to the winners channel that they won the auction    
@@ -8850,7 +8974,7 @@ module.exports.rpgReadyCommand = function(message){
                 buffItemsById[allItems[item].id] = allItems[item];
             }
         }
-        rpg.rpgReady(message, itemsMapById, amuletItemsById, buffItemsById);
+        rpg.rpgReady(message, itemsMapById, amuletItemsById, buffItemsById, allItems);
     }
 }
 

@@ -28,7 +28,7 @@ module.exports.rpgInitialize = function(message, special){
     team.push(message.author);
 
     users.forEach(function(user){
-        if (team.length < TEAM_MAX_LENGTH ){//&& discordUserId != user.id){
+        if (team.length < TEAM_MAX_LENGTH && discordUserId != user.id){
             team.push(user);
         }
     })
@@ -145,11 +145,14 @@ module.exports.showRpgStats = function(message, itemsAvailable, amuletItemsById)
                     // console.log(inventoryResponse.data);
                     // get all the data for each item
                     var itemsInInventoryCountMap = {};
-
+                    var userArmamentForItemId = {}
                     for (var item in inventoryResponse.data){
                         if (!itemsInInventoryCountMap[inventoryResponse.data[item].itemid] ){
                             // item hasnt been added to be counted, add it as 1
                             itemsInInventoryCountMap[inventoryResponse.data[item].itemid] = 1;
+                            if (inventoryResponse.data[item].armamentforitemid){
+                                userArmamentForItemId[inventoryResponse.data[item].armamentforitemid] = inventoryResponse.data[item]
+                            }
                         }else{
                             itemsInInventoryCountMap[inventoryResponse.data[item].itemid] = itemsInInventoryCountMap[inventoryResponse.data[item].itemid] + 1
                         }
@@ -228,6 +231,16 @@ module.exports.showRpgStats = function(message, itemsAvailable, amuletItemsById)
                                 var armorPlus = itemsAvailable[items[i]].armorplus ? itemsAvailable[items[i]].armorplus : 0;
                                 var spiritPlus = itemsAvailable[items[i]].spiritplus ? itemsAvailable[items[i]].spiritplus : 0;
                                 var luckPlus = itemsAvailable[items[i]].luckplus ? itemsAvailable[items[i]].luckplus : 0;
+                                // check for an amulet for this item
+                                if (userArmamentForItemId[items[i]]){
+                                    // HAVE armament for this item - add the stats to the item
+                                    hpPlus = hpPlus + userArmamentForItemId[items[i]].hpplus;
+                                    attackDmgPlus = attackDmgPlus + userArmamentForItemId[items[i]].adplus;
+                                    magicDmgPlus = magicDmgPlus + userArmamentForItemId[items[i]].mdplus;
+                                    armorPlus = armorPlus + userArmamentForItemId[items[i]].armorplus;
+                                    spiritPlus = spiritPlus + userArmamentForItemId[items[i]].spiritplus;
+                                    luckPlus = luckPlus + userArmamentForItemId[items[i]].luckplus;
+                                }
 
                                 statisticsFromItemsAndLevel.hpPlus = statisticsFromItemsAndLevel.hpPlus + hpPlus;
                                 statisticsFromItemsAndLevel.attackDmgPlus = statisticsFromItemsAndLevel.attackDmgPlus + attackDmgPlus;
@@ -235,6 +248,7 @@ module.exports.showRpgStats = function(message, itemsAvailable, amuletItemsById)
                                 statisticsFromItemsAndLevel.armorPlus = statisticsFromItemsAndLevel.armorPlus + armorPlus;
                                 statisticsFromItemsAndLevel.spiritPlus = statisticsFromItemsAndLevel.spiritPlus + spiritPlus;
                                 statisticsFromItemsAndLevel.luckPlus = statisticsFromItemsAndLevel.luckPlus + luckPlus;
+                                
 
                                 singleItemString = singleItemString + "**Stats**: ";
                                 singleItemString = singleItemString + " 💚 " + hpPlus;
@@ -423,7 +437,7 @@ module.exports.pvpReady = function(message, itemsAvailable, amuletItemsById){
     // add if pvp statement to turnfinishedEmbedBuilder, 
 }
 
-module.exports.rpgReady = function(message, itemsAvailable, amuletItemsById, buffItemsById){
+module.exports.rpgReady = function(message, itemsAvailable, amuletItemsById, buffItemsById, allItems){
     // create an embed saying that b is about to happen, for users MAX of 5 users and they must all say -ready to start costs 5 tacos per person
     var discordUserId = message.author.id;
     
@@ -466,11 +480,14 @@ module.exports.rpgReady = function(message, itemsAvailable, amuletItemsById, buf
                         else{
                             // get all the data for each item
                             var itemsInInventoryCountMap = {};
+                            var userArmamentForItemId = {}
                             for (var item in inventoryResponse.data){
-        
                                 if (!itemsInInventoryCountMap[inventoryResponse.data[item].itemid] ){
                                     // item hasnt been added to be counted, add it as 1
                                     itemsInInventoryCountMap[inventoryResponse.data[item].itemid] = 1;
+                                    if (inventoryResponse.data[item].armamentforitemid){
+                                        userArmamentForItemId[inventoryResponse.data[item].armamentforitemid] = inventoryResponse.data[item]
+                                    }
                                 }else{
                                     itemsInInventoryCountMap[inventoryResponse.data[item].itemid] = itemsInInventoryCountMap[inventoryResponse.data[item].itemid] + 1
                                 }
@@ -506,7 +523,7 @@ module.exports.rpgReady = function(message, itemsAvailable, amuletItemsById, buf
                                     message.channel.send(wearErr + " something went wrong [wearing] - someone doesn't have a wearing profile");
                                 }else{
                                     var userLevel = userStats.level;
-                                    wearStats.getUserWearingStats(message, discordUserId, {userLevel: userLevel}, function(wearErr, wearRes){
+                                    wearStats.getUserWearingStats(message, discordUserId, {userLevel: userLevel}, allItems, function(wearErr, wearRes){
                                         if (wearErr){
                                             console.log(wearErr)
                                         }else{
@@ -558,8 +575,6 @@ module.exports.rpgReady = function(message, itemsAvailable, amuletItemsById, buf
                                             }
                                             // added stats from items
                                             for (var i in items){
-                                                console.log("i")
-                                                console.log(i)
                                                 if (itemsAvailable[items[i]].ability1){
                                                     abilities.push(itemsAvailable[items[i]].ability1);
                                                 }
@@ -579,7 +594,16 @@ module.exports.rpgReady = function(message, itemsAvailable, amuletItemsById, buf
                                                 var armorPlus = itemsAvailable[items[i]].armorplus ? itemsAvailable[items[i]].armorplus : 0;
                                                 var spiritPlus = itemsAvailable[items[i]].spiritplus ? itemsAvailable[items[i]].spiritplus : 0;
                                                 var luckPlus = itemsAvailable[items[i]].luckplus ? itemsAvailable[items[i]].luckplus : 0;
-
+                                                // check for an amulet for this item
+                                                if (userArmamentForItemId[items[i]]){
+                                                    // HAVE armament for this item - add the stats to the item
+                                                    hpPlus = hpPlus + userArmamentForItemId[items[i]].hpplus;
+                                                    attackDmgPlus = attackDmgPlus + userArmamentForItemId[items[i]].adplus;
+                                                    magicDmgPlus = magicDmgPlus + userArmamentForItemId[items[i]].mdplus;
+                                                    armorPlus = armorPlus + userArmamentForItemId[items[i]].armorplus;
+                                                    spiritPlus = spiritPlus + userArmamentForItemId[items[i]].spiritplus;
+                                                    luckPlus = luckPlus + userArmamentForItemId[items[i]].luckplus;
+                                                }
                                                 statisticsFromItemsAndLevel.hpPlus = statisticsFromItemsAndLevel.hpPlus + hpPlus;
                                                 statisticsFromItemsAndLevel.attackDmgPlus = statisticsFromItemsAndLevel.attackDmgPlus + attackDmgPlus;
                                                 statisticsFromItemsAndLevel.magicDmgPlus = statisticsFromItemsAndLevel.magicDmgPlus + magicDmgPlus;

@@ -243,7 +243,83 @@ const rarityEssenceLevels = {
         essenceRarity: "artifact",
         crystalRarity: "artifact"
     }
+}
 
+var armamentEssenceLevels = {
+    "rare": {
+        level: 1,
+        essenceRarity: "rare",
+        crystalRarity: "rare"
+    },
+    "rare+": {
+        level: 2,
+        essenceRarity: "rare",
+        crystalRarity: "rare"
+    },
+    "rare++": {
+        level: 3,
+        essenceRarity: "rare",
+        crystalRarity: "rare"
+    },
+    "rare++": {
+        level: 4,
+        essenceRarity: "rare",
+        crystalRarity: "rare"
+    },
+    "ancient": {
+        level: 1,
+        essenceRarity: "ancient",
+        crystalRarity: "ancient"
+    },
+    "ancient+": {
+        level: 2,
+        essenceRarity: "ancient",
+        crystalRarity: "ancient"
+    },
+    "ancient++": {
+        level: 3,
+        essenceRarity: "ancient",
+        crystalRarity: "ancient"
+    },
+    "ancient+++": {
+        level: 4,
+        essenceRarity: "ancient",
+        crystalRarity: "ancient"
+    },
+    "artifact": {
+        level: 1,
+        essenceRarity: "artifact",
+        crystalRarity: "artifact"
+    }
+}
+
+module.exports.checkRequirements = function(item, itemToCreateArmament){
+    var itemRarity = itemToCreateArmament.itemraritycategory
+    var requirements = armamentEssenceLevels[itemRarity]
+    if (item.essencelevel){
+        if (item.essencelevel == requirements.level && item.essencerarity == requirements.essenceRarity){
+            return true
+        }else{
+            return false
+        }
+    }else{
+        return false
+    }
+    
+}
+
+module.exports.rollForArmamentStats = function(){
+    var armamentStats = {
+        hpplus: 10,
+        adplus: -5,
+        mdplus: 5,
+        armorplus: 2,
+        spiritplus: 0,
+        luckplus: 1,
+        critplus: 3
+    }
+
+    return armamentStats
 }
 
 function filterListOfObtainableItems(listOfObtainableItems, disassembleRarity, current, crystal){

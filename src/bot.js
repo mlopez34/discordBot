@@ -402,6 +402,12 @@ client.on('message', function(message){
                     // disassemble items - mark them as used - obtain items based on the item disassembled
                     commands.disassembleCommand(message, args);
                 }
+                else if (commandIs("createarmament", message)){
+                    commands.createArmament(message, args);
+                }
+                else if (commandIs("armaments", message)){
+                    commands.raresCommand(message, args, "armament");
+                }
                 else if (commandIs("bake", message)){
                     commands.bakeCommand(message, args);
                 }else if (commandIs("fish", message)){
@@ -984,6 +990,12 @@ client.on('message', function(message){
                 }
                 else if (commandIs("bake", message)){
                     commands.bakeCommand(message, args);
+                }
+                else if (commandIs("createarmament", message)){
+                    commands.createArmament(message, args);
+                }
+                else if (commandIs("armaments", message)){
+                    commands.raresCommand(message, args, "armament");
                 }
                 else if (commandIs("upgrade", message)){
                     // can be stable or greenhouse or temple

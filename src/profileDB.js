@@ -983,6 +983,7 @@ module.exports.getItemByIdsWear = function(itemId, itemId2, itemId3, cb) {
 module.exports.addNewItemToUser = function(discordId, items, cb) {
     var inventoryItems = [];
     var itemobtaindate = new Date();
+    let isArmament = false
     for (var item in items){
         if (items[item].itemAmount && items[item].itemAmount > 1){
             // insert more than 1 item
@@ -1001,24 +1002,52 @@ module.exports.addNewItemToUser = function(discordId, items, cb) {
                 itemid: items[item].id,
                 itemobtaindate: itemobtaindate
             }
+            if (items[item].armamentforitemid){
+                inventoryItem.armamentforitemid = items[item].armamentforitemid
+                inventoryItem.hpplus = items[item].hpplus
+                inventoryItem.adplus = items[item].adplus
+                inventoryItem.mdplus = items[item].mdplus
+                inventoryItem.armorplus = items[item].armorplus
+                inventoryItem.spiritplus = items[item].spiritplus
+                inventoryItem.critplus = items[item].critplus
+                inventoryItem.luckplus = items[item].luckplus
+                isArmament = true
+            }
             inventoryItems.push(inventoryItem);
         }
     }
-    
-    var values = new Inserts('${discordid}, ${itemid} ,${itemobtaindate}', inventoryItems); // using Inserts as a type;
 
-    db.none('INSERT INTO '  + config.inventoryTable + '(discordid, itemid, itemobtaindate) VALUES $1', values)
-    .then(function (data) {
-        cb(null, {
-            status: 'success',
-            data: data,
-            message: 'added Item to users inventory'
-        });
-    })
-    .catch(function (err) {
-        // console.log(err);
-        cb(err);
-    }); 
+    if (isArmament){
+        var values = new Inserts('${discordid}, ${itemid} ,${itemobtaindate} ,${armamentforitemid} ,${hpplus} ,${adplus} ,${mdplus} ,${armorplus} ,${spiritplus} ,${critplus} ,${luckplus}', inventoryItems); // using Inserts as a type;
+        db.none('INSERT INTO '  + config.inventoryTable + '(discordid, itemid, itemobtaindate, armamentforitemid, hpplus, adplus, mdplus, armorplus, spiritplus, critplus, luckplus) VALUES $1', values)
+        .then(function (data) {
+            cb(null, {
+                status: 'success',
+                data: data,
+                message: 'added Item to users inventory'
+            });
+        })
+        .catch(function (err) {
+            // console.log(err);
+            cb(err);
+        }); 
+    }else{
+        var values = new Inserts('${discordid}, ${itemid} ,${itemobtaindate}', inventoryItems); // using Inserts as a type;
+        db.none('INSERT INTO '  + config.inventoryTable + '(discordid, itemid, itemobtaindate) VALUES $1', values)
+        .then(function (data) {
+            cb(null, {
+                status: 'success',
+                data: data,
+                message: 'added Item to users inventory'
+            });
+        })
+        .catch(function (err) {
+            // console.log(err);
+            cb(err);
+        }); 
+    }
+    
+    
 }
 
 module.exports.bulkUpdateItemStatus = function(items, status, cb){
@@ -1324,7 +1353,7 @@ module.exports.bidOnMarketItem = function(params, cb){
 
 // get user's inventory
 module.exports.getUserItems = function(discordId, cb) {
-  var query = 'select * from ' + config.inventoryTable + ' where discordId = $1 AND status is null '
+  var query = 'select * from ' + config.inventoryTable + ' where discordId = $1 AND status is null ORDER BY id DESC '
   // console.log(query);
   db.query(query, [discordId])
     .then(function (data) {
@@ -1341,7 +1370,7 @@ module.exports.getUserItems = function(discordId, cb) {
 }
 // items for iteminfo
 module.exports.getUserItemsForInfo = function(discordId, cb) {
-    var query = 'select * from ' + config.inventoryTable + ' where discordId = $1 AND (status is null OR status = \'wearing\' ) '
+    var query = 'select * from ' + config.inventoryTable + ' where discordId = $1 AND (status is null OR status = \'wearing\' ) ORDER BY id DESC '
     // console.log(query);
     db.query(query, [discordId])
       .then(function (data) {
