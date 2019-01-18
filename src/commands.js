@@ -4997,6 +4997,10 @@ module.exports.createArmament = function(message, args){
                 useItem.setItemsLock(discordUserId, false)
             }
             else{
+                // TODO: get the user wearing to see if the user is wearing the item
+                // if the user is not wearing the item then do not create the armament
+
+
                 // get the requirements for the armament to create
                 var itemsInInventoryCountMap = {}
                 var itemToCreateArmament = itemsMapbyShortName[myItemShortName]
@@ -5067,6 +5071,9 @@ module.exports.createArmament = function(message, args){
                                     useItem.setItemsLock(discordUserId, false)
                                     // add the armament to inventory - armaments are "armament" rarity
                                     addToUserInventory(discordUserId, [ armamentTemplateItem ]);
+                                    console.log("******armament")
+                                    console.log(JSON.stringify(armamentTemplateItem, null, 2))
+                                    // TODO: create embed instead
                                     message.channel.send(message.author + " created an armament " + JSON.stringify(armamentTemplateItem))
                                 }
                             })
@@ -7205,7 +7212,6 @@ module.exports.initializeMarketPlace = function(){
                     marketItems[individualItem.id].currentbid = marketItems[individualItem.id].buyout
                 }
                 // take away the highest bidder's tacos immediately
-                
                 if (individualItem.currentbiduserid){
                     if (!tacosInUseAuction[individualItem.currentbiduserid]){
                         tacosInUseAuction[individualItem.currentbiduserid] = 0;
@@ -7218,7 +7224,6 @@ module.exports.initializeMarketPlace = function(){
                 }else{
                     marketItemsUserCount[individualItem.discordid] = marketItemsUserCount[individualItem.discordid] + 1
                 }
-                
                 handleAuctionItem(individualItem)
             }
             console.log("Market Initialized")

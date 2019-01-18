@@ -232,12 +232,12 @@ module.exports = {
         orchatasip: {
             name:"Orchata Sip",
             abilityId: "orchatasip",
-            description: "Heal your target over time for 50 + 145% of your magical damage over 5 turns",
+            description: "Heal your target over time for 150 + 155% of your magical damage over 5 turns",
             hot: {
                 name: "Orchata Sip",
-                heal: 50,
+                heal: 150,
                 emoji: "<:orchatasip:479296604831219714>",
-                mdPercentage: 1.45,
+                mdPercentage: 1.55,
                 healingOnHotApply: false,
                 turnsToExpire: 5,
                 healingOnDotExpire: false,
@@ -499,19 +499,19 @@ module.exports = {
         shoot: {
             name: "Shoot",
             abilityId: "shoot",
-            description: "Deal 125 damage + 120% of your attack damage, 6 charges",
+            description: "Deal 125 damage + 143% of your attack damage, 6 charges",
             dmg: 125,
             charges: 6,
             maxcharges: 6,
-            adPercentage: 1.2,
+            adPercentage: 1.43,
             type: "physical"
         },
         shock: {
             name: "Shock",
             abilityId: "shock",
             dmg: 120,
-            mdPercentage: 1.2,
-            description: "Deal 120 damage + 120% of your attack damage, deal 20% damage dealt to yourself",
+            mdPercentage: 1.43,
+            description: "Deal 120 damage + 143% of your magic damage, deal 20% damage dealt to yourself",
             type: "electric",
             special: "selfdamage",
             selfdamage: 15

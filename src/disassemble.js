@@ -308,15 +308,305 @@ module.exports.checkRequirements = function(item, itemToCreateArmament){
     
 }
 
-module.exports.rollForArmamentStats = function(){
+module.exports.rollForArmamentStats = function(itemToCreateArmament){
+    // based on the item rarity that we're crafting an armament for, we'll roll for the stats
+    // additional criteria to check - what slot it occupies
+    var itemRarity = itemToCreateArmament.itemraritycategory
+    // set floors and ceilings for the stats based on itemRarity
+    // based on rarity we will also get "extra bonuses" added ie if its a rare, we get + 5
+    // if we get a ancient++ we get +24
+    // once the distributions are done, the extra bonuses are added to the rolls
+    // if initially we get hpplus -10 then the extra bonus would kick in and give the roll -8 instead
+
+    // distributions will not be equal, 65% of the time between 1/2 of the floor and ceilings
+    // 20% of time other 25% of the floor and ceilings
+    // 15% of the time will be other 25% of floor and ceilings
+
     var armamentStats = {
-        hpplus: 10,
-        adplus: -5,
-        mdplus: 5,
-        armorplus: 2,
+        hpplus: 0,
+        adplus: 0,
+        mdplus: 0,
+        armorplus: 0,
         spiritplus: 0,
-        luckplus: 1,
-        critplus: 3
+        luckplus: 0,
+        critplus: 0
+    }
+
+    var statMap = {
+        hpplus: {
+            floor: -10,
+            ceiling: 10
+        },
+        adplus: {
+            floor: -10,
+            ceiling: 10
+        },
+        mdplus: {
+            floor: -10,
+            ceiling: 10
+        },
+        armorplus: {
+            floor: -10,
+            ceiling: 10
+        },
+        spiritplus: {
+            floor: -10,
+            ceiling: 10
+        },
+        critplus: {
+            floor: -10,
+            ceiling: 10
+        },
+        luckplus: {
+            floor: -10,
+            ceiling: 10
+        }
+    }
+
+    if (itemRarity == "rare"){
+        statMap.hpplus.floor = -20
+        statMap.hpplus.ceiling = 95
+
+        statMap.adplus.floor = -20
+        statMap.adplus.ceiling = 95
+
+        statMap.mdplus.floor = -20
+        statMap.mdplus.ceiling = 95
+
+        statMap.armorplus.floor = -20
+        statMap.armorplus.ceiling = 95
+
+        statMap.spiritplus.floor = -20
+        statMap.spiritplus.ceiling = 95
+
+        statMap.critplus.floor = -20
+        statMap.critplus.ceiling = 95
+
+        statMap.luckplus.floor = -20
+        statMap.luckplus.ceiling = 95
+
+    }else if (itemRarity == "rare+"){
+        statMap.hpplus.floor = -10
+        statMap.hpplus.ceiling = 19
+
+        statMap.adplus.floor = -20
+        statMap.adplus.ceiling = 95
+
+        statMap.mdplus.floor = -20
+        statMap.mdplus.ceiling = 95
+
+        statMap.armorplus.floor = -20
+        statMap.armorplus.ceiling = 95
+
+        statMap.spiritplus.floor = -20
+        statMap.spiritplus.ceiling = 95
+
+        statMap.critplus.floor = -20
+        statMap.critplus.ceiling = 95
+
+        statMap.luckplus.floor = -20
+        statMap.luckplus.ceiling = 95
+
+    }else if (itemRarity == "rare++"){
+        statMap.hpplus.floor = -9
+        statMap.hpplus.ceiling = 28
+
+        statMap.adplus.floor = -20
+        statMap.adplus.ceiling = 95
+
+        statMap.mdplus.floor = -20
+        statMap.mdplus.ceiling = 95
+
+        statMap.armorplus.floor = -20
+        statMap.armorplus.ceiling = 95
+
+        statMap.spiritplus.floor = -20
+        statMap.spiritplus.ceiling = 95
+
+        statMap.critplus.floor = -20
+        statMap.critplus.ceiling = 95
+
+        statMap.luckplus.floor = -20
+        statMap.luckplus.ceiling = 95
+
+    }else if (itemRarity == "rare+++"){
+        statMap.hpplus.floor = -8
+        statMap.hpplus.ceiling = 40
+
+        statMap.adplus.floor = -20
+        statMap.adplus.ceiling = 95
+
+        statMap.mdplus.floor = -20
+        statMap.mdplus.ceiling = 95
+
+        statMap.armorplus.floor = -20
+        statMap.armorplus.ceiling = 95
+
+        statMap.spiritplus.floor = -20
+        statMap.spiritplus.ceiling = 95
+
+        statMap.critplus.floor = -20
+        statMap.critplus.ceiling = 95
+
+        statMap.luckplus.floor = -20
+        statMap.luckplus.ceiling = 95
+
+    }else if (itemRarity == "ancient"){
+        statMap.hpplus.floor = -25
+        statMap.hpplus.ceiling = 35
+
+        statMap.adplus.floor = -20
+        statMap.adplus.ceiling = 95
+
+        statMap.mdplus.floor = -20
+        statMap.mdplus.ceiling = 95
+
+        statMap.armorplus.floor = -20
+        statMap.armorplus.ceiling = 95
+
+        statMap.spiritplus.floor = -20
+        statMap.spiritplus.ceiling = 95
+
+        statMap.critplus.floor = -20
+        statMap.critplus.ceiling = 95
+
+        statMap.luckplus.floor = -20
+        statMap.luckplus.ceiling = 95
+
+    }else if (itemRarity == "ancient+"){
+        statMap.hpplus.floor = -23
+        statMap.hpplus.ceiling = 45
+
+        statMap.adplus.floor = -20
+        statMap.adplus.ceiling = 95
+
+        statMap.mdplus.floor = -20
+        statMap.mdplus.ceiling = 95
+
+        statMap.armorplus.floor = -20
+        statMap.armorplus.ceiling = 95
+
+        statMap.spiritplus.floor = -20
+        statMap.spiritplus.ceiling = 95
+
+        statMap.critplus.floor = -20
+        statMap.critplus.ceiling = 95
+
+        statMap.luckplus.floor = -20
+        statMap.luckplus.ceiling = 95
+
+    }else if (itemRarity == "ancient++"){
+        statMap.hpplus.floor = -22
+        statMap.hpplus.ceiling = 68
+
+        statMap.adplus.floor = -20
+        statMap.adplus.ceiling = 95
+
+        statMap.mdplus.floor = -20
+        statMap.mdplus.ceiling = 95
+
+        statMap.armorplus.floor = -20
+        statMap.armorplus.ceiling = 95
+
+        statMap.spiritplus.floor = -20
+        statMap.spiritplus.ceiling = 95
+
+        statMap.critplus.floor = -20
+        statMap.critplus.ceiling = 95
+
+        statMap.luckplus.floor = -20
+        statMap.luckplus.ceiling = 95
+
+    }else if (itemRarity == "ancient+++"){
+        statMap.hpplus.floor = -20
+        statMap.hpplus.ceiling = 95
+
+        statMap.adplus.floor = -20
+        statMap.adplus.ceiling = 95
+
+        statMap.mdplus.floor = -20
+        statMap.mdplus.ceiling = 95
+
+        statMap.armorplus.floor = -20
+        statMap.armorplus.ceiling = 95
+
+        statMap.spiritplus.floor = -20
+        statMap.spiritplus.ceiling = 95
+
+        statMap.critplus.floor = -20
+        statMap.critplus.ceiling = 95
+
+        statMap.luckplus.floor = -20
+        statMap.luckplus.ceiling = 95
+
+    }else if (itemRarity == "myth"){
+        statMap.hpplus.floor = -8
+        statMap.hpplus.ceiling = 24
+
+        statMap.adplus.floor = -20
+        statMap.adplus.ceiling = 95
+
+        statMap.mdplus.floor = -20
+        statMap.mdplus.ceiling = 95
+
+        statMap.armorplus.floor = -20
+        statMap.armorplus.ceiling = 95
+
+        statMap.spiritplus.floor = -20
+        statMap.spiritplus.ceiling = 95
+
+        statMap.critplus.floor = -20
+        statMap.critplus.ceiling = 95
+
+        statMap.luckplus.floor = -20
+        statMap.luckplus.ceiling = 95
+    }
+
+    // roll for stat distribution
+    var distributionRoll = Math.floor(Math.random() * 100) + 1;
+
+    for (var stat in statMap){
+        var statfloor = statMap[stat].floor
+        var statceiling = statMap[stat].ceiling
+        if (distributionRoll > 80){
+            // roll for top 25% of distribution
+            var range = statceiling + (statfloor * -1)
+            var newstatfloor = statceiling - (range * 0.25)
+            var newstatceiling = statceiling
+            var newRange = newstatceiling + (newstatfloor * -1 )
+    
+            var statRoll = Math.floor( Math.random() *  newRange ) + newstatfloor;
+            // floor is new floor and ceiling remains same
+            armamentStats[stat] = Math.ceil( statRoll )
+    
+        }else if (distributionRoll > 20){
+            // roll for 50-75% of distribution
+            var range = statceiling + (statfloor * -1)
+            var newstatfloor = statceiling - (range * 0.5)
+            var newstatceiling = statceiling - (range * 0.25)
+            var newRange = newstatceiling + (newstatfloor * -1 )
+    
+            var statRoll = Math.floor( Math.random() *  newRange ) + newstatfloor;
+            armamentStats[stat] = Math.ceil( statRoll )
+        }else if (distributionRoll > 5){
+            // roll for 25%-50% of distribution
+            var range = statceiling + (statfloor * -1)
+            var newstatfloor = statceiling - (range * 0.75)
+            var newstatceiling = statceiling - (range * 0.5)
+            var newRange = newstatceiling + (newstatfloor * -1 )
+    
+            var statRoll = Math.floor( Math.random() *  newRange ) + newstatfloor;
+            armamentStats[stat] = Math.ceil( statRoll )
+        }else{
+            // roll for 0-25% of distribution
+            var range = statceiling + (statfloor * -1)
+            var newstatceiling = statceiling - (range * 0.75)
+            var newstatfloor = statfloor
+            var newRange = newstatceiling + (newstatfloor * -1 )
+    
+            var statRoll = Math.floor( Math.random() *  newRange ) + newstatfloor;
+            armamentStats[stat] = Math.ceil( statRoll )
+        }
     }
 
     return armamentStats
