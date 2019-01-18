@@ -7050,21 +7050,22 @@ function marketBuilder(message, marketData, long){
             page = marketData.marketParams.marketPage - 1
         }
     }
-
+    var userAuctionCount = marketItemsUserCount[message.author.id] || 0
     if (!long){
         // show short shop
         const embed = new Discord.RichEmbed()
         .setColor(0x000000)
-        .setDescription("-markethelp for more info!\nThere are `" + marketItemsCount + "` items in the market currently \nYou are viewing page: " + (page + 1))
+        .setDescription("-markethelp for more info!\nThere are `" + marketItemsCount + "` items in the market currently \nYou are viewing page: " + (page + 1) + "\nYou have `" + userAuctionCount + "` auctions in the market")
         .addField("Market Items :shinto_shrine:", marketItemsByPage[page] , false)
-        .addField('Your current tacos', marketData.userTacos + " :taco:", false)
+        .addField('Your current tacos', marketData.userTacos + " :taco:", true)
         .setTimestamp()
         message.channel.send({embed});
     }else{
         const embed = new Discord.RichEmbed()
         .setColor(0x000000)
-        .addField("Market Items :shinto_shrine:", marketString , false)
-        .addField('Your current tacos', marketData.userTacos + " :taco:", false)
+        .setDescription("-markethelp for more info!\nThere are `" + marketItemsCount + "` items in the market currently \nYou are viewing page: " + (page + 1) + "\nYou have `" + userAuctionCount + "` auctions in the market")
+        .addField("Market Items :shinto_shrine:", marketItemsByPage[page] , false)
+        .addField('Your current tacos', marketData.userTacos + " :taco:", true)
         .setTimestamp()
         message.channel.send({embed});
     }
