@@ -6771,7 +6771,9 @@ function handleAuctionItem(individualItem){
         // auction has not ended, just reinitialize
         var itemAuctionTimeout = setTimeout(function(){
             // do things here
-            console.log(marketItems[individualItem.id].name + " " + individualItem.id + " has ended" )
+            if (individualItem && marketItems[individualItem.id]){
+                console.log(marketItems[individualItem.id].name + " " + individualItem.id + " has ended" )
+            }
             // someone has bid on the item - announce, and change item to belong to them
             handleMarketItemAuctionEnded(individualItem)
     
