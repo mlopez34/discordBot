@@ -75,6 +75,7 @@ var marketItems = {}
 var marketItemsUserCount = {} // keeps track of number of items a user has in the market
 var client;
 var usersMinigames = {};
+var userTradeLock = {}
 
 var NeedsToAgree = {}
 
@@ -7711,6 +7712,11 @@ module.exports.bidCommand = function(message, args){
     }
 }
 
+module.exports.setTradeLock = function(sender, receiver, set){
+    userTradeLock[sender] = set
+    userTradeLock[receiver] = set
+}
+
 module.exports.tradeCommand = function(message, args){
     var discordUserId = message.author.id;
     // arguments are 1 = tagged person, 2 = item to trade
@@ -7728,8 +7734,16 @@ module.exports.tradeCommand = function(message, args){
         var mentionedIdString = "trading-" + mentionedId;
     }
     var discordUserIdString = "trading-" + discordUserId;
-    if (args && args.length >= 3 && mentionedUser && !activeTrades[mentionedIdString] && !hasOpenTrade[discordUserIdString] && !hasOpenTrade[mentionedIdString] ){ //&& mentionedId != discordUserId){
-        
+    if (args && args.length >= 3 
+        && mentionedUser 
+        && !activeTrades[mentionedIdString] 
+        && !hasOpenTrade[discordUserIdString] 
+        && !hasOpenTrade[mentionedIdString] 
+        && !userTradeLock[discordUserIdString]
+        && !userTradeLock[mentionedIdString]){
+        //&& mentionedId != discordUserId){
+        // lock trading between both users
+        exports.setTradeLock(discordUserIdString, mentionedIdString, true)
         var itemCount = 1;
         var myItemShortName = args[2].toLowerCase();
         if (args.length > 3){
@@ -7748,6 +7762,7 @@ module.exports.tradeCommand = function(message, args){
             profileDB.getUserProfileData(discordUserId, function(getProfileErr, getProfileRes){
                 if (getProfileErr){
                     // console.log(getProfileErr);
+                    exports.setTradeLock(discordUserIdString, mentionedIdString, false)
                     agreeToTerms(message, discordUserId);
                 }
                 else{
@@ -7755,6 +7770,7 @@ module.exports.tradeCommand = function(message, args){
                     profileDB.getUserItems(discordUserId, function(err, inventoryResponse){
                         if (err){
                             // console.log(err);
+                            exports.setTradeLock(discordUserIdString, mentionedIdString, false)
                         }
                         else{
                             // console.log(inventoryResponse.data);
@@ -7866,13 +7882,16 @@ module.exports.tradeCommand = function(message, args){
                                         }, 60000)
 
                                         activeTrades[mentionedIdString].tradeTimeout = tradeEnds
+                                        exports.setTradeLock(discordUserIdString, mentionedIdString, false)
                                     }
                                     else{
                                         message.channel.send(message.author + " you cannot create that trade")
+                                        exports.setTradeLock(discordUserIdString, mentionedIdString, false)
                                     }
                                 }
                                 else{
                                     message.channel.send(message.author + " invalid item!");
+                                    exports.setTradeLock(discordUserIdString, mentionedIdString, false)
                                 }
                             })
                         }
@@ -7882,12 +7901,15 @@ module.exports.tradeCommand = function(message, args){
         }
         else{
             message.channel.send(message.author + " trade for more than 1 taco, cannot tax 1 taco :(")
+            exports.setTradeLock(discordUserIdString, mentionedIdString, false)
         }
     }
     else{
         if (activeTrades[mentionedIdString] || hasOpenTrade[mentionedIdString]){
             // can't trade with the user at this time
             message.channel.send("the user is currently trading with someone else");
+        }else if (userTradeLock[mentionedIdString] || userTradeLock[discordUserIdString]){
+            message.channel.send(message.author + " try again. one of you was trading at the time")
         }else{
             //print usage
             message.channel.send("example use:\n-trade @user rock \n-trade @user rock 10 \n-trade @user rock 10 tacos 5");
@@ -8007,10 +8029,12 @@ module.exports.cancelTradeCommand = function(message, args){
                 delete activeTrades[discordUserIdString];
                 message.channel.send(":x:  " + message.author + " Canceled a trade ") 
             }else{
-                message.channel.send("there is some fishy stuff going on and I am investigating....")
+                message.channel.send("there is some fishy stuff going on and I am investigating....(for now i have cleared your trades)")
+                if (hasOpenTrade[discordUserIdString]){
+                    delete hasOpenTrade[discordUserIdString]
+                }
             }
         }
-        
     }
     else{
         message.channel.send(message.author + " You do not currently have open trades !")
