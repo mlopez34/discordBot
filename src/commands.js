@@ -52,6 +52,7 @@ var THANK_COOLDOWN_HOURS = 2;
 var SORRY_COOLDOWN_HOURS = 6;
 var COOK_COOLDOWN_HOURS = 24;
 var PREPARE_COOLDOWN_HOURS = 48;
+var HARVEST_COOLDOWN_HOURS = 12;
 var SCAVENGE_COOLDOWN_HOURS = 1;
 var RAFFLE_ENTRY_COST = 50;
 var RAFFLE_USER_SIZE = 7
@@ -2788,6 +2789,16 @@ function inventoryEmbedBuilder(message, itemsMap, allItems){
     message.channel.send({embed});
 }
 
+module.exports.getItemsByRarity = function(rarityToReturn){
+    var itemsToReturn = []
+    for (var item in allItems){
+        if (allItems[item].itemraritycategory == rarityToReturn){
+            itemsToReturn.push(allItems[item]);
+        }
+    }
+    return itemsToReturn
+}
+
 module.exports.scavangeCommand = function (message){
     var discordUserId = message.author.id;
     
@@ -4912,13 +4923,13 @@ module.exports.disassembleCommand = function(message, args){
         useItem.setItemsLock(discordUserId, true)
         profileDB.getUserItems(discordUserId, function(err, inventoryResponse){
             if (err){
-                // console.log(err);
+                useItem.setItemsLock(discordUserId, false)
+                console.log(err);
                 agreeToTerms(message, discordUserId);
             }
             else{
                 var itemsInInventoryCountMap = {};
                 var itemsBeingedDisassembled = []
-                var listOfRares = []
                 for (var item in inventoryResponse.data){
                     var validItem = useItem.itemValidate(inventoryResponse.data[item]);
                     var notWearing = useItem.itemNotWearing(inventoryResponse.data[item])
@@ -4944,21 +4955,17 @@ module.exports.disassembleCommand = function(message, args){
                         }
                     }
                 }
-                for (var index in allItems){
-                    if (allItems[index].itemraritycategory == "rare" && allItems[index].emoji != ":seedling:"){
-                        // add to list of rares
-                        listOfRares.push(allItems[index]);
-                    }
-                }
                 // have items to disassemble
                 if (itemsBeingedDisassembled.length > 0){
-                    disassembleItem.performDisassemble(message, discordUserId, itemsBeingedDisassembled[0], listOfRares, function(useError, daRes){
+                    var itemProfile = itemsMapById[ itemsBeingedDisassembled[0].itemid ]
+                    disassembleItem.performDisassemble(message, discordUserId, itemsBeingedDisassembled[0], itemProfile, function(useError, daRes){
                         if (useError){
+                            useItem.setItemsLock(discordUserId, false)
                             console.log(useError);
-                        }
-                        else{
+                        }else{
                             console.log(daRes[0]);
-
+                            useItem.setItemsLock(discordUserId, false)
+                            disassembleEmbedBuilder(message, daRes)
                             // TODO: create embed like scavenge 
 
                             // if (daRes.length && daRes.length > 0 && daRes[0].itemname){
@@ -4966,11 +4973,30 @@ module.exports.disassembleCommand = function(message, args){
                             // }
                         }
                     })
+                }else{
+                    message.channel.send("you do not own that item")
+                    useItem.setItemsLock(discordUserId, false)
                 }
             }
         })
     }
+}
 
+function disassembleEmbedBuilder(message, itemsObtained){
+    // create a quoted message of all the items
+    var itemsMessage = ""
+    for (var item in itemsObtained){
+        var itemAmount = itemsObtained[item].itemAmount ? itemsObtained[item].itemAmount : 1;
+        itemsMessage = itemsMessage + "**" + itemAmount + "**x " + "[**" + itemsObtained[item].itemraritycategory +"**] " + "**"  + itemsObtained[item].itemname + "** - " + itemsObtained[item].itemdescription + ", " +
+        itemsObtained[item].itemslot + ", " + itemsObtained[item].itemstatistics
+        itemsMessage = itemsMessage + " \n";
+    }
+
+    const embed = new Discord.RichEmbed()
+    .addField("[" + message.author.username +"'s Disassemble] :sparkles: Items found: ", itemsMessage, true)
+    .setThumbnail(message.author.avatarURL)
+    .setColor(0xbfa5ff)
+    message.channel.send({embed});
 }
 
 module.exports.createArmament = function(message, args){
@@ -5071,10 +5097,7 @@ module.exports.createArmament = function(message, args){
                                     useItem.setItemsLock(discordUserId, false)
                                     // add the armament to inventory - armaments are "armament" rarity
                                     addToUserInventory(discordUserId, [ armamentTemplateItem ]);
-                                    console.log("******armament")
-                                    console.log(JSON.stringify(armamentTemplateItem, null, 2))
-                                    // TODO: create embed instead
-                                    message.channel.send(message.author + " created an armament " + JSON.stringify(armamentTemplateItem))
+                                    createArmamentEmbedBuilder(message, armamentTemplateItem)
                                 }
                             })
                         }else{
@@ -5094,6 +5117,27 @@ module.exports.createArmament = function(message, args){
     }
 }
 
+function createArmamentEmbedBuilder(message, armamentTemplateItem){
+    console.log(armamentTemplateItem)
+    var itemId = armamentTemplateItem.armamentforitemid
+    var item = itemsMapById[itemId]
+    var hpplus = armamentTemplateItem.hpplus
+    var adplus = armamentTemplateItem.adplus
+    var mdplus = armamentTemplateItem.mdplus
+    var armorplus = armamentTemplateItem.armorplus
+    var spiritplus = armamentTemplateItem.spiritplus
+    var critplus = armamentTemplateItem.critplus
+    var luckplus = armamentTemplateItem.luckplus
+
+    var description = "**Armament Stats:**\n " + " 💚 " + hpplus + " 🗡️ "  + adplus + " ☄️ " + mdplus + " 🛡️ " + armorplus + " 🙌 " + spiritplus + " 💥 " + critplus + " 🌟 " + luckplus 
+    const embed = new Discord.RichEmbed()
+    .setAuthor(message.author.username + " has created: " + item.itemname + " Armament")
+    .setDescription( ":sparkles: :gear: :sparkles:\n" + description )
+    .setThumbnail(message.author.avatarURL)
+    .setColor(0xFF7A1C)
+    message.channel.send({embed});
+}
+
 function armamentsEmbedBuilder(message, userItems, itemsMapById, long, rarity){
     // display available armaments
     const embed = new Discord.RichEmbed()
@@ -5106,25 +5150,26 @@ function armamentsEmbedBuilder(message, userItems, itemsMapById, long, rarity){
     // generate the string based on the itemsMapById that corresponds to the item in inventory armamentitemid
     for (var item in userItems) {
         var idOfItemInMap = userItems[item].itemid
-        if (itemsMapById[idOfItemInMap].itemraritycategory == "armament"
-            && !mapOfArmaments[idOfItemTheArmamentIsFor]){
+        if (itemsMapById[idOfItemInMap].itemraritycategory == "armament"){
             var idOfItemTheArmamentIsFor = userItems[item].armamentforitemid
-            var statsFromArmament = " 💚 " + userItems[item].hpplus + " 🗡️ "  + userItems[item].adplus + " ☄️ " + userItems[item].mdplus + " 🛡️ " + userItems[item].armorplus + " 🙌 " + userItems[item].spiritplus + " 💥 " + userItems[item].critplus + " 🌟 " + userItems[item].luckplus 
-            var itemOfArmament = itemsMapById[idOfItemTheArmamentIsFor]
-            var emoji = ":gear:";
-            if (long && fieldCount < 25){
-                embed.addField(emoji + " " + itemOfArmament.itemname + " Armament", itemsMapById[idOfItemInMap].itemslot + " - " + itemsMapById[idOfItemInMap].itemstatistics, true)
-                fieldCount++
-            }else{
-                if (inventoryStringRegular.length > 900){
-                    inventoryStringsRegular.push(inventoryStringRegular);
-                    inventoryStringRegular = "";
-                    inventoryStringRegular = "**" + itemOfArmament.itemname + " Armament** - " +  statsFromArmament + "\n" + inventoryStringRegular;                        
+            if (!mapOfArmaments[idOfItemTheArmamentIsFor]){
+                var statsFromArmament = " 💚 " + userItems[item].hpplus + " 🗡️ "  + userItems[item].adplus + " ☄️ " + userItems[item].mdplus + " 🛡️ " + userItems[item].armorplus + " 🙌 " + userItems[item].spiritplus 
+                var itemOfArmament = itemsMapById[idOfItemTheArmamentIsFor]
+                var emoji = ":gear:";
+                if (long && fieldCount < 25){
+                    embed.addField(emoji + " " + itemOfArmament.itemname + "", itemsMapById[idOfItemInMap].itemslot + " - " + itemsMapById[idOfItemInMap].itemstatistics, true)
+                    fieldCount++
                 }else{
-                    inventoryStringRegular = "**" + itemOfArmament.itemname + " Armament** - " +  statsFromArmament + "\n" + inventoryStringRegular;                        
+                    if (inventoryStringRegular.length > 900){
+                        inventoryStringsRegular.push(inventoryStringRegular);
+                        inventoryStringRegular = "";
+                        inventoryStringRegular = "**" + itemOfArmament.itemname + "** - " +  statsFromArmament + "\n" + inventoryStringRegular;                        
+                    }else{
+                        inventoryStringRegular = "**" + itemOfArmament.itemname + "** - " +  statsFromArmament + "\n" + inventoryStringRegular;                        
+                    }
                 }
+                mapOfArmaments[idOfItemTheArmamentIsFor] = true
             }
-            mapOfArmaments[idOfItemTheArmamentIsFor] = true
         }
     }
     // push the leftover
@@ -5385,7 +5430,7 @@ module.exports.bakeCommand = function(message, args){
 
         profileDB.getFruitData(discordUserId, function(err, fruitData){
             if (err){
-                // console.log(err);
+                console.log(err);
                 agreeToTerms(message, discordUserId);
             }
             else{
@@ -5517,7 +5562,7 @@ function plantOnPlotOfLand(message, discordUserId, plotOfLand, greenHouseData, p
                     console.log(plotErr)
                 }else{
                     console.log(plotRes)
-                    message.channel.send(message.author + " has planted a " + greenHouseData.plantName + " !")
+                    message.channel.send(message.author + " has planted a `" + greenHouseData.plantName + "` !")
                 }
             })
         }
@@ -5547,6 +5592,7 @@ module.exports.harvestCommand = function(message, args){
         if(err){
             console.log(err)
         }else{
+            var userLevel = profileData.data.level
             var greenHouseData = {
                 plots: profileData.data.plotsoflandplantid,
                 harvestCounts: profileData.data.timesharvested,
@@ -5555,39 +5601,82 @@ module.exports.harvestCommand = function(message, args){
                 timesharvested: profileData.data.timesharvested,
                 name: message.author.username
             }
-            
-            var fruitsHarvested = harvestPlotsOfLand(greenHouseData, itemsMapById)
-            // harvest your plots of land
-            var fruitsColumnsWithCount = {}
-            for (var f in fruitsHarvested){
-                if ( itemHarvested[f] ){
-                    var actualFruitColumnId = itemHarvested[f]
-                    fruitsColumnsWithCount[actualFruitColumnId] = fruitsHarvested[f]
-                }
-            }
-            var newHarvestCounts = []
-            for (var h in greenHouseData.harvestCounts){
-                var currentCount = greenHouseData.harvestCounts[h]
-                newHarvestCounts.push(currentCount + 1)
-            }
-            // go through all the plants in your garden, harvest them, and then add them to your fruits profile
-            profileDB.bulkupdateUserFruits(discordUserId, fruitsColumnsWithCount, true, function(err, bulkRes){
-                if (err){
-                    console.log(err)
+            // TODO: CHECK last harvest time
+            wearStats.getUserWearingStats(message, discordUserId, {userLevel: userLevel}, allItems, function(wearErr, wearRes){
+                if (wearErr){
+                    console.log(wearErr)
                 }else{
-                    console.log(bulkRes)
                     var now = new Date();
-                    profileDB.updatePlotInfo(discordUserId, { lastharvest: now, timesharvested: newHarvestCounts }, function(plotErr, plotRes){
-                        if (plotErr){
-                            console.log(plotErr)
-                        }else{
-                            console.log(plotRes)
+                    var threeDaysAgo = new Date();
+                    ///////// CALCULATE THE MINUTES REDUCED HERE 
+                    var secondsToRemove = wearStats.calculateSecondsReduced(wearRes, "harvest");
+
+                    threeDaysAgo = new Date(threeDaysAgo.setHours(threeDaysAgo.getHours() - HARVEST_COOLDOWN_HOURS ));
+                    threeDaysAgo = new Date(threeDaysAgo.setSeconds(threeDaysAgo.getSeconds() + secondsToRemove));
+
+                    if ( threeDaysAgo > greenHouseData.lastharvest ){
+                        var fruitsHarvested = harvestPlotsOfLand(greenHouseData, itemsMapById)
+                        // harvest your plots of land
+                        var fruitsColumnsWithCount = {}
+                        for (var f in fruitsHarvested){
+                            if ( itemHarvested[f] ){
+                                var actualFruitColumnId = itemHarvested[f]
+                                fruitsColumnsWithCount[actualFruitColumnId] = fruitsHarvested[f]
+                            }
                         }
-                    })
+                        var newHarvestCounts = []
+                        for (var h in greenHouseData.harvestCounts){
+                            var currentCount = greenHouseData.harvestCounts[h]
+                            newHarvestCounts.push(currentCount + 1)
+                        }
+                        // go through all the plants in your garden, harvest them, and then add them to your fruits profile
+                        profileDB.bulkupdateUserFruits(discordUserId, fruitsColumnsWithCount, true, function(err, bulkRes){
+                            if (err){
+                                console.log(err)
+                            }else{
+                                console.log(bulkRes)
+                                var now = new Date();
+                                profileDB.updatePlotInfo(discordUserId, { lastharvest: now, timesharvested: newHarvestCounts }, function(plotErr, plotRes){
+                                    if (plotErr){
+                                        console.log(plotErr)
+                                    }else{
+                                        console.log(plotRes)
+                                        harvestEmbedBuilder(message, fruitsColumnsWithCount)
+                                    }
+                                })
+                            }
+                        })
+                    }else{
+                        now = new Date(now.setSeconds(now.getSeconds() + secondsToRemove));
+                        var numberOfHours = getDateDifference(greenHouseData.lastharvest, now, HARVEST_COOLDOWN_HOURS);
+                        message.channel.send(message.author + " You are tired! Please wait `" + numberOfHours + "` ");
+                    }
                 }
             })
         }
     })
+}
+
+function harvestStringBuilder(fruitsColumnsWithCount){
+    var harvestString = ""
+    for (var i in fruitsColumnsWithCount){
+        if (fruitsColumnsWithCount[i]){
+            harvestString = harvestString + i + ": " +  fruitsColumnsWithCount[i] + "\n"
+        }
+    }
+    return harvestString
+}
+
+function harvestEmbedBuilder(message, fruitsColumnsWithCount){
+            
+    var harvestString = harvestStringBuilder(fruitsColumnsWithCount)
+    const embed = new Discord.RichEmbed()
+    .setColor(0x87CEFA)
+    .setTitle(message.author.username + "'s Harvest")
+    //.setThumbnail()
+    .setColor(0x87CEFA)
+    .addField('Fruits', harvestString, false)
+    message.channel.send({embed});
 }
 
 function harvestPlotsOfLand(greenHouseData, itemsMapById){
@@ -5780,7 +5869,7 @@ module.exports.upgradeCommand = function(message, args){
 }
 
 function upgradeBuilding(message, discordUserId, buildingName, upgradeRequirements, buildingData, nextLevel){
-    var upgradeItemsToCheck = upgradeRequirements.items
+    var upgradeItemsToCheck = upgradeRequirements.itemRequirements
     var itemsToCheckMap = {}
     // map the item requirements
     for (var i in upgradeItemsToCheck){

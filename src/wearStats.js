@@ -123,7 +123,7 @@ module.exports.statsObjectBuilder = function(message, slot1Data, slot2Data, slot
             var extraTacoChanceCalculate = slot1Data.itembasetacochance + (slot1Data.itemtacochanceperlevel * userLevel);
             var extraTacosPairToCalculate = { extraTacos: extraTacosCalculate, tacoChance: getPercentage([ extraTacoChanceCalculate ] ) }
             var experienceCalculate = slot1Data.experiencegain + ((Math.floor(slot1Data.experienceonlevel / slot1Data.experiencegainperlevel * userLevel)) || 0);
-            var extraTacosTimesCD = (slot1Data.tacostimescdhours * fetchCount)
+            var extraTacosTimesCD = ((slot1Data.tacostimescdhours || 0) * fetchCount)
             var extraTacosTimesCDChance = 0
             if (slot1Data.tacostimescdhourschanceperlevel) {
                 extraTacosTimesCDChance = slot1Data.tacostimescdhourschance + (slot1Data.tacostimescdhourschanceperlevel * userLevel + fetchCD)
@@ -237,7 +237,7 @@ module.exports.statsObjectBuilder = function(message, slot1Data, slot2Data, slot
             var extraTacoChanceCalculate = slot2Data.itembasetacochance + (slot2Data.itemtacochanceperlevel * userLevel);
             var extraTacosPairToCalculate = { extraTacos: extraTacosCalculate, tacoChance: getPercentage([ extraTacoChanceCalculate ]) }
             var experienceCalculate = slot2Data.experiencegain + ((Math.floor(slot2Data.experienceonlevel / slot2Data.experiencegainperlevel * userLevel)) || 0);
-            var extraTacosTimesCD = (slot2Data.tacostimescdhours * fetchCount)
+            var extraTacosTimesCD = ((slot2Data.tacostimescdhours || 0) * fetchCount)
             var extraTacosTimesCDChance = 0
             if (slot2Data.tacostimescdhourschanceperlevel) {
                 extraTacosTimesCDChance = slot2Data.tacostimescdhourschance + (slot2Data.tacostimescdhourschanceperlevel * userLevel + fetchCD)
@@ -350,7 +350,7 @@ module.exports.statsObjectBuilder = function(message, slot1Data, slot2Data, slot
             var extraTacoChanceCalculate = slot3Data.itembasetacochance + (slot3Data.itemtacochanceperlevel * userLevel);
             var experienceCalculate = slot3Data.experiencegain + ((Math.floor(slot3Data.experienceonlevel / slot3Data.experiencegainperlevel * userLevel)) || 0);
             var extraTacosPairToCalculate = { extraTacos: extraTacosCalculate, tacoChance: getPercentage([ extraTacoChanceCalculate ]) }
-            var extraTacosTimesCD = (slot3Data.tacostimescdhours * fetchCount)
+            var extraTacosTimesCD = ((slot3Data.tacostimescdhours || 0) * fetchCount)
             var extraTacosTimesCDChance = 0
             if (slot3Data.tacostimescdhourschanceperlevel) {
                 extraTacosTimesCDChance = slot3Data.tacostimescdhourschance + (slot3Data.tacostimescdhourschanceperlevel * userLevel + fetchCD)

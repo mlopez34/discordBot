@@ -17,7 +17,7 @@ module.exports.checkRequirements = function(params){
     var requirementsMet = true;
     var requirements = upgradeRequirements[params.nextLevel]
     // check reputation level 
-    if (params.tacos >= requirements.tacos && params.reputationLevel >= requirements.reputationLevel){
+    if (params.tacos >= requirements.tacos && params.reputationLevel >= requirements.reputationlevel){
         // check fruits and check items now 
         if (requirements.fruits){
             // check params.fruits contains all the fruits
@@ -28,10 +28,10 @@ module.exports.checkRequirements = function(params){
                 }
             }
         }
-        if (requirements.items){
-            for (var i in requirements.items){
+        if (requirements.itemRequirements){
+            for (var i in requirements.itemRequirements){
                 // check params.itemsToUse contains all the items
-                var itemToCheck = requirements.items[i]
+                var itemToCheck = requirements.itemRequirements[i]
                 if (params.inventoryCountMap[itemToCheck.itemId] < itemToCheck.itemCount){
                     requirementsMet = false
                     break;

@@ -1555,7 +1555,7 @@ module.exports.updatePlotInfo = function(userId, plotInfo, cb) {
     for (var column in plotInfo){
         plotColumns.push(column)
     }
-    const query = pgp.helpers.update(plotInfo, plotColumns, config.greenhouseTable) + ' WHERE discordid = ' + userId;
+    const query = pgp.helpers.update(plotInfo, plotColumns, config.greenhouseTableNoQuotes) + ' WHERE discordid = ' + userId;
     db.none(query)
     .then(function () {
         cb(null, { status: 'success', message: 'updated columns in greenhouse' });

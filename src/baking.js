@@ -34,7 +34,7 @@ module.exports.bakeItem = function(discordUserId, itemToBake, itemsMapById, user
         // attempt to bake the item | check fruit requirements 
         // check its the right day  
         // if all requirements are met, set all items to used + insert new item into DB for user
-        var itemRequirements = bakingRecipes[itemToBake].items
+        var itemRequirements = bakingRecipes[itemToBake].itemRequirements
         var ableToBake = true;
         for (var item in itemRequirements){
             var singleItem = itemRequirements[item]
@@ -50,7 +50,7 @@ module.exports.bakeItem = function(discordUserId, itemToBake, itemsMapById, user
         }
 
         if (ableToBake){
-            var itemToCreateId = bakingRecipes[itemToBake].itemToCreateId
+            var itemToCreateId = bakingRecipes[itemToBake].itemId
             var itemToCreate = itemsMapById[itemToCreateId]
 
             // take away the fruits required
