@@ -232,12 +232,12 @@ module.exports = {
         orchatasip: {
             name:"Orchata Sip",
             abilityId: "orchatasip",
-            description: "Heal your target over time for 50 + 145% of your magical damage over 5 turns",
+            description: "Heal your target over time for 150 + 155% of your magical damage over 5 turns",
             hot: {
                 name: "Orchata Sip",
-                heal: 50,
+                heal: 150,
                 emoji: "<:orchatasip:479296604831219714>",
-                mdPercentage: 1.45,
+                mdPercentage: 1.55,
                 healingOnHotApply: false,
                 turnsToExpire: 5,
                 healingOnDotExpire: false,
@@ -499,19 +499,19 @@ module.exports = {
         shoot: {
             name: "Shoot",
             abilityId: "shoot",
-            description: "Deal 125 damage + 120% of your attack damage, 6 charges",
+            description: "Deal 125 damage + 143% of your attack damage, 6 charges",
             dmg: 125,
             charges: 6,
             maxcharges: 6,
-            adPercentage: 1.2,
+            adPercentage: 1.43,
             type: "physical"
         },
         shock: {
             name: "Shock",
             abilityId: "shock",
             dmg: 120,
-            mdPercentage: 1.2,
-            description: "Deal 120 damage + 120% of your attack damage, deal 20% damage dealt to yourself",
+            mdPercentage: 1.43,
+            description: "Deal 120 damage + 143% of your magic damage, deal 20% damage dealt to yourself",
             type: "electric",
             special: "selfdamage",
             selfdamage: 15
@@ -2930,6 +2930,42 @@ module.exports = {
                 affects: ["magicDmg"],
                 multiplier: 0.8
             }
+        }
+    },
+    rpgZones: {
+        prarie: {
+            name: "Prarie",
+            areas: {
+                tallgrass: {
+                    name: "Tallgrass",
+                    enemies: [
+
+                    ],
+                    rpgsToComplete: 8,
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ],
+                    boss: "bossId"
+                },
+                meadow: {
+                    name: "Meadow",
+                    enemies: [
+
+                    ]
+                }
+            }
+        },
+        woods: {
+
+        },
+        undergroundtunnels: {
+
         }
     },
     enemiesToEncounter: {
@@ -6890,3 +6926,31 @@ module.exports = {
         }
     }    
 }
+
+/*
+each zone has ~12-20 areas
+each area has 1 boss after ~7-10 RPGs in that area
+in total 84 RPGS -> 200 rpgs per zone
+zones can be moved around after an area is completed only
+areas have unique shops
+zones have unique drops
+zones have unique scavenges
+zones have unique enemies | bosses
+RPG JSON contains data for each ZONE (area names, enemy names, )
+RPG JSON contains data for each area (zone names, total zones, boss zone)
+RPG table stores the zones via row
+RPG table stores zone completion by zone as an array, current area via name, area completeion via integer
+all areas are completed by picking, first one is always the same, completion % of area is linear, they are just integers
+zones are completed once all areas are completed
+
+TODO: come up with area names for all of these
+find pictures for all areas + zones
+
+1-12, prarie, woods, underground tunnels
+13-20, Oasis, Glacier, Island,
+20-27, places Grand Canyon, Crystal Peak, Tadrart Acacus
+27-31, places Costa de marfil, Patagonia, Yosemite
+31-34, cities Tokyo, Johanesburg, London
+34-37, mountains Everest, Aconcagua, Elbert
+38-40 - moon Mons Argaeus, Mare Crisium, Vallis Snellius  
+*/
