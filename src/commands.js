@@ -6769,7 +6769,7 @@ function handleAuctionItem(individualItem){
     var milisecondsUntilEnd = auctionEnd.getTime() - now.getTime()
 
     if (milisecondsUntilEnd > 1){
-        setTimeOutForIndividualItem(individualItem)
+        setTimeOutForIndividualItem(individualItem, milisecondsUntilEnd)
     }else{
         // auction has ended - either return the item to its owner and set its status to null
         // or transfer the items and tacos right there and then
@@ -6777,7 +6777,7 @@ function handleAuctionItem(individualItem){
     }
 }
 
-function setTimeOutForIndividualItem(individualItem){
+function setTimeOutForIndividualItem(individualItem, milisecondsUntilEnd){
     // auction has not ended, just reinitialize
     var itemAuctionTimeout = setTimeout(function(){
         // do things here
