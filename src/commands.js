@@ -6862,7 +6862,7 @@ function handleMarketItemAuctionEnded(individualItem){
             }
         }
     }else{
-        data = {
+        var data = {
             command: "marketerror",
             guildId: 1,
             discordId: 1,
