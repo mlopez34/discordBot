@@ -6769,18 +6769,7 @@ function handleAuctionItem(individualItem){
     var milisecondsUntilEnd = auctionEnd.getTime() - now.getTime()
 
     if (milisecondsUntilEnd > 1){
-        // auction has not ended, just reinitialize
-        var itemAuctionTimeout = setTimeout(function(){
-            // do things here
-            if (individualItem && marketItems[individualItem.id]){
-                console.log(marketItems[individualItem.id].name + " " + individualItem.id + " has ended" )
-            }
-            // someone has bid on the item - announce, and change item to belong to them
-            handleMarketItemAuctionEnded(individualItem)
-    
-        }, milisecondsUntilEnd) // replace this with milisecondsuntilend
-    
-        marketItems[individualItem.id].auctionTimeout = itemAuctionTimeout
+        setTimeOutForIndividualItem(individualItem)
     }else{
         // auction has ended - either return the item to its owner and set its status to null
         // or transfer the items and tacos right there and then
@@ -6788,73 +6777,99 @@ function handleAuctionItem(individualItem){
     }
 }
 
+function setTimeOutForIndividualItem(individualItem){
+    // auction has not ended, just reinitialize
+    var itemAuctionTimeout = setTimeout(function(){
+        // do things here
+        if (individualItem && marketItems[individualItem.id]){
+            console.log(marketItems[individualItem.id].name + " " + individualItem.id + " has ended" )
+        }
+        // someone has bid on the item - announce, and change item to belong to them
+        handleMarketItemAuctionEnded(individualItem)
+
+    }, milisecondsUntilEnd) // replace this with milisecondsuntilend
+
+    marketItems[individualItem.id].auctionTimeout = itemAuctionTimeout
+}
+
 function handleMarketItemAuctionEnded(individualItem){
-    if (marketItems[individualItem.id].currentbiduserid){
-        // switch the item's owner + give them the tacos they earned, take away the tacos from the user
-        if (marketItems[individualItem.id].creatorchannel){
-            // send a message to the channel the user created the auction initially to announce their auction ended
-            var winner = client.users.get(marketItems[individualItem.id].currentbiduserid)
-            var seller = client.users.get(marketItems[individualItem.id].seller)
-            var itemsArray = [ individualItem.id ];
-            var tacosPaid = marketItems[individualItem.id].currentbid;
-            tacosInUseAuction[winner.id] = tacosInUseAuction[winner.id] - tacosPaid;
-            var tacosWon = marketItems[individualItem.id].currentbid;
-            var initialTacoTax = 0;
-            if (tacosWon > 50){
-                initialTacoTax = Math.floor(tacosWon * 0.1);
-            }
-            else if (tacosWon >= 5 && tacosWon <= 50){
-                initialTacoTax = Math.floor(tacosWon * 0.1);
-            }
-            tacosWon = tacosWon - initialTacoTax
-            transferItemsAndTacos(winner.id, seller.id, itemsArray, tacosPaid, tacosWon, function(transferErr, transferRes){
-                if (transferErr){
-                    console.log(transferErr)
+    if (individualItem){
+        if (marketItems[individualItem.id].currentbiduserid){
+            // switch the item's owner + give them the tacos they earned, take away the tacos from the user
+            if (marketItems[individualItem.id].creatorchannel){
+                // send a message to the channel the user created the auction initially to announce their auction ended
+                var winner = client.users.get(marketItems[individualItem.id].currentbiduserid)
+                var seller = client.users.get(marketItems[individualItem.id].seller)
+                var itemsArray = [ individualItem.id ];
+                var tacosPaid = marketItems[individualItem.id].currentbid;
+                tacosInUseAuction[winner.id] = tacosInUseAuction[winner.id] - tacosPaid;
+                var tacosWon = marketItems[individualItem.id].currentbid;
+                var initialTacoTax = 0;
+                if (tacosWon > 50){
+                    initialTacoTax = Math.floor(tacosWon * 0.1);
                 }
-                else{
-                    
-                    try{
-                        if (marketItems[individualItem.id].lastHighestbidderchannel){
-                            // send a message to the winners channel that they won the auction    
-                            client.channels.get(marketItems[individualItem.id].lastHighestbidderchannel).send(winner + " :loudspeaker: - You WON " + marketItems[individualItem.id].name + " for :taco: " + marketItems[individualItem.id].currentbid + " in the marketplace")
-                        }
-                        // send message to the creator channel that they sold an item 
-                        client.channels.get(marketItems[individualItem.id].creatorchannel).send(seller + " :loudspeaker: - Your " + marketItems[individualItem.id].name + " sold for :taco: " + tacosWon + " in the marketplace")
-                        removeItemFromMarket(individualItem)
-                    }catch(ex){
-                        console.log(ex)
+                else if (tacosWon >= 5 && tacosWon <= 50){
+                    initialTacoTax = Math.floor(tacosWon * 0.1);
+                }
+                tacosWon = tacosWon - initialTacoTax
+                transferItemsAndTacos(winner.id, seller.id, itemsArray, tacosPaid, tacosWon, function(transferErr, transferRes){
+                    if (transferErr){
+                        console.log(transferErr)
                     }
-                }
-            })
-            
+                    else{
+                        
+                        try{
+                            if (marketItems[individualItem.id].lastHighestbidderchannel){
+                                // send a message to the winners channel that they won the auction    
+                                client.channels.get(marketItems[individualItem.id].lastHighestbidderchannel).send(winner + " :loudspeaker: - You WON " + marketItems[individualItem.id].name + " for :taco: " + marketItems[individualItem.id].currentbid + " in the marketplace")
+                            }
+                            // send message to the creator channel that they sold an item 
+                            client.channels.get(marketItems[individualItem.id].creatorchannel).send(seller + " :loudspeaker: - Your " + marketItems[individualItem.id].name + " sold for :taco: " + tacosWon + " in the marketplace")
+                            removeItemFromMarket(individualItem)
+                        }catch(ex){
+                            console.log(ex)
+                        }
+                    }
+                })
+                
+            }
+        }else{
+            if (marketItems[individualItem.id].creatorchannel){
+                var seller = client.users.get(marketItems[individualItem.id].seller)
+                //// take the item out of the market in DB
+                var itemId = individualItem.id;
+                itemDidNotSell(itemId, function(noSellErr, noSellRes){
+                    if (noSellErr){
+                        console.log(noSellErr)
+                    }else{
+                        try{
+                            client.channels.get(marketItems[individualItem.id].creatorchannel).send(seller + " :x: - Your " + marketItems[individualItem.id].name + " did not sell in the marketplace")
+                            removeItemFromMarket(individualItem)
+                        }catch(error){
+                            // unable to send to channel
+                            console.log(error)
+                        }
+                    }
+                })
+            }else{
+                // there is no creator channel but item is still in market hmmmm....
+                // remove it from the market ..
+                var itemId = individualItem.id;
+                itemDidNotSell(itemId, function(noSellErr, noSellRes){
+                    console.log("done resetting item in limbo")
+                })
+                removeItemFromMarket(individualItem)
+            }
         }
     }else{
-        if (marketItems[individualItem.id].creatorchannel){
-            var seller = client.users.get(marketItems[individualItem.id].seller)
-            //// take the item out of the market in DB
-            var itemId = individualItem.id;
-            itemDidNotSell(itemId, function(noSellErr, noSellRes){
-                if (noSellErr){
-                    console.log(noSellErr)
-                }else{
-                    try{
-                        client.channels.get(marketItems[individualItem.id].creatorchannel).send(seller + " :x: - Your " + marketItems[individualItem.id].name + " did not sell in the marketplace")
-                        removeItemFromMarket(individualItem)
-                    }catch(error){
-                        // unable to send to channel
-                        console.log(error)
-                    }
-                }
-            })
-        }else{
-            // there is no creator channel but item is still in market hmmmm....
-            // remove it from the market ..
-            var itemId = individualItem.id;
-            itemDidNotSell(itemId, function(noSellErr, noSellRes){
-                console.log("done resetting item in limbo")
-            })
-            removeItemFromMarket(individualItem)
+        data = {
+            command: "marketerror",
+            guildId: 1,
+            discordId: 1,
+            username: "error",
+            message: JSON.stringify(individualItem)
         }
+        profileDB.createUserActivity(data)
     }
 }
 
