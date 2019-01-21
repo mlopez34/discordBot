@@ -5260,12 +5260,6 @@ function plotsVisualBuilder(greenHouseData, itemsMapById){
 }
 
 module.exports.stableCommand = function(message){
-    // display your stable, and stable information
-
-    // get user profile and stable info
-
-    // create embed based off of their stable info stats | visual representation
-    // a bunch of animal - brush - fishing rod - lures
 
     var discordUserId = message.author.id;
     // get user profile and stable info
@@ -5276,7 +5270,7 @@ module.exports.stableCommand = function(message){
             var stableData = {
                 name: message.author.username,
                 stableLevel : stRes.data.stablelevel,
-                pet1name: stRes.data.stableslot1name ,
+                pet1name: stRes.data.stableslot1name,
                 pet1type: stRes.data.stableslot1pet,
                 pet2name: stRes.data.stableslot2name,
                 pet2type: stRes.data.stableslot2pet,
@@ -5378,6 +5372,9 @@ module.exports.templeCommand = function(message){
                 templecraft1id: templeRes.data.templecraft1id,
                 templecraft2id: templeRes.data.templecraft2id,
                 templecraft3id : templeRes.data.templecraft3id,
+                templecraft1name: templeRes.data.templecraft1name,
+                templecraft2name: templeRes.data.templecraft2name,
+                templecraft3name: templeRes.data.templecraft3name,
                 lasttemplecraft: templeRes.data.lasttemplecraft,
                 currenttemplecraftslot: templeRes.data.currenttemplecraftslot
 
@@ -5398,16 +5395,16 @@ function templeEmbedBuilder(message, templeData){
     .setDescription("info")
     .setColor(0x87CEFA)
     .addField('Recipe', templeVisual, false)
-    .addField('Temple Info', templeVisual, false)
-    .addField('Next Level Info', "info", false)
+    .addField('Temple Info', templeData.currentLevelInfo, false)
+    .addField('Next Level Info', templeData.nextLevelInfo, false)
     .addField('Gems', gemString, false)
     message.channel.send({embed});
 }
 
 function gemStringBuilder(templeData){
     // make it look like ..
-    // recipes active | dust collected
     var gemString = "gems list"
+    // list of dust
     
     return gemString
 }
@@ -5415,8 +5412,42 @@ function gemStringBuilder(templeData){
 function templeVisualBuilder(templeData){
     // make it look like ..
     // recipes active | dust collected
-    var templeVisual = "temple"
-    
+    var templeVisual = ""
+    var recipe1 = crafting.getRecipeRequirements(templeData.templecraft1name)
+    var recipe2 = crafting.getRecipeRequirements(templeData.templecraft2name)
+    var recipe3 = crafting.getRecipeRequirements(templeData.templecraft3name)
+    if (recipe1){
+        var itemReq = ""
+        for (var i in recipe1.itemRequirements){
+            var itemid = recipe1.itemRequirements[i].itemId
+            var itemcount = recipe1.itemRequirements[i].itemCount
+            var itemname = itemsMapById[itemid].itemname
+            var itemReq = itemReq + itemname + " x" + itemcount + "\n"
+        }
+        templeVisual = templeVisual + "**" + recipe1.recipeName + "**: \nrequirements:\n tacos: " + recipe1.tacos + "\nreputation: " + recipe1.reputationlevel + "\nItems:\n" + itemReq
+    }
+    if (recipe2){
+        var itemReq = ""
+        for (var i in recipe2.itemRequirements){
+            var itemid = recipe2.itemRequirements[i].itemId
+            var itemcount = recipe2.itemRequirements[i].itemCount
+            var itemname = itemsMapById[itemid].itemname
+            var itemReq = itemReq + itemname + " x" + itemcount + "\n"
+        }
+        templeVisual = templeVisual + "**" + recipe2.recipeName + "**: \nrequirements:\n tacos: " + recipe2.tacos + "\nreputation: " + recipe2.reputationlevel + "\nItems:\n" + itemReq
+
+    }
+    if (recipe3){
+        var itemReq = ""
+        for (var i in recipe3.itemRequirements){
+            var itemid = recipe3.itemRequirements[i].itemId
+            var itemcount = recipe3.itemRequirements[i].itemCount
+            var itemname = itemsMapById[itemid].itemname
+            var itemReq = itemReq + itemname + " x" + itemcount + "\n"
+        }
+        templeVisual = templeVisual + "**" + recipe3.recipeName + "**: \nrequirements:\n tacos: " + recipe3.tacos + "\nreputation: " + recipe3.reputationlevel + "\nItems:\n" + itemReq
+
+    }
     return templeVisual
 }
 
@@ -5601,7 +5632,6 @@ module.exports.harvestCommand = function(message, args){
                 timesharvested: profileData.data.timesharvested,
                 name: message.author.username
             }
-            // TODO: CHECK last harvest time
             wearStats.getUserWearingStats(message, discordUserId, {userLevel: userLevel}, allItems, function(wearErr, wearRes){
                 if (wearErr){
                     console.log(wearErr)
