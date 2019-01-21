@@ -81,6 +81,7 @@ var marketItems = {}
 var marketItemsUserCount = {} // keeps track of number of items a user has in the market
 var client;
 var usersMinigames = {};
+var userTradeLock = {}
 
 var NeedsToAgree = {}
 
@@ -7388,86 +7389,106 @@ function handleAuctionItem(individualItem){
     var milisecondsUntilEnd = auctionEnd.getTime() - now.getTime()
 
     if (milisecondsUntilEnd > 1){
-        // auction has not ended, just reinitialize
-        var itemAuctionTimeout = setTimeout(function(){
-            console.log(marketItems[individualItem.id].name + " " + individualItem.id + " has ended" )
-            handleMarketItemAuctionEnded(individualItem)
-    
-        }, milisecondsUntilEnd)
-    
-        marketItems[individualItem.id].auctionTimeout = itemAuctionTimeout
+        setTimeOutForIndividualItem(individualItem, milisecondsUntilEnd)
     }else{
         // auction has ended - either return the item to its owner and set its status to null
         handleMarketItemAuctionEnded(individualItem)
     }
 }
 
+function setTimeOutForIndividualItem(individualItem, milisecondsUntilEnd){
+    // auction has not ended, just reinitialize
+    var itemAuctionTimeout = setTimeout(function(){
+        // do things here
+        if (individualItem && marketItems[individualItem.id]){
+            console.log(marketItems[individualItem.id].name + " " + individualItem.id + " has ended" )
+        }
+        // someone has bid on the item - announce, and change item to belong to them
+        handleMarketItemAuctionEnded(individualItem)
+
+    }, milisecondsUntilEnd) // replace this with milisecondsuntilend
+
+    marketItems[individualItem.id].auctionTimeout = itemAuctionTimeout
+}
+
 function handleMarketItemAuctionEnded(individualItem){
-    if (marketItems[individualItem.id].currentbiduserid){
-        // switch the item's owner + give them the tacos they earned, take away the tacos from the user
-        if (marketItems[individualItem.id].creatorchannel){
-            // send a message to the channel the user created the auction initially to announce their auction ended
-            var winner = client.users.get(marketItems[individualItem.id].currentbiduserid)
-            var seller = client.users.get(marketItems[individualItem.id].seller)
-            var itemsArray = [ individualItem.id ];
-            var tacosPaid = marketItems[individualItem.id].currentbid;
-            tacosInUseAuction[winner.id] = tacosInUseAuction[winner.id] - tacosPaid;
-            var tacosWon = marketItems[individualItem.id].currentbid;
-            var initialTacoTax = 0;
-            if (tacosWon > 50){
-                initialTacoTax = Math.floor(tacosWon * 0.1);
-            }
-            else if (tacosWon >= 5 && tacosWon <= 50){
-                initialTacoTax = Math.floor(tacosWon * 0.1);
-            }
-            tacosWon = tacosWon - initialTacoTax
-            transferItemsAndTacos(winner.id, seller.id, itemsArray, tacosPaid, tacosWon, function(transferErr, transferRes){
-                if (transferErr){
-                    console.log(transferErr)
+    if (individualItem){
+        if (marketItems[individualItem.id].currentbiduserid){
+            // switch the item's owner + give them the tacos they earned, take away the tacos from the user
+            if (marketItems[individualItem.id].creatorchannel){
+                // send a message to the channel the user created the auction initially to announce their auction ended
+                var winner = client.users.get(marketItems[individualItem.id].currentbiduserid)
+                var seller = client.users.get(marketItems[individualItem.id].seller)
+                var itemsArray = [ individualItem.id ];
+                var tacosPaid = marketItems[individualItem.id].currentbid;
+                tacosInUseAuction[winner.id] = tacosInUseAuction[winner.id] - tacosPaid;
+                var tacosWon = marketItems[individualItem.id].currentbid;
+                var initialTacoTax = 0;
+                if (tacosWon > 50){
+                    initialTacoTax = Math.floor(tacosWon * 0.1);
                 }
-                else{
-                    try{
-                        if (marketItems[individualItem.id].lastHighestbidderchannel){
-                            // send a message to the winners channel that they won the auction    
-                            client.channels.get(marketItems[individualItem.id].lastHighestbidderchannel).send(winner + " :loudspeaker: - You WON " + marketItems[individualItem.id].name + " for :taco: " + marketItems[individualItem.id].currentbid + " in the marketplace")
-                        }
-                        // send message to the creator channel that they sold an item 
-                        client.channels.get(marketItems[individualItem.id].creatorchannel).send(seller + " :loudspeaker: - Your " + marketItems[individualItem.id].name + " sold for :taco: " + tacosWon + " in the marketplace")
-                        removeItemFromMarket(individualItem)
-                    }catch(ex){
-                        console.log(ex)
+                else if (tacosWon >= 5 && tacosWon <= 50){
+                    initialTacoTax = Math.floor(tacosWon * 0.1);
+                }
+                tacosWon = tacosWon - initialTacoTax
+                transferItemsAndTacos(winner.id, seller.id, itemsArray, tacosPaid, tacosWon, function(transferErr, transferRes){
+                    if (transferErr){
+                        console.log(transferErr)
                     }
-                }
-            })
-            
+                    else{
+                        
+                        try{
+                            if (marketItems[individualItem.id].lastHighestbidderchannel){
+                                // send a message to the winners channel that they won the auction    
+                                client.channels.get(marketItems[individualItem.id].lastHighestbidderchannel).send(winner + " :loudspeaker: - You WON " + marketItems[individualItem.id].name + " for :taco: " + marketItems[individualItem.id].currentbid + " in the marketplace")
+                            }
+                            // send message to the creator channel that they sold an item 
+                            client.channels.get(marketItems[individualItem.id].creatorchannel).send(seller + " :loudspeaker: - Your " + marketItems[individualItem.id].name + " sold for :taco: " + tacosWon + " in the marketplace")
+                            removeItemFromMarket(individualItem)
+                        }catch(ex){
+                            console.log(ex)
+                        }
+                    }
+                })
+                
+            }
+        }else{
+            if (marketItems[individualItem.id].creatorchannel){
+                var seller = client.users.get(marketItems[individualItem.id].seller)
+                //// take the item out of the market in DB
+                var itemId = individualItem.id;
+                itemDidNotSell(itemId, function(noSellErr, noSellRes){
+                    if (noSellErr){
+                        console.log(noSellErr)
+                    }else{
+                        try{
+                            client.channels.get(marketItems[individualItem.id].creatorchannel).send(seller + " :x: - Your " + marketItems[individualItem.id].name + " did not sell in the marketplace")
+                            removeItemFromMarket(individualItem)
+                        }catch(error){
+                            // unable to send to channel
+                            console.log(error)
+                        }
+                    }
+                })
+            }else{
+                // there is no creator channel but item is still in market hmmmm....
+                // remove it from the market ..
+                var itemId = individualItem.id;
+                itemDidNotSell(itemId, function(noSellErr, noSellRes){
+                    console.log("done resetting item in limbo")
+                })
+                removeItemFromMarket(individualItem)
+            }
         }
     }else{
-        if (marketItems[individualItem.id].creatorchannel){
-            var seller = client.users.get(marketItems[individualItem.id].seller)
-            //// take the item out of the market in DB
-            var itemId = individualItem.id;
-            itemDidNotSell(itemId, function(noSellErr, noSellRes){
-                if (noSellErr){
-                    console.log(noSellErr)
-                }else{
-                    try{
-                        client.channels.get(marketItems[individualItem.id].creatorchannel).send(seller + " :x: - Your " + marketItems[individualItem.id].name + " did not sell in the marketplace")
-                        removeItemFromMarket(individualItem)
-                    }catch(error){
-                        // unable to send to channel
-                        console.log(error)
-                    }
-                }
-            })
-        }else{
-            // there is no creator channel but item is still in market hmmmm....
-            // remove it from the market ..
-            var itemId = individualItem.id;
-            itemDidNotSell(itemId, function(noSellErr, noSellRes){
-                console.log("done resetting item in limbo")
-            })
-            removeItemFromMarket(individualItem)
+        var data = {
+            command: "marketerror",
+            guildId: 1,
+            discordId: 1,
+            username: "error",
+            message: JSON.stringify(individualItem)
         }
+        profileDB.createUserActivity(data)
     }
 }
 
@@ -8315,6 +8336,11 @@ module.exports.bidCommand = function(message, args){
     }
 }
 
+module.exports.setTradeLock = function(sender, receiver, set){
+    userTradeLock[sender] = set
+    userTradeLock[receiver] = set
+}
+
 module.exports.tradeCommand = function(message, args){
     var discordUserId = message.author.id;
     // arguments are 1 = tagged person, 2 = item to trade
@@ -8332,8 +8358,16 @@ module.exports.tradeCommand = function(message, args){
         var mentionedIdString = "trading-" + mentionedId;
     }
     var discordUserIdString = "trading-" + discordUserId;
-    if (args && args.length >= 3 && mentionedUser && !activeTrades[mentionedIdString] && !hasOpenTrade[discordUserIdString] && !hasOpenTrade[mentionedIdString] ){ //&& mentionedId != discordUserId){
-        
+    if (args && args.length >= 3 
+        && mentionedUser 
+        && !activeTrades[mentionedIdString] 
+        && !hasOpenTrade[discordUserIdString] 
+        && !hasOpenTrade[mentionedIdString] 
+        && !userTradeLock[discordUserIdString]
+        && !userTradeLock[mentionedIdString]){
+        //&& mentionedId != discordUserId){
+        // lock trading between both users
+        exports.setTradeLock(discordUserIdString, mentionedIdString, true)
         var itemCount = 1;
         var myItemShortName = args[2].toLowerCase();
         if (args.length > 3){
@@ -8352,6 +8386,7 @@ module.exports.tradeCommand = function(message, args){
             profileDB.getUserProfileData(discordUserId, function(getProfileErr, getProfileRes){
                 if (getProfileErr){
                     // console.log(getProfileErr);
+                    exports.setTradeLock(discordUserIdString, mentionedIdString, false)
                     agreeToTerms(message, discordUserId);
                 }
                 else{
@@ -8359,6 +8394,7 @@ module.exports.tradeCommand = function(message, args){
                     profileDB.getUserItems(discordUserId, function(err, inventoryResponse){
                         if (err){
                             // console.log(err);
+                            exports.setTradeLock(discordUserIdString, mentionedIdString, false)
                         }
                         else{
                             // console.log(inventoryResponse.data);
@@ -8458,11 +8494,17 @@ module.exports.tradeCommand = function(message, args){
                                             message.channel.send(message.author + " your trade offer of **" + itemToTradeName + "** with **" + userTradingWith + "** has expired :x:" )
                                         }
                                     }, 60000)
-
-                                    activeTrades[mentionedIdString].tradeTimeout = tradeEnds
+                                        activeTrades[mentionedIdString].tradeTimeout = tradeEnds
+                                        exports.setTradeLock(discordUserIdString, mentionedIdString, false)
+                                    }
+                                    else{
+                                        message.channel.send(message.author + " you cannot create that trade")
+                                        exports.setTradeLock(discordUserIdString, mentionedIdString, false)
+                                    }
                                 }
                                 else{
-                                    message.channel.send(message.author + " you cannot create that trade")
+                                    message.channel.send(message.author + " invalid item!");
+                                    exports.setTradeLock(discordUserIdString, mentionedIdString, false)
                                 }
                             }
                             else{
@@ -8475,12 +8517,15 @@ module.exports.tradeCommand = function(message, args){
         }
         else{
             message.channel.send(message.author + " trade for more than 1 taco, cannot tax 1 taco :(")
+            exports.setTradeLock(discordUserIdString, mentionedIdString, false)
         }
     }
     else{
         if (activeTrades[mentionedIdString] || hasOpenTrade[mentionedIdString]){
             // can't trade with the user at this time
             message.channel.send("the user is currently trading with someone else");
+        }else if (userTradeLock[mentionedIdString] || userTradeLock[discordUserIdString]){
+            message.channel.send(message.author + " try again. one of you was trading at the time")
         }else{
             //print usage
             message.channel.send("example use:\n-trade @user rock \n-trade @user rock 10 \n-trade @user rock 10 tacos 5");
@@ -8600,10 +8645,12 @@ module.exports.cancelTradeCommand = function(message, args){
                 delete activeTrades[discordUserIdString];
                 message.channel.send(":x:  " + message.author + " Canceled a trade ") 
             }else{
-                message.channel.send("there is some fishy stuff going on and I am investigating....")
+                message.channel.send("there is some fishy stuff going on and I am investigating....(for now i have cleared your trades)")
+                if (hasOpenTrade[discordUserIdString]){
+                    delete hasOpenTrade[discordUserIdString]
+                }
             }
         }
-        
     }
     else{
         message.channel.send(message.author + " You do not currently have open trades !")
