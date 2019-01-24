@@ -2481,7 +2481,7 @@ module.exports = {
             ignoreFocus: true,
             afterNTurns: 5,
             currentTurn: 0,
-            description: "Reduce all damage done by 50% for 3 turns 8 turn cooldown",
+            description: "Reduce all damage done by 25% for 3 turns 6 turn cooldown",
             status: {
                 status: true,
                 ignoreBandaid: true,
@@ -2489,7 +2489,7 @@ module.exports = {
                 emoji : "👾", 
                 affectsGlobal: ["damageDealtPercentage", "healingDonePercentage"],
                 turnsToExpire: 3,
-                multiplier: 0.5
+                multiplier: 0.75
             }
         },
 
@@ -3485,7 +3485,7 @@ module.exports = {
                 hpPerPartyMember: 0,
                 adPerPartyMember: 0,
                 mdPerPartyMember: 0,
-                hp: 9300,
+                hp: 7300,
                 abilityOrder: [
                     0, 0, 0, 1
                 ],
