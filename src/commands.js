@@ -5358,29 +5358,35 @@ function stablesVisualBuilder(stableData){
 
 module.exports.templeCommand = function(message){
     // display your temple, and temple information
-    // create embed based off of their temple info stats | visual representation
-    // a bunch of random shit - sanctum? - recipes? 
-    // ( blueprints for rares, and ancients )
     var discordUserId = message.author.id;
     // get user profile and stable info
     profileDB.getTempleData(discordUserId, function(templeErr, templeRes){
         if (templeErr){
             console.log(templeErr)
         }else{
-            var templeData = { 
-                name: message.author.username,
-                templeLevel : templeRes.data.templelevel,
-                templecraft1id: templeRes.data.templecraft1id,
-                templecraft2id: templeRes.data.templecraft2id,
-                templecraft3id : templeRes.data.templecraft3id,
-                templecraft1name: templeRes.data.templecraft1name,
-                templecraft2name: templeRes.data.templecraft2name,
-                templecraft3name: templeRes.data.templecraft3name,
-                lasttemplecraft: templeRes.data.lasttemplecraft,
-                currenttemplecraftslot: templeRes.data.currenttemplecraftslot
-
-            }
-            templeEmbedBuilder(message, templeData)
+            profileDB.getUserItems(discordUserId, function(err, inventoryResponse){
+                if (err){
+                    // console.log(err);
+                    agreeToTerms(message, discordUserId);
+                }
+                else{
+                    var templeData = { 
+                        name: message.author.username,
+                        templeLevel : templeRes.data.templelevel,
+                        templecraft1id: templeRes.data.templecraft1id,
+                        templecraft2id: templeRes.data.templecraft2id,
+                        templecraft3id : templeRes.data.templecraft3id,
+                        templecraft1name: templeRes.data.templecraft1name,
+                        templecraft2name: templeRes.data.templecraft2name,
+                        templecraft3name: templeRes.data.templecraft3name,
+                        lasttemplecraft: templeRes.data.lasttemplecraft,
+                        currenttemplecraftslot: templeRes.data.currenttemplecraftslot
+        
+                    }
+                    // TODO: build the temple gems
+                    templeEmbedBuilder(message, templeData)
+                }
+            })
         }
     })
 }
@@ -8494,21 +8500,16 @@ module.exports.tradeCommand = function(message, args){
                                             message.channel.send(message.author + " your trade offer of **" + itemToTradeName + "** with **" + userTradingWith + "** has expired :x:" )
                                         }
                                     }, 60000)
-                                        activeTrades[mentionedIdString].tradeTimeout = tradeEnds
-                                        exports.setTradeLock(discordUserIdString, mentionedIdString, false)
-                                    }
-                                    else{
-                                        message.channel.send(message.author + " you cannot create that trade")
-                                        exports.setTradeLock(discordUserIdString, mentionedIdString, false)
-                                    }
-                                }
-                                else{
-                                    message.channel.send(message.author + " invalid item!");
+                                    activeTrades[mentionedIdString].tradeTimeout = tradeEnds
                                     exports.setTradeLock(discordUserIdString, mentionedIdString, false)
                                 }
-                            }
-                            else{
+                                else{
+                                    message.channel.send(message.author + " you cannot create that trade")
+                                    exports.setTradeLock(discordUserIdString, mentionedIdString, false)
+                                }
+                            }else{
                                 message.channel.send(message.author + " invalid item!");
+                                exports.setTradeLock(discordUserIdString, mentionedIdString, false)
                             }
                         }
                     })
