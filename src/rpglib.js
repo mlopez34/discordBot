@@ -2660,6 +2660,7 @@ module.exports = {
                 ignoreUnique: true,
                 name: "Enable",
                 abilityId: "enable",
+                additionalDescription: " Aramis gains 20% more physical and magical damage",
                 emoji: "<:strength:479298214294716416>",
                 turnsToExpire: 200,
                 affects: ["attackDmg", "magicDmg"],
@@ -3445,6 +3446,8 @@ module.exports = {
                     "maniac"
                 ],
                 effectsOnDeath: [
+                    "entombAll20",
+                    "killAllEntomb"
                 ],
                 hp: 64000,
                 attackDmg: 4700,
@@ -6919,6 +6922,52 @@ module.exports = {
                         adPerPartyMember: 0,
                         mdPerPartyMember: 0,
                         difficulty: "special",
+                        element: "normal"
+                    }
+                ]
+            },
+            12: {
+                timed: true,
+                timedPerTurn: 360000,
+                points: 317901,
+                difficulty: 186,
+                enemies: [
+                    {
+                        name: "Balrog",
+                        xp: 30,
+                        abilities: [
+                            "attack",
+                            "slash",
+                        ],
+                        buffs: [
+                            {
+                                name: "frenzy",
+                                emoji: "<:frenzy:479298214453968896>",
+                                onTurnEnd: {
+                                    attackDmgPlus : 12100,
+                                    magicDmgPlus : 12100,
+                                    everyNTurns: 5,
+                                    startTurn: 5
+                                }
+                            }
+                        ],
+                        abilityOrder: [
+                            0,0,1,1,1,1,1
+                        ],
+                        endOfTurnEvents : [
+                            "focus"
+                        ],
+                        effectsOnDeath: [
+                        ],
+                        hp: 42600,
+                        attackDmg: 14580,
+                        magicDmg: 14570,
+                        armor: 2100,
+                        spirit: 2100,
+                        hpPerPartyMember: 0,
+                        adPerPartyMember: 0,
+                        mdPerPartyMember: 0,
+                        difficulty: "boss",
                         element: "normal"
                     }
                 ]
