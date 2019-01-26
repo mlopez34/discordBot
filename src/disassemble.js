@@ -324,6 +324,19 @@ var armamentEssenceLevels = {
     }
 }
 
+module.exports.getRarityOfItemGemCanCreateArmamentFor = function(item){
+    for (var i in armamentEssenceLevels){
+        if (armamentEssenceLevels[i].level == item.essencelevel){
+            if (armamentEssenceLevels[i].essenceRarity == item.essencerarity){
+                return i
+            }
+            if (armamentEssenceLevels[i].crystalRarity == item.crystalrarity){
+                return i
+            }
+        }
+    }
+}
+
 module.exports.checkRequirements = function(item, itemToCreateArmament){
     var itemRarity = itemToCreateArmament.itemraritycategory
     var requirements = armamentEssenceLevels[itemRarity]

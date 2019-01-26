@@ -64,6 +64,10 @@ var TRANSFORMIUM_ID = 155;
 var ETHEREUM_ID = 200;
 var TACO_PARTY_TIME_TO_LIVE = 300000
 var SHOP_ITEM_COST = 125
+const GREENHOUSE_COST = 10000
+const TEMPLE_COST = 25000
+const HACKSAW_COST = 5000
+const STABLE_COST = 35000
 
 
 var activeAuctions = {};
@@ -102,6 +106,10 @@ var EXPERIENCE_GAINS = {
     useCommonItemFive: 5,
     buyStand: 5,
     buyStandPerStand: 2,
+    buyStable: 20,
+    buyGreenHouse: 10,
+    buyTemple: 15,
+    buyHacksaw: 5,
     buyPickaxe: 4
 
 }
@@ -1571,19 +1579,16 @@ module.exports.buyPickaxeCommand = function(message){
 
     profileDB.getUserProfileData( discordUserId, function(err, pickaxeResponse) {
         if(err){
-            // user doesnt exist tell the user they should get some tacos
             agreeToTerms(message, discordUserId);
             message.channel.send(message.author + " You can't afford a pickaxe!");
         }
         else{
             if (pickaxeResponse.data.pickaxe == "none"){
                 if ( adjustedTacosForUser(discordUserId, pickaxeResponse.data.tacos) >= PICKAXE_COST){
-                    // purchaseStand
                     var tacosSpent = PICKAXE_COST * -1;
                     profileDB.purchasePickAxe(discordUserId, tacosSpent, function(err, data){
                         if (err){
                             // console.log(err);
-                            // couldn't purchase stand
                         }
                         else{
                             experience.gainExperience(message, message.author, EXPERIENCE_GAINS.buyPickaxe , pickaxeResponse);
@@ -1597,12 +1602,10 @@ module.exports.buyPickaxeCommand = function(message){
             }
             else if (pickaxeResponse.data.pickaxe == "basic"){
                 if ( adjustedTacosForUser(discordUserId, pickaxeResponse.data.tacos) >= IMPROVED_PICKAXE_COST){
-                    // purchaseStand
                     var tacosSpent = IMPROVED_PICKAXE_COST * -1;
                     profileDB.purchasePickAxe(discordUserId, tacosSpent, function(err, data){
                         if (err){
                             // console.log(err);
-                            // couldn't purchase stand
                         }
                         else{
                             experience.gainExperience(message, message.author, EXPERIENCE_GAINS.buyPickaxe * 3 , pickaxeResponse);
@@ -1616,12 +1619,10 @@ module.exports.buyPickaxeCommand = function(message){
             }
             else if (pickaxeResponse.data.pickaxe == "improved"){
                 if ( adjustedTacosForUser(discordUserId, pickaxeResponse.data.tacos) >= MASTER_PICKAXE_COST){
-                    // purchaseStand
                     var tacosSpent = MASTER_PICKAXE_COST * -1;
                     profileDB.purchasePickAxe(discordUserId, tacosSpent, function(err, data){
                         if (err){
                             // console.log(err);
-                            // couldn't purchase stand
                         }
                         else{
                             experience.gainExperience(message, message.author, EXPERIENCE_GAINS.buyPickaxe * 10 , pickaxeResponse);
@@ -1635,12 +1636,10 @@ module.exports.buyPickaxeCommand = function(message){
             }
             else if (pickaxeResponse.data.pickaxe == "master"){
                 if (adjustedTacosForUser(discordUserId, pickaxeResponse.data.tacos) >= ETHEREAL_PICKAXE_COST){
-                    // purchaseStand
                     var tacosSpent = ETHEREAL_PICKAXE_COST * -1;
                     profileDB.purchasePickAxe(discordUserId, tacosSpent, function(err, data){
                         if (err){
                             // console.log(err);
-                            // couldn't purchase stand
                         }
                         else{
                             experience.gainExperience(message, message.author, EXPERIENCE_GAINS.buyPickaxe * 50 , pickaxeResponse);
@@ -1654,12 +1653,10 @@ module.exports.buyPickaxeCommand = function(message){
             }
             else if (pickaxeResponse.data.pickaxe == "ethereal"){
                 if (adjustedTacosForUser(discordUserId, pickaxeResponse.data.tacos) >= ZEUS_TRIDENT_COST){
-                    // purchaseStand
                     var tacosSpent = ZEUS_TRIDENT_COST * -1;
                     profileDB.purchasePickAxe(discordUserId, tacosSpent, function(err, data){
                         if (err){
                             // console.log(err);
-                            // couldn't purchase stand
                         }
                         else{
                             experience.gainExperience(message, message.author, EXPERIENCE_GAINS.buyPickaxe * 500 , pickaxeResponse);
@@ -1674,7 +1671,107 @@ module.exports.buyPickaxeCommand = function(message){
         }
     })
 }
-    
+
+
+module.exports.buyStableCommand = function(message){
+    var discordUserId = message.author.id
+
+    profileDB.getUserProfileData( discordUserId, function(err, stableResponse) {
+        if(err){
+            agreeToTerms(message, discordUserId);
+            message.channel.send(message.author + " You can't afford a Stable!");
+        }
+        else{
+            if (stableResponse.data.stable == false){
+                if ( adjustedTacosForUser(discordUserId, stableResponse.data.tacos) >= STABLE_COST){
+                    var tacosSpent = STABLE_COST * -1;
+                    profileDB.purchaseBuilding(discordUserId, tacosSpent, building, function(err, data){
+                        if (err){
+                            // console.log(err);
+                        }else{
+                            experience.gainExperience(message, message.author, EXPERIENCE_GAINS.buyStable * 50 , stableResponse);
+                            message.channel.send(message.author + " Congratulations, you have purchased the Stable!");
+                        }
+                    })
+                }
+            }
+        }
+    })
+}
+
+module.exports.buyGreenHouseCommand = function(message){
+    profileDB.getUserProfileData( discordUserId, function(err, greenhouseResponse) {
+        if(err){
+            agreeToTerms(message, discordUserId);
+            message.channel.send(message.author + " You can't afford a Greenhouse!");
+        }
+        else{
+            if (greenhouseResponse.data.greenhouse == false){
+                if ( adjustedTacosForUser(discordUserId, greenhouseResponse.data.tacos) >= GREENHOUSE_COST){
+                    var tacosSpent = GREENHOUSE_COST * -1;
+                    profileDB.purchaseBuilding(discordUserId, tacosSpent, building, function(err, data){
+                        if (err){
+                            // console.log(err);
+                        }else{
+                            experience.gainExperience(message, message.author, EXPERIENCE_GAINS.buyGreenHouse * 50 , greenhouseResponse);
+                            message.channel.send(message.author + " Congratulations, you have purchased the Greenhouse!");
+                        }
+                    })
+                }
+            }
+        }
+    })
+}
+
+module.exports.buyTempleCommand = function(message){
+    profileDB.getUserProfileData( discordUserId, function(err, templeResponse) {
+        if(err){
+            // user doesnt exist tell the user they should get some tacos
+            agreeToTerms(message, discordUserId);
+            message.channel.send(message.author + " You can't afford a Stable!");
+        }
+        else{
+            if (templeResponse.data.temple == false){
+                if ( adjustedTacosForUser(discordUserId, templeResponse.data.tacos) >= TEMPLE_COST){
+                    var tacosSpent = TEMPLE_COST * -1;
+                    profileDB.purchaseBuilding(discordUserId, tacosSpent, building, function(err, data){
+                        if (err){
+                            // console.log(err);
+                        }else{
+                            experience.gainExperience(message, message.author, EXPERIENCE_GAINS.buyPickaxe * 50 , templeResponse);
+                            message.channel.send(message.author + " Congratulations, you have purchased the Temple!");
+                        }
+                    })
+                }
+            }
+        }
+    })
+}
+
+module.exports.buyHacksawCommand = function(message){
+    profileDB.getUserProfileData( discordUserId, function(err, hacksawResponse) {
+        if(err){
+            // user doesnt exist tell the user they should get some tacos
+            agreeToTerms(message, discordUserId);
+            message.channel.send(message.author + " You can't afford the Hacksaw!");
+        }
+        else{
+            if (hacksawResponse.data.hacksaw == false){
+                if ( adjustedTacosForUser(discordUserId, hacksawResponse.data.tacos) >= HACKSAW_COST){
+                    var tacosSpent = HACKSAW_COST * -1;
+                    profileDB.purchaseHacksaw(discordUserId, tacosSpent, function(err, data){
+                        if (err){
+                            // console.log(err);
+                        }else{
+                            experience.gainExperience(message, message.author, EXPERIENCE_GAINS.buyPickaxe * 50 , hacksawResponse);
+                            message.channel.send(message.author + " Congratulations, you have purchased a Hacksaw!");
+                        }
+                    })
+                }
+            }
+        }
+    })
+}
 
 function profileBuilder(message, profileData){
     const embed = new Discord.RichEmbed()
@@ -1731,14 +1828,28 @@ function shopBuilder(message, shopData, long){
             embed.addField('Master Pickaxe', pickaxeCost, true)
         }
         else if (shopData.pickaxe == "master"){
-            // improved pickaxe
             pickaxeCost = ETHEREAL_PICKAXE_COST + " :taco:";
             embed.addField('Ethereal Pickaxe', pickaxeCost, true)
         }
         else if (shopData.pickaxe == "ethereal"){
-            // improved pickaxe
             pickaxeCost = ZEUS_TRIDENT_COST + " :taco:";
             embed.addField("Zeus' Trident", pickaxeCost, true)
+        }
+        if (!shopData.greenhouse){
+            greenHouseCost = GREENHOUSE_COST + " :taco:";
+            embed.addField("Greenhouse", greenHouseCost, true)
+        }
+        if (!shopData.temple){
+            templecost = TEMPLE_COST + " :taco:";
+            embed.addField("Temple", templecost, true)
+        }
+        if (shopData.temple){
+            hacksawCost = HACKSAW_COST + " :taco:";
+            embed.addField("Hacksaw", hacksawCost, true)
+        }
+        if (!shopData.stable){
+            stablecost = STABLE_COST + " :taco:";
+            embed.addField("Stable", stablecost, true)
         }
         embed.addField('Pasta', PASTA_COST + " :taco:", true)
         embed.addField('Knife',  SHOP_ITEM_COST + " :taco:", true)
@@ -1766,22 +1877,20 @@ function shopBuilder(message, shopData, long){
         var treeCost = BASE_TACO_COST + (shopData.userTacoCost * 250) + " :taco:"
         var pickaxeDescription = "The pickaxe can be used to scavenge. You never know what you will find in these lands ";
         var pastaDescription = "Add a quote to your profile, to purchase do: " +config.commandString + "buypasta [your pasta message]."
-        
+        var greenHouseDescription = "Add a quote to your profile, to purchase do: " +config.commandString + "buypasta [your pasta message]."
+
         var pickaxeCost = PICKAXE_COST +" :taco:";
         const embed = new Discord.RichEmbed()
         .setColor(0x87CEFA)
         .setTitle(welcomeMessage)
         .setThumbnail()
         .setDescription("Bender accepts Tacos as currency since he's a hungry guy :shrug:. Have a look around!")
-        .addField('Taco Stands', ":bus:", true)
-        .addField('Description', tacoStandDescription, true)
+        .addField('Taco Stands :bus:', tacoStandDescription, true)
         .addField('Cost', treeCost, true)
         .addField('Command', config.commandString+ "buystand", true)
         if(shopData.pickaxe == "none"){
-            embed.addBlankField(true)
-            .addBlankField(false)
-            .addField('Pickaxe', ":pick:", true)
-            .addField('Description', pickaxeDescription, true)
+            embed.addBlankField(false)
+            .addField('Pickaxe :pick:', pickaxeDescription, true)
             .addField('Cost', pickaxeCost, true)
             .addField('Command', config.commandString + "buypickaxe", true)
         }
@@ -1789,10 +1898,8 @@ function shopBuilder(message, shopData, long){
             // improved pickaxe
             pickaxeDescription = "The Improved Pickaxe can be used to scavenge. Success rate compared to the pickaxe has increased.";
             pickaxeCost = IMPROVED_PICKAXE_COST + " :taco:";
-            embed.addBlankField(true)
-            .addBlankField(false)
-            .addField('Improved Pickaxe', ":small_blue_diamond::pick:", true)
-            .addField('Description', pickaxeDescription, true)
+            embed.addBlankField(false)
+            .addField('Improved Pickaxe :small_blue_diamond::pick:', pickaxeDescription, true)
             .addField('Cost', pickaxeCost, true)
             .addField('Command', config.commandString + "buypickaxe", true)
         }
@@ -1800,10 +1907,8 @@ function shopBuilder(message, shopData, long){
             // improved pickaxe
             pickaxeDescription = "The Master Pickaxe can be used to scavenge. This is the master pickaxe, your adventures will be rewarded with the greatest treasures :diamond_shape_with_a_dot_inside: ."
             pickaxeCost = MASTER_PICKAXE_COST + " :taco:";
-            embed.addBlankField(true)
-            .addBlankField(false)
-            .addField('Master Pickaxe', ":diamond_shape_with_a_dot_inside::pick:", true)
-            .addField('Description', pickaxeDescription, true)
+            embed.addBlankField(false)
+            .addField('Master Pickaxe :diamond_shape_with_a_dot_inside::pick:', pickaxeDescription, true)
             .addField('Cost', pickaxeCost, true)
             .addField('Command', config.commandString + "buypickaxe", true)
         }
@@ -1811,10 +1916,8 @@ function shopBuilder(message, shopData, long){
             // improved pickaxe
             pickaxeDescription = "The Ethereal Pickaxe can be used to scavenge. This is the Ethereal pickaxe, your adventures will be rewarded with unbelievable treasures :cyclone: .";
             pickaxeCost = ETHEREAL_PICKAXE_COST + " :taco:";
-            embed.addBlankField(true)
-            .addBlankField(false)
-            .addField('Ethereal Pickaxe', ":cyclone::pick:", true)
-            .addField('Description', pickaxeDescription, true)
+            embed.addBlankField(false)
+            .addField('Ethereal Pickaxe :cyclone::pick:', pickaxeDescription, true)
             .addField('Cost', pickaxeCost, true)
             .addField('Command', config.commandString + "buypickaxe", true)
         }
@@ -1822,21 +1925,30 @@ function shopBuilder(message, shopData, long){
             // improved pickaxe
             pickaxeDescription = "Zeus' Trident can be used to scavenge. This is the Ultimate Pickaxe, the gods will grant you the power to find mankind's most valuable treasures :sparkles: .";
             pickaxeCost = ZEUS_TRIDENT_COST + " :taco:";
-            embed.addBlankField(true)
-            .addBlankField(false)
-            .addField("Zeus' Trident", ":sparkles::pick:", true)
-            .addField('Description', pickaxeDescription, true)
+            embed.addBlankField(false)
+            .addField("Zeus' Trident :sparkles::pick:", pickaxeDescription, true)
             .addField('Cost', pickaxeCost, true)
             .addField('Command', config.commandString + "buypickaxe", true)
         }
+
+        if (!shopData.greenhouse){
+            embed.addField('Green House :house_with_garden:', greenHouseDescription, true)
+        }
+        if (!shopData.temple){
+            embed.addField('Temple :house_with_garden:', greenHouseDescription, true)
+        }
+        if (shopData.temple){
+            embed.addField('Hacksaw :scissors:', greenHouseDescription, true)
+        }
+        if (!shopData.stable){
+            embed.addField('Stable :house_with_garden:', greenHouseDescription, true)
+        }
         
-        embed.addBlankField(true)
-        .addBlankField(false)
-        .addField('Pasta', ":spaghetti:", true)
-        .addField('Description', pastaDescription, true)
+        embed.addBlankField(false)
+        .addField('Pasta :spaghetti:', pastaDescription, true)
         .addField('Cost', PASTA_COST + " :taco:", true)
         .addField('Command', config.commandString + "buyPasta", true)
-        embed.addBlankField(true)
+        
         embed.addField('Wearable Items', "Knife/Socks: " + SHOP_ITEM_COST + " :taco: gives chance at additional tacos when thanking\nShorts/Skirt: " + SHOP_ITEM_COST + ":taco: gives chance at additional tacos when sorrying\nT-shirt/Belt: " + SHOP_ITEM_COST + ":taco: gives chance at additional tacos when cooking\ndo `-buyitem details` for more info on these items\n****Each of these items can be combined into improved versions (requires 5 of the same item to combine | use command `-combine [itemname]`) ", true)
         .addField('Command', config.commandString + "buyitem [itemname] \n**example**: -buyitem knife", true)
 
@@ -1845,10 +1957,8 @@ function shopBuilder(message, shopData, long){
             var userRepLevel = REPUTATIONS[shopData.repstatus.toLowerCase()].level;
             if (userRepLevel >= 2){
                 var repDescription = "Bender's Reputation shop. use -repshop to see what Bender has to offer.";        
-                embed.addBlankField(true)
-                .addBlankField(false)
-                .addField('Reputation shop', ":shopping_cart: ", true)
-                .addField('Description', repDescription, true)
+                embed.addBlankField(false)
+                .addField('Reputation shop :shopping_cart:', repDescription , true)
             }
         }
         embed.addBlankField(false)
@@ -2775,7 +2885,8 @@ function inventoryEmbedBuilder(message, itemsMap, allItems){
             // 
             if (allItems[key] && (allItems[key].itemraritycategory == "common" 
                 || allItems[key].itemraritycategory == "uncommon"
-                || allItems[key].itemraritycategory == "uncommon+" )){
+                || allItems[key].itemraritycategory == "uncommon+"
+                && !allItems[key].essencerarity)){
                 // console.log(key + " " + allItems[key].itemname)
                 inventoryString = "**"+allItems[key].itemname + "** - " +  itemsMap[key] + " - " + allItems[key].itemslot +"\n" + inventoryString;
             }
@@ -4915,7 +5026,6 @@ module.exports.useCommand = function(message, args){
 
 module.exports.disassembleCommand = function(message, args){
     // disassemble the item that you want via args id
-    // console.log(args);
     var discordUserId = message.author.id;
     if (args && args.length > 1 && !useItem.getItemsLock(discordUserId)){
         var myItemShortName =  args[1];
@@ -4967,11 +5077,6 @@ module.exports.disassembleCommand = function(message, args){
                             console.log(daRes[0]);
                             useItem.setItemsLock(discordUserId, false)
                             disassembleEmbedBuilder(message, daRes)
-                            // TODO: create embed like scavenge 
-
-                            // if (daRes.length && daRes.length > 0 && daRes[0].itemname){
-                            //     message.channel.send(message.author + " has tailored a **" + daRes[0].itemname + "** -" + "`" + daRes[0].itemdescription + ", " + daRes[0].itemslot + ", " + daRes[0].itemstatistics + "`");
-                            // }
                         }
                     })
                 }else{
@@ -5017,16 +5122,14 @@ module.exports.createArmament = function(message, args){
     if (args && args.length > 1 && !useItem.getItemsLock(discordUserId)){
         var myItemShortName =  args[1].toLowerCase()
         useItem.setItemsLock(discordUserId, true)
-        profileDB.getUserItems(discordUserId, function(err, inventoryResponse){
+        profileDB.getUserItemsForArmaments(discordUserId, function(err, inventoryResponse){
             if (err){
-                // console.log(err);
+                console.log(err);
                 agreeToTerms(message, discordUserId);
                 useItem.setItemsLock(discordUserId, false)
             }
             else{
-                // TODO: get the user wearing to see if the user is wearing the item
-                // if the user is not wearing the item then do not create the armament
-
+                // TODO: check for hacksaw
 
                 // get the requirements for the armament to create
                 var itemsInInventoryCountMap = {}
@@ -5039,12 +5142,10 @@ module.exports.createArmament = function(message, args){
                             armamentTemplateItem = allItems[i]
                         }
                     }
-    
                     // if we have an item that meets the requirements then use that item to create the armament
                     var itemBeingUsedForArmament = []
                     for (var item in inventoryResponse.data){
                         var validItem = useItem.itemValidate(inventoryResponse.data[item]);
-                        var notWearing = useItem.itemNotWearing(inventoryResponse.data[item])
                         var auctionedItem = false;
                         var ItemInQuestion = inventoryResponse.data[item]
     
@@ -5056,7 +5157,7 @@ module.exports.createArmament = function(message, args){
                             itemBeingTraded = true;
                         }
                         if (!itemsInInventoryCountMap[inventoryResponse.data[item].itemid] 
-                            && validItem && notWearing && !auctionedItem && !itemBeingTraded){
+                            && validItem && !auctionedItem && !itemBeingTraded){
                             // item hasnt been added to be counted, add it as 1
                             itemsInInventoryCountMap[inventoryResponse.data[item].itemid] = 1;
     
@@ -5203,14 +5304,18 @@ module.exports.greenHouseCommand = function(message){
         if (ghErr){
             console.log(ghErr)
         }else{
-            var greenHouseData = {
-                plots: ghRes.data.plotsoflandplantid,
-                plotsItemIds: ghRes.data.plotsoflanditemid,
-                lastharvest: ghRes.data.lastharvest,
-                timesharvested: ghRes.data.timesharvested,
-                name: message.author.username
+            if (ghRes.data.greenhouselevel > 0){
+                var greenHouseData = {
+                    plots: ghRes.data.plotsoflandplantid,
+                    plotsItemIds: ghRes.data.plotsoflanditemid,
+                    lastharvest: ghRes.data.lastharvest,
+                    timesharvested: ghRes.data.timesharvested,
+                    name: message.author.username
+                }
+                greenHouseEmbedBuilder(message, greenHouseData, itemsMapById)    
+            }else{
+                message.channel.send("You do not own a Greenhouse")
             }
-            greenHouseEmbedBuilder(message, greenHouseData, itemsMapById)
         }
     })
     // create embed based off of their greenhouse info stats | visual representation
@@ -5268,33 +5373,25 @@ module.exports.stableCommand = function(message){
         if (stErr){
             console.log(stErr)
         }else{
-            var stableData = {
-                name: message.author.username,
-                stableLevel : stRes.data.stablelevel,
-                pet1name: stRes.data.stableslot1name,
-                pet1type: stRes.data.stableslot1pet,
-                pet2name: stRes.data.stableslot2name,
-                pet2type: stRes.data.stableslot2pet,
-                pet3name: stRes.data.stableslot3name,
-                pet3type: stRes.data.stableslot3pet,
-                pet4name: stRes.data.stableslot4name,
-                pet4type: stRes.data.stableslot4pet,
-                pet5name: stRes.data.stableslot5name,
-                pet5type: stRes.data.stableslot5pet
+            if (stRes.data.stablelevel > 0){
+                var stableData = {
+                    name: message.author.username,
+                    stableLevel : stRes.data.stablelevel,
+                    pet1name: stRes.data.stableslot1name,
+                    pet1type: stRes.data.stableslot1pet,
+                    pet2name: stRes.data.stableslot2name,
+                    pet2type: stRes.data.stableslot2pet,
+                    pet3name: stRes.data.stableslot3name,
+                    pet3type: stRes.data.stableslot3pet,
+                    pet4name: stRes.data.stableslot4name,
+                    pet4type: stRes.data.stableslot4pet,
+                    pet5name: stRes.data.stableslot5name,
+                    pet5type: stRes.data.stableslot5pet
+                }
+                stableEmbedBuilder(message, stableData)    
+            }else{
+                message.channel.send("You do not own a stable")
             }
-            stableEmbedBuilder(message, stableData)
-
-            // profileDB.getItemData(function(error, allItemsResponse){
-            //     if (error){
-            //         console.log(error)
-            //     }else{
-            //         var itemsMapById = {}
-            //         for (var index in allItemsResponse.data){
-            //             itemsMapById[allItemsResponse.data[index].id] = allItemsResponse.data[index];
-            //         }
-            //         stableEmbedBuilder(message, stableData, itemsMapById)
-            //     }
-            // })
         }
     })
 }
@@ -5366,25 +5463,52 @@ module.exports.templeCommand = function(message){
         }else{
             profileDB.getUserItems(discordUserId, function(err, inventoryResponse){
                 if (err){
-                    // console.log(err);
+                    console.log(err);
                     agreeToTerms(message, discordUserId);
                 }
                 else{
-                    var templeData = { 
-                        name: message.author.username,
-                        templeLevel : templeRes.data.templelevel,
-                        templecraft1id: templeRes.data.templecraft1id,
-                        templecraft2id: templeRes.data.templecraft2id,
-                        templecraft3id : templeRes.data.templecraft3id,
-                        templecraft1name: templeRes.data.templecraft1name,
-                        templecraft2name: templeRes.data.templecraft2name,
-                        templecraft3name: templeRes.data.templecraft3name,
-                        lasttemplecraft: templeRes.data.lasttemplecraft,
-                        currenttemplecraftslot: templeRes.data.currenttemplecraftslot
-        
+                    if (templeRes.data.templelevel > 0){
+                        var itemsInInventoryCountMap = {};
+                        for (var item in inventoryResponse.data){
+                            var ItemInQuestion = inventoryResponse.data[item];
+                            var validItem = useItem.itemValidate(ItemInQuestion);
+                            var itemBeingAuctioned = false;
+                            if (itemsInAuction[ItemInQuestion.id]){
+                                itemBeingAuctioned = true;
+                            }
+                            var itemBeingTraded = false;
+                            if (activeTradeItems[inventoryResponse.data[item].id]){
+                                itemBeingTraded = true;
+                            }
+                            if (!itemsInInventoryCountMap[inventoryResponse.data[item].itemid] 
+                                && validItem 
+                                && !itemBeingAuctioned
+                                && !itemBeingTraded){
+                                // item hasnt been added to be counted, add it as 1
+                                itemsInInventoryCountMap[inventoryResponse.data[item].itemid] = 1;
+                            }
+                            else if (validItem && !itemBeingAuctioned && !itemBeingTraded){
+                                itemsInInventoryCountMap[inventoryResponse.data[item].itemid] = itemsInInventoryCountMap[inventoryResponse.data[item].itemid] + 1
+                            }
+                        }
+                        var templeData = { 
+                            name: message.author.username,
+                            templeLevel : templeRes.data.templelevel,
+                            templecraft1id: templeRes.data.templecraft1id,
+                            templecraft2id: templeRes.data.templecraft2id,
+                            templecraft3id : templeRes.data.templecraft3id,
+                            templecraft1name: templeRes.data.templecraft1name,
+                            templecraft2name: templeRes.data.templecraft2name,
+                            templecraft3name: templeRes.data.templecraft3name,
+                            lasttemplecraft: templeRes.data.lasttemplecraft,
+                            inventoryItems: itemsInInventoryCountMap,
+                            currenttemplecraftslot: templeRes.data.currenttemplecraftslot
+                        }
+                        // TODO: build the temple gems
+                        templeEmbedBuilder(message, templeData)
+                    }else{
+                        message.channel.send("You do not own a Temple")
                     }
-                    // TODO: build the temple gems
-                    templeEmbedBuilder(message, templeData)
                 }
             })
         }
@@ -5404,16 +5528,26 @@ function templeEmbedBuilder(message, templeData){
     .addField('Recipe', templeVisual, false)
     .addField('Temple Info', templeData.currentLevelInfo, false)
     .addField('Next Level Info', templeData.nextLevelInfo, false)
-    .addField('Gems', gemString, false)
+    .addField('Gems :gem:', gemString, false)
     message.channel.send({embed});
 }
 
 function gemStringBuilder(templeData){
-    // make it look like ..
-    var gemString = "gems list"
     // list of dust
+    var itemsMap = templeData.inventoryItems
+
+    var inventoryString = "";
+    for (var key in itemsMap) {
+        if (itemsMap.hasOwnProperty(key)) {
+            // 
+            if (itemsMapById[key].itemraritycategory == "uncommon+" && itemsMapById[key].essencerarity){
+                var rarityToCraftFor = disassembleItem.getRarityOfItemGemCanCreateArmamentFor(itemsMapById[key])
+                inventoryString = "**"+itemsMapById[key].itemname + "** - " +  itemsMap[key] + " - " + rarityToCraftFor +"\n" + inventoryString;
+            }
+        }
+    }
     
-    return gemString
+    return inventoryString
 }
 
 function templeVisualBuilder(templeData){
@@ -5431,7 +5565,7 @@ function templeVisualBuilder(templeData){
             var itemname = itemsMapById[itemid].itemname
             var itemReq = itemReq + itemname + " x" + itemcount + "\n"
         }
-        templeVisual = templeVisual + "**" + recipe1.recipeName + "**: \nrequirements:\n tacos: " + recipe1.tacos + "\nreputation: " + recipe1.reputationlevel + "\nItems:\n" + itemReq
+        templeVisual = templeVisual + "**" + recipe1.recipeName + " Requirements**: \ntacos: " + recipe1.tacos + "\nreputation: " + recipe1.reputationlevel + "\nItems:\n" + itemReq
     }
     if (recipe2){
         var itemReq = ""
@@ -5543,25 +5677,28 @@ module.exports.plantCommand = function(message, args){
                         if (ghError){
                             console.log(ghError)
                         }else{
-                            var greenHouseData = {
-                                numberOfPlots: ghRes.data.plotsofland,
-                                plots: ghRes.data.plotsoflandplantid,
-                                plotsItemIds: ghRes.data.plotsoflanditemid,
-                                lastharvest: ghRes.data.lastharvest,
-                                timesharvested: ghRes.data.timesharvested,
-                                plantName: itemsMapById[plantBeingPlanted[0].itemid].itemname,
-                                name: message.author.username
-                            }
-
-                            // if they do get the user's greenhouse, check that the slot is available (not higher than their #ofplots)
-                            if ( plotOfLand > 0 && plotOfLand <= greenHouseData.numberOfPlots){
-                                // plant on plot an update
-                                plantOnPlotOfLand(message, discordUserId, plotOfLand, greenHouseData, plantBeingPlanted[0])
+                            if (ghRes.data.greenhouselevel > 0){
+                                var greenHouseData = {
+                                    numberOfPlots: ghRes.data.plotsofland,
+                                    plots: ghRes.data.plotsoflandplantid,
+                                    plotsItemIds: ghRes.data.plotsoflanditemid,
+                                    lastharvest: ghRes.data.lastharvest,
+                                    timesharvested: ghRes.data.timesharvested,
+                                    plantName: itemsMapById[plantBeingPlanted[0].itemid].itemname,
+                                    name: message.author.username
+                                }
+    
+                                // if they do get the user's greenhouse, check that the slot is available (not higher than their #ofplots)
+                                if ( plotOfLand > 0 && plotOfLand <= greenHouseData.numberOfPlots){
+                                    // plant on plot an update
+                                    plantOnPlotOfLand(message, discordUserId, plotOfLand, greenHouseData, plantBeingPlanted[0])
+                                }else{
+                                    message.channel.send("Invalid plot of land, try planting in a slot that is available to you")
+                                }
+                                // if available, plant the seed in the plot of land, insert itemid, plantid, and set total harv = 0    
                             }else{
-                                message.channel.send("Invalid plot of land, try planting in a slot that is available to you")
+                                message.channel.send("You do not own a Greenhouse")
                             }
-                            // if available, plant the seed in the plot of land, insert itemid, plantid, and set total harv = 0
-
                         }
                     })
                 }else{
@@ -5630,66 +5767,71 @@ module.exports.harvestCommand = function(message, args){
         if(err){
             console.log(err)
         }else{
-            var userLevel = profileData.data.level
-            var greenHouseData = {
-                plots: profileData.data.plotsoflandplantid,
-                harvestCounts: profileData.data.timesharvested,
-                plotsItemIds: profileData.data.plotsoflanditemid,
-                lastharvest: profileData.data.lastharvest,
-                timesharvested: profileData.data.timesharvested,
-                name: message.author.username
-            }
-            wearStats.getUserWearingStats(message, discordUserId, {userLevel: userLevel}, allItems, function(wearErr, wearRes){
-                if (wearErr){
-                    console.log(wearErr)
-                }else{
-                    var now = new Date();
-                    var threeDaysAgo = new Date();
-                    ///////// CALCULATE THE MINUTES REDUCED HERE 
-                    var secondsToRemove = wearStats.calculateSecondsReduced(wearRes, "harvest");
-
-                    threeDaysAgo = new Date(threeDaysAgo.setHours(threeDaysAgo.getHours() - HARVEST_COOLDOWN_HOURS ));
-                    threeDaysAgo = new Date(threeDaysAgo.setSeconds(threeDaysAgo.getSeconds() + secondsToRemove));
-
-                    if ( threeDaysAgo > greenHouseData.lastharvest ){
-                        var fruitsHarvested = harvestPlotsOfLand(greenHouseData, itemsMapById)
-                        // harvest your plots of land
-                        var fruitsColumnsWithCount = {}
-                        for (var f in fruitsHarvested){
-                            if ( itemHarvested[f] ){
-                                var actualFruitColumnId = itemHarvested[f]
-                                fruitsColumnsWithCount[actualFruitColumnId] = fruitsHarvested[f]
-                            }
-                        }
-                        var newHarvestCounts = []
-                        for (var h in greenHouseData.harvestCounts){
-                            var currentCount = greenHouseData.harvestCounts[h]
-                            newHarvestCounts.push(currentCount + 1)
-                        }
-                        // go through all the plants in your garden, harvest them, and then add them to your fruits profile
-                        profileDB.bulkupdateUserFruits(discordUserId, fruitsColumnsWithCount, true, function(err, bulkRes){
-                            if (err){
-                                console.log(err)
-                            }else{
-                                console.log(bulkRes)
-                                var now = new Date();
-                                profileDB.updatePlotInfo(discordUserId, { lastharvest: now, timesharvested: newHarvestCounts }, function(plotErr, plotRes){
-                                    if (plotErr){
-                                        console.log(plotErr)
-                                    }else{
-                                        console.log(plotRes)
-                                        harvestEmbedBuilder(message, fruitsColumnsWithCount)
-                                    }
-                                })
-                            }
-                        })
-                    }else{
-                        now = new Date(now.setSeconds(now.getSeconds() + secondsToRemove));
-                        var numberOfHours = getDateDifference(greenHouseData.lastharvest, now, HARVEST_COOLDOWN_HOURS);
-                        message.channel.send(message.author + " You are tired! Please wait `" + numberOfHours + "` ");
-                    }
+            if (profileData.data.greenhouselevel > 0){
+                var userLevel = profileData.data.level
+                var greenHouseData = {
+                    plots: profileData.data.plotsoflandplantid,
+                    greenhouseLevel: profileData.data.greenhouselevel,
+                    harvestCounts: profileData.data.timesharvested,
+                    plotsItemIds: profileData.data.plotsoflanditemid,
+                    lastharvest: profileData.data.lastharvest,
+                    timesharvested: profileData.data.timesharvested,
+                    name: message.author.username
                 }
-            })
+                wearStats.getUserWearingStats(message, discordUserId, {userLevel: userLevel}, allItems, function(wearErr, wearRes){
+                    if (wearErr){
+                        console.log(wearErr)
+                    }else{
+                        var now = new Date();
+                        var threeDaysAgo = new Date();
+                        ///////// CALCULATE THE MINUTES REDUCED HERE 
+                        var secondsToRemove = wearStats.calculateSecondsReduced(wearRes, "harvest");
+
+                        threeDaysAgo = new Date(threeDaysAgo.setHours(threeDaysAgo.getHours() - HARVEST_COOLDOWN_HOURS ));
+                        threeDaysAgo = new Date(threeDaysAgo.setSeconds(threeDaysAgo.getSeconds() + secondsToRemove));
+
+                        if ( threeDaysAgo > greenHouseData.lastharvest ){
+                            var fruitsHarvested = harvestPlotsOfLand(greenHouseData, itemsMapById)
+                            // harvest your plots of land
+                            var fruitsColumnsWithCount = {}
+                            for (var f in fruitsHarvested){
+                                if ( itemHarvested[f] ){
+                                    var actualFruitColumnId = itemHarvested[f]
+                                    fruitsColumnsWithCount[actualFruitColumnId] = fruitsHarvested[f]
+                                }
+                            }
+                            var newHarvestCounts = []
+                            for (var h in greenHouseData.harvestCounts){
+                                var currentCount = greenHouseData.harvestCounts[h]
+                                newHarvestCounts.push(currentCount + 1)
+                            }
+                            // go through all the plants in your garden, harvest them, and then add them to your fruits profile
+                            profileDB.bulkupdateUserFruits(discordUserId, fruitsColumnsWithCount, true, function(err, bulkRes){
+                                if (err){
+                                    console.log(err)
+                                }else{
+                                    console.log(bulkRes)
+                                    var now = new Date();
+                                    profileDB.updatePlotInfo(discordUserId, { lastharvest: now, timesharvested: newHarvestCounts }, function(plotErr, plotRes){
+                                        if (plotErr){
+                                            console.log(plotErr)
+                                        }else{
+                                            console.log(plotRes)
+                                            harvestEmbedBuilder(message, fruitsColumnsWithCount)
+                                        }
+                                    })
+                                }
+                            })
+                        }else{
+                            now = new Date(now.setSeconds(now.getSeconds() + secondsToRemove));
+                            var numberOfHours = getDateDifference(greenHouseData.lastharvest, now, HARVEST_COOLDOWN_HOURS);
+                            message.channel.send(message.author + " You are tired! Please wait `" + numberOfHours + "` ");
+                        }
+                    }
+                })
+            }else{
+                message.channel.send("You do not own a Greenhouse")
+            }
         }
     })
 }
@@ -5748,28 +5890,33 @@ module.exports.craftCommand = function(message, args){
             if (err){
                 console.log(err)
             }else{
-                // match recipevia itemshortname
-                var availableRecipes = []
-                if (craftRes.data.templecraft1name){
-                    availableRecipes.push(craftRes.data.templecraft1name)
-                }
-                if (craftRes.data.templecraft2name){
-                    availableRecipes.push(craftRes.data.templecraft2name)
-                }
-                if (craftRes.data.templecraft3name){
-                    availableRecipes.push(craftRes.data.templecraft3name)
-                }
+                if (craftRes.data.templelevel > 0){
+                    // match recipevia itemshortname
+                    var availableRecipes = []
+                    if (craftRes.data.templecraft1name){
+                        availableRecipes.push(craftRes.data.templecraft1name)
+                    }
+                    if (craftRes.data.templecraft2name){
+                        availableRecipes.push(craftRes.data.templecraft2name)
+                    }
+                    if (craftRes.data.templecraft3name){
+                        availableRecipes.push(craftRes.data.templecraft3name)
+                    }
 
-                if (availableRecipes.indexOf(myItemShortName) > -1){
-                    // have the recipe from command
-                    var recipeData = craftRes.data
-                    var recipeRequirements = crafting.getRecipeRequirements(myItemShortName)
-                    if (recipeRequirements){
-                        craftItem(message, discordUserId, recipeRequirements, recipeData, myItemShortName)
+                    if (availableRecipes.indexOf(myItemShortName) > -1){
+                        // have the recipe from command
+                        var recipeData = craftRes.data
+                        var recipeRequirements = crafting.getRecipeRequirements(myItemShortName)
+                        if (recipeRequirements){
+                            craftItem(message, discordUserId, recipeRequirements, recipeData, myItemShortName)
+                        }
+                    }else{
+                        message.channel.send("you cannot craft that item")
                     }
                 }else{
-                    message.channel.send("you cannot craft that item")
+                    message.channel.send("You do not own a temple")
                 }
+                
             }
         })
         // materials required will vary, you can only craft the item if you own the recipe
@@ -5873,9 +6020,13 @@ module.exports.upgradeCommand = function(message, args){
                 if (profileErr){
                     
                 }else{
-                    var nextLevel = profileRes.data.stablelevel + 1
-                    var upgradeRequirementsObj = getUpgradeRequirements(buildingName, nextLevel)
-                    upgradeBuilding(message, discordUserId, buildingName, upgradeRequirementsObj, profileRes.data, nextLevel)
+                    if (profileRes.data.stablelevel > 0){
+                        var nextLevel = profileRes.data.stablelevel + 1
+                        var upgradeRequirementsObj = getUpgradeRequirements(buildingName, nextLevel)
+                        upgradeBuilding(message, discordUserId, buildingName, upgradeRequirementsObj, profileRes.data, nextLevel)    
+                    }else{
+                        message.channel.send("You do not own a Stable")
+                    }
                 }
             })
         }else if (buildingName.toLowerCase() == "greenhouse"){
@@ -5883,9 +6034,13 @@ module.exports.upgradeCommand = function(message, args){
                 if (profileErr){
                     
                 }else{
-                    var nextLevel = profileRes.data.greenhouselevel + 1
-                    var upgradeRequirementsObj = getUpgradeRequirements(buildingName, nextLevel)
-                    upgradeBuilding(message, discordUserId, buildingName, upgradeRequirementsObj, profileRes.data, nextLevel)
+                    if (profileRes.data.greenhouselevel > 0){
+                        var nextLevel = profileRes.data.greenhouselevel + 1
+                        var upgradeRequirementsObj = getUpgradeRequirements(buildingName, nextLevel)
+                        upgradeBuilding(message, discordUserId, buildingName, upgradeRequirementsObj, profileRes.data, nextLevel)    
+                    }else{
+                        message.channel.send("You do not own a Greenhouse")
+                    }
                 }
             })
         }else if (buildingName.toLowerCase() == "temple"){
@@ -5893,9 +6048,13 @@ module.exports.upgradeCommand = function(message, args){
                 if (profileErr){
                     
                 }else{
-                    var nextLevel = profileRes.data.templelevel + 1
-                    var upgradeRequirementsObj = getUpgradeRequirements(buildingName, nextLevel)
-                    upgradeBuilding(message, discordUserId, buildingName, upgradeRequirementsObj, profileRes.data, nextLevel)
+                    if (profileRes.data.templelevel > 0){
+                        var nextLevel = profileRes.data.templelevel + 1
+                        var upgradeRequirementsObj = getUpgradeRequirements(buildingName, nextLevel)
+                        upgradeBuilding(message, discordUserId, buildingName, upgradeRequirementsObj, profileRes.data, nextLevel)    
+                    }else{
+                        message.channel.send("You do not own a Temple")
+                    }
                 }
             })
         }
@@ -8677,7 +8836,6 @@ module.exports.agreeTermsCommand = function(message, args){
                                 // console.log(err);
                             }
                             else{
-                                // send message that the user has 1 more taco
                                 Last_Five_Welcomes.push(discordUserId);
                                 if (Last_Five_Welcomes.length >= 5){
                                     Last_Five_Welcomes.shift();

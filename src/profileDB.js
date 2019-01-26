@@ -39,10 +39,33 @@ module.exports.createUserProfile = function(data, cb) {
             slot4replacing: false
         }
         exports.createUserWearInfo(d, function(e, r){
-            cb(null, {
-                status: 'success',
-                message: 'Inserted one user'
-            });
+            // create stable, greenhouse, temple 
+            var s = {
+                discordId : data.discordId,
+                stablelevel: 0
+            }
+            exports.createUserStableInfo(s, function(e, r){
+                var g = {
+                    discordId : data.discordId,
+                    greenhouselevel: 0,
+                    timesharvested: [ 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                    plotsofland: [ null, null, null, null, null, null, null, null, null ],
+                    plotsoflanditemid: [null, null, null, null, null, null, null, null, null ],
+                    plotsoflandplantid: [null, null, null, null, null, null, null, null, null]
+                }
+                exports.createUserGreenHouseInfo(g, function(e, r){
+                    var t = {
+                        discordId : data.discordId,
+                        templelevel: 0
+                    }
+                    exports.createUserTempleInfo(t, function(e, r){
+                        cb(null, {
+                            status: 'success',
+                            message: 'Inserted one user'
+                        });
+                    })
+                })
+            })
         })
     })
     .catch(function (err) {
@@ -559,7 +582,6 @@ module.exports.updateStablePet = function(userId, pet, petName, stableSlot, thre
 module.exports.purchasePickAxe = function(userId, tacosSpent, cb){
     var query = 'update ' + config.profileTable + ' set tacos=tacos+$1, pickaxe=$3 where discordid=$2'
     // console.log(query)
-    var lastThank = new Date();
     var selectedPickaxe = "basic"
     if (tacosSpent <= -5000 && tacosSpent >= -15000){
         // improved Pickaxe should always be between 100 and 500
@@ -580,6 +602,45 @@ module.exports.purchasePickAxe = function(userId, tacosSpent, cb){
     cb(null, {
         status: 'success',
         message: 'purchased pickaxe'
+        });
+    })
+    .catch(function (err) {
+        cb(err);
+    });
+}
+
+module.exports.purchaseBuilding = function(userId, tacosSpent, building, cb){
+    var query;
+    if (building == "stable"){
+        query = 'update ' + config.profileTable + ' set tacos=tacos+$1, stable=true where discordid=$2'
+
+    }else if (building == "greenhouse"){
+        query = 'update ' + config.profileTable + ' set tacos=tacos+$1, greenhouse=true where discordid=$2'
+
+    }else if (building == "temple"){
+        query = 'update ' + config.profileTable + ' set tacos=tacos+$1, temple=true where discordid=$2'
+    }
+    
+    db.none(query, [tacosSpent, userId])
+    .then(function () {
+    cb(null, {
+        status: 'success',
+        message: 'purchased ' + building
+        });
+    })
+    .catch(function (err) {
+        cb(err);
+    });
+}
+
+module.exports.purchaseHacksaw = function(userId, tacosSpent, cb){
+    var query = 'update ' + config.profileTable + ' set tacos=tacos+$1, hacksaw=true where discordid=$2'
+    
+    db.none(query, [tacosSpent, userId])
+    .then(function () {
+    cb(null, {
+        status: 'success',
+        message: 'purchased hacksaw'
         });
     })
     .catch(function (err) {
@@ -1368,6 +1429,23 @@ module.exports.getUserItems = function(discordId, cb) {
       cb(err);
     });
 }
+
+module.exports.getUserItemsForArmaments = function(discordId, cb) {
+    var query = 'select * from ' + config.inventoryTable + ' where discordId = $1 AND (status is null OR status = \'wearing\') ORDER BY id DESC '
+    // console.log(query);
+    db.query(query, [discordId])
+      .then(function (data) {
+        cb(null, {
+            status: 'success',
+            data: data,
+            message: 'Retrieved All User Items'
+          });
+      })
+      .catch(function (err) {
+        // console.log(err);
+        cb(err);
+      });
+  }
 // items for iteminfo
 module.exports.getUserItemsForInfo = function(discordId, cb) {
     var query = 'select * from ' + config.inventoryTable + ' where discordId = $1 AND (status is null OR status = \'wearing\' ) ORDER BY id DESC '
@@ -1467,6 +1545,57 @@ module.exports.createUserWearInfo = function(data, cb){
     cb(null, {
         status: 'success',
         message: 'updated wear info'
+        });
+    })
+    .catch(function (err) {
+        cb(err);
+    });
+}
+
+// create stable info
+module.exports.createUserStableInfo = function(data, cb){
+    var query = 'insert into '+ config.stablesTable + '(discordId, stablelevel)' +
+    'values(${discordId}, ${stablelevel} )'
+    // console.log(query);
+    db.none(query, data)
+    .then(function () {
+    cb(null, {
+        status: 'success',
+        message: 'updated stable info'
+        });
+    })
+    .catch(function (err) {
+        cb(err);
+    });
+}
+
+// create greenhouse info
+module.exports.createUserGreenHouseInfo = function(data, cb){
+    var query = 'insert into '+ config.greenhouseTable + '(discordId, greenhouselevel, plotsofland, timesharvested, plotsoflanditemid, plotsoflandplantid)' +
+    'values(${discordId}, ${greenhouselevel}, ${plotsofland}, ${timesharvested}, ${plotsoflanditemid}, ${plotsoflandplantid} )'
+    // console.log(query);
+    db.none(query, data)
+    .then(function () {
+    cb(null, {
+        status: 'success',
+        message: 'updated greenhouse info'
+        });
+    })
+    .catch(function (err) {
+        cb(err);
+    });
+}
+
+// create temple info
+module.exports.createUserTempleInfo = function(data, cb){
+    var query = 'insert into '+ config.templeTable + '(discordId, templelevel)' +
+    'values(${discordId}, ${templelevel} )'
+    // console.log(query);
+    db.none(query, data)
+    .then(function () {
+    cb(null, {
+        status: 'success',
+        message: 'updated temple info'
         });
     })
     .catch(function (err) {
