@@ -7981,6 +7981,12 @@ function marketAuctionPostCommand(args){
         auctionPostObj.buyout = extractBuyout(args)
         auctionPostObj.timeToEnd = extractTimeToEnd(args)
         auctionPostObj.valid = true
+        if (auctionPostObj.buyout <= 0){
+            auctionPostObj.valid = false
+        }
+        if (auctionPostObj.startBid <= 0 ){
+            auctionPostObj.valid = false
+        }
     }
     // bid is always less than or equal to buyout price
     if (auctionPostObj.startBid && auctionPostObj.startBid > auctionPostObj.buyout){
