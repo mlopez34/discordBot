@@ -138,7 +138,6 @@ function updateUserRewards(message, discordId, repstatus, cb){
             
         case "admired":
             // give user sprinting shoes on their profile
-            // stable
             profileDB.obtainSprintingShoes(discordId, function(error, res){
                 if (error){
                     console.log(error);
@@ -149,18 +148,32 @@ function updateUserRewards(message, discordId, repstatus, cb){
             })
             break;
         case "glorified":
-            // temple + able to upgrade past level 5 on all buildings + able to improve artifacts
-            profileDB.obtainSprintingShoes(discordId, function(error, res){
+            // able to upgrade past level 5 on all buildings + able to improve artifacts
+            // special greater amulet 
+            // something for thanks? be able to critically earn from thanking - 10% chance to get 50% more tacos from thanks
+            profileDB.obtainHolyCandle(discordId, function(error, res){
                 if (error){
                     console.log(error);
                 }
                 else{
-                    cb(null, "sprinting shoes");
+                    cb(null, "holy candle");
                 }
             })
             break;
         case "sanctified":
             // able to upgrade past level 9 on all buildings + able to refine artifacts
+            // award is an item to refine artifact
+            profileDB.obtainSprintingShoes(discordId, function(error, res){
+                if (error){
+                    console.log(error);
+                }
+                else{
+                    cb(null, "artifact refine item");
+                }
+            })
+            break;
+        case "worshipped":
+        // 125k rep - 
             profileDB.obtainSprintingShoes(discordId, function(error, res){
                 if (error){
                     console.log(error);
