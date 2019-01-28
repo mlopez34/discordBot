@@ -4288,187 +4288,199 @@ module.exports.fetchCommand = function(message, args){
     // the pet has gone to fetch, get taco amount = their fetch
     if (!commandLock["fetch"][discordUserId]){
         exports.setCommandLock("fetch", discordUserId, true)
-    if (args && args.length > 1){
-        // get the stables pet from specified slot
-        var petName = args[1].toLowerCase()
-        profileDB.getStableData(discordUserId, function(fetchError, fetchResponse){
-            if (fetchError){
-                exports.setCommandLock("fetch", discordUserId, false)
-                console.log(fetchError)
-            }else{
-                var userPet;
-                var userPetName;
-                var lastFetchTime;
-                var stableSlot;
-                if (fetchResponse.data.stableslot1name && fetchResponse.data.stableslot1name.toLowerCase() == petName){
-                    userPet = fetchResponse.data.stableslot1pet ? fetchResponse.data.stableslot1pet : undefined;
-                    userPetName = fetchResponse.data.stableslot1name ? fetchResponse.data.stableslot1name : undefined; 
-                    lastFetchTime = fetchResponse.data.stableslot1lastfetchtime ? fetchResponse.data.stableslot1lastfetchtime : undefined; 
-                    stableSlot = 1
-                }else if (fetchResponse.data.stableslot2name && fetchResponse.data.stableslot2name.toLowerCase() == petName){
-                    userPet = fetchResponse.data.stableslot2pet ? fetchResponse.data.stableslot2pet : undefined;
-                    userPetName = fetchResponse.data.stableslot2name ? fetchResponse.data.stableslot2name : undefined; 
-                    lastFetchTime = fetchResponse.data.stableslot2lastfetchtime ? fetchResponse.data.stableslot2lastfetchtime : undefined;    
-                    stableSlot = 2
-                }else if (fetchResponse.data.stableslot3name && fetchResponse.data.stableslot3name.toLowerCase() == petName){
-                    userPet = fetchResponse.data.stableslot3pet ? fetchResponse.data.stableslot3pet : undefined;
-                    userPetName = fetchResponse.data.stableslot3name ? fetchResponse.data.stableslot3name : undefined;    
-                    lastFetchTime = fetchResponse.data.stableslot3lastfetchtime ? fetchResponse.data.stableslot3lastfetchtime : undefined; 
-                    stableSlot = 3
-                }else if (fetchResponse.data.stableslot4name && fetchResponse.data.stableslot4name.toLowerCase() == petName){
-                    userPet = fetchResponse.data.stableslot4pet ? fetchResponse.data.stableslot4pet : undefined;
-                    userPetName = fetchResponse.data.stableslot4name ? fetchResponse.data.stableslot4name : undefined;    
-                    lastFetchTime = fetchResponse.data.stableslot4lastfetchtime ? fetchResponse.data.stableslot4lastfetchtime : undefined; 
-                    stableSlot = 4
-                }else if (fetchResponse.data.stableslot5name && fetchResponse.data.stableslot5name.toLowerCase() == petName){
-                    userPet = fetchResponse.data.stableslot5pet ? fetchResponse.data.stableslot5pet : undefined;
-                    userPetName = fetchResponse.data.stableslot5name ? fetchResponse.data.stableslot5name : undefined;    
-                    lastFetchTime = fetchResponse.data.stableslot5lastfetchtime ? fetchResponse.data.stableslot5lastfetchtime : undefined; 
-                    stableSlot = 5
-                }
-                var userLevel = fetchResponse.data.level;
-                if (userPet){
-                    var userData = {
-                        userLevel : userLevel,
-                        fetchCD: PETS_AVAILABLE[userPet].cooldown,
-                        fetchCount: PETS_AVAILABLE[userPet].fetch
-                    }
-                    wearStats.getUserWearingStats(message, discordUserId, userData, allItems, function(wearErr, wearRes){
-                        if (wearErr){
-                            
-                        }else{
-                            var now = new Date();
-                            if (userPet){
-                                wearRes.fetchCD = userData.fetchCD
-                                var secondsToRemove = wearStats.calculateSecondsReduced(wearRes, "fetch");
-                                var cooldownDate = new Date();
-                                cooldownDate = new Date(cooldownDate.setHours(cooldownDate.getHours() - PETS_AVAILABLE[userPet].cooldown));
-                                ///////// CALCULATE THE MINUTES REDUCED HERE 
-                                cooldownDate = new Date(cooldownDate.setSeconds(cooldownDate.getSeconds() + secondsToRemove));
-
-                                if (!lastFetchTime || ( cooldownDate > lastFetchTime )){
-                                    // fetch whatever and then set lastfetchtime to now
-                                    var fetchTacos = PETS_AVAILABLE[userPet].fetch;
-                                    ///////// CALCULATE THE EXTRA TACOS HERE 
-                                    var extraTacosFromItems = wearStats.calculateExtraTacos(wearRes, "fetch"); // 0 or extra
-                                    profileDB.updateUserTacosStableFetch(discordUserId, fetchTacos + extraTacosFromItems, stableSlot, function(err, updateResponse) {
-                                        if (err){
-                                            // console.log(err);
-                                        }
-                                        else{
-                                            var experienceFromItems = wearStats.calculateExtraExperienceGained(wearRes, "fetch", null);                                                                             
-                                            experience.gainExperience(message, message.author, (( (EXPERIENCE_GAINS.perFetchCd * PETS_AVAILABLE[userPet].fetch) / 10) + experienceFromItems) , fetchResponse);
-                                            // user's pet fetched some tacos
-                                            if (extraTacosFromItems > 0){
-                                                message.channel.send("**" + userPetName + "** fetched:` " + fetchTacos + "` tacos :taco: \n" + PETS_AVAILABLE[userPet].emoji + " " + PETS_AVAILABLE[userPet].speak + " you received `" + extraTacosFromItems + "` extra tacos");                                                
-                                            }else{
-                                                message.channel.send("**" + userPetName + "** fetched:` " + fetchTacos + "` tacos :taco: \n" + PETS_AVAILABLE[userPet].emoji + " " + PETS_AVAILABLE[userPet].speak);                                                
-                                            }
-                                        }
-                                    })
-                                }else{
-                                    // console.log("cd " + PETS_AVAILABLE[userPet].cooldown)
-                                    now = new Date(now.setSeconds(now.getSeconds() + secondsToRemove));
-                                    var numberOfHours = getDateDifference(lastFetchTime, now, PETS_AVAILABLE[userPet].cooldown);
-                                    message.channel.send(message.author + " **" + userPetName + "** needs to rest and cannot fetch currently! Please wait `" + numberOfHours + "` ");
-                                }
-
-                            }
-                        }
-                    })
-
+        if (args && args.length > 1){
+            // get the stables pet from specified slot
+            var petName = args[1].toLowerCase()
+            profileDB.getStableData(discordUserId, function(fetchError, fetchResponse){
+                if (fetchError){
+                    exports.setCommandLock("fetch", discordUserId, false)
+                    console.log(fetchError)
                 }else{
-                    message.channel.send("You do not have a pet to fetch with!")
-                }
-            }
-        })
-    }else{
-        // the pet has gone to fetch, get taco amount = their fetch
-        profileDB.getUserProfileData(discordUserId, function(fetchError, fetchResponse){
-            if (fetchError){
-                // console.log(fetchError);
-            }
-            else{
-                var userLevel = fetchResponse.data.level;
-                var userPet = fetchResponse.data.pet ? fetchResponse.data.pet : undefined;
-                var userPetName = fetchResponse.data.petname ? fetchResponse.data.petname : undefined;
-                if (userPet){
-                    var userData = {
-                        userLevel : userLevel,
-                        fetchCD: PETS_AVAILABLE[userPet].cooldown,
-                        fetchCount: PETS_AVAILABLE[userPet].fetch
+                    var userPet;
+                    var userPetName;
+                    var lastFetchTime;
+                    var stableSlot;
+                    if (fetchResponse.data.stableslot1name && fetchResponse.data.stableslot1name.toLowerCase() == petName){
+                        userPet = fetchResponse.data.stableslot1pet ? fetchResponse.data.stableslot1pet : undefined;
+                        userPetName = fetchResponse.data.stableslot1name ? fetchResponse.data.stableslot1name : undefined; 
+                        lastFetchTime = fetchResponse.data.stableslot1lastfetchtime ? fetchResponse.data.stableslot1lastfetchtime : undefined; 
+                        stableSlot = 1
+                    }else if (fetchResponse.data.stableslot2name && fetchResponse.data.stableslot2name.toLowerCase() == petName){
+                        userPet = fetchResponse.data.stableslot2pet ? fetchResponse.data.stableslot2pet : undefined;
+                        userPetName = fetchResponse.data.stableslot2name ? fetchResponse.data.stableslot2name : undefined; 
+                        lastFetchTime = fetchResponse.data.stableslot2lastfetchtime ? fetchResponse.data.stableslot2lastfetchtime : undefined;    
+                        stableSlot = 2
+                    }else if (fetchResponse.data.stableslot3name && fetchResponse.data.stableslot3name.toLowerCase() == petName){
+                        userPet = fetchResponse.data.stableslot3pet ? fetchResponse.data.stableslot3pet : undefined;
+                        userPetName = fetchResponse.data.stableslot3name ? fetchResponse.data.stableslot3name : undefined;    
+                        lastFetchTime = fetchResponse.data.stableslot3lastfetchtime ? fetchResponse.data.stableslot3lastfetchtime : undefined; 
+                        stableSlot = 3
+                    }else if (fetchResponse.data.stableslot4name && fetchResponse.data.stableslot4name.toLowerCase() == petName){
+                        userPet = fetchResponse.data.stableslot4pet ? fetchResponse.data.stableslot4pet : undefined;
+                        userPetName = fetchResponse.data.stableslot4name ? fetchResponse.data.stableslot4name : undefined;    
+                        lastFetchTime = fetchResponse.data.stableslot4lastfetchtime ? fetchResponse.data.stableslot4lastfetchtime : undefined; 
+                        stableSlot = 4
+                    }else if (fetchResponse.data.stableslot5name && fetchResponse.data.stableslot5name.toLowerCase() == petName){
+                        userPet = fetchResponse.data.stableslot5pet ? fetchResponse.data.stableslot5pet : undefined;
+                        userPetName = fetchResponse.data.stableslot5name ? fetchResponse.data.stableslot5name : undefined;    
+                        lastFetchTime = fetchResponse.data.stableslot5lastfetchtime ? fetchResponse.data.stableslot5lastfetchtime : undefined; 
+                        stableSlot = 5
                     }
-                    wearStats.getUserWearingStats(message, discordUserId, userData, allItems, function(wearErr, wearRes){
-                        if (wearErr){
-                            
-                        }else{
-                            var now = new Date();
-                            if (userPet){
-                                wearRes.fetchCD = userData.fetchCD
-                                var secondsToRemove = wearStats.calculateSecondsReduced(wearRes, "fetch");
-
-                                var cooldownDate = new Date();
-                                cooldownDate = new Date(cooldownDate.setHours(cooldownDate.getHours() - PETS_AVAILABLE[userPet].cooldown));
-                                ///////// CALCULATE THE MINUTES REDUCED HERE 
-                                cooldownDate = new Date(cooldownDate.setSeconds(cooldownDate.getSeconds() + secondsToRemove));
-
-                                if (!fetchResponse.data.lastfetchtime || ( cooldownDate > fetchResponse.data.lastfetchtime )){
-                                    // fetch whatever and then set lastfetchtime to now
-                                    var fetchTacos = PETS_AVAILABLE[userPet].fetch;
-                                    ///////// CALCULATE THE EXTRA TACOS HERE 
-                                    var extraTacosFromItems = wearStats.calculateExtraTacos(wearRes, "fetch"); // 0 or extra
-
-                                    profileDB.updateUserTacosFetch(discordUserId, fetchTacos + extraTacosFromItems, function(err, updateResponse) {
-                                        if (err){
-                                            // console.log(err);
-                                        }
-                                        else{
-                                            var experienceFromItems = wearStats.calculateExtraExperienceGained(wearRes, "fetch", null);                                                                             
-                                            experience.gainExperience(message, message.author, (( (EXPERIENCE_GAINS.perFetchCd * PETS_AVAILABLE[userPet].fetch) / 10) + experienceFromItems) , fetchResponse);
-                                            // user's pet fetched some tacos
-                                            if (extraTacosFromItems > 0){
-                                                /* SEASONAL
-                                                if (trickOrTreatMap["tot-" + discordUserId] && trickOrTreatMap["tot-" + discordUserId].tot == "trick"){
-                                                    message.channel.send("**" + userPetName + "** fetched:` " + fetchTacos + "` tacos :taco: \n 👻 BOOOOOOOO " + PETS_AVAILABLE[userPet].speak + " you received `" + extraTacosFromItems + "` extra tacos");                                                
-                                                }else if (trickOrTreatMap["tot-" + discordUserId] && trickOrTreatMap["tot-" + discordUserId].tot == "treat"){
-
-                                                }else{
-                                                    */
-                                                message.channel.send("**" + userPetName + "** fetched:` " + fetchTacos + "` tacos :taco: \n" + PETS_AVAILABLE[userPet].emoji + " " + PETS_AVAILABLE[userPet].speak + " you received `" + extraTacosFromItems + "` extra tacos");                                                
-                                                //}
-                                            }else{
-                                                /* SEASONAL
-                                                if (trickOrTreatMap["tot-" + discordUserId] && trickOrTreatMap["tot-" + discordUserId].tot == "trick"){
-                                                    message.channel.send("**" + userPetName + "** fetched:` " + fetchTacos + "` tacos :taco: \n 👻 BOOOOOOOO " + PETS_AVAILABLE[userPet].speak);                                                
-                                                }else if (trickOrTreatMap["tot-" + discordUserId] && trickOrTreatMap["tot-" + discordUserId].tot == "treat"){
-                                                    message.channel.send("**" + userPetName + "** fetched:` " + fetchTacos + "` tacos :taco: \n 🎃 HEEEHEEEHEHEHEE " + PETS_AVAILABLE[userPet].speak);                                                
-                                                }else{
-                                                    */
-                                                message.channel.send("**" + userPetName + "** fetched:` " + fetchTacos + "` tacos :taco: \n" + PETS_AVAILABLE[userPet].emoji + " " + PETS_AVAILABLE[userPet].speak);                                                
-                                                //}
-                                            }
-                                        }
-                                    })
-                                }
-                                else{
-                                    // console.log("cd " + PETS_AVAILABLE[userPet].cooldown)
-                                    now = new Date(now.setSeconds(now.getSeconds() + secondsToRemove));
-                                    var numberOfHours = getDateDifference(fetchResponse.data.lastfetchtime, now, PETS_AVAILABLE[userPet].cooldown);
-                                    message.channel.send(message.author + " **" + userPetName + "** needs to rest and cannot fetch currently! Please wait `" + numberOfHours + "` ");
-                                }
-                            }
-                            else{
-                                // user doesnt have a pet
-                                // console.log("doesnt have pet")
-                            }
+                    var userLevel = fetchResponse.data.level;
+                    if (userPet){
+                        var userData = {
+                            userLevel : userLevel,
+                            fetchCD: PETS_AVAILABLE[userPet].cooldown,
+                            fetchCount: PETS_AVAILABLE[userPet].fetch
                         }
-                    })
+                        wearStats.getUserWearingStats(message, discordUserId, userData, allItems, function(wearErr, wearRes){
+                            if (wearErr){
+                                exports.setCommandLock("fetch", discordUserId, false)
+                            }else{
+                                var now = new Date();
+                                if (userPet){
+                                    wearRes.fetchCD = userData.fetchCD
+                                    var secondsToRemove = wearStats.calculateSecondsReduced(wearRes, "fetch");
+                                    var cooldownDate = new Date();
+                                    cooldownDate = new Date(cooldownDate.setHours(cooldownDate.getHours() - PETS_AVAILABLE[userPet].cooldown));
+                                    ///////// CALCULATE THE MINUTES REDUCED HERE 
+                                    cooldownDate = new Date(cooldownDate.setSeconds(cooldownDate.getSeconds() + secondsToRemove));
+
+                                    if (!lastFetchTime || ( cooldownDate > lastFetchTime )){
+                                        // fetch whatever and then set lastfetchtime to now
+                                        var fetchTacos = PETS_AVAILABLE[userPet].fetch;
+                                        ///////// CALCULATE THE EXTRA TACOS HERE 
+                                        var extraTacosFromItems = wearStats.calculateExtraTacos(wearRes, "fetch"); // 0 or extra
+                                        profileDB.updateUserTacosStableFetch(discordUserId, fetchTacos + extraTacosFromItems, stableSlot, function(err, updateResponse) {
+                                            if (err){
+                                                // console.log(err);
+                                                exports.setCommandLock("fetch", discordUserId, false)
+                                            }
+                                            else{
+                                                exports.setCommandLock("fetch", discordUserId, false)
+                                                var experienceFromItems = wearStats.calculateExtraExperienceGained(wearRes, "fetch", null);                                                                             
+                                                experience.gainExperience(message, message.author, (( (EXPERIENCE_GAINS.perFetchCd * PETS_AVAILABLE[userPet].fetch) / 10) + experienceFromItems) , fetchResponse);
+                                                // user's pet fetched some tacos
+                                                if (extraTacosFromItems > 0){
+                                                    message.channel.send("**" + userPetName + "** fetched:` " + fetchTacos + "` tacos :taco: \n" + PETS_AVAILABLE[userPet].emoji + " " + PETS_AVAILABLE[userPet].speak + " you received `" + extraTacosFromItems + "` extra tacos");                                                
+                                                }else{
+                                                    message.channel.send("**" + userPetName + "** fetched:` " + fetchTacos + "` tacos :taco: \n" + PETS_AVAILABLE[userPet].emoji + " " + PETS_AVAILABLE[userPet].speak);                                                
+                                                }
+                                            }
+                                        })
+                                    }else{
+                                        // console.log("cd " + PETS_AVAILABLE[userPet].cooldown)
+                                        exports.setCommandLock("fetch", discordUserId, false)
+                                        now = new Date(now.setSeconds(now.getSeconds() + secondsToRemove));
+                                        var numberOfHours = getDateDifference(lastFetchTime, now, PETS_AVAILABLE[userPet].cooldown);
+                                        message.channel.send(message.author + " **" + userPetName + "** needs to rest and cannot fetch currently! Please wait `" + numberOfHours + "` ");
+                                    }
+                                }else{
+                                    exports.setCommandLock("fetch", discordUserId, false)
+                                }
+                            }
+                        })
+
+                    }else{
+                        exports.setCommandLock("fetch", discordUserId, false)
+                        message.channel.send("You do not have a pet to fetch with!")
+                    }
+                }
+            })
+        }else{
+            // the pet has gone to fetch, get taco amount = their fetch
+            profileDB.getUserProfileData(discordUserId, function(fetchError, fetchResponse){
+                if (fetchError){
+                    exports.setCommandLock("fetch", discordUserId, false)
+                    // console.log(fetchError);
                 }
                 else{
-                    message.channel.send("You do not have a pet to fetch with!")
+                    var userLevel = fetchResponse.data.level;
+                    var userPet = fetchResponse.data.pet ? fetchResponse.data.pet : undefined;
+                    var userPetName = fetchResponse.data.petname ? fetchResponse.data.petname : undefined;
+                    if (userPet){
+                        var userData = {
+                            userLevel : userLevel,
+                            fetchCD: PETS_AVAILABLE[userPet].cooldown,
+                            fetchCount: PETS_AVAILABLE[userPet].fetch
+                        }
+                        wearStats.getUserWearingStats(message, discordUserId, userData, allItems, function(wearErr, wearRes){
+                            if (wearErr){
+                                exports.setCommandLock("fetch", discordUserId, false)
+                            }else{
+                                var now = new Date();
+                                if (userPet){
+                                    wearRes.fetchCD = userData.fetchCD
+                                    var secondsToRemove = wearStats.calculateSecondsReduced(wearRes, "fetch");
+
+                                    var cooldownDate = new Date();
+                                    cooldownDate = new Date(cooldownDate.setHours(cooldownDate.getHours() - PETS_AVAILABLE[userPet].cooldown));
+                                    ///////// CALCULATE THE MINUTES REDUCED HERE 
+                                    cooldownDate = new Date(cooldownDate.setSeconds(cooldownDate.getSeconds() + secondsToRemove));
+
+                                    if (!fetchResponse.data.lastfetchtime || ( cooldownDate > fetchResponse.data.lastfetchtime )){
+                                        // fetch whatever and then set lastfetchtime to now
+                                        var fetchTacos = PETS_AVAILABLE[userPet].fetch;
+                                        ///////// CALCULATE THE EXTRA TACOS HERE 
+                                        var extraTacosFromItems = wearStats.calculateExtraTacos(wearRes, "fetch"); // 0 or extra
+
+                                        profileDB.updateUserTacosFetch(discordUserId, fetchTacos + extraTacosFromItems, function(err, updateResponse) {
+                                            if (err){
+                                                // console.log(err);
+                                                exports.setCommandLock("fetch", discordUserId, false)
+                                            }
+                                            else{
+                                                exports.setCommandLock("fetch", discordUserId, false)
+                                                var experienceFromItems = wearStats.calculateExtraExperienceGained(wearRes, "fetch", null);                                                                             
+                                                experience.gainExperience(message, message.author, (( (EXPERIENCE_GAINS.perFetchCd * PETS_AVAILABLE[userPet].fetch) / 10) + experienceFromItems) , fetchResponse);
+                                                // user's pet fetched some tacos
+                                                if (extraTacosFromItems > 0){
+                                                    /* SEASONAL
+                                                    if (trickOrTreatMap["tot-" + discordUserId] && trickOrTreatMap["tot-" + discordUserId].tot == "trick"){
+                                                        message.channel.send("**" + userPetName + "** fetched:` " + fetchTacos + "` tacos :taco: \n 👻 BOOOOOOOO " + PETS_AVAILABLE[userPet].speak + " you received `" + extraTacosFromItems + "` extra tacos");                                                
+                                                    }else if (trickOrTreatMap["tot-" + discordUserId] && trickOrTreatMap["tot-" + discordUserId].tot == "treat"){
+
+                                                    }else{
+                                                        */
+                                                    message.channel.send("**" + userPetName + "** fetched:` " + fetchTacos + "` tacos :taco: \n" + PETS_AVAILABLE[userPet].emoji + " " + PETS_AVAILABLE[userPet].speak + " you received `" + extraTacosFromItems + "` extra tacos");                                                
+                                                    //}
+                                                }else{
+                                                    /* SEASONAL
+                                                    if (trickOrTreatMap["tot-" + discordUserId] && trickOrTreatMap["tot-" + discordUserId].tot == "trick"){
+                                                        message.channel.send("**" + userPetName + "** fetched:` " + fetchTacos + "` tacos :taco: \n 👻 BOOOOOOOO " + PETS_AVAILABLE[userPet].speak);                                                
+                                                    }else if (trickOrTreatMap["tot-" + discordUserId] && trickOrTreatMap["tot-" + discordUserId].tot == "treat"){
+                                                        message.channel.send("**" + userPetName + "** fetched:` " + fetchTacos + "` tacos :taco: \n 🎃 HEEEHEEEHEHEHEE " + PETS_AVAILABLE[userPet].speak);                                                
+                                                    }else{
+                                                        */
+                                                    message.channel.send("**" + userPetName + "** fetched:` " + fetchTacos + "` tacos :taco: \n" + PETS_AVAILABLE[userPet].emoji + " " + PETS_AVAILABLE[userPet].speak);                                                
+                                                    //}
+                                                }
+                                            }
+                                        })
+                                    }
+                                    else{
+                                        // console.log("cd " + PETS_AVAILABLE[userPet].cooldown)
+                                        exports.setCommandLock("fetch", discordUserId, false)
+                                        now = new Date(now.setSeconds(now.getSeconds() + secondsToRemove));
+                                        var numberOfHours = getDateDifference(fetchResponse.data.lastfetchtime, now, PETS_AVAILABLE[userPet].cooldown);
+                                        message.channel.send(message.author + " **" + userPetName + "** needs to rest and cannot fetch currently! Please wait `" + numberOfHours + "` ");
+                                    }
+                                }
+                                else{
+                                    exports.setCommandLock("fetch", discordUserId, false)
+                                    // user doesnt have a pet
+                                    // console.log("doesnt have pet")
+                                }
+                            }
+                        })
+                    }
+                    else{
+                        exports.setCommandLock("fetch", discordUserId, false)
+                        message.channel.send("You do not have a pet to fetch with!")
+                    }
                 }
-            }
-        })
+            })
+        }
     }
 }
 
