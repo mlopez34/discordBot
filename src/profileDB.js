@@ -305,6 +305,20 @@ module.exports.obtainSprintingShoes = function(userId, cb) {
     });
 }
 
+module.exports.obtainHolyCandle = function(userId, cb) {
+    var query = 'update ' + config.profileTable + ' set holycandle=true where discordid=$1'
+    db.none(query, [userId])
+    .then(function () {
+    cb(null, {
+        status: 'success',
+        message: 'added holy candle'
+        });
+    })
+    .catch(function (err) {
+        cb(err);
+    });
+}
+
 module.exports.updateUserTacosSorry = function(userId, tacos, cb) {
     var query = 'update ' + config.profileTable + ' set tacos=tacos+$1, lastsorrytime=$3 where discordid=$2'
     var lastThank = new Date();

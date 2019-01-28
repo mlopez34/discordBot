@@ -1019,6 +1019,15 @@ module.exports.calculateExtraExperienceGained = function(userItemStats, command,
     
 }
 
+module.exports.newExtraTacosFromCandle = function(extraTacos){
+    // 10% chance to get 50% more extra tacos - if user has holy candle
+    var extraTacosRoll = Math.floor(Math.random() * 1000) + 1;
+    if (extraTacosRoll > 900){
+        extraTacos = Math.floor(extraTacos * 1.5)
+    }
+    return extraTacos
+}
+
 module.exports.calculateExtraTacos = function(userItemStats, command, extraParams){
     // use the command to figure out the extra tacos, calculate the extra tacos gained
     var extraTacos = 0;

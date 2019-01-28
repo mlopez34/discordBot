@@ -48,7 +48,7 @@ var SODA_CAN_ITEM_ID = 1;
 var SOIL_ITEM_ID = 2;
 var PET_COST = 750;
 var QueueOfTacosDropped = [];
-var THANK_COOLDOWN_HOURS = 2;
+var THANK_COOLDOWN_HOURS = 0;
 var SORRY_COOLDOWN_HOURS = 6;
 var COOK_COOLDOWN_HOURS = 24;
 var PREPARE_COOLDOWN_HOURS = 48;
@@ -499,8 +499,12 @@ module.exports.thankCommand = function(message){
                 // console.log("in error : " + err.code);
                 agreeToTerms(message, discordUserId);
             }else{
-                var userLevel = thankResponse.data.level;
-                wearStats.getUserWearingStats(message, discordUserId, {userLevel: userLevel}, allItems, function(wearErr, wearRes){
+                var HAS_HOLY_CANDLE = thankResponse.data.holycandle;
+                var userLevel = thankResponse.data.level
+                var userWearingData = {
+                    userLevel : userLevel
+                }
+                wearStats.getUserWearingStats(message, discordUserId, userWearingData, allItems, function(wearErr, wearRes){
                     if (wearErr){
                         
                     }else{
@@ -517,6 +521,10 @@ module.exports.thankCommand = function(message){
                         if ( twoHoursAgo > thankResponse.data.lastthanktime ){
                             ///////// CALCULATE THE EXTRA TACOS HERE 
                             var extraTacosFromItems = wearStats.calculateExtraTacos(wearRes, "thank"); // 0 or extra
+                            if (HAS_HOLY_CANDLE){
+                                extraTacosFromItems = wearStats.newExtraTacosFromCandle(extraTacosFromItems)
+                                calculateResetScavengeCD(message, discordUserId, thankResponse.data)
+                            }
                             // add tacos to user's profile if they got extra tacos
                             var tacosThanked = 10
                             if (thankResponse.data.templelevel && thankResponse.data.templelevel > 1){
@@ -527,8 +535,7 @@ module.exports.thankCommand = function(message){
                                 if (updateerr){
                                     // console.log(updateerr);
                                     message.channel.send("The user has not yet agreed to the terms");
-                                }
-                                else{
+                                }else{
                                     profileDB.updateUserTacosThank(discordUserId, extraTacosFromItems, function(updateerr, updateResponse) {
                                         if (updateerr){
                                             // console.log(updateerr);
@@ -547,6 +554,7 @@ module.exports.thankCommand = function(message){
                                             ///// For Artifact or Missions
                                             var dataForMission = {}
                                             missionCheckCommand(message, discordUserId, "thank", mentionedId, dataForMission)
+                                            // TODO: check holy candle
 
                                             experience.gainExperience(message, message.author, EXPERIENCE_GAINS.thank + experienceFromItems, thankResponse);
                                             //update statistic
@@ -584,6 +592,19 @@ module.exports.thankCommand = function(message){
     else if (NeedsToAgree[mentionedId] && NeedsToAgree[mentionedId].hasNotAgreed){
         //message.channel.send(message.author + " You must mention a user or a user that isn't you whom you want to thank!");
         message.channel.send("the user has not yet agreed to the terms!")
+    }
+}
+
+function calculateResetScavengeCD(message, discordUserId, userProfile){
+    var scavengeCDResetRoll = Math.floor(Math.random() * 1000) + 1;
+    if (scavengeCDResetRoll >= 800){
+        profileDB.reduceCommandCooldownByHour(discordUserId, "scavenge", userProfile, function(err, res){
+            if (err){
+                console.log(err)
+            }else{
+                message.channel.send(message.author + " You are able to scavange again!")
+            }
+        })
     }
 }
 
