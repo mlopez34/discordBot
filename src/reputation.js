@@ -118,6 +118,59 @@ function updateReputationStatus(message, discordId, repstatus){
     })
 }
 
+function obtainReputationItem(message, reputationSource){
+    var greaterAmuletItems = []
+    var artifactItems = []
+
+    for (var item in allItems){
+        if(allItems[item].itemraritycategory == "artifact+" && allItems[item].amuletsource == reputationSource){
+            artifactItems.push(allItems[item]);
+        }
+        if(allItems[item].itemraritycategory == "amulet" && allItems[item].amuletsource == reputationSource){
+            greaterAmuletItems.push(allItems[item]);
+        }
+    }
+
+    var itemsObtainedArray = [];
+
+    var amuletRoll = Math.floor(Math.random() * amuletItems.length);
+    console.log(amuletItems[amuletRoll]);
+    itemsObtainedArray.push(amuletItems[amuletRoll])
+
+    var artifactRoll = Math.floor(Math.random() * artifactItems.length);
+    console.log(artifactItems[artifactRoll]);
+    itemsObtainedArray.push(artifactItems[artifactRoll])
+
+
+    if (itemsObtainedArray.length > 0){
+        addToUserInventory(discordUser.id, itemsObtainedArray);
+    }
+    const embed = new Discord.RichEmbed()
+    .setColor(0xF2E93E)
+    var rewardString = "";
+    rewardString = rewardString + "\n**Items:** \n";
+
+    for (var item in itemsObtainedArray){
+        var itemAmount = itemsObtainedArray[item].itemAmount ? itemsObtainedArray[item].itemAmount : 1;
+        rewardString = rewardString + "**" +itemAmount + "**x " + "[**" + itemsObtainedArray[item].itemraritycategory +"**] " + "**"  + itemsObtainedArray[item].itemname + "** - " + itemsObtainedArray[item].itemdescription + ", " +
+        itemsObtainedArray[item].itemslot + ", " +itemsObtainedArray[item].itemstatistics + " \n";
+    }
+    embed.addField("Reputation Rewards", rewardString, true)
+    .setThumbnail(discordUser.avatarURL)
+    message.channel.send({embed});
+}
+
+function addToUserInventory(discordUserId, items){
+    profileDB.addNewItemToUser(discordUserId, items, function(itemError, itemAddResponse){
+        if (itemError){
+            console.log(itemError);
+        }
+        else{
+            console.log(itemAddResponse);
+        }
+    })
+}
+
 // list of rewards to give the user
 function updateUserRewards(message, discordId, repstatus, cb){
     switch(repstatus.toLowerCase()){
@@ -125,6 +178,7 @@ function updateUserRewards(message, discordId, repstatus, cb){
             cb(null, "none");
             break;
         case "respected":
+            // able to upgrade past level 3 on all buildings + able to improve artifacts
             // give the user a casserole on their profile
             profileDB.obtainCasserole(discordId, function(error, res){
                 if (error){
@@ -137,6 +191,7 @@ function updateUserRewards(message, discordId, repstatus, cb){
             break;
             
         case "admired":
+            // able to upgrade past level 6 on all buildings + able to improve artifacts
             // give user sprinting shoes on their profile
             profileDB.obtainSprintingShoes(discordId, function(error, res){
                 if (error){
@@ -148,26 +203,36 @@ function updateUserRewards(message, discordId, repstatus, cb){
             })
             break;
         case "glorified":
-            // TODO: give the user reward, one rewrd should be a jewel, sorry gives an extra scavenge, artifacts can be obtained via 
-            profileDB.obtainSprintingShoes(discordId, function(error, res){
+            // able to upgrade past level 9 on all buildings + able to improve artifacts
+            // special greater amulet             
+            obtainReputationItem(message, "reputationglorified")
+            // something for thanks? be able to critically earn from thanking - 10% chance to get 50% more tacos from thanks
+            // chance to reset scavenge cooldown
+            profileDB.obtainHolyCandle(discordId, function(error, res){
                 if (error){
                     console.log(error);
                 }
                 else{
-                    cb(null, "sprinting shoes");
+                    cb(null, "holy candle");
                 }
             })
             break;
         case "sanctified":
-            // TODO: give the user reward
-            profileDB.obtainSprintingShoes(discordId, function(error, res){
+            // able to upgrade past level 12 on all buildings + able to refine artifacts
+            // award is an item to refine artifact
+            obtainReputationItem(message, "reputationsanctified")
+            profileDB.obtainLaboratoryAccessCard(discordId, function(error, res){
                 if (error){
-                    console.log(error);
-                }
-                else{
-                    cb(null, "sprinting shoes");
+                    console.log(error)
+                }else{
+                    cb(null, "lavoratory access card");
                 }
             })
+            break; 
+        case "worshipped":
+        // 125k rep - 
+            obtainReputationItem(message, "reputationworshipped")
+            cb(null, "artifact refine item");
             break;
             
     }
@@ -211,9 +276,11 @@ function reputationEmbedBuilder(message, repstatus, rewards){
     if (rewards === "sprinting shoes"){
         embed.addField( "Rewards: " , ":athletic_shoe: Sprinting Shoes - reduce prepare cooldown by 1% based on your level", true)
     }
-    // TODO: add the embed field for new reward
-    if (rewards === "sprinting shoes"){
-        embed.addField( "Rewards: " , ":athletic_shoe: Sprinting Shoes - reduce prepare cooldown by 1% based on your level", true)
+    if (rewards === "holy candle"){
+        embed.addField( "Rewards: " , ":athletic_shoe: Holy Candle - on thank 20% chance to reset scavenge cooldown, 10% chance to critically gain 50% of your tacos gained while thanking", true)
+    }
+    if (rewards === "lavoratory access card"){
+        embed.addField( "Rewards: " , ":athletic_shoe: Laboratory Card - present this card to Bender to be able to shop ethereum from his shop", true)
     }
     message.channel.send({embed});
 }
