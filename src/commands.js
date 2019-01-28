@@ -74,8 +74,16 @@ var activeTables = {};
 var marketItems = {}
 var marketItemsUserCount = {} // keeps track of number of items a user has in the market
 var client;
-var usersMinigames = {};
+var usersMinigames = {}
 var userTradeLock = {}
+var commandLock = {
+    thank: {},
+    sorry: {},
+    prepare: {},
+    cook: {},
+    fetch: {},
+    scavenge: {}
+}
 
 var NeedsToAgree = {}
 
@@ -455,6 +463,11 @@ module.exports.openPresentCommand = function(message){
     })
 }
 
+module.exports.setCommandLock = function(command, discordUserId, set){
+    commandLock[command][discordUserId] = set
+    commandLock[command][discordUserId] = set
+}
+
 module.exports.thankCommand = function(message){
     
     var discordUserId = message.author.id;
@@ -469,16 +482,18 @@ module.exports.thankCommand = function(message){
     })
     
     // check the user mentioned someone, and the user is not the same user
-    if ( message.mentions.users.size > 0 && discordUserId != mentionedId && !NeedsToAgree[mentionedId]){
+    if ( message.mentions.users.size > 0 && discordUserId != mentionedId && !NeedsToAgree[mentionedId] && !commandLock["thank"][discordUserId]){
+        exports.setCommandLock("thank", discordUserId, true)
         profileDB.getUserProfileData( discordUserId, function(err, thankResponse) {
             if(err){
                 // console.log("in error : " + err.code);
+                exports.setCommandLock("thank", discordUserId, false)
                 agreeToTerms(message, discordUserId);
             }else{
                 var userLevel = thankResponse.data.level;
                 wearStats.getUserWearingStats(message, discordUserId, {userLevel: userLevel}, function(wearErr, wearRes){
                     if (wearErr){
-                        
+                        exports.setCommandLock("thank", discordUserId, false)
                     }else{
                         // // console.log(wearRes);
                         var secondsToRemove = wearStats.calculateSecondsReduced(wearRes, "thank");
@@ -497,15 +512,18 @@ module.exports.thankCommand = function(message){
                             profileDB.updateUserTacos(mentionedId, 10, function(updateerr, updateResponse) {
                                 if (updateerr){
                                     // console.log(updateerr);
+                                    exports.setCommandLock("thank", discordUserId, false)
                                     message.channel.send("The user has not yet agreed to the terms");
                                 }
                                 else{
                                     profileDB.updateUserTacosThank(discordUserId, extraTacosFromItems, function(updateerr, updateResponse) {
                                         if (updateerr){
                                             // console.log(updateerr);
+                                            exports.setCommandLock("thank", discordUserId, false)
                                         }
                                         else{
                                             // // console.log(updateResponse);
+                                            exports.setCommandLock("thank", discordUserId, false)
                                             var experienceFromItems = wearStats.calculateExtraExperienceGained(wearRes, "thank", null);
                                             ///// For Artifact or Missions
                                             var dataForMission = {}
@@ -535,6 +553,7 @@ module.exports.thankCommand = function(message){
                             })
                         }else{
                             // six hours have not passed, tell the user they need to wait 
+                            exports.setCommandLock("thank", discordUserId, false)
                             now = new Date(now.setSeconds(now.getSeconds() + secondsToRemove));
                             var numberOfHours = getDateDifference(thankResponse.data.lastthanktime, now, 2);
                             message.channel.send(message.author + " You are being too thankful! Please wait `" + numberOfHours +"` ");
@@ -543,8 +562,7 @@ module.exports.thankCommand = function(message){
                 })
             }
         });
-    }
-    else if (NeedsToAgree[mentionedId] && NeedsToAgree[mentionedId].hasNotAgreed){
+    }else if (!commandLock["thank"][discordUserId] && NeedsToAgree[mentionedId] && NeedsToAgree[mentionedId].hasNotAgreed){
         //message.channel.send(message.author + " You must mention a user or a user that isn't you whom you want to thank!");
         message.channel.send("the user has not yet agreed to the terms!")
     }
@@ -563,16 +581,18 @@ module.exports.sorryCommand = function(message){
         mentionedUser = user.username
     })
 
-    if ( message.mentions.users.size > 0 && discordUserId != mentionedId && !NeedsToAgree[mentionedId]){
+    if ( message.mentions.users.size > 0 && discordUserId != mentionedId && !NeedsToAgree[mentionedId] && !commandLock["sorry"][discordUserId]){
+        exports.setCommandLock("sorry", discordUserId, true)
         profileDB.getUserProfileData( discordUserId, function(err, sorryResponse) {
             if(err){
+                exports.setCommandLock("sorry", discordUserId, false)
                 agreeToTerms(message, discordUserId);
             }
             else{
                 var userLevel = sorryResponse.data.level;
                 wearStats.getUserWearingStats(message, discordUserId, {userLevel: userLevel}, function(wearErr, wearRes){
                     if (wearErr){
-                        
+                        exports.setCommandLock("sorry", discordUserId, false)
                     }else{
                         // // console.log(wearRes);
                         var secondsToRemove = wearStats.calculateSecondsReduced(wearRes, "sorry");
@@ -597,8 +617,10 @@ module.exports.sorryCommand = function(message){
                                     profileDB.createUserProfile(mentionedData, function(createerr, createUserResponse){
                                         if (createerr){
                                             // console.log(createerr); // cant create user RIP
+                                            exports.setCommandLock("sorry", discordUserId, false)
                                         }
                                         else{
+                                            exports.setCommandLock("sorry", discordUserId, false)
                                             var experienceFromItems = wearStats.calculateExtraExperienceGained(wearRes, "sorry", null);
                                             experience.gainExperience(message, message.author, (EXPERIENCE_GAINS.sorry + experienceFromItems) , sorryResponse);
                                             ///// For Artifact or Missions
@@ -620,10 +642,12 @@ module.exports.sorryCommand = function(message){
                                 else{
                                     profileDB.updateUserTacosSorry(discordUserId, extraTacosFromItems, function(updateerr, updateResponse) {
                                         if (updateerr){
+                                            exports.setCommandLock("sorry", discordUserId, false)
                                             // console.log(updateerr);
                                         }
                                         else{
                                             //// console.log(updateResponse);
+                                            exports.setCommandLock("sorry", discordUserId, false)
                                             var experienceFromItems = wearRes.sorryCommandExperienceGain ? wearRes.sorryCommandExperienceGain : 0;
                                             experience.gainExperience(message, message.author,  (EXPERIENCE_GAINS.sorry + experienceFromItems) , sorryResponse);
                                             stats.statisticsManage(discordUserId, "sorrycount", 1, function(staterr, statSuccess){
@@ -647,6 +671,7 @@ module.exports.sorryCommand = function(message){
                             })
                         }else{
                             // six hours have not passed, tell the user they need to wait 
+                            exports.setCommandLock("sorry", discordUserId, false)
                             now = new Date(now.setSeconds(now.getSeconds() + secondsToRemove));
                             var numberOfHours = getDateDifference(sorryResponse.data.lastsorrytime, now, 6);
                             message.channel.send(message.author + " You are being too apologetic! Please wait `" + numberOfHours +"` ");
@@ -657,7 +682,7 @@ module.exports.sorryCommand = function(message){
             }
         })
     }
-    else if (NeedsToAgree[mentionedId] && NeedsToAgree[mentionedId].hasNotAgreed){
+    else if (!commandLock["sorry"][discordUserId] &&NeedsToAgree[mentionedId] && NeedsToAgree[mentionedId].hasNotAgreed){
         message.channel.send("the user has not yet agreed to the terms!")
         // message.channel.send(message.author + " You must mention a user or a user that isn't you whom you want to apologize to!");
     }
@@ -715,113 +740,120 @@ module.exports.buyStandCommand = function (message){
 module.exports.prepareCommand = function (message){
     // prepare tacos based on number of taco trees
     var discordUserId = message.author.id
-
-    profileDB.getUserProfileData( discordUserId, function(err, prepareResponse) {
-        if(err){
-            // user doesnt exist, they cannot prepare
-            var userData = initialUserProfile(discordUserId);
-            agreeToTerms(message, discordUserId);
-        }
-        else{
-            // get number of trees the user has
-            // check lastprepare time
-            var HAS_SPRINTING_SHOES = prepareResponse.data.sprintingshoes;
-            var userWearingData = {
-                userLevel : prepareResponse.data.level,
-                hasSprintingShoes : HAS_SPRINTING_SHOES
+    if (!commandLock["prepare"][discordUserId]){
+        exports.setCommandLock("prepare", discordUserId, true)
+        profileDB.getUserProfileData( discordUserId, function(err, prepareResponse) {
+            if(err){
+                // user doesnt exist, they cannot prepare
+                exports.setCommandLock("prepare", discordUserId, false)
+                var userData = initialUserProfile(discordUserId);
+                agreeToTerms(message, discordUserId);
             }
-            wearStats.getUserWearingStats(message, discordUserId, userWearingData, function(wearErr, wearRes){
-                if (wearErr){
-                    
-                }else{
-                    var achievements = prepareResponse.data.achievements;
-                    
-                    var now = new Date();
-                    var threeDaysAgo = new Date();
-                    ///////// CALCULATE THE MINUTES REDUCED HERE 
-                    var secondsToRemove = wearStats.calculateSecondsReduced(wearRes, "prepare");
-
-                    threeDaysAgo = new Date(threeDaysAgo.setHours(threeDaysAgo.getHours() - PREPARE_COOLDOWN_HOURS));
-                    threeDaysAgo = new Date(threeDaysAgo.setSeconds(threeDaysAgo.getSeconds() + secondsToRemove));
-
-                    if ( threeDaysAgo > prepareResponse.data.lastpreparetime ){
-                        // able to prepare again
-                        var userTacoStands = 0;
-                        if (prepareResponse.data.tacostands && prepareResponse.data.tacostands > -1){
-                            userTacoStands = prepareResponse.data.tacostands;
-                        }
-                        if (userTacoStands > 0){
-                            // add tacos x10 of # of trees
-                            // get extra tacos based on soiled crops
-                            var tacosToPrepare = BASE_TACO_PREPARE * userTacoStands;
-                            var soiledCrops = prepareResponse.data.soiledcrops;
-                            var soiledToTaco = 0;
-                            for (i = 0; i < soiledCrops; i++) {
-                                var soilRoll = Math.floor(Math.random() * 100) + 1;
-                                if ( soilRoll > 50 ){
-                                    soiledToTaco = soiledToTaco + 10;
-                                }
+            else{
+                // get number of trees the user has
+                // check lastprepare time
+                var HAS_SPRINTING_SHOES = prepareResponse.data.sprintingshoes;
+                var userWearingData = {
+                    userLevel : prepareResponse.data.level,
+                    hasSprintingShoes : HAS_SPRINTING_SHOES
+                }
+                wearStats.getUserWearingStats(message, discordUserId, userWearingData, function(wearErr, wearRes){
+                    if (wearErr){
+                        exports.setCommandLock("prepare", discordUserId, false)
+                    }else{
+                        var achievements = prepareResponse.data.achievements;
+                        
+                        var now = new Date();
+                        var threeDaysAgo = new Date();
+                        ///////// CALCULATE THE MINUTES REDUCED HERE 
+                        var secondsToRemove = wearStats.calculateSecondsReduced(wearRes, "prepare");
+    
+                        threeDaysAgo = new Date(threeDaysAgo.setHours(threeDaysAgo.getHours() - PREPARE_COOLDOWN_HOURS));
+                        threeDaysAgo = new Date(threeDaysAgo.setSeconds(threeDaysAgo.getSeconds() + secondsToRemove));
+    
+                        if ( threeDaysAgo > prepareResponse.data.lastpreparetime ){
+                            // able to prepare again
+                            var userTacoStands = 0;
+                            if (prepareResponse.data.tacostands && prepareResponse.data.tacostands > -1){
+                                userTacoStands = prepareResponse.data.tacostands;
                             }
-        
-                            ///////// CALCULATE THE EXTRA TACOS HERE 
-                            var extraTacosFromItems = wearStats.calculateExtraTacos(wearRes, "prepare"); // 0 or extra
-
-                            tacosToPrepare = tacosToPrepare + soiledToTaco;
-                            profileDB.prepareTacos(discordUserId, tacosToPrepare + extraTacosFromItems, function(err, data){
-                                if (err){
-                                    // console.log(err);
-                                    // something happened
+                            if (userTacoStands > 0){
+                                // add tacos x10 of # of trees
+                                // get extra tacos based on soiled crops
+                                var tacosToPrepare = BASE_TACO_PREPARE * userTacoStands;
+                                var soiledCrops = prepareResponse.data.soiledcrops;
+                                var soiledToTaco = 0;
+                                for (i = 0; i < soiledCrops; i++) {
+                                    var soilRoll = Math.floor(Math.random() * 100) + 1;
+                                    if ( soilRoll > 50 ){
+                                        soiledToTaco = soiledToTaco + 10;
+                                    }
                                 }
-                                else{
-                                    // update protection also
-                                    var protection = prepareResponse.data.protect;
-                                    profileDB.updateUserProtect(discordUserId, 1, protection, function(updateerr, updateResponse) {
-                                        if (updateerr){
-                                            // console.log(updateerr);
-                                        }
-                                        else{
-                                            //// console.log(updateResponse);
-                                            
-                                            if (extraTacosFromItems > 0){
-                                                message.channel.send(message.author + " You have prepared `" + tacosToPrepare + "` tacos :taco:! `" + soiledToTaco +"` were from soiled crops. The tacos also come with `1` warranty protection" + " received `" + extraTacosFromItems + "` extra tacos");
-                                            }else{
-                                                message.channel.send(message.author + " You have prepared `" + tacosToPrepare + "` tacos :taco:! `" + soiledToTaco +"` were from soiled crops. The tacos also come with `1` warranty protection");
+            
+                                ///////// CALCULATE THE EXTRA TACOS HERE 
+                                var extraTacosFromItems = wearStats.calculateExtraTacos(wearRes, "prepare"); // 0 or extra
+    
+                                tacosToPrepare = tacosToPrepare + soiledToTaco;
+                                profileDB.prepareTacos(discordUserId, tacosToPrepare + extraTacosFromItems, function(err, data){
+                                    if (err){
+                                        exports.setCommandLock("prepare", discordUserId, false)
+                                        // console.log(err);
+                                        // something happened
+                                    }
+                                    else{
+                                        // update protection also
+                                        var protection = prepareResponse.data.protect;
+                                        profileDB.updateUserProtect(discordUserId, 1, protection, function(updateerr, updateResponse) {
+                                            if (updateerr){
+                                                exports.setCommandLock("prepare", discordUserId, false)
+                                                // console.log(updateerr);
                                             }
-                                            var experienceFromItems = wearStats.calculateExtraExperienceGained(wearRes, "prepare", null)
-                                            experience.gainExperience(message, message.author, (EXPERIENCE_GAINS.prepare + (EXPERIENCE_GAINS.preparePerStand * userTacoStands) + experienceFromItems) , prepareResponse);
-                                            stats.statisticsManage(discordUserId, "maxextratacos", soiledToTaco, function(staterr, statSuccess){
-                                                if (staterr){
-                                                    // console.log(staterr);
+                                            else{
+                                                //// console.log(updateResponse);
+                                                exports.setCommandLock("prepare", discordUserId, false)
+                                                if (extraTacosFromItems > 0){
+                                                    message.channel.send(message.author + " You have prepared `" + tacosToPrepare + "` tacos :taco:! `" + soiledToTaco +"` were from soiled crops. The tacos also come with `1` warranty protection" + " received `" + extraTacosFromItems + "` extra tacos");
+                                                }else{
+                                                    message.channel.send(message.author + " You have prepared `" + tacosToPrepare + "` tacos :taco:! `" + soiledToTaco +"` were from soiled crops. The tacos also come with `1` warranty protection");
                                                 }
-                                                else{
-                                                    // check achievements??
-                                                    // console.log(statSuccess);
-                                                    // check achievements??
-                                                    var data = {}
-                                                    data.achievements = achievements;
-                                                    data.maxextratacos = soiledToTaco;
-                                                    // console.log(data);
-                                                    achiev.checkForAchievements(discordUserId, data, message);
-                                                }
-                                            })
-                                        }
-                                    })
-                                }
-                            })
+                                                var experienceFromItems = wearStats.calculateExtraExperienceGained(wearRes, "prepare", null)
+                                                experience.gainExperience(message, message.author, (EXPERIENCE_GAINS.prepare + (EXPERIENCE_GAINS.preparePerStand * userTacoStands) + experienceFromItems) , prepareResponse);
+                                                stats.statisticsManage(discordUserId, "maxextratacos", soiledToTaco, function(staterr, statSuccess){
+                                                    if (staterr){
+                                                        // console.log(staterr);
+                                                    }
+                                                    else{
+                                                        // check achievements??
+                                                        // console.log(statSuccess);
+                                                        // check achievements??
+                                                        var data = {}
+                                                        data.achievements = achievements;
+                                                        data.maxextratacos = soiledToTaco;
+                                                        // console.log(data);
+                                                        achiev.checkForAchievements(discordUserId, data, message);
+                                                    }
+                                                })
+                                            }
+                                        })
+                                    }
+                                })
+                            }
+                            else{
+                                exports.setCommandLock("prepare", discordUserId, false)
+                                message.channel.send(message.author + " You do not have any stands to prepare tacos with! buy some from the shop. Do -shop to see what you can buy");
+                            }
                         }
                         else{
-                            message.channel.send(message.author + " You do not have any stands to prepare tacos with! buy some from the shop. Do -shop to see what you can buy");
+                            exports.setCommandLock("prepare", discordUserId, false)
+                            now = new Date(now.setSeconds(now.getSeconds() + secondsToRemove));
+                            var numberOfHours = getDateDifference(prepareResponse.data.lastpreparetime, now, 48);
+                            message.channel.send(message.author + " You ran out of ingredients! Please wait `" + numberOfHours + "` ");
                         }
                     }
-                    else{
-                        now = new Date(now.setSeconds(now.getSeconds() + secondsToRemove));
-                        var numberOfHours = getDateDifference(prepareResponse.data.lastpreparetime, now, 48);
-                        message.channel.send(message.author + " You ran out of ingredients! Please wait `" + numberOfHours + "` ");
-                    }
-                }
-            })
-        }
-    })
+                })
+            }
+        })
+    }
 }
 
 module.exports.welcomeCommand = function(message){
@@ -1063,75 +1095,82 @@ module.exports.cookCommand = function(message){
     else{
         cookRoll = 20
     }
-
-    profileDB.getUserProfileData( discordUserId, function(err, cookResponse) {
-        if(err){
-            // user doesnt exist, they cannot cook
-            agreeToTerms(message, discordUserId);
-        }
-        else{
-            var userLevel = cookResponse.data.level;
-            var extraTacosFromCasserole = 0;
-            var HAS_CASSEROLE = cookResponse.data.casserole;
-            if (HAS_CASSEROLE){
-                extraTacosFromCasserole = cookResponse.data.level * 5;
+    if (!commandLock["cook"][discordUserId]){
+        exports.setCommandLock("cook", discordUserId, true)
+        profileDB.getUserProfileData( discordUserId, function(err, cookResponse) {
+            if(err){
+                // user doesnt exist, they cannot cook
+                exports.setCommandLock("cook", discordUserId, false)
+                agreeToTerms(message, discordUserId);
             }
-            wearStats.getUserWearingStats(message, discordUserId, {userLevel: userLevel}, function(wearErr, wearRes){
-                if (wearErr){
-                    
-                }else{
-                    // check six hours ago
-                    var secondsToRemove = wearStats.calculateSecondsReduced(wearRes, "cook");
-
-                    var achievements = cookResponse.data.achievements;
-                    var now = new Date();
-                    var threeDaysAgo = new Date();
-                    ///////// CALCULATE THE MINUTES REDUCED HERE 
-                    threeDaysAgo = new Date(threeDaysAgo.setHours(threeDaysAgo.getHours() - COOK_COOLDOWN_HOURS));
-
-                    threeDaysAgo = new Date(threeDaysAgo.setSeconds(threeDaysAgo.getSeconds() + secondsToRemove));
-
-                    if ( threeDaysAgo > cookResponse.data.lastcooktime ){
-                        ///////// CALCULATE THE EXTRA TACOS HERE 
-                        var extraTacosFromItems = wearStats.calculateExtraTacos(wearRes, "cook"); // 0 or extra
-
-                        profileDB.updateUserTacosCook(discordUserId, cookRoll + extraTacosFromItems + extraTacosFromCasserole , function(err, updateResponse) {
-                            if (err){
-                                // console.log(err);
-                            }
-                            else{
-                                // send message that the user has 1 more taco
-                                if (extraTacosFromItems > 0 && HAS_CASSEROLE){
-                                    message.channel.send(message.author + " Cooked `" + cookRoll + "` tacos! you now have `" + ( adjustedTacosForUser(discordUserId, cookResponse.data.tacos) + cookRoll) + "` tacos :taco:" + "! received `" + extraTacosFromCasserole + "` extra tacos :taco: from your casserole " + " and received `" + extraTacosFromItems + "` extra tacos from items" );
-                                }
-                                else if (extraTacosFromItems > 0 && !HAS_CASSEROLE){
-                                    message.channel.send(message.author + " Cooked `" + cookRoll + "` tacos! you now have `" + ( adjustedTacosForUser(discordUserId, cookResponse.data.tacos) + cookRoll) + "` tacos :taco:" + "! " + "received `" + extraTacosFromItems + "` extra tacos");
-                                }
-                                else if (HAS_CASSEROLE){
-                                    message.channel.send(message.author + " Cooked `" + cookRoll + "` tacos! you now have `" + ( adjustedTacosForUser(discordUserId, cookResponse.data.tacos) + cookRoll) + "` tacos :taco:" + "! received `" + extraTacosFromCasserole + "` extra tacos :taco: from your casserole" );
-                                }else{
-                                    message.channel.send(message.author + " Cooked `" + cookRoll + "` tacos! you now have `" + ( adjustedTacosForUser(discordUserId, cookResponse.data.tacos) + cookRoll) + "` tacos :taco:" );
-                                }
-                                var data = {}
-                                data.achievements = achievements;
-                                data.cookcount = cookRoll
-                                // console.log(data);
-                                achiev.checkForAchievements(discordUserId, data, message);
-                                var experienceFromItems = wearStats.calculateExtraExperienceGained(wearRes, "cook", null);
-                                experience.gainExperience(message, message.author, (EXPERIENCE_GAINS.cook + experienceFromItems), cookResponse);
-                            }
-                        })
-                    }else{
-                        // six hours have not passed, tell the user they need to wait 
-                        now = new Date(now.setSeconds(now.getSeconds() + secondsToRemove));
-                        var numberOfHours = getDateDifference(cookResponse.data.lastcooktime, now, 24);
-                        message.channel.send(message.author + " You cannot cook tacos currently! Please wait `" + numberOfHours + "` ");
-                    }
+            else{
+                var userLevel = cookResponse.data.level;
+                var extraTacosFromCasserole = 0;
+                var HAS_CASSEROLE = cookResponse.data.casserole;
+                if (HAS_CASSEROLE){
+                    extraTacosFromCasserole = cookResponse.data.level * 5;
                 }
-            })
-            
-        }
-    })
+                wearStats.getUserWearingStats(message, discordUserId, {userLevel: userLevel}, function(wearErr, wearRes){
+                    if (wearErr){
+                        exports.setCommandLock("cook", discordUserId, false)
+                    }else{
+                        // check six hours ago
+                        var secondsToRemove = wearStats.calculateSecondsReduced(wearRes, "cook");
+    
+                        var achievements = cookResponse.data.achievements;
+                        var now = new Date();
+                        var threeDaysAgo = new Date();
+                        ///////// CALCULATE THE MINUTES REDUCED HERE 
+                        threeDaysAgo = new Date(threeDaysAgo.setHours(threeDaysAgo.getHours() - COOK_COOLDOWN_HOURS));
+    
+                        threeDaysAgo = new Date(threeDaysAgo.setSeconds(threeDaysAgo.getSeconds() + secondsToRemove));
+    
+                        if ( threeDaysAgo > cookResponse.data.lastcooktime ){
+                            ///////// CALCULATE THE EXTRA TACOS HERE 
+                            var extraTacosFromItems = wearStats.calculateExtraTacos(wearRes, "cook"); // 0 or extra
+    
+                            profileDB.updateUserTacosCook(discordUserId, cookRoll + extraTacosFromItems + extraTacosFromCasserole , function(err, updateResponse) {
+                                if (err){
+                                    // console.log(err);
+                                    exports.setCommandLock("cook", discordUserId, false)
+                                }
+                                else{
+                                    // send message that the user has 1 more taco
+                                    exports.setCommandLock("cook", discordUserId, false)
+                                    if (extraTacosFromItems > 0 && HAS_CASSEROLE){
+                                        message.channel.send(message.author + " Cooked `" + cookRoll + "` tacos! you now have `" + ( adjustedTacosForUser(discordUserId, cookResponse.data.tacos) + cookRoll) + "` tacos :taco:" + "! received `" + extraTacosFromCasserole + "` extra tacos :taco: from your casserole " + " and received `" + extraTacosFromItems + "` extra tacos from items" );
+                                    }
+                                    else if (extraTacosFromItems > 0 && !HAS_CASSEROLE){
+                                        message.channel.send(message.author + " Cooked `" + cookRoll + "` tacos! you now have `" + ( adjustedTacosForUser(discordUserId, cookResponse.data.tacos) + cookRoll) + "` tacos :taco:" + "! " + "received `" + extraTacosFromItems + "` extra tacos");
+                                    }
+                                    else if (HAS_CASSEROLE){
+                                        message.channel.send(message.author + " Cooked `" + cookRoll + "` tacos! you now have `" + ( adjustedTacosForUser(discordUserId, cookResponse.data.tacos) + cookRoll) + "` tacos :taco:" + "! received `" + extraTacosFromCasserole + "` extra tacos :taco: from your casserole" );
+                                    }else{
+                                        message.channel.send(message.author + " Cooked `" + cookRoll + "` tacos! you now have `" + ( adjustedTacosForUser(discordUserId, cookResponse.data.tacos) + cookRoll) + "` tacos :taco:" );
+                                    }
+                                    var data = {}
+                                    data.achievements = achievements;
+                                    data.cookcount = cookRoll
+                                    // console.log(data);
+                                    achiev.checkForAchievements(discordUserId, data, message);
+                                    var experienceFromItems = wearStats.calculateExtraExperienceGained(wearRes, "cook", null);
+                                    experience.gainExperience(message, message.author, (EXPERIENCE_GAINS.cook + experienceFromItems), cookResponse);
+                                }
+                            })
+                        }else{
+                            // six hours have not passed, tell the user they need to wait 
+                            exports.setCommandLock("cook", discordUserId, false)
+                            now = new Date(now.setSeconds(now.getSeconds() + secondsToRemove));
+                            var numberOfHours = getDateDifference(cookResponse.data.lastcooktime, now, 24);
+                            message.channel.send(message.author + " You cannot cook tacos currently! Please wait `" + numberOfHours + "` ");
+                        }
+                    }
+                })
+                
+            }
+        })
+    }
+    
 }
 
 module.exports.throwCommand = function(message){
@@ -1141,7 +1180,6 @@ module.exports.throwCommand = function(message){
     var userMentioned;
     var mentionedId;
     var mentionedUser;
-    var mentionedDiscriminator;
     // console.log(users);
     users.forEach(function(user){
         // console.log(user.id);
@@ -2826,302 +2864,312 @@ module.exports.scavangeCommand = function (message){
         rollsCount = 1
     }
     // only scavenge if the user has a pickaxe
-    profileDB.getUserProfileData( discordUserId, function(error, getUserResponse) {
-        if(error){
-            // console.log(error);
-            // create user profile then send a message saying they need a pickaxe
-            agreeToTerms(message, discordUserId);
-        }
-        else if (getUserResponse.data.pickaxe && getUserResponse.data.pickaxe != "none"){
-            // get all the possible items from items DB - Bad implementation but idgaf
-            var userLevel = getUserResponse.data.level;
-            wearStats.getUserWearingStats(message, discordUserId, {userLevel: userLevel}, function(wearErr, wearRes){
-                if (wearErr){
-                    // console.log(wearErr);
-                }else{
-                    var secondsToRemove = wearStats.calculateSecondsReduced(wearRes, "scavenge");
-                    //check for more than 1 hours
-                    var now = new Date();
-                    var oneHourAgo = new Date();
-                    ///////// CALCULATE THE MINUTES REDUCED HERE 
-                    oneHourAgo = new Date(oneHourAgo.setHours(oneHourAgo.getHours() - SCAVENGE_COOLDOWN_HOURS));
-                    oneHourAgo = new Date(oneHourAgo.setSeconds(oneHourAgo.getSeconds() + secondsToRemove));
-
-                    if ( oneHourAgo > getUserResponse.data.lastscavangetime ){
-                        profileDB.getItemData(function(err, getItemResponse){
-                            if (err){
-                                // console.log(err);
-                            }
-                            else{
-                                var ARTIFACT_MIN_ROLL = 9995;
-                                var ANCIENT_MAX_ROLL = 9995
-                                var ANCIENT_MIN_ROLL = 9975;
-                                var RARE_MAX_ROLL = 9975;
-                                var RARE_MIN_ROLL = 9800;
-                                var UNCOMMON_MAX_ROLL = 9800;
-                                var UNCOMMON_MIN_ROLL = 8750;
-                                var COMMON_MAX_ROLL = 8750;
-                                var UNCOMMON_ITEMS_TO_OBTAIN = 1;
-                                var COMMON_ITEMS_TO_OBTAIN = 1;
-                                var TACOS_FOUND_MULTIPLIER = 1;
-                                var EXPERIENCE_MULTIPLIER = 1;
-
-                                if (getUserResponse.data.pickaxe == "improved"){
-                                    COMMON_ITEMS_TO_OBTAIN = 2
-                                    UNCOMMON_ITEMS_TO_OBTAIN = 1
-                                    TACOS_FOUND_MULTIPLIER = 3
-                                    ARTIFACT_MIN_ROLL = 9992
-                                    ANCIENT_MAX_ROLL = 9992;
-                                    ANCIENT_MIN_ROLL = 9955;
-                                    RARE_MAX_ROLL = 9955;
-                                    RARE_MIN_ROLL = 9750;
-                                    UNCOMMON_MAX_ROLL = 9750;
-                                    EXPERIENCE_MULTIPLIER = 2;
-
+    if (!commandLock["scavenge"][discordUserId]){
+        exports.setCommandLock("scavenge", discordUserId, true)
+        profileDB.getUserProfileData( discordUserId, function(error, getUserResponse) {
+            if(error){
+                // console.log(error);
+                // create user profile then send a message saying they need a pickaxe
+                exports.setCommandLock("scavenge", discordUserId, false)
+                agreeToTerms(message, discordUserId);
+            }
+            else if (getUserResponse.data.pickaxe && getUserResponse.data.pickaxe != "none"){
+                // get all the possible items from items DB - Bad implementation but idgaf
+                var userLevel = getUserResponse.data.level;
+                wearStats.getUserWearingStats(message, discordUserId, {userLevel: userLevel}, function(wearErr, wearRes){
+                    if (wearErr){
+                        // console.log(wearErr);
+                        exports.setCommandLock("scavenge", discordUserId, false)
+                    }else{
+                        var secondsToRemove = wearStats.calculateSecondsReduced(wearRes, "scavenge");
+                        //check for more than 1 hours
+                        var now = new Date();
+                        var oneHourAgo = new Date();
+                        ///////// CALCULATE THE MINUTES REDUCED HERE 
+                        oneHourAgo = new Date(oneHourAgo.setHours(oneHourAgo.getHours() - SCAVENGE_COOLDOWN_HOURS));
+                        oneHourAgo = new Date(oneHourAgo.setSeconds(oneHourAgo.getSeconds() + secondsToRemove));
+    
+                        if ( oneHourAgo > getUserResponse.data.lastscavangetime ){
+                            profileDB.getItemData(function(err, getItemResponse){
+                                if (err){
+                                    // console.log(err);
                                 }
-                                else if (getUserResponse.data.pickaxe == "master"){
-                                    ARTIFACT_MIN_ROLL = 9985
-                                    ANCIENT_MAX_ROLL = 9985;
-                                    ANCIENT_MIN_ROLL = 9940;
-                                    RARE_MAX_ROLL = 9940;
-                                    RARE_MIN_ROLL = 9725;
-                                    UNCOMMON_MAX_ROLL = 9725;
-                                    COMMON_ITEMS_TO_OBTAIN = 4
-                                    UNCOMMON_ITEMS_TO_OBTAIN = 2
-                                    TACOS_FOUND_MULTIPLIER = 6
-                                    EXPERIENCE_MULTIPLIER = 6
-                                    rollsCount++
-                                }
-                                else if (getUserResponse.data.pickaxe == "ethereal"){
-                                    ARTIFACT_MIN_ROLL = 9978
-                                    ANCIENT_MAX_ROLL = 9978;
-                                    ANCIENT_MIN_ROLL = 9925;
-                                    RARE_MAX_ROLL = 9925;
-                                    RARE_MIN_ROLL = 9700;
-                                    UNCOMMON_MAX_ROLL = 9700;
-                                    COMMON_ITEMS_TO_OBTAIN = 12
-                                    UNCOMMON_ITEMS_TO_OBTAIN = 4
-                                    TACOS_FOUND_MULTIPLIER = 20
-                                    EXPERIENCE_MULTIPLIER = 20
-                                    rollsCount++
-                                    var extraExtraRoll = Math.floor(Math.random() * 10000) + 1;
-                                    if (extraExtraRoll > 7500){
+                                else{
+                                    var ARTIFACT_MIN_ROLL = 9995;
+                                    var ANCIENT_MAX_ROLL = 9995
+                                    var ANCIENT_MIN_ROLL = 9975;
+                                    var RARE_MAX_ROLL = 9975;
+                                    var RARE_MIN_ROLL = 9800;
+                                    var UNCOMMON_MAX_ROLL = 9800;
+                                    var UNCOMMON_MIN_ROLL = 8750;
+                                    var COMMON_MAX_ROLL = 8750;
+                                    var UNCOMMON_ITEMS_TO_OBTAIN = 1;
+                                    var COMMON_ITEMS_TO_OBTAIN = 1;
+                                    var TACOS_FOUND_MULTIPLIER = 1;
+                                    var EXPERIENCE_MULTIPLIER = 1;
+    
+                                    if (getUserResponse.data.pickaxe == "improved"){
+                                        COMMON_ITEMS_TO_OBTAIN = 2
+                                        UNCOMMON_ITEMS_TO_OBTAIN = 1
+                                        TACOS_FOUND_MULTIPLIER = 3
+                                        ARTIFACT_MIN_ROLL = 9992
+                                        ANCIENT_MAX_ROLL = 9992;
+                                        ANCIENT_MIN_ROLL = 9955;
+                                        RARE_MAX_ROLL = 9955;
+                                        RARE_MIN_ROLL = 9750;
+                                        UNCOMMON_MAX_ROLL = 9750;
+                                        EXPERIENCE_MULTIPLIER = 2;
+    
+                                    }
+                                    else if (getUserResponse.data.pickaxe == "master"){
+                                        ARTIFACT_MIN_ROLL = 9985
+                                        ANCIENT_MAX_ROLL = 9985;
+                                        ANCIENT_MIN_ROLL = 9940;
+                                        RARE_MAX_ROLL = 9940;
+                                        RARE_MIN_ROLL = 9725;
+                                        UNCOMMON_MAX_ROLL = 9725;
+                                        COMMON_ITEMS_TO_OBTAIN = 4
+                                        UNCOMMON_ITEMS_TO_OBTAIN = 2
+                                        TACOS_FOUND_MULTIPLIER = 6
+                                        EXPERIENCE_MULTIPLIER = 6
                                         rollsCount++
                                     }
-                                }
-
-                                var allItems = getItemResponse.data
-                                var commonItems = [];
-                                var uncommonItems = [];
-                                var rareItems = [];
-                                var ancientItems = [];
-                                var artifactItems = [];
-                                var mythItems = [];
-                                // TODO: add check for rarity chance % to be > 0 
-                                for (var item in allItems){
-                                    if (allItems[item].itemraritycategory == "common"){
-                                        commonItems.push(allItems[item]);
-                                    }
-                                    else if(allItems[item].itemraritycategory == "uncommon"){
-                                        uncommonItems.push(allItems[item]);
-                                    }
-                                    else if(allItems[item].itemraritycategory == "rare"){
-                                        rareItems.push(allItems[item]);
-                                    }
-                                    else if(allItems[item].itemraritycategory == "ancient"){
-                                        ancientItems.push(allItems[item]);
-                                    }
-                                    else if(allItems[item].itemraritycategory == "artifact"){
-                                        artifactItems.push(allItems[item]);
-                                    }
-                                    else if(allItems[item].itemraritycategory == "myth"){
-                                        mythItems.push(allItems[item]);
-                                    }
-                                }
-                                // roll to randomly get only 5 amulets in the pool of amulets
-                                var poolOfAmulets = []
-                                for (var item in allItems){
-                                    if(allItems[item].itemraritycategory == "amulet" 
-                                    && allItems[item].amuletsource == "scavenge"){
-                                        poolOfAmulets.push(allItems[item]);
-                                    }
-                                }
-                                for (var i = 0; i < 5; i++){
-                                    var amuletRoll = Math.floor(Math.random() * poolOfAmulets.length - 1)
-                                    ancientItems.push(poolOfAmulets[amuletRoll])
-                                }
-                                
-                                // roll rarity, roll item from rarity
-                                var gotUncommon = false;
-                                var itemsObtainedArray = [];
-                                var highestRarityFound = 1
-				
-                                if (discordUserId == "248946965633564673"){
-                                    if (rollsCount < 4){
+                                    else if (getUserResponse.data.pickaxe == "ethereal"){
+                                        ARTIFACT_MIN_ROLL = 9978
+                                        ANCIENT_MAX_ROLL = 9978;
+                                        ANCIENT_MIN_ROLL = 9925;
+                                        RARE_MAX_ROLL = 9925;
+                                        RARE_MIN_ROLL = 9700;
+                                        UNCOMMON_MAX_ROLL = 9700;
+                                        COMMON_ITEMS_TO_OBTAIN = 12
+                                        UNCOMMON_ITEMS_TO_OBTAIN = 4
+                                        TACOS_FOUND_MULTIPLIER = 20
+                                        EXPERIENCE_MULTIPLIER = 20
                                         rollsCount++
-                                    }
-                                }
-
-                                for (var i = 0; i < rollsCount; i++){
-                                    var rarityRoll = Math.floor(Math.random() * 10000) + 1;
-                                    var rarityString = "";
-                                    // console.log(rarityRoll);
-                                    if (!gotUncommon && rollsCount > 4){
-                                        // guaranteed more than uncommon +
-                                        rarityRoll = Math.floor(Math.random() * 1500) + 8501;
-                                        if (discordUserId == "248946965633564673"){
-                                            rarityRoll = 9965
-                                        }
-                                        gotUncommon = true;
-                                    }
-                                    else if(!gotUncommon && rollsCount > 3){
-                                        // guaranteed uncommon +
-                                        rarityRoll = Math.floor(Math.random() * 2000) + 8001;
-                                        if (discordUserId == "248946965633564673"){
-                                            rarityRoll = 9900
-                                        }
-                                        gotUncommon = true;
-                                    }
-                                    if (rarityRoll > ARTIFACT_MIN_ROLL){
-                                        rarityString = "artifact"
-                                        var itemRoll = Math.floor(Math.random() * artifactItems.length);
-                                        // console.log(artifactItems[itemRoll]);
-                                        itemsObtainedArray.push(artifactItems[itemRoll]);
-                                        if (highestRarityFound <= 4){
-                                            highestRarityFound = 5;
+                                        var extraExtraRoll = Math.floor(Math.random() * 10000) + 1;
+                                        if (extraExtraRoll > 7500){
+                                            rollsCount++
                                         }
                                     }
-                                    else if(rarityRoll > ANCIENT_MIN_ROLL && rarityRoll <= ANCIENT_MAX_ROLL){
-                                        rarityString = "ancient"
-                                        var itemRoll = Math.floor(Math.random() * ancientItems.length);
-                                        // console.log(ancientItems[itemRoll]);
-                                        itemsObtainedArray.push(ancientItems[itemRoll])
-                                        if (highestRarityFound <= 3){
-                                            highestRarityFound = 4;
+    
+                                    var allItems = getItemResponse.data
+                                    var commonItems = [];
+                                    var uncommonItems = [];
+                                    var rareItems = [];
+                                    var ancientItems = [];
+                                    var artifactItems = [];
+                                    var mythItems = [];
+                                    // TODO: add check for rarity chance % to be > 0 
+                                    for (var item in allItems){
+                                        if (allItems[item].itemraritycategory == "common"){
+                                            commonItems.push(allItems[item]);
+                                        }
+                                        else if(allItems[item].itemraritycategory == "uncommon"){
+                                            uncommonItems.push(allItems[item]);
+                                        }
+                                        else if(allItems[item].itemraritycategory == "rare"){
+                                            rareItems.push(allItems[item]);
+                                        }
+                                        else if(allItems[item].itemraritycategory == "ancient"){
+                                            ancientItems.push(allItems[item]);
+                                        }
+                                        else if(allItems[item].itemraritycategory == "artifact"){
+                                            artifactItems.push(allItems[item]);
+                                        }
+                                        else if(allItems[item].itemraritycategory == "myth"){
+                                            mythItems.push(allItems[item]);
                                         }
                                     }
-                                    else if(rarityRoll > RARE_MIN_ROLL && rarityRoll <= RARE_MAX_ROLL){
-                                        rarityString = "rare"
-                                        var itemRoll = Math.floor(Math.random() * rareItems.length);
-                                        // console.log(rareItems[itemRoll]);
-                                        itemsObtainedArray.push(rareItems[itemRoll]);
-                                        if (highestRarityFound <= 2){
-                                            highestRarityFound = 3;
+                                    // roll to randomly get only 5 amulets in the pool of amulets
+                                    var poolOfAmulets = []
+                                    for (var item in allItems){
+                                        if(allItems[item].itemraritycategory == "amulet" 
+                                        && allItems[item].amuletsource == "scavenge"){
+                                            poolOfAmulets.push(allItems[item]);
                                         }
                                     }
-                                    else if (rarityRoll > UNCOMMON_MIN_ROLL && rarityRoll <= UNCOMMON_MAX_ROLL){
-                                        rarityString = "uncommon"
-                                        var itemRoll = Math.floor(Math.random() * uncommonItems.length);
-                                        // console.log(uncommonItems[itemRoll]);
-                                        uncommonItems[itemRoll].itemAmount = UNCOMMON_ITEMS_TO_OBTAIN
-                                        itemsObtainedArray.push( uncommonItems[itemRoll] );
-                                        if (highestRarityFound <= 1){
-                                            highestRarityFound = 2;
+                                    for (var i = 0; i < 5; i++){
+                                        var amuletRoll = Math.floor(Math.random() * poolOfAmulets.length - 1)
+                                        ancientItems.push(poolOfAmulets[amuletRoll])
+                                    }
+                                    
+                                    // roll rarity, roll item from rarity
+                                    var gotUncommon = false;
+                                    var itemsObtainedArray = [];
+                                    var highestRarityFound = 1
+                    
+                                    if (discordUserId == "248946965633564673"){
+                                        if (rollsCount < 4){
+                                            rollsCount++
                                         }
                                     }
-                                    else {
-                                        rarityString = "common"
-                                        var itemRoll = Math.floor(Math.random() * commonItems.length);
-                                        // console.log(commonItems[itemRoll]);
-                                        commonItems[itemRoll].itemAmount = COMMON_ITEMS_TO_OBTAIN
-                                        itemsObtainedArray.push( commonItems[itemRoll] );
+    
+                                    for (var i = 0; i < rollsCount; i++){
+                                        var rarityRoll = Math.floor(Math.random() * 10000) + 1;
+                                        var rarityString = "";
+                                        // console.log(rarityRoll);
+                                        if (!gotUncommon && rollsCount > 4){
+                                            // guaranteed more than uncommon +
+                                            rarityRoll = Math.floor(Math.random() * 1500) + 8501;
+                                            if (discordUserId == "248946965633564673"){
+                                                rarityRoll = 9965
+                                            }
+                                            gotUncommon = true;
+                                        }
+                                        else if(!gotUncommon && rollsCount > 3){
+                                            // guaranteed uncommon +
+                                            rarityRoll = Math.floor(Math.random() * 2000) + 8001;
+                                            if (discordUserId == "248946965633564673"){
+                                                rarityRoll = 9900
+                                            }
+                                            gotUncommon = true;
+                                        }
+                                        if (rarityRoll > ARTIFACT_MIN_ROLL){
+                                            rarityString = "artifact"
+                                            var itemRoll = Math.floor(Math.random() * artifactItems.length);
+                                            // console.log(artifactItems[itemRoll]);
+                                            itemsObtainedArray.push(artifactItems[itemRoll]);
+                                            if (highestRarityFound <= 4){
+                                                highestRarityFound = 5;
+                                            }
+                                        }
+                                        else if(rarityRoll > ANCIENT_MIN_ROLL && rarityRoll <= ANCIENT_MAX_ROLL){
+                                            rarityString = "ancient"
+                                            var itemRoll = Math.floor(Math.random() * ancientItems.length);
+                                            // console.log(ancientItems[itemRoll]);
+                                            itemsObtainedArray.push(ancientItems[itemRoll])
+                                            if (highestRarityFound <= 3){
+                                                highestRarityFound = 4;
+                                            }
+                                        }
+                                        else if(rarityRoll > RARE_MIN_ROLL && rarityRoll <= RARE_MAX_ROLL){
+                                            rarityString = "rare"
+                                            var itemRoll = Math.floor(Math.random() * rareItems.length);
+                                            // console.log(rareItems[itemRoll]);
+                                            itemsObtainedArray.push(rareItems[itemRoll]);
+                                            if (highestRarityFound <= 2){
+                                                highestRarityFound = 3;
+                                            }
+                                        }
+                                        else if (rarityRoll > UNCOMMON_MIN_ROLL && rarityRoll <= UNCOMMON_MAX_ROLL){
+                                            rarityString = "uncommon"
+                                            var itemRoll = Math.floor(Math.random() * uncommonItems.length);
+                                            // console.log(uncommonItems[itemRoll]);
+                                            uncommonItems[itemRoll].itemAmount = UNCOMMON_ITEMS_TO_OBTAIN
+                                            itemsObtainedArray.push( uncommonItems[itemRoll] );
+                                            if (highestRarityFound <= 1){
+                                                highestRarityFound = 2;
+                                            }
+                                        }
+                                        else {
+                                            rarityString = "common"
+                                            var itemRoll = Math.floor(Math.random() * commonItems.length);
+                                            // console.log(commonItems[itemRoll]);
+                                            commonItems[itemRoll].itemAmount = COMMON_ITEMS_TO_OBTAIN
+                                            itemsObtainedArray.push( commonItems[itemRoll] );
+                                        }
                                     }
-                                }
-                                if (tacoRoll > SCAVENGE_TACO_FIND_CHANCE_HIGHER){
-                                    tacosFound = 20 * TACOS_FOUND_MULTIPLIER;
-                                }
-                                else if(tacoRoll > SCAVENGE_TACO_FIND_CHANCE){
-                                    tacosFound = 10 * TACOS_FOUND_MULTIPLIER;
-                                }
-                                // send the items to be written all at once
-                                addToUserInventory(discordUserId, itemsObtainedArray);
-
-                                // send message of all items obtained
-                                scavengeEmbedBuilder(message, itemsObtainedArray, tacosFound);
-                                // update lastscavengetime
-                                profileDB.updateLastScavengeTime(discordUserId, function(updateLSErr, updateLSres){
-                                    if(updateLSErr){
-                                        // console.log(updateLSErr);
+                                    if (tacoRoll > SCAVENGE_TACO_FIND_CHANCE_HIGHER){
+                                        tacosFound = 20 * TACOS_FOUND_MULTIPLIER;
                                     }
-                                    else{
-                                        // console.log(updateLSres);
-                                        var experienceFromItems = wearStats.calculateExtraExperienceGained(wearRes, "scavenge", null);                                     
-                                        experience.gainExperience(message, message.author, ((EXPERIENCE_GAINS.scavenge * EXPERIENCE_MULTIPLIER) + experienceFromItems), getUserResponse);
+                                    else if(tacoRoll > SCAVENGE_TACO_FIND_CHANCE){
+                                        tacosFound = 10 * TACOS_FOUND_MULTIPLIER;
                                     }
-                                })
-                                // add the tacos to user
-                                ///////// CALCULATE THE EXTRA TACOS HERE 
-                                var extraTacosFromItems = wearStats.calculateExtraTacos(wearRes, "scavenge"); // 0 or extra
-                                if (extraTacosFromItems > 0){
-                                    message.channel.send(message.author + " received `" + extraTacosFromItems + "` for scavenging! :taco:" + " received `" + extraTacosFromItems + "` extra tacos" );
-                                }
-                                // early adopter ids to get tacos
-                                var earlyAdopterIds = config.earlyAdopterIds
-                                if (earlyAdopterIds.indexOf(discordUserId) > -1 && !getUserResponse.data.earlyadopt){
-                                    message.channel.send("hey " + message.author + " thanks for being an early adopter here's :taco: `1000` for you to feed me with! make sure to vote on discordbots.org for me")
-                                    profileDB.updateUserTacosEarly(discordUserId, 1000, function(earlyErr, earlyRes){
-                                        if (earlyErr){
-                                            console.log(earlyErr)
-                                        }else{
-                                            console.log(earlyRes)
+                                    // send the items to be written all at once
+                                    addToUserInventory(discordUserId, itemsObtainedArray);
+    
+                                    // send message of all items obtained
+                                    scavengeEmbedBuilder(message, itemsObtainedArray, tacosFound);
+                                    // update lastscavengetime
+                                    profileDB.updateLastScavengeTime(discordUserId, function(updateLSErr, updateLSres){
+                                        if(updateLSErr){
+                                            // console.log(updateLSErr);
+                                            exports.setCommandLock("scavenge", discordUserId, false)
+                                        }
+                                        else{
+                                            // console.log(updateLSres);
+                                            var experienceFromItems = wearStats.calculateExtraExperienceGained(wearRes, "scavenge", null);                                     
+                                            experience.gainExperience(message, message.author, ((EXPERIENCE_GAINS.scavenge * EXPERIENCE_MULTIPLIER) + experienceFromItems), getUserResponse);
                                         }
                                     })
-                                }
-
-                                profileDB.updateUserTacos(discordUserId, tacosFound + extraTacosFromItems, function(updateLSErr, updateLSres){
-                                    if(updateLSErr){
-                                        // console.log(updateLSErr);
+                                    // add the tacos to user
+                                    ///////// CALCULATE THE EXTRA TACOS HERE 
+                                    var extraTacosFromItems = wearStats.calculateExtraTacos(wearRes, "scavenge"); // 0 or extra
+                                    if (extraTacosFromItems > 0){
+                                        message.channel.send(message.author + " received `" + extraTacosFromItems + "` for scavenging! :taco:" + " received `" + extraTacosFromItems + "` extra tacos" );
                                     }
-                                    else{
-                                        // console.log(updateLSres);
-                                        // add to statistics
-                                        var achievements = getUserResponse.data.achievements;
-                                        stats.statisticsManage(discordUserId, "scavengecount", 1, function(err, statSuccess){
-                                            if (err){
-                                                // console.log(err);
-                                            }
-                                            else{
-                                                // check achievements
-                                                var data = {}
-                                                data.achievements = achievements;
-                                                // add the highestRarity
-                                                if (highestRarityFound == 5){
-                                                    data.rarity = "artifact"
-                                                }
-                                                else if (highestRarityFound == 4){
-                                                    data.rarity = "ancient"
-                                                }
-                                                else if (highestRarityFound == 3){
-                                                    data.rarity = "rare"
-                                                }
-                                                else if (highestRarityFound == 2){
-                                                    data.rarity = "uncommon"
-                                                }
-                                                if (highestRarityFound == 1){
-                                                    data.rarity = "common"
-                                                }
-                                                // console.log(data);
-                                                achiev.checkForAchievements(discordUserId, data, message);
+                                    // early adopter ids to get tacos
+                                    var earlyAdopterIds = config.earlyAdopterIds
+                                    if (earlyAdopterIds.indexOf(discordUserId) > -1 && !getUserResponse.data.earlyadopt){
+                                        message.channel.send("hey " + message.author + " thanks for being an early adopter here's :taco: `1000` for you to feed me with! make sure to vote on discordbots.org for me")
+                                        profileDB.updateUserTacosEarly(discordUserId, 1000, function(earlyErr, earlyRes){
+                                            if (earlyErr){
+                                                console.log(earlyErr)
+                                            }else{
+                                                console.log(earlyRes)
                                             }
                                         })
                                     }
-                                })
-                            }
-                        })
+    
+                                    profileDB.updateUserTacos(discordUserId, tacosFound + extraTacosFromItems, function(updateLSErr, updateLSres){
+                                        if(updateLSErr){
+                                            // console.log(updateLSErr);
+                                            exports.setCommandLock("scavenge", discordUserId, false)
+                                        }
+                                        else{
+                                            // console.log(updateLSres);
+                                            // add to statistics
+                                            exports.setCommandLock("scavenge", discordUserId, false)
+                                            var achievements = getUserResponse.data.achievements;
+                                            stats.statisticsManage(discordUserId, "scavengecount", 1, function(err, statSuccess){
+                                                if (err){
+                                                    // console.log(err);
+                                                }
+                                                else{
+                                                    // check achievements
+                                                    var data = {}
+                                                    data.achievements = achievements;
+                                                    // add the highestRarity
+                                                    if (highestRarityFound == 5){
+                                                        data.rarity = "artifact"
+                                                    }
+                                                    else if (highestRarityFound == 4){
+                                                        data.rarity = "ancient"
+                                                    }
+                                                    else if (highestRarityFound == 3){
+                                                        data.rarity = "rare"
+                                                    }
+                                                    else if (highestRarityFound == 2){
+                                                        data.rarity = "uncommon"
+                                                    }
+                                                    if (highestRarityFound == 1){
+                                                        data.rarity = "common"
+                                                    }
+                                                    // console.log(data);
+                                                    achiev.checkForAchievements(discordUserId, data, message);
+                                                }
+                                            })
+                                        }
+                                    })
+                                }
+                            })
+                        }
+                        else{
+                            exports.setCommandLock("scavenge", discordUserId, false)
+                            now = new Date(now.setSeconds(now.getSeconds() + secondsToRemove));
+                            var numberOfHours = getDateDifference(getUserResponse.data.lastscavangetime, now, 1);
+                            message.channel.send(message.author + " You have scavenged too recently! Please wait `" + numberOfHours +"` ");
+                        }
                     }
-                    else{
-                        now = new Date(now.setSeconds(now.getSeconds() + secondsToRemove));
-                        var numberOfHours = getDateDifference(getUserResponse.data.lastscavangetime, now, 1);
-                        message.channel.send(message.author + " You have scavenged too recently! Please wait `" + numberOfHours +"` ");
-                    }
-                }
-            })
-            
-        }
-        else{
-            message.channel.send(message.author + " You need a pickaxe! buy one from the shop, do `-shop` OR `-shop long` to see what you can buy");
-        }
-    })
+                })
+                
+            }
+            else{
+                exports.setCommandLock("scavenge", discordUserId, false)
+                message.channel.send(message.author + " You need a pickaxe! buy one from the shop, do `-shop` OR `-shop long` to see what you can buy");
+            }
+        })
+    }
 }
 
 function scavengeEmbedBuilder(message, itemsScavenged, tacosFound){
@@ -4084,90 +4132,98 @@ module.exports.fetchCommand = function(message){
     var discordUserId = message.author.id;
 
     // the pet has gone to fetch, get taco amount = their fetch
-    profileDB.getUserProfileData(discordUserId, function(fetchError, fetchResponse){
-        if (fetchError){
-            // console.log(fetchError);
-        }
-        else{
-            var userLevel = fetchResponse.data.level;
-            var userPet = fetchResponse.data.pet ? fetchResponse.data.pet : undefined;
-            var userPetName = fetchResponse.data.petname ? fetchResponse.data.petname : undefined;
-            if (userPet){
-                var userData = {
-                    userLevel : userLevel,
-                    fetchCD: PETS_AVAILABLE[userPet].cooldown,
-                    fetchCount: PETS_AVAILABLE[userPet].fetch
-                }
-                wearStats.getUserWearingStats(message, discordUserId, userData, function(wearErr, wearRes){
-                    if (wearErr){
-                        
-                    }else{
-                        var now = new Date();
-                        if (userPet){
-                            var secondsToRemove = wearStats.calculateSecondsReduced(wearRes, "fetch");
-
-                            var cooldownDate = new Date();
-                            cooldownDate = new Date(cooldownDate.setHours(cooldownDate.getHours() - PETS_AVAILABLE[userPet].cooldown));
-                            ///////// CALCULATE THE MINUTES REDUCED HERE 
-                            cooldownDate = new Date(cooldownDate.setSeconds(cooldownDate.getSeconds() + secondsToRemove));
-
-                            if (!fetchResponse.data.lastfetchtime || ( cooldownDate > fetchResponse.data.lastfetchtime )){
-                                // fetch whatever and then set lastfetchtime to now
-                                var fetchTacos = PETS_AVAILABLE[userPet].fetch;
-                                ///////// CALCULATE THE EXTRA TACOS HERE 
-                                var extraTacosFromItems = wearStats.calculateExtraTacos(wearRes, "fetch"); // 0 or extra
-
-                                profileDB.updateUserTacosFetch(discordUserId, fetchTacos + extraTacosFromItems, function(err, updateResponse) {
-                                    if (err){
-                                        // console.log(err);
-                                    }
-                                    else{
-                                        var experienceFromItems = wearStats.calculateExtraExperienceGained(wearRes, "fetch", null);                                                                             
-                                        experience.gainExperience(message, message.author, (( (EXPERIENCE_GAINS.perFetchCd * PETS_AVAILABLE[userPet].fetch) / 10) + experienceFromItems) , fetchResponse);
-                                        // user's pet fetched some tacos
-                                        if (extraTacosFromItems > 0){
-                                            /* SEASONAL
-                                            if (trickOrTreatMap["tot-" + discordUserId] && trickOrTreatMap["tot-" + discordUserId].tot == "trick"){
-                                                message.channel.send("**" + userPetName + "** fetched:` " + fetchTacos + "` tacos :taco: \n 👻 BOOOOOOOO " + PETS_AVAILABLE[userPet].speak + " you received `" + extraTacosFromItems + "` extra tacos");                                                
-                                            }else if (trickOrTreatMap["tot-" + discordUserId] && trickOrTreatMap["tot-" + discordUserId].tot == "treat"){
-
-                                            }else{
-                                                */
-                                            message.channel.send("**" + userPetName + "** fetched:` " + fetchTacos + "` tacos :taco: \n" + PETS_AVAILABLE[userPet].emoji + " " + PETS_AVAILABLE[userPet].speak + " you received `" + extraTacosFromItems + "` extra tacos");                                                
-                                            //}
-                                        }else{
-                                            /* SEASONAL
-                                            if (trickOrTreatMap["tot-" + discordUserId] && trickOrTreatMap["tot-" + discordUserId].tot == "trick"){
-                                                message.channel.send("**" + userPetName + "** fetched:` " + fetchTacos + "` tacos :taco: \n 👻 BOOOOOOOO " + PETS_AVAILABLE[userPet].speak);                                                
-                                            }else if (trickOrTreatMap["tot-" + discordUserId] && trickOrTreatMap["tot-" + discordUserId].tot == "treat"){
-                                                message.channel.send("**" + userPetName + "** fetched:` " + fetchTacos + "` tacos :taco: \n 🎃 HEEEHEEEHEHEHEE " + PETS_AVAILABLE[userPet].speak);                                                
-                                            }else{
-                                                */
-                                            message.channel.send("**" + userPetName + "** fetched:` " + fetchTacos + "` tacos :taco: \n" + PETS_AVAILABLE[userPet].emoji + " " + PETS_AVAILABLE[userPet].speak);                                                
-                                            //}
-                                        }
-                                    }
-                                })
-                            }
-                            else{
-                                // console.log("cd " + PETS_AVAILABLE[userPet].cooldown)
-                                now = new Date(now.setSeconds(now.getSeconds() + secondsToRemove));
-                                var numberOfHours = getDateDifference(fetchResponse.data.lastfetchtime, now, PETS_AVAILABLE[userPet].cooldown);
-                                message.channel.send(message.author + " **" + userPetName + "** needs to rest and cannot fetch currently! Please wait `" + numberOfHours + "` ");
-                            }
-                        }
-                        else{
-                            // user doesnt have a pet
-                            // console.log("doesnt have pet")
-                        }
-                    }
-                })
+    if (!commandLock["fetch"][discordUserId]){
+        exports.setCommandLock("fetch", discordUserId, true)
+        profileDB.getUserProfileData(discordUserId, function(fetchError, fetchResponse){
+            if (fetchError){
+                // console.log(fetchError);
+                exports.setCommandLock("fetch", discordUserId, false)
             }
             else{
-                message.channel.send("You do not have a pet to fetch with!")
+                var userLevel = fetchResponse.data.level;
+                var userPet = fetchResponse.data.pet ? fetchResponse.data.pet : undefined;
+                var userPetName = fetchResponse.data.petname ? fetchResponse.data.petname : undefined;
+                if (userPet){
+                    var userData = {
+                        userLevel : userLevel,
+                        fetchCD: PETS_AVAILABLE[userPet].cooldown,
+                        fetchCount: PETS_AVAILABLE[userPet].fetch
+                    }
+                    wearStats.getUserWearingStats(message, discordUserId, userData, function(wearErr, wearRes){
+                        if (wearErr){
+                            exports.setCommandLock("fetch", discordUserId, false)
+                        }else{
+                            var now = new Date();
+                            if (userPet){
+                                var secondsToRemove = wearStats.calculateSecondsReduced(wearRes, "fetch");
+    
+                                var cooldownDate = new Date();
+                                cooldownDate = new Date(cooldownDate.setHours(cooldownDate.getHours() - PETS_AVAILABLE[userPet].cooldown));
+                                ///////// CALCULATE THE MINUTES REDUCED HERE 
+                                cooldownDate = new Date(cooldownDate.setSeconds(cooldownDate.getSeconds() + secondsToRemove));
+    
+                                if (!fetchResponse.data.lastfetchtime || ( cooldownDate > fetchResponse.data.lastfetchtime )){
+                                    // fetch whatever and then set lastfetchtime to now
+                                    var fetchTacos = PETS_AVAILABLE[userPet].fetch;
+                                    ///////// CALCULATE THE EXTRA TACOS HERE 
+                                    var extraTacosFromItems = wearStats.calculateExtraTacos(wearRes, "fetch"); // 0 or extra
+    
+                                    profileDB.updateUserTacosFetch(discordUserId, fetchTacos + extraTacosFromItems, function(err, updateResponse) {
+                                        if (err){
+                                            // console.log(err);
+                                            exports.setCommandLock("fetch", discordUserId, false)
+                                        }
+                                        else{
+                                            exports.setCommandLock("fetch", discordUserId, false)
+                                            var experienceFromItems = wearStats.calculateExtraExperienceGained(wearRes, "fetch", null);                                                                             
+                                            experience.gainExperience(message, message.author, (( (EXPERIENCE_GAINS.perFetchCd * PETS_AVAILABLE[userPet].fetch) / 10) + experienceFromItems) , fetchResponse);
+                                            // user's pet fetched some tacos
+                                            if (extraTacosFromItems > 0){
+                                                /* SEASONAL
+                                                if (trickOrTreatMap["tot-" + discordUserId] && trickOrTreatMap["tot-" + discordUserId].tot == "trick"){
+                                                    message.channel.send("**" + userPetName + "** fetched:` " + fetchTacos + "` tacos :taco: \n 👻 BOOOOOOOO " + PETS_AVAILABLE[userPet].speak + " you received `" + extraTacosFromItems + "` extra tacos");                                                
+                                                }else if (trickOrTreatMap["tot-" + discordUserId] && trickOrTreatMap["tot-" + discordUserId].tot == "treat"){
+    
+                                                }else{
+                                                    */
+                                                message.channel.send("**" + userPetName + "** fetched:` " + fetchTacos + "` tacos :taco: \n" + PETS_AVAILABLE[userPet].emoji + " " + PETS_AVAILABLE[userPet].speak + " you received `" + extraTacosFromItems + "` extra tacos");                                                
+                                                //}
+                                            }else{
+                                                /* SEASONAL
+                                                if (trickOrTreatMap["tot-" + discordUserId] && trickOrTreatMap["tot-" + discordUserId].tot == "trick"){
+                                                    message.channel.send("**" + userPetName + "** fetched:` " + fetchTacos + "` tacos :taco: \n 👻 BOOOOOOOO " + PETS_AVAILABLE[userPet].speak);                                                
+                                                }else if (trickOrTreatMap["tot-" + discordUserId] && trickOrTreatMap["tot-" + discordUserId].tot == "treat"){
+                                                    message.channel.send("**" + userPetName + "** fetched:` " + fetchTacos + "` tacos :taco: \n 🎃 HEEEHEEEHEHEHEE " + PETS_AVAILABLE[userPet].speak);                                                
+                                                }else{
+                                                    */
+                                                message.channel.send("**" + userPetName + "** fetched:` " + fetchTacos + "` tacos :taco: \n" + PETS_AVAILABLE[userPet].emoji + " " + PETS_AVAILABLE[userPet].speak);                                                
+                                                //}
+                                            }
+                                        }
+                                    })
+                                }
+                                else{
+                                    // console.log("cd " + PETS_AVAILABLE[userPet].cooldown)
+                                    exports.setCommandLock("fetch", discordUserId, false)
+                                    now = new Date(now.setSeconds(now.getSeconds() + secondsToRemove));
+                                    var numberOfHours = getDateDifference(fetchResponse.data.lastfetchtime, now, PETS_AVAILABLE[userPet].cooldown);
+                                    message.channel.send(message.author + " **" + userPetName + "** needs to rest and cannot fetch currently! Please wait `" + numberOfHours + "` ");
+                                }
+                            }
+                            else{
+                                // console.log("doesnt have pet")
+                                exports.setCommandLock("fetch", discordUserId, false)
+                            }
+                        }
+                    })
+                }
+                else{
+                    exports.setCommandLock("fetch", discordUserId, false)
+                    message.channel.send("You do not have a pet to fetch with!")
+                }
             }
-        }
-    })
+        })
+    }
 }
 
 module.exports.useCommand = function(message, args){

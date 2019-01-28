@@ -172,7 +172,7 @@ client.on('message', function(message){
             if (message.channel.type == "text" && (BOT_CHANNELS.indexOf(message.channel.name) != -1) && !message.author.bot){
                 if( commandIs("thank", message )){
                     try{
-                        messagesByUserTimeout(commands.thankCommand, message)
+                        commands.thankCommand(message)
                     }
                     catch(error){
                         message.channel.send(error);
@@ -184,11 +184,11 @@ client.on('message', function(message){
                 // }
                 //SEASONAL
                 else if (commandIs("present", message)){
-                    messagesByUserTimeout(commands.openPresentCommand, message)
+                    //messagesByUserTimeout(commands.openPresentCommand, message)
                 }
                 
                 else if( commandIs("sorry", message )){
-                    messagesByUserTimeout(commands.sorryCommand, message)
+                    commands.sorryCommand(message)
                 }
                 else if( commandIs("help", message )){
                     commands.helpCommand(message);
@@ -205,7 +205,7 @@ client.on('message', function(message){
                     profileDB.createUserActivity(data)
                 }
                 else if( commandIs("prepare", message)){
-                    messagesByUserTimeout(commands.prepareCommand, message)
+                    commands.prepareCommand(message)
                 }
                 else if( commandIs("welcome", message)){
                     commands.welcomeCommand(message);
@@ -214,7 +214,7 @@ client.on('message', function(message){
                     commands.giveCommand(message, args[2]);
                 }
                 else if (commandIs("cook", message)){
-                    messagesByUserTimeout(commands.cookCommand, message)
+                    commands.cookCommand(message)
                 }
                 else if (commandIs("profile", message)){
                     commands.profileCommand(message);
@@ -257,7 +257,7 @@ client.on('message', function(message){
                     commands.buyPastaCommand(message, pasta);
                 }
                 else if (commandIs("scavenge", message)){
-                    messagesByUserTimeout(commands.scavangeCommand, message)
+                    commands.scavangeCommand(message)
                 }
                 else if (commandIs("inventory", message) || commandIs("inv", message)){
                     commands.inventoryCommand(message);
@@ -314,7 +314,7 @@ client.on('message', function(message){
                     }
                 }
                 else if (commandIs("use", message)){
-                    messagesByUserTimeoutArgs(commands.useCommand, message, args)
+                    commands.useCommand(message, args)
                 }
                 else if (commandIs("pickup", message)){
                     commands.pickupCommand(message);
@@ -323,7 +323,7 @@ client.on('message', function(message){
                     commands.buypetCommand(message, args);
                 }
                 else if (commandIs("fetch", message)){
-                    messagesByUserTimeout(commands.fetchCommand, message)
+                    commands.fetchCommand(message)
                 }
                 else if (commandIs("xp", message)){
                     commands.xpCommand(message);
@@ -584,10 +584,10 @@ client.on('message', function(message){
             }
             else if (message.channel.type == "text" && (MAIN_CHANNELS.indexOf(message.channel.name) != -1) && !message.author.bot){
                  if( commandIs("thank", message )){
-                    messagesByUserTimeout(commands.thankCommand, message)
+                    commands.thankCommand(message)
                 }
                 else if( commandIs("sorry", message )){
-                    messagesByUserTimeout(commands.sorryCommand, message)
+                    commands.sorryCommand(message)
                 }
                 else if( commandIs("welcome", message)){
                     commands.welcomeCommand(message);
@@ -642,7 +642,7 @@ client.on('message', function(message){
             if (message.channel.type == "text" && !message.author.bot){
                 if( commandIs("thank", message )){
                     try{
-                        messagesByUserTimeout(commands.thankCommand, message)
+                        commands.thankCommand(message)
                         data.command = "thank"
                         profileDB.createUserActivity(data)
                     }
@@ -656,11 +656,11 @@ client.on('message', function(message){
                 // }
                 // SEASONAL
                 else if (commandIs("present", message)){
-                    messagesByUserTimeout(commands.openPresentCommand, message)
+                    //messagesByUserTimeout(commands.openPresentCommand, message)
                 }
                 
                 else if( commandIs("sorry", message )){
-                    messagesByUserTimeout(commands.sorryCommand, message)
+                    commands.sorryCommand(message)
                     data.command = "sorry"
                     profileDB.createUserActivity(data)
                 }
@@ -685,7 +685,7 @@ client.on('message', function(message){
                     profileDB.createUserActivity(data)
                 }
                 else if( commandIs("prepare", message)){
-                    messagesByUserTimeout(commands.prepareCommand, message)
+                    commands.prepareCommand(message)
                     data.command = "prepare"
                     profileDB.createUserActivity(data)
                 }
@@ -700,7 +700,7 @@ client.on('message', function(message){
                     profileDB.createUserActivity(data)
                 }
                 else if (commandIs("cook", message)){
-                    messagesByUserTimeout(commands.cookCommand, message)
+                    commands.cookCommand(message)
                     data.command = "cook"
                     profileDB.createUserActivity(data)
                 }
@@ -767,7 +767,7 @@ client.on('message', function(message){
                     profileDB.createUserActivity(data)
                 }
                 else if (commandIs("scavenge", message)){
-                    messagesByUserTimeout(commands.scavangeCommand, message)
+                    commands.scavangeCommand(message)
                     data.command = "scavenge"
                     profileDB.createUserActivity(data)
                 }
@@ -844,7 +844,7 @@ client.on('message', function(message){
                     }
                 }
                 else if (commandIs("use", message)){
-                    messagesByUserTimeoutArgs(commands.useCommand, message, args)
+                    commands.useCommand(message, args)
                     data.command = "use"
                     profileDB.createUserActivity(data)
                 }
@@ -859,7 +859,7 @@ client.on('message', function(message){
                     profileDB.createUserActivity(data)
                 }
                 else if (commandIs("fetch", message)){
-                    messagesByUserTimeout(commands.fetchCommand, message)
+                    commands.fetchCommand(message)
                     data.command = "fetch"
                     profileDB.createUserActivity(data)
                 }
@@ -919,7 +919,7 @@ client.on('message', function(message){
                     profileDB.createUserActivity(data)
                 }
                 else if (commandIs("combine", message)){
-                    messagesByUserTimeoutArgs(commands.combineCommand, message, args)
+                    commands.combineCommand(message, args)
                     data.command = "combine"
                     profileDB.createUserActivity(data)
                 }
@@ -948,14 +948,22 @@ client.on('message', function(message){
                 }
                 else if (commandIs("markethelp", message)){
                     commands.marketHelpCommand(message)
+                    data.command = "markethelp"
+                    profileDB.createUserActivity(data)
                 }
                 else if (commandIs("market", message)){
                     commands.marketCommand(message, args)
+                    data.command = "market"
+                    profileDB.createUserActivity(data)
                 }
                 else if (commandIs("mkbid", message)){
                     commands.marketBidCommand(message, args)
+                    data.command = "mkbid"
+                    profileDB.createUserActivity(data)
                 }else if (commandIs("mkauction", message)){
                     commands.marketAuctionCommand(message, args)
+                    data.command = "mkauction"
+                    profileDB.createUserActivity(data)
                 }
                 else if (commandIs("plant", message)){
                     //commands.plantCommand(message, args)
@@ -983,7 +991,7 @@ client.on('message', function(message){
                     if (message.channel.type == "text" && !message.author.bot){
                         commands.rpgChallengeCommand(message, args);
                         data.command = "rpgchallenge"
-                    profileDB.createUserActivity(data)
+                        profileDB.createUserActivity(data)
                     }else{
                         message.channel.send("use the rpg channel for this")
                     }
@@ -992,7 +1000,7 @@ client.on('message', function(message){
                     if (message.channel.type == "text" && !message.author.bot){
                         commands.rpgReadyCommand(message);
                         data.command = "ready"
-                    profileDB.createUserActivity(data)
+                        profileDB.createUserActivity(data)
                     }else{
                         message.channel.send("use the rpg channel for this")
                     }
@@ -1001,7 +1009,7 @@ client.on('message', function(message){
                     if (message.channel.type == "text" && !message.author.bot){
                         commands.rpgSkipCommand(message);
                         data.command = "skip"
-                    profileDB.createUserActivity(data)
+                        profileDB.createUserActivity(data)
                     }else{
                         message.channel.send("use the rpg channel for this")
                     }
