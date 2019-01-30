@@ -95,8 +95,8 @@ module.exports = {
             name : "Shell",
             abilityId: "shell",
             cooldown: 0,
-            maxcooldown: 8,
-            description: "Reduce all damage taken by 33% for 3 turns 8 turn cooldown",
+            maxcooldown: 7,
+            description: "Reduce all damage taken by 33% for 3 turns 7 turn cooldown",
             buff: {
                 selfbuff: true,
                 buff: true,
@@ -351,7 +351,7 @@ module.exports = {
             targets: "friendly",
             cooldown: 0,
             maxcooldown: 5,
-            description: "Increase the group's magical damage and attack damage by 60% for 4 turns - 10 turn cooldown, applies Exhausted",
+            description: "Increase the group's magical damage and attack damage by 60% for 4 turns - 5 turn cooldown, applies Exhausted",
             buff: {
                 buff: true,
                 areawide: true,
