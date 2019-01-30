@@ -143,9 +143,9 @@ module.exports = {
         paralyze: {
             name: "Paralyze",
             abilityId: "paralyze",
-            maxcooldown: 5,
+            maxcooldown: 4,
             cooldown: 0,
-            description: "Paralyze a player or easy, medium, summoned difficulty enemy for 3 turns, 5 turn cooldown, invalid if damage is taken",
+            description: "Paralyze a player or easy, medium, summoned difficulty enemy for 3 turns, 4 turn cooldown, invalid if damage is taken",
             difficultiesAllowed: [
                 "easy",
                 "medium",
@@ -350,7 +350,7 @@ module.exports = {
             areawide: true,
             targets: "friendly",
             cooldown: 0,
-            maxcooldown: 5,
+            maxcooldown: 4,
             description: "Increase the group's magical damage and attack damage by 60% for 4 turns - 5 turn cooldown, applies Exhausted",
             buff: {
                 buff: true,
@@ -619,8 +619,6 @@ module.exports = {
         safeGuard : {
             name : "Safe Guard",
             abilityId: "safeGuard",
-            cooldown: 0,
-            maxcooldown: 8,
             description: "Reduce all damage taken by 4%",
             buff: {
                 buff: true,
