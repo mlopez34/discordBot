@@ -6849,7 +6849,7 @@ function setTimeOutForIndividualItem(individualItem, milisecondsUntilEnd){
 }
 
 function handleMarketItemAuctionEnded(individualItem){
-    if (individualItem){
+    if (individualItem && individualItem.id){
         if (marketItems[individualItem.id].currentbiduserid){
             // switch the item's owner + give them the tacos they earned, take away the tacos from the user
             if (marketItems[individualItem.id].creatorchannel){
