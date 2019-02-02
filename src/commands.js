@@ -2893,6 +2893,7 @@ module.exports.scavangeCommand = function (message){
                             profileDB.getItemData(function(err, getItemResponse){
                                 if (err){
                                     // console.log(err);
+                                    exports.setCommandLock("scavenge", discordUserId, false)
                                 }
                                 else{
                                     var ARTIFACT_MIN_ROLL = 9995;
