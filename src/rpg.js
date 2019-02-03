@@ -1081,6 +1081,28 @@ module.exports.rpgReady = function(message, itemsAvailable, amuletItemsById, buf
                                                                     }
                                                                 }
                                                                 var enemyFound;
+                                                                /*
+                                                                based on the leaders current zone we'll get enemies based on that
+                                                                anyone in the same zone as leader will be awarded completion
+                                                                can still partifipate in rpg if not in same zone, just no completion
+
+                                                                get the possible enemies for the party based off of rpgzones
+                                                                
+                                                                if success -> advance user +1 on that area - if area complete
+                                                                move them to next zone immediately (linear)
+                                                                area completion is based on number of rpgs completed there
+                                                                if all areas completed in a zone complete the zone
+                                                                zone completion is based on area completion
+
+                                                                zones are locked, only certain zones are available depending on completion 
+                                                                always start in area 1 - can move to next area once completed
+                                                                can go back to that area once completed as well
+
+                                                                how to store on DB?
+                                                                userprofile contains current area by name
+                                                                userrpgprofile contains 
+
+                                                                */
                                                                 if (rollForRarity >= 9650 ){
                                                                     // boss
                                                                     var enemyRoll = Math.floor(Math.random() * enemiesToEncounter.boss.length);
