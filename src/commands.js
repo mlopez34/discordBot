@@ -6851,7 +6851,7 @@ function setTimeOutForIndividualItem(individualItem, milisecondsUntilEnd){
 
 function handleMarketItemAuctionEnded(individualItem){
     if (individualItem && individualItem.id){
-        if (marketItems[individualItem.id].currentbiduserid){
+        if (marketItems[individualItem.id] && marketItems[individualItem.id].currentbiduserid){
             // switch the item's owner + give them the tacos they earned, take away the tacos from the user
             if (marketItems[individualItem.id].creatorchannel){
                 // send a message to the channel the user created the auction initially to announce their auction ended
@@ -6891,7 +6891,7 @@ function handleMarketItemAuctionEnded(individualItem){
                 
             }
         }else{
-            if (marketItems[individualItem.id].creatorchannel){
+            if (marketItems[individualItem.id] && marketItems[individualItem.id].creatorchannel){
                 var seller = client.users.get(marketItems[individualItem.id].seller)
                 //// take the item out of the market in DB
                 var itemId = individualItem.id;
