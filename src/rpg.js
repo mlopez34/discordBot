@@ -1100,7 +1100,19 @@ module.exports.rpgReady = function(message, itemsAvailable, amuletItemsById, buf
 
                                                                 how to store on DB?
                                                                 userprofile contains current area by name
-                                                                userrpgprofile contains 
+                                                                userrpgprofile contains one row per user, rows are:
+                                                                area1completion
+                                                                area2completion
+                                                                area3completion
+                                                                area4completion
+
+                                                                all integers
+
+                                                                the full completion is calculated on the server, 
+                                                                #oofRpgs to complete are stored server side
+                                                                based on the areas completed we calculate if the zone has been completed
+
+                                                                
 
                                                                 */
                                                                 if (rollForRarity >= 9650 ){
