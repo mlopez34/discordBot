@@ -2394,7 +2394,7 @@ module.exports = {
             abilityId: "pillarAOEmagic",
             areawidedmg: {
                 endOfTurnAura: true,
-                dmgPerTurn: 22,
+                dmgPerTurn: 1,
                 hitsEveryNTurn: 1,
                 name: "Pillar Radiation",
                 dmg: 680,
