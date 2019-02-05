@@ -2495,14 +2495,14 @@ module.exports = {
             name: "Summon Apparition",
             abilityId: "summonApparition",
             belongsToMember: true,
-            everyNTurns: 8,
+            everyNTurns: 10,
             afterNTurns: 2,
             currentTurn: 0,
             summon: {
                 enemy: "apparition",
                 attackDmg: 200,
                 magicDmg: 200,
-                hpPlus: 1000
+                hpPlus: 100
             }
         },
 
@@ -2632,7 +2632,7 @@ module.exports = {
             name: "Summon Enabler",
             abilityId: "summonEnabler",
             belongsToMember: true,
-            everyNTurns: 8,
+            everyNTurns: 10,
             afterNTurns: 2,
             currentTurn: 0,
             summon: {
@@ -2640,7 +2640,7 @@ module.exports = {
                 enemy: "enabler",
                 attackDmg: 500,
                 magicDmg: 500,
-                hpPlus: 1000
+                hpPlus: 100
             }
         },
 
@@ -2658,7 +2658,7 @@ module.exports = {
                 ignoreUnique: true,
                 name: "Enable",
                 abilityId: "enable",
-                additionalDescription: " Aramis gains 20% more physical and magical damage",
+                additionalDescription: " gains 20% more physical and magical damage",
                 emoji: "<:strength:479298214294716416>",
                 turnsToExpire: 200,
                 affects: ["attackDmg", "magicDmg"],
@@ -3429,7 +3429,7 @@ module.exports = {
                 hpPerPartyMember: 0,
                 adPerPartyMember: 0,
                 mdPerPartyMember: 0,
-                hp: 6300,
+                hp: 6100,
                 abilityOrder: [
                     1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
                 ],
@@ -3450,11 +3450,11 @@ module.exports = {
                 hpPerPartyMember: 0,
                 adPerPartyMember: 0,
                 mdPerPartyMember: 0,
-                hp: 7300,
+                hp: 6800,
                 abilityOrder: [
                     0, 0, 0, 1
                 ],
-                attackDmg: 1330,
+                attackDmg: 1030,
                 magicDmg: 860,
                 armor: 1300,
                 spirit: 1300,
