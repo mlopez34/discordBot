@@ -5528,7 +5528,7 @@ module.exports.combineCommand = function(message, args){
 
                                 var rarityOfMyItem = itemsMapbyShortName[myItemShortName].itemraritycategory
                                 //////////////////// TODO: do not allow user to combine if they are on stage # of the artifact quest
-                                if (rarityOfMyItem && rarityOfMyItem == "artifact"){
+                                if ( (rarityOfMyItem && rarityOfMyItem == "artifact") || (rarityOfMyItem == "artifact+" && itemsMapbyShortName[myItemShortName].questname)){
                                     // take the ids of the other 2 artifacts + artifact recipe and push them onto itemsBeingCombined array
                                     
                                     var artifactId = ARTIFACT_RECIPE_ID
