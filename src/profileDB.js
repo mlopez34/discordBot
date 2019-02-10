@@ -59,10 +59,16 @@ module.exports.createUserProfile = function(data, cb) {
                         templelevel: 0
                     }
                     exports.createUserTempleInfo(t, function(e, r){
-                        cb(null, {
-                            status: 'success',
-                            message: 'Inserted one user'
-                        });
+                        var r = {
+                            discordId : data.discordId,
+                            currentarea: "meadows"
+                        }
+                        exports.createRpgProfile(r, function(e, r){
+                            cb(null, {
+                                status: 'success',
+                                message: 'Inserted one user'
+                            });
+                        })
                     })
                 })
             })
@@ -479,6 +485,22 @@ module.exports.updateCurrentChallenge = function(userId, challengeNum, cb) {
     });
 }
 
+module.exports.updateCurrentChallengeKeystone = function(userId, keystoneNum, challengeId, cb) {
+    var query = 'update ' + config.userRpgProfileTable + ' set ' + challengeId + '=$1 where discordid=$2'
+    //// console.log("new last thank: " + lastThank);
+    db.none(query, [keystoneNum, userId])
+    .then(function () {
+    cb(null, {
+        status: 'success',
+        message: 'added keystone + 1'
+        });
+    })
+    .catch(function (err) {
+        // console.log(err);
+        cb(err);
+    });
+}
+
 module.exports.updateUserTacosGive = function(userId, tacoAmount, cb){
     var query = 'update ' + config.profileTable + ' set tacos=tacos+$1 where discordid=$2'
     //// console.log("new last thank: " + lastThank);
@@ -698,6 +720,20 @@ module.exports.purchaseTacoStand = function(userId, tacosSpent, currentTacoStand
             cb(err);
         });
     }
+}
+
+module.exports.setZoneComplete = function(userId, zoneid, cb) {
+    var query = 'update ' + config.userRpgProfileTable + ' set ' + zoneid + '= true where discordid=$1'
+    db.none(query, [userId])
+    .then(function () {
+    cb(null, {
+        status: 'success',
+        message: 'zone completed'
+        });
+    })
+    .catch(function (err) {
+        cb(err);
+    });
 }
 
 module.exports.rpgAreaIncreaseCompletion = function(userId, areatoincrease, currentareacompletion, cb){
@@ -1588,7 +1624,7 @@ module.exports.createUserWearInfo = function(data, cb){
     .then(function () {
     cb(null, {
         status: 'success',
-        message: 'updated wear info'
+        message: 'created wear info'
         });
     })
     .catch(function (err) {
@@ -1605,7 +1641,7 @@ module.exports.createUserStableInfo = function(data, cb){
     .then(function () {
     cb(null, {
         status: 'success',
-        message: 'updated stable info'
+        message: 'created stable info'
         });
     })
     .catch(function (err) {
@@ -1622,7 +1658,7 @@ module.exports.createUserGreenHouseInfo = function(data, cb){
     .then(function () {
     cb(null, {
         status: 'success',
-        message: 'updated greenhouse info'
+        message: 'created greenhouse info'
         });
     })
     .catch(function (err) {
@@ -1639,7 +1675,23 @@ module.exports.createUserTempleInfo = function(data, cb){
     .then(function () {
     cb(null, {
         status: 'success',
-        message: 'updated temple info'
+        message: 'created temple info'
+        });
+    })
+    .catch(function (err) {
+        cb(err);
+    });
+}
+// create rpg profile
+module.exports.createRpgProfile = function(data, cb){
+    var query = 'insert into '+ config.userRpgProfileTable + '(discordId, currentarea)' +
+    'values(${discordId}, ${currentarea} )'
+    // console.log(query);
+    db.none(query, data)
+    .then(function () {
+    cb(null, {
+        status: 'success',
+        message: 'created rpg info'
         });
     })
     .catch(function (err) {

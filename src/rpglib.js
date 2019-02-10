@@ -2972,6 +2972,7 @@ module.exports = {
                     boss: "bossId"
                 },
                 meadows: {
+                    areaString : "meadows string 1",
                     name: "Meadows",
                     enemies: {
                         easy: [
@@ -5652,11 +5653,18 @@ module.exports = {
         },
         challenge: {
             1: {
+                challengeId: "escapedrobot",
                 enemies: [
                     {
                         name: "Angry Mob Member",
                         abilities: ["attack", "attack", "poison", "iceshards", "iceshards", "cripple"],
                         buffs: [],
+                        keystoneStats: {
+                            hp: [1200, 3500, 6200, 10000, 15000 ],
+                            attackDmg: [300, 500, 900, 1500, 2300],
+                            magicDmg: [300, 500, 900, 1500, 2300],
+                            abilities: []
+                        },
                         hpPerPartyMember: 130,
                         adPerPartyMember: 8,
                         mdPerPartyMember: 8,
@@ -5672,6 +5680,12 @@ module.exports = {
                         name: "Taco Thief",
                         abilities: ["attack", "attack", "flameblast", "flameblast", "orchatasip"],
                         buffs: [],
+                        keystoneStats: {
+                            hp: [1200, 3500, 6200, 10000, 15000 ],
+                            attackDmg: [300, 500, 900, 1500, 2300],
+                            magicDmg: [300, 500, 900, 1500, 2300],
+                            abilities: []
+                        },
                         effectsOnDeath: [
                             "explode"
                         ],
@@ -5690,6 +5704,12 @@ module.exports = {
                         name: "Slots Gambler",
                         abilities: ["attack", "attack", "elixir", "elixir", "orchatasip"],
                         buffs: [],
+                        keystoneStats: {
+                            hp: [1200, 3500, 6200, 10000, 15000 ],
+                            attackDmg: [300, 500, 900, 1500, 2300],
+                            magicDmg: [300, 500, 900, 1500, 2300],
+                            abilities: []
+                        },
                         hpPerPartyMember: 130,
                         adPerPartyMember: 14,
                         mdPerPartyMember: 16,
@@ -5716,6 +5736,16 @@ module.exports = {
                                 }
                             }
                         ],
+                        keystoneStats: {
+                            frenzy: {
+                                attackDmgPlus : [110, 220, 350, 640, 920],
+                                magicDmgPlus : [110, 220, 350, 640, 920]
+                            },
+                            hp: [1500, 3900, 6900, 18000, 25000 ],
+                            attackDmg: [300, 500, 900, 1700, 3300],
+                            magicDmg: [300, 500, 900, 1700, 3300],
+                            abilities: []
+                        },
                         hpPerPartyMember: 1190,
                         adPerPartyMember: 18,
                         mdPerPartyMember: 18,
@@ -5744,6 +5774,16 @@ module.exports = {
                                 }
                             }
                         ],
+                        keystoneStats: {
+                            frenzy: {
+                                attackDmgPlus : [150, 280, 450, 840, 1220],
+                                magicDmgPlus : [150, 280, 450, 840, 1220]
+                            },
+                            hp: [1500, 3900, 6900, 18000, 25000 ],
+                            attackDmg: [800, 1200, 1900, 2700, 4300],
+                            magicDmg: [800, 1200, 1900, 2700, 4300],
+                            abilities: []
+                        },
                         endOfTurnEvents : [
                             "echo",
                             "focus"
@@ -5764,6 +5804,7 @@ module.exports = {
                 difficulty: 1
             },
             2: {
+                challengeId: "desperado",
                 enemies: [
                     {
                         name: "Taco Thief",
@@ -5890,6 +5931,7 @@ module.exports = {
                 difficulty: 2
             },
             3: {
+                challengeId: "romansoldier",
                 enemies: [
                     {
                         name: "Taco Thief",
@@ -5998,6 +6040,7 @@ module.exports = {
                 difficulty: 3
             },
             4: {
+                challengeId: "dictator",
                 enemies: [
                     {
                         name: "Dictator",
@@ -6129,6 +6172,7 @@ module.exports = {
                 difficulty: 5,
             },
             5: {
+                challengeId: "cheftrio",
                 enemies: [
                     // 3 bosses, each has a special ability
                     // when one of the bosses dies, the other 2 gain the ability at the current CD of the ability
@@ -6295,6 +6339,7 @@ module.exports = {
                 // yellow = abilities more often, aoe abilities, black = summon 6 minions
                 // purple = status on target, after 3 statuses they explode
                 // blue = 1 cooldown per ability, effect ends when new crystals appear
+                challengeId: "a182type2",
                 description: "**Energy Crystals:** \nRed - grants Furnace(magical)\nGreen- grants Dismantle(physical)\nBlack - Summons Tortured Robots\nBlue - Summons Energy Core(Immune to areawide damage)\nYellow - Rocket Strike becomes areawide, reduces Furnace, Dismantle, Rocket Strike cooldown by 1 turn, Summon Tortured Robot by 6 turns\nPurple - affects with Radioactive(direct healing grants an additional stack of Radioactive, at 5 stacks you explode for 1300 damage)\nEnergy Core - Grants Energize to the boss upon being summoned, Energize lasts 6 turns (+400 attack, magic), upon death causes cleansing which removes Energized from all units\nLaser Beam - Physical, Rocket Strike - Magical",
                 timed: true,
                 timedPerTurn: 180000,
@@ -6364,6 +6409,7 @@ module.exports = {
                 difficulty: 25
             },
             7: {
+                challengeId: "gatekeeper",
                 timed: true,
                 timedPerTurn: 180000,
                 points: 1900,
@@ -6480,6 +6526,7 @@ module.exports = {
                 ],
             },
             8: {
+                challengeId: "archvampire",
                 timed: true,
                 timedPerTurn: 180000,
                 points: 4600,
@@ -6628,6 +6675,7 @@ module.exports = {
                 ]
             },
             9: {
+                challengeId: "corruptedovermind",
                 timed: true,
                 timedPerTurn: 180000,
                 points: 22901,
@@ -6795,6 +6843,7 @@ module.exports = {
                 ],
             },
             10: {
+                challengeId: "anomaly",
                 timed: true,
                 timedPerTurn: 180000,
                 points: 75901,
@@ -6898,27 +6947,14 @@ module.exports = {
                     }
                 ]
             },
-            /*
-            */
             11: {
-                // transitions
-                // 1 - 25% max hp (every 2 turns) + arrow volley(for 3 turns after second turn) + flanking orders (every 7 turns) + damage reduction (every 2 turns after 4 turns)
-                // on second enemy - arrow volley + damage reduction + flanking orders
-                // 2 - arrow volley + damage reduction + apparition + iceshards + explosion shield + flanking orders
-                // on third enemy - apparition + shield + iceshards + flanking orders + damage reduct
-                // 3 - apparition + iceshards + explosion shield + maniac + add spawn after 4 turns + flanking order + damage reduction
-                // on last enemy - maniac + enabler + flanking orders + damage reduct + apparition
+                challengeId: "aramis",
                 timed: true,
                 timedPerTurn: 360000,
                 points: 317901,
                 difficulty: 186,
                 enemies: [
                     {
-                        // deals moderate physical
-                        // crush / poke / attack
-                        // EOT - deals 25% of max HP
-                        // special ***flanking orders lightning, fire, water, earth(7 turns)
-                        // dps race, gains frenzy of + 4k after 20 turns
                         name: "D'Artagnan",
                         xp: 30,
                         abilities: [
@@ -6989,6 +7025,7 @@ module.exports = {
             // dot deals increasing damage, bandaid forces it onto another player
             // 
             12: {
+                challengeId: "emperor",
                 timed: true,
                 timedPerTurn: 360000,
                 points: 317901,

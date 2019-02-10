@@ -135,7 +135,7 @@ module.exports.rpgSkip = function(message){
 module.exports.showRpgStats = function(message, itemsAvailable, amuletItemsById){
     var discordUserId = message.author.id;
     
-    profileDB.getUserProfileData(discordUserId, function(err, userData){
+    profileDB.getUserRpgProfleData(discordUserId, function(err, userData){
         if (err){
             console.log(err);
             message.channel.send(err + " something went wrong [profile]");
@@ -406,7 +406,15 @@ module.exports.showRpgStats = function(message, itemsAvailable, amuletItemsById)
                             
                             var playerString = userStatsStringBuilder(myStats, message.author.username, false);
                             playerString = playerString + "\nTime remaining: " + rpgTimeLeft;
+                            var userAreaId =  userData.data.currentarea 
+                            var zoneUserIsIn = getRpgZone(userAreaId)
+                            var userAreaName = rpgZones[zoneUserIsIn].areas[userAreaId].name
+                            var userZoneName = rpgZones[zoneUserIsIn].name
+                            
                             embed.addField( message.author.username, playerString )
+                            if (userAreaId){
+                                embed.addField( "Adventure Whereabouts", userZoneName + " - " + userAreaName )
+                            }
                             // set the item strings
                             for (var s in singleItemsStrings){
                                 embed.addField( s, singleItemsStrings[s] )
@@ -460,8 +468,9 @@ module.exports.rpgReady = function(message, itemsAvailable, amuletItemsById, buf
                 var rpgEventId = usersInRPGEvents["rpg-" + discordUserId].id;
                 var isSpecialEvent = activeRPGEvents[ "rpg-" +  rpgEventId ] ? activeRPGEvents[ "rpg-" + rpgEventId ].special : false;
                 var currentPlayerChallenge = userData.data.currentchallenge || 0 ;
-                var currentPlayerKeystone = userData.data.currentkeystone || 1;
                 var challengePicked = (activeRPGEvents[ "rpg-" +  rpgEventId ] && activeRPGEvents[ "rpg-" +  rpgEventId ].challenge) ? activeRPGEvents[ "rpg-" + rpgEventId ].challenge.challenge : false;
+                var challengeId = getKeystoneIdFromChallenge(parseInt( challengePicked ))
+                var currentPlayerKeystone = userData.data[challengeId] || 0;
                 var keystonePicked = (activeRPGEvents[ "rpg-" +  rpgEventId ] && activeRPGEvents[ "rpg-" +  rpgEventId ].challenge) ? activeRPGEvents[ "rpg-" + rpgEventId ].challenge.keystone : false;
                 if ((currentPlayerChallenge + 1) >= (parseInt( challengePicked ) )
                     && (currentPlayerKeystone) >= (parseInt( keystonePicked ) ) 
@@ -474,7 +483,7 @@ module.exports.rpgReady = function(message, itemsAvailable, amuletItemsById, buf
                 if (activeRPGEvents[ "rpg-" +  rpgEventId ].area 
                 && activeRPGEvents[ "rpg-" +  rpgEventId ].area == myRpgArea
                 && activeRPGEvents[ "rpg-" +  rpgEventId ].usersInArea){
-                    var currentareacompletion = userData.data.myRpgArea || 0
+                    var currentareacompletion = userData.data[myRpgArea] || 0
                     activeRPGEvents["rpg-" + rpgEventId].usersInArea.push({
                         userid: discordUserId,
                         currentareacompletion: currentareacompletion,
@@ -693,6 +702,7 @@ module.exports.rpgReady = function(message, itemsAvailable, amuletItemsById, buf
                                             usersInRPGEvents["rpg-" + discordUserId].memberStats = {
                                                 level: userStats.level,
                                                 currentchallenge: currentPlayerChallenge,
+                                                currentkeystone: currentPlayerKeystone,
                                                 plusStats: statisticsFromItemsAndLevel,
                                                 itemsBeingWorn: items,
                                                 itemsBeingWornUserIds: userItemIds,
@@ -797,8 +807,8 @@ module.exports.rpgReady = function(message, itemsAvailable, amuletItemsById, buf
                                                                 id: partyMember.id,
                                                                 name: partyMember.username,
                                                                 username: partyMember.username,
-                                                                hp: 2500 + (27 *  partyMemberStats.level ) + partyMemberHpPlus,
-                                                                attackDmg: 1000 + (9 * partyMemberStats.level) + partyMemberAttackDmgPlus,
+                                                                hp: 25000 + (27 *  partyMemberStats.level ) + partyMemberHpPlus,
+                                                                attackDmg: 100000 + (9 * partyMemberStats.level) + partyMemberAttackDmgPlus,
                                                                 magicDmg:  10 + (9 * partyMemberStats.level) + partyMemberMagicDmgPlus,
                                                                 armor: 5 + (partyMemberStats.level * partyMemberStats.level) + partyMemberArmorPlus,
                                                                 spirit: 5 + (partyMemberStats.level * partyMemberStats.level) + partyMemberSpiritPlus,
@@ -917,6 +927,24 @@ module.exports.rpgReady = function(message, itemsAvailable, amuletItemsById, buf
                                                                     effectsOnDeath: enemyFound.effectsOnDeath,
                                                                     abilitiesMap : {},
                                                                     element: enemyFound.element
+                                                                }
+
+                                                                if (keystoneNum > 0){
+                                                                    // add stats to enemies
+                                                                    var keystoneStatsArrayIndex = keystoneNum - 1
+                                                                    if (enemyFound.keystoneStats){
+                                                                        enemies[enemyIdCount].hp = enemies[enemyIdCount].hp  + enemyFound.keystoneStats.hp[keystoneStatsArrayIndex]
+                                                                        enemies[enemyIdCount].attackDmg = enemies[enemyIdCount].attackDmg + enemyFound.keystoneStats.attackDmg[keystoneStatsArrayIndex]
+                                                                        enemies[enemyIdCount].magicDmg = enemies[enemyIdCount].magicDmg + enemyFound.keystoneStats.magicDmg[keystoneStatsArrayIndex]
+                                                                        if (enemyFound.keystoneStats.frenzy){
+                                                                            for (var b in enemies[enemyIdCount].buffs){
+                                                                                if (enemies[enemyIdCount].buffs[b].name == "frenzy"){
+                                                                                    enemies[enemyIdCount].buffs[b].attackDmgPlus = enemyFound.keystoneStats.frenzy.attackDmgPlus[keystoneStatsArrayIndex]
+                                                                                    enemies[enemyIdCount].buffs[b].magicDmgPlus = enemyFound.keystoneStats.frenzy.magicDmgPlus[keystoneStatsArrayIndex]
+                                                                                }
+                                                                            }
+                                                                        }
+                                                                    }
                                                                 }
 
                                                                 if (enemyFound.abilityOrder){
@@ -1352,6 +1380,14 @@ module.exports.rpgReady = function(message, itemsAvailable, amuletItemsById, buf
     }
 }
 
+function getKeystoneIdFromChallenge(challengeNumber){
+    if (enemiesToEncounter.challenge[challengeNumber]){
+        return enemiesToEncounter.challenge[challengeNumber].challengeId
+    }else{
+        return -1
+    }
+}
+
 function getDateDifference(beforeDate, now, hoursDifference){
     // get difference between now and beforeDate + hoursDifference 
     
@@ -1770,13 +1806,13 @@ function eventEndedEmbedBuilder(message, event, partySuccess){
             // get members current challenge
             var challengenumber = usersInRPGEvents["rpg-" + memberInParty.id].memberStats.currentchallenge;
             if ( (challengenumber + 1) == event.challenge.challenge ){
-                profileDB.updateCurrentChallenge( memberInParty.id, challengenumber + 1, function(error, challengeRes){
-                    if (error){
-                        console.log(error);
-                    }else{
-                        console.log(challengeRes);
-                        //embed.addField("Challenge complete", challengenumber);
-                    }
+                profileDB.updateCurrentChallenge( memberInParty.id, challengenumber + 1)
+            }
+            var keystonenumber = usersInRPGEvents["rpg-" + memberInParty.id].memberStats.currentkeystone;
+            if ( (keystonenumber) == event.challenge.keystone ){
+                var challengeId = getKeystoneIdFromChallenge(event.challenge.challenge)
+                profileDB.updateCurrentChallengeKeystone( memberInParty.id, keystonenumber + 1, challengeId, function(err, res){
+                    
                 })
             }
             
@@ -1820,7 +1856,7 @@ function eventEndedEmbedBuilder(message, event, partySuccess){
     else if (event.area && event.usersInArea && partySuccess){
         // give completion to everyone in the area
         for (var u in event.usersInArea){
-            increaseCompletionForUser(event.usersInArea[u], event.area)
+            increaseCompletionForUser(event.usersInArea[u], event.area, message)
         }        
     }
 
@@ -1869,64 +1905,70 @@ function eventEndedEmbedBuilder(message, event, partySuccess){
     cleanupEventEnded(event);
 }
 
-function increaseCompletionForUser(eventUser, rpgareaId){
+function increaseCompletionForUser(eventUser, rpgareaId, message){
     var discordUserId = eventUser.userid
     var currentareacompletion = eventUser.currentareacompletion || 0
     var rpgsToCompleteArea = getRpgsToCompleteForArea(rpgareaId)
     profileDB.rpgAreaIncreaseCompletion(discordUserId, rpgareaId, currentareacompletion, function(err, res){
-        // check completion
         if (err){
             console.log(err)
         }else{
             var areaCompletionForUser = eventUser.currentareacompletion + 1
             if (areaCompletionForUser == rpgsToCompleteArea){
-                newAreaEmbedBuilder( eventUser.username, rpgareaId )
+                newAreaEmbedBuilder( eventUser.username, rpgareaId, message)
             }
             var zoneUserIsIn = getRpgZone(rpgareaId)
+            var zoneComplete = eventUser.userdata[zoneUserIsIn]
             var areasToComplete = getAreasCompletedForZone(zoneUserIsIn)
-            var areascompletedForUser = getAreasCompletedInZoneForUser(eventUser.userData, zoneUserIsIn)
+            var areascompletedForUser = getAreasCompletedInZoneForUser(eventUser.userdata, zoneUserIsIn)
             // calculate areascompletedForUser 
-            if (areascompletedForUser >= areasToComplete){
-                newZoneEmbedBuilder( eventUser.username, zoneUserIsIn )
+            if ( true || !zoneComplete && ( areascompletedForUser >= areasToComplete ) ){
+                // complete zone
+                newZoneEmbedBuilder( eventUser.username, zoneUserIsIn, message )
+                profileDB.setZoneComplete(discordUserId, zoneUserIsIn)
             }
         }
     })
 }
 
-function getAreasCompletedInZoneForUser(userData, zoneUserIsIn){
+function getAreasCompletedInZoneForUser(userdata, zoneUserIsIn){
     // first calculate current zone based on area
     // only calculate that zone's completion
     // go through all areas in that zone, and get their completion and then compare to user reqs
-
+    var numberOfAreasCompleted = 0
     var zoneAreas = rpgZones[zoneUserIsIn].areas
     for (var a in zoneAreas){
-
+        var areaToCheck = zoneAreas[a]
+        var rpgsToCompleteInArea = areaToCheck.rpgsToComplete
+        var rpgsCompletedByUser = userdata[a] || 0
+        if (rpgsCompletedByUser >= rpgsToCompleteInArea){
+            numberOfAreasCompleted++
+        }
     }
 
-
-    return numberOfAreasToComplete
+    return numberOfAreasCompleted
 }
 
-function newAreaEmbedBuilder(username, areaId){
-    const areaembed = new Discord.RichEmbed()
+function newAreaEmbedBuilder(username, areaId, message){
+    const embed = new Discord.RichEmbed()
     .setAuthor("Area completed!")
     .setColor(0xF2E93E)
     // include the username
     // new areas + the number of RPGs needed in them
     var areaString = getAreaString(areaId)
-    embed.addField(username,  areaString, true);
-    message.channel.send({areaembed})
+    embed.addField(username,  areaString);
+    message.channel.send({embed})
 }
 
-function newZoneEmbedBuilder(username, zoneId){
-    const zoneembed = new Discord.RichEmbed()
+function newZoneEmbedBuilder(username, zoneId, message){
+    const embed = new Discord.RichEmbed()
     .setAuthor("Zone completed!")
     .setColor(0xF2E93E)
     // include the username
     // new Zone + the level requirements
     var zoneString = getZoneString(zoneId)
     embed.addField(username,  zoneString, true);
-    message.channel.send({zoneembed})
+    message.channel.send({embed})
 }   
 
 function getAreaString(areaId){
