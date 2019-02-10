@@ -2935,14 +2935,31 @@ module.exports = {
     },
     rpgZones: {
         prarie: {
+            zoneString : "Prarie String 1",
             name: "Prarie",
             areas: {
                 tallgrass: {
+                    areaString : "tall grass string 1",
                     name: "Tallgrass",
-                    enemies: [
-
-                    ],
+                    enemies: {
+                        easy: [
+                            "rabbidwolf"
+                        ],
+                        medium: [
+                            "tacobandit"
+                        ],
+                        hard: [
+                            "footballplayer"
+                        ],
+                        boss: [
+                            "vampire"
+                        ]
+                    },
                     rpgsToComplete: 8,
+                    onCompleteAreasUnlocked: [
+                        "meadows",
+                        "test2"
+                    ],
                     shopItemsAvailable: [
 
                     ],
@@ -2954,20 +2971,47 @@ module.exports = {
                     ],
                     boss: "bossId"
                 },
-                meadow: {
-                    name: "Meadow",
-                    enemies: [
+                meadows: {
+                    name: "Meadows",
+                    enemies: {
+                        easy: [
+                            "rabbidwolf"
+                        ],
+                        medium: [
+                            "tacobandit"
+                        ],
+                        hard: [
+                            "footballplayer"
+                        ],
+                        boss: [
+                            "vampire"
+                        ]
+                    },
+                    rpgsToComplete: 8,
+                    shopItemsAvailable: [
 
-                    ]
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ],
+                    boss: "bossId"
                 }
             }
         },
         woods: {
-
+            zoneString : ""
         },
         undergroundtunnels: {
-
+            zoneString : ""
         }
+    },
+
+    areaToZoneMap: {
+        tallgrass: "prarie",
+        meadows: "prarie"
     },
     enemiesToEncounter: {
         summoned: {
@@ -3869,8 +3913,8 @@ module.exports = {
                 element: "normal"
             }
         },
-        easy : [
-            {
+        easy : {
+            rabbidwolf: {
                 name: "Rabbid Wolf",
                 abilities: ["attack", "attack", "poison", "poison", "tacowall"],
                 buffs: [],
@@ -3885,7 +3929,7 @@ module.exports = {
                 difficulty: "easy",
                 element: "normal"
             },
-            {
+            badchef: {
                 name: "Bad Chef",
                 abilities: ["attack", "attack", "poison", "poison", "barrier"],
                 buffs: [],
@@ -3903,7 +3947,7 @@ module.exports = {
                 difficulty: "easy",
                 element: "normal"
             },
-            {
+            vagabond: {
                 name: "Vagabond",
                 abilities: ["attack", "attack", "flameblast", "flameblast", "cripple"],
                 buffs: [],
@@ -3921,7 +3965,7 @@ module.exports = {
                 difficulty: "easy",
                 element: "normal"
             },
-            {
+            coyote: {
                 name: "Coyote",
                 abilities: ["attack", "attack", "claw", "claw", "cripple"],
                 buffs: [],
@@ -3939,7 +3983,7 @@ module.exports = {
                 difficulty: "easy",
                 element: "normal"
             },
-            {
+            angrymobmember: {
                 name: "Angry Mob Member",
                 abilities: ["attack", "attack", "poison", "iceshards", "iceshards", "cripple"],
                 buffs: [],
@@ -3954,7 +3998,7 @@ module.exports = {
                 difficulty: "easy",
                 element: "normal"
             },
-            {
+            tacodealer: {
                 name: "Taco Dealer",
                 abilities: ["attack", "attack", "drain", "drain", "freeze"],
                 buffs: [],
@@ -3969,7 +4013,7 @@ module.exports = {
                 difficulty: "easy",
                 element: "normal"
             },
-            {
+            burritohustler: {
                 name: "Burrito Hustler",
                 abilities: ["attack", "attack", "slap", "slap", "weaken"],
                 buffs: [],
@@ -3984,7 +4028,7 @@ module.exports = {
                 difficulty: "easy",
                 element: "normal"
             },
-            {
+            ruffian: {
                 name: "Ruffian",
                 abilities: ["attack", "attack", "tackle", "tackle", "weaken"],
                 buffs: [],
@@ -3999,9 +4043,9 @@ module.exports = {
                 difficulty: "easy",
                 element: "normal"
             }
-        ],
-        medium: [
-            {
+        },
+        medium: {
+            tacobandit: {
                 name: "Taco Bandit",
                 abilities: ["attack", "attack", "shock", "shock", "orchatasip"],
                 buffs: [],
@@ -4016,7 +4060,7 @@ module.exports = {
                 difficulty: "medium",
                 element: "normal"
             },
-            {
+            tacothief: {
                 name: "Taco Thief",
                 abilities: ["attack", "attack", "flameblast", "flameblast", "orchatasip"],
                 buffs: [],
@@ -4034,7 +4078,7 @@ module.exports = {
                 difficulty: "medium",
                 element: "normal"
             },
-            {
+            slotsgambler: {
                 name: "Slots Gambler",
                 abilities: ["attack", "attack", "elixir", "elixir", "orchatasip"],
                 buffs: [],
@@ -4049,7 +4093,7 @@ module.exports = {
                 difficulty: "medium",
                 element: "normal"
             },
-            {
+            fruitscounter: {
                 name: "Fruits Counter",
                 abilities: ["attack", "attack", "uppercut", "uppercut", "weaken"],
                 buffs: [],
@@ -4064,9 +4108,9 @@ module.exports = {
                 difficulty: "medium",
                 element: "normal"
             }
-        ],
-        hard: [
-            {
+        },
+        hard: {
+            footballplayer: {
                 name: "Football Player",
                 abilities: ["attack", "attack", "slash", "slash", "rockthrow", "empower"],
                 buffs: [
@@ -4092,7 +4136,7 @@ module.exports = {
                 difficulty: "hard",
                 element: "normal"
             },
-            {
+            samuraiwarrior: {
                 name: "Samurai Warrior",
                 abilities: ["attack", "attack", "iceshards", "iceshards", "drain", "drain", "bandaid"],
                 buffs: [
@@ -4118,7 +4162,7 @@ module.exports = {
                 difficulty: "hard",
                 element: "normal"
             },
-            {
+            warewolf: {
                 name: "Warewolf",
                 abilities: ["attack", "attack", "ferociousBite", "ferociousBite", "uppercut"],
                 buffs: [
@@ -4144,7 +4188,7 @@ module.exports = {
                 difficulty: "hard",
                 element: "normal"
             },
-            {
+            funnypolitician: {
                 name: "Funny Politician",
                 abilities: ["attack" , "attack" , "curse", "poison", "shoot", "shoot","freeze"],
                 buffs: [
@@ -4173,9 +4217,9 @@ module.exports = {
                 difficulty: "hard",
                 element: "normal"
             }
-        ],
-        boss: [
-            {
+        },
+        boss: {
+            vampire: {
                 name: "Vampire",
                 abilities: [
                    "attack", "attack", "rockthrow", "rockthrow", "shock", "shock", "tacowall"
@@ -4207,7 +4251,7 @@ module.exports = {
                 difficulty: "boss",
                 element: "normal"
             },
-            {
+            viking: {
                 name: "Viking",
                 abilities: [
                    "attack", "attack", "tackle", "tackle", "tackle", "slash", "slash", "slash","empower"
@@ -4239,7 +4283,7 @@ module.exports = {
                 difficulty: "boss",
                 element: "normal"
             },
-            {
+            escapedrobot: {
                 name: "Escaped Robot",
                 abilities: [
                     "attack", "attack", "drain", "drain", "iceshards", "iceshards", "shield"
@@ -4271,7 +4315,7 @@ module.exports = {
                 difficulty: "boss",
                 element: "normal"
             },
-            {
+            desperado: {
                 name: "Desperado",
                 abilities: [
                     "attack", "attack", "shoot", "shoot", "slash", "slash", "cripple"
@@ -4303,7 +4347,7 @@ module.exports = {
                 difficulty: "boss",
                 element: "normal"
             }
-        ],
+        },
         // time travel, demonic summoning, abraham lincolns tomb, evil exes
         
         special: {
@@ -6926,6 +6970,24 @@ module.exports = {
                     }
                 ]
             },
+            // empowering makes them deal 10% more damage + gain energy faster
+            // HP of all of them ~48k
+            // HP of summoned healer ~10k
+            // one melees(medium) and hits random player for 25% of melee (impale)
+            // one melees(weak) and deals status to random player (75%)
+            // one melees(hard) and puts ice dot on player (no bandaid)
+            // one hits random deals aoe
+            // HP of adds summoned by sand ~ 10k
+            // energy gained max should start at 7 turns (21 turns to kill one)
+            // 300, 600, 900, 1200, 1500, 1800 aoe hits after full energy from empowered
+            // 1, 9, 9, 9, 7, 6, 5, 5, 4, 3, 3
+            //   50, 40, 30, 23, 17, 12, 7, 
+            // 5 * 180 = 
+            // total 180 turns of debuff
+            // 6 turns when there's 3 left
+            // each time spirit is forced out create a new debuff - each turn adds 5% dmg taken
+            // dot deals increasing damage, bandaid forces it onto another player
+            // 
             12: {
                 timed: true,
                 timedPerTurn: 360000,
@@ -6933,7 +6995,7 @@ module.exports = {
                 difficulty: 186,
                 enemies: [
                     {
-                        name: "Balrog",
+                        name: "Summoner",
                         xp: 30,
                         abilities: [
                             "attack",
@@ -6956,6 +7018,8 @@ module.exports = {
                         ],
                         endOfTurnEvents : [
                             "focus"
+                            // adds debuff that deals low dmg runs out after 20 turns
+                            // empowered = summon adds + adds 30 turns to the debuffs
                         ],
                         effectsOnDeath: [
                         ],
@@ -6969,7 +7033,139 @@ module.exports = {
                         mdPerPartyMember: 0,
                         difficulty: "boss",
                         element: "normal"
+                    },
+                    {
+                        name: "High Melee",
+                        xp: 30,
+                        abilities: [
+                            "attack",
+                            "slash",
+                        ],
+                        buffs: [
+                            {
+                                name: "frenzy",
+                                emoji: "<:frenzy:479298214453968896>",
+                                onTurnEnd: {
+                                    attackDmgPlus : 12100,
+                                    magicDmgPlus : 12100,
+                                    everyNTurns: 5,
+                                    startTurn: 5
+                                }
+                            }
+                        ],
+                        abilityOrder: [
+                            0,0,1,1,1,1,1
+                        ],
+                        endOfTurnEvents : [
+                            "focus"
+                            // starts with darkness on turn 2
+                            // put high hitting dot on 1 person starts at (300)
+                            // empower his weapon to deal higher phys
+                        ],
+                        effectsOnDeath: [
+                        ],
+                        hp: 52600,
+                        attackDmg: 14580,
+                        magicDmg: 14570,
+                        armor: 2100,
+                        spirit: 2100,
+                        hpPerPartyMember: 0,
+                        adPerPartyMember: 0,
+                        mdPerPartyMember: 0,
+                        difficulty: "boss",
+                        element: "normal"
+                    },
+                    {
+                        name: "Healer",
+                        xp: 30,
+                        abilities: [
+                            "attack",
+                            "slash",
+                        ],
+                        buffs: [
+                            {
+                                name: "frenzy",
+                                emoji: "<:frenzy:479298214453968896>",
+                                onTurnEnd: {
+                                    attackDmgPlus : 12100,
+                                    magicDmgPlus : 12100,
+                                    everyNTurns: 5,
+                                    startTurn: 5
+                                }
+                            }
+                        ],
+                        // random magic dmg 
+                        abilityOrder: [
+                            0,0,1,1,1,1,1
+                        ],
+                        endOfTurnEvents : [
+                            "focus"
+                            // summon healer (lasts 2 turns) when not empowered
+                            // if empowered summon 2 adds that deal aoe
+                        ],
+                        effectsOnDeath: [
+                        ],
+                        hp: 52600,
+                        attackDmg: 14580,
+                        magicDmg: 14570,
+                        armor: 2100,
+                        spirit: 2100,
+                        hpPerPartyMember: 0,
+                        adPerPartyMember: 0,
+                        mdPerPartyMember: 0,
+                        difficulty: "boss",
+                        element: "normal"
+                    },
+                    {
+                        name: "Non Focus",
+                        xp: 30,
+                        abilities: [
+                            "attack",
+                            "slash",
+                        ],
+                        buffs: [
+                            {
+                                name: "frenzy",
+                                emoji: "<:frenzy:479298214453968896>",
+                                onTurnEnd: {
+                                    attackDmgPlus : 12100,
+                                    magicDmgPlus : 12100,
+                                    everyNTurns: 5,
+                                    startTurn: 5
+                                }
+                            }
+                        ],
+                        // no focus melee hit and aoe
+                        abilityOrder: [
+                            0,0,1,1,1,1,1
+                        ],
+                        endOfTurnEvents : [
+                            // when empowered reflect damage back 25%
+                        ],
+                        effectsOnDeath: [
+                        ],
+                        hp: 52600,
+                        attackDmg: 14580,
+                        magicDmg: 14570,
+                        armor: 2100,
+                        spirit: 2100,
+                        hpPerPartyMember: 0,
+                        adPerPartyMember: 0,
+                        mdPerPartyMember: 0,
+                        difficulty: "boss",
+                        element: "normal"
                     }
+                    // darkness buff starts on high melee
+                    // darkness is removed when taking 25% HP of current HP
+                    // darkness goes to next highest HP enemy - cannot skip 4 in a row
+                    // when darkness is removed it also gives +10% damage buff
+                    // when darkness is removed it also puts dot on random player
+                    // dot deals minor dmg, and gives +5% damage taken every turn
+                    // when dot is bandaided it jumps to another different player
+                    // if no other players available, stays on them
+                    // darkness gives buff that starts at x turns (6 initially)
+                    // everytime they get darkness again it starts off at x-1
+                    //
                 ]
             }
         }

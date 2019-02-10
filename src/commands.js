@@ -9345,7 +9345,13 @@ function tacoPartyReactRewards(message, user, emoji, reward){
 }
 
 module.exports.rpgBattleCommand = function(message){
-    rpg.rpgInitialize(message);
+    // get the users profile
+    var discordUserId = message.author.id
+    profileDB.getUserRpgProfleData(discordUserId, function(err, profileRes){
+        var currentarea = profileRes.data.currentarea
+        var special = { currentarea: currentarea }
+        rpg.rpgInitialize(message, special);
+    })
 }
 
 module.exports.rpgChallengeCommand = function(message, args){

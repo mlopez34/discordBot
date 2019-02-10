@@ -10,7 +10,7 @@ var commands = require("./commands.js")
 var moment = require("moment");
 var _ = require("lodash");
 
-var RPG_COOLDOWN_HOURS = 2
+var RPG_COOLDOWN_HOURS = 0
 var activeRPGEvents = {};
 var activeRPGItemIds = {};
 var usersInRPGEvents = {};
@@ -19,6 +19,8 @@ var CURRENT_CHALLENGES_AVAILABLE = 12
 var CHALLENGE_TO_TEST = 11
 var rpgAbilities = rpglib.rpgAbilities;
 var enemiesToEncounter = rpglib.enemiesToEncounter;
+var areaToZoneMap = rpglib.areaToZoneMap
+var rpgZones = rpglib.rpgZones
 
 module.exports.rpgInitialize = function(message, special){
     // create an embed saying that b is about to happen, for users MAX of 5 users and they must all say -ready to start costs 5 tacos per person
@@ -28,7 +30,7 @@ module.exports.rpgInitialize = function(message, special){
     team.push(message.author);
 
     users.forEach(function(user){
-        if (team.length < TEAM_MAX_LENGTH && discordUserId != user.id){
+        if (team.length < TEAM_MAX_LENGTH ){//&& discordUserId != user.id){
             team.push(user);
         }
     })
@@ -74,9 +76,12 @@ module.exports.rpgInitialize = function(message, special){
                     valid: false
                 };
                 activeRPGEvents["rpg-" + sentMessage.id].leader = message.author;
-            }else if (special){
+            }else if (special && !special.currentarea){
                 activeRPGEvents["rpg-" + sentMessage.id].special = special;
                 activeRPGEvents["rpg-" + sentMessage.id].leader = message.author;
+            }else{
+                activeRPGEvents["rpg-" + sentMessage.id].area = special.currentarea
+                activeRPGEvents["rpg-" + sentMessage.id].usersInArea = []
             }
         })
     }
@@ -444,7 +449,7 @@ module.exports.rpgReady = function(message, itemsAvailable, amuletItemsById, buf
     if (usersInRPGEvents["rpg-" + discordUserId] && usersInRPGEvents["rpg-" + discordUserId].ready != true){
         message.channel.send( message.author + " is ready");
         // get the user's profile and get the user's wearing
-        profileDB.getUserProfileData(discordUserId, function(err, userData){
+        profileDB.getUserRpgProfleData(discordUserId, function(err, userData){
             if (err){
                 console.log(err);
                 message.channel.send(err + " something went wrong [profile]");
@@ -463,6 +468,19 @@ module.exports.rpgReady = function(message, itemsAvailable, amuletItemsById, buf
                     && (parseInt( challengePicked ) ) > 0 
                     && (parseInt( challengePicked ) ) <= CURRENT_CHALLENGES_AVAILABLE ){
                     activeRPGEvents[ "rpg-" +  rpgEventId ].challenge.valid = true;
+                }
+                var myRpgArea = userData.data.currentarea
+                
+                if (activeRPGEvents[ "rpg-" +  rpgEventId ].area 
+                && activeRPGEvents[ "rpg-" +  rpgEventId ].area == myRpgArea
+                && activeRPGEvents[ "rpg-" +  rpgEventId ].usersInArea){
+                    var currentareacompletion = userData.data.myRpgArea || 0
+                    activeRPGEvents["rpg-" + rpgEventId].usersInArea.push({
+                        userid: discordUserId,
+                        currentareacompletion: currentareacompletion,
+                        userdata: userData.data,
+                        username: message.author.username
+                    })
                 }
                 oneHourAgo = new Date(oneHourAgo.setHours(oneHourAgo.getHours() - RPG_COOLDOWN_HOURS ));
                 var lastrpgtime = userData.data.lastrpgtime;
@@ -779,8 +797,8 @@ module.exports.rpgReady = function(message, itemsAvailable, amuletItemsById, buf
                                                                 id: partyMember.id,
                                                                 name: partyMember.username,
                                                                 username: partyMember.username,
-                                                                hp: 250 + (27 *  partyMemberStats.level ) + partyMemberHpPlus,
-                                                                attackDmg: 10 + (9 * partyMemberStats.level) + partyMemberAttackDmgPlus,
+                                                                hp: 2500 + (27 *  partyMemberStats.level ) + partyMemberHpPlus,
+                                                                attackDmg: 1000 + (9 * partyMemberStats.level) + partyMemberAttackDmgPlus,
                                                                 magicDmg:  10 + (9 * partyMemberStats.level) + partyMemberMagicDmgPlus,
                                                                 armor: 5 + (partyMemberStats.level * partyMemberStats.level) + partyMemberArmorPlus,
                                                                 spirit: 5 + (partyMemberStats.level * partyMemberStats.level) + partyMemberSpiritPlus,
@@ -1109,32 +1127,43 @@ module.exports.rpgReady = function(message, itemsAvailable, amuletItemsById, buf
                                                                 all integers
 
                                                                 the full completion is calculated on the server, 
-                                                                #oofRpgs to complete are stored server side
+                                                                #ofRpgs to complete are stored server side
                                                                 based on the areas completed we calculate if the zone has been completed
 
-                                                                
+                                                                everytime an rpg in an area gets completed we add 1 to the existing area
+                                                                once an area is completed the user can move to any area they want
+                                                                areas have unique shops
+                                                                areas are not linear - once an area is finished you can chose where to go next 
+                                                                from a limited number of areas
 
                                                                 */
+                                                                var areaToCheck = activeRPGEvents[rpgEvent].area
+                                                                var zoneUserIsIn = getRpgZone(areaToCheck) /// create this function
+                                                                var enemiesInArea = rpgZones[zoneUserIsIn].areas[areaToCheck].enemies
                                                                 if (rollForRarity >= 9650 ){
                                                                     // boss
-                                                                    var enemyRoll = Math.floor(Math.random() * enemiesToEncounter.boss.length);
-                                                                    enemyFound = JSON.parse(JSON.stringify( enemiesToEncounter.boss[enemyRoll] ));
+                                                                    var enemyRoll = Math.floor(Math.random() * enemiesInArea.boss.length);
+                                                                    enemyString = enemiesInArea.boss[enemyRoll]
+                                                                    enemyFound = JSON.parse(JSON.stringify( enemiesToEncounter.boss[enemyString] ));
                                                                     foundBoss = true;
                                                                 }
                                                                 else if (rollForRarity >= 8250 && rollForRarity < 9650 ){
                                                                     // hard
-                                                                    var enemyRoll = Math.floor(Math.random() * enemiesToEncounter.hard.length);
-                                                                    enemyFound = JSON.parse(JSON.stringify( enemiesToEncounter.hard[enemyRoll]));
+                                                                    var enemyRoll = Math.floor(Math.random() * enemiesInArea.hard.length);
+                                                                    enemyString = enemiesInArea.hard[enemyRoll]
+                                                                    enemyFound = JSON.parse(JSON.stringify( enemiesToEncounter.hard[enemyString]));
                                                                 }
                                                                 else if (rollForRarity >= 4000 && rollForRarity < 8250 ){
                                                                     // medium
-                                                                    var enemyRoll = Math.floor(Math.random() * enemiesToEncounter.medium.length);
-                                                                    enemyFound = JSON.parse(JSON.stringify( enemiesToEncounter.medium[enemyRoll]));
+                                                                    var enemyRoll = Math.floor(Math.random() * enemiesInArea.medium.length);
+                                                                    enemyString = enemiesInArea.medium[enemyRoll]
+                                                                    enemyFound = JSON.parse(JSON.stringify( enemiesToEncounter.medium[enemyString]));
                                                                 }
                                                                 else {
                                                                     // easy :)
-                                                                    var enemyRoll = Math.floor(Math.random() * enemiesToEncounter.easy.length);
-                                                                    enemyFound = JSON.parse(JSON.stringify(  enemiesToEncounter.easy[enemyRoll]));
+                                                                    var enemyRoll = Math.floor(Math.random() * enemiesInArea.easy.length);
+                                                                    enemyString = enemiesInArea.easy[enemyRoll]
+                                                                    enemyFound = JSON.parse(JSON.stringify(  enemiesToEncounter.easy[enemyString]));
                                                                 }
                                                                 enemies[enemyIdCount] = {
                                                                     id: enemyIdCount,
@@ -1758,13 +1787,7 @@ function eventEndedEmbedBuilder(message, event, partySuccess){
             embed.addField(event.special.reward.fieldTitle, event.special.reward.note)
         }
 
-        if (event.special.reward.questline && event.special.reward.stageAdvance){
-            // TODO: advance the user to the next step of the questline, create in artifacts case
-            // Create the artifact for the user, timetravel = time machine
-            // demonic = bow of andromalius
-            // diamond = ring (linked souls)
-            // abraham = vampire slaying pike
-            
+        if (event.special.reward.questline && event.special.reward.stageAdvance){            
             if ( event.special.reward.item ){
                 var extraItem = event.special.reward.item
                 // add the artifact item
@@ -1793,6 +1816,14 @@ function eventEndedEmbedBuilder(message, event, partySuccess){
             })
         }
     }
+
+    else if (event.area && event.usersInArea && partySuccess){
+        // give completion to everyone in the area
+        for (var u in event.usersInArea){
+            increaseCompletionForUser(event.usersInArea[u], event.area)
+        }        
+    }
+
     var numberOfMembers = event.members.length;
     event.experienceHandedOut = 0
     for (var member in event.members){
@@ -1836,6 +1867,94 @@ function eventEndedEmbedBuilder(message, event, partySuccess){
     })
     message.channel.send({embed})
     cleanupEventEnded(event);
+}
+
+function increaseCompletionForUser(eventUser, rpgareaId){
+    var discordUserId = eventUser.userid
+    var currentareacompletion = eventUser.currentareacompletion || 0
+    var rpgsToCompleteArea = getRpgsToCompleteForArea(rpgareaId)
+    profileDB.rpgAreaIncreaseCompletion(discordUserId, rpgareaId, currentareacompletion, function(err, res){
+        // check completion
+        if (err){
+            console.log(err)
+        }else{
+            var areaCompletionForUser = eventUser.currentareacompletion + 1
+            if (areaCompletionForUser == rpgsToCompleteArea){
+                newAreaEmbedBuilder( eventUser.username, rpgareaId )
+            }
+            var zoneUserIsIn = getRpgZone(rpgareaId)
+            var areasToComplete = getAreasCompletedForZone(zoneUserIsIn)
+            var areascompletedForUser = getAreasCompletedInZoneForUser(eventUser.userData, zoneUserIsIn)
+            // calculate areascompletedForUser 
+            if (areascompletedForUser >= areasToComplete){
+                newZoneEmbedBuilder( eventUser.username, zoneUserIsIn )
+            }
+        }
+    })
+}
+
+function getAreasCompletedInZoneForUser(userData, zoneUserIsIn){
+    // first calculate current zone based on area
+    // only calculate that zone's completion
+    // go through all areas in that zone, and get their completion and then compare to user reqs
+
+    var zoneAreas = rpgZones[zoneUserIsIn].areas
+    for (var a in zoneAreas){
+
+    }
+
+
+    return numberOfAreasToComplete
+}
+
+function newAreaEmbedBuilder(username, areaId){
+    const areaembed = new Discord.RichEmbed()
+    .setAuthor("Area completed!")
+    .setColor(0xF2E93E)
+    // include the username
+    // new areas + the number of RPGs needed in them
+    var areaString = getAreaString(areaId)
+    embed.addField(username,  areaString, true);
+    message.channel.send({areaembed})
+}
+
+function newZoneEmbedBuilder(username, zoneId){
+    const zoneembed = new Discord.RichEmbed()
+    .setAuthor("Zone completed!")
+    .setColor(0xF2E93E)
+    // include the username
+    // new Zone + the level requirements
+    var zoneString = getZoneString(zoneId)
+    embed.addField(username,  zoneString, true);
+    message.channel.send({zoneembed})
+}   
+
+function getAreaString(areaId){
+    var zoneAreaIsIn = getRpgZone(areaId)
+    var areaString = rpgZones[zoneAreaIsIn].areas[areaId].areaString
+    areaString = areaString + "\n" + "Map areas unlocked:\n"
+    for (var a in rpgZones[zoneAreaIsIn].areas[areaId].onCompleteAreasUnlocked){
+        areaString = areaString + areaString[a] + "\n"
+    }
+    return areaString
+}
+
+function getZoneString(zoneId){
+    return rpgZones[zoneId].zoneString
+}
+
+function getRpgsToCompleteForArea(areaId){
+    var zoneAreaIsIn = getRpgZone(areaId)
+    var rpgsToCompleteForArea = rpgZones[zoneAreaIsIn].areas[areaId].rpgsToComplete
+    return rpgsToCompleteForArea
+}
+
+function getAreasCompletedForZone(rpgZoneId){
+    var count = 0
+    for (var key in rpgZones[rpgZoneId].areas){
+        count++
+    }
+    return count
 }
 
 function createRpgStatData(rewardString, event, partySuccess){
@@ -7280,4 +7399,8 @@ function enemiesUseAbilities(event){
             
         }
     }
+}
+
+function getRpgZone(areaname){
+    return areaToZoneMap[areaname]
 }

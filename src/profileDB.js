@@ -700,6 +700,36 @@ module.exports.purchaseTacoStand = function(userId, tacosSpent, currentTacoStand
     }
 }
 
+module.exports.rpgAreaIncreaseCompletion = function(userId, areatoincrease, currentareacompletion, cb){
+    // null or 0
+    if (currentareacompletion){
+        var query = 'update ' + config.userRpgProfileTable + ' set ' + areatoincrease + '=' + areatoincrease + '+1 where discordid=$1'
+        db.none(query, [ userId])
+        .then(function () {
+        cb(null, {
+            status: 'success',
+            message: 'added area completion'
+            });
+        })
+        .catch(function (err) {
+            cb(err);
+        });
+    }
+    else{
+        var query = 'update ' + config.userRpgProfileTable + ' set '+ areatoincrease + '=1 where discordid=$1'
+        db.none(query, [ userId])
+        .then(function () {
+        cb(null, {
+            status: 'success',
+            message: 'added area completion'
+            });
+        })
+        .catch(function (err) {
+            cb(err);
+        });
+    }
+}
+
 module.exports.prepareTacos = function(userId, tacosToPrepare, cb){
     // update tacos and lastprepare
     var query = 'update ' + config.profileTable + ' set tacos=tacos+$1, lastpreparetime=$3, soiledcrops=0 where discordid=$2'
@@ -1615,6 +1645,24 @@ module.exports.createUserTempleInfo = function(data, cb){
     .catch(function (err) {
         cb(err);
     });
+}
+
+module.exports.getUserRpgProfleData = function(discordId, cb){
+    var query = 'select * from ' + config.userRpgProfileTable + ',' + config.profileTable + ' where ' + config.userRpgProfileTable + '.discordId = $1 AND ' + config.profileTable + '.discordId = $1'
+    console.log(query)
+    db.one(query, [discordId])
+      .then(function (data) {
+        //// console.log(data);
+        cb(null, {
+            status: 'success',
+            data: data,
+            message: 'Retrieved ONE user rpg profile'
+          });
+      })
+      .catch(function (err) {
+        // console.log(err);
+        cb(err);
+      });
 }
 
 module.exports.getStableData = function(discordId, cb){
