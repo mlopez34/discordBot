@@ -218,8 +218,8 @@ function updateUserRewards(message, discordId, repstatus, cb){
             })
             break;
         case "sanctified":
-            // able to upgrade past level 12 on all buildings + able to refine artifacts
-            // award is an item to refine artifact
+            // able to upgrade past level 12 on all buildings + able to improve artifacts
+            // award is an item to improve artifact
             obtainReputationItem(message, "reputationsanctified")
             profileDB.obtainLaboratoryAccessCard(discordId, function(error, res){
                 if (error){
@@ -230,7 +230,7 @@ function updateUserRewards(message, discordId, repstatus, cb){
             })
             break; 
         case "worshipped":
-        // 125k rep - 
+        // 125k rep - be able to refine artifacts
             obtainReputationItem(message, "reputationworshipped")
             cb(null, "artifact refine item");
             break;
@@ -277,7 +277,7 @@ function reputationEmbedBuilder(message, repstatus, rewards){
         embed.addField( "Rewards: " , ":athletic_shoe: Sprinting Shoes - reduce prepare cooldown by 1% based on your level", true)
     }
     if (rewards === "holy candle"){
-        embed.addField( "Rewards: " , ":athletic_shoe: Holy Candle - on thank 20% chance to reset scavenge cooldown, 10% chance to critically gain 50% of your tacos gained while thanking", true)
+        embed.addField( "Rewards: " , ":candle: Holy Candle - on thank 20% chance to reset scavenge cooldown, 10% chance to critically gain 50% of your tacos gained while thanking", true)
     }
     if (rewards === "lavoratory access card"){
         embed.addField( "Rewards: " , ":athletic_shoe: Laboratory Card - present this card to Bender to be able to shop ethereum from his shop", true)

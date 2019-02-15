@@ -326,7 +326,7 @@ client.on('message', function(message){
                     commands.buypetCommand(message, args);
                 }
                 else if (commandIs("fetch", message)){
-                    commands.fetchCommand(message)
+                    commands.fetchCommand(message, args)
                 }
                 else if (commandIs("xp", message)){
                     commands.xpCommand(message);
@@ -421,6 +421,10 @@ client.on('message', function(message){
                 else if (commandIs("craft", message)){
                     // craft a specific item via id
                     commands.craftCommand(message, args)
+                }
+                else if (commandIs("buyhacksaw", message)){
+                    // craft a specific item via id
+                    commands.buyHacksawCommand(message, args)
                 }
                 else if (commandIs("race", message)){
                     // enter an upcoming race
@@ -872,7 +876,7 @@ client.on('message', function(message){
                     profileDB.createUserActivity(data)
                 }
                 else if (commandIs("fetch", message)){
-                    commands.fetchCommand(message)
+                    commands.fetchCommand(message, args)
                     data.command = "fetch"
                     profileDB.createUserActivity(data)
                 }
@@ -1012,6 +1016,10 @@ client.on('message', function(message){
                 else if (commandIs("craft", message)){
                     // craft a specific item via id
                     commands.craftCommand(message, args)
+                }
+                else if (commandIs("buyhacksaw", message)){
+                    // craft a specific item via id
+                    commands.buyHacksawCommand(message, args)
                 }
                 else if (commandIs("rpgstart", message)){
                     if (message.channel.type == "text" && !message.author.bot){

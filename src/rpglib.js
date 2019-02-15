@@ -1,5 +1,13 @@
 module.exports = {
-
+    // TODO:
+    // change assist to physical scaling
+    // aoe heal over time lasts 5 turns total of 85% of magical
+    // 10 turn dot phys
+    // 10 turn dot magical
+    // physical elixir
+    // cocoon - 15% damage reduct, -10% damage dealt
+    // cannister shot
+    // 
     rpgAbilities: {
         attack : {
             name: "Attack",

@@ -105,16 +105,16 @@ function buildPossibleRecipesArray(params){
 
 function rollForItemInRecipeBasedCategory(itemObject, userLevel, categoryLevel, rarityLevel, templeLevel){
 
-    var rollAboveChance = getItemRollChance(userLevel, categoryLevel)
+    var rollAboveChance = getItemRollChance(userLevel, categoryLevel, templeLevel)
     var rollForItem = Math.floor(Math.random() * 100) + 1;
 
-    if (templeLevel < 12 && categoryLevel >= 35){
+    if (templeLevel < 12 && categoryLevel >= 40){
         return false
     }
-    if (templeLevel < 9 && ( rarityLevel == "artifacts" || rarityLevel == "amulets" ) ){
+    if (templeLevel < 10 && ( rarityLevel == "artifacts" || rarityLevel == "amulets" ) ){
         return false
     }
-    if (templeLevel < 6 && (rarityLevel == "ancients" || rarityLevel == "artifacts" || rarityLevel == "amulets" )){
+    if (templeLevel < 8 && (rarityLevel == "ancients" || rarityLevel == "artifacts" || rarityLevel == "amulets" )){
         return false
     }
     if (templeLevel < 3 && ( rarityLevel == "rares" || rarityLevel == "ancients" || rarityLevel == "artifacts" || rarityLevel == "amulets" )){
@@ -216,6 +216,7 @@ module.exports.craftRecipe = function(message, params){
                     console.log(error)
                 }else{
                     addToUserInventory(discordUserId, params.itemToCreate)
+                    message.channel.send(message.author + " crafted **" + params.itemToCreate[0].itemname +"**")
                 }
             })
         }

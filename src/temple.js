@@ -113,10 +113,27 @@ module.exports.getUpgradeRequirements = function(level){
     return upgradeRequirements[level]
 }
 
+module.exports.getUpgradeRequirementsForLevel = function(level, itemsMapById){
+    var requirementString = ""
+    var upgradeReqs = exports.getUpgradeRequirements(level)
+    if (upgradeReqs){
+        var itemReq = ""
+        for (var i in upgradeReqs.itemRequirements){
+            var itemid = upgradeReqs.itemRequirements[i].itemId
+            var itemcount = upgradeReqs.itemRequirements[i].itemCount
+            var itemname = itemsMapById[itemid].itemname
+            var itemReq = itemReq + itemname + " x" + itemcount + "\n"
+        }
+        requirementString = requirementString + "tacos: " + upgradeReqs.tacos + "\nreputation: " + upgradeReqs.reputationlevel + "\nItems:\n" + itemReq
+    }
+    return requirementString
+}
+
 function createUpgradeObject(upgrade){
 
     var individualUpgrade = {
         tacos: upgrade.tacos ? upgrade.tacos : 0,
+        levelinfo: upgrade.levelinfo,
         reputationlevel: upgrade.reputationlevel ? upgrade.reputationlevel : 1,
         itemRequirements: []
     }
@@ -159,6 +176,10 @@ module.exports.initializeUpgradeRequirements = function( upgradeReqs, callback){
         }
     }
     callback()
+}
+
+module.exports.getLevelInfo = function(level){
+    return upgradeRequirements[level].levelinfo
 }
 
 const upgradeRequirements = {
