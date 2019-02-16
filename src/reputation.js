@@ -206,7 +206,7 @@ function updateUserRewards(message, discordId, repstatus, cb){
             // able to upgrade past level 9 on all buildings + able to improve artifacts
             // special greater amulet             
             obtainReputationItem(message, "reputationglorified")
-            // something for thanks? be able to critically earn from thanking - 10% chance to get 50% more tacos from thanks
+            // something for thanks be able to critically earn from thanking - 10% chance to get 50% more tacos from thanks
             // chance to reset scavenge cooldown
             profileDB.obtainHolyCandle(discordId, function(error, res){
                 if (error){
@@ -218,8 +218,7 @@ function updateUserRewards(message, discordId, repstatus, cb){
             })
             break;
         case "sanctified":
-            // able to upgrade past level 12 on all buildings + able to improve artifacts
-            // award is an item to improve artifact
+            // able to upgrade past level 12 on all buildings + able to master ancients
             obtainReputationItem(message, "reputationsanctified")
             profileDB.obtainLaboratoryAccessCard(discordId, function(error, res){
                 if (error){
@@ -280,7 +279,7 @@ function reputationEmbedBuilder(message, repstatus, rewards){
         embed.addField( "Rewards: " , ":candle: Holy Candle - on thank 20% chance to reset scavenge cooldown, 10% chance to critically gain 50% of your tacos gained while thanking", true)
     }
     if (rewards === "lavoratory access card"){
-        embed.addField( "Rewards: " , ":athletic_shoe: Laboratory Card - present this card to Bender to be able to shop ethereum from his shop", true)
+        embed.addField( "Rewards: " , ":flower_playing_cards: Laboratory Card - present this card to Bender to be able to shop ethereum from his shop", true)
     }
     message.channel.send({embed});
 }

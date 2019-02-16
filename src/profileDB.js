@@ -325,6 +325,20 @@ module.exports.obtainHolyCandle = function(userId, cb) {
     });
 }
 
+module.exports.obtainLaboratoryAccessCard = function(userId, cb) {
+    var query = 'update ' + config.profileTable + ' set laboratoryaccesscard=true where discordid=$1'
+    db.none(query, [userId])
+    .then(function () {
+    cb(null, {
+        status: 'success',
+        message: 'added laboratoryaccesscard'
+        });
+    })
+    .catch(function (err) {
+        cb(err);
+    });
+}
+
 module.exports.updateUserTacosSorry = function(userId, tacos, cb) {
     var query = 'update ' + config.profileTable + ' set tacos=tacos+$1, lastsorrytime=$3 where discordid=$2'
     var lastThank = new Date();
@@ -1809,9 +1823,9 @@ module.exports.updatePlotInfo = function(userId, plotInfo, cb) {
 }
 
 module.exports.upgradeGreenHouse = function(userId, cb) {
-    
-    var query = 'update ' + config.greenhouseTable + ' set greenhouselevel=greenhouselevel+1 where discordid=$1'
-    db.none(query, [userId])
+    var lastupgrade = new Date();
+    var query = 'update ' + config.greenhouseTable + ' set greenhouselevel=greenhouselevel+1,lastupgrade=$2 where discordid=$1'
+    db.none(query, [userId, lastupgrade])
     .then(function () {
         cb(null, { status: 'success', message: 'upgraded greenhouse' });
     })
@@ -1821,9 +1835,9 @@ module.exports.upgradeGreenHouse = function(userId, cb) {
 }
 
 module.exports.upgradeStable = function(userId, cb) {
-    
-    var query = 'update ' + config.stablesTable + ' set stablelevel=stablelevel+1 where discordid=$1'
-    db.none(query, [userId])
+    var lastupgrade = new Date();
+    var query = 'update ' + config.stablesTable + ' set stablelevel=stablelevel+1,lastupgrade=$2 where discordid=$1'
+    db.none(query, [userId, lastupgrade])
     .then(function () {
         cb(null, { status: 'success', message: 'upgraded stable' });
     })
@@ -1833,9 +1847,9 @@ module.exports.upgradeStable = function(userId, cb) {
 }
 
 module.exports.upgradeTemple = function(userId, cb) {
-    
-    var query = 'update ' + config.templeTable + ' set templelevel=templelevel+1 where discordid=$1'
-    db.none(query, [userId])
+    var lastupgrade = new Date();
+    var query = 'update ' + config.templeTable + ' set templelevel=templelevel+1,lastupgrade=$2 where discordid=$1'
+    db.none(query, [userId, lastupgrade])
     .then(function () {
         cb(null, { status: 'success', message: 'upgraded temple' });
     })

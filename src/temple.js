@@ -4,6 +4,24 @@ const Discord = require("discord.js");
 
 var upgradeLock = {}
 
+var upgradeLevelTimes = {
+    1: 1,
+    2: 2,
+    3: 4,
+    5: 7,
+    6: 10,
+    7: 15,
+    8: 24,
+    9: 48,
+    10: 70,
+    11: 120,
+    12: 200
+}
+
+module.exports.getUpgradeCooldownHoursByLevel = function(level){
+    return upgradeLevelTimes[1]
+}
+
 module.exports.setupgradeLock = function(discordUserId, set){
     upgradeLock[discordUserId] = set
 }

@@ -5403,7 +5403,6 @@ function armamentsEmbedBuilder(message, userItems, itemsMapById, long, rarity){
 
     embed
     .setAuthor(message.author.username +"'s Armaments")
-    .setDescription( "armament description")
     .setThumbnail(message.author.avatarURL)
     .setColor(0x06e8e8)
     message.channel.send({embed});
@@ -5420,7 +5419,7 @@ module.exports.greenHouseCommand = function(message){
             if (ghRes.data.greenhouselevel > 0){
                 profileDB.getFruitData(discordUserId, function(err, fruitData){
                     if (err){
-                        // console.log(err);
+                        console.log(err);
                         agreeToTerms(message, discordUserId);
                     }
                     else{
@@ -6016,8 +6015,6 @@ function harvestEmbedBuilder(message, fruitsColumnsWithCount){
 
 function harvestPlotsOfLand(greenHouseData, itemsMapById){
     // return an object with all the plants harvested, and the count harvested
-
-    //// TODO: ONLY harvest if times harvested is > 0, if it is -1 the plant is dead
     //// when reaching 10, 20 timesharvested update it to -1
     var fruitsObject = {}
     for (var i in greenHouseData.plots){
@@ -6181,10 +6178,22 @@ module.exports.upgradeCommand = function(message, args){
                 if (profileErr){
                     
                 }else{
+                    // check last stable upgrade
                     if (profileRes.data.stablelevel > 0){
-                        var nextLevel = profileRes.data.stablelevel + 1
-                        var upgradeRequirementsObj = getUpgradeRequirements(buildingName, nextLevel)
-                        upgradeBuilding(message, discordUserId, buildingName, upgradeRequirementsObj, profileRes.data, nextLevel)    
+                        var now = new Date();
+                        var twoHoursAgo = new Date();
+                        var stableLevelUpgradeTime = stable.getUpgradeCooldownHoursByLevel(profileRes.data.stablelevel)
+                        twoHoursAgo = new Date(twoHoursAgo.setHours(twoHoursAgo.getHours() - stableLevelUpgradeTime));    
+                        if ( twoHoursAgo > profileRes.data.laststableupgrade ){
+                            var nextLevel = profileRes.data.stablelevel + 1
+                            var upgradeRequirementsObj = getUpgradeRequirements(buildingName, nextLevel)
+                            upgradeBuilding(message, discordUserId, buildingName, upgradeRequirementsObj, profileRes.data, nextLevel)    
+                        }else{
+                            exports.setCommandLock("upgrade", discordUserId, false)
+                            now = new Date(now.setSeconds(now.getSeconds()));
+                            var numberOfHours = getDateDifference(profileRes.data.laststableupgrade, now, stableLevelUpgradeTime);
+                            message.channel.send(message.author + " You have recently upgraded your Stable! Please wait `" + numberOfHours +"` ");
+                        }
                     }else{
                         message.channel.send("You do not own a Stable")
                     }
@@ -6196,9 +6205,20 @@ module.exports.upgradeCommand = function(message, args){
                     
                 }else{
                     if (profileRes.data.greenhouselevel > 0){
-                        var nextLevel = profileRes.data.greenhouselevel + 1
-                        var upgradeRequirementsObj = getUpgradeRequirements(buildingName, nextLevel)
-                        upgradeBuilding(message, discordUserId, buildingName, upgradeRequirementsObj, profileRes.data, nextLevel)    
+                        var now = new Date();
+                        var twoHoursAgo = new Date();
+                        var greenHouseLevelUpgradeTime = greenhouse.getUpgradeCooldownHoursByLevel(profileRes.data.greenhouselevel)
+                        twoHoursAgo = new Date(twoHoursAgo.setHours(twoHoursAgo.getHours() - greenHouseLevelUpgradeTime));    
+                        if ( twoHoursAgo > profileRes.data.lastgreenhouseupgrade ){
+                            var nextLevel = profileRes.data.greenhouselevel + 1
+                            var upgradeRequirementsObj = getUpgradeRequirements(buildingName, nextLevel)
+                            upgradeBuilding(message, discordUserId, buildingName, upgradeRequirementsObj, profileRes.data, nextLevel)    
+                        }else{
+                            exports.setCommandLock("upgrade", discordUserId, false)
+                            now = new Date(now.setSeconds(now.getSeconds()));
+                            var numberOfHours = getDateDifference(profileRes.data.lastgreenhouseupgrade, now, greenHouseLevelUpgradeTime);
+                            message.channel.send(message.author + " You have recently upgraded your Greenhouse! Please wait `" + numberOfHours +"` ");
+                        }
                     }else{
                         message.channel.send("You do not own a Greenhouse")
                     }
@@ -6210,9 +6230,20 @@ module.exports.upgradeCommand = function(message, args){
                     
                 }else{
                     if (profileRes.data.templelevel > 0){
-                        var nextLevel = profileRes.data.templelevel + 1
-                        var upgradeRequirementsObj = getUpgradeRequirements(buildingName, nextLevel)
-                        upgradeBuilding(message, discordUserId, buildingName, upgradeRequirementsObj, profileRes.data, nextLevel)    
+                        var now = new Date();
+                        var twoHoursAgo = new Date();
+                        var templeLevelUpgradeTime = temple.getUpgradeCooldownHoursByLevel(profileRes.datatemplelevel)
+                        twoHoursAgo = new Date(twoHoursAgo.setHours(twoHoursAgo.getHours() - templeLevelUpgradeTime));    
+                        if ( twoHoursAgo > profileRes.data.lasttempleupgrade ){
+                            var nextLevel = profileRes.data.templelevel + 1
+                            var upgradeRequirementsObj = getUpgradeRequirements(buildingName, nextLevel)
+                            upgradeBuilding(message, discordUserId, buildingName, upgradeRequirementsObj, profileRes.data, nextLevel)
+                        }else{
+                            exports.setCommandLock("upgrade", discordUserId, false)
+                            now = new Date(now.setSeconds(now.getSeconds()));
+                            var numberOfHours = getDateDifference(profileRes.data.datatemplelevel, now, greenHouseLevelUpgradeTime);
+                            message.channel.send(message.author + " You have recently upgraded your Temple! Please wait `" + numberOfHours +"` ");
+                        }
                     }else{
                         message.channel.send("You do not own a Temple")
                     }
