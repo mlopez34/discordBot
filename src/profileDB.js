@@ -172,9 +172,8 @@ module.exports.updateUserTacosPresent = function(userId, tacos, cb) {
     });
 }
 
-module.exports.reduceCommandCooldownByHour = function(userId, command, userProfile, cb) {
+module.exports.reduceCommandCooldownByHour = function(userId, command, userProfile, secondsToReduceByPotion, cb) {
     var commandProperty = undefined;
-    var HOURS_TO_REDUCE_FOR_COMMAND = 1;
     // calculate 1 hour less than current date of the command
     var newDate = undefined;
     if (command == "scavenge"){
@@ -183,7 +182,7 @@ module.exports.reduceCommandCooldownByHour = function(userId, command, userProfi
         if (!currentCommandTime){
             cb(null, { status: 'success', message: 'reduced cooldown' } );
         }else{
-            newDate = new Date(currentCommandTime.setHours(currentCommandTime.getHours() - HOURS_TO_REDUCE_FOR_COMMAND));        
+            newDate = new Date(currentCommandTime.setSeconds(currentCommandTime.getSeconds() - secondsToReduceByPotion));        
         }
     }else if (command == "cook"){
         commandProperty = "lastcooktime"
@@ -191,7 +190,7 @@ module.exports.reduceCommandCooldownByHour = function(userId, command, userProfi
         if (!currentCommandTime){
             cb(null, { status: 'success', message: 'reduced cooldown' } );
         }else{
-            newDate = new Date(currentCommandTime.setHours(currentCommandTime.getHours() - HOURS_TO_REDUCE_FOR_COMMAND));
+            newDate = new Date(currentCommandTime.setSeconds(currentCommandTime.getSeconds() - secondsToReduceByPotion));
         }                
     }else if (command == "RPG"){
         commandProperty = "lastrpgtime"
@@ -199,7 +198,7 @@ module.exports.reduceCommandCooldownByHour = function(userId, command, userProfi
         if (!currentCommandTime){
             cb(null, { status: 'success', message: 'reduced cooldown' } );
         }else{
-            newDate = new Date(currentCommandTime.setHours(currentCommandTime.getHours() - HOURS_TO_REDUCE_FOR_COMMAND));                
+            newDate = new Date(currentCommandTime.setSeconds(currentCommandTime.getSeconds() - secondsToReduceByPotion));                
         }
     }else if (command == "thank"){
         commandProperty = "lastthanktime"
@@ -207,7 +206,7 @@ module.exports.reduceCommandCooldownByHour = function(userId, command, userProfi
         if (!currentCommandTime){
             cb(null, { status: 'success', message: 'reduced cooldown' } );
         }else{
-            newDate = new Date(currentCommandTime.setHours(currentCommandTime.getHours() - HOURS_TO_REDUCE_FOR_COMMAND));                
+            newDate = new Date(currentCommandTime.setSeconds(currentCommandTime.getSeconds() - secondsToReduceByPotion));                
         }
     }else if (command == "sorry"){
         commandProperty = "lastsorrytime"
@@ -215,7 +214,7 @@ module.exports.reduceCommandCooldownByHour = function(userId, command, userProfi
         if (!currentCommandTime){
             cb(null, { status: 'success', message: 'reduced cooldown' } );
         }else{
-            newDate = new Date(currentCommandTime.setHours(currentCommandTime.getHours() - HOURS_TO_REDUCE_FOR_COMMAND));                
+            newDate = new Date(currentCommandTime.setSeconds(currentCommandTime.getSeconds() - secondsToReduceByPotion));                
         }
     }else if (command == "prepare"){
         commandProperty = "lastpreparetime"
@@ -223,7 +222,7 @@ module.exports.reduceCommandCooldownByHour = function(userId, command, userProfi
         if (!currentCommandTime){
             cb(null, { status: 'success', message: 'reduced cooldown' } );
         }else{
-            newDate = new Date(currentCommandTime.setHours(currentCommandTime.getHours() - HOURS_TO_REDUCE_FOR_COMMAND));                
+            newDate = new Date(currentCommandTime.setSeconds(currentCommandTime.getSeconds() - secondsToReduceByPotion));                
         }
     }else if (command == "fetch"){
         commandProperty = "lastfetchtime"
@@ -231,7 +230,7 @@ module.exports.reduceCommandCooldownByHour = function(userId, command, userProfi
         if (!currentCommandTime){
             cb(null, { status: 'success', message: 'reduced cooldown' } );
         }else{
-            newDate = new Date(currentCommandTime.setHours(currentCommandTime.getHours() - HOURS_TO_REDUCE_FOR_COMMAND));                        
+            newDate = new Date(currentCommandTime.setSeconds(currentCommandTime.getSeconds() - secondsToReduceByPotion));                        
         }
     }
     if (newDate){
@@ -507,6 +506,27 @@ module.exports.updateCurrentChallengeKeystone = function(userId, keystoneNum, ch
     cb(null, {
         status: 'success',
         message: 'added keystone + 1'
+        });
+    })
+    .catch(function (err) {
+        // console.log(err);
+        cb(err);
+    });
+}
+
+module.exports.updateUserRpgArea = function(userId, area, updatetraveltime, cb) {
+    var query;
+    if (updatetraveltime){
+        var query = 'update ' + config.userRpgProfileTable + ' set currentarea=$1,lasttraveltime=$3 where discordid=$2'
+    }else{
+        var query = 'update ' + config.userRpgProfileTable + ' set currentarea=$1 where discordid=$2'
+    }
+    var lasttraveltime = new Date()
+    db.none(query, [area, userId, lasttraveltime])
+    .then(function () {
+    cb(null, {
+        status: 'success',
+        message: 'changed location for user'
         });
     })
     .catch(function (err) {

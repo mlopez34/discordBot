@@ -5101,15 +5101,24 @@ module.exports.useCommand = function(message, args){
                             itemsInInventoryCountMap[inventoryResponse.data[item].itemid] = itemsInInventoryCountMap[inventoryResponse.data[item].itemid] + 1;
                         }
                     }
-    
-                    // have the inventory done, now call 
-                    useItem.useBasedOnShortName(message, discordUserId, itemShortName, itemsInInventoryCountMap, userInventory, itemsMapbyShortName, function(err, res){
-                        if (err){
-                            useItem.setItemsLock(discordUserId, false)
-                            console.log(err);
+                    var commandTimes = wearStats.getCommandTimesInSeconds()
+                    var userWearingData = {
+                        userLevel: 1 /// Doesnt matter since all we care about is command CDRs and they are NOT affected by level otherwise we would have to do a call to get userprofile and thats UGH
+                    }
+                    wearStats.getUserWearingStats(message, discordUserId, userWearingData, allItems, function(wearErr, wearRes){
+                        if (wearErr){
+                            console.log(wearErr)
                         }else{
-                            useItem.setItemsLock(discordUserId, false)
-                            console.log(res);
+                            // // console.log(wearRes);    
+                            useItem.useBasedOnShortName(message, discordUserId, itemShortName, itemsInInventoryCountMap, userInventory, itemsMapbyShortName, commandTimes, wearRes, function(err, res){
+                                if (err){
+                                    useItem.setItemsLock(discordUserId, false)
+                                    console.log(err);
+                                }else{
+                                    useItem.setItemsLock(discordUserId, false)
+                                    console.log(res);
+                                }
+                            })
                         }
                     })
                 }
@@ -5752,6 +5761,8 @@ module.exports.bakeCommand = function(message, args){
                     if (error){
                         if (error == "doesn't exist"){
                             message.channel.send("Item doesnt exist")
+                        }else if (error == "not available today"){
+                            message.channel.send("You can't bake that item today")
                         }else if (error == "failed"){
                             message.channel.send("Do not have the ingredients")
                         }
@@ -5764,8 +5775,23 @@ module.exports.bakeCommand = function(message, args){
             }
         })
     }else{
-        message.channel.send("cannot bake that item")
+        todaysRecipesEmbedBuilder(message)
     }
+}
+
+function todaysRecipesEmbedBuilder(message){
+    var today = new Date()
+    var recipesAvailable = baking.getRecipesForToday(today)
+    var recipesAvailableObjects = baking.recipesForTodayObjectBuilder(recipesAvailable)
+    const embed = new Discord.RichEmbed()
+    .setColor(0x87CEFA)
+    .setTitle("Today's available Recipes :cake: ")
+    //.setThumbnail()
+    .setColor(0x87CEFA)
+    for (var r in recipesAvailableObjects){
+        embed.addField(recipesAvailableObjects[r].recipeName, recipesAvailableObjects[r].recipeRequirementsString, false)
+    }
+    message.channel.send({embed});
 }
 
 module.exports.plantCommand = function(message, args){
@@ -9545,4 +9571,27 @@ module.exports.rpgstatsCommand = function(message){
         }
     }
     rpg.showRpgStats(message, itemsMapById, amuletItemsById);
+}
+
+module.exports.mapCommand = function(message, args){
+    // display available zones, and areas available in the current zone
+    // if zone specified display available areas in specified zone
+    if (args && args.length > 1){
+        var zoneToCheck = args[1]
+        rpg.displayMap(message, zoneToCheck)    
+    }else{
+        rpg.displayMap(message)
+    }
+}
+
+module.exports.travelCommand = function(message, args){
+    // change currentarea to specified area
+
+    // set cooldown to 1 hour when traveling
+    if (args && args.length > 1){
+        var placeName = args[1]
+        rpg.travelToNewArea(message, placeName)    
+    }else{
+        message.channel.send("invalid use of travel command")
+    }
 }

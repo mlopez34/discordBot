@@ -1388,6 +1388,165 @@ function getKeystoneIdFromChallenge(challengeNumber){
     }
 }
 
+module.exports.displayMap = function(message, zoneToCheck){
+    var discordUserId = message.author.id
+    profileDB.getUserRpgProfleData(discordUserId, function(err, userData){
+        if (err){
+            console.log(err)
+        }else{
+            if (!zoneToCheck){
+                var usercurrentarea = userData.data.currentarea
+                zoneToCheck = getRpgZone(usercurrentarea)
+            }
+
+            // create an embed that includes the zone name currently and available zones
+            // and areas in current zone
+            var listOfAreasInZone = getAreasInZone(zoneToCheck, userData.data)
+            var zonesAvailableForUserMap = getZonesAvailableForUser(userData.data)
+            var currentZoneName = rpgZones[ getRpgZone( userData.data.currentarea ) ].name
+            mapEmbedBuilder(message, listOfAreasInZone, zonesAvailableForUserMap, currentZoneName)
+        }
+    })
+}
+
+function mapEmbedBuilder(message, listOfAreasInZone, zonesAvailableForUserMap, currentZoneName){
+    var zonesAvailableString = ""
+    var areasInZoneString = ""
+    for (var z in zonesAvailableForUserMap){
+        if (zonesAvailableForUserMap[z].completed){
+            zonesAvailableString = zonesAvailableString + "**" + zonesAvailableForUserMap[z].name + "**\n"
+        }else{
+            zonesAvailableString = zonesAvailableString + zonesAvailableForUserMap[z].name + "\n"
+        }
+    }
+    for (var a in listOfAreasInZone){
+        if (listOfAreasInZone[a].completed){
+            areasInZoneString = areasInZoneString + "**" + listOfAreasInZone[a].name + "**\n"
+        }else{
+            areasInZoneString = areasInZoneString + listOfAreasInZone[a].name + "\n"
+        }
+    }
+
+    const embed = new Discord.RichEmbed()
+    .setAuthor(message.author.username + " Map")
+    .setDescription(":map: travel to different areas via -travel [areaname] OR -travel [zonename]\nYou are currently in " + currentZoneName)
+    .addField("Zones available", zonesAvailableString, true)
+    .addField("Areas in " + currentZoneName, areasInZoneString, true)
+    .setThumbnail(message.author.avatarURL)
+    .setColor(0xbfa5ff)
+    message.channel.send({embed});
+}
+
+function getAreasInZone(zoneid, userData){
+    // get the areas in the zone that are available to the user
+    var areasInZone = []
+    for (var key in rpgZones[zoneid].areas){
+        // check that the user has completed the area, if they have, add the onCompleteAreasUnlocked
+        var area = rpgZones[zoneid].areas[key]
+        if (isAreaCompleted(area, userData[key]) ){
+            areasInZone.push({
+                name: key,
+                completed: true
+            })
+        }else{
+            areasInZone.push({
+                name: key,
+                completed: false
+            })
+        }
+    }
+    return areasInZone
+}
+
+function isAreaCompleted(area, userAreaCompletion){
+    return userAreaCompletion >= area.rpgsToComplete
+}
+
+function getZonesAvailableForUser(userData){
+    var zonesAvailable = {}
+    // get the zones available to the user - go through the zones, compare to completion of zone in user profile
+    var currentZonesCheck = [ "prarie" ]
+    var done = false
+    while(!done){
+        var newZonesToCheck = [] // THESE WILL ALWAYS BE UNIQUE
+        for (var i in currentZonesCheck){
+            var zone = rpgZones[ currentZonesCheck[i] ]
+            if (userData[ currentZonesCheck[i]] ){
+                if (!zonesAvailable[ currentZonesCheck[i] ]){
+                    zonesAvailable[currentZonesCheck[i]] = { 
+                        name: currentZonesCheck[i], 
+                        completed: true 
+                    } 
+                }
+                for (var adjacent in zone.onCompleteZonesUnlocked){
+                    if (!zonesAvailable[zone.onCompleteZonesUnlocked[adjacent] ] ){
+                        newZonesToCheck.push( zone.onCompleteZonesUnlocked[adjacent] )
+                    }
+                }
+            }
+            // did not complete the zone yet
+            if (!zonesAvailable[ currentZonesCheck[i] ]){
+                zonesAvailable[currentZonesCheck[i]] = { 
+                    name: currentZonesCheck[i], 
+                    completed: false 
+                } 
+            }
+        }
+        if(newZonesToCheck.length == 0){
+            done = true
+        }else{
+            currentZonesCheck = newZonesToCheck
+        }
+    }
+
+    return zonesAvailable
+}
+
+module.exports.travelToNewArea = function(message, placeName){
+    var discordUserId = message.author.id
+    profileDB.getUserRpgProfleData(discordUserId, function(err, userData){
+        if (err){
+            console.log(err)
+        }else{
+            // figure out if the user specified an area, or a zone
+            var zonesAvailable = getZonesAvailableForUser(userData.data)
+            if (rpgZones[placeName]){
+                // if a zone, no cooldown and take them to the starting area in that zone
+                // check that the zone is available to the user
+                var startingArea = rpgZones[placeName].startingArea
+                if (zonesAvailable[placeName]){
+                    profileDB.updateUserRpgArea(discordUserId, startingArea, false, function(error, res){
+                        if (error){
+                            console.log(error)
+                        }else{
+                            message.channel.send("You are now in `" + startingArea+ "` !")
+                        }
+                    })
+                }else{
+                    message.channel.send("that place is not on your map")
+                }
+
+            }else{
+                var rpgZoneToTravel = getRpgZone(placeName)
+                if (rpgZones[rpgZoneToTravel]){
+                    var area = placeName
+                    // if an area then give them a cooldown and change their area there
+                    profileDB.updateUserRpgArea(discordUserId, area, true, function(error, res){
+                        if (error){
+                            console.log(error)
+                        }else{
+                            message.channel.send("You are now in `" + area+ "` !")
+                        }
+                    })
+                }else{
+                    message.channel.send("that place is not on your map")
+                }
+            }
+
+        }
+    })
+}
+
 function getDateDifference(beforeDate, now, hoursDifference){
     // get difference between now and beforeDate + hoursDifference 
     
@@ -1793,6 +1952,7 @@ function turnFinishedEmbedBuilder(message, event, turnString, passiveEffectsStri
 
 function eventEndedEmbedBuilder(message, event, partySuccess){
     var allItems = commands.getAllItems()
+    var usersFirstComplete = []
     const embed = new Discord.RichEmbed()
     .setAuthor("Event has ended")
     .setColor(0xF2E93E)
@@ -1806,7 +1966,10 @@ function eventEndedEmbedBuilder(message, event, partySuccess){
             // get members current challenge
             var challengenumber = usersInRPGEvents["rpg-" + memberInParty.id].memberStats.currentchallenge;
             if ( (challengenumber + 1) == event.challenge.challenge ){
-                profileDB.updateCurrentChallenge( memberInParty.id, challengenumber + 1)
+                profileDB.updateCurrentChallenge( memberInParty.id, challengenumber + 1, function(err, res){
+
+                })
+                usersFirstComplete.push(memberInParty.id)
             }
             var keystonenumber = usersInRPGEvents["rpg-" + memberInParty.id].memberStats.currentkeystone;
             if ( (keystonenumber) == event.challenge.keystone ){
@@ -1814,6 +1977,7 @@ function eventEndedEmbedBuilder(message, event, partySuccess){
                 profileDB.updateCurrentChallengeKeystone( memberInParty.id, keystonenumber + 1, challengeId, function(err, res){
                     
                 })
+                usersFirstComplete.push(memberInParty.id)
             }
             
         }
@@ -1872,8 +2036,12 @@ function eventEndedEmbedBuilder(message, event, partySuccess){
             var extraXp = usersInRPGEvents["rpg-" + memberInParty.id].memberStats.extraExperience;
             memberInRpgEvent.extraTacosForUser = extraTacosForUser
             memberInRpgEvent.extraXp = extraXp
+            var firstKill = false;
+            if (usersFirstComplete.indexOf(memberInParty.id) > -1){
+                firstKill = true
+            }
             
-            var rewards =  calculateRewards( event, memberInRpgEvent, allItems, numberOfMembers)
+            var rewards =  calculateRewards( event, memberInRpgEvent, allItems, numberOfMembers, firstKill)
             // add experience and rpgpoints to user
             updateUserRewards(message, memberInParty, rewards);
             if (rewards.extraTacos && rewards.extraTacos > 0 ){
@@ -1919,7 +2087,7 @@ function increaseCompletionForUser(eventUser, rpgareaId, message){
             }
             var zoneUserIsIn = getRpgZone(rpgareaId)
             var zoneComplete = eventUser.userdata[zoneUserIsIn]
-            var areasToComplete = getAreasCompletedForZone(zoneUserIsIn)
+            var areasToComplete = getAreasToCompletForZone(zoneUserIsIn)
             var areascompletedForUser = getAreasCompletedInZoneForUser(eventUser.userdata, zoneUserIsIn)
             // calculate areascompletedForUser 
             if ( true || !zoneComplete && ( areascompletedForUser >= areasToComplete ) ){
@@ -1991,7 +2159,7 @@ function getRpgsToCompleteForArea(areaId){
     return rpgsToCompleteForArea
 }
 
-function getAreasCompletedForZone(rpgZoneId){
+function getAreasToCompletForZone(rpgZoneId){
     var count = 0
     for (var key in rpgZones[rpgZoneId].areas){
         count++
@@ -2115,7 +2283,7 @@ function artifactEmbedBuilder(message, artifactItems, user){
     message.channel.send({embed});
 }
 
-function calculateRewards(event, memberInRpgEvent, allItems, numberOfMembers){
+function calculateRewards(event, memberInRpgEvent, allItems, numberOfMembers, firstKill){
     var rewardsForPlayer =  {
         xp: 1,
         extraTacos: 0,
@@ -2165,17 +2333,15 @@ function calculateRewards(event, memberInRpgEvent, allItems, numberOfMembers){
 
     var itemsObtainedArray = [];
     // calculate xp based on level and difficulty of enemies and items
-    if (event.challenge &&  (event.challenge.challenge == 6 || event.challenge.challenge >= 9)){
-        var rarityRoll = undefined;
-        var numberOfRolls = [0,1,2,3,4]
-        if (event.challenge.challenge == 9){
-            numberOfRolls = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21]
+    if (event.challenge){
+        var rarityRoll = undefined
+        var challengeNum = event.challenge.challenge
+        var keystone = event.challenge.keystone
+        var numberOfRolls = enemiesToEncounter.challenge[challengeNum].lootcount || 3
+        if (firstKill){
+            numberOfRolls = numberOfRolls * 4
         }
-        if (event.challenge.challenge >= 10){
-            numberOfRolls = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21,
-                            22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38]
-        }
-        for (var enemy in numberOfRolls){
+        for (var enemy = 0; enemy < numberOfRolls; enemy++){
             rarityRoll = Math.floor(Math.random() * 2000) + 8000;
             if (rarityRoll){
                 if(rarityRoll > ANCIENT_MIN_ROLL ){
@@ -2201,74 +2367,79 @@ function calculateRewards(event, memberInRpgEvent, allItems, numberOfMembers){
                 }
             }
         }
-    }
-    for (var enemy in event.enemies){
-        var rarityRoll = undefined;
-        var enemyDifficulty =  event.enemies[enemy].difficulty
-        if (enemyDifficulty == "easy"){
-            additionalExperience = additionalExperience + 1
-            additionalRpgPoints = additionalRpgPoints + 1
-            // common items
-            rarityRoll = Math.floor(Math.random() * COMMON_MAX_ROLL) + 1;
-        }
-        else if (enemyDifficulty == "medium"){
-            additionalExperience = additionalExperience + 2
-            additionalRpgPoints = additionalRpgPoints + 2
-            // common ? uncommon
-            rarityRoll = Math.floor(Math.random() * UNCOMMON_MAX_ROLL) + 1;
-        }
-        else if (enemyDifficulty == "hard"){
-            additionalExperience = additionalExperience + 9
-            additionalRpgPoints = additionalRpgPoints + 9
-            // common + uncommon maybe rare
-            rarityRoll = Math.floor(Math.random() * 3975) + 6000;
-        }
-        else if (enemyDifficulty == "boss"){
-            additionalExperience = additionalExperience + 19
-            additionalRpgPoints = additionalRpgPoints + 19
-            // common + uncommon maybe rare maybe ancient
-            rarityRoll = Math.floor(Math.random() * 2000) + 8000;
-        }else if (enemyDifficulty == "special"){
-            additionalExperience = additionalExperience + 19
-            additionalRpgPoints = additionalRpgPoints + 19
-            // common + uncommon maybe rare maybe ancient
-            rarityRoll = Math.floor(Math.random() * 2000) + 8000;
-        }
-        // TODO: add + luck to rarityroll
-        // push the item to items
-        if (rarityRoll){
-            if(rarityRoll > ANCIENT_MIN_ROLL ){
-                var itemRoll = Math.floor(Math.random() * ancientItems.length);
-                console.log(ancientItems[itemRoll]);
-                itemsObtainedArray.push(ancientItems[itemRoll])
-            }
-            else if(rarityRoll > RARE_MIN_ROLL && rarityRoll <= RARE_MAX_ROLL){
-                var itemRoll = Math.floor(Math.random() * rareItems.length);
-                console.log(rareItems[itemRoll]);
-                itemsObtainedArray.push(rareItems[itemRoll]);
-            }
-            else if (rarityRoll > UNCOMMON_MIN_ROLL && rarityRoll <= UNCOMMON_MAX_ROLL){
-                var itemRoll = Math.floor(Math.random() * uncommonItems.length);
-                console.log(uncommonItems[itemRoll]);
-                itemsObtainedArray.push( uncommonItems[itemRoll] );
-            }
-            else {
-                var itemRoll = Math.floor(Math.random() * commonItems.length);
-                console.log(commonItems[itemRoll]);
-                commonItems[itemRoll].itemAmount = COMMON_ITEMS_TO_OBTAIN
-                itemsObtainedArray.push( commonItems[itemRoll] );
-            }
-        }
-    }
-    if (event.challenge){
+
         // get the challenge points
-        var challengeNum = event.challenge.challenge;
         var challengePts = enemiesToEncounter.challenge[challengeNum].points;
+        var challengeXpPts = enemiesToEncounter.challenge[challengeNum].xppoints;
+        if (firstKill){
+            challengePts = challengePts * ( 8 + challengeNum + keystone )
+            challengeXpPts = challengeXpPts * ( 8 + challengeNum + keystone )
+        }
         var challengeDifficulty = enemiesToEncounter.challenge[challengeNum].difficulty ? enemiesToEncounter.challenge[challengeNum].difficulty : 1
         var extraXP =  memberInRpgEvent.extraXp * challengeDifficulty
         rewardsForPlayer.extraTacos = rewardsForPlayer.extraTacos + (memberInRpgEvent.extraTacosForUser * Math.ceil(challengeDifficulty/10))
-        rewardsForPlayer.xp = rewardsForPlayer.xp + challengePts + extraXP;
+        rewardsForPlayer.xp = rewardsForPlayer.xp + challengeXpPts + extraXP;
         rewardsForPlayer.rpgPoints = rewardsForPlayer.rpgPoints + challengePts;
+        
+    }else{
+        for (var enemy in event.enemies){
+            var rarityRoll = undefined;
+            var enemyDifficulty =  event.enemies[enemy].difficulty
+            if (enemyDifficulty == "easy"){
+                additionalExperience = additionalExperience + 1
+                additionalRpgPoints = additionalRpgPoints + 1
+                // common items
+                rarityRoll = Math.floor(Math.random() * COMMON_MAX_ROLL) + 1;
+            }
+            else if (enemyDifficulty == "medium"){
+                additionalExperience = additionalExperience + 2
+                additionalRpgPoints = additionalRpgPoints + 2
+                // common ? uncommon
+                rarityRoll = Math.floor(Math.random() * UNCOMMON_MAX_ROLL) + 1;
+            }
+            else if (enemyDifficulty == "hard"){
+                additionalExperience = additionalExperience + 9
+                additionalRpgPoints = additionalRpgPoints + 9
+                // common + uncommon maybe rare
+                rarityRoll = Math.floor(Math.random() * 3975) + 6000;
+            }
+            else if (enemyDifficulty == "boss"){
+                additionalExperience = additionalExperience + 19
+                additionalRpgPoints = additionalRpgPoints + 19
+                // common + uncommon maybe rare maybe ancient
+                rarityRoll = Math.floor(Math.random() * 2000) + 8000;
+            }else if (enemyDifficulty == "special"){
+                additionalExperience = additionalExperience + 19
+                additionalRpgPoints = additionalRpgPoints + 19
+                // common + uncommon maybe rare maybe ancient
+                rarityRoll = Math.floor(Math.random() * 2000) + 8000;
+            }
+            // TODO: add + luck to rarityroll
+            // push the item to items
+            if (rarityRoll){
+                if(rarityRoll > ANCIENT_MIN_ROLL ){
+                    var itemRoll = Math.floor(Math.random() * ancientItems.length);
+                    console.log(ancientItems[itemRoll]);
+                    itemsObtainedArray.push(ancientItems[itemRoll])
+                }
+                else if(rarityRoll > RARE_MIN_ROLL && rarityRoll <= RARE_MAX_ROLL){
+                    var itemRoll = Math.floor(Math.random() * rareItems.length);
+                    console.log(rareItems[itemRoll]);
+                    itemsObtainedArray.push(rareItems[itemRoll]);
+                }
+                else if (rarityRoll > UNCOMMON_MIN_ROLL && rarityRoll <= UNCOMMON_MAX_ROLL){
+                    var itemRoll = Math.floor(Math.random() * uncommonItems.length);
+                    console.log(uncommonItems[itemRoll]);
+                    itemsObtainedArray.push( uncommonItems[itemRoll] );
+                }
+                else {
+                    var itemRoll = Math.floor(Math.random() * commonItems.length);
+                    console.log(commonItems[itemRoll]);
+                    commonItems[itemRoll].itemAmount = COMMON_ITEMS_TO_OBTAIN
+                    itemsObtainedArray.push( commonItems[itemRoll] );
+                }
+            }
+        }
     }
     if (event.special && event.special.xp){
         // get the special points, they should be in event.special.

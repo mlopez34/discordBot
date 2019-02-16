@@ -430,6 +430,12 @@ client.on('message', function(message){
                     // enter an upcoming race
                     message.channel.send(":tractor:")
                 }
+                else if (commandIs("map", message)){
+                    commands.mapCommand(message, args)
+                }
+                else if (commandIs("travel", message)){
+                    commands.travelCommand(message, args)
+                }
                 else if (commandIs("rpgstart", message)){
                     if (message.channel.type == "text" && (RPG_CHANNELS.indexOf(message.channel.name) != -1) && !message.author.bot){
                         commands.rpgBattleCommand(message);
@@ -1018,8 +1024,13 @@ client.on('message', function(message){
                     commands.craftCommand(message, args)
                 }
                 else if (commandIs("buyhacksaw", message)){
-                    // craft a specific item via id
                     commands.buyHacksawCommand(message, args)
+                }
+                else if (commandIs("map", message)){
+                    commands.mapCommand(message, args)
+                }
+                else if (commandIs("travel", message)){
+                    commands.travelCommand(message, args)
                 }
                 else if (commandIs("rpgstart", message)){
                     if (message.channel.type == "text" && !message.author.bot){

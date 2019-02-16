@@ -8,6 +8,17 @@ var FETCH_BASE_SECONDS = 10800;
 var COOK_BASE_SECONDS = 86400;
 var PREPARE_BASE_SECONDS = 172800;
 
+module.exports.getCommandTimesInSeconds = function() {
+    return {
+        thank: THANK_BASE_SECONDS,
+        sorry: SORRY_BASE_SECONDS,
+        scavenge: SCAVENGE_BASE_SECONDS,
+        fetch: FETCH_BASE_SECONDS,
+        cook: COOK_BASE_SECONDS,
+        prepare: PREPARE_BASE_SECONDS
+    }
+}
+
 module.exports.statsObjectBuilder = function(message, slot1Data, slot2Data, slot3Data, userData, slot1active, slot2active, slot3active, userAmuletData){
     // calculate the stats that the user has accumulated with all the items
     // thank, sorry, cook, prepare

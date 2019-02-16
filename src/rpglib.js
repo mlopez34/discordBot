@@ -2944,6 +2944,7 @@ module.exports = {
     rpgZones: {
         prarie: {
             zoneString : "Prarie String 1",
+            startingArea: "meadows",
             name: "Prarie",
             areas: {
                 tallgrass: {
@@ -2997,6 +2998,10 @@ module.exports = {
                         ]
                     },
                     rpgsToComplete: 8,
+                    onCompleteAreasUnlocked: [
+                        "meadows",
+                        "test2"
+                    ],
                     shopItemsAvailable: [
 
                     ],
@@ -3008,15 +3013,46 @@ module.exports = {
                     ],
                     boss: "bossId"
                 }
-            }
+            },
+            onCompleteZonesUnlocked: [
+                "woods"
+            ]
         },
         woods: {
             zoneString : ""
         },
         undergroundtunnels: {
             zoneString : ""
-        }
+        },
+
     },
+    /*
+        Zones:
+        Gabriels Horn, 
+        Pike Creek, 
+        Neo Seul,
+        Chicago, 
+        New York, 
+        Sahara,
+        Emerald Eve, 
+        Panama, - Sona, Panama City, 
+        Matamoros - 
+        Grand Canyon, 
+        Crystal Peak, 
+        Tadrart Acacus
+        Costa de marfil, 
+        Patagonia, 
+        Yosemite
+        Tokyo, 
+        Johanesburg - district 10, 
+        London - essex, bridge, 
+        mountains Everest - walrus cove, crystaline cave, igloo town, 
+        Aconcagua, 
+        Elbert
+        moon Mons Argaeus, 
+        Mare Crisium, 
+        Vallis Snellius  
+    */
 
     areaToZoneMap: {
         tallgrass: "prarie",
@@ -5809,6 +5845,8 @@ module.exports = {
                     },
                 ],
                 points: 23,
+                xppoints: 23,
+                lootcount: 5,
                 difficulty: 1
             },
             2: {
@@ -5936,6 +5974,8 @@ module.exports = {
                     }
                 ],
                 points: 49,
+                xppoints: 49,
+                lootcount: 5,
                 difficulty: 2
             },
             3: {
@@ -6045,6 +6085,8 @@ module.exports = {
                     }
                 ],
                 points: 93,
+                xppoints: 93,
+                lootcount: 6,
                 difficulty: 3
             },
             4: {
@@ -6177,6 +6219,8 @@ module.exports = {
                     },
                 ],
                 points: 139,
+                xppoints: 139,
+                lootcount: 7,
                 difficulty: 5,
             },
             5: {
@@ -6337,8 +6381,10 @@ module.exports = {
                         element: "normal"
                     },
                 ],
-                points: 681,
-                difficulty: 11
+                points: 281,
+                xppoints: 241,
+                lootcount: 9,
+                difficulty: 8
             },
             6: {
                 // 4 energy crystals
@@ -6413,15 +6459,19 @@ module.exports = {
                         element: "normal"
                     }
                 ],
-                points: 929,
-                difficulty: 25
+                points: 529,
+                xppoints: 370,
+                lootcount: 10,
+                difficulty: 15
             },
             7: {
                 challengeId: "gatekeeper",
                 timed: true,
                 timedPerTurn: 180000,
-                points: 1900,
-                difficulty: 46,
+                points: 1000,
+                xppoints: 480,
+                lootcount: 10,
+                difficulty: 19,
                 enemies: [
                     {
                         name: "The Gatekeeper",
@@ -6537,8 +6587,10 @@ module.exports = {
                 challengeId: "archvampire",
                 timed: true,
                 timedPerTurn: 180000,
-                points: 4600,
-                difficulty: 79,
+                points: 1800,
+                xppoints: 710,
+                difficulty: 29,
+                lootcount: 10,
                 enemies: [
                     {
                         name: "Archvampire",
@@ -6686,8 +6738,10 @@ module.exports = {
                 challengeId: "corruptedovermind",
                 timed: true,
                 timedPerTurn: 180000,
-                points: 22901,
-                difficulty: 110,
+                points: 2901,
+                xppoints: 1500,
+                difficulty: 40,
+                lootcount: 11,
                 enemies: [
                     {
                         name: "Corrupted Overmind",
@@ -6854,8 +6908,10 @@ module.exports = {
                 challengeId: "anomaly",
                 timed: true,
                 timedPerTurn: 180000,
-                points: 75901,
-                difficulty: 141,
+                points: 7901,
+                xppoints: 2140,
+                lootcount: 12,
+                difficulty: 55,
                 enemies: [
                     {
                         name: "Asteroid Golem",
@@ -6959,8 +7015,10 @@ module.exports = {
                 challengeId: "aramis",
                 timed: true,
                 timedPerTurn: 360000,
-                points: 317901,
-                difficulty: 186,
+                points: 10901,
+                xppoints: 3573,
+                lootcount: 13,
+                difficulty: 70,
                 enemies: [
                     {
                         name: "D'Artagnan",
@@ -7036,8 +7094,9 @@ module.exports = {
                 challengeId: "emperor",
                 timed: true,
                 timedPerTurn: 360000,
-                points: 317901,
-                difficulty: 186,
+                points: 27901,
+                xppoints: 5120,
+                difficulty: 85,
                 enemies: [
                     {
                         name: "Summoner",
