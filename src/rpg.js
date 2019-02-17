@@ -1527,22 +1527,31 @@ module.exports.travelToNewArea = function(message, placeName){
                 }
 
             }else{
-                var rpgZoneToTravel = getRpgZone(placeName)
-                if (rpgZones[rpgZoneToTravel]){
-                    var area = placeName
-                    // if an area then give them a cooldown and change their area there
-                    profileDB.updateUserRpgArea(discordUserId, area, true, function(error, res){
-                        if (error){
-                            console.log(error)
-                        }else{
-                            message.channel.send("You are now in `" + area+ "` !")
-                        }
-                    })
+                var now = new Date();
+                var oneHourAgo = new Date();
+                ///////// CALCULATE THE MINUTES REDUCED HERE 
+                oneHourAgo = new Date(oneHourAgo.setHours(oneHourAgo.getHours() - 1));
+
+                if (!userData.data.lasttraveltime || oneHourAgo > userData.data.lasttraveltime){
+                    var rpgZoneToTravel = getRpgZone(placeName)
+                    if (rpgZones[rpgZoneToTravel]){
+                        var area = placeName
+                        // if an area then give them a cooldown and change their area there
+                        profileDB.updateUserRpgArea(discordUserId, area, true, function(error, res){
+                            if (error){
+                                console.log(error)
+                            }else{
+                                message.channel.send("You are now in `" + area+ "` !")
+                            }
+                        })
+                    }else{
+                        message.channel.send("that place is not on your map")
+                    }
                 }else{
-                    message.channel.send("that place is not on your map")
+                    var numberOfHours = getDateDifference(userData.data.lasttraveltime, now, 1);
+                    message.channel.send(message.author + " You just recently traveled! Please wait `" + numberOfHours +"` ");
                 }
             }
-
         }
     })
 }

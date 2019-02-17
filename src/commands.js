@@ -52,7 +52,7 @@ var THANK_COOLDOWN_HOURS = 0;
 var SORRY_COOLDOWN_HOURS = 6;
 var COOK_COOLDOWN_HOURS = 24;
 var PREPARE_COOLDOWN_HOURS = 48;
-var HARVEST_COOLDOWN_HOURS = 0;
+var HARVEST_COOLDOWN_HOURS = 4;
 var SCAVENGE_COOLDOWN_HOURS = 1;
 var RAFFLE_ENTRY_COST = 50;
 var RAFFLE_USER_SIZE = 7
@@ -607,7 +607,6 @@ module.exports.thankCommand = function(message){
             }
         });
     }else if (!commandLock["thank"][discordUserId] && NeedsToAgree[mentionedId] && NeedsToAgree[mentionedId].hasNotAgreed){
-        //message.channel.send(message.author + " You must mention a user or a user that isn't you whom you want to thank!");
         message.channel.send("the user has not yet agreed to the terms!")
     }
 }
@@ -2644,7 +2643,10 @@ function raresEmbedBuilder(message, itemsMap, allItems, long, rarity){
         if (itemsMap.hasOwnProperty(key)) {
             //
             if ( allItems[key] && 
-                ( (allItems[key].itemraritycategory == "rare" && rarity == "rare")
+                ( (allItems[key].itemraritycategory == "rare" && rarity == "rare"
+                    && !allItems[key].isseed)
+                || (allItems[key].itemraritycategory == "rare" && rarity == "seeds"
+                    && allItems[key].isseed)
                 || (allItems[key].itemraritycategory == "rare+" && rarity == "rare")
                 || (allItems[key].itemraritycategory == "rare++" && rarity == "rare")
                 || (allItems[key].itemraritycategory == "rare+++" && rarity == "rare")
@@ -2957,7 +2959,7 @@ function inventoryEmbedBuilder(message, itemsMap, allItems){
     embed
     .addField("Item Name  |  Count  |  Slot", inventoryString, true)
     .setAuthor(message.author.username +"'s Inventory ")
-    .setDescription( ":left_luggage: \n-rares | -rares long to view your rare items\n-ancients | -ancients long to view your ancient items\n-artifacts | -artifacts long to view your artifacts\n-amulets to view your amulets " )
+    .setDescription( ":left_luggage: \n-rares | -rares long to view your rare items\n-seeds | seeds long to view your seeds\n-ancients | -ancients long to view your ancient items\n-artifacts | -artifacts long to view your artifacts\n-amulets to view your amulets " )
     .setThumbnail(message.author.avatarURL)
     .setColor(0x06e8e8)
     message.channel.send({embed});
@@ -3092,7 +3094,6 @@ module.exports.scavangeCommand = function (message){
                                     var rareItems = [];
                                     var ancientItems = [];
                                     var artifactItems = [];
-                                    var mythItems = [];
                                     // TODO: add check for rarity chance % to be > 0 
                                     for (var item in allItems){
                                         if (allItems[item].itemraritycategory == "common"){
@@ -3101,17 +3102,17 @@ module.exports.scavangeCommand = function (message){
                                         else if(allItems[item].itemraritycategory == "uncommon"){
                                             uncommonItems.push(allItems[item]);
                                         }
-                                        else if(allItems[item].itemraritycategory == "rare"){
+                                        else if(allItems[item].itemraritycategory == "rare"
+                                            && allItems[item].fromscavange ){
                                             rareItems.push(allItems[item]);
                                         }
-                                        else if(allItems[item].itemraritycategory == "ancient"){
+                                        else if(allItems[item].itemraritycategory == "ancient"
+                                            && allItems[item].fromscavange ){
                                             ancientItems.push(allItems[item]);
                                         }
-                                        else if(allItems[item].itemraritycategory == "artifact"){
+                                        else if(allItems[item].itemraritycategory == "artifact"
+                                            && allItems[item].fromscavange){
                                             artifactItems.push(allItems[item]);
-                                        }
-                                        else if(allItems[item].itemraritycategory == "myth"){
-                                            mythItems.push(allItems[item]);
                                         }
                                     }
                                     // roll to randomly get only 5 amulets in the pool of amulets
@@ -5470,11 +5471,11 @@ function greenHouseEmbedBuilder(message, greenHouseData, itemsMapById){
     .setThumbnail(message.author.avatarURL)
     .setDescription('Greenhouse Level: ' + greenHouseData.greenhouseLevel)
     .setColor(0x87CEFA)
-    .addField('Plots', greenHousePlotVisual, false)
     //.addField('harvestTimeRemaining', harvestTimeRemaining, true)
     .addField('Greenhouse Info', greenHouseData.currentlevelinfo, false)
     .addField('Next Level Info', greenHouseData.nextlevelinfo, false)
     .addField('Crops', greenHouseData.fruitsString, false)
+    .addField('Plots', greenHousePlotVisual, false)
     .addField('Next Level Requirements', greenHouseRequirementString, false)
     message.channel.send({embed});
 }
@@ -5486,7 +5487,7 @@ function plotsVisualBuilder(greenHouseData, itemsMapById){
     var plotCount = 1
     for (var i in greenHouseData.plots){
         // plots[i] has an emoji in items table
-        if (greenHouseData.timesharvested[i] > 0){
+        if (greenHouseData.timesharvested[i] >= 0){
             var plotId = greenHouseData.plots[i]
             var plotEmoji = itemsMapById[plotId] ? itemsMapById[plotId].emoji : null
             if (!plotEmoji){
@@ -5958,9 +5959,11 @@ module.exports.harvestCommand = function(message, args){
 
                         if ( threeDaysAgo > greenHouseData.lastharvest ){
                             var fruitsHarvested = harvestPlotsOfLand(greenHouseData, itemsMapById)
+                            var fruitsHarvestedCount = 0
                             // harvest your plots of land
                             var fruitsColumnsWithCount = {}
                             for (var f in fruitsHarvested){
+                                fruitsHarvestedCount++
                                 if ( itemHarvested[f] ){
                                     var actualFruitColumnId = itemHarvested[f]
                                     fruitsColumnsWithCount[actualFruitColumnId] = fruitsHarvested[f]
@@ -5982,7 +5985,7 @@ module.exports.harvestCommand = function(message, args){
                                 }
                             }
                             // go through all the plants in your garden, harvest them, and then add them to your fruits profile
-                            if (fruitsHarvested.length > 0){
+                            if (fruitsHarvestedCount > 0){
                                 profileDB.bulkupdateUserFruits(discordUserId, fruitsColumnsWithCount, true, function(err, bulkRes){
                                     if (err){
                                         console.log(err)
@@ -6044,7 +6047,7 @@ function harvestPlotsOfLand(greenHouseData, itemsMapById){
     //// when reaching 10, 20 timesharvested update it to -1
     var fruitsObject = {}
     for (var i in greenHouseData.plots){
-        if (greenHouseData.harvestCounts[i] > 0){
+        if (greenHouseData.harvestCounts[i] >= 0){
             // plots[i] has an emoji in items table
             var plotId = greenHouseData.plots[i]
             // get the shortname of that item
@@ -9586,7 +9589,6 @@ module.exports.mapCommand = function(message, args){
 
 module.exports.travelCommand = function(message, args){
     // change currentarea to specified area
-
     // set cooldown to 1 hour when traveling
     if (args && args.length > 1){
         var placeName = args[1]

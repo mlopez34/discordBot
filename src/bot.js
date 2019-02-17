@@ -268,6 +268,9 @@ client.on('message', function(message){
                 else if (commandIs("rares", message)){
                     commands.raresCommand(message, args, "rare");
                 }
+                else if (commandIs("seeds", message)){
+                    commands.raresCommand(message, args, "seeds");
+                }
                 else if (commandIs("ancients", message)){
                     commands.raresCommand(message, args, "ancient");
                 }
@@ -801,6 +804,11 @@ client.on('message', function(message){
                 }
                 else if (commandIs("rares", message)){
                     commands.raresCommand(message, args, "rare");
+                    data.command = "rares"
+                    profileDB.createUserActivity(data)
+                }
+                else if (commandIs("seeds", message)){
+                    commands.raresCommand(message, args, "seeds");
                     data.command = "rares"
                     profileDB.createUserActivity(data)
                 }
