@@ -1430,6 +1430,15 @@ module.exports.profileCommand = function(message){
                 if (profileResponse.data.flasks){
                     profileData.userItems = profileData.userItems + "Flasks :alembic: " + profileResponse.data.flasks + "\n"
                 }
+                if (profileResponse.data.hacksaw){
+                    profileData.userItems = profileData.userItems + "Hacksaw :scissors:\n"
+                }
+                if (profileResponse.data.holycandle){
+                    profileData.userItems = profileData.userItems + "Holy Candle :candle:\n"
+                }
+                if (profileResponse.data.laboratoryaccesscard){
+                    profileData.userItems = profileData.userItems + "Laboratory Access Card :flower_playing_cards:\n"
+                }
                 if (profileResponse.data.petname){
                     if (profileResponse.data.pet && PETS_AVAILABLE[profileResponse.data.pet]){
                         profileData.petname = profileResponse.data.petname
@@ -1509,6 +1518,15 @@ module.exports.profileCommand = function(message){
                 }
                 if (profileResponse.data.flasks){
                     profileData.userItems = profileData.userItems + "Flasks :alembic: " + profileResponse.data.flasks + "\n"
+                }
+                if (profileResponse.data.hacksaw){
+                    profileData.userItems = profileData.userItems + "Hacksaw :scissors:\n"
+                }
+                if (profileResponse.data.holycandle){
+                    profileData.userItems = profileData.userItems + "Holy Candle :candle:\n"
+                }
+                if (profileResponse.data.laboratoryaccesscard){
+                    profileData.userItems = profileData.userItems + "Laboratory Access Card :flower_playing_cards:\n"
                 }
                 if (profileResponse.data.petname){
                     if (profileResponse.data.pet && PETS_AVAILABLE[profileResponse.data.pet]){
@@ -1733,14 +1751,14 @@ module.exports.buyPickaxeCommand = function(message){
 
 module.exports.buyStableCommand = function(message){
     var discordUserId = message.author.id
-
+    var building = "stable"
     profileDB.getUserProfileData( discordUserId, function(err, stableResponse) {
         if(err){
             agreeToTerms(message, discordUserId);
             message.channel.send(message.author + " You can't afford a Stable!");
         }
         else{
-            if (stableResponse.data.stable == false){
+            if (!stableResponse.data.stable){
                 if ( adjustedTacosForUser(discordUserId, stableResponse.data.tacos) >= STABLE_COST){
                     var tacosSpent = STABLE_COST * -1;
                     profileDB.purchaseBuilding(discordUserId, tacosSpent, building, function(err, data){
@@ -1752,19 +1770,23 @@ module.exports.buyStableCommand = function(message){
                         }
                     })
                 }
+            }else{
+                message.channel.send("You already own the stable!")
             }
         }
     })
 }
 
 module.exports.buyGreenHouseCommand = function(message){
+    var discordUserId = message.author.id
+    var building = "greenhouse"
     profileDB.getUserProfileData( discordUserId, function(err, greenhouseResponse) {
         if(err){
             agreeToTerms(message, discordUserId);
             message.channel.send(message.author + " You can't afford a Greenhouse!");
         }
         else{
-            if (greenhouseResponse.data.greenhouse == false){
+            if (!greenhouseResponse.data.greenhouse){
                 if ( adjustedTacosForUser(discordUserId, greenhouseResponse.data.tacos) >= GREENHOUSE_COST){
                     var tacosSpent = GREENHOUSE_COST * -1;
                     profileDB.purchaseBuilding(discordUserId, tacosSpent, building, function(err, data){
@@ -1776,12 +1798,16 @@ module.exports.buyGreenHouseCommand = function(message){
                         }
                     })
                 }
+            }else{
+                message.channel.send("You already own the Greenhouse!")
             }
         }
     })
 }
 
 module.exports.buyTempleCommand = function(message){
+    var discordUserId = message.author.id
+    var building = "temple"
     profileDB.getUserProfileData( discordUserId, function(err, templeResponse) {
         if(err){
             // user doesnt exist tell the user they should get some tacos
@@ -1789,7 +1815,7 @@ module.exports.buyTempleCommand = function(message){
             message.channel.send(message.author + " You can't afford a Stable!");
         }
         else{
-            if (templeResponse.data.temple == false){
+            if (!templeResponse.data.temple){
                 if ( adjustedTacosForUser(discordUserId, templeResponse.data.tacos) >= TEMPLE_COST){
                     var tacosSpent = TEMPLE_COST * -1;
                     profileDB.purchaseBuilding(discordUserId, tacosSpent, building, function(err, data){
@@ -1801,6 +1827,8 @@ module.exports.buyTempleCommand = function(message){
                         }
                     })
                 }
+            }else{
+                message.channel.send("You already own the Temple!")
             }
         }
     })
@@ -1904,7 +1932,7 @@ function shopBuilder(message, shopData, long){
             templecost = TEMPLE_COST + " :taco:";
             embed.addField("Temple", templecost, true)
         }
-        if (shopData.temple){
+        if (shopData.temple && !shopData.hacksaw){
             hacksawCost = HACKSAW_COST + " :taco:";
             embed.addField("Hacksaw", hacksawCost, true)
         }
@@ -1998,7 +2026,7 @@ function shopBuilder(message, shopData, long){
         if (!shopData.temple){
             embed.addField('Temple :house_with_garden:', greenHouseDescription, true)
         }
-        if (shopData.temple){
+        if (shopData.temple && !shopData.hacksaw){
             embed.addField('Hacksaw :scissors:', greenHouseDescription, true)
         }
         if (!shopData.stable){
@@ -2054,6 +2082,10 @@ module.exports.shopCommand = function(message, args){
             if (shopResponse.data.tacostands && shopResponse.data.tacostands > -1){
                 userTacoStands = shopResponse.data.tacostands;
             }
+            shopData.temple = shopResponse.data.temple
+            shopData.greenhouse = shopResponse.data.greenhouse
+            shopData.stable = shopResponse.data.stable
+            shopData.hacksaw = shopResponse.data.hacksaw
             shopData.repstatus = shopResponse.data.repstatus
             shopData.userTacoCost = userTacoStands;
             shopBuilder(message, shopData, includeDescriptions);
@@ -4822,7 +4854,7 @@ module.exports.useCommand = function(message, args){
                     }
                 }
                 for (var index in allItems){
-                    if (allItems[index].itemraritycategory == "rare" && allItems[index].emoji != ":seedling:"){
+                    if (allItems[index].itemraritycategory == "rare" && !allItems[index].isseed){
                         // add to list of rares
                         listOfRares.push(allItems[index]);
                     }
@@ -5426,7 +5458,7 @@ module.exports.greenHouseCommand = function(message){
         if (ghErr){
             console.log(ghErr)
         }else{
-            if (ghRes.data.greenhouselevel > 0){
+            if (ghRes.data.greenhouselevel > 0 && ghRes.data.greenhouse){
                 profileDB.getFruitData(discordUserId, function(err, fruitData){
                     if (err){
                         console.log(err);
@@ -5517,7 +5549,7 @@ module.exports.stableCommand = function(message){
         if (stErr){
             console.log(stErr)
         }else{
-            if (stRes.data.stablelevel > 0){
+            if (stRes.data.stablelevel > 0 && stRes.data.stable){
                 var stableData = {
                     name: message.author.username,
                     stableLevel : stRes.data.stablelevel,
@@ -5614,7 +5646,7 @@ module.exports.templeCommand = function(message){
                     agreeToTerms(message, discordUserId);
                 }
                 else{
-                    if (templeRes.data.templelevel > 0){
+                    if (templeRes.data.templelevel > 0 && templeRes.data.temple){
                         var itemsInInventoryCountMap = {};
                         for (var item in inventoryResponse.data){
                             var ItemInQuestion = inventoryResponse.data[item];
@@ -5674,8 +5706,10 @@ function templeEmbedBuilder(message, templeData){
     .setThumbnail(message.author.avatarURL)
     .setDescription('Temple Level: ' + templeData.templeLevel)
     .setColor(0x87CEFA)
-    .addField('Recipe', templeVisual, false)
-    .addField('Temple Info', templeData.currentlevelinfo, false)
+    if (templeVisual.length > 0){
+        embed.addField('Recipes', templeVisual, false)
+    }
+    embed.addField('Temple Info', templeData.currentlevelinfo, false)
     .addField('Next Level Info', templeData.nextlevelinfo, false)
     .addField('Next Level Requirements', upgradeRequirementString, false)
     .addField('Gems :gem:', gemString, false)
@@ -6218,7 +6252,6 @@ module.exports.upgradeCommand = function(message, args){
                             var upgradeRequirementsObj = getUpgradeRequirements(buildingName, nextLevel)
                             upgradeBuilding(message, discordUserId, buildingName, upgradeRequirementsObj, profileRes.data, nextLevel)    
                         }else{
-                            exports.setCommandLock("upgrade", discordUserId, false)
                             now = new Date(now.setSeconds(now.getSeconds()));
                             var numberOfHours = getDateDifference(profileRes.data.laststableupgrade, now, stableLevelUpgradeTime);
                             message.channel.send(message.author + " You have recently upgraded your Stable! Please wait `" + numberOfHours +"` ");
@@ -6243,7 +6276,6 @@ module.exports.upgradeCommand = function(message, args){
                             var upgradeRequirementsObj = getUpgradeRequirements(buildingName, nextLevel)
                             upgradeBuilding(message, discordUserId, buildingName, upgradeRequirementsObj, profileRes.data, nextLevel)    
                         }else{
-                            exports.setCommandLock("upgrade", discordUserId, false)
                             now = new Date(now.setSeconds(now.getSeconds()));
                             var numberOfHours = getDateDifference(profileRes.data.lastgreenhouseupgrade, now, greenHouseLevelUpgradeTime);
                             message.channel.send(message.author + " You have recently upgraded your Greenhouse! Please wait `" + numberOfHours +"` ");
@@ -6268,9 +6300,8 @@ module.exports.upgradeCommand = function(message, args){
                             var upgradeRequirementsObj = getUpgradeRequirements(buildingName, nextLevel)
                             upgradeBuilding(message, discordUserId, buildingName, upgradeRequirementsObj, profileRes.data, nextLevel)
                         }else{
-                            exports.setCommandLock("upgrade", discordUserId, false)
                             now = new Date(now.setSeconds(now.getSeconds()));
-                            var numberOfHours = getDateDifference(profileRes.data.datatemplelevel, now, greenHouseLevelUpgradeTime);
+                            var numberOfHours = getDateDifference(profileRes.data.lasttempleupgrade, now, templeLevelUpgradeTime);
                             message.channel.send(message.author + " You have recently upgraded your Temple! Please wait `" + numberOfHours +"` ");
                         }
                     }else{

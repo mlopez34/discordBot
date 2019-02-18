@@ -81,7 +81,7 @@ module.exports.upgradeStable = function(message, params){
                                 if (err){
                                     console.log(err)
                                 }else{
-                                    message.channel.send("upgraded stable")
+                                    message.channel.send(message.author + " Has upgraded their Stable to level `" + params.nextLevel + "` :sparkler: :hammer: ")
                                 }
                             })
                         }
@@ -234,7 +234,11 @@ module.exports.initializeUpgradeRequirements = function( upgradeReqs, callback){
 }
 
 module.exports.getLevelInfo = function(level){
-    return upgradeRequirements[level].levelinfo
+    if (upgradeRequirements[level]){
+        return upgradeRequirements[level].levelinfo
+    }else{
+        return "-"
+    }
 }
 
 const upgradeRequirements = {

@@ -78,11 +78,11 @@ module.exports.upgradeGreenHouse = function(message, params){
                             console.log(error)
                         }else{
                             // SET building level higher
-                            profileDB.upgradeTemple(discordUserId, function(err, res){
+                            profileDB.upgradeGreenHouse(discordUserId, function(err, res){
                                 if (err){
                                     console.log(err)
                                 }else{
-                                    message.channel.send("upgraded temple")
+                                    message.channel.send(message.author + " Has upgraded their Greenhouse to level `" + params.nextLevel + "` :sparkler: :hammer: ")
                                 }
                             })
                         }
@@ -113,7 +113,7 @@ function useItems(params, cb){
     })
 }
 
-function removeFruits(params, cb){
+function removeFruits(discordUserId, params, cb){
     // TODO: get object of fruits to remove
     if (params.upgradeRequirements.fruits){
         profileDB.bulkupdateUserFruits(discordUserId, params.upgradeRequirements.fruits, false, function(err, res){
@@ -198,7 +198,11 @@ module.exports.initializeUpgradeRequirements = function( upgradeReqs, callback){
 }
 
 module.exports.getLevelInfo = function(level){
-    return upgradeRequirements[level].levelinfo
+    if (upgradeRequirements[level]){
+        return upgradeRequirements[level].levelinfo
+    }else{
+        return "-"
+    }
 }
 
 // TODO: create emoji map for crops

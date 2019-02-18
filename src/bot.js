@@ -380,7 +380,22 @@ client.on('message', function(message){
                     commands.createTableCommand(message, mainChannel);
                 }
                 else if (commandIs("greenhouse", message)){
-                    //commands.greenHouseCommand(message)
+                    commands.greenHouseCommand(message)
+                }
+                else if (commandIs("buygreenhouse", message)){
+                    commands.buyGreenHouseCommand(message)
+                }
+                else if (commandIs("stable", message)){
+                    commands.stableCommand(message)
+                }
+                else if (commandIs("buystable", message)){
+                    commands.buyStableCommand(message)
+                }
+                else if (commandIs("temple", message)){
+                    commands.templeCommand(message)
+                }
+                else if (commandIs("buytemple", message)){
+                    commands.buyTempleCommand(message)
                 }
                 else if (commandIs("markethelp", message)){
                     commands.marketHelpCommand(message)
@@ -977,11 +992,20 @@ client.on('message', function(message){
                 else if (commandIs("greenhouse", message)){
                     commands.greenHouseCommand(message)
                 }
+                else if (commandIs("buygreenhouse", message)){
+                    commands.buyGreenHouseCommand(message)
+                }
                 else if (commandIs("stable", message)){
                     commands.stableCommand(message)
                 }
+                else if (commandIs("buystable", message)){
+                    commands.buyStableCommand(message)
+                }
                 else if (commandIs("temple", message)){
                     commands.templeCommand(message)
+                }
+                else if (commandIs("buytemple", message)){
+                    commands.buyTempleCommand(message)
                 }
                 else if (commandIs("markethelp", message)){
                     commands.marketHelpCommand(message)

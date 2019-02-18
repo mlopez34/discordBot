@@ -42,21 +42,21 @@ module.exports.createUserProfile = function(data, cb) {
             // create stable, greenhouse, temple 
             var s = {
                 discordId : data.discordId,
-                stablelevel: 0
+                stablelevel: 1
             }
             exports.createUserStableInfo(s, function(e, r){
                 var g = {
                     discordId : data.discordId,
-                    greenhouselevel: 0,
+                    greenhouselevel: 1,
                     timesharvested: [ 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                    plotsofland: [ null, null, null, null, null, null, null, null, null ],
+                    plotsofland: 9,
                     plotsoflanditemid: [null, null, null, null, null, null, null, null, null ],
                     plotsoflandplantid: [null, null, null, null, null, null, null, null, null]
                 }
                 exports.createUserGreenHouseInfo(g, function(e, r){
                     var t = {
                         discordId : data.discordId,
-                        templelevel: 0
+                        templelevel: 1
                     }
                     exports.createUserTempleInfo(t, function(e, r){
                         var r = {
@@ -1844,7 +1844,7 @@ module.exports.updatePlotInfo = function(userId, plotInfo, cb) {
 
 module.exports.upgradeGreenHouse = function(userId, cb) {
     var lastupgrade = new Date();
-    var query = 'update ' + config.greenhouseTable + ' set greenhouselevel=greenhouselevel+1,lastupgrade=$2 where discordid=$1'
+    var query = 'update ' + config.greenhouseTable + ' set greenhouselevel=greenhouselevel+1,lastgreenhouseupgrade=$2 where discordid=$1'
     db.none(query, [userId, lastupgrade])
     .then(function () {
         cb(null, { status: 'success', message: 'upgraded greenhouse' });
@@ -1856,7 +1856,7 @@ module.exports.upgradeGreenHouse = function(userId, cb) {
 
 module.exports.upgradeStable = function(userId, cb) {
     var lastupgrade = new Date();
-    var query = 'update ' + config.stablesTable + ' set stablelevel=stablelevel+1,lastupgrade=$2 where discordid=$1'
+    var query = 'update ' + config.stablesTable + ' set stablelevel=stablelevel+1,laststableupgrade=$2 where discordid=$1'
     db.none(query, [userId, lastupgrade])
     .then(function () {
         cb(null, { status: 'success', message: 'upgraded stable' });
@@ -1868,7 +1868,7 @@ module.exports.upgradeStable = function(userId, cb) {
 
 module.exports.upgradeTemple = function(userId, cb) {
     var lastupgrade = new Date();
-    var query = 'update ' + config.templeTable + ' set templelevel=templelevel+1,lastupgrade=$2 where discordid=$1'
+    var query = 'update ' + config.templeTable + ' set templelevel=templelevel+1,lasttempleupgrade=$2 where discordid=$1'
     db.none(query, [userId, lastupgrade])
     .then(function () {
         cb(null, { status: 'success', message: 'upgraded temple' });
