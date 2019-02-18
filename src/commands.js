@@ -5682,7 +5682,7 @@ module.exports.greenHouseCommand = function(message){
 function greenHouseEmbedBuilder(message, greenHouseData, itemsMapById){
             
     var greenHousePlotVisual = plotsVisualBuilder(greenHouseData, itemsMapById)
-    var greenHouseRequirementString = greenhouse.getUpgradeRequirementsForLevel(greenHouseData.greenhouseLevel, itemsMapById)
+    var greenHouseRequirementString = greenhouse.getUpgradeRequirementsForLevel(greenHouseData.greenhouseLevel + 1, itemsMapById)
     var weather = ":sunny:"
     var shears = ":scissors:"
     var harvestTimeRemaining = "1 hour" // GET the harvest time, should be every 24 hours
@@ -5772,7 +5772,7 @@ module.exports.feedCommand = function(message, args){
 function stableEmbedBuilder(message, stableData){
             
     var stablesPlotVisual = stablesVisualBuilder(stableData)
-    var stablesRequirementString = stable.getUpgradeRequirementsForLevel(stableData.stableLevel, itemsMapById)
+    var stablesRequirementString = stable.getUpgradeRequirementsForLevel(stableData.stableLevel + 1, itemsMapById)
     const embed = new Discord.RichEmbed()
     .setColor(0x87CEFA)
     .setTitle(stableData.name + "'s Stables")
@@ -5889,7 +5889,7 @@ function templeEmbedBuilder(message, templeData){
             
     var templeVisual = templeVisualBuilder(templeData)
     var gemString = gemStringBuilder(templeData)
-    var upgradeRequirementString = temple.getUpgradeRequirementsForLevel(templeData.templeLevel, itemsMapById)
+    var upgradeRequirementString = temple.getUpgradeRequirementsForLevel(templeData.templeLevel + 1, itemsMapById)
     const embed = new Discord.RichEmbed()
     .setColor(0x87CEFA)
     .setTitle(templeData.name + "'s Temple 🕍")
