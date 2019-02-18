@@ -3313,15 +3313,15 @@ module.exports.scavangeCommand = function (message){
                                             uncommonItems.push(allItems[item]);
                                         }
                                         else if(allItems[item].itemraritycategory == "rare"
-                                            && allItems[item].fromscavange == true){
+                                            && allItems[item].fromscavenge == true){
                                             rareItems.push(allItems[item]);
                                         }
                                         else if(allItems[item].itemraritycategory == "ancient"
-                                            && allItems[item].fromscavange == true){
+                                            && allItems[item].fromscavenge == true){
                                             ancientItems.push(allItems[item]);
                                         }
                                         else if(allItems[item].itemraritycategory == "artifact"
-                                            && allItems[item].fromscavange == true){
+                                            && allItems[item].fromscavenge == true){
                                             artifactItems.push(allItems[item]);
                                         }
                                     }
