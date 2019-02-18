@@ -527,6 +527,30 @@ module.exports.collectRewardsCommand = function(message){
                 
                 var data = {}
                 data.achievements = achievements;
+                if (data.achievements.indexOf("Legacy Top 1% RPG") > -1){
+                    var index = data.achievements.indexOf("Legacy Top 1% RPG")
+                    data.achievements.splice(index, 1);
+                }
+                if (data.achievements.indexOf("Legacy Top 1% XP") > -1){
+                    var index = data.achievements.indexOf("Legacy Top 1% XP")
+                    data.achievements.splice(index, 1);
+                }
+                if (data.achievements.indexOf("Legacy Top 1% Challenge") > -1){
+                    var index = data.achievements.indexOf("Legacy Top 1% Challenge")
+                    data.achievements.splice(index, 1);
+                }
+                if (data.achievements.indexOf("Legacy Top Taco Stands") > -1){
+                    var index = data.achievements.indexOf("Legacy Top Taco Stands")
+                    data.achievements.splice(index, 1);
+                }
+                if (data.achievements.indexOf("Legacy Top 10% RPG") > -1){
+                    var index = data.achievements.indexOf("Legacy Top 10% RPG")
+                    data.achievements.splice(index, 1);
+                }
+                if (data.achievements.indexOf("Legacy Top 10% XP") > -1){
+                    var index = data.achievements.indexOf("Legacy Top 10% XP")
+                    data.achievements.splice(index, 1);
+                }
                 var rewardsString = ""
                 if (userData.data.legacytop1rpgpoints){
                     // unique pet - :owl:  DONE

@@ -653,7 +653,7 @@ module.exports.checkForAchievements = function(discordUserId, data, message, cal
                     })
                 }
                 /// rewards for legacy
-                if(data.legacytop1rpgpoints &&
+                if(data.legacytop1rpgpoints > 0 &&
                     (data.achievements === null || data.achievements.indexOf("Legacy Top 1% RPG") == -1)){
                         profileDB.updateAchievements(discordUserId, "{Legacy Top 1% RPG}", function(err, r){
                             if (err){
@@ -664,7 +664,7 @@ module.exports.checkForAchievements = function(discordUserId, data, message, cal
                             }
                         })
                     }
-                if(data.legacytop1experience &&
+                if(data.legacytop1experience > 0 &&
                 (data.achievements === null || data.achievements.indexOf("Legacy Top 1% XP") == -1)){
                     profileDB.updateAchievements(discordUserId, "{Legacy Top 1% XP}", function(err, r){
                         if (err){
@@ -675,7 +675,7 @@ module.exports.checkForAchievements = function(discordUserId, data, message, cal
                         }
                     })
                 }
-                if(data.legacytop10rpgpoints &&
+                if(data.legacytop10rpgpoints > 0 &&
                 (data.achievements === null || data.achievements.indexOf("Legacy Top 1% Challenge") == -1)){
                     profileDB.updateAchievements(discordUserId, "{Legacy Top 1% Challenge}", function(err, r){
                         if (err){
@@ -686,7 +686,7 @@ module.exports.checkForAchievements = function(discordUserId, data, message, cal
                         }
                     })
                 }
-                if(data.legacytop10experience &&
+                if(data.legacytop10experience > 0 &&
                 (data.achievements === null || data.achievements.indexOf("Legacy Top Taco Stands") == -1)){
                     profileDB.updateAchievements(discordUserId, "{Legacy Top Taco Stands}", function(err, r){
                         if (err){
@@ -697,7 +697,7 @@ module.exports.checkForAchievements = function(discordUserId, data, message, cal
                         }
                     })
                 }
-                if(data.legacytop1challenge &&
+                if(data.legacytop1challenge > 0 &&
                 (data.achievements === null || data.achievements.indexOf("Legacy Top 10% RPG") == -1)){
                     profileDB.updateAchievements(discordUserId, "{Legacy Top 10% RPG}", function(err, r){
                         if (err){
@@ -708,7 +708,7 @@ module.exports.checkForAchievements = function(discordUserId, data, message, cal
                         }
                     })
                 }
-                if(data.legacytop1tacostands &&
+                if(data.legacytop1tacostands > 0 &&
                 (data.achievements === null || data.achievements.indexOf("Legacy Top 10% XP") == -1)){
                     profileDB.updateAchievements(discordUserId, "{Legacy Top 10% XP}", function(err, r){
                         if (err){
