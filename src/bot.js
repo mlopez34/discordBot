@@ -414,10 +414,10 @@ client.on('message', function(message){
                     commands.marketAuctionCommand(message, args)
                 }
                 else if (commandIs("plant", message)){
-                    message.channel.send(":herb:")
+                    commands.plantCommand(message, args)
                 }
                 else if (commandIs("harvest", message)){
-                    message.channel.send(":tractor:")
+                    commands.harvestCommand(message)
                 }
                 else if (commandIs("disassemble", message)){
                     // disassemble items - mark them as used - obtain items based on the item disassembled
