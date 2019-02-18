@@ -16,7 +16,7 @@ module.exports.getCommandTimesInSeconds = function() {
         fetch: FETCH_BASE_SECONDS,
         cook: COOK_BASE_SECONDS,
         prepare: PREPARE_BASE_SECONDS,
-        rpg: THANK_BASE_SECONDS
+        RPG: THANK_BASE_SECONDS
     }
 }
 
