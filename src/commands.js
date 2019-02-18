@@ -776,7 +776,7 @@ module.exports.thankCommand = function(message){
 function calculateResetScavengeCD(message, discordUserId, userProfile){
     var scavengeCDResetRoll = Math.floor(Math.random() * 1000) + 1;
     if (scavengeCDResetRoll >= 800){
-        profileDB.reduceCommandCooldownByHour(discordUserId, "scavenge", userProfile, function(err, res){
+        profileDB.reduceCommandCooldownByHour(discordUserId, "scavenge", userProfile, 3600, function(err, res){
             if (err){
                 console.log(err)
             }else{
@@ -845,14 +845,13 @@ module.exports.sorryCommand = function(message){
                                         else{
                                             exports.setCommandLock("sorry", discordUserId, false)
                                             ///// for temple recipes
-                                            if (mentionedUser.bot){
-                                                var recipeParams = {
-                                                    userLevel: userLevel,
-                                                    discordUserId: discordUserId,
-                                                    templeLevel: sorryResponse.data.templelevel
-                                                }
-                                                crafting.rollForRecipes(message, recipeParams)
+                                            var recipeParams = {
+                                                userLevel: userLevel,
+                                                discordUserId: discordUserId,
+                                                templeLevel: sorryResponse.data.templelevel
                                             }
+                                            crafting.rollForRecipes(message, recipeParams)
+                                            
                                             var experienceFromItems = wearStats.calculateExtraExperienceGained(wearRes, "sorry", null);
                                             experience.gainExperience(message, message.author, (EXPERIENCE_GAINS.sorry + experienceFromItems) , sorryResponse);
                                             ///// For Artifact or Missions
