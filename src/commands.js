@@ -6681,7 +6681,7 @@ module.exports.combineCommand = function(message, args){
 
                         var rarityOfMyItem = itemsMapbyShortName[myItemShortName].itemraritycategory
                         //////////////////// TODO: do not allow user to combine if they are on stage # of the artifact quest
-                        if (rarityOfMyItem && rarityOfMyItem == "artifact"){
+                        if ( (rarityOfMyItem && rarityOfMyItem == "artifact") || (rarityOfMyItem == "artifact+" && itemsMapbyShortName[myItemShortName].questname)){
                             // take the ids of the other 2 artifacts + artifact recipe and push them onto itemsBeingCombined array
                             
                             var artifactId = ARTIFACT_RECIPE_ID
@@ -6716,54 +6716,16 @@ module.exports.combineCommand = function(message, args){
                                 }
                                 // added all required items - set the artifacts to 'questing'
 
-                                var rarityOfMyItem = itemsMapbyShortName[myItemShortName].itemraritycategory
-                                //////////////////// TODO: do not allow user to combine if they are on stage # of the artifact quest
-                                if ( (rarityOfMyItem && rarityOfMyItem == "artifact") || (rarityOfMyItem == "artifact+" && itemsMapbyShortName[myItemShortName].questname)){
-                                    // take the ids of the other 2 artifacts + artifact recipe and push them onto itemsBeingCombined array
-                                    
-                                    var artifactId = ARTIFACT_RECIPE_ID
-                                    var recipeAdded = false;
-                                    var firstArtifact = itemsMapbyShortName[myItemShortName] ? itemsMapbyShortName[myItemShortName].firstartifact : undefined; 
-                                    var firstArtifactAdded = false;
-                                    var secondArtifact = itemsMapbyShortName[myItemShortName] ? itemsMapbyShortName[myItemShortName].secondartifact : undefined; 
-                                    var secondArtifactAdded = false;
+                                var itemToCreate = itemsMapById[combineToId];  // maybe create the item and keep it inactive?
+                                var itemToCreateById = itemsMapById[combineToId].id;
+                                var itemToCreateByName = itemsMapById[combineToId].itemname
+                                // enable user to be in quest stage 1 of the quest series (user profile)
+                                var questName = itemsMapbyShortName[myItemShortName] ? itemsMapbyShortName[myItemShortName].questname : undefined;
+                                // var questName = "ring" // get from item.questname
 
-                                    // Check that the user has an artifact recipe, and the other two artifacts in their inventory
-                                    if (itemsInInventoryCountMap[artifactId] >= 1
-                                        && itemsInInventoryCountMap[firstArtifact] >= 1
-                                        && itemsInInventoryCountMap[secondArtifact] >= 1){
-                                        for (var item in inventoryResponse.data){
-                                            var validItem = useItem.itemValidate(inventoryResponse.data[item]);
-                                            var notWearing = useItem.itemNotWearing(inventoryResponse.data[item])
-                                            var auctionedItem = false;
-                                            var ItemInQuestion = inventoryResponse.data[item]
-
-                                            if ( itemsMapById[ItemInQuestion.itemid] && itemsMapById[ItemInQuestion.itemid].id === artifactId && !recipeAdded){
-                                                itemsBeingedCombined.push(ItemInQuestion);
-                                                recipeAdded = true;
-                                            }
-                                            else if (itemsMapById[ItemInQuestion.itemid] && itemsMapById[ItemInQuestion.itemid].id === firstArtifact && !firstArtifactAdded){
-                                                itemsBeingedCombined.push(ItemInQuestion);
-                                                firstArtifactAdded = true;
-                                            }
-                                            else if (itemsMapById[ItemInQuestion.itemid] && itemsMapById[ItemInQuestion.itemid].id === secondArtifact && !secondArtifactAdded){
-                                                itemsBeingedCombined.push(ItemInQuestion);
-                                                secondArtifactAdded = true
-                                            }
-                                        }
-                                        // added all required items - set the artifacts to 'questing'
-
-                                        var itemToCreate = itemsMapById[combineToId];  // maybe create the item and keep it inactive?
-                                        var itemToCreateById = itemsMapById[combineToId].id;
-                                        var itemToCreateByName = itemsMapById[combineToId].itemname
-                                        // enable user to be in quest stage 1 of the quest series (user profile)
-                                        var questName = itemsMapbyShortName[myItemShortName] ? itemsMapbyShortName[myItemShortName].questname : undefined;
-                                        // var questName = "ring" // get from item.questname
-
-                                        if (questName && recipeAdded && firstArtifactAdded && secondArtifactAdded ){
-                                            profileDB.userStartQuest(discordUserId, questName, function(createErr, createRes){
-                                                if (createErr){
-
+                                if (questName && recipeAdded && firstArtifactAdded && secondArtifactAdded ){
+                                    profileDB.userStartQuest(discordUserId, questName, function(createErr, createRes){
+                                        if (createErr){
                                             useItem.setItemsLock(discordUserId, false)
                                             console.log(createErr);
                                         }
@@ -6804,7 +6766,7 @@ module.exports.combineCommand = function(message, args){
                             }else{
                                 useItem.setItemsLock(discordUserId, false)
                             }
-                            
+                    
                         }else if (rarityOfMyItem && rarityOfMyItem == "rare++"
                             && itemsInInventoryCountMap[idOfMyItem] 
                             && itemsInInventoryCountMap[idOfMyItem] >= itemCount){
