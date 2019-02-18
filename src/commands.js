@@ -303,6 +303,32 @@ var PETS_AVAILABLE = {
         cooldown: 27,
         reputation: "glorified",
         repLevel: 5
+    },
+
+    // UNIQUE REWARDS PETS
+    owl: {
+        speak: "broop broop",
+        emoji: ":owl:",
+        fetch: 50,
+        cooldown: 3,
+        uniquereward: true,
+        rewardType: "top1rpg"
+    },
+    lion: {
+        speak: "RRWWAAAAAARRR",
+        emoji: ":lion_face:",
+        fetch: 50,
+        cooldown: 9,
+        uniquereward: true,
+        rewardType: "top1xp"
+    },
+    snowman: {
+        speak: "Ha HEEE",
+        emoji: ":snowman2:",
+        fetch: 50,
+        cooldown: 12,
+        uniquereward: true,
+        rewardType: "top1challenge"
     }
 }
 
@@ -471,6 +497,120 @@ module.exports.openPresentCommand = function(message){
             }
         }
     })
+}
+
+module.exports.collectRewardsCommand = function(message){
+    var discordUserId = message.author.id
+    profileDB.getUserProfileData(discordUserId, function(error, userData){
+        if (error){
+            message.channel.send(error)
+        }else{
+            // check that the user has the following:
+            // legacytop1rpgpoints
+            // legacytop1experience
+            // legacytop10rpgpoints
+            // legacytop10experience
+            // legacytop1challenge
+            // legacytop1tacostands
+            // give ACHIEVEMENT FOR ALL OF THESE
+            // 
+            if (!userData.data.collectedrewards){
+                var achievements = userData.data.achievements
+                var rareItems = [];
+                var itemsObtainedArray = [];
+                for (var item in allItems){
+                    if(allItems[item].itemraritycategory == "rare"
+                    && allItems[item].fromscavenge == true ){
+                        rareItems.push(allItems[item]);
+                    }
+                }
+                
+                var data = {}
+                data.achievements = achievements;
+                var rewardsString = ""
+                if (userData.data.legacytop1rpgpoints){
+                    // unique pet - :owl:  DONE
+                    data.legacytop1rpgpoints = true
+                    rewardsString = rewardsString + "Pet available on reputation shop - :owl:\n"
+                }
+                if (userData.data.legacytop1experience){
+                    // unique pet - :lion_face: DONE
+                    data.legacytop1experience = true
+                    rewardsString = rewardsString + "Pet available on reputation shop - :lion_face:\n"
+                }
+                if (userData.data.legacytop10rpgpoints){
+                    // give amulet - 
+                    itemsObtainedArray.push(itemsMapById[296]);
+                    // ancient item - 
+                    itemsObtainedArray.push(itemsMapById[297]);
+                    // 15 random rares - DONE
+                    data.legacytop10rpgpoints = true
+                    for (var i = 0; i < 15; i++){
+                        var itemRoll = Math.floor(Math.random() * rareItems.length);
+                        itemsObtainedArray.push(rareItems[itemRoll]);
+                    }
+                }
+                if (userData.data.legacytop10experience){
+                    // give amulet - 
+                    itemsObtainedArray.push(itemsMapById[295]);
+                    // ancient item - 
+                    itemsObtainedArray.push(itemsMapById[297]);
+                    // 15 random rares - DONE
+                    data.legacytop10experience = true
+                    for (var i = 0; i < 15; i++){
+                        var itemRoll = Math.floor(Math.random() * rareItems.length);
+                        itemsObtainedArray.push(rareItems[itemRoll]);
+                    }
+                }
+                if (userData.data.legacytop1challenge){
+                    // unique pet DIFF KIND - :snowman2: DONE
+                    data.legacytop1challenge = true
+                    rewardsString = rewardsString + "Pet available on reputation shop - :snowman2:\n"
+                }
+                if (userData.data.legacytop1tacostands){
+                    // ancient item - 5 master chef hats DONE
+                    data.legacytop1tacostands = true
+                    itemsObtainedArray.push(itemsMapById[95]);
+                    itemsObtainedArray.push(itemsMapById[95]);
+                    itemsObtainedArray.push(itemsMapById[95]);
+                    itemsObtainedArray.push(itemsMapById[95]);
+                    itemsObtainedArray.push(itemsMapById[95]);
+
+                }
+                achiev.checkForAchievements(discordUserId, data, message);
+                var itemsString = ""
+                if (itemsObtainedArray.length > 0){
+                    for (var item in itemsObtainedArray){
+                        itemsString = itemsString + itemsObtainedArray[item].itemname + " \n";
+                    }
+                }
+                if (rewardsString.length > 0 || itemsString.length > 0){
+                    profileDB.collectedRewards(discordUserId, function(err, res){
+                        if (err){
+                            console.log(err)
+                        }else{
+                            addToUserInventory(discordUserId, itemsObtainedArray);
+                            rewardsEmbedBuilder(message, rewardsString, itemsString)
+                        }
+                    })
+                }
+            }
+        }
+    })
+}
+
+function rewardsEmbedBuilder(message, rewardsString, itemsString){
+    const embed = new Discord.RichEmbed()
+    .setTitle(message.author.username )
+    .setColor(0x00AE86)
+    if (rewardsString.length > 0){
+        embed.addField("Rewards" , rewardsString, true)
+    }
+    if (itemsString.length > 0){
+        embed.addField("Items" , itemsString, true)
+    }
+    embed.setThumbnail(message.author.avatarURL)
+    message.channel.send({embed});
 }
 
 module.exports.setCommandLock = function(command, discordUserId, set){
@@ -2317,8 +2457,18 @@ function repShopBuilder(message, shopData){
         for (var key in PETS_AVAILABLE) {
             if (PETS_AVAILABLE.hasOwnProperty(key)) {
                 // add the pets to petsToPurchase if the userRepLevel >= repLevel
-                if (userRepLevel >= PETS_AVAILABLE[key].repLevel){
+                if (PETS_AVAILABLE[key].repLevel && userRepLevel >= PETS_AVAILABLE[key].repLevel){
                     petsToPurchase = petsToPurchase + key +  ", "
+                }else if (PETS_AVAILABLE[key].uniquereward){
+                    if (shopData.top1rpg && PETS_AVAILABLE[key].rewardType == "top1rpg"){
+                        petsToPurchase = petsToPurchase + key +  ", "
+                    }
+                    if (shopData.top1xp && PETS_AVAILABLE[key].rewardType == "top1xp"){
+                        petsToPurchase = petsToPurchase + key +  ", "
+                    }
+                    if (shopData.top1challenge && PETS_AVAILABLE[key].rewardType == "top1challenge"){
+                        petsToPurchase = petsToPurchase + key +  ", "
+                    }
                 }
             }
         }
@@ -2384,6 +2534,9 @@ module.exports.repShopCommand = function(message){
             shopData.repstatus = shopResponse.data.repstatus
             shopData.userTacoCost = userTacoStands;
             shopData.userLevel = userLevel
+            shopData.top1rpg = shopResponse.data.legacytop1rpgpoints
+            shopData.top1xp = shopResponse.data.legacytop1experience
+            shopData.top1challenge = shopResponse.data.legacytop1challenge
             repShopBuilder(message, shopData);
         }
     })
@@ -3135,15 +3288,15 @@ module.exports.scavangeCommand = function (message){
                                             uncommonItems.push(allItems[item]);
                                         }
                                         else if(allItems[item].itemraritycategory == "rare"
-                                            && allItems[item].fromscavange ){
+                                            && allItems[item].fromscavange == true){
                                             rareItems.push(allItems[item]);
                                         }
                                         else if(allItems[item].itemraritycategory == "ancient"
-                                            && allItems[item].fromscavange ){
+                                            && allItems[item].fromscavange == true){
                                             ancientItems.push(allItems[item]);
                                         }
                                         else if(allItems[item].itemraritycategory == "artifact"
-                                            && allItems[item].fromscavange){
+                                            && allItems[item].fromscavange == true){
                                             artifactItems.push(allItems[item]);
                                         }
                                     }
@@ -4234,7 +4387,10 @@ module.exports.buypetCommand = function(message, args){
                             var achievements = buyPetResponse.data.achievements;
                             var userTacos = adjustedTacosForUser(discordUserId, buyPetResponse.data.tacos)
                             if (userTacos >= PET_COST){
-                                if (PETS_AVAILABLE[pet] != undefined && userRepLevel && userRepLevel >= PETS_AVAILABLE[pet].repLevel){
+                                if ( (PETS_AVAILABLE[pet] != undefined && userRepLevel && userRepLevel >= PETS_AVAILABLE[pet].repLevel)
+                                    || ( PETS_AVAILABLE[pet].uniquereward && PETS_AVAILABLE[pet].rewardType == "top1rpg" && buyPetResponse.data.legacytop1rpgpoints )
+                                    || ( PETS_AVAILABLE[pet].uniquereward && PETS_AVAILABLE[pet].rewardType == "top1xp" && buyPetResponse.data.legacytop1experience )
+                                    || ( PETS_AVAILABLE[pet].uniquereward && PETS_AVAILABLE[pet].rewardType == "top1challenge" && buyPetResponse.data.legacytop1challenge ) ){
                                     // can afford the pet update user pet, take away tacos.
                                     var threedaysAgo = new Date();
                                     if (!buyPetResponse.data.pet){

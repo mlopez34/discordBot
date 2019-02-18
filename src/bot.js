@@ -397,6 +397,9 @@ client.on('message', function(message){
                 else if (commandIs("buytemple", message)){
                     commands.buyTempleCommand(message)
                 }
+                else if (commandIs("collectrewards", message)){
+                    commands.collectRewardsCommand(message)
+                }
                 else if (commandIs("markethelp", message)){
                     commands.marketHelpCommand(message)
                 }
@@ -1006,6 +1009,9 @@ client.on('message', function(message){
                 }
                 else if (commandIs("buytemple", message)){
                     commands.buyTempleCommand(message)
+                }
+                else if (commandIs("collectrewards", message)){
+                    commands.collectRewardsCommand(message)
                 }
                 else if (commandIs("markethelp", message)){
                     commands.marketHelpCommand(message)
