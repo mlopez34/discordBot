@@ -724,14 +724,12 @@ module.exports.thankCommand = function(message){
                                             // // console.log(updateResponse);
                                             exports.setCommandLock("thank", discordUserId, false)
                                             ///// for temple recipes
-                                            if (mentionedUser.bot){
-                                                var recipeParams = {
-                                                    userLevel: userLevel,
-                                                    discordUserId: discordUserId,
-                                                    templeLevel: thankResponse.data.templelevel
-                                                }
-                                                crafting.rollForRecipes(message, recipeParams)
+                                            var recipeParams = {
+                                                userLevel: userLevel,
+                                                discordUserId: discordUserId,
+                                                templeLevel: thankResponse.data.templelevel
                                             }
+                                            crafting.rollForRecipes(message, recipeParams)
                                             var experienceFromItems = wearStats.calculateExtraExperienceGained(wearRes, "thank", null);
                                             ///// For Artifact or Missions
                                             var dataForMission = {}
