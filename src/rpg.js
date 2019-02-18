@@ -71,7 +71,7 @@ module.exports.rpgInitialize = function(message, special){
             activeRPGEvents["rpg-" + sentMessage.id].endOfTurnEvents = [];
             if (special && special.challenge){
                 activeRPGEvents["rpg-" + sentMessage.id].challenge = {
-                    challenge: special.challenge,
+                    challenge: parseInt( special.challenge ),
                     keystone: special.keystone,
                     valid: false
                 };
@@ -2348,7 +2348,7 @@ function calculateRewards(event, memberInRpgEvent, allItems, numberOfMembers, fi
         var keystone = event.challenge.keystone
         var numberOfRolls = enemiesToEncounter.challenge[challengeNum].lootcount || 3
         if (firstKill){
-            numberOfRolls = numberOfRolls * 4
+            numberOfRolls = numberOfRolls * 3
         }
         for (var enemy = 0; enemy < numberOfRolls; enemy++){
             rarityRoll = Math.floor(Math.random() * 2000) + 8000;
