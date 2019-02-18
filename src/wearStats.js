@@ -15,7 +15,8 @@ module.exports.getCommandTimesInSeconds = function() {
         scavenge: SCAVENGE_BASE_SECONDS,
         fetch: FETCH_BASE_SECONDS,
         cook: COOK_BASE_SECONDS,
-        prepare: PREPARE_BASE_SECONDS
+        prepare: PREPARE_BASE_SECONDS,
+        rpg: THANK_BASE_SECONDS
     }
 }
 
@@ -692,7 +693,9 @@ module.exports.amuletsStringBuilder = function(userAmuletData){
     // name the amulets
     var amuletString = "";
     for (var i = userAmuletData.length - 1; i >= 0; i--){
-        amuletString = amuletString + userAmuletData[i].emoji + " " + userAmuletData[i].itemname +" x" + userAmuletData[i].count + "\n"
+        if (amuletString.length < 970){
+            amuletString = amuletString + userAmuletData[i].emoji + " " + userAmuletData[i].itemname +" x" + userAmuletData[i].count + "\n"
+        }
     }
     return amuletString;
 }
