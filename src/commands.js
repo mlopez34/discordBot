@@ -5902,7 +5902,9 @@ function templeEmbedBuilder(message, templeData){
     embed.addField('Temple Info', templeData.currentlevelinfo, false)
     .addField('Next Level Info', templeData.nextlevelinfo, false)
     .addField('Next Level Requirements', upgradeRequirementString, false)
-    .addField('Gems :gem:', gemString, false)
+    if (gemString.length > 0){
+        embed.addField('Gems :gem:', gemString, false)
+    }
     message.channel.send({embed});
 }
 
