@@ -48,10 +48,7 @@ module.exports.createUserProfile = function(data, cb) {
                 var g = {
                     discordId : data.discordId,
                     greenhouselevel: 1,
-                    timesharvested: [ 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                    plotsofland: 9,
-                    plotsoflanditemid: [null, null, null, null, null, null, null, null, null ],
-                    plotsoflandplantid: [null, null, null, null, null, null, null, null, null]
+                    plotsofland: 9
                 }
                 exports.createUserGreenHouseInfo(g, function(e, r){
                     var t = {
@@ -1701,8 +1698,8 @@ module.exports.createUserStableInfo = function(data, cb){
 
 // create greenhouse info
 module.exports.createUserGreenHouseInfo = function(data, cb){
-    var query = 'insert into '+ config.greenhouseTable + '(discordId, greenhouselevel, plotsofland, timesharvested, plotsoflanditemid, plotsoflandplantid)' +
-    'values(${discordId}, ${greenhouselevel}, ${plotsofland}, ${timesharvested}, ${plotsoflanditemid}, ${plotsoflandplantid} )'
+    var query = 'insert into '+ config.greenhouseTable + '(discordId, greenhouselevel, plotsofland)' +
+    'values(${discordId}, ${greenhouselevel}, ${plotsofland} )'
     // console.log(query);
     db.none(query, data)
     .then(function () {

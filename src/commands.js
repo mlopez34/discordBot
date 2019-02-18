@@ -5631,6 +5631,15 @@ module.exports.greenHouseCommand = function(message){
                             timesharvested: ghRes.data.timesharvested,
                             name: message.author.username
                         }
+                        if (!greenHouseData.plotsItemIds){
+                            greenHouseData.plotsItemIds = [null, null, null, null, null, null, null, null, null]
+                        }
+                        if (!greenHouseData.plots){
+                            greenHouseData.plots = [null, null, null, null, null, null, null, null, null]
+                        }
+                        if (!greenHouseData.timesharvested){
+                            greenHouseData.timesharvested = [0, 0, 0, 0, 0, 0, 0, 0, 0]
+                        }
                         // TODO: add fruits string
                         greenHouseData.fruitsString = greenhouse.getFruitString(userFruitsCount)
                         greenHouseData.currentlevelinfo = greenhouse.getLevelInfo(greenHouseData.greenhouseLevel)
@@ -6045,6 +6054,16 @@ module.exports.plantCommand = function(message, args){
                                     plantName: itemsMapById[plantBeingPlanted[0].itemid].itemname,
                                     name: message.author.username
                                 }
+
+                                if (!greenHouseData.plotsItemIds){
+                                    greenHouseData.plotsItemIds = [null, null, null, null, null, null, null, null, null]
+                                }
+                                if (!greenHouseData.plots){
+                                    greenHouseData.plots = [null, null, null, null, null, null, null, null, null]
+                                }
+                                if (!greenHouseData.timesharvested){
+                                    greenHouseData.timesharvested = [0, 0, 0, 0, 0, 0, 0, 0, 0]
+                                }
     
                                 // if they do get the user's greenhouse, check that the slot is available (not higher than their #ofplots)
                                 if ( plotOfLand > 0 && plotOfLand <= greenHouseData.numberOfPlots){
@@ -6135,6 +6154,15 @@ module.exports.harvestCommand = function(message, args){
                     lastharvest: profileData.data.lastharvest,
                     timesharvested: profileData.data.timesharvested,
                     name: message.author.username
+                }
+                if (!greenHouseData.plotsItemIds){
+                    greenHouseData.plotsItemIds = [null, null, null, null, null, null, null, null, null]
+                }
+                if (!greenHouseData.plots){
+                    greenHouseData.plots = [null, null, null, null, null, null, null, null, null]
+                }
+                if (!greenHouseData.timesharvested){
+                    greenHouseData.timesharvested = [0, 0, 0, 0, 0, 0, 0, 0, 0]
                 }
                 wearStats.getUserWearingStats(message, discordUserId, {userLevel: userLevel}, allItems, function(wearErr, wearRes){
                     if (wearErr){
