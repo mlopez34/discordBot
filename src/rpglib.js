@@ -103,8 +103,8 @@ module.exports = {
             name : "Shell",
             abilityId: "shell",
             cooldown: 0,
-            maxcooldown: 8,
-            description: "Reduce all damage taken by 33% for 3 turns 8 turn cooldown",
+            maxcooldown: 7,
+            description: "Reduce all damage taken by 33% for 3 turns 7 turn cooldown",
             buff: {
                 selfbuff: true,
                 buff: true,
@@ -151,9 +151,9 @@ module.exports = {
         paralyze: {
             name: "Paralyze",
             abilityId: "paralyze",
-            maxcooldown: 5,
+            maxcooldown: 4,
             cooldown: 0,
-            description: "Paralyze a player or easy, medium, summoned difficulty enemy for 3 turns, 5 turn cooldown, invalid if damage is taken",
+            description: "Paralyze a player or easy, medium, summoned difficulty enemy for 3 turns, 4 turn cooldown, invalid if damage is taken",
             difficultiesAllowed: [
                 "easy",
                 "medium",
@@ -358,8 +358,8 @@ module.exports = {
             areawide: true,
             targets: "friendly",
             cooldown: 0,
-            maxcooldown: 5,
-            description: "Increase the group's magical damage and attack damage by 60% for 4 turns - 10 turn cooldown, applies Exhausted",
+            maxcooldown: 4,
+            description: "Increase the group's magical damage and attack damage by 60% for 4 turns - 5 turn cooldown, applies Exhausted",
             buff: {
                 buff: true,
                 areawide: true,
@@ -647,8 +647,6 @@ module.exports = {
         safeGuard : {
             name : "Safe Guard",
             abilityId: "safeGuard",
-            cooldown: 0,
-            maxcooldown: 8,
             description: "Reduce all damage taken by 4%",
             buff: {
                 buff: true,
@@ -2424,7 +2422,7 @@ module.exports = {
             abilityId: "pillarAOEmagic",
             areawidedmg: {
                 endOfTurnAura: true,
-                dmgPerTurn: 22,
+                dmgPerTurn: 1,
                 hitsEveryNTurn: 1,
                 name: "Pillar Radiation",
                 dmg: 680,
@@ -2525,14 +2523,14 @@ module.exports = {
             name: "Summon Apparition",
             abilityId: "summonApparition",
             belongsToMember: true,
-            everyNTurns: 8,
+            everyNTurns: 10,
             afterNTurns: 2,
             currentTurn: 0,
             summon: {
                 enemy: "apparition",
                 attackDmg: 200,
                 magicDmg: 200,
-                hpPlus: 1000
+                hpPlus: 100
             }
         },
 
@@ -2662,7 +2660,7 @@ module.exports = {
             name: "Summon Enabler",
             abilityId: "summonEnabler",
             belongsToMember: true,
-            everyNTurns: 8,
+            everyNTurns: 10,
             afterNTurns: 2,
             currentTurn: 0,
             summon: {
@@ -2670,7 +2668,7 @@ module.exports = {
                 enemy: "enabler",
                 attackDmg: 500,
                 magicDmg: 500,
-                hpPlus: 1000
+                hpPlus: 100
             }
         },
 
@@ -2688,7 +2686,7 @@ module.exports = {
                 ignoreUnique: true,
                 name: "Enable",
                 abilityId: "enable",
-                additionalDescription: " Aramis gains 20% more physical and magical damage",
+                additionalDescription: " gains 20% more physical and magical damage",
                 emoji: "<:strength:479298214294716416>",
                 turnsToExpire: 200,
                 affects: ["attackDmg", "magicDmg"],
@@ -2717,7 +2715,7 @@ module.exports = {
                 type: "physical",
                 adPercentage: 10,
                 ignoreBandaid: true,
-                turnsToExpire: 25,
+                turnsToExpire: 28,
                 dmgOnStatusExpire: true,
                 dmgOnRemoveAreaWide: false,
                 dmgOnExpire: 500250
@@ -5402,7 +5400,7 @@ Hoover Dam
                 hpPerPartyMember: 0,
                 adPerPartyMember: 0,
                 mdPerPartyMember: 0,
-                hp: 6300,
+                hp: 6100,
                 abilityOrder: [
                     1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
                 ],
@@ -5423,11 +5421,11 @@ Hoover Dam
                 hpPerPartyMember: 0,
                 adPerPartyMember: 0,
                 mdPerPartyMember: 0,
-                hp: 7300,
+                hp: 6800,
                 abilityOrder: [
                     0, 0, 0, 1
                 ],
-                attackDmg: 1330,
+                attackDmg: 1030,
                 magicDmg: 860,
                 armor: 1300,
                 spirit: 1300,

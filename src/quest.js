@@ -66,6 +66,16 @@ module.exports.questStartEmbedBuilder = function(message, questName, questString
         .setColor(0xFF7A1C)
         message.channel.send({embed});
     }
+    else if(questName == "escape"){
+        const embed = new Discord.RichEmbed()
+        .setAuthor(message.author.username + " has begun an artifact quest.")
+        .addField("Use your map to travel to different points of interests and decypher the assets", questString, true)
+        .setDescription(":spy:  :imp:  :spy: \n" +message.author.username + " gathers the assets but is unable to put them together.. opening the Tombstone file only reveals coordinates pointing to Panama City as a point of interest" )
+        .addField("New command granted", "-decypher [@user] [@user] [@user] [@user]")
+        .setThumbnail(message.author.avatarURL)
+        .setColor(0xFF7A1C)
+        message.channel.send({embed});
+    }
 }
 
 module.exports.questStringBuilder = function(questname, questData){
@@ -280,6 +290,67 @@ module.exports.questStringBuilder = function(questname, questData){
         if ( questData.stage == "start"){
             return "Profess your love to your soulmate";
         }
+        // proposed
+        else if (questData.stage == 1){
+            if (questData && questData.storyStep == 1){
+                return questData.message.author.username + ", you must show your love the hard way..."
+            }else if (questData && questData.storyStep == 2){
+                return questData.message.author.username + ", you must show your love the hard way, give your soulmate 10,000 tacos"
+            }else if (questData && questData.storyStep == 3){
+                return questData.message.author.username + ", you must show your love the hard way, give your soulmate 10,000 tacos ❤️❤️❤️ "
+            }
+        }
+        // gave 20,000 tacos
+        else if (questData.stage == 2){
+            if (questData && questData.storyStep == 1){
+                return questData.message.author.username + ", thank your soulmate for being themselves"
+            }else if (questData && questData.storyStep == 2){
+                return questData.message.author.username + ", thank your soulmate for being themselves  ❤️❤️❤️"
+            }else if (questData && questData.storyStep == 3){
+                return questData.message.author.username + ", thank your soulmate for being themselves  ❤️❤️❤️❤️❤️"
+            }
+        }
+        // thanked soulmate
+        else if (questData.stage == 3){
+            if (questData && questData.storyStep == 1){
+                return questData.message.author.username + ", it is wedding day, time to celebrate! -wedding @user 🥂 "
+            }else if (questData && questData.storyStep == 2){
+                return questData.message.author.username + ", it is wedding day, time to celebrate! -wedding @user 🥂"
+            }else if (questData && questData.storyStep == 3){
+                return questData.message.author.username + ", it is wedding day, time to celebrate! -wedding @user 🥂"
+            }
+        }
+        // wedding
+        else if (questData.stage == 4){
+            if (questData && questData.storyStep == 1){
+                return questData.message.author.username + ", everyone gets to collect presents at the wedding 🥂 "
+            }else if (questData && questData.storyStep == 2){
+                return questData.message.author.username + ", everyone gets to collect presents at the wedding 🥂"
+            }else if (questData && questData.storyStep == 3){
+                return questData.message.author.username + ", everyone gets to collect presents at the wedding 🥂"
+            }
+        }
+        // defeat evil exes
+        else if (questData.stage == 5){
+            if (questData && questData.storyStep == 1){
+                return questData.message.author.username + ", there is a loud crashing sound outside."
+            }
+            else if (questData && questData.storyStep == 2){
+                return questData.message.author.username + ", there is a loud crashing sound outside... It is your soulmate's exes "                
+            }
+            else if (questData && questData.storyStep == 3){
+                return questData.message.author.username + ", there is a loud crashing sound outside... It is your soulmate's exes. You must defeat your soulmate's seven evil exes"                
+            }
+        }else{
+            return "Profess your love to your soulmate";
+        }
+    }
+    if (questname == "escape"){
+        // combined
+        if ( questData.stage == "start"){
+            return "Travel to Panama City with 4 other companions";
+        }
+        // TODO: CHANGE THESE
         // proposed
         else if (questData.stage == 1){
             if (questData && questData.storyStep == 1){

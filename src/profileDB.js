@@ -1026,6 +1026,8 @@ module.exports.userStartQuest = function(discordUserId, questName, cb){
         query = 'update ' + config.profileTable + ' set tombqueststage=1 where discordid=$1'        
     }else if (questName == "ring"){
         query = 'update ' + config.profileTable + ' set ringqueststage=1 where discordid=$1'        
+    }else if (questName == "escape"){
+        query = 'update ' + config.profileTable + ' set escapequeststage=1 where discordid=$1'        
     }
     // do else for all questlines
     db.none(query, [discordUserId])
