@@ -3,6 +3,7 @@
 var profileDB = require("./profileDB.js");
 const Discord = require("discord.js");
 var config = require("./config.js")
+var commands = require("./commands")
 
 var REPUTATIONS = config.reputations;
 
@@ -119,6 +120,7 @@ function updateReputationStatus(message, discordId, repstatus){
 }
 
 function obtainReputationItem(message, reputationSource){
+    var allItems = commands.getAllItems()
     var greaterAmuletItems = []
     var artifactItems = []
 
@@ -132,18 +134,19 @@ function obtainReputationItem(message, reputationSource){
     }
 
     var itemsObtainedArray = [];
-
-    var amuletRoll = Math.floor(Math.random() * amuletItems.length);
-    console.log(amuletItems[amuletRoll]);
-    itemsObtainedArray.push(amuletItems[amuletRoll])
-
-    var artifactRoll = Math.floor(Math.random() * artifactItems.length);
-    console.log(artifactItems[artifactRoll]);
-    itemsObtainedArray.push(artifactItems[artifactRoll])
-
+    if (greaterAmuletItems.length > 0){
+        var amuletRoll = Math.floor(Math.random() * greaterAmuletItems.length);
+        console.log(greaterAmuletItems[amuletRoll]);
+        itemsObtainedArray.push(greaterAmuletItems[amuletRoll])    
+    }
+    if (artifactItems.length){
+        var artifactRoll = Math.floor(Math.random() * artifactItems.length);
+        console.log(artifactItems[artifactRoll]);
+        itemsObtainedArray.push(artifactItems[artifactRoll])    
+    }
 
     if (itemsObtainedArray.length > 0){
-        addToUserInventory(discordUser.id, itemsObtainedArray);
+        addToUserInventory(message.author.id, itemsObtainedArray);
     }
     const embed = new Discord.RichEmbed()
     .setColor(0xF2E93E)
@@ -156,7 +159,7 @@ function obtainReputationItem(message, reputationSource){
         itemsObtainedArray[item].itemslot + ", " +itemsObtainedArray[item].itemstatistics + " \n";
     }
     embed.addField("Reputation Rewards", rewardString, true)
-    .setThumbnail(discordUser.avatarURL)
+    .setThumbnail(message.author.avatarURL)
     message.channel.send({embed});
 }
 
