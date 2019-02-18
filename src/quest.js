@@ -412,7 +412,7 @@ module.exports.questStringBuilder = function(questname, questData){
     
 }
 
-module.exports.questHandler = function(message, discordUserId, questline, stageInQuest, team, dataUsedInQuest, channel){
+module.exports.questHandler = function(message, discordUserId, questline, stageInQuest, team, dataUsedInQuest, channel, allItems){
     // this will create the specific embed for the stage the user is in parameters should include (questline, stage, user)
     if (questline == "testQuest"){
         // handle stage
@@ -421,23 +421,23 @@ module.exports.questHandler = function(message, discordUserId, questline, stageI
     else if (questline == "timetravel"){
         // handle timetravel
         var year = dataUsedInQuest.year;
-        handleTimeMachineArtifact(message, discordUserId, stageInQuest, team, year, channel)
+        handleTimeMachineArtifact(message, discordUserId, stageInQuest, team, year, channel, allItems)
     }
     else if (questline == "tomb"){
         // handle abraham lincoln
-        handleTombArtifact(message, discordUserId, stageInQuest, team, channel)
+        handleTombArtifact(message, discordUserId, stageInQuest, team, channel, allItems)
     }
     else if (questline == "demonic"){
         // handle demonic
-        handleDemonicArtifact(message, discordUserId, stageInQuest, team, channel)
+        handleDemonicArtifact(message, discordUserId, stageInQuest, team, channel, allItems)
     }
     else if (questline == "ring"){
         // handle evilexes
-        handleRingArtifact(message, discordUserId, stageInQuest, team, dataUsedInQuest, channel)
+        handleRingArtifact(message, discordUserId, stageInQuest, team, dataUsedInQuest, channel, allItems)
     }
 }
 
-function handleTimeMachineArtifact(message, discordUserId, stage, team, year, channel){
+function handleTimeMachineArtifact(message, discordUserId, stage, team, year, channel, allItems){
     /*
     timetravel
     -stage 1 = (embed)get supplies
@@ -450,7 +450,7 @@ function handleTimeMachineArtifact(message, discordUserId, stage, team, year, ch
 
     if (stage == 1){
         if (!activeMissions["quest-" + discordUserId]){
-            handleTimeMachineArtifactStageOne(message, discordUserId, stage, team, year, channel)
+            handleTimeMachineArtifactStageOne(message, discordUserId, stage, team, year, channel, allItems)
         }
     }
     else if (stage == 2){
@@ -459,7 +459,7 @@ function handleTimeMachineArtifact(message, discordUserId, stage, team, year, ch
     else if (stage == 3){
         if (!activeMissions["quest-" + discordUserId]){
             // travel to the year -65,000,000 and save the dinosaurs from the meteor
-            handleTimeMachineArtifactStageThree(message, discordUserId, stage, team, year, channel)
+            handleTimeMachineArtifactStageThree(message, discordUserId, stage, team, year, channel, allItems)
         }
     }
     else if (stage == 4){
@@ -476,7 +476,7 @@ function handleTimeMachineArtifact(message, discordUserId, stage, team, year, ch
     }
 }
 
-function handleTombArtifact(message, discordUserId, stage, team, channel){
+function handleTombArtifact(message, discordUserId, stage, team, channel, allItems){
     /*
     abraham lincoln tomb
     -stage 1 = (embed)arrive at the tomb and gather supplies 
@@ -489,7 +489,7 @@ function handleTombArtifact(message, discordUserId, stage, team, channel){
     if (stage == 1){
         // embed shows supplies that users can gather (item pickup)
         if (!activeMissions["quest-" + discordUserId]){
-            handleTombArtifactStageOne(message, discordUserId, stage, team, channel)
+            handleTombArtifactStageOne(message, discordUserId, stage, team, channel, allItems)
         }
     }
     else if (stage == 2){
@@ -516,7 +516,7 @@ function handleTombArtifact(message, discordUserId, stage, team, channel){
     }
 }
 
-function handleDemonicArtifact(message, discordUserId, stage, team, channel){
+function handleDemonicArtifact(message, discordUserId, stage, team, channel, allItems){
     /*
     demonic scroll :
     -stage 1 = * (mission) all members stand in a star formation (react on spots)
@@ -541,7 +541,7 @@ function handleDemonicArtifact(message, discordUserId, stage, team, channel){
     else if (stage == 3){
         // sacrifice a server member by throwing tacos to each other in the formation to create a star (start at top)
         if (!activeMissions["quest-" + discordUserId]){
-            handleDemonicArtifactStageThree(message, discordUserId, stage, team, channel)
+            handleDemonicArtifactStageThree(message, discordUserId, stage, team, channel, allItems)
         }
     }
     else if (stage == 4){
@@ -554,7 +554,7 @@ function handleDemonicArtifact(message, discordUserId, stage, team, channel){
     }
 }
 
-function handleRingArtifact(message, discordUserId, stage, team, questData, channel){
+function handleRingArtifact(message, discordUserId, stage, team, questData, channel, allItems){
     /*
     fight the evil exes
     ring:
@@ -586,7 +586,7 @@ function handleRingArtifact(message, discordUserId, stage, team, questData, chan
         if (activeMissions["quest-" + discordUserId] && activeMissions["quest-" + discordUserId].proposedTo && activeMissions["quest-" + discordUserId].wedding){
             var marriedTo = questData.marriedTo
             activeMissions["quest-" + discordUserId].wedding = false // to prevent multiple weddings spam
-            handleRingArtifactStageFour(message, discordUserId, stage, team, marriedTo, channel)
+            handleRingArtifactStageFour(message, discordUserId, stage, team, marriedTo, channel, allItems)
         }
     }
     else if (stage == 5){
@@ -600,7 +600,7 @@ function handleRingArtifact(message, discordUserId, stage, team, questData, chan
 */
 
 // embed
-function handleTimeMachineArtifactStageOne(message, discordUserId, stage, team, year, channel){
+function handleTimeMachineArtifactStageOne(message, discordUserId, stage, team, year, channel, allItems){
     var questData = {
         questname: "timetravel",
         message: message,
@@ -712,7 +712,7 @@ function handleTimeMachineArtifactStageOne(message, discordUserId, stage, team, 
                     for (var m in team){
                         var teamUser = team[m]
                         if (!user.bot && teamUser.id == user.id){
-                            questFindRewards(message, user, reactionEmoji._emoji.name)
+                            questFindRewards(message, user, reactionEmoji._emoji.name, allItems)
                         }
                     }
                 })
@@ -904,7 +904,7 @@ function handleTimeMachineArtifactStageThree(message, discordUserId, stage, team
                     for (var m in team){
                         var teamUser = team[m]
                         if (!user.bot && teamUser.id == user.id){
-                            questFindRewards(message, user, reactionEmoji._emoji.name)
+                            questFindRewards(message, user, reactionEmoji._emoji.name, allItems)
                         }
                     }
                 })
@@ -1350,7 +1350,7 @@ function handleDemonicArtifactStageTwo(message, discordUserId, stage, team, chan
     })
 }
 // embed
-function handleDemonicArtifactStageThree(message, discordUserId, stage, team, channel){
+function handleDemonicArtifactStageThree(message, discordUserId, stage, team, channel, allItems){
     var questData = {
         questname: "demonic",
         message: message,
@@ -1460,7 +1460,7 @@ function handleDemonicArtifactStageThree(message, discordUserId, stage, team, ch
                     for (var m in team){
                         var teamUser = team[m]
                         if (!user.bot && teamUser.id == user.id){
-                            questFindRewards(message, user, reactionEmoji._emoji.name)
+                            questFindRewards(message, user, reactionEmoji._emoji.name, allItems)
                         }
                     }
                 })
@@ -1738,7 +1738,7 @@ function handleRingArtifactStageThree(message, discordUserId, stage, team, comma
     }
 }
 
-function handleRingArtifactStageFour(message, discordUserId, stage, team, marriedTo, channel){
+function handleRingArtifactStageFour(message, discordUserId, stage, team, marriedTo, channel, allItems){
     var mission = activeMissions["quest-" + discordUserId]
     if (!mission){
         message.channel.send("not currently in a quest, you must propose to someone")
@@ -1821,7 +1821,7 @@ function handleRingArtifactStageFour(message, discordUserId, stage, team, marrie
                     // only team members should be getting items
                     reactionEmoji.users.forEach(function(user){
                         if (!user.bot){
-                            questFindRewards(message, user, reactionEmoji._emoji.name)
+                            questFindRewards(message, user, reactionEmoji._emoji.name, allItems)
                         }
                     })
                 })
@@ -2014,7 +2014,7 @@ function handleTombArtifactStageOne(message, discordUserId, stage, team, channel
                     for (var m in team){
                         var teamUser = team[m]
                         if (!user.bot && teamUser.id == user.id){
-                            questFindRewards(message, user, reactionEmoji._emoji.name)
+                            questFindRewards(message, user, reactionEmoji._emoji.name, allItems)
                         }
                     }
                 })
@@ -2375,144 +2375,128 @@ function artifactStartString(questline, discordUser, mentionedUsers){
     // return the starting quest text
 }
 
-function questFindRewards(message, user, emoji){
+function questFindRewards(message, user, emoji, allItems){
 
     var giveRewardTo = user.id;
     var giveRewardToUsername = user.username
     console.log(user.id);
 
-    profileDB.getItemData(function(error, allItemsResponse){
-        if ( error){
-            console.log(error)
-        }else{
-            var itemsMapbyShortName = {};
-            var itemsMapById = {};
-            for (var index in allItemsResponse.data){
-                itemsMapbyShortName[allItemsResponse.data[index].itemshortname] = allItemsResponse.data[index];
-            }
-            for (var index in allItemsResponse.data){
-                itemsMapById[allItemsResponse.data[index].id] = allItemsResponse.data[index];
-            }
+    var ANCIENT_MIN_ROLL = 9920;
+    var RARE_MAX_ROLL = 9920;
+    var RARE_MIN_ROLL = 9800;
+    var UNCOMMON_MAX_ROLL = 9800;
+    var UNCOMMON_MIN_ROLL = 8750;
+    var COMMON_MAX_ROLL = 8750;
+    var UNCOMMON_ITEMS_TO_OBTAIN = 2;
+    var COMMON_ITEMS_TO_OBTAIN = 5;
+    var TRANSFORMIUM_ID = 155 
+    var SILVER_CROSS_ID = 155
 
-            var ANCIENT_MIN_ROLL = 9920;
-            var RARE_MAX_ROLL = 9920;
-            var RARE_MIN_ROLL = 9800;
-            var UNCOMMON_MAX_ROLL = 9800;
-            var UNCOMMON_MIN_ROLL = 8750;
-            var COMMON_MAX_ROLL = 8750;
-            var UNCOMMON_ITEMS_TO_OBTAIN = 2;
-            var COMMON_ITEMS_TO_OBTAIN = 5;
-            var TRANSFORMIUM_ID = 155 
-            var SILVER_CROSS_ID = 155
-
-            var allItems = allItemsResponse.data
-            var commonItems = [];
-            var uncommonItems = [];
-            var rareItems = [];
-            var ancientItems = [];
+    var commonItems = [];
+    var uncommonItems = [];
+    var rareItems = [];
+    var ancientItems = [];
             
-            for (var item in allItems){
-                if (allItems[item].itemraritycategory == "common"){
-                    commonItems.push(allItems[item]);
-                }
-                else if(allItems[item].itemraritycategory == "uncommon"){
-                    uncommonItems.push(allItems[item]);
-                }
-                else if(allItems[item].itemraritycategory == "rare"){
-                    rareItems.push(allItems[item]);
-                }
-                else if(allItems[item].itemraritycategory == "ancient"){
-                    ancientItems.push(allItems[item]);
-                }
-                else if(allItems[item].itemraritycategory == "amulet"){
-                    ancientItems.push(allItems[item]);
-                }
-            }
-            
-            var itemsObtainedArray = [];
-            var rollsCount = 4
-
-            for (var i = 0; i < rollsCount; i++){
-                var rarityRoll = Math.floor(Math.random() * 10000) + 1;
-                var rarityString = "";
-
-                if(rarityRoll > ANCIENT_MIN_ROLL){
-                    var itemRoll = Math.floor(Math.random() * ancientItems.length);
-                    itemsObtainedArray.push(ancientItems[itemRoll])
-                }
-                else if(rarityRoll > RARE_MIN_ROLL && rarityRoll <= RARE_MAX_ROLL){
-                    var itemRoll = Math.floor(Math.random() * rareItems.length);
-                    itemsObtainedArray.push(rareItems[itemRoll]);
-                }
-                else if (rarityRoll > UNCOMMON_MIN_ROLL && rarityRoll <= UNCOMMON_MAX_ROLL){
-                    var itemRoll = Math.floor(Math.random() * uncommonItems.length);
-                    uncommonItems[itemRoll].itemAmount = UNCOMMON_ITEMS_TO_OBTAIN
-                    itemsObtainedArray.push( uncommonItems[itemRoll] );
-                }
-                else {
-                    var itemRoll = Math.floor(Math.random() * commonItems.length);
-                    commonItems[itemRoll].itemAmount = COMMON_ITEMS_TO_OBTAIN
-                    itemsObtainedArray.push( commonItems[itemRoll] );
-                }
-            }
-
-            // timetravel
-            if (emoji == "📮" || emoji == "🏯" || emoji == "🏮" ){
-                // push a special item?
-                // roll for it
-                var rarityRoll = Math.floor(Math.random() * 10) + 1;
-
-                if(rarityRoll > 8){
-                    for (var index in allItems){
-                        if (allItems[index].id == TRANSFORMIUM_ID){
-                            itemsObtainedArray.push( allItems[index] );
-                        }
-                    }
-                }
-            }
-            // tomb
-            else if (emoji == "🔨" || emoji == "🍱" || emoji == "🔦" ){
-                var rarityRoll = Math.floor(Math.random() * 10) + 1;
-
-                if(rarityRoll > 8){
-                    for (var index in allItems){
-                        if (allItems[index].id == TRANSFORMIUM_ID){
-                            itemsObtainedArray.push( allItems[index] );
-                        }
-                    }
-                }
-        
-            }
-            // demonic
-            else if (emoji == "🐍" || emoji == "🎨"|| emoji == "💉"){
-                var rarityRoll = Math.floor(Math.random() * 10) + 1;
-
-                if(rarityRoll > 8){
-                    for (var index in allItems){
-                        if (allItems[index].id == TRANSFORMIUM_ID){
-                            itemsObtainedArray.push( allItems[index] );
-                        }
-                    }
-                }
-            }
-            //wedding
-            else if (emoji == "🎈" || emoji == "💝" || emoji == "💳"){
-                var rarityRoll = Math.floor(Math.random() * 10) + 1;
-
-                if(rarityRoll > 8){
-                    for (var index in allItems){
-                        if (allItems[index].id == TRANSFORMIUM_ID){
-                            itemsObtainedArray.push( allItems[index] );
-                        }
-                    }
-                }
-            }
-
-            // TODO: print embed of all the items - change these outside of the for loop
-            addToUserInventory(giveRewardTo, itemsObtainedArray);
-            itemObtainEmbedBuilder(message, itemsObtainedArray, user);
+    for (var item in allItems){
+        if (allItems[item].itemraritycategory == "common"){
+            commonItems.push(allItems[item]);
         }
-    })
+        else if(allItems[item].itemraritycategory == "uncommon"){
+            uncommonItems.push(allItems[item]);
+        }
+        else if(allItems[item].itemraritycategory == "rare"){
+            rareItems.push(allItems[item]);
+        }
+        else if(allItems[item].itemraritycategory == "ancient"){
+            ancientItems.push(allItems[item]);
+        }
+        else if(allItems[item].itemraritycategory == "amulet"){
+            ancientItems.push(allItems[item]);
+        }
+    }
+            
+    var itemsObtainedArray = [];
+    var rollsCount = 4
+
+    for (var i = 0; i < rollsCount; i++){
+        var rarityRoll = Math.floor(Math.random() * 10000) + 1;
+        var rarityString = "";
+
+        if(rarityRoll > ANCIENT_MIN_ROLL){
+            var itemRoll = Math.floor(Math.random() * ancientItems.length);
+            itemsObtainedArray.push(ancientItems[itemRoll])
+        }
+        else if(rarityRoll > RARE_MIN_ROLL && rarityRoll <= RARE_MAX_ROLL){
+            var itemRoll = Math.floor(Math.random() * rareItems.length);
+            itemsObtainedArray.push(rareItems[itemRoll]);
+        }
+        else if (rarityRoll > UNCOMMON_MIN_ROLL && rarityRoll <= UNCOMMON_MAX_ROLL){
+            var itemRoll = Math.floor(Math.random() * uncommonItems.length);
+            uncommonItems[itemRoll].itemAmount = UNCOMMON_ITEMS_TO_OBTAIN
+            itemsObtainedArray.push( uncommonItems[itemRoll] );
+        }
+        else {
+            var itemRoll = Math.floor(Math.random() * commonItems.length);
+            commonItems[itemRoll].itemAmount = COMMON_ITEMS_TO_OBTAIN
+            itemsObtainedArray.push( commonItems[itemRoll] );
+        }
+    }
+
+    // timetravel
+    if (emoji == "📮" || emoji == "🏯" || emoji == "🏮" ){
+        // push a special item?
+        // roll for it
+        var rarityRoll = Math.floor(Math.random() * 10) + 1;
+
+        if(rarityRoll > 8){
+            for (var index in allItems){
+                if (allItems[index].id == TRANSFORMIUM_ID){
+                    itemsObtainedArray.push( allItems[index] );
+                }
+            }
+        }
+    }
+    // tomb
+    else if (emoji == "🔨" || emoji == "🍱" || emoji == "🔦" ){
+        var rarityRoll = Math.floor(Math.random() * 10) + 1;
+
+        if(rarityRoll > 8){
+            for (var index in allItems){
+                if (allItems[index].id == TRANSFORMIUM_ID){
+                    itemsObtainedArray.push( allItems[index] );
+                }
+            }
+        }
+
+    }
+    // demonic
+    else if (emoji == "🐍" || emoji == "🎨"|| emoji == "💉"){
+        var rarityRoll = Math.floor(Math.random() * 10) + 1;
+
+        if(rarityRoll > 8){
+            for (var index in allItems){
+                if (allItems[index].id == TRANSFORMIUM_ID){
+                    itemsObtainedArray.push( allItems[index] );
+                }
+            }
+        }
+    }
+    //wedding
+    else if (emoji == "🎈" || emoji == "💝" || emoji == "💳"){
+        var rarityRoll = Math.floor(Math.random() * 10) + 1;
+
+        if(rarityRoll > 8){
+            for (var index in allItems){
+                if (allItems[index].id == TRANSFORMIUM_ID){
+                    itemsObtainedArray.push( allItems[index] );
+                }
+            }
+        }
+    }
+
+    // TODO: print embed of all the items - change these outside of the for loop
+    addToUserInventory(giveRewardTo, itemsObtainedArray);
+    itemObtainEmbedBuilder(message, itemsObtainedArray, user);
 }
 
 function itemObtainEmbedBuilder(message, itemsFound, user){

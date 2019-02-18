@@ -1,5 +1,13 @@
 module.exports = {
-
+    // TODO:
+    // change assist to physical scaling
+    // aoe heal over time lasts 5 turns total of 85% of magical
+    // 10 turn dot phys
+    // 10 turn dot magical
+    // physical elixir
+    // cocoon - 15% damage reduct, -10% damage dealt
+    // cannister shot
+    // LEFT OFF AT: WOODS - create the entire woods profile
     rpgAbilities: {
         attack : {
             name: "Attack",
@@ -232,12 +240,12 @@ module.exports = {
         orchatasip: {
             name:"Orchata Sip",
             abilityId: "orchatasip",
-            description: "Heal your target over time for 50 + 145% of your magical damage over 5 turns",
+            description: "Heal your target over time for 150 + 155% of your magical damage over 5 turns",
             hot: {
                 name: "Orchata Sip",
-                heal: 50,
+                heal: 150,
                 emoji: "<:orchatasip:479296604831219714>",
-                mdPercentage: 1.45,
+                mdPercentage: 1.55,
                 healingOnHotApply: false,
                 turnsToExpire: 5,
                 healingOnDotExpire: false,
@@ -496,22 +504,42 @@ module.exports = {
             areawide: true,
             targets: "enemy"
         },
-        shoot: {
+        enemyshoot: {
             name: "Shoot",
-            abilityId: "shoot",
-            description: "Deal 125 damage + 120% of your attack damage, 6 charges",
+            abilityId: "enemyshoot",
+            description: "Deal 125 damage + 125% of your attack damage, 6 charges",
             dmg: 125,
             charges: 6,
             maxcharges: 6,
-            adPercentage: 1.2,
+            adPercentage: 1.25,
             type: "physical"
+        },
+        shoot: {
+            name: "Shoot",
+            abilityId: "shoot",
+            description: "Deal 125 damage + 143% of your attack damage, 6 charges",
+            dmg: 125,
+            charges: 6,
+            maxcharges: 6,
+            adPercentage: 1.43,
+            type: "physical"
+        },
+        enemyshock: {
+            name: "Shock",
+            abilityId: "enemyshock",
+            dmg: 120,
+            mdPercentage: 1.25,
+            description: "Deal 120 damage + 125% of your magic damage, deal 20% damage dealt to yourself",
+            type: "electric",
+            special: "selfdamage",
+            selfdamage: 15
         },
         shock: {
             name: "Shock",
             abilityId: "shock",
             dmg: 120,
-            mdPercentage: 1.2,
-            description: "Deal 120 damage + 120% of your attack damage, deal 20% damage dealt to yourself",
+            mdPercentage: 1.43,
+            description: "Deal 120 damage + 143% of your magic damage, deal 20% damage dealt to yourself",
             type: "electric",
             special: "selfdamage",
             selfdamage: 15
@@ -2851,22 +2879,6 @@ module.exports = {
             }
         },
         
-        // tackle (more damage over 80%)
-        // protect (absorb damage)
-        // bite (hits harder than attack)
-        // absorb (absorbs damage)
-        // cover (take damage for someone else - maybe reduce some dmg)
-        // heal that heals depending on hp of player with 1 turn cd
-
-        // ON D Abilities:
-        // explosion for 150
-        // gives +25 AD MD
-        // leaves a curse on someone
-        // aoe aura ends
-        // heals rest of enemies for ~500
-        // deals single target damage
-        // 100% enrage
-
         revive: {
             name: "Revive",
             description: "Revive your target",
@@ -2930,6 +2942,1965 @@ module.exports = {
                 multiplier: 0.8
             }
         }
+    },
+    rpgZones: {
+        prarie: {
+            zoneString : "Prarie String 1",
+            startingArea: "meadows",
+            name: "Prarie",
+            areas: {
+                // 3
+                acheronriver: {
+                    areaString : "Acheron River string 1",
+                    name: "Acheron River",
+                    enemies: {
+                        easy: [
+                            "rabbidwolf"
+                        ],
+                        medium: [
+                            "tacobandit"
+                        ],
+                        hard: [
+                            "footballplayer"
+                        ],
+                        boss: [
+                            "vampire"
+                        ]
+                    },
+                    rpgsToComplete: 9,
+                    onCompleteAreasUnlocked: [
+                        "charlesbridge",
+                        "tauronplains"
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ],
+                    
+                },
+                // 3
+                anorariver: {
+                    areaString : "Anora River string 1",
+                    name: "Anora River",
+                    enemies: {
+                        easy: [
+                            "rabbidwolf"
+                        ],
+                        medium: [
+                            "tacobandit"
+                        ],
+                        hard: [
+                            "footballplayer"
+                        ],
+                        boss: [
+                            "vampire"
+                        ]
+                    },
+                    rpgsToComplete: 9,
+                    onCompleteAreasUnlocked: [
+                        "greenchestnut",
+                        "tauronplains"
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                    
+                },
+                // 3
+                aokigahara: {
+                    areaString : "Aokigahara Forest string 1",
+                    name: "Aokigahara Forest",
+                    enemies: {
+                        easy: [
+                            "rabbidwolf"
+                        ],
+                        medium: [
+                            "tacobandit"
+                        ],
+                        hard: [
+                            "footballplayer"
+                        ],
+                        boss: [
+                            "vampire"
+                        ]
+                    },
+                    rpgsToComplete: 9,
+                    onCompleteAreasUnlocked: [
+                        "nishinomaru",
+                        "greenchestnut"
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                    
+                },
+                // 3
+                bagan: {
+                    areaString : "Bagan string 1",
+                    name: "Bagan",
+                    enemies: {
+                        easy: [
+                            "rabbidwolf"
+                        ],
+                        medium: [
+                            "tacobandit"
+                        ],
+                        hard: [
+                            "footballplayer"
+                        ],
+                        boss: [
+                            "vampire"
+                        ]
+                    },
+                    rpgsToComplete: 9,
+                    onCompleteAreasUnlocked: [
+                        "carerralake",
+                        "greenchestnut"
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                    
+                },
+                // 2
+                bluegrotto: {
+                    areaString : "Blue Grotto string 1",
+                    name: "Blue Grotto",
+                    enemies: {
+                        easy: [
+                            "rabbidwolf"
+                        ],
+                        medium: [
+                            "tacobandit"
+                        ],
+                        hard: [
+                            "footballplayer"
+                        ],
+                        boss: [
+                            "vampire"
+                        ]
+                    },
+                    rpgsToComplete: 9,
+                    onCompleteAreasUnlocked: [
+                        "acheronriver",
+                        "bagan"
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                    
+                },
+                // 4
+                carerralake: {
+                    areaString : "Carerra Lake string 1",
+                    name: "Carerra Lake",
+                    enemies: {
+                        easy: [
+                            "rabbidwolf"
+                        ],
+                        medium: [
+                            "tacobandit"
+                        ],
+                        hard: [
+                            "footballplayer"
+                        ],
+                        boss: [
+                            "vampire"
+                        ]
+                    },
+                    rpgsToComplete: 9,
+                    onCompleteAreasUnlocked: [
+                        "nishinomaru"
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                    
+                },
+                // 4
+                charlesbridge: {
+                    areaString : "Charles Bridge string 1",
+                    name: "Charles Bridge",
+                    enemies: {
+                        easy: [
+                            "rabbidwolf"
+                        ],
+                        medium: [
+                            "tacobandit"
+                        ],
+                        hard: [
+                            "footballplayer"
+                        ],
+                        boss: [
+                            "vampire"
+                        ]
+                    },
+                    rpgsToComplete: 9,
+                    onCompleteAreasUnlocked: [
+                        "nishinomaru"
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                    
+                },
+                // 4
+                tauronplains: {
+                    areaString : "Tauron Plains string 1",
+                    name: "Tauron Plains",
+                    enemies: {
+                        easy: [
+                            "rabbidwolf"
+                        ],
+                        medium: [
+                            "tacobandit"
+                        ],
+                        hard: [
+                            "footballplayer"
+                        ],
+                        boss: [
+                            "vampire"
+                        ]
+                    },
+                    rpgsToComplete: 9,
+                    onCompleteAreasUnlocked: [
+                        "nishinomaru"
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                    
+                },
+                // 4
+                greenchestnut: {
+                    areaString : "Green Chestnut string 1",
+                    name: "Green Chestnut",
+                    enemies: {
+                        easy: [
+                            "rabbidwolf"
+                        ],
+                        medium: [
+                            "tacobandit"
+                        ],
+                        hard: [
+                            "footballplayer"
+                        ],
+                        boss: [
+                            "vampire"
+                        ]
+                    },
+                    rpgsToComplete: 9,
+                    onCompleteAreasUnlocked: [
+                        "igualdafalls"
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                    
+                },
+                igualdafalls: {
+                    areaString : "Igualda Falls string 1",
+                    name: "Igualda Falls",
+                    enemies: {
+                        easy: [
+                            "rabbidwolf"
+                        ],
+                        medium: [
+                            "tacobandit"
+                        ],
+                        hard: [
+                            "footballplayer"
+                        ],
+                        boss: [
+                            "vampire"
+                        ]
+                    },
+                    rpgsToComplete: 9,
+                    onCompleteAreasUnlocked: [
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                    
+                },
+                // 3
+                molonoth: {
+                    areaString : "Molonoth Fields string 1",
+                    name: "Molonoth Fields",
+                    enemies: {
+                        easy: [
+                            "rabbidwolf"
+                        ],
+                        medium: [
+                            "tacobandit"
+                        ],
+                        hard: [
+                            "footballplayer"
+                        ],
+                        boss: [
+                            "vampire"
+                        ]
+                    },
+                    rpgsToComplete: 9,
+                    onCompleteAreasUnlocked: [
+                        "carerralake",
+                        "tauronplains"
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                    
+                },
+                nishinomaru: {
+                    areaString : "Nishinomaru Garden string 1",
+                    name: "Nishinomaru Garden",
+                    enemies: {
+                        easy: [
+                            "rabbidwolf"
+                        ],
+                        medium: [
+                            "tacobandit"
+                        ],
+                        hard: [
+                            "footballplayer"
+                        ],
+                        boss: [
+                            "vampire"
+                        ]
+                    },
+                    rpgsToComplete: 9,
+                    onCompleteAreasUnlocked: [
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                    
+                },
+                // 2
+                tallgrass: {
+                    areaString : "Tallgrass string 1",
+                    name: "Tallgrass",
+                    enemies: {
+                        easy: [
+                            "rabbidwolf"
+                        ],
+                        medium: [
+                            "tacobandit"
+                        ],
+                        hard: [
+                            "footballplayer"
+                        ],
+                        boss: [
+                            "vampire"
+                        ]
+                    },
+                    rpgsToComplete: 8,
+                    onCompleteAreasUnlocked: [
+                        "molonoth",
+                        "anorariver",
+                        "aokigahara"
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ],
+                    boss: "bossId"
+                },
+                // 1
+                meadows: {
+                    areaString : "Meadows string 1",
+                    name: "Meadows",
+                    enemies: {
+                        easy: [
+                            "rabbidwolf"
+                        ],
+                        medium: [
+                            "tacobandit"
+                        ],
+                        hard: [
+                            "footballplayer"
+                        ],
+                        boss: [
+                            "vampire"
+                        ]
+                    },
+                    rpgsToComplete: 8,
+                    onCompleteAreasUnlocked: [
+                        "tallgrass",
+                        "bluegrotto"
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ],
+                    boss: "bossId"
+                }
+            },
+            onCompleteZonesUnlocked: [
+                "woods",
+                "undergroundtunnels"
+            ]
+        },
+        woods: {
+            // Archenland, Beartooth River, Black Forest, Bryce Canyon, Dark Hedges, Darkwater Cove, Denali Park, 
+            // Forest of Stone, Inca Trail, Lake Vostok, Meero Ruins
+            zoneString : "Woods String 1",
+            startingArea: "archenland",
+            name: "Woods",
+            areas: {
+                archenland: {
+                    areaString : "Archenland string 1",
+                    name: "Archenland",
+                    enemies: {
+                        easy: [
+                            "rabbidwolf"
+                        ],
+                        medium: [
+                            "tacobandit"
+                        ],
+                        hard: [
+                            "footballplayer"
+                        ],
+                        boss: [
+                            "vampire"
+                        ]
+                    },
+                    rpgsToComplete: 9,
+                    onCompleteAreasUnlocked: [
+                        "beartoothriver",
+                        "meeroruins"
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ],
+                    
+                },
+                // 2
+                beartoothriver: {
+                    areaString : "Beartooth River string 1",
+                    name: "Beartooth River",
+                    enemies: {
+                        easy: [
+                            "rabbidwolf"
+                        ],
+                        medium: [
+                            "tacobandit"
+                        ],
+                        hard: [
+                            "footballplayer"
+                        ],
+                        boss: [
+                            "vampire"
+                        ]
+                    },
+                    rpgsToComplete: 9,
+                    onCompleteAreasUnlocked: [
+                        "brycecanyon",
+                        "incatrail"
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                    
+                },
+                blackforest: {
+                    areaString : "Black Forest string 1",
+                    name: "Black Forest",
+                    enemies: {
+                        easy: [
+                            "rabbidwolf"
+                        ],
+                        medium: [
+                            "tacobandit"
+                        ],
+                        hard: [
+                            "footballplayer"
+                        ],
+                        boss: [
+                            "vampire"
+                        ]
+                    },
+                    rpgsToComplete: 9,
+                    onCompleteAreasUnlocked: [
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                    
+                },
+                // 3
+                brycecanyon: {
+                    areaString : "Bryce Canyon string 1",
+                    name: "Bryce Canyon",
+                    enemies: {
+                        easy: [
+                            "rabbidwolf"
+                        ],
+                        medium: [
+                            "tacobandit"
+                        ],
+                        hard: [
+                            "footballplayer"
+                        ],
+                        boss: [
+                            "vampire"
+                        ]
+                    },
+                    rpgsToComplete: 9,
+                    onCompleteAreasUnlocked: [
+                        "lakevostok",
+                        "darkwatercove"
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                    
+                },
+                // 3
+                darkhedges: {
+                    areaString : "Dark Hedges string 1",
+                    name: "Dark Hedges",
+                    enemies: {
+                        easy: [
+                            "rabbidwolf"
+                        ],
+                        medium: [
+                            "tacobandit"
+                        ],
+                        hard: [
+                            "footballplayer"
+                        ],
+                        boss: [
+                            "vampire"
+                        ]
+                    },
+                    rpgsToComplete: 9,
+                    onCompleteAreasUnlocked: [
+                        "blackforest",
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                    
+                },
+                // 4
+                darkwatercove: {
+                    areaString : "Darkwater Cove string 1",
+                    name: "Darkwater Cove",
+                    enemies: {
+                        easy: [
+                            "rabbidwolf"
+                        ],
+                        medium: [
+                            "tacobandit"
+                        ],
+                        hard: [
+                            "footballplayer"
+                        ],
+                        boss: [
+                            "vampire"
+                        ]
+                    },
+                    rpgsToComplete: 9,
+                    onCompleteAreasUnlocked: [
+                        "blackforest"
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                    
+                },
+                // 5
+                denalipark: {
+                    areaString : "Denali Park string 1",
+                    name: "Denali Park",
+                    enemies: {
+                        easy: [
+                            "rabbidwolf"
+                        ],
+                        medium: [
+                            "tacobandit"
+                        ],
+                        hard: [
+                            "footballplayer"
+                        ],
+                        boss: [
+                            "vampire"
+                        ]
+                    },
+                    rpgsToComplete: 9,
+                    onCompleteAreasUnlocked: [
+                        "blackforest",
+                        "darkwatercove"
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                    
+                },
+                // 5
+                forestofstone: {
+                    areaString : "Forest of Stone string 1",
+                    name: "Forest of Stone",
+                    enemies: {
+                        easy: [
+                            "rabbidwolf"
+                        ],
+                        medium: [
+                            "tacobandit"
+                        ],
+                        hard: [
+                            "footballplayer"
+                        ],
+                        boss: [
+                            "vampire"
+                        ]
+                    },
+                    rpgsToComplete: 9,
+                    onCompleteAreasUnlocked: [
+                        "denalipark",
+                        "blackforest"
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                    
+                },
+                // 3
+                incatrail: {
+                    areaString : "Inca Trail string 1",
+                    name: "Inca Trail",
+                    enemies: {
+                        easy: [
+                            "rabbidwolf"
+                        ],
+                        medium: [
+                            "tacobandit"
+                        ],
+                        hard: [
+                            "footballplayer"
+                        ],
+                        boss: [
+                            "vampire"
+                        ]
+                    },
+                    rpgsToComplete: 9,
+                    onCompleteAreasUnlocked: [
+                        "denalipark",
+                        "forestofstone"
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                    
+                },
+                // 4
+                lakevostok: {
+                    areaString : "Lake Vostok string 1",
+                    name: "Lake Vostok",
+                    enemies: {
+                        easy: [
+                            "rabbidwolf"
+                        ],
+                        medium: [
+                            "tacobandit"
+                        ],
+                        hard: [
+                            "footballplayer"
+                        ],
+                        boss: [
+                            "vampire"
+                        ]
+                    },
+                    rpgsToComplete: 9,
+                    onCompleteAreasUnlocked: [
+                        "blackforest"
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                    
+                },
+                // 2
+                meeroruins: {
+                    areaString : "Meero Ruins string 1",
+                    name: "Meero Ruins",
+                    enemies: {
+                        easy: [
+                            "rabbidwolf"
+                        ],
+                        medium: [
+                            "tacobandit"
+                        ],
+                        hard: [
+                            "footballplayer"
+                        ],
+                        boss: [
+                            "vampire"
+                        ]
+                    },
+                    rpgsToComplete: 9,
+                    onCompleteAreasUnlocked: [
+                        "darkhedges",
+                        "brycecanyon"
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                    
+                }
+            },
+            onCompleteZonesUnlocked: [
+                "grandcanyon",
+                "crystalpeak",
+                "matamoros"
+            ]
+        },
+        undergroundtunnels: {
+            zoneString : "Underground Tunnels String 1",
+            startingArea: "klencory",
+            name: "Underground Tunnels",
+            areas: {
+                angkorwat: {
+                    areaString : "Angkor Wat string 1",
+                    name: "Angkor Wat",
+                    enemies: {
+                        easy: [
+                            "rabbidwolf"
+                        ],
+                        medium: [
+                            "tacobandit"
+                        ],
+                        hard: [
+                            "footballplayer"
+                        ],
+                        boss: [
+                            "vampire"
+                        ]
+                    },
+                    rpgsToComplete: 9,
+                    onCompleteAreasUnlocked: [
+                        "glowwormcave"
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ],
+                    
+                },
+                bigsur: {
+                    areaString : "Big Sur string 1",
+                    name: "Big Sur",
+                    enemies: {
+                        easy: [
+                            "rabbidwolf"
+                        ],
+                        medium: [
+                            "tacobandit"
+                        ],
+                        hard: [
+                            "footballplayer"
+                        ],
+                        boss: [
+                            "vampire"
+                        ]
+                    },
+                    rpgsToComplete: 9,
+                    onCompleteAreasUnlocked: [
+                        "angkorwat"
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                    
+                },
+                bramstomb: {
+                    areaString : "Bram's tomb string 1",
+                    name: "Bram's tomb",
+                    enemies: {
+                        easy: [
+                            "rabbidwolf"
+                        ],
+                        medium: [
+                            "tacobandit"
+                        ],
+                        hard: [
+                            "footballplayer"
+                        ],
+                        boss: [
+                            "vampire"
+                        ]
+                    },
+                    rpgsToComplete: 9,
+                    onCompleteAreasUnlocked: [
+                        "angkorwat"
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                    
+                },
+                greyheath: {
+                    areaString : "Gray Heath string 1",
+                    name: "Gray Heath",
+                    enemies: {
+                        easy: [
+                            "rabbidwolf"
+                        ],
+                        medium: [
+                            "tacobandit"
+                        ],
+                        hard: [
+                            "footballplayer"
+                        ],
+                        boss: [
+                            "vampire"
+                        ]
+                    },
+                    rpgsToComplete: 9,
+                    onCompleteAreasUnlocked: [
+                        "angkorwat"
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                    
+                },
+                klencory: {
+                    areaString : "Klencory string 1",
+                    name: "Klencory",
+                    enemies: {
+                        easy: [
+                            "rabbidwolf"
+                        ],
+                        medium: [
+                            "tacobandit"
+                        ],
+                        hard: [
+                            "footballplayer"
+                        ],
+                        boss: [
+                            "vampire"
+                        ]
+                    },
+                    rpgsToComplete: 9,
+                    onCompleteAreasUnlocked: [
+                        "ladakh",
+                        "meenakshitemple"
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                    
+                },
+                ladakh: {
+                    areaString : "Ladakh string 1",
+                    name: "Ladakh",
+                    enemies: {
+                        easy: [
+                            "rabbidwolf"
+                        ],
+                        medium: [
+                            "tacobandit"
+                        ],
+                        hard: [
+                            "footballplayer"
+                        ],
+                        boss: [
+                            "vampire"
+                        ]
+                    },
+                    rpgsToComplete: 9,
+                    onCompleteAreasUnlocked: [
+                        "greyheath",
+                        "bramstomb",
+                        "bigsur"
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                    
+                },
+                meenakshitemple: {
+                    areaString : "Meenakshi Temple string 1",
+                    name: "Meenakshi Temple",
+                    enemies: {
+                        easy: [
+                            "rabbidwolf"
+                        ],
+                        medium: [
+                            "tacobandit"
+                        ],
+                        hard: [
+                            "footballplayer"
+                        ],
+                        boss: [
+                            "vampire"
+                        ]
+                    },
+                    rpgsToComplete: 9,
+                    onCompleteAreasUnlocked: [
+                        "morrowcaverns",
+                        "tikal",
+                        "bramstomb"
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                    
+                },
+                morrowcaverns: {
+                    areaString : "Morrow Caverns string 1",
+                    name: "Morrow Caverns",
+                    enemies: {
+                        easy: [
+                            "rabbidwolf"
+                        ],
+                        medium: [
+                            "tacobandit"
+                        ],
+                        hard: [
+                            "footballplayer"
+                        ],
+                        boss: [
+                            "vampire"
+                        ]
+                    },
+                    rpgsToComplete: 9,
+                    onCompleteAreasUnlocked: [
+                        "minasmorgul",
+                        "dunwall",
+                        "angkorwat"
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                    
+                },
+                glowwormcave: {
+                    areaString : "Glowworm Cave string 1",
+                    name: "Glowworm Cave",
+                    enemies: {
+                        easy: [
+                            "rabbidwolf"
+                        ],
+                        medium: [
+                            "tacobandit"
+                        ],
+                        hard: [
+                            "footballplayer"
+                        ],
+                        boss: [
+                            "vampire"
+                        ]
+                    },
+                    rpgsToComplete: 9,
+                    onCompleteAreasUnlocked: [
+
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                    
+                },
+                tikal: {
+                    areaString : "Tikal string 1",
+                    name: "Tikal",
+                    enemies: {
+                        easy: [
+                            "rabbidwolf"
+                        ],
+                        medium: [
+                            "tacobandit"
+                        ],
+                        hard: [
+                            "footballplayer"
+                        ],
+                        boss: [
+                            "vampire"
+                        ]
+                    },
+                    rpgsToComplete: 9,
+                    onCompleteAreasUnlocked: [
+                        "minasmorgul",
+                        "dunwall"
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                    
+                },
+                minasmorgul: {
+                    areaString : "Minas Morgul string 1",
+                    name: "Minas Morgul",
+                    enemies: {
+                        easy: [
+                            "rabbidwolf"
+                        ],
+                        medium: [
+                            "tacobandit"
+                        ],
+                        hard: [
+                            "footballplayer"
+                        ],
+                        boss: [
+                            "vampire"
+                        ]
+                    },
+                    rpgsToComplete: 9,
+                    onCompleteAreasUnlocked: [
+                        "glowwormcave"
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                    
+                },
+                dunwall: {
+                    areaString : "Dunwall string 1",
+                    name: "Dunwall",
+                    enemies: {
+                        easy: [
+                            "rabbidwolf"
+                        ],
+                        medium: [
+                            "tacobandit"
+                        ],
+                        hard: [
+                            "footballplayer"
+                        ],
+                        boss: [
+                            "vampire"
+                        ]
+                    },
+                    rpgsToComplete: 9,
+                    onCompleteAreasUnlocked: [
+                        "glowwormcave"
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                    
+                }
+            },
+            onCompleteZonesUnlocked: [
+                "grandcanyon",
+                "crystalpeak",
+                "tadrartacacus"
+            ]
+        },
+        grandcanyon: {
+            // Sanyou Cave
+            zoneString : "Grand Canyon 1",
+            startingArea: "sanyoucave",
+            name: "Grand Canyon",
+            areas: {
+                sanyoucave: {
+                    areaString : "Sanyou Cave string 1",
+                    name: "Sanyou Cave",
+                    enemies: {
+                        easy: [
+                            "rabbidwolf"
+                        ],
+                        medium: [
+                            "tacobandit"
+                        ],
+                        hard: [
+                            "footballplayer"
+                        ],
+                        boss: [
+                            "vampire"
+                        ]
+                    },
+                    rpgsToComplete: 8,
+                    onCompleteAreasUnlocked: [
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ],
+                    
+                },
+                meadows2: {
+                    areaString : "meadows string 1",
+                    name: "Meadows",
+                    enemies: {
+                        easy: [
+                            "rabbidwolf"
+                        ],
+                        medium: [
+                            "tacobandit"
+                        ],
+                        hard: [
+                            "footballplayer"
+                        ],
+                        boss: [
+                            "vampire"
+                        ]
+                    },
+                    rpgsToComplete: 8,
+                    onCompleteAreasUnlocked: [
+                        "meadows",
+                        "test2"
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ],
+                    boss: "bossId"
+                }
+            },
+            onCompleteZonesUnlocked: [
+                "costademarfil"
+            ]
+        },
+        crystalpeak: {
+            // Krell Canyon
+            zoneString : "Crystal Peak 1",
+            startingArea: "krellcanyon",
+            name: "Crystal Peak",
+            areas: {
+                krellcanyon: {
+                    areaString : "Krell Canyon string 1",
+                    name: "Krell Canyon",
+                    enemies: {
+                        easy: [
+                            "rabbidwolf"
+                        ],
+                        medium: [
+                            "tacobandit"
+                        ],
+                        hard: [
+                            "footballplayer"
+                        ],
+                        boss: [
+                            "vampire"
+                        ]
+                    },
+                    rpgsToComplete: 8,
+                    onCompleteAreasUnlocked: [
+
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ],
+                    
+                },
+                meadows2: {
+                    areaString : "meadows string 1",
+                    name: "Meadows",
+                    enemies: {
+                        easy: [
+                            "rabbidwolf"
+                        ],
+                        medium: [
+                            "tacobandit"
+                        ],
+                        hard: [
+                            "footballplayer"
+                        ],
+                        boss: [
+                            "vampire"
+                        ]
+                    },
+                    rpgsToComplete: 8,
+                    onCompleteAreasUnlocked: [
+                        "meadows",
+                        "test2"
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ],
+                    boss: "bossId"
+                }
+            },
+            onCompleteZonesUnlocked: [
+                "costademarfil"
+            ]
+        },
+        matamoros: {
+            // La Jolla Cove
+            zoneString : "Matamoros 1",
+            startingArea: "lajoyacove",
+            name: "Matamoros",
+            areas: {
+                lajoyacove: {
+                    areaString : "La Jolla Cove string 1",
+                    name: "La Jolla Cove",
+                    enemies: {
+                        easy: [
+                            "rabbidwolf"
+                        ],
+                        medium: [
+                            "tacobandit"
+                        ],
+                        hard: [
+                            "footballplayer"
+                        ],
+                        boss: [
+                            "vampire"
+                        ]
+                    },
+                    rpgsToComplete: 8,
+                    onCompleteAreasUnlocked: [
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ],
+                    
+                },
+                meadows2: {
+                    areaString : "meadows string 1",
+                    name: "Meadows",
+                    enemies: {
+                        easy: [
+                            "rabbidwolf"
+                        ],
+                        medium: [
+                            "tacobandit"
+                        ],
+                        hard: [
+                            "footballplayer"
+                        ],
+                        boss: [
+                            "vampire"
+                        ]
+                    },
+                    rpgsToComplete: 8,
+                    onCompleteAreasUnlocked: [
+                        "meadows",
+                        "test2"
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ],
+                    boss: "bossId"
+                }
+            },
+            onCompleteZonesUnlocked: [
+                "costademarfil"
+            ]
+        },
+        tadrartacacus: {
+            // Karnaca
+            zoneString : "Tadrartacacus 1",
+            startingArea: "karnaca",
+            name: "Tadrartacacus",
+            areas: {
+                karnaca: {
+                    areaString : "Karnaca string 1",
+                    name: "Karnaca",
+                    enemies: {
+                        easy: [
+                            "rabbidwolf"
+                        ],
+                        medium: [
+                            "tacobandit"
+                        ],
+                        hard: [
+                            "footballplayer"
+                        ],
+                        boss: [
+                            "vampire"
+                        ]
+                    },
+                    rpgsToComplete: 8,
+                    onCompleteAreasUnlocked: [
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ],
+                    
+                },
+                meadows2: {
+                    areaString : "meadows string 1",
+                    name: "Meadows",
+                    enemies: {
+                        easy: [
+                            "rabbidwolf"
+                        ],
+                        medium: [
+                            "tacobandit"
+                        ],
+                        hard: [
+                            "footballplayer"
+                        ],
+                        boss: [
+                            "vampire"
+                        ]
+                    },
+                    rpgsToComplete: 8,
+                    onCompleteAreasUnlocked: [
+                        "meadows",
+                        "test2"
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ],
+                    boss: "bossId"
+                }
+            },
+            onCompleteZonesUnlocked: [
+                "costademarfil"
+            ]
+        },
+
+        //// NOT DONE TODO: FINISH THESE AND CONNECT
+        costademarfil: {
+
+        },
+        patagonia: {
+
+        },
+        yosemite: {
+
+        },
+        tokyo: {
+
+        },
+        johanesburg: {
+
+        },
+        london: {
+
+        },
+        mounteverest: {
+
+        },
+        aconcagua: {
+
+        },
+        pikecreek: {
+
+        },
+        sahara: {
+
+        },
+        newyork: {
+
+        },
+        chicago: {
+
+        },
+        elbert: {
+
+        },
+        panama: {
+
+        },
+
+        emeraldeve: {
+
+        },
+        gabrielshorn: {
+
+        },
+        monsargaeus: {
+
+        },
+        marecrisium: {
+
+        },
+        neoseoul: {
+
+        },
+        villissnelius: {
+
+        }
+    },
+    /*
+        Zones:
+        - prarie
+        - woods
+        - underground tunnels
+        - Gabriels Horn, 
+        - Pike Creek, 
+        - Neo Seul,
+        - Chicago, 
+        - New York, 
+        - Sahara,
+        - Emerald Eve, 
+        - Panama, - Sona, Panama City, 
+        - Matamoros - 
+        - Grand Canyon, 
+        - Crystal Peak, 
+        - Tadrart Acacus
+        - Costa de marfil, 
+        - Patagonia, 
+        - Yosemite
+        - Tokyo, 
+        - Johanesburg - district 10, 
+        - London - essex, bridge, 
+        - mountains Everest - walrus cove, crystaline cave, igloo town, 
+        - Aconcagua, 
+        - Elbert
+        -moon Mons Argaeus, 
+        -Mare Crisium, 
+        - Vallis Snellius  
+
+
+area 51
+bermuda triangle
+blackrock mountain
+moisty mire
+pearl harbour
+Taxco, 
+Devil´s sea, 
+Lake Vostok
+neverland, 
+peggy's cove, 
+santa monica pier, 
+scranton, 
+negaverse
+Nazca Lines, 
+Stonehenge, 
+Lake Khiluk, 
+Torres del Paine, 
+Inca Trail, 
+Keukenhof Gardens, 
+Hoge Velume park
+Arkaham Asylum, 
+Puerto princesa, 
+Palawan
+Signal Iduna Park, 
+Aokigahara Forest, 
+Chernobyl
+charles bridge
+central park
+Lanzarote
+Hogwarts
+Florence 
+Kitty Hawk
+Caprica City, 
+Tomb of Athena, 
+Gates of Hera, 
+Grand Library of Libran
+Sydney, 
+venice,
+Alexandria´s library, 
+Academy city, 
+Reach, 
+Klandagon, 
+Rannoch, 
+New Mombasa, 
+Sur'Kesh, 
+Jartar, 
+Voeld, 
+Parnassus, 
+Klencory
+Trinity park, 
+St George subway station, 
+Distillery district
+Argentum Bay, 
+Guardian Mountains, 
+Scorpia Shipyards, 
+Acheron River, 
+Themis Arena, 
+Euclid River, 
+Cuffle's Breath, 
+Kor Yaz Glacier, 
+Ruby Range, 
+Promos, 
+Pilgrim Bay, 
+Caprica Interplanetary Spaceport, 
+Cobb's Point, 
+Orpheus Park, 
+Martok Valley, 
+Delphi Museum, 
+Pantheon Bridge, 
+Telamont Building, 
+Pustiu Desert, 
+Spatiu Gol Plateau, 
+Penrose Harbor, 
+Great Tauron Plains, 
+Petrus Pallace, 
+Tower of Virgon, 
+Royal Palace of Leonis, 
+Hedon Grand Casino
+Agorian Battleplex, 
+Krell Canyon, 
+Molonoth Fields, 
+Tombli Outpost, 
+Zolar Forest, 
+Zoni Temple, 
+Maktar Resort, 
+MegaCorp Armory, 
+Park Dome, 
+Azeril Caverns, 
+Meero Ruins, 
+Gimlick Valley, 
+Hagrow Swamp, 
+Darkwater Cove, 
+Hoolefar Island, 
+Morrow Caverns
+Space Needle, 
+Salar de Uniya Salt Flats, 
+Lake Baikal, 
+Kuang Si Falls, 
+Torres del Paine Park, 
+Grand Prismatic Spring, 
+Niagara Falls, 
+Huacachina Oasis, 
+Machu Pichu, 
+Karakum Desert, 
+Mount Rinjani, 
+Lake Louise, 
+Taj Mahal, 
+Mount Fuji, 
+Namib-Naukluft Park, 
+Bagan, 
+Ha Long Bay, 
+Camps Bay, 
+Milford Sound, 
+Serengeti Park
+Neuschwanstein Castle, 
+Sa Pa Valley, 
+Plitvice Lakes, 
+Seljalandsfoss, 
+Cinque Terre, 
+Great Barrier Reef, 
+Lake Tekapo, 
+Plateau de Valensole, 
+Lake Hillier, 
+Antelope Canyon, 
+Arashiyama Forest, 
+Faroe Islands, 
+Lake Borogia, 
+Waitomo Glowworm Cave, 
+Denali Park, 
+The Fairy Pools, 
+Iguazu Falls, 
+Abraham Lake
+Anora River, 
+Ardwen Lake, 
+Arngor Mountain, 
+Beartooth River, 
+Beirland Island, 
+Borromeo Castle, 
+Bregan Hold, 
+The Burning Plains, 
+Brom's tomb, 
+Catacombs of Dras-Leona, 
+Crags of Tel'naeír, 
+Du Fells Nángoröth, 
+Edda River, 
+Eldor Lake, 
+Edur Naroch, 
+Forest of Stone, 
+Gray Heath, 
+Golden Globe, 
+Green Chestnut, 
+Hadarac Desert, 
+Nurmengard Castle, 
+Minas Morgul, 
+Igualda Falls, 
+Rathbur's Spar, 
+Leona Lake
+Karnaca
+Dunwall
+Tristram
+Taviana
+Ouagadougou
+archenland
+naypyidaw
+Arlington Cemetery, 
+Lijang Tower, 
+Black Forest, 
+Giza Plateau,
+Petra, 
+La Jolla Cove, 
+Temple of Anubis, 
+Cape Cod, 
+Wailea Beach 
+Grand Teton, 
+Big Sur, 
+Sedona,
+Zion, 
+Miyaka-jima Island, 
+Island of Dolls, 
+Blood Falls, 
+Mendenhall Ice Caves, 
+Red Beach, 
+Tianzi Mountains
+Skeleton Lake, 
+Bhangarh Fort, 
+Magnetic Hill, 
+Root Bridges, 
+Floating Islands, 
+Sea of Stars, 
+Hanging Pillar, 
+Pripyat Town, 
+Bubble Houses, 
+Inversion House, 
+Karni Mata Temple, 
+Hang Son Doong, 
+Screaming Tunnel, 
+Coober Pedy, 
+Stone Forest of Shilin, 
+Mir Mine
+Magic Castle, 
+Cano Cristales, 
+Badab-e Surt, 
+Marieta Island, 
+Aleppo, 
+Nambia
+Bag End
+Helm's Deep
+Grey Havens
+Pass of Cirith Ungol
+Rivendell
+Minas Tirith
+Preikestolen
+Camino de Santiago
+Galata Bridge
+Bwindi Impenetrable National Park
+Trans-Siberian Railway
+Cies Islands
+Pic du Midi
+Ladakh
+Himachal Pradash
+Bryce Canyon
+Mount Bromo
+Mount Everest
+Tomb of marxo
+Searle's Fang
+Saint Basil's Cathedral
+Tsukij fish market
+Sanyou Cave
+Blue Grotto
+Angkor Wat
+Nishinomaru Garden
+Bozkov Dolomite Caves
+Dark Hedges
+Whitehaven Beach
+Bay of Kotor
+Perito Moreno Glacier
+Maasai Mara National Reserve
+Verdon Gorge
+Milford Sound
+Panama Canal
+Juche Tower
+Bora Bora
+Sassi
+Tanah Lot
+Moraine Lake
+Socotra Island
+Chocolate Hills
+Angel Falls
+Meenakshi Temple
+Erg Ubari Desert
+Easter Island
+Table Mountain
+Giant's Causeway
+Dead Sea
+Carerra Lake
+Lofoten Islands
+Borobudur Temple
+Lagoa das Sete Cidades
+Rio de Los Siete Colores
+San Blas Islands
+Ranthambore National Park
+Berry Head Arch
+Ayers Rock
+Monument Valley
+Giant Crystal Cave
+Rock Islands of Palau
+White Desert
+Galapagos
+Na Pali Coast
+Napili Bay
+Neuschwanstein Castle
+Djemaa El Fna market
+Parthenon
+King Arthur Castle
+Chichen Itza
+Hagia Sophia
+Tikal
+Wat Phra Si Sanphet
+Colosseum
+Burj Khalifa
+Wuhan Greenland Center
+Big Ben
+Sydney Opera House
+Marina Bay Sands
+Louvre
+Arc de Triomphe
+Great Wall of China
+Bingham Canyon mine
+Nile River
+Death Valley
+Hoover Dam
+
+
+    */
+
+    areaToZoneMap: {
+        tallgrass: "prarie",
+        meadows: "prarie"
     },
     enemiesToEncounter: {
         summoned: {
@@ -3612,7 +5583,7 @@ module.exports = {
             },
             demon: {
                 name: "Demon",
-                abilities: ["attack", "attack", "attack", "shock"],
+                abilities: ["attack", "attack", "attack", "enemyshock"],
                 buffs: [],
                 hpPerPartyMember: 0,
                 adPerPartyMember: 0,
@@ -3680,7 +5651,7 @@ module.exports = {
             },
             tacoBandit: {
                 name: "Taco Bandit",
-                abilities: ["attack", "attack", "shock", "shock", "orchatasip"],
+                abilities: ["attack", "attack", "enemyshock", "enemyshock", "orchatasip"],
                 buffs: [],
                 hpPerPartyMember: 230,
                 adPerPartyMember: 14,
@@ -3800,7 +5771,7 @@ module.exports = {
             vampire: {
                 name: "Vampire",
                 abilities: [
-                   "attack", "attack", "rockthrow", "rockthrow", "shock", "shock", "tacowall"
+                   "attack", "attack", "rockthrow", "rockthrow", "enemyshock", "enemyshock", "tacowall"
                 ],
                 buffs: [
                     {
@@ -3831,8 +5802,8 @@ module.exports = {
                 element: "normal"
             }
         },
-        easy : [
-            {
+        easy : {
+            rabbidwolf: {
                 name: "Rabbid Wolf",
                 abilities: ["attack", "attack", "poison", "poison", "tacowall"],
                 buffs: [],
@@ -3847,7 +5818,7 @@ module.exports = {
                 difficulty: "easy",
                 element: "normal"
             },
-            {
+            badchef: {
                 name: "Bad Chef",
                 abilities: ["attack", "attack", "poison", "poison", "barrier"],
                 buffs: [],
@@ -3865,7 +5836,7 @@ module.exports = {
                 difficulty: "easy",
                 element: "normal"
             },
-            {
+            vagabond: {
                 name: "Vagabond",
                 abilities: ["attack", "attack", "flameblast", "flameblast", "cripple"],
                 buffs: [],
@@ -3883,7 +5854,7 @@ module.exports = {
                 difficulty: "easy",
                 element: "normal"
             },
-            {
+            coyote: {
                 name: "Coyote",
                 abilities: ["attack", "attack", "claw", "claw", "cripple"],
                 buffs: [],
@@ -3901,7 +5872,7 @@ module.exports = {
                 difficulty: "easy",
                 element: "normal"
             },
-            {
+            angrymobmember: {
                 name: "Angry Mob Member",
                 abilities: ["attack", "attack", "poison", "iceshards", "iceshards", "cripple"],
                 buffs: [],
@@ -3916,7 +5887,7 @@ module.exports = {
                 difficulty: "easy",
                 element: "normal"
             },
-            {
+            tacodealer: {
                 name: "Taco Dealer",
                 abilities: ["attack", "attack", "drain", "drain", "freeze"],
                 buffs: [],
@@ -3931,7 +5902,7 @@ module.exports = {
                 difficulty: "easy",
                 element: "normal"
             },
-            {
+            burritohustler: {
                 name: "Burrito Hustler",
                 abilities: ["attack", "attack", "slap", "slap", "weaken"],
                 buffs: [],
@@ -3946,7 +5917,7 @@ module.exports = {
                 difficulty: "easy",
                 element: "normal"
             },
-            {
+            ruffian: {
                 name: "Ruffian",
                 abilities: ["attack", "attack", "tackle", "tackle", "weaken"],
                 buffs: [],
@@ -3961,11 +5932,11 @@ module.exports = {
                 difficulty: "easy",
                 element: "normal"
             }
-        ],
-        medium: [
-            {
+        },
+        medium: {
+            tacobandit: {
                 name: "Taco Bandit",
-                abilities: ["attack", "attack", "shock", "shock", "orchatasip"],
+                abilities: ["attack", "attack", "enemyshock", "enemyshock", "orchatasip"],
                 buffs: [],
                 hpPerPartyMember: 230,
                 adPerPartyMember: 14,
@@ -3978,7 +5949,7 @@ module.exports = {
                 difficulty: "medium",
                 element: "normal"
             },
-            {
+            tacothief: {
                 name: "Taco Thief",
                 abilities: ["attack", "attack", "flameblast", "flameblast", "orchatasip"],
                 buffs: [],
@@ -3996,7 +5967,7 @@ module.exports = {
                 difficulty: "medium",
                 element: "normal"
             },
-            {
+            slotsgambler: {
                 name: "Slots Gambler",
                 abilities: ["attack", "attack", "elixir", "elixir", "orchatasip"],
                 buffs: [],
@@ -4011,7 +5982,7 @@ module.exports = {
                 difficulty: "medium",
                 element: "normal"
             },
-            {
+            fruitscounter: {
                 name: "Fruits Counter",
                 abilities: ["attack", "attack", "uppercut", "uppercut", "weaken"],
                 buffs: [],
@@ -4026,9 +5997,9 @@ module.exports = {
                 difficulty: "medium",
                 element: "normal"
             }
-        ],
-        hard: [
-            {
+        },
+        hard: {
+            footballplayer: {
                 name: "Football Player",
                 abilities: ["attack", "attack", "slash", "slash", "rockthrow", "empower"],
                 buffs: [
@@ -4054,7 +6025,7 @@ module.exports = {
                 difficulty: "hard",
                 element: "normal"
             },
-            {
+            samuraiwarrior: {
                 name: "Samurai Warrior",
                 abilities: ["attack", "attack", "iceshards", "iceshards", "drain", "drain", "bandaid"],
                 buffs: [
@@ -4080,7 +6051,7 @@ module.exports = {
                 difficulty: "hard",
                 element: "normal"
             },
-            {
+            warewolf: {
                 name: "Warewolf",
                 abilities: ["attack", "attack", "ferociousBite", "ferociousBite", "uppercut"],
                 buffs: [
@@ -4106,9 +6077,9 @@ module.exports = {
                 difficulty: "hard",
                 element: "normal"
             },
-            {
+            funnypolitician: {
                 name: "Funny Politician",
-                abilities: ["attack" , "attack" , "curse", "poison", "shoot", "shoot","freeze"],
+                abilities: ["attack" , "attack" , "curse", "poison", "enemyshoot", "enemyshoot","freeze"],
                 buffs: [
                     {
                         name: "frenzy",
@@ -4135,12 +6106,12 @@ module.exports = {
                 difficulty: "hard",
                 element: "normal"
             }
-        ],
-        boss: [
-            {
+        },
+        boss: {
+            vampire: {
                 name: "Vampire",
                 abilities: [
-                   "attack", "attack", "rockthrow", "rockthrow", "shock", "shock", "tacowall"
+                   "attack", "attack", "rockthrow", "rockthrow", "enemyshock", "enemyshock", "tacowall"
                 ],
                 buffs: [
                     {
@@ -4169,7 +6140,7 @@ module.exports = {
                 difficulty: "boss",
                 element: "normal"
             },
-            {
+            viking: {
                 name: "Viking",
                 abilities: [
                    "attack", "attack", "tackle", "tackle", "tackle", "slash", "slash", "slash","empower"
@@ -4201,7 +6172,7 @@ module.exports = {
                 difficulty: "boss",
                 element: "normal"
             },
-            {
+            escapedrobot: {
                 name: "Escaped Robot",
                 abilities: [
                     "attack", "attack", "drain", "drain", "iceshards", "iceshards", "shield"
@@ -4233,10 +6204,10 @@ module.exports = {
                 difficulty: "boss",
                 element: "normal"
             },
-            {
+            desperado: {
                 name: "Desperado",
                 abilities: [
-                    "attack", "attack", "shoot", "shoot", "slash", "slash", "cripple"
+                    "attack", "attack", "enemyshoot", "enemyshoot", "slash", "slash", "cripple"
                 ],
                 buffs: [
                     {
@@ -4265,7 +6236,7 @@ module.exports = {
                 difficulty: "boss",
                 element: "normal"
             }
-        ],
+        },
         // time travel, demonic summoning, abraham lincolns tomb, evil exes
         
         special: {
@@ -4601,8 +6572,8 @@ module.exports = {
                     name: "T-1000",
                     abilities: [
                         "attack",
-                        "shoot",
-                        "shoot",
+                        "enemyshoot",
+                        "enemyshoot",
                         "poke",
                         "barrier"
                     ],
@@ -4623,7 +6594,7 @@ module.exports = {
                     xp: 1350,
                     abilities: [
                         "corrupt",
-                        "shock",
+                        "enemyshock",
                         "curse",
                         "freeze"
                     ],
@@ -4902,7 +6873,7 @@ module.exports = {
                 {
                     name: "Vampire",
                     abilities: [
-                    "attack", "attack", "drain", "drain", "shock", "shock", "tacowall"
+                    "attack", "attack", "drain", "drain", "enemyshock", "enemyshock", "tacowall"
                     ],
                     buffs: [
                         {
@@ -5475,8 +7446,8 @@ module.exports = {
                         "attack",
                         "flameblast",
                         "flameblast",
-                        "shoot",
-                        "shoot",
+                        "enemyshoot",
+                        "enemyshoot",
                         "poke",
                         "cripple"
                     ],
@@ -5570,11 +7541,18 @@ module.exports = {
         },
         challenge: {
             1: {
+                challengeId: "escapedrobot",
                 enemies: [
                     {
                         name: "Angry Mob Member",
                         abilities: ["attack", "attack", "poison", "iceshards", "iceshards", "cripple"],
                         buffs: [],
+                        keystoneStats: {
+                            hp: [1200, 3500, 6200, 10000, 15000 ],
+                            attackDmg: [300, 500, 900, 1500, 2300],
+                            magicDmg: [300, 500, 900, 1500, 2300],
+                            abilities: []
+                        },
                         hpPerPartyMember: 130,
                         adPerPartyMember: 8,
                         mdPerPartyMember: 8,
@@ -5590,6 +7568,12 @@ module.exports = {
                         name: "Taco Thief",
                         abilities: ["attack", "attack", "flameblast", "flameblast", "orchatasip"],
                         buffs: [],
+                        keystoneStats: {
+                            hp: [1200, 3500, 6200, 10000, 15000 ],
+                            attackDmg: [300, 500, 900, 1500, 2300],
+                            magicDmg: [300, 500, 900, 1500, 2300],
+                            abilities: []
+                        },
                         effectsOnDeath: [
                             "explode"
                         ],
@@ -5608,6 +7592,12 @@ module.exports = {
                         name: "Slots Gambler",
                         abilities: ["attack", "attack", "elixir", "elixir", "orchatasip"],
                         buffs: [],
+                        keystoneStats: {
+                            hp: [1200, 3500, 6200, 10000, 15000 ],
+                            attackDmg: [300, 500, 900, 1500, 2300],
+                            magicDmg: [300, 500, 900, 1500, 2300],
+                            abilities: []
+                        },
                         hpPerPartyMember: 130,
                         adPerPartyMember: 14,
                         mdPerPartyMember: 16,
@@ -5634,6 +7624,16 @@ module.exports = {
                                 }
                             }
                         ],
+                        keystoneStats: {
+                            frenzy: {
+                                attackDmgPlus : [110, 220, 350, 640, 920],
+                                magicDmgPlus : [110, 220, 350, 640, 920]
+                            },
+                            hp: [1500, 3900, 6900, 18000, 25000 ],
+                            attackDmg: [300, 500, 900, 1700, 3300],
+                            magicDmg: [300, 500, 900, 1700, 3300],
+                            abilities: []
+                        },
                         hpPerPartyMember: 1190,
                         adPerPartyMember: 18,
                         mdPerPartyMember: 18,
@@ -5662,6 +7662,16 @@ module.exports = {
                                 }
                             }
                         ],
+                        keystoneStats: {
+                            frenzy: {
+                                attackDmgPlus : [150, 280, 450, 840, 1220],
+                                magicDmgPlus : [150, 280, 450, 840, 1220]
+                            },
+                            hp: [1500, 3900, 6900, 18000, 25000 ],
+                            attackDmg: [800, 1200, 1900, 2700, 4300],
+                            magicDmg: [800, 1200, 1900, 2700, 4300],
+                            abilities: []
+                        },
                         endOfTurnEvents : [
                             "echo",
                             "focus"
@@ -5679,9 +7689,12 @@ module.exports = {
                     },
                 ],
                 points: 23,
+                xppoints: 23,
+                lootcount: 5,
                 difficulty: 1
             },
             2: {
+                challengeId: "desperado",
                 enemies: [
                     {
                         name: "Taco Thief",
@@ -5703,7 +7716,7 @@ module.exports = {
                     },
                     {
                         name: "Taco Bandit",
-                        abilities: ["attack", "attack", "shock", "shock", "orchatasip"],
+                        abilities: ["attack", "attack", "enemyshock", "enemyshock", "orchatasip"],
                         buffs: [],
                         hpPerPartyMember: 180,
                         adPerPartyMember: 14,
@@ -5718,7 +7731,7 @@ module.exports = {
                     },
                     {
                         name: "Funny Politician",
-                        abilities: ["attack" , "attack" , "curse", "poison", "shoot", "shoot","freeze"],
+                        abilities: ["attack" , "attack" , "curse", "poison", "enemyshoot", "enemyshoot","freeze"],
                         buffs: [
                             {
                                 name: "frenzy",
@@ -5774,7 +7787,7 @@ module.exports = {
                     {
                         name: "Desperado",
                         abilities: [
-                            "attack", "attack", "shoot", "shoot", "slash", "slash", "cripple",
+                            "attack", "attack", "enemyshoot", "enemyshoot", "slash", "slash", "cripple",
                         ],
                         buffs: [
                             {
@@ -5805,9 +7818,12 @@ module.exports = {
                     }
                 ],
                 points: 49,
+                xppoints: 49,
+                lootcount: 5,
                 difficulty: 2
             },
             3: {
+                challengeId: "romansoldier",
                 enemies: [
                     {
                         name: "Taco Thief",
@@ -5845,7 +7861,7 @@ module.exports = {
                     {
                         name: "Roman Soldier",
                         abilities: [
-                            "attack", "crush", "shock"
+                            "attack", "crush", "enemyshock"
                         ],
                         buffs: [
                             {
@@ -5913,9 +7929,12 @@ module.exports = {
                     }
                 ],
                 points: 93,
+                xppoints: 93,
+                lootcount: 6,
                 difficulty: 3
             },
             4: {
+                challengeId: "dictator",
                 enemies: [
                     {
                         name: "Dictator",
@@ -6044,16 +8063,19 @@ module.exports = {
                     },
                 ],
                 points: 139,
+                xppoints: 139,
+                lootcount: 7,
                 difficulty: 5,
             },
             5: {
+                challengeId: "cheftrio",
                 enemies: [
                     // 3 bosses, each has a special ability
                     // when one of the bosses dies, the other 2 gain the ability at the current CD of the ability
                     // all bosses get healed, and dmg gets increased as well
                     {
                         name: "Taco Bandit",
-                        abilities: ["attack", "attack", "shock", "shock", "orchatasip"],
+                        abilities: ["attack", "attack", "enemyshock", "enemyshock", "orchatasip"],
                         buffs: [],
                         hpPerPartyMember: 210,
                         adPerPartyMember: 14,
@@ -6068,7 +8090,7 @@ module.exports = {
                     },
                     {
                         name: "Taco Bandit",
-                        abilities: ["attack", "attack", "shock", "shock", "orchatasip"],
+                        abilities: ["attack", "attack", "enemyshock", "enemyshock", "orchatasip"],
                         buffs: [],
                         hpPerPartyMember: 210,
                         adPerPartyMember: 14,
@@ -6203,8 +8225,10 @@ module.exports = {
                         element: "normal"
                     },
                 ],
-                points: 681,
-                difficulty: 11
+                points: 281,
+                xppoints: 241,
+                lootcount: 9,
+                difficulty: 8
             },
             6: {
                 // 4 energy crystals
@@ -6213,6 +8237,7 @@ module.exports = {
                 // yellow = abilities more often, aoe abilities, black = summon 6 minions
                 // purple = status on target, after 3 statuses they explode
                 // blue = 1 cooldown per ability, effect ends when new crystals appear
+                challengeId: "a182type2",
                 description: "**Energy Crystals:** \nRed - grants Furnace(magical)\nGreen- grants Dismantle(physical)\nBlack - Summons Tortured Robots\nBlue - Summons Energy Core(Immune to areawide damage)\nYellow - Rocket Strike becomes areawide, reduces Furnace, Dismantle, Rocket Strike cooldown by 1 turn, Summon Tortured Robot by 6 turns\nPurple - affects with Radioactive(direct healing grants an additional stack of Radioactive, at 5 stacks you explode for 1300 damage)\nEnergy Core - Grants Energize to the boss upon being summoned, Energize lasts 6 turns (+400 attack, magic), upon death causes cleansing which removes Energized from all units\nLaser Beam - Physical, Rocket Strike - Magical",
                 timed: true,
                 timedPerTurn: 180000,
@@ -6278,14 +8303,19 @@ module.exports = {
                         element: "normal"
                     }
                 ],
-                points: 929,
-                difficulty: 25
+                points: 529,
+                xppoints: 370,
+                lootcount: 10,
+                difficulty: 15
             },
             7: {
+                challengeId: "gatekeeper",
                 timed: true,
                 timedPerTurn: 180000,
-                points: 1900,
-                difficulty: 46,
+                points: 1000,
+                xppoints: 480,
+                lootcount: 10,
+                difficulty: 19,
                 enemies: [
                     {
                         name: "The Gatekeeper",
@@ -6398,10 +8428,13 @@ module.exports = {
                 ],
             },
             8: {
+                challengeId: "archvampire",
                 timed: true,
                 timedPerTurn: 180000,
-                points: 4600,
-                difficulty: 79,
+                points: 1800,
+                xppoints: 710,
+                difficulty: 29,
+                lootcount: 10,
                 enemies: [
                     {
                         name: "Archvampire",
@@ -6546,16 +8579,19 @@ module.exports = {
                 ]
             },
             9: {
+                challengeId: "corruptedovermind",
                 timed: true,
                 timedPerTurn: 180000,
-                points: 22901,
-                difficulty: 110,
+                points: 2901,
+                xppoints: 1500,
+                difficulty: 40,
+                lootcount: 11,
                 enemies: [
                     {
                         name: "Corrupted Overmind",
                         abilities: [
                             "corrupt",
-                            "shock",
+                            "enemyshock",
                             "curse",
                             "freeze"
                         ],
@@ -6713,10 +8749,13 @@ module.exports = {
                 ],
             },
             10: {
+                challengeId: "anomaly",
                 timed: true,
                 timedPerTurn: 180000,
-                points: 75901,
-                difficulty: 141,
+                points: 7901,
+                xppoints: 2140,
+                lootcount: 12,
+                difficulty: 55,
                 enemies: [
                     {
                         name: "Asteroid Golem",
@@ -6816,27 +8855,16 @@ module.exports = {
                     }
                 ]
             },
-            /*
-            */
             11: {
-                // transitions
-                // 1 - 25% max hp (every 2 turns) + arrow volley(for 3 turns after second turn) + flanking orders (every 7 turns) + damage reduction (every 2 turns after 4 turns)
-                // on second enemy - arrow volley + damage reduction + flanking orders
-                // 2 - arrow volley + damage reduction + apparition + iceshards + explosion shield + flanking orders
-                // on third enemy - apparition + shield + iceshards + flanking orders + damage reduct
-                // 3 - apparition + iceshards + explosion shield + maniac + add spawn after 4 turns + flanking order + damage reduction
-                // on last enemy - maniac + enabler + flanking orders + damage reduct + apparition
+                challengeId: "aramis",
                 timed: true,
                 timedPerTurn: 360000,
-                points: 317901,
-                difficulty: 186,
+                points: 10901,
+                xppoints: 3573,
+                lootcount: 13,
+                difficulty: 70,
                 enemies: [
                     {
-                        // deals moderate physical
-                        // crush / poke / attack
-                        // EOT - deals 25% of max HP
-                        // special ***flanking orders lightning, fire, water, earth(7 turns)
-                        // dps race, gains frenzy of + 4k after 20 turns
                         name: "D'Artagnan",
                         xp: 30,
                         abilities: [
@@ -6888,14 +8916,34 @@ module.exports = {
                     }
                 ]
             },
+            // empowering makes them deal 10% more damage + gain energy faster
+            // HP of all of them ~48k
+            // HP of summoned healer ~10k
+            // one melees(medium) and hits random player for 25% of melee (impale)
+            // one melees(weak) and deals status to random player (75%)
+            // one melees(hard) and puts ice dot on player (no bandaid)
+            // one hits random deals aoe
+            // HP of adds summoned by sand ~ 10k
+            // energy gained max should start at 7 turns (21 turns to kill one)
+            // 300, 600, 900, 1200, 1500, 1800 aoe hits after full energy from empowered
+            // 1, 9, 9, 9, 7, 6, 5, 5, 4, 3, 3
+            //   50, 40, 30, 23, 17, 12, 7, 
+            // 5 * 180 = 
+            // total 180 turns of debuff
+            // 6 turns when there's 3 left
+            // each time spirit is forced out create a new debuff - each turn adds 5% dmg taken
+            // dot deals increasing damage, bandaid forces it onto another player
+            // 
             12: {
+                challengeId: "emperor",
                 timed: true,
                 timedPerTurn: 360000,
-                points: 317901,
-                difficulty: 186,
+                points: 27901,
+                xppoints: 5120,
+                difficulty: 85,
                 enemies: [
                     {
-                        name: "Balrog",
+                        name: "Summoner",
                         xp: 30,
                         abilities: [
                             "attack",
@@ -6918,6 +8966,8 @@ module.exports = {
                         ],
                         endOfTurnEvents : [
                             "focus"
+                            // adds debuff that deals low dmg runs out after 20 turns
+                            // empowered = summon adds + adds 30 turns to the debuffs
                         ],
                         effectsOnDeath: [
                         ],
@@ -6931,9 +8981,152 @@ module.exports = {
                         mdPerPartyMember: 0,
                         difficulty: "boss",
                         element: "normal"
+                    },
+                    {
+                        name: "High Melee",
+                        xp: 30,
+                        abilities: [
+                            "attack",
+                            "slash",
+                        ],
+                        buffs: [
+                            {
+                                name: "frenzy",
+                                emoji: "<:frenzy:479298214453968896>",
+                                onTurnEnd: {
+                                    attackDmgPlus : 12100,
+                                    magicDmgPlus : 12100,
+                                    everyNTurns: 5,
+                                    startTurn: 5
+                                }
+                            }
+                        ],
+                        abilityOrder: [
+                            0,0,1,1,1,1,1
+                        ],
+                        endOfTurnEvents : [
+                            "focus"
+                            // starts with darkness on turn 2
+                            // put high hitting dot on 1 person starts at (300)
+                            // empower his weapon to deal higher phys
+                        ],
+                        effectsOnDeath: [
+                        ],
+                        hp: 52600,
+                        attackDmg: 14580,
+                        magicDmg: 14570,
+                        armor: 2100,
+                        spirit: 2100,
+                        hpPerPartyMember: 0,
+                        adPerPartyMember: 0,
+                        mdPerPartyMember: 0,
+                        difficulty: "boss",
+                        element: "normal"
+                    },
+                    {
+                        name: "Healer",
+                        xp: 30,
+                        abilities: [
+                            "attack",
+                            "slash",
+                        ],
+                        buffs: [
+                            {
+                                name: "frenzy",
+                                emoji: "<:frenzy:479298214453968896>",
+                                onTurnEnd: {
+                                    attackDmgPlus : 12100,
+                                    magicDmgPlus : 12100,
+                                    everyNTurns: 5,
+                                    startTurn: 5
+                                }
+                            }
+                        ],
+                        // random magic dmg 
+                        abilityOrder: [
+                            0,0,1,1,1,1,1
+                        ],
+                        endOfTurnEvents : [
+                            "focus"
+                            // summon healer (lasts 2 turns) when not empowered
+                            // if empowered summon 2 adds that deal aoe
+                        ],
+                        effectsOnDeath: [
+                        ],
+                        hp: 52600,
+                        attackDmg: 14580,
+                        magicDmg: 14570,
+                        armor: 2100,
+                        spirit: 2100,
+                        hpPerPartyMember: 0,
+                        adPerPartyMember: 0,
+                        mdPerPartyMember: 0,
+                        difficulty: "boss",
+                        element: "normal"
+                    },
+                    {
+                        name: "Non Focus",
+                        xp: 30,
+                        abilities: [
+                            "attack",
+                            "slash",
+                        ],
+                        buffs: [
+                            {
+                                name: "frenzy",
+                                emoji: "<:frenzy:479298214453968896>",
+                                onTurnEnd: {
+                                    attackDmgPlus : 12100,
+                                    magicDmgPlus : 12100,
+                                    everyNTurns: 5,
+                                    startTurn: 5
+                                }
+                            }
+                        ],
+                        // no focus melee hit and aoe
+                        abilityOrder: [
+                            0,0,1,1,1,1,1
+                        ],
+                        endOfTurnEvents : [
+                            // when empowered reflect damage back 25%
+                        ],
+                        effectsOnDeath: [
+                        ],
+                        hp: 52600,
+                        attackDmg: 14580,
+                        magicDmg: 14570,
+                        armor: 2100,
+                        spirit: 2100,
+                        hpPerPartyMember: 0,
+                        adPerPartyMember: 0,
+                        mdPerPartyMember: 0,
+                        difficulty: "boss",
+                        element: "normal"
                     }
+                    // darkness buff starts on high melee
+                    // darkness is removed when taking 25% HP of current HP
+                    // darkness goes to next highest HP enemy - cannot skip 4 in a row
+                    // when darkness is removed it also gives +10% damage buff
+                    // when darkness is removed it also puts dot on random player
+                    // dot deals minor dmg, and gives +5% damage taken every turn
+                    // when dot is bandaided it jumps to another different player
+                    // if no other players available, stays on them
+                    // darkness gives buff that starts at x turns (6 initially)
+                    // everytime they get darkness again it starts off at x-1
+                    //
                 ]
             }
         }
     }    
 }
+
+/*
+each zone has ~12-20 areas
+each area has 1 boss after ~7-10 RPGs in that area
+in total 84 RPGS -> 200 rpgs per zone
+all areas are completed by picking, first one is always the same, completion % of area is linear, they are just integers
+zones are completed once all areas are completed
+
+TODO: come up with area names for all of these
+find pictures for all areas + zones
+*/

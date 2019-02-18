@@ -6,10 +6,11 @@ var config = require("./config");
 var rpglib = require("./rpglib");
 var wearStats = require("./wearStats.js")
 var achiev = require("./achievements")
+var commands = require("./commands.js")
 var moment = require("moment");
 var _ = require("lodash");
 
-var RPG_COOLDOWN_HOURS = 2
+var RPG_COOLDOWN_HOURS = 0
 var activeRPGEvents = {};
 var activeRPGItemIds = {};
 var usersInRPGEvents = {};
@@ -18,6 +19,8 @@ var CURRENT_CHALLENGES_AVAILABLE = 12
 var CHALLENGE_TO_TEST = 11
 var rpgAbilities = rpglib.rpgAbilities;
 var enemiesToEncounter = rpglib.enemiesToEncounter;
+var areaToZoneMap = rpglib.areaToZoneMap
+var rpgZones = rpglib.rpgZones
 
 module.exports.rpgInitialize = function(message, special){
     // create an embed saying that b is about to happen, for users MAX of 5 users and they must all say -ready to start costs 5 tacos per person
@@ -27,7 +30,7 @@ module.exports.rpgInitialize = function(message, special){
     team.push(message.author);
 
     users.forEach(function(user){
-        if (team.length < TEAM_MAX_LENGTH && discordUserId != user.id){
+        if (team.length < TEAM_MAX_LENGTH ){//&& discordUserId != user.id){
             team.push(user);
         }
     })
@@ -69,12 +72,16 @@ module.exports.rpgInitialize = function(message, special){
             if (special && special.challenge){
                 activeRPGEvents["rpg-" + sentMessage.id].challenge = {
                     challenge: special.challenge,
+                    keystone: special.keystone,
                     valid: false
                 };
                 activeRPGEvents["rpg-" + sentMessage.id].leader = message.author;
-            }else if (special){
+            }else if (special && !special.currentarea){
                 activeRPGEvents["rpg-" + sentMessage.id].special = special;
                 activeRPGEvents["rpg-" + sentMessage.id].leader = message.author;
+            }else{
+                activeRPGEvents["rpg-" + sentMessage.id].area = special.currentarea
+                activeRPGEvents["rpg-" + sentMessage.id].usersInArea = []
             }
         })
     }
@@ -128,7 +135,7 @@ module.exports.rpgSkip = function(message){
 module.exports.showRpgStats = function(message, itemsAvailable, amuletItemsById){
     var discordUserId = message.author.id;
     
-    profileDB.getUserProfileData(discordUserId, function(err, userData){
+    profileDB.getUserRpgProfleData(discordUserId, function(err, userData){
         if (err){
             console.log(err);
             message.channel.send(err + " something went wrong [profile]");
@@ -143,15 +150,15 @@ module.exports.showRpgStats = function(message, itemsAvailable, amuletItemsById)
                     // console.log(inventoryResponse.data);
                     // get all the data for each item
                     var itemsInInventoryCountMap = {};
-                    var itemsMapbyId = {};
-
+                    var userArmamentForItemId = {}
                     for (var item in inventoryResponse.data){
-
                         if (!itemsInInventoryCountMap[inventoryResponse.data[item].itemid] ){
                             // item hasnt been added to be counted, add it as 1
                             itemsInInventoryCountMap[inventoryResponse.data[item].itemid] = 1;
+                            if (inventoryResponse.data[item].armamentforitemid){
+                                userArmamentForItemId[inventoryResponse.data[item].armamentforitemid] = inventoryResponse.data[item]
+                            }
                         }else{
-                            // 
                             itemsInInventoryCountMap[inventoryResponse.data[item].itemid] = itemsInInventoryCountMap[inventoryResponse.data[item].itemid] + 1
                         }
                     }
@@ -229,6 +236,16 @@ module.exports.showRpgStats = function(message, itemsAvailable, amuletItemsById)
                                 var armorPlus = itemsAvailable[items[i]].armorplus ? itemsAvailable[items[i]].armorplus : 0;
                                 var spiritPlus = itemsAvailable[items[i]].spiritplus ? itemsAvailable[items[i]].spiritplus : 0;
                                 var luckPlus = itemsAvailable[items[i]].luckplus ? itemsAvailable[items[i]].luckplus : 0;
+                                // check for an amulet for this item
+                                if (userArmamentForItemId[items[i]]){
+                                    // HAVE armament for this item - add the stats to the item
+                                    hpPlus = hpPlus + userArmamentForItemId[items[i]].hpplus;
+                                    attackDmgPlus = attackDmgPlus + userArmamentForItemId[items[i]].adplus;
+                                    magicDmgPlus = magicDmgPlus + userArmamentForItemId[items[i]].mdplus;
+                                    armorPlus = armorPlus + userArmamentForItemId[items[i]].armorplus;
+                                    spiritPlus = spiritPlus + userArmamentForItemId[items[i]].spiritplus;
+                                    luckPlus = luckPlus + userArmamentForItemId[items[i]].luckplus;
+                                }
 
                                 statisticsFromItemsAndLevel.hpPlus = statisticsFromItemsAndLevel.hpPlus + hpPlus;
                                 statisticsFromItemsAndLevel.attackDmgPlus = statisticsFromItemsAndLevel.attackDmgPlus + attackDmgPlus;
@@ -236,6 +253,7 @@ module.exports.showRpgStats = function(message, itemsAvailable, amuletItemsById)
                                 statisticsFromItemsAndLevel.armorPlus = statisticsFromItemsAndLevel.armorPlus + armorPlus;
                                 statisticsFromItemsAndLevel.spiritPlus = statisticsFromItemsAndLevel.spiritPlus + spiritPlus;
                                 statisticsFromItemsAndLevel.luckPlus = statisticsFromItemsAndLevel.luckPlus + luckPlus;
+                                
 
                                 singleItemString = singleItemString + "**Stats**: ";
                                 singleItemString = singleItemString + " 💚 " + hpPlus;
@@ -388,7 +406,15 @@ module.exports.showRpgStats = function(message, itemsAvailable, amuletItemsById)
                             
                             var playerString = userStatsStringBuilder(myStats, message.author.username, false);
                             playerString = playerString + "\nTime remaining: " + rpgTimeLeft;
+                            var userAreaId =  userData.data.currentarea 
+                            var zoneUserIsIn = getRpgZone(userAreaId)
+                            var userAreaName = rpgZones[zoneUserIsIn].areas[userAreaId].name
+                            var userZoneName = rpgZones[zoneUserIsIn].name
+                            
                             embed.addField( message.author.username, playerString )
+                            if (userAreaId){
+                                embed.addField( "Adventure Whereabouts", userZoneName + " - " + userAreaName )
+                            }
                             // set the item strings
                             for (var s in singleItemsStrings){
                                 embed.addField( s, singleItemsStrings[s] )
@@ -424,14 +450,14 @@ module.exports.pvpReady = function(message, itemsAvailable, amuletItemsById){
     // add if pvp statement to turnfinishedEmbedBuilder, 
 }
 
-module.exports.rpgReady = function(message, itemsAvailable, amuletItemsById){
+module.exports.rpgReady = function(message, itemsAvailable, amuletItemsById, buffItemsById, allItems){
     // create an embed saying that b is about to happen, for users MAX of 5 users and they must all say -ready to start costs 5 tacos per person
     var discordUserId = message.author.id;
     
     if (usersInRPGEvents["rpg-" + discordUserId] && usersInRPGEvents["rpg-" + discordUserId].ready != true){
         message.channel.send( message.author + " is ready");
         // get the user's profile and get the user's wearing
-        profileDB.getUserProfileData(discordUserId, function(err, userData){
+        profileDB.getUserRpgProfleData(discordUserId, function(err, userData){
             if (err){
                 console.log(err);
                 message.channel.send(err + " something went wrong [profile]");
@@ -443,10 +469,27 @@ module.exports.rpgReady = function(message, itemsAvailable, amuletItemsById){
                 var isSpecialEvent = activeRPGEvents[ "rpg-" +  rpgEventId ] ? activeRPGEvents[ "rpg-" + rpgEventId ].special : false;
                 var currentPlayerChallenge = userData.data.currentchallenge || 0 ;
                 var challengePicked = (activeRPGEvents[ "rpg-" +  rpgEventId ] && activeRPGEvents[ "rpg-" +  rpgEventId ].challenge) ? activeRPGEvents[ "rpg-" + rpgEventId ].challenge.challenge : false;
-                if ((currentPlayerChallenge + 1) >= (parseInt( challengePicked ) ) 
+                var challengeId = getKeystoneIdFromChallenge(parseInt( challengePicked ))
+                var currentPlayerKeystone = userData.data[challengeId] || 0;
+                var keystonePicked = (activeRPGEvents[ "rpg-" +  rpgEventId ] && activeRPGEvents[ "rpg-" +  rpgEventId ].challenge) ? activeRPGEvents[ "rpg-" + rpgEventId ].challenge.keystone : false;
+                if ((currentPlayerChallenge + 1) >= (parseInt( challengePicked ) )
+                    && (currentPlayerKeystone) >= (parseInt( keystonePicked ) ) 
                     && (parseInt( challengePicked ) ) > 0 
                     && (parseInt( challengePicked ) ) <= CURRENT_CHALLENGES_AVAILABLE ){
                     activeRPGEvents[ "rpg-" +  rpgEventId ].challenge.valid = true;
+                }
+                var myRpgArea = userData.data.currentarea
+                
+                if (activeRPGEvents[ "rpg-" +  rpgEventId ].area 
+                && activeRPGEvents[ "rpg-" +  rpgEventId ].area == myRpgArea
+                && activeRPGEvents[ "rpg-" +  rpgEventId ].usersInArea){
+                    var currentareacompletion = userData.data[myRpgArea] || 0
+                    activeRPGEvents["rpg-" + rpgEventId].usersInArea.push({
+                        userid: discordUserId,
+                        currentareacompletion: currentareacompletion,
+                        userdata: userData.data,
+                        username: message.author.username
+                    })
                 }
                 oneHourAgo = new Date(oneHourAgo.setHours(oneHourAgo.getHours() - RPG_COOLDOWN_HOURS ));
                 var lastrpgtime = userData.data.lastrpgtime;
@@ -462,18 +505,17 @@ module.exports.rpgReady = function(message, itemsAvailable, amuletItemsById){
                             console.log(err);
                         }
                         else{
-                            // console.log(inventoryResponse.data);
                             // get all the data for each item
                             var itemsInInventoryCountMap = {};
-                            var itemsMapbyId = {};
-        
+                            var userArmamentForItemId = {}
                             for (var item in inventoryResponse.data){
-        
                                 if (!itemsInInventoryCountMap[inventoryResponse.data[item].itemid] ){
                                     // item hasnt been added to be counted, add it as 1
                                     itemsInInventoryCountMap[inventoryResponse.data[item].itemid] = 1;
+                                    if (inventoryResponse.data[item].armamentforitemid){
+                                        userArmamentForItemId[inventoryResponse.data[item].armamentforitemid] = inventoryResponse.data[item]
+                                    }
                                 }else{
-                                    // 
                                     itemsInInventoryCountMap[inventoryResponse.data[item].itemid] = itemsInInventoryCountMap[inventoryResponse.data[item].itemid] + 1
                                 }
                             }
@@ -487,7 +529,20 @@ module.exports.rpgReady = function(message, itemsAvailable, amuletItemsById){
                                     amuletToAdd.count = itemsInInventoryCountMap[idToCheck]        
                                     userAmuletData.push(amuletItemsById[amulet]);
                                 }
-                            }        
+                            }
+                            var userTemporaryBuffData = []
+                            for (var buffItem in buffItemsById){
+                                var idToCheck = buffItemsById[buffItem].id
+                                var buffTime = userStats.rpgbuffactivatetime
+                                var now = new Date()
+                                if (now <= buffTime){
+                                    // buff is still active
+                                    if (userStats.rpgbuffitemid == idToCheck){
+                                        // add the buff to the stats
+                                        userTemporaryBuffData.push(buffItemsById[buffItem])
+                                    }
+                                }
+                            }
 
                             profileDB.getUserWearInfo(discordUserId, function(wearErr, wearData){
                                 if (wearErr){
@@ -495,7 +550,7 @@ module.exports.rpgReady = function(message, itemsAvailable, amuletItemsById){
                                     message.channel.send(wearErr + " something went wrong [wearing] - someone doesn't have a wearing profile");
                                 }else{
                                     var userLevel = userStats.level;
-                                    wearStats.getUserWearingStats(message, discordUserId, {userLevel: userLevel}, function(wearErr, wearRes){
+                                    wearStats.getUserWearingStats(message, discordUserId, {userLevel: userLevel}, allItems, function(wearErr, wearRes){
                                         if (wearErr){
                                             console.log(wearErr)
                                         }else{
@@ -547,8 +602,6 @@ module.exports.rpgReady = function(message, itemsAvailable, amuletItemsById){
                                             }
                                             // added stats from items
                                             for (var i in items){
-                                                console.log("i")
-                                                console.log(i)
                                                 if (itemsAvailable[items[i]].ability1){
                                                     abilities.push(itemsAvailable[items[i]].ability1);
                                                 }
@@ -568,7 +621,16 @@ module.exports.rpgReady = function(message, itemsAvailable, amuletItemsById){
                                                 var armorPlus = itemsAvailable[items[i]].armorplus ? itemsAvailable[items[i]].armorplus : 0;
                                                 var spiritPlus = itemsAvailable[items[i]].spiritplus ? itemsAvailable[items[i]].spiritplus : 0;
                                                 var luckPlus = itemsAvailable[items[i]].luckplus ? itemsAvailable[items[i]].luckplus : 0;
-
+                                                // check for an amulet for this item
+                                                if (userArmamentForItemId[items[i]]){
+                                                    // HAVE armament for this item - add the stats to the item
+                                                    hpPlus = hpPlus + userArmamentForItemId[items[i]].hpplus;
+                                                    attackDmgPlus = attackDmgPlus + userArmamentForItemId[items[i]].adplus;
+                                                    magicDmgPlus = magicDmgPlus + userArmamentForItemId[items[i]].mdplus;
+                                                    armorPlus = armorPlus + userArmamentForItemId[items[i]].armorplus;
+                                                    spiritPlus = spiritPlus + userArmamentForItemId[items[i]].spiritplus;
+                                                    luckPlus = luckPlus + userArmamentForItemId[items[i]].luckplus;
+                                                }
                                                 statisticsFromItemsAndLevel.hpPlus = statisticsFromItemsAndLevel.hpPlus + hpPlus;
                                                 statisticsFromItemsAndLevel.attackDmgPlus = statisticsFromItemsAndLevel.attackDmgPlus + attackDmgPlus;
                                                 statisticsFromItemsAndLevel.magicDmgPlus = statisticsFromItemsAndLevel.magicDmgPlus + magicDmgPlus;
@@ -604,6 +666,30 @@ module.exports.rpgReady = function(message, itemsAvailable, amuletItemsById){
                                             statisticsFromItemsAndLevel.luckPlus = statisticsFromItemsAndLevel.luckPlus + userStats.level
 
 
+                                            // now include any RPG buffs
+                                            for (var i in userTemporaryBuffData){
+                                                var hppluspercentage = itemsAvailable[userTemporaryBuffData[i].id].hppluspercentage ? itemsAvailable[userTemporaryBuffData[i].id].hppluspercentage : 0
+                                                var attackdmgpluspercentage = itemsAvailable[userTemporaryBuffData[i].id].attackdmgpluspercentage ? itemsAvailable[userTemporaryBuffData[i].id].attackdmgpluspercentage : 0
+                                                var magicdmgpluspercentage = itemsAvailable[userTemporaryBuffData[i].id].magicdmgpluspercentage ? itemsAvailable[userTemporaryBuffData[i].id].magicdmgpluspercentage : 0
+                                                var armorpluspercentage = itemsAvailable[userTemporaryBuffData[i].id].armorpluspercentage ? itemsAvailable[userTemporaryBuffData[i].id].armorpluspercentage : 0
+                                                var spiritpluspercentage = itemsAvailable[userTemporaryBuffData[i].id].spiritpluspercentage ? itemsAvailable[userTemporaryBuffData[i].id].spiritpluspercentage : 0
+                                                var luckpluspercentage = itemsAvailable[userTemporaryBuffData[i].id].luckpluspercentage ? itemsAvailable[userTemporaryBuffData[i].id].luckpluspercentage : 0
+
+                                                hppluspercentage = hppluspercentage / 100
+                                                attackdmgpluspercentage = attackdmgpluspercentage / 100
+                                                magicdmgpluspercentage = magicdmgpluspercentage / 100
+                                                armorpluspercentage = armorpluspercentage / 100
+                                                spiritpluspercentage = spiritpluspercentage / 100
+                                                luckpluspercentage = luckpluspercentage / 100
+                                                
+                                                statisticsFromItemsAndLevel.hpPlus = statisticsFromItemsAndLevel.hpPlus + Math.floor(statisticsFromItemsAndLevel.hpPlus * hppluspercentage);
+                                                statisticsFromItemsAndLevel.attackDmgPlus = statisticsFromItemsAndLevel.attackDmgPlus + Math.floor(statisticsFromItemsAndLevel.attackDmgPlus * attackdmgpluspercentage);
+                                                statisticsFromItemsAndLevel.magicDmgPlus = statisticsFromItemsAndLevel.magicDmgPlus + Math.floor(statisticsFromItemsAndLevel.magicDmgPlus * magicdmgpluspercentage);
+                                                statisticsFromItemsAndLevel.armorPlus = statisticsFromItemsAndLevel.armorPlus + Math.floor(statisticsFromItemsAndLevel.armorPlus * armorpluspercentage);
+                                                statisticsFromItemsAndLevel.spiritPlus = statisticsFromItemsAndLevel.spiritPlus + Math.floor(statisticsFromItemsAndLevel.spiritPlus * spiritpluspercentage);
+                                                statisticsFromItemsAndLevel.luckPlus = statisticsFromItemsAndLevel.luckPlus + Math.floor(statisticsFromItemsAndLevel.luckPlus * luckpluspercentage);
+                                            }
+
                                             // get the abilities the user will have
                                             // get the extra stats obtained from level, item+ stats, 
                                             // insert the data to the event info to be able to use it once the team is ready
@@ -616,6 +702,7 @@ module.exports.rpgReady = function(message, itemsAvailable, amuletItemsById){
                                             usersInRPGEvents["rpg-" + discordUserId].memberStats = {
                                                 level: userStats.level,
                                                 currentchallenge: currentPlayerChallenge,
+                                                currentkeystone: currentPlayerKeystone,
                                                 plusStats: statisticsFromItemsAndLevel,
                                                 itemsBeingWorn: items,
                                                 itemsBeingWornUserIds: userItemIds,
@@ -720,8 +807,8 @@ module.exports.rpgReady = function(message, itemsAvailable, amuletItemsById){
                                                                 id: partyMember.id,
                                                                 name: partyMember.username,
                                                                 username: partyMember.username,
-                                                                hp: 250 + (27 *  partyMemberStats.level ) + partyMemberHpPlus,
-                                                                attackDmg: 10 + (9 * partyMemberStats.level) + partyMemberAttackDmgPlus,
+                                                                hp: 25000 + (27 *  partyMemberStats.level ) + partyMemberHpPlus,
+                                                                attackDmg: 100000 + (9 * partyMemberStats.level) + partyMemberAttackDmgPlus,
                                                                 magicDmg:  10 + (9 * partyMemberStats.level) + partyMemberMagicDmgPlus,
                                                                 armor: 5 + (partyMemberStats.level * partyMemberStats.level) + partyMemberArmorPlus,
                                                                 spirit: 5 + (partyMemberStats.level * partyMemberStats.level) + partyMemberSpiritPlus,
@@ -791,6 +878,7 @@ module.exports.rpgReady = function(message, itemsAvailable, amuletItemsById){
                                                         if (activeRPGEvents[rpgEvent].challenge){
                                                             
                                                             var challengeNum = activeRPGEvents[rpgEvent].challenge.challenge;
+                                                            var keystoneNum = activeRPGEvents[rpgEvent].challenge.keystone;
                                                             var specialEnemies = enemiesToEncounter.challenge[challengeNum].enemies;
                                                             if (enemiesToEncounter.challenge[challengeNum].description){
                                                                 embedDescription = enemiesToEncounter.challenge[challengeNum].description;
@@ -800,7 +888,8 @@ module.exports.rpgReady = function(message, itemsAvailable, amuletItemsById){
                                                             }
                                                             for (var i = 0; i < specialEnemies.length; i++){
                                                                 enemyFound = JSON.parse(JSON.stringify( specialEnemies[i] ));
-
+                                                                // TODO: SCALE BASED ON KEYSTONE HERE
+                                                                // Possible to gain new abilities, new enemies, different stats
                                                                 enemies[enemyIdCount] = {
                                                                     id: enemyIdCount,
                                                                     name: enemyFound.name,
@@ -838,6 +927,24 @@ module.exports.rpgReady = function(message, itemsAvailable, amuletItemsById){
                                                                     effectsOnDeath: enemyFound.effectsOnDeath,
                                                                     abilitiesMap : {},
                                                                     element: enemyFound.element
+                                                                }
+
+                                                                if (keystoneNum > 0){
+                                                                    // add stats to enemies
+                                                                    var keystoneStatsArrayIndex = keystoneNum - 1
+                                                                    if (enemyFound.keystoneStats){
+                                                                        enemies[enemyIdCount].hp = enemies[enemyIdCount].hp  + enemyFound.keystoneStats.hp[keystoneStatsArrayIndex]
+                                                                        enemies[enemyIdCount].attackDmg = enemies[enemyIdCount].attackDmg + enemyFound.keystoneStats.attackDmg[keystoneStatsArrayIndex]
+                                                                        enemies[enemyIdCount].magicDmg = enemies[enemyIdCount].magicDmg + enemyFound.keystoneStats.magicDmg[keystoneStatsArrayIndex]
+                                                                        if (enemyFound.keystoneStats.frenzy){
+                                                                            for (var b in enemies[enemyIdCount].buffs){
+                                                                                if (enemies[enemyIdCount].buffs[b].name == "frenzy"){
+                                                                                    enemies[enemyIdCount].buffs[b].attackDmgPlus = enemyFound.keystoneStats.frenzy.attackDmgPlus[keystoneStatsArrayIndex]
+                                                                                    enemies[enemyIdCount].buffs[b].magicDmgPlus = enemyFound.keystoneStats.frenzy.magicDmgPlus[keystoneStatsArrayIndex]
+                                                                                }
+                                                                            }
+                                                                        }
+                                                                    }
                                                                 }
 
                                                                 if (enemyFound.abilityOrder){
@@ -1020,26 +1127,71 @@ module.exports.rpgReady = function(message, itemsAvailable, amuletItemsById){
                                                                     }
                                                                 }
                                                                 var enemyFound;
+                                                                /*
+                                                                based on the leaders current zone we'll get enemies based on that
+                                                                anyone in the same zone as leader will be awarded completion
+                                                                can still partifipate in rpg if not in same zone, just no completion
+
+                                                                get the possible enemies for the party based off of rpgzones
+                                                                
+                                                                if success -> advance user +1 on that area - if area complete
+                                                                move them to next zone immediately (linear)
+                                                                area completion is based on number of rpgs completed there
+                                                                if all areas completed in a zone complete the zone
+                                                                zone completion is based on area completion
+
+                                                                zones are locked, only certain zones are available depending on completion 
+                                                                always start in area 1 - can move to next area once completed
+                                                                can go back to that area once completed as well
+
+                                                                how to store on DB?
+                                                                userprofile contains current area by name
+                                                                userrpgprofile contains one row per user, rows are:
+                                                                area1completion
+                                                                area2completion
+                                                                area3completion
+                                                                area4completion
+
+                                                                all integers
+
+                                                                the full completion is calculated on the server, 
+                                                                #ofRpgs to complete are stored server side
+                                                                based on the areas completed we calculate if the zone has been completed
+
+                                                                everytime an rpg in an area gets completed we add 1 to the existing area
+                                                                once an area is completed the user can move to any area they want
+                                                                areas have unique shops
+                                                                areas are not linear - once an area is finished you can chose where to go next 
+                                                                from a limited number of areas
+
+                                                                */
+                                                                var areaToCheck = activeRPGEvents[rpgEvent].area
+                                                                var zoneUserIsIn = getRpgZone(areaToCheck) /// create this function
+                                                                var enemiesInArea = rpgZones[zoneUserIsIn].areas[areaToCheck].enemies
                                                                 if (rollForRarity >= 9650 ){
                                                                     // boss
-                                                                    var enemyRoll = Math.floor(Math.random() * enemiesToEncounter.boss.length);
-                                                                    enemyFound = JSON.parse(JSON.stringify( enemiesToEncounter.boss[enemyRoll] ));
+                                                                    var enemyRoll = Math.floor(Math.random() * enemiesInArea.boss.length);
+                                                                    enemyString = enemiesInArea.boss[enemyRoll]
+                                                                    enemyFound = JSON.parse(JSON.stringify( enemiesToEncounter.boss[enemyString] ));
                                                                     foundBoss = true;
                                                                 }
                                                                 else if (rollForRarity >= 8250 && rollForRarity < 9650 ){
                                                                     // hard
-                                                                    var enemyRoll = Math.floor(Math.random() * enemiesToEncounter.hard.length);
-                                                                    enemyFound = JSON.parse(JSON.stringify( enemiesToEncounter.hard[enemyRoll]));
+                                                                    var enemyRoll = Math.floor(Math.random() * enemiesInArea.hard.length);
+                                                                    enemyString = enemiesInArea.hard[enemyRoll]
+                                                                    enemyFound = JSON.parse(JSON.stringify( enemiesToEncounter.hard[enemyString]));
                                                                 }
                                                                 else if (rollForRarity >= 4000 && rollForRarity < 8250 ){
                                                                     // medium
-                                                                    var enemyRoll = Math.floor(Math.random() * enemiesToEncounter.medium.length);
-                                                                    enemyFound = JSON.parse(JSON.stringify( enemiesToEncounter.medium[enemyRoll]));
+                                                                    var enemyRoll = Math.floor(Math.random() * enemiesInArea.medium.length);
+                                                                    enemyString = enemiesInArea.medium[enemyRoll]
+                                                                    enemyFound = JSON.parse(JSON.stringify( enemiesToEncounter.medium[enemyString]));
                                                                 }
                                                                 else {
                                                                     // easy :)
-                                                                    var enemyRoll = Math.floor(Math.random() * enemiesToEncounter.easy.length);
-                                                                    enemyFound = JSON.parse(JSON.stringify(  enemiesToEncounter.easy[enemyRoll]));
+                                                                    var enemyRoll = Math.floor(Math.random() * enemiesInArea.easy.length);
+                                                                    enemyString = enemiesInArea.easy[enemyRoll]
+                                                                    enemyFound = JSON.parse(JSON.stringify(  enemiesToEncounter.easy[enemyString]));
                                                                 }
                                                                 enemies[enemyIdCount] = {
                                                                     id: enemyIdCount,
@@ -1226,6 +1378,182 @@ module.exports.rpgReady = function(message, itemsAvailable, amuletItemsById){
     else{
         message.channel.send(message.author + " you are not in an event");
     }
+}
+
+function getKeystoneIdFromChallenge(challengeNumber){
+    if (enemiesToEncounter.challenge[challengeNumber]){
+        return enemiesToEncounter.challenge[challengeNumber].challengeId
+    }else{
+        return -1
+    }
+}
+
+module.exports.displayMap = function(message, zoneToCheck){
+    var discordUserId = message.author.id
+    profileDB.getUserRpgProfleData(discordUserId, function(err, userData){
+        if (err){
+            console.log(err)
+        }else{
+            if (!zoneToCheck){
+                var usercurrentarea = userData.data.currentarea
+                zoneToCheck = getRpgZone(usercurrentarea)
+            }
+
+            // create an embed that includes the zone name currently and available zones
+            // and areas in current zone
+            var listOfAreasInZone = getAreasInZone(zoneToCheck, userData.data)
+            var zonesAvailableForUserMap = getZonesAvailableForUser(userData.data)
+            var currentZoneName = rpgZones[ getRpgZone( userData.data.currentarea ) ].name
+            mapEmbedBuilder(message, listOfAreasInZone, zonesAvailableForUserMap, currentZoneName)
+        }
+    })
+}
+
+function mapEmbedBuilder(message, listOfAreasInZone, zonesAvailableForUserMap, currentZoneName){
+    var zonesAvailableString = ""
+    var areasInZoneString = ""
+    for (var z in zonesAvailableForUserMap){
+        if (zonesAvailableForUserMap[z].completed){
+            zonesAvailableString = zonesAvailableString + "**" + zonesAvailableForUserMap[z].name + "**\n"
+        }else{
+            zonesAvailableString = zonesAvailableString + zonesAvailableForUserMap[z].name + "\n"
+        }
+    }
+    for (var a in listOfAreasInZone){
+        if (listOfAreasInZone[a].completed){
+            areasInZoneString = areasInZoneString + "**" + listOfAreasInZone[a].name + "**\n"
+        }else{
+            areasInZoneString = areasInZoneString + listOfAreasInZone[a].name + "\n"
+        }
+    }
+
+    const embed = new Discord.RichEmbed()
+    .setAuthor(message.author.username + " Map")
+    .setDescription(":map: travel to different areas via -travel [areaname] OR -travel [zonename]\nYou are currently in " + currentZoneName)
+    .addField("Zones available", zonesAvailableString, true)
+    .addField("Areas in " + currentZoneName, areasInZoneString, true)
+    .setThumbnail(message.author.avatarURL)
+    .setColor(0xbfa5ff)
+    message.channel.send({embed});
+}
+
+function getAreasInZone(zoneid, userData){
+    // get the areas in the zone that are available to the user
+    var areasInZone = []
+    for (var key in rpgZones[zoneid].areas){
+        // check that the user has completed the area, if they have, add the onCompleteAreasUnlocked
+        var area = rpgZones[zoneid].areas[key]
+        if (isAreaCompleted(area, userData[key]) ){
+            areasInZone.push({
+                name: key,
+                completed: true
+            })
+        }else{
+            areasInZone.push({
+                name: key,
+                completed: false
+            })
+        }
+    }
+    return areasInZone
+}
+
+function isAreaCompleted(area, userAreaCompletion){
+    return userAreaCompletion >= area.rpgsToComplete
+}
+
+function getZonesAvailableForUser(userData){
+    var zonesAvailable = {}
+    // get the zones available to the user - go through the zones, compare to completion of zone in user profile
+    var currentZonesCheck = [ "prarie" ]
+    var done = false
+    while(!done){
+        var newZonesToCheck = [] // THESE WILL ALWAYS BE UNIQUE
+        for (var i in currentZonesCheck){
+            var zone = rpgZones[ currentZonesCheck[i] ]
+            if (userData[ currentZonesCheck[i]] ){
+                if (!zonesAvailable[ currentZonesCheck[i] ]){
+                    zonesAvailable[currentZonesCheck[i]] = { 
+                        name: currentZonesCheck[i], 
+                        completed: true 
+                    } 
+                }
+                for (var adjacent in zone.onCompleteZonesUnlocked){
+                    if (!zonesAvailable[zone.onCompleteZonesUnlocked[adjacent] ] ){
+                        newZonesToCheck.push( zone.onCompleteZonesUnlocked[adjacent] )
+                    }
+                }
+            }
+            // did not complete the zone yet
+            if (!zonesAvailable[ currentZonesCheck[i] ]){
+                zonesAvailable[currentZonesCheck[i]] = { 
+                    name: currentZonesCheck[i], 
+                    completed: false 
+                } 
+            }
+        }
+        if(newZonesToCheck.length == 0){
+            done = true
+        }else{
+            currentZonesCheck = newZonesToCheck
+        }
+    }
+
+    return zonesAvailable
+}
+
+module.exports.travelToNewArea = function(message, placeName){
+    var discordUserId = message.author.id
+    profileDB.getUserRpgProfleData(discordUserId, function(err, userData){
+        if (err){
+            console.log(err)
+        }else{
+            // figure out if the user specified an area, or a zone
+            var zonesAvailable = getZonesAvailableForUser(userData.data)
+            if (rpgZones[placeName]){
+                // if a zone, no cooldown and take them to the starting area in that zone
+                // check that the zone is available to the user
+                var startingArea = rpgZones[placeName].startingArea
+                if (zonesAvailable[placeName]){
+                    profileDB.updateUserRpgArea(discordUserId, startingArea, false, function(error, res){
+                        if (error){
+                            console.log(error)
+                        }else{
+                            message.channel.send("You are now in `" + startingArea+ "` !")
+                        }
+                    })
+                }else{
+                    message.channel.send("that place is not on your map")
+                }
+
+            }else{
+                var now = new Date();
+                var oneHourAgo = new Date();
+                ///////// CALCULATE THE MINUTES REDUCED HERE 
+                oneHourAgo = new Date(oneHourAgo.setHours(oneHourAgo.getHours() - 1));
+
+                if (!userData.data.lasttraveltime || oneHourAgo > userData.data.lasttraveltime){
+                    var rpgZoneToTravel = getRpgZone(placeName)
+                    if (rpgZones[rpgZoneToTravel]){
+                        var area = placeName
+                        // if an area then give them a cooldown and change their area there
+                        profileDB.updateUserRpgArea(discordUserId, area, true, function(error, res){
+                            if (error){
+                                console.log(error)
+                            }else{
+                                message.channel.send("You are now in `" + area+ "` !")
+                            }
+                        })
+                    }else{
+                        message.channel.send("that place is not on your map")
+                    }
+                }else{
+                    var numberOfHours = getDateDifference(userData.data.lasttraveltime, now, 1);
+                    message.channel.send(message.author + " You just recently traveled! Please wait `" + numberOfHours +"` ");
+                }
+            }
+        }
+    })
 }
 
 function getDateDifference(beforeDate, now, hoursDifference){
@@ -1632,120 +1960,220 @@ function turnFinishedEmbedBuilder(message, event, turnString, passiveEffectsStri
 }
 
 function eventEndedEmbedBuilder(message, event, partySuccess){
-    profileDB.getItemData(function(err, getItemResponse){
-        if (err){
-            console.log(err);
-        }else{
-            const embed = new Discord.RichEmbed()
-            .setAuthor("Event has ended")
-            .setColor(0xF2E93E)
-            if (event.special && event.special.avatar){
-                embed.setThumbnail(event.special.avatar);
-            }
-            if (event.challenge && partySuccess){
-                for (var member in event.members){
-                    var memberInRpgEvent = event.members[member];
-                    var memberInParty = event.membersInParty["rpg-" + memberInRpgEvent.id];
-                    // get members current challenge
-                    var challengenumber = usersInRPGEvents["rpg-" + memberInParty.id].memberStats.currentchallenge;
-                    if ( (challengenumber + 1) == event.challenge.challenge ){
-                        profileDB.updateCurrentChallenge( memberInParty.id, challengenumber + 1, function(error, challengeRes){
-                            if (error){
-                                console.log(error);
-                            }else{
-                                console.log(challengeRes);
-                                //embed.addField("Challenge complete", challengenumber);
-                            }
-                        })
-                    }
-                    
-                }
-            }
-            else if (event.special && event.special.reward && partySuccess){
-                if (event.special.reward.type == "note"){
-                    embed.addField(event.special.reward.fieldTitle, event.special.reward.note)
-                }
+    var allItems = commands.getAllItems()
+    var usersFirstComplete = []
+    const embed = new Discord.RichEmbed()
+    .setAuthor("Event has ended")
+    .setColor(0xF2E93E)
+    if (event.special && event.special.avatar){
+        embed.setThumbnail(event.special.avatar);
+    }
+    if (event.challenge && partySuccess){
+        for (var member in event.members){
+            var memberInRpgEvent = event.members[member];
+            var memberInParty = event.membersInParty["rpg-" + memberInRpgEvent.id];
+            // get members current challenge
+            var challengenumber = usersInRPGEvents["rpg-" + memberInParty.id].memberStats.currentchallenge;
+            if ( (challengenumber + 1) == event.challenge.challenge ){
+                profileDB.updateCurrentChallenge( memberInParty.id, challengenumber + 1, function(err, res){
 
-                if (event.special.reward.questline && event.special.reward.stageAdvance){
-                    // TODO: advance the user to the next step of the questline, create in artifacts case
-                    // Create the artifact for the user, timetravel = time machine
-                    // demonic = bow of andromalius
-                    // diamond = ring (linked souls)
-                    // abraham = vampire slaying pike
-                    
-                    if ( event.special.reward.item ){
-                        var extraItem = event.special.reward.item
-                        // add the artifact item
-                        var rewardsArtifact = addArtifactItem(getItemResponse, extraItem)
-                        // event.leader.id
-                        updateUserRewards(message, event.leader, rewardsArtifact);
-                        artifactEmbedBuilder(message, rewardsArtifact.items, event.leader)
-
-                        profileDB.getUserProfileData(event.leader.id, function(profileErr, profileRes){
-                            if (profileErr){
-                                console.log("FAILURE SOMETHING WENT WRONG")
-                            }else{
-                                var achievData = { achievements: profileRes.data.achievements, rpgDefeated: event.special.questName }
-                                achiev.checkForAchievements(event.leader.id, achievData, message)
-                            }
-                        })
-                        
-                    }
-                   
-                    profileDB.updateQuestlineStage(event.leader.id, event.special.questData.questname, event.special.questData.stage + 1, function(error, updateRes){
-                        if (error){
-                            console.log(error);
-                        }else{
-                            console.log("advanced special rpg ");
-                        }
-                    })
-                }
+                })
+                usersFirstComplete.push(memberInParty.id)
             }
-            var numberOfMembers = event.members.length;
-            event.experienceHandedOut = 0
-            for (var member in event.members){
-                var memberInRpgEvent = event.members[member];
-                var memberInParty = event.membersInParty["rpg-" + memberInRpgEvent.id];
-                var rewards;
-                var rewardString = "";
-                if (partySuccess){
-                    var extraTacosForUser = usersInRPGEvents["rpg-" + memberInParty.id].memberStats.extraTacos;
-                    var extraXp = usersInRPGEvents["rpg-" + memberInParty.id].memberStats.extraExperience;
-                    memberInRpgEvent.extraTacosForUser = extraTacosForUser
-                    memberInRpgEvent.extraXp = extraXp
+            var keystonenumber = usersInRPGEvents["rpg-" + memberInParty.id].memberStats.currentkeystone;
+            if ( (keystonenumber) == event.challenge.keystone ){
+                var challengeId = getKeystoneIdFromChallenge(event.challenge.challenge)
+                profileDB.updateCurrentChallengeKeystone( memberInParty.id, keystonenumber + 1, challengeId, function(err, res){
                     
-                    var rewards =  calculateRewards( event, memberInRpgEvent, getItemResponse, numberOfMembers)
-                    // add experience and rpgpoints to user
-                    updateUserRewards(message, memberInParty, rewards);
-                    if (rewards.extraTacos && rewards.extraTacos > 0 ){
-                        rewardString = rewardString + "**Tacos:** " + rewards.extraTacos + "\n"
+                })
+                usersFirstComplete.push(memberInParty.id)
+            }
+            
+        }
+    }
+    else if (event.special && event.special.reward && partySuccess){
+        if (event.special.reward.type == "note"){
+            embed.addField(event.special.reward.fieldTitle, event.special.reward.note)
+        }
+
+        if (event.special.reward.questline && event.special.reward.stageAdvance){            
+            if ( event.special.reward.item ){
+                var extraItem = event.special.reward.item
+                // add the artifact item
+                var rewardsArtifact = addArtifactItem(allItems, extraItem)
+                // event.leader.id
+                updateUserRewards(message, event.leader, rewardsArtifact);
+                artifactEmbedBuilder(message, rewardsArtifact.items, event.leader)
+
+                profileDB.getUserProfileData(event.leader.id, function(profileErr, profileRes){
+                    if (profileErr){
+                        console.log("FAILURE SOMETHING WENT WRONG")
+                    }else{
+                        var achievData = { achievements: profileRes.data.achievements, rpgDefeated: event.special.questName }
+                        achiev.checkForAchievements(event.leader.id, achievData, message)
                     }
-                    rewardString = rewardString + "**Experience:** " + rewards.xp + "\n**Rpg Points**: " + rewards.rpgPoints + "\n**Items:** \n";
-                    event.experienceHandedOut = event.experienceHandedOut + rewards.xp
-                    for (var item in rewards.items){
-                        rewardString = rewardString + rewards.items[item].itemname + " \n";
-                    }
-                }
-                else{
-                    rewards = "No rewards :skull_crossbones:"
-                    rewardString = rewardString + " " + rewards + " \n";
-                }
+                })
                 
-                embed.addField(memberInRpgEvent.username,  rewardString, true);
-                // TODO: check for achievments, timed, special kills, 
             }
-            var rpgStatData = createRpgStatData(rewardString, event, partySuccess)
-            profileDB.createRpgStatistics(rpgStatData, function(statErr, statRes){
-                if (statErr){
-                    console.log(statErr)
+            
+            profileDB.updateQuestlineStage(event.leader.id, event.special.questData.questname, event.special.questData.stage + 1, function(error, updateRes){
+                if (error){
+                    console.log(error);
                 }else{
-                    console.log(statRes)
+                    console.log("advanced special rpg ");
                 }
             })
-            message.channel.send({embed})
-            cleanupEventEnded(event);
+        }
+    }
+
+    else if (event.area && event.usersInArea && partySuccess){
+        // give completion to everyone in the area
+        for (var u in event.usersInArea){
+            increaseCompletionForUser(event.usersInArea[u], event.area, message)
+        }        
+    }
+
+    var numberOfMembers = event.members.length;
+    event.experienceHandedOut = 0
+    for (var member in event.members){
+        var memberInRpgEvent = event.members[member];
+        var memberInParty = event.membersInParty["rpg-" + memberInRpgEvent.id];
+        var rewards;
+        var rewardString = "";
+        if (partySuccess){
+            var extraTacosForUser = usersInRPGEvents["rpg-" + memberInParty.id].memberStats.extraTacos;
+            var extraXp = usersInRPGEvents["rpg-" + memberInParty.id].memberStats.extraExperience;
+            memberInRpgEvent.extraTacosForUser = extraTacosForUser
+            memberInRpgEvent.extraXp = extraXp
+            var firstKill = false;
+            if (usersFirstComplete.indexOf(memberInParty.id) > -1){
+                firstKill = true
+            }
+            
+            var rewards =  calculateRewards( event, memberInRpgEvent, allItems, numberOfMembers, firstKill)
+            // add experience and rpgpoints to user
+            updateUserRewards(message, memberInParty, rewards);
+            if (rewards.extraTacos && rewards.extraTacos > 0 ){
+                rewardString = rewardString + "**Tacos:** " + rewards.extraTacos + "\n"
+            }
+            rewardString = rewardString + "**Experience:** " + rewards.xp + "\n**Rpg Points**: " + rewards.rpgPoints + "\n**Items:** \n";
+            event.experienceHandedOut = event.experienceHandedOut + rewards.xp
+            for (var item in rewards.items){
+                rewardString = rewardString + rewards.items[item].itemname + " \n";
+            }
+        }
+        else{
+            rewards = "No rewards :skull_crossbones:"
+            rewardString = rewardString + " " + rewards + " \n";
+        }
+        
+        embed.addField(memberInRpgEvent.username,  rewardString, true);
+        // TODO: check for achievments, timed, special kills, 
+    }
+    var rpgStatData = createRpgStatData(rewardString, event, partySuccess)
+    profileDB.createRpgStatistics(rpgStatData, function(statErr, statRes){
+        if (statErr){
+            console.log(statErr)
+        }else{
+            console.log(statRes)
         }
     })
+    message.channel.send({embed})
+    cleanupEventEnded(event);
+}
+
+function increaseCompletionForUser(eventUser, rpgareaId, message){
+    var discordUserId = eventUser.userid
+    var currentareacompletion = eventUser.currentareacompletion || 0
+    var rpgsToCompleteArea = getRpgsToCompleteForArea(rpgareaId)
+    profileDB.rpgAreaIncreaseCompletion(discordUserId, rpgareaId, currentareacompletion, function(err, res){
+        if (err){
+            console.log(err)
+        }else{
+            var areaCompletionForUser = eventUser.currentareacompletion + 1
+            if (areaCompletionForUser == rpgsToCompleteArea){
+                newAreaEmbedBuilder( eventUser.username, rpgareaId, message)
+            }
+            var zoneUserIsIn = getRpgZone(rpgareaId)
+            var zoneComplete = eventUser.userdata[zoneUserIsIn]
+            var areasToComplete = getAreasToCompletForZone(zoneUserIsIn)
+            var areascompletedForUser = getAreasCompletedInZoneForUser(eventUser.userdata, zoneUserIsIn)
+            // calculate areascompletedForUser 
+            if ( true || !zoneComplete && ( areascompletedForUser >= areasToComplete ) ){
+                // complete zone
+                newZoneEmbedBuilder( eventUser.username, zoneUserIsIn, message )
+                profileDB.setZoneComplete(discordUserId, zoneUserIsIn)
+            }
+        }
+    })
+}
+
+function getAreasCompletedInZoneForUser(userdata, zoneUserIsIn){
+    // first calculate current zone based on area
+    // only calculate that zone's completion
+    // go through all areas in that zone, and get their completion and then compare to user reqs
+    var numberOfAreasCompleted = 0
+    var zoneAreas = rpgZones[zoneUserIsIn].areas
+    for (var a in zoneAreas){
+        var areaToCheck = zoneAreas[a]
+        var rpgsToCompleteInArea = areaToCheck.rpgsToComplete
+        var rpgsCompletedByUser = userdata[a] || 0
+        if (rpgsCompletedByUser >= rpgsToCompleteInArea){
+            numberOfAreasCompleted++
+        }
+    }
+
+    return numberOfAreasCompleted
+}
+
+function newAreaEmbedBuilder(username, areaId, message){
+    const embed = new Discord.RichEmbed()
+    .setAuthor("Area completed!")
+    .setColor(0xF2E93E)
+    // include the username
+    // new areas + the number of RPGs needed in them
+    var areaString = getAreaString(areaId)
+    embed.addField(username,  areaString);
+    message.channel.send({embed})
+}
+
+function newZoneEmbedBuilder(username, zoneId, message){
+    const embed = new Discord.RichEmbed()
+    .setAuthor("Zone completed!")
+    .setColor(0xF2E93E)
+    // include the username
+    // new Zone + the level requirements
+    var zoneString = getZoneString(zoneId)
+    embed.addField(username,  zoneString, true);
+    message.channel.send({embed})
+}   
+
+function getAreaString(areaId){
+    var zoneAreaIsIn = getRpgZone(areaId)
+    var areaString = rpgZones[zoneAreaIsIn].areas[areaId].areaString
+    areaString = areaString + "\n" + "Map areas unlocked:\n"
+    for (var a in rpgZones[zoneAreaIsIn].areas[areaId].onCompleteAreasUnlocked){
+        areaString = areaString + areaString[a] + "\n"
+    }
+    return areaString
+}
+
+function getZoneString(zoneId){
+    return rpgZones[zoneId].zoneString
+}
+
+function getRpgsToCompleteForArea(areaId){
+    var zoneAreaIsIn = getRpgZone(areaId)
+    var rpgsToCompleteForArea = rpgZones[zoneAreaIsIn].areas[areaId].rpgsToComplete
+    return rpgsToCompleteForArea
+}
+
+function getAreasToCompletForZone(rpgZoneId){
+    var count = 0
+    for (var key in rpgZones[rpgZoneId].areas){
+        count++
+    }
+    return count
 }
 
 function createRpgStatData(rewardString, event, partySuccess){
@@ -1830,13 +2258,12 @@ function addToUserInventory(discordUserId, items){
     })
 }
 
-function addArtifactItem( getItemResponse, extraItem){
+function addArtifactItem( allItems, extraItem){
     var rewardsForPlayer =  {
         xp: 0,
         rpgPoints: 0,
         items: []
     }
-    var allItems = getItemResponse.data
     var itemsObtainedArray = [];
     if (extraItem){
         for (var i in allItems){
@@ -1865,7 +2292,7 @@ function artifactEmbedBuilder(message, artifactItems, user){
     message.channel.send({embed});
 }
 
-function calculateRewards(event, memberInRpgEvent, getItemResponse, numberOfMembers){
+function calculateRewards(event, memberInRpgEvent, allItems, numberOfMembers, firstKill){
     var rewardsForPlayer =  {
         xp: 1,
         extraTacos: 0,
@@ -1885,7 +2312,6 @@ function calculateRewards(event, memberInRpgEvent, getItemResponse, numberOfMemb
     var COMMON_MAX_ROLL = 8000;
     var COMMON_ITEMS_TO_OBTAIN = 1;
 
-    var allItems = getItemResponse.data
     var commonItems = [];
     var uncommonItems = [];
     var rareItems = [];
@@ -1916,17 +2342,15 @@ function calculateRewards(event, memberInRpgEvent, getItemResponse, numberOfMemb
 
     var itemsObtainedArray = [];
     // calculate xp based on level and difficulty of enemies and items
-    if (event.challenge &&  (event.challenge.challenge == 6 || event.challenge.challenge >= 9)){
-        var rarityRoll = undefined;
-        var numberOfRolls = [0,1,2,3,4]
-        if (event.challenge.challenge == 9){
-            numberOfRolls = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21]
+    if (event.challenge){
+        var rarityRoll = undefined
+        var challengeNum = event.challenge.challenge
+        var keystone = event.challenge.keystone
+        var numberOfRolls = enemiesToEncounter.challenge[challengeNum].lootcount || 3
+        if (firstKill){
+            numberOfRolls = numberOfRolls * 4
         }
-        if (event.challenge.challenge >= 10){
-            numberOfRolls = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21,
-                            22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38]
-        }
-        for (var enemy in numberOfRolls){
+        for (var enemy = 0; enemy < numberOfRolls; enemy++){
             rarityRoll = Math.floor(Math.random() * 2000) + 8000;
             if (rarityRoll){
                 if(rarityRoll > ANCIENT_MIN_ROLL ){
@@ -1952,74 +2376,79 @@ function calculateRewards(event, memberInRpgEvent, getItemResponse, numberOfMemb
                 }
             }
         }
-    }
-    for (var enemy in event.enemies){
-        var rarityRoll = undefined;
-        var enemyDifficulty =  event.enemies[enemy].difficulty
-        if (enemyDifficulty == "easy"){
-            additionalExperience = additionalExperience + 1
-            additionalRpgPoints = additionalRpgPoints + 1
-            // common items
-            rarityRoll = Math.floor(Math.random() * COMMON_MAX_ROLL) + 1;
-        }
-        else if (enemyDifficulty == "medium"){
-            additionalExperience = additionalExperience + 2
-            additionalRpgPoints = additionalRpgPoints + 2
-            // common ? uncommon
-            rarityRoll = Math.floor(Math.random() * UNCOMMON_MAX_ROLL) + 1;
-        }
-        else if (enemyDifficulty == "hard"){
-            additionalExperience = additionalExperience + 9
-            additionalRpgPoints = additionalRpgPoints + 9
-            // common + uncommon maybe rare
-            rarityRoll = Math.floor(Math.random() * 3975) + 6000;
-        }
-        else if (enemyDifficulty == "boss"){
-            additionalExperience = additionalExperience + 19
-            additionalRpgPoints = additionalRpgPoints + 19
-            // common + uncommon maybe rare maybe ancient
-            rarityRoll = Math.floor(Math.random() * 2000) + 8000;
-        }else if (enemyDifficulty == "special"){
-            additionalExperience = additionalExperience + 19
-            additionalRpgPoints = additionalRpgPoints + 19
-            // common + uncommon maybe rare maybe ancient
-            rarityRoll = Math.floor(Math.random() * 2000) + 8000;
-        }
-        // TODO: add + luck to rarityroll
-        // push the item to items
-        if (rarityRoll){
-            if(rarityRoll > ANCIENT_MIN_ROLL ){
-                var itemRoll = Math.floor(Math.random() * ancientItems.length);
-                console.log(ancientItems[itemRoll]);
-                itemsObtainedArray.push(ancientItems[itemRoll])
-            }
-            else if(rarityRoll > RARE_MIN_ROLL && rarityRoll <= RARE_MAX_ROLL){
-                var itemRoll = Math.floor(Math.random() * rareItems.length);
-                console.log(rareItems[itemRoll]);
-                itemsObtainedArray.push(rareItems[itemRoll]);
-            }
-            else if (rarityRoll > UNCOMMON_MIN_ROLL && rarityRoll <= UNCOMMON_MAX_ROLL){
-                var itemRoll = Math.floor(Math.random() * uncommonItems.length);
-                console.log(uncommonItems[itemRoll]);
-                itemsObtainedArray.push( uncommonItems[itemRoll] );
-            }
-            else {
-                var itemRoll = Math.floor(Math.random() * commonItems.length);
-                console.log(commonItems[itemRoll]);
-                commonItems[itemRoll].itemAmount = COMMON_ITEMS_TO_OBTAIN
-                itemsObtainedArray.push( commonItems[itemRoll] );
-            }
-        }
-    }
-    if (event.challenge){
+
         // get the challenge points
-        var challengeNum = event.challenge.challenge;
         var challengePts = enemiesToEncounter.challenge[challengeNum].points;
+        var challengeXpPts = enemiesToEncounter.challenge[challengeNum].xppoints;
+        if (firstKill){
+            challengePts = challengePts * ( 8 + challengeNum + keystone )
+            challengeXpPts = challengeXpPts * ( 8 + challengeNum + keystone )
+        }
         var challengeDifficulty = enemiesToEncounter.challenge[challengeNum].difficulty ? enemiesToEncounter.challenge[challengeNum].difficulty : 1
         var extraXP =  memberInRpgEvent.extraXp * challengeDifficulty
         rewardsForPlayer.extraTacos = rewardsForPlayer.extraTacos + (memberInRpgEvent.extraTacosForUser * Math.ceil(challengeDifficulty/10))
-        rewardsForPlayer.xp = rewardsForPlayer.xp + challengePts + extraXP;
+        rewardsForPlayer.xp = rewardsForPlayer.xp + challengeXpPts + extraXP;
         rewardsForPlayer.rpgPoints = rewardsForPlayer.rpgPoints + challengePts;
+        
+    }else{
+        for (var enemy in event.enemies){
+            var rarityRoll = undefined;
+            var enemyDifficulty =  event.enemies[enemy].difficulty
+            if (enemyDifficulty == "easy"){
+                additionalExperience = additionalExperience + 1
+                additionalRpgPoints = additionalRpgPoints + 1
+                // common items
+                rarityRoll = Math.floor(Math.random() * COMMON_MAX_ROLL) + 1;
+            }
+            else if (enemyDifficulty == "medium"){
+                additionalExperience = additionalExperience + 2
+                additionalRpgPoints = additionalRpgPoints + 2
+                // common ? uncommon
+                rarityRoll = Math.floor(Math.random() * UNCOMMON_MAX_ROLL) + 1;
+            }
+            else if (enemyDifficulty == "hard"){
+                additionalExperience = additionalExperience + 9
+                additionalRpgPoints = additionalRpgPoints + 9
+                // common + uncommon maybe rare
+                rarityRoll = Math.floor(Math.random() * 3975) + 6000;
+            }
+            else if (enemyDifficulty == "boss"){
+                additionalExperience = additionalExperience + 19
+                additionalRpgPoints = additionalRpgPoints + 19
+                // common + uncommon maybe rare maybe ancient
+                rarityRoll = Math.floor(Math.random() * 2000) + 8000;
+            }else if (enemyDifficulty == "special"){
+                additionalExperience = additionalExperience + 19
+                additionalRpgPoints = additionalRpgPoints + 19
+                // common + uncommon maybe rare maybe ancient
+                rarityRoll = Math.floor(Math.random() * 2000) + 8000;
+            }
+            // TODO: add + luck to rarityroll
+            // push the item to items
+            if (rarityRoll){
+                if(rarityRoll > ANCIENT_MIN_ROLL ){
+                    var itemRoll = Math.floor(Math.random() * ancientItems.length);
+                    console.log(ancientItems[itemRoll]);
+                    itemsObtainedArray.push(ancientItems[itemRoll])
+                }
+                else if(rarityRoll > RARE_MIN_ROLL && rarityRoll <= RARE_MAX_ROLL){
+                    var itemRoll = Math.floor(Math.random() * rareItems.length);
+                    console.log(rareItems[itemRoll]);
+                    itemsObtainedArray.push(rareItems[itemRoll]);
+                }
+                else if (rarityRoll > UNCOMMON_MIN_ROLL && rarityRoll <= UNCOMMON_MAX_ROLL){
+                    var itemRoll = Math.floor(Math.random() * uncommonItems.length);
+                    console.log(uncommonItems[itemRoll]);
+                    itemsObtainedArray.push( uncommonItems[itemRoll] );
+                }
+                else {
+                    var itemRoll = Math.floor(Math.random() * commonItems.length);
+                    console.log(commonItems[itemRoll]);
+                    commonItems[itemRoll].itemAmount = COMMON_ITEMS_TO_OBTAIN
+                    itemsObtainedArray.push( commonItems[itemRoll] );
+                }
+            }
+        }
     }
     if (event.special && event.special.xp){
         // get the special points, they should be in event.special.
@@ -7192,4 +7621,8 @@ function enemiesUseAbilities(event){
             
         }
     }
+}
+
+function getRpgZone(areaname){
+    return areaToZoneMap[areaname]
 }

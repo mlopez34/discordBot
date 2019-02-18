@@ -30,7 +30,10 @@ client.on('ready', function(err) {
     console.log("in guilds: " + client.guilds.size)
     console.log('The bot is online'); 
     // initialize market
-    commands.initializeMarketPlace(client)
+    commands.initializeItemsMaps(client, function(err, res){
+        commands.initializeMarketPlace()
+        console.log(res)
+    })
     //steal(channelName);
 });
 
@@ -265,6 +268,9 @@ client.on('message', function(message){
                 else if (commandIs("rares", message)){
                     commands.raresCommand(message, args, "rare");
                 }
+                else if (commandIs("seeds", message)){
+                    commands.raresCommand(message, args, "seeds");
+                }
                 else if (commandIs("ancients", message)){
                     commands.raresCommand(message, args, "ancient");
                 }
@@ -323,7 +329,7 @@ client.on('message', function(message){
                     commands.buypetCommand(message, args);
                 }
                 else if (commandIs("fetch", message)){
-                    commands.fetchCommand(message)
+                    commands.fetchCommand(message, args)
                 }
                 else if (commandIs("xp", message)){
                     commands.xpCommand(message);
@@ -374,7 +380,25 @@ client.on('message', function(message){
                     commands.createTableCommand(message, mainChannel);
                 }
                 else if (commandIs("greenhouse", message)){
-                    //commands.greenHouseCommand(message)
+                    commands.greenHouseCommand(message)
+                }
+                else if (commandIs("buygreenhouse", message)){
+                    commands.buyGreenHouseCommand(message)
+                }
+                else if (commandIs("stable", message)){
+                    commands.stableCommand(message)
+                }
+                else if (commandIs("buystable", message)){
+                    commands.buyStableCommand(message)
+                }
+                else if (commandIs("temple", message)){
+                    commands.templeCommand(message)
+                }
+                else if (commandIs("buytemple", message)){
+                    commands.buyTempleCommand(message)
+                }
+                else if (commandIs("collectrewards", message)){
+                    commands.collectRewardsCommand(message)
                 }
                 else if (commandIs("markethelp", message)){
                     commands.marketHelpCommand(message)
@@ -384,6 +408,8 @@ client.on('message', function(message){
                 }
                 else if (commandIs("mkbid", message)){
                     commands.marketBidCommand(message, args)
+                }else if (commandIs("mkcancel", message)){
+                    commands.marketCancelCommand(message, args)
                 }else if (commandIs("mkauction", message)){
                     commands.marketAuctionCommand(message, args)
                 }
@@ -397,21 +423,39 @@ client.on('message', function(message){
                     // disassemble items - mark them as used - obtain items based on the item disassembled
                     commands.disassembleCommand(message, args);
                 }
-                else if (commandIs("fish", message)){
+                else if (commandIs("createarmament", message)){
+                    commands.createArmament(message, args);
+                }
+                else if (commandIs("armaments", message)){
+                    commands.raresCommand(message, args, "armament");
+                }
+                else if (commandIs("bake", message)){
+                    commands.bakeCommand(message, args);
+                }else if (commandIs("fish", message)){
                     // go fishing - catch a big fish!
                     message.channel.send(":tractor:")
                 }
                 else if (commandIs("upgrade", message)){
                     // can be stable or greenhouse or temple
-                    message.channel.send(":tractor:")
+                    commands.upgradeCommand(message, args);
                 }
                 else if (commandIs("craft", message)){
                     // craft a specific item via id
-                    message.channel.send(":tractor:")
+                    commands.craftCommand(message, args)
+                }
+                else if (commandIs("buyhacksaw", message)){
+                    // craft a specific item via id
+                    commands.buyHacksawCommand(message, args)
                 }
                 else if (commandIs("race", message)){
                     // enter an upcoming race
                     message.channel.send(":tractor:")
+                }
+                else if (commandIs("map", message)){
+                    commands.mapCommand(message, args)
+                }
+                else if (commandIs("travel", message)){
+                    commands.travelCommand(message, args)
                 }
                 else if (commandIs("rpgstart", message)){
                     if (message.channel.type == "text" && (RPG_CHANNELS.indexOf(message.channel.name) != -1) && !message.author.bot){
@@ -781,6 +825,11 @@ client.on('message', function(message){
                     data.command = "rares"
                     profileDB.createUserActivity(data)
                 }
+                else if (commandIs("seeds", message)){
+                    commands.raresCommand(message, args, "seeds");
+                    data.command = "rares"
+                    profileDB.createUserActivity(data)
+                }
                 else if (commandIs("ancients", message)){
                     commands.raresCommand(message, args, "ancient");
                     data.command = "ancients"
@@ -859,7 +908,7 @@ client.on('message', function(message){
                     profileDB.createUserActivity(data)
                 }
                 else if (commandIs("fetch", message)){
-                    commands.fetchCommand(message)
+                    commands.fetchCommand(message, args)
                     data.command = "fetch"
                     profileDB.createUserActivity(data)
                 }
@@ -944,7 +993,25 @@ client.on('message', function(message){
                     profileDB.createUserActivity(data)
                 }
                 else if (commandIs("greenhouse", message)){
-                    //commands.greenHouseCommand(message)
+                    commands.greenHouseCommand(message)
+                }
+                else if (commandIs("buygreenhouse", message)){
+                    commands.buyGreenHouseCommand(message)
+                }
+                else if (commandIs("stable", message)){
+                    commands.stableCommand(message)
+                }
+                else if (commandIs("buystable", message)){
+                    commands.buyStableCommand(message)
+                }
+                else if (commandIs("temple", message)){
+                    commands.templeCommand(message)
+                }
+                else if (commandIs("buytemple", message)){
+                    commands.buyTempleCommand(message)
+                }
+                else if (commandIs("collectrewards", message)){
+                    commands.collectRewardsCommand(message)
                 }
                 else if (commandIs("markethelp", message)){
                     commands.marketHelpCommand(message)
@@ -960,16 +1027,48 @@ client.on('message', function(message){
                     commands.marketBidCommand(message, args)
                     data.command = "mkbid"
                     profileDB.createUserActivity(data)
+                }else if (commandIs("mkcancel", message)){
+                    commands.marketCancelCommand(message, args)
                 }else if (commandIs("mkauction", message)){
                     commands.marketAuctionCommand(message, args)
                     data.command = "mkauction"
                     profileDB.createUserActivity(data)
                 }
                 else if (commandIs("plant", message)){
-                    //commands.plantCommand(message, args)
+                    commands.plantCommand(message, args)
                 }
                 else if (commandIs("harvest", message)){
-                    //commands.harvestCommand(message)
+                    commands.harvestCommand(message)
+                }
+                else if (commandIs("disassemble", message)){
+                    // disassemble items - mark them as used - obtain items based on the item disassembled
+                    commands.disassembleCommand(message, args);
+                }
+                else if (commandIs("bake", message)){
+                    commands.bakeCommand(message, args);
+                }
+                else if (commandIs("createarmament", message)){
+                    commands.createArmament(message, args);
+                }
+                else if (commandIs("armaments", message)){
+                    commands.raresCommand(message, args, "armament");
+                }
+                else if (commandIs("upgrade", message)){
+                    // can be stable or greenhouse or temple
+                    commands.upgradeCommand(message, args);
+                }
+                else if (commandIs("craft", message)){
+                    // craft a specific item via id
+                    commands.craftCommand(message, args)
+                }
+                else if (commandIs("buyhacksaw", message)){
+                    commands.buyHacksawCommand(message, args)
+                }
+                else if (commandIs("map", message)){
+                    commands.mapCommand(message, args)
+                }
+                else if (commandIs("travel", message)){
+                    commands.travelCommand(message, args)
                 }
                 else if (commandIs("rpgstart", message)){
                     if (message.channel.type == "text" && !message.author.bot){

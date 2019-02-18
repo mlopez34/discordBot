@@ -3,6 +3,193 @@ var profileDB = require("./profileDB.js");
 const Discord = require("discord.js");
 
 var achievementsData = {
+    // NEW
+    "Farmer": {
+        emoji : ":boy::skin-tone-2:",
+        score: 10,
+        description: "Purchase a Greenhouse and harvest 20 times"
+    },
+    "Jockey": {
+        emoji : ":boy::skin-tone-2:",
+        score: 10,
+        description: "Purchase a Stable and fetch 100 times"
+    },
+    "Blacksmith": {
+        emoji : ":boy::skin-tone-2:",
+        score: 10,
+        description: "Purchase a Temple and learn a recipe"
+    },
+    "Wrecker": {
+        emoji : ":boy::skin-tone-2:",
+        score: 10,
+        description: "Purchase a Hacksaw and disassemble 15 ancient items"
+    },
+    "Loyalty Before Royalty": {
+        emoji : ":boy::skin-tone-2:",
+        score: 10,
+        description: "Reach sanctified reputation with Bender"
+    },
+    "Better luck next time": {
+        emoji : ":boy::skin-tone-2:",
+        score: 10,
+        description: "Create an armament that provides only negative rpg stats"
+    },
+    "Keystone 5": {
+        emoji : ":boy::skin-tone-2:",
+        score: 10,
+        description: "Defeat keystone 5 of an rpg challenge"
+    },
+    "Wedding Season": {
+        emoji : ":boy::skin-tone-2:",
+        score: 10,
+        description: "Bake a wedding cake"
+    },
+    "Carpenter": {
+        emoji : ":boy::skin-tone-2:",
+        score: 10,
+        description: "Upgrade your stable to level 10"
+    },
+    "Blue Collar": {
+        emoji : ":boy::skin-tone-2:",
+        score: 10,
+        description: "Upgrade your greenhouse to level 10"
+    },
+    "Worshiper": {
+        emoji : ":boy::skin-tone-2:",
+        score: 10,
+        description: "Upgrade your temple to level 10"
+    },
+    "Liutenant": {
+        emoji : ":boy::skin-tone-2:",
+        score: 10,
+        description: "Earn the liutenant title"
+    },
+    "Liutenant2": {
+        emoji : ":boy::skin-tone-2:",
+        score: 10,
+        description: "top 1% Legacy"
+    },
+    "Liutenant3": {
+        emoji : ":boy::skin-tone-2:",
+        score: 10,
+        description: "top 10% Legacy"
+    },
+    "Fruitcake": {
+        emoji : ":boy::skin-tone-2:",
+        score: 10,
+        description: "Win 1000 Fruits games"
+    },
+    "Zone1": {
+        emoji : ":boy::skin-tone-2:",
+        score: 10,
+        description: "Complete Zone 1 of RPG"
+    },
+    "Zone2": {
+        emoji : ":boy::skin-tone-2:",
+        score: 10,
+        description: "Complete Zone 2 of RPG"
+    },
+    "Zone3": {
+        emoji : ":boy::skin-tone-2:",
+        score: 10,
+        description: "Complete Zone 3 of RPG"
+    },
+    "Zone4": {
+        emoji : ":boy::skin-tone-2:",
+        score: 10,
+        description: "Complete Zone 4 of RPG"
+    },
+    "Level 35 + item": {
+        emoji : ":boy::skin-tone-2:",
+        score: 10,
+        description: "Craft a level 35 + requirement item"
+    },
+    "Beluga Whale": {
+        emoji : ":boy::skin-tone-2:",
+        score: 10,
+        description: "Catch a beluga whale while fishing"
+    },
+    "Challenge 6": {
+        emoji : ":boy::skin-tone-2:",
+        score: 10,
+        description: "Defeat A182-Type2 Without killing any energy crystals"
+    },
+    "Challenge 5": {
+        emoji : ":boy::skin-tone-2:",
+        score: 10,
+        description: "Defeat Challenge 5 by killing Valet Last"
+    },
+    "Challenge 10": {
+        emoji : ":boy::skin-tone-2:",
+        score: 10,
+        description: "Defeat Challenge 10 without letting the Anomaly absorb any fiends"
+    },
+    "Challenge 11": {
+        emoji : ":boy::skin-tone-2:",
+        score: 10,
+        description: "Defeat Challenge 11 without killing any of the four pillar holders"
+    },
+    "Challenge 4": {
+        emoji : ":boy::skin-tone-2:",
+        score: 10,
+        description: "Defeat Challenge 4 by killing the Dictator and Mob Lord within 2 turns of each other"
+    },
+    "Challenge 1": {
+        emoji : ":boy::skin-tone-2:",
+        score: 10,
+        description: "Defeat Challenge 1 and kill the Escaped Robot first"
+    },
+    "Challenge 2": {
+        emoji : ":boy::skin-tone-2:",
+        score: 10,
+        description: "Defeat Challenge 2 and kill the Desperado first"
+    },
+    "Challenge 3": {
+        emoji : ":boy::skin-tone-2:",
+        score: 10,
+        description: "Defeat Challenge 3 and kill the Roman Soldier first"
+    },
+    "Challenge 7": {
+        emoji : ":boy::skin-tone-2:",
+        score: 10,
+        description: "Defeat Challenge 7 ..."
+    },
+    "Challenge 8": {
+        emoji : ":boy::skin-tone-2:",
+        score: 10,
+        description: "Defeat Challenge 8 ..."
+    },
+    ///
+    "Legacy Top 1% RPG" : {
+        emoji : ":first_place:",
+        score: 10,
+        description: "Achieve the top 1% rpg points during legacy bender season"
+    },
+    "Legacy Top 1% XP" : {
+        emoji : ":first_place:",
+        score: 10,
+        description: "Achieve the top 1% experience points during legacy bender season"
+    },
+    "Legacy Top 1% Challenge" : {
+        emoji : ":first_place:",
+        score: 10,
+        description: "Achieve the top 1% rpg challenge standings during legacy bender season"
+    },
+    "Legacy Top Taco Stands" : {
+        emoji : ":first_place:",
+        score: 10,
+        description: "Obtain the most taco stands during legacy bender season"
+    },
+    "Legacy Top 10% RPG" : {
+        emoji : ":medal:",
+        score: 10,
+        description: "Achieve the top 10% rpg points during legacy bender season"
+    },
+    "Legacy Top 10% XP" : {
+        emoji : ":medal:",
+        score: 10,
+        description: "Achieve the top 10% experience points during legacy bender season"
+    },
     "Nice guy" : {
         emoji : ":boy::skin-tone-2:",
         score: 10,
@@ -462,6 +649,73 @@ module.exports.checkForAchievements = function(discordUserId, data, message, cal
                         }
                         {
                             achievementEmbedBuilder(message, "Gambler", achievementEarner);
+                        }
+                    })
+                }
+                /// rewards for legacy
+                if(data.legacytop1rpgpoints &&
+                    (data.achievements === null || data.achievements.indexOf("Legacy Top 1% RPG") == -1)){
+                        profileDB.updateAchievements(discordUserId, "{Legacy Top 1% RPG}", function(err, r){
+                            if (err){
+                                // console.log(err); :gift_heart: 
+                            }
+                            {
+                                achievementEmbedBuilder(message, "Legacy Top 1% RPG", achievementEarner);
+                            }
+                        })
+                    }
+                if(data.legacytop1experience &&
+                (data.achievements === null || data.achievements.indexOf("Legacy Top 1% XP") == -1)){
+                    profileDB.updateAchievements(discordUserId, "{Legacy Top 1% XP}", function(err, r){
+                        if (err){
+                            // console.log(err); :gift_heart: 
+                        }
+                        {
+                            achievementEmbedBuilder(message, "Legacy Top 1% XP", achievementEarner);
+                        }
+                    })
+                }
+                if(data.legacytop10rpgpoints &&
+                (data.achievements === null || data.achievements.indexOf("Legacy Top 1% Challenge") == -1)){
+                    profileDB.updateAchievements(discordUserId, "{Legacy Top 1% Challenge}", function(err, r){
+                        if (err){
+                            // console.log(err); :gift_heart: 
+                        }
+                        {
+                            achievementEmbedBuilder(message, "Legacy Top 1% Challenge", achievementEarner);
+                        }
+                    })
+                }
+                if(data.legacytop10experience &&
+                (data.achievements === null || data.achievements.indexOf("Legacy Top Taco Stands") == -1)){
+                    profileDB.updateAchievements(discordUserId, "{Legacy Top Taco Stands}", function(err, r){
+                        if (err){
+                            // console.log(err); :gift_heart: 
+                        }
+                        {
+                            achievementEmbedBuilder(message, "Legacy Top Taco Stands", achievementEarner);
+                        }
+                    })
+                }
+                if(data.legacytop1challenge &&
+                (data.achievements === null || data.achievements.indexOf("Legacy Top 10% RPG") == -1)){
+                    profileDB.updateAchievements(discordUserId, "{Legacy Top 10% RPG}", function(err, r){
+                        if (err){
+                            // console.log(err); :gift_heart: 
+                        }
+                        {
+                            achievementEmbedBuilder(message, "Legacy Top 10% RPG", achievementEarner);
+                        }
+                    })
+                }
+                if(data.legacytop1tacostands &&
+                (data.achievements === null || data.achievements.indexOf("Legacy Top 10% XP") == -1)){
+                    profileDB.updateAchievements(discordUserId, "{Legacy Top 10% XP}", function(err, r){
+                        if (err){
+                            // console.log(err); :gift_heart: 
+                        }
+                        {
+                            achievementEmbedBuilder(message, "Legacy Top 10% XP", achievementEarner);
                         }
                     })
                 }

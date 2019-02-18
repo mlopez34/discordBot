@@ -1,9 +1,19 @@
 'use strict'
 var profileDB = require("./profileDB.js");
 var reputation = require("./reputation.js")
+var wearStats = require("./wearStats.js")
 ///// THIS is used to keep multiple uses from using the same items
 var usingItemsLock = {}
 // functions for using each item
+
+var percentageToReduceForCommand = {
+    scavenge: .50,
+    thank: .50,
+    sorry: .33,
+    fetch: .33,
+    cook: .15,
+    prepare: .10
+}
 
 module.exports.setItemsLock = function(discordUserId, set){
     usingItemsLock[discordUserId] = set
@@ -401,89 +411,138 @@ module.exports.useSoil = function(message, discordUserId, soilToUse, cb){
     }
 }
 
-module.exports.useBasedOnShortName = function(message, discordid, itemshortname, userInventoryCountMap, userInventory, cb){
-    // get all items, map by itemshortname as key, if it matches an item then use the item
-    profileDB.getItemData(function(error, allItemsResponse){
-        if (error){
-            // console.log(error);
-            exports.setItemsLock(discordid, false)
-            cb("failed");
-        }
-        else{
-            var itemsMapbyName = {};
-            for (var index in allItemsResponse.data){
-                itemsMapbyName[allItemsResponse.data[index].itemshortname] = allItemsResponse.data[index];
-            }
-            // 
-            if (itemsMapbyName[itemshortname]){
-                // item exists, use the item and remove from user inventory
-                if (itemshortname == "adventurer"
-                    || itemshortname == "culinary"
-                    || itemshortname == "roleplaying"
-                    || itemshortname == "wild"
-                    || itemshortname == "satisfying"
-                    || itemshortname == "guilt"
-                    || itemshortname == "productivity"){
-                    // use a potion from inventory
-                    var idOfItemToUse = itemsMapbyName[itemshortname].id;
-                    var itemInInventoryCount = userInventoryCountMap[idOfItemToUse]
-                    // look for an item in my inventory that has the above id
-                    if (itemInInventoryCount > 0){
-                        var potionToUse = undefined;
-                        for (var item in userInventory){
-                            // check the rock hasnt been used
-                            var validItem = exports.itemValidate(userInventory[item]);
-                            if (validItem){
-                                // item hasnt been added to be counted, add it as 1
-                                if (userInventory[item].itemid == idOfItemToUse){
-                                    potionToUse = userInventory[item];
-                                    break;
-                                }
-                            }
+module.exports.useBasedOnShortName = function(message, discordid, itemshortname, userInventoryCountMap, userInventory, itemsMapbyShortName, commandTimes, wearRes, cb){
+    
+    if (itemsMapbyShortName[itemshortname]){
+        // item exists, use the item and remove from user inventory
+        if (itemshortname == "adventurer"
+            || itemshortname == "culinary"
+            || itemshortname == "roleplaying"
+            || itemshortname == "wild"
+            || itemshortname == "satisfying"
+            || itemshortname == "guilt"
+            || itemshortname == "productivity"){
+            // use a potion from inventory
+            var idOfItemToUse = itemsMapbyShortName[itemshortname].id;
+            var itemInInventoryCount = userInventoryCountMap[idOfItemToUse]
+            // look for an item in my inventory that has the above id
+            if (itemInInventoryCount > 0){
+                var potionToUse = undefined;
+                for (var item in userInventory){
+                    // check the rock hasnt been used
+                    var validItem = exports.itemValidate(userInventory[item]);
+                    if (validItem){
+                        // item hasnt been added to be counted, add it as 1
+                        if (userInventory[item].itemid == idOfItemToUse){
+                            potionToUse = userInventory[item];
+                            break;
                         }
-                        // use the potion
-                        if (potionToUse){
-                            profileDB.updateItemStatus(potionToUse.id, "used", function(updatePotionErr, updatePotionRes){
-                                if (updatePotionErr){
+                    }
+                }
+                // use the potion
+                if (potionToUse){
+                    profileDB.updateItemStatus(potionToUse.id, "used", function(updatePotionErr, updatePotionRes){
+                        if (updatePotionErr){
+                            exports.setItemsLock(discordid, false)
+                            cb(updatePotionErr);
+                        }
+                        else{
+                            // used the potion, reduce the command that the potion affects by 1 hour
+                            // EDIT: no longer 1 hour (2-16-2019) reduce based on command max time - seconds to reduce
+                            // then subtract by predefined % of time reduction
+                            var commandTime = commandTimes[itemsMapbyShortName[itemshortname].command]
+                            var secondsToRemove = wearStats.calculateSecondsReduced(wearRes, itemsMapbyShortName[itemshortname].command);
+                            var secondsToReduceByPotion = timeToReduceFromPotion(commandTime, secondsToRemove, itemsMapbyShortName[itemshortname].command)
+                            reduceCommandCooldown(discordid, itemsMapbyShortName[itemshortname].command, secondsToReduceByPotion, function(reduceErr, reduceRes){
+                                if (reduceErr){
                                     exports.setItemsLock(discordid, false)
-                                    cb(updatePotionErr);
-                                }
-                                else{
-                                    // used the potion, reduce the command that the potion affects by 1 hour
-                                    reduceCommandCooldown(discordid, itemsMapbyName[itemshortname].command, function(reduceErr, reduceRes){
-                                        if (reduceErr){
-                                            exports.setItemsLock(discordid, false)
-                                            message.channel.send("Something went wrong, call 911")
-                                            cb("failed");
-                                        }else{
-                                            exports.setItemsLock(discordid, false)
-                                            message.channel.send( message.author + " used a **" + itemsMapbyName[itemshortname].itemname + "**, they reduced their " + itemsMapbyName[itemshortname].command + " command cooldown by `1 hour`");                                                                
-                                            cb(null, "success")
-                                        }
-                                    })
+                                    message.channel.send("Something went wrong, call 911")
+                                    cb("failed");
+                                }else{
+                                    exports.setItemsLock(discordid, false)
+                                    var minutesReduced = Math.floor( secondsToReduceByPotion / 60 )
+                                    message.channel.send( message.author + " used a **" + itemsMapbyShortName[itemshortname].itemname + "**, they reduced their " + itemsMapbyShortName[itemshortname].command + " command cooldown by `" + minutesReduced + " minutes`");                                                                
+                                    cb(null, "success")
                                 }
                             })
-                        }else{
-                            exports.setItemsLock(discordid, false)
-                            cb("failed")
                         }
-                    }else{
-                        exports.setItemsLock(discordid, false)
-                        cb("failed");
-                    }
+                    })
                 }else{
                     exports.setItemsLock(discordid, false)
-                    cb("failed");
+                    cb("failed")
                 }
             }else{
                 exports.setItemsLock(discordid, false)
                 cb("failed");
             }
+        }else if (itemshortname == "applepie"
+            || itemshortname == "bananacake"){
+            // use a pie from inventory
+            var idOfItemToUse = itemsMapbyShortName[itemshortname].id;
+            var itemInInventoryCount = userInventoryCountMap[idOfItemToUse]
+            if (itemInInventoryCount > 0){
+                var bakeToUse = undefined;
+                for (var item in userInventory){
+                    // check the rock hasnt been used
+                    var validItem = exports.itemValidate(userInventory[item]);
+                    if (validItem){
+                        // item hasnt been added to be counted, add it as 1
+                        if (userInventory[item].itemid == idOfItemToUse){
+                            bakeToUse = userInventory[item];
+                            break;
+                        }
+                    }
+                }
+                if (bakeToUse){
+                    // set the item to used
+                    profileDB.updateItemStatus(bakeToUse.id, "used", function(updatePotionErr, updatePotionRes){
+                        if (updatePotionErr){
+                            exports.setItemsLock(discordid, false)
+                            cb(updatePotionErr);
+                        }
+                        else{
+                            // add the buff to the user profile. itemid + itemactivatetime
+                            addRPGBuffToUser(discordid, bakeToUse.itemid, 2, function(buffErr, buffRes){
+                                if (buffErr){
+                                    exports.setItemsLock(discordid, false)
+                                    message.channel.send("Something went wrong, call 911")
+                                    cb("failed");
+                                }else{
+                                    exports.setItemsLock(discordid, false)
+                                    message.channel.send( "gained buff" ); // message that user gained buff                                                           
+                                    cb(null, "success")
+                                }
+                            })
+                        }
+                    })
+                }else{
+                    exports.setItemsLock(discordid, false)
+                    cb("failed")
+                }
+            }else{
+                exports.setItemsLock(discordid, false)
+                cb("failed");
+            }
+        }else{
+            exports.setItemsLock(discordid, false)
+            cb("failed");
         }
-    })
+    }else{
+        exports.setItemsLock(discordid, false)
+        cb("failed");
+    }
 }
 
-function reduceCommandCooldown(discordUserId, command, cb){
+function timeToReduceFromPotion(commandTime, secondsToRemove, command ){
+    // calculate total seconds user has commandTime - secondsToReduce
+    var secondsReducedTo = commandTime - secondsToRemove
+    // multiply that time by potion time to reduce (time * potionToReduce)
+    secondsReducedTo = Math.floor( secondsReducedTo * percentageToReduceForCommand[command] )
+    // floor the number, and return the number, this should be the seconds to reduce
+    return secondsReducedTo
+}
+
+function reduceCommandCooldown(discordUserId, command, secondsToReduceByPotion, cb){
     profileDB.getUserProfileData(discordUserId, function(err, profileRes){
         if (err){
             console.log(err);
@@ -491,7 +550,7 @@ function reduceCommandCooldown(discordUserId, command, cb){
         }else{
             var userProfile = profileRes.data;
 
-            profileDB.reduceCommandCooldownByHour(discordUserId, command, userProfile, function(err, res){
+            profileDB.reduceCommandCooldownByHour(discordUserId, command, userProfile, secondsToReduceByPotion, function(err, res){
                 if (err){
                     cb(err);
                 }else{
@@ -501,6 +560,17 @@ function reduceCommandCooldown(discordUserId, command, cb){
         }
     })
     
+}
+
+function addRPGBuffToUser(discordUserId, itemid, hours, cb){
+    profileDB.updateUserRPGBuff(discordUserId, itemid, hours, function(err, res){
+        if (err){
+            console.log(err)
+            cb(err)
+        }else{
+            cb(null, "success")
+        }
+    })
 }
 
 module.exports.useUncommons = function(message, discordid, uncommons, cb){
