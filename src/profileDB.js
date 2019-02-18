@@ -61,10 +61,15 @@ module.exports.createUserProfile = function(data, cb) {
                             currentarea: "meadows"
                         }
                         exports.createRpgProfile(r, function(e, r){
-                            cb(null, {
-                                status: 'success',
-                                message: 'Inserted one user'
-                            });
+                            var f = {
+                                discordId: data.discordId
+                            }
+                            exports.createFruitsProfile(f, function(e, r){
+                                cb(null, {
+                                    status: 'success',
+                                    message: 'Inserted one user'
+                                });
+                            })
                         })
                     })
                 })
@@ -1739,6 +1744,23 @@ module.exports.createRpgProfile = function(data, cb){
     cb(null, {
         status: 'success',
         message: 'created rpg info'
+        });
+    })
+    .catch(function (err) {
+        cb(err);
+    });
+}
+
+// create fruits profile
+module.exports.createFruitsProfile = function(data, cb){
+    var query = 'insert into '+ config.userFruitTable + '(discordId)' +
+    'values(${discordId})'
+    // console.log(query);
+    db.none(query, data)
+    .then(function () {
+    cb(null, {
+        status: 'success',
+        message: 'created fruit profile'
         });
     })
     .catch(function (err) {
