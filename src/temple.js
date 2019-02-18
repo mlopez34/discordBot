@@ -34,6 +34,8 @@ module.exports.checkRequirements = function(params){
     // check level of temple - get requirements for next level - check upgrade requirements
     var requirementsMet = true;
     var requirements = upgradeRequirements[params.nextLevel]
+    console.log(requirements)
+    console.log(params)
     // check reputation level 
     if (params.tacos >= requirements.tacos && params.reputationLevel >= requirements.reputationlevel){
         // check fruits and check items now 
