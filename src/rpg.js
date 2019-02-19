@@ -154,9 +154,11 @@ module.exports.showRpgStats = function(message, itemsAvailable, amuletItemsById)
                     for (var item in inventoryResponse.data){
                         if (!itemsInInventoryCountMap[inventoryResponse.data[item].itemid] ){
                             // item hasnt been added to be counted, add it as 1
-                            itemsInInventoryCountMap[inventoryResponse.data[item].itemid] = 1;
-                            if (inventoryResponse.data[item].armamentforitemid){
+                            if (inventoryResponse.data[item].armamentforitemid
+                                && !userArmamentForItemId[inventoryResponse.data[item].armamentforitemid]){
                                 userArmamentForItemId[inventoryResponse.data[item].armamentforitemid] = inventoryResponse.data[item]
+                            }else{
+                                itemsInInventoryCountMap[inventoryResponse.data[item].itemid] = 1;
                             }
                         }else{
                             itemsInInventoryCountMap[inventoryResponse.data[item].itemid] = itemsInInventoryCountMap[inventoryResponse.data[item].itemid] + 1
@@ -511,9 +513,11 @@ module.exports.rpgReady = function(message, itemsAvailable, amuletItemsById, buf
                             for (var item in inventoryResponse.data){
                                 if (!itemsInInventoryCountMap[inventoryResponse.data[item].itemid] ){
                                     // item hasnt been added to be counted, add it as 1
-                                    itemsInInventoryCountMap[inventoryResponse.data[item].itemid] = 1;
-                                    if (inventoryResponse.data[item].armamentforitemid){
+                                    if (inventoryResponse.data[item].armamentforitemid
+                                        && !userArmamentForItemId[inventoryResponse.data[item].armamentforitemid]){
                                         userArmamentForItemId[inventoryResponse.data[item].armamentforitemid] = inventoryResponse.data[item]
+                                    }else{
+                                        itemsInInventoryCountMap[inventoryResponse.data[item].itemid] = 1;
                                     }
                                 }else{
                                     itemsInInventoryCountMap[inventoryResponse.data[item].itemid] = itemsInInventoryCountMap[inventoryResponse.data[item].itemid] + 1
