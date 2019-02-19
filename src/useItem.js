@@ -10,9 +10,9 @@ var percentageToReduceForCommand = {
     scavenge: .50,
     thank: .50,
     sorry: .33,
-    fetch: .33,
-    cook: .15,
-    prepare: .10,
+    fetch: .30,
+    cook: .07,
+    prepare: .05,
     RPG: .50
 }
 

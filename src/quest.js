@@ -784,7 +784,7 @@ function handleTimeMachineArtifactStageTwo(message, discordUserId, stage, team, 
     })
 }
 
-function handleTimeMachineArtifactStageThree(message, discordUserId, stage, team, year, channel){
+function handleTimeMachineArtifactStageThree(message, discordUserId, stage, team, year, channel, allItems){
     // save dinosaurs from the asteroid in -65,000,000
     var questData = {
         questname: "timetravel",
@@ -1905,7 +1905,7 @@ function handleRingArtifactStageFive(message, discordUserId, stage, team, channe
 */
 
 // embed
-function handleTombArtifactStageOne(message, discordUserId, stage, team, channel){
+function handleTombArtifactStageOne(message, discordUserId, stage, team, channel, allItems){
     var questData = {
         questname: "tomb",
         message: message,
