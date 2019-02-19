@@ -309,7 +309,7 @@ var PETS_AVAILABLE = {
     owl: {
         speak: "broop broop",
         emoji: ":owl:",
-        fetch: 50,
+        fetch: 10,
         cooldown: 3,
         uniquereward: true,
         rewardType: "top1rpg"
@@ -317,7 +317,7 @@ var PETS_AVAILABLE = {
     lion: {
         speak: "RRWWAAAAAARRR",
         emoji: ":lion_face:",
-        fetch: 50,
+        fetch: 30,
         cooldown: 9,
         uniquereward: true,
         rewardType: "top1xp"
@@ -325,7 +325,7 @@ var PETS_AVAILABLE = {
     snowman: {
         speak: "Ha HEEE",
         emoji: ":snowman2:",
-        fetch: 50,
+        fetch: 40,
         cooldown: 12,
         uniquereward: true,
         rewardType: "top1challenge"
