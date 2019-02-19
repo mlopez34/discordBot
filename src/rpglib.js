@@ -8,6 +8,7 @@ module.exports = {
     // cocoon - 15% damage reduct, -10% damage dealt
     // cannister shot
     // LEFT OFF AT: WOODS - create the entire woods profile
+    
     rpgAbilities: {
         attack : {
             name: "Attack",
@@ -4900,7 +4901,42 @@ Hoover Dam
 
     areaToZoneMap: {
         tallgrass: "prarie",
-        meadows: "prarie"
+        meadows: "prarie",
+        acheronriver: "prarie",
+        anorariver: "prarie",
+        aokigahara: "prarie",
+        bagan: "prarie",
+        bluegrotto: "prarie",
+        carerralake: "prarie",
+        charlesbridge: "prarie",
+        tauronplains: "prarie",
+        greenchestnut: "prarie",
+        igualdafalls : "prarie",
+        molonoth: "prarie",
+        nishinomaru: "prarie",
+        archenland: "woods",
+        beartoothriver: "woods",
+        blackforest: "woods",
+        brycecanyon: "woods",
+        darkhedges: "woods",
+        darkwatercove: "woods",
+        denalipark: "woods",
+        forestofstone:"woods",
+        incatrail:  "woods",
+        lakevostok: "woods",
+        meeroruins: "woods",
+        angkorwat: "undergroundtunnels", 
+        bigsur: "undergroundtunnels",
+        bramstomb: "undergroundtunnels",
+        greyheath: "undergroundtunnels",
+        klencory: "undergroundtunnels",
+        ladakh: "undergroundtunnels",
+        meenakshitemple: "undergroundtunnels",
+        morrowcaverns: "undergroundtunnels",
+        glowwormcave: "undergroundtunnels",
+        tikal: "undergroundtunnels",
+        minasmorgul: "undergroundtunnels",
+        dunwall: "undergroundtunnels"
     },
     enemiesToEncounter: {
         summoned: {
