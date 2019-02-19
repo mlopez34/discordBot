@@ -466,7 +466,7 @@ client.on('message', function(message){
                 }
                 else if (commandIs("pvpstart", message)){
                     if (message.channel.type == "text" && (RPG_CHANNELS.indexOf(message.channel.name) != -1) && !message.author.bot){
-                        commands.rpgBattleCommand(message);
+                        //commands.rpgBattleCommand(message);
                     }else{
                         message.channel.send("use the rpg channel for this")
                     }
@@ -597,7 +597,7 @@ client.on('message', function(message){
                         //commands.rpgBattleCommand(message);
                     }
                     else if (commandIs("pvpstart", message)){
-                        commands.rpgBattleCommand(message);
+                        //commands.rpgBattleCommand(message);
                     }
                     else if (commandIs("rpgchallenge", message)){
                         commands.rpgChallengeCommand(message, args);
@@ -1081,7 +1081,7 @@ client.on('message', function(message){
                 }
                 else if (commandIs("pvpstart", message)){
                     if (message.channel.type == "text" && !message.author.bot){
-                        commands.rpgBattleCommand(message);
+                        //commands.rpgBattleCommand(message);
                     }else{
                         message.channel.send("use the rpg channel for this")
                     }
