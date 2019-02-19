@@ -24,7 +24,7 @@ module.exports.rollForRecipes = function(message, params){
     // userlevel, userzone, templelevel
     var rollForNewRecipe = Math.floor(Math.random() * 1000) + 1;
 
-    if (rollForNewRecipe > 750){
+    if (rollForNewRecipe > 950){
         var possibleRecipesToRollFrom = buildPossibleRecipesArray(params)
 
         // roll for recipes - number of recipes depends on the templeLevel
