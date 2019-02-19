@@ -608,6 +608,28 @@ module.exports.rollForArmamentStats = function(itemToCreateArmament){
         statMap.luckplus.floor = -30
         statMap.luckplus.ceiling = 80
 
+    }
+    else if (itemRarity == "artifact"){
+        statMap.hpplus.floor = -25
+        statMap.hpplus.ceiling = 40
+
+        statMap.adplus.floor = -20
+        statMap.adplus.ceiling = 55
+
+        statMap.mdplus.floor = -20
+        statMap.mdplus.ceiling = 55
+
+        statMap.armorplus.floor = -35
+        statMap.armorplus.ceiling = 70
+
+        statMap.spiritplus.floor = -35
+        statMap.spiritplus.ceiling = 70
+
+        statMap.critplus.floor = -20
+        statMap.critplus.ceiling = 45
+
+        statMap.luckplus.floor = -20
+        statMap.luckplus.ceiling = 45
     }else if (itemRarity == "myth"){
         statMap.hpplus.floor = -35
         statMap.hpplus.ceiling = 60
