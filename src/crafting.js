@@ -82,8 +82,8 @@ module.exports.rollForRecipes = function(message, params){
 
 function buildPossibleRecipesArray(params){
     var possibleRecipesToRollFrom = []
-    for (var r in availableRecipes){
-        let rarityLevel = availableRecipes[r]
+    for (var r in recipesToCraftMap){
+        let rarityLevel = recipesToCraftMap[r]
 
         for (var i in rarityLevel){
             let levelRange = rarityLevel[i]
