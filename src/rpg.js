@@ -2103,7 +2103,7 @@ function increaseCompletionForUser(eventUser, rpgareaId, message){
             var areasToComplete = getAreasToCompletForZone(zoneUserIsIn)
             var areascompletedForUser = getAreasCompletedInZoneForUser(eventUser.userdata, zoneUserIsIn)
             // calculate areascompletedForUser 
-            if ( true || !zoneComplete && ( areascompletedForUser >= areasToComplete ) ){
+            if (!zoneComplete && ( areascompletedForUser >= areasToComplete ) ){
                 // complete zone
                 newZoneEmbedBuilder( eventUser.username, zoneUserIsIn, message )
                 profileDB.setZoneComplete(discordUserId, zoneUserIsIn)
