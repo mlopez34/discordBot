@@ -265,6 +265,11 @@ const rarityEssenceLevels = {
         crystalRarity: "ancient"
     },
     "artifact": {
+        level: 1,
+        essenceRarity: "artifact",
+        crystalRarity: "artifact"
+    },
+    "artifact": {
         level: 2,
         essenceRarity: "artifact",
         crystalRarity: "artifact"
@@ -728,7 +733,7 @@ function filterListOfObtainableItems(listOfObtainableItems, disassembleRarity, c
     for (var i in listOfObtainableItems){
         if (crystal){
             if (current){
-                if ( listOfObtainableItems[i].level == essenceInfo.level - 1 
+                if ( listOfObtainableItems[i].essencelevel == essenceInfo.level - 1 
                     && listOfObtainableItems[i].crystalrarity == essenceInfo.crystalRarity){
                     // this one should be included
                     adjustedList.push(listOfObtainableItems[i])
@@ -766,47 +771,63 @@ module.exports.performDisassemble =  function(message, discordUserId, itemsToDis
         console.log()
         // if rare, or ancient, or artifact, get pool of items to obtain
         var numberOfItems = 3
+        var validDisassemble = false
         var itemsObtained = []
 
-        if ( itemProfile.itemraritycategory == "rare" ){
+        if ( itemProfile.itemraritycategory == "rare" && !itemProfile.isseed){
             numberOfItems = 3
+            validDisassemble = true
         }else if (itemProfile.itemraritycategory == "rare+"){
             numberOfItems = 4
+            validDisassemble = true
         }else if (itemProfile.itemraritycategory == "rare++"){
             numberOfItems = 5
+            validDisassemble = true
         }else if (itemProfile.itemraritycategory == "rare+++"){
             numberOfItems = 7
+            validDisassemble = true
         }else if (itemProfile.itemraritycategory == "ancient"){
             numberOfItems = 5
+            validDisassemble = true
         }else if (itemProfile.itemraritycategory == "ancient+"){
             numberOfItems = 6
+            validDisassemble = true
         }else if (itemProfile.itemraritycategory == "ancient++"){
             numberOfItems = 7
+            validDisassemble = true
         }else if (itemProfile.itemraritycategory == "ancient+++"){
             numberOfItems = 8
+            validDisassemble = true
         }else if (itemProfile.itemraritycategory == "artifact"){
             numberOfItems = 7
+            validDisassemble = true
         }
-        itemsObtained = rollForItems(itemProfile.itemraritycategory, numberOfItems, listOfObtainableItems )        
         // can get commons, uncommons, and shards (shards will be used for armaments, crafting, building)
         // console.log(itemsObtained);
-        profileDB.addNewItemToUser(discordUserId, itemsObtained, function(error, response){
-            if (error){
-                console.log(error)
-                cb(error);
-            }
-            else{
-                // added item, use the disassembled item
-                profileDB.bulkUpdateItemStatus( [ itemsToDisassemble ], "disassembled", function(updateBulkErr, updateBulkRes){
-                    if (updateBulkErr){
-                        cb(updateBulkErr);
-                    }
-                    else{
-                        cb(null, itemsObtained);
-                    }
-                })
-            }
-        });
+        if (validDisassemble){
+            itemsObtained = rollForItems(itemProfile.itemraritycategory, numberOfItems, listOfObtainableItems )        
+            profileDB.addNewItemToUser(discordUserId, itemsObtained, function(error, response){
+                if (error){
+                    console.log(error)
+                    cb(error);
+                }
+                else{
+                    // added item, use the disassembled item
+                    profileDB.bulkUpdateItemStatus( [ itemsToDisassemble ], "disassembled", function(updateBulkErr, updateBulkRes){
+                        if (updateBulkErr){
+                            cb(updateBulkErr);
+                        }
+                        else{
+                            cb(null, itemsObtained);
+                        }
+                    })
+                }
+            });
+        }else{
+            message.channel.send("Can't disassemble that item")
+            cb("Can't disassemble that item")
+        }
+        
     }
 }
 
