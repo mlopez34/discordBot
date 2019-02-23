@@ -4,6 +4,7 @@ var profileDB = require("./profileDB.js");
 const Discord = require("discord.js");
 var config = require("./config.js");
 var achiev = require("./achievements.js");
+var commands = require("./commands")
 
 var Levels = config.Levels
 var levelRewards = config.levelTacoRewards;
@@ -72,7 +73,8 @@ function gainExperienceHandler(message, discordUser, experienceNumber, userProfi
                     data.achievements = userProfileData.data.achievements;
                     achiev.checkForAchievements(discordUser.id, data, message);
                     experienceEmbedBuilder(message, discordUser, userLeveledUpTo, tacoRewards);
-                    extraLevelRewards(message, discordUser, userLeveledUpTo)
+                    var allItems = commands.getAllItems()
+                    extraLevelRewards(message, discordUser, userLeveledUpTo, allItems)
                 }
             })
         }
