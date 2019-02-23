@@ -234,7 +234,13 @@ function updateUserRewards(message, discordId, repstatus, cb){
         case "worshipped":
         // 125k rep - be able to refine artifacts
             obtainReputationItem(message, "reputationworshipped")
-            cb(null, "artifact refine item");
+            profileDB.obtainPandorasBox(discordId, function(error, res){
+                if (error){
+                    console.log(error)
+                }else{
+                    cb(null, "pandoras box");
+                }
+            })
             break;
             
     }
@@ -282,7 +288,10 @@ function reputationEmbedBuilder(message, repstatus, rewards){
         embed.addField( "Rewards: " , ":candle: Holy Candle - on thank 20% chance to reset scavenge cooldown, 10% chance to critically gain 50% of your tacos gained while thanking", true)
     }
     if (rewards === "lavoratory access card"){
-        embed.addField( "Rewards: " , ":flower_playing_cards: Laboratory Card - present this card to Bender to be able to shop ethereum from his shop", true)
+        embed.addField( "Rewards: " , ":flower_playing_cards: Laboratory Card - present this card to Bender to be able to shop transformium from his shop", true)
+    }
+    if (rewards === "pandoras box"){
+        embed.addField( "Rewards: " , ":crystal_ball: Pandora's Box - present this box to Bender to be able to shop ethereum from his shop", true)
     }
     message.channel.send({embed});
 }
