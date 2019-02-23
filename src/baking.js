@@ -40,7 +40,8 @@ module.exports.bakeItem = function(discordUserId, itemToBake, itemsMapById, user
             for (var item in itemRequirements){
                 var singleItem = itemRequirements[item]
                 // here we check for the user fruits
-                if (userFruitsCount[singleItem.itemId] < singleItem.itemCount){
+                if (!userFruitsCount[singleItem.itemId]
+                    || userFruitsCount[singleItem.itemId] < singleItem.itemCount){
                     ableToBake = false
                     break;
                 }

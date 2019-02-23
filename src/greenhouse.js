@@ -50,7 +50,8 @@ module.exports.checkRequirements = function(params){
             for (var i in requirements.itemRequirements){
                 // check params.itemsToUse contains all the items
                 var itemToCheck = requirements.itemRequirements[i]
-                if (params.inventoryCountMap[itemToCheck.itemId] < itemToCheck.itemCount){
+                if (!params.inventoryCountMap[itemToCheck.itemId]
+                    || params.inventoryCountMap[itemToCheck.itemId] < itemToCheck.itemCount){
                     requirementsMet = false
                     break;
                 }
