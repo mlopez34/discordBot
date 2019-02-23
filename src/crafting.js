@@ -31,7 +31,6 @@ module.exports.rollForRecipes = function(message, params){
         // 3 = 1, 7 = 2, 11 = 3
         var recipesObj = {}
         if (params.templeLevel >= 11){
-            var recipesToRoll = 3
             var rollForRecipe1 = Math.floor(Math.random() * possibleRecipesToRollFrom.length)
             var recipe1id = possibleRecipesToRollFrom[rollForRecipe1].itemId
             var recipe1name = possibleRecipesToRollFrom[rollForRecipe1].itemshortname
@@ -51,7 +50,6 @@ module.exports.rollForRecipes = function(message, params){
             recipesObj.templecraft3name = recipe3name
 
         }else if (params.templeLevel >= 7){
-            var recipesToRoll = 2
             var recipesObj = {}
             var rollForRecipe1 = Math.floor(Math.random() * possibleRecipesToRollFrom.length)
             var recipe1id = possibleRecipesToRollFrom[rollForRecipe1].itemId
@@ -66,7 +64,6 @@ module.exports.rollForRecipes = function(message, params){
             recipesObj.templecraft2name = recipe2name
 
         }else if (params.templeLevel >= 3){
-            var recipesToRoll = 1
             var recipesObj = {}
             var rollForRecipe1 = Math.floor(Math.random() * possibleRecipesToRollFrom.length)
             var recipe1id = possibleRecipesToRollFrom[rollForRecipe1].itemId
