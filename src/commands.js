@@ -2004,7 +2004,7 @@ module.exports.buyHacksawCommand = function(message){
             message.channel.send(message.author + " You can't afford the Hacksaw!");
         }
         else{
-            if (!hacksawResponse.data.hacksaw){
+            if (!hacksawResponse.data.hacksaw && hacksawResponse.data.temple){
                 if ( adjustedTacosForUser(discordUserId, hacksawResponse.data.tacos) >= HACKSAW_COST){
                     var tacosSpent = HACKSAW_COST * -1;
                     profileDB.purchaseHacksaw(discordUserId, tacosSpent, function(err, data){
@@ -6015,6 +6015,7 @@ function todaysRecipesEmbedBuilder(message){
     for (var r in recipesAvailableObjects){
         embed.addField(recipesAvailableObjects[r].recipeName, recipesAvailableObjects[r].recipeRequirementsString, false)
     }
+    embed.addField("Command To Bake", config.commandString + "" + recipesAvailableObjects[r].itemshortname, false)
     message.channel.send({embed});
 }
 
@@ -6067,7 +6068,7 @@ module.exports.plantCommand = function(message, args){
                         if (ghError){
                             console.log(ghError)
                         }else{
-                            if (ghRes.data.greenhouselevel > 0){
+                            if (ghRes.data.greenhouselevel > 0 && ghRes.data.greenhouse){
                                 var greenHouseData = {
                                     numberOfPlots: ghRes.data.plotsofland,
                                     plots: ghRes.data.plotsoflandplantid,
@@ -6167,7 +6168,7 @@ module.exports.harvestCommand = function(message, args){
         if(err){
             console.log(err)
         }else{
-            if (profileData.data.greenhouselevel > 0){
+            if (profileData.data.greenhouselevel > 0 && profileData.data.greenhouse){
                 var userLevel = profileData.data.level
                 var greenHouseData = {
                     plots: profileData.data.plotsoflandplantid,
@@ -6450,7 +6451,7 @@ module.exports.upgradeCommand = function(message, args){
                     
                 }else{
                     // check last stable upgrade
-                    if (profileRes.data.stablelevel > 0){
+                    if (profileRes.data.stablelevel > 0 && profileRes.data.stable){
                         var now = new Date();
                         var twoHoursAgo = new Date();
                         var stableLevelUpgradeTime = stable.getUpgradeCooldownHoursByLevel(profileRes.data.stablelevel)
@@ -6474,7 +6475,7 @@ module.exports.upgradeCommand = function(message, args){
                 if (profileErr){
                     
                 }else{
-                    if (profileRes.data.greenhouselevel > 0){
+                    if (profileRes.data.greenhouselevel > 0 && profileRes.data.greenhouse){
                         var now = new Date();
                         var twoHoursAgo = new Date();
                         var greenHouseLevelUpgradeTime = greenhouse.getUpgradeCooldownHoursByLevel(profileRes.data.greenhouselevel)
@@ -6498,7 +6499,7 @@ module.exports.upgradeCommand = function(message, args){
                 if (profileErr){
                     
                 }else{
-                    if (profileRes.data.templelevel > 0){
+                    if (profileRes.data.templelevel > 0 && profileRes.data.temple){
                         var now = new Date();
                         var twoHoursAgo = new Date();
                         var templeLevelUpgradeTime = temple.getUpgradeCooldownHoursByLevel(profileRes.datatemplelevel)

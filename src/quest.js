@@ -539,7 +539,6 @@ function handleDemonicArtifact(message, discordUserId, stage, team, channel, all
         }
     }
     else if (stage == 3){
-        // sacrifice a server member by throwing tacos to each other in the formation to create a star (start at top)
         if (!activeMissions["quest-" + discordUserId]){
             handleDemonicArtifactStageThree(message, discordUserId, stage, team, channel, allItems)
         }
@@ -726,7 +725,7 @@ function handleTimeMachineArtifactStageOne(message, discordUserId, stage, team, 
                     if (activeQuests[idOfQuest]){
                         delete activeQuests[idOfQuest];
                     }
-                    exports.questHandler(message, discordUserId, "timetravel", stage + 1, team, year, channel)
+                    exports.questHandler(message, discordUserId, "timetravel", stage + 1, team, year, channel, allItems)
                 }
             })
         })
@@ -918,7 +917,7 @@ function handleTimeMachineArtifactStageThree(message, discordUserId, stage, team
                     if (activeQuests[idOfQuest]){
                         delete activeQuests[idOfQuest];
                     }
-                    exports.questHandler(message, discordUserId, "timetravel", stage + 1, team, year, channel)
+                    exports.questHandler(message, discordUserId, "timetravel", stage + 1, team, year, channel, allItems)
                 }
             })
         })
@@ -1226,7 +1225,7 @@ function handleDemonicArtifactStageOne(message, discordUserId, stage, team, chan
                         if (activeQuests[idOfQuest]){
                             delete activeQuests[idOfQuest];
                         }
-                        exports.questHandler(message, discordUserId, "demonic", stage + 1, team, channel)
+                        exports.questHandler(message, discordUserId, "demonic", stage + 1, team, channel, allItems)
                     }
                 })
             }else{
@@ -1343,7 +1342,7 @@ function handleDemonicArtifactStageTwo(message, discordUserId, stage, team, chan
                     if (activeQuests[idOfQuest]){
                         delete activeQuests[idOfQuest];
                     }
-                    exports.questHandler(message, discordUserId, "demonic", stage + 1, team, channel)
+                    exports.questHandler(message, discordUserId, "demonic", stage + 1, team, channel, allItems)
                 }
             })
         })
@@ -1474,7 +1473,7 @@ function handleDemonicArtifactStageThree(message, discordUserId, stage, team, ch
                     if (activeQuests[idOfQuest]){
                         delete activeQuests[idOfQuest];
                     }
-                    exports.questHandler(message, discordUserId, "demonic", stage + 1, team, channel)
+                    exports.questHandler(message, discordUserId, "demonic", stage + 1, team, channel, allItems)
                 }
             })
         })
@@ -1833,7 +1832,7 @@ function handleRingArtifactStageFour(message, discordUserId, stage, team, marrie
                         if (activeQuests[idOfQuest]){
                             delete activeQuests[idOfQuest];
                         }
-                        exports.questHandler(message, discordUserId, "ring", stage + 1, team, channel)
+                        exports.questHandler(message, discordUserId, "ring", stage + 1, team, channel, allItems)
                     }
                 })
             })
@@ -2028,7 +2027,7 @@ function handleTombArtifactStageOne(message, discordUserId, stage, team, channel
                     if (activeQuests[idOfQuest]){
                         delete activeQuests[idOfQuest];
                     }
-                    exports.questHandler(message, discordUserId, "tomb", stage + 1, team, channel)
+                    exports.questHandler(message, discordUserId, "tomb", stage + 1, team, channel, allItems)
                 }
             })
         })
@@ -2291,7 +2290,7 @@ function handleTombArtifactStageFive(message, discordUserId, stage, team, channe
                     if (activeQuests[idOfQuest]){
                         delete activeQuests[idOfQuest];
                     }
-                    exports.questHandler(message, discordUserId, "tomb", stage + 1, team, channel)
+                    exports.questHandler(message, discordUserId, "tomb", stage + 1, team, channel, allItems)
                 }
             })
         })
