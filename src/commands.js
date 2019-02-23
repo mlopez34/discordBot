@@ -6410,7 +6410,7 @@ function craftItem(message, discordUserId, recipeRequirements, recipeData, myIte
                 reputationLevel: REPUTATIONS[recipeData.repstatus.toLowerCase()].level, // my rep
                 tacos: recipeData.tacos, // my tacos
                 inventoryCountMap: itemsInInventoryCountMap,
-                itemsToUse: itemsToUse,  // items to use for upgrade
+                itemsToUse: itemsToUse,  // items to use for craft
                 recipeRequirements: recipeRequirements,
                 itemToCreate: [ itemToCreate ]
             }

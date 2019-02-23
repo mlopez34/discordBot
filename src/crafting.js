@@ -84,17 +84,19 @@ function buildPossibleRecipesArray(params){
     var possibleRecipesToRollFrom = []
     for (var r in recipesToCraftMap){
         let rarityLevel = recipesToCraftMap[r]
-
-        for (var i in rarityLevel){
-            let levelRange = rarityLevel[i]
-
-            for (var item in levelRange){
-                var includeItem = rollForItemInRecipeBasedCategory(levelRange[item], params.userLevel, i, rarityLevel, params.templeLevel)
-
-                if (includeItem){
-                    possibleRecipesToRollFrom.push(levelRange[item])
-                }else{
-                    // TODO: what to do if we dont include that item?
+        if (params.templeLevel >= rarityLevel.templeLevelRequired ){
+            for (var i in rarityLevel){
+                let levelRange = rarityLevel[i]
+                if (levelRange.length > 0){
+                    for (var item in levelRange){
+                        var includeItem = rollForItemInRecipeBasedCategory(levelRange[item], params.userLevel, i, rarityLevel, params.templeLevel)
+        
+                        if (includeItem){
+                            possibleRecipesToRollFrom.push(levelRange[item])
+                        }else{
+                            // TODO: what to do if we dont include that item?
+                        }
+                    }
                 }
             }
         }
@@ -346,6 +348,7 @@ module.exports.initializeCraftingRecipes = function(recipes, itemsMapById, callb
 
 var recipesToCraftMap = {
     rares:{
+        templeLevelRequired: 3,
         10: [],
         15: [],
         20: [],
@@ -356,6 +359,7 @@ var recipesToCraftMap = {
         45: []
     },
     ancients:{
+        templeLevelRequired: 8,
         10: [],
         15: [],
         20: [],
@@ -366,6 +370,7 @@ var recipesToCraftMap = {
         45: []
     },
     amulets:{
+        templeLevelRequired: 12,
         10: [],
         15: [],
         20: [],
@@ -376,6 +381,7 @@ var recipesToCraftMap = {
         45: []
     },
     artifacts:{
+        templeLevelRequired: 10,
         10: [],
         15: [],
         20: [],
