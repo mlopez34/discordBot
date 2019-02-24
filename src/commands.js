@@ -5661,12 +5661,11 @@ module.exports.greenHouseCommand = function(message){
                         if (!greenHouseData.timesharvested){
                             greenHouseData.timesharvested = [0, 0, 0, 0, 0, 0, 0, 0, 0]
                         }
-                        // TODO: add fruits string
+                        greenHouseData = reconfigureGreenHouse(greenHouseData)
                         greenHouseData.fruitsString = greenhouse.getFruitString(userFruitsCount)
                         greenHouseData.currentlevelinfo = greenhouse.getLevelInfo(greenHouseData.greenhouseLevel)
                         greenHouseData.nextlevelinfo = greenhouse.getLevelInfo(greenHouseData.greenhouseLevel + 1)
-                        greenHouseEmbedBuilder(message, greenHouseData, itemsMapById)    
-        
+                        greenHouseEmbedBuilder(message, greenHouseData, itemsMapById)
                     }
                 })
             }else{
@@ -5712,7 +5711,7 @@ function plotsVisualBuilder(greenHouseData, itemsMapById){
             if (!plotEmoji){
                 plotEmoji = "📥"
             }
-            if (plotCount > 9){
+            if (plotCount % 10 == 0){
                 plotVisual = plotVisual + "\n"
             }
             plotVisual = plotVisual + plotEmoji + " | "
@@ -6019,6 +6018,36 @@ function todaysRecipesEmbedBuilder(message){
     message.channel.send({embed});
 }
 
+function reconfigureGreenHouse(greenHouseData){
+    var plotsPerLevelMap = {
+        1: 9,
+        2: 9, 
+        3: 13,
+        4: 13,
+        5: 17,
+        6: 17,
+        7: 21,
+        8: 21,
+        9: 25,
+        10: 25,
+        11: 29,
+        12: 29
+    }
+    
+    greenHouseData.numberOfPlots = plotsPerLevelMap[greenHouseData.greenhouseLevel]
+    while (greenHouseData.plots.length < greenHouseData.numberOfPlots){
+        greenHouseData.plots.push(null)
+    }
+    while(greenHouseData.plotsItemIds.length < greenHouseData.numberOfPlots){
+        greenHouseData.plotsItemIds.push(null)
+    }
+    while(greenHouseData.timesharvested.length < greenHouseData.numberOfPlots){
+        greenHouseData.timesharvested.push(0)
+    }
+    return greenHouseData
+    
+}
+
 module.exports.plantCommand = function(message, args){
     var discordUserId = message.author.id;
     // arguments will be, seednameid, greenhouse slot
@@ -6070,6 +6099,7 @@ module.exports.plantCommand = function(message, args){
                         }else{
                             if (ghRes.data.greenhouselevel > 0 && ghRes.data.greenhouse){
                                 var greenHouseData = {
+                                    greenhouseLevel: ghRes.data.greenhouselevel,
                                     numberOfPlots: ghRes.data.plotsofland,
                                     plots: ghRes.data.plotsoflandplantid,
                                     plotsItemIds: ghRes.data.plotsoflanditemid,
@@ -6088,6 +6118,7 @@ module.exports.plantCommand = function(message, args){
                                 if (!greenHouseData.timesharvested){
                                     greenHouseData.timesharvested = [0, 0, 0, 0, 0, 0, 0, 0, 0]
                                 }
+                                greenHouseData = reconfigureGreenHouse(greenHouseData)
     
                                 // if they do get the user's greenhouse, check that the slot is available (not higher than their #ofplots)
                                 if ( plotOfLand > 0 && plotOfLand <= greenHouseData.numberOfPlots){
@@ -6188,6 +6219,7 @@ module.exports.harvestCommand = function(message, args){
                 if (!greenHouseData.timesharvested){
                     greenHouseData.timesharvested = [0, 0, 0, 0, 0, 0, 0, 0, 0]
                 }
+                greenHouseData = reconfigureGreenHouse(greenHouseData)
                 wearStats.getUserWearingStats(message, discordUserId, {userLevel: userLevel}, allItems, function(wearErr, wearRes){
                     if (wearErr){
                         console.log(wearErr)
@@ -7587,7 +7619,7 @@ module.exports.putonCommand = function(message, args, retry){
     // if replacing an item, it requires 1 command use for it to take effect
     var discordUserId = message.author.id;
     if (args && args.length >= 3 && !retry){
-        var slot = args[1]; // must be a number between 1 and 4
+        var slot = args[1]; // must be a number between 1 and 7
         var itemToWear = args[2]; // must be a valid itemname
         // get the user's wear information, then get their item information, 
         // check user doesnt have the same slot category in 1 and 3, if so then valid command, update slot 2 with all the info for sundress
@@ -7627,10 +7659,17 @@ module.exports.putonCommand = function(message, args, retry){
                     })
                 }else{
                     // get the user's items
+                    var greenHouseLevel = getWearRes.data[0].greenhouselevel;
+                    var stableLevel = getWearRes.data[0].stablelevel;
+                    var templeLevel = getWearRes.data[0].templelevel;
                     var currentSlot1Slot = getWearRes.data[0].slot1slot;
                     var currentSlot2Slot = getWearRes.data[0].slot2slot;
                     var currentSlot3Slot = getWearRes.data[0].slot3slot;
                     var currentSlot4Slot = getWearRes.data[0].slot4slot;
+                    var currentSlot5Slot = getWearRes.data[0].slot5slot;
+                    var currentSlot6Slot = getWearRes.data[0].slot6slot;
+                    var currentSlot7Slot = getWearRes.data[0].slot7slot;
+
 
                     // is the user replacing the current slot?
                     var replacingCurrentSlot; 
@@ -7646,10 +7685,19 @@ module.exports.putonCommand = function(message, args, retry){
                     else if (slot == 4){
                         replacingCurrentSlot = getWearRes.data[0].slot4replacing;
                     }
+                    else if (slot == 5){
+                        replacingCurrentSlot = getWearRes.data[0].slot5replacing;
+                    }
+                    else if (slot == 6){
+                        replacingCurrentSlot = getWearRes.data[0].slot6replacing;
+                    }
+                    else if (slot == 7){
+                        replacingCurrentSlot = getWearRes.data[0].slot7replacing;
+                    }
 
                     profileDB.getUserItems(discordUserId, function(err, inventoryResponse){
                         if (err){
-                            // console.log(err);
+                            console.log(err);
                         }
                         else{
                             // 
@@ -7722,6 +7770,18 @@ module.exports.putonCommand = function(message, args, retry){
                                     else if (slot == 4 && !currentSlot4Slot && itemsMapbyShortName[itemToWear].itemraritycategory == "myth" ){
                                         validateSlotToWear = true
                                     }
+                                    /// temple level 6
+                                    else if (slot == 5 && !currentSlot5Slot && templeLevel >= 6){
+                                        validateSlotToWear = true
+                                    }
+                                    /// stable level 11
+                                    else if (slot == 6 && !currentSlot6Slot && stableLevel >= 11){
+                                        validateSlotToWear = true
+                                    }
+                                    // greenhouse level 12
+                                    else if (slot == 7 && !currentSlot7Slot && greenHouseLevel >= 12){
+                                        validateSlotToWear = true
+                                    }
                                     if (validateSlotToWear){
                                         // check that the item slot is not already equiped elsewhere
                                         // console.log("updating: slot: " + slot + " itemslot: " + itemslot + " itemid: " + itemid + " itemuserid: " + itemuserid + " itemstats: " + JSON.stringify(itemstats, null, 2));
@@ -7750,28 +7810,32 @@ module.exports.putonCommand = function(message, args, retry){
                                         profileDB.updateUserWearInfo(discordUserId, slot + "", itemslot, itemid, itemuserid, activateDate, replacingCurrentSlot, function(err, res){
                                             // set the item to equipped in userinventory
                                             if (err){
-                                                // console.log(err);
-                                            }
-                                            else{
-                                                // console.log(res);
+                                                console.log(err);
+                                            }else{
                                                 // change the item status to wearing in user inventory
                                                 profileDB.updateItemStatus(itemuserid, "wearing", function(updateRockStatusErr, updateRockStatusRes){
                                                     if (updateRockStatusErr){
-                                                        // console.log(updateRockStatusErr);
-                                                    }
-                                                    else{
-                                                        // console.log(updateRockStatusRes);
+                                                        console.log(updateRockStatusErr);
+                                                    }else{
                                                         message.channel.send(message.author + " you are now wearing **" + itemsMapbyShortName[itemToWear].itemname + "**")
                                                     }
                                                 })
                                             }
                                         })
+                                    }else{
+                                        if (templeLevel < 6 && slot == 5){
+                                            message.channel.send(message.author + " invalid slot!")
+                                        }
+                                        else if (stableLevel < 11 && slot == 6){
+                                            message.channel.send(message.author + " invalid slot!")
+                                        }
+                                        else if (greenHouseLevel < 12 && slot == 7){
+                                            message.channel.send(message.author + " invalid slot!") 
+                                        }else{
+                                            message.channel.send(message.author + " invalid slot!")
+                                        }
                                     }
-                                    else{
-                                        message.channel.send(message.author + " you are already wearing an item of that slot!")
-                                    }
-                                }
-                                else{
+                                }else{
                                     message.channel.send(message.author + " invalid item!")
                                 }
                             }
@@ -7827,21 +7891,32 @@ module.exports.takeoffCommand = function(message, args){
                 itemId = takeoffRes.data[0].slot4useritemid
                 itemslot = takeoffRes.data[0].slot4slot
             }
+            else if (slot == 5 && takeoffRes.data.length > 0){
+                itemId = takeoffRes.data[0].slot5useritemid
+                itemslot = takeoffRes.data[0].slot5slot
+            }
+            else if (slot == 6 && takeoffRes.data.length > 0){
+                itemId = takeoffRes.data[0].slot6useritemid
+                itemslot = takeoffRes.data[0].slot6slot
+            }
+            else if (slot == 7 && takeoffRes.data.length > 0){
+                itemId = takeoffRes.data[0].slot7useritemid
+                itemslot = takeoffRes.data[0].slot7slot
+            }
             // console.log("itemid " + itemId);
             if (itemId){
                 // change the item status from wearing to null in userinventory using the item id
                 profileDB.updateItemStatus(itemId, null, function(updateErr, updateRes){
                     if (updateErr){
-                        // console.log(updateErr);
+                        console.log(updateErr);
                     }
                     else{
                         //user wearing slot to null
                         profileDB.takeOffWear(discordUserId, slot, function(err, res){
                             if (err){
-                                // console.log(err);
-                            }
-                            else{
-                                // console.log(res);
+                                console.log(err);
+                            }else{
+                                console.log(res);
                                 message.channel.send(message.author.username + " took off item from slot " + slot);
                             }
                         })
@@ -7854,8 +7929,7 @@ module.exports.takeoffCommand = function(message, args){
                 profileDB.takeOffWear(discordUserId, slot, function(err, res){
                     if (err){
                         // console.log(err);
-                    }
-                    else{
+                    }else{
                         // console.log(res);
                         message.channel.send(message.author.username + " took off item from slot " + slot);
                     }

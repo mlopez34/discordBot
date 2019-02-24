@@ -199,54 +199,91 @@ module.exports.showRpgStats = function(message, itemsAvailable, amuletItemsById)
                             }
                             
                             if (wearingStats.slot1itemid){
-                                items.push(wearingStats.slot1itemid)
+                                items.push({
+                                    itemid: wearingStats.slot1itemid,
+                                    abilities: true
+                                })
                             }
                             if (wearingStats.slot2itemid){
-                                items.push(wearingStats.slot2itemid)
+                                items.push({
+                                    itemid: wearingStats.slot2itemid,
+                                    abilities: true
+                                })
                             }
                             if (wearingStats.slot3itemid){
-                                items.push(wearingStats.slot3itemid)
+                                items.push({
+                                    itemid: wearingStats.slot3itemid,
+                                    abilities: true
+                                })
                             }
                             if (wearingStats.slot4itemid){
-                                items.push(wearingStats.slot4itemid)
+                                items.push({
+                                    itemid: wearingStats.slot4itemid,
+                                    abilities: true
+                                })
+                            }
+                            // temple
+                            if (wearingStats.slot5itemid){
+                                items.push({
+                                    itemid: wearingStats.slot5itemid,
+                                    abilities: false
+                                })
+                            }
+                            // stable
+                            if (wearingStats.slot6itemid){
+                                items.push({
+                                    itemid: wearingStats.slot6itemid,
+                                    abilities: false
+                                })
+                            }
+                            // greenhouse
+                            if (wearingStats.slot7itemid){
+                                items.push({
+                                    itemid: wearingStats.slot7itemid,
+                                    abilities: false
+                                })
                             }
                             // added stats from items
                             
                             for (var i in items){
-                                var singleItemString = "**Abilities**: ";
-                                if (itemsAvailable[items[i]].ability1){
-                                    abilities.push(itemsAvailable[items[i]].ability1);
-                                    singleItemString = singleItemString + itemsAvailable[items[i]].ability1 + ","
+                                var slotItemId = items[i].itemid
+                                var abilitiesActivated = items[i].abilities
+                                var singleItemString = abilitiesActivated ? "**Abilities**: " : "";
+                                if (abilitiesActivated){
+                                    if (itemsAvailable[slotItemId].ability1){
+                                        abilities.push(itemsAvailable[slotItemId].ability1);
+                                        singleItemString = singleItemString + itemsAvailable[slotItemId].ability1 + ","
+                                    }
+                                    if (itemsAvailable[slotItemId].ability2){
+                                        abilities.push(itemsAvailable[slotItemId].ability2);
+                                        singleItemString = singleItemString + itemsAvailable[slotItemId].ability2 + ","
+                                    }
+                                    if (itemsAvailable[slotItemId].specialability){
+                                        abilities.push(itemsAvailable[slotItemId].specialability)
+                                        singleItemString = singleItemString + itemsAvailable[slotItemId].specialability + ","
+                                    }
+                                    if (itemsAvailable[slotItemId].passiveability){
+                                        abilities.push(itemsAvailable[slotItemId].passiveability);
+                                        singleItemString = singleItemString + itemsAvailable[slotItemId].passiveability + ","
+                                    }
+                                    singleItemString = singleItemString + "\n"    
                                 }
-                                if (itemsAvailable[items[i]].ability2){
-                                    abilities.push(itemsAvailable[items[i]].ability2);
-                                    singleItemString = singleItemString + itemsAvailable[items[i]].ability2 + ","
-                                }
-                                if (itemsAvailable[items[i]].specialability){
-                                    abilities.push(itemsAvailable[items[i]].specialability)
-                                    singleItemString = singleItemString + itemsAvailable[items[i]].specialability + ","
-                                }
-                                if (itemsAvailable[items[i]].passiveability){
-                                    abilities.push(itemsAvailable[items[i]].passiveability);
-                                    singleItemString = singleItemString + itemsAvailable[items[i]].passiveability + ","
-                                }
-                                singleItemString = singleItemString + "\n"
 
-                                var hpPlus = itemsAvailable[items[i]].hpplus ? itemsAvailable[items[i]].hpplus : 0;
-                                var attackDmgPlus = itemsAvailable[items[i]].attackdmgplus ? itemsAvailable[items[i]].attackdmgplus : 0;
-                                var magicDmgPlus = itemsAvailable[items[i]].magicdmgplus ? itemsAvailable[items[i]].magicdmgplus : 0;
-                                var armorPlus = itemsAvailable[items[i]].armorplus ? itemsAvailable[items[i]].armorplus : 0;
-                                var spiritPlus = itemsAvailable[items[i]].spiritplus ? itemsAvailable[items[i]].spiritplus : 0;
-                                var luckPlus = itemsAvailable[items[i]].luckplus ? itemsAvailable[items[i]].luckplus : 0;
+                                var hpPlus = itemsAvailable[slotItemId].hpplus ? itemsAvailable[slotItemId].hpplus : 0;
+                                var attackDmgPlus = itemsAvailable[slotItemId].attackdmgplus ? itemsAvailable[slotItemId].attackdmgplus : 0;
+                                var magicDmgPlus = itemsAvailable[slotItemId].magicdmgplus ? itemsAvailable[slotItemId].magicdmgplus : 0;
+                                var armorPlus = itemsAvailable[slotItemId].armorplus ? itemsAvailable[slotItemId].armorplus : 0;
+                                var spiritPlus = itemsAvailable[slotItemId].spiritplus ? itemsAvailable[slotItemId].spiritplus : 0;
+                                var luckPlus = itemsAvailable[slotItemId].luckplus ? itemsAvailable[slotItemId].luckplus : 0;
                                 // check for an amulet for this item
-                                if (userArmamentForItemId[items[i]]){
+                                if (userArmamentForItemId[slotItemId]){
                                     // HAVE armament for this item - add the stats to the item
-                                    hpPlus = hpPlus + userArmamentForItemId[items[i]].hpplus;
-                                    attackDmgPlus = attackDmgPlus + userArmamentForItemId[items[i]].adplus;
-                                    magicDmgPlus = magicDmgPlus + userArmamentForItemId[items[i]].mdplus;
-                                    armorPlus = armorPlus + userArmamentForItemId[items[i]].armorplus;
-                                    spiritPlus = spiritPlus + userArmamentForItemId[items[i]].spiritplus;
-                                    luckPlus = luckPlus + userArmamentForItemId[items[i]].luckplus;
+                                    hpPlus = hpPlus + userArmamentForItemId[slotItemId].hpplus;
+                                    attackDmgPlus = attackDmgPlus + userArmamentForItemId[slotItemId].adplus;
+                                    magicDmgPlus = magicDmgPlus + userArmamentForItemId[slotItemId].mdplus;
+                                    armorPlus = armorPlus + userArmamentForItemId[slotItemId].armorplus;
+                                    spiritPlus = spiritPlus + userArmamentForItemId[slotItemId].spiritplus;
+                                    luckPlus = luckPlus + userArmamentForItemId[slotItemId].luckplus;
                                 }
 
                                 statisticsFromItemsAndLevel.hpPlus = statisticsFromItemsAndLevel.hpPlus + hpPlus;
@@ -255,7 +292,6 @@ module.exports.showRpgStats = function(message, itemsAvailable, amuletItemsById)
                                 statisticsFromItemsAndLevel.armorPlus = statisticsFromItemsAndLevel.armorPlus + armorPlus;
                                 statisticsFromItemsAndLevel.spiritPlus = statisticsFromItemsAndLevel.spiritPlus + spiritPlus;
                                 statisticsFromItemsAndLevel.luckPlus = statisticsFromItemsAndLevel.luckPlus + luckPlus;
-                                
 
                                 singleItemString = singleItemString + "**Stats**: ";
                                 singleItemString = singleItemString + " 💚 " + hpPlus;
@@ -265,7 +301,7 @@ module.exports.showRpgStats = function(message, itemsAvailable, amuletItemsById)
                                 singleItemString = singleItemString + " 🙌 " + spiritPlus;
 
                                 // add to map
-                                singleItemsStrings[itemsAvailable[items[i]].itemname] = singleItemString;
+                                singleItemsStrings[itemsAvailable[slotItemId].itemname] = singleItemString;
                             }
 
                             // stats from amulets
@@ -578,62 +614,108 @@ module.exports.rpgReady = function(message, itemsAvailable, amuletItemsById, buf
                                             if (wearingStats.slot1itemid){
                                                 // check that the itemid is not already being used
                                                 if (!activeRPGItemIds[wearingStats.slot1useritemid]){
-                                                    items.push(wearingStats.slot1itemid);
+                                                    items.push({
+                                                        itemid: wearingStats.slot1itemid,
+                                                        abilities: true
+                                                    });
                                                     userItemIds.push(wearingStats.slot1useritemid);
                                                     activeRPGItemIds[wearingStats.slot1useritemid] = true;
                                                 }
                                             }
                                             if (wearingStats.slot2itemid){
                                                 if (!activeRPGItemIds[wearingStats.slot2useritemid]){
-                                                    items.push(wearingStats.slot2itemid);
+                                                    items.push({
+                                                        itemid: wearingStats.slot2itemid,
+                                                        abilities: true
+                                                    });
                                                     userItemIds.push(wearingStats.slot2useritemid);
                                                     activeRPGItemIds[wearingStats.slot2useritemid] = true;
                                                 }
                                             }
                                             if (wearingStats.slot3itemid){
                                                 if (!activeRPGItemIds[wearingStats.slot3useritemid]){
-                                                    items.push(wearingStats.slot3itemid);
+                                                    items.push({
+                                                        itemid: wearingStats.slot3itemid,
+                                                        abilities: true
+                                                    });
                                                     userItemIds.push(wearingStats.slot3useritemid);
                                                     activeRPGItemIds[wearingStats.slot3useritemid] = true;
                                                 }
                                             }
                                             if (wearingStats.slot4itemid){
                                                 if (!activeRPGItemIds[wearingStats.slot4useritemid]){
-                                                    items.push(wearingStats.slot4itemid);
+                                                    items.push({
+                                                        itemid: wearingStats.slot4itemid,
+                                                        abilities: true
+                                                    });
                                                     userItemIds.push(wearingStats.slot4useritemid);
                                                     activeRPGItemIds[wearingStats.slot4useritemid] = true;
                                                 }
                                             }
+                                            if (wearingStats.slot5itemid){
+                                                if (!activeRPGItemIds[wearingStats.slot5useritemid]){
+                                                    items.push({
+                                                        itemid: wearingStats.slot5itemid,
+                                                        abilities: false
+                                                    });
+                                                    userItemIds.push(wearingStats.slot5useritemid);
+                                                    activeRPGItemIds[wearingStats.slot5useritemid] = true;
+                                                }
+                                            }
+                                            if (wearingStats.slot6itemid){
+                                                if (!activeRPGItemIds[wearingStats.slot6useritemid]){
+                                                    items.push({
+                                                        itemid: wearingStats.slot6itemid,
+                                                        abilities: false
+                                                    });
+                                                    userItemIds.push(wearingStats.slot6useritemid);
+                                                    activeRPGItemIds[wearingStats.slot6useritemid] = true;
+                                                }
+                                            }
+                                            if (wearingStats.slot7itemid){
+                                                if (!activeRPGItemIds[wearingStats.slot7useritemid]){
+                                                    items.push({
+                                                        itemid: wearingStats.slot7itemid,
+                                                        abilities: false
+                                                    });
+                                                    userItemIds.push(wearingStats.slot7useritemid);
+                                                    activeRPGItemIds[wearingStats.slot7useritemid] = true;
+                                                }
+                                            }
                                             // added stats from items
                                             for (var i in items){
-                                                if (itemsAvailable[items[i]].ability1){
-                                                    abilities.push(itemsAvailable[items[i]].ability1);
-                                                }
-                                                if (itemsAvailable[items[i]].ability2){
-                                                    abilities.push(itemsAvailable[items[i]].ability2);
-                                                }
-                                                if (itemsAvailable[items[i]].specialability){
-                                                    abilities.push(itemsAvailable[items[i]].specialability)
-                                                }
-                                                if (itemsAvailable[items[i]].passiveability){
-                                                    abilities.push(itemsAvailable[items[i]].passiveability);
+                                                var slotItemId = items[i].itemid
+                                                var abilitiesActivated = items[i].abilities
+                                                if (abilitiesActivated){
+                                                    if (itemsAvailable[slotItemId].ability1){
+                                                        abilities.push(itemsAvailable[slotItemId].ability1);
+                                                    }
+                                                    if (itemsAvailable[slotItemId].ability2){
+                                                        abilities.push(itemsAvailable[slotItemId].ability2);
+                                                    }
+                                                    if (itemsAvailable[slotItemId].specialability){
+                                                        abilities.push(itemsAvailable[slotItemId].specialability)
+                                                    }
+                                                    if (itemsAvailable[slotItemId].passiveability){
+                                                        abilities.push(itemsAvailable[slotItemId].passiveability);
+                                                    }
                                                 }
 
-                                                var hpPlus = itemsAvailable[items[i]].hpplus ? itemsAvailable[items[i]].hpplus : 0;
-                                                var attackDmgPlus = itemsAvailable[items[i]].attackdmgplus ? itemsAvailable[items[i]].attackdmgplus : 0;
-                                                var magicDmgPlus = itemsAvailable[items[i]].magicdmgplus ? itemsAvailable[items[i]].magicdmgplus : 0;
-                                                var armorPlus = itemsAvailable[items[i]].armorplus ? itemsAvailable[items[i]].armorplus : 0;
-                                                var spiritPlus = itemsAvailable[items[i]].spiritplus ? itemsAvailable[items[i]].spiritplus : 0;
-                                                var luckPlus = itemsAvailable[items[i]].luckplus ? itemsAvailable[items[i]].luckplus : 0;
+                                                var hpPlus = itemsAvailable[slotItemId].hpplus ? itemsAvailable[slotItemId].hpplus : 0;
+                                                var attackDmgPlus = itemsAvailable[slotItemId].attackdmgplus ? itemsAvailable[slotItemId].attackdmgplus : 0;
+                                                var magicDmgPlus = itemsAvailable[slotItemId].magicdmgplus ? itemsAvailable[slotItemId].magicdmgplus : 0;
+                                                var armorPlus = itemsAvailable[slotItemId].armorplus ? itemsAvailable[slotItemId].armorplus : 0;
+                                                var spiritPlus = itemsAvailable[slotItemId].spiritplus ? itemsAvailable[slotItemId].spiritplus : 0;
+                                                var luckPlus = itemsAvailable[slotItemId].luckplus ? itemsAvailable[slotItemId].luckplus : 0;
                                                 // check for an amulet for this item
-                                                if (userArmamentForItemId[items[i]]){
+                                                if (userArmamentForItemId[slotItemId]){
                                                     // HAVE armament for this item - add the stats to the item
-                                                    hpPlus = hpPlus + userArmamentForItemId[items[i]].hpplus;
-                                                    attackDmgPlus = attackDmgPlus + userArmamentForItemId[items[i]].adplus;
-                                                    magicDmgPlus = magicDmgPlus + userArmamentForItemId[items[i]].mdplus;
-                                                    armorPlus = armorPlus + userArmamentForItemId[items[i]].armorplus;
-                                                    spiritPlus = spiritPlus + userArmamentForItemId[items[i]].spiritplus;
-                                                    luckPlus = luckPlus + userArmamentForItemId[items[i]].luckplus;
+                                                    hpPlus = hpPlus + userArmamentForItemId[slotItemId].hpplus;
+                                                    attackDmgPlus = attackDmgPlus + userArmamentForItemId[slotItemId].adplus;
+                                                    magicDmgPlus = magicDmgPlus + userArmamentForItemId[slotItemId].mdplus;
+                                                    armorPlus = armorPlus + userArmamentForItemId[slotItemId].armorplus;
+                                                    spiritPlus = spiritPlus + userArmamentForItemId[slotItemId].spiritplus;
+                                                    luckPlus = luckPlus + userArmamentForItemId[slotItemId].luckplus;
                                                 }
                                                 statisticsFromItemsAndLevel.hpPlus = statisticsFromItemsAndLevel.hpPlus + hpPlus;
                                                 statisticsFromItemsAndLevel.attackDmgPlus = statisticsFromItemsAndLevel.attackDmgPlus + attackDmgPlus;

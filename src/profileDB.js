@@ -1611,7 +1611,8 @@ module.exports.getUserItemsForInfo = function(discordId, cb) {
   }
 // get wear info
 module.exports.getUserWearInfo = function(discordId, cb){
-    var query = 'select * from ' + config.wearTable + ' where discordId = $1'
+    var query = 'select * from ' + config.wearTable + ',' + config.templeTable + ',' + config.greenhouseTable + ',' + config.stablesTable + ' where ' + config.wearTable + '.discordId = $1 AND ' + config.templeTable + '.discordId = $1 AND ' + config.greenhouseTable + '.discordId = $1 AND ' + config.stablesTable + '.discordId = $1'
+
     // console.log(query);
     db.query(query, [discordId])
       .then(function (data) {
@@ -1642,6 +1643,15 @@ module.exports.updateUserWearInfo = function(discordId, slot, itemslot, itemid, 
     if (slot == 4){
         query = 'update ' + config.wearTable + ' set slot4slot=$2, slot4itemid=$3, slot4useritemid=$4, activate4date=$6, slot4replacing=$7 where discordid=$5'
     }
+    if (slot == 5){
+        query = 'update ' + config.wearTable + ' set slot5slot=$2, slot5itemid=$3, slot5useritemid=$4, activate5date=$6, slot5replacing=$7 where discordid=$5'
+    }
+    if (slot == 6){
+        query = 'update ' + config.wearTable + ' set slot6slot=$2, slot6itemid=$3, slot6useritemid=$4, activate6date=$6, slot6replacing=$7 where discordid=$5'
+    }
+    if (slot == 7){
+        query = 'update ' + config.wearTable + ' set slot7slot=$2, slot7itemid=$3, slot7useritemid=$4, activate7date=$6, slot7replacing=$7 where discordid=$5'
+    }
     db.none(query, [slot, itemslot, itemid, itemuserid, discordId, activateDate, replacingCurrentSlot])
     .then(function () {
     cb(null, {
@@ -1668,6 +1678,15 @@ module.exports.takeOffWear = function(discordId, slot, cb){
     }
     if (slot == 4){
         query = 'update ' + config.wearTable + ' set slot4slot=null, slot4itemid=null, slot4useritemid=null where discordid=$1'
+    }
+    if (slot == 5){
+        query = 'update ' + config.wearTable + ' set slot5slot=null, slot5itemid=null, slot5useritemid=null where discordid=$1'
+    }
+    if (slot == 6){
+        query = 'update ' + config.wearTable + ' set slot6slot=null, slot6itemid=null, slot6useritemid=null where discordid=$1'
+    }
+    if (slot == 7){
+        query = 'update ' + config.wearTable + ' set slot7slot=null, slot7itemid=null, slot7useritemid=null where discordid=$1'
     }
     db.none(query, [discordId])
     .then(function () {
