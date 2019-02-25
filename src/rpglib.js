@@ -1,11 +1,11 @@
 module.exports = {
     // TODO:
     // change assist to physical scaling
-    // aoe heal over time lasts 5 turns total of 85% of magical
+    // DONE aoe heal over time lasts 5 turns total of 85% of magical
     // 10 turn dot phys
     // 10 turn dot magical
     // physical elixir
-    // cocoon - 15% damage reduct, -10% damage dealt
+    // DONE cocoon - 15% damage reduct, -10% damage dealt
     // cannister shot
     // LEFT OFF AT: WOODS - create the entire woods profile
     
@@ -114,6 +114,22 @@ module.exports = {
                 affectsGlobal: ["damageTakenPercentage"],
                 turnsToExpire: 3,
                 multiplier: 0.67
+            }
+        },
+
+        cocoon : {
+            name : "Cocoon",
+            abilityId: "cocoon",
+            cooldown: 0,
+            maxcooldown: 6,
+            description: "Reduce all damage taken by 15% for 3 turns 6 turn cooldown",
+            buff: {
+                buff: true,
+                name: "Cocoon",
+                emoji : ":egg:",
+                affectsGlobal: ["damageTakenPercentage", "damageDealtPercentage"],
+                turnsToExpire: 3,
+                multiplier: 0.85
             }
         },
 
@@ -237,6 +253,26 @@ module.exports = {
             heal: 20,
             mdPercentage: 0.6,
             special: "remove status"
+        },
+        sanctuary: {
+            name:"Sanctuary",
+            abilityId: "sanctuary",
+            areawide: true,
+            cooldown: 0,
+            maxcooldown: 5,
+            description: "Heal the group over time for 65 + 100% of your magical damage over 5 turns 5 turn cooldown",
+            hot: {
+                name: "Sanctuary",
+                heal: 65,
+                emoji: ":ocean:",
+                areawide: true,
+                mdPercentage: 1,
+                healingOnHotApply: false,
+                turnsToExpire: 5,
+                healingOnDotExpire: false,
+                healingOnExpire: 0
+
+            }
         },
         orchatasip: {
             name:"Orchata Sip",
@@ -474,6 +510,18 @@ module.exports = {
             dmg: 45,
             adPercentage: 0.6,
             description: "Deal 45 damage + 60% of your attack damage to all enemies",
+            type: "physical",
+            areawide: true,
+            targets: "enemy"
+        },
+        whirlwind: {
+            name: "Whirlwind",
+            abilityId: "whirlwind",
+            dmg: 90,
+            adPercentage: 0.85,
+            cooldown: 0,
+            maxcooldown: 1,
+            description: "Deal 90 damage + 85% of your attack damage to all enemies",
             type: "physical",
             areawide: true,
             targets: "enemy"
