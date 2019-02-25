@@ -5588,7 +5588,7 @@ function armamentsEmbedBuilder(message, userItems, itemsMapById, long, rarity){
         if (itemsMapById[idOfItemInMap].itemraritycategory == "armament"){
             var idOfItemTheArmamentIsFor = userItems[item].armamentforitemid
             if (!mapOfArmaments[idOfItemTheArmamentIsFor]){
-                var statsFromArmament = " 💚 " + userItems[item].hpplus + " 🗡️ "  + userItems[item].adplus + " ☄️ " + userItems[item].mdplus + " 🛡️ " + userItems[item].armorplus + " 🙌 " + userItems[item].spiritplus 
+                var statsFromArmament = " 💚 " + userItems[item].hpplus + " 🗡️ "  + userItems[item].adplus + " ☄️ " + userItems[item].mdplus + " 🛡️ " + userItems[item].armorplus + " 🙌 " + userItems[item].spiritplus + " 💥 " + userItems[item].critplus
                 var itemOfArmament = itemsMapById[idOfItemTheArmamentIsFor]
                 var emoji = ":gear:";
                 if (long && fieldCount < 25){
