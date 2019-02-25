@@ -6472,7 +6472,7 @@ function processAbility(abilityObject, event){
                 damageToDeal = Math.floor(damageToDeal.dmg * 0.2)
                 var critStrike = damageToDeal.critical ? "**" : ""
                 //event.membersInParty["rpg-"+abilityCaster].hp = event.membersInParty["rpg-"+abilityCaster].hp - damageToDeal;
-                damageToDeal = dealDamageTo( event.membersInParty["rpg-"+abilityCaster], damageToDeal.dmg, event, abType)
+                damageToDeal = dealDamageTo( event.membersInParty["rpg-"+abilityCaster], damageToDeal, event, abType)
                 abilityToString = abilityToString + critStrike + targetToDealDmgName + " suffered " + damageToDeal + " damage from " + rpgAbility.name + "\n"
                 rpgAbility.dmg = tempDamage
                 if ( checkHasDied(event.membersInParty["rpg-"+abilityCaster])){
@@ -6491,7 +6491,7 @@ function processAbility(abilityObject, event){
                 var critStrike = damageToDeal.critical ? "**" : ""
                 //event.enemies[abilityCaster].hp = event.enemies[abilityCaster].hp - damageToDeal;
                 var abType = rpgAbility.type
-                damageToDeal = dealDamageTo( event.enemies[abilityCaster], damageToDeal.dmg, event, abType)
+                damageToDeal = dealDamageTo( event.enemies[abilityCaster], damageToDeal, event, abType)
                 abilityToString = abilityToString + critStrike + targetToDealDmgName + " suffered " + damageToDeal + " damage from " + rpgAbility.name + "\n"
                 rpgAbility.dmg = tempDamage
                 if ( checkHasDied(event.enemies[abilityCaster])){
