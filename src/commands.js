@@ -7758,29 +7758,37 @@ module.exports.putonCommand = function(message, args, retry){
                                 if (itemuserid){
                                     
                                     var validateSlotToWear;
+                                    var arrayOfSlots = []
+                                    arrayOfSlots.push(currentSlot1Slot)
+                                    arrayOfSlots.push(currentSlot2Slot)
+                                    arrayOfSlots.push(currentSlot3Slot)
+                                    arrayOfSlots.push(currentSlot5Slot)
+                                    arrayOfSlots.push(currentSlot6Slot)
+                                    arrayOfSlots.push(currentSlot7Slot)
+
                                     if (slot == 1 && !currentSlot1Slot){
-                                        validateSlotToWear = validateSlot(itemslot, currentSlot2Slot, currentSlot3Slot)
+                                        validateSlotToWear = validateSlot(itemslot, arrayOfSlots)
                                     }
                                     else if (slot == 2 && !currentSlot2Slot){
-                                        validateSlotToWear = validateSlot(itemslot, currentSlot1Slot, currentSlot3Slot)
+                                        validateSlotToWear = validateSlot(itemslot, arrayOfSlots)
                                     }
                                     else if (slot == 3 && !currentSlot3Slot){
-                                        validateSlotToWear = validateSlot(itemslot, currentSlot1Slot, currentSlot2Slot)
+                                        validateSlotToWear = validateSlot(itemslot, arrayOfSlots)
                                     }
                                     else if (slot == 4 && !currentSlot4Slot && itemsMapbyShortName[itemToWear].itemraritycategory == "myth" ){
                                         validateSlotToWear = true
                                     }
                                     /// temple level 6
                                     else if (slot == 5 && !currentSlot5Slot && templeLevel >= 6){
-                                        validateSlotToWear = true
+                                        validateSlotToWear = validateSlot(itemslot, arrayOfSlots)
                                     }
                                     /// stable level 11
                                     else if (slot == 6 && !currentSlot6Slot && stableLevel >= 11){
-                                        validateSlotToWear = true
+                                        validateSlotToWear = validateSlot(itemslot, arrayOfSlots)
                                     }
                                     // greenhouse level 12
                                     else if (slot == 7 && !currentSlot7Slot && greenHouseLevel >= 12){
-                                        validateSlotToWear = true
+                                        validateSlotToWear = validateSlot(itemslot, arrayOfSlots)
                                     }
                                     if (validateSlotToWear){
                                         // check that the item slot is not already equiped elsewhere
@@ -7849,13 +7857,16 @@ module.exports.putonCommand = function(message, args, retry){
     }
 }
 
-function validateSlot(slotToEquip, currentSlot1, currentSlot2){
-    var slotIsValid = false;
-    if (!currentSlot1 && !currentSlot2){
-        return true;
-    }
-    else if (slotToEquip != currentSlot1 && slotToEquip != currentSlot2){
-        slotIsValid = true;
+function validateSlot(slotToEquip, arrayOfSlots){
+    var slotIsValid = true;
+    if (arrayOfSlots.length == 0){
+        return slotIsValid;
+    }else {
+        for (var s in arrayOfSlots){
+            if (arrayOfSlots[s] == slotToEquip){
+                return false
+            }
+        }
     }
     return slotIsValid
 }
