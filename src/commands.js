@@ -6014,7 +6014,7 @@ function todaysRecipesEmbedBuilder(message){
     for (var r in recipesAvailableObjects){
         embed.addField(recipesAvailableObjects[r].recipeName, recipesAvailableObjects[r].recipeRequirementsString, false)
     }
-    embed.addField("Command To Bake", config.commandString + "" + recipesAvailableObjects[r].itemshortname, false)
+    embed.addField("Command To Bake", config.commandString + "bake " + recipesAvailableObjects[r].itemshortname, false)
     message.channel.send({embed});
 }
 
