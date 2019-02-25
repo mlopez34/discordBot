@@ -6277,43 +6277,86 @@ function processAbility(abilityObject, event){
         }
         hotToAdd.hot.expireOnTurn = currentTurn + hotToAdd.hot.turnsToExpire;
         hotToAdd.hot.caster = abilityCaster // id of caster
-        // enemy added a hot to party member
-        if (event.membersInParty[targetToAddHot]){
-            var targetToAddHotName = event.membersInParty[targetToAddHot].name;
-            if (event.membersInParty[targetToAddHot].statuses.indexOf("dead") == -1){
-                // target is not dead
-                var alreadyHaveHot = false;
-                for (var buff in event.membersInParty[targetToAddHot].buffs){
-                    if (event.membersInParty[targetToAddHot].buffs[buff].hot
-                        && event.membersInParty[targetToAddHot].buffs[buff].hot.caster == abilityObject.user
-                        && event.membersInParty[targetToAddHot].buffs[buff].hot.name == hotToAdd.hot.name ){
-                            alreadyHaveHot = true;
+        if (rpgAbility.hot.areawide){
+            if (abilityCaster > 1000){
+                var caster = event.membersInParty["rpg-"+abilityCaster] ? event.membersInParty["rpg-"+abilityCaster].name : undefined;
+                for (var targetToAddHot in event.membersInParty){
+                    if (event.membersInParty[targetToAddHot].hp > 0
+                    && event.membersInParty[targetToAddHot].statuses.indexOf("dead") == -1){
+                        var alreadyHaveStatus = false;
+                        for (var buff in event.membersInParty[targetToAddHot].buffs){
+                            if (event.membersInParty[targetToAddHot].buffs[buff].hot
+                                && event.membersInParty[targetToAddHot].buffs[buff].hot.caster == abilityObject.user
+                                && !event.membersInParty[targetToAddHot].buffs[buff].hot.ignoreUnique ){
+                                alreadyHaveStatus = true;
+                            }
+                        }
+                        if (!alreadyHaveStatus){
+                            delete hotToAdd.areawide 
+                            event.membersInParty[targetToAddHot].buffs.push(hotToAdd);
+                        }
                     }
                 }
-                if (!alreadyHaveHot){
-                    event.membersInParty[targetToAddHot].buffs.push(hotToAdd);
-                    // gain stack of radioactive
-                    abilityToString = abilityToString + checkRadioactive(event, event.membersInParty[targetToAddHot])
-                    abilityToString = abilityToString + targetToAddHotName + " was affected with " + hotToAdd.hot.name + " \n" 
+                abilityToString = abilityToString + "The group was affected with " + hotToAdd.hot.name + " \n" 
+            }else{
+                for (var targetToAddHot in event.enemies){
+                    if (event.enemies[targetToAddHot].hp > 0
+                        && event.enemies[targetToAddHot].statuses.indexOf("dead") == -1){
+                        var alreadyHaveHot = false;
+                        for (var buff in event.enemies[targetToAddHot].buffs){
+                            if (event.enemies[targetToAddHot].buffs[buff].hot
+                                && event.enemies[targetToAddHot].buffs[buff].hot.caster == abilityObject.user
+                                && event.enemies[targetToAddHot].buffs[buff].hot.name == hotToAdd.hot.name
+                                && !event.enemies[targetToAddHot].buffs[buff].hot.ignoreUnique ){
+                                    alreadyHaveHot = true;
+                            }
+                        }
+                        if (!alreadyHaveStatus){
+                            event.enemies[targetToAddHot].buffs.push(hotToAdd);
+                        }
+                    }
+                }
+                abilityToString = abilityToString + "The group was affected with " + hotToAdd.hot.name + " \n"                 
+            }
+        }else{
+            // enemy added a hot to party member
+            if (event.membersInParty[targetToAddHot]){
+                var targetToAddHotName = event.membersInParty[targetToAddHot].name;
+                if (event.membersInParty[targetToAddHot].statuses.indexOf("dead") == -1){
+                    // target is not dead
+                    var alreadyHaveHot = false;
+                    for (var buff in event.membersInParty[targetToAddHot].buffs){
+                        if (event.membersInParty[targetToAddHot].buffs[buff].hot
+                            && event.membersInParty[targetToAddHot].buffs[buff].hot.caster == abilityObject.user
+                            && event.membersInParty[targetToAddHot].buffs[buff].hot.name == hotToAdd.hot.name ){
+                                alreadyHaveHot = true;
+                        }
+                    }
+                    if (!alreadyHaveHot){
+                        event.membersInParty[targetToAddHot].buffs.push(hotToAdd);
+                        // gain stack of radioactive
+                        abilityToString = abilityToString + checkRadioactive(event, event.membersInParty[targetToAddHot])
+                        abilityToString = abilityToString + targetToAddHotName + " was affected with " + hotToAdd.hot.name + " \n" 
+                    }
                 }
             }
-        }
 
-        else if (event.enemies[targetToAddHot]){
-            var targetToAddHotName = event.enemies[targetToAddHot].name;
-            if (event.enemies[targetToAddHot].statuses.indexOf("dead") == -1){
+            else if (event.enemies[targetToAddHot]){
+                var targetToAddHotName = event.enemies[targetToAddHot].name;
+                if (event.enemies[targetToAddHot].statuses.indexOf("dead") == -1){
 
-                var alreadyHaveHot = false;
-                for (var buff in event.enemies[targetToAddHot].buffs){
-                    if (event.enemies[targetToAddHot].buffs[buff].hot
-                        && event.enemies[targetToAddHot].buffs[buff].hot.caster == abilityObject.user
-                        && event.enemies[targetToAddHot].buffs[buff].hot.name == hotToAdd.hot.name ){
-                            alreadyHaveHot = true;
+                    var alreadyHaveHot = false;
+                    for (var buff in event.enemies[targetToAddHot].buffs){
+                        if (event.enemies[targetToAddHot].buffs[buff].hot
+                            && event.enemies[targetToAddHot].buffs[buff].hot.caster == abilityObject.user
+                            && event.enemies[targetToAddHot].buffs[buff].hot.name == hotToAdd.hot.name ){
+                                alreadyHaveHot = true;
+                        }
                     }
-                }
-                if (!alreadyHaveHot){
-                    event.enemies[targetToAddHot].buffs.push(hotToAdd);
-                    abilityToString = abilityToString + targetToAddHotName + " was affected with " + hotToAdd.hot.name + " \n" 
+                    if (!alreadyHaveHot){
+                        event.enemies[targetToAddHot].buffs.push(hotToAdd);
+                        abilityToString = abilityToString + targetToAddHotName + " was affected with " + hotToAdd.hot.name + " \n" 
+                    }
                 }
             }
         }
@@ -6425,7 +6468,8 @@ function processAbility(abilityObject, event){
                 var tempDamage = rpgAbility.dmg;
                 rpgAbility.dmg = rpgAbility.selfdamage;
                 var abType = rpgAbility.type
-                var damageToDeal = Math.floor(calculateDamageDealt(event, abilityCaster, "rpg-"+abilityCaster, rpgAbility).dmg * 0.2)
+                var damageToDeal = calculateDamageDealt(event, abilityCaster, "rpg-"+abilityCaster, rpgAbility)
+                damageToDeal = Math.floor(damageToDeal.dmg * 0.2)
                 var critStrike = damageToDeal.critical ? "**" : ""
                 //event.membersInParty["rpg-"+abilityCaster].hp = event.membersInParty["rpg-"+abilityCaster].hp - damageToDeal;
                 damageToDeal = dealDamageTo( event.membersInParty["rpg-"+abilityCaster], damageToDeal.dmg, event, abType)
@@ -6442,7 +6486,8 @@ function processAbility(abilityObject, event){
                 // set damage temporarily
                 var tempDamage = rpgAbility.dmg;
                 rpgAbility.dmg = rpgAbility.selfdamage;
-                var damageToDeal = Math.floor(calculateDamageDealt(event, abilityCaster, abilityCaster, rpgAbility).dmg * 0.2)
+                var damageToDeal = calculateDamageDealt(event, abilityCaster, abilityCaster, rpgAbility)
+                damageToDeal = Math.floor(damageToDeal.dmg * 0.2)
                 var critStrike = damageToDeal.critical ? "**" : ""
                 //event.enemies[abilityCaster].hp = event.enemies[abilityCaster].hp - damageToDeal;
                 var abType = rpgAbility.type
