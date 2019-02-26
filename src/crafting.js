@@ -190,7 +190,7 @@ function setRecipesOnTemple(message, params, recipesObj){
         if (err){
             console.log(err)
             if (err == "no columns"){
-                message.channel.send("temple not high enough lvl")
+                console.log("temple not high enough lvl")
             }
         }else{
             // send message displaying the new recipes aquired
@@ -200,7 +200,6 @@ function setRecipesOnTemple(message, params, recipesObj){
 }
 
 module.exports.getRecipeRequirements = function(itemshortname){
-    // TODO: get requirements based on shortname
     return availableRecipesByShortName[itemshortname]
 }
 

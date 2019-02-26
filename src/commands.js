@@ -669,7 +669,6 @@ module.exports.thankCommand = function(message){
     // check the user mentioned someone, and the user is not the same user
     if ( message.mentions.users.size > 0 && discordUserId != mentionedId && !NeedsToAgree[mentionedId] && !commandLock["thank"][discordUserId]){
         exports.setCommandLock("thank", discordUserId, true)
-        // TODO: getTempleData instead - check temple level - give extra tacos - if tag is bender then 
         // chance to get recipe
         profileDB.getTempleData( discordUserId, function(err, thankResponse) {
             if(err){
@@ -801,7 +800,6 @@ module.exports.sorryCommand = function(message){
 
     if ( message.mentions.users.size > 0 && discordUserId != mentionedId && !NeedsToAgree[mentionedId] && !commandLock["sorry"][discordUserId]){
         exports.setCommandLock("sorry", discordUserId, true)
-        // TODO: getTempleData instead - check temple level - give extra tacos - if tag is bender then 
         // chance to get recipe
         profileDB.getTempleData( discordUserId, function(err, sorryResponse) {
             if(err){
@@ -4317,7 +4315,6 @@ module.exports.pickupCommand = function (message){
             // update user tacos
             profileDB.updateUserTacos(discordUserId, -10, function(updateErr, updateRes){
                 if (updateErr){
-                    // TODO: create user profile
                     // console.log(updateErr)
                     agreeToTerms(message, discordUserId);
                 }
@@ -4341,7 +4338,6 @@ module.exports.pickupCommand = function (message){
             
             profileDB.updateUserTacos(discordUserId, 10, function(updateErr, updateRes){
                 if (updateErr){
-                    // TODO: create user profile
                     // console.log(updateErr)
                     agreeToTerms(message, discordUserId);
                 }
@@ -4429,7 +4425,6 @@ module.exports.buypetCommand = function(message, args){
                                                 // take away tacos from user
                                                 profileDB.updateUserTacos(discordUserId, (PET_COST * -1), function(updateErr, updateRes){
                                                     if (updateErr){
-                                                        // TODO: create user profile
                                                         // console.log(updateErr)
                                                         message.channel.send(" error, check bender now");
                                                     }
@@ -6013,8 +6008,9 @@ function todaysRecipesEmbedBuilder(message){
     .setColor(0x87CEFA)
     for (var r in recipesAvailableObjects){
         embed.addField(recipesAvailableObjects[r].recipeName, recipesAvailableObjects[r].recipeRequirementsString, false)
+        embed.addField("Recipe Info", itemsMapById[ recipesAvailableObjects[r].itemId ].itemstatistics, false)
+        embed.addField("Command To Bake", config.commandString + "bake " + recipesAvailableObjects[r].itemshortname, false)
     }
-    embed.addField("Command To Bake", config.commandString + "bake " + recipesAvailableObjects[r].itemshortname, false)
     message.channel.send({embed});
 }
 
@@ -6736,7 +6732,7 @@ module.exports.combineCommand = function(message, args){
                                 itemCount = 4
                             }
                             else if (rarityOfItem == "artifact"){
-                                itemCount = 4
+                                itemCount = 1
                             }
                         }
                         // console.log(ItemInQuestion);

@@ -116,7 +116,6 @@ function useItems(params, cb){
 }
 
 function removeFruits(discordUserId, params, cb){
-    // TODO: get object of fruits to remove
     if (params.upgradeRequirements.fruits){
         profileDB.bulkupdateUserFruits(discordUserId, params.upgradeRequirements.fruits, false, function(err, res){
             if (err){

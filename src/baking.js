@@ -111,6 +111,7 @@ module.exports.recipesForTodayObjectBuilder = function(recipesAvailable){
         var recipeObject = {
             recipeName: bakingRecipes[recipename].recipeName,
             itemshortname: bakingRecipes[recipename].itemshortname,
+            itemId: bakingRecipes[recipename].itemId,
             recipeRequirementsString: exports.buildRecipeRequirementString(recipename)
         }
         recipesAvailableObjects.push(recipeObject)
