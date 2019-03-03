@@ -1471,6 +1471,19 @@ module.exports = {
                 multiplier: 1.1
             }
         },
+        strengthDarkness: {
+            name: "Strength",
+            abilityId: "strengthDarkness",
+            buff: {
+                buff: true,
+                name: "Strength",
+                abilityId: "strengthDarkness",
+                emoji: "<:strength:479298214294716416>",
+                turnsToExpire: 100,
+                affects: ["attackDmg", "magicDmg"],
+                multiplier: 1.2
+            }
+        },
         strengthFever: {
             name: "Strength",
             abilityId: "strengthFever",
@@ -1781,7 +1794,6 @@ module.exports = {
                 abilityId: "burst",
                 ignoreBandaid: true,
                 removeDotOnHpPercentage: .99,
-
                 type:"physical",
                 dmg: 1000,
                 adPercentage: 0.2,
@@ -2497,9 +2509,6 @@ module.exports = {
             }
         },
 
-        // TODO: transfer the elemental orders and hammerdown protocol to next enemy
-
-
         // summon 4 more every so often
         shackle: {
             // ignore unique
@@ -2688,22 +2697,6 @@ module.exports = {
                 turnsToExpire: 4
             }
         },
-        // reflect damage back to the attacker 50%
-        reflect: {
-            name:"Reflect",
-            abilityId: "reflect",
-            processAbility: true,
-            belongsToMember: true,
-            everyNTurns: 7,
-            afterNTurns: 7,
-            currentTurn: 0,
-            buff: {
-                name: "Reflect",
-                emoji: "<:break:479347734722379777>",
-                ignoreUnique: true,
-                turnsToExpire: 4
-            }
-        },
 
         summonEnabler: {
             name: "Summon Enabler",
@@ -2796,7 +2789,369 @@ module.exports = {
             currentTurn: 0,
             eotMessage: "I will crush you.. in body and spirit"
         },
+        /*
+        challenge 12
+        */
+        // buff that allows caster to cast empowered abilities
+        // gives buff that starts at n-1 each turn when that buff runs out
+        // if the caster has darkness then start casting increasing aoe 500->800->1100 on current top lvl
+        // after taking 25% damage from point of getting buff remove it
+        // on remove the caster gains strength 10% more damage
+        // on remove - jumps to another boss
+        // on remove cast puncture on one player
+        darknessHandler: {
+            
+            transferAtHpPercentage: 1,
+            buffToHandleId: "darkness",
+            onNewCastAddBuff: "energy",
+            removeAtHpPercentagePerTransfer: 0.25,
+            belongsToEvent: true,
+            startTarget : "Emperor Zheng",
+            transferToHighestHpOnRemove: true,
+            listOfpossibleTransfer: [
+                "Emperor Zheng",
+                "Warlord Ying",
+                "Mistical Fairy",
+                "Reckless Barbarian",
+            ],
+            onTransferCastAbility: "puncture",
+            onTransferGiveBuffToTransferTarget: "energy",
+            minusTurnsToExpirePerBuffCount: "strengthDarkness",
+            onTransferCasterGainsBuff: "strengthDarkness",
+            clearBuffIfBuffToHandleNotExists: "energy",
+            // at the end of the turn do the following:
+            // check if the current darkness holder is under transferAtHpPercentage
+            // if so, transfer to someone in the listOfPossibleTransfer
+            // give energy to the enemy darkness was transfered to
+            // give strength to target transfered from
+            // transferToHighestHpOnRemove means check every target and figure out who has the highest HP %
+            // cast puncture on a random player
+        },
+        darkness: {
+            // ignore unique
+            name: "Darkness",
+            abilityId: "darkness",
+            processAbility: true,
+            belongsToMember: true,
+            everyNTurns: 200,
+            afterNTurns: 1,
+            currentTurn: 0,
+            buff: {
+                name: "Darkness",
+                abilityId: "darkness",
+                buff: true,
+                ignoreBandaid: true,
+                emoji: ":star_and_crescent:",
+                ignoreUnique: true,
+                turnsToExpire: 200
+            }
+        },
+        // starts at n-1 when the buff runs out then aoe begins to cast every turn
+        energy:  {
+            belongsToMember: true,
+            abilityId: "energy",
+            name: "Energy",
+            buff: {
+                name: "Energy",
+                emoji: ":signal_strength:",
+                minusTurnsToExpirePerBuffCount: "strengthDarkness",
+                displayExpireCount: true,
+                turnsToExpire: 6,
+                abilityId: "energy",
+            }
+        },
+        eradicate: {
+            belongsToMember: true,
+            name: "Eradicate",
+            validIfBuff: "darkness",
+            invalidIfBuff: "energy",
+            abilityId: "eradicate",
+            resetEOTDamageForAbilityWhenBuffLost: "darkness",
+            everyNTurns: 1,
+            afterNTurns: 1,
+            currentTurn: 1,
+            areawidedmg: {
+                areawide: true,
+                name: "eradicate",
+                increaseDamagePerTurn: 600,
+                dmg: 100,
+                damageToResetTo: 100,
+                mdPercentage: 1,
+                type: "earth"
+            }
+        },
 
+        // small dot that leaves +5% damage taken
+        // on bandaid jumps to someone else, never goes away
+        // casts upon darkness transfer
+        puncture: {
+            name: "Puncture",
+            onDeathEffect: true,
+            abilityId: "puncture",
+            type: "earth",
+            processAbility: true,
+            belongsToMember: true,
+            ignoreFocus: true,
+            dot: {
+                name: "Puncture",
+                type: "earth",
+                dmg: 100,
+                mdPercentage: 1,
+                emoji: ":o2:",
+                ignoreUnique: true,
+                applyDebuffOnDotDmg: "debilitate",
+                onRemoveSelectNewTarget: true,
+                dmgOnDotApply: false,
+                turnsToExpire: 65,
+                dmgOnDotExpire: false,
+                dmgOnExpire: 0
+            }
+        },
+
+        debilitate: {
+            name: "Debilitate",
+            abilityId: "debilitate",
+            status: {
+                status: true,
+                name: "Debilitate",
+                abilityId: "debilitate",
+                emoji: ":full_moon_with_face:",
+                affectsGlobal: ["damageTakenPercentage"],                
+                multiplier: 1.0,
+                ignoreBandaid: true,
+                multiplierPerDotTurn: 0.05,
+                abilityTriggerOnDeath: "healAllDebilitate",
+                checkDotMultiplierPerDotTurn: "puncture"
+            }
+        },
+
+        healAllDebilitate: {
+            belongsToMember: true,
+            name: "Heal All",
+            abilityId: "healAllDebilitate",
+            heal: 10000,
+            areawide: true,
+            mdPercentage: 1,
+        },
+
+        worship: {
+            name: "Worship",
+            abilityId: "worship",
+            processAbility: true,
+            belongsToMember: true,
+            targetLowestPercent: true,
+            healMaxHpPercentage: 0.1,
+            heal: 1,
+            everyNTurns: 2,
+            afterNTurns: 2,
+            currentTurn: 0,
+            listOfPossibleTarget: [
+                "Emperor Zheng",
+                "Warlord Ying",
+                "Mistical Fairy",
+                "Reckless Barbarian"
+            ]
+        },
+
+        // HIGH MELEE - 6 turn dot hits high
+        wound: {
+            name: "Wound",
+            abilityId: "wound",
+            type: "physical",
+            processAbility: true,
+            belongsToMember: true,
+            ignoreFocus: true,
+            everyNTurns: 9,
+            afterNTurns: 4,
+            currentTurn: 0,
+            dot: {
+                name: "Wound",
+                type:"physical",
+                dmg: 1000,
+                adPercentage: 1,
+                emoji: "<:deep_hatred:479298214340591626>",
+                dmgOnDotApply: false,
+                ignoreBandaid: true,
+                turnsToExpire: 6,
+                dmgOnDotExpire: false,
+                dmgOnExpire: 0
+            }
+        },
+        // HEALER - hits medium
+        blast: {
+            abilityId: "blast",
+            belongsToMember: true,
+            processAbility: true,
+            ignoreFocus: true,
+            name: "Blast",
+            dmg: 50,
+            mdPercentage: .2,
+            type: "electric",
+            everyNTurns: 6,
+            afterNTurns: 3,
+            currentTurn: 0,
+            status: {
+                status: true,
+                abilityId: "blast",
+                untargettable: true,
+                name: "Blast",
+                emoji: "<:electricorb:479296558375108610>",
+                mdPercentage: 1,
+                turnsToExpire: 2,
+                dmgOnStatusExpire: true,
+                dmgOnStatusRemove: true,
+                dmgOnRemove: 150,
+                dmgOnRemoveAreaWide: false,
+                mdPercentageOnRemove: 1,
+                dmgOnExpire: 150
+            }
+        },
+        // 50% buff to damage - MUST have darkness
+        mightyweapon : {
+            name : "Mighty Weapon",
+            abilityId: "mightyweapon",
+            validIfBuff: "darkness",
+            processAbility: true,
+            belongsToMember: true,
+            everyNTurns: 8,
+            afterNTurns: 4,
+            currentTurn: 0,
+            description: "Increase all damage done by 50% for 3 turns",
+            buff: {
+                buff: true,
+                selfbuff: true,
+                abilityId: "mightyweapon",
+                name: "Mighty Weapon",
+                emoji : ":dagger:", 
+                affectsGlobal: ["damageDealtPercentage"],
+                turnsToExpire: 3,
+                multiplier: 1.5
+            }
+        },
+        // casts every 4 turns, MUST NOT have darkness
+        lesion: {
+            name:"Lesion",
+            processAbility: true,
+            belongsToMember: true,
+            ignoreFocus: true,
+            everyNTurns: 4,
+            afterNTurns: 2,
+            currentTurn: 0,
+            abilityId: "lesion",
+            invalidIfBuff: "darkness",
+            type: "earth",
+            dot: {
+                name: "Lesion",
+                abilityId: "lesion",
+                type: "earth",
+                dmg: 100,
+                mdPercentage: 1,
+                emoji: "<:bomb:479296552096235520>",
+                dmgOnDotApply: false,
+                ignoreBandaid: true,
+                ignoreUnique: true,
+                turnsToExpire: 30,
+                dmgOnDotExpire: true,
+                dmgOnExpire: 550,
+            }
+        },
+
+        // reflect damage back to the attacker based on percentage
+        reflectShield: {
+            name: "Reflect Shield",
+            abilityId: "reflectShield",
+            invalidIfBuff: "darkness",
+            processAbility: true,
+            belongsToMember: true,
+            everyNTurns: 3,
+            afterNTurns: 3,
+            currentTurn: 0,
+            buff: {
+                buff: true,
+                name: "Reflect Shield",
+                selfbuff: true,
+                abilityId: "reflectShield",
+                reflectPercentage: 0.15,
+                areaewideReflectPercentage: 0.5,
+                emoji: ":sound:",
+                abType: "electric",
+                ignoreUnique: true,
+                turnsToExpire: 3
+            }
+        },
+        reflectBarrier: {
+            name: "Reflect Barrier",
+            abilityId: "reflectBarrier",
+            validIfBuff: "darkness",
+            processAbility: true,
+            belongsToMember: true,
+            everyNTurns: 3,
+            afterNTurns: 3,
+            currentTurn: 0,
+            buff: {
+                buff: true,
+                name: "Reflect Barrier",
+                selfbuff: true,
+                abilityId: "reflectBarrier",
+                reflectPercentageToAll: 0.15,
+                areaewideReflectPercentageToAll: 0.5,
+                emoji: ":loud_sound:",
+                abType: "electric",
+                ignoreUnique: true,
+                turnsToExpire: 3
+            }
+        },
+        // attempt to cast every turn, MUST HAVE darkness buff 
+        summonKnights: {
+            name: "Summon Knights",
+            abilityId: "summonKnights",
+            validIfBuff: "darkness",
+            belongsToMember: true,
+            everyNTurns: 2,
+            afterNTurns: 5,
+            currentTurn: 0,
+            summon: {
+                summonCountPerDot: "lesion",
+                enemy: "knight",
+                attackDmg: 100,
+                magicDmg: 100,
+                hpPlus: 100
+            }
+        },
+        // attempts to heal lowest health boss after 2 turns for 15%
+        // MUST NOT have darkness
+        summonWorshipper: {
+            name: "Summon Worshipper",
+            abilityId: "summonWorshipper",
+            invalidIfBuff: "darkness",
+            belongsToMember: true,
+            everyNTurns: 6,
+            afterNTurns: 6,
+            currentTurn: 0,
+            summon: {
+                enemy: "worshipper",
+                attackDmg: 500,
+                magicDmg: 500,
+                hpPlus: 100
+            }
+        },
+        // MUST HAVE darkness
+        // deal aoe damage increasing every turn that they are alive
+        summonCursedGuardian: {
+            name: "Summon Cursed Guardian",
+            abilityId: "summonCursedGuardian",
+            validIfBuff: "darkness",
+            belongsToMember: true,
+            everyNTurns: 6,
+            afterNTurns: 6,
+            currentTurn: 0,
+            summon: {
+                enemy: "cursedGuardian",
+                attackDmg: 500,
+                magicDmg: 500,
+                hpPlus: 100
+            }
+        },
 
         /*
         summon effects
@@ -5516,6 +5871,78 @@ Hoover Dam
                 difficulty: "summoned",
                 element: "normal"
             },
+
+            knight: {
+                name: "Knight",
+                abilities: ["attack"],
+                buffs: [],
+                hpPerPartyMember: 0,
+                adPerPartyMember: 0,
+                mdPerPartyMember: 0,
+                hp: 5000,
+                abilityOrder: [
+                    0, 0, 0, 0
+                ],
+                attackDmg: 930,
+                magicDmg: 860,
+                armor: 1300,
+                spirit: 1300,
+                difficulty: "summoned",
+                element: "normal"
+            },
+
+            worshipper: {
+                name: "Worshipper",
+                abilities: ["attack"],
+                buffs: [],
+                hpPerPartyMember: 0,
+                adPerPartyMember: 0,
+                mdPerPartyMember: 0,
+                hp: 5800,
+                abilityOrder: [
+                    0, 0, 0, 0
+                ],
+                endOfTurnEvents: [
+                    "worship"
+                ],
+                attackDmg: 830,
+                magicDmg: 860,
+                armor: 1300,
+                spirit: 1300,
+                difficulty: "summoned",
+                element: "normal"
+            },
+
+            cursedGuardian: {
+                name: "Cursed Guardian",
+                abilities: ["iceshards"],
+                buffs: [
+                    {
+                        name: "frenzy",
+                        emoji: "<:frenzy:479298214453968896>",
+                        onTurnEnd: {
+                            attackDmgPlus : 195,
+                            magicDmgPlus : 195,
+                            everyNTurns: 1,
+                            startTurn: 1
+                        }
+                    }
+                ],
+                hpPerPartyMember: 0,
+                adPerPartyMember: 0,
+                mdPerPartyMember: 0,
+                hp: 12800,
+                abilityOrder: [
+                    0, 0, 0, 0
+                ],
+                attackDmg: 1860,
+                magicDmg: 1860,
+                armor: 1300,
+                spirit: 1300,
+                difficulty: "summoned",
+                element: "normal"
+            },
+
             energyCore: {
                 name: "Energy Core",
                 passive: true,
@@ -9021,84 +9448,46 @@ Hoover Dam
             12: {
                 challengeId: "emperor",
                 timed: true,
+                description: "**The High Council:** \n**Darkness** - A mamber of the high council becomes tainted with darkness and gains *Energy* and their abilities become empowered. Darkness can only be removed upon taking 25% of the member's health from the point of obtaining darkness\n**Energy** - upon reaching full energy the member of the high council unleashes eradicate every turn increasing in damage every turn until darkness is removed - each subsequent darkness requires one less turn to reach full energy\n**Puncture** - Deals 200 damage per turn, increases damage taken by 5% every turn, cast upon losing darkness\n**Strength** - Upon losing darkness the member of the high council gains +20% damage dealt permanently\nWarlord Ying > **Lesion** - Deals low damage for 30 turns\n**Summon Knights** (Darkness Only) - summon a knight per number of lesions on the group\nEmperor > **Mighty Weapon** - Empowers his weapon and deals 50% more damage\n>**Wound** - Deals high physical damage on a random target for 6 turns\nMystical Fairy > **Blast** - deal moderate magical damage on a random target\n**Summon Worshipper** > Summon a worshipper that will heal the lowest health member for 10% of their total health\n**Summon Cursed Guardians** (Darkness only) > Summons two cursed guardians that radiate magic damage on the group until killed\nReckless Barbarian > **Reflect Shield** - reflects 20% damage dealt back to the attacker | 100% aoe damage reflected back\n**Reflect Barrier** (Darkness only) - reflects 20% of damage dealt back to the group | 100% aoe damage reflected back",
                 timedPerTurn: 360000,
                 points: 27901,
                 xppoints: 5120,
                 difficulty: 85,
                 enemies: [
                     {
-                        name: "Summoner",
+                        name: "Warlord Ying",
                         xp: 30,
                         abilities: [
                             "attack",
-                            "slash",
+                            "uppercut"
                         ],
                         buffs: [
                             {
                                 name: "frenzy",
                                 emoji: "<:frenzy:479298214453968896>",
                                 onTurnEnd: {
-                                    attackDmgPlus : 12100,
-                                    magicDmgPlus : 12100,
-                                    everyNTurns: 5,
-                                    startTurn: 5
+                                    attackDmgPlus : 6100,
+                                    magicDmgPlus : 6100,
+                                    everyNTurns: 10,
+                                    startTurn: 60
                                 }
                             }
                         ],
                         abilityOrder: [
-                            0,0,1,1,1,1,1
+                            0, 1, 0, 0, 0, 1, 0, 0
                         ],
                         endOfTurnEvents : [
-                            "focus"
-                            // adds debuff that deals low dmg runs out after 20 turns
-                            // empowered = summon adds + adds 30 turns to the debuffs
+                            "focus",
+                            "summonKnights", // D
+                            "lesion",
+                            "eradicate"
                         ],
                         effectsOnDeath: [
-                        ],
-                        hp: 42600,
-                        attackDmg: 14580,
-                        magicDmg: 14570,
-                        armor: 2100,
-                        spirit: 2100,
-                        hpPerPartyMember: 0,
-                        adPerPartyMember: 0,
-                        mdPerPartyMember: 0,
-                        difficulty: "boss",
-                        element: "normal"
-                    },
-                    {
-                        name: "High Melee",
-                        xp: 30,
-                        abilities: [
-                            "attack",
-                            "slash",
-                        ],
-                        buffs: [
-                            {
-                                name: "frenzy",
-                                emoji: "<:frenzy:479298214453968896>",
-                                onTurnEnd: {
-                                    attackDmgPlus : 12100,
-                                    magicDmgPlus : 12100,
-                                    everyNTurns: 5,
-                                    startTurn: 5
-                                }
-                            }
-                        ],
-                        abilityOrder: [
-                            0,0,1,1,1,1,1
-                        ],
-                        endOfTurnEvents : [
-                            "focus"
-                            // starts with darkness on turn 2
-                            // put high hitting dot on 1 person starts at (300)
-                            // empower his weapon to deal higher phys
-                        ],
-                        effectsOnDeath: [
+                            "puncture"
                         ],
                         hp: 52600,
-                        attackDmg: 14580,
-                        magicDmg: 14570,
+                        attackDmg: 4580,
+                        magicDmg: 4570,
                         armor: 2100,
                         spirit: 2100,
                         hpPerPartyMember: 0,
@@ -9108,38 +9497,90 @@ Hoover Dam
                         element: "normal"
                     },
                     {
-                        name: "Healer",
+                        name: "Emperor Zheng",
                         xp: 30,
                         abilities: [
                             "attack",
-                            "slash",
+                            "crush"
                         ],
                         buffs: [
                             {
                                 name: "frenzy",
                                 emoji: "<:frenzy:479298214453968896>",
                                 onTurnEnd: {
-                                    attackDmgPlus : 12100,
-                                    magicDmgPlus : 12100,
-                                    everyNTurns: 5,
-                                    startTurn: 5
+                                    attackDmgPlus : 6100,
+                                    magicDmgPlus : 6100,
+                                    everyNTurns: 10,
+                                    startTurn: 60
+                                }
+                            }
+                        ],
+                        abilityOrder: [
+                            0, [0, 1], 1, [0, 1], 1, [0, 1], 1
+                        ],
+                        endOfTurnEvents : [
+                            "focus",
+                            "mightyweapon", // D
+                            "darknessHandler",
+                            "wound",
+                            "eradicate"
+                            // starts with darkness on turn 2
+                        ],
+                        effectsOnDeath: [
+                            "puncture"
+                        ],
+                        hp: 52600,
+                        attackDmg: 4580,
+                        magicDmg: 4570,
+                        armor: 2100,
+                        spirit: 2100,
+                        hpPerPartyMember: 0,
+                        adPerPartyMember: 0,
+                        mdPerPartyMember: 0,
+                        difficulty: "boss",
+                        element: "normal"
+                    },
+                    {
+                        name: "Mystical Fairy",
+                        xp: 30,
+                        abilities: [
+                            "attack",
+                            "enemyshock",
+                            "orchatasip",
+                            "flameblast"
+                        ],
+                        buffs: [
+                            {
+                                name: "frenzy",
+                                emoji: "<:frenzy:479298214453968896>",
+                                onTurnEnd: {
+                                    attackDmgPlus : 6100,
+                                    magicDmgPlus : 6100,
+                                    everyNTurns: 10,
+                                    startTurn: 60
                                 }
                             }
                         ],
                         // random magic dmg 
                         abilityOrder: [
-                            0,0,1,1,1,1,1
+                            3, 0, [2,3], [0,1], [2,3], [0,1], [2,3], [0,1], [2,3]
                         ],
                         endOfTurnEvents : [
-                            "focus"
+                            "focus",
+                            "blast",
+                            "summonWorshipper",
+                            "eradicate",
+                            "summonCursedGuardian",  // D
+                            "summonCursedGuardian" // D
                             // summon healer (lasts 2 turns) when not empowered
                             // if empowered summon 2 adds that deal aoe
                         ],
                         effectsOnDeath: [
+                            "puncture"
                         ],
                         hp: 52600,
-                        attackDmg: 14580,
-                        magicDmg: 14570,
+                        attackDmg: 4580,
+                        magicDmg: 4570,
                         armor: 2100,
                         spirit: 2100,
                         hpPerPartyMember: 0,
@@ -9149,36 +9590,39 @@ Hoover Dam
                         element: "normal"
                     },
                     {
-                        name: "Non Focus",
+                        name: "Reckless Barbarian",
                         xp: 30,
                         abilities: [
-                            "attack",
-                            "slash",
+                            "attack"
                         ],
                         buffs: [
                             {
                                 name: "frenzy",
                                 emoji: "<:frenzy:479298214453968896>",
                                 onTurnEnd: {
-                                    attackDmgPlus : 12100,
-                                    magicDmgPlus : 12100,
-                                    everyNTurns: 5,
-                                    startTurn: 5
+                                    attackDmgPlus : 6100,
+                                    magicDmgPlus : 6100,
+                                    everyNTurns: 10,
+                                    startTurn: 60
                                 }
                             }
                         ],
                         // no focus melee hit and aoe
                         abilityOrder: [
-                            0,0,1,1,1,1,1
+                            0, 0, 0
                         ],
                         endOfTurnEvents : [
                             // when empowered reflect damage back 25%
+                            "reflectShield",
+                            "eradicate",
+                            "reflectBarrier" //D every 3 turns, expires after 3 turns
                         ],
                         effectsOnDeath: [
+                            "puncture"
                         ],
                         hp: 52600,
-                        attackDmg: 14580,
-                        magicDmg: 14570,
+                        attackDmg: 4580,
+                        magicDmg: 4570,
                         armor: 2100,
                         spirit: 2100,
                         hpPerPartyMember: 0,
