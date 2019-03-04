@@ -1053,6 +1053,19 @@ module.exports.rpgReady = function(message, itemsAvailable, amuletItemsById, buf
                                                                                 }
                                                                             }
                                                                         }
+                                                                        // replace the lists instead of adding onto them
+                                                                        if (enemyFound.keystoneStats.abilities){
+
+                                                                        }
+                                                                        if (enemyFound.keystoneStats.abilityOrder){
+
+                                                                        }
+                                                                        if (enemyFound.keystoneStats.endOfTurnEvents){
+                                                                            
+                                                                        }
+                                                                        if (enemyFound.keystoneStats.effectsOnDeath){
+                                                                            
+                                                                        }
                                                                     }
                                                                 }
 
@@ -1505,6 +1518,14 @@ function calculateCritDamagePlus(critDamageRating){
 function getKeystoneIdFromChallenge(challengeNumber){
     if (enemiesToEncounter.challenge[challengeNumber]){
         return enemiesToEncounter.challenge[challengeNumber].challengeId
+    }else{
+        return -1
+    }
+}
+
+function getKeystoneUnlockNameFromChallenge(challengeNumber){
+    if (enemiesToEncounter.challenge[challengeNumber]){
+        return enemiesToEncounter.challenge[challengeNumber].keystoneUnlockName
     }else{
         return -1
     }
@@ -2152,7 +2173,7 @@ function eventEndedEmbedBuilder(message, event, partySuccess){
         // give completion to everyone in the area
         for (var u in event.usersInArea){
             increaseCompletionForUser(event.usersInArea[u], event.area, message)
-        }        
+        }
     }
 
     var numberOfMembers = event.members.length;
@@ -2181,7 +2202,13 @@ function eventEndedEmbedBuilder(message, event, partySuccess){
             rewardString = rewardString + "**Experience:** " + rewards.xp + "\n**Rpg Points**: " + rewards.rpgPoints + "\n**Items:** \n";
             event.experienceHandedOut = event.experienceHandedOut + rewards.xp
             for (var item in rewards.items){
-                rewardString = rewardString + rewards.items[item].itemname + " \n";
+                rewardString = rewardString + rewards.items[item].itemname + "\n";
+            }
+            // unlocked the next keystone
+            if (firstKill){
+                var challengeId = getKeystoneUnlockNameFromChallenge(event.challenge.challenge)
+                var keystoneNumString = event.challenge.keystone > 0 ? (event.challenge.keystone + 1) : ""
+                rewardString = rewardString + challengeId + " " + keystoneNumString + "\n"
             }
         }
         else{
