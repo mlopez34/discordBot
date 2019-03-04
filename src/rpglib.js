@@ -6049,8 +6049,8 @@ Hoover Dam
                 abilityOrder: [
                     0, 0, 0, 0
                 ],
-                attackDmg: 1860,
-                magicDmg: 1860,
+                attackDmg: 1460,
+                magicDmg: 1460,
                 armor: 1300,
                 spirit: 1300,
                 difficulty: "summoned",

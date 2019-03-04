@@ -3125,7 +3125,24 @@ function effectsOnTurnEnd(event){
                                             }
                                         }
                                     }
-    
+                                    var keystoneNum = event.challenge ? event.challenge.keystone : 0
+                                    if (keystoneNum > 0){
+                                        // add stats to enemies TODO: add it to summoned enemies
+                                        var keystoneStatsArrayIndex = keystoneNum - 1
+                                        if (enemyFound.keystoneStats){
+                                            event.enemies[enemyIdCount].hp = event.enemies[enemyIdCount].hp  + enemyFound.keystoneStats.hp[keystoneStatsArrayIndex]
+                                            event.enemies[enemyIdCount].attackDmg = event.enemies[enemyIdCount].attackDmg + enemyFound.keystoneStats.attackDmg[keystoneStatsArrayIndex]
+                                            event.enemies[enemyIdCount].magicDmg = event.enemies[enemyIdCount].magicDmg + enemyFound.keystoneStats.magicDmg[keystoneStatsArrayIndex]
+                                            if (enemyFound.keystoneStats.frenzy){
+                                                for (var b in event.enemies[enemyIdCount].buffs){
+                                                    if (event.enemies[enemyIdCount].buffs[b].name == "frenzy"){
+                                                        event.enemies[enemyIdCount].buffs[b].attackDmgPlus = enemyFound.keystoneStats.frenzy.attackDmgPlus[keystoneStatsArrayIndex]
+                                                        event.enemies[enemyIdCount].buffs[b].magicDmgPlus = enemyFound.keystoneStats.frenzy.magicDmgPlus[keystoneStatsArrayIndex]
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
                                     enemySummoned.maxhp = enemySummoned.hp;
                                     enemyIdCount++;
                                     // add the enemy to the list
@@ -3968,6 +3985,24 @@ function summonEnemy(event, enemy, index, enemyFound, summonRpgAbility){
                     event.endOfTurnEvents.push( eventToPush );
                 }else if ( eventToPush.belongsToMember ){
                     enemySummoned.endOfTurnEvents.push( eventToPush );
+                }
+            }
+        }
+        var keystoneNum = event.challenge ? event.challenge.keystone : 0
+        if (keystoneNum > 0){
+            // add stats to enemies TODO: add it to summoned enemies
+            var keystoneStatsArrayIndex = keystoneNum - 1
+            if (enemyFound.keystoneStats){
+                event.enemies[enemyIdCount].hp = event.enemies[enemyIdCount].hp  + enemyFound.keystoneStats.hp[keystoneStatsArrayIndex]
+                event.enemies[enemyIdCount].attackDmg = event.enemies[enemyIdCount].attackDmg + enemyFound.keystoneStats.attackDmg[keystoneStatsArrayIndex]
+                event.enemies[enemyIdCount].magicDmg = event.enemies[enemyIdCount].magicDmg + enemyFound.keystoneStats.magicDmg[keystoneStatsArrayIndex]
+                if (enemyFound.keystoneStats.frenzy){
+                    for (var b in event.enemies[enemyIdCount].buffs){
+                        if (event.enemies[enemyIdCount].buffs[b].name == "frenzy"){
+                            event.enemies[enemyIdCount].buffs[b].attackDmgPlus = enemyFound.keystoneStats.frenzy.attackDmgPlus[keystoneStatsArrayIndex]
+                            event.enemies[enemyIdCount].buffs[b].magicDmgPlus = enemyFound.keystoneStats.frenzy.magicDmgPlus[keystoneStatsArrayIndex]
+                        }
+                    }
                 }
             }
         }
@@ -7605,7 +7640,7 @@ function processAbility(abilityObject, event){
                 damageToDeal = dealDamageTo(event.membersInParty[targetToDealDmg], damageToDeal.dmg, event, abType)
                 abilityToString = abilityToString + critStrike + targetToDealDmgName + " took " + damageToDeal + " damage from " + rpgAbility.name + "\n";
                 abilityToString = abilityToString + processDamageDealingBuffs(event, damageToDeal, event.membersInParty[targetToDealDmg], abilityCaster)
-                abilityToString = abilityToString + processReflectEffects(event, targetToDealDmg, damageToDealTo, abilityCaster, "dmg")
+                abilityToString = abilityToString + processReflectEffects(event, targetToDealDmg, damageToDeal, abilityCaster, "dmg")
                 if ( checkHasDied(event.membersInParty[targetToDealDmg])){
                     abilityToString = abilityToString + hasDied( event, event.membersInParty[targetToDealDmg]);
                 }
