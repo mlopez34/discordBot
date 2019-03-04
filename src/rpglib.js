@@ -2841,7 +2841,7 @@ module.exports = {
                 abilityId: "darkness",
                 buff: true,
                 ignoreBandaid: true,
-                emoji: "☪️",
+                emoji: ":star_and_crescent:",
                 ignoreUnique: true,
                 turnsToExpire: 200
             }
@@ -2996,7 +2996,7 @@ module.exports = {
                 untargettable: true,
                 name: "Blast",
                 emoji: "<:electricorb:479296558375108610>",
-                mdPercentage: 1,
+                mdPercentage: .75,
                 turnsToExpire: 2,
                 dmgOnStatusExpire: true,
                 dmgOnStatusRemove: true,
