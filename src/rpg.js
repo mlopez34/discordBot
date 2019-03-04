@@ -297,9 +297,9 @@ module.exports.showRpgStats = function(message, itemsAvailable, amuletItemsById)
 
                                 singleItemString = singleItemString + "**Stats**: ";
                                 singleItemString = singleItemString + " 💚 " + hpPlus;
-                                singleItemString = singleItemString + " 🗡️ " + attackDmgPlus;
-                                singleItemString = singleItemString + " ☄️ " + magicDmgPlus;
-                                singleItemString = singleItemString + " 🛡️ " + armorPlus;
+                                singleItemString = singleItemString + " :dagger: " + attackDmgPlus;
+                                singleItemString = singleItemString + " :comet: " + magicDmgPlus;
+                                singleItemString = singleItemString + " :shield: " + armorPlus;
                                 singleItemString = singleItemString + " 🙌 " + spiritPlus;
 
                                 // add to map
@@ -341,9 +341,9 @@ module.exports.showRpgStats = function(message, itemsAvailable, amuletItemsById)
                             // stats from amulets
                             amuletString = amuletString + "**Amulet Stats**: ";
                             amuletString = amuletString + " 💚 " + amuletHpPlus;
-                            amuletString = amuletString + " 🗡️ " + amuletAttackDmgPlus;
-                            amuletString = amuletString + " ☄️ " + amuletMagicDmgPlus;
-                            amuletString = amuletString + " 🛡️ " + amuletArmorPlus;
+                            amuletString = amuletString + " :dagger: " + amuletAttackDmgPlus;
+                            amuletString = amuletString + " :comet: " + amuletMagicDmgPlus;
+                            amuletString = amuletString + " :shield: " + amuletArmorPlus;
                             amuletString = amuletString + " 🙌 " + amuletSpiritPlus;
                             if (userAmuletData.length > 0){
                                 singleItemsStrings['Amulets'] = amuletString
@@ -1039,7 +1039,7 @@ module.exports.rpgReady = function(message, itemsAvailable, amuletItemsById, buf
                                                                 }
 
                                                                 if (keystoneNum > 0){
-                                                                    // add stats to enemies
+                                                                    // add stats to enemies TODO: add it to summoned enemies
                                                                     var keystoneStatsArrayIndex = keystoneNum - 1
                                                                     if (enemyFound.keystoneStats){
                                                                         enemies[enemyIdCount].hp = enemies[enemyIdCount].hp  + enemyFound.keystoneStats.hp[keystoneStatsArrayIndex]
@@ -2474,7 +2474,7 @@ function calculateRewards(event, memberInRpgEvent, allItems, numberOfMembers, fi
             numberOfRolls = numberOfRolls * 3
         }
         for (var enemy = 0; enemy < numberOfRolls; enemy++){
-            rarityRoll = Math.floor(Math.random() * 2000) + 8000;
+            rarityRoll = Math.floor(Math.random() * 2500) + 7500;
             if (rarityRoll){
                 if(rarityRoll > ANCIENT_MIN_ROLL ){
                     var itemRoll = Math.floor(Math.random() * ancientItems.length);

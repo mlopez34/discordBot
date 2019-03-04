@@ -5347,6 +5347,12 @@ Hoover Dam
                 name: "Tortured Robot",
                 abilities: ["attack"],
                 buffs: [],
+                keystoneStats: {
+                    hp: [1200, 3500, 6200, 10000, 15000 ],
+                    attackDmg: [300, 500, 900, 1500, 2300],
+                    magicDmg: [300, 500, 900, 1500, 2300],
+                    abilities: []
+                },
                 hpPerPartyMember: 0,
                 adPerPartyMember: 0,
                 mdPerPartyMember: 0,
@@ -5387,6 +5393,12 @@ Hoover Dam
                         }
                     }
                 ],
+                keystoneStats: {
+                    hp: [1200, 3500, 6200, 10000, 15000 ],
+                    attackDmg: [300, 500, 900, 1500, 2300],
+                    magicDmg: [300, 500, 900, 1500, 2300],
+                    abilities: []
+                },
                 abilityOrder: [
                     0, 2, 1, 0, 0, 0, 0
                 ],
@@ -5446,6 +5458,12 @@ Hoover Dam
                     }
 
                 ],
+                keystoneStats: {
+                    hp: [1200, 3500, 6200, 10000, 15000 ],
+                    attackDmg: [300, 500, 900, 1500, 2300],
+                    magicDmg: [300, 500, 900, 1500, 2300],
+                    abilities: []
+                },
                 abilityOrder: [
                     0, 0, 1, 0, 2, 2, 0, 1
                 ],
@@ -5496,6 +5514,12 @@ Hoover Dam
                         }
                     }
                 ],
+                keystoneStats: {
+                    hp: [1200, 3500, 6200, 10000, 15000 ],
+                    attackDmg: [300, 500, 900, 1500, 2300],
+                    magicDmg: [300, 500, 900, 1500, 2300],
+                    abilities: []
+                },
                 abilityOrder: [
                     1, 0, 2, 0, 0, 2, 0, 3
                 ],
@@ -5539,6 +5563,12 @@ Hoover Dam
                 effectsOnDeath: [
                     "explode"
                 ],
+                keystoneStats: {
+                    hp: [1200, 3500, 6200, 10000, 15000 ],
+                    attackDmg: [300, 500, 900, 1500, 2300],
+                    magicDmg: [300, 500, 900, 1500, 2300],
+                    abilities: []
+                },
                 attackDmg: 630,
                 magicDmg: 660,
                 armor: 1000,
@@ -5550,6 +5580,12 @@ Hoover Dam
                 name: "Smoke Screen",
                 abilities: ["attack", "igniteLava"],
                 buffs: [],
+                keystoneStats: {
+                    hp: [1200, 3500, 6200, 10000, 15000 ],
+                    attackDmg: [300, 500, 900, 1500, 2300],
+                    magicDmg: [300, 500, 900, 1500, 2300],
+                    abilities: []
+                },
                 hpPerPartyMember: 0,
                 adPerPartyMember: 0,
                 mdPerPartyMember: 0,
@@ -5568,6 +5604,12 @@ Hoover Dam
                 name: "Dweller",
                 abilities: ["attack", "igniteLava"],
                 buffs: [],
+                keystoneStats: {
+                    hp: [1200, 3500, 6200, 10000, 15000 ],
+                    attackDmg: [300, 500, 900, 1500, 2300],
+                    magicDmg: [300, 500, 900, 1500, 2300],
+                    abilities: []
+                },
                 hpPerPartyMember: 0,
                 adPerPartyMember: 0,
                 mdPerPartyMember: 0,
@@ -5587,6 +5629,12 @@ Hoover Dam
                 passive: true,
                 abilities: [],
                 buffs: [],
+                keystoneStats: {
+                    hp: [1200, 3500, 6200, 10000, 15000 ],
+                    attackDmg: [300, 500, 900, 1500, 2300],
+                    magicDmg: [300, 500, 900, 1500, 2300],
+                    abilities: []
+                },
                 endOfTurnEvents : [
                     "pillarAOEmagic"
                 ],
@@ -5609,6 +5657,12 @@ Hoover Dam
                 passive: true,
                 abilities: [],
                 buffs: [],
+                keystoneStats: {
+                    hp: [1200, 3500, 6200, 10000, 15000 ],
+                    attackDmg: [300, 500, 900, 1500, 2300],
+                    magicDmg: [300, 500, 900, 1500, 2300],
+                    abilities: []
+                },
                 endOfTurnEvents : [
                     "pillarAOEmagic"
                 ],
@@ -5631,6 +5685,12 @@ Hoover Dam
                 passive: true,
                 abilities: [],
                 buffs: [],
+                keystoneStats: {
+                    hp: [1200, 3500, 6200, 10000, 15000 ],
+                    attackDmg: [300, 500, 900, 1500, 2300],
+                    magicDmg: [300, 500, 900, 1500, 2300],
+                    abilities: []
+                },
                 endOfTurnEvents : [
                     "pillarAOE"
                 ],
@@ -5653,6 +5713,12 @@ Hoover Dam
                 passive: true,
                 abilities: [],
                 buffs: [],
+                keystoneStats: {
+                    hp: [1200, 3500, 6200, 10000, 15000 ],
+                    attackDmg: [300, 500, 900, 1500, 2300],
+                    magicDmg: [300, 500, 900, 1500, 2300],
+                    abilities: []
+                },
                 endOfTurnEvents : [
                     "pillarAOE"
                 ],
@@ -5696,6 +5762,12 @@ Hoover Dam
                         }
                     }
                 ],
+                keystoneStats: {
+                    hp: [1200, 3500, 6200, 10000, 15000 ],
+                    attackDmg: [300, 500, 900, 1500, 2300],
+                    magicDmg: [300, 500, 900, 1500, 2300],
+                    abilities: []
+                },
                 abilityOrder: [
                     1, 0, 2, 0, 0, 0, 2, 3
                 ],
@@ -5751,6 +5823,12 @@ Hoover Dam
                         }
                     }
                 ],
+                keystoneStats: {
+                    hp: [1200, 3500, 6200, 10000, 15000 ],
+                    attackDmg: [300, 500, 900, 1500, 2300],
+                    magicDmg: [300, 500, 900, 1500, 2300],
+                    abilities: []
+                },
                 abilityOrder: [
                     1, 0, 2, 0, 3, 3, 2, 0, 0
                 ],
@@ -5807,6 +5885,12 @@ Hoover Dam
                         }
                     }
                 ],
+                keystoneStats: {
+                    hp: [1200, 3500, 6200, 10000, 15000 ],
+                    attackDmg: [300, 500, 900, 1500, 2300],
+                    magicDmg: [300, 500, 900, 1500, 2300],
+                    abilities: []
+                },
                 abilityOrder: [
                     4, 1, 2, 0, 0, 0, 1, 2, 3
                 ],
@@ -5836,6 +5920,12 @@ Hoover Dam
                 name: "Apparition",
                 abilities: [ "attack", "curse"],
                 buffs: [],
+                keystoneStats: {
+                    hp: [1200, 3500, 6200, 10000, 15000 ],
+                    attackDmg: [300, 500, 900, 1500, 2300],
+                    magicDmg: [300, 500, 900, 1500, 2300],
+                    abilities: []
+                },
                 hpPerPartyMember: 0,
                 adPerPartyMember: 0,
                 mdPerPartyMember: 0,
@@ -5857,6 +5947,12 @@ Hoover Dam
                 name: "Enabler",
                 abilities: ["attack", "enable"],
                 buffs: [],
+                keystoneStats: {
+                    hp: [1200, 3500, 6200, 10000, 15000 ],
+                    attackDmg: [300, 500, 900, 1500, 2300],
+                    magicDmg: [300, 500, 900, 1500, 2300],
+                    abilities: []
+                },
                 hpPerPartyMember: 0,
                 adPerPartyMember: 0,
                 mdPerPartyMember: 0,
@@ -5876,6 +5972,12 @@ Hoover Dam
                 name: "Knight",
                 abilities: ["attack"],
                 buffs: [],
+                keystoneStats: {
+                    hp: [1200, 3500, 6200, 10000, 15000 ],
+                    attackDmg: [300, 500, 900, 1500, 2300],
+                    magicDmg: [300, 500, 900, 1500, 2300],
+                    abilities: []
+                },
                 hpPerPartyMember: 0,
                 adPerPartyMember: 0,
                 mdPerPartyMember: 0,
@@ -5895,6 +5997,12 @@ Hoover Dam
                 name: "Worshipper",
                 abilities: ["attack"],
                 buffs: [],
+                keystoneStats: {
+                    hp: [1200, 3500, 6200, 10000, 15000 ],
+                    attackDmg: [300, 500, 900, 1500, 2300],
+                    magicDmg: [300, 500, 900, 1500, 2300],
+                    abilities: []
+                },
                 hpPerPartyMember: 0,
                 adPerPartyMember: 0,
                 mdPerPartyMember: 0,
@@ -5928,6 +6036,12 @@ Hoover Dam
                         }
                     }
                 ],
+                keystoneStats: {
+                    hp: [1200, 3500, 6200, 10000, 15000 ],
+                    attackDmg: [300, 500, 900, 1500, 2300],
+                    magicDmg: [300, 500, 900, 1500, 2300],
+                    abilities: []
+                },
                 hpPerPartyMember: 0,
                 adPerPartyMember: 0,
                 mdPerPartyMember: 0,
@@ -5949,6 +6063,12 @@ Hoover Dam
                 immuneToAoe: true,
                 abilities: [],
                 buffs: [],
+                keystoneStats: {
+                    hp: [1200, 3500, 6200, 10000, 15000 ],
+                    attackDmg: [300, 500, 900, 1500, 2300],
+                    magicDmg: [300, 500, 900, 1500, 2300],
+                    abilities: []
+                },
                 endOfTurnEvents : [
                 ],
                 effectsOnDeath: [
@@ -5970,6 +6090,12 @@ Hoover Dam
                 passive: true,
                 abilities: [],
                 buffs: [],
+                keystoneStats: {
+                    hp: [1200, 3500, 6200, 10000, 15000 ],
+                    attackDmg: [300, 500, 900, 1500, 2300],
+                    magicDmg: [300, 500, 900, 1500, 2300],
+                    abilities: []
+                },
                 endOfTurnEvents : [
                 ],
                 hpPerPartyMember: 0,
@@ -5988,6 +6114,12 @@ Hoover Dam
                 passive: true,
                 abilities: [],
                 buffs: [],
+                keystoneStats: {
+                    hp: [1200, 3500, 6200, 10000, 15000 ],
+                    attackDmg: [300, 500, 900, 1500, 2300],
+                    magicDmg: [300, 500, 900, 1500, 2300],
+                    abilities: []
+                },
                 endOfTurnEvents : [
                 ],
                 hpPerPartyMember: 0,
@@ -6006,6 +6138,12 @@ Hoover Dam
                 passive: true,
                 abilities: [],
                 buffs: [],
+                keystoneStats: {
+                    hp: [1200, 3500, 6200, 10000, 15000 ],
+                    attackDmg: [300, 500, 900, 1500, 2300],
+                    magicDmg: [300, 500, 900, 1500, 2300],
+                    abilities: []
+                },
                 endOfTurnEvents : [
                 ],
                 hpPerPartyMember: 0,
@@ -6024,6 +6162,12 @@ Hoover Dam
                 passive: true,
                 abilities: [],
                 buffs: [],
+                keystoneStats: {
+                    hp: [1200, 3500, 6200, 10000, 15000 ],
+                    attackDmg: [300, 500, 900, 1500, 2300],
+                    magicDmg: [300, 500, 900, 1500, 2300],
+                    abilities: []
+                },
                 endOfTurnEvents : [
                 ],
                 hpPerPartyMember: 0,
@@ -6042,6 +6186,12 @@ Hoover Dam
                 passive: true,
                 abilities: [],
                 buffs: [],
+                keystoneStats: {
+                    hp: [1200, 3500, 6200, 10000, 15000 ],
+                    attackDmg: [300, 500, 900, 1500, 2300],
+                    magicDmg: [300, 500, 900, 1500, 2300],
+                    abilities: []
+                },
                 endOfTurnEvents : [
                 ],
                 hpPerPartyMember: 0,
@@ -6060,6 +6210,12 @@ Hoover Dam
                 passive: true,
                 abilities: [],
                 buffs: [],
+                keystoneStats: {
+                    hp: [1200, 3500, 6200, 10000, 15000 ],
+                    attackDmg: [300, 500, 900, 1500, 2300],
+                    magicDmg: [300, 500, 900, 1500, 2300],
+                    abilities: []
+                },
                 endOfTurnEvents : [
                 ],
                 hpPerPartyMember: 0,
@@ -6078,6 +6234,12 @@ Hoover Dam
                 passive: true,
                 abilities: [],
                 buffs: [],
+                keystoneStats: {
+                    hp: [1200, 3500, 6200, 10000, 15000 ],
+                    attackDmg: [300, 500, 900, 1500, 2300],
+                    magicDmg: [300, 500, 900, 1500, 2300],
+                    abilities: []
+                },
                 endOfTurnEvents : [
                     "haunt"
                 ],
@@ -6096,6 +6258,12 @@ Hoover Dam
                 name: "Demon",
                 abilities: ["attack", "attack", "attack", "enemyshock"],
                 buffs: [],
+                keystoneStats: {
+                    hp: [1200, 3500, 6200, 10000, 15000 ],
+                    attackDmg: [300, 500, 900, 1500, 2300],
+                    magicDmg: [300, 500, 900, 1500, 2300],
+                    abilities: []
+                },
                 hpPerPartyMember: 0,
                 adPerPartyMember: 0,
                 mdPerPartyMember: 0,
@@ -6130,6 +6298,12 @@ Hoover Dam
                         }
                     }
                 ],
+                keystoneStats: {
+                    hp: [1200, 3500, 6200, 10000, 15000 ],
+                    attackDmg: [300, 500, 900, 1500, 2300],
+                    magicDmg: [300, 500, 900, 1500, 2300],
+                    abilities: []
+                },
                 effectsOnDeath: [
                     "radiation",
                     "explode"
@@ -6149,6 +6323,12 @@ Hoover Dam
                 name: "Chupacabra",
                 abilities: ["attack", "attack", "curse", "curse", "guac", "protect"],
                 buffs: [],
+                keystoneStats: {
+                    hp: [1200, 3500, 6200, 10000, 15000 ],
+                    attackDmg: [300, 500, 900, 1500, 2300],
+                    magicDmg: [300, 500, 900, 1500, 2300],
+                    abilities: []
+                },
                 hpPerPartyMember: 0,
                 adPerPartyMember: 0,
                 mdPerPartyMember: 0,
@@ -6164,6 +6344,12 @@ Hoover Dam
                 name: "Taco Bandit",
                 abilities: ["attack", "attack", "enemyshock", "enemyshock", "orchatasip"],
                 buffs: [],
+                keystoneStats: {
+                    hp: [1200, 3500, 6200, 10000, 15000 ],
+                    attackDmg: [300, 500, 900, 1500, 2300],
+                    magicDmg: [300, 500, 900, 1500, 2300],
+                    abilities: []
+                },
                 hpPerPartyMember: 230,
                 adPerPartyMember: 14,
                 mdPerPartyMember: 14,
@@ -6179,6 +6365,12 @@ Hoover Dam
                 name: "Slots Gambler",
                 abilities: ["attack", "attack", "elixir", "elixir", "orchatasip"],
                 buffs: [],
+                keystoneStats: {
+                    hp: [1200, 3500, 6200, 10000, 15000 ],
+                    attackDmg: [300, 500, 900, 1500, 2300],
+                    magicDmg: [300, 500, 900, 1500, 2300],
+                    abilities: []
+                },
                 hpPerPartyMember: 190,
                 adPerPartyMember: 14,
                 mdPerPartyMember: 14,
@@ -6194,6 +6386,12 @@ Hoover Dam
                 name: "Angry Mob Member",
                 abilities: ["attack", "attack", "poison", "iceshards", "iceshards", "cripple"],
                 buffs: [],
+                keystoneStats: {
+                    hp: [1200, 3500, 6200, 10000, 15000 ],
+                    attackDmg: [300, 500, 900, 1500, 2300],
+                    magicDmg: [300, 500, 900, 1500, 2300],
+                    abilities: []
+                },
                 hpPerPartyMember: 190,
                 adPerPartyMember: 9,
                 mdPerPartyMember: 9,
@@ -6209,6 +6407,12 @@ Hoover Dam
                 name: "Bad Chef",
                 abilities: ["attack", "attack", "poison", "poison", "barrier"],
                 buffs: [],
+                keystoneStats: {
+                    hp: [1200, 3500, 6200, 10000, 15000 ],
+                    attackDmg: [300, 500, 900, 1500, 2300],
+                    magicDmg: [300, 500, 900, 1500, 2300],
+                    abilities: []
+                },
                 hpPerPartyMember: 190,
                 adPerPartyMember: 9,
                 mdPerPartyMember: 9,
@@ -6238,6 +6442,12 @@ Hoover Dam
                         }
                     }
                 ],
+                keystoneStats: {
+                    hp: [1200, 3500, 6200, 10000, 15000 ],
+                    attackDmg: [300, 500, 900, 1500, 2300],
+                    magicDmg: [300, 500, 900, 1500, 2300],
+                    abilities: []
+                },
                 hpPerPartyMember: 0,
                 adPerPartyMember: 0,
                 mdPerPartyMember: 0,
@@ -6266,6 +6476,12 @@ Hoover Dam
                         }
                     }
                 ],
+                keystoneStats: {
+                    hp: [1200, 3500, 6200, 10000, 15000 ],
+                    attackDmg: [300, 500, 900, 1500, 2300],
+                    magicDmg: [300, 500, 900, 1500, 2300],
+                    abilities: []
+                },
                 endOfTurnEvents : [
                 ],
                 hpPerPartyMember: 0,
@@ -6296,6 +6512,12 @@ Hoover Dam
                         }
                     }
                 ],
+                keystoneStats: {
+                    hp: [1200, 3500, 6200, 10000, 15000 ],
+                    attackDmg: [300, 500, 900, 1500, 2300],
+                    magicDmg: [300, 500, 900, 1500, 2300],
+                    abilities: []
+                },
                 endOfTurnEvents : [
                 ],
                 effectsOnDeath: [
@@ -6318,6 +6540,12 @@ Hoover Dam
                 name: "Rabbid Wolf",
                 abilities: ["attack", "attack", "poison", "poison", "tacowall"],
                 buffs: [],
+                keystoneStats: {
+                    hp: [1200, 3500, 6200, 10000, 15000 ],
+                    attackDmg: [300, 500, 900, 1500, 2300],
+                    magicDmg: [300, 500, 900, 1500, 2300],
+                    abilities: []
+                },
                 hpPerPartyMember: 60,
                 adPerPartyMember: 7,
                 mdPerPartyMember: 7,
@@ -6333,6 +6561,12 @@ Hoover Dam
                 name: "Bad Chef",
                 abilities: ["attack", "attack", "poison", "poison", "barrier"],
                 buffs: [],
+                keystoneStats: {
+                    hp: [1200, 3500, 6200, 10000, 15000 ],
+                    attackDmg: [300, 500, 900, 1500, 2300],
+                    magicDmg: [300, 500, 900, 1500, 2300],
+                    abilities: []
+                },
                 hpPerPartyMember: 170,
                 adPerPartyMember: 7,
                 mdPerPartyMember: 7,
@@ -6351,6 +6585,12 @@ Hoover Dam
                 name: "Vagabond",
                 abilities: ["attack", "attack", "flameblast", "flameblast", "cripple"],
                 buffs: [],
+                keystoneStats: {
+                    hp: [1200, 3500, 6200, 10000, 15000 ],
+                    attackDmg: [300, 500, 900, 1500, 2300],
+                    magicDmg: [300, 500, 900, 1500, 2300],
+                    abilities: []
+                },
                 hpPerPartyMember: 170,
                 adPerPartyMember: 7,
                 mdPerPartyMember: 7,
@@ -6369,6 +6609,12 @@ Hoover Dam
                 name: "Coyote",
                 abilities: ["attack", "attack", "claw", "claw", "cripple"],
                 buffs: [],
+                keystoneStats: {
+                    hp: [1200, 3500, 6200, 10000, 15000 ],
+                    attackDmg: [300, 500, 900, 1500, 2300],
+                    magicDmg: [300, 500, 900, 1500, 2300],
+                    abilities: []
+                },
                 hpPerPartyMember: 170,
                 adPerPartyMember: 7,
                 mdPerPartyMember: 7,
@@ -6387,6 +6633,12 @@ Hoover Dam
                 name: "Angry Mob Member",
                 abilities: ["attack", "attack", "poison", "iceshards", "iceshards", "cripple"],
                 buffs: [],
+                keystoneStats: {
+                    hp: [1200, 3500, 6200, 10000, 15000 ],
+                    attackDmg: [300, 500, 900, 1500, 2300],
+                    magicDmg: [300, 500, 900, 1500, 2300],
+                    abilities: []
+                },
                 hpPerPartyMember: 110,
                 adPerPartyMember: 7,
                 mdPerPartyMember: 7,
@@ -6402,6 +6654,12 @@ Hoover Dam
                 name: "Taco Dealer",
                 abilities: ["attack", "attack", "drain", "drain", "freeze"],
                 buffs: [],
+                keystoneStats: {
+                    hp: [1200, 3500, 6200, 10000, 15000 ],
+                    attackDmg: [300, 500, 900, 1500, 2300],
+                    magicDmg: [300, 500, 900, 1500, 2300],
+                    abilities: []
+                },
                 hpPerPartyMember: 170,
                 adPerPartyMember: 9,
                 mdPerPartyMember: 9,
@@ -6417,6 +6675,12 @@ Hoover Dam
                 name: "Burrito Hustler",
                 abilities: ["attack", "attack", "slap", "slap", "weaken"],
                 buffs: [],
+                keystoneStats: {
+                    hp: [1200, 3500, 6200, 10000, 15000 ],
+                    attackDmg: [300, 500, 900, 1500, 2300],
+                    magicDmg: [300, 500, 900, 1500, 2300],
+                    abilities: []
+                },
                 hpPerPartyMember: 170,
                 adPerPartyMember: 9,
                 mdPerPartyMember: 9,
@@ -6432,6 +6696,12 @@ Hoover Dam
                 name: "Ruffian",
                 abilities: ["attack", "attack", "tackle", "tackle", "weaken"],
                 buffs: [],
+                keystoneStats: {
+                    hp: [1200, 3500, 6200, 10000, 15000 ],
+                    attackDmg: [300, 500, 900, 1500, 2300],
+                    magicDmg: [300, 500, 900, 1500, 2300],
+                    abilities: []
+                },
                 hpPerPartyMember: 170,
                 adPerPartyMember: 9,
                 mdPerPartyMember: 9,
@@ -6449,6 +6719,12 @@ Hoover Dam
                 name: "Taco Bandit",
                 abilities: ["attack", "attack", "enemyshock", "enemyshock", "orchatasip"],
                 buffs: [],
+                keystoneStats: {
+                    hp: [1200, 3500, 6200, 10000, 15000 ],
+                    attackDmg: [300, 500, 900, 1500, 2300],
+                    magicDmg: [300, 500, 900, 1500, 2300],
+                    abilities: []
+                },
                 hpPerPartyMember: 230,
                 adPerPartyMember: 14,
                 mdPerPartyMember: 14,
@@ -6464,6 +6740,12 @@ Hoover Dam
                 name: "Taco Thief",
                 abilities: ["attack", "attack", "flameblast", "flameblast", "orchatasip"],
                 buffs: [],
+                keystoneStats: {
+                    hp: [1200, 3500, 6200, 10000, 15000 ],
+                    attackDmg: [300, 500, 900, 1500, 2300],
+                    magicDmg: [300, 500, 900, 1500, 2300],
+                    abilities: []
+                },
                 effectsOnDeath: [
                     "explode"
                 ],
@@ -6482,6 +6764,12 @@ Hoover Dam
                 name: "Slots Gambler",
                 abilities: ["attack", "attack", "elixir", "elixir", "orchatasip"],
                 buffs: [],
+                keystoneStats: {
+                    hp: [1200, 3500, 6200, 10000, 15000 ],
+                    attackDmg: [300, 500, 900, 1500, 2300],
+                    magicDmg: [300, 500, 900, 1500, 2300],
+                    abilities: []
+                },
                 hpPerPartyMember: 190,
                 adPerPartyMember: 14,
                 mdPerPartyMember: 14,
@@ -6497,6 +6785,12 @@ Hoover Dam
                 name: "Fruits Counter",
                 abilities: ["attack", "attack", "uppercut", "uppercut", "weaken"],
                 buffs: [],
+                keystoneStats: {
+                    hp: [1200, 3500, 6200, 10000, 15000 ],
+                    attackDmg: [300, 500, 900, 1500, 2300],
+                    magicDmg: [300, 500, 900, 1500, 2300],
+                    abilities: []
+                },
                 hpPerPartyMember: 190,
                 adPerPartyMember: 14,
                 mdPerPartyMember: 14,
@@ -6525,6 +6819,12 @@ Hoover Dam
                         }
                     }
                 ],
+                keystoneStats: {
+                    hp: [1200, 3500, 6200, 10000, 15000 ],
+                    attackDmg: [300, 500, 900, 1500, 2300],
+                    magicDmg: [300, 500, 900, 1500, 2300],
+                    abilities: []
+                },
                 hpPerPartyMember: 950,
                 adPerPartyMember: 21,
                 mdPerPartyMember: 21,
@@ -6551,6 +6851,12 @@ Hoover Dam
                         }
                     }
                 ],
+                keystoneStats: {
+                    hp: [1200, 3500, 6200, 10000, 15000 ],
+                    attackDmg: [300, 500, 900, 1500, 2300],
+                    magicDmg: [300, 500, 900, 1500, 2300],
+                    abilities: []
+                },
                 hpPerPartyMember: 1090,
                 adPerPartyMember: 21,
                 mdPerPartyMember: 21,
@@ -6577,6 +6883,12 @@ Hoover Dam
                         }
                     }
                 ],
+                keystoneStats: {
+                    hp: [1200, 3500, 6200, 10000, 15000 ],
+                    attackDmg: [300, 500, 900, 1500, 2300],
+                    magicDmg: [300, 500, 900, 1500, 2300],
+                    abilities: []
+                },
                 hpPerPartyMember: 1090,
                 adPerPartyMember: 21,
                 mdPerPartyMember: 21,
@@ -6603,6 +6915,12 @@ Hoover Dam
                         }
                     }
                 ],
+                keystoneStats: {
+                    hp: [1200, 3500, 6200, 10000, 15000 ],
+                    attackDmg: [300, 500, 900, 1500, 2300],
+                    magicDmg: [300, 500, 900, 1500, 2300],
+                    abilities: []
+                },
                 effectsOnDeath: [
                     "explode"
                 ],
@@ -6636,6 +6954,12 @@ Hoover Dam
                         }
                     }
                 ],
+                keystoneStats: {
+                    hp: [1200, 3500, 6200, 10000, 15000 ],
+                    attackDmg: [300, 500, 900, 1500, 2300],
+                    magicDmg: [300, 500, 900, 1500, 2300],
+                    abilities: []
+                },
                 endOfTurnEvents : [
                     "echo",
                     "focus"
@@ -6668,6 +6992,12 @@ Hoover Dam
                         }
                     }
                 ],
+                keystoneStats: {
+                    hp: [1200, 3500, 6200, 10000, 15000 ],
+                    attackDmg: [300, 500, 900, 1500, 2300],
+                    magicDmg: [300, 500, 900, 1500, 2300],
+                    abilities: []
+                },
                 endOfTurnEvents : [
                     "echo",
                     "focus"
@@ -6700,6 +7030,12 @@ Hoover Dam
                         }
                     }
                 ],
+                keystoneStats: {
+                    hp: [1200, 3500, 6200, 10000, 15000 ],
+                    attackDmg: [300, 500, 900, 1500, 2300],
+                    magicDmg: [300, 500, 900, 1500, 2300],
+                    abilities: []
+                },
                 endOfTurnEvents : [
                     "echo",
                     "focus"
@@ -6732,6 +7068,12 @@ Hoover Dam
                         }
                     }
                 ],
+                keystoneStats: {
+                    hp: [1200, 3500, 6200, 10000, 15000 ],
+                    attackDmg: [300, 500, 900, 1500, 2300],
+                    magicDmg: [300, 500, 900, 1500, 2300],
+                    abilities: []
+                },
                 endOfTurnEvents : [
                     "echo",
                     "focus"
@@ -8336,6 +8678,12 @@ Hoover Dam
                                 }
                             }
                         ],
+                        keystoneStats: {
+                            hp: [1200, 3500, 6200, 10000, 15000 ],
+                            attackDmg: [300, 500, 900, 1500, 2300],
+                            magicDmg: [300, 500, 900, 1500, 2300],
+                            abilities: []
+                        },
                         endOfTurnEvents : [
                             "echo",
                             "focus"
@@ -8364,6 +8712,12 @@ Hoover Dam
                         name: "Taco Thief",
                         abilities: ["attack", "attack", "flameblast", "flameblast", "orchatasip"],
                         buffs: [],
+                        keystoneStats: {
+                            hp: [1200, 3500, 6200, 10000, 15000 ],
+                            attackDmg: [300, 500, 900, 1500, 2300],
+                            magicDmg: [300, 500, 900, 1500, 2300],
+                            abilities: []
+                        },
                         effectsOnDeath: [
                             "explode"
                         ],
@@ -8382,6 +8736,12 @@ Hoover Dam
                         name: "Slots Gambler",
                         abilities: ["attack", "attack", "elixir", "elixir", "orchatasip"],
                         buffs: [],
+                        keystoneStats: {
+                            hp: [1200, 3500, 6200, 10000, 15000 ],
+                            attackDmg: [300, 500, 900, 1500, 2300],
+                            magicDmg: [300, 500, 900, 1500, 2300],
+                            abilities: []
+                        },
                         hpPerPartyMember: 140,
                         adPerPartyMember: 14,
                         mdPerPartyMember: 18,
@@ -8410,6 +8770,12 @@ Hoover Dam
                                 }
                             }
                         ],
+                        keystoneStats: {
+                            hp: [1200, 3500, 6200, 10000, 15000 ],
+                            attackDmg: [300, 500, 900, 1500, 2300],
+                            magicDmg: [300, 500, 900, 1500, 2300],
+                            abilities: []
+                        },
                         abilityOrder: [
                             0, 0, [1, 2], 0, 0, [1, 2], 0, 0, [1, 2]
                         ],
@@ -8433,6 +8799,12 @@ Hoover Dam
                         name: "Taco Thief",
                         abilities: ["attack", "attack", "flameblast", "flameblast", "orchatasip"],
                         buffs: [],
+                        keystoneStats: {
+                            hp: [1200, 3500, 6200, 10000, 15000 ],
+                            attackDmg: [300, 500, 900, 1500, 2300],
+                            magicDmg: [300, 500, 900, 1500, 2300],
+                            abilities: []
+                        },
                         effectsOnDeath: [
                             "explode"
                         ],
@@ -8451,6 +8823,12 @@ Hoover Dam
                         name: "Slots Gambler",
                         abilities: ["attack", "attack", "elixir", "elixir", "orchatasip"],
                         buffs: [],
+                        keystoneStats: {
+                            hp: [1200, 3500, 6200, 10000, 15000 ],
+                            attackDmg: [300, 500, 900, 1500, 2300],
+                            magicDmg: [300, 500, 900, 1500, 2300],
+                            abilities: []
+                        },
                         hpPerPartyMember: 140,
                         adPerPartyMember: 14,
                         mdPerPartyMember: 14,
@@ -8488,6 +8866,12 @@ Hoover Dam
                                 }
                             }
                         ],
+                        keystoneStats: {
+                            hp: [1200, 3500, 6200, 10000, 15000 ],
+                            attackDmg: [300, 500, 900, 1500, 2300],
+                            magicDmg: [300, 500, 900, 1500, 2300],
+                            abilities: []
+                        },
                         abilityOrder: [
                             1, 0, 4, 2, 3, 5, 5, 0
                         ],
@@ -8525,6 +8909,12 @@ Hoover Dam
                                 }
                             }
                         ],
+                        keystoneStats: {
+                            hp: [1200, 3500, 6200, 10000, 15000 ],
+                            attackDmg: [300, 500, 900, 1500, 2300],
+                            magicDmg: [300, 500, 900, 1500, 2300],
+                            abilities: []
+                        },
                         abilityOrder: [
                             0, 1, 0, [2, 3], 4, 1, 1, 0, [2, 3], 4, 1, 1, 0, [2, 3], 4,
                             1, 1, 0, [2, 3], 4, 1, 1, 0, [2, 3], 4, 1, 1, 0, [2, 3], 4,
@@ -8552,6 +8942,12 @@ Hoover Dam
                         name: "Slots Gambler",
                         abilities: ["attack", "attack", "elixir", "elixir", "orchatasip"],
                         buffs: [],
+                        keystoneStats: {
+                            hp: [1200, 3500, 6200, 10000, 15000 ],
+                            attackDmg: [300, 500, 900, 1500, 2300],
+                            magicDmg: [300, 500, 900, 1500, 2300],
+                            abilities: []
+                        },
                         hpPerPartyMember: 280,
                         adPerPartyMember: 14,
                         mdPerPartyMember: 14,
@@ -8567,6 +8963,12 @@ Hoover Dam
                         name: "Bad Chef",
                         abilities: ["attack", "attack", "poison", "poison", "barrier"],
                         buffs: [],
+                        keystoneStats: {
+                            hp: [1200, 3500, 6200, 10000, 15000 ],
+                            attackDmg: [300, 500, 900, 1500, 2300],
+                            magicDmg: [300, 500, 900, 1500, 2300],
+                            abilities: []
+                        },
                         hpPerPartyMember: 290,
                         adPerPartyMember: 9,
                         mdPerPartyMember: 9,
@@ -8585,6 +8987,12 @@ Hoover Dam
                         name: "Angry Mob Member",
                         abilities: ["attack", "attack", "poison", "iceshards", "iceshards", "cripple"],
                         buffs: [],
+                        keystoneStats: {
+                            hp: [1200, 3500, 6200, 10000, 15000 ],
+                            attackDmg: [300, 500, 900, 1500, 2300],
+                            magicDmg: [300, 500, 900, 1500, 2300],
+                            abilities: []
+                        },
                         hpPerPartyMember: 290,
                         adPerPartyMember: 9,
                         mdPerPartyMember: 9,
@@ -8612,6 +9020,12 @@ Hoover Dam
                         name: "Taco Bandit",
                         abilities: ["attack", "attack", "enemyshock", "enemyshock", "orchatasip"],
                         buffs: [],
+                        keystoneStats: {
+                            hp: [1200, 3500, 6200, 10000, 15000 ],
+                            attackDmg: [300, 500, 900, 1500, 2300],
+                            magicDmg: [300, 500, 900, 1500, 2300],
+                            abilities: []
+                        },
                         hpPerPartyMember: 210,
                         adPerPartyMember: 14,
                         mdPerPartyMember: 14,
@@ -8627,6 +9041,12 @@ Hoover Dam
                         name: "Taco Bandit",
                         abilities: ["attack", "attack", "enemyshock", "enemyshock", "orchatasip"],
                         buffs: [],
+                        keystoneStats: {
+                            hp: [1200, 3500, 6200, 10000, 15000 ],
+                            attackDmg: [300, 500, 900, 1500, 2300],
+                            magicDmg: [300, 500, 900, 1500, 2300],
+                            abilities: []
+                        },
                         hpPerPartyMember: 210,
                         adPerPartyMember: 14,
                         mdPerPartyMember: 14,
@@ -8656,6 +9076,12 @@ Hoover Dam
                                 }
                             }
                         ],
+                        keystoneStats: {
+                            hp: [1200, 3500, 6200, 10000, 15000 ],
+                            attackDmg: [300, 500, 900, 1500, 2300],
+                            magicDmg: [300, 500, 900, 1500, 2300],
+                            abilities: []
+                        },
                         abilityOrder: [
                             1, 0, 0, 0, 0, 0, 0
                         ],
@@ -8696,6 +9122,12 @@ Hoover Dam
                                 }
                             }
                         ],
+                        keystoneStats: {
+                            hp: [1200, 3500, 6200, 10000, 15000 ],
+                            attackDmg: [300, 500, 900, 1500, 2300],
+                            magicDmg: [300, 500, 900, 1500, 2300],
+                            abilities: []
+                        },
                         abilityOrder: [
                             0, 1, 0, 1, 0
                         ],
@@ -8736,6 +9168,12 @@ Hoover Dam
                                 }
                             }
                         ],
+                        keystoneStats: {
+                            hp: [1200, 3500, 6200, 10000, 15000 ],
+                            attackDmg: [300, 500, 900, 1500, 2300],
+                            magicDmg: [300, 500, 900, 1500, 2300],
+                            abilities: []
+                        },
                         abilityOrder: [
                             0, 0, 1, 0, 0
                         ],
@@ -8794,6 +9232,12 @@ Hoover Dam
                                 }
                             }
                         ],
+                        keystoneStats: {
+                            hp: [1200, 3500, 6200, 10000, 15000 ],
+                            attackDmg: [300, 500, 900, 1500, 2300],
+                            magicDmg: [300, 500, 900, 1500, 2300],
+                            abilities: []
+                        },
                         abilityOrder: [
                             [0,1], [0,1], [0,1],[0,1],[0,1], [0,1],[0,1],[0,1],[0,1],[0,1],[0,1],[0,1],
                                           [0,1],[0,1],[0,1], [0,1],[0,1],[0,1],[0,1],[0,1],[0,1],[0,1],
@@ -8871,6 +9315,12 @@ Hoover Dam
                                 }
                             }
                         ],
+                        keystoneStats: {
+                            hp: [1200, 3500, 6200, 10000, 15000 ],
+                            attackDmg: [300, 500, 900, 1500, 2300],
+                            magicDmg: [300, 500, 900, 1500, 2300],
+                            abilities: []
+                        },
                         abilityOrder: [
                             0, 0, 1, 2, 1, 0, 1, 0, 1
                         ],
@@ -8904,6 +9354,12 @@ Hoover Dam
                         name: "Vampiric Knight",
                         abilities: ["attack", "attack", "drain", "drain", "uppercut", "uppercut", "freeze"],
                         buffs: [],
+                        keystoneStats: {
+                            hp: [1200, 3500, 6200, 10000, 15000 ],
+                            attackDmg: [300, 500, 900, 1500, 2300],
+                            magicDmg: [300, 500, 900, 1500, 2300],
+                            abilities: []
+                        },
                         hpPerPartyMember: 0,
                         adPerPartyMember: 8,
                         mdPerPartyMember: 8,
@@ -8919,6 +9375,12 @@ Hoover Dam
                         name: "Starved Hound",
                         abilities: ["ferociousBite", "ferociousBite", "claw", "claw", "tackle", "cripple"],
                         buffs: [],
+                        keystoneStats: {
+                            hp: [1200, 3500, 6200, 10000, 15000 ],
+                            attackDmg: [300, 500, 900, 1500, 2300],
+                            magicDmg: [300, 500, 900, 1500, 2300],
+                            abilities: []
+                        },
                         hpPerPartyMember: 0,
                         adPerPartyMember: 8,
                         mdPerPartyMember: 8,
@@ -8934,6 +9396,12 @@ Hoover Dam
                         name: "Vampiric Knight",
                         abilities: ["attack", "attack", "drain", "drain", "uppercut", "uppercut", "freeze"],
                         buffs: [],
+                        keystoneStats: {
+                            hp: [1200, 3500, 6200, 10000, 15000 ],
+                            attackDmg: [300, 500, 900, 1500, 2300],
+                            magicDmg: [300, 500, 900, 1500, 2300],
+                            abilities: []
+                        },
                         hpPerPartyMember: 0,
                         adPerPartyMember: 8,
                         mdPerPartyMember: 8,
@@ -8949,6 +9417,12 @@ Hoover Dam
                         name: "Starved Hound",
                         abilities: ["ferociousBite", "ferociousBite", "claw", "claw", "tackle", "cripple"],
                         buffs: [],
+                        keystoneStats: {
+                            hp: [1200, 3500, 6200, 10000, 15000 ],
+                            attackDmg: [300, 500, 900, 1500, 2300],
+                            magicDmg: [300, 500, 900, 1500, 2300],
+                            abilities: []
+                        },
                         hpPerPartyMember: 0,
                         adPerPartyMember: 8,
                         mdPerPartyMember: 8,
@@ -8991,6 +9465,12 @@ Hoover Dam
                                 }
                             }
                         ],
+                        keystoneStats: {
+                            hp: [1200, 3500, 6200, 10000, 15000 ],
+                            attackDmg: [300, 500, 900, 1500, 2300],
+                            magicDmg: [300, 500, 900, 1500, 2300],
+                            abilities: []
+                        },
                         abilityOrder: [
                             0, 1, 2, 3, 0, 0, 1, 2, 0
                         ],
@@ -9032,6 +9512,12 @@ Hoover Dam
                                 }
                             }
                         ],
+                        keystoneStats: {
+                            hp: [1200, 3500, 6200, 10000, 15000 ],
+                            attackDmg: [300, 500, 900, 1500, 2300],
+                            magicDmg: [300, 500, 900, 1500, 2300],
+                            abilities: []
+                        },
                         abilityOrder: [
                             0, 1, 2, 3, 4, 0, 1, 2, 0
                         ],
@@ -9067,6 +9553,12 @@ Hoover Dam
                                 }
                             }
                         ],
+                        keystoneStats: {
+                            hp: [1200, 3500, 6200, 10000, 15000 ],
+                            attackDmg: [300, 500, 900, 1500, 2300],
+                            magicDmg: [300, 500, 900, 1500, 2300],
+                            abilities: []
+                        },
                         abilityOrder: [
                             0, 2, 1, 3, 4, 0, 2, 1, 0
                         ],
@@ -9085,6 +9577,12 @@ Hoover Dam
                         name: "Immortality Seeker",
                         abilities: ["attack", "attack","attack", "flameblast", "flameblast", "iceshards", "freeze"],
                         buffs: [],
+                        keystoneStats: {
+                            hp: [1200, 3500, 6200, 10000, 15000 ],
+                            attackDmg: [300, 500, 900, 1500, 2300],
+                            magicDmg: [300, 500, 900, 1500, 2300],
+                            abilities: []
+                        },
                         hpPerPartyMember: 0,
                         adPerPartyMember: 8,
                         mdPerPartyMember: 8,
@@ -9100,6 +9598,12 @@ Hoover Dam
                         name: "Immortality Seeker",
                         abilities: ["attack", "attack","attack", "flameblast", "flameblast", "iceshards", "scold"],
                         buffs: [],
+                        keystoneStats: {
+                            hp: [1200, 3500, 6200, 10000, 15000 ],
+                            attackDmg: [300, 500, 900, 1500, 2300],
+                            magicDmg: [300, 500, 900, 1500, 2300],
+                            abilities: []
+                        },
                         hpPerPartyMember: 0,
                         adPerPartyMember: 8,
                         mdPerPartyMember: 8,
@@ -9142,6 +9646,12 @@ Hoover Dam
                                 }
                             }
                         ],
+                        keystoneStats: {
+                            hp: [1200, 3500, 6200, 10000, 15000 ],
+                            attackDmg: [300, 500, 900, 1500, 2300],
+                            magicDmg: [300, 500, 900, 1500, 2300],
+                            abilities: []
+                        },
                         abilityOrder: [
                             0, 1, 0, 1, 2, [0, 1, 3], 0, 1, 1
                         ],
@@ -9189,6 +9699,12 @@ Hoover Dam
                                 }
                             }
                         ],
+                        keystoneStats: {
+                            hp: [1200, 3500, 6200, 10000, 15000 ],
+                            attackDmg: [300, 500, 900, 1500, 2300],
+                            magicDmg: [300, 500, 900, 1500, 2300],
+                            abilities: []
+                        },
                         effectsOnDeath: [
                             "radiation",
                             "explode"
@@ -9226,6 +9742,12 @@ Hoover Dam
                                 }
                             }
                         ],
+                        keystoneStats: {
+                            hp: [1200, 3500, 6200, 10000, 15000 ],
+                            attackDmg: [300, 500, 900, 1500, 2300],
+                            magicDmg: [300, 500, 900, 1500, 2300],
+                            abilities: []
+                        },
                         endOfTurnEvents : [
                             "focus"
                         ],
@@ -9267,6 +9789,12 @@ Hoover Dam
                                 }
                             }
                         ],
+                        keystoneStats: {
+                            hp: [1200, 3500, 6200, 10000, 15000 ],
+                            attackDmg: [300, 500, 900, 1500, 2300],
+                            magicDmg: [300, 500, 900, 1500, 2300],
+                            abilities: []
+                        },
                         effectsOnDeath: [
                             "radiation"
                         ],
@@ -9314,6 +9842,12 @@ Hoover Dam
                                 }
                             }
                         ],
+                        keystoneStats: {
+                            hp: [1200, 3500, 6200, 10000, 15000 ],
+                            attackDmg: [300, 500, 900, 1500, 2300],
+                            magicDmg: [300, 500, 900, 1500, 2300],
+                            abilities: []
+                        },
                         abilityOrder: [
                             0, 1, 3, 2, 4, 1, 4
                         ],
@@ -9362,6 +9896,12 @@ Hoover Dam
                                 }
                             }
                         ],
+                        keystoneStats: {
+                            hp: [1200, 3500, 6200, 10000, 15000 ],
+                            attackDmg: [300, 500, 900, 1500, 2300],
+                            magicDmg: [300, 500, 900, 1500, 2300],
+                            abilities: []
+                        },
                         abilityOrder: [
                             1, 0, 2, 3, 1, 4, 4
                         ],
@@ -9420,6 +9960,12 @@ Hoover Dam
                                 }
                             }
                         ],
+                        keystoneStats: {
+                            hp: [1200, 3500, 6200, 10000, 15000 ],
+                            attackDmg: [300, 500, 900, 1500, 2300],
+                            magicDmg: [300, 500, 900, 1500, 2300],
+                            abilities: []
+                        },
                         abilityOrder: [
                             3, 1, 2, 2, 0, 1, 0, 0, 2, 1, 0, 0
                         ],
@@ -9497,6 +10043,12 @@ Hoover Dam
                                 }
                             }
                         ],
+                        keystoneStats: {
+                            hp: [1200, 3500, 6200, 10000, 15000 ],
+                            attackDmg: [300, 500, 900, 1500, 2300],
+                            magicDmg: [300, 500, 900, 1500, 2300],
+                            abilities: []
+                        },
                         abilityOrder: [
                             0, 1, 0, 0, 0, 1, 0, 0
                         ],
@@ -9539,6 +10091,12 @@ Hoover Dam
                                 }
                             }
                         ],
+                        keystoneStats: {
+                            hp: [1200, 3500, 6200, 10000, 15000 ],
+                            attackDmg: [300, 500, 900, 1500, 2300],
+                            magicDmg: [300, 500, 900, 1500, 2300],
+                            abilities: []
+                        },
                         abilityOrder: [
                             0, [0, 1], 1, [0, 1], 1, [0, 1], 1
                         ],
@@ -9585,6 +10143,12 @@ Hoover Dam
                                 }
                             }
                         ],
+                        keystoneStats: {
+                            hp: [1200, 3500, 6200, 10000, 15000 ],
+                            attackDmg: [300, 500, 900, 1500, 2300],
+                            magicDmg: [300, 500, 900, 1500, 2300],
+                            abilities: []
+                        },
                         // random magic dmg 
                         abilityOrder: [
                             2, 0, [2,3], [0,1], [2,3], [0,1], [2,3], [0,1], [2,3]
@@ -9630,6 +10194,12 @@ Hoover Dam
                                 }
                             }
                         ],
+                        keystoneStats: {
+                            hp: [1200, 3500, 6200, 10000, 15000 ],
+                            attackDmg: [300, 500, 900, 1500, 2300],
+                            magicDmg: [300, 500, 900, 1500, 2300],
+                            abilities: []
+                        },
                         // no focus melee hit and aoe
                         abilityOrder: [
                             0, 0, 0
