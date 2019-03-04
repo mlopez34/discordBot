@@ -3563,11 +3563,11 @@ function effectsOnTurnEnd(event){
                 var enemy = undefined;
                 var abilityPicked = eotEvent.buffToHandleId
                 if (event.turn < 2){
-                    for (var enemy in event.enemies){
-                        if (event.enemies[enemy].name == eotEvent.startTarget
-                            && !checkIfDeadByObject(event.enemies[enemy])){
-                                target = enemy
-                                enemy = enemy
+                    for (var e in event.enemies){
+                        if (event.enemies[e].name == eotEvent.startTarget
+                            && !checkIfDeadByObject(event.enemies[e])){
+                                target = e
+                                enemy = e
                         }
                     }
                 }
@@ -3724,6 +3724,22 @@ function effectsOnTurnEnd(event){
                                 }
                             }                             
                         }
+                        if (transfering && eotEvent.onTransferGiveBuffToTransferTarget){
+                            // cast the energy buff on same target that gained darkness
+                            // cast energy
+                            var abilityPicked = eotEvent.onTransferGiveBuffToTransferTarget
+                            var rpgAbility = rpgAbilities[abilityPicked] ? JSON.parse(JSON.stringify(rpgAbilities[abilityPicked])) : undefined; 
+                            var target = enemyToTransferTo;
+        
+                            var abilityToProcess = {
+                                user: target,
+                                ability: abilityPicked,
+                                target: target
+                            }
+                            if (abilityToProcess.target != undefined){
+                                endOfTurnString = endOfTurnString  + processAbility(abilityToProcess, event);    
+                            }
+                        }
                         
                         // cast puncture on random player
                         if (eotEvent.onTransferCastAbility){
@@ -3813,22 +3829,6 @@ function effectsOnTurnEnd(event){
                     }
                 }
 
-                if (transfering && eotEvent.onTransferGiveBuffToTransferTarget){
-                    // cast the energy buff on same target that gained darkness
-                    // cast energy
-                    var abilityPicked = eotEvent.onTransferGiveBuffToTransferTarget
-                    var rpgAbility = rpgAbilities[abilityPicked] ? JSON.parse(JSON.stringify(rpgAbilities[abilityPicked])) : undefined; 
-                    var target = enemyToTransferTo;
-
-                    var abilityToProcess = {
-                        user: enemy,
-                        ability: abilityPicked,
-                        target: target
-                    }
-                    if (abilityToProcess.target != undefined){
-                        endOfTurnString = endOfTurnString  + processAbility(abilityToProcess, event);    
-                    }
-                }
                 if (eotEvent.clearBuffIfBuffToHandleNotExists){
                     // TODO: check for any targets that have the buff and do not have bufftohandleId
                     

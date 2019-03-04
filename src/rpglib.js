@@ -2810,8 +2810,8 @@ module.exports = {
             transferToHighestHpOnRemove: true,
             listOfpossibleTransfer: [
                 "Emperor Zheng",
-                "Warlord Ying",
-                "Mistical Fairy",
+                "Balrogue",
+                "Mystical Fairy",
                 "Reckless Barbarian",
             ],
             onTransferCastAbility: "puncture",
@@ -2841,7 +2841,7 @@ module.exports = {
                 abilityId: "darkness",
                 buff: true,
                 ignoreBandaid: true,
-                emoji: ":star_and_crescent:",
+                emoji: "☪️",
                 ignoreUnique: true,
                 turnsToExpire: 200
             }
@@ -2853,7 +2853,7 @@ module.exports = {
             name: "Energy",
             buff: {
                 name: "Energy",
-                emoji: ":signal_strength:",
+                emoji: "📶",
                 minusTurnsToExpirePerBuffCount: "strengthDarkness",
                 displayExpireCount: true,
                 turnsToExpire: 6,
@@ -2873,10 +2873,10 @@ module.exports = {
             areawidedmg: {
                 areawide: true,
                 name: "eradicate",
-                increaseDamagePerTurn: 600,
+                increaseDamagePerTurn: 750,
                 dmg: 100,
                 damageToResetTo: 100,
-                mdPercentage: 1,
+                mdPercentage: .5,
                 type: "earth"
             }
         },
@@ -2915,7 +2915,7 @@ module.exports = {
                 status: true,
                 name: "Debilitate",
                 abilityId: "debilitate",
-                emoji: ":full_moon_with_face:",
+                emoji: "🌝",
                 affectsGlobal: ["damageTakenPercentage"],                
                 multiplier: 1.0,
                 ignoreBandaid: true,
@@ -2947,8 +2947,8 @@ module.exports = {
             currentTurn: 0,
             listOfPossibleTarget: [
                 "Emperor Zheng",
-                "Warlord Ying",
-                "Mistical Fairy",
+                "Balrogue",
+                "Mystical Fairy",
                 "Reckless Barbarian"
             ]
         },
@@ -2969,7 +2969,7 @@ module.exports = {
                 type:"physical",
                 dmg: 1000,
                 adPercentage: 1,
-                emoji: "<:deep_hatred:479298214340591626>",
+                emoji: "💔",
                 dmgOnDotApply: false,
                 ignoreBandaid: true,
                 turnsToExpire: 6,
@@ -3022,7 +3022,7 @@ module.exports = {
                 selfbuff: true,
                 abilityId: "mightyweapon",
                 name: "Mighty Weapon",
-                emoji : ":dagger:", 
+                emoji : "🗡", 
                 affectsGlobal: ["damageDealtPercentage"],
                 turnsToExpire: 3,
                 multiplier: 1.5
@@ -3046,7 +3046,7 @@ module.exports = {
                 type: "earth",
                 dmg: 100,
                 mdPercentage: 1,
-                emoji: "<:bomb:479296552096235520>",
+                emoji: "▪️",
                 dmgOnDotApply: false,
                 ignoreBandaid: true,
                 ignoreUnique: true,
@@ -3073,7 +3073,7 @@ module.exports = {
                 abilityId: "reflectShield",
                 reflectPercentage: 0.15,
                 areaewideReflectPercentage: 0.5,
-                emoji: ":sound:",
+                emoji: "🔈",
                 abType: "electric",
                 ignoreUnique: true,
                 turnsToExpire: 3
@@ -3095,7 +3095,7 @@ module.exports = {
                 abilityId: "reflectBarrier",
                 reflectPercentageToAll: 0.15,
                 areaewideReflectPercentageToAll: 0.5,
-                emoji: ":loud_sound:",
+                emoji: "🔊",
                 abType: "electric",
                 ignoreUnique: true,
                 turnsToExpire: 3
@@ -9448,14 +9448,14 @@ Hoover Dam
             12: {
                 challengeId: "emperor",
                 timed: true,
-                description: "**The High Council:** \n**Darkness** - A mamber of the high council becomes tainted with darkness and gains *Energy* and their abilities become empowered. Darkness can only be removed upon taking 25% of the member's health from the point of obtaining darkness\n**Energy** - upon reaching full energy the member of the high council unleashes eradicate every turn increasing in damage every turn until darkness is removed - each subsequent darkness requires one less turn to reach full energy\n**Puncture** - Deals 200 damage per turn, increases damage taken by 5% every turn, cast upon losing darkness\n**Strength** - Upon losing darkness the member of the high council gains +20% damage dealt permanently\nWarlord Ying > **Lesion** - Deals low damage for 30 turns\n**Summon Knights** (Darkness Only) - summon a knight per number of lesions on the group\nEmperor > **Mighty Weapon** - Empowers his weapon and deals 50% more damage\n>**Wound** - Deals high physical damage on a random target for 6 turns\nMystical Fairy > **Blast** - deal moderate magical damage on a random target\n**Summon Worshipper** > Summon a worshipper that will heal the lowest health member for 10% of their total health\n**Summon Cursed Guardians** (Darkness only) > Summons two cursed guardians that radiate magic damage on the group until killed\nReckless Barbarian > **Reflect Shield** - reflects 20% damage dealt back to the attacker | 100% aoe damage reflected back\n**Reflect Barrier** (Darkness only) - reflects 20% of damage dealt back to the group | 100% aoe damage reflected back",
+                description: "**The High Council:** \n**Darkness** - A mamber of the high council becomes tainted with darkness and gains *Energy* and their abilities become empowered. Darkness can only be removed upon taking 25% of the member's health from the point of obtaining darkness\n**Energy** - upon reaching full energy the member of the high council unleashes eradicate every turn increasing in damage every turn until darkness is removed - each subsequent darkness requires one less turn to reach full energy\n**Puncture** - Deals 200 damage per turn, increases damage taken by 5% every turn, cast upon losing darkness\n**Strength** - Upon losing darkness the member of the high council gains +20% damage dealt permanently\Balrogue > **Lesion** - Deals low damage for 30 turns\n**Summon Knights** (Darkness Only) - summon a knight per number of lesions on the group\nEmperor > **Mighty Weapon** - Empowers his weapon and deals 50% more damage\n>**Wound** - Deals high physical damage on a random target for 6 turns\nMystical Fairy > **Blast** - deal moderate magical damage on a random target\n**Summon Worshipper** > Summon a worshipper that will heal the lowest health member for 10% of their total health\n**Summon Cursed Guardians** (Darkness only) > Summons two cursed guardians that radiate magic damage on the group until killed\nReckless Barbarian > **Reflect Shield** - reflects 20% damage dealt back to the attacker | 100% aoe damage reflected back\n**Reflect Barrier** (Darkness only) - reflects 20% of damage dealt back to the group | 100% aoe damage reflected back",
                 timedPerTurn: 360000,
                 points: 27901,
                 xppoints: 5120,
                 difficulty: 85,
                 enemies: [
                     {
-                        name: "Warlord Ying",
+                        name: "Balrogue",
                         xp: 30,
                         abilities: [
                             "attack",
@@ -9464,7 +9464,7 @@ Hoover Dam
                         buffs: [
                             {
                                 name: "frenzy",
-                                emoji: "<:frenzy:479298214453968896>",
+                                emoji: "<:overmind:479298213904646147>",
                                 onTurnEnd: {
                                     attackDmgPlus : 6100,
                                     magicDmgPlus : 6100,
@@ -9486,8 +9486,8 @@ Hoover Dam
                             "puncture"
                         ],
                         hp: 52600,
-                        attackDmg: 4580,
-                        magicDmg: 4570,
+                        attackDmg: 2580,
+                        magicDmg: 2570,
                         armor: 2100,
                         spirit: 2100,
                         hpPerPartyMember: 0,
@@ -9506,7 +9506,7 @@ Hoover Dam
                         buffs: [
                             {
                                 name: "frenzy",
-                                emoji: "<:frenzy:479298214453968896>",
+                                emoji: "<:overmind:479298213904646147>",
                                 onTurnEnd: {
                                     attackDmgPlus : 6100,
                                     magicDmgPlus : 6100,
@@ -9530,8 +9530,8 @@ Hoover Dam
                             "puncture"
                         ],
                         hp: 52600,
-                        attackDmg: 4580,
-                        magicDmg: 4570,
+                        attackDmg: 2580,
+                        magicDmg: 2570,
                         armor: 2100,
                         spirit: 2100,
                         hpPerPartyMember: 0,
@@ -9546,13 +9546,13 @@ Hoover Dam
                         abilities: [
                             "attack",
                             "enemyshock",
-                            "orchatasip",
+                            "curse",
                             "flameblast"
                         ],
                         buffs: [
                             {
                                 name: "frenzy",
-                                emoji: "<:frenzy:479298214453968896>",
+                                emoji: "<:overmind:479298213904646147>",
                                 onTurnEnd: {
                                     attackDmgPlus : 6100,
                                     magicDmgPlus : 6100,
@@ -9563,11 +9563,10 @@ Hoover Dam
                         ],
                         // random magic dmg 
                         abilityOrder: [
-                            3, 0, [2,3], [0,1], [2,3], [0,1], [2,3], [0,1], [2,3]
+                            2, 0, [2,3], [0,1], [2,3], [0,1], [2,3], [0,1], [2,3]
                         ],
                         endOfTurnEvents : [
                             "focus",
-                            "blast",
                             "summonWorshipper",
                             "eradicate",
                             "summonCursedGuardian",  // D
@@ -9579,8 +9578,8 @@ Hoover Dam
                             "puncture"
                         ],
                         hp: 52600,
-                        attackDmg: 4580,
-                        magicDmg: 4570,
+                        attackDmg: 2580,
+                        magicDmg: 2570,
                         armor: 2100,
                         spirit: 2100,
                         hpPerPartyMember: 0,
@@ -9598,7 +9597,7 @@ Hoover Dam
                         buffs: [
                             {
                                 name: "frenzy",
-                                emoji: "<:frenzy:479298214453968896>",
+                                emoji: "<:overmind:479298213904646147>",
                                 onTurnEnd: {
                                     attackDmgPlus : 6100,
                                     magicDmgPlus : 6100,
@@ -9621,8 +9620,8 @@ Hoover Dam
                             "puncture"
                         ],
                         hp: 52600,
-                        attackDmg: 4580,
-                        magicDmg: 4570,
+                        attackDmg: 2580,
+                        magicDmg: 2570,
                         armor: 2100,
                         spirit: 2100,
                         hpPerPartyMember: 0,
