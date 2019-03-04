@@ -8395,6 +8395,7 @@ Hoover Dam
         challenge: {
             1: {
                 challengeId: "escapedrobot",
+                keystoneUnlockName: "Robotic Keystone",
                 enemies: [
                     {
                         name: "Angry Mob Member",
@@ -8422,9 +8423,9 @@ Hoover Dam
                         abilities: ["attack", "attack", "flameblast", "flameblast", "orchatasip"],
                         buffs: [],
                         keystoneStats: {
-                            hp: [1200, 3500, 6200, 10000, 15000 ],
-                            attackDmg: [300, 500, 900, 1500, 2300],
-                            magicDmg: [300, 500, 900, 1500, 2300],
+                            hp: [1500, 4500, 7200, 14000, 18000 ],
+                            attackDmg: [300, 500, 800, 1400, 2100],
+                            magicDmg: [400, 650, 1000, 1900, 2800],
                             abilities: []
                         },
                         effectsOnDeath: [
@@ -8446,7 +8447,7 @@ Hoover Dam
                         abilities: ["attack", "attack", "elixir", "elixir", "orchatasip"],
                         buffs: [],
                         keystoneStats: {
-                            hp: [1200, 3500, 6200, 10000, 15000 ],
+                            hp: [1200, 3500, 6100, 8000, 14000 ],
                             attackDmg: [300, 500, 900, 1500, 2300],
                             magicDmg: [300, 500, 900, 1500, 2300],
                             abilities: []
@@ -8479,8 +8480,8 @@ Hoover Dam
                         ],
                         keystoneStats: {
                             frenzy: {
-                                attackDmgPlus : [110, 220, 350, 640, 920],
-                                magicDmgPlus : [110, 220, 350, 640, 920]
+                                attackDmgPlus : [80, 140, 230, 380, 750],
+                                magicDmgPlus : [80, 140, 230, 380, 750]
                             },
                             hp: [1500, 3900, 6900, 18000, 25000 ],
                             attackDmg: [300, 500, 900, 1700, 3300],
@@ -8517,10 +8518,10 @@ Hoover Dam
                         ],
                         keystoneStats: {
                             frenzy: {
-                                attackDmgPlus : [150, 280, 450, 840, 1220],
-                                magicDmgPlus : [150, 280, 450, 840, 1220]
+                                attackDmgPlus : [120, 180, 300, 540, 820],
+                                magicDmgPlus : [120, 180, 300, 540, 820]
                             },
-                            hp: [1500, 3900, 6900, 18000, 25000 ],
+                            hp: [3500, 7900, 14900, 21000, 35000 ],
                             attackDmg: [800, 1200, 1900, 2700, 4300],
                             magicDmg: [800, 1200, 1900, 2700, 4300],
                             abilities: []
@@ -8548,6 +8549,7 @@ Hoover Dam
             },
             2: {
                 challengeId: "desperado",
+                keystoneUnlockName: "Cannister Keystone",
                 enemies: [
                     {
                         name: "Taco Thief",
@@ -8610,9 +8612,13 @@ Hoover Dam
                             }
                         ],
                         keystoneStats: {
+                            frenzy: {
+                                attackDmgPlus : [85, 120, 250, 440, 620],
+                                magicDmgPlus : [85, 120, 250, 440, 620]
+                            },
                             hp: [1200, 3500, 6200, 10000, 15000 ],
-                            attackDmg: [300, 500, 900, 1500, 2300],
-                            magicDmg: [300, 500, 900, 1500, 2300],
+                            attackDmg: [300, 500, 900, 1500, 2500],
+                            magicDmg: [300, 500, 900, 1500, 2500],
                             abilities: []
                         },
                         effectsOnDeath: [
@@ -8645,9 +8651,13 @@ Hoover Dam
                             }
                         ],
                         keystoneStats: {
+                            frenzy: {
+                                attackDmgPlus : [85, 120, 250, 440, 620],
+                                magicDmgPlus : [85, 120, 250, 440, 620]
+                            },
                             hp: [1200, 3500, 6200, 10000, 15000 ],
-                            attackDmg: [300, 500, 900, 1500, 2300],
-                            magicDmg: [300, 500, 900, 1500, 2300],
+                            attackDmg: [300, 500, 900, 1500, 2500],
+                            magicDmg: [300, 500, 900, 1500, 2500],
                             abilities: []
                         },
                         hpPerPartyMember: 850,
@@ -8679,9 +8689,13 @@ Hoover Dam
                             }
                         ],
                         keystoneStats: {
-                            hp: [1200, 3500, 6200, 10000, 15000 ],
-                            attackDmg: [300, 500, 900, 1500, 2300],
-                            magicDmg: [300, 500, 900, 1500, 2300],
+                            frenzy: {
+                                attackDmgPlus : [120, 180, 300, 540, 820],
+                                magicDmgPlus : [120, 180, 300, 540, 820]
+                            },
+                            hp: [3500, 7900, 14900, 21000, 47000 ],
+                            attackDmg: [800, 1200, 1900, 2700, 4300],
+                            magicDmg: [800, 1200, 1900, 2700, 4300],
                             abilities: []
                         },
                         endOfTurnEvents : [
@@ -8707,6 +8721,7 @@ Hoover Dam
             },
             3: {
                 challengeId: "romansoldier",
+                keystoneUnlockName: "Roman Keystone",
                 enemies: [
                     {
                         name: "Taco Thief",
@@ -8771,9 +8786,13 @@ Hoover Dam
                             }
                         ],
                         keystoneStats: {
-                            hp: [1200, 3500, 6200, 10000, 15000 ],
-                            attackDmg: [300, 500, 900, 1500, 2300],
-                            magicDmg: [300, 500, 900, 1500, 2300],
+                            frenzy: {
+                                attackDmgPlus : [150, 220, 350, 640, 990],
+                                magicDmgPlus : [150, 220, 350, 640, 990]
+                            },
+                            hp: [9500, 19900, 34900, 51000, 77000 ],
+                            attackDmg: [1000, 1500, 2000, 2900, 4500],
+                            magicDmg: [1000, 1500, 2000, 2900, 4500],
                             abilities: []
                         },
                         abilityOrder: [
@@ -8848,6 +8867,7 @@ Hoover Dam
             },
             4: {
                 challengeId: "dictator",
+                keystoneUnlockName: "Dictator Keystone",
                 enemies: [
                     {
                         name: "Dictator",
@@ -8867,9 +8887,13 @@ Hoover Dam
                             }
                         ],
                         keystoneStats: {
-                            hp: [1200, 3500, 6200, 10000, 15000 ],
-                            attackDmg: [300, 500, 900, 1500, 2300],
-                            magicDmg: [300, 500, 900, 1500, 2300],
+                            frenzy: {
+                                attackDmgPlus : [120, 200, 300, 540, 790],
+                                magicDmgPlus : [120, 200, 300, 540, 790]
+                            },
+                            hp: [11500, 15900, 24900, 31000, 47000 ],
+                            attackDmg: [800, 1300, 1700, 2500, 3500],
+                            magicDmg: [800, 1300, 1700, 2500, 3500],
                             abilities: []
                         },
                         abilityOrder: [
@@ -8910,9 +8934,13 @@ Hoover Dam
                             }
                         ],
                         keystoneStats: {
-                            hp: [1200, 3500, 6200, 10000, 15000 ],
-                            attackDmg: [300, 500, 900, 1500, 2300],
-                            magicDmg: [300, 500, 900, 1500, 2300],
+                            frenzy: {
+                                attackDmgPlus : [120, 200, 300, 540, 790],
+                                magicDmgPlus : [120, 200, 300, 540, 790]
+                            },
+                            hp: [11500, 15900, 24900, 31000, 47000 ],
+                            attackDmg: [800, 1300, 1700, 2500, 3500],
+                            magicDmg: [800, 1300, 1700, 2500, 3500],
                             abilities: []
                         },
                         abilityOrder: [
@@ -9012,6 +9040,7 @@ Hoover Dam
             },
             5: {
                 challengeId: "cheftrio",
+                keystoneUnlockName: "Chef Keystone",
                 enemies: [
                     // 3 bosses, each has a special ability
                     // when one of the bosses dies, the other 2 gain the ability at the current CD of the ability
@@ -9077,9 +9106,13 @@ Hoover Dam
                             }
                         ],
                         keystoneStats: {
-                            hp: [1200, 3500, 6200, 10000, 15000 ],
-                            attackDmg: [300, 500, 900, 1500, 2300],
-                            magicDmg: [300, 500, 900, 1500, 2300],
+                            frenzy: {
+                                attackDmgPlus : [130, 210, 340, 530, 750],
+                                magicDmgPlus : [130, 210, 340, 530, 750]
+                            },
+                            hp: [11500, 15900, 24900, 31000, 43000 ],
+                            attackDmg: [800, 1100, 1500, 2300, 3000],
+                            magicDmg: [800, 1100, 1500, 2300, 3000],
                             abilities: []
                         },
                         abilityOrder: [
@@ -9123,9 +9156,13 @@ Hoover Dam
                             }
                         ],
                         keystoneStats: {
-                            hp: [1200, 3500, 6200, 10000, 15000 ],
-                            attackDmg: [300, 500, 900, 1500, 2300],
-                            magicDmg: [300, 500, 900, 1500, 2300],
+                            frenzy: {
+                                attackDmgPlus : [130, 210, 340, 530, 750],
+                                magicDmgPlus : [130, 210, 340, 530, 750]
+                            },
+                            hp: [11500, 15900, 24900, 31000, 43000 ],
+                            attackDmg: [800, 1100, 1500, 2300, 3000],
+                            magicDmg: [800, 1100, 1500, 2300, 3000],
                             abilities: []
                         },
                         abilityOrder: [
@@ -9169,9 +9206,13 @@ Hoover Dam
                             }
                         ],
                         keystoneStats: {
-                            hp: [1200, 3500, 6200, 10000, 15000 ],
-                            attackDmg: [300, 500, 900, 1500, 2300],
-                            magicDmg: [300, 500, 900, 1500, 2300],
+                            frenzy: {
+                                attackDmgPlus : [130, 210, 340, 530, 750],
+                                magicDmgPlus : [130, 210, 340, 530, 750]
+                            },
+                            hp: [11500, 15900, 24900, 31000, 43000 ],
+                            attackDmg: [800, 1100, 1500, 2300, 3000],
+                            magicDmg: [800, 1100, 1500, 2300, 3000],
                             abilities: []
                         },
                         abilityOrder: [
@@ -9211,6 +9252,7 @@ Hoover Dam
                 // purple = status on target, after 3 statuses they explode
                 // blue = 1 cooldown per ability, effect ends when new crystals appear
                 challengeId: "a182type2",
+                keystoneUnlockName: "A182-Type2 Keystone",
                 description: "**Energy Crystals:** \nRed - grants Furnace(magical)\nGreen- grants Dismantle(physical)\nBlack - Summons Tortured Robots\nBlue - Summons Energy Core(Immune to areawide damage)\nYellow - Rocket Strike becomes areawide, reduces Furnace, Dismantle, Rocket Strike cooldown by 1 turn, Summon Tortured Robot by 6 turns\nPurple - affects with Radioactive(direct healing grants an additional stack of Radioactive, at 5 stacks you explode for 1300 damage)\nEnergy Core - Grants Energize to the boss upon being summoned, Energize lasts 6 turns (+400 attack, magic), upon death causes cleansing which removes Energized from all units\nLaser Beam - Physical, Rocket Strike - Magical",
                 timed: true,
                 timedPerTurn: 180000,
@@ -9233,9 +9275,13 @@ Hoover Dam
                             }
                         ],
                         keystoneStats: {
-                            hp: [1200, 3500, 6200, 10000, 15000 ],
-                            attackDmg: [300, 500, 900, 1500, 2300],
-                            magicDmg: [300, 500, 900, 1500, 2300],
+                            frenzy: {
+                                attackDmgPlus : [10030, 20010, 30040, 50030, 70050],
+                                magicDmgPlus : [10030, 20010, 30040, 50030, 70050]
+                            },
+                            hp: [21500, 45900, 64900, 91000, 147000 ],
+                            attackDmg: [800, 1100, 1500, 2300, 3800],
+                            magicDmg: [800, 1100, 1500, 2300, 3800],
                             abilities: []
                         },
                         abilityOrder: [
@@ -9289,6 +9335,7 @@ Hoover Dam
             },
             7: {
                 challengeId: "gatekeeper",
+                keystoneUnlockName: "Gatekeeper Keystone",
                 timed: true,
                 timedPerTurn: 180000,
                 points: 1000,
@@ -9316,9 +9363,13 @@ Hoover Dam
                             }
                         ],
                         keystoneStats: {
-                            hp: [1200, 3500, 6200, 10000, 15000 ],
-                            attackDmg: [300, 500, 900, 1500, 2300],
-                            magicDmg: [300, 500, 900, 1500, 2300],
+                            frenzy: {
+                                attackDmgPlus : [230, 310, 540, 630, 850],
+                                magicDmgPlus : [230, 310, 540, 630, 850]
+                            },
+                            hp: [31500, 50900, 69900, 101000, 157000 ],
+                            attackDmg: [700, 1100, 1500, 2300, 3800],
+                            magicDmg: [700, 1100, 1500, 2300, 3800],
                             abilities: []
                         },
                         abilityOrder: [
@@ -9438,6 +9489,7 @@ Hoover Dam
             },
             8: {
                 challengeId: "archvampire",
+                keystoneUnlockName: "Archvampire Keystone",
                 timed: true,
                 timedPerTurn: 180000,
                 points: 1800,
@@ -9466,9 +9518,13 @@ Hoover Dam
                             }
                         ],
                         keystoneStats: {
-                            hp: [1200, 3500, 6200, 10000, 15000 ],
-                            attackDmg: [300, 500, 900, 1500, 2300],
-                            magicDmg: [300, 500, 900, 1500, 2300],
+                            frenzy: {
+                                attackDmgPlus : [1055, 1210, 1540, 1930, 2150],
+                                magicDmgPlus : [1055, 1210, 1540, 1930, 2150]
+                            },
+                            hp: [31500, 40900, 59900, 81000, 137000 ],
+                            attackDmg: [700, 1100, 1500, 2100, 2500],
+                            magicDmg: [700, 1100, 1500, 2100, 2500],
                             abilities: []
                         },
                         abilityOrder: [
@@ -9513,9 +9569,13 @@ Hoover Dam
                             }
                         ],
                         keystoneStats: {
-                            hp: [1200, 3500, 6200, 10000, 15000 ],
-                            attackDmg: [300, 500, 900, 1500, 2300],
-                            magicDmg: [300, 500, 900, 1500, 2300],
+                            frenzy: {
+                                attackDmgPlus : [250, 400, 650, 700, 900],
+                                magicDmgPlus : [250, 400, 650, 700, 900]
+                            },
+                            hp: [10500, 15900, 21900, 27000, 37000 ],
+                            attackDmg: [700, 1100, 1400, 1700, 2100],
+                            magicDmg: [700, 1100, 1400, 1700, 2100],
                             abilities: []
                         },
                         abilityOrder: [
@@ -9554,9 +9614,13 @@ Hoover Dam
                             }
                         ],
                         keystoneStats: {
-                            hp: [1200, 3500, 6200, 10000, 15000 ],
-                            attackDmg: [300, 500, 900, 1500, 2300],
-                            magicDmg: [300, 500, 900, 1500, 2300],
+                            frenzy: {
+                                attackDmgPlus : [250, 400, 650, 700, 900],
+                                magicDmgPlus : [250, 400, 650, 700, 900]
+                            },
+                            hp: [10500, 15900, 21900, 27000, 37000 ],
+                            attackDmg: [700, 1100, 1400, 1700, 2100],
+                            magicDmg: [700, 1100, 1400, 1700, 2100],
                             abilities: []
                         },
                         abilityOrder: [
@@ -9619,6 +9683,7 @@ Hoover Dam
             },
             9: {
                 challengeId: "corruptedovermind",
+                keystoneUnlockName: "Corrupted Keystone",
                 timed: true,
                 timedPerTurn: 180000,
                 points: 2901,
@@ -9647,9 +9712,13 @@ Hoover Dam
                             }
                         ],
                         keystoneStats: {
-                            hp: [1200, 3500, 6200, 10000, 15000 ],
-                            attackDmg: [300, 500, 900, 1500, 2300],
-                            magicDmg: [300, 500, 900, 1500, 2300],
+                            frenzy: {
+                                attackDmgPlus : [1055, 1210, 1540, 1930, 2150],
+                                magicDmgPlus : [1055, 1210, 1540, 1930, 2150]
+                            },
+                            hp: [531500, 800900, 1109900, 1410000, 1707000 ],
+                            attackDmg: [700, 1100, 1500, 2100, 2500],
+                            magicDmg: [700, 1100, 1500, 2100, 2500],
                             abilities: []
                         },
                         abilityOrder: [
@@ -9813,6 +9882,7 @@ Hoover Dam
             },
             10: {
                 challengeId: "anomaly",
+                keystoneUnlockName: "Anomaly Keystone",
                 timed: true,
                 timedPerTurn: 180000,
                 points: 7901,
@@ -9843,9 +9913,13 @@ Hoover Dam
                             }
                         ],
                         keystoneStats: {
-                            hp: [1200, 3500, 6200, 10000, 15000 ],
-                            attackDmg: [300, 500, 900, 1500, 2300],
-                            magicDmg: [300, 500, 900, 1500, 2300],
+                            frenzy: {
+                                attackDmgPlus : [755, 990, 1240, 1430, 1750],
+                                magicDmgPlus : [755, 990, 1240, 1430, 1750]
+                            },
+                            hp: [13500, 20900, 29900, 41000, 57000 ],
+                            attackDmg: [700, 1100, 1500, 2100, 2500],
+                            magicDmg: [700, 1100, 1500, 2100, 2500],
                             abilities: []
                         },
                         abilityOrder: [
@@ -9897,9 +9971,13 @@ Hoover Dam
                             }
                         ],
                         keystoneStats: {
-                            hp: [1200, 3500, 6200, 10000, 15000 ],
-                            attackDmg: [300, 500, 900, 1500, 2300],
-                            magicDmg: [300, 500, 900, 1500, 2300],
+                            frenzy: {
+                                attackDmgPlus : [755, 990, 1240, 1430, 1750],
+                                magicDmgPlus : [755, 990, 1240, 1430, 1750]
+                            },
+                            hp: [13500, 20900, 29900, 41000, 57000 ],
+                            attackDmg: [700, 1100, 1500, 2100, 2500],
+                            magicDmg: [700, 1100, 1500, 2100, 2500],
                             abilities: []
                         },
                         abilityOrder: [
@@ -9931,6 +10009,7 @@ Hoover Dam
                 ]
             },
             11: {
+                keystoneUnlockName: "Aramis Keystone",
                 challengeId: "aramis",
                 timed: true,
                 timedPerTurn: 360000,
@@ -9961,9 +10040,13 @@ Hoover Dam
                             }
                         ],
                         keystoneStats: {
-                            hp: [1200, 3500, 6200, 10000, 15000 ],
-                            attackDmg: [300, 500, 900, 1500, 2300],
-                            magicDmg: [300, 500, 900, 1500, 2300],
+                            frenzy: {
+                                attackDmgPlus : [3100, 4100, 5100, 6100, 7100],
+                                magicDmgPlus : [3100, 4100, 5100, 6100, 7100]
+                            },
+                            hp: [ 19500, 25900, 39900, 51000, 77000 ],
+                            attackDmg: [700, 1100, 1500, 2100, 2500],
+                            magicDmg: [700, 1100, 1500, 2100, 2500],
                             abilities: []
                         },
                         abilityOrder: [
@@ -10017,6 +10100,7 @@ Hoover Dam
             // 
             12: {
                 challengeId: "emperor",
+                keystoneUnlockName: "Emperor Keystone",
                 timed: true,
                 description: "**The High Council:** \n**Darkness** - A member of the high council becomes tainted with darkness and gains *Energy* and their abilities become empowered. Darkness can only be removed upon taking 25% of the member's health from the point of obtaining darkness\n**Energy** - upon reaching full energy the member of the high council unleashes eradicate every turn increasing in damage every turn until darkness is removed - each subsequent darkness requires one less turn to reach full energy\n**Puncture** - Deals 200 damage per turn, each tick gives a stack of *debilitate*, cast upon losing darkness\n**Debilitate** - increases all damage taken by 5% per stack\n**Strength** - Upon losing darkness the member of the high council gains +20% damage dealt permanently\nBalrogue > **Lesion** - DOT Deals low damage for 30 turns\n**Summon Knights** (Darkness Only) - summon a knight per number of lesions on the group, cast every 3 turns until darkness is removed\nEmperor > **Mighty Weapon** - Empowers his weapon and deals 50% more damage\n>**Wound** - Deals high physical damage on a random target for 6 turns\nMystical Fairy > **Blast** - deal moderate magical damage on a random target\n**Summon Worshipper** > Summon a worshipper that will heal the lowest health member for 10% of their total health every 2 turns\n**Summon Cursed Guardians** (Darkness only) > Summons two cursed guardians that become stronger each turn\nReckless Barbarian > **Reflect Shield** - reflects 15% damage dealt back to the attacker | 50% aoe damage reflected back to the attacker\n**Reflect Barrier** (Darkness only) - reflects 15% of damage dealt back to the group | 50% aoe damage reflected back to the group",
                 timedPerTurn: 360000,
@@ -10044,9 +10128,13 @@ Hoover Dam
                             }
                         ],
                         keystoneStats: {
-                            hp: [1200, 3500, 6200, 10000, 15000 ],
-                            attackDmg: [300, 500, 900, 1500, 2300],
-                            magicDmg: [300, 500, 900, 1500, 2300],
+                            frenzy: {
+                                attackDmgPlus : [3100, 4100, 5100, 6100, 7100],
+                                magicDmgPlus : [3100, 4100, 5100, 6100, 7100]
+                            },
+                            hp: [ 19500, 25900, 39900, 51000, 77000 ],
+                            attackDmg: [700, 1100, 1500, 2100, 2500],
+                            magicDmg: [700, 1100, 1500, 2100, 2500],
                             abilities: []
                         },
                         abilityOrder: [
@@ -10092,9 +10180,13 @@ Hoover Dam
                             }
                         ],
                         keystoneStats: {
-                            hp: [1200, 3500, 6200, 10000, 15000 ],
-                            attackDmg: [300, 500, 900, 1500, 2300],
-                            magicDmg: [300, 500, 900, 1500, 2300],
+                            frenzy: {
+                                attackDmgPlus : [3100, 4100, 5100, 6100, 7100],
+                                magicDmgPlus : [3100, 4100, 5100, 6100, 7100]
+                            },
+                            hp: [ 19500, 25900, 39900, 51000, 77000 ],
+                            attackDmg: [700, 1100, 1500, 2100, 2500],
+                            magicDmg: [700, 1100, 1500, 2100, 2500],
                             abilities: []
                         },
                         abilityOrder: [
@@ -10144,9 +10236,13 @@ Hoover Dam
                             }
                         ],
                         keystoneStats: {
-                            hp: [1200, 3500, 6200, 10000, 15000 ],
-                            attackDmg: [300, 500, 900, 1500, 2300],
-                            magicDmg: [300, 500, 900, 1500, 2300],
+                            frenzy: {
+                                attackDmgPlus : [3100, 4100, 5100, 6100, 7100],
+                                magicDmgPlus : [3100, 4100, 5100, 6100, 7100]
+                            },
+                            hp: [ 19500, 25900, 39900, 51000, 77000 ],
+                            attackDmg: [700, 1100, 1500, 2100, 2500],
+                            magicDmg: [700, 1100, 1500, 2100, 2500],
                             abilities: []
                         },
                         // random magic dmg 
@@ -10195,9 +10291,13 @@ Hoover Dam
                             }
                         ],
                         keystoneStats: {
-                            hp: [1200, 3500, 6200, 10000, 15000 ],
-                            attackDmg: [300, 500, 900, 1500, 2300],
-                            magicDmg: [300, 500, 900, 1500, 2300],
+                            frenzy: {
+                                attackDmgPlus : [3100, 4100, 5100, 6100, 7100],
+                                magicDmgPlus : [3100, 4100, 5100, 6100, 7100]
+                            },
+                            hp: [ 19500, 25900, 39900, 51000, 77000 ],
+                            attackDmg: [700, 1100, 1500, 2100, 2500],
+                            magicDmg: [700, 1100, 1500, 2100, 2500],
                             abilities: []
                         },
                         // no focus melee hit and aoe
