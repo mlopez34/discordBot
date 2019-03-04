@@ -3046,7 +3046,7 @@ module.exports = {
                 type: "earth",
                 dmg: 100,
                 mdPercentage: 1,
-                emoji: "▪️",
+                emoji: ":black_small_square:",
                 dmgOnDotApply: false,
                 ignoreBandaid: true,
                 ignoreUnique: true,

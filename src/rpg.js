@@ -7687,10 +7687,10 @@ function userStatsStringBuilder(userStats, name, isEnemy, currentTurn){
         userString = userString + " - **" + userStats.id + "** **" + name + "**" + "\n"
     }else{
         userString = " :green_heart:  " + (userStats.hp + userStats.statBuffs.maxhp) + "/" + (userStats.maxhp + userStats.statBuffs.maxhp) + " "
-        userString = userString + " 🛡️ " + (userStats.armor + userStats.statBuffs.armor)
+        userString = userString + " :shield: " + (userStats.armor + userStats.statBuffs.armor)
         userString = userString + " 🙌 " + (userStats.spirit + userStats.statBuffs.spirit)
         userString = userString + " 🗡 " + (userStats.attackDmg + userStats.statBuffs.attackDmg)
-        userString = userString + " ☄️ " + (userStats.magicDmg + userStats.statBuffs.magicDmg) + "\n"
+        userString = userString + " :comet: " + (userStats.magicDmg + userStats.statBuffs.magicDmg) + "\n"
     }
     if (userStats.element){
         // TODO: show that they are of a certain element
