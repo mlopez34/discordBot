@@ -2873,10 +2873,10 @@ module.exports = {
             areawidedmg: {
                 areawide: true,
                 name: "eradicate",
-                increaseDamagePerTurn: 750,
+                increaseDamagePerTurn: 700,
                 dmg: 100,
                 damageToResetTo: 100,
-                mdPercentage: .5,
+                mdPercentage: .4,
                 type: "earth"
             }
         },
@@ -8211,6 +8211,12 @@ Hoover Dam
                         name: "Taco Thief",
                         abilities: ["attack", "attack", "flameblast", "flameblast", "orchatasip"],
                         buffs: [],
+                        keystoneStats: {
+                            hp: [1200, 3500, 6200, 10000, 15000 ],
+                            attackDmg: [300, 500, 900, 1500, 2300],
+                            magicDmg: [300, 500, 900, 1500, 2300],
+                            abilities: []
+                        },
                         effectsOnDeath: [
                             "explode"
                         ],
@@ -8229,6 +8235,12 @@ Hoover Dam
                         name: "Taco Bandit",
                         abilities: ["attack", "attack", "enemyshock", "enemyshock", "orchatasip"],
                         buffs: [],
+                        keystoneStats: {
+                            hp: [1200, 3500, 6200, 10000, 15000 ],
+                            attackDmg: [300, 500, 900, 1500, 2300],
+                            magicDmg: [300, 500, 900, 1500, 2300],
+                            abilities: []
+                        },
                         hpPerPartyMember: 180,
                         adPerPartyMember: 14,
                         mdPerPartyMember: 14,
@@ -8255,6 +8267,12 @@ Hoover Dam
                                 }
                             }
                         ],
+                        keystoneStats: {
+                            hp: [1200, 3500, 6200, 10000, 15000 ],
+                            attackDmg: [300, 500, 900, 1500, 2300],
+                            magicDmg: [300, 500, 900, 1500, 2300],
+                            abilities: []
+                        },
                         effectsOnDeath: [
                             "explode"
                         ],
@@ -8284,6 +8302,12 @@ Hoover Dam
                                 }
                             }
                         ],
+                        keystoneStats: {
+                            hp: [1200, 3500, 6200, 10000, 15000 ],
+                            attackDmg: [300, 500, 900, 1500, 2300],
+                            magicDmg: [300, 500, 900, 1500, 2300],
+                            abilities: []
+                        },
                         hpPerPartyMember: 850,
                         adPerPartyMember: 18,
                         mdPerPartyMember: 18,
@@ -9448,7 +9472,7 @@ Hoover Dam
             12: {
                 challengeId: "emperor",
                 timed: true,
-                description: "**The High Council:** \n**Darkness** - A mamber of the high council becomes tainted with darkness and gains *Energy* and their abilities become empowered. Darkness can only be removed upon taking 25% of the member's health from the point of obtaining darkness\n**Energy** - upon reaching full energy the member of the high council unleashes eradicate every turn increasing in damage every turn until darkness is removed - each subsequent darkness requires one less turn to reach full energy\n**Puncture** - Deals 200 damage per turn, increases damage taken by 5% every turn, cast upon losing darkness\n**Strength** - Upon losing darkness the member of the high council gains +20% damage dealt permanently\Balrogue > **Lesion** - Deals low damage for 30 turns\n**Summon Knights** (Darkness Only) - summon a knight per number of lesions on the group\nEmperor > **Mighty Weapon** - Empowers his weapon and deals 50% more damage\n>**Wound** - Deals high physical damage on a random target for 6 turns\nMystical Fairy > **Blast** - deal moderate magical damage on a random target\n**Summon Worshipper** > Summon a worshipper that will heal the lowest health member for 10% of their total health\n**Summon Cursed Guardians** (Darkness only) > Summons two cursed guardians that radiate magic damage on the group until killed\nReckless Barbarian > **Reflect Shield** - reflects 20% damage dealt back to the attacker | 100% aoe damage reflected back\n**Reflect Barrier** (Darkness only) - reflects 20% of damage dealt back to the group | 100% aoe damage reflected back",
+                description: "**The High Council:** \n**Darkness** - A mamber of the high council becomes tainted with darkness and gains *Energy* and their abilities become empowered. Darkness can only be removed upon taking 25% of the member's health from the point of obtaining darkness\n**Energy** - upon reaching full energy the member of the high council unleashes eradicate every turn increasing in damage every turn until darkness is removed - each subsequent darkness requires one less turn to reach full energy\n**Puncture** - Deals 200 damage per turn, each tick gives a stack of *debilitate*, cast upon losing darkness\n**Debilitate** - increases all damage taken by 5% per stack\n**Strength** - Upon losing darkness the member of the high council gains +20% damage dealt permanently\nBalrogue > **Lesion** - DOT Deals low damage for 30 turns\n**Summon Knights** (Darkness Only) - summon a knight per number of lesions on the group, cast every 3 turns until darkness is removed\nEmperor > **Mighty Weapon** - Empowers his weapon and deals 50% more damage\n>**Wound** - Deals high physical damage on a random target for 6 turns\nMystical Fairy > **Blast** - deal moderate magical damage on a random target\n**Summon Worshipper** > Summon a worshipper that will heal the lowest health member for 10% of their total health every 2 turns\n**Summon Cursed Guardians** (Darkness only) > Summons two cursed guardians that become stronger each turn\nReckless Barbarian > **Reflect Shield** - reflects 15% damage dealt back to the attacker | 50% aoe damage reflected back to the attacker\n**Reflect Barrier** (Darkness only) - reflects 15% of damage dealt back to the group | 50% aoe damage reflected back to the group",
                 timedPerTurn: 360000,
                 points: 27901,
                 xppoints: 5120,
