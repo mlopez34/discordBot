@@ -1796,12 +1796,12 @@ module.exports.useRpgAbility = function(message, args){
                                 }
                             }
                             if (membersAlive == activeRPGEvents["rpg-"+idOfEventUserIsIn].memberTurnAbilities.length){
-                                //try{
+                                try{
                                     processRpgTurn(message, activeRPGEvents["rpg-"+idOfEventUserIsIn]);
-                                //}
-                                //catch(err){
-                                    //console.log(err);
-                                //}
+                                }
+                                catch(err){
+                                    console.log(err);
+                                }
                             }
                         }else{
                             message.channel.send("invalid ability or already used ability");
@@ -1876,7 +1876,7 @@ function validateTarget(target, abilityToUse, event, caster){
 }
 
 function processRpgTurn(message, event){
-    //try{
+    try{
         var order = [];
         recalculateStatBuffs(event)
         var passiveEffectsString = processPassiveEffects(event);
@@ -1968,10 +1968,10 @@ function processRpgTurn(message, event){
                 message.channel.send("exception : " + exception)
             }
         }
-    //}
-    //catch(ex){
-        //message.channel.send("turn processing exception : " + -caex)
-    //}
+    }
+    catch(ex){
+        message.channel.send("turn processing exception : " + ex)
+    }
 }
 
 function cleanupEventEnded(event){
@@ -4750,9 +4750,7 @@ function processStrength(event, target, dotBeingRemoved, abilityIdOfBuff){
 function processReflectEffects(event, target, damageToDealToPlayer, damageCaster, abilityType){
     // check if the target is enemy or player
     var reflectString = ""
-    if (target > 1000){
-        // target is a player - means reflect buff is on player - dont implement for now
-    }else{
+    if (target < 1000){
         for (var b in event.enemies[target].buffs){
             var buffToCheck = event.enemies[target].buffs[b]
             // if the target has a reflection buff then
@@ -4811,6 +4809,8 @@ function processReflectEffects(event, target, damageToDealToPlayer, damageCaster
                 }
             }
         }
+    }else{
+        // target is a player - means reflect buff is on player - dont implement for now
     }
 
     return reflectString
