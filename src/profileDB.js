@@ -1403,6 +1403,34 @@ module.exports.consumeFlask = function(discordId, cb){
     });
 }
 
+module.exports.updateUserRPGExperience = function(rpgpoints, rpglevel, userId, firstRPGExperienceGain, tacoRewards, cb){
+    var query= "";
+    if (!firstRPGExperienceGain){
+        if (tacoRewards){
+            query = 'update ' + config.profileTable + ' set tacos=tacos+$4, rpgpoints=$1, rpglevel=$3 where discordid=$2'
+        }else{
+            query = 'update ' + config.profileTable + ' set rpgpoints=$1, rpglevel=$3 where discordid=$2'
+        }
+    }
+    else{
+        if (tacoRewards){
+            query = 'update ' + config.profileTable + ' set tacos=tacos+$4, rpgpoints=rpgpoints+$1, rpglevel=$3 where discordid=$2'
+        }else{
+            query = 'update ' + config.profileTable + ' set rpgpoints=rpgpoints+$1, rpglevel=$3 where discordid=$2'
+        }
+    }
+    db.none(query, [rpgpoints, userId, rpglevel, tacoRewards])
+    .then(function () {
+    cb(null, {
+        status: 'success',
+        message: 'added rpg experience'
+        });
+    })
+    .catch(function (err) {
+        cb(err);
+    });
+}
+
 module.exports.updateUserExperience = function(experience, level, userId, firstExperienceGain, tacoRewards, cb){
     var query= "";
     if (!firstExperienceGain){

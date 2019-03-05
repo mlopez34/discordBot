@@ -321,7 +321,7 @@ module.exports.initializeCraftingRecipes = function(recipes, itemsMapById, callb
 
             var recipeConverted = createRecipeObject(recipe, itemToCraftId )
             availableRecipesByShortName[recipe.recipeshortname] = recipeConverted
-            if (raritylevel == "rare"){
+            if (raritylevel == "rare" || raritylevel == "rare+" ){
                 if (recipesToCraftMap.rares[recipeCraftingLevel]){
                     recipesToCraftMap.rares[recipeCraftingLevel].push(recipeConverted)
                 }

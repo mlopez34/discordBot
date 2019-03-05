@@ -2792,15 +2792,7 @@ module.exports = {
         /*
         challenge 12
         */
-        // buff that allows caster to cast empowered abilities
-        // gives buff that starts at n-1 each turn when that buff runs out
-        // if the caster has darkness then start casting increasing aoe 500->800->1100 on current top lvl
-        // after taking 25% damage from point of getting buff remove it
-        // on remove the caster gains strength 10% more damage
-        // on remove - jumps to another boss
-        // on remove cast puncture on one player
         darknessHandler: {
-            
             transferAtHpPercentage: 1,
             buffToHandleId: "darkness",
             onNewCastAddBuff: "energy",
@@ -2881,9 +2873,6 @@ module.exports = {
             }
         },
 
-        // small dot that leaves +5% damage taken
-        // on bandaid jumps to someone else, never goes away
-        // casts upon darkness transfer
         puncture: {
             name: "Puncture",
             onDeathEffect: true,
@@ -2943,7 +2932,7 @@ module.exports = {
             healMaxHpPercentage: 0.1,
             heal: 1,
             everyNTurns: 2,
-            afterNTurns: 2,
+            afterNTurns: 1,
             currentTurn: 0,
             listOfPossibleTarget: [
                 "Emperor Zheng",
@@ -5394,9 +5383,13 @@ Hoover Dam
                     }
                 ],
                 keystoneStats: {
-                    hp: [1200, 3500, 6200, 10000, 15000 ],
-                    attackDmg: [300, 500, 900, 1500, 2300],
-                    magicDmg: [300, 500, 900, 1500, 2300],
+                    frenzy: {
+                        attackDmgPlus : [755, 990, 1240, 1430, 1750],
+                        magicDmgPlus : [755, 990, 1240, 1430, 1750]
+                    },
+                    hp: [13500, 20900, 29900, 41000, 57000 ],
+                    attackDmg: [700, 1100, 1500, 2100, 2500],
+                    magicDmg: [700, 1100, 1500, 2100, 2500],
                     abilities: []
                 },
                 abilityOrder: [
@@ -5459,9 +5452,13 @@ Hoover Dam
 
                 ],
                 keystoneStats: {
-                    hp: [1200, 3500, 6200, 10000, 15000 ],
-                    attackDmg: [300, 500, 900, 1500, 2300],
-                    magicDmg: [300, 500, 900, 1500, 2300],
+                    frenzy: {
+                        attackDmgPlus : [755, 990, 1240, 1430, 1750],
+                        magicDmgPlus : [755, 990, 1240, 1430, 1750]
+                    },
+                    hp: [13500, 20900, 29900, 41000, 57000 ],
+                    attackDmg: [700, 1100, 1500, 2100, 2500],
+                    magicDmg: [700, 1100, 1500, 2100, 2500],
                     abilities: []
                 },
                 abilityOrder: [
@@ -5515,9 +5512,13 @@ Hoover Dam
                     }
                 ],
                 keystoneStats: {
-                    hp: [1200, 3500, 6200, 10000, 15000 ],
-                    attackDmg: [300, 500, 900, 1500, 2300],
-                    magicDmg: [300, 500, 900, 1500, 2300],
+                    frenzy: {
+                        attackDmgPlus : [250, 300, 350, 400, 500],
+                        magicDmgPlus : [850, 1000, 1250, 1400, 1600]
+                    },
+                    hp: [10500, 15900, 21900, 27000, 37000 ],
+                    attackDmg: [700, 1100, 1400, 1700, 2100],
+                    magicDmg: [700, 1100, 1400, 1700, 2100],
                     abilities: []
                 },
                 abilityOrder: [
@@ -5763,9 +5764,13 @@ Hoover Dam
                     }
                 ],
                 keystoneStats: {
-                    hp: [1200, 3500, 6200, 10000, 15000 ],
-                    attackDmg: [300, 500, 900, 1500, 2300],
-                    magicDmg: [300, 500, 900, 1500, 2300],
+                    frenzy: {
+                        attackDmgPlus : [3100, 4100, 5100, 6100, 7100],
+                        magicDmgPlus : [3100, 4100, 5100, 6100, 7100]
+                    },
+                    hp: [ 19500, 25900, 39900, 51000, 77000 ],
+                    attackDmg: [700, 1100, 1500, 2100, 2500],
+                    magicDmg: [700, 1100, 1500, 2100, 2500],
                     abilities: []
                 },
                 abilityOrder: [
@@ -5824,9 +5829,13 @@ Hoover Dam
                     }
                 ],
                 keystoneStats: {
-                    hp: [1200, 3500, 6200, 10000, 15000 ],
-                    attackDmg: [300, 500, 900, 1500, 2300],
-                    magicDmg: [300, 500, 900, 1500, 2300],
+                    frenzy: {
+                        attackDmgPlus : [3100, 4100, 5100, 6100, 7100],
+                        magicDmgPlus : [3100, 4100, 5100, 6100, 7100]
+                    },
+                    hp: [ 19500, 25900, 39900, 51000, 77000 ],
+                    attackDmg: [700, 1100, 1500, 2100, 2500],
+                    magicDmg: [700, 1100, 1500, 2100, 2500],
                     abilities: []
                 },
                 abilityOrder: [
@@ -5886,9 +5895,13 @@ Hoover Dam
                     }
                 ],
                 keystoneStats: {
-                    hp: [1200, 3500, 6200, 10000, 15000 ],
-                    attackDmg: [300, 500, 900, 1500, 2300],
-                    magicDmg: [300, 500, 900, 1500, 2300],
+                    frenzy: {
+                        attackDmgPlus : [3100, 4100, 5100, 6100, 7100],
+                        magicDmgPlus : [3100, 4100, 5100, 6100, 7100]
+                    },
+                    hp: [ 19500, 25900, 39900, 51000, 77000 ],
+                    attackDmg: [700, 1100, 1500, 2100, 2500],
+                    magicDmg: [700, 1100, 1500, 2100, 2500],
                     abilities: []
                 },
                 abilityOrder: [
@@ -6443,9 +6456,13 @@ Hoover Dam
                     }
                 ],
                 keystoneStats: {
-                    hp: [1200, 3500, 6200, 10000, 15000 ],
-                    attackDmg: [300, 500, 900, 1500, 2300],
-                    magicDmg: [300, 500, 900, 1500, 2300],
+                    frenzy: {
+                        attackDmgPlus : [120, 200, 300, 540, 790],
+                        magicDmgPlus : [120, 200, 300, 540, 790]
+                    },
+                    hp: [11500, 15900, 24900, 31000, 47000 ],
+                    attackDmg: [800, 1300, 1700, 2500, 3500],
+                    magicDmg: [800, 1300, 1700, 2500, 3500],
                     abilities: []
                 },
                 hpPerPartyMember: 0,
@@ -6477,9 +6494,13 @@ Hoover Dam
                     }
                 ],
                 keystoneStats: {
-                    hp: [1200, 3500, 6200, 10000, 15000 ],
-                    attackDmg: [300, 500, 900, 1500, 2300],
-                    magicDmg: [300, 500, 900, 1500, 2300],
+                    frenzy: {
+                        attackDmgPlus : [120, 200, 300, 540, 790],
+                        magicDmgPlus : [120, 200, 300, 540, 790]
+                    },
+                    hp: [11500, 15900, 24900, 31000, 47000 ],
+                    attackDmg: [800, 1300, 1700, 2500, 3500],
+                    magicDmg: [800, 1300, 1700, 2500, 3500],
                     abilities: []
                 },
                 endOfTurnEvents : [
@@ -6513,9 +6534,13 @@ Hoover Dam
                     }
                 ],
                 keystoneStats: {
-                    hp: [1200, 3500, 6200, 10000, 15000 ],
-                    attackDmg: [300, 500, 900, 1500, 2300],
-                    magicDmg: [300, 500, 900, 1500, 2300],
+                    frenzy: {
+                        attackDmgPlus : [120, 200, 300, 540, 790],
+                        magicDmgPlus : [120, 200, 300, 540, 790]
+                    },
+                    hp: [11500, 15900, 24900, 31000, 47000 ],
+                    attackDmg: [800, 1300, 1700, 2500, 3500],
+                    magicDmg: [800, 1300, 1700, 2500, 3500],
                     abilities: []
                 },
                 endOfTurnEvents : [
@@ -8545,6 +8570,7 @@ Hoover Dam
                 points: 23,
                 xppoints: 23,
                 lootcount: 5,
+                keystonePoints: [300, 2100, 5030, 10030, 15030],
                 difficulty: 1
             },
             2: {
@@ -8717,8 +8743,10 @@ Hoover Dam
                 points: 49,
                 xppoints: 49,
                 lootcount: 5,
+                keystonePoints: [700, 1300, 3030, 6030, 9030],
                 difficulty: 2
             },
+            // keystone 5: decay lasts 10 turns
             3: {
                 challengeId: "romansoldier",
                 keystoneUnlockName: "Roman Keystone",
@@ -8752,7 +8780,7 @@ Hoover Dam
                         abilities: ["attack", "attack", "elixir", "elixir", "orchatasip"],
                         buffs: [],
                         keystoneStats: {
-                            hp: [1200, 3500, 6200, 10000, 15000 ],
+                            hp: [1100, 3400, 5200, 8000, 13000 ],
                             attackDmg: [300, 500, 900, 1500, 2300],
                             magicDmg: [300, 500, 900, 1500, 2300],
                             abilities: []
@@ -8843,7 +8871,7 @@ Hoover Dam
                         abilities: ["attack", "attack", "elixir", "elixir", "orchatasip"],
                         buffs: [],
                         keystoneStats: {
-                            hp: [1200, 3500, 6200, 10000, 15000 ],
+                            hp: [1100, 3400, 5200, 8000, 13000 ],
                             attackDmg: [300, 500, 900, 1500, 2300],
                             magicDmg: [300, 500, 900, 1500, 2300],
                             abilities: []
@@ -8863,8 +8891,10 @@ Hoover Dam
                 points: 93,
                 xppoints: 93,
                 lootcount: 6,
+                keystonePoints: [600, 2000, 2730, 5030, 7030],
                 difficulty: 3
             },
+            // keystone 5: bombs go out to all players
             4: {
                 challengeId: "dictator",
                 keystoneUnlockName: "Dictator Keystone",
@@ -9036,8 +9066,10 @@ Hoover Dam
                 points: 139,
                 xppoints: 139,
                 lootcount: 7,
+                keystonePoints: [500, 1700, 2530, 4530, 6030],
                 difficulty: 5,
             },
+            // keystone 5: 
             5: {
                 challengeId: "cheftrio",
                 keystoneUnlockName: "Chef Keystone",
@@ -9242,8 +9274,10 @@ Hoover Dam
                 points: 281,
                 xppoints: 241,
                 lootcount: 9,
+                keystonePoints: [400, 1500, 2330, 4230, 5530],
                 difficulty: 8
             },
+            // keystone 5: killing same crystal will give the boss 30% more damage done
             6: {
                 // 4 energy crystals
                 // shadowbolt, and regular attack
@@ -9330,9 +9364,11 @@ Hoover Dam
                 ],
                 points: 529,
                 xppoints: 370,
+                keystonePoints: [300, 1300, 2030, 4030, 5030],
                 lootcount: 10,
                 difficulty: 15
             },
+            // keystone 5: vampires attempt to heal gatekeeper each turn after entomb
             7: {
                 challengeId: "gatekeeper",
                 keystoneUnlockName: "Gatekeeper Keystone",
@@ -9340,8 +9376,9 @@ Hoover Dam
                 timedPerTurn: 180000,
                 points: 1000,
                 xppoints: 480,
+                keystonePoints: [300, 1300, 2030, 4030, 5030],
                 lootcount: 10,
-                difficulty: 19,
+                difficulty: 18,
                 enemies: [
                     {
                         name: "The Gatekeeper",
@@ -9487,6 +9524,7 @@ Hoover Dam
                     }
                 ],
             },
+            // keystone 5: summon during < 30%
             8: {
                 challengeId: "archvampire",
                 keystoneUnlockName: "Archvampire Keystone",
@@ -9494,7 +9532,8 @@ Hoover Dam
                 timedPerTurn: 180000,
                 points: 1800,
                 xppoints: 710,
-                difficulty: 29,
+                keystonePoints: [270, 1100, 1830, 3730, 4530],
+                difficulty: 25,
                 lootcount: 10,
                 enemies: [
                     {
@@ -9681,6 +9720,7 @@ Hoover Dam
                     }
                 ]
             },
+            // keystone 5: summons at 75% 50% 25%
             9: {
                 challengeId: "corruptedovermind",
                 keystoneUnlockName: "Corrupted Keystone",
@@ -9688,7 +9728,8 @@ Hoover Dam
                 timedPerTurn: 180000,
                 points: 2901,
                 xppoints: 1500,
-                difficulty: 40,
+                difficulty: 37,
+                keystonePoints: [300, 1300, 2030, 4030, 5030],
                 lootcount: 11,
                 enemies: [
                     {
@@ -9880,15 +9921,17 @@ Hoover Dam
                     }
                 ],
             },
+            // keystone 5: 3 players get burst
             10: {
                 challengeId: "anomaly",
                 keystoneUnlockName: "Anomaly Keystone",
                 timed: true,
                 timedPerTurn: 180000,
-                points: 7901,
+                points: 4901,
                 xppoints: 2140,
                 lootcount: 12,
                 difficulty: 55,
+                keystonePoints: [250, 1100, 1830, 3530, 4030],
                 enemies: [
                     {
                         name: "Asteroid Golem",
@@ -10008,15 +10051,17 @@ Hoover Dam
                     }
                 ]
             },
+            // transition 3 subsequent arrows turns, shadowburst leaves a dot, reflect after maniac 
             11: {
                 keystoneUnlockName: "Aramis Keystone",
                 challengeId: "aramis",
                 timed: true,
                 timedPerTurn: 360000,
-                points: 10901,
+                points: 7001,
                 xppoints: 3573,
                 lootcount: 13,
                 difficulty: 70,
+                keystonePoints: [250, 1100, 1830, 3530, 4030],
                 enemies: [
                     {
                         name: "D'Artagnan",
@@ -10064,7 +10109,6 @@ Hoover Dam
                             "elementalOrderPrepare"
                         ],
                         effectsOnDeath: [
-                            // TODO: Transfer pillarRevive, hammerdownProtocol etc to athos
                             "transferDartagnanAbilities",
                         ],
                         hp: 54600,
@@ -10080,33 +10124,17 @@ Hoover Dam
                     }
                 ]
             },
-            // empowering makes them deal 10% more damage + gain energy faster
-            // HP of all of them ~48k
-            // HP of summoned healer ~10k
-            // one melees(medium) and hits random player for 25% of melee (impale)
-            // one melees(weak) and deals status to random player (75%)
-            // one melees(hard) and puts ice dot on player (no bandaid)
-            // one hits random deals aoe
-            // HP of adds summoned by sand ~ 10k
-            // energy gained max should start at 7 turns (21 turns to kill one)
-            // 300, 600, 900, 1200, 1500, 1800 aoe hits after full energy from empowered
-            // 1, 9, 9, 9, 7, 6, 5, 5, 4, 3, 3
-            //   50, 40, 30, 23, 17, 12, 7, 
-            // 5 * 180 = 
-            // total 180 turns of debuff
-            // 6 turns when there's 3 left
-            // each time spirit is forced out create a new debuff - each turn adds 5% dmg taken
-            // dot deals increasing damage, bandaid forces it onto another player
-            // 
+            // keystone 5: 
             12: {
                 challengeId: "emperor",
                 keystoneUnlockName: "Emperor Keystone",
                 timed: true,
                 description: "**The High Council:** \n**Darkness** - A member of the high council becomes tainted with darkness and gains *Energy* and their abilities become empowered. Darkness can only be removed upon taking 25% of the member's health from the point of obtaining darkness\n**Energy** - upon reaching full energy the member of the high council unleashes eradicate every turn increasing in damage every turn until darkness is removed - each subsequent darkness requires one less turn to reach full energy\n**Puncture** - Deals 200 damage per turn, each tick gives a stack of *debilitate*, cast upon losing darkness\n**Debilitate** - increases all damage taken by 5% per stack\n**Strength** - Upon losing darkness the member of the high council gains +20% damage dealt permanently\nBalrogue > **Lesion** - DOT Deals low damage for 30 turns\n**Summon Knights** (Darkness Only) - summon a knight per number of lesions on the group, cast every 3 turns until darkness is removed\nEmperor > **Mighty Weapon** - Empowers his weapon and deals 50% more damage\n>**Wound** - Deals high physical damage on a random target for 6 turns\nMystical Fairy > **Blast** - deal moderate magical damage on a random target\n**Summon Worshipper** > Summon a worshipper that will heal the lowest health member for 10% of their total health every 2 turns\n**Summon Cursed Guardians** (Darkness only) > Summons two cursed guardians that become stronger each turn\nReckless Barbarian > **Reflect Shield** - reflects 15% damage dealt back to the attacker | 50% aoe damage reflected back to the attacker\n**Reflect Barrier** (Darkness only) - reflects 15% of damage dealt back to the group | 50% aoe damage reflected back to the group",
                 timedPerTurn: 360000,
-                points: 27901,
+                points: 12001,
+                keystonePoints: [250, 1100, 1830, 3530, 4030],
                 xppoints: 5120,
-                difficulty: 85,
+                difficulty: 88,
                 enemies: [
                     {
                         name: "Balrogue",
@@ -10255,8 +10283,6 @@ Hoover Dam
                             "eradicate",
                             "summonCursedGuardian",  // D
                             "summonCursedGuardian" // D
-                            // summon healer (lasts 2 turns) when not empowered
-                            // if empowered summon 2 adds that deal aoe
                         ],
                         effectsOnDeath: [
                             "puncture"
@@ -10305,7 +10331,6 @@ Hoover Dam
                             0, 0, 0
                         ],
                         endOfTurnEvents : [
-                            // when empowered reflect damage back 25%
                             "reflectShield",
                             "eradicate",
                             "reflectBarrier" //D every 3 turns, expires after 3 turns
@@ -10324,17 +10349,6 @@ Hoover Dam
                         difficulty: "boss",
                         element: "normal"
                     }
-                    // darkness buff starts on high melee
-                    // darkness is removed when taking 25% HP of current HP
-                    // darkness goes to next highest HP enemy - cannot skip 4 in a row
-                    // when darkness is removed it also gives +10% damage buff
-                    // when darkness is removed it also puts dot on random player
-                    // dot deals minor dmg, and gives +5% damage taken every turn
-                    // when dot is bandaided it jumps to another different player
-                    // if no other players available, stays on them
-                    // darkness gives buff that starts at x turns (6 initially)
-                    // everytime they get darkness again it starts off at x-1
-                    //
                 ]
             }
         }

@@ -1213,6 +1213,7 @@ module.exports.getUserWearingStats = function(message, discordUserId, userData, 
     profileDB.getUserItems(discordUserId, function(err, inventoryResponse){
         if (err){
             console.log(err);
+            cb(err)
         }
         else{
             // console.log(inventoryResponse.data);
@@ -1240,6 +1241,7 @@ module.exports.getUserWearingStats = function(message, discordUserId, userData, 
             profileDB.getUserWearInfo(discordUserId, function(getWearErr, getWearRes){
                 if (getWearErr){
                     console.log(getWearErr);
+                    cb(getWearErr)
                 }
                 else{
                     // console.log(getWearRes);
@@ -1271,6 +1273,7 @@ module.exports.getUserWearingStats = function(message, discordUserId, userData, 
                         profileDB.getItemByIdsWear(slot1Id, slot2Id, slot3Id, function(error, itemResponse){
                             if (error){
                                 console.log(error);
+                                cb(error)
                             }
                             else{
                                 // console.log(itemResponse);

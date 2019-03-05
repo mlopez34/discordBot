@@ -878,14 +878,13 @@ module.exports.sorryCommand = function(message){
                                             //// console.log(updateResponse);
                                             exports.setCommandLock("sorry", discordUserId, false)
                                             ///// for temple recipes
-                                            if (mentionedUser.bot){
-                                                var recipeParams = {
-                                                    userLevel: userLevel,
-                                                    discordUserId: discordUserId,
-                                                    templeLevel: sorryResponse.data.templelevel
-                                                }
-                                                crafting.rollForRecipes(message, recipeParams)
+                                            var recipeParams = {
+                                                userLevel: userLevel,
+                                                discordUserId: discordUserId,
+                                                templeLevel: sorryResponse.data.templelevel
                                             }
+                                            crafting.rollForRecipes(message, recipeParams)
+                                            
                                             var experienceFromItems = wearRes.sorryCommandExperienceGain ? wearRes.sorryCommandExperienceGain : 0;
                                             experience.gainExperience(message, message.author,  (EXPERIENCE_GAINS.sorry + experienceFromItems) , sorryResponse);
                                             stats.statisticsManage(discordUserId, "sorrycount", 1, function(staterr, statSuccess){
@@ -3230,265 +3229,256 @@ module.exports.scavangeCommand = function (message){
                         oneHourAgo = new Date(oneHourAgo.setSeconds(oneHourAgo.getSeconds() + secondsToRemove));
     
                         if ( oneHourAgo > getUserResponse.data.lastscavangetime ){
-                            profileDB.getItemData(function(err, getItemResponse){
-                                if (err){
-                                    // console.log(err);
+                            var ARTIFACT_MIN_ROLL = 9995;
+                            var ANCIENT_MAX_ROLL = 9995
+                            var ANCIENT_MIN_ROLL = 9975;
+                            var RARE_MAX_ROLL = 9975;
+                            var RARE_MIN_ROLL = 9800;
+                            var UNCOMMON_MAX_ROLL = 9800;
+                            var UNCOMMON_MIN_ROLL = 8750;
+                            var COMMON_MAX_ROLL = 8750;
+                            var UNCOMMON_ITEMS_TO_OBTAIN = 1;
+                            var COMMON_ITEMS_TO_OBTAIN = 1;
+                            var TACOS_FOUND_MULTIPLIER = 1;
+                            var EXPERIENCE_MULTIPLIER = 1;
+
+                            if (getUserResponse.data.pickaxe == "improved"){
+                                COMMON_ITEMS_TO_OBTAIN = 2
+                                UNCOMMON_ITEMS_TO_OBTAIN = 1
+                                TACOS_FOUND_MULTIPLIER = 3
+                                ARTIFACT_MIN_ROLL = 9992
+                                ANCIENT_MAX_ROLL = 9992;
+                                ANCIENT_MIN_ROLL = 9955;
+                                RARE_MAX_ROLL = 9955;
+                                RARE_MIN_ROLL = 9750;
+                                UNCOMMON_MAX_ROLL = 9750;
+                                EXPERIENCE_MULTIPLIER = 2;
+
+                            }
+                            else if (getUserResponse.data.pickaxe == "master"){
+                                ARTIFACT_MIN_ROLL = 9985
+                                ANCIENT_MAX_ROLL = 9985;
+                                ANCIENT_MIN_ROLL = 9940;
+                                RARE_MAX_ROLL = 9940;
+                                RARE_MIN_ROLL = 9725;
+                                UNCOMMON_MAX_ROLL = 9725;
+                                COMMON_ITEMS_TO_OBTAIN = 4
+                                UNCOMMON_ITEMS_TO_OBTAIN = 2
+                                TACOS_FOUND_MULTIPLIER = 6
+                                EXPERIENCE_MULTIPLIER = 6
+                                rollsCount++
+                            }
+                            else if (getUserResponse.data.pickaxe == "ethereal"){
+                                ARTIFACT_MIN_ROLL = 9978
+                                ANCIENT_MAX_ROLL = 9978;
+                                ANCIENT_MIN_ROLL = 9925;
+                                RARE_MAX_ROLL = 9925;
+                                RARE_MIN_ROLL = 9700;
+                                UNCOMMON_MAX_ROLL = 9700;
+                                COMMON_ITEMS_TO_OBTAIN = 12
+                                UNCOMMON_ITEMS_TO_OBTAIN = 4
+                                TACOS_FOUND_MULTIPLIER = 20
+                                EXPERIENCE_MULTIPLIER = 20
+                                rollsCount++
+                                var extraExtraRoll = Math.floor(Math.random() * 10000) + 1;
+                                if (extraExtraRoll > 7500){
+                                    rollsCount++
+                                }
+                            }
+
+                            var commonItems = [];
+                            var uncommonItems = [];
+                            var rareItems = [];
+                            var ancientItems = [];
+                            var artifactItems = [];
+                            // TODO: add check for rarity chance % to be > 0 
+                            for (var item in allItems){
+                                if (allItems[item].itemraritycategory == "common"){
+                                    commonItems.push(allItems[item]);
+                                }
+                                else if(allItems[item].itemraritycategory == "uncommon"){
+                                    uncommonItems.push(allItems[item]);
+                                }
+                                else if(allItems[item].itemraritycategory == "rare"
+                                    && allItems[item].fromscavenge == true){
+                                    rareItems.push(allItems[item]);
+                                }
+                                else if(allItems[item].itemraritycategory == "ancient"
+                                    && allItems[item].fromscavenge == true){
+                                    ancientItems.push(allItems[item]);
+                                }
+                                else if(allItems[item].itemraritycategory == "artifact"
+                                    && allItems[item].fromscavenge == true){
+                                    artifactItems.push(allItems[item]);
+                                }
+                            }
+                            // roll to randomly get only 5 amulets in the pool of amulets
+                            var poolOfAmulets = []
+                            for (var item in allItems){
+                                if(allItems[item].itemraritycategory == "amulet" 
+                                && allItems[item].amuletsource == "scavenge"){
+                                    poolOfAmulets.push(allItems[item]);
+                                }
+                            }
+                            for (var i = 0; i < 5; i++){
+                                var amuletRoll = Math.floor(Math.random() * poolOfAmulets.length - 1)
+                                ancientItems.push(poolOfAmulets[amuletRoll])
+                            }
+                            
+                            // roll rarity, roll item from rarity
+                            var gotUncommon = false;
+                            var itemsObtainedArray = [];
+                            var highestRarityFound = 1
+            
+                            if (discordUserId == "248946965633564673"){
+                                if (rollsCount < 4){
+                                    rollsCount++
+                                }
+                            }
+
+                            for (var i = 0; i < rollsCount; i++){
+                                var rarityRoll = Math.floor(Math.random() * 10000) + 1;
+                                var rarityString = "";
+                                // console.log(rarityRoll);
+                                if (!gotUncommon && rollsCount > 4){
+                                    // guaranteed more than uncommon +
+                                    rarityRoll = Math.floor(Math.random() * 1500) + 8501;
+                                    if (discordUserId == "248946965633564673"){
+                                        rarityRoll = 9965
+                                    }
+                                    gotUncommon = true;
+                                }
+                                else if(!gotUncommon && rollsCount > 3){
+                                    // guaranteed uncommon +
+                                    rarityRoll = Math.floor(Math.random() * 2000) + 8001;
+                                    if (discordUserId == "248946965633564673"){
+                                        rarityRoll = 9900
+                                    }
+                                    gotUncommon = true;
+                                }
+                                if (rarityRoll > ARTIFACT_MIN_ROLL){
+                                    rarityString = "artifact"
+                                    var itemRoll = Math.floor(Math.random() * artifactItems.length);
+                                    // console.log(artifactItems[itemRoll]);
+                                    itemsObtainedArray.push(artifactItems[itemRoll]);
+                                    if (highestRarityFound <= 4){
+                                        highestRarityFound = 5;
+                                    }
+                                }
+                                else if(rarityRoll > ANCIENT_MIN_ROLL && rarityRoll <= ANCIENT_MAX_ROLL){
+                                    rarityString = "ancient"
+                                    var itemRoll = Math.floor(Math.random() * ancientItems.length);
+                                    // console.log(ancientItems[itemRoll]);
+                                    itemsObtainedArray.push(ancientItems[itemRoll])
+                                    if (highestRarityFound <= 3){
+                                        highestRarityFound = 4;
+                                    }
+                                }
+                                else if(rarityRoll > RARE_MIN_ROLL && rarityRoll <= RARE_MAX_ROLL){
+                                    rarityString = "rare"
+                                    var itemRoll = Math.floor(Math.random() * rareItems.length);
+                                    // console.log(rareItems[itemRoll]);
+                                    itemsObtainedArray.push(rareItems[itemRoll]);
+                                    if (highestRarityFound <= 2){
+                                        highestRarityFound = 3;
+                                    }
+                                }
+                                else if (rarityRoll > UNCOMMON_MIN_ROLL && rarityRoll <= UNCOMMON_MAX_ROLL){
+                                    rarityString = "uncommon"
+                                    var itemRoll = Math.floor(Math.random() * uncommonItems.length);
+                                    // console.log(uncommonItems[itemRoll]);
+                                    uncommonItems[itemRoll].itemAmount = UNCOMMON_ITEMS_TO_OBTAIN
+                                    itemsObtainedArray.push( uncommonItems[itemRoll] );
+                                    if (highestRarityFound <= 1){
+                                        highestRarityFound = 2;
+                                    }
+                                }
+                                else {
+                                    rarityString = "common"
+                                    var itemRoll = Math.floor(Math.random() * commonItems.length);
+                                    // console.log(commonItems[itemRoll]);
+                                    commonItems[itemRoll].itemAmount = COMMON_ITEMS_TO_OBTAIN
+                                    itemsObtainedArray.push( commonItems[itemRoll] );
+                                }
+                            }
+                            if (tacoRoll > SCAVENGE_TACO_FIND_CHANCE_HIGHER){
+                                tacosFound = 20 * TACOS_FOUND_MULTIPLIER;
+                            }
+                            else if(tacoRoll > SCAVENGE_TACO_FIND_CHANCE){
+                                tacosFound = 10 * TACOS_FOUND_MULTIPLIER;
+                            }
+                            // send the items to be written all at once
+                            addToUserInventory(discordUserId, itemsObtainedArray);
+
+                            // send message of all items obtained
+                            scavengeEmbedBuilder(message, itemsObtainedArray, tacosFound);
+                            // update lastscavengetime
+                            profileDB.updateLastScavengeTime(discordUserId, function(updateLSErr, updateLSres){
+                                if(updateLSErr){
+                                    // console.log(updateLSErr);
                                     exports.setCommandLock("scavenge", discordUserId, false)
                                 }
                                 else{
-                                    var ARTIFACT_MIN_ROLL = 9995;
-                                    var ANCIENT_MAX_ROLL = 9995
-                                    var ANCIENT_MIN_ROLL = 9975;
-                                    var RARE_MAX_ROLL = 9975;
-                                    var RARE_MIN_ROLL = 9800;
-                                    var UNCOMMON_MAX_ROLL = 9800;
-                                    var UNCOMMON_MIN_ROLL = 8750;
-                                    var COMMON_MAX_ROLL = 8750;
-                                    var UNCOMMON_ITEMS_TO_OBTAIN = 1;
-                                    var COMMON_ITEMS_TO_OBTAIN = 1;
-                                    var TACOS_FOUND_MULTIPLIER = 1;
-                                    var EXPERIENCE_MULTIPLIER = 1;
-    
-                                    if (getUserResponse.data.pickaxe == "improved"){
-                                        COMMON_ITEMS_TO_OBTAIN = 2
-                                        UNCOMMON_ITEMS_TO_OBTAIN = 1
-                                        TACOS_FOUND_MULTIPLIER = 3
-                                        ARTIFACT_MIN_ROLL = 9992
-                                        ANCIENT_MAX_ROLL = 9992;
-                                        ANCIENT_MIN_ROLL = 9955;
-                                        RARE_MAX_ROLL = 9955;
-                                        RARE_MIN_ROLL = 9750;
-                                        UNCOMMON_MAX_ROLL = 9750;
-                                        EXPERIENCE_MULTIPLIER = 2;
-    
+                                    // console.log(updateLSres);
+                                    var experienceFromItems = wearStats.calculateExtraExperienceGained(wearRes, "scavenge", null);                                     
+                                    experience.gainExperience(message, message.author, ((EXPERIENCE_GAINS.scavenge * EXPERIENCE_MULTIPLIER) + experienceFromItems), getUserResponse);
+                                }
+                            })
+                            // add the tacos to user
+                            ///////// CALCULATE THE EXTRA TACOS HERE 
+                            var extraTacosFromItems = wearStats.calculateExtraTacos(wearRes, "scavenge"); // 0 or extra
+                            if (extraTacosFromItems > 0){
+                                message.channel.send(message.author + " received `" + extraTacosFromItems + "` for scavenging! :taco:" + " received `" + extraTacosFromItems + "` extra tacos" );
+                            }
+                            // early adopter ids to get tacos
+                            var earlyAdopterIds = config.earlyAdopterIds
+                            if (earlyAdopterIds.indexOf(discordUserId) > -1 && !getUserResponse.data.earlyadopt){
+                                message.channel.send("hey " + message.author + " thanks for being an early adopter here's :taco: `1000` for you to feed me with! make sure to vote on discordbots.org for me")
+                                profileDB.updateUserTacosEarly(discordUserId, 1000, function(earlyErr, earlyRes){
+                                    if (earlyErr){
+                                        console.log(earlyErr)
+                                    }else{
+                                        console.log(earlyRes)
                                     }
-                                    else if (getUserResponse.data.pickaxe == "master"){
-                                        ARTIFACT_MIN_ROLL = 9985
-                                        ANCIENT_MAX_ROLL = 9985;
-                                        ANCIENT_MIN_ROLL = 9940;
-                                        RARE_MAX_ROLL = 9940;
-                                        RARE_MIN_ROLL = 9725;
-                                        UNCOMMON_MAX_ROLL = 9725;
-                                        COMMON_ITEMS_TO_OBTAIN = 4
-                                        UNCOMMON_ITEMS_TO_OBTAIN = 2
-                                        TACOS_FOUND_MULTIPLIER = 6
-                                        EXPERIENCE_MULTIPLIER = 6
-                                        rollsCount++
-                                    }
-                                    else if (getUserResponse.data.pickaxe == "ethereal"){
-                                        ARTIFACT_MIN_ROLL = 9978
-                                        ANCIENT_MAX_ROLL = 9978;
-                                        ANCIENT_MIN_ROLL = 9925;
-                                        RARE_MAX_ROLL = 9925;
-                                        RARE_MIN_ROLL = 9700;
-                                        UNCOMMON_MAX_ROLL = 9700;
-                                        COMMON_ITEMS_TO_OBTAIN = 12
-                                        UNCOMMON_ITEMS_TO_OBTAIN = 4
-                                        TACOS_FOUND_MULTIPLIER = 20
-                                        EXPERIENCE_MULTIPLIER = 20
-                                        rollsCount++
-                                        var extraExtraRoll = Math.floor(Math.random() * 10000) + 1;
-                                        if (extraExtraRoll > 7500){
-                                            rollsCount++
-                                        }
-                                    }
-    
-                                    var allItems = getItemResponse.data
-                                    var commonItems = [];
-                                    var uncommonItems = [];
-                                    var rareItems = [];
-                                    var ancientItems = [];
-                                    var artifactItems = [];
-                                    // TODO: add check for rarity chance % to be > 0 
-                                    for (var item in allItems){
-                                        if (allItems[item].itemraritycategory == "common"){
-                                            commonItems.push(allItems[item]);
-                                        }
-                                        else if(allItems[item].itemraritycategory == "uncommon"){
-                                            uncommonItems.push(allItems[item]);
-                                        }
-                                        else if(allItems[item].itemraritycategory == "rare"
-                                            && allItems[item].fromscavenge == true){
-                                            rareItems.push(allItems[item]);
-                                        }
-                                        else if(allItems[item].itemraritycategory == "ancient"
-                                            && allItems[item].fromscavenge == true){
-                                            ancientItems.push(allItems[item]);
-                                        }
-                                        else if(allItems[item].itemraritycategory == "artifact"
-                                            && allItems[item].fromscavenge == true){
-                                            artifactItems.push(allItems[item]);
-                                        }
-                                    }
-                                    // roll to randomly get only 5 amulets in the pool of amulets
-                                    var poolOfAmulets = []
-                                    for (var item in allItems){
-                                        if(allItems[item].itemraritycategory == "amulet" 
-                                        && allItems[item].amuletsource == "scavenge"){
-                                            poolOfAmulets.push(allItems[item]);
-                                        }
-                                    }
-                                    for (var i = 0; i < 5; i++){
-                                        var amuletRoll = Math.floor(Math.random() * poolOfAmulets.length - 1)
-                                        ancientItems.push(poolOfAmulets[amuletRoll])
-                                    }
-                                    
-                                    // roll rarity, roll item from rarity
-                                    var gotUncommon = false;
-                                    var itemsObtainedArray = [];
-                                    var highestRarityFound = 1
-                    
-                                    if (discordUserId == "248946965633564673"){
-                                        if (rollsCount < 4){
-                                            rollsCount++
-                                        }
-                                    }
-    
-                                    for (var i = 0; i < rollsCount; i++){
-                                        var rarityRoll = Math.floor(Math.random() * 10000) + 1;
-                                        var rarityString = "";
-                                        // console.log(rarityRoll);
-                                        if (!gotUncommon && rollsCount > 4){
-                                            // guaranteed more than uncommon +
-                                            rarityRoll = Math.floor(Math.random() * 1500) + 8501;
-                                            if (discordUserId == "248946965633564673"){
-                                                rarityRoll = 9965
-                                            }
-                                            gotUncommon = true;
-                                        }
-                                        else if(!gotUncommon && rollsCount > 3){
-                                            // guaranteed uncommon +
-                                            rarityRoll = Math.floor(Math.random() * 2000) + 8001;
-                                            if (discordUserId == "248946965633564673"){
-                                                rarityRoll = 9900
-                                            }
-                                            gotUncommon = true;
-                                        }
-                                        if (rarityRoll > ARTIFACT_MIN_ROLL){
-                                            rarityString = "artifact"
-                                            var itemRoll = Math.floor(Math.random() * artifactItems.length);
-                                            // console.log(artifactItems[itemRoll]);
-                                            itemsObtainedArray.push(artifactItems[itemRoll]);
-                                            if (highestRarityFound <= 4){
-                                                highestRarityFound = 5;
-                                            }
-                                        }
-                                        else if(rarityRoll > ANCIENT_MIN_ROLL && rarityRoll <= ANCIENT_MAX_ROLL){
-                                            rarityString = "ancient"
-                                            var itemRoll = Math.floor(Math.random() * ancientItems.length);
-                                            // console.log(ancientItems[itemRoll]);
-                                            itemsObtainedArray.push(ancientItems[itemRoll])
-                                            if (highestRarityFound <= 3){
-                                                highestRarityFound = 4;
-                                            }
-                                        }
-                                        else if(rarityRoll > RARE_MIN_ROLL && rarityRoll <= RARE_MAX_ROLL){
-                                            rarityString = "rare"
-                                            var itemRoll = Math.floor(Math.random() * rareItems.length);
-                                            // console.log(rareItems[itemRoll]);
-                                            itemsObtainedArray.push(rareItems[itemRoll]);
-                                            if (highestRarityFound <= 2){
-                                                highestRarityFound = 3;
-                                            }
-                                        }
-                                        else if (rarityRoll > UNCOMMON_MIN_ROLL && rarityRoll <= UNCOMMON_MAX_ROLL){
-                                            rarityString = "uncommon"
-                                            var itemRoll = Math.floor(Math.random() * uncommonItems.length);
-                                            // console.log(uncommonItems[itemRoll]);
-                                            uncommonItems[itemRoll].itemAmount = UNCOMMON_ITEMS_TO_OBTAIN
-                                            itemsObtainedArray.push( uncommonItems[itemRoll] );
-                                            if (highestRarityFound <= 1){
-                                                highestRarityFound = 2;
-                                            }
-                                        }
-                                        else {
-                                            rarityString = "common"
-                                            var itemRoll = Math.floor(Math.random() * commonItems.length);
-                                            // console.log(commonItems[itemRoll]);
-                                            commonItems[itemRoll].itemAmount = COMMON_ITEMS_TO_OBTAIN
-                                            itemsObtainedArray.push( commonItems[itemRoll] );
-                                        }
-                                    }
-                                    if (tacoRoll > SCAVENGE_TACO_FIND_CHANCE_HIGHER){
-                                        tacosFound = 20 * TACOS_FOUND_MULTIPLIER;
-                                    }
-                                    else if(tacoRoll > SCAVENGE_TACO_FIND_CHANCE){
-                                        tacosFound = 10 * TACOS_FOUND_MULTIPLIER;
-                                    }
-                                    // send the items to be written all at once
-                                    addToUserInventory(discordUserId, itemsObtainedArray);
-    
-                                    // send message of all items obtained
-                                    scavengeEmbedBuilder(message, itemsObtainedArray, tacosFound);
-                                    // update lastscavengetime
-                                    profileDB.updateLastScavengeTime(discordUserId, function(updateLSErr, updateLSres){
-                                        if(updateLSErr){
-                                            // console.log(updateLSErr);
-                                            exports.setCommandLock("scavenge", discordUserId, false)
+                                })
+                            }
+
+                            profileDB.updateUserTacos(discordUserId, tacosFound + extraTacosFromItems, function(updateLSErr, updateLSres){
+                                if(updateLSErr){
+                                    // console.log(updateLSErr);
+                                    exports.setCommandLock("scavenge", discordUserId, false)
+                                }
+                                else{
+                                    // console.log(updateLSres);
+                                    // add to statistics
+                                    exports.setCommandLock("scavenge", discordUserId, false)
+                                    var achievements = getUserResponse.data.achievements;
+                                    stats.statisticsManage(discordUserId, "scavengecount", 1, function(err, statSuccess){
+                                        if (err){
+                                            // console.log(err);
                                         }
                                         else{
-                                            // console.log(updateLSres);
-                                            var experienceFromItems = wearStats.calculateExtraExperienceGained(wearRes, "scavenge", null);                                     
-                                            experience.gainExperience(message, message.author, ((EXPERIENCE_GAINS.scavenge * EXPERIENCE_MULTIPLIER) + experienceFromItems), getUserResponse);
-                                        }
-                                    })
-                                    // add the tacos to user
-                                    ///////// CALCULATE THE EXTRA TACOS HERE 
-                                    var extraTacosFromItems = wearStats.calculateExtraTacos(wearRes, "scavenge"); // 0 or extra
-                                    if (extraTacosFromItems > 0){
-                                        message.channel.send(message.author + " received `" + extraTacosFromItems + "` for scavenging! :taco:" + " received `" + extraTacosFromItems + "` extra tacos" );
-                                    }
-                                    // early adopter ids to get tacos
-                                    var earlyAdopterIds = config.earlyAdopterIds
-                                    if (earlyAdopterIds.indexOf(discordUserId) > -1 && !getUserResponse.data.earlyadopt){
-                                        message.channel.send("hey " + message.author + " thanks for being an early adopter here's :taco: `1000` for you to feed me with! make sure to vote on discordbots.org for me")
-                                        profileDB.updateUserTacosEarly(discordUserId, 1000, function(earlyErr, earlyRes){
-                                            if (earlyErr){
-                                                console.log(earlyErr)
-                                            }else{
-                                                console.log(earlyRes)
+                                            // check achievements
+                                            var data = {}
+                                            data.achievements = achievements;
+                                            // add the highestRarity
+                                            if (highestRarityFound == 5){
+                                                data.rarity = "artifact"
                                             }
-                                        })
-                                    }
-    
-                                    profileDB.updateUserTacos(discordUserId, tacosFound + extraTacosFromItems, function(updateLSErr, updateLSres){
-                                        if(updateLSErr){
-                                            // console.log(updateLSErr);
-                                            exports.setCommandLock("scavenge", discordUserId, false)
-                                        }
-                                        else{
-                                            // console.log(updateLSres);
-                                            // add to statistics
-                                            exports.setCommandLock("scavenge", discordUserId, false)
-                                            var achievements = getUserResponse.data.achievements;
-                                            stats.statisticsManage(discordUserId, "scavengecount", 1, function(err, statSuccess){
-                                                if (err){
-                                                    // console.log(err);
-                                                }
-                                                else{
-                                                    // check achievements
-                                                    var data = {}
-                                                    data.achievements = achievements;
-                                                    // add the highestRarity
-                                                    if (highestRarityFound == 5){
-                                                        data.rarity = "artifact"
-                                                    }
-                                                    else if (highestRarityFound == 4){
-                                                        data.rarity = "ancient"
-                                                    }
-                                                    else if (highestRarityFound == 3){
-                                                        data.rarity = "rare"
-                                                    }
-                                                    else if (highestRarityFound == 2){
-                                                        data.rarity = "uncommon"
-                                                    }
-                                                    if (highestRarityFound == 1){
-                                                        data.rarity = "common"
-                                                    }
-                                                    // console.log(data);
-                                                    achiev.checkForAchievements(discordUserId, data, message);
-                                                }
-                                            })
+                                            else if (highestRarityFound == 4){
+                                                data.rarity = "ancient"
+                                            }
+                                            else if (highestRarityFound == 3){
+                                                data.rarity = "rare"
+                                            }
+                                            else if (highestRarityFound == 2){
+                                                data.rarity = "uncommon"
+                                            }
+                                            if (highestRarityFound == 1){
+                                                data.rarity = "common"
+                                            }
+                                            // console.log(data);
+                                            achiev.checkForAchievements(discordUserId, data, message);
                                         }
                                     })
                                 }
@@ -9539,6 +9529,7 @@ function calculateRaffleWinner(message){
         }
     })
 }
+// TODO: CREATE MEGA PARTY uses 10 of each
 
 module.exports.createTableCommand = function(message){
 
@@ -9634,7 +9625,7 @@ function createParty(message, discordUserId, uncommonsToUse){
     const embed = new Discord.RichEmbed()
     .setThumbnail("https://i.imgur.com/dI1PWNo.png")
     .setColor(0xF2E93E)
-    .addField("Taco party created by " + message.author.username + "!! " + 'Eat some tacos, drink some orchata water, or dance with Aileen your taco hostess', "Pick one! 🌮 = taco x20, 🍹 = terry cloth x1, 💃🏼 = rock x1 \nYou will receive it at the end of the party (5 minutes)" )
+    .addField("Taco party created by " + message.author.username + "!! " + 'Eat some tacos, drink some orchata water, or dance with Aileen your taco hostess', "Pick one! 🌮 = taco x40, 🍹 = terry cloth x3, 💃🏼 = rock x2 \nYou will receive it at the end of the party (5 minutes)" )
 
     useItem.useUncommons(message, discordUserId, uncommonsToUse, function(useError, useRes){
         if (useError){
@@ -9723,7 +9714,7 @@ function createParty(message, discordUserId, uncommonsToUse){
                                 else{
                                     // for gaining xp
                                     var userData = getDataRes;
-                                    profileDB.updateUserTacos(ownerOfTable.id, reactionCount * 20, function(err, res){
+                                    profileDB.updateUserTacos(ownerOfTable.id, reactionCount * 40, function(err, res){
                                         if (err){
                                             // console.log(err);
                                             message.channel.send(err);
@@ -9777,6 +9768,8 @@ function tacoPartyReactRewards(message, user, emoji, reward){
             for (var index in allItems){
                 if (allItems[index].id == TERRY_CLOTH_ITEM_ID){
                     itemsObtainedArray.push( allItems[index] );
+                    itemsObtainedArray.push( allItems[index] );
+                    itemsObtainedArray.push( allItems[index] );
                     break;
                 }
             }
@@ -9784,6 +9777,7 @@ function tacoPartyReactRewards(message, user, emoji, reward){
         else if (reward === "rock"){
             for (var index in allItems){
                 if (allItems[index].id == ROCK_ITEM_ID){
+                    itemsObtainedArray.push( allItems[index] );
                     itemsObtainedArray.push( allItems[index] );
                     break;
                 }

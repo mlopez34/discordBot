@@ -7,92 +7,152 @@ var achiev = require("./achievements.js");
 var commands = require("./commands")
 
 var Levels = config.Levels
+var RPGLevels = config.RPGLevels
 var levelRewards = config.levelTacoRewards;
 
-module.exports.gainExperience = function (message, discordUser, experienceNumber, userProfileData){
+module.exports.gainExperience = function (message, discordUser, experienceNumber, userProfileData, isRpgExperience){
     if (!userProfileData){
         profileDB.getUserProfileData( discordUser.id, function(err, profileResponse) {
             if(err){
                 // console.log(err);
             }
             else{
-                gainExperienceHandler(message, discordUser, experienceNumber, profileResponse)
+                gainExperienceHandler(message, discordUser, experienceNumber, profileResponse, isRpgExperience)
             }
         })
     }
     else{
-        gainExperienceHandler(message, discordUser, experienceNumber, userProfileData)
+        gainExperienceHandler(message, discordUser, experienceNumber, userProfileData, isRpgExperience)
     }
 }
 
-function experienceEmbedBuilder(message, userThatLeveled, level, tacoRewards){
-    var xpEmoji = ":arrow_up: :tada:";
+function experienceEmbedBuilder(message, userThatLeveled, level, tacoRewards, isRpgExperience){
+    var xpEmoji = (!isRpgExperience ? ":arrow_up: :tada:" : ":fleur_de_lis:")
+    var levelUpString = ""
+    if (isRpgExperience){
+        levelUpString = userThatLeveled.username + " has leveled up in RPG!"
+    }else{
+        levelUpString = userThatLeveled.username + " has leveled up!"
+    }
     const embed = new Discord.RichEmbed()
     .setColor(0xED962D)
-    .addField(userThatLeveled.username +" has leveled up!", "Level " + level + " "  + xpEmoji + "\n**Rewards:** " + tacoRewards + " tacos! :taco:", true)
+    .addField(levelUpString, "Level " + level + " "  + xpEmoji + "\n**Rewards:** " + tacoRewards + " tacos! :taco:",true)
     message.channel.send({embed});
 }
 
-function gainExperienceHandler(message, discordUser, experienceNumber, userProfileData){
+function gainExperienceHandler(message, discordUser, experienceNumber, userProfileData, isRpgExperience){
     // once the user has gained experience, check if the user has leveled and check which level the user is in 
-    if (discordUser && discordUser.id && experienceNumber){
+    if (isRpgExperience){
         // get user's experience, and level
-        var firstExperienceGain = userProfileData.data.experience;
-        var userExperience = userProfileData.data.experience ? userProfileData.data.experience : 0;
-        var userLevel = userProfileData.data.level ? userProfileData.data.level : 1;
-        var nextLevel = userLevel + 1;
-        var nextLevelExperience = Levels[nextLevel];
+        var firstRPGExperienceGain = userProfileData.data.rpgpoints;
+        var userRPGExperience = userProfileData.data.rpgpoints ? userProfileData.data.rpgpoints : 0;
+        var userRPGLevel = userProfileData.data.rpglevel ? userProfileData.data.rpglevel : 1;
+        var nextRPGLevel = userRPGLevel + 1;
+        var nextRPGLevelExperience = RPGLevels[nextRPGLevel];
         var levelUp = false;
-        var userLeveledUpTo = userLevel;
+        var userLeveledUpTo = userRPGLevel;
         var tacoRewards = 0;
-        // check if experience + experienceNumber will be >= next level
-        if (userExperience + experienceNumber >= nextLevelExperience){
+        // check if rpgexperience + rpgexperienceNumber will be >= next level
+        if (userRPGExperience + experienceNumber >= nextRPGLevelExperience){
             levelUp = true;
-            userLeveledUpTo = nextLevel;
+            userLeveledUpTo = nextRPGLevel;
         }
-        // get the correct level to level up to
         if (levelUp){
             // find the correct level for the user to be placed in
-            while(userExperience + experienceNumber > Levels[userLeveledUpTo+1]){
+            while(userRPGExperience + experienceNumber > RPGLevels[userLeveledUpTo + 1]){
                 userLeveledUpTo++
             }
-            tacoRewards = levelRewards[userLeveledUpTo];
+            tacoRewards = tacoRewards + levelRewards[userLeveledUpTo];
         }
-        // console.log("xp: " + experienceNumber + " lvl: " + userLeveledUpTo)
         if (levelUp){
             // add experience and if userleveledupto is different than userlevel then update userlevel also
-            profileDB.updateUserExperience(experienceNumber, userLeveledUpTo, discordUser.id, firstExperienceGain, tacoRewards, function(updateXpErr, updateXpRes){
+            profileDB.updateUserRPGExperience(experienceNumber, userLeveledUpTo, discordUser.id, firstRPGExperienceGain, tacoRewards, function(updateXpErr, updateXpRes){
                 if (updateXpErr){
                     // console.log(updateXpErr);
                 }
                 else{
+                    // TODO: update this for RPG
                     // console.log(updateXpRes);
-                    var data = {
-                        levelObtained: userLeveledUpTo
-                    }
-                    data.achievements = userProfileData.data.achievements;
-                    achiev.checkForAchievements(discordUser.id, data, message);
-                    experienceEmbedBuilder(message, discordUser, userLeveledUpTo, tacoRewards);
-                    var allItems = commands.getAllItems()
-                    extraLevelRewards(message, discordUser, userLeveledUpTo, allItems)
+                    // var data = {
+                    //     levelObtained: userLeveledUpTo
+                    // }
+                    // data.achievements = userProfileData.data.achievements;
+                    // achiev.checkForAchievements(discordUser.id, data, message);
+                    experienceEmbedBuilder(message, discordUser, userLeveledUpTo, tacoRewards, isRpgExperience);
+                    //var allItems = commands.getAllItems()
+                    //extraLevelRewards(message, discordUser, userLeveledUpTo, allItems)
                 }
             })
         }
         else{
-            profileDB.updateUserExperience(experienceNumber, userLeveledUpTo, discordUser.id, firstExperienceGain, null, function(updateXpErr, updateXpRes){
+            profileDB.updateUserRPGExperience(experienceNumber, userLeveledUpTo, discordUser.id, firstRPGExperienceGain, null, function(updateXpErr, updateXpRes){
                 if (updateXpErr){
                     // console.log(updateXpErr);
-                }
-                else{
+                }else{
                     // console.log(updateXpRes);
                 }
             })
         }
-        
+    }else{
+        if (discordUser && discordUser.id && experienceNumber){
+            // get user's experience, and level
+            var firstExperienceGain = userProfileData.data.experience;
+            var userExperience = userProfileData.data.experience ? userProfileData.data.experience : 0;
+            var userLevel = userProfileData.data.level ? userProfileData.data.level : 1;
+            var nextLevel = userLevel + 1;
+            var nextLevelExperience = Levels[nextLevel];
+            var levelUp = false;
+            var userLeveledUpTo = userLevel;
+            var tacoRewards = 0;
+            // check if experience + experienceNumber will be >= next level
+            if (userExperience + experienceNumber >= nextLevelExperience){
+                levelUp = true;
+                userLeveledUpTo = nextLevel;
+            }
+            // get the correct level to level up to
+            if (levelUp){
+                // find the correct level for the user to be placed in
+                while(userExperience + experienceNumber > Levels[userLeveledUpTo+1]){
+                    userLeveledUpTo++
+                }
+                tacoRewards = tacoRewards + levelRewards[userLeveledUpTo];
+            }
+            // console.log("xp: " + experienceNumber + " lvl: " + userLeveledUpTo)
+            if (levelUp){
+                // add experience and if userleveledupto is different than userlevel then update userlevel also
+                profileDB.updateUserExperience(experienceNumber, userLeveledUpTo, discordUser.id, firstExperienceGain, tacoRewards, function(updateXpErr, updateXpRes){
+                    if (updateXpErr){
+                        // console.log(updateXpErr);
+                    }
+                    else{
+                        // console.log(updateXpRes);
+                        var data = {
+                            levelObtained: userLeveledUpTo
+                        }
+                        data.achievements = userProfileData.data.achievements;
+                        achiev.checkForAchievements(discordUser.id, data, message);
+                        experienceEmbedBuilder(message, discordUser, userLeveledUpTo, tacoRewards);
+                        var allItems = commands.getAllItems()
+                        extraLevelRewards(message, discordUser, userLeveledUpTo, allItems)
+                    }
+                })
+            }
+            else{
+                profileDB.updateUserExperience(experienceNumber, userLeveledUpTo, discordUser.id, firstExperienceGain, null, function(updateXpErr, updateXpRes){
+                    if (updateXpErr){
+                        // console.log(updateXpErr);
+                    }else{
+                        // console.log(updateXpRes);
+                    }
+                })
+            }
+            
+        }
+        else{
+            // something wrong
+        }
     }
-    else{
-        // something wrong
-    }
+    
 }
 
 function extraLevelRewards(message, discordUser, userLeveledUpTo, allItems){
