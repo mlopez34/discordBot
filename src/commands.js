@@ -9805,6 +9805,9 @@ module.exports.rpgBattleCommand = function(message){
 module.exports.rpgChallengeCommand = function(message, args){
     var challengeNumber = args[1];
     var keystone = args.length > 3 && args[2].toLowerCase() == "keystone" && Math.floor( args[3] ) && Math.floor( args[3] ) > 0 ? Math.floor( args[3] ) : 0
+    if (keystone > 5){
+        keystone = 5 // TEMPORARY
+    }
     var special = { challenge: challengeNumber, keystone: keystone }
     rpg.rpgInitialize(message, special);
 }
