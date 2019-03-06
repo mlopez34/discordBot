@@ -2126,7 +2126,10 @@ function shopBuilder(message, shopData, long){
         var treeCost = BASE_TACO_COST + (shopData.userTacoCost * 250) + " :taco:"
         var pickaxeDescription = "The pickaxe can be used to scavenge. You never know what you will find in these lands ";
         var pastaDescription = "Add a quote to your profile, to purchase do: " +config.commandString + "buypasta [your pasta message]."
-        var greenHouseDescription = "Add a quote to your profile, to purchase do: " +config.commandString + "buypasta [your pasta message]."
+        var greenHouseDescription = "The Greenhouse can be used to grow crops by planting seeds and for baking, to purchase do: " +config.commandString + "buygreenhouse "
+        var templeDescription = "The Temple can be used to gain special bonuses and crafting recipes, to purchase do: " +config.commandString + "buytemple "
+        var hacksawDescription = "The Hacksaw can be used to disassemble items and create armaments for items which improve the item, to purchase do: " +config.commandString + "buyhacksaw "
+        var stableDescription = "The Stable can be used to buy more pets " +config.commandString + "buystable "
 
         var pickaxeCost = PICKAXE_COST +" :taco:";
         const embed = new Discord.RichEmbed()
@@ -2184,13 +2187,13 @@ function shopBuilder(message, shopData, long){
             embed.addField('Green House :house_with_garden:', greenHouseDescription, true)
         }
         if (!shopData.temple){
-            embed.addField('Temple :house_with_garden:', greenHouseDescription, true)
+            embed.addField('Temple :synagogue:', templeDescription, true)
         }
         if (shopData.temple && !shopData.hacksaw){
-            embed.addField('Hacksaw :scissors:', greenHouseDescription, true)
+            embed.addField('Hacksaw :scissors:', hacksawDescription, true)
         }
         if (!shopData.stable){
-            embed.addField('Stable :house_with_garden:', greenHouseDescription, true)
+            embed.addField('Stable :door:', stableDescription, true)
         }
         
         embed.addBlankField(false)

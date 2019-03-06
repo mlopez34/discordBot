@@ -60,6 +60,7 @@ function gainExperienceHandler(message, discordUser, experienceNumber, userProfi
         if (levelUp){
             // find the correct level for the user to be placed in
             while(userRPGExperience + experienceNumber > RPGLevels[userLeveledUpTo + 1]){
+                tacoRewards = tacoRewards + levelRewards[userLeveledUpTo];
                 userLeveledUpTo++
             }
             tacoRewards = tacoRewards + levelRewards[userLeveledUpTo];
@@ -69,8 +70,7 @@ function gainExperienceHandler(message, discordUser, experienceNumber, userProfi
             profileDB.updateUserRPGExperience(experienceNumber, userLeveledUpTo, discordUser.id, firstRPGExperienceGain, tacoRewards, function(updateXpErr, updateXpRes){
                 if (updateXpErr){
                     // console.log(updateXpErr);
-                }
-                else{
+                }else{
                     // TODO: update this for RPG
                     // console.log(updateXpRes);
                     // var data = {
@@ -113,6 +113,7 @@ function gainExperienceHandler(message, discordUser, experienceNumber, userProfi
             if (levelUp){
                 // find the correct level for the user to be placed in
                 while(userExperience + experienceNumber > Levels[userLeveledUpTo+1]){
+                    tacoRewards = tacoRewards + levelRewards[userLeveledUpTo];
                     userLeveledUpTo++
                 }
                 tacoRewards = tacoRewards + levelRewards[userLeveledUpTo];
@@ -123,8 +124,7 @@ function gainExperienceHandler(message, discordUser, experienceNumber, userProfi
                 profileDB.updateUserExperience(experienceNumber, userLeveledUpTo, discordUser.id, firstExperienceGain, tacoRewards, function(updateXpErr, updateXpRes){
                     if (updateXpErr){
                         // console.log(updateXpErr);
-                    }
-                    else{
+                    }else{
                         // console.log(updateXpRes);
                         var data = {
                             levelObtained: userLeveledUpTo
