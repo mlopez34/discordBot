@@ -10178,7 +10178,7 @@ Hoover Dam
                             "puncture"
                         ],
                         hp: 52600,
-                        attackDmg: 2580,
+                        attackDmg: 2380,
                         magicDmg: 2570,
                         armor: 2100,
                         spirit: 2100,
@@ -10232,7 +10232,7 @@ Hoover Dam
                             "puncture"
                         ],
                         hp: 52600,
-                        attackDmg: 2580,
+                        attackDmg: 2380,
                         magicDmg: 2570,
                         armor: 2100,
                         spirit: 2100,
@@ -10289,7 +10289,7 @@ Hoover Dam
                             "puncture"
                         ],
                         hp: 52600,
-                        attackDmg: 2580,
+                        attackDmg: 2380,
                         magicDmg: 2570,
                         armor: 2100,
                         spirit: 2100,
@@ -10340,7 +10340,7 @@ Hoover Dam
                             "puncture"
                         ],
                         hp: 52600,
-                        attackDmg: 2580,
+                        attackDmg: 2180,
                         magicDmg: 2570,
                         armor: 2100,
                         spirit: 2100,
