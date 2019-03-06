@@ -6062,8 +6062,8 @@ Hoover Dam
                 abilityOrder: [
                     0, 0, 0, 0
                 ],
-                attackDmg: 960,
-                magicDmg: 960,
+                attackDmg: 1160,
+                magicDmg: 1160,
                 armor: 1300,
                 spirit: 1300,
                 difficulty: "summoned",
@@ -10281,6 +10281,7 @@ Hoover Dam
                             "focus",
                             "summonWorshipper",
                             "eradicate",
+                            "blast",
                             "summonCursedGuardian",  // D
                             "summonCursedGuardian" // D
                         ],
