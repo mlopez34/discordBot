@@ -133,6 +133,7 @@ var commandHoursToActivate = {
 }
 
 var Levels = config.Levels;
+var RPGLevels = config.RPGLevels;
 
 var REWARDS = {
     ArtifactRecipe : {
@@ -1537,6 +1538,7 @@ module.exports.profileCommand = function(message){
                 profileData.experience = profileResponse.data.experience ? profileResponse.data.experience : 0;
                 profileData.rpgPoints = profileResponse.data.rpgpoints ? profileResponse.data.rpgpoints : 0;
                 profileData.rpgLevel = profileResponse.data.rpglevel ? profileResponse.data.rpglevel : 0;
+                profileData.rpgPointsNextLevel = RPGLevels[profileData.rpgLevel + 1];
                 profileData.currentRpgChallenge = profileResponse.data.currentchallenge ? profileResponse.data.currentchallenge : 0;
                 profileData.nextLevelExp = Levels[profileData.level + 1];
                 if (!profileData.reputation){
@@ -1629,6 +1631,7 @@ module.exports.profileCommand = function(message){
                 profileData.nextLevelExp = Levels[profileData.level + 1];
                 profileData.rpgPoints = profileResponse.data.rpgpoints ? profileResponse.data.rpgpoints : 0;
                 profileData.rpgLevel = profileResponse.data.rpglevel ? profileResponse.data.rpglevel : 0;
+                profileData.rpgPointsNextLevel = RPGLevels[profileData.rpgLevel + 1];
                 profileData.currentRpgChallenge = profileResponse.data.currentchallenge ? profileResponse.data.currentchallenge : 0;
                 if (!profileData.reputation){
                     profileData.reputation = 0;
@@ -2051,7 +2054,7 @@ function profileBuilder(message, profileData){
     }
     embed.addField('Items :shopping_bags:', profileData.userItems, true)
     .addField('Achievements :military_medal: ', profileData.achievementString, true)
-    .addField('RPG stats :fleur_de_lis:  ', "Points : " + profileData.rpgLevel + " | " + profileData.rpgPoints + "\nChallenge: " + profileData.currentRpgChallenge + "\nRating: 1500 ", true)
+    .addField('RPG stats :fleur_de_lis:  ', "Points : " + profileData.rpgLevel + " | " + profileData.rpgPoints + "/" + profileData.rpgPointsNextLevel + "\nChallenge: " + profileData.currentRpgChallenge + "\nRating: 1500 ", true)
     message.channel.send({embed});
 }
 
@@ -5581,7 +5584,7 @@ function armamentsEmbedBuilder(message, userItems, itemsMapById, long, rarity){
         if (itemsMapById[idOfItemInMap].itemraritycategory == "armament"){
             var idOfItemTheArmamentIsFor = userItems[item].armamentforitemid
             if (!mapOfArmaments[idOfItemTheArmamentIsFor]){
-                var statsFromArmament = " 💚 " + userItems[item].hpplus + " 🗡️ "  + userItems[item].adplus + " ☄️ " + userItems[item].mdplus + " 🛡️ " + userItems[item].armorplus + " 🙌 " + userItems[item].spiritplus + " 💥 " + userItems[item].critplus
+                var statsFromArmament = " 💚 " + userItems[item].hpplus + " :dagger: "  + userItems[item].adplus + " :comet: " + userItems[item].mdplus + " :shield: " + userItems[item].armorplus + " 🙌 " + userItems[item].spiritplus + " 💥 " + userItems[item].critplus
                 var itemOfArmament = itemsMapById[idOfItemTheArmamentIsFor]
                 var emoji = ":gear:";
                 if (long && fieldCount < 25){
