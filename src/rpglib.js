@@ -1793,6 +1793,7 @@ module.exports = {
                 name: "Burst",
                 abilityId: "burst",
                 ignoreBandaid: true,
+                untargettable: true,
                 removeDotOnHpPercentage: .99,
                 type:"physical",
                 dmg: 1000,
@@ -5387,7 +5388,7 @@ Hoover Dam
                         attackDmgPlus : [755, 990, 1240, 1430, 1750],
                         magicDmgPlus : [755, 990, 1240, 1430, 1750]
                     },
-                    hp: [13500, 20900, 29900, 41000, 57000 ],
+                    hp: [14500, 22900, 30900, 44000, 67000 ],
                     attackDmg: [700, 1100, 1500, 2100, 2500],
                     magicDmg: [700, 1100, 1500, 2100, 2500],
                     abilities: []
@@ -5456,7 +5457,7 @@ Hoover Dam
                         attackDmgPlus : [755, 990, 1240, 1430, 1750],
                         magicDmgPlus : [755, 990, 1240, 1430, 1750]
                     },
-                    hp: [13500, 20900, 29900, 41000, 57000 ],
+                    hp: [13500, 30900, 49900, 81000, 127000 ],
                     attackDmg: [700, 1100, 1500, 2100, 2500],
                     magicDmg: [700, 1100, 1500, 2100, 2500],
                     abilities: []
