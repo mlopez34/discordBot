@@ -5244,7 +5244,7 @@ function hasDied(event, member){
                     && member.statuses[status].dot.onRemoveSelectNewTarget){
                     var newTarget = getRandomLivingPlayer(event, "rpg-" + member.id)
                     if (newTarget){
-                        var statusToTransfer = member.statuses[status].dot
+                        var statusToTransfer = member.statuses[status]
                         abilityToString = abilityToString + transferStatusToNewTarget(newTarget, statusToTransfer, event)
                     }
                 }
@@ -5358,7 +5358,7 @@ function processPassiveEffects(event){
                         
                         if (event.membersInParty[member].statuses[index].dot.applyDebuffOnDotDmg){
                             var dotBeingProcessed = event.membersInParty[member].statuses[index].dot
-                            var abilityIdOfDebuff = event.membersInParty[member].statuses[index].dot.applyDebuffOnDotDmg
+                            var abilityIdOfDebuff = dotBeingProcessed.applyDebuffOnDotDmg
                             if ( abilityIdOfDebuff == "debilitate" ){
                                 passiveEffectsString = passiveEffectsString + processDebilitate(event, abilityIdOfDebuff, member)
                             }
@@ -7196,7 +7196,7 @@ function processAbility(abilityObject, event){
                             && event.membersInParty[targetToRemoveFrom].statuses[status].dot.onRemoveSelectNewTarget){
                             var newTarget = getRandomLivingPlayer(event, targetToRemoveFrom)
                             if (newTarget){
-                                var statusToTransfer = event.membersInParty[targetToRemoveFrom].statuses[status].dot
+                                var statusToTransfer = event.membersInParty[targetToRemoveFrom].statuses[status]
                                 abilityToString = abilityToString + transferStatusToNewTarget(newTarget, statusToTransfer, event)
                             }
                         }

@@ -3136,8 +3136,8 @@ module.exports = {
             currentTurn: 0,
             summon: {
                 enemy: "cursedGuardian",
-                attackDmg: 500,
-                magicDmg: 500,
+                attackDmg: 100,
+                magicDmg: 100,
                 hpPlus: 100
             }
         },
@@ -6062,8 +6062,8 @@ Hoover Dam
                 abilityOrder: [
                     0, 0, 0, 0
                 ],
-                attackDmg: 1460,
-                magicDmg: 1460,
+                attackDmg: 960,
+                magicDmg: 960,
                 armor: 1300,
                 spirit: 1300,
                 difficulty: "summoned",
