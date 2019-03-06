@@ -3182,14 +3182,14 @@ function effectsOnTurnEnd(event){
                                         // add stats to enemies TODO: add it to summoned enemies
                                         var keystoneStatsArrayIndex = keystoneNum - 1
                                         if (enemyFound.keystoneStats){
-                                            event.enemies[enemyIdCount].hp = event.enemies[enemyIdCount].hp  + enemyFound.keystoneStats.hp[keystoneStatsArrayIndex]
-                                            event.enemies[enemyIdCount].attackDmg = event.enemies[enemyIdCount].attackDmg + enemyFound.keystoneStats.attackDmg[keystoneStatsArrayIndex]
-                                            event.enemies[enemyIdCount].magicDmg = event.enemies[enemyIdCount].magicDmg + enemyFound.keystoneStats.magicDmg[keystoneStatsArrayIndex]
+                                            enemySummoned.hp = enemySummoned.hp  + enemyFound.keystoneStats.hp[keystoneStatsArrayIndex]
+                                            enemySummoned.attackDmg = enemySummoned.attackDmg + enemyFound.keystoneStats.attackDmg[keystoneStatsArrayIndex]
+                                            enemySummoned.magicDmg = enemySummoned.magicDmg + enemyFound.keystoneStats.magicDmg[keystoneStatsArrayIndex]
                                             if (enemyFound.keystoneStats.frenzy){
-                                                for (var b in event.enemies[enemyIdCount].buffs){
-                                                    if (event.enemies[enemyIdCount].buffs[b].name == "frenzy"){
-                                                        event.enemies[enemyIdCount].buffs[b].attackDmgPlus = enemyFound.keystoneStats.frenzy.attackDmgPlus[keystoneStatsArrayIndex]
-                                                        event.enemies[enemyIdCount].buffs[b].magicDmgPlus = enemyFound.keystoneStats.frenzy.magicDmgPlus[keystoneStatsArrayIndex]
+                                                for (var b in enemySummoned.buffs){
+                                                    if (enemySummoned.buffs[b].name == "frenzy"){
+                                                        enemySummoned.buffs[b].attackDmgPlus = enemyFound.keystoneStats.frenzy.attackDmgPlus[keystoneStatsArrayIndex]
+                                                        enemySummoned.buffs[b].magicDmgPlus = enemyFound.keystoneStats.frenzy.magicDmgPlus[keystoneStatsArrayIndex]
                                                     }
                                                 }
                                             }
@@ -4045,14 +4045,14 @@ function summonEnemy(event, enemy, index, enemyFound, summonRpgAbility){
             // add stats to enemies TODO: add it to summoned enemies
             var keystoneStatsArrayIndex = keystoneNum - 1
             if (enemyFound.keystoneStats){
-                event.enemies[enemyIdCount].hp = event.enemies[enemyIdCount].hp  + enemyFound.keystoneStats.hp[keystoneStatsArrayIndex]
-                event.enemies[enemyIdCount].attackDmg = event.enemies[enemyIdCount].attackDmg + enemyFound.keystoneStats.attackDmg[keystoneStatsArrayIndex]
-                event.enemies[enemyIdCount].magicDmg = event.enemies[enemyIdCount].magicDmg + enemyFound.keystoneStats.magicDmg[keystoneStatsArrayIndex]
+                enemySummoned.hp = enemySummoned.hp  + enemyFound.keystoneStats.hp[keystoneStatsArrayIndex]
+                enemySummoned.attackDmg = enemySummoned.attackDmg + enemyFound.keystoneStats.attackDmg[keystoneStatsArrayIndex]
+                enemySummoned.magicDmg = enemySummoned.magicDmg + enemyFound.keystoneStats.magicDmg[keystoneStatsArrayIndex]
                 if (enemyFound.keystoneStats.frenzy){
-                    for (var b in event.enemies[enemyIdCount].buffs){
-                        if (event.enemies[enemyIdCount].buffs[b].name == "frenzy"){
-                            event.enemies[enemyIdCount].buffs[b].attackDmgPlus = enemyFound.keystoneStats.frenzy.attackDmgPlus[keystoneStatsArrayIndex]
-                            event.enemies[enemyIdCount].buffs[b].magicDmgPlus = enemyFound.keystoneStats.frenzy.magicDmgPlus[keystoneStatsArrayIndex]
+                    for (var b in enemySummoned.buffs){
+                        if (enemySummoned.buffs[b].name == "frenzy"){
+                            enemySummoned.buffs[b].attackDmgPlus = enemyFound.keystoneStats.frenzy.attackDmgPlus[keystoneStatsArrayIndex]
+                            enemySummoned.buffs[b].magicDmgPlus = enemyFound.keystoneStats.frenzy.magicDmgPlus[keystoneStatsArrayIndex]
                         }
                     }
                 }
