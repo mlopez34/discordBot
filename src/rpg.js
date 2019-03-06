@@ -1069,8 +1069,8 @@ module.exports.rpgReady = function(message, itemsAvailable, amuletItemsById, buf
                                                                             if (enemyFound.keystoneStats.frenzy){
                                                                                 for (var b in enemies[enemyIdCount].buffs){
                                                                                     if (enemies[enemyIdCount].buffs[b].name == "frenzy"){
-                                                                                        enemies[enemyIdCount].buffs[b].attackDmgPlus = enemyFound.keystoneStats.frenzy.attackDmgPlus[keystoneStatsArrayIndex]
-                                                                                        enemies[enemyIdCount].buffs[b].magicDmgPlus = enemyFound.keystoneStats.frenzy.magicDmgPlus[keystoneStatsArrayIndex]
+                                                                                        enemies[enemyIdCount].buffs[b].attackDmgPlus = enemyFound.keystoneStats.frenzy.onTurnEnd.attackDmgPlus[keystoneStatsArrayIndex]
+                                                                                        enemies[enemyIdCount].buffs[b].magicDmgPlus = enemyFound.keystoneStats.frenzy.onTurnEnd.magicDmgPlus[keystoneStatsArrayIndex]
                                                                                     }
                                                                                 }
                                                                             }
@@ -3188,8 +3188,8 @@ function effectsOnTurnEnd(event){
                                             if (enemyFound.keystoneStats.frenzy){
                                                 for (var b in enemySummoned.buffs){
                                                     if (enemySummoned.buffs[b].name == "frenzy"){
-                                                        enemySummoned.buffs[b].attackDmgPlus = enemyFound.keystoneStats.frenzy.attackDmgPlus[keystoneStatsArrayIndex]
-                                                        enemySummoned.buffs[b].magicDmgPlus = enemyFound.keystoneStats.frenzy.magicDmgPlus[keystoneStatsArrayIndex]
+                                                        enemySummoned.buffs[b].attackDmgPlus = enemyFound.keystoneStats.frenzy.onTurnEnd.attackDmgPlus[keystoneStatsArrayIndex]
+                                                        enemySummoned.buffs[b].magicDmgPlus = enemyFound.keystoneStats.frenzy.onTurnEnd.magicDmgPlus[keystoneStatsArrayIndex]
                                                     }
                                                 }
                                             }
@@ -4051,8 +4051,8 @@ function summonEnemy(event, enemy, index, enemyFound, summonRpgAbility){
                 if (enemyFound.keystoneStats.frenzy){
                     for (var b in enemySummoned.buffs){
                         if (enemySummoned.buffs[b].name == "frenzy"){
-                            enemySummoned.buffs[b].attackDmgPlus = enemyFound.keystoneStats.frenzy.attackDmgPlus[keystoneStatsArrayIndex]
-                            enemySummoned.buffs[b].magicDmgPlus = enemyFound.keystoneStats.frenzy.magicDmgPlus[keystoneStatsArrayIndex]
+                            enemySummoned.buffs[b].attackDmgPlus = enemyFound.keystoneStats.frenzy.onTurnEnd.attackDmgPlus[keystoneStatsArrayIndex]
+                            enemySummoned.buffs[b].magicDmgPlus = enemyFound.keystoneStats.frenzy.onTurnEnd.magicDmgPlus[keystoneStatsArrayIndex]
                         }
                     }
                 }
