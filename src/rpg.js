@@ -2547,6 +2547,7 @@ function calculateRewards(event, memberInRpgEvent, allItems, numberOfMembers, fi
                 }
             }
         }
+        // ***** TODO: CALCULATE loot by challenge / keystone 
 
         // get the challenge points
         var challengePts = enemiesToEncounter.challenge[challengeNum].points;

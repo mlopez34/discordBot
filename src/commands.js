@@ -4136,8 +4136,10 @@ module.exports.rpgTopListCommand = function(message, listOfUsers, global){
                         toplistUsername = toplistUser.user.username; 
                     }
                     var toplistChallenge = user.currentchallenge || 0;
+                    var topListChallengeKeystone = 0;
                     var toplistRpg = user.rpgpoints;
-                    toplistMap[toplistCount] = { username: toplistUsername, rpgPoints: toplistRpg, challengedefeated: toplistChallenge }
+                    var topListLevel = user.rpglevel || 0;
+                    toplistMap[toplistCount] = { username: toplistUsername, rpgPoints: toplistRpg, challengedefeated: toplistChallenge, keystoneDefeated: topListChallengeKeystone, rpgLevel: topListLevel }
                     toplistCount++;
                 }
             }
@@ -4153,7 +4155,8 @@ function rpgTopListEmbedBuilder(topRpgString, message){
     .setColor(0xe521ff)
     for (var key in topRpgString) {
         if (topRpgString.hasOwnProperty(key)) {
-            embed.addField("#" + key + ": `" + topRpgString[key].username+"`","**Challenges:** " + topRpgString[key].challengedefeated +  "\n**Points:  **" +topRpgString[key].rpgPoints , true)
+            var keystoneChallengeString = topRpgString[key].keystoneDefeated ? " - " + topRpgString[key].keystoneDefeated : "" 
+            embed.addField("#" + key + ": `" + topRpgString[key].username + "`","**Challenges:** " + topRpgString[key].challengedefeated + keystoneChallengeString + "\n**Points:  **" +  topRpgString[key].rpgLevel + " | " + topRpgString[key].rpgPoints , true)
         }
     }
     embed.setDescription("-toprpg global to view global rpg standings")
