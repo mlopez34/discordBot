@@ -3143,6 +3143,31 @@ module.exports = {
             }
         },
 
+        mysticalFairyDeath: {
+            abilityId: "mysticalFairyDeath",
+            onDeathEffect: true,
+            belongsToMember: true,
+            deathMessage: "End their misery swiftly"
+        },
+        emperorDeath: {
+            abilityId: "emperorDeath",
+            onDeathEffect: true,
+            belongsToMember: true,
+            deathMessage: "Avenge me.."
+        },
+        barbarianDeath: {
+            abilityId: "barbarianDeath",
+            onDeathEffect: true,
+            belongsToMember: true,
+            deathMessage: "Impossible..."
+        },
+        balrogueDeath: {
+            abilityId: "balrogueDeath",
+            onDeathEffect: true,
+            belongsToMember: true,
+            deathMessage: "Your fate is sealed"
+        },
+
         /*
         summon effects
         */
@@ -10135,6 +10160,7 @@ Hoover Dam
                 points: 12001,
                 keystonePoints: [250, 1100, 1830, 3530, 4030],
                 xppoints: 5120,
+                lootcount: 13,
                 difficulty: 88,
                 enemies: [
                     {
@@ -10176,7 +10202,8 @@ Hoover Dam
                             "eradicate"
                         ],
                         effectsOnDeath: [
-                            "puncture"
+                            "puncture",
+                            "balrogueDeath"
                         ],
                         hp: 52600,
                         attackDmg: 2380,
@@ -10230,7 +10257,8 @@ Hoover Dam
                             // starts with darkness on turn 2
                         ],
                         effectsOnDeath: [
-                            "puncture"
+                            "puncture",
+                            "emperorDeath"
                         ],
                         hp: 52600,
                         attackDmg: 2380,
@@ -10287,7 +10315,8 @@ Hoover Dam
                             "summonCursedGuardian" // D
                         ],
                         effectsOnDeath: [
-                            "puncture"
+                            "puncture",
+                            "mysticalFairyDeath"
                         ],
                         hp: 52600,
                         attackDmg: 2380,
@@ -10338,7 +10367,8 @@ Hoover Dam
                             "reflectBarrier" //D every 3 turns, expires after 3 turns
                         ],
                         effectsOnDeath: [
-                            "puncture"
+                            "puncture",
+                            "barbarianDeath"
                         ],
                         hp: 52600,
                         attackDmg: 2180,
