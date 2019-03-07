@@ -1608,7 +1608,7 @@ function mapEmbedBuilder(message, listOfAreasInZone, zonesAvailableForUserMap, c
     .setAuthor(message.author.username + " Map")
     .setDescription(":map: travel to different areas via -travel [areaname] OR -travel [zonename]\nYou are currently in " + currentZoneName)
     .addField("Zones available", zonesAvailableString, true)
-    .addField("Areas in " + currentZoneName, areasInZoneString, true)
+    .addField("Areas available in " + currentZoneName, areasInZoneString, true)
     .setThumbnail(message.author.avatarURL)
     .setColor(0xbfa5ff)
     message.channel.send({embed});
@@ -1616,20 +1616,40 @@ function mapEmbedBuilder(message, listOfAreasInZone, zonesAvailableForUserMap, c
 
 function getAreasInZone(zoneid, userData){
     // get the areas in the zone that are available to the user
-    var areasInZone = []
-    for (var key in rpgZones[zoneid].areas){
-        // check that the user has completed the area, if they have, add the onCompleteAreasUnlocked
-        var area = rpgZones[zoneid].areas[key]
-        if (isAreaCompleted(area, userData[key]) ){
-            areasInZone.push({
-                name: key,
-                completed: true
-            })
+    var areasInZone = {}
+    var startingAreaForZone = rpgZones[zoneid].startingArea
+    var currentAreasCheck = [ startingAreaForZone ]
+    var done = false
+    while(!done){
+        var newAreasToCheck = []
+        for (var key in currentAreasCheck){
+            var areaId = currentAreasCheck[key]
+            var area = rpgZones[zoneid].areas[areaId]
+            // check that area was already cleared
+            if (isAreaCompleted(area, userData[areaId])  ){
+                if (!areasInZone[ currentAreasCheck[key] ]){
+                    areasInZone[currentAreasCheck[key]] = {
+                        name: currentAreasCheck[key], 
+                        completed: true 
+                    }
+                }
+                for (var adjacent in area.onCompleteAreasUnlocked){
+                    if (!areasInZone[area.onCompleteAreasUnlocked[adjacent] ] ){
+                        newAreasToCheck.push( area.onCompleteAreasUnlocked[adjacent] )
+                    }
+                }
+            }else{
+                areasInZone[currentAreasCheck[key]] = {
+                    name: currentAreasCheck[key],
+                    completed: false
+                }
+            }
+        }
+
+        if(newAreasToCheck.length == 0){
+            done = true
         }else{
-            areasInZone.push({
-                name: key,
-                completed: false
-            })
+            currentAreasCheck = newAreasToCheck
         }
     }
     return areasInZone
@@ -1642,7 +1662,7 @@ function isAreaCompleted(area, userAreaCompletion){
 function getZonesAvailableForUser(userData){
     var zonesAvailable = {}
     // get the zones available to the user - go through the zones, compare to completion of zone in user profile
-    var currentZonesCheck = [ "prarie" ]
+    var currentZonesCheck = [ "prarie" ] // default starting area
     var done = false
     while(!done){
         var newZonesToCheck = [] // THESE WILL ALWAYS BE UNIQUE
@@ -3681,6 +3701,7 @@ function effectsOnTurnEnd(event){
                                 var currentHpPercentForTarget = ( event.enemies[target].hp / event.enemies[enemy].maxhp )
                                 var hpToTransferAt = currentHpPercentForTarget - eotEvent.removeAtHpPercentagePerTransfer
                                 eotEvent.transferAtHpPercentage = hpToTransferAt
+                                event.enemies[target].buffs[b].removeAtHpPercentage = hpToTransferAt
                             }
                         }
                     }
@@ -3789,6 +3810,7 @@ function effectsOnTurnEnd(event){
                                         var currentHpPercentForTarget = ( event.enemies[target].hp / event.enemies[target].maxhp )
                                         var hpToTransferAt = currentHpPercentForTarget - eotEvent.removeAtHpPercentagePerTransfer
                                         eotEvent.transferAtHpPercentage = hpToTransferAt
+                                        event.enemies[target].buffs[b].removeAtHpPercentage = hpToTransferAt
                                     }
                                 }
                             }                             
@@ -4863,7 +4885,7 @@ function processReflectEffects(event, target, damageToDealToPlayer, damageCaster
                         && !event.membersInParty[targetToDealDmg].immuneToAoe){
                         damageToDealToPlayer = dealDamageTo(event.membersInParty[targetToDealDmg], damageToReflect, event, abType)
                         if (checkHasDied(event.membersInParty[targetToDealDmg])){
-                            endOfTurnString = endOfTurnString + hasDied(event, event.membersInParty[targetToDealDmg]);
+                            reflectString = reflectString + hasDied(event, event.membersInParty[targetToDealDmg]);
                         }
                     }
                 }
@@ -4890,7 +4912,7 @@ function processReflectEffects(event, target, damageToDealToPlayer, damageCaster
                         && !event.membersInParty[targetToDealDmg].immuneToAoe){
                         damageToDealToPlayer = dealDamageTo(event.membersInParty[targetToDealDmg], damageToReflect, event, abType)
                         if (checkHasDied(event.membersInParty[targetToDealDmg])){
-                            endOfTurnString = endOfTurnString + hasDied(event, event.membersInParty[targetToDealDmg]);
+                            reflectString = reflectString + hasDied(event, event.membersInParty[targetToDealDmg]);
                         }
                     }
                 }
@@ -8041,6 +8063,7 @@ function recalculateStatBuffs(event){
             spirit: 0,
             maxhp: 0
         }
+        var buffsToRemoveByIndex = []
         for (var buff in event.enemies[enemy].buffs){
             var buffToProcess = event.enemies[enemy].buffs[buff];
             var statToAffectArray = buffToProcess.affects;
@@ -8112,6 +8135,17 @@ function recalculateStatBuffs(event){
             }
             if (buffToProcess.setEndOfTurnEnable === false){
                 event.enemies[enemy].globalStatuses.endofturnenable = buffToProcess.setEndOfTurnEnable
+            }
+            if (buffToProcess.removeAtHpPercentage){
+                // remove this buff 
+                if (event.enemies[enemy].hp / event.enemies[enemy].maxhp < buffToProcess.removeAtHpPercentage){
+                    buffsToRemoveByIndex.push(parseInt(buff))
+                }
+            }
+        }
+        for( var i = event.enemies[enemy].buffs.length; i >= 0; i--){
+            if (buffsToRemoveByIndex.indexOf(i) > -1){ 
+                event.enemies[enemy].buffs.splice(i, 1)
             }
         }
         // calculate statuses
