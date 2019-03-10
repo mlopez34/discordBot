@@ -1863,6 +1863,20 @@ module.exports = {
                 type: "physical"
             }
         },
+        echoK5: {
+            dmgaura: true,
+            belongsToEvent: true,
+            name: "Echo",
+            abilityId: "echoK5",
+            areawidedmg: {
+                endOfTurnAura: true,
+                hitsEveryNTurn: 4,
+                dmgPerTurn: 112,
+                name: "Echo",
+                dmg: 400,
+                type: "physical"
+            }
+        },
         suckBlood: {
             belongsToMember: true,
             name: "Suck Blood",
@@ -8447,15 +8461,16 @@ Hoover Dam
             1: {
                 challengeId: "escapedrobot",
                 keystoneUnlockName: "Robotic Keystone",
+                avatar: "https://i.imgur.com/6fzApmM.png",
                 enemies: [
                     {
                         name: "Angry Mob Member",
                         abilities: ["attack", "attack", "poison", "iceshards", "iceshards", "cripple"],
                         buffs: [],
                         keystoneStats: {
-                            hp: [1200, 3500, 6200, 10000, 15000 ],
-                            attackDmg: [300, 500, 900, 1500, 2300],
-                            magicDmg: [300, 500, 900, 1500, 2300],
+                            hp: [1200, 3500, 6200, 10000, 15000, 23500 ],
+                            attackDmg: [300, 500, 900, 1500, 2300, 3400],
+                            magicDmg: [300, 500, 900, 1500, 2300, 3400],
                             abilities: []
                         },
                         hpPerPartyMember: 130,
@@ -8474,9 +8489,9 @@ Hoover Dam
                         abilities: ["attack", "attack", "flameblast", "flameblast", "orchatasip"],
                         buffs: [],
                         keystoneStats: {
-                            hp: [1500, 4500, 7200, 14000, 18000 ],
-                            attackDmg: [300, 500, 800, 1400, 2100],
-                            magicDmg: [400, 650, 1000, 1900, 2800],
+                            hp: [1500, 4500, 7200, 14000, 18000, 23500 ],
+                            attackDmg: [300, 500, 800, 1400, 2100, 3400],
+                            magicDmg: [400, 650, 1000, 1900, 2800, 3400],
                             abilities: []
                         },
                         effectsOnDeath: [
@@ -8498,9 +8513,9 @@ Hoover Dam
                         abilities: ["attack", "attack", "elixir", "elixir", "orchatasip"],
                         buffs: [],
                         keystoneStats: {
-                            hp: [1200, 3500, 6100, 8000, 14000 ],
-                            attackDmg: [300, 500, 900, 1500, 2300],
-                            magicDmg: [300, 500, 900, 1500, 2300],
+                            hp: [1200, 3500, 6100, 8000, 14000, 21400 ],
+                            attackDmg: [300, 500, 900, 1500, 2300, 3400],
+                            magicDmg: [300, 500, 900, 1500, 2300, 3400],
                             abilities: []
                         },
                         hpPerPartyMember: 130,
@@ -8531,12 +8546,12 @@ Hoover Dam
                         ],
                         keystoneStats: {
                             frenzy: {
-                                attackDmgPlus : [80, 140, 230, 380, 750],
-                                magicDmgPlus : [80, 140, 230, 380, 750]
+                                attackDmgPlus : [80, 140, 230, 380, 750, 975],
+                                magicDmgPlus : [80, 140, 230, 380, 750, 975]
                             },
-                            hp: [1500, 3900, 6900, 21000, 35000 ],
-                            attackDmg: [300, 500, 900, 1700, 3300],
-                            magicDmg: [300, 500, 900, 1700, 3300],
+                            hp: [1500, 3900, 6900, 21000, 35000, 52000 ],
+                            attackDmg: [300, 500, 900, 1700, 3300, 4400],
+                            magicDmg: [300, 500, 900, 1700, 3300, 4400],
                             abilities: []
                         },
                         hpPerPartyMember: 1190,
@@ -8569,12 +8584,12 @@ Hoover Dam
                         ],
                         keystoneStats: {
                             frenzy: {
-                                attackDmgPlus : [120, 180, 300, 540, 820],
-                                magicDmgPlus : [120, 180, 300, 540, 820]
+                                attackDmgPlus : [120, 180, 300, 540, 820, 1300],
+                                magicDmgPlus : [120, 180, 300, 540, 820, 1300]
                             },
-                            hp: [3500, 7900, 14900, 31000, 55000 ],
-                            attackDmg: [800, 1200, 1900, 2700, 4300],
-                            magicDmg: [800, 1200, 1900, 2700, 4300],
+                            hp: [3500, 7900, 14900, 31000, 55000, 87205 ],
+                            attackDmg: [800, 1200, 1900, 2700, 4300, 5500],
+                            magicDmg: [800, 1200, 1900, 2700, 4300, 5500],
                             abilities: []
                         },
                         endOfTurnEvents : [
@@ -8601,7 +8616,8 @@ Hoover Dam
             },
             2: {
                 challengeId: "desperado",
-                keystoneUnlockName: "Cannister Keystone",
+                keystoneUnlockName: "Canister Keystone",
+                avatar: "https://i.imgur.com/6fzApmM.png",
                 enemies: [
                     {
                         name: "Taco Thief",
@@ -8776,6 +8792,7 @@ Hoover Dam
             3: {
                 challengeId: "romansoldier",
                 keystoneUnlockName: "Roman Keystone",
+                avatar: "https://i.imgur.com/6fzApmM.png",
                 enemies: [
                     {
                         name: "Taco Thief",
@@ -8924,6 +8941,7 @@ Hoover Dam
             4: {
                 challengeId: "dictator",
                 keystoneUnlockName: "Dictator Keystone",
+                avatar: "https://i.imgur.com/6fzApmM.png",
                 enemies: [
                     {
                         name: "Dictator",
@@ -9099,6 +9117,7 @@ Hoover Dam
             5: {
                 challengeId: "cheftrio",
                 keystoneUnlockName: "Chef Keystone",
+                avatar: "https://i.imgur.com/6fzApmM.png",
                 enemies: [
                     // 3 bosses, each has a special ability
                     // when one of the bosses dies, the other 2 gain the ability at the current CD of the ability
@@ -9313,6 +9332,7 @@ Hoover Dam
                 // blue = 1 cooldown per ability, effect ends when new crystals appear
                 challengeId: "a182type2",
                 keystoneUnlockName: "A182-Type2 Keystone",
+                avatar: "https://i.imgur.com/6fzApmM.png",
                 description: "**Energy Crystals:** \nRed - grants Furnace(magical)\nGreen- grants Dismantle(physical)\nBlack - Summons Tortured Robots\nBlue - Summons Energy Core(Immune to areawide damage)\nYellow - Rocket Strike becomes areawide, reduces Furnace, Dismantle, Rocket Strike cooldown by 1 turn, Summon Tortured Robot by 6 turns\nPurple - affects with Radioactive(direct healing grants an additional stack of Radioactive, at 5 stacks you explode for 1300 damage)\nEnergy Core - Grants Energize to the boss upon being summoned, Energize lasts 6 turns (+400 attack, magic), upon death causes cleansing which removes Energized from all units\nLaser Beam - Physical, Rocket Strike - Magical",
                 timed: true,
                 timedPerTurn: 180000,
@@ -9398,6 +9418,7 @@ Hoover Dam
             7: {
                 challengeId: "gatekeeper",
                 keystoneUnlockName: "Gatekeeper Keystone",
+                avatar: "https://i.imgur.com/6fzApmM.png",
                 timed: true,
                 timedPerTurn: 180000,
                 points: 1000,
@@ -9554,6 +9575,7 @@ Hoover Dam
             8: {
                 challengeId: "archvampire",
                 keystoneUnlockName: "Archvampire Keystone",
+                avatar: "https://i.imgur.com/6fzApmM.png",
                 timed: true,
                 timedPerTurn: 180000,
                 points: 1800,
@@ -9750,6 +9772,7 @@ Hoover Dam
             9: {
                 challengeId: "corruptedovermind",
                 keystoneUnlockName: "Corrupted Keystone",
+                avatar: "https://i.imgur.com/6fzApmM.png",
                 timed: true,
                 timedPerTurn: 180000,
                 points: 2901,
@@ -9951,6 +9974,7 @@ Hoover Dam
             10: {
                 challengeId: "anomaly",
                 keystoneUnlockName: "Anomaly Keystone",
+                avatar: "https://i.imgur.com/6fzApmM.png",
                 timed: true,
                 timedPerTurn: 180000,
                 points: 4901,
@@ -10081,6 +10105,7 @@ Hoover Dam
             11: {
                 keystoneUnlockName: "Aramis Keystone",
                 challengeId: "aramis",
+                avatar: "https://i.imgur.com/6fzApmM.png",
                 timed: true,
                 timedPerTurn: 360000,
                 points: 7001,
@@ -10154,6 +10179,7 @@ Hoover Dam
             12: {
                 challengeId: "emperor",
                 keystoneUnlockName: "Emperor Keystone",
+                avatar: "https://i.imgur.com/6fzApmM.png",
                 timed: true,
                 description: "**The High Council:** \n**Darkness** - A member of the high council becomes tainted with darkness and gains *Energy* and their abilities become empowered. Darkness can only be removed upon taking 25% of the member's health from the point of obtaining darkness\n**Energy** - upon reaching full energy the member of the high council unleashes eradicate every turn increasing in damage every turn until darkness is removed - each subsequent darkness requires one less turn to reach full energy\n**Puncture** - Deals 200 damage per turn, each tick gives a stack of *debilitate*, cast upon losing darkness\n**Debilitate** - increases all damage taken by 5% per stack\n**Strength** - Upon losing darkness the member of the high council gains +20% damage dealt permanently\nBalrogue > **Lesion** - DOT Deals low damage for 30 turns\n**Summon Knights** (Darkness Only) - summon a knight per number of lesions on the group, cast every 3 turns until darkness is removed\nEmperor > **Mighty Weapon** - Empowers his weapon and deals 50% more damage\n>**Wound** - Deals high physical damage on a random target for 6 turns\nMystical Fairy > **Blast** - deal moderate magical damage on a random target\n**Summon Worshipper** > Summon a worshipper that will heal the lowest health member for 10% of their total health every 2 turns\n**Summon Cursed Guardians** (Darkness only) > Summons two cursed guardians that become stronger each turn\nReckless Barbarian > **Reflect Shield** - reflects 15% damage dealt back to the attacker | 50% aoe damage reflected back to the attacker\n**Reflect Barrier** (Darkness only) - reflects 15% of damage dealt back to the group | 50% aoe damage reflected back to the group",
                 timedPerTurn: 360000,

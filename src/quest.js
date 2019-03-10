@@ -2403,13 +2403,16 @@ function questFindRewards(message, user, emoji, allItems){
         else if(allItems[item].itemraritycategory == "uncommon"){
             uncommonItems.push(allItems[item]);
         }
-        else if(allItems[item].itemraritycategory == "rare"){
+        else if(allItems[item].itemraritycategory == "rare"
+        && !allItems[item].findinchallenge){
             rareItems.push(allItems[item]);
         }
-        else if(allItems[item].itemraritycategory == "ancient"){
+        else if(allItems[item].itemraritycategory == "ancient"
+        && !allItems[item].findinchallenge){
             ancientItems.push(allItems[item]);
         }
-        else if(allItems[item].itemraritycategory == "amulet"){
+        else if(allItems[item].itemraritycategory == "amulet"
+        && !allItems[item].findinchallenge){
             ancientItems.push(allItems[item]);
         }
     }

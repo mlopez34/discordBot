@@ -2514,17 +2514,20 @@ function calculateRewards(event, memberInRpgEvent, allItems, numberOfMembers, fi
         else if(allItems[item].itemraritycategory == "uncommon"){
             uncommonItems.push(allItems[item]);
         }
-        else if(allItems[item].itemraritycategory == "rare"){
+        else if(allItems[item].itemraritycategory == "rare"
+        && !allItems[item].findinchallenge){
             rareItems.push(allItems[item]);
         }
-        else if(allItems[item].itemraritycategory == "ancient"){
+        else if(allItems[item].itemraritycategory == "ancient"
+        && !allItems[item].findinchallenge){
             ancientItems.push(allItems[item]);
         }
         else if (allItems[item].itemraritycategory == "amulet"
             && allItems[item].amuletsource == "rpgchallenge"){
             ancientItems.push(allItems[item]);
         }
-        else if(allItems[item].itemraritycategory == "artifact"){
+        else if(allItems[item].itemraritycategory == "artifact"
+        && !allItems[item].findinchallenge){
             artifactItems.push(allItems[item]);
         }
     }
@@ -2535,6 +2538,21 @@ function calculateRewards(event, memberInRpgEvent, allItems, numberOfMembers, fi
         var rarityRoll = undefined
         var challengeNum = event.challenge.challenge
         var keystone = event.challenge.keystone
+
+        var rareKeystoneItems = []
+        var ancientsKeystoneItems = []
+        for (var item in allItems){
+            if (allItems[item].itemraritycategory == "ancient"
+            && allItems[item].findinchallenge == challengeNum
+            && allItems[item].findinkeystone <= keystone){
+                ancientsKeystoneItems.push(allItems[item]);
+            }else if (allItems[item].itemraritycategory == "rare"
+            && allItems[item].findinchallenge == challengeNum
+            && allItems[item].findinkeystone <= keystone){
+                rareKeystoneItems.push(allItems[item]);
+            }
+        }
+
         // TODO: calculate keystone only and challenge only rewards
         // ie - roman soldier drops roman gloves
         var numberOfRolls = enemiesToEncounter.challenge[challengeNum].lootcount || 3
@@ -2545,14 +2563,30 @@ function calculateRewards(event, memberInRpgEvent, allItems, numberOfMembers, fi
             rarityRoll = Math.floor(Math.random() * 2500) + 7500;
             if (rarityRoll){
                 if(rarityRoll > ANCIENT_MIN_ROLL ){
-                    var itemRoll = Math.floor(Math.random() * ancientItems.length);
-                    console.log(ancientItems[itemRoll]);
-                    itemsObtainedArray.push(ancientItems[itemRoll])
+                    // check if keystone and roll for keystone loot / challenge loot
+                    if (keystone){
+                        var getKeystoneLootRoll = Math.floor(Math.random() * 10) + 1;
+                        if (keystone >= getKeystoneLootRoll ){
+                            var itemRoll = Math.floor(Math.random() * ancientsKeystoneItems.length);
+                            itemsObtainedArray.push(ancientsKeystoneItems[itemRoll])        
+                        }
+                    }else{
+                        var itemRoll = Math.floor(Math.random() * ancientItems.length);
+                        itemsObtainedArray.push(ancientItems[itemRoll])    
+                    }
                 }
                 else if(rarityRoll > RARE_MIN_ROLL && rarityRoll <= RARE_MAX_ROLL){
-                    var itemRoll = Math.floor(Math.random() * rareItems.length);
-                    console.log(rareItems[itemRoll]);
-                    itemsObtainedArray.push(rareItems[itemRoll]);
+                    // check if keystone and roll for keystone loot challenge loot
+                    if (keystone){
+                        var getKeystoneLootRoll = Math.floor(Math.random() * 10) + 1;
+                        if (keystone >= getKeystoneLootRoll ){
+                            var itemRoll = Math.floor(Math.random() * rareKeystoneItems.length);
+                            itemsObtainedArray.push(rareKeystoneItems[itemRoll])        
+                        }
+                    }else{
+                        var itemRoll = Math.floor(Math.random() * rareItems.length);
+                        itemsObtainedArray.push(rareItems[itemRoll]);    
+                    }
                 }
                 else if (rarityRoll > UNCOMMON_MIN_ROLL && rarityRoll <= UNCOMMON_MAX_ROLL){
                     var itemRoll = Math.floor(Math.random() * uncommonItems.length);

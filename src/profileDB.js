@@ -1639,7 +1639,7 @@ module.exports.getUserItemsForInfo = function(discordId, cb) {
   }
 // get wear info
 module.exports.getUserWearInfo = function(discordId, cb){
-    var query = 'select * from ' + config.wearTable + ',' + config.templeTable + ',' + config.greenhouseTable + ',' + config.stablesTable + ' where ' + config.wearTable + '.discordId = $1 AND ' + config.templeTable + '.discordId = $1 AND ' + config.greenhouseTable + '.discordId = $1 AND ' + config.stablesTable + '.discordId = $1'
+    var query = 'select * from ' + config.profileTable + ',' + config.wearTable + ',' + config.templeTable + ',' + config.greenhouseTable + ',' + config.stablesTable + ' where ' + config.profileTable + '.discordId = $1 AND ' + config.wearTable + '.discordId = $1 AND ' + config.templeTable + '.discordId = $1 AND ' + config.greenhouseTable + '.discordId = $1 AND ' + config.stablesTable + '.discordId = $1'
 
     // console.log(query);
     db.query(query, [discordId])

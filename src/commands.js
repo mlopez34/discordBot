@@ -643,7 +643,7 @@ module.exports.setCommandLock = function(command, discordUserId, set){
     commandLock[command][discordUserId] = set
 }
 module.exports.getItemsMapById = function(){
-    return itemsMapById
+    return JSON.parse(JSON.stringify(itemsMapById))
 }
 
 module.exports.getItemsMapByShortName = function(){
@@ -651,7 +651,7 @@ module.exports.getItemsMapByShortName = function(){
 }
 
 module.exports.getAllItems = function(){
-    return allItems
+    return JSON.parse(JSON.stringify(allItems))
 }
 
 module.exports.thankCommand = function(message){
@@ -3237,6 +3237,7 @@ module.exports.scavangeCommand = function (message){
                         oneHourAgo = new Date(oneHourAgo.setSeconds(oneHourAgo.getSeconds() + secondsToRemove));
     
                         if ( oneHourAgo > getUserResponse.data.lastscavangetime ){
+                            var allScavengeableItems = exports.getAllItems()
                             var ARTIFACT_MIN_ROLL = 9995;
                             var ANCIENT_MAX_ROLL = 9995
                             var ANCIENT_MIN_ROLL = 9975;
@@ -3300,32 +3301,32 @@ module.exports.scavangeCommand = function (message){
                             var ancientItems = [];
                             var artifactItems = [];
                             // TODO: add check for rarity chance % to be > 0 
-                            for (var item in allItems){
-                                if (allItems[item].itemraritycategory == "common"){
-                                    commonItems.push(allItems[item]);
+                            for (var item in allScavengeableItems){
+                                if (allScavengeableItems[item].itemraritycategory == "common"){
+                                    commonItems.push(allScavengeableItems[item]);
                                 }
-                                else if(allItems[item].itemraritycategory == "uncommon"){
-                                    uncommonItems.push(allItems[item]);
+                                else if(allScavengeableItems[item].itemraritycategory == "uncommon"){
+                                    uncommonItems.push(allScavengeableItems[item]);
                                 }
-                                else if(allItems[item].itemraritycategory == "rare"
-                                    && allItems[item].fromscavenge == true){
-                                    rareItems.push(allItems[item]);
+                                else if(allScavengeableItems[item].itemraritycategory == "rare"
+                                    && allScavengeableItems[item].fromscavenge == true){
+                                    rareItems.push(allScavengeableItems[item]);
                                 }
-                                else if(allItems[item].itemraritycategory == "ancient"
-                                    && allItems[item].fromscavenge == true){
-                                    ancientItems.push(allItems[item]);
+                                else if(allScavengeableItems[item].itemraritycategory == "ancient"
+                                    && allScavengeableItems[item].fromscavenge == true){
+                                    ancientItems.push(allScavengeableItems[item]);
                                 }
-                                else if(allItems[item].itemraritycategory == "artifact"
-                                    && allItems[item].fromscavenge == true){
-                                    artifactItems.push(allItems[item]);
+                                else if(allScavengeableItems[item].itemraritycategory == "artifact"
+                                    && allScavengeableItems[item].fromscavenge == true){
+                                    artifactItems.push(allScavengeableItems[item]);
                                 }
                             }
                             // roll to randomly get only 5 amulets in the pool of amulets
                             var poolOfAmulets = []
-                            for (var item in allItems){
-                                if(allItems[item].itemraritycategory == "amulet" 
-                                && allItems[item].amuletsource == "scavenge"){
-                                    poolOfAmulets.push(allItems[item]);
+                            for (var item in allScavengeableItems){
+                                if(allScavengeableItems[item].itemraritycategory == "amulet" 
+                                && allScavengeableItems[item].amuletsource == "scavenge"){
+                                    poolOfAmulets.push(allScavengeableItems[item]);
                                 }
                             }
                             for (var i = 0; i < 5; i++){
@@ -3556,8 +3557,7 @@ function addToUserInventory(discordUserId, items){
     profileDB.addNewItemToUser(discordUserId, items, function(itemError, itemAddResponse){
         if (itemError){
             // console.log(itemError);
-        }
-        else{
+        }else{
             // console.log(itemAddResponse);
         }
     })
@@ -3778,19 +3778,23 @@ module.exports.miniGameCommand = function(message) {
         }
         if (listOfPlayers.length >= 3 && validGroup){
             // TODO: get rares available, amulets available, ancients available
+            var allItemsForMiniGame = exports.getAllItems()
             var raresAvailable = []
             var ancientsAvailable = []
             var amuletsAvailable = []
-            for (var item in allItems){
-                if(allItems[item].itemraritycategory == "rare"){
-                    raresAvailable.push(allItems[item]);
+            for (var item in allItemsForMiniGame){
+                if(allItemsForMiniGame[item].itemraritycategory == "rare"
+                && !allItemsForMiniGame[item].findinchallenge){
+                    raresAvailable.push(allItemsForMiniGame[item]);
                 }
-                else if(allItems[item].itemraritycategory == "ancient"){
-                    ancientsAvailable.push(allItems[item]);
+                else if(allItemsForMiniGame[item].itemraritycategory == "ancient"
+                && !allItemsForMiniGame[item].findinchallenge){
+                    ancientsAvailable.push(allItemsForMiniGame[item]);
                 }
-                else if(allItems[item].itemraritycategory == "amulet"
-                && allItems[item].amuletsource == "scavenge"){
-                    amuletsAvailable.push(allItems[item]);
+                else if(allItemsForMiniGame[item].itemraritycategory == "amulet"
+                && allItemsForMiniGame[item].amuletsource == "scavenge"
+                && !allItemsForMiniGame[item].findinchallenge){
+                    amuletsAvailable.push(allItemsForMiniGame[item]);
                 }
             }
             var currentGame = new miniboard(listOfPlayers, message, raresAvailable, amuletsAvailable, ancientsAvailable );
@@ -5027,10 +5031,13 @@ module.exports.useCommand = function(message, args){
                         }
                     }
                 }
-                for (var index in allItems){
-                    if (allItems[index].itemraritycategory == "rare" && !allItems[index].isseed){
+                var itemsForTerryCraft = exports.getAllItems()
+                for (var index in itemsForTerryCraft){
+                    if (itemsForTerryCraft[index].itemraritycategory == "rare" 
+                    && !itemsForTerryCraft[index].isseed
+                    && !itemsForTerryCraft[index].findinchallenge){
                         // add to list of rares
-                        listOfRares.push(allItems[index]);
+                        listOfRares.push(itemsForTerryCraft[index]);
                     }
                 }
                 if (terryClothToUse.length == 5){
@@ -7627,14 +7634,13 @@ module.exports.putonCommand = function(message, args, retry){
                 profileDB.createUserWearInfo(discordUserId, false, function(error, res){
                     if (error){
                         // console.log(error);
-                    }
-                    else{
+                    }else{
                         // console.log(res);
                     }
                 })
-            }
-            else{
+            }else{
                 // console.log("wear res " + JSON.stringify(getWearRes, null, 2));
+                var userLevel = getWearRes.data.level;
                 if (getWearRes.data.length == 0){
                     // create the user
                     var data = {
@@ -7647,8 +7653,7 @@ module.exports.putonCommand = function(message, args, retry){
                     profileDB.createUserWearInfo(data, function(error, res){
                         if (error){
                             // console.log(error);
-                        }
-                        else{
+                        }else{
                             // console.log(res);
                             // call the same function again now that the user exists
                             exports.putonCommand(message, args, false)
@@ -7695,8 +7700,7 @@ module.exports.putonCommand = function(message, args, retry){
                     profileDB.getUserItems(discordUserId, function(err, inventoryResponse){
                         if (err){
                             console.log(err);
-                        }
-                        else{
+                        }else{
                             // 
                             // get all the data for each item
                             var itemsInInventoryCountMap = {};
@@ -7743,16 +7747,18 @@ module.exports.putonCommand = function(message, args, retry){
                                 }
                                 // id if the specific item the user will wear (pick the first item)
                                 var itemuserid;
+                                var itemLevelRequirement = 0;
                                 var itemObtainDate;
                                 for (var item in userItemsById[itemid]){
                                     if (userItemsById[itemid][item].status != "wearing"){
                                         itemuserid = userItemsById[itemid][item].id;
+                                        itemLevelRequirement = userItemsById[itemid][item].itemlevelrequirement || 0;
                                         itemObtainDate = userItemsById[itemid][item].itemobtaindate;
                                         break;
                                     }
                                 }
-                                // validate the user owns that item
-                                if (itemuserid){
+                                // validate the user owns that item and make sure item is above user level
+                                if (itemuserid && userLevel >= itemLevelRequirement){
                                     
                                     var validateSlotToWear;
                                     var arrayOfSlots = []
@@ -9761,6 +9767,7 @@ function tacoPartyReactRewards(message, user, emoji, reward){
     // each of these ids will receive 1 taco, 1 xp, or 1 rock
     var giveRewardTo = user.id;
     var giveRewardToUsername = user.username
+    var allPartyItems = exports.getAllItems()
     // console.log(user.id);
     if (reward === "taco"){
         profileDB.updateUserTacos(giveRewardTo, 20, function(err, res){
@@ -9776,20 +9783,22 @@ function tacoPartyReactRewards(message, user, emoji, reward){
         var itemsObtainedArray = [];
         if (reward === "terrycloth"){
             // ID of terry cloth
-            for (var index in allItems){
-                if (allItems[index].id == TERRY_CLOTH_ITEM_ID){
-                    itemsObtainedArray.push( allItems[index] );
-                    itemsObtainedArray.push( allItems[index] );
-                    itemsObtainedArray.push( allItems[index] );
+            for (var index in allPartyItems){
+                if (allPartyItems[index].id == TERRY_CLOTH_ITEM_ID){
+                    console.log(index)
+                    itemsObtainedArray.push( allPartyItems[index] );
+                    itemsObtainedArray.push( allPartyItems[index] );
+                    itemsObtainedArray.push( allPartyItems[index] );
                     break;
                 }
             }
         }
         else if (reward === "rock"){
-            for (var index in allItems){
-                if (allItems[index].id == ROCK_ITEM_ID){
-                    itemsObtainedArray.push( allItems[index] );
-                    itemsObtainedArray.push( allItems[index] );
+            for (var index in allPartyItems){
+                if (allPartyItems[index].id == ROCK_ITEM_ID){
+                    console.log(index)
+                    itemsObtainedArray.push( allPartyItems[index] );
+                    itemsObtainedArray.push( allPartyItems[index] );
                     break;
                 }
             }
@@ -9857,18 +9866,20 @@ module.exports.rpgReadyCommand = function(message){
         }
     }else{
         var amuletItemsById = {}
-        for (var item in allItems){
-            if (allItems[item].itemraritycategory == "amulet"){
-                amuletItemsById[allItems[item].id] = allItems[item];
+        var itemsForRpg = exports.getAllItems()
+        for (var item in itemsForRpg){
+            if (itemsForRpg[item].itemraritycategory == "amulet"){
+                amuletItemsById[itemsForRpg[item].id] = itemsForRpg[item];
             }
         }
         var buffItemsById = {}
-        for (var item in allItems){
-            if (allItems[item].itemraritycategory == "uncommon+" && allItems[item].amuletsource == 'rpgbuff'){
-                buffItemsById[allItems[item].id] = allItems[item];
+        for (var item in itemsForRpg){
+            if (itemsForRpg[item].itemraritycategory == "uncommon+" && itemsForRpg[item].amuletsource == 'rpgbuff'){
+                buffItemsById[itemsForRpg[item].id] = itemsForRpg[item];
             }
         }
-        rpg.rpgReady(message, itemsMapById, amuletItemsById, buffItemsById, allItems);
+        var itemsMapByIdForRpg = exports.getItemsMapById()
+        rpg.rpgReady(message, itemsMapByIdForRpg, amuletItemsById, buffItemsById, itemsForRpg);
     }
 }
 

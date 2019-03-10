@@ -169,7 +169,9 @@ function extraLevelRewards(message, discordUser, userLeveledUpTo, allItems){
 
         for (var item in allItems){
             
-            if(allItems[item].itemraritycategory == "rare" && allItems[item].itemslot != "consumable"){
+            if(allItems[item].itemraritycategory == "rare" 
+            && allItems[item].itemslot != "consumable"
+            && !allItems[item].findinchallenge){
                 rareItems.push(allItems[item]);
             }
         }
