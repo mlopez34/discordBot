@@ -1443,6 +1443,13 @@ module.exports.rpgReady = function(message, itemsAvailable, amuletItemsById, buf
                                                             .setColor(0xF2E93E)
                                                             if (activeRPGEvents[rpgEvent].special && activeRPGEvents[rpgEvent].special.avatar){
                                                                 embed.setThumbnail(activeRPGEvents[rpgEvent].special.avatar);
+                                                            }else if (activeRPGEvents[rpgEvent].challenge){
+                                                                var challengeNum = activeRPGEvents[rpgEvent].challenge.challenge
+                                                                var keystoneNum = activeRPGEvents[rpgEvent].challenge.keystone
+                                                                if (keystoneNum >= 5){
+                                                                    var avatarURL = getThumbnailFromChallenge(challengeNum)
+                                                                    embed.setThumbnail(avatarURL);
+                                                                }
                                                             }
                                                             // party members
                                                             //var groupString = "";
@@ -1552,6 +1559,14 @@ function calculateCritDamagePlus(critDamageRating){
 function getKeystoneIdFromChallenge(challengeNumber){
     if (enemiesToEncounter.challenge[challengeNumber]){
         return enemiesToEncounter.challenge[challengeNumber].challengeId
+    }else{
+        return -1
+    }
+}
+
+function getThumbnailFromChallenge(challengeNumber){
+    if (enemiesToEncounter.challenge[challengeNumber]){
+        return enemiesToEncounter.challenge[challengeNumber].avatar
     }else{
         return -1
     }
@@ -2088,6 +2103,13 @@ function turnFinishedEmbedBuilder(message, event, turnString, passiveEffectsStri
     var enemiesString = "";
     if (event.special && event.special.avatar){
         embed.setThumbnail(event.special.avatar);
+    }else if (event.challenge){
+        var challengeNum = event.challenge.challenge
+        var keystoneNum = event.challenge.keystone
+        if (keystoneNum >= 5){
+            var avatarURL = getThumbnailFromChallenge(challengeNum)
+            embed.setThumbnail(avatarURL);
+        }
     }
 
     for (var member in event.members){
@@ -2440,8 +2462,7 @@ function addToUserInventory(discordUserId, items){
     profileDB.addNewItemToUser(discordUserId, items, function(itemError, itemAddResponse){
         if (itemError){
             console.log(itemError);
-        }
-        else{
+        }else{
             console.log(itemAddResponse);
         }
     })
@@ -2568,7 +2589,7 @@ function calculateRewards(event, memberInRpgEvent, allItems, numberOfMembers, fi
                     // check if keystone and roll for keystone loot / challenge loot
                     if (keystone && !gotKeystoneAncient){
                         var getKeystoneLootRoll = Math.floor(Math.random() * 10) + 1;
-                        if (keystone >= getKeystoneLootRoll ){
+                        if (keystone >= getKeystoneLootRoll && ancientsKeystoneItems.length > 0){
                             var itemRoll = Math.floor(Math.random() * ancientsKeystoneItems.length);
                             itemsObtainedArray.push(ancientsKeystoneItems[itemRoll])  
                             gotKeystoneAncient = true;      
@@ -2585,7 +2606,7 @@ function calculateRewards(event, memberInRpgEvent, allItems, numberOfMembers, fi
                     // check if keystone and roll for keystone loot challenge loot
                     if (keystone && !gotKeystoneRare){
                         var getKeystoneLootRoll = Math.floor(Math.random() * 10) + 1;
-                        if (keystone >= getKeystoneLootRoll ){
+                        if (keystone >= getKeystoneLootRoll && rareKeystoneItems.length > 0){
                             var itemRoll = Math.floor(Math.random() * rareKeystoneItems.length);
                             itemsObtainedArray.push(rareKeystoneItems[itemRoll])  
                             gotKeystoneRare = true      
