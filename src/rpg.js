@@ -2559,16 +2559,22 @@ function calculateRewards(event, memberInRpgEvent, allItems, numberOfMembers, fi
         if (firstKill){
             numberOfRolls = numberOfRolls * 3
         }
+        var gotKeystoneAncient = false;
+        var gotKeystoneRare = false;
         for (var enemy = 0; enemy < numberOfRolls; enemy++){
             rarityRoll = Math.floor(Math.random() * 2500) + 7500;
             if (rarityRoll){
                 if(rarityRoll > ANCIENT_MIN_ROLL ){
                     // check if keystone and roll for keystone loot / challenge loot
-                    if (keystone){
+                    if (keystone && !gotKeystoneAncient){
                         var getKeystoneLootRoll = Math.floor(Math.random() * 10) + 1;
                         if (keystone >= getKeystoneLootRoll ){
                             var itemRoll = Math.floor(Math.random() * ancientsKeystoneItems.length);
-                            itemsObtainedArray.push(ancientsKeystoneItems[itemRoll])        
+                            itemsObtainedArray.push(ancientsKeystoneItems[itemRoll])  
+                            gotKeystoneAncient = true;      
+                        }else{
+                            var itemRoll = Math.floor(Math.random() * ancientItems.length);
+                            itemsObtainedArray.push(ancientItems[itemRoll])        
                         }
                     }else{
                         var itemRoll = Math.floor(Math.random() * ancientItems.length);
@@ -2577,11 +2583,15 @@ function calculateRewards(event, memberInRpgEvent, allItems, numberOfMembers, fi
                 }
                 else if(rarityRoll > RARE_MIN_ROLL && rarityRoll <= RARE_MAX_ROLL){
                     // check if keystone and roll for keystone loot challenge loot
-                    if (keystone){
+                    if (keystone && !gotKeystoneRare){
                         var getKeystoneLootRoll = Math.floor(Math.random() * 10) + 1;
                         if (keystone >= getKeystoneLootRoll ){
                             var itemRoll = Math.floor(Math.random() * rareKeystoneItems.length);
-                            itemsObtainedArray.push(rareKeystoneItems[itemRoll])        
+                            itemsObtainedArray.push(rareKeystoneItems[itemRoll])  
+                            gotKeystoneRare = true      
+                        }else{
+                            var itemRoll = Math.floor(Math.random() * rareItems.length);
+                            itemsObtainedArray.push(rareItems[itemRoll]);    
                         }
                     }else{
                         var itemRoll = Math.floor(Math.random() * rareItems.length);

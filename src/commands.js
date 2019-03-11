@@ -3178,9 +3178,10 @@ function inventoryEmbedBuilder(message, itemsMap, allItems){
 
 module.exports.getItemsByRarity = function(rarityToReturn){
     var itemsToReturn = []
-    for (var item in allItems){
-        if (allItems[item].itemraritycategory == rarityToReturn){
-            itemsToReturn.push(allItems[item]);
+    var allItemsCopy = exports.getAllItems()
+    for (var item in allItemsCopy){
+        if (allItemsCopy[item].itemraritycategory == rarityToReturn){
+            itemsToReturn.push(allItemsCopy[item]);
         }
     }
     return itemsToReturn
@@ -7071,7 +7072,7 @@ module.exports.weddingCommand = function(message, channel){
             console.log (profileErr);
         }else{
             var stage = profileData.data.ringqueststage;
-
+            var allItemsForWedding = exports.getAllItems()
             if (stage == 4){
                 // first stage of ring, user proposes
                 var questData = {
@@ -7079,7 +7080,7 @@ module.exports.weddingCommand = function(message, channel){
                 }
                 var team = [] 
                 /// TEAM MUST BE > 5
-                quest.questHandler(message, discordUserId, "ring", stage, team, questData, channel, allItems)
+                quest.questHandler(message, discordUserId, "ring", stage, team, questData, channel, allItemsForWedding)
             }
             if (stage == 5){
                 // user marries - creates embed for wedding
@@ -7087,7 +7088,7 @@ module.exports.weddingCommand = function(message, channel){
                     marriedTo: mentionedUser
                 }
                 var team = []
-                quest.questHandler(message, discordUserId, "ring", stage, team, questData, channel, allItems)
+                quest.questHandler(message, discordUserId, "ring", stage, team, questData, channel, allItemsForWedding)
             }
             // TODO: give, thanks, and sorry should check whether the user is in stages 2, 3 and complete the stages
             // on stage 4, everyone can react to the embed and receive rewards
@@ -7123,6 +7124,7 @@ module.exports.exploreTombCommand = function(message, args, channel){
         }
     }
     // TODO: explore (RPG / scavenge) if the user has a pike equiped and is in end stage
+    var allItemsForExplore = exports.getAllItems()
     if (team.length > 1 && team.length <= 5){
         profileDB.getUserProfileData(discordUserId, function(profileErr, profileData){
             if (profileErr){
@@ -7132,27 +7134,27 @@ module.exports.exploreTombCommand = function(message, args, channel){
                 var questData = {}
                 if (stage == 1){
                     // first stage of tomb, enter tomb
-                    quest.questHandler(message, discordUserId, "tomb", stage, team, questData, channel, allItems)
+                    quest.questHandler(message, discordUserId, "tomb", stage, team, questData, channel, allItemsForExplore)
                 }
                 else if (stage == 2){
                     // second stage of tomb
-                    quest.questHandler(message, discordUserId, "tomb", stage, team, questData, channel, allItems)
+                    quest.questHandler(message, discordUserId, "tomb", stage, team, questData, channel, allItemsForExplore)
                 }
                 else if (stage == 3){
                     // third stage of tomb
-                    quest.questHandler(message, discordUserId, "tomb", stage, team, questData, channel, allItems)
+                    quest.questHandler(message, discordUserId, "tomb", stage, team, questData, channel, allItemsForExplore)
                 }
                 else if (stage == 4){
                     // 4th stage, tomb
-                    quest.questHandler(message, discordUserId, "tomb", stage, team, questData, channel, allItems)
+                    quest.questHandler(message, discordUserId, "tomb", stage, team, questData, channel, allItemsForExplore)
                 }
                 else if (stage == 5){
                     // 5th stage, tomb
-                    quest.questHandler(message, discordUserId, "tomb", stage, team, questData, channel, allItems)
+                    quest.questHandler(message, discordUserId, "tomb", stage, team, questData, channel, allItemsForExplore)
                 }
                 else if (stage == 6){
                     // 6th stage, defeat archvampires
-                    quest.questHandler(message, discordUserId, "tomb", stage, team, questData, channel, allItems)
+                    quest.questHandler(message, discordUserId, "tomb", stage, team, questData, channel, allItemsForExplore)
                 }
                 else if (stage == 7){
                     message.channel.send("exploring tomb ")
@@ -7188,6 +7190,7 @@ module.exports.ritualCommand = function(message, args, channel){
             validTeam = false;
         }
     }
+    var allItemsForRitual = exports.getAllItems()
     // TODO: Perform a ritual of summoning ( RPG / scavenge) if the user has a bow equiped and is in end stage
     if (team.length >= 1 && team.length <= 5){
         profileDB.getUserProfileData(discordUserId, function(profileErr, profileData){
@@ -7201,32 +7204,32 @@ module.exports.ritualCommand = function(message, args, channel){
                     var questData = {
 
                     }
-                    quest.questHandler(message, discordUserId, "demonic", stage, team, questData, channel, allItems)
+                    quest.questHandler(message, discordUserId, "demonic", stage, team, questData, channel, allItemsForRitual)
 
                 }
                 else if (stage == 2){
                     // second stage of demonic
                     var questData = {
                     }
-                    quest.questHandler(message, discordUserId, "demonic", stage, team, questData, channel, allItems)
+                    quest.questHandler(message, discordUserId, "demonic", stage, team, questData, channel, allItemsForRitual)
                 }
                 else if (stage == 3){
                     // third stage of demonic
                     var questData = {
                     }
-                    quest.questHandler(message, discordUserId, "demonic", stage, team, questData, channel, allItems)
+                    quest.questHandler(message, discordUserId, "demonic", stage, team, questData, channel, allItemsForRitual)
                 }
                 else if (stage == 4){
                     // 4th stage, defeat the swarm of demons
                     var questData = {
                     }
-                    quest.questHandler(message, discordUserId, "demonic", stage, team, questData, channel, allItems)
+                    quest.questHandler(message, discordUserId, "demonic", stage, team, questData, channel, allItemsForRitual)
                 }
                 else if (stage == 5){
                     // 5th stage, defeat andromalius
                     var questData = {
                     }
-                    quest.questHandler(message, discordUserId, "demonic", stage, team, questData, channel, allItems)
+                    quest.questHandler(message, discordUserId, "demonic", stage, team, questData, channel, allItemsForRitual)
                 }
                 else{
                     message.channel.send("performed ritual ")
@@ -7262,6 +7265,7 @@ module.exports.timeTravelCommand = function(message, args, channel){
             validTeam = false;
         }
     }
+    var allItemsForTimetravel = exports.getAllItems()
     // TODO: Travel to specific time and RPG there OR ...(Do something else not sure what yet, scavenge maybe?) if the user has a timemachine equiped and is in end stage
     if (args.length > 1 && args[1] >= 1210 && args[1] <= 1215 && team.length <= 5){
         // travel back in time to the year... 
@@ -7272,20 +7276,19 @@ module.exports.timeTravelCommand = function(message, args, channel){
                 console.log (profileErr);
             }else{
                 var stage = profileData.data.timetravelqueststage;
-
                 if (stage == 1){
                     // create an rpg event with the tagged members to time travel
                     var questData = {
                         year: args[1]
                     }
-                    quest.questHandler(message, discordUserId, "timetravel", stage, team, questData, channel, allItems)
+                    quest.questHandler(message, discordUserId, "timetravel", stage, team, questData, channel, allItemsForTimetravel)
 
                 }
                 else if (stage == 2){
                     var questData = {
                         year: args[1]
                     }
-                    quest.questHandler(message, discordUserId, "timetravel", stage, team, questData, channel, allItems)
+                    quest.questHandler(message, discordUserId, "timetravel", stage, team, questData, channel, allItemsForTimetravel)
                 }
                 else{
                     // TODO: make this just be a travel in time
@@ -7308,18 +7311,17 @@ module.exports.timeTravelCommand = function(message, args, channel){
                 // console.log (profileErr);
             }else{
                 var stage = profileData.data.timetravelqueststage;
-
                 if (stage == 3){
                     var questData = {
                         year: args[1]
                     }
-                    quest.questHandler(message, discordUserId, "timetravel", stage, team, questData, channel, allItems)
+                    quest.questHandler(message, discordUserId, "timetravel", stage, team, questData, channel, allItemsForTimetravel)
                 }
                 else if (stage == 4){
                     var questData = {
                         year: args[1]
                     }
-                    quest.questHandler(message, discordUserId, "timetravel", stage, team, questData, channel, allItems)
+                    quest.questHandler(message, discordUserId, "timetravel", stage, team, questData, channel, allItemsForTimetravel)
                 }
                 else{
                     message.channel.send("traveled to the year " + args[1])
@@ -7337,13 +7339,13 @@ module.exports.timeTravelCommand = function(message, args, channel){
                     var questData = {
                         year: args[1]
                     }
-                    quest.questHandler(message, discordUserId, "timetravel", stage, team, questData, channel, allItems)
+                    quest.questHandler(message, discordUserId, "timetravel", stage, team, questData, channel, allItemsForTimetravel)
                 }
                 else if (stage == 6){
                     var questData = {
                         year: args[1]
                     }
-                    quest.questHandler(message, discordUserId, "timetravel", stage, team, questData, channel, allItems)
+                    quest.questHandler(message, discordUserId, "timetravel", stage, team, questData, channel, allItemsForTimetravel)
                 }
                 else{
                     message.channel.send("traveled to the year " + args[1])
@@ -7361,7 +7363,7 @@ module.exports.timeTravelCommand = function(message, args, channel){
                     var questData = {
                         year: args[1]
                     }
-                    quest.questHandler(message, discordUserId, "timetravel", stage, team, questData, channel, allItems)
+                    quest.questHandler(message, discordUserId, "timetravel", stage, team, questData, channel, allItemsForTimetravel)
                 }
                 else{
                     message.channel.send("traveled to the year " + args[1])
@@ -9731,7 +9733,7 @@ function createParty(message, discordUserId, uncommonsToUse){
                                 else{
                                     // for gaining xp
                                     var userData = getDataRes;
-                                    profileDB.updateUserTacos(ownerOfTable.id, reactionCount * 40, function(err, res){
+                                    profileDB.updateUserTacos(ownerOfTable.id, reactionCount * 20, function(err, res){
                                         if (err){
                                             // console.log(err);
                                             message.channel.send(err);
@@ -9770,7 +9772,7 @@ function tacoPartyReactRewards(message, user, emoji, reward){
     var allPartyItems = exports.getAllItems()
     // console.log(user.id);
     if (reward === "taco"){
-        profileDB.updateUserTacos(giveRewardTo, 20, function(err, res){
+        profileDB.updateUserTacos(giveRewardTo, 40, function(err, res){
             if (err){
                 // console.log(err);
                 message.channel.send(err);
