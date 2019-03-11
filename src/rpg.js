@@ -3151,7 +3151,7 @@ function effectsOnTurnEnd(event){
                                                 var energize = rpgAbilities["energize"] ? JSON.parse(JSON.stringify(rpgAbilities["energize"])) : undefined;
                                                 energize.buff.expireOnTurn = currentTurn + energize.buff.turnsToExpire
                                                 event.enemies[enemy].buffs.push(energize.buff);
-                                                endOfTurnString = endOfTurnString + event.enemies[enemy].name + " gained Energized 🗡 +350, ☄️ + 350 \n\n"
+                                                endOfTurnString = endOfTurnString + event.enemies[enemy].name + " gained Energized 🗡 +22%, ☄️ + 22% \n\n"
                                             }
                                             if (event.enemies[enemy].endOfTurnEvents[index].oneTimeCast){
                                                 event.enemies[enemy].endOfTurnEvents[index].invalid = true;
