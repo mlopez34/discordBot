@@ -388,35 +388,35 @@ module.exports = {
                 additive: 650
             }
         },
-        energize: {
-            name: "Energize",
-            abilityId: "energize",
-            areawide: true,
-            targets: "friendly",
-            cooldown: 0,
-            maxcooldown: 4,
-            description: "Increase the group's magical damage and attack damage by 60% for 4 turns - 5 turn cooldown, applies Exhausted",
-            buff: {
-                buff: true,
-                areawide: true,
-                name: "Energize",
-                abilityId: "energize",
-                emoji: "<:empower:479293276298412033>",
-                turnsToExpire: 4,
-                affects: ["attackDmg", "magicDmg"],
-                multiplier: 1.6
-            },
-            status: {
-                name: "Exhausted",
-                status: true,
-                areawide: true,
-                ignoreBandaid: true,
-                selfDebuff: true,
-                emoji: "<:exhausted:479294904858836992>",
-                buffToStop: ["empower", "energize"],
-                turnsToExpire: 10,
-            }
-        },
+        // energize: {
+        //     name: "Energize",
+        //     abilityId: "energize",
+        //     areawide: true,
+        //     targets: "friendly",
+        //     cooldown: 0,
+        //     maxcooldown: 4,
+        //     description: "Increase the group's magical damage and attack damage by 60% for 4 turns - 5 turn cooldown, applies Exhausted",
+        //     buff: {
+        //         buff: true,
+        //         areawide: true,
+        //         name: "Energize",
+        //         abilityId: "energize",
+        //         emoji: "<:empower:479293276298412033>",
+        //         turnsToExpire: 4,
+        //         affects: ["attackDmg", "magicDmg"],
+        //         multiplier: 1.6
+        //     },
+        //     status: {
+        //         name: "Exhausted",
+        //         status: true,
+        //         areawide: true,
+        //         ignoreBandaid: true,
+        //         selfDebuff: true,
+        //         emoji: "<:exhausted:479294904858836992>",
+        //         buffToStop: ["empower", "energize"],
+        //         turnsToExpire: 10,
+        //     }
+        // },
         empower: {
             name: "Empower",
             abilityId: "empower",
@@ -1264,7 +1264,7 @@ module.exports = {
                 turnsToExpire: 7,
                 abilityId: "energize",
                 affects: ["attackDmg", "magicDmg"],
-                additive: 350
+                multiplier: 1.22
             }
         },
         entomb75: {
