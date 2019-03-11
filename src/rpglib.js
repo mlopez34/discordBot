@@ -7,7 +7,6 @@ module.exports = {
     // physical elixir
     // DONE cocoon - 15% damage reduct, -10% damage dealt
     // cannister shot
-    // LEFT OFF AT: WOODS - create the entire woods profile
     
     rpgAbilities: {
         attack : {
@@ -389,6 +388,35 @@ module.exports = {
                 additive: 650
             }
         },
+        energize: {
+            name: "Energize",
+            abilityId: "energize",
+            areawide: true,
+            targets: "friendly",
+            cooldown: 0,
+            maxcooldown: 4,
+            description: "Increase the group's magical damage and attack damage by 60% for 4 turns - 5 turn cooldown, applies Exhausted",
+            buff: {
+                buff: true,
+                areawide: true,
+                name: "Energize",
+                abilityId: "energize",
+                emoji: "<:empower:479293276298412033>",
+                turnsToExpire: 4,
+                affects: ["attackDmg", "magicDmg"],
+                multiplier: 1.6
+            },
+            status: {
+                name: "Exhausted",
+                status: true,
+                areawide: true,
+                ignoreBandaid: true,
+                selfDebuff: true,
+                emoji: "<:exhausted:479294904858836992>",
+                buffToStop: ["empower", "energize"],
+                turnsToExpire: 10,
+            }
+        },
         empower: {
             name: "Empower",
             abilityId: "empower",
@@ -613,6 +641,16 @@ module.exports = {
         headshot: {
             name: "Headshot",
             abilityId: "headshot",
+            limitOffensive: true,
+            description: "Limit ability - Deal 480 damage + 200% of your attack damage",
+            dmg: 480,
+            adPercentage: 2,
+            type: "physical"
+            
+        },
+        puleseshot: {
+            name: "Pulse Shot",
+            abilityId: "pulseshot",
             limitOffensive: true,
             description: "Limit ability - Deal 480 damage + 200% of your attack damage",
             dmg: 480,
@@ -4677,9 +4715,9 @@ module.exports = {
                     ],
                     
                 },
-                meadows2: {
-                    areaString : "meadows string 1",
-                    name: "Meadows",
+                antelopecanyon: {
+                    areaString : "Antelope Canyon string 1",
+                    name: "Antelope Canyon",
                     enemies: {
                         easy: [
                             "rabbidwolf"
@@ -4696,8 +4734,6 @@ module.exports = {
                     },
                     rpgsToComplete: 8,
                     onCompleteAreasUnlocked: [
-                        "meadows",
-                        "test2"
                     ],
                     shopItemsAvailable: [
 
@@ -4708,7 +4744,317 @@ module.exports = {
                     rpgDropsAvailable: [
 
                     ],
-                    boss: "bossId"
+                    
+                },
+                arngormountains: {
+                    areaString : "Arngor Mountain string 1",
+                    name: "Arngor Mountain",
+                    enemies: {
+                        easy: [
+                            "rabbidwolf"
+                        ],
+                        medium: [
+                            "tacobandit"
+                        ],
+                        hard: [
+                            "footballplayer"
+                        ],
+                        boss: [
+                            "vampire"
+                        ]
+                    },
+                    rpgsToComplete: 8,
+                    onCompleteAreasUnlocked: [
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ],
+                    
+                },
+                ayersrock: {
+                    areaString : "Ayers Rock string 1",
+                    name: "Ayers Rock",
+                    enemies: {
+                        easy: [
+                            "rabbidwolf"
+                        ],
+                        medium: [
+                            "tacobandit"
+                        ],
+                        hard: [
+                            "footballplayer"
+                        ],
+                        boss: [
+                            "vampire"
+                        ]
+                    },
+                    rpgsToComplete: 8,
+                    onCompleteAreasUnlocked: [
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ],
+                    
+                },
+                eddariver: {
+                    areaString : "Edda River string 1",
+                    name: "Edda River",
+                    enemies: {
+                        easy: [
+                            "rabbidwolf"
+                        ],
+                        medium: [
+                            "tacobandit"
+                        ],
+                        hard: [
+                            "footballplayer"
+                        ],
+                        boss: [
+                            "vampire"
+                        ]
+                    },
+                    rpgsToComplete: 8,
+                    onCompleteAreasUnlocked: [
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ],
+                    
+                },
+                gimlickvalley: {
+                    areaString : "Gimlick Valley string 1",
+                    name: "Gimlick Valley",
+                    enemies: {
+                        easy: [
+                            "rabbidwolf"
+                        ],
+                        medium: [
+                            "tacobandit"
+                        ],
+                        hard: [
+                            "footballplayer"
+                        ],
+                        boss: [
+                            "vampire"
+                        ]
+                    },
+                    rpgsToComplete: 8,
+                    onCompleteAreasUnlocked: [
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ],
+                    
+                },
+                gizaplateau: {
+                    areaString : "Giza Plateau string 1",
+                    name: "Giza Plateau",
+                    enemies: {
+                        easy: [
+                            "rabbidwolf"
+                        ],
+                        medium: [
+                            "tacobandit"
+                        ],
+                        hard: [
+                            "footballplayer"
+                        ],
+                        boss: [
+                            "vampire"
+                        ]
+                    },
+                    rpgsToComplete: 8,
+                    onCompleteAreasUnlocked: [
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ],
+                    
+                },
+                martokvalley: {
+                    areaString : "Martok Valley string 1",
+                    name: "Martok Valley",
+                    enemies: {
+                        easy: [
+                            "rabbidwolf"
+                        ],
+                        medium: [
+                            "tacobandit"
+                        ],
+                        hard: [
+                            "footballplayer"
+                        ],
+                        boss: [
+                            "vampire"
+                        ]
+                    },
+                    rpgsToComplete: 8,
+                    onCompleteAreasUnlocked: [
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ],
+                    
+                },
+                palawan: {
+                    areaString : "Palawan string 1",
+                    name: "Palawan",
+                    enemies: {
+                        easy: [
+                            "rabbidwolf"
+                        ],
+                        medium: [
+                            "tacobandit"
+                        ],
+                        hard: [
+                            "footballplayer"
+                        ],
+                        boss: [
+                            "vampire"
+                        ]
+                    },
+                    rpgsToComplete: 8,
+                    onCompleteAreasUnlocked: [
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ],
+                    
+                },
+                reach: {
+                    areaString : "Reach string 1",
+                    name: "Reach",
+                    enemies: {
+                        easy: [
+                            "rabbidwolf"
+                        ],
+                        medium: [
+                            "tacobandit"
+                        ],
+                        hard: [
+                            "footballplayer"
+                        ],
+                        boss: [
+                            "vampire"
+                        ]
+                    },
+                    rpgsToComplete: 8,
+                    onCompleteAreasUnlocked: [
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ],
+                    
+                },
+                whitedesert: {
+                    areaString : "White Desert string 1",
+                    name: "White Desert",
+                    enemies: {
+                        easy: [
+                            "rabbidwolf"
+                        ],
+                        medium: [
+                            "tacobandit"
+                        ],
+                        hard: [
+                            "footballplayer"
+                        ],
+                        boss: [
+                            "vampire"
+                        ]
+                    },
+                    rpgsToComplete: 8,
+                    onCompleteAreasUnlocked: [
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ],
+                    
+                },
+                zonitemple: {
+                    areaString : "Zoni Temple string 1",
+                    name: "Zoni Temple",
+                    enemies: {
+                        easy: [
+                            "rabbidwolf"
+                        ],
+                        medium: [
+                            "tacobandit"
+                        ],
+                        hard: [
+                            "footballplayer"
+                        ],
+                        boss: [
+                            "vampire"
+                        ]
+                    },
+                    rpgsToComplete: 8,
+                    onCompleteAreasUnlocked: [
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ],
+                    
                 }
             },
             onCompleteZonesUnlocked: [
@@ -4828,9 +5174,9 @@ module.exports = {
                     ],
                     
                 },
-                meadows2: {
-                    areaString : "meadows string 1",
-                    name: "Meadows",
+                arcdetriomphe: {
+                    areaString : "Arc de Triomphe string 1",
+                    name: "Arc de Triomphe",
                     enemies: {
                         easy: [
                             "rabbidwolf"
@@ -4847,8 +5193,254 @@ module.exports = {
                     },
                     rpgsToComplete: 8,
                     onCompleteAreasUnlocked: [
-                        "meadows",
-                        "test2"
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ],
+                    boss: "bossId"
+                },
+                caminodesantiago: {
+                    areaString : "Camino de Santiago string 1",
+                    name: "Camino de Santiago",
+                    enemies: {
+                        easy: [
+                            "rabbidwolf"
+                        ],
+                        medium: [
+                            "tacobandit"
+                        ],
+                        hard: [
+                            "footballplayer"
+                        ],
+                        boss: [
+                            "vampire"
+                        ]
+                    },
+                    rpgsToComplete: 8,
+                    onCompleteAreasUnlocked: [
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ],
+                    boss: "bossId"
+                },
+                jartar: {
+                    areaString : "jartar string 1",
+                    name: "Jartar",
+                    enemies: {
+                        easy: [
+                            "rabbidwolf"
+                        ],
+                        medium: [
+                            "tacobandit"
+                        ],
+                        hard: [
+                            "footballplayer"
+                        ],
+                        boss: [
+                            "vampire"
+                        ]
+                    },
+                    rpgsToComplete: 8,
+                    onCompleteAreasUnlocked: [
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ],
+                    boss: "bossId"
+                },
+                karnimatatemple: {
+                    areaString : "Karni Mata Temple string 1",
+                    name: "Karni Mata Temple",
+                    enemies: {
+                        easy: [
+                            "rabbidwolf"
+                        ],
+                        medium: [
+                            "tacobandit"
+                        ],
+                        hard: [
+                            "footballplayer"
+                        ],
+                        boss: [
+                            "vampire"
+                        ]
+                    },
+                    rpgsToComplete: 8,
+                    onCompleteAreasUnlocked: [
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ],
+                    boss: "bossId"
+                },
+                klandragon: {
+                    areaString : "Klandagon string 1",
+                    name: "Klandagon",
+                    enemies: {
+                        easy: [
+                            "rabbidwolf"
+                        ],
+                        medium: [
+                            "tacobandit"
+                        ],
+                        hard: [
+                            "footballplayer"
+                        ],
+                        boss: [
+                            "vampire"
+                        ]
+                    },
+                    rpgsToComplete: 8,
+                    onCompleteAreasUnlocked: [
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ],
+                    boss: "bossId"
+                },
+                riodelossietecolores: {
+                    areaString : "Rio de Los Siete Colores string 1",
+                    name: "Rio de Los Siete Colores",
+                    enemies: {
+                        easy: [
+                            "rabbidwolf"
+                        ],
+                        medium: [
+                            "tacobandit"
+                        ],
+                        hard: [
+                            "footballplayer"
+                        ],
+                        boss: [
+                            "vampire"
+                        ]
+                    },
+                    rpgsToComplete: 8,
+                    onCompleteAreasUnlocked: [
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ],
+                    boss: "bossId"
+                },
+                sapavalley: {
+                    areaString : "Sa Pa Valley string 1",
+                    name: "Sa Pa Valley",
+                    enemies: {
+                        easy: [
+                            "rabbidwolf"
+                        ],
+                        medium: [
+                            "tacobandit"
+                        ],
+                        hard: [
+                            "footballplayer"
+                        ],
+                        boss: [
+                            "vampire"
+                        ]
+                    },
+                    rpgsToComplete: 8,
+                    onCompleteAreasUnlocked: [
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ],
+                    boss: "bossId"
+                },
+                sedona: {
+                    areaString : "Sedona string 1",
+                    name: "Sedona",
+                    enemies: {
+                        easy: [
+                            "rabbidwolf"
+                        ],
+                        medium: [
+                            "tacobandit"
+                        ],
+                        hard: [
+                            "footballplayer"
+                        ],
+                        boss: [
+                            "vampire"
+                        ]
+                    },
+                    rpgsToComplete: 8,
+                    onCompleteAreasUnlocked: [
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ],
+                    boss: "bossId"
+                },
+                taxco: {
+                    areaString : "Taxco string 1",
+                    name: "Taxco",
+                    enemies: {
+                        easy: [
+                            "rabbidwolf"
+                        ],
+                        medium: [
+                            "tacobandit"
+                        ],
+                        hard: [
+                            "footballplayer"
+                        ],
+                        boss: [
+                            "vampire"
+                        ]
+                    },
+                    rpgsToComplete: 8,
+                    onCompleteAreasUnlocked: [
                     ],
                     shopItemsAvailable: [
 
@@ -5025,6 +5617,7 @@ module.exports = {
         - Costa de marfil, 
         - Patagonia, 
         - Yosemite
+        - Gibraltar
         - Tokyo, 
         - Johanesburg - district 10, 
         - London - essex, bridge, 
@@ -5368,7 +5961,29 @@ Hoover Dam
         glowwormcave: "undergroundtunnels",
         tikal: "undergroundtunnels",
         minasmorgul: "undergroundtunnels",
-        dunwall: "undergroundtunnels"
+        dunwall: "undergroundtunnels",
+        lajoyacove: "matamoros",
+        arcdetriomphe: "matamoros",
+        caminodesantiago: "matamoros",
+        jartar: "matamoros",
+        karnimatatemple: "matamoros",
+        klandragon: "matamoros",
+        riodelossietecolores: "matamoros",
+        sapavalley: "matamoros",
+        sedona: "matamoros",
+        taxco: "matamoros",
+        sanyoucave: "grandcanyon",
+        antelopecanyon: "grandcanyon",
+        arngormountains: "grandcanyon",
+        ayersrock: "grandcanyon",
+        eddariver: "grandcanyon",
+        gimlickvalley: "grandcanyon",
+        gizaplateau: "grandcanyon",
+        martokvalley: "grandcanyon",
+        palawan: "grandcanyon",
+        reach: "grandcanyon",
+        whitedesert: "grandcanyon",
+        zonitemple:  "grandcanyon",
     },
     enemiesToEncounter: {
         summoned: {
@@ -5809,8 +6424,8 @@ Hoover Dam
                         magicDmgPlus : [3100, 4100, 5100, 6100, 7100]
                     },
                     hp: [ 19500, 25900, 39900, 51000, 77000 ],
-                    attackDmg: [700, 1100, 1500, 2100, 2500],
-                    magicDmg: [700, 1100, 1500, 2100, 2500],
+                    attackDmg: [700, 1500, 2500, 4100, 5500],
+                    magicDmg: [700, 1500, 2500, 4100, 5500],
                     abilities: []
                 },
                 abilityOrder: [
@@ -5874,8 +6489,8 @@ Hoover Dam
                         magicDmgPlus : [3100, 4100, 5100, 6100, 7100]
                     },
                     hp: [ 19500, 25900, 39900, 51000, 77000 ],
-                    attackDmg: [700, 1100, 1500, 2100, 2500],
-                    magicDmg: [700, 1100, 1500, 2100, 2500],
+                    attackDmg: [700, 1500, 2500, 4100, 5500],
+                    magicDmg: [700, 1500, 2500, 4100, 5500],
                     abilities: []
                 },
                 abilityOrder: [
@@ -5940,8 +6555,8 @@ Hoover Dam
                         magicDmgPlus : [3100, 4100, 5100, 6100, 7100]
                     },
                     hp: [ 19500, 25900, 39900, 51000, 77000 ],
-                    attackDmg: [700, 1100, 1500, 2100, 2500],
-                    magicDmg: [700, 1100, 1500, 2100, 2500],
+                    attackDmg: [700, 1500, 2500, 4100, 5500],
+                    magicDmg: [700, 1500, 2500, 4100, 5500],
                     abilities: []
                 },
                 abilityOrder: [
@@ -6622,6 +7237,216 @@ Hoover Dam
                 difficulty: "easy",
                 element: "normal"
             },
+            hungryboar: {
+                name: "Hungry Boar",
+                abilities: ["attack", "attack", "poison", "poison", "tacowall"],
+                buffs: [],
+                keystoneStats: {
+                    hp: [1200, 3500, 6200, 10000, 15000 ],
+                    attackDmg: [300, 500, 900, 1500, 2300],
+                    magicDmg: [300, 500, 900, 1500, 2300],
+                    abilities: []
+                },
+                hpPerPartyMember: 60,
+                adPerPartyMember: 7,
+                mdPerPartyMember: 7,
+                hp: 380,
+                attackDmg: 90,
+                magicDmg: 90,
+                armor: 300,
+                spirit: 300,
+                difficulty: "easy",
+                element: "normal"
+            },
+            bull: {
+                name: "Bull",
+                abilities: ["attack", "attack", "poison", "poison", "tacowall"],
+                buffs: [],
+                keystoneStats: {
+                    hp: [1200, 3500, 6200, 10000, 15000 ],
+                    attackDmg: [300, 500, 900, 1500, 2300],
+                    magicDmg: [300, 500, 900, 1500, 2300],
+                    abilities: []
+                },
+                hpPerPartyMember: 60,
+                adPerPartyMember: 7,
+                mdPerPartyMember: 7,
+                hp: 380,
+                attackDmg: 90,
+                magicDmg: 90,
+                armor: 300,
+                spirit: 300,
+                difficulty: "easy",
+                element: "normal"
+            },
+            cheetah: {
+                name: "Cheetah",
+                abilities: ["attack", "attack", "poison", "poison", "tacowall"],
+                buffs: [],
+                keystoneStats: {
+                    hp: [1200, 3500, 6200, 10000, 15000 ],
+                    attackDmg: [300, 500, 900, 1500, 2300],
+                    magicDmg: [300, 500, 900, 1500, 2300],
+                    abilities: []
+                },
+                hpPerPartyMember: 60,
+                adPerPartyMember: 7,
+                mdPerPartyMember: 7,
+                hp: 380,
+                attackDmg: 90,
+                magicDmg: 90,
+                armor: 300,
+                spirit: 300,
+                difficulty: "easy",
+                element: "normal"
+            },
+            hyena: {
+                name: "Hyena",
+                abilities: ["attack", "attack", "poison", "poison", "tacowall"],
+                buffs: [],
+                keystoneStats: {
+                    hp: [1200, 3500, 6200, 10000, 15000 ],
+                    attackDmg: [300, 500, 900, 1500, 2300],
+                    magicDmg: [300, 500, 900, 1500, 2300],
+                    abilities: []
+                },
+                hpPerPartyMember: 60,
+                adPerPartyMember: 7,
+                mdPerPartyMember: 7,
+                hp: 380,
+                attackDmg: 90,
+                magicDmg: 90,
+                armor: 300,
+                spirit: 300,
+                difficulty: "easy",
+                element: "normal"
+            },
+            addict: {
+                name: "Addict",
+                abilities: ["attack", "attack", "poison", "poison", "tacowall"],
+                buffs: [],
+                keystoneStats: {
+                    hp: [1200, 3500, 6200, 10000, 15000 ],
+                    attackDmg: [300, 500, 900, 1500, 2300],
+                    magicDmg: [300, 500, 900, 1500, 2300],
+                    abilities: []
+                },
+                hpPerPartyMember: 60,
+                adPerPartyMember: 7,
+                mdPerPartyMember: 7,
+                hp: 380,
+                attackDmg: 90,
+                magicDmg: 90,
+                armor: 300,
+                spirit: 300,
+                difficulty: "easy",
+                element: "normal"
+            },
+            angrydwarf: {
+                name: "Angry Dwarf",
+                abilities: ["attack", "attack", "poison", "poison", "tacowall"],
+                buffs: [],
+                keystoneStats: {
+                    hp: [1200, 3500, 6200, 10000, 15000 ],
+                    attackDmg: [300, 500, 900, 1500, 2300],
+                    magicDmg: [300, 500, 900, 1500, 2300],
+                    abilities: []
+                },
+                hpPerPartyMember: 60,
+                adPerPartyMember: 7,
+                mdPerPartyMember: 7,
+                hp: 380,
+                attackDmg: 90,
+                magicDmg: 90,
+                armor: 300,
+                spirit: 300,
+                difficulty: "easy",
+                element: "normal"
+            },
+            extremist: {
+                name: "Extremist",
+                abilities: ["attack", "attack", "poison", "poison", "tacowall"],
+                buffs: [],
+                keystoneStats: {
+                    hp: [1200, 3500, 6200, 10000, 15000 ],
+                    attackDmg: [300, 500, 900, 1500, 2300],
+                    magicDmg: [300, 500, 900, 1500, 2300],
+                    abilities: []
+                },
+                hpPerPartyMember: 60,
+                adPerPartyMember: 7,
+                mdPerPartyMember: 7,
+                hp: 380,
+                attackDmg: 90,
+                magicDmg: 90,
+                armor: 300,
+                spirit: 300,
+                difficulty: "easy",
+                element: "normal"
+            },
+            thug: {
+                name: "Thug",
+                abilities: ["attack", "attack", "poison", "poison", "tacowall"],
+                buffs: [],
+                keystoneStats: {
+                    hp: [1200, 3500, 6200, 10000, 15000 ],
+                    attackDmg: [300, 500, 900, 1500, 2300],
+                    magicDmg: [300, 500, 900, 1500, 2300],
+                    abilities: []
+                },
+                hpPerPartyMember: 60,
+                adPerPartyMember: 7,
+                mdPerPartyMember: 7,
+                hp: 380,
+                attackDmg: 90,
+                magicDmg: 90,
+                armor: 300,
+                spirit: 300,
+                difficulty: "easy",
+                element: "normal"
+            },
+            tacosmuggler: {
+                name: "Taco Smuggler",
+                abilities: ["attack", "attack", "poison", "poison", "tacowall"],
+                buffs: [],
+                keystoneStats: {
+                    hp: [1200, 3500, 6200, 10000, 15000 ],
+                    attackDmg: [300, 500, 900, 1500, 2300],
+                    magicDmg: [300, 500, 900, 1500, 2300],
+                    abilities: []
+                },
+                hpPerPartyMember: 60,
+                adPerPartyMember: 7,
+                mdPerPartyMember: 7,
+                hp: 380,
+                attackDmg: 90,
+                magicDmg: 90,
+                armor: 300,
+                spirit: 300,
+                difficulty: "easy",
+                element: "normal"
+            },
+            seedthief: {
+                name: "Seed Thief",
+                abilities: ["attack", "attack", "poison", "poison", "tacowall"],
+                buffs: [],
+                keystoneStats: {
+                    hp: [1200, 3500, 6200, 10000, 15000 ],
+                    attackDmg: [300, 500, 900, 1500, 2300],
+                    magicDmg: [300, 500, 900, 1500, 2300],
+                    abilities: []
+                },
+                hpPerPartyMember: 60,
+                adPerPartyMember: 7,
+                mdPerPartyMember: 7,
+                hp: 380,
+                attackDmg: 90,
+                magicDmg: 90,
+                armor: 300,
+                spirit: 300,
+                difficulty: "easy",
+                element: "normal"
+            },
             badchef: {
                 name: "Bad Chef",
                 abilities: ["attack", "attack", "poison", "poison", "barrier"],
@@ -6866,7 +7691,343 @@ Hoover Dam
                 spirit: 550,
                 difficulty: "medium",
                 element: "normal"
-            }
+            },
+            disassembler: {
+                name: "Disassembler",
+                abilities: ["attack", "attack", "uppercut", "uppercut", "weaken"],
+                buffs: [],
+                keystoneStats: {
+                    hp: [1200, 3500, 6200, 10000, 15000 ],
+                    attackDmg: [300, 500, 900, 1500, 2300],
+                    magicDmg: [300, 500, 900, 1500, 2300],
+                    abilities: []
+                },
+                hpPerPartyMember: 190,
+                adPerPartyMember: 14,
+                mdPerPartyMember: 14,
+                hp: 640,
+                attackDmg: 90,
+                magicDmg: 90,
+                armor: 350,
+                spirit: 550,
+                difficulty: "medium",
+                element: "normal"
+            },
+            nigerianprince: {
+                name: "Nigerian Prince",
+                abilities: ["attack", "attack", "uppercut", "uppercut", "weaken"],
+                buffs: [],
+                keystoneStats: {
+                    hp: [1200, 3500, 6200, 10000, 15000 ],
+                    attackDmg: [300, 500, 900, 1500, 2300],
+                    magicDmg: [300, 500, 900, 1500, 2300],
+                    abilities: []
+                },
+                hpPerPartyMember: 190,
+                adPerPartyMember: 14,
+                mdPerPartyMember: 14,
+                hp: 640,
+                attackDmg: 90,
+                magicDmg: 90,
+                armor: 350,
+                spirit: 550,
+                difficulty: "medium",
+                element: "normal"
+            },
+            troglodyte: {
+                name: "Troglodyte",
+                abilities: ["attack", "attack", "uppercut", "uppercut", "weaken"],
+                buffs: [],
+                keystoneStats: {
+                    hp: [1200, 3500, 6200, 10000, 15000 ],
+                    attackDmg: [300, 500, 900, 1500, 2300],
+                    magicDmg: [300, 500, 900, 1500, 2300],
+                    abilities: []
+                },
+                hpPerPartyMember: 190,
+                adPerPartyMember: 14,
+                mdPerPartyMember: 14,
+                hp: 640,
+                attackDmg: 90,
+                magicDmg: 90,
+                armor: 350,
+                spirit: 550,
+                difficulty: "medium",
+                element: "normal"
+            },
+            ignoramus: {
+                name: "Ignoramus",
+                abilities: ["attack", "attack", "uppercut", "uppercut", "weaken"],
+                buffs: [],
+                keystoneStats: {
+                    hp: [1200, 3500, 6200, 10000, 15000 ],
+                    attackDmg: [300, 500, 900, 1500, 2300],
+                    magicDmg: [300, 500, 900, 1500, 2300],
+                    abilities: []
+                },
+                hpPerPartyMember: 190,
+                adPerPartyMember: 14,
+                mdPerPartyMember: 14,
+                hp: 640,
+                attackDmg: 90,
+                magicDmg: 90,
+                armor: 350,
+                spirit: 550,
+                difficulty: "medium",
+                element: "normal"
+            },
+            dullard: {
+                name: "Dullard",
+                abilities: ["attack", "attack", "uppercut", "uppercut", "weaken"],
+                buffs: [],
+                keystoneStats: {
+                    hp: [1200, 3500, 6200, 10000, 15000 ],
+                    attackDmg: [300, 500, 900, 1500, 2300],
+                    magicDmg: [300, 500, 900, 1500, 2300],
+                    abilities: []
+                },
+                hpPerPartyMember: 190,
+                adPerPartyMember: 14,
+                mdPerPartyMember: 14,
+                hp: 640,
+                attackDmg: 90,
+                magicDmg: 90,
+                armor: 350,
+                spirit: 550,
+                difficulty: "medium",
+                element: "normal"
+            },
+            dolt: {
+                name: "Dolt",
+                abilities: ["attack", "attack", "uppercut", "uppercut", "weaken"],
+                buffs: [],
+                keystoneStats: {
+                    hp: [1200, 3500, 6200, 10000, 15000 ],
+                    attackDmg: [300, 500, 900, 1500, 2300],
+                    magicDmg: [300, 500, 900, 1500, 2300],
+                    abilities: []
+                },
+                hpPerPartyMember: 190,
+                adPerPartyMember: 14,
+                mdPerPartyMember: 14,
+                hp: 640,
+                attackDmg: 90,
+                magicDmg: 90,
+                armor: 350,
+                spirit: 550,
+                difficulty: "medium",
+                element: "normal"
+            },
+            auctionsniper: {
+                name: "Auction Sniper",
+                abilities: ["attack", "attack", "uppercut", "uppercut", "weaken"],
+                buffs: [],
+                keystoneStats: {
+                    hp: [1200, 3500, 6200, 10000, 15000 ],
+                    attackDmg: [300, 500, 900, 1500, 2300],
+                    magicDmg: [300, 500, 900, 1500, 2300],
+                    abilities: []
+                },
+                hpPerPartyMember: 190,
+                adPerPartyMember: 14,
+                mdPerPartyMember: 14,
+                hp: 640,
+                attackDmg: 90,
+                magicDmg: 90,
+                armor: 350,
+                spirit: 550,
+                difficulty: "medium",
+                element: "normal"
+            },
+            marketflipper: {
+                name: "Market Flipper",
+                abilities: ["attack", "attack", "uppercut", "uppercut", "weaken"],
+                buffs: [],
+                keystoneStats: {
+                    hp: [1200, 3500, 6200, 10000, 15000 ],
+                    attackDmg: [300, 500, 900, 1500, 2300],
+                    magicDmg: [300, 500, 900, 1500, 2300],
+                    abilities: []
+                },
+                hpPerPartyMember: 190,
+                adPerPartyMember: 14,
+                mdPerPartyMember: 14,
+                hp: 640,
+                attackDmg: 90,
+                magicDmg: 90,
+                armor: 350,
+                spirit: 550,
+                difficulty: "medium",
+                element: "normal"
+            },
+            bear: {
+                name: "Bear",
+                abilities: ["attack", "attack", "uppercut", "uppercut", "weaken"],
+                buffs: [],
+                keystoneStats: {
+                    hp: [1200, 3500, 6200, 10000, 15000 ],
+                    attackDmg: [300, 500, 900, 1500, 2300],
+                    magicDmg: [300, 500, 900, 1500, 2300],
+                    abilities: []
+                },
+                hpPerPartyMember: 190,
+                adPerPartyMember: 14,
+                mdPerPartyMember: 14,
+                hp: 640,
+                attackDmg: 90,
+                magicDmg: 90,
+                armor: 350,
+                spirit: 550,
+                difficulty: "medium",
+                element: "normal"
+            },
+            silverback: {
+                name: "Silverback",
+                abilities: ["attack", "attack", "uppercut", "uppercut", "weaken"],
+                buffs: [],
+                keystoneStats: {
+                    hp: [1200, 3500, 6200, 10000, 15000 ],
+                    attackDmg: [300, 500, 900, 1500, 2300],
+                    magicDmg: [300, 500, 900, 1500, 2300],
+                    abilities: []
+                },
+                hpPerPartyMember: 190,
+                adPerPartyMember: 14,
+                mdPerPartyMember: 14,
+                hp: 640,
+                attackDmg: 90,
+                magicDmg: 90,
+                armor: 350,
+                spirit: 550,
+                difficulty: "medium",
+                element: "normal"
+            },
+            philistine: {
+                name: "Philistine",
+                abilities: ["attack", "attack", "uppercut", "uppercut", "weaken"],
+                buffs: [],
+                keystoneStats: {
+                    hp: [1200, 3500, 6200, 10000, 15000 ],
+                    attackDmg: [300, 500, 900, 1500, 2300],
+                    magicDmg: [300, 500, 900, 1500, 2300],
+                    abilities: []
+                },
+                hpPerPartyMember: 190,
+                adPerPartyMember: 14,
+                mdPerPartyMember: 14,
+                hp: 640,
+                attackDmg: 90,
+                magicDmg: 90,
+                armor: 350,
+                spirit: 550,
+                difficulty: "medium",
+                element: "normal"
+            },
+            suicidebomber: {
+                name: "Suicidebomber",
+                abilities: ["attack", "attack", "uppercut", "uppercut", "weaken"],
+                buffs: [],
+                keystoneStats: {
+                    hp: [1200, 3500, 6200, 10000, 15000 ],
+                    attackDmg: [300, 500, 900, 1500, 2300],
+                    magicDmg: [300, 500, 900, 1500, 2300],
+                    abilities: []
+                },
+                hpPerPartyMember: 190,
+                adPerPartyMember: 14,
+                mdPerPartyMember: 14,
+                hp: 640,
+                attackDmg: 90,
+                magicDmg: 90,
+                armor: 350,
+                spirit: 550,
+                difficulty: "medium",
+                element: "normal"
+            },
+            witch: {
+                name: "Witch",
+                abilities: ["attack", "attack", "uppercut", "uppercut", "weaken"],
+                buffs: [],
+                keystoneStats: {
+                    hp: [1200, 3500, 6200, 10000, 15000 ],
+                    attackDmg: [300, 500, 900, 1500, 2300],
+                    magicDmg: [300, 500, 900, 1500, 2300],
+                    abilities: []
+                },
+                hpPerPartyMember: 190,
+                adPerPartyMember: 14,
+                mdPerPartyMember: 14,
+                hp: 640,
+                attackDmg: 90,
+                magicDmg: 90,
+                armor: 350,
+                spirit: 550,
+                difficulty: "medium",
+                element: "normal"
+            },
+            evilclown: {
+                name: "Evil Clown",
+                abilities: ["attack", "attack", "uppercut", "uppercut", "weaken"],
+                buffs: [],
+                keystoneStats: {
+                    hp: [1200, 3500, 6200, 10000, 15000 ],
+                    attackDmg: [300, 500, 900, 1500, 2300],
+                    magicDmg: [300, 500, 900, 1500, 2300],
+                    abilities: []
+                },
+                hpPerPartyMember: 190,
+                adPerPartyMember: 14,
+                mdPerPartyMember: 14,
+                hp: 640,
+                attackDmg: 90,
+                magicDmg: 90,
+                armor: 350,
+                spirit: 550,
+                difficulty: "medium",
+                element: "normal"
+            },
+            charlatan: {
+                name: "Charlatan",
+                abilities: ["attack", "attack", "uppercut", "uppercut", "weaken"],
+                buffs: [],
+                keystoneStats: {
+                    hp: [1200, 3500, 6200, 10000, 15000 ],
+                    attackDmg: [300, 500, 900, 1500, 2300],
+                    magicDmg: [300, 500, 900, 1500, 2300],
+                    abilities: []
+                },
+                hpPerPartyMember: 190,
+                adPerPartyMember: 14,
+                mdPerPartyMember: 14,
+                hp: 640,
+                attackDmg: 90,
+                magicDmg: 90,
+                armor: 350,
+                spirit: 550,
+                difficulty: "medium",
+                element: "normal"
+            },
+            tweener: {
+                name: "Tweener",
+                abilities: ["attack", "attack", "uppercut", "uppercut", "weaken"],
+                buffs: [],
+                keystoneStats: {
+                    hp: [1200, 3500, 6200, 10000, 15000 ],
+                    attackDmg: [300, 500, 900, 1500, 2300],
+                    magicDmg: [300, 500, 900, 1500, 2300],
+                    abilities: []
+                },
+                hpPerPartyMember: 190,
+                adPerPartyMember: 14,
+                mdPerPartyMember: 14,
+                hp: 640,
+                attackDmg: 90,
+                magicDmg: 90,
+                armor: 350,
+                spirit: 550,
+                difficulty: "medium",
+                element: "normal"
+            },
         },
         hard: {
             footballplayer: {
@@ -6999,7 +8160,357 @@ Hoover Dam
                 spirit: 900,
                 difficulty: "hard",
                 element: "normal"
-            }
+            },
+            voodoowitch: {
+                name: "Voodoo Witch",
+                abilities: ["attack" , "attack" , "curse", "poison", "enemyshoot", "enemyshoot","freeze"],
+                buffs: [
+                    {
+                        name: "frenzy",
+                        emoji: "<:frenzy:479298214453968896>",
+                        onTurnEnd: {
+                            attackDmgPlus : 60,
+                            magicDmgPlus : 60,
+                            everyNTurns: 2,
+                            startTurn: 2
+                        }
+                    }
+                ],
+                keystoneStats: {
+                    hp: [1200, 3500, 6200, 10000, 15000 ],
+                    attackDmg: [300, 500, 900, 1500, 2300],
+                    magicDmg: [300, 500, 900, 1500, 2300],
+                    abilities: []
+                },
+                effectsOnDeath: [
+                    "explode"
+                ],
+                hpPerPartyMember: 1090,
+                adPerPartyMember: 21,
+                mdPerPartyMember: 21,
+                hp: 650,
+                attackDmg: 125,
+                magicDmg: 170,
+                armor: 600,
+                spirit: 900,
+                difficulty: "hard",
+                element: "normal"
+            },
+            sniper: {
+                name: "Sniper",
+                abilities: ["attack" , "attack" , "curse", "poison", "enemyshoot", "enemyshoot","freeze"],
+                buffs: [
+                    {
+                        name: "frenzy",
+                        emoji: "<:frenzy:479298214453968896>",
+                        onTurnEnd: {
+                            attackDmgPlus : 60,
+                            magicDmgPlus : 60,
+                            everyNTurns: 2,
+                            startTurn: 2
+                        }
+                    }
+                ],
+                keystoneStats: {
+                    hp: [1200, 3500, 6200, 10000, 15000 ],
+                    attackDmg: [300, 500, 900, 1500, 2300],
+                    magicDmg: [300, 500, 900, 1500, 2300],
+                    abilities: []
+                },
+                effectsOnDeath: [
+                    "explode"
+                ],
+                hpPerPartyMember: 1090,
+                adPerPartyMember: 21,
+                mdPerPartyMember: 21,
+                hp: 650,
+                attackDmg: 125,
+                magicDmg: 170,
+                armor: 600,
+                spirit: 900,
+                difficulty: "hard",
+                element: "normal"
+            },
+            gascollector: {
+                name: "Gas Collector",
+                abilities: ["attack" , "attack" , "curse", "poison", "enemyshoot", "enemyshoot","freeze"],
+                buffs: [
+                    {
+                        name: "frenzy",
+                        emoji: "<:frenzy:479298214453968896>",
+                        onTurnEnd: {
+                            attackDmgPlus : 60,
+                            magicDmgPlus : 60,
+                            everyNTurns: 2,
+                            startTurn: 2
+                        }
+                    }
+                ],
+                keystoneStats: {
+                    hp: [1200, 3500, 6200, 10000, 15000 ],
+                    attackDmg: [300, 500, 900, 1500, 2300],
+                    magicDmg: [300, 500, 900, 1500, 2300],
+                    abilities: []
+                },
+                effectsOnDeath: [
+                    "explode"
+                ],
+                hpPerPartyMember: 1090,
+                adPerPartyMember: 21,
+                mdPerPartyMember: 21,
+                hp: 650,
+                attackDmg: 125,
+                magicDmg: 170,
+                armor: 600,
+                spirit: 900,
+                difficulty: "hard",
+                element: "normal"
+            },
+            capo: {
+                name: "Capo",
+                abilities: ["attack" , "attack" , "curse", "poison", "enemyshoot", "enemyshoot","freeze"],
+                buffs: [
+                    {
+                        name: "frenzy",
+                        emoji: "<:frenzy:479298214453968896>",
+                        onTurnEnd: {
+                            attackDmgPlus : 60,
+                            magicDmgPlus : 60,
+                            everyNTurns: 2,
+                            startTurn: 2
+                        }
+                    }
+                ],
+                keystoneStats: {
+                    hp: [1200, 3500, 6200, 10000, 15000 ],
+                    attackDmg: [300, 500, 900, 1500, 2300],
+                    magicDmg: [300, 500, 900, 1500, 2300],
+                    abilities: []
+                },
+                effectsOnDeath: [
+                    "explode"
+                ],
+                hpPerPartyMember: 1090,
+                adPerPartyMember: 21,
+                mdPerPartyMember: 21,
+                hp: 650,
+                attackDmg: 125,
+                magicDmg: 170,
+                armor: 600,
+                spirit: 900,
+                difficulty: "hard",
+                element: "normal"
+            },
+            zeta: {
+                name: "Zeta",
+                abilities: ["attack" , "attack" , "curse", "poison", "enemyshoot", "enemyshoot","freeze"],
+                buffs: [
+                    {
+                        name: "frenzy",
+                        emoji: "<:frenzy:479298214453968896>",
+                        onTurnEnd: {
+                            attackDmgPlus : 60,
+                            magicDmgPlus : 60,
+                            everyNTurns: 2,
+                            startTurn: 2
+                        }
+                    }
+                ],
+                keystoneStats: {
+                    hp: [1200, 3500, 6200, 10000, 15000 ],
+                    attackDmg: [300, 500, 900, 1500, 2300],
+                    magicDmg: [300, 500, 900, 1500, 2300],
+                    abilities: []
+                },
+                effectsOnDeath: [
+                    "explode"
+                ],
+                hpPerPartyMember: 1090,
+                adPerPartyMember: 21,
+                mdPerPartyMember: 21,
+                hp: 650,
+                attackDmg: 125,
+                magicDmg: 170,
+                armor: 600,
+                spirit: 900,
+                difficulty: "hard",
+                element: "normal"
+            },
+            racketeer: {
+                name: "Racketeer",
+                abilities: ["attack" , "attack" , "curse", "poison", "enemyshoot", "enemyshoot","freeze"],
+                buffs: [
+                    {
+                        name: "frenzy",
+                        emoji: "<:frenzy:479298214453968896>",
+                        onTurnEnd: {
+                            attackDmgPlus : 60,
+                            magicDmgPlus : 60,
+                            everyNTurns: 2,
+                            startTurn: 2
+                        }
+                    }
+                ],
+                keystoneStats: {
+                    hp: [1200, 3500, 6200, 10000, 15000 ],
+                    attackDmg: [300, 500, 900, 1500, 2300],
+                    magicDmg: [300, 500, 900, 1500, 2300],
+                    abilities: []
+                },
+                effectsOnDeath: [
+                    "explode"
+                ],
+                hpPerPartyMember: 1090,
+                adPerPartyMember: 21,
+                mdPerPartyMember: 21,
+                hp: 650,
+                attackDmg: 125,
+                magicDmg: 170,
+                armor: 600,
+                spirit: 900,
+                difficulty: "hard",
+                element: "normal"
+            },
+            tacopirate: {
+                name: "Taco Pirate",
+                abilities: ["attack" , "attack" , "curse", "poison", "enemyshoot", "enemyshoot","freeze"],
+                buffs: [
+                    {
+                        name: "frenzy",
+                        emoji: "<:frenzy:479298214453968896>",
+                        onTurnEnd: {
+                            attackDmgPlus : 60,
+                            magicDmgPlus : 60,
+                            everyNTurns: 2,
+                            startTurn: 2
+                        }
+                    }
+                ],
+                keystoneStats: {
+                    hp: [1200, 3500, 6200, 10000, 15000 ],
+                    attackDmg: [300, 500, 900, 1500, 2300],
+                    magicDmg: [300, 500, 900, 1500, 2300],
+                    abilities: []
+                },
+                effectsOnDeath: [
+                    "explode"
+                ],
+                hpPerPartyMember: 1090,
+                adPerPartyMember: 21,
+                mdPerPartyMember: 21,
+                hp: 650,
+                attackDmg: 125,
+                magicDmg: 170,
+                armor: 600,
+                spirit: 900,
+                difficulty: "hard",
+                element: "normal"
+            },
+            walrus: {
+                name: "Walrus",
+                abilities: ["attack" , "attack" , "curse", "poison", "enemyshoot", "enemyshoot","freeze"],
+                buffs: [
+                    {
+                        name: "frenzy",
+                        emoji: "<:frenzy:479298214453968896>",
+                        onTurnEnd: {
+                            attackDmgPlus : 60,
+                            magicDmgPlus : 60,
+                            everyNTurns: 2,
+                            startTurn: 2
+                        }
+                    }
+                ],
+                keystoneStats: {
+                    hp: [1200, 3500, 6200, 10000, 15000 ],
+                    attackDmg: [300, 500, 900, 1500, 2300],
+                    magicDmg: [300, 500, 900, 1500, 2300],
+                    abilities: []
+                },
+                effectsOnDeath: [
+                    "explode"
+                ],
+                hpPerPartyMember: 1090,
+                adPerPartyMember: 21,
+                mdPerPartyMember: 21,
+                hp: 650,
+                attackDmg: 125,
+                magicDmg: 170,
+                armor: 600,
+                spirit: 900,
+                difficulty: "hard",
+                element: "normal"
+            },
+            delinquent: {
+                name: "Delinquent",
+                abilities: ["attack" , "attack" , "curse", "poison", "enemyshoot", "enemyshoot","freeze"],
+                buffs: [
+                    {
+                        name: "frenzy",
+                        emoji: "<:frenzy:479298214453968896>",
+                        onTurnEnd: {
+                            attackDmgPlus : 60,
+                            magicDmgPlus : 60,
+                            everyNTurns: 2,
+                            startTurn: 2
+                        }
+                    }
+                ],
+                keystoneStats: {
+                    hp: [1200, 3500, 6200, 10000, 15000 ],
+                    attackDmg: [300, 500, 900, 1500, 2300],
+                    magicDmg: [300, 500, 900, 1500, 2300],
+                    abilities: []
+                },
+                effectsOnDeath: [
+                    "explode"
+                ],
+                hpPerPartyMember: 1090,
+                adPerPartyMember: 21,
+                mdPerPartyMember: 21,
+                hp: 650,
+                attackDmg: 125,
+                magicDmg: 170,
+                armor: 600,
+                spirit: 900,
+                difficulty: "hard",
+                element: "normal"
+            },
+            distributor: {
+                name: "Distributor",
+                abilities: ["attack" , "attack" , "curse", "poison", "enemyshoot", "enemyshoot","freeze"],
+                buffs: [
+                    {
+                        name: "frenzy",
+                        emoji: "<:frenzy:479298214453968896>",
+                        onTurnEnd: {
+                            attackDmgPlus : 60,
+                            magicDmgPlus : 60,
+                            everyNTurns: 2,
+                            startTurn: 2
+                        }
+                    }
+                ],
+                keystoneStats: {
+                    hp: [1200, 3500, 6200, 10000, 15000 ],
+                    attackDmg: [300, 500, 900, 1500, 2300],
+                    magicDmg: [300, 500, 900, 1500, 2300],
+                    abilities: []
+                },
+                effectsOnDeath: [
+                    "explode"
+                ],
+                hpPerPartyMember: 1090,
+                adPerPartyMember: 21,
+                mdPerPartyMember: 21,
+                hp: 650,
+                attackDmg: 125,
+                magicDmg: 170,
+                armor: 600,
+                spirit: 900,
+                difficulty: "hard",
+                element: "normal"
+            },
         },
         boss: {
             vampire: {
@@ -7153,7 +8664,273 @@ Hoover Dam
                 spirit: 1600,
                 difficulty: "boss",
                 element: "normal"
-            }
+            },
+            sicario: {
+                name: "Sicario",
+                abilities: [
+                    "attack", "attack", "enemyshoot", "enemyshoot", "slash", "slash", "cripple"
+                ],
+                buffs: [
+                    {
+                        name: "frenzy",
+                        emoji: "<:frenzy:479298214453968896>",
+                        onTurnEnd: {
+                            attackDmgPlus : 85,
+                            magicDmgPlus : 85,
+                            everyNTurns: 2,
+                            startTurn: 2
+                        }
+                    }
+                ],
+                keystoneStats: {
+                    hp: [1200, 3500, 6200, 10000, 15000 ],
+                    attackDmg: [300, 500, 900, 1500, 2300],
+                    magicDmg: [300, 500, 900, 1500, 2300],
+                    abilities: []
+                },
+                endOfTurnEvents : [
+                    "echo",
+                    "focus"
+                ],
+                hpPerPartyMember: 1222,
+                hp: 950,
+                adPerPartyMember: 29,
+                mdPerPartyMember: 29,
+                attackDmg: 240,
+                magicDmg: 190,
+                armor: 1600,
+                spirit: 1600,
+                difficulty: "boss",
+                element: "normal"
+            },
+            trex: {
+                name: "T-Rex",
+                abilities: [
+                    "attack", "attack", "enemyshoot", "enemyshoot", "slash", "slash", "cripple"
+                ],
+                buffs: [
+                    {
+                        name: "frenzy",
+                        emoji: "<:frenzy:479298214453968896>",
+                        onTurnEnd: {
+                            attackDmgPlus : 85,
+                            magicDmgPlus : 85,
+                            everyNTurns: 2,
+                            startTurn: 2
+                        }
+                    }
+                ],
+                keystoneStats: {
+                    hp: [1200, 3500, 6200, 10000, 15000 ],
+                    attackDmg: [300, 500, 900, 1500, 2300],
+                    magicDmg: [300, 500, 900, 1500, 2300],
+                    abilities: []
+                },
+                endOfTurnEvents : [
+                    "echo",
+                    "focus"
+                ],
+                hpPerPartyMember: 1222,
+                hp: 950,
+                adPerPartyMember: 29,
+                mdPerPartyMember: 29,
+                attackDmg: 240,
+                magicDmg: 190,
+                armor: 1600,
+                spirit: 1600,
+                difficulty: "boss",
+                element: "normal"
+            },
+            executioner: {
+                name: "Executioner",
+                abilities: [
+                    "attack", "attack", "enemyshoot", "enemyshoot", "slash", "slash", "cripple"
+                ],
+                buffs: [
+                    {
+                        name: "frenzy",
+                        emoji: "<:frenzy:479298214453968896>",
+                        onTurnEnd: {
+                            attackDmgPlus : 85,
+                            magicDmgPlus : 85,
+                            everyNTurns: 2,
+                            startTurn: 2
+                        }
+                    }
+                ],
+                keystoneStats: {
+                    hp: [1200, 3500, 6200, 10000, 15000 ],
+                    attackDmg: [300, 500, 900, 1500, 2300],
+                    magicDmg: [300, 500, 900, 1500, 2300],
+                    abilities: []
+                },
+                endOfTurnEvents : [
+                    "echo",
+                    "focus"
+                ],
+                hpPerPartyMember: 1222,
+                hp: 950,
+                adPerPartyMember: 29,
+                mdPerPartyMember: 29,
+                attackDmg: 240,
+                magicDmg: 190,
+                armor: 1600,
+                spirit: 1600,
+                difficulty: "boss",
+                element: "normal"
+            },
+            beheader: {
+                name: "Beheader",
+                abilities: [
+                    "attack", "attack", "enemyshoot", "enemyshoot", "slash", "slash", "cripple"
+                ],
+                buffs: [
+                    {
+                        name: "frenzy",
+                        emoji: "<:frenzy:479298214453968896>",
+                        onTurnEnd: {
+                            attackDmgPlus : 85,
+                            magicDmgPlus : 85,
+                            everyNTurns: 2,
+                            startTurn: 2
+                        }
+                    }
+                ],
+                keystoneStats: {
+                    hp: [1200, 3500, 6200, 10000, 15000 ],
+                    attackDmg: [300, 500, 900, 1500, 2300],
+                    magicDmg: [300, 500, 900, 1500, 2300],
+                    abilities: []
+                },
+                endOfTurnEvents : [
+                    "echo",
+                    "focus"
+                ],
+                hpPerPartyMember: 1222,
+                hp: 950,
+                adPerPartyMember: 29,
+                mdPerPartyMember: 29,
+                attackDmg: 240,
+                magicDmg: 190,
+                armor: 1600,
+                spirit: 1600,
+                difficulty: "boss",
+                element: "normal"
+            },
+            goliath: {
+                name: "Goliath",
+                abilities: [
+                    "attack", "attack", "enemyshoot", "enemyshoot", "slash", "slash", "cripple"
+                ],
+                buffs: [
+                    {
+                        name: "frenzy",
+                        emoji: "<:frenzy:479298214453968896>",
+                        onTurnEnd: {
+                            attackDmgPlus : 85,
+                            magicDmgPlus : 85,
+                            everyNTurns: 2,
+                            startTurn: 2
+                        }
+                    }
+                ],
+                keystoneStats: {
+                    hp: [1200, 3500, 6200, 10000, 15000 ],
+                    attackDmg: [300, 500, 900, 1500, 2300],
+                    magicDmg: [300, 500, 900, 1500, 2300],
+                    abilities: []
+                },
+                endOfTurnEvents : [
+                    "echo",
+                    "focus"
+                ],
+                hpPerPartyMember: 1222,
+                hp: 950,
+                adPerPartyMember: 29,
+                mdPerPartyMember: 29,
+                attackDmg: 240,
+                magicDmg: 190,
+                armor: 1600,
+                spirit: 1600,
+                difficulty: "boss",
+                element: "normal"
+            },
+            cyclops: {
+                name: "Cyclops",
+                abilities: [
+                    "attack", "attack", "enemyshoot", "enemyshoot", "slash", "slash", "cripple"
+                ],
+                buffs: [
+                    {
+                        name: "frenzy",
+                        emoji: "<:frenzy:479298214453968896>",
+                        onTurnEnd: {
+                            attackDmgPlus : 85,
+                            magicDmgPlus : 85,
+                            everyNTurns: 2,
+                            startTurn: 2
+                        }
+                    }
+                ],
+                keystoneStats: {
+                    hp: [1200, 3500, 6200, 10000, 15000 ],
+                    attackDmg: [300, 500, 900, 1500, 2300],
+                    magicDmg: [300, 500, 900, 1500, 2300],
+                    abilities: []
+                },
+                endOfTurnEvents : [
+                    "echo",
+                    "focus"
+                ],
+                hpPerPartyMember: 1222,
+                hp: 950,
+                adPerPartyMember: 29,
+                mdPerPartyMember: 29,
+                attackDmg: 240,
+                magicDmg: 190,
+                armor: 1600,
+                spirit: 1600,
+                difficulty: "boss",
+                element: "normal"
+            },
+            cyclops2: {
+                name: "Cyclops2",
+                abilities: [
+                    "attack", "attack", "enemyshoot", "enemyshoot", "slash", "slash", "cripple"
+                ],
+                buffs: [
+                    {
+                        name: "frenzy",
+                        emoji: "<:frenzy:479298214453968896>",
+                        onTurnEnd: {
+                            attackDmgPlus : 85,
+                            magicDmgPlus : 85,
+                            everyNTurns: 2,
+                            startTurn: 2
+                        }
+                    }
+                ],
+                keystoneStats: {
+                    hp: [1200, 3500, 6200, 10000, 15000 ],
+                    attackDmg: [300, 500, 900, 1500, 2300],
+                    magicDmg: [300, 500, 900, 1500, 2300],
+                    abilities: []
+                },
+                endOfTurnEvents : [
+                    "echo",
+                    "focus"
+                ],
+                hpPerPartyMember: 1222,
+                hp: 950,
+                adPerPartyMember: 29,
+                mdPerPartyMember: 29,
+                attackDmg: 240,
+                magicDmg: 190,
+                armor: 1600,
+                spirit: 1600,
+                difficulty: "boss",
+                element: "normal"
+            },
         },
         // time travel, demonic summoning, abraham lincolns tomb, evil exes
         
@@ -8617,7 +10394,7 @@ Hoover Dam
             2: {
                 challengeId: "desperado",
                 keystoneUnlockName: "Canister Keystone",
-                avatar: "https://i.imgur.com/6fzApmM.png",
+                avatar: "https://i.imgur.com/GC2VoCW.jpg",
                 enemies: [
                     {
                         name: "Taco Thief",
@@ -8792,7 +10569,7 @@ Hoover Dam
             3: {
                 challengeId: "romansoldier",
                 keystoneUnlockName: "Roman Keystone",
-                avatar: "https://i.imgur.com/6fzApmM.png",
+                avatar: "https://i.imgur.com/wopsjbo.png",
                 enemies: [
                     {
                         name: "Taco Thief",
@@ -8941,7 +10718,7 @@ Hoover Dam
             4: {
                 challengeId: "dictator",
                 keystoneUnlockName: "Dictator Keystone",
-                avatar: "https://i.imgur.com/6fzApmM.png",
+                avatar: "https://i.imgur.com/L9MC5Xk.png",
                 enemies: [
                     {
                         name: "Dictator",
@@ -9117,7 +10894,7 @@ Hoover Dam
             5: {
                 challengeId: "cheftrio",
                 keystoneUnlockName: "Chef Keystone",
-                avatar: "https://i.imgur.com/6fzApmM.png",
+                avatar: "https://i.imgur.com/cv3FUXq.png",
                 enemies: [
                     // 3 bosses, each has a special ability
                     // when one of the bosses dies, the other 2 gain the ability at the current CD of the ability
@@ -9332,7 +11109,7 @@ Hoover Dam
                 // blue = 1 cooldown per ability, effect ends when new crystals appear
                 challengeId: "a182type2",
                 keystoneUnlockName: "A182-Type2 Keystone",
-                avatar: "https://i.imgur.com/6fzApmM.png",
+                avatar: "https://i.imgur.com/ImttjNb.png",
                 description: "**Energy Crystals:** \nRed - grants Furnace(magical)\nGreen- grants Dismantle(physical)\nBlack - Summons Tortured Robots\nBlue - Summons Energy Core(Immune to areawide damage)\nYellow - Rocket Strike becomes areawide, reduces Furnace, Dismantle, Rocket Strike cooldown by 1 turn, Summon Tortured Robot by 6 turns\nPurple - affects with Radioactive(direct healing grants an additional stack of Radioactive, at 5 stacks you explode for 1300 damage)\nEnergy Core - Grants Energize to the boss upon being summoned, Energize lasts 6 turns (+400 attack, magic), upon death causes cleansing which removes Energized from all units\nLaser Beam - Physical, Rocket Strike - Magical",
                 timed: true,
                 timedPerTurn: 180000,
@@ -9356,12 +11133,12 @@ Hoover Dam
                         ],
                         keystoneStats: {
                             frenzy: {
-                                attackDmgPlus : [10030, 20010, 30040, 50030, 70050],
+                                attackDmgPlus : [10030, 20010, 30040, 50030, 7050],
                                 magicDmgPlus : [10030, 20010, 30040, 50030, 70050]
                             },
                             hp: [21500, 45900, 64900, 105000, 187000 ],
-                            attackDmg: [800, 1100, 1500, 2300, 3800],
-                            magicDmg: [800, 1100, 1500, 2300, 3800],
+                            attackDmg: [800, 1500, 2500, 4300, 5800],
+                            magicDmg: [800, 1500, 2500, 4300, 5800],
                             abilities: []
                         },
                         abilityOrder: [
@@ -9418,7 +11195,7 @@ Hoover Dam
             7: {
                 challengeId: "gatekeeper",
                 keystoneUnlockName: "Gatekeeper Keystone",
-                avatar: "https://i.imgur.com/6fzApmM.png",
+                avatar: "https://i.imgur.com/N79puTW.jpg",
                 timed: true,
                 timedPerTurn: 180000,
                 points: 1000,
@@ -9575,7 +11352,7 @@ Hoover Dam
             8: {
                 challengeId: "archvampire",
                 keystoneUnlockName: "Archvampire Keystone",
-                avatar: "https://i.imgur.com/6fzApmM.png",
+                avatar: "https://i.imgur.com/0Tl4Zda.png",
                 timed: true,
                 timedPerTurn: 180000,
                 points: 1800,
@@ -9772,7 +11549,7 @@ Hoover Dam
             9: {
                 challengeId: "corruptedovermind",
                 keystoneUnlockName: "Corrupted Keystone",
-                avatar: "https://i.imgur.com/6fzApmM.png",
+                avatar: "https://i.imgur.com/5VOMbq1.png",
                 timed: true,
                 timedPerTurn: 180000,
                 points: 2901,
@@ -9974,7 +11751,7 @@ Hoover Dam
             10: {
                 challengeId: "anomaly",
                 keystoneUnlockName: "Anomaly Keystone",
-                avatar: "https://i.imgur.com/6fzApmM.png",
+                avatar: "https://i.imgur.com/ySI8sHG.png",
                 timed: true,
                 timedPerTurn: 180000,
                 points: 4901,
@@ -10105,7 +11882,7 @@ Hoover Dam
             11: {
                 keystoneUnlockName: "Aramis Keystone",
                 challengeId: "aramis",
-                avatar: "https://i.imgur.com/6fzApmM.png",
+                avatar: "https://i.imgur.com/kFVuVHN.png",
                 timed: true,
                 timedPerTurn: 360000,
                 points: 7001,
@@ -10141,8 +11918,8 @@ Hoover Dam
                                 magicDmgPlus : [3100, 4100, 5100, 6100, 7100]
                             },
                             hp: [ 19500, 25900, 39900, 51000, 77000 ],
-                            attackDmg: [700, 1100, 1500, 2100, 2500],
-                            magicDmg: [700, 1100, 1500, 2100, 2500],
+                            attackDmg: [700, 1500, 2500, 4100, 5500],
+                            magicDmg: [700, 1500, 2500, 4100, 5500],
                             abilities: []
                         },
                         abilityOrder: [
@@ -10179,7 +11956,7 @@ Hoover Dam
             12: {
                 challengeId: "emperor",
                 keystoneUnlockName: "Emperor Keystone",
-                avatar: "https://i.imgur.com/6fzApmM.png",
+                avatar: "https://i.imgur.com/21C2UbS.jpg",
                 timed: true,
                 description: "**The High Council:** \n**Darkness** - A member of the high council becomes tainted with darkness and gains *Energy* and their abilities become empowered. Darkness can only be removed upon taking 25% of the member's health from the point of obtaining darkness\n**Energy** - upon reaching full energy the member of the high council unleashes eradicate every turn increasing in damage every turn until darkness is removed - each subsequent darkness requires one less turn to reach full energy\n**Puncture** - Deals 200 damage per turn, each tick gives a stack of *debilitate*, cast upon losing darkness\n**Debilitate** - increases all damage taken by 5% per stack\n**Strength** - Upon losing darkness the member of the high council gains +20% damage dealt permanently\nBalrogue > **Lesion** - DOT Deals low damage for 30 turns\n**Summon Knights** (Darkness Only) - summon a knight per number of lesions on the group, cast every 3 turns until darkness is removed\nEmperor > **Mighty Weapon** - Empowers his weapon and deals 50% more damage\n>**Wound** - Deals high physical damage on a random target for 6 turns\nMystical Fairy > **Blast** - deal moderate magical damage on a random target\n**Summon Worshipper** > Summon a worshipper that will heal the lowest health member for 10% of their total health every 2 turns\n**Summon Cursed Guardians** (Darkness only) > Summons two cursed guardians that become stronger each turn\nReckless Barbarian > **Reflect Shield** - reflects 15% damage dealt back to the attacker | 50% aoe damage reflected back to the attacker\n**Reflect Barrier** (Darkness only) - reflects 15% of damage dealt back to the group | 50% aoe damage reflected back to the group",
                 timedPerTurn: 360000,
