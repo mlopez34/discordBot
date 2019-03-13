@@ -5943,7 +5943,10 @@ function calculateDamageDealt(event, caster, target, rpgAbility){
             // check that the enemy can be damaged by this caster
             var canDamageTarget = checkCasterCanDamageTarget(userStats, targetStats)
             if (!canDamageTarget){
-                return 0
+                return {
+                    dmg: 0,
+                    critical: false
+                }
             }
 
             // add damage 
