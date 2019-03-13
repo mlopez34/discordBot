@@ -5098,39 +5098,6 @@ module.exports = {
 
                     ],
                     
-                },
-                meadows2: {
-                    areaString : "meadows string 1",
-                    name: "Meadows",
-                    enemies: {
-                        easy: [
-                            "rabbidwolf"
-                        ],
-                        medium: [
-                            "tacobandit"
-                        ],
-                        hard: [
-                            "footballplayer"
-                        ],
-                        boss: [
-                            "vampire"
-                        ]
-                    },
-                    rpgsToComplete: 8,
-                    onCompleteAreasUnlocked: [
-                        "meadows",
-                        "test2"
-                    ],
-                    shopItemsAvailable: [
-
-                    ],
-                    scavengeItemsAvailable: [
-
-                    ],
-                    rpgDropsAvailable: [
-
-                    ],
-                    boss: "bossId"
                 }
             },
             onCompleteZonesUnlocked: [
@@ -5494,39 +5461,6 @@ module.exports = {
 
                     ],
                     
-                },
-                meadows2: {
-                    areaString : "meadows string 1",
-                    name: "Meadows",
-                    enemies: {
-                        easy: [
-                            "rabbidwolf"
-                        ],
-                        medium: [
-                            "tacobandit"
-                        ],
-                        hard: [
-                            "footballplayer"
-                        ],
-                        boss: [
-                            "vampire"
-                        ]
-                    },
-                    rpgsToComplete: 8,
-                    onCompleteAreasUnlocked: [
-                        "meadows",
-                        "test2"
-                    ],
-                    shopItemsAvailable: [
-
-                    ],
-                    scavengeItemsAvailable: [
-
-                    ],
-                    rpgDropsAvailable: [
-
-                    ],
-                    boss: "bossId"
                 }
             },
             onCompleteZonesUnlocked: [
@@ -6967,7 +6901,11 @@ Hoover Dam
                     }
                 ],
                 keystoneStats: {
-                    hp: [1200, 3500, 6200, 10000, 15000 ],
+                    frenzy: {
+                        attackDmgPlus : [120, 200, 300, 440, 590],
+                        magicDmgPlus : [120, 200, 300, 440, 590]
+                    },
+                    hp: [1200, 3500, 15000, 25000, 55000 ],
                     attackDmg: [300, 500, 900, 1500, 2300],
                     magicDmg: [300, 500, 900, 1500, 2300],
                     abilities: []
@@ -11584,8 +11522,8 @@ Hoover Dam
                                 magicDmgPlus : [1055, 1210, 1540, 1930, 2150]
                             },
                             hp: [531500, 800900, 1509900, 2410000, 3707000 ],
-                            attackDmg: [700, 1100, 1500, 2100, 2500],
-                            magicDmg: [700, 1100, 1500, 2100, 2500],
+                            attackDmg: [700, 1100, 1700, 2100, 2500],
+                            magicDmg: [700, 1100, 2500, 3800, 4500],
                             abilities: []
                         },
                         abilityOrder: [
