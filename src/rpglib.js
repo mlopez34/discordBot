@@ -11322,11 +11322,11 @@ Hoover Dam
                         keystoneStats: {
                             frenzy: {
                                 attackDmgPlus : [1055, 1210, 1540, 2530, 4250],
-                                magicDmgPlus : [1055, 1210, 1540, 2530, 4250]
+                                magicDmgPlus : [1055, 1210, 1340, 2030, 3250]
                             },
                             hp: [31500, 40900, 59900, 81000, 137000 ],
                             attackDmg: [700, 1100, 1500, 2100, 2500],
-                            magicDmg: [700, 1100, 2500, 3100, 4500],
+                            magicDmg: [900, 2000, 2800, 3500, 4500],
                             abilities: []
                         },
                         abilityOrder: [
