@@ -11321,12 +11321,12 @@ Hoover Dam
                         ],
                         keystoneStats: {
                             frenzy: {
-                                attackDmgPlus : [1055, 1210, 1540, 1930, 2150],
-                                magicDmgPlus : [1055, 1210, 1540, 1930, 2150]
+                                attackDmgPlus : [1055, 1210, 1540, 2530, 4250],
+                                magicDmgPlus : [1055, 1210, 1540, 2530, 4250]
                             },
                             hp: [31500, 40900, 59900, 81000, 137000 ],
                             attackDmg: [700, 1100, 1500, 2100, 2500],
-                            magicDmg: [700, 1100, 1500, 2100, 2500],
+                            magicDmg: [700, 1100, 2500, 3100, 4500],
                             abilities: []
                         },
                         abilityOrder: [
@@ -11372,8 +11372,8 @@ Hoover Dam
                         ],
                         keystoneStats: {
                             frenzy: {
-                                attackDmgPlus : [250, 400, 650, 700, 900],
-                                magicDmgPlus : [250, 400, 650, 700, 900]
+                                attackDmgPlus : [250, 400, 650, 900, 1200],
+                                magicDmgPlus : [250, 400, 650, 900, 1200]
                             },
                             hp: [10500, 15900, 21900, 27000, 37000 ],
                             attackDmg: [700, 1100, 1400, 1700, 2100],
@@ -11417,8 +11417,8 @@ Hoover Dam
                         ],
                         keystoneStats: {
                             frenzy: {
-                                attackDmgPlus : [250, 400, 650, 700, 900],
-                                magicDmgPlus : [250, 400, 650, 700, 900]
+                                attackDmgPlus : [250, 400, 650, 900, 1200],
+                                magicDmgPlus : [250, 400, 650, 900, 1200]
                             },
                             hp: [10500, 15900, 21900, 27000, 37000 ],
                             attackDmg: [700, 1100, 1400, 1700, 2100],
