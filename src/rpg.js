@@ -1606,7 +1606,9 @@ module.exports.displayKeystones = function(message, zoneToCheck){
             console.log(err)
         }else{
             var keystonesString = keystonesStringBuilder(userData)
-            keystonesEmbedBuilder(message, keystonesString, userData)
+            if (keystonesString.length > 0){
+                keystonesEmbedBuilder(message, keystonesString, userData)
+            }
         }
     })
 }
