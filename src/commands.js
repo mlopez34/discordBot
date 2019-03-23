@@ -4995,8 +4995,7 @@ module.exports.useCommand = function(message, args){
                 // console.log(error);
                 useItem.setItemsLock(discordUserId, false)
                 agreeToTerms(message, discordUserId);
-            }
-            else{
+            }else{
                 // check the user has enough terries
                  // map of user's inventory
                 var itemsInInventoryCountMap = {};
@@ -5048,8 +5047,7 @@ module.exports.useCommand = function(message, args){
                             // couldnt update the user protect
                             // console.log(useError);
                             useItem.setItemsLock(discordUserId, false)
-                        }
-                        else{
+                        }else{
                             // console.log(useRes[0]);
                             if (useRes.length && useRes.length > 0 && useRes[0].itemname){
                                 message.channel.send(message.author + " has tailored a **" + useRes[0].itemname + "** -" + "`" + useRes[0].itemdescription + ", " + useRes[0].itemslot + ", " + useRes[0].itemstatistics + "`");
@@ -5455,11 +5453,11 @@ module.exports.createArmament = function(message, args){
                 console.log(err);
                 agreeToTerms(message, discordUserId);
                 useItem.setItemsLock(discordUserId, false)
-            }
-            else{
+            }else{
                 profileDB.getUserProfileData(discordUserId, function(profileErr, profileRes){
                     if (profileErr){
                         console.log(profileErr)
+                        useItem.setItemsLock(discordUserId, false)
                     }else{
                         if (profileRes.data.hacksaw){
                             // get the requirements for the armament to create
@@ -5546,11 +5544,11 @@ module.exports.createArmament = function(message, args){
                                 message.channel.send("invalid item name")
                             }
                         }else{
+                            useItem.setItemsLock(discordUserId, false)
                             message.channel.send("You need a hacksaw - obtain one from the shop")
                         }
                     }
                 })
-                
             }
         })
     }
@@ -9926,6 +9924,11 @@ module.exports.mapCommand = function(message, args){
         rpg.displayMap(message)
     }
 }
+
+module.exports.keystonesCommand = function(message, args){
+    rpg.displayKeystones(message)
+}
+
 
 module.exports.travelCommand = function(message, args){
     // change currentarea to specified area

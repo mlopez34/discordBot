@@ -869,8 +869,7 @@ module.exports.rpgReady = function(message, itemsAvailable, amuletItemsById, buf
                                                                             profileDB.updateLastRpgTime(partyMember.id, function(updateLSErr, updateLSres){
                                                                                 if(updateLSErr){
                                                                                     console.log(updateLSErr);
-                                                                                }
-                                                                                else{
+                                                                                }else{
                                                                                     console.log(updateLSres)
                                                                                 }
                                                                             })
@@ -984,8 +983,7 @@ module.exports.rpgReady = function(message, itemsAvailable, amuletItemsById, buf
                                                                             membersInParty["rpg-" + partyMember.id].buffs.push(passiveAbilityBuff);
                                                                             membersInParty["rpg-" + partyMember.id].passiveAbilities.push(passiveAbilityBuff);
                                                                             membersInParty["rpg-" + partyMember.id].abilitiesMap[passiveAbilityBuff.name] = passiveAbilityBuff;
-                                                                        }
-                                                                        else{
+                                                                        }else{
                                                                             if (membersInParty["rpg-" + partyMember.id].abilities.indexOf(partyMemberStats.abilities[ability]) == -1){
                                                                                 var playerAbility = JSON.parse(JSON.stringify( partyMemberStats.abilities[ability] ));
                                                                                 membersInParty["rpg-" + partyMember.id].abilities.push( playerAbility );
@@ -1601,6 +1599,39 @@ module.exports.displayMap = function(message, zoneToCheck){
     })
 }
 
+module.exports.displayKeystones = function(message, zoneToCheck){
+    var discordUserId = message.author.id
+    profileDB.getUserRpgProfleData(discordUserId, function(err, userData){
+        if (err){
+            console.log(err)
+        }else{
+            var keystonesString = keystonesStringBuilder(userData)
+            keystonesEmbedBuilder(message, keystonesString, userData)
+        }
+    })
+}
+
+function keystonesStringBuilder(userData){
+    var keystonesString = ""
+    for (var i = 1; i <= CURRENT_CHALLENGES_AVAILABLE; i++){
+        var keystoneId = getKeystoneIdFromChallenge(i)
+        if (userData.data[keystoneId] && userData.data[keystoneId] > 0){
+            keystonesString = keystonesString + keystoneId + " - " + userData.data[keystoneId] + "\n"
+        }
+    }
+    return keystonesString
+}
+
+function keystonesEmbedBuilder(message, keystonesString, userData){
+
+    const embed = new Discord.RichEmbed()
+    .setAuthor(message.author.username)
+    .addField("Keystones: :key: :asterisk:", keystonesString, true)
+    .setThumbnail(message.author.avatarURL)
+    .setColor(0xbfa5ff)
+    message.channel.send({embed});
+}
+
 function mapEmbedBuilder(message, listOfAreasInZone, zonesAvailableForUserMap, currentZoneName){
     var zonesAvailableString = ""
     var areasInZoneString = ""
@@ -1671,7 +1702,7 @@ function getAreasInZone(zoneid, userData){
 }
 
 function isAreaCompleted(area, userAreaCompletion){
-    return userAreaCompletion >= area.rpgsToComplete
+    return userAreaCompletion >= area.enemiesToDefeat
 }
 
 function getZonesAvailableForUser(userData){
@@ -2312,13 +2343,13 @@ function eventEndedEmbedBuilder(message, event, partySuccess){
 function increaseCompletionForUser(eventUser, rpgareaId, message){
     var discordUserId = eventUser.userid
     var currentareacompletion = eventUser.currentareacompletion || 0
-    var rpgsToCompleteArea = getRpgsToCompleteForArea(rpgareaId)
+    var enemiesToDefeatArea = getEnemiesToDefeatForArea(rpgareaId)
     profileDB.rpgAreaIncreaseCompletion(discordUserId, rpgareaId, currentareacompletion, function(err, res){
         if (err){
             console.log(err)
         }else{
             var areaCompletionForUser = eventUser.currentareacompletion + 1
-            if (areaCompletionForUser == rpgsToCompleteArea){
+            if (areaCompletionForUser == enemiesToDefeatArea){
                 newAreaEmbedBuilder( eventUser.username, rpgareaId, message)
             }
             var zoneUserIsIn = getRpgZone(rpgareaId)
@@ -2343,9 +2374,9 @@ function getAreasCompletedInZoneForUser(userdata, zoneUserIsIn){
     var zoneAreas = rpgZones[zoneUserIsIn].areas
     for (var a in zoneAreas){
         var areaToCheck = zoneAreas[a]
-        var rpgsToCompleteInArea = areaToCheck.rpgsToComplete
+        var enemiesToDefeatInArea = areaToCheck.enemiesToDefeat
         var rpgsCompletedByUser = userdata[a] || 0
-        if (rpgsCompletedByUser >= rpgsToCompleteInArea){
+        if (rpgsCompletedByUser >= enemiesToDefeatInArea){
             numberOfAreasCompleted++
         }
     }
@@ -2389,10 +2420,10 @@ function getZoneString(zoneId){
     return rpgZones[zoneId].zoneString
 }
 
-function getRpgsToCompleteForArea(areaId){
+function getEnemiesToDefeatForArea(areaId){
     var zoneAreaIsIn = getRpgZone(areaId)
-    var rpgsToCompleteForArea = rpgZones[zoneAreaIsIn].areas[areaId].rpgsToComplete
-    return rpgsToCompleteForArea
+    var enemiesToDefeatForArea = rpgZones[zoneAreaIsIn].areas[areaId].enemiesToDefeat
+    return enemiesToDefeatForArea
 }
 
 function getAreasToCompletForZone(rpgZoneId){

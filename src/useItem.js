@@ -259,16 +259,14 @@ module.exports.useTerryCloth =  function(message, discordUserId, terryClothToUse
                     // console.log("couldnt add item");
                     exports.setItemsLock(discordUserId, false)
                     cb("error");
-                }
-                else{
+                }else{
                     // added item, use the terry cloths
                     profileDB.bulkUpdateItemStatus(terryClothToUse, "used", function(updateBulkErr, updateBulkRes){
                         if (updateBulkErr){
                             // console.log(updateBulkErr);
                             exports.setItemsLock(discordUserId, false)
                             cb(updateBulkErr);
-                        }
-                        else{
+                        }else{
                             // console.log(updateBulkRes);
                             exports.setItemsLock(discordUserId, false)
                             cb(null, rareWon);
@@ -284,16 +282,14 @@ module.exports.useTerryCloth =  function(message, discordUserId, terryClothToUse
                     // console.log(tacosError);
                     exports.setItemsLock(discordUserId, false)
                     cb(tacosError);
-                }
-                else{
+                }else{
                     // console.log(tacosRes);
                     profileDB.bulkUpdateItemStatus(terryClothToUse, "used", function(updateBulkErr, updateBulkRes){
                         if (updateBulkErr){
                             // console.log(updateBulkErr);
                             exports.setItemsLock(discordUserId, false)
                             cb(updateBulkErr);
-                        }
-                        else{
+                        }else{
                             // console.log(updateBulkRes);
                             exports.setItemsLock(discordUserId, false)
                             cb(null, 50)
@@ -318,8 +314,7 @@ module.exports.useTerryCloth =  function(message, discordUserId, terryClothToUse
                             // console.log(updateBulkErr);
                             exports.setItemsLock(discordUserId, false)
                             cb(updateBulkErr);
-                        }
-                        else{
+                        }else{
                             // console.log(updateBulkRes);
                             exports.setItemsLock(discordUserId, false)
                             cb(null, 20)

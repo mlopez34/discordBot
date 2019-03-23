@@ -350,16 +350,19 @@ module.exports.getRarityOfItemGemCanCreateArmamentFor = function(item){
 module.exports.checkRequirements = function(item, itemToCreateArmament){
     var itemRarity = itemToCreateArmament.itemraritycategory
     var requirements = armamentEssenceLevels[itemRarity]
-    if (item.essencelevel){
-        if (item.essencelevel == requirements.level && item.essencerarity == requirements.essenceRarity){
-            return true
+    if (requirements){
+        if (item.essencelevel){
+            if (item.essencelevel == requirements.level && item.essencerarity == requirements.essenceRarity){
+                return true
+            }else{
+                return false
+            }
         }else{
             return false
         }
     }else{
         return false
     }
-    
 }
 
 module.exports.rollForArmamentStats = function(itemToCreateArmament){

@@ -454,6 +454,9 @@ client.on('message', function(message){
                 else if (commandIs("map", message)){
                     commands.mapCommand(message, args)
                 }
+                else if (commandIs("keystones", message)){
+                    commands.keystonesCommand(message, args)
+                }
                 else if (commandIs("travel", message)){
                     commands.travelCommand(message, args)
                 }
@@ -1066,6 +1069,9 @@ client.on('message', function(message){
                 }
                 else if (commandIs("map", message)){
                     commands.mapCommand(message, args)
+                }
+                else if (commandIs("keystones", message)){
+                    commands.keystonesCommand(message, args)
                 }
                 else if (commandIs("travel", message)){
                     commands.travelCommand(message, args)
