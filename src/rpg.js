@@ -1628,7 +1628,7 @@ function keystonesEmbedBuilder(message, keystonesString, userData){
 
     const embed = new Discord.RichEmbed()
     .setAuthor(message.author.username)
-    .addField("Keystones: :key: :asterisk:", keystonesString, true)
+    .addField("Keystones available: :key: :asterisk:", keystonesString, true)
     .setThumbnail(message.author.avatarURL)
     .setColor(0xbfa5ff)
     message.channel.send({embed});
@@ -2794,7 +2794,8 @@ function effectsOnTurnEnd(event){
                     var validEOT = true;
                     if (event.enemies[enemy].endOfTurnEvents[index].invalidIfBuff){
                         for (var b in event.enemies[enemy].buffs){
-                            if (event.enemies[enemy].buffs[b].abilityId == event.enemies[enemy].endOfTurnEvents[index].invalidIfBuff){
+                            if (event.enemies[enemy].buffs[b].abilityId == event.enemies[enemy].endOfTurnEvents[index].invalidIfBuff
+                                && !event.enemies[enemy].buffs[b].invalid ){
                                 console.log("invalid " + event.enemies[enemy].buffs[b].abilityId )
                                 console.log("enemy to cast this " + event.enemies[enemy].name)
                                 validEOT = false;
@@ -2875,7 +2876,8 @@ function effectsOnTurnEnd(event){
                                     for (var i = event.enemies[enemy].buffs.length - 1; i >= 0; i--){
                                         if (event.enemies[enemy].buffs.indexOf("dead") == -1){
                                             // process the on turn end buff
-                                            if (event.enemies[enemy].buffs[i].abilityId == buffToCheck){
+                                            if (event.enemies[enemy].buffs[i].abilityId == buffToCheck
+                                                && !event.enemies[enemy].buffs[i].invalid ){
                                                 validCast = true;
                                                 break;
                                             }
@@ -3009,8 +3011,9 @@ function effectsOnTurnEnd(event){
                                         for (var i = event.enemies[enemy].buffs.length - 1; i >= 0; i--){
                                             if (event.enemies[enemy].buffs.indexOf("dead") == -1){
                                                 // process the on turn end buff
-                                                if (event.enemies[enemy].buffs[i].name == buffToCheck
-                                                    || event.enemies[enemy].buffs[i].abilityId == buffToCheck){
+                                                if ( (event.enemies[enemy].buffs[i].name == buffToCheck
+                                                    || event.enemies[enemy].buffs[i].abilityId == buffToCheck )
+                                                    && !event.enemies[enemy].buffs[i].invalid){
                                                     validCast = true;
                                                     break;
                                                 }
@@ -3147,8 +3150,9 @@ function effectsOnTurnEnd(event){
                                         for (var i = event.enemies[enemy].buffs.length - 1; i >= 0; i--){
                                             if (event.enemies[enemy].buffs.indexOf("dead") == -1){
                                                 // process the on turn end buff
-                                                if (event.enemies[enemy].buffs[i].name == buffToCheck
-                                                    || event.enemies[enemy].buffs[i].abilityId == buffToCheck){
+                                                if ( (event.enemies[enemy].buffs[i].name == buffToCheck
+                                                    || event.enemies[enemy].buffs[i].abilityId == buffToCheck ) 
+                                                    &&  !event.enemies[enemy].buffs[i].invalid){
                                                     validSummon = true;
                                                     break;
                                                 }
@@ -3352,8 +3356,9 @@ function effectsOnTurnEnd(event){
                                     for (var i = event.enemies[enemy].buffs.length - 1; i >= 0; i--){
                                         if (event.enemies[enemy].buffs.indexOf("dead") == -1){
                                             // process the on turn end buff
-                                            if (event.enemies[enemy].buffs[i].name == buffToCheck
-                                                || event.enemies[enemy].buffs[i].abilityId == buffToCheck){
+                                            if ( (event.enemies[enemy].buffs[i].name == buffToCheck
+                                                || event.enemies[enemy].buffs[i].abilityId == buffToCheck )
+                                                && !event.enemies[enemy].buffs[i].invalid ){
                                                 validCast = true;
                                                 break;
                                             }
@@ -4222,7 +4227,8 @@ function effectsOnDeath(event, member){
             var rpgAbility = JSON.parse(JSON.stringify( rpgAbilities[ event.enemies[idOfMember].effectsOnDeath[effect] ] ));
             if (rpgAbility.invalidIfBuff){
                 for (var b in event.enemies[idOfMember].buffs){
-                    if (event.enemies[idOfMember].buffs[b].abilityId == rpgAbility.invalidIfBuff){
+                    if (event.enemies[idOfMember].buffs[b].abilityId == rpgAbility.invalidIfBuff
+                        && !event.enemies[idOfMember].buffs[b].invalid){
                         validEOD = false;
                         continue
                     }
@@ -8240,13 +8246,14 @@ function recalculateStatBuffs(event){
             if (buffToProcess.removeAtHpPercentage){
                 // remove this buff 
                 if (event.enemies[enemy].hp / event.enemies[enemy].maxhp < buffToProcess.removeAtHpPercentage){
+                    // remove it but also handle other things
                     buffsToRemoveByIndex.push(parseInt(buff))
                 }
             }
         }
         for( var i = event.enemies[enemy].buffs.length; i >= 0; i--){
             if (buffsToRemoveByIndex.indexOf(i) > -1){ 
-                event.enemies[enemy].buffs.splice(i, 1)
+                event.enemies[enemy].buffs[i].invalid = true
             }
         }
         // calculate statuses

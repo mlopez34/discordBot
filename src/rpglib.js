@@ -3419,26 +3419,29 @@ module.exports = {
             zoneString : "Prarie String 1",
             startingArea: "meadows",
             name: "Prarie",
+            enemies: {
+                easy: [
+                    "rabbidwolf",
+                    "hungryboar"
+                ],
+                medium: [
+                    "tacobandit",
+                    "bear"
+                ],
+                hard: [
+                    "sniper",
+                    "warewolf"
+                ],
+                boss: [
+                    "desperado"
+                ]
+            },
             areas: {
                 // 3
                 acheronriver: {
                     areaString : "Acheron River string 1",
                     name: "Acheron River",
-                    enemies: {
-                        easy: [
-                            "rabbidwolf"
-                        ],
-                        medium: [
-                            "tacobandit"
-                        ],
-                        hard: [
-                            "footballplayer"
-                        ],
-                        boss: [
-                            "vampire"
-                        ]
-                    },
-                    rpgsToComplete: 9,
+                    enemiesToDefeat: 36,
                     onCompleteAreasUnlocked: [
                         "charlesbridge",
                         "tauronplains"
@@ -3458,21 +3461,7 @@ module.exports = {
                 anorariver: {
                     areaString : "Anora River string 1",
                     name: "Anora River",
-                    enemies: {
-                        easy: [
-                            "rabbidwolf"
-                        ],
-                        medium: [
-                            "tacobandit"
-                        ],
-                        hard: [
-                            "footballplayer"
-                        ],
-                        boss: [
-                            "vampire"
-                        ]
-                    },
-                    rpgsToComplete: 9,
+                    enemiesToDefeat: 39,
                     onCompleteAreasUnlocked: [
                         "greenchestnut",
                         "tauronplains"
@@ -3492,21 +3481,7 @@ module.exports = {
                 aokigahara: {
                     areaString : "Aokigahara Forest string 1",
                     name: "Aokigahara Forest",
-                    enemies: {
-                        easy: [
-                            "rabbidwolf"
-                        ],
-                        medium: [
-                            "tacobandit"
-                        ],
-                        hard: [
-                            "footballplayer"
-                        ],
-                        boss: [
-                            "vampire"
-                        ]
-                    },
-                    rpgsToComplete: 9,
+                    enemiesToDefeat: 37,
                     onCompleteAreasUnlocked: [
                         "nishinomaru",
                         "greenchestnut"
@@ -3526,21 +3501,7 @@ module.exports = {
                 bagan: {
                     areaString : "Bagan string 1",
                     name: "Bagan",
-                    enemies: {
-                        easy: [
-                            "rabbidwolf"
-                        ],
-                        medium: [
-                            "tacobandit"
-                        ],
-                        hard: [
-                            "footballplayer"
-                        ],
-                        boss: [
-                            "vampire"
-                        ]
-                    },
-                    rpgsToComplete: 9,
+                    enemiesToDefeat: 41,
                     onCompleteAreasUnlocked: [
                         "carerralake",
                         "greenchestnut"
@@ -3560,21 +3521,7 @@ module.exports = {
                 bluegrotto: {
                     areaString : "Blue Grotto string 1",
                     name: "Blue Grotto",
-                    enemies: {
-                        easy: [
-                            "rabbidwolf"
-                        ],
-                        medium: [
-                            "tacobandit"
-                        ],
-                        hard: [
-                            "footballplayer"
-                        ],
-                        boss: [
-                            "vampire"
-                        ]
-                    },
-                    rpgsToComplete: 9,
+                    enemiesToDefeat: 33,
                     onCompleteAreasUnlocked: [
                         "acheronriver",
                         "bagan"
@@ -3594,21 +3541,7 @@ module.exports = {
                 carerralake: {
                     areaString : "Carerra Lake string 1",
                     name: "Carerra Lake",
-                    enemies: {
-                        easy: [
-                            "rabbidwolf"
-                        ],
-                        medium: [
-                            "tacobandit"
-                        ],
-                        hard: [
-                            "footballplayer"
-                        ],
-                        boss: [
-                            "vampire"
-                        ]
-                    },
-                    rpgsToComplete: 9,
+                    enemiesToDefeat: 42,
                     onCompleteAreasUnlocked: [
                         "nishinomaru"
                     ],
@@ -3627,21 +3560,7 @@ module.exports = {
                 charlesbridge: {
                     areaString : "Charles Bridge string 1",
                     name: "Charles Bridge",
-                    enemies: {
-                        easy: [
-                            "rabbidwolf"
-                        ],
-                        medium: [
-                            "tacobandit"
-                        ],
-                        hard: [
-                            "footballplayer"
-                        ],
-                        boss: [
-                            "vampire"
-                        ]
-                    },
-                    rpgsToComplete: 9,
+                    enemiesToDefeat: 77,
                     onCompleteAreasUnlocked: [
                         "nishinomaru"
                     ],
@@ -3660,21 +3579,7 @@ module.exports = {
                 tauronplains: {
                     areaString : "Tauron Plains string 1",
                     name: "Tauron Plains",
-                    enemies: {
-                        easy: [
-                            "rabbidwolf"
-                        ],
-                        medium: [
-                            "tacobandit"
-                        ],
-                        hard: [
-                            "footballplayer"
-                        ],
-                        boss: [
-                            "vampire"
-                        ]
-                    },
-                    rpgsToComplete: 9,
+                    enemiesToDefeat: 32,
                     onCompleteAreasUnlocked: [
                         "nishinomaru"
                     ],
@@ -3693,21 +3598,7 @@ module.exports = {
                 greenchestnut: {
                     areaString : "Green Chestnut string 1",
                     name: "Green Chestnut",
-                    enemies: {
-                        easy: [
-                            "rabbidwolf"
-                        ],
-                        medium: [
-                            "tacobandit"
-                        ],
-                        hard: [
-                            "footballplayer"
-                        ],
-                        boss: [
-                            "vampire"
-                        ]
-                    },
-                    rpgsToComplete: 9,
+                    enemiesToDefeat: 35,
                     onCompleteAreasUnlocked: [
                         "igualdafalls"
                     ],
@@ -3725,21 +3616,7 @@ module.exports = {
                 igualdafalls: {
                     areaString : "Igualda Falls string 1",
                     name: "Igualda Falls",
-                    enemies: {
-                        easy: [
-                            "rabbidwolf"
-                        ],
-                        medium: [
-                            "tacobandit"
-                        ],
-                        hard: [
-                            "footballplayer"
-                        ],
-                        boss: [
-                            "vampire"
-                        ]
-                    },
-                    rpgsToComplete: 9,
+                    enemiesToDefeat: 39,
                     onCompleteAreasUnlocked: [
                     ],
                     shopItemsAvailable: [
@@ -3757,21 +3634,7 @@ module.exports = {
                 molonoth: {
                     areaString : "Molonoth Fields string 1",
                     name: "Molonoth Fields",
-                    enemies: {
-                        easy: [
-                            "rabbidwolf"
-                        ],
-                        medium: [
-                            "tacobandit"
-                        ],
-                        hard: [
-                            "footballplayer"
-                        ],
-                        boss: [
-                            "vampire"
-                        ]
-                    },
-                    rpgsToComplete: 9,
+                    enemiesToDefeat: 32,
                     onCompleteAreasUnlocked: [
                         "carerralake",
                         "tauronplains"
@@ -3790,21 +3653,7 @@ module.exports = {
                 nishinomaru: {
                     areaString : "Nishinomaru Garden string 1",
                     name: "Nishinomaru Garden",
-                    enemies: {
-                        easy: [
-                            "rabbidwolf"
-                        ],
-                        medium: [
-                            "tacobandit"
-                        ],
-                        hard: [
-                            "footballplayer"
-                        ],
-                        boss: [
-                            "vampire"
-                        ]
-                    },
-                    rpgsToComplete: 9,
+                    enemiesToDefeat: 49,
                     onCompleteAreasUnlocked: [
                     ],
                     shopItemsAvailable: [
@@ -3822,21 +3671,7 @@ module.exports = {
                 tallgrass: {
                     areaString : "Tallgrass string 1",
                     name: "Tallgrass",
-                    enemies: {
-                        easy: [
-                            "rabbidwolf"
-                        ],
-                        medium: [
-                            "tacobandit"
-                        ],
-                        hard: [
-                            "footballplayer"
-                        ],
-                        boss: [
-                            "vampire"
-                        ]
-                    },
-                    rpgsToComplete: 8,
+                    enemiesToDefeat: 38,
                     onCompleteAreasUnlocked: [
                         "molonoth",
                         "anorariver",
@@ -3857,21 +3692,7 @@ module.exports = {
                 meadows: {
                     areaString : "Meadows string 1",
                     name: "Meadows",
-                    enemies: {
-                        easy: [
-                            "rabbidwolf"
-                        ],
-                        medium: [
-                            "tacobandit"
-                        ],
-                        hard: [
-                            "footballplayer"
-                        ],
-                        boss: [
-                            "vampire"
-                        ]
-                    },
-                    rpgsToComplete: 8,
+                    enemiesToDefeat: 38,
                     onCompleteAreasUnlocked: [
                         "tallgrass",
                         "bluegrotto"
@@ -3899,25 +3720,28 @@ module.exports = {
             zoneString : "Woods String 1",
             startingArea: "archenland",
             name: "Woods",
+            enemies: {
+                easy: [
+                    "hyena",
+                    "bull"
+                ],
+                medium: [
+                    "tacothief",
+                    "troglodyte"
+                ],
+                hard: [
+                    "warewolf",
+                    "sniper"
+                ],
+                boss: [
+                    "desperado"
+                ]
+            },
             areas: {
                 archenland: {
                     areaString : "Archenland string 1",
                     name: "Archenland",
-                    enemies: {
-                        easy: [
-                            "rabbidwolf"
-                        ],
-                        medium: [
-                            "tacobandit"
-                        ],
-                        hard: [
-                            "footballplayer"
-                        ],
-                        boss: [
-                            "vampire"
-                        ]
-                    },
-                    rpgsToComplete: 9,
+                    enemiesToDefeat: 29,
                     onCompleteAreasUnlocked: [
                         "beartoothriver",
                         "meeroruins"
@@ -3937,21 +3761,7 @@ module.exports = {
                 beartoothriver: {
                     areaString : "Beartooth River string 1",
                     name: "Beartooth River",
-                    enemies: {
-                        easy: [
-                            "rabbidwolf"
-                        ],
-                        medium: [
-                            "tacobandit"
-                        ],
-                        hard: [
-                            "footballplayer"
-                        ],
-                        boss: [
-                            "vampire"
-                        ]
-                    },
-                    rpgsToComplete: 9,
+                    enemiesToDefeat: 31,
                     onCompleteAreasUnlocked: [
                         "brycecanyon",
                         "incatrail"
@@ -3970,21 +3780,7 @@ module.exports = {
                 blackforest: {
                     areaString : "Black Forest string 1",
                     name: "Black Forest",
-                    enemies: {
-                        easy: [
-                            "rabbidwolf"
-                        ],
-                        medium: [
-                            "tacobandit"
-                        ],
-                        hard: [
-                            "footballplayer"
-                        ],
-                        boss: [
-                            "vampire"
-                        ]
-                    },
-                    rpgsToComplete: 9,
+                    enemiesToDefeat: 21,
                     onCompleteAreasUnlocked: [
                     ],
                     shopItemsAvailable: [
@@ -4002,21 +3798,7 @@ module.exports = {
                 brycecanyon: {
                     areaString : "Bryce Canyon string 1",
                     name: "Bryce Canyon",
-                    enemies: {
-                        easy: [
-                            "rabbidwolf"
-                        ],
-                        medium: [
-                            "tacobandit"
-                        ],
-                        hard: [
-                            "footballplayer"
-                        ],
-                        boss: [
-                            "vampire"
-                        ]
-                    },
-                    rpgsToComplete: 9,
+                    enemiesToDefeat: 39,
                     onCompleteAreasUnlocked: [
                         "lakevostok",
                         "darkwatercove"
@@ -4030,27 +3812,12 @@ module.exports = {
                     rpgDropsAvailable: [
 
                     ]
-                    
                 },
                 // 3
                 darkhedges: {
                     areaString : "Dark Hedges string 1",
                     name: "Dark Hedges",
-                    enemies: {
-                        easy: [
-                            "rabbidwolf"
-                        ],
-                        medium: [
-                            "tacobandit"
-                        ],
-                        hard: [
-                            "footballplayer"
-                        ],
-                        boss: [
-                            "vampire"
-                        ]
-                    },
-                    rpgsToComplete: 9,
+                    enemiesToDefeat: 49,
                     onCompleteAreasUnlocked: [
                         "blackforest",
                     ],
@@ -4069,21 +3836,7 @@ module.exports = {
                 darkwatercove: {
                     areaString : "Darkwater Cove string 1",
                     name: "Darkwater Cove",
-                    enemies: {
-                        easy: [
-                            "rabbidwolf"
-                        ],
-                        medium: [
-                            "tacobandit"
-                        ],
-                        hard: [
-                            "footballplayer"
-                        ],
-                        boss: [
-                            "vampire"
-                        ]
-                    },
-                    rpgsToComplete: 9,
+                    enemiesToDefeat: 49,
                     onCompleteAreasUnlocked: [
                         "blackforest"
                     ],
@@ -4102,21 +3855,7 @@ module.exports = {
                 denalipark: {
                     areaString : "Denali Park string 1",
                     name: "Denali Park",
-                    enemies: {
-                        easy: [
-                            "rabbidwolf"
-                        ],
-                        medium: [
-                            "tacobandit"
-                        ],
-                        hard: [
-                            "footballplayer"
-                        ],
-                        boss: [
-                            "vampire"
-                        ]
-                    },
-                    rpgsToComplete: 9,
+                    enemiesToDefeat: 9,
                     onCompleteAreasUnlocked: [
                         "blackforest",
                         "darkwatercove"
@@ -4136,21 +3875,7 @@ module.exports = {
                 forestofstone: {
                     areaString : "Forest of Stone string 1",
                     name: "Forest of Stone",
-                    enemies: {
-                        easy: [
-                            "rabbidwolf"
-                        ],
-                        medium: [
-                            "tacobandit"
-                        ],
-                        hard: [
-                            "footballplayer"
-                        ],
-                        boss: [
-                            "vampire"
-                        ]
-                    },
-                    rpgsToComplete: 9,
+                    enemiesToDefeat: 9,
                     onCompleteAreasUnlocked: [
                         "denalipark",
                         "blackforest"
@@ -4170,21 +3895,7 @@ module.exports = {
                 incatrail: {
                     areaString : "Inca Trail string 1",
                     name: "Inca Trail",
-                    enemies: {
-                        easy: [
-                            "rabbidwolf"
-                        ],
-                        medium: [
-                            "tacobandit"
-                        ],
-                        hard: [
-                            "footballplayer"
-                        ],
-                        boss: [
-                            "vampire"
-                        ]
-                    },
-                    rpgsToComplete: 9,
+                    enemiesToDefeat: 9,
                     onCompleteAreasUnlocked: [
                         "denalipark",
                         "forestofstone"
@@ -4204,21 +3915,7 @@ module.exports = {
                 lakevostok: {
                     areaString : "Lake Vostok string 1",
                     name: "Lake Vostok",
-                    enemies: {
-                        easy: [
-                            "rabbidwolf"
-                        ],
-                        medium: [
-                            "tacobandit"
-                        ],
-                        hard: [
-                            "footballplayer"
-                        ],
-                        boss: [
-                            "vampire"
-                        ]
-                    },
-                    rpgsToComplete: 9,
+                    enemiesToDefeat: 9,
                     onCompleteAreasUnlocked: [
                         "blackforest"
                     ],
@@ -4237,21 +3934,7 @@ module.exports = {
                 meeroruins: {
                     areaString : "Meero Ruins string 1",
                     name: "Meero Ruins",
-                    enemies: {
-                        easy: [
-                            "rabbidwolf"
-                        ],
-                        medium: [
-                            "tacobandit"
-                        ],
-                        hard: [
-                            "footballplayer"
-                        ],
-                        boss: [
-                            "vampire"
-                        ]
-                    },
-                    rpgsToComplete: 9,
+                    enemiesToDefeat: 9,
                     onCompleteAreasUnlocked: [
                         "darkhedges",
                         "brycecanyon"
@@ -4282,21 +3965,7 @@ module.exports = {
                 angkorwat: {
                     areaString : "Angkor Wat string 1",
                     name: "Angkor Wat",
-                    enemies: {
-                        easy: [
-                            "rabbidwolf"
-                        ],
-                        medium: [
-                            "tacobandit"
-                        ],
-                        hard: [
-                            "footballplayer"
-                        ],
-                        boss: [
-                            "vampire"
-                        ]
-                    },
-                    rpgsToComplete: 9,
+                    enemiesToDefeat: 9,
                     onCompleteAreasUnlocked: [
                         "glowwormcave"
                     ],
@@ -4314,21 +3983,7 @@ module.exports = {
                 bigsur: {
                     areaString : "Big Sur string 1",
                     name: "Big Sur",
-                    enemies: {
-                        easy: [
-                            "rabbidwolf"
-                        ],
-                        medium: [
-                            "tacobandit"
-                        ],
-                        hard: [
-                            "footballplayer"
-                        ],
-                        boss: [
-                            "vampire"
-                        ]
-                    },
-                    rpgsToComplete: 9,
+                    enemiesToDefeat: 9,
                     onCompleteAreasUnlocked: [
                         "angkorwat"
                     ],
@@ -4346,21 +4001,7 @@ module.exports = {
                 bramstomb: {
                     areaString : "Bram's tomb string 1",
                     name: "Bram's tomb",
-                    enemies: {
-                        easy: [
-                            "rabbidwolf"
-                        ],
-                        medium: [
-                            "tacobandit"
-                        ],
-                        hard: [
-                            "footballplayer"
-                        ],
-                        boss: [
-                            "vampire"
-                        ]
-                    },
-                    rpgsToComplete: 9,
+                    enemiesToDefeat: 9,
                     onCompleteAreasUnlocked: [
                         "angkorwat"
                     ],
@@ -4378,21 +4019,7 @@ module.exports = {
                 greyheath: {
                     areaString : "Gray Heath string 1",
                     name: "Gray Heath",
-                    enemies: {
-                        easy: [
-                            "rabbidwolf"
-                        ],
-                        medium: [
-                            "tacobandit"
-                        ],
-                        hard: [
-                            "footballplayer"
-                        ],
-                        boss: [
-                            "vampire"
-                        ]
-                    },
-                    rpgsToComplete: 9,
+                    enemiesToDefeat: 9,
                     onCompleteAreasUnlocked: [
                         "angkorwat"
                     ],
@@ -4410,21 +4037,7 @@ module.exports = {
                 klencory: {
                     areaString : "Klencory string 1",
                     name: "Klencory",
-                    enemies: {
-                        easy: [
-                            "rabbidwolf"
-                        ],
-                        medium: [
-                            "tacobandit"
-                        ],
-                        hard: [
-                            "footballplayer"
-                        ],
-                        boss: [
-                            "vampire"
-                        ]
-                    },
-                    rpgsToComplete: 9,
+                    enemiesToDefeat: 9,
                     onCompleteAreasUnlocked: [
                         "ladakh",
                         "meenakshitemple"
@@ -4443,21 +4056,7 @@ module.exports = {
                 ladakh: {
                     areaString : "Ladakh string 1",
                     name: "Ladakh",
-                    enemies: {
-                        easy: [
-                            "rabbidwolf"
-                        ],
-                        medium: [
-                            "tacobandit"
-                        ],
-                        hard: [
-                            "footballplayer"
-                        ],
-                        boss: [
-                            "vampire"
-                        ]
-                    },
-                    rpgsToComplete: 9,
+                    enemiesToDefeat: 9,
                     onCompleteAreasUnlocked: [
                         "greyheath",
                         "bramstomb",
@@ -4477,21 +4076,7 @@ module.exports = {
                 meenakshitemple: {
                     areaString : "Meenakshi Temple string 1",
                     name: "Meenakshi Temple",
-                    enemies: {
-                        easy: [
-                            "rabbidwolf"
-                        ],
-                        medium: [
-                            "tacobandit"
-                        ],
-                        hard: [
-                            "footballplayer"
-                        ],
-                        boss: [
-                            "vampire"
-                        ]
-                    },
-                    rpgsToComplete: 9,
+                    enemiesToDefeat: 9,
                     onCompleteAreasUnlocked: [
                         "morrowcaverns",
                         "tikal",
@@ -4511,21 +4096,7 @@ module.exports = {
                 morrowcaverns: {
                     areaString : "Morrow Caverns string 1",
                     name: "Morrow Caverns",
-                    enemies: {
-                        easy: [
-                            "rabbidwolf"
-                        ],
-                        medium: [
-                            "tacobandit"
-                        ],
-                        hard: [
-                            "footballplayer"
-                        ],
-                        boss: [
-                            "vampire"
-                        ]
-                    },
-                    rpgsToComplete: 9,
+                    enemiesToDefeat: 9,
                     onCompleteAreasUnlocked: [
                         "minasmorgul",
                         "dunwall",
@@ -4545,21 +4116,7 @@ module.exports = {
                 glowwormcave: {
                     areaString : "Glowworm Cave string 1",
                     name: "Glowworm Cave",
-                    enemies: {
-                        easy: [
-                            "rabbidwolf"
-                        ],
-                        medium: [
-                            "tacobandit"
-                        ],
-                        hard: [
-                            "footballplayer"
-                        ],
-                        boss: [
-                            "vampire"
-                        ]
-                    },
-                    rpgsToComplete: 9,
+                    enemiesToDefeat: 9,
                     onCompleteAreasUnlocked: [
 
                     ],
@@ -4577,21 +4134,7 @@ module.exports = {
                 tikal: {
                     areaString : "Tikal string 1",
                     name: "Tikal",
-                    enemies: {
-                        easy: [
-                            "rabbidwolf"
-                        ],
-                        medium: [
-                            "tacobandit"
-                        ],
-                        hard: [
-                            "footballplayer"
-                        ],
-                        boss: [
-                            "vampire"
-                        ]
-                    },
-                    rpgsToComplete: 9,
+                    enemiesToDefeat: 9,
                     onCompleteAreasUnlocked: [
                         "minasmorgul",
                         "dunwall"
@@ -4610,21 +4153,7 @@ module.exports = {
                 minasmorgul: {
                     areaString : "Minas Morgul string 1",
                     name: "Minas Morgul",
-                    enemies: {
-                        easy: [
-                            "rabbidwolf"
-                        ],
-                        medium: [
-                            "tacobandit"
-                        ],
-                        hard: [
-                            "footballplayer"
-                        ],
-                        boss: [
-                            "vampire"
-                        ]
-                    },
-                    rpgsToComplete: 9,
+                    enemiesToDefeat: 9,
                     onCompleteAreasUnlocked: [
                         "glowwormcave"
                     ],
@@ -4642,21 +4171,7 @@ module.exports = {
                 dunwall: {
                     areaString : "Dunwall string 1",
                     name: "Dunwall",
-                    enemies: {
-                        easy: [
-                            "rabbidwolf"
-                        ],
-                        medium: [
-                            "tacobandit"
-                        ],
-                        hard: [
-                            "footballplayer"
-                        ],
-                        boss: [
-                            "vampire"
-                        ]
-                    },
-                    rpgsToComplete: 9,
+                    enemiesToDefeat: 9,
                     onCompleteAreasUnlocked: [
                         "glowwormcave"
                     ],
@@ -4687,21 +4202,7 @@ module.exports = {
                 sanyoucave: {
                     areaString : "Sanyou Cave string 1",
                     name: "Sanyou Cave",
-                    enemies: {
-                        easy: [
-                            "rabbidwolf"
-                        ],
-                        medium: [
-                            "tacobandit"
-                        ],
-                        hard: [
-                            "footballplayer"
-                        ],
-                        boss: [
-                            "vampire"
-                        ]
-                    },
-                    rpgsToComplete: 8,
+                    enemiesToDefeat: 8,
                     onCompleteAreasUnlocked: [
                     ],
                     shopItemsAvailable: [
@@ -4718,21 +4219,7 @@ module.exports = {
                 antelopecanyon: {
                     areaString : "Antelope Canyon string 1",
                     name: "Antelope Canyon",
-                    enemies: {
-                        easy: [
-                            "rabbidwolf"
-                        ],
-                        medium: [
-                            "tacobandit"
-                        ],
-                        hard: [
-                            "footballplayer"
-                        ],
-                        boss: [
-                            "vampire"
-                        ]
-                    },
-                    rpgsToComplete: 8,
+                    enemiesToDefeat: 8,
                     onCompleteAreasUnlocked: [
                     ],
                     shopItemsAvailable: [
@@ -4749,21 +4236,7 @@ module.exports = {
                 arngormountains: {
                     areaString : "Arngor Mountain string 1",
                     name: "Arngor Mountain",
-                    enemies: {
-                        easy: [
-                            "rabbidwolf"
-                        ],
-                        medium: [
-                            "tacobandit"
-                        ],
-                        hard: [
-                            "footballplayer"
-                        ],
-                        boss: [
-                            "vampire"
-                        ]
-                    },
-                    rpgsToComplete: 8,
+                    enemiesToDefeat: 8,
                     onCompleteAreasUnlocked: [
                     ],
                     shopItemsAvailable: [
@@ -4780,21 +4253,7 @@ module.exports = {
                 ayersrock: {
                     areaString : "Ayers Rock string 1",
                     name: "Ayers Rock",
-                    enemies: {
-                        easy: [
-                            "rabbidwolf"
-                        ],
-                        medium: [
-                            "tacobandit"
-                        ],
-                        hard: [
-                            "footballplayer"
-                        ],
-                        boss: [
-                            "vampire"
-                        ]
-                    },
-                    rpgsToComplete: 8,
+                    enemiesToDefeat: 8,
                     onCompleteAreasUnlocked: [
                     ],
                     shopItemsAvailable: [
@@ -4811,21 +4270,7 @@ module.exports = {
                 eddariver: {
                     areaString : "Edda River string 1",
                     name: "Edda River",
-                    enemies: {
-                        easy: [
-                            "rabbidwolf"
-                        ],
-                        medium: [
-                            "tacobandit"
-                        ],
-                        hard: [
-                            "footballplayer"
-                        ],
-                        boss: [
-                            "vampire"
-                        ]
-                    },
-                    rpgsToComplete: 8,
+                    enemiesToDefeat: 8,
                     onCompleteAreasUnlocked: [
                     ],
                     shopItemsAvailable: [
@@ -4842,21 +4287,7 @@ module.exports = {
                 gimlickvalley: {
                     areaString : "Gimlick Valley string 1",
                     name: "Gimlick Valley",
-                    enemies: {
-                        easy: [
-                            "rabbidwolf"
-                        ],
-                        medium: [
-                            "tacobandit"
-                        ],
-                        hard: [
-                            "footballplayer"
-                        ],
-                        boss: [
-                            "vampire"
-                        ]
-                    },
-                    rpgsToComplete: 8,
+                    enemiesToDefeat: 8,
                     onCompleteAreasUnlocked: [
                     ],
                     shopItemsAvailable: [
@@ -4873,21 +4304,7 @@ module.exports = {
                 gizaplateau: {
                     areaString : "Giza Plateau string 1",
                     name: "Giza Plateau",
-                    enemies: {
-                        easy: [
-                            "rabbidwolf"
-                        ],
-                        medium: [
-                            "tacobandit"
-                        ],
-                        hard: [
-                            "footballplayer"
-                        ],
-                        boss: [
-                            "vampire"
-                        ]
-                    },
-                    rpgsToComplete: 8,
+                    enemiesToDefeat: 8,
                     onCompleteAreasUnlocked: [
                     ],
                     shopItemsAvailable: [
@@ -4904,21 +4321,7 @@ module.exports = {
                 martokvalley: {
                     areaString : "Martok Valley string 1",
                     name: "Martok Valley",
-                    enemies: {
-                        easy: [
-                            "rabbidwolf"
-                        ],
-                        medium: [
-                            "tacobandit"
-                        ],
-                        hard: [
-                            "footballplayer"
-                        ],
-                        boss: [
-                            "vampire"
-                        ]
-                    },
-                    rpgsToComplete: 8,
+                    enemiesToDefeat: 8,
                     onCompleteAreasUnlocked: [
                     ],
                     shopItemsAvailable: [
@@ -4935,21 +4338,7 @@ module.exports = {
                 palawan: {
                     areaString : "Palawan string 1",
                     name: "Palawan",
-                    enemies: {
-                        easy: [
-                            "rabbidwolf"
-                        ],
-                        medium: [
-                            "tacobandit"
-                        ],
-                        hard: [
-                            "footballplayer"
-                        ],
-                        boss: [
-                            "vampire"
-                        ]
-                    },
-                    rpgsToComplete: 8,
+                    enemiesToDefeat: 8,
                     onCompleteAreasUnlocked: [
                     ],
                     shopItemsAvailable: [
@@ -4966,21 +4355,7 @@ module.exports = {
                 reach: {
                     areaString : "Reach string 1",
                     name: "Reach",
-                    enemies: {
-                        easy: [
-                            "rabbidwolf"
-                        ],
-                        medium: [
-                            "tacobandit"
-                        ],
-                        hard: [
-                            "footballplayer"
-                        ],
-                        boss: [
-                            "vampire"
-                        ]
-                    },
-                    rpgsToComplete: 8,
+                    enemiesToDefeat: 8,
                     onCompleteAreasUnlocked: [
                     ],
                     shopItemsAvailable: [
@@ -4997,21 +4372,7 @@ module.exports = {
                 whitedesert: {
                     areaString : "White Desert string 1",
                     name: "White Desert",
-                    enemies: {
-                        easy: [
-                            "rabbidwolf"
-                        ],
-                        medium: [
-                            "tacobandit"
-                        ],
-                        hard: [
-                            "footballplayer"
-                        ],
-                        boss: [
-                            "vampire"
-                        ]
-                    },
-                    rpgsToComplete: 8,
+                    enemiesToDefeat: 8,
                     onCompleteAreasUnlocked: [
                     ],
                     shopItemsAvailable: [
@@ -5028,21 +4389,7 @@ module.exports = {
                 zonitemple: {
                     areaString : "Zoni Temple string 1",
                     name: "Zoni Temple",
-                    enemies: {
-                        easy: [
-                            "rabbidwolf"
-                        ],
-                        medium: [
-                            "tacobandit"
-                        ],
-                        hard: [
-                            "footballplayer"
-                        ],
-                        boss: [
-                            "vampire"
-                        ]
-                    },
-                    rpgsToComplete: 8,
+                    enemiesToDefeat: 8,
                     onCompleteAreasUnlocked: [
                     ],
                     shopItemsAvailable: [
@@ -5070,21 +4417,7 @@ module.exports = {
                 krellcanyon: {
                     areaString : "Krell Canyon string 1",
                     name: "Krell Canyon",
-                    enemies: {
-                        easy: [
-                            "rabbidwolf"
-                        ],
-                        medium: [
-                            "tacobandit"
-                        ],
-                        hard: [
-                            "footballplayer"
-                        ],
-                        boss: [
-                            "vampire"
-                        ]
-                    },
-                    rpgsToComplete: 8,
+                    enemiesToDefeat: 8,
                     onCompleteAreasUnlocked: [
 
                     ],
@@ -5113,21 +4446,7 @@ module.exports = {
                 lajoyacove: {
                     areaString : "La Jolla Cove string 1",
                     name: "La Jolla Cove",
-                    enemies: {
-                        easy: [
-                            "rabbidwolf"
-                        ],
-                        medium: [
-                            "tacobandit"
-                        ],
-                        hard: [
-                            "footballplayer"
-                        ],
-                        boss: [
-                            "vampire"
-                        ]
-                    },
-                    rpgsToComplete: 8,
+                    enemiesToDefeat: 8,
                     onCompleteAreasUnlocked: [
                     ],
                     shopItemsAvailable: [
@@ -5144,21 +4463,7 @@ module.exports = {
                 arcdetriomphe: {
                     areaString : "Arc de Triomphe string 1",
                     name: "Arc de Triomphe",
-                    enemies: {
-                        easy: [
-                            "rabbidwolf"
-                        ],
-                        medium: [
-                            "tacobandit"
-                        ],
-                        hard: [
-                            "footballplayer"
-                        ],
-                        boss: [
-                            "vampire"
-                        ]
-                    },
-                    rpgsToComplete: 8,
+                    enemiesToDefeat: 8,
                     onCompleteAreasUnlocked: [
                     ],
                     shopItemsAvailable: [
@@ -5175,21 +4480,7 @@ module.exports = {
                 caminodesantiago: {
                     areaString : "Camino de Santiago string 1",
                     name: "Camino de Santiago",
-                    enemies: {
-                        easy: [
-                            "rabbidwolf"
-                        ],
-                        medium: [
-                            "tacobandit"
-                        ],
-                        hard: [
-                            "footballplayer"
-                        ],
-                        boss: [
-                            "vampire"
-                        ]
-                    },
-                    rpgsToComplete: 8,
+                    enemiesToDefeat: 8,
                     onCompleteAreasUnlocked: [
                     ],
                     shopItemsAvailable: [
@@ -5206,21 +4497,7 @@ module.exports = {
                 jartar: {
                     areaString : "jartar string 1",
                     name: "Jartar",
-                    enemies: {
-                        easy: [
-                            "rabbidwolf"
-                        ],
-                        medium: [
-                            "tacobandit"
-                        ],
-                        hard: [
-                            "footballplayer"
-                        ],
-                        boss: [
-                            "vampire"
-                        ]
-                    },
-                    rpgsToComplete: 8,
+                    enemiesToDefeat: 8,
                     onCompleteAreasUnlocked: [
                     ],
                     shopItemsAvailable: [
@@ -5237,21 +4514,7 @@ module.exports = {
                 karnimatatemple: {
                     areaString : "Karni Mata Temple string 1",
                     name: "Karni Mata Temple",
-                    enemies: {
-                        easy: [
-                            "rabbidwolf"
-                        ],
-                        medium: [
-                            "tacobandit"
-                        ],
-                        hard: [
-                            "footballplayer"
-                        ],
-                        boss: [
-                            "vampire"
-                        ]
-                    },
-                    rpgsToComplete: 8,
+                    enemiesToDefeat: 8,
                     onCompleteAreasUnlocked: [
                     ],
                     shopItemsAvailable: [
@@ -5268,21 +4531,7 @@ module.exports = {
                 klandragon: {
                     areaString : "Klandagon string 1",
                     name: "Klandagon",
-                    enemies: {
-                        easy: [
-                            "rabbidwolf"
-                        ],
-                        medium: [
-                            "tacobandit"
-                        ],
-                        hard: [
-                            "footballplayer"
-                        ],
-                        boss: [
-                            "vampire"
-                        ]
-                    },
-                    rpgsToComplete: 8,
+                    enemiesToDefeat: 8,
                     onCompleteAreasUnlocked: [
                     ],
                     shopItemsAvailable: [
@@ -5299,21 +4548,7 @@ module.exports = {
                 riodelossietecolores: {
                     areaString : "Rio de Los Siete Colores string 1",
                     name: "Rio de Los Siete Colores",
-                    enemies: {
-                        easy: [
-                            "rabbidwolf"
-                        ],
-                        medium: [
-                            "tacobandit"
-                        ],
-                        hard: [
-                            "footballplayer"
-                        ],
-                        boss: [
-                            "vampire"
-                        ]
-                    },
-                    rpgsToComplete: 8,
+                    enemiesToDefeat: 8,
                     onCompleteAreasUnlocked: [
                     ],
                     shopItemsAvailable: [
@@ -5330,21 +4565,7 @@ module.exports = {
                 sapavalley: {
                     areaString : "Sa Pa Valley string 1",
                     name: "Sa Pa Valley",
-                    enemies: {
-                        easy: [
-                            "rabbidwolf"
-                        ],
-                        medium: [
-                            "tacobandit"
-                        ],
-                        hard: [
-                            "footballplayer"
-                        ],
-                        boss: [
-                            "vampire"
-                        ]
-                    },
-                    rpgsToComplete: 8,
+                    enemiesToDefeat: 8,
                     onCompleteAreasUnlocked: [
                     ],
                     shopItemsAvailable: [
@@ -5361,21 +4582,7 @@ module.exports = {
                 sedona: {
                     areaString : "Sedona string 1",
                     name: "Sedona",
-                    enemies: {
-                        easy: [
-                            "rabbidwolf"
-                        ],
-                        medium: [
-                            "tacobandit"
-                        ],
-                        hard: [
-                            "footballplayer"
-                        ],
-                        boss: [
-                            "vampire"
-                        ]
-                    },
-                    rpgsToComplete: 8,
+                    enemiesToDefeat: 8,
                     onCompleteAreasUnlocked: [
                     ],
                     shopItemsAvailable: [
@@ -5392,21 +4599,7 @@ module.exports = {
                 taxco: {
                     areaString : "Taxco string 1",
                     name: "Taxco",
-                    enemies: {
-                        easy: [
-                            "rabbidwolf"
-                        ],
-                        medium: [
-                            "tacobandit"
-                        ],
-                        hard: [
-                            "footballplayer"
-                        ],
-                        boss: [
-                            "vampire"
-                        ]
-                    },
-                    rpgsToComplete: 8,
+                    enemiesToDefeat: 8,
                     onCompleteAreasUnlocked: [
                     ],
                     shopItemsAvailable: [
@@ -5430,25 +4623,25 @@ module.exports = {
             zoneString : "Tadrartacacus 1",
             startingArea: "karnaca",
             name: "Tadrartacacus",
+            enemies: {
+                easy: [
+                    "rabbidwolf"
+                ],
+                medium: [
+                    "tacobandit"
+                ],
+                hard: [
+                    "footballplayer"
+                ],
+                boss: [
+                    "vampire"
+                ]
+            },
             areas: {
                 karnaca: {
                     areaString : "Karnaca string 1",
                     name: "Karnaca",
-                    enemies: {
-                        easy: [
-                            "rabbidwolf"
-                        ],
-                        medium: [
-                            "tacobandit"
-                        ],
-                        hard: [
-                            "footballplayer"
-                        ],
-                        boss: [
-                            "vampire"
-                        ]
-                    },
-                    rpgsToComplete: 8,
+                    enemiesToDefeat: 8,
                     onCompleteAreasUnlocked: [
                     ],
                     shopItemsAvailable: [
@@ -8033,7 +7226,7 @@ Hoover Dam
                 element: "normal"
             },
             warewolf: {
-                name: "Warewolf",
+                name: "Werewolf",
                 abilities: ["attack", "attack", "ferociousBite", "ferociousBite", "uppercut"],
                 buffs: [
                     {
@@ -12045,7 +11238,7 @@ Hoover Dam
                         },
                         // random magic dmg 
                         abilityOrder: [
-                            2, 0, [2,3], [0,1], [2,3], [0,1], [2,3], [0,1], [2,3]
+                            2, 0, [1,3], [0,1], [2,3], [0,1], [1,3], [0,1], [2,3]
                         ],
                         endOfTurnEvents : [
                             "focus",
