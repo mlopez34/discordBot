@@ -2860,6 +2860,7 @@ module.exports = {
                 "Reckless Barbarian",
             ],
             onTransferCastAbility: "puncture",
+            onTransferResetAbilityDamage: "eradicate",
             onTransferGiveBuffToTransferTarget: "energy",
             minusTurnsToExpirePerBuffCount: "strengthDarkness",
             onTransferCasterGainsBuff: "strengthDarkness",

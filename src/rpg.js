@@ -3934,6 +3934,21 @@ function effectsOnTurnEnd(event){
                                 endOfTurnString = endOfTurnString  + processAbility(abilityToProcess, event);    
                             }
                         }
+
+                        if (eotEvent.onTransferResetAbilityDamage){
+                            var abilityPicked = eotEvent.onTransferResetAbilityDamage
+                            // check for end of turn ability and reset it
+                            for (var e in event.enemies[enemyHoldingBuff].endOfTurnEvents){
+                                let enemyEOTEvent = event.enemies[enemyHoldingBuff].endOfTurnEvents[e]
+                                if (enemyEOTEvent.abilityId == abilityPicked){
+                                    if (enemyEOTEvent.areawidedmg){
+                                        enemyEOTEvent.areawidedmg.dmg = enemyEOTEvent.areawidedmg.damageToResetTo
+                                    }else{
+                                        enemyEOTEvent.dmg = enemyEOTEvent.damageToResetTo
+                                    }
+                                }
+                            }
+                        }
                         
                         // cast puncture on random player
                         if (eotEvent.onTransferCastAbility){
