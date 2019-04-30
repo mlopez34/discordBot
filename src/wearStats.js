@@ -1214,9 +1214,7 @@ module.exports.getUserWearingStats = function(message, discordUserId, userData, 
         if (err){
             console.log(err);
             cb(err)
-        }
-        else{
-            // console.log(inventoryResponse.data);
+        }else{
             // get all the data for each item
             var itemsInInventoryCountMap = {};
             for (var item in inventoryResponse.data){

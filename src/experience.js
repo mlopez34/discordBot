@@ -112,7 +112,7 @@ function gainExperienceHandler(message, discordUser, experienceNumber, userProfi
             // get the correct level to level up to
             if (levelUp){
                 // find the correct level for the user to be placed in
-                while(userExperience + experienceNumber > Levels[userLeveledUpTo+1]){
+                while(userExperience + experienceNumber > Levels[userLeveledUpTo + 1]){
                     tacoRewards = tacoRewards + levelRewards[userLeveledUpTo];
                     userLeveledUpTo++
                 }

@@ -3093,9 +3093,7 @@ module.exports = {
                 dmgOnDotApply: false,
                 ignoreBandaid: true,
                 ignoreUnique: true,
-                turnsToExpire: 30,
-                dmgOnDotExpire: true,
-                dmgOnExpire: 550,
+                turnsToExpire: 70
             }
         },
 
@@ -3417,32 +3415,35 @@ module.exports = {
     },
     rpgZones: {
         prarie: {
-            zoneString : "Prarie String 1",
+            zoneString : "The prarie was only the beginning, the dark woods, and mysterious underground tunnels contain uncharted life",
             startingArea: "meadows",
             name: "Prarie",
             enemies: {
                 easy: [
-                    "rabbidwolf",
-                    "hungryboar"
+                    "rabbidwolf", "rabbidwolf", "rabbidwolf", "rabbidwolf",
+                    "hungryboar", "hungryboar", "hungryboar", "hungryboar", 
+                    "hyena", 
                 ],
                 medium: [
-                    "tacobandit",
-                    "bear"
+                    "tacobandit", "tacobandit", "tacobandit", "tacobandit",
+                    "bear", "bear", "bear", "bear", 
+                    "fruitscounter"
                 ],
                 hard: [
                     "sniper",
-                    "warewolf"
+                    "footballplayer"
                 ],
                 boss: [
-                    "desperado"
+                    "desperado", "desperado", "desperado", "desperado",
+                    "sicario"
                 ]
             },
             areas: {
                 // 3
                 acheronriver: {
-                    areaString : "Acheron River string 1",
+                    areaString : "Hots are healing over time effects that take effect at the start of every turn after damage over time effects",
                     name: "Acheron River",
-                    enemiesToDefeat: 36,
+                    enemiesToDefeat: 30,
                     onCompleteAreasUnlocked: [
                         "charlesbridge",
                         "tauronplains"
@@ -3460,9 +3461,9 @@ module.exports = {
                 },
                 // 3
                 anorariver: {
-                    areaString : "Anora River string 1",
+                    areaString : "Enemies will always cast before a player does",
                     name: "Anora River",
-                    enemiesToDefeat: 39,
+                    enemiesToDefeat: 34,
                     onCompleteAreasUnlocked: [
                         "greenchestnut",
                         "tauronplains"
@@ -3480,7 +3481,7 @@ module.exports = {
                 },
                 // 3
                 aokigahara: {
-                    areaString : "Aokigahara Forest string 1",
+                    areaString : "Items with haste allow you to cast before the enemy does",
                     name: "Aokigahara Forest",
                     enemiesToDefeat: 37,
                     onCompleteAreasUnlocked: [
@@ -3500,9 +3501,9 @@ module.exports = {
                 },
                 // 3
                 bagan: {
-                    areaString : "Bagan string 1",
+                    areaString : "Hard level enemies will grow stronger over time",
                     name: "Bagan",
-                    enemiesToDefeat: 41,
+                    enemiesToDefeat: 29,
                     onCompleteAreasUnlocked: [
                         "carerralake",
                         "greenchestnut"
@@ -3520,9 +3521,9 @@ module.exports = {
                 },
                 // 2
                 bluegrotto: {
-                    areaString : "Blue Grotto string 1",
+                    areaString : "Dots are damage over time effects that take effect at the start of every turn",
                     name: "Blue Grotto",
-                    enemiesToDefeat: 33,
+                    enemiesToDefeat: 21,
                     onCompleteAreasUnlocked: [
                         "acheronriver",
                         "bagan"
@@ -3540,9 +3541,9 @@ module.exports = {
                 },
                 // 4
                 carerralake: {
-                    areaString : "Carerra Lake string 1",
+                    areaString : "This area seems to be rich in marine life",
                     name: "Carerra Lake",
-                    enemiesToDefeat: 42,
+                    enemiesToDefeat: 44,
                     onCompleteAreasUnlocked: [
                         "nishinomaru"
                     ],
@@ -3559,9 +3560,9 @@ module.exports = {
                 },
                 // 4
                 charlesbridge: {
-                    areaString : "Charles Bridge string 1",
+                    areaString : "Boss level enemies will focus on the person with the highest HP in your group",
                     name: "Charles Bridge",
-                    enemiesToDefeat: 77,
+                    enemiesToDefeat: 28,
                     onCompleteAreasUnlocked: [
                         "nishinomaru"
                     ],
@@ -3578,9 +3579,9 @@ module.exports = {
                 },
                 // 4
                 tauronplains: {
-                    areaString : "Tauron Plains string 1",
+                    areaString : "Armor and Spirit gains are very effective early on but their effects diminish as you gain more of them",
                     name: "Tauron Plains",
-                    enemiesToDefeat: 32,
+                    enemiesToDefeat: 27,
                     onCompleteAreasUnlocked: [
                         "nishinomaru"
                     ],
@@ -3597,9 +3598,9 @@ module.exports = {
                 },
                 // 4
                 greenchestnut: {
-                    areaString : "Green Chestnut string 1",
+                    areaString : "items can be combined to create an improved version of the item using the -combine command",
                     name: "Green Chestnut",
-                    enemiesToDefeat: 35,
+                    enemiesToDefeat: 32,
                     onCompleteAreasUnlocked: [
                         "igualdafalls"
                     ],
@@ -3615,9 +3616,31 @@ module.exports = {
                     
                 },
                 igualdafalls: {
-                    areaString : "Igualda Falls string 1",
+                    areaString : "Dead end",
                     name: "Igualda Falls",
-                    enemiesToDefeat: 39,
+                    enemiesToDefeat: 49,
+                    enemies: [
+                        {
+                            enemyId: "rabbidwolf",
+                            enemyDifficulty: "easy"
+                        },
+                        {
+                            enemyId: "hyena",
+                            enemyDifficulty: "easy"
+                        },
+                        {
+                            enemyId: "tacobandit",
+                            enemyDifficulty: "medium"
+                        },
+                        {
+                            enemyId: "bear",
+                            enemyDifficulty: "medium"
+                        },
+                        {
+                            enemyId: "sniper",
+                            enemyDifficulty: "hard"
+                        },
+                    ],
                     onCompleteAreasUnlocked: [
                     ],
                     shopItemsAvailable: [
@@ -3633,9 +3656,9 @@ module.exports = {
                 },
                 // 3
                 molonoth: {
-                    areaString : "Molonoth Fields string 1",
+                    areaString : "Bandaid ability effects removes statuses",
                     name: "Molonoth Fields",
-                    enemiesToDefeat: 32,
+                    enemiesToDefeat: 31,
                     onCompleteAreasUnlocked: [
                         "carerralake",
                         "tauronplains"
@@ -3652,9 +3675,9 @@ module.exports = {
                     
                 },
                 nishinomaru: {
-                    areaString : "Nishinomaru Garden string 1",
+                    areaString : "Ancient items have much higher stats than rare items",
                     name: "Nishinomaru Garden",
-                    enemiesToDefeat: 49,
+                    enemiesToDefeat: 32,
                     onCompleteAreasUnlocked: [
                     ],
                     shopItemsAvailable: [
@@ -3666,13 +3689,12 @@ module.exports = {
                     rpgDropsAvailable: [
 
                     ]
-                    
                 },
                 // 2
                 tallgrass: {
-                    areaString : "Tallgrass string 1",
+                    areaString : "Limit shield and sword display when you have limit offensive or defensive abilities (10 turn cooldown) ",
                     name: "Tallgrass",
-                    enemiesToDefeat: 38,
+                    enemiesToDefeat: 24,
                     onCompleteAreasUnlocked: [
                         "molonoth",
                         "anorariver",
@@ -3691,9 +3713,9 @@ module.exports = {
                 },
                 // 1
                 meadows: {
-                    areaString : "Meadows string 1",
+                    areaString : "Seek help while you still can",
                     name: "Meadows",
-                    enemiesToDefeat: 38,
+                    enemiesToDefeat: 8,
                     onCompleteAreasUnlocked: [
                         "tallgrass",
                         "bluegrotto"
@@ -3718,29 +3740,32 @@ module.exports = {
         woods: {
             // Archenland, Beartooth River, Black Forest, Bryce Canyon, Dark Hedges, Darkwater Cove, Denali Park, 
             // Forest of Stone, Inca Trail, Lake Vostok, Meero Ruins
-            zoneString : "Woods String 1",
+            zoneString : "Enemies are drawn to ....",
             startingArea: "archenland",
             name: "Woods",
             enemies: {
                 easy: [
-                    "hyena",
-                    "bull"
+                    "hyena", "hyena","hyena","hyena",
+                    "bull", "bull", "bull", "bull",
+                    "tacosmuggler"
                 ],
                 medium: [
-                    "tacothief",
-                    "troglodyte"
+                    "tacothief", "tacothief", "tacothief", "tacothief",
+                    "troglodyte", "troglodyte", "troglodyte",
+                    "nigerianprince"
                 ],
                 hard: [
-                    "warewolf",
+                    "warewolf", "warewolf", "warewolf", "warewolf",
                     "sniper"
                 ],
                 boss: [
-                    "desperado"
+                    "escapedrobot", "escapedrobot", "escapedrobot", "escapedrobot",
+                    "viking"
                 ]
             },
             areas: {
                 archenland: {
-                    areaString : "Archenland string 1",
+                    areaString : "Critical strike chance base percent is 3%",
                     name: "Archenland",
                     enemiesToDefeat: 29,
                     onCompleteAreasUnlocked: [
@@ -3760,7 +3785,7 @@ module.exports = {
                 },
                 // 2
                 beartoothriver: {
-                    areaString : "Beartooth River string 1",
+                    areaString : "Critical strikes deal 50% more damage",
                     name: "Beartooth River",
                     enemiesToDefeat: 31,
                     onCompleteAreasUnlocked: [
@@ -3779,7 +3804,7 @@ module.exports = {
                     
                 },
                 blackforest: {
-                    areaString : "Black Forest string 1",
+                    areaString : "Some enemies have on death effects",
                     name: "Black Forest",
                     enemiesToDefeat: 21,
                     onCompleteAreasUnlocked: [
@@ -3797,7 +3822,7 @@ module.exports = {
                 },
                 // 3
                 brycecanyon: {
-                    areaString : "Bryce Canyon string 1",
+                    areaString : "Empower gives exhaust and you cannot gain empower while you have exhaust",
                     name: "Bryce Canyon",
                     enemiesToDefeat: 39,
                     onCompleteAreasUnlocked: [
@@ -3816,7 +3841,7 @@ module.exports = {
                 },
                 // 3
                 darkhedges: {
-                    areaString : "Dark Hedges string 1",
+                    areaString : "Some enemies have abilities that only happen at the end of each turn",
                     name: "Dark Hedges",
                     enemiesToDefeat: 49,
                     onCompleteAreasUnlocked: [
@@ -3835,9 +3860,9 @@ module.exports = {
                 },
                 // 4
                 darkwatercove: {
-                    areaString : "Darkwater Cove string 1",
+                    areaString : "Artifact items are the rarest items you can find",
                     name: "Darkwater Cove",
-                    enemiesToDefeat: 49,
+                    enemiesToDefeat: 42,
                     onCompleteAreasUnlocked: [
                         "blackforest"
                     ],
@@ -3854,9 +3879,9 @@ module.exports = {
                 },
                 // 5
                 denalipark: {
-                    areaString : "Denali Park string 1",
+                    areaString : "Artifact items can only be worn on slot 4",
                     name: "Denali Park",
-                    enemiesToDefeat: 9,
+                    enemiesToDefeat: 41,
                     onCompleteAreasUnlocked: [
                         "blackforest",
                         "darkwatercove"
@@ -3874,9 +3899,9 @@ module.exports = {
                 },
                 // 5
                 forestofstone: {
-                    areaString : "Forest of Stone string 1",
+                    areaString : "Challenges are available and tuned for level 20 or higher",
                     name: "Forest of Stone",
-                    enemiesToDefeat: 9,
+                    enemiesToDefeat: 53,
                     onCompleteAreasUnlocked: [
                         "denalipark",
                         "blackforest"
@@ -3894,9 +3919,9 @@ module.exports = {
                 },
                 // 3
                 incatrail: {
-                    areaString : "Inca Trail string 1",
+                    areaString : "Artifact items can be combined but only if you have the full set of items required",
                     name: "Inca Trail",
-                    enemiesToDefeat: 9,
+                    enemiesToDefeat: 27,
                     onCompleteAreasUnlocked: [
                         "denalipark",
                         "forestofstone"
@@ -3914,9 +3939,9 @@ module.exports = {
                 },
                 // 4
                 lakevostok: {
-                    areaString : "Lake Vostok string 1",
+                    areaString : "The black forest does not take kindly to strangers",
                     name: "Lake Vostok",
-                    enemiesToDefeat: 9,
+                    enemiesToDefeat: 31,
                     onCompleteAreasUnlocked: [
                         "blackforest"
                     ],
@@ -3933,9 +3958,9 @@ module.exports = {
                 },
                 // 2
                 meeroruins: {
-                    areaString : "Meero Ruins string 1",
+                    areaString : "Ruins usually have something hidden within them",
                     name: "Meero Ruins",
-                    enemiesToDefeat: 9,
+                    enemiesToDefeat: 49,
                     onCompleteAreasUnlocked: [
                         "darkhedges",
                         "brycecanyon"
@@ -3959,14 +3984,38 @@ module.exports = {
             ]
         },
         undergroundtunnels: {
-            zoneString : "Underground Tunnels String 1",
+            zoneString : "The underground tunnels have led you into an uncovered secret",
             startingArea: "klencory",
             name: "Underground Tunnels",
+            enemies: {
+                easy: [
+                    "rabbidwolf", "rabbidwolf","rabbidwolf", "rabbidwolf",
+                    "hungryboar", "hungryboar", "hungryboar", "hungryboar",
+                    "bull", "bull",
+                    "cheetah",
+                    "coyote", "coyote", "coyote", "coyote"
+                ],
+                medium: [
+                    "tacobandit", "tacobandit", "tacobandit", "tacobandit",
+                    "bear", "bear", "bear", "bear", "bear", "bear", "bear",
+                    "troglodyte", "troglodyte", "troglodyte", 
+                    "disassembler"
+                ],
+                hard: [
+                    "sniper", "sniper", "sniper", "sniper",
+                    "warewolf", "warewolf", "warewolf", "warewolf", "warewolf", "warewolf",
+                    "silverback"
+                ],
+                boss: [
+                    "desperado", "desperado", "desperado", "desperado", "desperado",
+                    "vampire",
+                ]
+            },
             areas: {
                 angkorwat: {
-                    areaString : "Angkor Wat string 1",
+                    areaString : "Some items only drop from certain enemies",
                     name: "Angkor Wat",
-                    enemiesToDefeat: 9,
+                    enemiesToDefeat: 31,
                     onCompleteAreasUnlocked: [
                         "glowwormcave"
                     ],
@@ -3982,9 +4031,9 @@ module.exports = {
                     
                 },
                 bigsur: {
-                    areaString : "Big Sur string 1",
+                    areaString : "Some items can are only sold in certain areas",
                     name: "Big Sur",
-                    enemiesToDefeat: 9,
+                    enemiesToDefeat: 34,
                     onCompleteAreasUnlocked: [
                         "angkorwat"
                     ],
@@ -4000,9 +4049,9 @@ module.exports = {
                     
                 },
                 bramstomb: {
-                    areaString : "Bram's tomb string 1",
+                    areaString : "Some items can only be found in certain areas",
                     name: "Bram's tomb",
-                    enemiesToDefeat: 9,
+                    enemiesToDefeat: 39,
                     onCompleteAreasUnlocked: [
                         "angkorwat"
                     ],
@@ -4018,9 +4067,9 @@ module.exports = {
                     
                 },
                 greyheath: {
-                    areaString : "Gray Heath string 1",
+                    areaString : " ",
                     name: "Gray Heath",
-                    enemiesToDefeat: 9,
+                    enemiesToDefeat: 49,
                     onCompleteAreasUnlocked: [
                         "angkorwat"
                     ],
@@ -4036,9 +4085,9 @@ module.exports = {
                     
                 },
                 klencory: {
-                    areaString : "Klencory string 1",
+                    areaString : " ",
                     name: "Klencory",
-                    enemiesToDefeat: 9,
+                    enemiesToDefeat: 22,
                     onCompleteAreasUnlocked: [
                         "ladakh",
                         "meenakshitemple"
@@ -4055,9 +4104,9 @@ module.exports = {
                     
                 },
                 ladakh: {
-                    areaString : "Ladakh string 1",
+                    areaString : " ",
                     name: "Ladakh",
-                    enemiesToDefeat: 9,
+                    enemiesToDefeat: 27,
                     onCompleteAreasUnlocked: [
                         "greyheath",
                         "bramstomb",
@@ -4075,9 +4124,9 @@ module.exports = {
                     
                 },
                 meenakshitemple: {
-                    areaString : "Meenakshi Temple string 1",
+                    areaString : " ",
                     name: "Meenakshi Temple",
-                    enemiesToDefeat: 9,
+                    enemiesToDefeat: 28,
                     onCompleteAreasUnlocked: [
                         "morrowcaverns",
                         "tikal",
@@ -4095,9 +4144,9 @@ module.exports = {
                     
                 },
                 morrowcaverns: {
-                    areaString : "Morrow Caverns string 1",
+                    areaString : " ",
                     name: "Morrow Caverns",
-                    enemiesToDefeat: 9,
+                    enemiesToDefeat: 44,
                     onCompleteAreasUnlocked: [
                         "minasmorgul",
                         "dunwall",
@@ -4115,9 +4164,9 @@ module.exports = {
                     
                 },
                 glowwormcave: {
-                    areaString : "Glowworm Cave string 1",
+                    areaString : " ",
                     name: "Glowworm Cave",
-                    enemiesToDefeat: 9,
+                    enemiesToDefeat: 32,
                     onCompleteAreasUnlocked: [
 
                     ],
@@ -4133,9 +4182,9 @@ module.exports = {
                     
                 },
                 tikal: {
-                    areaString : "Tikal string 1",
+                    areaString : " ",
                     name: "Tikal",
-                    enemiesToDefeat: 9,
+                    enemiesToDefeat: 37,
                     onCompleteAreasUnlocked: [
                         "minasmorgul",
                         "dunwall"
@@ -4152,9 +4201,9 @@ module.exports = {
                     
                 },
                 minasmorgul: {
-                    areaString : "Minas Morgul string 1",
+                    areaString : " ",
                     name: "Minas Morgul",
-                    enemiesToDefeat: 9,
+                    enemiesToDefeat: 36,
                     onCompleteAreasUnlocked: [
                         "glowwormcave"
                     ],
@@ -4170,9 +4219,9 @@ module.exports = {
                     
                 },
                 dunwall: {
-                    areaString : "Dunwall string 1",
+                    areaString : " ",
                     name: "Dunwall",
-                    enemiesToDefeat: 9,
+                    enemiesToDefeat: 34,
                     onCompleteAreasUnlocked: [
                         "glowwormcave"
                     ],
@@ -4199,11 +4248,35 @@ module.exports = {
             zoneString : "Grand Canyon 1",
             startingArea: "sanyoucave",
             name: "Grand Canyon",
+            enemies: {
+                easy: [
+                    "rabbidwolf", "rabbidwolf", "rabbidwolf", "rabbidwolf", "rabbidwolf",
+                    "hungryboar", "hungryboar", "hungryboar", "hungryboar",
+                    "hyena", "hyena", "hyena", "hyena", 
+                    "angrydwarf"
+                ],
+                medium: [
+                    "tacobandit", "tacobandit", "tacobandit", "tacobandit",
+                    "bear", "bear", "bear", "bear",
+                    "fruitscounter", "fruitscounter",
+                    "dullard"
+                ],
+                hard: [
+                    "sniper", "sniper", "sniper", "sniper", "sniper",
+                    "warewolf", "warewolf", "warewolf", "warewolf", 
+                    "gascollector", "gascollector"
+                ],
+                boss: [
+                    "desperado", "desperado", "desperado", "desperado", 
+                    "escapedrobot", "escapedrobot",
+                    "vampire"
+                ]
+            },
             areas: {
                 sanyoucave: {
-                    areaString : "Sanyou Cave string 1",
+                    areaString : " ",
                     name: "Sanyou Cave",
-                    enemiesToDefeat: 8,
+                    enemiesToDefeat: 28,
                     onCompleteAreasUnlocked: [
                     ],
                     shopItemsAvailable: [
@@ -4218,9 +4291,9 @@ module.exports = {
                     
                 },
                 antelopecanyon: {
-                    areaString : "Antelope Canyon string 1",
+                    areaString : " ",
                     name: "Antelope Canyon",
-                    enemiesToDefeat: 8,
+                    enemiesToDefeat: 38,
                     onCompleteAreasUnlocked: [
                     ],
                     shopItemsAvailable: [
@@ -4235,9 +4308,9 @@ module.exports = {
                     
                 },
                 arngormountains: {
-                    areaString : "Arngor Mountain string 1",
+                    areaString : " ",
                     name: "Arngor Mountain",
-                    enemiesToDefeat: 8,
+                    enemiesToDefeat: 41,
                     onCompleteAreasUnlocked: [
                     ],
                     shopItemsAvailable: [
@@ -4252,9 +4325,9 @@ module.exports = {
                     
                 },
                 ayersrock: {
-                    areaString : "Ayers Rock string 1",
+                    areaString : " ",
                     name: "Ayers Rock",
-                    enemiesToDefeat: 8,
+                    enemiesToDefeat: 35,
                     onCompleteAreasUnlocked: [
                     ],
                     shopItemsAvailable: [
@@ -4269,9 +4342,9 @@ module.exports = {
                     
                 },
                 eddariver: {
-                    areaString : "Edda River string 1",
+                    areaString : " ",
                     name: "Edda River",
-                    enemiesToDefeat: 8,
+                    enemiesToDefeat: 32,
                     onCompleteAreasUnlocked: [
                     ],
                     shopItemsAvailable: [
@@ -4286,9 +4359,9 @@ module.exports = {
                     
                 },
                 gimlickvalley: {
-                    areaString : "Gimlick Valley string 1",
+                    areaString : " ",
                     name: "Gimlick Valley",
-                    enemiesToDefeat: 8,
+                    enemiesToDefeat: 30,
                     onCompleteAreasUnlocked: [
                     ],
                     shopItemsAvailable: [
@@ -4303,9 +4376,9 @@ module.exports = {
                     
                 },
                 gizaplateau: {
-                    areaString : "Giza Plateau string 1",
+                    areaString : " ",
                     name: "Giza Plateau",
-                    enemiesToDefeat: 8,
+                    enemiesToDefeat: 39,
                     onCompleteAreasUnlocked: [
                     ],
                     shopItemsAvailable: [
@@ -4320,9 +4393,9 @@ module.exports = {
                     
                 },
                 martokvalley: {
-                    areaString : "Martok Valley string 1",
+                    areaString : " ",
                     name: "Martok Valley",
-                    enemiesToDefeat: 8,
+                    enemiesToDefeat: 41,
                     onCompleteAreasUnlocked: [
                     ],
                     shopItemsAvailable: [
@@ -4337,9 +4410,9 @@ module.exports = {
                     
                 },
                 palawan: {
-                    areaString : "Palawan string 1",
+                    areaString : " ",
                     name: "Palawan",
-                    enemiesToDefeat: 8,
+                    enemiesToDefeat: 42,
                     onCompleteAreasUnlocked: [
                     ],
                     shopItemsAvailable: [
@@ -4354,9 +4427,9 @@ module.exports = {
                     
                 },
                 reach: {
-                    areaString : "Reach string 1",
+                    areaString : " ",
                     name: "Reach",
-                    enemiesToDefeat: 8,
+                    enemiesToDefeat: 49,
                     onCompleteAreasUnlocked: [
                     ],
                     shopItemsAvailable: [
@@ -4371,9 +4444,9 @@ module.exports = {
                     
                 },
                 whitedesert: {
-                    areaString : "White Desert string 1",
+                    areaString : " ",
                     name: "White Desert",
-                    enemiesToDefeat: 8,
+                    enemiesToDefeat: 47,
                     onCompleteAreasUnlocked: [
                     ],
                     shopItemsAvailable: [
@@ -4388,9 +4461,9 @@ module.exports = {
                     
                 },
                 zonitemple: {
-                    areaString : "Zoni Temple string 1",
+                    areaString : " ",
                     name: "Zoni Temple",
-                    enemiesToDefeat: 8,
+                    enemiesToDefeat: 45,
                     onCompleteAreasUnlocked: [
                     ],
                     shopItemsAvailable: [
@@ -4414,11 +4487,33 @@ module.exports = {
             zoneString : "Crystal Peak 1",
             startingArea: "krellcanyon",
             name: "Crystal Peak",
+            enemies: {
+                easy: [
+                    "rabbidwolf", "rabbidwolf", 
+                    "extremist", "extremist", "extremist", 
+                    "thug", "thug", "thug", "thug", "thug", "thug", 
+                    "hyena", "hyena", "hyena"
+                ],
+                medium: [
+                    "tacobandit", "tacobandit", "tacobandit", "tacobandit",
+                    "bear", "bear", "bear", "bear", 
+                    "dolt", 
+                ],
+                hard: [
+                    "sniper","sniper","sniper",
+                    "warewolf",
+                    "funnypolitician"
+                ],
+                boss: [
+                    "desperado", "desperado", 
+                    "escapedrobot"
+                ]
+            },
             areas: {
                 krellcanyon: {
-                    areaString : "Krell Canyon string 1",
+                    areaString : " ",
                     name: "Krell Canyon",
-                    enemiesToDefeat: 8,
+                    enemiesToDefeat: 48,
                     onCompleteAreasUnlocked: [
 
                     ],
@@ -4443,11 +4538,30 @@ module.exports = {
             zoneString : "Matamoros 1",
             startingArea: "lajoyacove",
             name: "Matamoros",
+            enemies: {
+                easy: [
+                    "hungryboar", "hungryboar", "hungryboar", "hungryboar", 
+                    "angrydwarf", "angrydwarf", "angrydwarf", "angrydwarf",
+                    "tacosmuggler"
+                ],
+                medium: [
+                    "tacobandit", "tacobandit", "tacobandit",
+                    "bear", "bear", "bear", "bear", "bear", 
+                    "ignoramus"
+                ],
+                hard: [
+                    "sniper",
+                    "warewolf"
+                ],
+                boss: [
+                    "viking"
+                ]
+            },
             areas: {
                 lajoyacove: {
-                    areaString : "La Jolla Cove string 1",
+                    areaString : " ",
                     name: "La Jolla Cove",
-                    enemiesToDefeat: 8,
+                    enemiesToDefeat: 21,
                     onCompleteAreasUnlocked: [
                     ],
                     shopItemsAvailable: [
@@ -4462,9 +4576,9 @@ module.exports = {
                     
                 },
                 arcdetriomphe: {
-                    areaString : "Arc de Triomphe string 1",
+                    areaString : " ",
                     name: "Arc de Triomphe",
-                    enemiesToDefeat: 8,
+                    enemiesToDefeat: 52,
                     onCompleteAreasUnlocked: [
                     ],
                     shopItemsAvailable: [
@@ -4479,9 +4593,9 @@ module.exports = {
                     boss: "bossId"
                 },
                 caminodesantiago: {
-                    areaString : "Camino de Santiago string 1",
+                    areaString : " ",
                     name: "Camino de Santiago",
-                    enemiesToDefeat: 8,
+                    enemiesToDefeat: 54,
                     onCompleteAreasUnlocked: [
                     ],
                     shopItemsAvailable: [
@@ -4496,9 +4610,9 @@ module.exports = {
                     boss: "bossId"
                 },
                 jartar: {
-                    areaString : "jartar string 1",
+                    areaString : " ",
                     name: "Jartar",
-                    enemiesToDefeat: 8,
+                    enemiesToDefeat: 30,
                     onCompleteAreasUnlocked: [
                     ],
                     shopItemsAvailable: [
@@ -4513,9 +4627,9 @@ module.exports = {
                     boss: "bossId"
                 },
                 karnimatatemple: {
-                    areaString : "Karni Mata Temple string 1",
+                    areaString : " ",
                     name: "Karni Mata Temple",
-                    enemiesToDefeat: 8,
+                    enemiesToDefeat: 49,
                     onCompleteAreasUnlocked: [
                     ],
                     shopItemsAvailable: [
@@ -4530,9 +4644,9 @@ module.exports = {
                     boss: "bossId"
                 },
                 klandragon: {
-                    areaString : "Klandagon string 1",
+                    areaString : " ",
                     name: "Klandagon",
-                    enemiesToDefeat: 8,
+                    enemiesToDefeat: 41,
                     onCompleteAreasUnlocked: [
                     ],
                     shopItemsAvailable: [
@@ -4547,9 +4661,9 @@ module.exports = {
                     boss: "bossId"
                 },
                 riodelossietecolores: {
-                    areaString : "Rio de Los Siete Colores string 1",
+                    areaString : " ",
                     name: "Rio de Los Siete Colores",
-                    enemiesToDefeat: 8,
+                    enemiesToDefeat: 42,
                     onCompleteAreasUnlocked: [
                     ],
                     shopItemsAvailable: [
@@ -4564,9 +4678,9 @@ module.exports = {
                     boss: "bossId"
                 },
                 sapavalley: {
-                    areaString : "Sa Pa Valley string 1",
+                    areaString : " ",
                     name: "Sa Pa Valley",
-                    enemiesToDefeat: 8,
+                    enemiesToDefeat: 38,
                     onCompleteAreasUnlocked: [
                     ],
                     shopItemsAvailable: [
@@ -4581,9 +4695,9 @@ module.exports = {
                     boss: "bossId"
                 },
                 sedona: {
-                    areaString : "Sedona string 1",
+                    areaString : " ",
                     name: "Sedona",
-                    enemiesToDefeat: 8,
+                    enemiesToDefeat: 39,
                     onCompleteAreasUnlocked: [
                     ],
                     shopItemsAvailable: [
@@ -4598,9 +4712,9 @@ module.exports = {
                     boss: "bossId"
                 },
                 taxco: {
-                    areaString : "Taxco string 1",
+                    areaString : " ",
                     name: "Taxco",
-                    enemiesToDefeat: 8,
+                    enemiesToDefeat: 20,
                     onCompleteAreasUnlocked: [
                     ],
                     shopItemsAvailable: [
@@ -4626,23 +4740,29 @@ module.exports = {
             name: "Tadrartacacus",
             enemies: {
                 easy: [
-                    "rabbidwolf"
+                    "bull", "bull", "bull", "bull", 
+                    "addict", "addict", "addict", 
+                    "hungryboar"
                 ],
                 medium: [
-                    "tacobandit"
+                    "tacobandit", "tacobandit", "tacobandit", "tacobandit",
+                    "ignoramus",
+                    "auctionsniper",
                 ],
                 hard: [
-                    "footballplayer"
+                    "footballplayer", "footballplayer", "footballplayer",
+                    "capo"
                 ],
                 boss: [
-                    "vampire"
+                    "vampire",
+                    "desperado"
                 ]
             },
             areas: {
                 karnaca: {
-                    areaString : "Karnaca string 1",
+                    areaString : " ",
                     name: "Karnaca",
-                    enemiesToDefeat: 8,
+                    enemiesToDefeat: 68,
                     onCompleteAreasUnlocked: [
                     ],
                     shopItemsAvailable: [
@@ -7013,27 +7133,6 @@ Hoover Dam
                 difficulty: "medium",
                 element: "normal"
             },
-            silverback: {
-                name: "Silverback",
-                abilities: ["attack", "attack", "uppercut", "uppercut", "weaken"],
-                buffs: [],
-                keystoneStats: {
-                    hp: [1200, 3500, 6200, 10000, 15000 ],
-                    attackDmg: [300, 500, 900, 1500, 2300],
-                    magicDmg: [300, 500, 900, 1500, 2300],
-                    abilities: []
-                },
-                hpPerPartyMember: 190,
-                adPerPartyMember: 14,
-                mdPerPartyMember: 14,
-                hp: 640,
-                attackDmg: 90,
-                magicDmg: 90,
-                armor: 350,
-                spirit: 550,
-                difficulty: "medium",
-                element: "normal"
-            },
             philistine: {
                 name: "Philistine",
                 abilities: ["attack", "attack", "uppercut", "uppercut", "weaken"],
@@ -7162,6 +7261,27 @@ Hoover Dam
             },
         },
         hard: {
+            silverback: {
+                name: "Silverback",
+                abilities: ["attack", "attack", "uppercut", "uppercut", "weaken"],
+                buffs: [],
+                keystoneStats: {
+                    hp: [1200, 3500, 6200, 10000, 15000 ],
+                    attackDmg: [300, 500, 900, 1500, 2300],
+                    magicDmg: [300, 500, 900, 1500, 2300],
+                    abilities: []
+                },
+                hpPerPartyMember: 190,
+                adPerPartyMember: 14,
+                mdPerPartyMember: 14,
+                hp: 640,
+                attackDmg: 90,
+                magicDmg: 90,
+                armor: 350,
+                spirit: 550,
+                difficulty: "hard",
+                element: "normal"
+            },
             footballplayer: {
                 name: "Football Player",
                 abilities: ["attack", "attack", "slash", "slash", "rockthrow", "empower"],
