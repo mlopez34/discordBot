@@ -823,6 +823,11 @@ module.exports.rpgReady = function(message, itemsAvailable, amuletItemsById, buf
                                             // var experienceFromItems = wearRes.rpgSuccessExtraExperienceGain ? wearRes.rpgSuccessExtraExperienceGain : 0;
                                             var experienceFromItems = wearStats.calculateExtraExperienceGained(wearRes, "rpg", null)
                                             var extraTacosFromItems = wearStats.calculateExtraTacos(wearRes, "rpg"); // 0 or extra
+                                            if (!challengePicked){
+                                                // normal rpg reduced exp and extra tacos
+                                                experienceFromItems = Math.floor( experienceFromItems / 20)
+                                                extraTacosFromItems = Math.floor( extraTacosFromItems / 20)
+                                            }
                                             if (usersInRPGEvents["rpg-" + discordUserId]){
                                                 usersInRPGEvents["rpg-" + discordUserId].memberStats = {
                                                     level: userStats.level,
