@@ -1879,13 +1879,18 @@ module.exports.travelToNewArea = function(message, placeName){
                     if (rpgZones[rpgZoneToTravel]){
                         var area = placeName
                         // if an area then give them a cooldown and change their area there
-                        profileDB.updateUserRpgArea(discordUserId, area, true, function(error, res){
-                            if (error){
-                                console.log(error)
-                            }else{
-                                message.channel.send("You are now in `" + area+ "` !")
-                            }
-                        })
+                        let areasAvailable = getAreasInZone(rpgZoneToTravel, userData.data)
+                        if (areasAvailable[area]){
+                            profileDB.updateUserRpgArea(discordUserId, area, true, function(error, res){
+                                if (error){
+                                    console.log(error)
+                                }else{
+                                    message.channel.send("You are now in `" + area+ "` !")
+                                }
+                            })
+                        }else{
+                            message.channel.send("not an area you can travel to yet")
+                        }
                     }else{
                         message.channel.send("that place is not on your map")
                     }
