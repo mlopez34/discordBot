@@ -2566,7 +2566,7 @@ module.exports = {
 
         pillarAOE: {
             belongsToMember: true,
-            hppercentage: 0.50,
+            hppercentage: 0.25,
             dmgaura: true,
             name: "Pillar Radiation",
             abilityId: "pillarAOE",
@@ -3769,6 +3769,13 @@ module.exports = {
             zoneString : "Enemies are drawn to ....",
             startingArea: "archenland",
             name: "Woods",
+            enemyStatBuffs: {
+                hpPlusPercentage: 1.3,
+                adPlusPercentage: 1.4,
+                mdPlusPercentage: 1.4,
+                armorPlusPercentage: 1.2,
+                spiritPlusPercentage: 1.2,
+            },
             enemies: {
                 easy: [
                     "hyena", "hyena","hyena","hyena",
@@ -4013,6 +4020,13 @@ module.exports = {
             zoneString : "The underground tunnels have led you into an uncovered secret",
             startingArea: "klencory",
             name: "Underground Tunnels",
+            enemyStatBuffs: {
+                hpPlusPercentage: 1.3,
+                adPlusPercentage: 1.4,
+                mdPlusPercentage: 1.4,
+                armorPlusPercentage: 1.2,
+                spiritPlusPercentage: 1.2,
+            },
             enemies: {
                 easy: [
                     "rabbidwolf", "rabbidwolf","rabbidwolf", "rabbidwolf",
@@ -4274,6 +4288,13 @@ module.exports = {
             zoneString : "Grand Canyon 1",
             startingArea: "sanyoucave",
             name: "Grand Canyon",
+            enemyStatBuffs: {
+                hpPlusPercentage: 1.7,
+                adPlusPercentage: 2,
+                mdPlusPercentage: 2,
+                armorPlusPercentage: 1.4,
+                spiritPlusPercentage: 1.4,
+            },
             enemies: {
                 easy: [
                     "rabbidwolf", "rabbidwolf", "rabbidwolf", "rabbidwolf", "rabbidwolf",
@@ -4513,6 +4534,13 @@ module.exports = {
             zoneString : "Crystal Peak 1",
             startingArea: "krellcanyon",
             name: "Crystal Peak",
+            enemyStatBuffs: {
+                hpPlusPercentage: 1.7,
+                adPlusPercentage: 2,
+                mdPlusPercentage: 2,
+                armorPlusPercentage: 1.4,
+                spiritPlusPercentage: 1.4,
+            },
             enemies: {
                 easy: [
                     "rabbidwolf", "rabbidwolf", 
@@ -4564,6 +4592,13 @@ module.exports = {
             zoneString : "Matamoros 1",
             startingArea: "lajoyacove",
             name: "Matamoros",
+            enemyStatBuffs: {
+                hpPlusPercentage: 1.7,
+                adPlusPercentage: 2,
+                mdPlusPercentage: 2,
+                armorPlusPercentage: 1.4,
+                spiritPlusPercentage: 1.4,
+            },
             enemies: {
                 easy: [
                     "hungryboar", "hungryboar", "hungryboar", "hungryboar", 
@@ -4764,6 +4799,13 @@ module.exports = {
             zoneString : "Tadrartacacus 1",
             startingArea: "karnaca",
             name: "Tadrartacacus",
+            enemyStatBuffs: {
+                hpPlusPercentage: 2,
+                adPlusPercentage: 3,
+                mdPlusPercentage: 3,
+                armorPlusPercentage: 1.8,
+                spiritPlusPercentage: 1.8,
+            },
             enemies: {
                 easy: [
                     "bull", "bull", "bull", "bull", 
