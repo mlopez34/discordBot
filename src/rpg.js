@@ -1262,7 +1262,7 @@ module.exports.rpgReady = function(message, itemsAvailable, amuletItemsById, buf
                                                                         if (enemyId && enemyDifficulty && enemiesToEncounter[enemyDifficulty]){
                                                                             enemyFound = JSON.parse(JSON.stringify( enemiesToEncounter[enemyDifficulty][enemyId] ));
                                                                         }
-                                                                        let enemyAreaStatBuffs = rpgZones[zoneUserIsIn].enemyStatBuffs
+                                                                        let enemyAreaStatBuffs = rpgZones[zoneUserIsIn].enemyStatBuffs || {}
                                                                         let hpAreaBuff = enemyAreaStatBuffs.hpPlusPercentage || 1
                                                                         let adAreaBuff = enemyAreaStatBuffs.adPlusPercentage || 1
                                                                         let mdAreaBuff = enemyAreaStatBuffs.mdPlusPercentage || 1
