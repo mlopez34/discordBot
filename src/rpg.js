@@ -1760,7 +1760,8 @@ function mapEmbedBuilder(message, listOfAreasInZone, zonesAvailableForUserMap, c
         if (listOfAreasInZone[a].completed){
             areasInZoneString = areasInZoneString + "**" + listOfAreasInZone[a].name + "**\n"
         }else{
-            areasInZoneString = areasInZoneString + listOfAreasInZone[a].name + "\n"
+            // display the completion
+            areasInZoneString = areasInZoneString + listOfAreasInZone[a].name + " " + listOfAreasInZone[a].progressionString +  "\n"
         }
     }
 
@@ -1786,7 +1787,7 @@ function getAreasInZone(zoneid, userData){
             var areaId = currentAreasCheck[key]
             var area = rpgZones[zoneid].areas[areaId]
             // check that area was already cleared
-            if (isAreaCompleted(area, userData[areaId])  ){
+            if (isAreaCompleted(area, userData[areaId], areaId)  ){
                 if (!areasInZone[ currentAreasCheck[key] ]){
                     areasInZone[currentAreasCheck[key]] = {
                         name: currentAreasCheck[key], 
@@ -1799,9 +1800,11 @@ function getAreasInZone(zoneid, userData){
                     }
                 }
             }else{
+                let progression = areaProgressionString(area, userData[areaId])
                 areasInZone[currentAreasCheck[key]] = {
                     name: currentAreasCheck[key],
-                    completed: false
+                    completed: false,
+                    progressionString: progression
                 }
             }
         }
@@ -1817,6 +1820,10 @@ function getAreasInZone(zoneid, userData){
 
 function isAreaCompleted(area, userAreaCompletion){
     return userAreaCompletion >= area.enemiesToDefeat
+}
+
+function areaProgressionString(area, userAreaCompletion){
+    return ( (userAreaCompletion || 0 ) + " / " + area.enemiesToDefeat )
 }
 
 function getZonesAvailableForUser(userData){
@@ -2343,7 +2350,7 @@ function eventEndedEmbedBuilder(message, event, partySuccess){
             var memberInParty = event.membersInParty["rpg-" + memberInRpgEvent.id];
             // get members current challenge
             var challengenumber = usersInRPGEvents["rpg-" + memberInParty.id].memberStats.currentchallenge;
-            if ( (challengenumber + 1) == event.challenge.challenge ){
+            if ( (challengenumber + 1) == event.challenge.challenge && keystonenumber == 0 ){
                 profileDB.updateCurrentChallenge( memberInParty.id, challengenumber + 1, function(err, res){
 
                 })
@@ -2356,7 +2363,9 @@ function eventEndedEmbedBuilder(message, event, partySuccess){
                 profileDB.updateCurrentChallengeKeystone( memberInParty.id, keystonenumber + 1, challengeId, function(err, res){
                     
                 })
-                usersFirstComplete.push(memberInParty.id)
+                if ( keystonenumber > 0 (challengenumber + 1) >= event.challenge.challenge ){
+                    usersFirstComplete.push(memberInParty.id)
+                }
             }
             
         }
@@ -6694,10 +6703,10 @@ function processAbility(abilityObject, event){
     if (rpgAbility && rpgAbility.heal && stillAlive && validAbility){
         // this is a healing ability, heal the target
         var hpToHeal = calculateHealingDone(event, abilityCaster, abilityObject.target, rpgAbility);
-        
+        let validHeal = true
         if (rpgAbility.areawide){
             
-            if (abilityCaster > 1000){
+            if (validHeal && abilityCaster > 1000){
                 // if caster is party of membersInParty then target = all the membersInParty
                 var caster = event.membersInParty["rpg-"+abilityCaster] ? event.membersInParty["rpg-"+abilityCaster].name : undefined;
                 abilityToString = abilityToString + caster +  " healed the group for " + hpToHeal + " with " + rpgAbility.name + "\n";                
@@ -6714,7 +6723,7 @@ function processAbility(abilityObject, event){
                     }
                 }
             }
-            else{
+            else if (validHeal){
                 // if caster is in enemies then target = all the members of party
                 var caster = event.enemies[abilityCaster] ? event.enemies[abilityCaster].name : undefined;
                 abilityToString = abilityToString + caster +  " healed the group for " + hpToHeal + " with " + rpgAbility.name + "\n";                
@@ -6731,10 +6740,15 @@ function processAbility(abilityObject, event){
             }
         }else{
             var targetToHeal = abilityObject.target;
-            if (rpgAbility.healMaxHpPercentage){
-                hpToHeal = Math.floor(event.enemies[targetToHeal].maxhp * rpgAbility.healMaxHpPercentage)
+            if (validHeal && rpgAbility.healMaxHpPercentage){
+                if (event.enemies[targetToHeal]){
+                    hpToHeal = Math.floor(event.enemies[targetToHeal].maxhp * rpgAbility.healMaxHpPercentage)
+                }else{
+                    abilityToString = abilityToString + "could not heal anyone\n"
+                    validHeal = false
+                }
             }
-            if (event.membersInParty[targetToHeal]){
+            if (validHeal && event.membersInParty[targetToHeal]){
                 var targetToHealName = event.membersInParty[targetToHeal].name;
                 if (event.membersInParty[targetToHeal].statuses.indexOf("dead") == -1){
                     // target is not dead
@@ -6748,7 +6762,7 @@ function processAbility(abilityObject, event){
                     }
                 }
             }
-            else if (event.enemies[targetToHeal]){
+            else if (validHeal && event.enemies[targetToHeal]){
                 var targetToHealName = event.enemies[targetToHeal].name;
                 if (event.enemies[targetToHeal].statuses.indexOf("dead") == -1){
                     //event.enemies[targetToHeal].hp = event.enemies[targetToHeal].hp + hpToHeal;

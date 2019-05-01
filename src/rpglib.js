@@ -11241,7 +11241,7 @@ Hoover Dam
                 points: 12001,
                 keystonePoints: [250, 1100, 1830, 3530, 4030],
                 xppoints: 5120,
-                lootcount: 13,
+                lootcount: 33,
                 difficulty: 88,
                 enemies: [
                     {
