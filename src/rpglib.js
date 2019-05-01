@@ -11456,6 +11456,68 @@ Hoover Dam
                         element: "normal"
                     }
                 ]
+            },
+            13: {
+                challengeId: "dragon",
+                keystoneUnlockName: "Emperor Keystone",
+                avatar: "https://i.imgur.com/21C2UbS.jpg",
+                timed: true,
+                description: "",
+                timedPerTurn: 360000,
+                points: 12001,
+                keystonePoints: [250, 1100, 1830, 3530, 4030],
+                xppoints: 5120,
+                lootcount: 13,
+                difficulty: 88,
+                enemies: [
+                    {
+                        name: "Amber Dragon",
+                        xp: 30,
+                        abilities: [
+                            "slash",
+                            "uppercut"
+                        ],
+                        buffs: [
+                            {
+                                name: "frenzy",
+                                emoji: "<:overmind:479298213904646147>",
+                                onTurnEnd: {
+                                    attackDmgPlus : 6100,
+                                    magicDmgPlus : 6100,
+                                    everyNTurns: 10,
+                                    startTurn: 60
+                                }
+                            }
+                        ],
+                        keystoneStats: {
+                            frenzy: {
+                                attackDmgPlus : [3100, 4100, 5100, 6100, 7100],
+                                magicDmgPlus : [3100, 4100, 5100, 6100, 7100]
+                            },
+                            hp: [ 19500, 25900, 39900, 51000, 77000 ],
+                            attackDmg: [700, 1100, 1500, 2100, 2500],
+                            magicDmg: [700, 1100, 1500, 2100, 2500],
+                            abilities: []
+                        },
+                        abilityOrder: [
+                            0, 1, 0, 0, 0, 1, 0, 0
+                        ],
+                        endOfTurnEvents : [
+                        ],
+                        effectsOnDeath: [
+                        ],
+                        hp: 82600,
+                        attackDmg: 238000,
+                        magicDmg: 257000,
+                        armor: 2100,
+                        spirit: 2100,
+                        hpPerPartyMember: 0,
+                        adPerPartyMember: 0,
+                        mdPerPartyMember: 0,
+                        difficulty: "boss",
+                        element: "normal"
+                    }
+                ]
             }
         }
     }    
