@@ -3437,6 +3437,13 @@ module.exports = {
             zoneString : "The prarie was only the beginning, the dark woods, and mysterious underground tunnels contain uncharted life",
             startingArea: "meadows",
             name: "Prarie",
+            enemyStatBuffs: {
+                hpPlusPercentage: 1,
+                adPlusPercentage: 1,
+                mdPlusPercentage: 1,
+                armorPlusPercentage: 1,
+                spiritPlusPercentage: 1,
+            },
             enemies: {
                 easy: [
                     "rabbidwolf", "rabbidwolf", "rabbidwolf", "rabbidwolf",

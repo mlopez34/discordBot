@@ -554,6 +554,7 @@ module.exports.rpgReady = function(message, itemsAvailable, amuletItemsById, buf
                 if ((lastrpgtime && oneHourAgo > lastrpgtime)
                     || isSpecialEvent 
                     || !lastrpgtime
+                    || !challengePicked
                     || challengePicked >= CHALLENGE_TO_TEST){
                     // get the user profile data
                     var userStats = userData.data;
@@ -836,7 +837,7 @@ module.exports.rpgReady = function(message, itemsAvailable, amuletItemsById, buf
                                                 }
     
                                                 usersInRPGEvents["rpg-" + discordUserId].ready = true;
-                                                if ( userStats.level >= 20 ){
+                                                if ( userStats.level >= 20 || !challengePicked ){ // under level 20 or doing normal rpg
                                                     usersInRPGEvents["rpg-" + discordUserId].setRPGcooldown = true
                                                 }
                                                 // check the activeRPGEvents
@@ -1261,15 +1262,21 @@ module.exports.rpgReady = function(message, itemsAvailable, amuletItemsById, buf
                                                                         if (enemyId && enemyDifficulty && enemiesToEncounter[enemyDifficulty]){
                                                                             enemyFound = JSON.parse(JSON.stringify( enemiesToEncounter[enemyDifficulty][enemyId] ));
                                                                         }
+                                                                        let enemyAreaStatBuffs = rpgZones[zoneUserIsIn].enemyStatBuffs
+                                                                        let hpAreaBuff = enemyAreaStatBuffs.hpPlusPercentage || 1
+                                                                        let adAreaBuff = enemyAreaStatBuffs.adPlusPercentage || 1
+                                                                        let mdAreaBuff = enemyAreaStatBuffs.mdPlusPercentage || 1
+                                                                        let armorAreaBuff = enemyAreaStatBuffs.armorPlusPercentage || 1
+                                                                        let spiritAreaBuff = enemyAreaStatBuffs.spiritPlusPercentage || 1
 
                                                                         enemies[enemyIdCount] = {
                                                                             id: enemyIdCount,
                                                                             name: enemyFound.name,
-                                                                            hp: enemyFound.hp + (21 * averageLevelInParty) + (enemyFound.hpPerPartyMember * enemyCount), 
-                                                                            attackDmg: enemyFound.attackDmg + (10 * averageLevelInParty) + (enemyFound.adPerPartyMember * enemyCount), 
-                                                                            magicDmg: enemyFound.magicDmg + (10 * averageLevelInParty) + (enemyFound.mdPerPartyMember * enemyCount),
-                                                                            armor: enemyFound.armor + (averageLevelInParty * averageLevelInParty),
-                                                                            spirit: enemyFound.spirit + ( averageLevelInParty * averageLevelInParty),
+                                                                            hp: Math.floor( hpAreaBuff * ( enemyFound.hp + (21 * averageLevelInParty) + (enemyFound.hpPerPartyMember * enemyCount)) ) , 
+                                                                            attackDmg: Math.floor( adAreaBuff * ( enemyFound.attackDmg + (10 * averageLevelInParty) + (enemyFound.adPerPartyMember * enemyCount)) ), 
+                                                                            magicDmg: Math.floor( mdAreaBuff * ( enemyFound.magicDmg + (10 * averageLevelInParty) + (enemyFound.mdPerPartyMember * enemyCount)) ) ,
+                                                                            armor: Math.floor( armorAreaBuff * ( enemyFound.armor + (averageLevelInParty * averageLevelInParty)) ),
+                                                                            spirit: Math.floor( spiritAreaBuff * ( enemyFound.spirit + ( averageLevelInParty * averageLevelInParty)) ),
                                                                             statuses: [],
                                                                             endOfTurnEvents: [],
                                                                             statBuffs: {
@@ -1429,14 +1436,22 @@ module.exports.rpgReady = function(message, itemsAvailable, amuletItemsById, buf
                                                                             enemyString = enemiesInArea.easy[enemyRoll]
                                                                             enemyFound = JSON.parse(JSON.stringify(  enemiesToEncounter.easy[enemyString]));
                                                                         }
+
+                                                                        let enemyAreaStatBuffs = rpgZones[zoneUserIsIn].enemyStatBuffs || {}
+                                                                        let hpAreaBuff = enemyAreaStatBuffs.hpPlusPercentage || 1
+                                                                        let adAreaBuff = enemyAreaStatBuffs.adPlusPercentage || 1
+                                                                        let mdAreaBuff = enemyAreaStatBuffs.mdPlusPercentage || 1
+                                                                        let armorAreaBuff = enemyAreaStatBuffs.armorPlusPercentage || 1
+                                                                        let spiritAreaBuff = enemyAreaStatBuffs.spiritPlusPercentage || 1
+
                                                                         enemies[enemyIdCount] = {
                                                                             id: enemyIdCount,
                                                                             name: enemyFound.name,
-                                                                            hp: enemyFound.hp + (21 * averageLevelInParty) + (enemyFound.hpPerPartyMember * enemyCount), 
-                                                                            attackDmg: enemyFound.attackDmg + (10 * averageLevelInParty) + (enemyFound.adPerPartyMember * enemyCount), 
-                                                                            magicDmg: enemyFound.magicDmg + (10 * averageLevelInParty) + (enemyFound.mdPerPartyMember * enemyCount),
-                                                                            armor: enemyFound.armor + (averageLevelInParty * averageLevelInParty),
-                                                                            spirit: enemyFound.spirit + ( averageLevelInParty * averageLevelInParty),
+                                                                            hp: Math.floor( hpAreaBuff * ( enemyFound.hp + (21 * averageLevelInParty) + (enemyFound.hpPerPartyMember * enemyCount)) ) , 
+                                                                            attackDmg: Math.floor( adAreaBuff * ( enemyFound.attackDmg + (10 * averageLevelInParty) + (enemyFound.adPerPartyMember * enemyCount)) ), 
+                                                                            magicDmg: Math.floor( mdAreaBuff * ( enemyFound.magicDmg + (10 * averageLevelInParty) + (enemyFound.mdPerPartyMember * enemyCount)) ) ,
+                                                                            armor: Math.floor( armorAreaBuff * ( enemyFound.armor + (averageLevelInParty * averageLevelInParty)) ),
+                                                                            spirit: Math.floor( spiritAreaBuff * ( enemyFound.spirit + ( averageLevelInParty * averageLevelInParty)) ),
                                                                             statuses: [],
                                                                             endOfTurnEvents: [],
                                                                             statBuffs: {
