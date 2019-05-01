@@ -711,7 +711,7 @@ function handleTimeMachineArtifactStageOne(message, discordUserId, stage, team, 
                     for (var m in team){
                         var teamUser = team[m]
                         if (!user.bot && teamUser.id == user.id){
-                            questFindRewards(message, user, reactionEmoji._emoji.name, allItems)
+                            questFindRewards(message, user, reactionEmoji._emoji.name, allItems, questData.questname)
                         }
                     }
                 })
@@ -903,7 +903,7 @@ function handleTimeMachineArtifactStageThree(message, discordUserId, stage, team
                     for (var m in team){
                         var teamUser = team[m]
                         if (!user.bot && teamUser.id == user.id){
-                            questFindRewards(message, user, reactionEmoji._emoji.name, allItems)
+                            questFindRewards(message, user, reactionEmoji._emoji.name, allItems, questData.questname)
                         }
                     }
                 })
@@ -1459,7 +1459,7 @@ function handleDemonicArtifactStageThree(message, discordUserId, stage, team, ch
                     for (var m in team){
                         var teamUser = team[m]
                         if (!user.bot && teamUser.id == user.id){
-                            questFindRewards(message, user, reactionEmoji._emoji.name, allItems)
+                            questFindRewards(message, user, reactionEmoji._emoji.name, allItems, questData.questname)
                         }
                     }
                 })
@@ -1820,7 +1820,7 @@ function handleRingArtifactStageFour(message, discordUserId, stage, team, marrie
                     // only team members should be getting items
                     reactionEmoji.users.forEach(function(user){
                         if (!user.bot){
-                            questFindRewards(message, user, reactionEmoji._emoji.name, allItems)
+                            questFindRewards(message, user, reactionEmoji._emoji.name, allItems, questData.questname)
                         }
                     })
                 })
@@ -2013,7 +2013,7 @@ function handleTombArtifactStageOne(message, discordUserId, stage, team, channel
                     for (var m in team){
                         var teamUser = team[m]
                         if (!user.bot && teamUser.id == user.id){
-                            questFindRewards(message, user, reactionEmoji._emoji.name, allItems)
+                            questFindRewards(message, user, reactionEmoji._emoji.name, allItems, questData.questname)
                         }
                     }
                 })
@@ -2374,7 +2374,7 @@ function artifactStartString(questline, discordUser, mentionedUsers){
     // return the starting quest text
 }
 
-function questFindRewards(message, user, emoji, allItems){
+function questFindRewards(message, user, emoji, allItems, questname){
 
     var giveRewardTo = user.id;
     var giveRewardToUsername = user.username
@@ -2404,15 +2404,18 @@ function questFindRewards(message, user, emoji, allItems){
             uncommonItems.push(allItems[item]);
         }
         else if(allItems[item].itemraritycategory == "rare"
-        && !allItems[item].findinchallenge){
+        && ( allItems[item].fromscavenge == true
+        || allItems[item].dropsinquest == questname ) ){
             rareItems.push(allItems[item]);
         }
         else if(allItems[item].itemraritycategory == "ancient"
-        && !allItems[item].findinchallenge){
+        && (allItems[item].fromscavenge == true
+        || allItems[item].dropsinquest == questname ) ){
             ancientItems.push(allItems[item]);
         }
-        else if(allItems[item].itemraritycategory == "amulet"
-        && !allItems[item].findinchallenge){
+        else if( allItems[item].itemraritycategory == "amulet"
+        && ( allItems[item].amuletsource == "scavenge"
+        || allItems[item].dropsinquest == questname ) ) {
             ancientItems.push(allItems[item]);
         }
     }

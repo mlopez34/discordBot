@@ -233,6 +233,14 @@ var PETS_AVAILABLE = {
         reputation: "respected",
         repLevel: 3
     },
+    fox: {
+        speak: "mmmmmmmmmarsss mmmmmmmm",
+        emoji: ":fox:",
+        fetch: 20,
+        cooldown: 6,
+        reputation: "respected",
+        repLevel: 3
+    },
     tiger: {
         speak: ".....",
         emoji: ":tiger:",
@@ -428,13 +436,16 @@ module.exports.openPresentCommand = function(message){
                     var rareItems = [];
                     var ancientItems = [];                        
                     for (var item in allItems){
-                        if(allItems[item].itemraritycategory == "uncommon"){
+                        if(allItems[item].itemraritycategory == "uncommon"
+                        && allItems[item].fromscavenge == true){
                             uncommonItems.push(allItems[item]);
                         }
-                        else if(allItems[item].itemraritycategory == "rare"){
+                        else if(allItems[item].itemraritycategory == "rare"
+                        && allItems[item].fromscavenge == true){
                             rareItems.push(allItems[item]);
                         }
-                        else if(allItems[item].itemraritycategory == "ancient"){
+                        else if(allItems[item].itemraritycategory == "ancient"
+                        && allItems[item].fromscavenge == true){
                             ancientItems.push(allItems[item]);
                         }
                     }
@@ -639,7 +650,6 @@ function rewardsEmbedBuilder(message, rewardsString, itemsString){
 }
 
 module.exports.setCommandLock = function(command, discordUserId, set){
-    commandLock[command][discordUserId] = set
     commandLock[command][discordUserId] = set
 }
 module.exports.getItemsMapById = function(){
@@ -2237,8 +2247,7 @@ module.exports.shopCommand = function(message, args){
             // user doesnt exist tell the user they should get some tacos
             console.log(err)
             agreeToTerms(message, discordUserId);
-        }
-        else{
+        }else{
             // if user has enough tacos to purchase the tree, add 1 tree, subtract x tacos
             var shopData = {};
             var userTacoStands = 0;
@@ -2274,8 +2283,7 @@ module.exports.createPotionCommand = function(message){
                 var potionItems = [];
 
                 for (var item in allItems){
-                    
-                    if(allItems[item].itemraritycategory == "uncommon+" && allItems[item].amuletsource == "createpotion"){
+                    if(allItems[item].itemraritycategory == "uncommon+" && allItems[item].shoppotion == true){
                         potionItems.push(allItems[item]);
                     }
                 }
@@ -2806,8 +2814,7 @@ module.exports.raresCommand = function(message, args, rarity){
     profileDB.getUserItems(discordUserId, function(err, inventoryResponse){
         if (err){
             console.log(err);
-        }
-        else{
+        }else{
             // console.log(inventoryResponse.data);
             // get all the data for each item
             var itemsInInventoryCountMap = {};
@@ -3120,8 +3127,7 @@ module.exports.inventoryCommand = function(message){
     profileDB.getUserItems(discordUserId, function(err, inventoryResponse){
         if (err){
             // console.log(err);
-        }
-        else{
+        }else{
             // console.log(inventoryResponse.data);
             var itemsInInventoryCountMap = {};
             for (var item in inventoryResponse.data){
@@ -3353,17 +3359,11 @@ module.exports.scavangeCommand = function (message){
                                 if (!gotUncommon && rollsCount > 4){
                                     // guaranteed more than uncommon +
                                     rarityRoll = Math.floor(Math.random() * 1500) + 8501;
-                                    if (discordUserId == "248946965633564673"){
-                                        rarityRoll = 9965
-                                    }
                                     gotUncommon = true;
                                 }
                                 else if(!gotUncommon && rollsCount > 3){
                                     // guaranteed uncommon +
                                     rarityRoll = Math.floor(Math.random() * 2000) + 8001;
-                                    if (discordUserId == "248946965633564673"){
-                                        rarityRoll = 9900
-                                    }
                                     gotUncommon = true;
                                 }
                                 if (rarityRoll > ARTIFACT_MIN_ROLL){
@@ -3785,16 +3785,16 @@ module.exports.miniGameCommand = function(message) {
             var amuletsAvailable = []
             for (var item in allItemsForMiniGame){
                 if(allItemsForMiniGame[item].itemraritycategory == "rare"
-                && !allItemsForMiniGame[item].findinchallenge){
+                && allItemsForMiniGame[item].findinfruits){
                     raresAvailable.push(allItemsForMiniGame[item]);
                 }
                 else if(allItemsForMiniGame[item].itemraritycategory == "ancient"
-                && !allItemsForMiniGame[item].findinchallenge){
+                && allItemsForMiniGame[item].findinfruits){
                     ancientsAvailable.push(allItemsForMiniGame[item]);
                 }
                 else if(allItemsForMiniGame[item].itemraritycategory == "amulet"
                 && allItemsForMiniGame[item].amuletsource == "scavenge"
-                && !allItemsForMiniGame[item].findinchallenge){
+                && allItemsForMiniGame[item].findinfruits){
                     amuletsAvailable.push(allItemsForMiniGame[item]);
                 }
             }
@@ -4765,7 +4765,6 @@ module.exports.useCommand = function(message, args){
                 // console.log(itemsInInventoryCountMap);
                 for (var index in allItems){
                     if (allItems[index].itemraritycategory == "amulet" && allItems[index].amuletsource == "scavenge"){
-                        // add to list of rares
                         listOfAmulets.push(allItems[index]);
                     }
                 }
@@ -4776,10 +4775,7 @@ module.exports.useCommand = function(message, args){
                     useItem.useRock(message, discordUserId, rocksToUse, listOfAmulets, function(useError, useRes){
                         if (useError){
                             useItem.setItemsLock(discordUserId, false)
-                            // console.log(useError);
-                        }
-                        else{
-                            // console.log(useRes[0]);
+                        }else{
                             if (useRes.length && useRes.length > 0 && useRes[0].itemname){
                                 message.channel.send(message.author + " has polished a **" + useRes[0].itemname + "** -" + "`" + useRes[0].itemdescription + ", " + useRes[0].itemslot + ", " + useRes[0].itemstatistics + "`");
                             }
@@ -4797,7 +4793,6 @@ module.exports.useCommand = function(message, args){
                                     }
                                     else{
                                         // check achievements??
-                                        // console.log(statSuccess);
                                         getProfileForAchievement(discordUserId, message) 
                                     }
                                 })
@@ -5033,9 +5028,9 @@ module.exports.useCommand = function(message, args){
                 }
                 var itemsForTerryCraft = exports.getAllItems()
                 for (var index in itemsForTerryCraft){
-                    if (itemsForTerryCraft[index].itemraritycategory == "rare" 
-                    && !itemsForTerryCraft[index].isseed
-                    && !itemsForTerryCraft[index].findinchallenge){
+                    if (itemsForTerryCraft[index].itemraritycategory == "rare"
+                    && itemsForTerryCraft[index].fromscavenge == true
+                    && !itemsForTerryCraft[index].isseed){
                         // add to list of rares
                         listOfRares.push(itemsForTerryCraft[index]);
                     }
@@ -5045,7 +5040,6 @@ module.exports.useCommand = function(message, args){
                     useItem.useTerryCloth(message, discordUserId, terryClothToUse, listOfRares, function(useError, useRes){
                         if (useError){
                             // couldnt update the user protect
-                            // console.log(useError);
                             useItem.setItemsLock(discordUserId, false)
                         }else{
                             // console.log(useRes[0]);
@@ -5071,7 +5065,6 @@ module.exports.useCommand = function(message, args){
                                     }
                                 })
                             }, 1000);
-                            
                             
                         }
                     });

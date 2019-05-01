@@ -462,14 +462,14 @@ client.on('message', function(message){
                 }
                 else if (commandIs("rpgstart", message)){
                     if (message.channel.type == "text" && (RPG_CHANNELS.indexOf(message.channel.name) != -1) && !message.author.bot){
-                        //commands.rpgBattleCommand(message);
+                        commands.rpgBattleCommand(message);
                     }else{
                         message.channel.send("use the rpg channel for this")
                     }
                 }
                 else if (commandIs("pvpstart", message)){
                     if (message.channel.type == "text" && (RPG_CHANNELS.indexOf(message.channel.name) != -1) && !message.author.bot){
-                        //commands.rpgBattleCommand(message);
+                        commands.rpgBattleCommand(message);
                     }else{
                         message.channel.send("use the rpg channel for this")
                     }
@@ -597,7 +597,7 @@ client.on('message', function(message){
                         commands.timeTravelCommand(message, args, channelName);
                     }
                     else if (commandIs("rpgstart", message)){
-                        //commands.rpgBattleCommand(message);
+                        commands.rpgBattleCommand(message);
                     }
                     else if (commandIs("pvpstart", message)){
                         //commands.rpgBattleCommand(message);
@@ -1078,7 +1078,7 @@ client.on('message', function(message){
                 }
                 else if (commandIs("rpgstart", message)){
                     if (message.channel.type == "text" && !message.author.bot){
-                        //commands.rpgBattleCommand(message);
+                        commands.rpgBattleCommand(message);
                         data.command = "rpgstart"
                         profileDB.createUserActivity(data)
                     }else{

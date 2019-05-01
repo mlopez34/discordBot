@@ -125,7 +125,7 @@ function obtainReputationItem(message, reputationSource){
     var artifactItems = []
 
     for (var item in allItems){
-        if(allItems[item].itemraritycategory == "artifact+" && allItems[item].amuletsource == reputationSource){
+        if(allItems[item].itemraritycategory == "artifact+" && allItems[item].fromreputation == reputationSource){
             artifactItems.push(allItems[item]);
         }
         if(allItems[item].itemraritycategory == "amulet" && allItems[item].amuletsource == reputationSource){

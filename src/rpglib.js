@@ -1,10 +1,8 @@
 module.exports = {
     // TODO:
-    // change assist to physical scaling
     // DONE aoe heal over time lasts 5 turns total of 85% of magical
     // 10 turn dot phys
     // 10 turn dot magical
-    // physical elixir
     // DONE cocoon - 15% damage reduct, -10% damage dealt
     // cannister shot
     
@@ -46,15 +44,15 @@ module.exports = {
             name: "Assist", // binding heal
             abilityId: "assist",
             heal: 50,
-            mdPercentage: 0.85,
-            description: "Heal your target for 50 + 85% of your magical damage and heal your target for 50 + 85% of your magical damage",
+            adPercentage: 0.85,
+            description: "Heal your target for 50 + 85% of your physical damage and heal your target for 50 + 85% of your physical damage",
             selfUntargettable: true,
             special: {
                 name: "Assist",
                 abilityId: "assist",
                 heal: 50,
                 selfHeal: 50,
-                mdPercentage: 0.85,
+                adPercentage: 0.85,
             }
         },
 
@@ -298,6 +296,27 @@ module.exports = {
             mdPercentage: 0.6,
             areawide: true,
             targets: "friendly"
+        },
+        recuperate: {
+            name: "Recuperate",
+            abilityId: "recuperate",
+            description: "Heal the group for 35 + 40% of your current physical damage, 1 turn cooldown, grant the group fortified - 1 turn buff that reduces all damage taken by 10%",
+            heal: 35,
+            cooldown: 0,
+            maxcooldown: 1,
+            adPercentage: 0.4,
+            areawide: true,
+            targets: "friendly",
+            buff: {
+                buff: true,
+                areawide: true,
+                name: "Fortify",
+                abilityId: "fortify",
+                emoji : ":lock:",
+                affectsGlobal: ["damageTakenPercentage"],
+                turnsToExpire: 1,
+                multiplier: 0.9
+            }
         },
         megaelixir: {
             name: "Mega Elixir",
@@ -2962,7 +2981,7 @@ module.exports = {
                 affectsGlobal: ["damageTakenPercentage"],                
                 multiplier: 1.0,
                 ignoreBandaid: true,
-                multiplierPerDotTurn: 0.05,
+                multiplierPerDotTurn: 0.03,
                 abilityTriggerOnDeath: "healAllDebilitate",
                 checkDotMultiplierPerDotTurn: "puncture"
             }

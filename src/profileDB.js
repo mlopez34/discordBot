@@ -800,11 +800,11 @@ module.exports.setZoneComplete = function(userId, zoneid, cb) {
     });
 }
 
-module.exports.rpgAreaIncreaseCompletion = function(userId, areatoincrease, currentareacompletion, cb){
+module.exports.rpgAreaIncreaseCompletion = function(userId, areatoincrease, currentareacompletion, enemiesCount, cb){
     // null or 0
     if (currentareacompletion){
-        var query = 'update ' + config.userRpgProfileTable + ' set ' + areatoincrease + '=' + areatoincrease + '+1 where discordid=$1'
-        db.none(query, [ userId])
+        var query = 'update ' + config.userRpgProfileTable + ' set ' + areatoincrease + '=' + areatoincrease + '+$2 where discordid=$1'
+        db.none(query, [ userId, enemiesCount ])
         .then(function () {
         cb(null, {
             status: 'success',
