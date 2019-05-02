@@ -437,8 +437,7 @@ module.exports.showRpgStats = function(message, itemsAvailable, amuletItemsById)
                             var rpgTimeLeft = "";
                             if (lastrpgtime && oneHourAgo > lastrpgtime || !lastrpgtime){
                                 rpgTimeLeft = "ready";
-                            }
-                            else{
+                            }else{
                                 now = new Date(now.setMinutes(now.getMinutes()));
                                 var numberOfHours = getDateDifference(userData.data.lastrpgtime, now, RPG_COOLDOWN_HOURS);
                                 rpgTimeLeft = " `" + numberOfHours +"` left on cooldown";
@@ -842,7 +841,7 @@ module.exports.rpgReady = function(message, itemsAvailable, amuletItemsById, buf
                                                 }
     
                                                 usersInRPGEvents["rpg-" + discordUserId].ready = true;
-                                                if ( userStats.level >= 20 || !challengePicked ){ // under level 20 or doing normal rpg
+                                                if ( userStats.level >= 20 || challengePicked ){ // under level 20 or doing normal rpg
                                                     usersInRPGEvents["rpg-" + discordUserId].setRPGcooldown = true
                                                 }
                                                 // check the activeRPGEvents
@@ -1888,7 +1887,8 @@ module.exports.travelToNewArea = function(message, placeName){
                         if (error){
                             console.log(error)
                         }else{
-                            message.channel.send("You are now in `" + startingArea+ "` !")
+                            let areaName = rpgZones[placeName].areas[startingArea].name
+                            message.channel.send("You are now in `" + areaName + "` !")
                         }
                     })
                 }else{
@@ -1912,7 +1912,8 @@ module.exports.travelToNewArea = function(message, placeName){
                                 if (error){
                                     console.log(error)
                                 }else{
-                                    message.channel.send("You are now in `" + area+ "` !")
+                                    let areaName = rpgZones[rpgZoneToTravel].areas[area].name
+                                    message.channel.send("You are now in `" + areaName + "` !")
                                 }
                             })
                         }else{
