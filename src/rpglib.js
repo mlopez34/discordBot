@@ -11330,8 +11330,8 @@ Hoover Dam
                             "balrogueDeath"
                         ],
                         hp: 52600,
-                        attackDmg: 2380,
-                        magicDmg: 2570,
+                        attackDmg: 2080,
+                        magicDmg: 2270,
                         armor: 2100,
                         spirit: 2100,
                         hpPerPartyMember: 0,
@@ -11385,8 +11385,8 @@ Hoover Dam
                             "emperorDeath"
                         ],
                         hp: 52600,
-                        attackDmg: 2380,
-                        magicDmg: 2570,
+                        attackDmg: 2080,
+                        magicDmg: 2270,
                         armor: 2100,
                         spirit: 2100,
                         hpPerPartyMember: 0,
@@ -11443,8 +11443,8 @@ Hoover Dam
                             "mysticalFairyDeath"
                         ],
                         hp: 52600,
-                        attackDmg: 2380,
-                        magicDmg: 2570,
+                        attackDmg: 1980,
+                        magicDmg: 2070,
                         armor: 2100,
                         spirit: 2100,
                         hpPerPartyMember: 0,
@@ -11495,8 +11495,8 @@ Hoover Dam
                             "barbarianDeath"
                         ],
                         hp: 52600,
-                        attackDmg: 2180,
-                        magicDmg: 2570,
+                        attackDmg: 1780,
+                        magicDmg: 2270,
                         armor: 2100,
                         spirit: 2100,
                         hpPerPartyMember: 0,
