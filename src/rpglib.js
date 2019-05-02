@@ -1533,6 +1533,7 @@ module.exports = {
             abilityId: "strengthDarkness",
             buff: {
                 buff: true,
+                ignoreUnique: true,
                 name: "Strength",
                 abilityId: "strengthDarkness",
                 emoji: "<:strength:479298214294716416>",
