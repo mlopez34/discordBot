@@ -2369,7 +2369,7 @@ function eventEndedEmbedBuilder(message, event, partySuccess){
                 profileDB.updateCurrentChallengeKeystone( memberInParty.id, keystonenumber + 1, challengeId, function(err, res){
                     
                 })
-                if ( keystonenumber > 0 (challengenumber + 1) >= event.challenge.challenge ){
+                if ( keystonenumber > 0 && (challengenumber + 1) >= event.challenge.challenge ){
                     usersFirstComplete.push(memberInParty.id)
                 }
             }
