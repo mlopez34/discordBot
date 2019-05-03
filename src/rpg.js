@@ -2483,14 +2483,16 @@ function increaseCompletionForUser(eventUser, rpgareaId, message, enemiesCount){
             console.log(err)
         }else{
             var areaCompletionForUser = currentareacompletion + enemiesCount
+            var areaCompletedCheck = 0 
             if ( areaCompletionForUser >= enemiesToDefeatArea
             && currentareacompletion < enemiesToDefeatArea ){
                 newAreaEmbedBuilder( eventUser.username, rpgareaId, message)
+                areaCompletedCheck = 1
             }
             var zoneUserIsIn = getRpgZone(rpgareaId)
             var zoneComplete = eventUser.userdata[zoneUserIsIn]
             var areasToComplete = getAreasToCompletForZone(zoneUserIsIn)
-            var areascompletedForUser = getAreasCompletedInZoneForUser(eventUser.userdata, zoneUserIsIn) + 1
+            var areascompletedForUser = getAreasCompletedInZoneForUser(eventUser.userdata, zoneUserIsIn) + areaCompletedCheck
             // calculate areascompletedForUser 
             if (!zoneComplete && ( areascompletedForUser >= areasToComplete ) ){
                 // complete zone
@@ -2721,15 +2723,15 @@ function calculateRewards(event, memberInRpgEvent, allItems, numberOfMembers, fi
             ancientItems.push(allItems[item]);
         }
         else if (allItems[item].itemraritycategory == "amulet"
-            && ( allItems[item].amuletsource == "rpgchallenge"
-            || allItems[item].findinarea == event.area
-            || allItems[item].findinzone == event.zone)){
+        && ( allItems[item].amuletsource == "rpgchallenge"
+        || allItems[item].findinarea == event.area
+        || allItems[item].findinzone == getRpgZone(event.area)) ){
             ancientItems.push(allItems[item]);
         }
         else if(allItems[item].itemraritycategory == "artifact"
         && (allItems[item].fromscavenge == true
         || allItems[item].findinarea == event.area
-        || allItems[item].findinzone == event.zone) ){
+        || allItems[item].findinzone == getRpgZone(event.area)) ){
             artifactItems.push(allItems[item]);
         }
     }
