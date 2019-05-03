@@ -517,11 +517,29 @@ module.exports.getreadyLock = function(activeRPGEvent, discordUserId){
     }
 }
 
+module.exports.getReadyLockUser = function(activeRPGEvent, discordUserId){
+    if (readyLock[activeRPGEvent]){
+        let locked = false
+        for (var member in readyLock[activeRPGEvent]){
+            if (member == discordUserId){
+                if (readyLock[activeRPGEvent][member] == true){
+                    locked = true
+                }
+            }
+        }
+        return locked
+    }else{
+        return false
+    }
+}
+
 module.exports.rpgReady = function(message, itemsAvailable, amuletItemsById, buffItemsById, allItems){
     // create an embed saying that b is about to happen, for users MAX of 5 users and they must all say -ready to start costs 5 tacos per person
     var discordUserId = message.author.id;
-    
-    if (usersInRPGEvents["rpg-" + discordUserId] && usersInRPGEvents["rpg-" + discordUserId].ready != true){
+    var idOfUserInEvent = usersInRPGEvents["rpg-" + discordUserId] ? usersInRPGEvents["rpg-" + discordUserId].id : undefined;
+    if ( usersInRPGEvents["rpg-" + discordUserId] 
+    && usersInRPGEvents["rpg-" + discordUserId].ready != true
+    && !exports.getReadyLockUser(idOfUserInEvent, discordUserId) ){
         message.channel.send( message.author + " is ready");
         var rpgEventId = usersInRPGEvents["rpg-" + discordUserId].id;
         // get the user's profile and get the user's wearing
@@ -1661,6 +1679,9 @@ module.exports.rpgReady = function(message, itemsAvailable, amuletItemsById, buf
                 }
             }
         })
+    }
+    else if (exports.getReadyLockUser(idOfUserInEvent, discordUserId)){
+        message.channel.send(message.author + " you are being processed")
     }
     else if (usersInRPGEvents["rpg-" + discordUserId] && usersInRPGEvents["rpg-" + discordUserId].ready == true){
         message.channel.send(message.author + " you are already ready")
