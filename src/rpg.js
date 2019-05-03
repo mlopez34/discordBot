@@ -2834,60 +2834,78 @@ function calculateRewards(event, memberInRpgEvent, allItems, numberOfMembers, fi
         
     }else{
         for (var enemy in event.enemies){
-            var rarityRoll = undefined;
-            var enemyDifficulty =  event.enemies[enemy].difficulty
-            if (enemyDifficulty == "easy"){
-                additionalExperience = additionalExperience + 1
-                additionalRpgPoints = additionalRpgPoints + 1
-                // common items
-                rarityRoll = Math.floor(Math.random() * COMMON_MAX_ROLL) + 1;
-            }
-            else if (enemyDifficulty == "medium"){
-                additionalExperience = additionalExperience + 2
-                additionalRpgPoints = additionalRpgPoints + 2
-                // common ? uncommon
-                rarityRoll = Math.floor(Math.random() * UNCOMMON_MAX_ROLL) + 1;
-            }
-            else if (enemyDifficulty == "hard"){
-                additionalExperience = additionalExperience + 9
-                additionalRpgPoints = additionalRpgPoints + 9
-                // common + uncommon maybe rare
-                rarityRoll = Math.floor(Math.random() * 3975) + 6000;
-            }
-            else if (enemyDifficulty == "boss"){
-                additionalExperience = additionalExperience + 19
-                additionalRpgPoints = additionalRpgPoints + 19
-                // common + uncommon maybe rare maybe ancient
-                rarityRoll = Math.floor(Math.random() * 2000) + 8000;
-            }else if (enemyDifficulty == "special"){
-                additionalExperience = additionalExperience + 19
-                additionalRpgPoints = additionalRpgPoints + 19
-                // common + uncommon maybe rare maybe ancient
-                rarityRoll = Math.floor(Math.random() * 2000) + 8000;
-            }
-            // TODO: add + luck to rarityroll
-            // push the item to items
-            if (rarityRoll){
-                if(rarityRoll > ANCIENT_MIN_ROLL ){
-                    var itemRoll = Math.floor(Math.random() * ancientItems.length);
-                    console.log(ancientItems[itemRoll]);
-                    itemsObtainedArray.push(ancientItems[itemRoll])
+            let getThisRoll = true;
+            if (event.area){
+                // number of rolls based on the number of people in the area
+                let thresholdMap = {
+                    2: 500,
+                    3: 333,
+                    4: 250,
+                    5: 200
                 }
-                else if(rarityRoll > RARE_MIN_ROLL && rarityRoll <= RARE_MAX_ROLL){
-                    var itemRoll = Math.floor(Math.random() * rareItems.length);
-                    console.log(rareItems[itemRoll]);
-                    itemsObtainedArray.push(rareItems[itemRoll]);
+                let extraRoll = Math.floor(Math.random() * 1000 )
+                let extraRollHasToBeOver = 1000 - ( event.usersInArea.length * thresholdMap[event.members.length])
+                if (extraRoll < extraRollHasToBeOver){
+                    // got extra roll
+                    getThisRoll = false
                 }
-                else if (rarityRoll > UNCOMMON_MIN_ROLL && rarityRoll <= UNCOMMON_MAX_ROLL){
-                    var itemRoll = Math.floor(Math.random() * uncommonItems.length);
-                    console.log(uncommonItems[itemRoll]);
-                    itemsObtainedArray.push( uncommonItems[itemRoll] );
+            }
+            if (getThisRoll){
+                var rarityRoll = undefined;
+                var enemyDifficulty =  event.enemies[enemy].difficulty
+                if (enemyDifficulty == "easy"){
+                    additionalExperience = additionalExperience + 1
+                    additionalRpgPoints = additionalRpgPoints + 1
+                    // common items
+                    rarityRoll = Math.floor(Math.random() * COMMON_MAX_ROLL) + 1;
                 }
-                else {
-                    var itemRoll = Math.floor(Math.random() * commonItems.length);
-                    console.log(commonItems[itemRoll]);
-                    commonItems[itemRoll].itemAmount = COMMON_ITEMS_TO_OBTAIN
-                    itemsObtainedArray.push( commonItems[itemRoll] );
+                else if (enemyDifficulty == "medium"){
+                    additionalExperience = additionalExperience + 2
+                    additionalRpgPoints = additionalRpgPoints + 2
+                    // common ? uncommon
+                    rarityRoll = Math.floor(Math.random() * UNCOMMON_MAX_ROLL) + 1;
+                }
+                else if (enemyDifficulty == "hard"){
+                    additionalExperience = additionalExperience + 9
+                    additionalRpgPoints = additionalRpgPoints + 9
+                    // common + uncommon maybe rare
+                    rarityRoll = Math.floor(Math.random() * 3975) + 6000;
+                }
+                else if (enemyDifficulty == "boss"){
+                    additionalExperience = additionalExperience + 19
+                    additionalRpgPoints = additionalRpgPoints + 19
+                    // common + uncommon maybe rare maybe ancient
+                    rarityRoll = Math.floor(Math.random() * 2000) + 8000;
+                }else if (enemyDifficulty == "special"){
+                    additionalExperience = additionalExperience + 19
+                    additionalRpgPoints = additionalRpgPoints + 19
+                    // common + uncommon maybe rare maybe ancient
+                    rarityRoll = Math.floor(Math.random() * 2000) + 8000;
+                }
+                // TODO: add + luck to rarityroll
+                // push the item to items
+                if (rarityRoll){
+                    if(rarityRoll > ANCIENT_MIN_ROLL ){
+                        var itemRoll = Math.floor(Math.random() * ancientItems.length);
+                        console.log(ancientItems[itemRoll]);
+                        itemsObtainedArray.push(ancientItems[itemRoll])
+                    }
+                    else if(rarityRoll > RARE_MIN_ROLL && rarityRoll <= RARE_MAX_ROLL){
+                        var itemRoll = Math.floor(Math.random() * rareItems.length);
+                        console.log(rareItems[itemRoll]);
+                        itemsObtainedArray.push(rareItems[itemRoll]);
+                    }
+                    else if (rarityRoll > UNCOMMON_MIN_ROLL && rarityRoll <= UNCOMMON_MAX_ROLL){
+                        var itemRoll = Math.floor(Math.random() * uncommonItems.length);
+                        console.log(uncommonItems[itemRoll]);
+                        itemsObtainedArray.push( uncommonItems[itemRoll] );
+                    }
+                    else {
+                        var itemRoll = Math.floor(Math.random() * commonItems.length);
+                        console.log(commonItems[itemRoll]);
+                        commonItems[itemRoll].itemAmount = COMMON_ITEMS_TO_OBTAIN
+                        itemsObtainedArray.push( commonItems[itemRoll] );
+                    }
                 }
             }
         }
