@@ -494,12 +494,27 @@ module.exports.pvpReady = function(message, itemsAvailable, amuletItemsById){
 
 var readyLock = {}
 
-module.exports.setreadyLock = function(activeRPGEvent, set){
-    readyLock[activeRPGEvent] = set
+module.exports.setreadyLock = function(activeRPGEvent, discordUserId, set){
+    if (readyLock[activeRPGEvent]){
+        readyLock[activeRPGEvent][discordUserId] = set
+    }else{
+        readyLock[activeRPGEvent] = {}
+        readyLock[activeRPGEvent][discordUserId] = set
+    }
 }
 
-module.exports.getreadyLock = function(activeRPGEvent){
-    return readyLock[activeRPGEvent]
+module.exports.getreadyLock = function(activeRPGEvent, discordUserId){
+    if (readyLock[activeRPGEvent]){
+        let locked = false
+        for (var member in readyLock[activeRPGEvent]){
+            if (readyLock[activeRPGEvent][member] == true){
+                locked = true
+            }
+        }
+        return locked
+    }else{
+        return false
+    }
 }
 
 module.exports.rpgReady = function(message, itemsAvailable, amuletItemsById, buffItemsById, allItems){
@@ -511,11 +526,11 @@ module.exports.rpgReady = function(message, itemsAvailable, amuletItemsById, buf
         var rpgEventId = usersInRPGEvents["rpg-" + discordUserId].id;
         // get the user's profile and get the user's wearing
         // lock the RPG event so that skipping doesnt cause users to lock their rpg items
-        exports.setreadyLock(rpgEventId, true)
+        exports.setreadyLock(rpgEventId, discordUserId, true)
         profileDB.getUserRpgProfleData(discordUserId, function(err, userData){
             if (err){
                 console.log(err);
-                exports.setreadyLock(rpgEventId, false)
+                exports.setreadyLock(rpgEventId, discordUserId, false)
                 message.channel.send(err + " something went wrong [profile]");
             }else{
 
@@ -560,7 +575,7 @@ module.exports.rpgReady = function(message, itemsAvailable, amuletItemsById, buf
 
                     profileDB.getUserItems(discordUserId, function(err, inventoryResponse){
                         if (err){
-                            exports.setreadyLock(rpgEventId, false)
+                            exports.setreadyLock(rpgEventId, discordUserId, false)
                             console.log(err);
                         }
                         else{
@@ -609,13 +624,13 @@ module.exports.rpgReady = function(message, itemsAvailable, amuletItemsById, buf
                             profileDB.getUserWearInfo(discordUserId, function(wearErr, wearData){
                                 if (wearErr){
                                     console.log(wearErr);
-                                    exports.setreadyLock(rpgEventId, false)
+                                    exports.setreadyLock(rpgEventId, discordUserId, false)
                                     message.channel.send(wearErr + " something went wrong [wearing] - someone doesn't have a wearing profile");
                                 }else{
                                     var userLevel = userStats.level;
                                     wearStats.getUserWearingStats(message, discordUserId, {userLevel: userLevel}, allItems, function(wearErr, wearRes){
                                         if (wearErr){
-                                            exports.setreadyLock(rpgEventId, false)
+                                            exports.setreadyLock(rpgEventId, discordUserId, false)
                                             console.log(wearErr)
                                         }else{
                                             // get the wearing data
@@ -1602,34 +1617,34 @@ module.exports.rpgReady = function(message, itemsAvailable, amuletItemsById, buf
                                                                 if (lastMessage){
                                                                     lastMessage.delete()
                                                                     .then(function(res){
-                                                                        exports.setreadyLock(rpgEventId, false)
+                                                                        exports.setreadyLock(rpgEventId, discordUserId, false)
                                                                         activeRPGEvents[rpgEvent].lastEmbedMessage = sentMessage
                                                                     })
                                                                     .catch(function(err){
-                                                                        exports.setreadyLock(rpgEventId, false)
+                                                                        exports.setreadyLock(rpgEventId, discordUserId, false)
                                                                         console.log(err);
                                                                     })
                                                                 }else{
-                                                                    exports.setreadyLock(rpgEventId, false)
+                                                                    exports.setreadyLock(rpgEventId, discordUserId, false)
                                                                 }
                                                             })
                                             
                                                         }
                                                         else{
-                                                            exports.setreadyLock(rpgEventId, false)
+                                                            exports.setreadyLock(rpgEventId, discordUserId, false)
                                                             message.channel.send("cannot start this challenge")
                                                         }
                                                         // unlock readying
                                                     }
                                                     else{
-                                                        exports.setreadyLock(rpgEventId, false)
+                                                        exports.setreadyLock(rpgEventId, discordUserId, false)
                                                         message.channel.send("waiting on the rest of the group");
                                                     }
                                                 }else{
-                                                    exports.setreadyLock(rpgEventId, false)
+                                                    exports.setreadyLock(rpgEventId, discordUserId, false)
                                                 }
                                             }else{
-                                                exports.setreadyLock(rpgEventId, false)
+                                                exports.setreadyLock(rpgEventId, discordUserId, false)
                                             }
                                         }
                                     })
@@ -1639,7 +1654,7 @@ module.exports.rpgReady = function(message, itemsAvailable, amuletItemsById, buf
                     })
                 }
                 else{
-                    exports.setreadyLock(rpgEventId, false)
+                    exports.setreadyLock(rpgEventId, discordUserId, false)
                     now = new Date(now.setMinutes(now.getMinutes()));
                     var numberOfHours = getDateDifference(userData.data.lastrpgtime, now, RPG_COOLDOWN_HOURS);
                     message.channel.send(message.author + " You have rpgd too recently! please wait `" + numberOfHours +"` ");
@@ -1710,12 +1725,13 @@ module.exports.displayMap = function(message, zoneToCheck){
             var listOfAreasInZone = getAreasInZone(zoneToCheck, userData.data)
             var zonesAvailableForUserMap = getZonesAvailableForUser(userData.data)
             var currentZoneName = rpgZones[ getRpgZone( userData.data.currentarea ) ].name
-            mapEmbedBuilder(message, listOfAreasInZone, zonesAvailableForUserMap, currentZoneName)
+            var currentAreaName = rpgZones[ getRpgZone( userData.data.currentarea ) ].areas[userData.data.currentarea].name
+            mapEmbedBuilder(message, listOfAreasInZone, zonesAvailableForUserMap, currentZoneName, currentAreaName)
         }
     })
 }
 
-module.exports.displayKeystones = function(message, zoneToCheck){
+module.exports.displayKeystones = function(message){
     var discordUserId = message.author.id
     profileDB.getUserRpgProfleData(discordUserId, function(err, userData){
         if (err){
@@ -1750,7 +1766,7 @@ function keystonesEmbedBuilder(message, keystonesString, userData){
     message.channel.send({embed});
 }
 
-function mapEmbedBuilder(message, listOfAreasInZone, zonesAvailableForUserMap, currentZoneName){
+function mapEmbedBuilder(message, listOfAreasInZone, zonesAvailableForUserMap, currentZoneName, currentAreaName){
     var zonesAvailableString = ""
     var areasInZoneString = ""
     for (var z in zonesAvailableForUserMap){
@@ -1771,7 +1787,7 @@ function mapEmbedBuilder(message, listOfAreasInZone, zonesAvailableForUserMap, c
 
     const embed = new Discord.RichEmbed()
     .setAuthor(message.author.username + " Map")
-    .setDescription(":map: travel to different areas via -travel [areaname] OR -travel [zonename]\nYou are currently in " + currentZoneName)
+    .setDescription(":map: travel to different areas via -travel [areaname] OR -travel [zonename]\nYou are currently in " + currentZoneName + " - " + currentAreaName)
     .addField("Zones available", zonesAvailableString, true)
     .addField("Areas available in " + currentZoneName, areasInZoneString, true)
     .setThumbnail(message.author.avatarURL)
@@ -2534,7 +2550,9 @@ function newAreaEmbedBuilder(username, areaId, message){
     // include the username
     // new areas + the number of RPGs needed in them
     var areaString = getAreaString(areaId)
-    embed.addField(username,  areaString);
+    var zoneAreaIsIn = getRpgZone(areaId)
+    var areaName = rpgZones[zoneAreaIsIn].areas[areaId].name
+    embed.addField(username + " completed " + areaName ,  areaString);
     message.channel.send({embed})
 }
 
@@ -2551,11 +2569,11 @@ function newZoneEmbedBuilder(username, zoneId, message){
 
 function getAreaString(areaId){
     var zoneAreaIsIn = getRpgZone(areaId)
-    var areaString = rpgZones[zoneAreaIsIn].areas[areaId].areaString
-    areaString = areaString + "\n" + "Map areas unlocked:\n"
+    var areaString = "*" + rpgZones[zoneAreaIsIn].areas[areaId].areaString + "*"
+    areaString = areaString + "\n\n" + "Map areas unlocked:\n"
     let areasUnlocked = rpgZones[zoneAreaIsIn].areas[areaId].onCompleteAreasUnlocked
     for (var a in areasUnlocked){
-        areaString = areaString + areasUnlocked[a] + "\n"
+        areaString = areaString + "**" + areasUnlocked[a] + "**\n"
     }
     return areaString
 }

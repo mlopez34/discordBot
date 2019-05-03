@@ -3767,7 +3767,7 @@ module.exports = {
         woods: {
             // Archenland, Beartooth River, Black Forest, Bryce Canyon, Dark Hedges, Darkwater Cove, Denali Park, 
             // Forest of Stone, Inca Trail, Lake Vostok, Meero Ruins
-            zoneString : "Enemies are drawn to ....",
+            zoneString : "Enemies are drawn to blood ....",
             startingArea: "archenland",
             name: "Woods",
             enemyStatBuffs: {
@@ -4801,9 +4801,9 @@ module.exports = {
             startingArea: "karnaca",
             name: "Tadrartacacus",
             enemyStatBuffs: {
-                hpPlusPercentage: 2,
-                adPlusPercentage: 3,
-                mdPlusPercentage: 3,
+                hpPlusPercentage: 2.2,
+                adPlusPercentage: 3.2,
+                mdPlusPercentage: 3.2,
                 armorPlusPercentage: 1.8,
                 spiritPlusPercentage: 1.8,
             },
@@ -4842,8 +4842,7 @@ module.exports = {
                     ],
                     rpgDropsAvailable: [
 
-                    ],
-                    
+                    ]
                 }
             },
             onCompleteZonesUnlocked: [
