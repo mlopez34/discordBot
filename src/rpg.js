@@ -2402,6 +2402,8 @@ function eventEndedEmbedBuilder(message, event, partySuccess){
             var memberInParty = event.membersInParty["rpg-" + memberInRpgEvent.id];
             // get members current challenge
             var challengenumber = usersInRPGEvents["rpg-" + memberInParty.id].memberStats.currentchallenge;
+            var keystonenumber = usersInRPGEvents["rpg-" + memberInParty.id].memberStats.currentkeystone;
+            var userLevel = usersInRPGEvents["rpg-" + memberInParty.id].memberStats.level
             if ( (challengenumber + 1) == event.challenge.challenge && keystonenumber == 0 ){
                 profileDB.updateCurrentChallenge( memberInParty.id, challengenumber + 1, function(err, res){
 
@@ -2409,8 +2411,6 @@ function eventEndedEmbedBuilder(message, event, partySuccess){
                 message.channel.send(memberInParty.id + " first challenge kill")
                 usersFirstComplete.push(memberInParty.id)
             }
-            var keystonenumber = usersInRPGEvents["rpg-" + memberInParty.id].memberStats.currentkeystone;
-            var userLevel = usersInRPGEvents["rpg-" + memberInParty.id].memberStats.level
             if ( (keystonenumber) == event.challenge.keystone && userLevel >= KEYSTONE_UNLOCK_LEVEL){
                 var challengeId = getKeystoneIdFromChallenge(event.challenge.challenge)
                 profileDB.updateCurrentChallengeKeystone( memberInParty.id, keystonenumber + 1, challengeId, function(err, res){
