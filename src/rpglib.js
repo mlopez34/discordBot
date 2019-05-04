@@ -3508,6 +3508,8 @@ module.exports = {
                 mdPlusPercentage: 1,
                 armorPlusPercentage: 1,
                 spiritPlusPercentage: 1,
+                frenzyAdIncreasePercentage: 1,
+                echoIncreasePercentage: 1
             },
             enemies: {
                 easy: [
@@ -3841,6 +3843,8 @@ module.exports = {
                 mdPlusPercentage: 1.4,
                 armorPlusPercentage: 1.2,
                 spiritPlusPercentage: 1.2,
+                frenzyAdIncreasePercentage: 1.2,
+                echoIncreasePercentage: 1.2
             },
             enemies: {
                 easy: [
@@ -4093,6 +4097,8 @@ module.exports = {
                 mdPlusPercentage: 1.4,
                 armorPlusPercentage: 1.2,
                 spiritPlusPercentage: 1.2,
+                frenzyAdIncreasePercentage: 1.2,
+                echoIncreasePercentage: 1.2
             },
             enemies: {
                 easy: [
@@ -4362,6 +4368,8 @@ module.exports = {
                 mdPlusPercentage: 2,
                 armorPlusPercentage: 1.4,
                 spiritPlusPercentage: 1.4,
+                frenzyAdIncreasePercentage: 1.5,
+                echoIncreasePercentage: 1.5
             },
             enemies: {
                 easy: [
@@ -4633,6 +4641,8 @@ module.exports = {
                 mdPlusPercentage: 2,
                 armorPlusPercentage: 1.4,
                 spiritPlusPercentage: 1.4,
+                frenzyAdIncreasePercentage: 1.5,
+                echoIncreasePercentage: 1.5
             },
             enemies: {
                 easy: [
@@ -4975,6 +4985,8 @@ module.exports = {
                 mdPlusPercentage: 2,
                 armorPlusPercentage: 1.4,
                 spiritPlusPercentage: 1.4,
+                frenzyAdIncreasePercentage: 1.5,
+                echoIncreasePercentage: 1.5
             },
             enemies: {
                 easy: [
@@ -5246,6 +5258,8 @@ module.exports = {
                 mdPlusPercentage: 3.2,
                 armorPlusPercentage: 1.8,
                 spiritPlusPercentage: 1.8,
+                frenzyAdIncreasePercentage: 1.8,
+                echoIncreasePercentage: 1.8
             },
             enemies: {
                 easy: [
@@ -5545,6 +5559,8 @@ module.exports = {
                 mdPlusPercentage: 3.7,
                 armorPlusPercentage: 2,
                 spiritPlusPercentage: 2,
+                frenzyAdIncreasePercentage: 2.2,
+                echoIncreasePercentage: 2.2
             },
             enemies: {
                 easy: [
@@ -12120,7 +12136,7 @@ Hoover Dam
                             "puncture",
                             "balrogueDeath"
                         ],
-                        hp: 52600,
+                        hp: 50,
                         attackDmg: 2080,
                         magicDmg: 2270,
                         armor: 2100,
@@ -12175,7 +12191,7 @@ Hoover Dam
                             "puncture",
                             "emperorDeath"
                         ],
-                        hp: 52600,
+                        hp: 50,
                         attackDmg: 2080,
                         magicDmg: 2270,
                         armor: 2100,
@@ -12233,7 +12249,7 @@ Hoover Dam
                             "puncture",
                             "mysticalFairyDeath"
                         ],
-                        hp: 52600,
+                        hp: 50,
                         attackDmg: 1980,
                         magicDmg: 2070,
                         armor: 2100,
@@ -12285,7 +12301,7 @@ Hoover Dam
                             "puncture",
                             "barbarianDeath"
                         ],
-                        hp: 52600,
+                        hp: 50,
                         attackDmg: 1780,
                         magicDmg: 2270,
                         armor: 2100,
