@@ -2778,8 +2778,8 @@ function calculateRewards(event, memberInRpgEvent, allItems, numberOfMembers, fi
         }
         else if (allItems[item].itemraritycategory == "amulet"
         && ( allItems[item].amuletsource == "rpgchallenge"
-        || allItems[item].findinarea == event.area
-        || allItems[item].findinzone == getRpgZone(event.area)) ){
+        || (getRpgZone(event.area) && allItems[item].findinarea == event.area )
+        || (getRpgZone(event.area) && allItems[item].findinzone == getRpgZone(event.area)) ) ){
             ancientItems.push(allItems[item]);
         }
         else if(allItems[item].itemraritycategory == "artifact"
