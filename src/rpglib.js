@@ -192,6 +192,69 @@ module.exports = {
             adPercentage: 1,
             type: "physical"
         },
+        bite : {
+            name: "Bite",
+            abilityId: "bite",
+            dmg: 50,
+            adPercentage: 1,
+            type: "physical"
+        },
+        ram : {
+            name: "Ram",
+            abilityId: "ram",
+            dmg: 50,
+            adPercentage: 1.2,
+            type: "physical"
+        },
+        clap : {
+            name: "Clap",
+            abilityId: "clap",
+            dmg: 50,
+            adPercentage: 1.2,
+            type: "physical"
+        },
+        scam : {
+            name: "Scam",
+            abilityId: "scam",
+            dmg: 50,
+            adPercentage: 1.25,
+            type: "shadow"
+        },
+        inject : {
+            name: "Inject",
+            abilityId: "inject",
+            dmg: 50,
+            adPercentage: 1.25,
+            type: "shadow"
+        },
+        smuggle : {
+            name: "Smuggle",
+            abilityId: "smuggle",
+            dmg: 50,
+            adPercentage: 1.25,
+            type: "shadow"
+        },
+        hostage : {
+            name: "Hostage",
+            abilityId: "hostage",
+            dmg: 50,
+            adPercentage: 1.25,
+            type: "shadow"
+        },
+        punch : {
+            name: "Punch",
+            abilityId: "punch",
+            dmg: 50,
+            adPercentage: 1.25,
+            type: "physical"
+        },
+        scare : {
+            name: "Scare",
+            abilityId: "scare",
+            dmg: 50,
+            adPercentage: 1.25,
+            type: "shadow"
+        },
         corrupt : {
             name: "Corrupt",
             abilityId: "corrupt",
@@ -3435,6 +3498,7 @@ module.exports = {
     },
     rpgZones: {
         prarie: {
+            zoneAvatar: "https://i.imgur.com/wEmcFoo.png",
             zoneString : "The prarie was only the beginning, the dark woods, and mysterious underground tunnels contain uncharted life",
             startingArea: "meadows",
             name: "Prarie",
@@ -3767,6 +3831,7 @@ module.exports = {
         woods: {
             // Archenland, Beartooth River, Black Forest, Bryce Canyon, Dark Hedges, Darkwater Cove, Denali Park, 
             // Forest of Stone, Inca Trail, Lake Vostok, Meero Ruins
+            zoneAvatar: "https://i.imgur.com/iLoWi9d.png",
             zoneString : "Enemies are drawn to blood ....",
             startingArea: "archenland",
             name: "Woods",
@@ -4018,6 +4083,7 @@ module.exports = {
             ]
         },
         undergroundtunnels: {
+            zoneAvatar: "https://i.imgur.com/BRxnfgf.png",
             zoneString : "The underground tunnels have led you into an uncovered secret",
             startingArea: "klencory",
             name: "Underground Tunnels",
@@ -4072,7 +4138,7 @@ module.exports = {
                     
                 },
                 bigsur: {
-                    areaString : "Some items can are only sold in certain areas",
+                    areaString : "Some items are only sold in certain areas",
                     name: "Big Sur",
                     enemiesToDefeat: 34,
                     onCompleteAreasUnlocked: [
@@ -4109,7 +4175,7 @@ module.exports = {
                 },
                 greyheath: {
                     areaString : " ",
-                    name: "Gray Heath",
+                    name: "Grey Heath",
                     enemiesToDefeat: 49,
                     onCompleteAreasUnlocked: [
                         "angkorwat"
@@ -4205,7 +4271,7 @@ module.exports = {
                     
                 },
                 glowwormcave: {
-                    areaString : " ",
+                    areaString : "Unusual and colorful worms swarm the walls",
                     name: "Glowworm Cave",
                     enemiesToDefeat: 32,
                     onCompleteAreasUnlocked: [
@@ -4286,7 +4352,8 @@ module.exports = {
         },
         grandcanyon: {
             // Sanyou Cave
-            zoneString : "Grand Canyon 1",
+            zoneAvatar: "https://i.imgur.com/Z0PpQjf.png",
+            zoneString : "You've reached the peak of the Grand Canyon, what are you gonna do next?",
             startingArea: "sanyoucave",
             name: "Grand Canyon",
             enemyStatBuffs: {
@@ -4321,11 +4388,14 @@ module.exports = {
                 ]
             },
             areas: {
+                // 
                 sanyoucave: {
                     areaString : " ",
                     name: "Sanyou Cave",
                     enemiesToDefeat: 28,
                     onCompleteAreasUnlocked: [
+                        "zonitemple",
+                        "eddariver"
                     ],
                     shopItemsAvailable: [
 
@@ -4338,10 +4408,11 @@ module.exports = {
                     ],
                     
                 },
+                //
                 antelopecanyon: {
                     areaString : " ",
                     name: "Antelope Canyon",
-                    enemiesToDefeat: 38,
+                    enemiesToDefeat: 78,
                     onCompleteAreasUnlocked: [
                     ],
                     shopItemsAvailable: [
@@ -4355,11 +4426,13 @@ module.exports = {
                     ],
                     
                 },
+                //
                 arngormountains: {
                     areaString : " ",
                     name: "Arngor Mountain",
-                    enemiesToDefeat: 41,
+                    enemiesToDefeat: 91,
                     onCompleteAreasUnlocked: [
+                        "ayersrock"
                     ],
                     shopItemsAvailable: [
 
@@ -4372,10 +4445,11 @@ module.exports = {
                     ],
                     
                 },
+                //
                 ayersrock: {
                     areaString : " ",
                     name: "Ayers Rock",
-                    enemiesToDefeat: 35,
+                    enemiesToDefeat: 105,
                     onCompleteAreasUnlocked: [
                     ],
                     shopItemsAvailable: [
@@ -4389,11 +4463,14 @@ module.exports = {
                     ],
                     
                 },
+                // 
                 eddariver: {
                     areaString : " ",
                     name: "Edda River",
-                    enemiesToDefeat: 32,
+                    enemiesToDefeat: 132,
                     onCompleteAreasUnlocked: [
+                        "arngormountains",
+                        "gizaplateau"
                     ],
                     shopItemsAvailable: [
 
@@ -4406,10 +4483,11 @@ module.exports = {
                     ],
                     
                 },
+                //
                 gimlickvalley: {
                     areaString : " ",
                     name: "Gimlick Valley",
-                    enemiesToDefeat: 30,
+                    enemiesToDefeat: 130,
                     onCompleteAreasUnlocked: [
                     ],
                     shopItemsAvailable: [
@@ -4423,11 +4501,13 @@ module.exports = {
                     ],
                     
                 },
+                //
                 gizaplateau: {
                     areaString : " ",
                     name: "Giza Plateau",
-                    enemiesToDefeat: 39,
+                    enemiesToDefeat: 109,
                     onCompleteAreasUnlocked: [
+                        "gimlickvalley"
                     ],
                     shopItemsAvailable: [
 
@@ -4440,11 +4520,13 @@ module.exports = {
                     ],
                     
                 },
+                //
                 martokvalley: {
                     areaString : " ",
                     name: "Martok Valley",
-                    enemiesToDefeat: 41,
+                    enemiesToDefeat: 71,
                     onCompleteAreasUnlocked: [
+                        "whitedesert"
                     ],
                     shopItemsAvailable: [
 
@@ -4457,11 +4539,13 @@ module.exports = {
                     ],
                     
                 },
+                //
                 palawan: {
                     areaString : " ",
                     name: "Palawan",
-                    enemiesToDefeat: 42,
+                    enemiesToDefeat: 102,
                     onCompleteAreasUnlocked: [
+                        "whitedesert"
                     ],
                     shopItemsAvailable: [
 
@@ -4474,11 +4558,13 @@ module.exports = {
                     ],
                     
                 },
+                //
                 reach: {
                     areaString : " ",
                     name: "Reach",
-                    enemiesToDefeat: 49,
+                    enemiesToDefeat: 149,
                     onCompleteAreasUnlocked: [
+                        "antelopecanyon"
                     ],
                     shopItemsAvailable: [
 
@@ -4491,10 +4577,11 @@ module.exports = {
                     ],
                     
                 },
+                //
                 whitedesert: {
                     areaString : " ",
                     name: "White Desert",
-                    enemiesToDefeat: 47,
+                    enemiesToDefeat: 177,
                     onCompleteAreasUnlocked: [
                     ],
                     shopItemsAvailable: [
@@ -4508,11 +4595,15 @@ module.exports = {
                     ],
                     
                 },
+                // 
                 zonitemple: {
                     areaString : " ",
                     name: "Zoni Temple",
-                    enemiesToDefeat: 45,
+                    enemiesToDefeat: 65,
                     onCompleteAreasUnlocked: [
+                        "martokvalley",
+                        "palawan",
+                        "reach"
                     ],
                     shopItemsAvailable: [
 
@@ -4532,7 +4623,8 @@ module.exports = {
         },
         crystalpeak: {
             // Krell Canyon
-            zoneString : "Crystal Peak 1",
+            zoneAvatar: "https://i.imgur.com/SfTplrL.png",
+            zoneString : "Buried deep inside the underground bunker in Crystal Peak is a small boat with specific directions",
             startingArea: "krellcanyon",
             name: "Crystal Peak",
             enemyStatBuffs: {
@@ -4570,6 +4662,9 @@ module.exports = {
                     name: "Krell Canyon",
                     enemiesToDefeat: 48,
                     onCompleteAreasUnlocked: [
+                        "angelfalls",
+                        "euclidriver",
+                        "bwindipark"
 
                     ],
                     shopItemsAvailable: [
@@ -4580,8 +4675,288 @@ module.exports = {
                     ],
                     rpgDropsAvailable: [
 
+                    ]
+                },
+                //
+                angelfalls: {
+                    areaString : " ",
+                    name: "Angel Falls",
+                    enemiesToDefeat: 48,
+                    onCompleteAreasUnlocked: [
+                        "mendenhallice",
+                        "arlingtoncemetery"
                     ],
-                    
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                },
+                //
+                arlingtoncemetery: {
+                    areaString : " ",
+                    name: "Arlington Cemetery",
+                    enemiesToDefeat: 48,
+                    onCompleteAreasUnlocked: [
+
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                },
+                //
+                bagend: {
+                    areaString : " ",
+                    name: "Bag End",
+                    enemiesToDefeat: 48,
+                    onCompleteAreasUnlocked: [
+                        "cinqueterre",
+                        "cufflesbreath"
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                },
+                //
+                bayofkotor: {
+                    areaString : " ",
+                    name: "Bay of Kotor",
+                    enemiesToDefeat: 48,
+                    onCompleteAreasUnlocked: [
+                        "capricacity",
+                        "chichenitza"
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                },
+                //
+                bwindipark: {
+                    areaString : " ",
+                    name: "Bwindi Park",
+                    enemiesToDefeat: 48,
+                    onCompleteAreasUnlocked: [
+                        "bagend",
+                        "bayofkotor",
+                        "torresdelpaine",
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                },
+                //
+                capricacity: {
+                    areaString : " ",
+                    name: "Caprica City",
+                    enemiesToDefeat: 48,
+                    onCompleteAreasUnlocked: [
+
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                },
+                //
+                chichenitza: {
+                    areaString : " ",
+                    name: "Chichen Itza",
+                    enemiesToDefeat: 48,
+                    onCompleteAreasUnlocked: [
+
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                },
+                //
+                cinqueterre: {
+                    areaString : " ",
+                    name: "Cinque Terre",
+                    enemiesToDefeat: 48,
+                    onCompleteAreasUnlocked: [
+
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                },
+                //
+                cufflesbreath: {
+                    areaString : " ",
+                    name: "Cuffle's Breath",
+                    enemiesToDefeat: 48,
+                    onCompleteAreasUnlocked: [
+
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                },
+                //
+                euclidriver: {
+                    areaString : " ",
+                    name: "Euclid River",
+                    enemiesToDefeat: 48,
+                    onCompleteAreasUnlocked: [
+                        "himachalpradash",
+                        "mendenhallice"
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                },
+                //
+                himachalpradash: {
+                    areaString : " ",
+                    name: "Himachal Pradash",
+                    enemiesToDefeat: 48,
+                    onCompleteAreasUnlocked: [
+                        "penroseharbor",
+                        "torresdelpaine"
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                },
+                //
+                mendenhallice: {
+                    areaString : " ",
+                    name: "Mendenhall Ice Caves",
+                    enemiesToDefeat: 48,
+                    onCompleteAreasUnlocked: [
+
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                },
+                //
+                penroseharbor: {
+                    areaString : " ",
+                    name: "Penrose Harbor",
+                    enemiesToDefeat: 48,
+                    onCompleteAreasUnlocked: [
+
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                },
+                //
+                torresdelpaine: {
+                    areaString : " ",
+                    name: "Torres del Paine",
+                    enemiesToDefeat: 48,
+                    enemies: [
+                        {
+                            enemyId: "racketeer",
+                            enemyDifficulty: "hard"
+                        },
+                        {
+                            enemyId: "sniper",
+                            enemyDifficulty: "hard"
+                        },
+                        {
+                            enemyId: "gascollector",
+                            enemyDifficulty: "hard"
+                        },
+                        {
+                            enemyId: "gascollector",
+                            enemyDifficulty: "hard"
+                        },
+                        {
+                            enemyId: "sniper",
+                            enemyDifficulty: "hard"
+                        },
+                    ],
+                    onCompleteAreasUnlocked: [
+
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
                 }
             },
             onCompleteZonesUnlocked: [
@@ -4590,7 +4965,8 @@ module.exports = {
         },
         matamoros: {
             // La Jolla Cove
-            zoneString : "Matamoros 1",
+            zoneAvatar: "https://i.imgur.com/cxffazN.png",
+            zoneString : "Una ruta directa por el mar",
             startingArea: "lajoyacove",
             name: "Matamoros",
             enemyStatBuffs: {
@@ -4620,11 +4996,14 @@ module.exports = {
                 ]
             },
             areas: {
+                //
                 lajoyacove: {
                     areaString : " ",
                     name: "La Jolla Cove",
-                    enemiesToDefeat: 21,
+                    enemiesToDefeat: 41,
                     onCompleteAreasUnlocked: [
+                        "caminodesantiago",
+                        "arcdetriomphe"
                     ],
                     shopItemsAvailable: [
 
@@ -4637,11 +5016,13 @@ module.exports = {
                     ],
                     
                 },
+                //
                 arcdetriomphe: {
                     areaString : " ",
                     name: "Arc de Triomphe",
-                    enemiesToDefeat: 52,
+                    enemiesToDefeat: 92,
                     onCompleteAreasUnlocked: [
+                        "jartar"
                     ],
                     shopItemsAvailable: [
 
@@ -4654,11 +5035,35 @@ module.exports = {
                     ],
                     boss: "bossId"
                 },
+                //
                 caminodesantiago: {
                     areaString : " ",
                     name: "Camino de Santiago",
-                    enemiesToDefeat: 54,
+                    enemiesToDefeat: 94,
+                    enemies: [
+                        {
+                            enemyId: "ignoramus",
+                            enemyDifficulty: "medium"
+                        },
+                        {
+                            enemyId: "disassembler",
+                            enemyDifficulty: "medium"
+                        },
+                        {
+                            enemyId: "samuraiwarrior",
+                            enemyDifficulty: "hard"
+                        },
+                        {
+                            enemyId: "gascollector",
+                            enemyDifficulty: "hard"
+                        },
+                        {
+                            enemyId: "gascollector",
+                            enemyDifficulty: "hard"
+                        },
+                    ],
                     onCompleteAreasUnlocked: [
+                        "karnimatatemple"
                     ],
                     shopItemsAvailable: [
 
@@ -4671,11 +5076,13 @@ module.exports = {
                     ],
                     boss: "bossId"
                 },
+                //
                 jartar: {
                     areaString : " ",
                     name: "Jartar",
-                    enemiesToDefeat: 30,
+                    enemiesToDefeat: 110,
                     onCompleteAreasUnlocked: [
+                        "klandragon"
                     ],
                     shopItemsAvailable: [
 
@@ -4688,11 +5095,13 @@ module.exports = {
                     ],
                     boss: "bossId"
                 },
+                //
                 karnimatatemple: {
                     areaString : " ",
                     name: "Karni Mata Temple",
-                    enemiesToDefeat: 49,
+                    enemiesToDefeat: 119,
                     onCompleteAreasUnlocked: [
+                        "riodelossietecolores"
                     ],
                     shopItemsAvailable: [
 
@@ -4705,11 +5114,13 @@ module.exports = {
                     ],
                     boss: "bossId"
                 },
+                //
                 klandragon: {
                     areaString : " ",
                     name: "Klandagon",
-                    enemiesToDefeat: 41,
+                    enemiesToDefeat: 141,
                     onCompleteAreasUnlocked: [
+                        "sapavalley"
                     ],
                     shopItemsAvailable: [
 
@@ -4722,11 +5133,13 @@ module.exports = {
                     ],
                     boss: "bossId"
                 },
+                //
                 riodelossietecolores: {
                     areaString : " ",
                     name: "Rio de Los Siete Colores",
-                    enemiesToDefeat: 42,
+                    enemiesToDefeat: 122,
                     onCompleteAreasUnlocked: [
+                        "sedona"
                     ],
                     shopItemsAvailable: [
 
@@ -4739,11 +5152,35 @@ module.exports = {
                     ],
                     boss: "bossId"
                 },
+                //
                 sapavalley: {
                     areaString : " ",
                     name: "Sa Pa Valley",
-                    enemiesToDefeat: 38,
+                    enemiesToDefeat: 158,
                     onCompleteAreasUnlocked: [
+                        "taxco"
+                    ],
+                    enemies: [
+                        {
+                            enemyId: "sniper",
+                            enemyDifficulty: "hard"
+                        },
+                        {
+                            enemyId: "sniper",
+                            enemyDifficulty: "hard"
+                        },
+                        {
+                            enemyId: "sniper",
+                            enemyDifficulty: "hard"
+                        },
+                        {
+                            enemyId: "sniper",
+                            enemyDifficulty: "hard"
+                        },
+                        {
+                            enemyId: "sniper",
+                            enemyDifficulty: "hard"
+                        },
                     ],
                     shopItemsAvailable: [
 
@@ -4756,10 +5193,11 @@ module.exports = {
                     ],
                     boss: "bossId"
                 },
+                //
                 sedona: {
                     areaString : " ",
                     name: "Sedona",
-                    enemiesToDefeat: 39,
+                    enemiesToDefeat: 199,
                     onCompleteAreasUnlocked: [
                     ],
                     shopItemsAvailable: [
@@ -4773,10 +5211,11 @@ module.exports = {
                     ],
                     boss: "bossId"
                 },
+                //
                 taxco: {
                     areaString : " ",
                     name: "Taxco",
-                    enemiesToDefeat: 20,
+                    enemiesToDefeat: 210,
                     onCompleteAreasUnlocked: [
                     ],
                     shopItemsAvailable: [
@@ -4797,9 +5236,10 @@ module.exports = {
         },
         tadrartacacus: {
             // Karnaca
-            zoneString : "Tadrartacacus 1",
+            zoneAvatar: "https://i.imgur.com/NHOsGDG.png",
+            zoneString : "Have you found the secret stash under the MegaCorp Armory? of course not, it is securely guarded",
             startingArea: "karnaca",
-            name: "Tadrartacacus",
+            name: "Tadrart Acacus",
             enemyStatBuffs: {
                 hpPlusPercentage: 2.2,
                 adPlusPercentage: 3.2,
@@ -4814,25 +5254,31 @@ module.exports = {
                     "hungryboar"
                 ],
                 medium: [
-                    "tacobandit", "tacobandit", "tacobandit", "tacobandit",
+                    "disassembler", "disassembler", "disassembler", "disassembler",
                     "ignoramus",
                     "auctionsniper",
                 ],
                 hard: [
-                    "footballplayer", "footballplayer", "footballplayer",
+                    "silverback", "silverback", "silverback",
+                    "voodoowitch", "voodoowitch", "voodoowitch",
                     "capo"
                 ],
                 boss: [
-                    "vampire",
+                    "vampire", "vampire", "vampire", 
                     "desperado"
                 ]
             },
             areas: {
+                //
                 karnaca: {
                     areaString : " ",
                     name: "Karnaca",
-                    enemiesToDefeat: 68,
+                    enemiesToDefeat: 78,
                     onCompleteAreasUnlocked: [
+                        "nazcalines",
+                        "badabesurt",
+                        "borobudurtemple",
+                        "canocristales",
                     ],
                     shopItemsAvailable: [
 
@@ -4843,7 +5289,303 @@ module.exports = {
                     rpgDropsAvailable: [
 
                     ]
-                }
+                },
+                //
+                abrahamlake: {
+                    areaString : " ",
+                    name: "Abraham Lake",
+                    enemiesToDefeat: 108,
+                    onCompleteAreasUnlocked: [
+                        "azerilcaverns"
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                },
+                //
+                azerilcaverns: {
+                    areaString : " ",
+                    name: "Azeril Caverns",
+                    enemiesToDefeat: 121,
+                    onCompleteAreasUnlocked: [
+                        "delphimuseum"
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                },
+                //
+                badabesurt: {
+                    areaString : " ",
+                    name: "Badab-e Surt",
+                    enemiesToDefeat: 153,
+                    onCompleteAreasUnlocked: [
+                        "abrahamlake"
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                },
+                //
+                borobudurtemple: {
+                    areaString : " ",
+                    name: "Borobudur Temple",
+                    enemiesToDefeat: 179,
+                    onCompleteAreasUnlocked: [
+                        "cooberpedy"
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                },
+                //
+                canocristales: {
+                    areaString : " ",
+                    name: "Cano Cristales",
+                    enemiesToDefeat: 37,
+                    onCompleteAreasUnlocked: [
+                        "chocolatehills"
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                },
+                //
+                chocolatehills: {
+                    areaString : " ",
+                    name: "Chocolate Hills",
+                    enemiesToDefeat: 155,
+                    onCompleteAreasUnlocked: [
+                        "megacorparmory"
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                },
+                //
+                cooberpedy: {
+                    areaString : " ",
+                    name: "Coober Pedy",
+                    enemiesToDefeat: 122,
+                    onCompleteAreasUnlocked: [
+                        "hagrowswamp"
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                },
+                //
+                delphimuseum: {
+                    areaString : " ",
+                    name: "Delphi Museum",
+                    enemiesToDefeat: 90,
+                    onCompleteAreasUnlocked: [
+                        "hagiasophia"
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                },
+                //
+                hagiasophia: {
+                    areaString : " ",
+                    name: "Hagia Sophia",
+                    enemiesToDefeat: 178,
+                    onCompleteAreasUnlocked: [
+                        "hagrowswamp"
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                },
+                //
+                hagrowswamp: {
+                    areaString : " ",
+                    name: "Hagrow Swamp",
+                    enemiesToDefeat: 136,
+                    onCompleteAreasUnlocked: [
+                        "megacorparmory"
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                },
+                //
+                megacorparmory: {
+                    areaString : "Your mind is telling you to stay, your body wants to escape",
+                    name: "MegaCorp Armory",
+                    enemiesToDefeat: 101,
+                    onCompleteAreasUnlocked: [
+                        "hagrowswamp"
+                    ],
+                    enemies: [
+                        {
+                            enemyId: "zeta",
+                            enemyDifficulty: "hard"
+                        },
+                        {
+                            enemyId: "capo",
+                            enemyDifficulty: "hard"
+                        },
+                        {
+                            enemyId: "gascollector",
+                            enemyDifficulty: "hard"
+                        },
+                        {
+                            enemyId: "gascollector",
+                            enemyDifficulty: "hard"
+                        },
+                        {
+                            enemyId: "capo",
+                            enemyDifficulty: "hard"
+                        },
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                },
+                //
+                nazcalines: {
+                    areaString : " ",
+                    name: "Nazca Lines",
+                    enemiesToDefeat: 114,
+                    onCompleteAreasUnlocked: [
+                        "megacorparmory"
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                },
+            },
+            onCompleteZonesUnlocked: [
+                "costademarfil"
+            ]
+        },
+
+        costademarfil: {
+            zoneAvatar: "https://i.imgur.com/3Eohx8s.png",
+            zoneString : "Things get a little rough from here, you may need reinforcements",
+            startingArea: "argentumbay",
+            name: "Costa De Marfil",
+            enemyStatBuffs: {
+                hpPlusPercentage: 2.5,
+                adPlusPercentage: 3.7,
+                mdPlusPercentage: 3.7,
+                armorPlusPercentage: 2,
+                spiritPlusPercentage: 2,
+            },
+            enemies: {
+                easy: [
+                    "tacosmuggler", "tacosmuggler", "tacosmuggler", "tacosmuggler", 
+                    "addict", "addict", "addict", 
+                    "hungryboar"
+                ],
+                medium: [
+                    "tarzan", "tarzan", "tarzan", "tarzan",
+                    "witch",
+                    "auctionsniper",
+                ],
+                hard: [
+                    "distributor", "distributor", "distributor",
+                    "walrus", "walrus", "walrus",
+                    "capo"
+                ],
+                boss: [
+                    "trex", "trex", "trex", 
+                    "executioner"
+                ]
+            },
+            areas: {
+                //
+                argentumbay: {
+                    areaString : "Welcome to the coast of marvels",
+                    name: "Argentum Bay",
+                    enemiesToDefeat: 178,
+                    onCompleteAreasUnlocked: [
+
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                },
             },
             onCompleteZonesUnlocked: [
                 "costademarfil"
@@ -4851,9 +5593,7 @@ module.exports = {
         },
 
         //// NOT DONE TODO: FINISH THESE AND CONNECT
-        costademarfil: {
 
-        },
         patagonia: {
 
         },
@@ -5300,6 +6040,37 @@ Hoover Dam
         reach: "grandcanyon",
         whitedesert: "grandcanyon",
         zonitemple:  "grandcanyon",
+
+        krellcanyon: "crystalpeak",
+        angelfalls: "crystalpeak",
+        arlingtoncemetery: "crystalpeak",
+        bagend: "crystalpeak",
+        bayofkotor: "crystalpeak",
+        bwindipark: "crystalpeak",
+        capricacity: "crystalpeak",
+        chichenitza: "crystalpeak",
+        cinqueterre: "crystalpeak",
+        cufflesbreath: "crystalpeak",
+        euclidriver: "crystalpeak",
+        himachalpradash: "crystalpeak",
+        mendenhallice: "crystalpeak",
+        penroseharbor: "crystalpeak",
+        torresdelpaine: "crystalpeak",
+
+        karnaca: "tadrartacacus",
+        abrahamlake: "tadrartacacus",
+        azerilcaverns: "tadrartacacus",
+        badabesurt: "tadrartacacus",
+        borobudurtemple: "tadrartacacus",
+        canocristales: "tadrartacacus",
+        chocolatehills: "tadrartacacus",
+        cooberpedy: "tadrartacacus",
+        delphimuseum: "tadrartacacus",
+        hagiasophia: "tadrartacacus",
+        hagrowswamp: "tadrartacacus",
+        megacorparmory: "tadrartacacus",
+        nazcalines: "tadrartacacus",
+
     },
     enemiesToEncounter: {
         summoned: {
@@ -6559,7 +7330,7 @@ Hoover Dam
             },
             hungryboar: {
                 name: "Hungry Boar",
-                abilities: ["attack", "attack", "poison", "poison", "tacowall"],
+                abilities: ["bite", "bite", "slash", "slash", "shield"],
                 buffs: [],
                 keystoneStats: {
                     hp: [1200, 3500, 6200, 10000, 15000 ],
@@ -6580,7 +7351,7 @@ Hoover Dam
             },
             bull: {
                 name: "Bull",
-                abilities: ["attack", "attack", "poison", "poison", "tacowall"],
+                abilities: ["ram", "ram", "assist", "assist", "empower"],
                 buffs: [],
                 keystoneStats: {
                     hp: [1200, 3500, 6200, 10000, 15000 ],
@@ -6601,7 +7372,7 @@ Hoover Dam
             },
             cheetah: {
                 name: "Cheetah",
-                abilities: ["attack", "attack", "poison", "poison", "tacowall"],
+                abilities: ["claw", "claw", "claw", "claw", "protect"],
                 buffs: [],
                 keystoneStats: {
                     hp: [1200, 3500, 6200, 10000, 15000 ],
@@ -6622,7 +7393,7 @@ Hoover Dam
             },
             hyena: {
                 name: "Hyena",
-                abilities: ["attack", "attack", "poison", "poison", "tacowall"],
+                abilities: ["ferociousBite", "ferociousBite", "iceshards", "iceshards", "barrier"],
                 buffs: [],
                 keystoneStats: {
                     hp: [1200, 3500, 6200, 10000, 15000 ],
@@ -6643,7 +7414,7 @@ Hoover Dam
             },
             addict: {
                 name: "Addict",
-                abilities: ["attack", "attack", "poison", "poison", "tacowall"],
+                abilities: ["inject", "inject", "orchatasip", "inject", "bandaid"],
                 buffs: [],
                 keystoneStats: {
                     hp: [1200, 3500, 6200, 10000, 15000 ],
@@ -6664,7 +7435,7 @@ Hoover Dam
             },
             angrydwarf: {
                 name: "Angry Dwarf",
-                abilities: ["attack", "attack", "poison", "poison", "tacowall"],
+                abilities: ["bite", "bite", "poke", "poke", "poke"],
                 buffs: [],
                 keystoneStats: {
                     hp: [1200, 3500, 6200, 10000, 15000 ],
@@ -6685,7 +7456,7 @@ Hoover Dam
             },
             extremist: {
                 name: "Extremist",
-                abilities: ["attack", "attack", "poison", "poison", "tacowall"],
+                abilities: ["attack", "attack", "hostage", "hostage", "bomb"],
                 buffs: [],
                 keystoneStats: {
                     hp: [1200, 3500, 6200, 10000, 15000 ],
@@ -6706,7 +7477,7 @@ Hoover Dam
             },
             thug: {
                 name: "Thug",
-                abilities: ["attack", "attack", "poison", "poison", "tacowall"],
+                abilities: ["attack", "attack", "punch", "punch", "bandaid"],
                 buffs: [],
                 keystoneStats: {
                     hp: [1200, 3500, 6200, 10000, 15000 ],
@@ -6727,7 +7498,7 @@ Hoover Dam
             },
             tacosmuggler: {
                 name: "Taco Smuggler",
-                abilities: ["attack", "attack", "poison", "poison", "tacowall"],
+                abilities: ["clap", "clap", "curse", "curse", "clap"],
                 buffs: [],
                 keystoneStats: {
                     hp: [1200, 3500, 6200, 10000, 15000 ],
@@ -6748,7 +7519,7 @@ Hoover Dam
             },
             seedthief: {
                 name: "Seed Thief",
-                abilities: ["attack", "attack", "poison", "poison", "tacowall"],
+                abilities: ["attack", "attack", "tacoheal", "tacoheal", "poke"],
                 buffs: [],
                 keystoneStats: {
                     hp: [1200, 3500, 6200, 10000, 15000 ],
@@ -7014,7 +7785,7 @@ Hoover Dam
             },
             disassembler: {
                 name: "Disassembler",
-                abilities: ["attack", "attack", "uppercut", "uppercut", "weaken"],
+                abilities: ["clap", "clap", "scam", "scam", "weaken"],
                 buffs: [],
                 keystoneStats: {
                     hp: [1200, 3500, 6200, 10000, 15000 ],
@@ -7035,7 +7806,7 @@ Hoover Dam
             },
             nigerianprince: {
                 name: "Nigerian Prince",
-                abilities: ["attack", "attack", "uppercut", "uppercut", "weaken"],
+                abilities: ["scam", "scam", "scam", "elixir", "cripple"],
                 buffs: [],
                 keystoneStats: {
                     hp: [1200, 3500, 6200, 10000, 15000 ],
@@ -7056,7 +7827,7 @@ Hoover Dam
             },
             troglodyte: {
                 name: "Troglodyte",
-                abilities: ["attack", "attack", "uppercut", "uppercut", "weaken"],
+                abilities: ["punch", "punch", "claw", "claw", "scold"],
                 buffs: [],
                 keystoneStats: {
                     hp: [1200, 3500, 6200, 10000, 15000 ],
@@ -7077,7 +7848,7 @@ Hoover Dam
             },
             ignoramus: {
                 name: "Ignoramus",
-                abilities: ["attack", "attack", "uppercut", "uppercut", "weaken"],
+                abilities: ["scare", "scare", "punch", "punch", "freeze"],
                 buffs: [],
                 keystoneStats: {
                     hp: [1200, 3500, 6200, 10000, 15000 ],
@@ -7098,7 +7869,7 @@ Hoover Dam
             },
             dullard: {
                 name: "Dullard",
-                abilities: ["attack", "attack", "uppercut", "uppercut", "weaken"],
+                abilities: ["ram", "ram", "claw", "claw", "protect"],
                 buffs: [],
                 keystoneStats: {
                     hp: [1200, 3500, 6200, 10000, 15000 ],
@@ -7119,7 +7890,7 @@ Hoover Dam
             },
             dolt: {
                 name: "Dolt",
-                abilities: ["attack", "attack", "uppercut", "uppercut", "weaken"],
+                abilities: ["attack", "attack", "slash", "slash", "cripple"],
                 buffs: [],
                 keystoneStats: {
                     hp: [1200, 3500, 6200, 10000, 15000 ],
@@ -7140,7 +7911,7 @@ Hoover Dam
             },
             auctionsniper: {
                 name: "Auction Sniper",
-                abilities: ["attack", "attack", "uppercut", "uppercut", "weaken"],
+                abilities: ["scam", "scam", "bandaid", "empower", "freeze"],
                 buffs: [],
                 keystoneStats: {
                     hp: [1200, 3500, 6200, 10000, 15000 ],
@@ -7161,7 +7932,7 @@ Hoover Dam
             },
             marketflipper: {
                 name: "Market Flipper",
-                abilities: ["attack", "attack", "uppercut", "uppercut", "weaken"],
+                abilities: ["scam", "scam", "iceshards", "iceshards", "scold"],
                 buffs: [],
                 keystoneStats: {
                     hp: [1200, 3500, 6200, 10000, 15000 ],
@@ -7182,7 +7953,7 @@ Hoover Dam
             },
             bear: {
                 name: "Bear",
-                abilities: ["attack", "attack", "uppercut", "uppercut", "weaken"],
+                abilities: ["ferociousBite", "ferociousBite", "ferociousBite", "ferociousBite", "shield"],
                 buffs: [],
                 keystoneStats: {
                     hp: [1200, 3500, 6200, 10000, 15000 ],
@@ -7203,7 +7974,7 @@ Hoover Dam
             },
             philistine: {
                 name: "Philistine",
-                abilities: ["attack", "attack", "uppercut", "uppercut", "weaken"],
+                abilities: ["clap", "clap", "clap", "smuggle", "poke"],
                 buffs: [],
                 keystoneStats: {
                     hp: [1200, 3500, 6200, 10000, 15000 ],
@@ -7224,7 +7995,7 @@ Hoover Dam
             },
             suicidebomber: {
                 name: "Suicidebomber",
-                abilities: ["attack", "attack", "uppercut", "uppercut", "weaken"],
+                abilities: ["attack", "cripple", "cripple", "weaken", "bomb"],
                 buffs: [],
                 keystoneStats: {
                     hp: [1200, 3500, 6200, 10000, 15000 ],
@@ -7245,7 +8016,28 @@ Hoover Dam
             },
             witch: {
                 name: "Witch",
-                abilities: ["attack", "attack", "uppercut", "uppercut", "weaken"],
+                abilities: ["curse", "curse", "guac", "guac", "scold"],
+                buffs: [],
+                keystoneStats: {
+                    hp: [1200, 3500, 6200, 10000, 15000 ],
+                    attackDmg: [300, 500, 900, 1500, 2300],
+                    magicDmg: [300, 500, 900, 1500, 2300],
+                    abilities: []
+                },
+                hpPerPartyMember: 190,
+                adPerPartyMember: 14,
+                mdPerPartyMember: 14,
+                hp: 640,
+                attackDmg: 90,
+                magicDmg: 90,
+                armor: 350,
+                spirit: 550,
+                difficulty: "medium",
+                element: "normal"
+            },
+            tarzan: {
+                name: "Tarzan",
+                abilities: ["claw", "claw", "hostage", "hostage", "elixir"],
                 buffs: [],
                 keystoneStats: {
                     hp: [1200, 3500, 6200, 10000, 15000 ],
@@ -7266,7 +8058,7 @@ Hoover Dam
             },
             evilclown: {
                 name: "Evil Clown",
-                abilities: ["attack", "attack", "uppercut", "uppercut", "weaken"],
+                abilities: ["scare", "scare", "corrupt", "corrupt", "hostage"],
                 buffs: [],
                 keystoneStats: {
                     hp: [1200, 3500, 6200, 10000, 15000 ],
@@ -7287,7 +8079,7 @@ Hoover Dam
             },
             charlatan: {
                 name: "Charlatan",
-                abilities: ["attack", "attack", "uppercut", "uppercut", "weaken"],
+                abilities: ["attack", "attack", "claw", "claw", "weaken"],
                 buffs: [],
                 keystoneStats: {
                     hp: [1200, 3500, 6200, 10000, 15000 ],
@@ -7308,7 +8100,7 @@ Hoover Dam
             },
             tweener: {
                 name: "Tweener",
-                abilities: ["attack", "attack", "uppercut", "uppercut", "weaken"],
+                abilities: ["smuggle", "smuggle", "inject", "inject", "claw"],
                 buffs: [],
                 keystoneStats: {
                     hp: [1200, 3500, 6200, 10000, 15000 ],
@@ -7331,7 +8123,7 @@ Hoover Dam
         hard: {
             silverback: {
                 name: "Silverback",
-                abilities: ["attack", "attack", "uppercut", "uppercut", "weaken"],
+                abilities: ["ferociousBite", "claw", "slash", "slash", "cripple"],
                 buffs: [],
                 keystoneStats: {
                     hp: [1200, 3500, 6200, 10000, 15000 ],
@@ -7483,7 +8275,7 @@ Hoover Dam
             },
             voodoowitch: {
                 name: "Voodoo Witch",
-                abilities: ["attack" , "attack" , "curse", "poison", "enemyshoot", "enemyshoot","freeze"],
+                abilities: ["attack" , "attack" , "curse", "curse", "poison", "poison", "freeze"],
                 buffs: [
                     {
                         name: "frenzy",
@@ -7518,7 +8310,7 @@ Hoover Dam
             },
             sniper: {
                 name: "Sniper",
-                abilities: ["attack" , "attack" , "curse", "poison", "enemyshoot", "enemyshoot","freeze"],
+                abilities: ["attack"  , "punch", "enemyshoot", "enemyshoot", "enemyshoot","freeze"],
                 buffs: [
                     {
                         name: "frenzy",
@@ -7553,7 +8345,7 @@ Hoover Dam
             },
             gascollector: {
                 name: "Gas Collector",
-                abilities: ["attack" , "attack" , "curse", "poison", "enemyshoot", "enemyshoot","freeze"],
+                abilities: ["attack" , "attack" , "poison", "poison", "inject", "inject","freeze"],
                 buffs: [
                     {
                         name: "frenzy",
@@ -7588,7 +8380,7 @@ Hoover Dam
             },
             capo: {
                 name: "Capo",
-                abilities: ["attack" , "attack" , "curse", "poison", "enemyshoot", "enemyshoot","freeze"],
+                abilities: ["punch" , "punch" , "hostage", "hostage", "decapitate", "tacoheal", "weaken"],
                 buffs: [
                     {
                         name: "frenzy",
@@ -7623,7 +8415,7 @@ Hoover Dam
             },
             zeta: {
                 name: "Zeta",
-                abilities: ["attack" , "attack" , "curse", "poison", "enemyshoot", "enemyshoot","freeze"],
+                abilities: ["attack"  , "punch", "decapitate", "decapitate","weaken"],
                 buffs: [
                     {
                         name: "frenzy",
@@ -7658,7 +8450,7 @@ Hoover Dam
             },
             racketeer: {
                 name: "Racketeer",
-                abilities: ["attack" , "attack" , "curse", "poison", "enemyshoot", "enemyshoot","freeze"],
+                abilities: ["scare" , "scare" , "shoot", "shoot", "bomb", "bomb","freeze"],
                 buffs: [
                     {
                         name: "frenzy",
@@ -7693,7 +8485,7 @@ Hoover Dam
             },
             tacopirate: {
                 name: "Taco Pirate",
-                abilities: ["attack" , "attack" , "curse", "poison", "enemyshoot", "enemyshoot","freeze"],
+                abilities: ["claw" , "claw" , "hostage", "hostage","empower"],
                 buffs: [
                     {
                         name: "frenzy",
@@ -7728,7 +8520,7 @@ Hoover Dam
             },
             walrus: {
                 name: "Walrus",
-                abilities: ["attack" , "attack" , "curse", "poison", "enemyshoot", "enemyshoot","freeze"],
+                abilities: ["ferociousBite" , "ferociousBite" , "iceshards", "iceshards","freeze"],
                 buffs: [
                     {
                         name: "frenzy",
@@ -7763,7 +8555,7 @@ Hoover Dam
             },
             delinquent: {
                 name: "Delinquent",
-                abilities: ["attack" , "attack" , "curse", "poison", "enemyshoot", "enemyshoot","freeze"],
+                abilities: ["drain" , "drain" , "smuggle", "smuggle", "corrupt", "currupt"],
                 buffs: [
                     {
                         name: "frenzy",
@@ -7798,7 +8590,7 @@ Hoover Dam
             },
             distributor: {
                 name: "Distributor",
-                abilities: ["attack" , "attack" , "curse", "poison", "enemyshoot", "enemyshoot","freeze"],
+                abilities: ["punch" , "punch" , "curse", "poison", "poison", "inject", "shield"],
                 buffs: [
                     {
                         name: "frenzy",
@@ -7988,7 +8780,7 @@ Hoover Dam
             sicario: {
                 name: "Sicario",
                 abilities: [
-                    "attack", "attack", "enemyshoot", "enemyshoot", "slash", "slash", "cripple"
+                    "attack", "punch", "decapitate", "decapitate", "slash", "tacoheal", "tacoheal"
                 ],
                 buffs: [
                     {
@@ -8026,7 +8818,7 @@ Hoover Dam
             trex: {
                 name: "T-Rex",
                 abilities: [
-                    "attack", "attack", "enemyshoot", "enemyshoot", "slash", "slash", "cripple"
+                    "claw", "claw", "ferociousBite", "slash", "slash", "ferociousBite", "cripple"
                 ],
                 buffs: [
                     {
@@ -8064,7 +8856,7 @@ Hoover Dam
             executioner: {
                 name: "Executioner",
                 abilities: [
-                    "attack", "attack", "enemyshoot", "enemyshoot", "slash", "slash", "cripple"
+                    "attack", "attack", "execute", "execute", "tacoheal", "tacoheal", "cripple"
                 ],
                 buffs: [
                     {
@@ -8102,7 +8894,7 @@ Hoover Dam
             beheader: {
                 name: "Beheader",
                 abilities: [
-                    "attack", "attack", "enemyshoot", "enemyshoot", "slash", "slash", "cripple"
+                    "attack", "attack", "decapitate", "decapitate", "slash", "slash", "cripple"
                 ],
                 buffs: [
                     {
@@ -8140,7 +8932,7 @@ Hoover Dam
             goliath: {
                 name: "Goliath",
                 abilities: [
-                    "attack", "attack", "enemyshoot", "enemyshoot", "slash", "slash", "cripple"
+                    "ram", "ram", "clap", "clap", "iceshards", "iceshards", "cripple"
                 ],
                 buffs: [
                     {
@@ -8178,7 +8970,7 @@ Hoover Dam
             cyclops: {
                 name: "Cyclops",
                 abilities: [
-                    "attack", "attack", "enemyshoot", "enemyshoot", "slash", "slash", "cripple"
+                    "corrupt", "corrupt", "laserBeam", "laserBeam", "laserBeam", "laserBeam", "shell"
                 ],
                 buffs: [
                     {

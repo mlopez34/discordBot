@@ -1284,7 +1284,8 @@ module.exports.rpgReady = function(message, itemsAvailable, amuletItemsById, buf
                                                             else{
                                                                 var foundBoss = false;
                                                                 var areaToCheck = activeRPGEvents[rpgEvent].area
-                                                                var zoneUserIsIn = getRpgZone(areaToCheck) /// create this function
+                                                                var zoneUserIsIn = getRpgZone(areaToCheck)
+                                                                var zoneAvatar = rpgZones[zoneUserIsIn].zoneAvatar
 
                                                                 // FIRST check if the area has predefined enemies, if it doesnt then go for the zone enemies
                                                                 if (rpgZones[zoneUserIsIn].areas[areaToCheck].enemies){
@@ -1597,6 +1598,8 @@ module.exports.rpgReady = function(message, itemsAvailable, amuletItemsById, buf
                                                                     var avatarURL = getThumbnailFromChallenge(challengeNum)
                                                                     embed.setThumbnail(avatarURL);
                                                                 }
+                                                            }else if (zoneAvatar){
+                                                                embed.setThumbnail(zoneAvatar);
                                                             }
                                                             // party members
                                                             //var groupString = "";
@@ -1747,7 +1750,8 @@ module.exports.displayMap = function(message, zoneToCheck){
             var zonesAvailableForUserMap = getZonesAvailableForUser(userData.data)
             var currentZoneName = rpgZones[ getRpgZone( userData.data.currentarea ) ].name
             var currentAreaName = rpgZones[ getRpgZone( userData.data.currentarea ) ].areas[userData.data.currentarea].name
-            mapEmbedBuilder(message, listOfAreasInZone, zonesAvailableForUserMap, currentZoneName, currentAreaName)
+            var zoneAvatar = rpgZones[ getRpgZone( userData.data.currentarea ) ].zoneAvatar
+            mapEmbedBuilder(message, listOfAreasInZone, zonesAvailableForUserMap, currentZoneName, currentAreaName, zoneAvatar)
         }
     })
 }
@@ -1787,7 +1791,7 @@ function keystonesEmbedBuilder(message, keystonesString, userData){
     message.channel.send({embed});
 }
 
-function mapEmbedBuilder(message, listOfAreasInZone, zonesAvailableForUserMap, currentZoneName, currentAreaName){
+function mapEmbedBuilder(message, listOfAreasInZone, zonesAvailableForUserMap, currentZoneName, currentAreaName, zoneAvatar){
     var zonesAvailableString = ""
     var areasInZoneString = ""
     for (var z in zonesAvailableForUserMap){
@@ -1811,8 +1815,10 @@ function mapEmbedBuilder(message, listOfAreasInZone, zonesAvailableForUserMap, c
     .setDescription(":map: travel to different areas via -travel [areaname] OR -travel [zonename]\nYou are currently in " + currentZoneName + " - " + currentAreaName)
     .addField("Zones available", zonesAvailableString, true)
     .addField("Areas available in " + currentZoneName, areasInZoneString, true)
-    .setThumbnail(message.author.avatarURL)
     .setColor(0xbfa5ff)
+    if (zoneAvatar){
+        embed.setImage(zoneAvatar)
+    }
     message.channel.send({embed});
 }
 
