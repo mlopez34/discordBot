@@ -1600,6 +1600,7 @@ module.exports.rpgReady = function(message, itemsAvailable, amuletItemsById, buf
                                                                 }
                                                             }else if (zoneAvatar){
                                                                 embed.setThumbnail(zoneAvatar);
+                                                                activeRPGEvents[rpgEvent].zoneAvatar = zoneAvatar
                                                             }
                                                             // party members
                                                             //var groupString = "";
@@ -2316,6 +2317,8 @@ function turnFinishedEmbedBuilder(message, event, turnString, passiveEffectsStri
             var avatarURL = getThumbnailFromChallenge(challengeNum)
             embed.setThumbnail(avatarURL);
         }
+    }else if (event.zoneAvatar){
+        embed.setThumbnail(event.zoneAvatar);
     }
 
     for (var member in event.members){
