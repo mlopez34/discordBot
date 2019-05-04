@@ -2490,7 +2490,11 @@ function eventEndedEmbedBuilder(message, event, partySuccess){
             rewardString = rewardString + "**Experience:** " + rewards.xp + "\n**Rpg Points**: " + rewards.rpgPoints + "\n**Items:** \n";
             event.experienceHandedOut = event.experienceHandedOut + rewards.xp
             for (var item in rewards.items){
-                rewardString = rewardString + rewards.items[item].itemname + "\n";
+                if (rewardString.length < 950){
+                    rewardString = rewardString + rewards.items[item].itemname + "\n";
+                }else{
+                    rewardString = rewardString + "."
+                }
             }
             // unlocked the next keystone
             var userLevel = usersInRPGEvents["rpg-" + memberInParty.id].memberStats.level
