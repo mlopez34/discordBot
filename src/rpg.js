@@ -2406,6 +2406,7 @@ function eventEndedEmbedBuilder(message, event, partySuccess){
                 profileDB.updateCurrentChallenge( memberInParty.id, challengenumber + 1, function(err, res){
 
                 })
+                message.channel.send(memberInParty.id + " first challenge kill")
                 usersFirstComplete.push(memberInParty.id)
             }
             var keystonenumber = usersInRPGEvents["rpg-" + memberInParty.id].memberStats.currentkeystone;
@@ -2416,6 +2417,7 @@ function eventEndedEmbedBuilder(message, event, partySuccess){
                     
                 })
                 if ( keystonenumber > 0 && (challengenumber + 1) >= event.challenge.challenge ){
+                    message.channel.send(memberInParty.id + " first keystone kill")
                     usersFirstComplete.push(memberInParty.id)
                 }
             }
