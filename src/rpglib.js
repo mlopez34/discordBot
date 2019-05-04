@@ -217,28 +217,28 @@ module.exports = {
             name: "Scam",
             abilityId: "scam",
             dmg: 50,
-            adPercentage: 1.25,
+            mdPercentage: 1.25,
             type: "shadow"
         },
         inject : {
             name: "Inject",
             abilityId: "inject",
             dmg: 50,
-            adPercentage: 1.25,
+            mdPercentage: 1.25,
             type: "shadow"
         },
         smuggle : {
             name: "Smuggle",
             abilityId: "smuggle",
             dmg: 50,
-            adPercentage: 1.25,
+            mdPercentage: 1.25,
             type: "shadow"
         },
         hostage : {
             name: "Hostage",
             abilityId: "hostage",
             dmg: 50,
-            adPercentage: 1.25,
+            mdPercentage: 1.25,
             type: "shadow"
         },
         punch : {
@@ -252,7 +252,7 @@ module.exports = {
             name: "Scare",
             abilityId: "scare",
             dmg: 50,
-            adPercentage: 1.25,
+            mdPercentage: 1.25,
             type: "shadow"
         },
         corrupt : {
