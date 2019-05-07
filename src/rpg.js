@@ -2408,7 +2408,6 @@ function eventEndedEmbedBuilder(message, event, partySuccess){
                 profileDB.updateCurrentChallenge( memberInParty.id, challengenumber + 1, function(err, res){
 
                 })
-                message.channel.send(memberInParty.id + " first challenge kill")
                 usersFirstComplete.push(memberInParty.id)
             }
             if ( (keystonenumber) == event.challenge.keystone && userLevel >= KEYSTONE_UNLOCK_LEVEL){
@@ -2417,7 +2416,6 @@ function eventEndedEmbedBuilder(message, event, partySuccess){
                     
                 })
                 if ( keystonenumber > 0 && (challengenumber + 1) >= event.challenge.challenge ){
-                    message.channel.send(memberInParty.id + " first keystone kill")
                     usersFirstComplete.push(memberInParty.id)
                 }
             }

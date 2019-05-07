@@ -5623,7 +5623,7 @@ function armamentsEmbedBuilder(message, userItems, itemsMapById, long, rarity){
     message.channel.send({embed});
 }
 
-module.exports.greenHouseCommand = function(message){
+module.exports.greenHouseCommand = function(message, long){
     // display your greenhouse, and greenhouse information
     var discordUserId = message.author.id;
     // get user profile and greenhouse info
@@ -5660,7 +5660,14 @@ module.exports.greenHouseCommand = function(message){
                         greenHouseData.fruitsString = greenhouse.getFruitString(userFruitsCount)
                         greenHouseData.currentlevelinfo = greenhouse.getLevelInfo(greenHouseData.greenhouseLevel)
                         greenHouseData.nextlevelinfo = greenhouse.getLevelInfo(greenHouseData.greenhouseLevel + 1)
-                        greenHouseEmbedBuilder(message, greenHouseData, itemsMapById)
+                        if (long){
+                            // get all levels up to current one
+                            greenHouseData.allMyLevelsInfo = ""
+                            for (var l = 1; l <= greenHouseData.greenhouseLevel; l++){
+                                greenHouseData.allMyLevelsInfo = greenHouseData.allMyLevelsInfo + greenhouse.getLevelInfo( l ) + "\n"
+                            }
+                        }
+                        greenHouseEmbedBuilder(message, greenHouseData, itemsMapById, long)
                     }
                 })
             }else{
@@ -5670,7 +5677,7 @@ module.exports.greenHouseCommand = function(message){
     })
 }
 
-function greenHouseEmbedBuilder(message, greenHouseData, itemsMapById){
+function greenHouseEmbedBuilder(message, greenHouseData, itemsMapById, long){
             
     var greenHousePlotVisual = plotsVisualBuilder(greenHouseData, itemsMapById)
     var greenHouseRequirementString = greenhouse.getUpgradeRequirementsForLevel(greenHouseData.greenhouseLevel + 1, itemsMapById)
@@ -5684,12 +5691,19 @@ function greenHouseEmbedBuilder(message, greenHouseData, itemsMapById){
     .setThumbnail(message.author.avatarURL)
     .setDescription('Greenhouse Level: ' + greenHouseData.greenhouseLevel)
     .setColor(0x87CEFA)
-    //.addField('harvestTimeRemaining', harvestTimeRemaining, true)
-    .addField('Greenhouse Info', greenHouseData.currentlevelinfo, false)
-    .addField('Next Level Info', greenHouseData.nextlevelinfo, false)
-    .addField('Crops', greenHouseData.fruitsString, false)
-    .addField('Plots', greenHousePlotVisual, false)
-    .addField('Next Level Requirements', greenHouseRequirementString, false)
+    if (long){
+        if (greenHouseData.allMyLevelsInfo && greenHouseData.allMyLevelsInfo.length > 0 ){
+            embed.addField('My Greenhouse Info', greenHouseData.allMyLevelsInfo, false)
+        }
+    }else{
+        //.addField('harvestTimeRemaining', harvestTimeRemaining, true)
+        embed.addField('Greenhouse Info', greenHouseData.currentlevelinfo, false)
+        .addField('Next Level Info', greenHouseData.nextlevelinfo, false)
+        .addField('Crops', greenHouseData.fruitsString, false)
+        .addField('Plots', greenHousePlotVisual, false)
+        .addField('Next Level Requirements', greenHouseRequirementString, false)
+
+    }
     message.channel.send({embed});
 }
 
@@ -5722,7 +5736,7 @@ function plotsVisualBuilder(greenHouseData, itemsMapById){
     return plotVisual
 }
 
-module.exports.stableCommand = function(message){
+module.exports.stableCommand = function(message, long){
 
     var discordUserId = message.author.id;
     // get user profile and stable info
@@ -5748,7 +5762,14 @@ module.exports.stableCommand = function(message){
                 // get the text for the current level and next level
                 stableData.currentlevelinfo = stable.getLevelInfo(stableData.stableLevel)
                 stableData.nextlevelinfo = stable.getLevelInfo(stableData.stableLevel + 1)
-                stableEmbedBuilder(message, stableData)    
+                if (long){
+                    // get all levels up to current one
+                    stableData.allMyLevelsInfo = ""
+                    for (var l = 1; l <= stableData.stableLevel; l++){
+                        stableData.allMyLevelsInfo = stableData.allMyLevelsInfo + stable.getLevelInfo( l ) + "\n"
+                    }
+                }   
+                stableEmbedBuilder(message, stableData, long)    
             }else{
                 message.channel.send("You do not own a stable")
             }
@@ -5760,20 +5781,25 @@ module.exports.feedCommand = function(message, args){
     // feed the specified pet using food from - baking, uncommons, fish
 }
 
-function stableEmbedBuilder(message, stableData){
-            
-    var stablesPlotVisual = stablesVisualBuilder(stableData)
-    var stablesRequirementString = stable.getUpgradeRequirementsForLevel(stableData.stableLevel + 1, itemsMapById)
+function stableEmbedBuilder(message, stableData, long){
     const embed = new Discord.RichEmbed()
     .setColor(0x87CEFA)
     .setTitle(stableData.name + "'s Stables")
     .setThumbnail(message.author.avatarURL)
     .setDescription('Stable Level: ' + stableData.stableLevel)
     .setColor(0x87CEFA)
-    .addField('Pets', stablesPlotVisual, false)
-    .addField('Stable Info', stableData.currentlevelinfo, false)
-    .addField('Next Level Info', stableData.nextlevelinfo, false)
-    .addField('Next Level Requirements', stablesRequirementString, false)
+    if (long){
+        if (stableData.allMyLevelsInfo && stableData.allMyLevelsInfo.length > 0 ){
+            embed.addField('My Stable', stableData.allMyLevelsInfo, false)
+        }
+    }else{
+        var stablesPlotVisual = stablesVisualBuilder(stableData)
+        var stablesRequirementString = stable.getUpgradeRequirementsForLevel(stableData.stableLevel + 1, itemsMapById)
+        embed.addField('Pets', stablesPlotVisual, false)
+        .addField('Stable Info', stableData.currentlevelinfo, false)
+        .addField('Next Level Info', stableData.nextlevelinfo, false)
+        .addField('Next Level Requirements', stablesRequirementString, false)    
+    }
     message.channel.send({embed});
 }
 
@@ -5813,10 +5839,9 @@ function stablesVisualBuilder(stableData){
     return stablesVisual
 }
 
-module.exports.templeCommand = function(message){
+module.exports.templeCommand = function(message, long){
     // display your temple, and temple information
     var discordUserId = message.author.id;
-    // get user profile and stable info
     profileDB.getTempleData(discordUserId, function(templeErr, templeRes){
         if (templeErr){
             console.log(templeErr)
@@ -5865,8 +5890,15 @@ module.exports.templeCommand = function(message){
                             currenttemplecraftslot: templeRes.data.currenttemplecraftslot
                         }
                         templeData.currentlevelinfo = temple.getLevelInfo(templeData.templeLevel)
-                        templeData.nextlevelinfo = temple.getLevelInfo(templeData.templeLevel + 1)        
-                        templeEmbedBuilder(message, templeData)
+                        templeData.nextlevelinfo = temple.getLevelInfo(templeData.templeLevel + 1)   
+                        if (long){
+                            // get all levels up to current one
+                            templeData.allMyLevelsInfo = ""
+                            for (var l = 1; l <= templeData.templeLevel; l++){
+                                templeData.allMyLevelsInfo = templeData.allMyLevelsInfo + temple.getLevelInfo( l ) + "\n"
+                            }
+                        }     
+                        templeEmbedBuilder(message, templeData, long)
                     }else{
                         message.channel.send("You do not own a Temple")
                     }
@@ -5876,26 +5908,34 @@ module.exports.templeCommand = function(message){
     })
 }
 
-function templeEmbedBuilder(message, templeData){
-            
-    var templeVisual = templeVisualBuilder(templeData)
-    var gemString = gemStringBuilder(templeData)
-    var upgradeRequirementString = temple.getUpgradeRequirementsForLevel(templeData.templeLevel + 1, itemsMapById)
+function templeEmbedBuilder(message, templeData, long){
     const embed = new Discord.RichEmbed()
     .setColor(0x87CEFA)
     .setTitle(templeData.name + "'s Temple 🕍")
     .setThumbnail(message.author.avatarURL)
     .setDescription('Temple Level: ' + templeData.templeLevel)
     .setColor(0x87CEFA)
-    if (templeVisual.length > 0){
-        embed.addField('Recipes', templeVisual, false)
+
+    if (long){
+        if (templeData.allMyLevelsInfo && templeData.allMyLevelsInfo.length > 0 ){
+            embed.addField('My Temple Info', templeData.allMyLevelsInfo, false)
+        }
+    }else{
+        var templeVisual = templeVisualBuilder(templeData)
+        var gemString = gemStringBuilder(templeData)
+        var upgradeRequirementString = temple.getUpgradeRequirementsForLevel(templeData.templeLevel + 1, itemsMapById)
+        if (templeVisual.length > 0){
+            embed.addField('Recipes', templeVisual, false)
+        }
+        embed.addField('Temple Info', templeData.currentlevelinfo, false)
+        .addField('Next Level Info', templeData.nextlevelinfo, false)
+        .addField('Next Level Requirements', upgradeRequirementString, false)
+    
+        if (gemString.length > 0){
+            embed.addField('Gems :gem:', gemString, false)
+        }
     }
-    embed.addField('Temple Info', templeData.currentlevelinfo, false)
-    .addField('Next Level Info', templeData.nextlevelinfo, false)
-    .addField('Next Level Requirements', upgradeRequirementString, false)
-    if (gemString.length > 0){
-        embed.addField('Gems :gem:', gemString, false)
-    }
+    
     message.channel.send({embed});
 }
 

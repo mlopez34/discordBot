@@ -379,17 +379,26 @@ client.on('message', function(message){
                 else if (commandIs("party", message)){
                     commands.createTableCommand(message, mainChannel);
                 }
+                else if (commandIs("mygreenhouse", message)){
+                    commands.greenHouseCommand(message, true)
+                }
                 else if (commandIs("greenhouse", message)){
                     commands.greenHouseCommand(message)
                 }
                 else if (commandIs("buygreenhouse", message)){
                     commands.buyGreenHouseCommand(message)
                 }
+                else if (commandIs("mystable", message)){
+                    commands.stableCommand(message, true)
+                }
                 else if (commandIs("stable", message)){
                     commands.stableCommand(message)
                 }
                 else if (commandIs("buystable", message)){
                     commands.buyStableCommand(message)
+                }
+                else if (commandIs("mytemple", message)){
+                    commands.templeCommand(message, true)
                 }
                 else if (commandIs("temple", message)){
                     commands.templeCommand(message)
@@ -995,17 +1004,26 @@ client.on('message', function(message){
                     data.command = "party"
                     profileDB.createUserActivity(data)
                 }
+                else if (commandIs("mygreenhouse", message)){
+                    commands.greenHouseCommand(message, true)
+                }
                 else if (commandIs("greenhouse", message)){
                     commands.greenHouseCommand(message)
                 }
                 else if (commandIs("buygreenhouse", message)){
                     commands.buyGreenHouseCommand(message)
                 }
+                else if (commandIs("mystable", message)){
+                    commands.stableCommand(message, true)
+                }
                 else if (commandIs("stable", message)){
                     commands.stableCommand(message)
                 }
                 else if (commandIs("buystable", message)){
                     commands.buyStableCommand(message)
+                }
+                else if (commandIs("mytemple", message)){
+                    commands.templeCommand(message, true)
                 }
                 else if (commandIs("temple", message)){
                     commands.templeCommand(message)
