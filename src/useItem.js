@@ -1,7 +1,28 @@
 'use strict'
 var profileDB = require("./profileDB.js");
 var reputation = require("./reputation.js")
+var wearStats = require("./wearStats.js")
+///// THIS is used to keep multiple uses from using the same items
+var usingItemsLock = {}
 // functions for using each item
+
+var percentageToReduceForCommand = {
+    scavenge: .50,
+    thank: .50,
+    sorry: .33,
+    fetch: .30,
+    cook: .05,
+    prepare: .02,
+    RPG: .50
+}
+
+module.exports.setItemsLock = function(discordUserId, set){
+    usingItemsLock[discordUserId] = set
+}
+
+module.exports.getItemsLock = function(discordUserId){
+    return usingItemsLock[discordUserId]
+}
 
 module.exports.useRock = function(message, mentionedUserId, rockToUse, tacosInUse, cb){
     //use the rock at the user
@@ -19,6 +40,7 @@ module.exports.useRock = function(message, mentionedUserId, rockToUse, tacosInUs
                 if(err){
                     // user does not exist
                     // console.log(err);
+                    exports.setItemsLock(message.author.id, false)
                     cb(err);
                 }
                 else{
@@ -28,6 +50,7 @@ module.exports.useRock = function(message, mentionedUserId, rockToUse, tacosInUs
                         profileDB.updateUserProtect(mentionedUserId, -1, protection, function(updateerr, updateResponse) {
                             if (updateerr){
                                 // console.log(updateerr);
+                                exports.setItemsLock(message.author.id, false)
                                 cb(updateerr);
                             }
                             else{
@@ -35,9 +58,11 @@ module.exports.useRock = function(message, mentionedUserId, rockToUse, tacosInUs
                                 profileDB.updateItemStatus(rockToUse.id, "used", function(updateRockStatusErr, updateRockStatusRes){
                                     if (updateRockStatusErr){
                                         // console.log(updateRockStatusErr);
+                                        exports.setItemsLock(message.author.id, false)
                                         cb(updateRockStatusErr);
                                     }
                                     else{
+                                        exports.setItemsLock(message.author.id, false)
                                         // console.log(updateRockStatusRes);
                                         cb(null, "protection")
                                     }
@@ -52,6 +77,7 @@ module.exports.useRock = function(message, mentionedUserId, rockToUse, tacosInUs
                             profileDB.updateUserTacos(mentionedUserId, -10, function(updateerr, updateResponse) {
                                 if (updateerr){
                                     // console.log(updateerr);
+                                    exports.setItemsLock(message.author.id, false)
                                     cb(updateerr);
                                 }
                                 else{
@@ -60,9 +86,11 @@ module.exports.useRock = function(message, mentionedUserId, rockToUse, tacosInUs
                                     profileDB.updateItemStatus(rockToUse.id, "used", function(updateRockStatusErr, updateRockStatusRes){
                                         if (updateRockStatusErr){
                                             // console.log(updateRockStatusErr);
+                                            exports.setItemsLock(message.author.id, false)
                                             cb(updateRockStatusErr);
                                         }
                                         else{
+                                            exports.setItemsLock(message.author.id, false)
                                             // console.log(updateRockStatusRes);
                                             cb(null, "success")
                                         }
@@ -71,21 +99,24 @@ module.exports.useRock = function(message, mentionedUserId, rockToUse, tacosInUs
                             })
                         }
                         else{
+                            exports.setItemsLock(message.author.id, false)
                             cb("user doesn't have tacos to drop");
                         }
+                    }else{
+                        exports.setItemsLock(message.author.id, false)
                     }
                 }
             })
         }
         else{
             // console.log(successThrowRockRoll)
+            exports.setItemsLock(message.author.id, false)
             cb("failed")
         }
-    }else if (rockToUse.length == 10){
+    }else if (rockToUse.length == 10 ){
         var discordUserId = mentionedUserId;
         var listOfRares = tacosInUse;
         var rollRockAmulet = Math.floor(Math.random() * 1000) + 1;
-        // console.log(rollRockAmulet);
         if (rollRockAmulet >= 995){
             // add an amulet item to user's inventory from all the rares
             // roll for a rare
@@ -95,6 +126,7 @@ module.exports.useRock = function(message, mentionedUserId, rockToUse, tacosInUs
             profileDB.addNewItemToUser(discordUserId, rareWon, function(error, response){
                 if (error){
                     // console.log("couldnt add item");
+                    exports.setItemsLock(discordUserId, false)
                     cb("error");
                 }
                 else{
@@ -102,10 +134,11 @@ module.exports.useRock = function(message, mentionedUserId, rockToUse, tacosInUs
                     profileDB.bulkUpdateItemStatus(rockToUse, "used", function(updateBulkErr, updateBulkRes){
                         if (updateBulkErr){
                             // console.log(updateBulkErr);
+                            exports.setItemsLock(discordUserId, false)
                             cb(updateBulkErr);
                         }
                         else{
-                            // console.log(updateBulkRes);
+                            exports.setItemsLock(discordUserId, false)
                             cb(null, rareWon);
                         }
                     })
@@ -116,7 +149,7 @@ module.exports.useRock = function(message, mentionedUserId, rockToUse, tacosInUs
             // add tacos to user
             profileDB.updateUserTacos(discordUserId, 50, function(tacosError, tacosRes){
                 if (tacosError){
-                    console.log(tacosError);
+                    exports.setItemsLock(discordUserId, false)
                     cb(tacosError);
                 }
                 else{
@@ -124,10 +157,11 @@ module.exports.useRock = function(message, mentionedUserId, rockToUse, tacosInUs
                     profileDB.bulkUpdateItemStatus(rockToUse, "used", function(updateBulkErr, updateBulkRes){
                         if (updateBulkErr){
                             // console.log(updateBulkErr);
+                            exports.setItemsLock(discordUserId, false)
                             cb(updateBulkErr);
                         }
                         else{
-                            // console.log(updateBulkRes);
+                            exports.setItemsLock(discordUserId, false)
                             cb(null, 50)
                         }
                     })
@@ -139,7 +173,7 @@ module.exports.useRock = function(message, mentionedUserId, rockToUse, tacosInUs
             // add tacos to user
             profileDB.updateUserTacos(discordUserId, 20, function(tacosError, tacosRes){
                 if (tacosError){
-                    // console.log(tacosError);
+                    exports.setItemsLock(discordUserId, false)
                     cb(tacosError);
                 }
                 else{
@@ -147,25 +181,29 @@ module.exports.useRock = function(message, mentionedUserId, rockToUse, tacosInUs
                     profileDB.bulkUpdateItemStatus(rockToUse, "used", function(updateBulkErr, updateBulkRes){
                         if (updateBulkErr){
                             // console.log(updateBulkErr);
+                            exports.setItemsLock(discordUserId, false)
                             cb(updateBulkErr);
                         }
                         else{
-                            // console.log(updateBulkRes);
+                            exports.setItemsLock(discordUserId, false)
                             cb(null, 20)
                         }
                     })
                 }
             })
         }
+    }else{
+        exports.setItemsLock(message.author.id, false)
     }
 }
 
 module.exports.usePieceOfWood = function(message, discordUserId, piecesOfWoodToUse, cb){
     // update inventory
-    if (piecesOfWoodToUse.length == 5){
+    if (piecesOfWoodToUse.length == 5 ){
         profileDB.getUserProfileData(discordUserId, function(getProfileErr, getProfileRes){
             if (getProfileErr){
                 // console.log(getProfileErr);
+                exports.setItemsLock(message.author.id, false)
             }
             else{
                 var protection = getProfileRes.data.protect;
@@ -177,6 +215,7 @@ module.exports.usePieceOfWood = function(message, discordUserId, piecesOfWoodToU
                 profileDB.updateUserProtect(discordUserId, 3, protection, function(updateerr, updateResponse) {
                     if (updateerr){
                         // console.log(updateerr);
+                        exports.setItemsLock(message.author.id, false)
                         cb(updateerr);
                     }
                     else{
@@ -185,10 +224,12 @@ module.exports.usePieceOfWood = function(message, discordUserId, piecesOfWoodToU
                         profileDB.bulkUpdateItemStatus(piecesOfWoodToUse, "used", function(updateBulkErr, updateBulkRes){
                             if (updateBulkErr){
                                 // console.log(updateBulkErr);
+                                exports.setItemsLock(message.author.id, false)
                                 cb(updateBulkErr);
                             }
                             else{
                                 // console.log(updateBulkRes);
+                                exports.setItemsLock(message.author.id, false)
                                 cb(null, "success")
                             }
                         })
@@ -197,6 +238,8 @@ module.exports.usePieceOfWood = function(message, discordUserId, piecesOfWoodToU
             }
         })
        
+    }else{
+        exports.setItemsLock(discordUserId, false)
     }
 }
 
@@ -214,17 +257,18 @@ module.exports.useTerryCloth =  function(message, discordUserId, terryClothToUse
             profileDB.addNewItemToUser(discordUserId, rareWon, function(error, response){
                 if (error){
                     // console.log("couldnt add item");
+                    exports.setItemsLock(discordUserId, false)
                     cb("error");
-                }
-                else{
+                }else{
                     // added item, use the terry cloths
                     profileDB.bulkUpdateItemStatus(terryClothToUse, "used", function(updateBulkErr, updateBulkRes){
                         if (updateBulkErr){
                             // console.log(updateBulkErr);
+                            exports.setItemsLock(discordUserId, false)
                             cb(updateBulkErr);
-                        }
-                        else{
+                        }else{
                             // console.log(updateBulkRes);
+                            exports.setItemsLock(discordUserId, false)
                             cb(null, rareWon);
                         }
                     })
@@ -236,17 +280,18 @@ module.exports.useTerryCloth =  function(message, discordUserId, terryClothToUse
             profileDB.updateUserTacos(discordUserId, 50, function(tacosError, tacosRes){
                 if (tacosError){
                     // console.log(tacosError);
+                    exports.setItemsLock(discordUserId, false)
                     cb(tacosError);
-                }
-                else{
+                }else{
                     // console.log(tacosRes);
                     profileDB.bulkUpdateItemStatus(terryClothToUse, "used", function(updateBulkErr, updateBulkRes){
                         if (updateBulkErr){
                             // console.log(updateBulkErr);
+                            exports.setItemsLock(discordUserId, false)
                             cb(updateBulkErr);
-                        }
-                        else{
+                        }else{
                             // console.log(updateBulkRes);
+                            exports.setItemsLock(discordUserId, false)
                             cb(null, 50)
                         }
                     })
@@ -259,6 +304,7 @@ module.exports.useTerryCloth =  function(message, discordUserId, terryClothToUse
             profileDB.updateUserTacos(discordUserId, 20, function(tacosError, tacosRes){
                 if (tacosError){
                     // console.log(tacosError);
+                    exports.setItemsLock(discordUserId, false)
                     cb(tacosError);
                 }
                 else{
@@ -266,16 +312,19 @@ module.exports.useTerryCloth =  function(message, discordUserId, terryClothToUse
                     profileDB.bulkUpdateItemStatus(terryClothToUse, "used", function(updateBulkErr, updateBulkRes){
                         if (updateBulkErr){
                             // console.log(updateBulkErr);
+                            exports.setItemsLock(discordUserId, false)
                             cb(updateBulkErr);
-                        }
-                        else{
+                        }else{
                             // console.log(updateBulkRes);
+                            exports.setItemsLock(discordUserId, false)
                             cb(null, 20)
                         }
                     })
                 }
             })
         }
+    }else{
+        exports.setItemsLock(discordUserId, false)
     }
 }
 
@@ -285,6 +334,7 @@ module.exports.useSodaCan = function(message, discordUserId, sodaCansToUse, cb){
     reputation.gainReputation(message, discordUserId, (REP_GAIN_PER_CAN * sodaCansToUse.length) , function(error, response){
         if (error){
             // console.log(error);
+            exports.setItemsLock(discordUserId, false)
             cb(error);
         }
         else{
@@ -294,10 +344,12 @@ module.exports.useSodaCan = function(message, discordUserId, sodaCansToUse, cb){
             profileDB.bulkUpdateItemStatus( sodaCansToUse, "used", function(updateSodaCanStatusErr, updateSodaCanStatusRes ){
                 if (updateSodaCanStatusErr){
                     // console.log(updateSodaCanStatusErr);
+                    exports.setItemsLock(discordUserId, false)
                     cb(updateSodaCanStatusErr);
                 }
                 else{
                     // console.log(updateSodaCanStatusRes);
+                    exports.setItemsLock(discordUserId, false)
                     cb(null, response);
                 }
             })
@@ -311,6 +363,7 @@ module.exports.useSoil = function(message, discordUserId, soilToUse, cb){
         profileDB.getUserProfileData(discordUserId, function(getProfileErr, getProfileRes){
             if (getProfileErr){
                 // console.log(getProfileErr);
+                exports.setItemsLock(discordUserId, false)
                 cb(getProfileErr);
             }
             else{
@@ -319,6 +372,7 @@ module.exports.useSoil = function(message, discordUserId, soilToUse, cb){
                 profileDB.updateUserSoiledCrops(discordUserId, soiledCrops, currentCropsSoiled, function(error, response){
                     if (error){
                         // console.log(error);
+                        exports.setItemsLock(discordUserId, false)
                         cb(error);
                     }
                     else{
@@ -327,15 +381,16 @@ module.exports.useSoil = function(message, discordUserId, soilToUse, cb){
                         profileDB.bulkUpdateItemStatus(soilToUse, "used", function(updateSodaCanStatusErr, updateSodaCanStatusRes){
                             if (updateSodaCanStatusErr){
                                 // console.log(updateSodaCanStatusErr);
+                                exports.setItemsLock(discordUserId, false)
                                 cb(updateSodaCanStatusErr);
                             }
                             else{
                                 // console.log(updateSodaCanStatusRes);
+                                exports.setItemsLock(discordUserId, false)
                                 var cropsCount;
                                 if (currentCropsSoiled){
                                     cropsCount = currentCropsSoiled + soiledCrops;
-                                }
-                                else{
+                                }else{
                                     cropsCount = soiledCrops;
                                 }
                                 cb(null, cropsCount)
@@ -347,83 +402,143 @@ module.exports.useSoil = function(message, discordUserId, soilToUse, cb){
         })
     }
     else{
+        exports.setItemsLock(discordUserId, false)
         cb("failed");
     }
 }
 
-module.exports.useBasedOnShortName = function(message, discordid, itemshortname, userInventoryCountMap, userInventory, cb){
-    // get all items, map by itemshortname as key, if it matches an item then use the item
-    profileDB.getItemData(function(error, allItemsResponse){
-        if (error){
-            // console.log(error);
-            cb("failed");
-        }
-        else{
-            var itemsMapbyName = {};
-            for (var index in allItemsResponse.data){
-                itemsMapbyName[allItemsResponse.data[index].itemshortname] = allItemsResponse.data[index];
-            }
-            // 
-            if (itemsMapbyName[itemshortname]){
-                // item exists, use the item and remove from user inventory
-                if (itemshortname == "adventurer"
-                    || itemshortname == "culinary"
-                    || itemshortname == "roleplaying"
-                    || itemshortname == "wild"
-                    || itemshortname == "satisfying"
-                    || itemshortname == "guilt"
-                    || itemshortname == "productivity"){
-                    // use a potion from inventory
-                    var idOfItemToUse = itemsMapbyName[itemshortname].id;
-                    var itemInInventoryCount = userInventoryCountMap[idOfItemToUse]
-                    // look for an item in my inventory that has the above id
-                    if (itemInInventoryCount > 0){
-                        var potionToUse = undefined;
-                        for (var item in userInventory){
-                            // check the rock hasnt been used
-                            var validItem = exports.itemValidate(userInventory[item]);
-                            if (validItem){
-                                // item hasnt been added to be counted, add it as 1
-                                if (userInventory[item].itemid == idOfItemToUse){
-                                    potionToUse = userInventory[item];
-                                    break;
-                                }
-                            }
+module.exports.useBasedOnShortName = function(message, discordid, itemshortname, userInventoryCountMap, userInventory, itemsMapbyShortName, commandTimes, wearRes, cb){
+    
+    if (itemsMapbyShortName[itemshortname]){
+        // item exists, use the item and remove from user inventory
+        if (itemshortname == "adventurer"
+            || itemshortname == "culinary"
+            || itemshortname == "roleplaying"
+            || itemshortname == "wild"
+            || itemshortname == "satisfying"
+            || itemshortname == "guilt"
+            || itemshortname == "productivity"){
+            // use a potion from inventory
+            var idOfItemToUse = itemsMapbyShortName[itemshortname].id;
+            var itemInInventoryCount = userInventoryCountMap[idOfItemToUse]
+            // look for an item in my inventory that has the above id
+            if (itemInInventoryCount > 0){
+                var potionToUse = undefined;
+                for (var item in userInventory){
+                    // check the rock hasnt been used
+                    var validItem = exports.itemValidate(userInventory[item]);
+                    if (validItem){
+                        // item hasnt been added to be counted, add it as 1
+                        if (userInventory[item].itemid == idOfItemToUse){
+                            potionToUse = userInventory[item];
+                            break;
                         }
-                        // use the potion
-                        if (potionToUse){
-                            profileDB.updateItemStatus(potionToUse.id, "used", function(updatePotionErr, updatePotionRes){
-                                if (updatePotionErr){
-                                    cb(updatePotionErr);
-                                }
-                                else{
-                                    // used the potion, reduce the command that the potion affects by 1 hour
-                                    reduceCommandCooldown(discordid, itemsMapbyName[itemshortname].command, function(reduceErr, reduceRes){
-                                        if (reduceErr){
-                                            message.channel.send("Something went wrong, call 911")
-                                            cb("failed");
-                                        }else{
-                                            message.channel.send( message.author + " used a **" + itemsMapbyName[itemshortname].itemname + "**, they reduced their " + itemsMapbyName[itemshortname].command + " command cooldown by `1 hour`");                                                                
-                                            cb(null, "success")
-                                        }
-                                    })
-                                }
-                            })
-                        }else{
-                            cb("failed")
-                        }
-                    }else{
-                        cb("failed");
                     }
                 }
+                // use the potion
+                if (potionToUse){
+                    profileDB.updateItemStatus(potionToUse.id, "used", function(updatePotionErr, updatePotionRes){
+                        if (updatePotionErr){
+                            exports.setItemsLock(discordid, false)
+                            cb(updatePotionErr);
+                        }
+                        else{
+                            // used the potion, reduce the command that the potion affects by 1 hour
+                            // EDIT: no longer 1 hour (2-16-2019) reduce based on command max time - seconds to reduce
+                            // then subtract by predefined % of time reduction
+                            var commandTime = commandTimes[itemsMapbyShortName[itemshortname].command]
+                            var secondsToRemove = wearStats.calculateSecondsReduced(wearRes, itemsMapbyShortName[itemshortname].command);
+                            var secondsToReduceByPotion = timeToReduceFromPotion(commandTime, secondsToRemove, itemsMapbyShortName[itemshortname].command)
+                            reduceCommandCooldown(discordid, itemsMapbyShortName[itemshortname].command, secondsToReduceByPotion, function(reduceErr, reduceRes){
+                                if (reduceErr){
+                                    exports.setItemsLock(discordid, false)
+                                    message.channel.send("Something went wrong, call 911")
+                                    cb("failed");
+                                }else{
+                                    exports.setItemsLock(discordid, false)
+                                    var minutesReduced = Math.floor( secondsToReduceByPotion / 60 )
+                                    message.channel.send( message.author + " used a **" + itemsMapbyShortName[itemshortname].itemname + "**, they reduced their " + itemsMapbyShortName[itemshortname].command + " command cooldown by `" + minutesReduced + " minutes`");                                                                
+                                    cb(null, "success")
+                                }
+                            })
+                        }
+                    })
+                }else{
+                    exports.setItemsLock(discordid, false)
+                    cb("failed")
+                }
             }else{
+                exports.setItemsLock(discordid, false)
                 cb("failed");
             }
+        }else if (itemshortname == "applepie"
+            || itemshortname == "bananacake"){
+            // use a pie from inventory
+            var idOfItemToUse = itemsMapbyShortName[itemshortname].id;
+            var itemInInventoryCount = userInventoryCountMap[idOfItemToUse]
+            if (itemInInventoryCount > 0){
+                var bakeToUse = undefined;
+                for (var item in userInventory){
+                    // check the rock hasnt been used
+                    var validItem = exports.itemValidate(userInventory[item]);
+                    if (validItem){
+                        // item hasnt been added to be counted, add it as 1
+                        if (userInventory[item].itemid == idOfItemToUse){
+                            bakeToUse = userInventory[item];
+                            break;
+                        }
+                    }
+                }
+                if (bakeToUse){
+                    // set the item to used
+                    profileDB.updateItemStatus(bakeToUse.id, "used", function(updatePotionErr, updatePotionRes){
+                        if (updatePotionErr){
+                            exports.setItemsLock(discordid, false)
+                            cb(updatePotionErr);
+                        }
+                        else{
+                            // add the buff to the user profile. itemid + itemactivatetime
+                            addRPGBuffToUser(discordid, bakeToUse.itemid, 2, function(buffErr, buffRes){
+                                if (buffErr){
+                                    exports.setItemsLock(discordid, false)
+                                    message.channel.send("Something went wrong, call 911")
+                                    cb("failed");
+                                }else{
+                                    exports.setItemsLock(discordid, false)
+                                    message.channel.send( "gained buff" ); // message that user gained buff                                                           
+                                    cb(null, "success")
+                                }
+                            })
+                        }
+                    })
+                }else{
+                    exports.setItemsLock(discordid, false)
+                    cb("failed")
+                }
+            }else{
+                exports.setItemsLock(discordid, false)
+                cb("failed");
+            }
+        }else{
+            exports.setItemsLock(discordid, false)
+            cb("failed");
         }
-    })
+    }else{
+        exports.setItemsLock(discordid, false)
+        cb("failed");
+    }
 }
 
-function reduceCommandCooldown(discordUserId, command, cb){
+function timeToReduceFromPotion(commandTime, secondsToRemove, command ){
+    // calculate total seconds user has commandTime - secondsToReduce
+    var secondsReducedTo = commandTime - secondsToRemove
+    // multiply that time by potion time to reduce (time * potionToReduce)
+    secondsReducedTo = Math.floor( secondsReducedTo * percentageToReduceForCommand[command] )
+    // floor the number, and return the number, this should be the seconds to reduce
+    return secondsReducedTo
+}
+
+function reduceCommandCooldown(discordUserId, command, secondsToReduceByPotion, cb){
     profileDB.getUserProfileData(discordUserId, function(err, profileRes){
         if (err){
             console.log(err);
@@ -431,7 +546,7 @@ function reduceCommandCooldown(discordUserId, command, cb){
         }else{
             var userProfile = profileRes.data;
 
-            profileDB.reduceCommandCooldownByHour(discordUserId, command, userProfile, function(err, res){
+            profileDB.reduceCommandCooldownByHour(discordUserId, command, userProfile, secondsToReduceByPotion, function(err, res){
                 if (err){
                     cb(err);
                 }else{
@@ -443,18 +558,34 @@ function reduceCommandCooldown(discordUserId, command, cb){
     
 }
 
+function addRPGBuffToUser(discordUserId, itemid, hours, cb){
+    profileDB.updateUserRPGBuff(discordUserId, itemid, hours, function(err, res){
+        if (err){
+            console.log(err)
+            cb(err)
+        }else{
+            cb(null, "success")
+        }
+    })
+}
+
 module.exports.useUncommons = function(message, discordid, uncommons, cb){
     if (discordid && uncommons.length > 0){
         profileDB.bulkUpdateItemStatus(uncommons, "used", function(updateBulkErr, updateBulkRes){
             if (updateBulkErr){
+                exports.setItemsLock(discordid, false)
                 // console.log(updateBulkErr);
                 cb(updateBulkErr);
             }
             else{
+                exports.setItemsLock(discordid, false)
                 // console.log(updateBulkRes);
                 cb(null, "success")
             }
         })
+    }else{
+        cb("failed")
+        exports.setItemsLock(discordid, false)
     }
 }
 

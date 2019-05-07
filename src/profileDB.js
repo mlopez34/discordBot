@@ -39,10 +39,41 @@ module.exports.createUserProfile = function(data, cb) {
             slot4replacing: false
         }
         exports.createUserWearInfo(d, function(e, r){
-            cb(null, {
-                status: 'success',
-                message: 'Inserted one user'
-            });
+            // create stable, greenhouse, temple 
+            var s = {
+                discordId : data.discordId,
+                stablelevel: 1
+            }
+            exports.createUserStableInfo(s, function(e, r){
+                var g = {
+                    discordId : data.discordId,
+                    greenhouselevel: 1,
+                    plotsofland: 9
+                }
+                exports.createUserGreenHouseInfo(g, function(e, r){
+                    var t = {
+                        discordId : data.discordId,
+                        templelevel: 1
+                    }
+                    exports.createUserTempleInfo(t, function(e, r){
+                        var r = {
+                            discordId : data.discordId,
+                            currentarea: "meadows"
+                        }
+                        exports.createRpgProfile(r, function(e, r){
+                            var f = {
+                                discordId: data.discordId
+                            }
+                            exports.createFruitsProfile(f, function(e, r){
+                                cb(null, {
+                                    status: 'success',
+                                    message: 'Inserted one user'
+                                });
+                            })
+                        })
+                    })
+                })
+            })
         })
     })
     .catch(function (err) {
@@ -143,9 +174,8 @@ module.exports.updateUserTacosPresent = function(userId, tacos, cb) {
     });
 }
 
-module.exports.reduceCommandCooldownByHour = function(userId, command, userProfile, cb) {
+module.exports.reduceCommandCooldownByHour = function(userId, command, userProfile, secondsToReduceByPotion, cb) {
     var commandProperty = undefined;
-    var HOURS_TO_REDUCE_FOR_COMMAND = 1;
     // calculate 1 hour less than current date of the command
     var newDate = undefined;
     if (command == "scavenge"){
@@ -154,7 +184,7 @@ module.exports.reduceCommandCooldownByHour = function(userId, command, userProfi
         if (!currentCommandTime){
             cb(null, { status: 'success', message: 'reduced cooldown' } );
         }else{
-            newDate = new Date(currentCommandTime.setHours(currentCommandTime.getHours() - HOURS_TO_REDUCE_FOR_COMMAND));        
+            newDate = new Date(currentCommandTime.setSeconds(currentCommandTime.getSeconds() - secondsToReduceByPotion));        
         }
     }else if (command == "cook"){
         commandProperty = "lastcooktime"
@@ -162,7 +192,7 @@ module.exports.reduceCommandCooldownByHour = function(userId, command, userProfi
         if (!currentCommandTime){
             cb(null, { status: 'success', message: 'reduced cooldown' } );
         }else{
-            newDate = new Date(currentCommandTime.setHours(currentCommandTime.getHours() - HOURS_TO_REDUCE_FOR_COMMAND));
+            newDate = new Date(currentCommandTime.setSeconds(currentCommandTime.getSeconds() - secondsToReduceByPotion));
         }                
     }else if (command == "RPG"){
         commandProperty = "lastrpgtime"
@@ -170,7 +200,7 @@ module.exports.reduceCommandCooldownByHour = function(userId, command, userProfi
         if (!currentCommandTime){
             cb(null, { status: 'success', message: 'reduced cooldown' } );
         }else{
-            newDate = new Date(currentCommandTime.setHours(currentCommandTime.getHours() - HOURS_TO_REDUCE_FOR_COMMAND));                
+            newDate = new Date(currentCommandTime.setSeconds(currentCommandTime.getSeconds() - secondsToReduceByPotion));                
         }
     }else if (command == "thank"){
         commandProperty = "lastthanktime"
@@ -178,7 +208,7 @@ module.exports.reduceCommandCooldownByHour = function(userId, command, userProfi
         if (!currentCommandTime){
             cb(null, { status: 'success', message: 'reduced cooldown' } );
         }else{
-            newDate = new Date(currentCommandTime.setHours(currentCommandTime.getHours() - HOURS_TO_REDUCE_FOR_COMMAND));                
+            newDate = new Date(currentCommandTime.setSeconds(currentCommandTime.getSeconds() - secondsToReduceByPotion));                
         }
     }else if (command == "sorry"){
         commandProperty = "lastsorrytime"
@@ -186,7 +216,7 @@ module.exports.reduceCommandCooldownByHour = function(userId, command, userProfi
         if (!currentCommandTime){
             cb(null, { status: 'success', message: 'reduced cooldown' } );
         }else{
-            newDate = new Date(currentCommandTime.setHours(currentCommandTime.getHours() - HOURS_TO_REDUCE_FOR_COMMAND));                
+            newDate = new Date(currentCommandTime.setSeconds(currentCommandTime.getSeconds() - secondsToReduceByPotion));                
         }
     }else if (command == "prepare"){
         commandProperty = "lastpreparetime"
@@ -194,7 +224,7 @@ module.exports.reduceCommandCooldownByHour = function(userId, command, userProfi
         if (!currentCommandTime){
             cb(null, { status: 'success', message: 'reduced cooldown' } );
         }else{
-            newDate = new Date(currentCommandTime.setHours(currentCommandTime.getHours() - HOURS_TO_REDUCE_FOR_COMMAND));                
+            newDate = new Date(currentCommandTime.setSeconds(currentCommandTime.getSeconds() - secondsToReduceByPotion));                
         }
     }else if (command == "fetch"){
         commandProperty = "lastfetchtime"
@@ -202,7 +232,7 @@ module.exports.reduceCommandCooldownByHour = function(userId, command, userProfi
         if (!currentCommandTime){
             cb(null, { status: 'success', message: 'reduced cooldown' } );
         }else{
-            newDate = new Date(currentCommandTime.setHours(currentCommandTime.getHours() - HOURS_TO_REDUCE_FOR_COMMAND));                        
+            newDate = new Date(currentCommandTime.setSeconds(currentCommandTime.getSeconds() - secondsToReduceByPotion));                        
         }
     }
     if (newDate){
@@ -220,7 +250,22 @@ module.exports.reduceCommandCooldownByHour = function(userId, command, userProfi
             cb(err);
         });
     }
-    
+}
+
+module.exports.updateUserRPGBuff = function(userId, itemid, buffHours, cb) {
+    var query = 'update ' + config.profileTable + ' set rpgbuffitemid=$1, rpgbuffactivatetime=$3 where discordid=$2'
+    var activateTime = new Date();
+    activateTime = new Date(activateTime.setHours(activateTime.getHours() + buffHours))
+    db.none(query, [itemid, userId, activateTime])
+    .then(function () {
+    cb(null, {
+        status: 'success',
+        message: 'added RPG buff'
+        });
+    })
+    .catch(function (err) {
+        cb(err);
+    });
 }
 
 module.exports.updateUserTacosTrickOrTreat = function(userId, tacos, cb) {
@@ -260,6 +305,48 @@ module.exports.obtainSprintingShoes = function(userId, cb) {
     cb(null, {
         status: 'success',
         message: 'added sprinting shoes'
+        });
+    })
+    .catch(function (err) {
+        cb(err);
+    });
+}
+
+module.exports.obtainHolyCandle = function(userId, cb) {
+    var query = 'update ' + config.profileTable + ' set holycandle=true where discordid=$1'
+    db.none(query, [userId])
+    .then(function () {
+    cb(null, {
+        status: 'success',
+        message: 'added holy candle'
+        });
+    })
+    .catch(function (err) {
+        cb(err);
+    });
+}
+
+module.exports.obtainLaboratoryAccessCard = function(userId, cb) {
+    var query = 'update ' + config.profileTable + ' set laboratoryaccesscard=true where discordid=$1'
+    db.none(query, [userId])
+    .then(function () {
+    cb(null, {
+        status: 'success',
+        message: 'added laboratoryaccesscard'
+        });
+    })
+    .catch(function (err) {
+        cb(err);
+    });
+}
+
+module.exports.obtainPandorasBox = function(userId, cb) {
+    var query = 'update ' + config.profileTable + ' set pandorasbox=true where discordid=$1'
+    db.none(query, [userId])
+    .then(function () {
+    cb(null, {
+        status: 'success',
+        message: 'added pandorasbox'
         });
     })
     .catch(function (err) {
@@ -308,6 +395,37 @@ module.exports.updateUserTacosFetch = function(userId, tacos, cb) {
     cb(null, {
         status: 'success',
         message: 'added tacos fetch'
+        });
+    })
+    .catch(function (err) {
+        cb(err);
+    });
+}
+
+module.exports.updateUserTacosStableFetch = function(userId, tacos, stableSlot, cb) {
+    var query;
+    if (stableSlot == 5){
+        query = 'update ' + config.profileTable + ' set tacos=tacos+$1 where discordid=$2;\n'
+        query = query + 'update ' + config.stablesTable + ' set stableslot5lastfetchtime=$3 where discordid=$2;'
+    }else if (stableSlot == 4){
+        query = 'update ' + config.profileTable + ' set tacos=tacos+$1 where discordid=$2;\n'
+        query = query + 'update ' + config.stablesTable + ' set stableslot4lastfetchtime=$3 where discordid=$2;'
+    }else if (stableSlot == 3){
+        query = 'update ' + config.profileTable + ' set tacos=tacos+$1 where discordid=$2;\n'
+        query = query + 'update ' + config.stablesTable + ' set stableslot3lastfetchtime=$3 where discordid=$2;'
+    }else if (stableSlot == 2){
+        query = 'update ' + config.profileTable + ' set tacos=tacos+$1 where discordid=$2;\n'
+        query = query + 'update ' + config.stablesTable + ' set stableslot2lastfetchtime=$3 where discordid=$2;'
+    }else if (stableSlot == 1){
+        query = 'update ' + config.profileTable + ' set tacos=tacos+$1 where discordid=$2;\n'
+        query = query + 'update ' + config.stablesTable + ' set stableslot1lastfetchtime=$3 where discordid=$2;'
+    }
+    var lastFetch = new Date();
+    db.none(query, [tacos, userId, lastFetch])
+    .then(function () {
+    cb(null, {
+        status: 'success',
+        message: 'added tacos stable fetch'
         });
     })
     .catch(function (err) {
@@ -388,6 +506,43 @@ module.exports.updateCurrentChallenge = function(userId, challengeNum, cb) {
     cb(null, {
         status: 'success',
         message: 'added currentchallenge'
+        });
+    })
+    .catch(function (err) {
+        // console.log(err);
+        cb(err);
+    });
+}
+
+module.exports.updateCurrentChallengeKeystone = function(userId, keystoneNum, challengeId, cb) {
+    var query = 'update ' + config.userRpgProfileTable + ' set ' + challengeId + '=$1 where discordid=$2'
+    //// console.log("new last thank: " + lastThank);
+    db.none(query, [keystoneNum, userId])
+    .then(function () {
+    cb(null, {
+        status: 'success',
+        message: 'added keystone + 1'
+        });
+    })
+    .catch(function (err) {
+        // console.log(err);
+        cb(err);
+    });
+}
+
+module.exports.updateUserRpgArea = function(userId, area, updatetraveltime, cb) {
+    var query;
+    if (updatetraveltime){
+        var query = 'update ' + config.userRpgProfileTable + ' set currentarea=$1,lasttraveltime=$3 where discordid=$2'
+    }else{
+        var query = 'update ' + config.userRpgProfileTable + ' set currentarea=$1 where discordid=$2'
+    }
+    var lasttraveltime = new Date()
+    db.none(query, [area, userId, lasttraveltime])
+    .then(function () {
+    cb(null, {
+        status: 'success',
+        message: 'changed location for user'
         });
     })
     .catch(function (err) {
@@ -482,10 +637,37 @@ module.exports.updateUserPet = function(userId, pet, petName, threedaysAgo, cb) 
     });
 }
 
+module.exports.updateStablePet = function(userId, pet, petName, stableSlot, threedaysAgo, cb) {
+    var query;
+    if (stableSlot == 1){
+        query = 'update ' + config.stablesTable + ' set stableslot1pet=$1, stableslot1name=$3, stableslot1lastfetchtime=$4 where discordid=$2'
+    }else if (stableSlot == 2){
+        query = 'update ' + config.stablesTable + ' set stableslot2pet=$1, stableslot2name=$3, stableslot2lastfetchtime=$4 where discordid=$2'
+    }else if (stableSlot == 3){
+        query = 'update ' + config.stablesTable + ' set stableslot3pet=$1, stableslot3name=$3, stableslot3lastfetchtime=$4 where discordid=$2'
+    }else if (stableSlot == 4){
+        query = 'update ' + config.stablesTable + ' set stableslot4pet=$1, stableslot4name=$3, stableslot4lastfetchtime=$4 where discordid=$2'
+    }else if (stableSlot == 5){
+        query = 'update ' + config.stablesTable + ' set stableslot5pet=$1, stableslot5name=$3, stableslot5lastfetchtime=$4 where discordid=$2'
+    }else{
+        cb("failed")
+    }
+    db.none(query, [pet, userId, petName, threedaysAgo])
+    .then(function () {
+    cb(null, {
+        status: 'success',
+        message: 'updated pet'
+        });
+    })
+    .catch(function (err) {
+        // console.log(err);
+        cb(err);
+    });
+}
+
 module.exports.purchasePickAxe = function(userId, tacosSpent, cb){
     var query = 'update ' + config.profileTable + ' set tacos=tacos+$1, pickaxe=$3 where discordid=$2'
     // console.log(query)
-    var lastThank = new Date();
     var selectedPickaxe = "basic"
     if (tacosSpent <= -5000 && tacosSpent >= -15000){
         // improved Pickaxe should always be between 100 and 500
@@ -506,6 +688,59 @@ module.exports.purchasePickAxe = function(userId, tacosSpent, cb){
     cb(null, {
         status: 'success',
         message: 'purchased pickaxe'
+        });
+    })
+    .catch(function (err) {
+        cb(err);
+    });
+}
+
+module.exports.collectedRewards = function(userId, cb){
+    var query = 'update ' + config.profileTable + ' set collectedrewards=true where discordid=$1'
+    db.none(query, [userId])
+    .then(function () {
+    cb(null, {
+        status: 'success',
+        message: 'collected rewards'
+        });
+    })
+    .catch(function (err) {
+        cb(err);
+    });
+}
+
+module.exports.purchaseBuilding = function(userId, tacosSpent, building, cb){
+    var query;
+    if (building == "stable"){
+        query = 'update ' + config.profileTable + ' set tacos=tacos+$1, stable=true where discordid=$2'
+
+    }else if (building == "greenhouse"){
+        query = 'update ' + config.profileTable + ' set tacos=tacos+$1, greenhouse=true where discordid=$2'
+
+    }else if (building == "temple"){
+        query = 'update ' + config.profileTable + ' set tacos=tacos+$1, temple=true where discordid=$2'
+    }
+    
+    db.none(query, [tacosSpent, userId])
+    .then(function () {
+    cb(null, {
+        status: 'success',
+        message: 'purchased ' + building
+        });
+    })
+    .catch(function (err) {
+        cb(err);
+    });
+}
+
+module.exports.purchaseHacksaw = function(userId, tacosSpent, cb){
+    var query = 'update ' + config.profileTable + ' set tacos=tacos+$1, hacksaw=true where discordid=$2'
+    
+    db.none(query, [tacosSpent, userId])
+    .then(function () {
+    cb(null, {
+        status: 'success',
+        message: 'purchased hacksaw'
         });
     })
     .catch(function (err) {
@@ -543,6 +778,50 @@ module.exports.purchaseTacoStand = function(userId, tacosSpent, currentTacoStand
         cb(null, {
             status: 'success',
             message: 'added taco stand'
+            });
+        })
+        .catch(function (err) {
+            cb(err);
+        });
+    }
+}
+
+module.exports.setZoneComplete = function(userId, zoneid, cb) {
+    var query = 'update ' + config.userRpgProfileTable + ' set ' + zoneid + '= true where discordid=$1'
+    db.none(query, [userId])
+    .then(function () {
+    cb(null, {
+        status: 'success',
+        message: 'zone completed'
+        });
+    })
+    .catch(function (err) {
+        cb(err);
+    });
+}
+
+module.exports.rpgAreaIncreaseCompletion = function(userId, areatoincrease, currentareacompletion, enemiesCount, cb){
+    // null or 0
+    if (currentareacompletion){
+        var query = 'update ' + config.userRpgProfileTable + ' set ' + areatoincrease + '=' + areatoincrease + '+$2 where discordid=$1'
+        db.none(query, [ userId, enemiesCount ])
+        .then(function () {
+        cb(null, {
+            status: 'success',
+            message: 'added area completion'
+            });
+        })
+        .catch(function (err) {
+            cb(err);
+        });
+    }
+    else{
+        var query = 'update ' + config.userRpgProfileTable + ' set '+ areatoincrease + '=1 where discordid=$1'
+        db.none(query, [ userId])
+        .then(function () {
+        cb(null, {
+            status: 'success',
+            message: 'added area completion'
             });
         })
         .catch(function (err) {
@@ -763,6 +1042,8 @@ module.exports.userStartQuest = function(discordUserId, questName, cb){
         query = 'update ' + config.profileTable + ' set tombqueststage=1 where discordid=$1'        
     }else if (questName == "ring"){
         query = 'update ' + config.profileTable + ' set ringqueststage=1 where discordid=$1'        
+    }else if (questName == "escape"){
+        query = 'update ' + config.profileTable + ' set escapequeststage=1 where discordid=$1'        
     }
     // do else for all questlines
     db.none(query, [discordUserId])
@@ -823,6 +1104,41 @@ module.exports.getItemData = function(cb) {
     });
 }
 
+module.exports.getItemRecipes = function(cb) {
+    var query = 'select * from ' + config.recipesTable
+    // console.log(query);
+    db.query(query)
+      .then(function (data) {
+        //// console.log(data);
+        cb(null, {
+            status: 'success',
+            data: data,
+            message: 'Retrieved All recipes'
+          });
+      })
+      .catch(function (err) {
+        // console.log(err);
+        cb(err);
+      });
+}
+
+module.exports.getUpgradeRequirements = function(cb) {
+    var query = 'select * from ' + config.upgradeTable
+    db.query(query)
+    .then(function (data) {
+    //// console.log(data);
+    cb(null, {
+        status: 'success',
+        data: data,
+        message: 'Retrieved All upgrade reqs'
+        });
+    })
+    .catch(function (err) {
+    // console.log(err);
+    cb(err);
+    });
+}
+
 // get specific item via id
 module.exports.getItemById = function(itemId, cb) {
   var query = 'select * from ' + config.itemsTable + ' where id =$1'
@@ -874,6 +1190,7 @@ module.exports.getItemByIdsWear = function(itemId, itemId2, itemId3, cb) {
 module.exports.addNewItemToUser = function(discordId, items, cb) {
     var inventoryItems = [];
     var itemobtaindate = new Date();
+    let isArmament = false
     for (var item in items){
         if (items[item].itemAmount && items[item].itemAmount > 1){
             // insert more than 1 item
@@ -892,24 +1209,52 @@ module.exports.addNewItemToUser = function(discordId, items, cb) {
                 itemid: items[item].id,
                 itemobtaindate: itemobtaindate
             }
+            if (items[item].armamentforitemid){
+                inventoryItem.armamentforitemid = items[item].armamentforitemid
+                inventoryItem.hpplus = items[item].hpplus
+                inventoryItem.adplus = items[item].adplus
+                inventoryItem.mdplus = items[item].mdplus
+                inventoryItem.armorplus = items[item].armorplus
+                inventoryItem.spiritplus = items[item].spiritplus
+                inventoryItem.critplus = items[item].critplus
+                inventoryItem.luckplus = items[item].luckplus
+                isArmament = true
+            }
             inventoryItems.push(inventoryItem);
         }
     }
-    
-    var values = new Inserts('${discordid}, ${itemid} ,${itemobtaindate}', inventoryItems); // using Inserts as a type;
 
-    db.none('INSERT INTO '  + config.inventoryTable + '(discordid, itemid, itemobtaindate) VALUES $1', values)
-    .then(function (data) {
-        cb(null, {
-            status: 'success',
-            data: data,
-            message: 'added Item to users inventory'
-        });
-    })
-    .catch(function (err) {
-        // console.log(err);
-        cb(err);
-    }); 
+    if (isArmament){
+        var values = new Inserts('${discordid}, ${itemid} ,${itemobtaindate} ,${armamentforitemid} ,${hpplus} ,${adplus} ,${mdplus} ,${armorplus} ,${spiritplus} ,${critplus} ,${luckplus}', inventoryItems); // using Inserts as a type;
+        db.none('INSERT INTO '  + config.inventoryTable + '(discordid, itemid, itemobtaindate, armamentforitemid, hpplus, adplus, mdplus, armorplus, spiritplus, critplus, luckplus) VALUES $1', values)
+        .then(function (data) {
+            cb(null, {
+                status: 'success',
+                data: data,
+                message: 'added Item to users inventory'
+            });
+        })
+        .catch(function (err) {
+            // console.log(err);
+            cb(err);
+        }); 
+    }else{
+        var values = new Inserts('${discordid}, ${itemid} ,${itemobtaindate}', inventoryItems); // using Inserts as a type;
+        db.none('INSERT INTO '  + config.inventoryTable + '(discordid, itemid, itemobtaindate) VALUES $1', values)
+        .then(function (data) {
+            cb(null, {
+                status: 'success',
+                data: data,
+                message: 'added Item to users inventory'
+            });
+        })
+        .catch(function (err) {
+            // console.log(err);
+            cb(err);
+        }); 
+    }
+    
+    
 }
 
 module.exports.bulkUpdateItemStatus = function(items, status, cb){
@@ -1058,6 +1403,34 @@ module.exports.consumeFlask = function(discordId, cb){
     });
 }
 
+module.exports.updateUserRPGExperience = function(rpgpoints, rpglevel, userId, firstRPGExperienceGain, tacoRewards, cb){
+    var query= "";
+    if (!firstRPGExperienceGain){
+        if (tacoRewards){
+            query = 'update ' + config.profileTable + ' set tacos=tacos+$4, rpgpoints=$1, rpglevel=$3 where discordid=$2'
+        }else{
+            query = 'update ' + config.profileTable + ' set rpgpoints=$1, rpglevel=$3 where discordid=$2'
+        }
+    }
+    else{
+        if (tacoRewards){
+            query = 'update ' + config.profileTable + ' set tacos=tacos+$4, rpgpoints=rpgpoints+$1, rpglevel=$3 where discordid=$2'
+        }else{
+            query = 'update ' + config.profileTable + ' set rpgpoints=rpgpoints+$1, rpglevel=$3 where discordid=$2'
+        }
+    }
+    db.none(query, [rpgpoints, userId, rpglevel, tacoRewards])
+    .then(function () {
+    cb(null, {
+        status: 'success',
+        message: 'added rpg experience'
+        });
+    })
+    .catch(function (err) {
+        cb(err);
+    });
+}
+
 module.exports.updateUserExperience = function(experience, level, userId, firstExperienceGain, tacoRewards, cb){
     var query= "";
     if (!firstExperienceGain){
@@ -1142,7 +1515,7 @@ module.exports.updateMarketItemSold = function(item, newOwner, cb){
 
 // get market items
 module.exports.getMarketItems = function(cb) {
-    var query = 'select * from ' + config.inventoryTable + ' where status = $1 LIMIT 20'
+    var query = 'select * from ' + config.inventoryTable + ' where status = $1 ORDER BY auctionenddate desc LIMIT 100'
     // console.log(query);
     db.query(query, [ "market" ])
     .then(function (data) {
@@ -1176,9 +1549,9 @@ module.exports.unsoldMarketItem = function(itemId, cb){
 module.exports.postItemToMarket = function(params, cb){
     var status = "market"
     var buyout = params.buyout
-    var currentbid = params.currentBid
-    var creatorchannel = params.creatorChannel
-    var auctionEndDate = params.auctionEndDate
+    var currentbid = params.currentbid
+    var creatorchannel = params.creatorchannel
+    var auctionEndDate = params.auctionenddate
     var itemId = params.id
     
     var query = 'update ' + config.inventoryTable + ' set status=$1, currentbid=$3, buyout=$4,auctionenddate=$5,auctioncreatorchannel=$6 where id=$2'
@@ -1195,9 +1568,9 @@ module.exports.postItemToMarket = function(params, cb){
 }
 
 module.exports.bidOnMarketItem = function(params, cb){
-    var currentbid = params.currentBid
-    var bidderId = params.currentBidUserId
-    var bidderChannel =  params.lastHighestBidderChannel
+    var currentbid = params.currentbid
+    var bidderId = params.currentbiduserid
+    var bidderChannel =  params.lastHighestbidderchannel
     var itemId = params.itemId
 
     var query = 'update ' + config.inventoryTable + ' set currentbid=$2,currentbiduserid=$3, lastbidchannel=$4 where id=$1'
@@ -1215,7 +1588,7 @@ module.exports.bidOnMarketItem = function(params, cb){
 
 // get user's inventory
 module.exports.getUserItems = function(discordId, cb) {
-  var query = 'select * from ' + config.inventoryTable + ' where discordId = $1 AND status is null '
+  var query = 'select * from ' + config.inventoryTable + ' where discordId = $1 AND status is null ORDER BY id DESC '
   // console.log(query);
   db.query(query, [discordId])
     .then(function (data) {
@@ -1230,9 +1603,26 @@ module.exports.getUserItems = function(discordId, cb) {
       cb(err);
     });
 }
+
+module.exports.getUserItemsForArmaments = function(discordId, cb) {
+    var query = 'select * from ' + config.inventoryTable + ' where discordId = $1 AND (status is null OR status = \'wearing\') ORDER BY id DESC '
+    // console.log(query);
+    db.query(query, [discordId])
+      .then(function (data) {
+        cb(null, {
+            status: 'success',
+            data: data,
+            message: 'Retrieved All User Items'
+          });
+      })
+      .catch(function (err) {
+        // console.log(err);
+        cb(err);
+      });
+  }
 // items for iteminfo
 module.exports.getUserItemsForInfo = function(discordId, cb) {
-    var query = 'select * from ' + config.inventoryTable + ' where discordId = $1 AND (status is null OR status = \'wearing\' ) '
+    var query = 'select * from ' + config.inventoryTable + ' where discordId = $1 AND (status is null OR status = \'wearing\' ) ORDER BY id DESC '
     // console.log(query);
     db.query(query, [discordId])
       .then(function (data) {
@@ -1249,7 +1639,8 @@ module.exports.getUserItemsForInfo = function(discordId, cb) {
   }
 // get wear info
 module.exports.getUserWearInfo = function(discordId, cb){
-    var query = 'select * from ' + config.wearTable + ' where discordId = $1'
+    var query = 'select * from ' + config.profileTable + ',' + config.wearTable + ',' + config.templeTable + ',' + config.greenhouseTable + ',' + config.stablesTable + ' where ' + config.profileTable + '.discordId = $1 AND ' + config.wearTable + '.discordId = $1 AND ' + config.templeTable + '.discordId = $1 AND ' + config.greenhouseTable + '.discordId = $1 AND ' + config.stablesTable + '.discordId = $1'
+
     // console.log(query);
     db.query(query, [discordId])
       .then(function (data) {
@@ -1280,6 +1671,15 @@ module.exports.updateUserWearInfo = function(discordId, slot, itemslot, itemid, 
     if (slot == 4){
         query = 'update ' + config.wearTable + ' set slot4slot=$2, slot4itemid=$3, slot4useritemid=$4, activate4date=$6, slot4replacing=$7 where discordid=$5'
     }
+    if (slot == 5){
+        query = 'update ' + config.wearTable + ' set slot5slot=$2, slot5itemid=$3, slot5useritemid=$4, activate5date=$6, slot5replacing=$7 where discordid=$5'
+    }
+    if (slot == 6){
+        query = 'update ' + config.wearTable + ' set slot6slot=$2, slot6itemid=$3, slot6useritemid=$4, activate6date=$6, slot6replacing=$7 where discordid=$5'
+    }
+    if (slot == 7){
+        query = 'update ' + config.wearTable + ' set slot7slot=$2, slot7itemid=$3, slot7useritemid=$4, activate7date=$6, slot7replacing=$7 where discordid=$5'
+    }
     db.none(query, [slot, itemslot, itemid, itemuserid, discordId, activateDate, replacingCurrentSlot])
     .then(function () {
     cb(null, {
@@ -1307,6 +1707,15 @@ module.exports.takeOffWear = function(discordId, slot, cb){
     if (slot == 4){
         query = 'update ' + config.wearTable + ' set slot4slot=null, slot4itemid=null, slot4useritemid=null where discordid=$1'
     }
+    if (slot == 5){
+        query = 'update ' + config.wearTable + ' set slot5slot=null, slot5itemid=null, slot5useritemid=null where discordid=$1'
+    }
+    if (slot == 6){
+        query = 'update ' + config.wearTable + ' set slot6slot=null, slot6itemid=null, slot6useritemid=null where discordid=$1'
+    }
+    if (slot == 7){
+        query = 'update ' + config.wearTable + ' set slot7slot=null, slot7itemid=null, slot7useritemid=null where discordid=$1'
+    }
     db.none(query, [discordId])
     .then(function () {
     cb(null, {
@@ -1328,12 +1737,171 @@ module.exports.createUserWearInfo = function(data, cb){
     .then(function () {
     cb(null, {
         status: 'success',
-        message: 'updated wear info'
+        message: 'created wear info'
         });
     })
     .catch(function (err) {
         cb(err);
     });
+}
+
+// create stable info
+module.exports.createUserStableInfo = function(data, cb){
+    var query = 'insert into '+ config.stablesTable + '(discordId, stablelevel)' +
+    'values(${discordId}, ${stablelevel} )'
+    // console.log(query);
+    db.none(query, data)
+    .then(function () {
+    cb(null, {
+        status: 'success',
+        message: 'created stable info'
+        });
+    })
+    .catch(function (err) {
+        cb(err);
+    });
+}
+
+// create greenhouse info
+module.exports.createUserGreenHouseInfo = function(data, cb){
+    var query = 'insert into '+ config.greenhouseTable + '(discordId, greenhouselevel, plotsofland)' +
+    'values(${discordId}, ${greenhouselevel}, ${plotsofland} )'
+    // console.log(query);
+    db.none(query, data)
+    .then(function () {
+    cb(null, {
+        status: 'success',
+        message: 'created greenhouse info'
+        });
+    })
+    .catch(function (err) {
+        cb(err);
+    });
+}
+
+// create temple info
+module.exports.createUserTempleInfo = function(data, cb){
+    var query = 'insert into '+ config.templeTable + '(discordId, templelevel)' +
+    'values(${discordId}, ${templelevel} )'
+    // console.log(query);
+    db.none(query, data)
+    .then(function () {
+    cb(null, {
+        status: 'success',
+        message: 'created temple info'
+        });
+    })
+    .catch(function (err) {
+        cb(err);
+    });
+}
+// create rpg profile
+module.exports.createRpgProfile = function(data, cb){
+    var query = 'insert into '+ config.userRpgProfileTable + '(discordId, currentarea)' +
+    'values(${discordId}, ${currentarea} )'
+    // console.log(query);
+    db.none(query, data)
+    .then(function () {
+    cb(null, {
+        status: 'success',
+        message: 'created rpg info'
+        });
+    })
+    .catch(function (err) {
+        cb(err);
+    });
+}
+
+// create fruits profile
+module.exports.createFruitsProfile = function(data, cb){
+    var query = 'insert into '+ config.userFruitTable + '(discordId)' +
+    'values(${discordId})'
+    // console.log(query);
+    db.none(query, data)
+    .then(function () {
+    cb(null, {
+        status: 'success',
+        message: 'created fruit profile'
+        });
+    })
+    .catch(function (err) {
+        cb(err);
+    });
+}
+
+module.exports.getUserRpgProfleData = function(discordId, cb){
+    var query = 'select * from ' + config.userRpgProfileTable + ',' + config.profileTable + ' where ' + config.userRpgProfileTable + '.discordId = $1 AND ' + config.profileTable + '.discordId = $1'
+    console.log(query)
+    db.one(query, [discordId])
+      .then(function (data) {
+        //// console.log(data);
+        cb(null, {
+            status: 'success',
+            data: data,
+            message: 'Retrieved ONE user rpg profile'
+          });
+      })
+      .catch(function (err) {
+        // console.log(err);
+        cb(err);
+      });
+}
+
+module.exports.getStableData = function(discordId, cb){
+    var query = 'select * from ' + config.stablesTable + ',' + config.profileTable + ' where ' + config.stablesTable + '.discordId = $1 AND ' + config.profileTable + '.discordId = $1'
+    console.log(query)
+    db.one(query, [discordId])
+      .then(function (data) {
+        //// console.log(data);
+        cb(null, {
+            status: 'success',
+            data: data,
+            message: 'Retrieved ONE user stables'
+          });
+      })
+      .catch(function (err) {
+        // console.log(err);
+        cb(err);
+      });
+}
+
+module.exports.getTempleData = function(discordId, cb){
+    var query = 'select * from ' + config.templeTable + ',' + config.profileTable + ' where ' + config.templeTable + '.discordId = $1 AND ' + config.profileTable + '.discordId = $1'
+    console.log(query)
+    db.one(query, [discordId])
+      .then(function (data) {
+        //// console.log(data);
+        cb(null, {
+            status: 'success',
+            data: data,
+            message: 'Retrieved ONE user temple'
+          });
+      })
+      .catch(function (err) {
+        // console.log(err);
+        cb(err);
+      });
+}
+
+module.exports.updateTempleRecipes = function(userId, recipeInfo, cb) {
+    // templecraft1id	templecraft2id	templecraft3id	
+    var recipeColumns = []
+    for (var column in recipeInfo){
+        recipeColumns.push(column)
+    }
+    if (recipeColumns.length > 0){
+        const query = pgp.helpers.update(recipeInfo, recipeColumns, config.templeTableNoQuotes) + ' WHERE discordid = ' + userId;
+        db.none(query)
+        .then(function () {
+            cb(null, { status: 'success', message: 'updated columns in temple' });
+        })
+        .catch(function (err) {
+            cb(err);
+        });
+    }else{
+        cb("no columns");
+    }
+    
 }
 
 module.exports.getGreenHouseData = function(discordId, cb){
@@ -1360,10 +1928,46 @@ module.exports.updatePlotInfo = function(userId, plotInfo, cb) {
     for (var column in plotInfo){
         plotColumns.push(column)
     }
-    const query = pgp.helpers.update(plotInfo, plotColumns, config.greenhouseTable) + ' WHERE discordid = ' + userId;
+    const query = pgp.helpers.update(plotInfo, plotColumns, config.greenhouseTableNoQuotes) + ' WHERE discordid = ' + userId;
     db.none(query)
     .then(function () {
         cb(null, { status: 'success', message: 'updated columns in greenhouse' });
+    })
+    .catch(function (err) {
+        cb(err);
+    });
+}
+
+module.exports.upgradeGreenHouse = function(userId, cb) {
+    var lastupgrade = new Date();
+    var query = 'update ' + config.greenhouseTable + ' set greenhouselevel=greenhouselevel+1,lastgreenhouseupgrade=$2 where discordid=$1'
+    db.none(query, [userId, lastupgrade])
+    .then(function () {
+        cb(null, { status: 'success', message: 'upgraded greenhouse' });
+    })
+    .catch(function (err) {
+        cb(err);
+    });
+}
+
+module.exports.upgradeStable = function(userId, cb) {
+    var lastupgrade = new Date();
+    var query = 'update ' + config.stablesTable + ' set stablelevel=stablelevel+1,laststableupgrade=$2 where discordid=$1'
+    db.none(query, [userId, lastupgrade])
+    .then(function () {
+        cb(null, { status: 'success', message: 'upgraded stable' });
+    })
+    .catch(function (err) {
+        cb(err);
+    });
+}
+
+module.exports.upgradeTemple = function(userId, cb) {
+    var lastupgrade = new Date();
+    var query = 'update ' + config.templeTable + ' set templelevel=templelevel+1,lasttempleupgrade=$2 where discordid=$1'
+    db.none(query, [userId, lastupgrade])
+    .then(function () {
+        cb(null, { status: 'success', message: 'upgraded temple' });
     })
     .catch(function (err) {
         cb(err);
@@ -1398,12 +2002,21 @@ module.exports.updateUserFruits = function(userId, fruit, fruitcount, cb) {
     });
 }
 
-module.exports.bulkupdateUserFruits = function(userId, fruits, cb){
+module.exports.bulkupdateUserFruits = function(userId, fruits, increment, cb){
+    
     var fruitNames = []
+    var columnSymbol = increment ? '+' : '-'
     for (var fruit in fruits){
-        fruitNames.push(fruit)
+        fruitNames.push(
+        {
+            name: fruit,
+            init: c => c.name + columnSymbol + c.value,
+            mod: ':raw'
+        })
     }
-    const query = pgp.helpers.update(fruits, fruitNames, config.userFruitTable) + ' WHERE discordid = ' + userId;
+    const Column = pgp.helpers.ColumnSet(fruitNames)
+    const query = pgp.helpers.update(fruits, Column, config.userFruitTableNoQuotes) + ' WHERE discordid = ' + userId
+
     db.none(query)
     .then(function () {
         cb(null, { status: 'success', message: 'updated columns' });
