@@ -5547,7 +5547,7 @@ module.exports = {
                 "costademarfil"
             ]
         },
-
+        // - Costa de marfil - Scorpia Shipyards,  
         costademarfil: {
             zoneAvatar: "https://i.imgur.com/3Eohx8s.png",
             zoneString : "Things get a little rough from here, you may need reinforcements",
@@ -5588,7 +5588,79 @@ module.exports = {
                 argentumbay: {
                     areaString : "Welcome to the coast of marvels",
                     name: "Argentum Bay",
-                    enemiesToDefeat: 178,
+                    enemiesToDefeat: 148,
+                    onCompleteAreasUnlocked: [
+                        "scorpiashipyards",
+
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                },
+                //
+                ardwenlake: {
+                    areaString : " ",
+                    name: "Ardwen Lake",
+                    enemiesToDefeat: 205,
+                    onCompleteAreasUnlocked: [
+                        "galatabridge"
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                },
+                //
+                beirlandisland: {
+                    areaString : " ",
+                    name: "Beirland Island",
+                    enemiesToDefeat: 203,
+                    onCompleteAreasUnlocked: [
+                        "floatingislands"
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                },
+                //
+                berryheadarch: {
+                    areaString : " ",
+                    name: "Berry Head Arch",
+                    enemiesToDefeat: 193,
+                    onCompleteAreasUnlocked: [
+                        "beirlandisland"
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                },
+                bubblehouses: {
+                    areaString : " ",
+                    name: "Bubble Houses",
+                    enemiesToDefeat: 182,
                     onCompleteAreasUnlocked: [
 
                     ],
@@ -5602,6 +5674,191 @@ module.exports = {
 
                     ]
                 },
+                //
+                capecod: {
+                    areaString : " ",
+                    name: "Cape Cod",
+                    enemiesToDefeat: 227,
+                    onCompleteAreasUnlocked: [
+                        "berryheadarch",
+                        "ardwenlake"
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                },
+                devilssea: {
+                    areaString : " ",
+                    name: "Abandon all hope those who enter here",
+                    enemiesToDefeat: 266,
+                    onCompleteAreasUnlocked: [
+                        "bubblehouses"
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                },
+                //
+                faroeislands: {
+                    areaString : " ",
+                    name: "Faroe Islands",
+                    enemiesToDefeat: 195,
+                    onCompleteAreasUnlocked: [
+                        "capecod",
+                        "floatingislands",
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                },
+                //
+                floatingislands: {
+                    areaString : " ",
+                    name: "Floating Islands",
+                    enemiesToDefeat: 214,
+                    onCompleteAreasUnlocked: [
+                        "devilssea"
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                },
+                //
+                galatabridge: {
+                    areaString : " ",
+                    name: "Galata Bridge",
+                    enemiesToDefeat: 201,
+                    onCompleteAreasUnlocked: [
+                        "devilssea"
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                },
+                //
+                barrierreef: {
+                    areaString : " ",
+                    name: "Barrier Reef",
+                    enemiesToDefeat: 196,
+                    onCompleteAreasUnlocked: [
+                        "puertoprincesa",
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                },
+                //
+                halongbay: {
+                    areaString : " ",
+                    name: "Ha Long Bay",
+                    enemiesToDefeat: 184,
+                    onCompleteAreasUnlocked: [
+                        "devilssea",
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                },
+                //
+                napalicoast: {
+                    areaString : " ",
+                    name: "Na Pali Coast",
+                    enemiesToDefeat: 213,
+                    onCompleteAreasUnlocked: [
+                        "halongbay"
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                },
+                //
+                puertoprincesa: {
+                    areaString : " ",
+                    name: "Puerto princesa",
+                    enemiesToDefeat: 198,
+                    onCompleteAreasUnlocked: [
+                        "devilssea",
+
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                },
+                //
+                scorpiashipyards: {
+                    areaString : " ",
+                    name: "Scorpia Shipyards",
+                    enemiesToDefeat: 231,
+                    onCompleteAreasUnlocked: [
+                        "faroeislands",
+                        "barrierreef",
+                        "napalicoast"
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                }
+
             },
             onCompleteZonesUnlocked: [
                 "costademarfil"
@@ -6086,6 +6343,23 @@ Hoover Dam
         hagrowswamp: "tadrartacacus",
         megacorparmory: "tadrartacacus",
         nazcalines: "tadrartacacus",
+
+        argentumbay: "costademarfil",
+        ardwenlake: "costademarfil",
+        beirlandisland: "costademarfil",
+        berryheadarch: "costademarfil",
+        bubblehouses: "costademarfil",
+        capecod: "costademarfil",
+        devilssea: "costademarfil",
+        faroeislands: "costademarfil",
+        floatingislands: "costademarfil",
+        galatabridge: "costademarfil",
+        barrierreef: "costademarfil",
+        halongbay: "costademarfil",
+        napalicoast: "costademarfil",
+        puertoprincesa: "costademarfil",
+        scorpiashipyards: "costademarfil",
+
 
     },
     enemiesToEncounter: {
