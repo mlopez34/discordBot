@@ -1,6 +1,7 @@
 'use strict'
 var profileDB = require("./profileDB.js");
 const Discord = require("discord.js");
+const PETS_FETCH_SEEDS_LEVEL = 8;
 
 var upgradeLock = {}
 
@@ -239,6 +240,66 @@ module.exports.getLevelInfo = function(level){
     }else{
         return "-"
     }
+}
+
+module.exports.eventsForCommand = function(message, eventParams){
+    if (eventParams.command === "fetch"){
+        petFetchSeeds(message, eventParams)
+        petFetchItemBasedOnArea(message, eventParams)
+    }
+}
+
+function filterForSeeds(allItems){
+    let seedItems = []
+    for (var i in allItems){
+        if (allItems[i].isseed){
+            seedItems.push(allItems[i])
+        }
+    }
+    return seedItems
+}
+
+function petFetchSeeds(message, eventParams){
+    if (eventParams.discordUserId){
+        profileDB.getStableData(eventParams.discordUserId, function(err, stableRes){
+            if (err){
+                console.log(err)
+            }else{
+                if (stableRes.data.stablelevel >= PETS_FETCH_SEEDS_LEVEL){
+                    // how to calculate chance to get seeds? pet cooldown 
+                    let itemsObtainedArray = []
+                    let getSeedRoll = Math.floor(Math.random() * 100) + 1;
+                    if (getSeedRoll <= eventParams.fetchCD){
+                        // higher CD higher chance user gets a random seed
+                        let seedItems = filterForSeeds(eventParams.allItems)
+                        let seedRoll = Math.floor(Math.random() * seedItems.length )
+                        itemsObtainedArray.push(seedItems[seedRoll])
+                        addToUserInventory(eventParams.discordUserId, itemsObtainedArray);
+                        obtainedItemEmbedBuilder(message, itemsObtainedArray, eventParams)
+                    }
+                }
+            }
+        })
+    }
+}
+
+function petFetchItemBasedOnArea(message, eventParams){
+    // get commons and uncommons here only, never rares or above
+    // TODO: implement this
+}
+
+function obtainedItemEmbedBuilder(message, itemobtained, eventParams){
+    message.channel.send(message.author + " " + eventParams.emoji + " " + eventParams.userPetName + " also fetched `" + itemobtained[0].itemname + "`" )
+}
+
+function addToUserInventory(discordUserId, items){
+    profileDB.addNewItemToUser(discordUserId, items, function(itemError, itemAddResponse){
+        if (itemError){
+            // console.log(itemError);
+        }else{
+            // console.log(itemAddResponse);
+        }
+    })
 }
 
 const upgradeRequirements = {

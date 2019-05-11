@@ -206,6 +206,10 @@ module.exports.getLevelInfo = function(level){
     }
 }
 
+module.exports.eventsForCommand = function(message, eventParams){
+    
+}
+
 const upgradeRequirements = {
     1: {
         items: [

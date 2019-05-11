@@ -148,8 +148,7 @@ module.exports.showRpgStats = function(message, itemsAvailable, amuletItemsById)
             profileDB.getUserItems(discordUserId, function(err, inventoryResponse){
                 if (err){
                     console.log(err);
-                }
-                else{
+                }else{
                     // console.log(inventoryResponse.data);
                     // get all the data for each item
                     var itemsInInventoryCountMap = {};

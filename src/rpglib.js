@@ -4626,7 +4626,7 @@ module.exports = {
                 }
             },
             onCompleteZonesUnlocked: [
-                "costademarfil"
+                "patagonia"
             ]
         },
         crystalpeak: {
@@ -5544,7 +5544,7 @@ module.exports = {
                 },
             },
             onCompleteZonesUnlocked: [
-                "costademarfil"
+                "yosemite"
             ]
         },
         // - Costa de marfil - Scorpia Shipyards,  
@@ -5861,7 +5861,8 @@ module.exports = {
 
             },
             onCompleteZonesUnlocked: [
-                "costademarfil"
+                "tokyo",
+                "mounteverest",
             ]
         },
 

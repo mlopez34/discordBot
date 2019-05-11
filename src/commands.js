@@ -3230,7 +3230,8 @@ module.exports.scavangeCommand = function (message){
             else if (getUserResponse.data.pickaxe && getUserResponse.data.pickaxe != "none"){
                 // get all the possible items from items DB - Bad implementation but idgaf
                 var userLevel = getUserResponse.data.level;
-                wearStats.getUserWearingStats(message, discordUserId, {userLevel: userLevel}, allItems, function(wearErr, wearRes){
+                let allItemsForWearing = exports.getAllItems()
+                wearStats.getUserWearingStats(message, discordUserId, {userLevel: userLevel}, allItemsForWearing, function(wearErr, wearRes){
                     if (wearErr){
                         // console.log(wearErr);
                         exports.setCommandLock("scavenge", discordUserId, false)
@@ -4495,6 +4496,14 @@ module.exports.buypetCommand = function(message, args){
     }
 }
 
+function additionalEventsForCommand(message, eventParams){
+    // delegate to other modules
+    var allItemsForBuildingEvent = exports.getAllItems()
+    eventParams.allItems = allItemsForBuildingEvent
+    stable.eventsForCommand(message, eventParams)
+    //TODO: temple, GH
+}
+
 module.exports.fetchCommand = function(message, args){
     var discordUserId = message.author.id;
     // the pet has gone to fetch, get taco amount = their fetch
@@ -4567,11 +4576,12 @@ module.exports.fetchCommand = function(message, args){
                                             if (err){
                                                 // console.log(err);
                                                 exports.setCommandLock("fetch", discordUserId, false)
-                                            }
-                                            else{
+                                            }else{
                                                 exports.setCommandLock("fetch", discordUserId, false)
                                                 var experienceFromItems = wearStats.calculateExtraExperienceGained(wearRes, "fetch", null);                                                                             
                                                 experience.gainExperience(message, message.author, (( (EXPERIENCE_GAINS.perFetchCd * PETS_AVAILABLE[userPet].fetch) / 10) + experienceFromItems) , fetchResponse);
+                                                eventParams = { command: "fetch", userData: fetchResponse, discordUserId: discordUserId, fetchCD: userData.fetchCD, userPetName: userPetName, emoji: PETS_AVAILABLE[userPet].emoji  }
+                                                additionalEventsForCommand(message, eventParams)
                                                 // user's pet fetched some tacos
                                                 if (extraTacosFromItems > 0){
                                                     message.channel.send("**" + userPetName + "** fetched:` " + fetchTacos + "` tacos :taco: \n" + PETS_AVAILABLE[userPet].emoji + " " + PETS_AVAILABLE[userPet].speak + " you received `" + extraTacosFromItems + "` extra tacos");                                                
@@ -4645,6 +4655,9 @@ module.exports.fetchCommand = function(message, args){
                                                 exports.setCommandLock("fetch", discordUserId, false)
                                                 var experienceFromItems = wearStats.calculateExtraExperienceGained(wearRes, "fetch", null);                                                                             
                                                 experience.gainExperience(message, message.author, (( (EXPERIENCE_GAINS.perFetchCd * PETS_AVAILABLE[userPet].fetch) / 10) + experienceFromItems) , fetchResponse);
+                                                // TODO: create events that are processed by other modules: ie - temple, greenhouse, temple 
+                                                eventParams = { command: "fetch", userData: fetchResponse, fetchCD: userData.fetchCD, discordUserId: discordUserId, userPetName: userPetName, emoji: PETS_AVAILABLE[userPet].emoji  }
+                                                additionalEventsForCommand(message, eventParams)
                                                 // user's pet fetched some tacos
                                                 if (extraTacosFromItems > 0){
                                                     /* SEASONAL
@@ -8182,19 +8195,25 @@ function handleMarketItemAuctionEnded(individualItem){
                 transferItemsAndTacos(winner.id, seller.id, itemsArray, tacosPaid, tacosWon, function(transferErr, transferRes){
                     if (transferErr){
                         console.log(transferErr)
-                    }
-                    else{
-                        
+                    }else{
                         try{
+                            removeItemFromMarket(individualItem)
                             if (marketItems[individualItem.id].lastHighestbidderchannel){
                                 // send a message to the winners channel that they won the auction    
                                 client.channels.get(marketItems[individualItem.id].lastHighestbidderchannel).send(winner + " :loudspeaker: - You WON " + marketItems[individualItem.id].name + " for :taco: " + marketItems[individualItem.id].currentbid + " in the marketplace")
                             }
                             // send message to the creator channel that they sold an item 
                             client.channels.get(marketItems[individualItem.id].creatorchannel).send(seller + " :loudspeaker: - Your " + marketItems[individualItem.id].name + " sold for :taco: " + tacosWon + " in the marketplace")
-                            removeItemFromMarket(individualItem)
                         }catch(ex){
                             console.log(ex)
+                            var data = {
+                                command: "marketerror",
+                                guildId: 1,
+                                discordId: 1,
+                                username: "error",
+                                message: JSON.stringify(individualItem)
+                            }
+                            profileDB.createUserActivity(data)
                         }
                     }
                 })
@@ -8210,11 +8229,19 @@ function handleMarketItemAuctionEnded(individualItem){
                         console.log(noSellErr)
                     }else{
                         try{
-                            client.channels.get(marketItems[individualItem.id].creatorchannel).send(seller + " :x: - Your " + marketItems[individualItem.id].name + " did not sell in the marketplace")
                             removeItemFromMarket(individualItem)
-                        }catch(error){
+                            client.channels.get(marketItems[individualItem.id].creatorchannel).send(seller + " :x: - Your " + marketItems[individualItem.id].name + " did not sell in the marketplace")
+                        }catch(ex){
                             // unable to send to channel
-                            console.log(error)
+                            var data = {
+                                command: "marketerror",
+                                guildId: 1,
+                                discordId: 1,
+                                username: "error",
+                                message: JSON.stringify(individualItem)
+                            }
+                            profileDB.createUserActivity(data)
+                            console.log(ex)
                         }
                     }
                 })
@@ -9939,9 +9966,10 @@ module.exports.castCommand = function(message, args){
 
 module.exports.rpgstatsCommand = function(message){
     var amuletItemsById = {}
-    for (var item in allItems){
-        if (allItems[item].itemraritycategory == "amulet"){
-            amuletItemsById[allItems[item].id] = allItems[item];
+    let allItemsForRpgStats = exports.getAllItems()
+    for (var item in allItemsForRpgStats){
+        if (allItemsForRpgStats[item].itemraritycategory == "amulet"){
+            amuletItemsById[allItemsForRpgStats[item].id] = allItemsForRpgStats[item];
         }
     }
     rpg.showRpgStats(message, itemsMapById, amuletItemsById);
