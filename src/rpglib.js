@@ -12366,7 +12366,7 @@ Hoover Dam
                 points: 12001,
                 keystonePoints: [250, 1100, 1830, 3530, 4030],
                 xppoints: 5120,
-                lootcount: 14,
+                lootcount: 33,
                 difficulty: 88,
                 enemies: [
                     {
@@ -12411,7 +12411,7 @@ Hoover Dam
                             "puncture",
                             "balrogueDeath"
                         ],
-                        hp: 52600,
+                        hp: 50,
                         attackDmg: 2080,
                         magicDmg: 2270,
                         armor: 2100,
@@ -12466,7 +12466,7 @@ Hoover Dam
                             "puncture",
                             "emperorDeath"
                         ],
-                        hp: 52600,
+                        hp: 50,
                         attackDmg: 2080,
                         magicDmg: 2270,
                         armor: 2100,
@@ -12524,7 +12524,7 @@ Hoover Dam
                             "puncture",
                             "mysticalFairyDeath"
                         ],
-                        hp: 52600,
+                        hp: 50,
                         attackDmg: 1980,
                         magicDmg: 2070,
                         armor: 2100,
@@ -12576,7 +12576,7 @@ Hoover Dam
                             "puncture",
                             "barbarianDeath"
                         ],
-                        hp: 52600,
+                        hp: 50,
                         attackDmg: 1780,
                         magicDmg: 2270,
                         armor: 2100,
