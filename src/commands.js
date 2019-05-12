@@ -9777,7 +9777,7 @@ function createParty(message, discordUserId, uncommonsToUse){
                             }
                             
                         })
-                        if (ownerOfTable.id){
+                        if (ownerOfTable && ownerOfTable.id){
                             // give owner of table 1xp per reaction, 2 tacos per reaction 
                             var attendees = reactionCount;
                             if (reactionCount > 15){
@@ -9813,6 +9813,8 @@ function createParty(message, discordUserId, uncommonsToUse){
                                     })
                                 }
                             })
+                        }else{
+                            message.channel.send("there is no party owner")
                         }
                     })
                 }).catch(function(err) {
