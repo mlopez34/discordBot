@@ -5585,6 +5585,7 @@ function armamentsEmbedBuilder(message, userItems, itemsMapById, long, rarity){
     // display available armaments
     const embed = new Discord.RichEmbed()
     var fieldCount = 0
+    var totalLength = 0;
     var inventoryStringRegular = "";
     var inventoryStringsRegular = [];
     var mapOfArmaments = {}
@@ -5603,11 +5604,12 @@ function armamentsEmbedBuilder(message, userItems, itemsMapById, long, rarity){
                     embed.addField(emoji + " " + itemOfArmament.itemname + "", itemsMapById[idOfItemInMap].itemslot + " - " + itemsMapById[idOfItemInMap].itemstatistics, true)
                     fieldCount++
                 }else{
-                    if (inventoryStringRegular.length > 900){
+                    if (inventoryStringRegular.length > 900 && totalLength <= 5050){
+                        totalLength = totalLength + inventoryStringRegular.length
                         inventoryStringsRegular.push(inventoryStringRegular);
                         inventoryStringRegular = "";
                         inventoryStringRegular = "**" + itemOfArmament.itemname + "** - " +  statsFromArmament + "\n" + inventoryStringRegular;                        
-                    }else{
+                    }else if(totalLength <= 5050){
                         inventoryStringRegular = "**" + itemOfArmament.itemname + "** - " +  statsFromArmament + "\n" + inventoryStringRegular;                        
                     }
                 }
@@ -5616,7 +5618,7 @@ function armamentsEmbedBuilder(message, userItems, itemsMapById, long, rarity){
         }
     }
     // push the leftover
-    if (inventoryStringRegular.length > 0){
+    if (inventoryStringRegular.length > 0 && totalLength <= 5050){
         inventoryStringsRegular.push(inventoryStringRegular);
     }
     if (!long){
