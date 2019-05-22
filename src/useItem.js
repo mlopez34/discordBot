@@ -2,6 +2,7 @@
 var profileDB = require("./profileDB.js");
 var reputation = require("./reputation.js")
 var wearStats = require("./wearStats.js")
+var baking = require("./baking.js")
 ///// THIS is used to keep multiple uses from using the same items
 var usingItemsLock = {}
 // functions for using each item
@@ -408,16 +409,17 @@ module.exports.useSoil = function(message, discordUserId, soilToUse, cb){
 }
 
 module.exports.useBasedOnShortName = function(message, discordid, itemshortname, userInventoryCountMap, userInventory, itemsMapbyShortName, commandTimes, wearRes, cb){
-    
+    // prepare for baking recipes
+    let listOfBakingRecipes = baking.getListOfBakingShortNames()
     if (itemsMapbyShortName[itemshortname]){
         // item exists, use the item and remove from user inventory
         if (itemshortname == "adventurer"
-            || itemshortname == "culinary"
-            || itemshortname == "roleplaying"
-            || itemshortname == "wild"
-            || itemshortname == "satisfying"
-            || itemshortname == "guilt"
-            || itemshortname == "productivity"){
+        || itemshortname == "culinary"
+        || itemshortname == "roleplaying"
+        || itemshortname == "wild"
+        || itemshortname == "satisfying"
+        || itemshortname == "guilt"
+        || itemshortname == "productivity"){
             // use a potion from inventory
             var idOfItemToUse = itemsMapbyShortName[itemshortname].id;
             var itemInInventoryCount = userInventoryCountMap[idOfItemToUse]
@@ -471,15 +473,13 @@ module.exports.useBasedOnShortName = function(message, discordid, itemshortname,
                 exports.setItemsLock(discordid, false)
                 cb("failed");
             }
-        }else if (itemshortname == "applepie"
-            || itemshortname == "bananacake"){
-            // use a pie from inventory
+        }else if (listOfBakingRecipes.indexOf(itemshortname) > -1){
+            // use a baking item from inventory
             var idOfItemToUse = itemsMapbyShortName[itemshortname].id;
             var itemInInventoryCount = userInventoryCountMap[idOfItemToUse]
             if (itemInInventoryCount > 0){
                 var bakeToUse = undefined;
                 for (var item in userInventory){
-                    // check the rock hasnt been used
                     var validItem = exports.itemValidate(userInventory[item]);
                     if (validItem){
                         // item hasnt been added to be counted, add it as 1
@@ -495,8 +495,7 @@ module.exports.useBasedOnShortName = function(message, discordid, itemshortname,
                         if (updatePotionErr){
                             exports.setItemsLock(discordid, false)
                             cb(updatePotionErr);
-                        }
-                        else{
+                        }else{
                             // add the buff to the user profile. itemid + itemactivatetime
                             addRPGBuffToUser(discordid, bakeToUse.itemid, 2, function(buffErr, buffRes){
                                 if (buffErr){
@@ -505,7 +504,8 @@ module.exports.useBasedOnShortName = function(message, discordid, itemshortname,
                                     cb("failed");
                                 }else{
                                     exports.setItemsLock(discordid, false)
-                                    message.channel.send( "gained buff" ); // message that user gained buff                                                           
+                                    // TODO: get buffstring
+                                    message.channel.send( "gained buff :cake:" ); // message that user gained buff                                                           
                                     cb(null, "success")
                                 }
                             })

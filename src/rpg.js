@@ -18,6 +18,7 @@ var TEAM_MAX_LENGTH = 5;
 var CURRENT_CHALLENGES_AVAILABLE = 13
 var CHALLENGE_TO_TEST = 12
 var KEYSTONE_UNLOCK_LEVEL = 35
+var RPG_TEMPLE_LEVEL_PET = 5
 var rpgAbilities = rpglib.rpgAbilities;
 var enemiesToEncounter = rpglib.enemiesToEncounter;
 var areaToZoneMap = rpglib.areaToZoneMap
@@ -135,7 +136,7 @@ module.exports.rpgSkip = function(message){
     }
 }
 
-module.exports.showRpgStats = function(message, itemsAvailable, amuletItemsById){
+module.exports.showRpgStats = function(message, itemsAvailable, amuletItemsById, buffItemsById){
     var discordUserId = message.author.id;
     
     profileDB.getUserRpgProfleData(discordUserId, function(err, userData){
@@ -180,6 +181,20 @@ module.exports.showRpgStats = function(message, itemsAvailable, amuletItemsById)
                         }
                     }
 
+                    var userTemporaryBuffData = []
+                    for (var buffItem in buffItemsById){
+                        var idToCheck = buffItemsById[buffItem].id
+                        var buffTime = userStats.rpgbuffactivatetime
+                        var now = new Date()
+                        if (now <= buffTime){
+                            // buff is still active
+                            if (userStats.rpgbuffitemid == idToCheck){
+                                // add the buff to the stats
+                                userTemporaryBuffData.push(buffItemsById[buffItem])
+                            }
+                        }
+                    }
+
                     profileDB.getUserWearInfo(discordUserId, function(wearErr, wearData){
                         if (wearErr){
                             console.log(wearErr);
@@ -198,6 +213,8 @@ module.exports.showRpgStats = function(message, itemsAvailable, amuletItemsById)
                                 armorPlus: 0,
                                 spiritPlus: 0,
                                 luckPlus: 0,
+                                critPlus: 0,
+                                critDamagePlus: 0,
                                 statuses: [],
                                 buffs: []
                             }
@@ -205,73 +222,116 @@ module.exports.showRpgStats = function(message, itemsAvailable, amuletItemsById)
                             if (wearingStats.slot1itemid){
                                 items.push({
                                     itemid: wearingStats.slot1itemid,
-                                    abilities: true
+                                    ability1: true,
+                                    ability2: true,
+                                    specialability: true,
+                                    passiveability: true
                                 })
                             }
                             if (wearingStats.slot2itemid){
                                 items.push({
                                     itemid: wearingStats.slot2itemid,
-                                    abilities: true
+                                    ability1: true,
+                                    ability2: true,
+                                    specialability: true,
+                                    passiveability: true
                                 })
                             }
                             if (wearingStats.slot3itemid){
                                 items.push({
                                     itemid: wearingStats.slot3itemid,
-                                    abilities: true
+                                    ability1: true,
+                                    ability2: true,
+                                    specialability: true,
+                                    passiveability: true
                                 })
                             }
                             if (wearingStats.slot4itemid){
                                 items.push({
                                     itemid: wearingStats.slot4itemid,
-                                    abilities: true
+                                    ability1: true,
+                                    ability2: true,
+                                    specialability: true,
+                                    passiveability: true
                                 })
                             }
                             // temple
                             if (wearingStats.slot5itemid){
                                 items.push({
                                     itemid: wearingStats.slot5itemid,
-                                    abilities: false
+                                    ability1: false,
+                                    ability2: false,
+                                    specialability: false,
+                                    passiveability: false
                                 })
                             }
                             // stable
                             if (wearingStats.slot6itemid){
                                 items.push({
                                     itemid: wearingStats.slot6itemid,
-                                    abilities: false
+                                    ability1: false,
+                                    ability2: false,
+                                    specialability: false,
+                                    passiveability: false
                                 })
                             }
                             // greenhouse
                             if (wearingStats.slot7itemid){
                                 items.push({
                                     itemid: wearingStats.slot7itemid,
-                                    abilities: false
+                                    ability1: false,
+                                    ability2: false,
+                                    specialability: false,
+                                    passiveability: false
                                 })
                             }
                             // added stats from items
-                            
+                            for (var i in userTemporaryBuffData){
+                                var activatebilityallslots = itemsAvailable[userTemporaryBuffData[i].id].activatebilityallslots ? itemsAvailable[userTemporaryBuffData[i].id].activatebilityallslots : 0
+                                for (var i in items){
+                                    var slotItemId = items[i].itemid
+                                    if (activatebilityallslots == 1){
+                                        items[i].ability1 = true
+                                    }
+                                    if (activatebilityallslots == 2){
+                                        items[i].ability2 = true
+                                    }
+                                    if (activatebilityallslots == 3){
+                                        items[i].specialability = true
+                                    }
+                                    if (activatebilityallslots == 4){
+                                        items[i].passiveability = true
+                                    }
+                                }
+                            }
                             for (var i in items){
                                 var slotItemId = items[i].itemid
-                                var abilitiesActivated = items[i].abilities
-                                var singleItemString = abilitiesActivated ? "**Abilities**: " : "";
-                                if (abilitiesActivated){
+                                var singleItemString = items[i].ability1 || items[i].ability2 || items[i].specialability || items[i].passiveability ? "**Abilities**: " : "";
+                                if (items[i].ability1){
                                     if (itemsAvailable[slotItemId].ability1){
                                         abilities.push(itemsAvailable[slotItemId].ability1);
                                         singleItemString = singleItemString + itemsAvailable[slotItemId].ability1 + ","
-                                    }
+                                    }  
+                                }
+                                if (items[i].ability2){
                                     if (itemsAvailable[slotItemId].ability2){
                                         abilities.push(itemsAvailable[slotItemId].ability2);
                                         singleItemString = singleItemString + itemsAvailable[slotItemId].ability2 + ","
                                     }
+                                }
+                                if (items[i].specialability){
                                     if (itemsAvailable[slotItemId].specialability){
                                         abilities.push(itemsAvailable[slotItemId].specialability)
                                         singleItemString = singleItemString + itemsAvailable[slotItemId].specialability + ","
                                     }
+                                }
+                                if (items[i].passiveability){
                                     if (itemsAvailable[slotItemId].passiveability){
                                         abilities.push(itemsAvailable[slotItemId].passiveability);
                                         singleItemString = singleItemString + itemsAvailable[slotItemId].passiveability + ","
                                     }
-                                    singleItemString = singleItemString + "\n"    
                                 }
+                                singleItemString = singleItemString = singleItemString + "\n"
 
                                 var hpPlus = itemsAvailable[slotItemId].hpplus ? itemsAvailable[slotItemId].hpplus : 0;
                                 var attackDmgPlus = itemsAvailable[slotItemId].attackdmgplus ? itemsAvailable[slotItemId].attackdmgplus : 0;
@@ -349,6 +409,35 @@ module.exports.showRpgStats = function(message, itemsAvailable, amuletItemsById)
                             amuletString = amuletString + " 🙌 " + amuletSpiritPlus;
                             if (userAmuletData.length > 0){
                                 singleItemsStrings['Amulets'] = amuletString
+                            }
+
+                            for (var i in userTemporaryBuffData){
+                                var hppluspercentage = itemsAvailable[userTemporaryBuffData[i].id].hppluspercentage ? itemsAvailable[userTemporaryBuffData[i].id].hppluspercentage : 0
+                                var attackdmgpluspercentage = itemsAvailable[userTemporaryBuffData[i].id].attackdmgpluspercentage ? itemsAvailable[userTemporaryBuffData[i].id].attackdmgpluspercentage : 0
+                                var magicdmgpluspercentage = itemsAvailable[userTemporaryBuffData[i].id].magicdmgpluspercentage ? itemsAvailable[userTemporaryBuffData[i].id].magicdmgpluspercentage : 0
+                                var armorpluspercentage = itemsAvailable[userTemporaryBuffData[i].id].armorpluspercentage ? itemsAvailable[userTemporaryBuffData[i].id].armorpluspercentage : 0
+                                var spiritpluspercentage = itemsAvailable[userTemporaryBuffData[i].id].spiritpluspercentage ? itemsAvailable[userTemporaryBuffData[i].id].spiritpluspercentage : 0
+                                var critpluspercentage = itemsAvailable[userTemporaryBuffData[i].id].critpluspercentage ? itemsAvailable[userTemporaryBuffData[i].id].critpluspercentage : 0
+                                var critdamagepluspercentage = itemsAvailable[userTemporaryBuffData[i].id].critdmgpluspercentage ? itemsAvailable[userTemporaryBuffData[i].id].critdmgpluspercentage : 0
+                                var luckpluspercentage = itemsAvailable[userTemporaryBuffData[i].id].luckpluspercentage ? itemsAvailable[userTemporaryBuffData[i].id].luckpluspercentage : 0
+                                
+                                hppluspercentage = hppluspercentage / 100
+                                attackdmgpluspercentage = attackdmgpluspercentage / 100
+                                magicdmgpluspercentage = magicdmgpluspercentage / 100
+                                armorpluspercentage = armorpluspercentage / 100
+                                spiritpluspercentage = spiritpluspercentage / 100
+                                critpluspercentage = critpluspercentage / 100
+                                critdamagepluspercentage = critdamagepluspercentage / 100
+                                luckpluspercentage = luckpluspercentage / 100
+                                
+                                statisticsFromItemsAndLevel.hpPlus = statisticsFromItemsAndLevel.hpPlus + Math.floor(statisticsFromItemsAndLevel.hpPlus * hppluspercentage);
+                                statisticsFromItemsAndLevel.attackDmgPlus = statisticsFromItemsAndLevel.attackDmgPlus + Math.floor(statisticsFromItemsAndLevel.attackDmgPlus * attackdmgpluspercentage);
+                                statisticsFromItemsAndLevel.magicDmgPlus = statisticsFromItemsAndLevel.magicDmgPlus + Math.floor(statisticsFromItemsAndLevel.magicDmgPlus * magicdmgpluspercentage);
+                                statisticsFromItemsAndLevel.armorPlus = statisticsFromItemsAndLevel.armorPlus + Math.floor(statisticsFromItemsAndLevel.armorPlus * armorpluspercentage);
+                                statisticsFromItemsAndLevel.spiritPlus = statisticsFromItemsAndLevel.spiritPlus + Math.floor(statisticsFromItemsAndLevel.spiritPlus * spiritpluspercentage);
+                                statisticsFromItemsAndLevel.critPlus = statisticsFromItemsAndLevel.critPlus + Math.floor(statisticsFromItemsAndLevel.critPlus * critpluspercentage);
+                                statisticsFromItemsAndLevel.critDamagePlus = statisticsFromItemsAndLevel.critDamagePlus + Math.floor(statisticsFromItemsAndLevel.critDamagePlus * critdamagepluspercentage);
+                                statisticsFromItemsAndLevel.luckPlus = statisticsFromItemsAndLevel.luckPlus + Math.floor(statisticsFromItemsAndLevel.luckPlus * luckpluspercentage);
                             }
 
                             // added stats from level
@@ -553,7 +642,10 @@ module.exports.rpgReady = function(message, itemsAvailable, amuletItemsById, buf
 
                 var now = new Date();
                 var oneHourAgo = new Date();
-                
+                var extraPetHelp = false
+                if (userData.data.templelevel >= RPG_TEMPLE_LEVEL_PET){
+                    extraPetHelp = true
+                }
                 var isSpecialEvent = activeRPGEvents[ "rpg-" +  rpgEventId ] ? activeRPGEvents[ "rpg-" + rpgEventId ].special : false;
                 var currentPlayerChallenge = userData.data.currentchallenge || 0 ;
                 var challengePicked = (activeRPGEvents[ "rpg-" +  rpgEventId ] && activeRPGEvents[ "rpg-" +  rpgEventId ].challenge) ? activeRPGEvents[ "rpg-" + rpgEventId ].challenge.challenge : false;
@@ -674,7 +766,10 @@ module.exports.rpgReady = function(message, itemsAvailable, amuletItemsById, buf
                                                 if (!activeRPGItemIds[wearingStats.slot1useritemid]){
                                                     items.push({
                                                         itemid: wearingStats.slot1itemid,
-                                                        abilities: true
+                                                        ability1: true,
+                                                        ability2: true,
+                                                        specialability: true,
+                                                        passiveability: true
                                                     });
                                                     userItemIds.push(wearingStats.slot1useritemid);
                                                     activeRPGItemIds[wearingStats.slot1useritemid] = true;
@@ -684,7 +779,10 @@ module.exports.rpgReady = function(message, itemsAvailable, amuletItemsById, buf
                                                 if (!activeRPGItemIds[wearingStats.slot2useritemid]){
                                                     items.push({
                                                         itemid: wearingStats.slot2itemid,
-                                                        abilities: true
+                                                        ability1: true,
+                                                        ability2: true,
+                                                        specialability: true,
+                                                        passiveability: true
                                                     });
                                                     userItemIds.push(wearingStats.slot2useritemid);
                                                     activeRPGItemIds[wearingStats.slot2useritemid] = true;
@@ -694,7 +792,10 @@ module.exports.rpgReady = function(message, itemsAvailable, amuletItemsById, buf
                                                 if (!activeRPGItemIds[wearingStats.slot3useritemid]){
                                                     items.push({
                                                         itemid: wearingStats.slot3itemid,
-                                                        abilities: true
+                                                        ability1: true,
+                                                        ability2: true,
+                                                        specialability: true,
+                                                        passiveability: true
                                                     });
                                                     userItemIds.push(wearingStats.slot3useritemid);
                                                     activeRPGItemIds[wearingStats.slot3useritemid] = true;
@@ -704,7 +805,10 @@ module.exports.rpgReady = function(message, itemsAvailable, amuletItemsById, buf
                                                 if (!activeRPGItemIds[wearingStats.slot4useritemid]){
                                                     items.push({
                                                         itemid: wearingStats.slot4itemid,
-                                                        abilities: true
+                                                        ability1: true,
+                                                        ability2: true,
+                                                        specialability: true,
+                                                        passiveability: true
                                                     });
                                                     userItemIds.push(wearingStats.slot4useritemid);
                                                     activeRPGItemIds[wearingStats.slot4useritemid] = true;
@@ -714,7 +818,10 @@ module.exports.rpgReady = function(message, itemsAvailable, amuletItemsById, buf
                                                 if (!activeRPGItemIds[wearingStats.slot5useritemid]){
                                                     items.push({
                                                         itemid: wearingStats.slot5itemid,
-                                                        abilities: false
+                                                        ability1: false,
+                                                        ability2: false,
+                                                        specialability: false,
+                                                        passiveability: false
                                                     });
                                                     userItemIds.push(wearingStats.slot5useritemid);
                                                     activeRPGItemIds[wearingStats.slot5useritemid] = true;
@@ -724,7 +831,10 @@ module.exports.rpgReady = function(message, itemsAvailable, amuletItemsById, buf
                                                 if (!activeRPGItemIds[wearingStats.slot6useritemid]){
                                                     items.push({
                                                         itemid: wearingStats.slot6itemid,
-                                                        abilities: false
+                                                        ability1: false,
+                                                        ability2: false,
+                                                        specialability: false,
+                                                        passiveability: false
                                                     });
                                                     userItemIds.push(wearingStats.slot6useritemid);
                                                     activeRPGItemIds[wearingStats.slot6useritemid] = true;
@@ -734,26 +844,53 @@ module.exports.rpgReady = function(message, itemsAvailable, amuletItemsById, buf
                                                 if (!activeRPGItemIds[wearingStats.slot7useritemid]){
                                                     items.push({
                                                         itemid: wearingStats.slot7itemid,
-                                                        abilities: false
+                                                        ability1: false,
+                                                        ability2: false,
+                                                        specialability: false,
+                                                        passiveability: false
                                                     });
                                                     userItemIds.push(wearingStats.slot7useritemid);
                                                     activeRPGItemIds[wearingStats.slot7useritemid] = true;
                                                 }
                                             }
+                                            for (var i in userTemporaryBuffData){
+                                                var activatebilityallslots = itemsAvailable[userTemporaryBuffData[i].id].activatebilityallslots ? itemsAvailable[userTemporaryBuffData[i].id].activatebilityallslots : 0
+                                                // TODO: all slot ability 1 are enabled , all slot ability 2 are enabled 
+                                                for (var i in items){
+                                                    var slotItemId = items[i].itemid
+                                                    if (activatebilityallslots == 1){
+                                                        items[i].ability1 = true
+                                                    }
+                                                    if (activatebilityallslots == 2){
+                                                        items[i].ability2 = true
+                                                    }
+                                                    if (activatebilityallslots == 3){
+                                                        items[i].specialability = true
+                                                    }
+                                                    if (activatebilityallslots == 4){
+                                                        items[i].passiveability = true
+                                                    }
+                                                }
+                                            }
                                             // added stats from items
                                             for (var i in items){
                                                 var slotItemId = items[i].itemid
-                                                var abilitiesActivated = items[i].abilities
-                                                if (abilitiesActivated){
+                                                if (items[i].ability1){
                                                     if (itemsAvailable[slotItemId].ability1){
                                                         abilities.push(itemsAvailable[slotItemId].ability1);
                                                     }
+                                                }
+                                                if (items[i].ability2){
                                                     if (itemsAvailable[slotItemId].ability2){
                                                         abilities.push(itemsAvailable[slotItemId].ability2);
                                                     }
+                                                }
+                                                if (items[i].specialability){
                                                     if (itemsAvailable[slotItemId].specialability){
                                                         abilities.push(itemsAvailable[slotItemId].specialability)
                                                     }
+                                                }
+                                                if (items[i].passiveability){
                                                     if (itemsAvailable[slotItemId].passiveability){
                                                         abilities.push(itemsAvailable[slotItemId].passiveability);
                                                     }
@@ -826,7 +963,7 @@ module.exports.rpgReady = function(message, itemsAvailable, amuletItemsById, buf
                                                 var critpluspercentage = itemsAvailable[userTemporaryBuffData[i].id].critpluspercentage ? itemsAvailable[userTemporaryBuffData[i].id].critpluspercentage : 0
                                                 var critdamagepluspercentage = itemsAvailable[userTemporaryBuffData[i].id].critdmgpluspercentage ? itemsAvailable[userTemporaryBuffData[i].id].critdmgpluspercentage : 0
                                                 var luckpluspercentage = itemsAvailable[userTemporaryBuffData[i].id].luckpluspercentage ? itemsAvailable[userTemporaryBuffData[i].id].luckpluspercentage : 0
-
+                                                
                                                 hppluspercentage = hppluspercentage / 100
                                                 attackdmgpluspercentage = attackdmgpluspercentage / 100
                                                 magicdmgpluspercentage = magicdmgpluspercentage / 100
@@ -869,7 +1006,8 @@ module.exports.rpgReady = function(message, itemsAvailable, amuletItemsById, buf
                                                     itemsBeingWornUserIds: userItemIds,
                                                     abilities: abilities,
                                                     extraTacos: extraTacosFromItems,
-                                                    extraExperience: experienceFromItems
+                                                    extraExperience: experienceFromItems,
+                                                    extraPetHelp: extraPetHelp
                                                 }
     
                                                 usersInRPGEvents["rpg-" + discordUserId].ready = true;
@@ -6707,6 +6845,7 @@ function processAbility(abilityObject, event){
         // caster AD or MD depending on ability, target armor, special buffs, special debuffs some random number gen
         var damageToDeal = rpgAbility.dmg;
         damageToDeal = calculateDamageDealt(event, abilityCaster, abilityObject.target, rpgAbility)
+        // TODO: add damage from pet 
         var critStrike = damageToDeal.critical ? ">" : ""
         if (rpgAbility.areawide){
             // deal damage area wide against opposite party
@@ -7926,6 +8065,7 @@ function processAbility(abilityObject, event){
                             var tempDmg = rpgAbility.dmg;
                             rpgAbility.dmg = rpgAbility.buff.atMaxStacksDealDamage;
                             var damageToDeal = calculateDamageDealt(event, abilityObject.user, abilityObject.target, rpgAbility);
+                            // TODO: add damage from pet 
                             var critStrike = damageToDeal.critical ? ">" : ""
                             rpgAbility.dmg = tempDmg;
                             // deal the damage and then remove the buff
@@ -8036,6 +8176,7 @@ function processAbility(abilityObject, event){
                 rpgAbility.special.mdPercentage = rpgAbility.special.mdPercentage + rpgAbility.special.mdPerDot * numberOfDots;
 
                 var damageToDeal = calculateDamageDealt(event, abilityCaster, abilityObject.target, rpgAbility.special)
+                // TODO: add damage from pet 
                 var critStrike = damageToDeal.critical ? ">" : ""
                 // deal the damage                
                 var targetToDealDmgName = event.enemies[targetToDealDmg].name;
@@ -8092,6 +8233,7 @@ function processAbility(abilityObject, event){
                 rpgAbility.special.adPercentage = rpgAbility.special.adPercentage + rpgAbility.special.adPerDot * numberOfDots;
 
                 var damageToDeal = calculateDamageDealt(event, abilityCaster, abilityObject.target, rpgAbility.special)
+                // TODO: add damage from pet 
                 var critStrike = damageToDeal.critical ? ">" : ""
                 // deal the damage                
                 var targetToDealDmgName = event.enemies[targetToDealDmg].name;

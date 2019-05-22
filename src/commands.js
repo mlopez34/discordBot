@@ -6028,31 +6028,48 @@ module.exports.bakeCommand = function(message, args){
             else{
                 var userFruitsCount = baking.obtainFruitsCountObject( fruitData.data )
                 // pass the full inventory to bakeItem
-                baking.bakeItem(discordUserId, itemToBake, itemsMapById, userFruitsCount, function(error, res){
-                    if (error){
-                        if (error == "doesn't exist"){
-                            message.channel.send("Item doesnt exist")
-                        }else if (error == "not available today"){
-                            message.channel.send("You can't bake that item today")
-                        }else if (error == "failed"){
-                            message.channel.send("Do not have the ingredients")
-                        }
-                        console.log(error)
+                profileDB.getGreenHouseData(discordUserId, function(ghErr, ghRes){
+                    if (ghErr){
+                        console.log(ghErr)
                     }else{
-                        var itemBaked = res[0].itemname
-                        message.channel.send(message.author + " has created a `" + itemBaked + "`!")
+                        let userData = ghRes.data
+                        baking.bakeItem(discordUserId, itemToBake, itemsMapById, userFruitsCount, userData, function(error, res){
+                            if (error){
+                                if (error == "doesn't exist"){
+                                    message.channel.send("Item doesnt exist")
+                                }else if (error == "not available today"){
+                                    message.channel.send("You can't bake that item today")
+                                }else if (error == "failed"){
+                                    message.channel.send("Do not have the ingredients")
+                                }
+                                console.log(error)
+                            }else{
+                                var itemBaked = res[0].itemname
+                                message.channel.send(message.author + " has created a `" + itemBaked + "`!")
+                            }
+                        })
                     }
                 })
+                
             }
         })
     }else{
-        todaysRecipesEmbedBuilder(message)
+        // Get the user's greenhouse level, 
+        // lvl 4 = regular, lvl 8 = higher, lvl 10 = super cakes
+        profileDB.getGreenHouseData(discordUserId, function(ghErr, ghRes){
+            if (ghErr){
+                console.log(ghErr)
+            }else{
+                let userData = ghRes.data
+                todaysRecipesEmbedBuilder(message, userData)
+            }
+        })
     }
 }
 
-function todaysRecipesEmbedBuilder(message){
+function todaysRecipesEmbedBuilder(message, userData){
     var today = new Date()
-    var recipesAvailable = baking.getRecipesForToday(today)
+    var recipesAvailable = baking.getRecipesForToday(today, userData)
     var recipesAvailableObjects = baking.recipesForTodayObjectBuilder(recipesAvailable)
     const embed = new Discord.RichEmbed()
     .setColor(0x87CEFA)
@@ -6369,7 +6386,21 @@ function harvestEmbedBuilder(message, fruitsColumnsWithCount){
 function harvestPlotsOfLand(greenHouseData, itemsMapById){
     // return an object with all the plants harvested, and the count harvested
     //// when reaching 10, 20 timesharvested update it to -1
+    const mapOfHarvestMultiplier = {
+        5 : 2,
+        8 : 3,
+        10: 5
+    }
     var fruitsObject = {}
+    let myHarvestMultiplier = 1;
+    let currentMapKey = 0;
+    for (var m in mapOfHarvestMultiplier){
+        if (greenHouseData.greenhouseLevel >= m
+        && m > currentMapKey){
+            currentMapKey = m
+            myHarvestMultiplier = mapOfHarvestMultiplier[m]
+        }
+    }
     for (var i in greenHouseData.plots){
         if (greenHouseData.harvestCounts[i] >= 0){
             // plots[i] has an emoji in items table
@@ -6378,9 +6409,9 @@ function harvestPlotsOfLand(greenHouseData, itemsMapById){
             if (plotId){
                 var plotShortName = itemsMapById[plotId].itemshortname
                 if (!fruitsObject[plotShortName]){
-                    fruitsObject[plotShortName] = 1
+                    fruitsObject[plotShortName] = 1 * myHarvestMultiplier
                 }else{
-                    fruitsObject[plotShortName] = fruitsObject[plotShortName] + 1
+                    fruitsObject[plotShortName] = fruitsObject[plotShortName] + ( 1 * myHarvestMultiplier )
                 }
             }
         }
@@ -9974,7 +10005,13 @@ module.exports.rpgstatsCommand = function(message){
             amuletItemsById[allItemsForRpgStats[item].id] = allItemsForRpgStats[item];
         }
     }
-    rpg.showRpgStats(message, itemsMapById, amuletItemsById);
+    var buffItemsById = {}
+    for (var item in allItemsForRpgStats){
+        if (allItemsForRpgStats[item].itemraritycategory == "uncommon+" && allItemsForRpgStats[item].amuletsource == 'rpgbuff'){
+            buffItemsById[allItemsForRpgStats[item].id] = allItemsForRpgStats[item];
+        }
+    }
+    rpg.showRpgStats(message, itemsMapById, amuletItemsById, buffItemsById);
 }
 
 module.exports.mapCommand = function(message, args){
