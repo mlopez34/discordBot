@@ -5471,7 +5471,7 @@ module.exports.createArmament = function(message, args){
                             var itemToCreateArmament = itemsMapbyShortName[myItemShortName]
                             var armamentTemplateItem;
                             // find the armament template to obtain based on the rarity of the itemToCreateArmament
-                            if (itemToCreateArmament){
+                            if (itemToCreateArmament && !itemToCreateArmament.isseed){
                                 for (var i in allItems){
                                     if (allItems[i].armamentcategory && allItems[i].armamentcategory == itemToCreateArmament.itemraritycategory){
                                         armamentTemplateItem = allItems[i]
