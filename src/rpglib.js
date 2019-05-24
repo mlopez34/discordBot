@@ -4,7 +4,12 @@ module.exports = {
     // 10 turn dot phys
     // 10 turn dot magical
     // DONE cocoon - 15% damage reduct, -10% damage dealt
-    // cannister shot
+    // cannister shot chance to deal 1 to 7 shots
+    // 17% more magical damage 0% healing
+    // 17% more ad 0% healing
+    // mindflaylike ability 90%, 120%, 150%
+    // lightwell ability - 5 random heals
+
     
     rpgAbilities: {
         attack : {
@@ -676,6 +681,26 @@ module.exports = {
         shoot: {
             name: "Shoot",
             abilityId: "shoot",
+            description: "Deal 125 damage + 143% of your attack damage, 6 charges",
+            dmg: 125,
+            charges: 6,
+            maxcharges: 6,
+            adPercentage: 1.43,
+            type: "physical"
+        },
+        plasmabeam: {
+            name: "Plasma Beam",
+            abilityId: "plasmabeam",
+            description: "Deal 125 damage + 143% of your attack damage, 6 charges",
+            dmg: 125,
+            charges: 6,
+            maxcharges: 6,
+            adPercentage: 1.43,
+            type: "physical"
+        },
+        cannistershot: {
+            name: "Cannister Shot",
+            abilityId: "cannistershot",
             description: "Deal 125 damage + 143% of your attack damage, 6 charges",
             dmg: 125,
             charges: 6,
