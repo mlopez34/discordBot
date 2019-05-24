@@ -7719,7 +7719,8 @@ module.exports.putonCommand = function(message, args, retry){
                 })
             }else{
                 // console.log("wear res " + JSON.stringify(getWearRes, null, 2));
-                var userLevel = getWearRes.data[0].level;
+                var userLevel = getWearRes.data[0].level
+                var userRPGLevel = getWearRes.data[0].rpglevel
                 if (getWearRes.data.length == 0){
                     // create the user
                     var data = {
@@ -7813,6 +7814,8 @@ module.exports.putonCommand = function(message, args, retry){
                             if (itemsMapbyShortName[itemToWear]){
                                 // get all the data needed for equiping  for the item
                                 var itemslot = itemsMapbyShortName[itemToWear].itemslot;
+                                var itemLevelRequirement = itemsMapbyShortName[itemToWear].itemlevelrequirement || 0;
+                                var itemLevelRequirementRPG = itemsMapbyShortName[itemToWear].rpglevelrequirement || 0;
                                 // id of the item in the item db
                                 var itemid = itemsMapbyShortName[itemToWear].id;
                                 var itemstats = {
@@ -7826,18 +7829,16 @@ module.exports.putonCommand = function(message, args, retry){
                                 }
                                 // id if the specific item the user will wear (pick the first item)
                                 var itemuserid;
-                                var itemLevelRequirement = 0;
                                 var itemObtainDate;
                                 for (var item in userItemsById[itemid]){
                                     if (userItemsById[itemid][item].status != "wearing"){
                                         itemuserid = userItemsById[itemid][item].id;
-                                        itemLevelRequirement = userItemsById[itemid][item].itemlevelrequirement || 0;
                                         itemObtainDate = userItemsById[itemid][item].itemobtaindate;
                                         break;
                                     }
                                 }
                                 // validate the user owns that item and make sure item is above user level
-                                if (itemuserid && userLevel >= itemLevelRequirement){
+                                if (itemuserid && (userLevel >= itemLevelRequirement) && (userRPGLevel >= itemLevelRequirementRPG) ){
                                     
                                     var validateSlotToWear;
                                     var arrayOfSlots = []
@@ -7926,7 +7927,11 @@ module.exports.putonCommand = function(message, args, retry){
                                         }
                                     }
                                 }else{
-                                    message.channel.send(message.author + " invalid item!")
+                                    if (userLevel < itemLevelRequirement || userRPGLevel < itemLevelRequirementRPG){
+                                        message.channel.send(message.author + " requires level `" + itemLevelRequirement + "` and rpg level `" + itemLevelRequirementRPG + "`")
+                                    }else{
+                                        message.channel.send(message.author + " invalid item!")
+                                    }
                                 }
                             }
                         }

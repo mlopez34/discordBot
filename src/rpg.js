@@ -973,14 +973,14 @@ module.exports.rpgReady = function(message, itemsAvailable, amuletItemsById, buf
                                                 critdamagepluspercentage = critdamagepluspercentage / 100
                                                 luckpluspercentage = luckpluspercentage / 100
                                                 
-                                                statisticsFromItemsAndLevel.hpPlus = statisticsFromItemsAndLevel.hpPlus + Math.floor(statisticsFromItemsAndLevel.hpPlus * hppluspercentage);
-                                                statisticsFromItemsAndLevel.attackDmgPlus = statisticsFromItemsAndLevel.attackDmgPlus + Math.floor(statisticsFromItemsAndLevel.attackDmgPlus * attackdmgpluspercentage);
-                                                statisticsFromItemsAndLevel.magicDmgPlus = statisticsFromItemsAndLevel.magicDmgPlus + Math.floor(statisticsFromItemsAndLevel.magicDmgPlus * magicdmgpluspercentage);
-                                                statisticsFromItemsAndLevel.armorPlus = statisticsFromItemsAndLevel.armorPlus + Math.floor(statisticsFromItemsAndLevel.armorPlus * armorpluspercentage);
-                                                statisticsFromItemsAndLevel.spiritPlus = statisticsFromItemsAndLevel.spiritPlus + Math.floor(statisticsFromItemsAndLevel.spiritPlus * spiritpluspercentage);
-                                                statisticsFromItemsAndLevel.critPlus = statisticsFromItemsAndLevel.critPlus + Math.floor(statisticsFromItemsAndLevel.critPlus * critpluspercentage);
-                                                statisticsFromItemsAndLevel.critDamagePlus = statisticsFromItemsAndLevel.critDamagePlus + Math.floor(statisticsFromItemsAndLevel.critDamagePlus * critdamagepluspercentage);
-                                                statisticsFromItemsAndLevel.luckPlus = statisticsFromItemsAndLevel.luckPlus + Math.floor(statisticsFromItemsAndLevel.luckPlus * luckpluspercentage);
+                                                statisticsFromItemsAndLevel.hpPlusPercentage = hppluspercentage;
+                                                statisticsFromItemsAndLevel.attackDmgPlusPercentage = attackdmgpluspercentage;
+                                                statisticsFromItemsAndLevel.magicDmgPlusPercentage = magicdmgpluspercentage;
+                                                statisticsFromItemsAndLevel.armorPlusPercentage = armorpluspercentage;
+                                                statisticsFromItemsAndLevel.spiritPlusPercentage = spiritpluspercentage;
+                                                statisticsFromItemsAndLevel.critPlusPercentage = critpluspercentage;
+                                                statisticsFromItemsAndLevel.critDamagePlusPercentage = critdamagepluspercentage;
+                                                statisticsFromItemsAndLevel.luckPlusPercentage = luckpluspercentage;
                                             }
 
                                             // get the abilities the user will have
@@ -1146,6 +1146,14 @@ module.exports.rpgReady = function(message, itemsAvailable, amuletItemsById, buf
                                                                     buffs: [
                                                                     ]
                                                                 }
+                                                                membersInParty["rpg-" + partyMember.id].hp = membersInParty["rpg-" + partyMember.id].hp + Math.floor( membersInParty["rpg-" + partyMember.id].hp * partyMemberStats.plusStats.hpPlusPercentage || 0)
+                                                                membersInParty["rpg-" + partyMember.id].attackDmg = membersInParty["rpg-" + partyMember.id].attackDmg + Math.floor( membersInParty["rpg-" + partyMember.id].attackDmg * partyMemberStats.plusStats.attackDmgPlusPercentage || 0)
+                                                                membersInParty["rpg-" + partyMember.id].magicDmg = membersInParty["rpg-" + partyMember.id].magicDmg + Math.floor( membersInParty["rpg-" + partyMember.id].magicDmg * partyMemberStats.plusStats.magicDmgPlusPercentage || 0)
+                                                                membersInParty["rpg-" + partyMember.id].spirit = membersInParty["rpg-" + partyMember.id].spirit + Math.floor( membersInParty["rpg-" + partyMember.id].spirit * partyMemberStats.plusStats.spiritPlusPercentage || 0)
+                                                                membersInParty["rpg-" + partyMember.id].armor = membersInParty["rpg-" + partyMember.id].armor + Math.floor( membersInParty["rpg-" + partyMember.id].armor * partyMemberStats.plusStats.armorPlusPercentage || 0)
+                                                                membersInParty["rpg-" + partyMember.id].criticalChance = membersInParty["rpg-" + partyMember.id].criticalChance + Math.floor( membersInParty["rpg-" + partyMember.id].criticalChance * partyMemberStats.plusStats.critPlusPercentage || 0)
+                                                                membersInParty["rpg-" + partyMember.id].criticalDamagePlus = membersInParty["rpg-" + partyMember.id].criticalDamagePlus + Math.floor( membersInParty["rpg-" + partyMember.id].criticalDamagePlus * partyMemberStats.plusStats.critDamagePlusPercentage || 0)
+
                                                                 membersInParty["rpg-" + partyMember.id].criticalChance = calculateCritChance( membersInParty["rpg-" + partyMember.id].criticalChance )
                                                                 membersInParty["rpg-" + partyMember.id].criticalDamagePlus = calculateCritDamagePlus( membersInParty["rpg-" + partyMember.id].criticalDamagePlus )
                                                                 membersInParty["rpg-" + partyMember.id].maxhp = membersInParty["rpg-" + partyMember.id].hp;
@@ -2960,7 +2968,7 @@ function calculateRewards(event, memberInRpgEvent, allItems, numberOfMembers, fi
                 if(rarityRoll > ANCIENT_MIN_ROLL ){
                     // check if keystone and roll for keystone loot / challenge loot
                     if (keystone && !gotKeystoneAncient){
-                        var getKeystoneLootRoll = Math.floor(Math.random() * 10) + 1;
+                        var getKeystoneLootRoll = Math.floor(Math.random() * 20) + 1;
                         if (keystone >= getKeystoneLootRoll && ancientsKeystoneItems.length > 0){
                             var itemRoll = Math.floor(Math.random() * ancientsKeystoneItems.length);
                             itemsObtainedArray.push(ancientsKeystoneItems[itemRoll])  
@@ -3025,7 +3033,20 @@ function calculateRewards(event, memberInRpgEvent, allItems, numberOfMembers, fi
         for (var enemy in event.enemies){
             let getThisRoll = true;
             if (event.area){
+                let rareRpgMapItems = []
+                let ancientRpgMapItems = []
                 // number of rolls based on the number of people in the area
+                for (var item in allItems){
+                    if (allItems[item].itemraritycategory == "ancient"
+                    && allItems[item].findinzone == getRpgZone(event.area)
+                    && allItems[item].findinarea == event.area){
+                        ancientRpgMapItems.push(allItems[item]);
+                    }else if (allItems[item].itemraritycategory == "rare"
+                    && allItems[item].findinzone == getRpgZone(event.area)
+                    && allItems[item].findinarea == event.area){
+                        rareRpgMapItems.push(allItems[item]);
+                    }
+                }
                 let thresholdMap = {
                     2: 500,
                     3: 333,
@@ -3038,6 +3059,7 @@ function calculateRewards(event, memberInRpgEvent, allItems, numberOfMembers, fi
                     // got extra roll
                     getThisRoll = false
                 }
+                ///// grab the items that are available to the area, zone, and enemy
             }
             if (getThisRoll){
                 var rarityRoll = undefined;
