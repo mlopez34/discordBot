@@ -2611,6 +2611,7 @@ function eventEndedEmbedBuilder(message, event, partySuccess){
 
     var numberOfMembers = event.members.length;
     event.experienceHandedOut = 0
+    var rewardStringForStatistics = "";
     for (var member in event.members){
         var memberInRpgEvent = event.members[member];
         var memberInParty = event.membersInParty["rpg-" + memberInRpgEvent.id];
@@ -2648,16 +2649,18 @@ function eventEndedEmbedBuilder(message, event, partySuccess){
                 var keystoneNumString = event.challenge.keystone > 0 ? (event.challenge.keystone + 1) : ""
                 rewardString = rewardString + challengeId + " " + keystoneNumString + "\n"
             }
+            rewardStringForStatistics = rewardStringForStatistics + rewardString
         }
         else{
             rewards = "No rewards :skull_crossbones:"
             rewardString = rewardString + " " + rewards + " \n";
+            rewardStringForStatistics = rewardStringForStatistics + rewardString
         }
         
         embed.addField(memberInRpgEvent.username,  rewardString, true);
         // TODO: check for achievments, timed, special kills, 
     }
-    var rpgStatData = createRpgStatData(rewardString, event, partySuccess)
+    var rpgStatData = createRpgStatData(rewardStringForStatistics, event, partySuccess)
     profileDB.createRpgStatistics(rpgStatData, function(statErr, statRes){
         if (statErr){
             console.log(statErr)
@@ -2809,6 +2812,8 @@ function createRpgStatData(rewardString, event, partySuccess){
         }
     }
     dataToReturn.enemies = enemyString
+    dataToReturn.challenge = event.challenge ? event.challenge.challenge : null
+    dataToReturn.keystone = event.challenge ? event.challenge.keystone : null
     return dataToReturn
 }
 
@@ -2909,14 +2914,14 @@ function calculateRewards(event, memberInRpgEvent, allItems, numberOfMembers, fi
         }
         else if(allItems[item].itemraritycategory == "rare"
         && (allItems[item].fromscavenge == true
-        || allItems[item].findinarea == event.area
-        || allItems[item].findinzone == event.zone ) ){
+        || (event.area && allItems[item].findinarea == event.area)
+        || (event.zone && allItems[item].findinzone == event.zone) ) ){
             rareItems.push(allItems[item]);
         }
         else if(allItems[item].itemraritycategory == "ancient"
         && ( allItems[item].fromscavenge == true
-        || allItems[item].findinarea == event.area
-        || allItems[item].findinzone == event.zone) ){
+        || (event.area && allItems[item].findinarea == event.area)
+        || (event.zone && allItems[item].findinzone == event.zone) ) ){
             ancientItems.push(allItems[item]);
         }
         else if (allItems[item].itemraritycategory == "amulet"
@@ -2927,8 +2932,8 @@ function calculateRewards(event, memberInRpgEvent, allItems, numberOfMembers, fi
         }
         else if(allItems[item].itemraritycategory == "artifact"
         && (allItems[item].fromscavenge == true
-        || allItems[item].findinarea == event.area
-        || allItems[item].findinzone == getRpgZone(event.area)) ){
+        || (event.area && allItems[item].findinarea == event.area)
+        || (event.zone && allItems[item].findinzone == getRpgZone(event.area)) ) ){
             artifactItems.push(allItems[item]);
         }
     }
@@ -3038,12 +3043,12 @@ function calculateRewards(event, memberInRpgEvent, allItems, numberOfMembers, fi
                 // number of rolls based on the number of people in the area
                 for (var item in allItems){
                     if (allItems[item].itemraritycategory == "ancient"
-                    && allItems[item].findinzone == getRpgZone(event.area)
-                    && allItems[item].findinarea == event.area){
+                    && (event.area && allItems[item].findinzone == getRpgZone(event.area) )
+                    && (event.area && allItems[item].findinarea == event.area)){
                         ancientRpgMapItems.push(allItems[item]);
                     }else if (allItems[item].itemraritycategory == "rare"
-                    && allItems[item].findinzone == getRpgZone(event.area)
-                    && allItems[item].findinarea == event.area){
+                    && (event.area && allItems[item].findinzone == getRpgZone(event.area))
+                    && (event.area &&allItems[item].findinarea == event.area)){
                         rareRpgMapItems.push(allItems[item]);
                     }
                 }

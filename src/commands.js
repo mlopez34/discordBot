@@ -3786,16 +3786,16 @@ module.exports.miniGameCommand = function(message) {
             var amuletsAvailable = []
             for (var item in allItemsForMiniGame){
                 if(allItemsForMiniGame[item].itemraritycategory == "rare"
-                && allItemsForMiniGame[item].findinfruits){
+                && allItemsForMiniGame[item].findinfruits == true){
                     raresAvailable.push(allItemsForMiniGame[item]);
                 }
                 else if(allItemsForMiniGame[item].itemraritycategory == "ancient"
-                && allItemsForMiniGame[item].findinfruits){
+                && allItemsForMiniGame[item].findinfruits == true){
                     ancientsAvailable.push(allItemsForMiniGame[item]);
                 }
                 else if(allItemsForMiniGame[item].itemraritycategory == "amulet"
                 && allItemsForMiniGame[item].amuletsource == "scavenge"
-                && allItemsForMiniGame[item].findinfruits){
+                && allItemsForMiniGame[item].findinfruits == true){
                     amuletsAvailable.push(allItemsForMiniGame[item]);
                 }
             }

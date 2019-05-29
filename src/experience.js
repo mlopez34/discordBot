@@ -181,7 +181,7 @@ function extraLevelRewards(message, discordUser, userLeveledUpTo, allItems){
             
             if(allItems[item].itemraritycategory == "rare" 
             && allItems[item].itemslot != "consumable"
-            && allItems[item].fromscavenge){
+            && allItems[item].fromscavenge == true){
                 rareItems.push(allItems[item]);
             }
         }
@@ -190,7 +190,8 @@ function extraLevelRewards(message, discordUser, userLeveledUpTo, allItems){
     }
     else if (userLeveledUpTo >= 30 && userLeveledUpTo <= 34){
         for (var item in allItems){
-            if(allItems[item].itemraritycategory == "ancient"){
+            if(allItems[item].itemraritycategory == "ancient"
+            && allItems[item].fromscavenge == true){
                 ancientItems.push(allItems[item]);
             }else if(allItems[item].itemraritycategory == "amulet"
             && allItems[item].awardforlevelup == 30){
@@ -202,7 +203,8 @@ function extraLevelRewards(message, discordUser, userLeveledUpTo, allItems){
 
     }else if (userLeveledUpTo == 36 || userLeveledUpTo == 35){
         for (var item in allItems){
-            if (allItems[item].itemraritycategory == "ancient"){
+            if (allItems[item].itemraritycategory == "ancient"
+            && allItems[item].fromscavenge == true){
                 ancientItems.push(allItems[item]);
             }else if(allItems[item].itemraritycategory == "amulet" && allItems[item].amuletsource == "levelup35"){
                 amuletItems.push(allItems[item]);
@@ -214,7 +216,8 @@ function extraLevelRewards(message, discordUser, userLeveledUpTo, allItems){
     }else if (userLeveledUpTo >= 37 && userLeveledUpTo <= 39){
 
         for (var item in allItems){
-            if(allItems[item].itemraritycategory == "ancient"){
+            if(allItems[item].itemraritycategory == "ancient"
+            && allItems[item].fromscavenge == true){
                 ancientItems.push(allItems[item]);
             }
             else if(allItems[item].itemraritycategory == "artifact+" && allItems[item].amuletsource == "levelup37"){
@@ -236,7 +239,8 @@ function extraLevelRewards(message, discordUser, userLeveledUpTo, allItems){
 
         for (var item in allItems){
             
-            if(allItems[item].itemraritycategory == "ancient"){
+            if(allItems[item].itemraritycategory == "ancient"
+            && allItems[item].fromscavenge == true){
                 ancientItems.push(allItems[item]);
             }
             else if(allItems[item].itemraritycategory == "artifact+" && allItems[item].amuletsource == "levelup40"){
@@ -262,7 +266,8 @@ function extraLevelRewards(message, discordUser, userLeveledUpTo, allItems){
     else if (userLeveledUpTo == 41 ){
 
         for (var item in allItems){      
-            if(allItems[item].itemraritycategory == "ancient"){
+            if(allItems[item].itemraritycategory == "ancient"
+            && allItems[item].fromscavenge == true){
                 ancientItems.push(allItems[item]);
             }
             else if(allItems[item].itemraritycategory == "artifact+" && allItems[item].amuletsource == "levelup41"){
@@ -289,7 +294,8 @@ function extraLevelRewards(message, discordUser, userLeveledUpTo, allItems){
     }else if (userLeveledUpTo == 42 ){
 
         for (var item in allItems){
-            if(allItems[item].itemraritycategory == "ancient"){
+            if(allItems[item].itemraritycategory == "ancient"
+            && allItems[item].fromscavenge == true){
                 ancientItems.push(allItems[item]);
             }
             else if(allItems[item].itemraritycategory == "artifact+" && allItems[item].amuletsource == "levelup42"){
@@ -314,7 +320,8 @@ function extraLevelRewards(message, discordUser, userLeveledUpTo, allItems){
     }else if (userLeveledUpTo == 43 ){
 
         for (var item in allItems){
-            if(allItems[item].itemraritycategory == "ancient"){
+            if(allItems[item].itemraritycategory == "ancient"
+            && allItems[item].fromscavenge == true){
                 ancientItems.push(allItems[item]);
             }
             else if(allItems[item].itemraritycategory == "artifact+" && allItems[item].amuletsource == "levelup43"){

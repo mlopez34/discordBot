@@ -963,8 +963,8 @@ module.exports.createRpgStatistics = function(rpgStatData, cb){
         rpgStatData.user5 = null
         rpgStatData.user5stats = null
     }
-    var query = 'insert into '+ config.rpgStatisticsTable + '(user1, user1stats, user2, user2stats, user3, user3stats, user4, user4stats, user5, user5stats, enemies, averagelevel, xp, rewards, success )' +
-        'values(${user1}, ${user1stats}, ${user2}, ${user2stats}, ${user3}, ${user3stats}, ${user4},  ${user4stats}, ${user5}, ${user5stats}, ${enemies}, ${averagelevel}, ${xp}, ${rewards}, ${success})'
+    var query = 'insert into '+ config.rpgStatisticsTable + '(user1, user1stats, user2, user2stats, user3, user3stats, user4, user4stats, user5, user5stats, enemies, averagelevel, xp, rewards, success, challenge, keystone )' +
+        'values(${user1}, ${user1stats}, ${user2}, ${user2stats}, ${user3}, ${user3stats}, ${user4},  ${user4stats}, ${user5}, ${user5stats}, ${enemies}, ${averagelevel}, ${xp}, ${rewards}, ${success}, ${challenge}, ${keystone})'
     db.none(query, rpgStatData)
     .then(function () {
         cb(null, {
