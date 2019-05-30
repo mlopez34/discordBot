@@ -3022,7 +3022,8 @@ function calculateRewards(event, memberInRpgEvent, allItems, numberOfMembers, fi
         var challengePts = enemiesToEncounter.challenge[challengeNum].points;
         var challengeXpPts = enemiesToEncounter.challenge[challengeNum].xppoints;
         if (keystone > 0){
-            challengePts = enemiesToEncounter.challenge[challengeNum].keystonePoints ? enemiesToEncounter.challenge[challengeNum].keystonePoints[keystone - 1] : 1
+            let pts = enemiesToEncounter.challenge[challengeNum].keystonePoints
+            challengePts = pts && pts.length >= keystone ? challengePts + pts[keystone - 1] : challengePts
         }
         if (firstKill){
             challengePts = challengePts * ( 6 + challengeNum + keystone )

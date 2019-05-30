@@ -10816,7 +10816,7 @@ Hoover Dam
                 points: 23,
                 xppoints: 23,
                 lootcount: 5,
-                keystonePoints: [300, 2100, 5030, 10030, 15030],
+                keystonePoints: [300, 2100, 5030, 10030, 15030, 25000],
                 difficulty: 1
             },
             2: {
@@ -10990,7 +10990,7 @@ Hoover Dam
                 points: 49,
                 xppoints: 49,
                 lootcount: 5,
-                keystonePoints: [700, 1300, 3030, 6030, 9030],
+                keystonePoints: [700, 1300, 3030, 6030, 9030, 20000],
                 difficulty: 2
             },
             // keystone 5: decay lasts 10 turns
@@ -11139,7 +11139,7 @@ Hoover Dam
                 points: 93,
                 xppoints: 93,
                 lootcount: 6,
-                keystonePoints: [600, 2000, 2730, 5030, 7030],
+                keystonePoints: [600, 2000, 2730, 5030, 7030, 15000],
                 difficulty: 3
             },
             // keystone 5: bombs go out to all players
@@ -11315,7 +11315,7 @@ Hoover Dam
                 points: 139,
                 xppoints: 139,
                 lootcount: 7,
-                keystonePoints: [500, 1700, 2530, 4530, 6030],
+                keystonePoints: [500, 1700, 2530, 4530, 6030, 13000],
                 difficulty: 5,
             },
             // keystone 5: 
@@ -11524,7 +11524,7 @@ Hoover Dam
                 points: 281,
                 xppoints: 241,
                 lootcount: 9,
-                keystonePoints: [400, 1500, 2330, 4230, 5530],
+                keystonePoints: [400, 1500, 2330, 4230, 5530, 12000],
                 difficulty: 8
             },
             // keystone 5: killing same crystal will give the boss 30% more damage done
@@ -11615,7 +11615,7 @@ Hoover Dam
                 ],
                 points: 529,
                 xppoints: 370,
-                keystonePoints: [300, 1300, 2030, 4030, 5030],
+                keystonePoints: [300, 1300, 2030, 4030, 5030, 11000],
                 lootcount: 10,
                 difficulty: 15
             },
@@ -11628,7 +11628,7 @@ Hoover Dam
                 timedPerTurn: 180000,
                 points: 1000,
                 xppoints: 480,
-                keystonePoints: [300, 1300, 2030, 4030, 5030],
+                keystonePoints: [300, 1300, 2030, 4030, 5030, 10000],
                 lootcount: 10,
                 difficulty: 18,
                 enemies: [
@@ -11785,7 +11785,7 @@ Hoover Dam
                 timedPerTurn: 180000,
                 points: 1800,
                 xppoints: 710,
-                keystonePoints: [270, 1100, 1830, 3730, 4530],
+                keystonePoints: [270, 1100, 1830, 3730, 4530, 9000],
                 difficulty: 25,
                 lootcount: 10,
                 enemies: [
@@ -11983,7 +11983,7 @@ Hoover Dam
                 points: 2901,
                 xppoints: 1500,
                 difficulty: 37,
-                keystonePoints: [300, 1300, 2030, 4030, 5030],
+                keystonePoints: [300, 1300, 2030, 4030, 5030, 8000],
                 lootcount: 11,
                 enemies: [
                     {
@@ -12186,7 +12186,7 @@ Hoover Dam
                 xppoints: 2140,
                 lootcount: 12,
                 difficulty: 55,
-                keystonePoints: [250, 1100, 1830, 3530, 4030],
+                keystonePoints: [250, 1100, 1830, 3530, 4030, 7000],
                 enemies: [
                     {
                         name: "Asteroid Golem",
@@ -12317,7 +12317,7 @@ Hoover Dam
                 xppoints: 3573,
                 lootcount: 13,
                 difficulty: 70,
-                keystonePoints: [250, 1100, 1830, 3530, 4030],
+                keystonePoints: [250, 1100, 1830, 3530, 4030, 6000],
                 enemies: [
                     {
                         name: "D'Artagnan",
@@ -12389,7 +12389,7 @@ Hoover Dam
                 description: "**The High Council:** \n**Darkness** - A member of the high council becomes tainted with darkness and gains *Energy* and their abilities become empowered. Darkness can only be removed upon taking 25% of the member's health from the point of obtaining darkness\n**Energy** - upon reaching full energy the member of the high council unleashes eradicate every turn increasing in damage every turn until darkness is removed - each subsequent darkness requires one less turn to reach full energy\n**Puncture** - Deals 200 damage per turn, each tick gives a stack of *debilitate*, cast upon losing darkness\n**Debilitate** - increases all damage taken by 3% per stack\n**Strength** - Upon losing darkness the member of the high council gains +20% damage dealt permanently\nBalrogue > **Lesion** - DOT Deals low damage for 30 turns\n**Summon Knights** (Darkness Only) - summon a knight per number of lesions on the group, cast every 3 turns until darkness is removed\nEmperor > **Mighty Weapon** - Empowers his weapon and deals 50% more damage\n>**Wound** - Deals high physical damage on a random target for 6 turns\nMystical Fairy > **Blast** - deal moderate magical damage on a random target\n**Summon Worshipper** > Summon a worshipper that will heal the lowest health member for 10% of their total health every 2 turns\n**Summon Cursed Guardians** (Darkness only) > Summons two cursed guardians that become stronger each turn\nReckless Barbarian > **Reflect Shield** - reflects 15% damage dealt back to the attacker | 50% aoe damage reflected back to the attacker\n**Reflect Barrier** (Darkness only) - reflects 15% of damage dealt back to the group | 50% aoe damage reflected back to the group",
                 timedPerTurn: 360000,
                 points: 12001,
-                keystonePoints: [250, 1100, 1830, 3530, 4030],
+                keystonePoints: [250, 1100, 1830, 3530, 4030, 5500],
                 xppoints: 5120,
                 lootcount: 14,
                 difficulty: 88,
@@ -12622,7 +12622,7 @@ Hoover Dam
                 description: "",
                 timedPerTurn: 360000,
                 points: 12001,
-                keystonePoints: [250, 1100, 1830, 3530, 4030],
+                keystonePoints: [250, 1100, 1830, 3530, 4030, 4800],
                 xppoints: 5120,
                 lootcount: 15,
                 difficulty: 99,
