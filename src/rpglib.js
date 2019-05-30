@@ -10829,9 +10829,9 @@ Hoover Dam
                         abilities: ["attack", "attack", "flameblast", "flameblast", "orchatasip"],
                         buffs: [],
                         keystoneStats: {
-                            hp: [1200, 3500, 6200, 10000, 15000 ],
-                            attackDmg: [300, 500, 900, 1500, 2300],
-                            magicDmg: [300, 500, 900, 1500, 2300],
+                            hp: [1200, 3500, 6200, 10000, 15000, 23500 ],
+                            attackDmg: [300, 500, 900, 1500, 2300, 3400 ],
+                            magicDmg: [300, 500, 900, 1500, 2300, 3400],
                             abilities: []
                         },
                         effectsOnDeath: [
@@ -10853,9 +10853,9 @@ Hoover Dam
                         abilities: ["attack", "attack", "enemyshock", "enemyshock", "orchatasip"],
                         buffs: [],
                         keystoneStats: {
-                            hp: [1200, 3500, 6200, 10000, 15000 ],
-                            attackDmg: [300, 500, 900, 1500, 2300],
-                            magicDmg: [300, 500, 900, 1500, 2300],
+                            hp: [1200, 3500, 6200, 10000, 15000, 23500 ],
+                            attackDmg: [300, 500, 900, 1500, 2300, 3400],
+                            magicDmg: [300, 500, 900, 1500, 2300, 3400],
                             abilities: []
                         },
                         hpPerPartyMember: 180,
@@ -10886,12 +10886,12 @@ Hoover Dam
                         ],
                         keystoneStats: {
                             frenzy: {
-                                attackDmgPlus : [85, 120, 250, 440, 620],
-                                magicDmgPlus : [85, 120, 250, 440, 620]
+                                attackDmgPlus : [85, 120, 250, 440, 620, 975],
+                                magicDmgPlus : [85, 120, 250, 440, 620, 975]
                             },
-                            hp: [1200, 3500, 6200, 20000, 35000 ],
-                            attackDmg: [300, 500, 900, 1500, 2500],
-                            magicDmg: [300, 500, 900, 1500, 2500],
+                            hp: [1200, 3500, 6200, 20000, 35000, 52000 ],
+                            attackDmg: [300, 500, 900, 1500, 2500, 4400],
+                            magicDmg: [300, 500, 900, 1500, 2500, 4400],
                             abilities: []
                         },
                         effectsOnDeath: [
@@ -10925,12 +10925,12 @@ Hoover Dam
                         ],
                         keystoneStats: {
                             frenzy: {
-                                attackDmgPlus : [85, 120, 250, 440, 620],
-                                magicDmgPlus : [85, 120, 250, 440, 620]
+                                attackDmgPlus : [85, 120, 250, 440, 620, 975],
+                                magicDmgPlus : [85, 120, 250, 440, 620, 975]
                             },
-                            hp: [1200, 3500, 6200, 20000, 35000 ],
-                            attackDmg: [300, 500, 900, 1500, 2500],
-                            magicDmg: [300, 500, 900, 1500, 2500],
+                            hp: [1200, 3500, 6200, 20000, 35000, 52000 ],
+                            attackDmg: [300, 500, 900, 1500, 2500, 4400],
+                            magicDmg: [300, 500, 900, 1500, 2500, 4400],
                             abilities: []
                         },
                         hpPerPartyMember: 850,
@@ -10963,12 +10963,12 @@ Hoover Dam
                         ],
                         keystoneStats: {
                             frenzy: {
-                                attackDmgPlus : [120, 180, 300, 540, 820],
-                                magicDmgPlus : [120, 180, 300, 540, 820]
+                                attackDmgPlus : [120, 180, 300, 540, 820, 1300],
+                                magicDmgPlus : [120, 180, 300, 540, 820, 1300]
                             },
-                            hp: [3500, 7900, 14900, 21000, 77000 ],
-                            attackDmg: [800, 1200, 1900, 2700, 4300],
-                            magicDmg: [800, 1200, 1900, 2700, 4300],
+                            hp: [3500, 7900, 14900, 21000, 77000 , 87205],
+                            attackDmg: [800, 1200, 1900, 2700, 4300, 5500],
+                            magicDmg: [800, 1200, 1900, 2700, 4300, 5500],
                             abilities: []
                         },
                         endOfTurnEvents : [
