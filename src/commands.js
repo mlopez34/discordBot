@@ -5609,9 +5609,9 @@ function armamentsEmbedBuilder(message, userItems, itemsMapById, long, rarity){
                         totalLength = totalLength + inventoryStringRegular.length
                         inventoryStringsRegular.push(inventoryStringRegular);
                         inventoryStringRegular = "";
-                        inventoryStringRegular = "||**" + itemOfArmament.itemname + "** - " +  statsFromArmament + "||\n" + inventoryStringRegular;                        
+                        inventoryStringRegular = "**" + itemOfArmament.itemname + "** - " +  statsFromArmament + "\n" + inventoryStringRegular;                        
                     }else if(totalLength <= 5050){
-                        inventoryStringRegular = "||**" + itemOfArmament.itemname + "** - " +  statsFromArmament + "||\n" + inventoryStringRegular;                        
+                        inventoryStringRegular = "**" + itemOfArmament.itemname + "** - " +  statsFromArmament + "\n" + inventoryStringRegular;                        
                     }
                 }
                 mapOfArmaments[idOfItemTheArmamentIsFor] = true
