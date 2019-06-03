@@ -552,6 +552,25 @@ module.exports = {
                 damageOnExpire: 0
             }
         },
+        smash: {
+            name: "Smash",
+            abilityId: "smash",
+            dmg: 50,
+            adPercentage: 1,
+            description: "Deal 50 damage + 100% of your physical damage, applies injure which deals 20 damage + 90% of your physical damage over 5 turns",
+            type: "physical",
+            dot: {
+                name: "Injure",
+                dmg: 20,
+                adPercentage: .9,
+                type: "physical",
+                emoji: "🤼",
+                damageOnDotApply: false,
+                turnsToExpire: 5,
+                damageOnDotExpire: false,
+                damageOnExpire: 0
+            }
+        },
         poison: {
             name: "Poison",
             abilityId: "poison",

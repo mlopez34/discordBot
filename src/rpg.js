@@ -451,6 +451,7 @@ module.exports.showRpgStats = function(message, itemsAvailable, amuletItemsById,
 
                             var partyMemberStats = {
                                 level: userStats.level,
+                                rpglevel: userStats.rpglevel,
                                 plusStats: statisticsFromItemsAndLevel,
                                 itemsBeingWorn: items,
                                 abilities: abilities
@@ -474,11 +475,11 @@ module.exports.showRpgStats = function(message, itemsAvailable, amuletItemsById,
                                 id: message.author.id,
                                 name: message.author.username,
                                 username: message.author.username,
-                                hp: 250 + (27 *  partyMemberStats.level ) + partyMemberHpPlus,
-                                attackDmg: 10 + (9 * partyMemberStats.level) + partyMemberAttackDmgPlus,
-                                magicDmg:  10 + (9 * partyMemberStats.level) + partyMemberMagicDmgPlus,
-                                armor: 5 + (partyMemberStats.level * partyMemberStats.level) + partyMemberArmorPlus,
-                                spirit: 5 + (partyMemberStats.level * partyMemberStats.level) + partyMemberSpiritPlus,
+                                hp: 250 + (7 *  partyMemberStats.level ) + (20 *  partyMemberStats.rpglevel ) + partyMemberHpPlus,
+                                attackDmg: 10 + (2 * partyMemberStats.level) + (7 * partyMemberStats.rpglevel ) + partyMemberAttackDmgPlus,
+                                magicDmg:  10 + (2 * partyMemberStats.level) + (7 * partyMemberStats.rpglevel ) + partyMemberMagicDmgPlus,
+                                armor: 5 + Math.floor((partyMemberStats.level * partyMemberStats.level) / 2) + Math.floor((partyMemberStats.rpglevel * partyMemberStats.rpglevel) / 2 ) + partyMemberArmorPlus,
+                                spirit: 5 + Math.floor((partyMemberStats.level * partyMemberStats.level) / 2)+ Math.floor((partyMemberStats.rpglevel * partyMemberStats.rpglevel) / 2 ) + partyMemberSpiritPlus,
                                 luck: 1 + partyMemberLuckPlus,
                                 abilitiesMap : {},
                                 abilities: ["attack"],
@@ -855,7 +856,6 @@ module.exports.rpgReady = function(message, itemsAvailable, amuletItemsById, buf
                                             }
                                             for (var i in userTemporaryBuffData){
                                                 var activatebilityallslots = itemsAvailable[userTemporaryBuffData[i].id].activatebilityallslots ? itemsAvailable[userTemporaryBuffData[i].id].activatebilityallslots : 0
-                                                // TODO: all slot ability 1 are enabled , all slot ability 2 are enabled 
                                                 for (var i in items){
                                                     var slotItemId = items[i].itemid
                                                     if (activatebilityallslots == 1){
@@ -999,6 +999,7 @@ module.exports.rpgReady = function(message, itemsAvailable, amuletItemsById, buf
                                             if (usersInRPGEvents["rpg-" + discordUserId]){
                                                 usersInRPGEvents["rpg-" + discordUserId].memberStats = {
                                                     level: userStats.level,
+                                                    rpglevel: userStats.rpglevel,
                                                     currentchallenge: currentPlayerChallenge,
                                                     currentkeystone: currentPlayerKeystone,
                                                     plusStats: statisticsFromItemsAndLevel,
@@ -1064,9 +1065,9 @@ module.exports.rpgReady = function(message, itemsAvailable, amuletItemsById, buf
                                                             for (var member in activeRPGEvents[rpgEvent].members){
                                                                 var partyMember = activeRPGEvents[rpgEvent].members[member];
                                                                 var partyMemberStats = usersInRPGEvents["rpg-"+partyMember.id].memberStats ? usersInRPGEvents["rpg-"+partyMember.id].memberStats : undefined;
-                                                                averageLevelInParty = averageLevelInParty + partyMemberStats.level;
-                                                                if (partyMemberStats && partyMemberStats.level > maxLevelInParty){
-                                                                    maxLevelInParty = partyMemberStats.level;
+                                                                averageLevelInParty = averageLevelInParty + partyMemberStats.rpglevel;
+                                                                if (partyMemberStats && partyMemberStats.rpglevel > maxLevelInParty){
+                                                                    maxLevelInParty = partyMemberStats.rpglevel;
                                                                 }else if (!partyMemberStats){
                                                                     var statisticsFromItemsAndLevel = {
                                                                         hpPlus: 0,
@@ -1109,11 +1110,11 @@ module.exports.rpgReady = function(message, itemsAvailable, amuletItemsById, buf
                                                                     id: partyMember.id,
                                                                     name: partyMember.username,
                                                                     username: partyMember.username,
-                                                                    hp: 250 + (27 *  partyMemberStats.level ) + partyMemberHpPlus,
-                                                                    attackDmg: 10 + (9 * partyMemberStats.level) + partyMemberAttackDmgPlus,
-                                                                    magicDmg:  10 + (9 * partyMemberStats.level) + partyMemberMagicDmgPlus,
-                                                                    armor: 5 + (partyMemberStats.level * partyMemberStats.level) + partyMemberArmorPlus,
-                                                                    spirit: 5 + (partyMemberStats.level * partyMemberStats.level) + partyMemberSpiritPlus,
+                                                                    hp: 250 + (7 *  partyMemberStats.level ) + (20 *  partyMemberStats.rpglevel ) + partyMemberHpPlus,
+                                                                    attackDmg: 10 + (2 * partyMemberStats.level) + (7 * partyMemberStats.rpglevel ) + partyMemberAttackDmgPlus,
+                                                                    magicDmg:  10 + (2 * partyMemberStats.level) + (7 * partyMemberStats.rpglevel ) + partyMemberMagicDmgPlus,
+                                                                    armor: 5 + Math.floor((partyMemberStats.level * partyMemberStats.level) / 2) + Math.floor((partyMemberStats.rpglevel * partyMemberStats.rpglevel) / 2 ) + partyMemberArmorPlus,
+                                                                    spirit: 5 + Math.floor((partyMemberStats.level * partyMemberStats.level) / 2)+ Math.floor((partyMemberStats.rpglevel * partyMemberStats.rpglevel) / 2 ) + partyMemberSpiritPlus,                                                                    
                                                                     criticalChance: partyMemberCritPlus,
                                                                     criticalDamagePlus: partyMemberCritDamagePlus,
                                                                     luck: 1 + partyMemberLuckPlus,

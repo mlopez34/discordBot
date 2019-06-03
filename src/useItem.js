@@ -12,7 +12,7 @@ var percentageToReduceForCommand = {
     thank: .50,
     sorry: .33,
     fetch: .30,
-    cook: .05,
+    cook: .08,
     prepare: .02,
     RPG: .50
 }

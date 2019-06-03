@@ -4571,7 +4571,8 @@ module.exports.fetchCommand = function(message, args){
                                         // fetch whatever and then set lastfetchtime to now
                                         var fetchTacos = PETS_AVAILABLE[userPet].fetch;
                                         ///////// CALCULATE THE EXTRA TACOS HERE 
-                                        var extraTacosFromItems = wearStats.calculateExtraTacos(wearRes, "fetch"); // 0 or extra
+                                        // instead do fetch * ( slot stable * 50 )
+                                        var extraTacosFromItems = fetchTacos * ( stableSlot * stableSlot) * 10 // wearStats.calculateExtraTacos(wearRes, "fetch"); // 0 or extra
                                         profileDB.updateUserTacosStableFetch(discordUserId, fetchTacos + extraTacosFromItems, stableSlot, function(err, updateResponse) {
                                             if (err){
                                                 // console.log(err);
@@ -5608,9 +5609,9 @@ function armamentsEmbedBuilder(message, userItems, itemsMapById, long, rarity){
                         totalLength = totalLength + inventoryStringRegular.length
                         inventoryStringsRegular.push(inventoryStringRegular);
                         inventoryStringRegular = "";
-                        inventoryStringRegular = "**" + itemOfArmament.itemname + "** - " +  statsFromArmament + "\n" + inventoryStringRegular;                        
+                        inventoryStringRegular = "||**" + itemOfArmament.itemname + "** - " +  statsFromArmament + "||\n" + inventoryStringRegular;                        
                     }else if(totalLength <= 5050){
-                        inventoryStringRegular = "**" + itemOfArmament.itemname + "** - " +  statsFromArmament + "\n" + inventoryStringRegular;                        
+                        inventoryStringRegular = "||**" + itemOfArmament.itemname + "** - " +  statsFromArmament + "||\n" + inventoryStringRegular;                        
                     }
                 }
                 mapOfArmaments[idOfItemTheArmamentIsFor] = true
@@ -6296,8 +6297,13 @@ module.exports.harvestCommand = function(message, args){
                         var threeDaysAgo = new Date();
                         ///////// CALCULATE THE MINUTES REDUCED HERE 
                         var secondsToRemove = wearStats.calculateSecondsReduced(wearRes, "harvest");
-
-                        threeDaysAgo = new Date(threeDaysAgo.setHours(threeDaysAgo.getHours() - HARVEST_COOLDOWN_HOURS ));
+                        let userCooldown = HARVEST_COOLDOWN_HOURS;
+                        if (greenHouseData.greenhouseLevel >= 11){
+                            userCooldown = 2;
+                        }else if (greenHouseData.greenhouseLevel >= 9){
+                            userCooldown = 3;
+                        }
+                        threeDaysAgo = new Date(threeDaysAgo.setHours(threeDaysAgo.getHours() - userCooldown ));
                         threeDaysAgo = new Date(threeDaysAgo.setSeconds(threeDaysAgo.getSeconds() + secondsToRemove));
 
                         if ( threeDaysAgo > greenHouseData.lastharvest ){
@@ -6351,7 +6357,7 @@ module.exports.harvestCommand = function(message, args){
                             
                         }else{
                             now = new Date(now.setSeconds(now.getSeconds() + secondsToRemove));
-                            var numberOfHours = getDateDifference(greenHouseData.lastharvest, now, HARVEST_COOLDOWN_HOURS);
+                            var numberOfHours = getDateDifference(greenHouseData.lastharvest, now, userCooldown);
                             message.channel.send(message.author + " You are tired! Please wait `" + numberOfHours + "` ");
                         }
                     }

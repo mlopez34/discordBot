@@ -140,8 +140,7 @@ function getItemRollChance(userLevel, categoryLevel, templeLevel){
         if (templeLevel < 12 && categoryLevel >= 35){
             // chance of 35 > is 0
             return chance
-        }
-        else if (userLevel - 10 >= categoryLevel){
+        }else if (userLevel - 10 >= categoryLevel){
             chance = 100
         }else if (userLevel - 5 >= categoryLevel){
             chance = 50
@@ -367,7 +366,7 @@ var recipesToCraftMap = {
         45: []
     },
     amulets:{
-        templeLevelRequired: 12,
+        templeLevelRequired: 10,
         10: [],
         15: [],
         20: [],
