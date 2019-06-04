@@ -168,7 +168,7 @@ function individualRoll(gotCurrentLevelDust, gotCrystal, crystalChance, cutoff, 
         itemReturnedObject.cutoffIncrease = -800
     }
     if (itemReturnedObject.crystalChanceIncrease == 0){
-        itemReturnedObject.crystalChanceIncrease = -300
+        itemReturnedObject.crystalChanceIncrease = -150
     }
 
     return itemReturnedObject
@@ -183,21 +183,21 @@ function rollForItems(rarityOfDisassemble, numberOfItems, possibleItems, templel
     var crystalChanceIncrease = 0
     for (var i = 0; i < numberOfItems; i++){
         if (rarityOfDisassemble == "rare"){
-            crystalChance = 10000 + crystalChanceIncrease
+            crystalChance = 10150 + crystalChanceIncrease
         }else if (rarityOfDisassemble == "rare+"){
-            crystalChance = 10000 + crystalChanceIncrease
+            crystalChance = 9500 + crystalChanceIncrease
         }else if (rarityOfDisassemble == "rare++"){
-            crystalChance = 9000 + crystalChanceIncrease
+            crystalChance = 8500 + crystalChanceIncrease
         }else if (rarityOfDisassemble == "rare+++"){
-            crystalChance = 8000 + crystalChanceIncrease
+            crystalChance = 7500 + crystalChanceIncrease
         }else if (rarityOfDisassemble == "ancient"){
-            crystalChance = 10000 + crystalChanceIncrease
+            crystalChance = 9500 + crystalChanceIncrease
         }else if (rarityOfDisassemble == "ancient+"){
-            crystalChance = 9000 + crystalChanceIncrease
-        }else if (rarityOfDisassemble == "ancient++"){
             crystalChance = 8000 + crystalChanceIncrease
+        }else if (rarityOfDisassemble == "ancient++"){
+            crystalChance = 7500 + crystalChanceIncrease
         }else if (rarityOfDisassemble == "ancient+++"){
-            crystalChance = 7000 + crystalChanceIncrease
+            crystalChance = 5500 + crystalChanceIncrease
         }else if (rarityOfDisassemble == "artifact"){
             crystalChance = 7000 + crystalChanceIncrease
         }

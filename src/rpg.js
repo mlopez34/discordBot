@@ -2974,7 +2974,7 @@ function calculateRewards(event, memberInRpgEvent, allItems, numberOfMembers, fi
                 if(rarityRoll > ANCIENT_MIN_ROLL ){
                     // check if keystone and roll for keystone loot / challenge loot
                     if (keystone && !gotKeystoneAncient){
-                        var getKeystoneLootRoll = Math.floor(Math.random() * 20) + 1;
+                        var getKeystoneLootRoll = Math.floor(Math.random() * 20);
                         if (keystone >= getKeystoneLootRoll && ancientsKeystoneItems.length > 0){
                             var itemRoll = Math.floor(Math.random() * ancientsKeystoneItems.length);
                             itemsObtainedArray.push(ancientsKeystoneItems[itemRoll])  
