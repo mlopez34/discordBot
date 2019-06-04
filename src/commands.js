@@ -3165,9 +3165,10 @@ function inventoryEmbedBuilder(message, itemsMap, allItems){
         if (itemsMap.hasOwnProperty(key)) {
             // 
             if (allItems[key] && (allItems[key].itemraritycategory == "common" 
-                || allItems[key].itemraritycategory == "uncommon"
-                || allItems[key].itemraritycategory == "uncommon+"
-                && !allItems[key].essencerarity)){
+            || allItems[key].itemraritycategory == "uncommon"
+            || allItems[key].itemraritycategory == "uncommon+"
+            && !allItems[key].essencerarity 
+            && !allItems[key].crystalrarity ) ) {
                 // console.log(key + " " + allItems[key].itemname)
                 inventoryString = "**"+allItems[key].itemname + "** - " +  itemsMap[key] + " - " + allItems[key].itemslot +"\n" + inventoryString;
             }
@@ -5353,7 +5354,7 @@ module.exports.disassembleCommand = function(message, args){
     if (args && args.length > 1 && !useItem.getItemsLock(discordUserId)){
         var myItemShortName =  args[1];
 
-        profileDB.getUserProfileData(discordUserId, function(profileErr, profileRes){
+        profileDB.getTempleData(discordUserId, function(profileErr, profileRes){
             if (profileErr){
                 console.log(profileErr)
             }else{
@@ -5396,7 +5397,8 @@ module.exports.disassembleCommand = function(message, args){
                             // have items to disassemble
                             if (itemsBeingedDisassembled.length > 0){
                                 var itemProfile = itemsMapById[ itemsBeingedDisassembled[0].itemid ]
-                                disassembleItem.performDisassemble(message, discordUserId, itemsBeingedDisassembled[0], itemProfile, function(useError, daRes){
+                                let templelevel = profileRes.data.templelevel
+                                disassembleItem.performDisassemble(message, discordUserId, itemsBeingedDisassembled[0], itemProfile, templelevel, function(useError, daRes){
                                     if (useError){
                                         useItem.setItemsLock(discordUserId, false)
                                         console.log(useError);
@@ -5963,9 +5965,10 @@ function gemStringBuilder(templeData){
     for (var key in itemsMap) {
         if (itemsMap.hasOwnProperty(key)) {
             // 
-            if (itemsMapById[key].itemraritycategory == "uncommon+" && itemsMapById[key].essencerarity){
+            if (itemsMapById[key].itemraritycategory == "uncommon+" && ( itemsMapById[key].essencerarity || itemsMapById[key].crystalrarity )){
                 var rarityToCraftFor = disassembleItem.getRarityOfItemGemCanCreateArmamentFor(itemsMapById[key])
-                inventoryString = "**"+itemsMapById[key].itemname + "** - " +  itemsMap[key] + " - " + rarityToCraftFor +"\n" + inventoryString;
+                let emoji = disassembleItem.getEmojiBasedOnRarityToCraftFor(itemsMapById[key])
+                inventoryString = emoji + " **"+itemsMapById[key].itemname + "** - " +  itemsMap[key] + " - " + rarityToCraftFor +"\n" + inventoryString;
             }
         }
     }
@@ -7803,15 +7806,17 @@ module.exports.putonCommand = function(message, args, retry){
                                     itemBeingTraded = true;
                                 }
                                 if (!itemsInInventoryCountMap[inventoryResponse.data[item].itemid] 
-                                    && validItem
-                                    && !itemBeingAuctioned 
-                                    && !itemBeingTraded){
+                                && validItem
+                                && !itemBeingAuctioned 
+                                && !itemBeingTraded
+                                && itemsMapbyShortName[itemToWear] && itemsMapbyShortName[itemToWear].itemraritycategory != "amulet"){
                                     // item hasnt been added to be counted, add it as 1
                                     itemsInInventoryCountMap[inventoryResponse.data[item].itemid] = 1;
                                     userItemsById[inventoryResponse.data[item].itemid] = [];
                                     userItemsById[inventoryResponse.data[item].itemid].push(inventoryResponse.data[item]);
                                 }
-                                else if (validItem && !itemBeingAuctioned && !itemBeingTraded){
+                                else if (validItem && !itemBeingAuctioned && !itemBeingTraded
+                                && ( itemsMapbyShortName[itemToWear] && itemsMapbyShortName[itemToWear].itemraritycategory != "amulet" )){
                                     itemsInInventoryCountMap[inventoryResponse.data[item].itemid] = itemsInInventoryCountMap[inventoryResponse.data[item].itemid] + 1;
                                     userItemsById[inventoryResponse.data[item].itemid].push(inventoryResponse.data[item]);
                                 }
@@ -8710,7 +8715,8 @@ module.exports.marketAuctionCommand = function(message, args){
                     }
                     if (itemsMapbyShortName[myItemShortName] 
                         && itemsMapbyShortName[myItemShortName].itemraritycategory != "myth"
-                        && itemsMapbyShortName[myItemShortName].itemraritycategory != "artifact+"){
+                        && itemsMapbyShortName[myItemShortName].itemraritycategory != "artifact+"
+                        && itemsMapbyShortName[myItemShortName].itemraritycategory != "amulet"){
                         var idOfMyItem = itemsMapbyShortName[myItemShortName].id;
                         var itemNameInMarket = itemsMapbyShortName[myItemShortName].itemname
                         // console.log(idOfMyItem);
@@ -8852,7 +8858,8 @@ module.exports.auctionCommand = function(message, args){
                     }
                     if (itemsMapbyShortName[myItemShortName] 
                         && itemsMapbyShortName[myItemShortName].itemraritycategory != "myth"
-                        && itemsMapbyShortName[myItemShortName].itemraritycategory != "artifact+"){
+                        && itemsMapbyShortName[myItemShortName].itemraritycategory != "artifact+"
+                        && itemsMapbyShortName[myItemShortName].itemraritycategory != "amulet"){
                         var idOfMyItem = itemsMapbyShortName[myItemShortName].id;
                         var itemNameInAuction = itemsMapbyShortName[myItemShortName].itemname
                         // console.log(idOfMyItem);
@@ -9264,7 +9271,8 @@ module.exports.tradeCommand = function(message, args){
                             // check if myItem exists in items, check if otherItem exists in items, if not then turn the string
                             if (itemsMapbyShortName[myItemShortName] 
                                 && itemsMapbyShortName[myItemShortName].itemraritycategory != "myth"
-                                && itemsMapbyShortName[myItemShortName].itemraritycategory != "artifact+" ){
+                                && itemsMapbyShortName[myItemShortName].itemraritycategory != "artifact+"
+                                && itemsMapbyShortName[myItemShortName].itemraritycategory != "amulet" ){
                                 var idOfMyItem = itemsMapbyShortName[myItemShortName].id;
                                 var itemNameInTrade = itemsMapbyShortName[myItemShortName].itemname
                                 // console.log(idOfMyItem);

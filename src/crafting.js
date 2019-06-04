@@ -137,7 +137,7 @@ function getItemRollChance(userLevel, categoryLevel, templeLevel){
     if (categoryLevel > userLevel){
         return chance
     }else{
-        if (templeLevel < 12 && categoryLevel >= 35){
+        if (templeLevel < 12 && categoryLevel >= 40){
             // chance of 35 > is 0
             return chance
         }else if (userLevel - 10 >= categoryLevel){

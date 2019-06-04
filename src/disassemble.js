@@ -4,9 +4,9 @@ var reputation = require("./reputation.js")
 var commands = require("./commands")
 // functions for disassembling an item
 
-function individualRoll(gotCurrentLevelDust, gotCrystal, crystalChance, cutoff, possibleItems, rarityOfDisassemble){
+function individualRoll(gotCurrentLevelDust, gotCrystal, crystalChance, cutoff, possibleItems, rarityOfDisassemble, canGetCrystal){
     // do an individual roll based on parameters and return the item
-    var itemReturnedObject = { item: [], cutoffIncrease : 0 }
+    var itemReturnedObject = { item: [], cutoffIncrease : 0, crystalChanceIncrease : 0 }
 
     if (!gotCurrentLevelDust){
         // only roll possibleItems current level
@@ -28,28 +28,18 @@ function individualRoll(gotCurrentLevelDust, gotCrystal, crystalChance, cutoff, 
         }
         itemReturnedObject.gotCurrentLevelDust = true;
     }else{
-        if (!gotCrystal){
+        if ( ( !gotCrystal && canGetCrystal ) || ( rarityOfDisassemble && canGetCrystal ) ){
             // do a roll with crystal in mind
             var CRYSTAL_CHANCE = crystalChance
-            var itemRoll = Math.floor(Math.random() * 1000) + 1;
+            var itemRoll = Math.floor(Math.random() * 10000) + 1;
             if (itemRoll > CRYSTAL_CHANCE){
-                // got a crystal - only current level crystal
-                // roll for type of crystal to obtain
-                var crystalRoll = Math.floor(Math.random() * 1000) + 1;
-                if (crystalRoll > 800){
-                    // got elemental crystal - roll for the elemental crystal to get
-                    var adjustedListOfObtainableItems = filterListOfObtainableItems(possibleItems, rarityOfDisassemble, false, true)
-                    var itemToGetRoll = Math.floor( Math.random() * adjustedListOfObtainableItems.length);
-                    itemReturnedObject.item.push( adjustedListOfObtainableItems[itemToGetRoll] )
-                    itemReturnedObject.item[0].itemAmount = 1
-                }else{
-                    // got regular crystal push the crystal of current level
-                    var adjustedListOfObtainableItems = filterListOfObtainableItems(possibleItems, rarityOfDisassemble, true, true)
-                    var itemToGetRoll = Math.floor( Math.random() * adjustedListOfObtainableItems.length);
-                    itemReturnedObject.item.push( adjustedListOfObtainableItems[itemToGetRoll] )
-                    itemReturnedObject.item[0].itemAmount = 1
-                }
+                // got elemental crystal - roll for the elemental crystal to get
+                var adjustedListOfObtainableItems = filterListOfObtainableItems(possibleItems, rarityOfDisassemble, true, true)
+                var itemToGetRoll = Math.floor( Math.random() * adjustedListOfObtainableItems.length);
+                itemReturnedObject.item.push( adjustedListOfObtainableItems[itemToGetRoll] )
+                itemReturnedObject.item[0].itemAmount = 1
                 itemReturnedObject.gotCrystal = true;
+                itemReturnedObject.crystalChanceIncrease = 2500
             }else{
                 // didnt get a crystal then roll for current and above level dust
                 var itemRoll = Math.floor(Math.random() * 10000) + 1;
@@ -69,6 +59,7 @@ function individualRoll(gotCurrentLevelDust, gotCrystal, crystalChance, cutoff, 
                         }else {
                             itemReturnedObject.item[0].itemAmount = 1
                         }
+                        itemReturnedObject.cutoffIncrease = 2000
                     }else{
                         // got current level dust, roll for the amount to get
                         var adjustedListOfObtainableItems = filterListOfObtainableItems(possibleItems, rarityOfDisassemble, true, false)
@@ -86,6 +77,7 @@ function individualRoll(gotCurrentLevelDust, gotCrystal, crystalChance, cutoff, 
                         }else {
                             itemReturnedObject.item[0].itemAmount = 1
                         }
+                        itemReturnedObject.cutoffIncrease = 1000
                     }
                 }else if ( itemRoll > 6000 ){
                     // get an uncommon item
@@ -106,7 +98,7 @@ function individualRoll(gotCurrentLevelDust, gotCrystal, crystalChance, cutoff, 
             }
         }else{
             // do a roll for only current and above level dust
-            var itemRoll = Math.floor(Math.random() * 1000) + 1;
+            var itemRoll = Math.floor(Math.random() * 10000) + 1;
             if (itemRoll > cutoff){
                 // got dust now roll if current level dust or higher level dust
                 var itemLevel = Math.floor(Math.random() * 10000) + 1;
@@ -123,6 +115,7 @@ function individualRoll(gotCurrentLevelDust, gotCrystal, crystalChance, cutoff, 
                     }else {
                         itemReturnedObject.item[0].itemAmount = 1
                     }
+                    itemReturnedObject.cutoffIncrease = 2000
                 }else{
                     var adjustedListOfObtainableItems = filterListOfObtainableItems(possibleItems, rarityOfDisassemble, true, false)
                     var itemToGetRoll = Math.floor( Math.random() * adjustedListOfObtainableItems.length);
@@ -140,6 +133,7 @@ function individualRoll(gotCurrentLevelDust, gotCrystal, crystalChance, cutoff, 
                     }else {
                         itemReturnedObject.item[0].itemAmount = 1
                     }
+                    itemReturnedObject.cutoffIncrease = 1000
                 }
             }else if ( itemRoll > 6000 ){
                 // get an uncommon item
@@ -160,6 +154,9 @@ function individualRoll(gotCurrentLevelDust, gotCrystal, crystalChance, cutoff, 
         }
     }
 
+    // if a crystal was obtained make it harder to get another crystal
+    // if current level dust was obtained make it harder to get another dust
+
     if (itemReturnedObject.gotCrystal == undefined ){
         itemReturnedObject.gotCrystal = gotCrystal
     }
@@ -167,38 +164,48 @@ function individualRoll(gotCurrentLevelDust, gotCrystal, crystalChance, cutoff, 
         itemReturnedObject.gotCurrentLevelDust = gotCurrentLevelDust
     }
 
+    if (itemReturnedObject.cutoffIncrease == 0){
+        itemReturnedObject.cutoffIncrease = -800
+    }
+    if (itemReturnedObject.crystalChanceIncrease == 0){
+        itemReturnedObject.crystalChanceIncrease = -300
+    }
+
     return itemReturnedObject
 }
 
-function rollForItems(rarityOfDisassemble, numberOfItems, possibleItems ){
+function rollForItems(rarityOfDisassemble, numberOfItems, possibleItems, templelevel){
     var itemsCollected = [] // RETURNED BACK
     var gotCurrentLevelDust = false
     var gotCrystal = false
     var currentCuttoff = 7500
+    var crystalChance = 10000
+    var crystalChanceIncrease = 0
     for (var i = 0; i < numberOfItems; i++){
-        var crystalChance = 10000
         if (rarityOfDisassemble == "rare"){
-            crystalChance = 10000
+            crystalChance = 10000 + crystalChanceIncrease
         }else if (rarityOfDisassemble == "rare+"){
-            crystalChance = 10000
+            crystalChance = 10000 + crystalChanceIncrease
         }else if (rarityOfDisassemble == "rare++"){
-            crystalChance = 9000
+            crystalChance = 9000 + crystalChanceIncrease
         }else if (rarityOfDisassemble == "rare+++"){
-            crystalChance = 8000
+            crystalChance = 8000 + crystalChanceIncrease
         }else if (rarityOfDisassemble == "ancient"){
-            crystalChance = 10000
+            crystalChance = 10000 + crystalChanceIncrease
         }else if (rarityOfDisassemble == "ancient+"){
-            crystalChance = 9000
+            crystalChance = 9000 + crystalChanceIncrease
         }else if (rarityOfDisassemble == "ancient++"){
-            crystalChance = 8000
+            crystalChance = 8000 + crystalChanceIncrease
         }else if (rarityOfDisassemble == "ancient+++"){
-            crystalChance = 7000
+            crystalChance = 7000 + crystalChanceIncrease
         }else if (rarityOfDisassemble == "artifact"){
-            crystalChance = 0
+            crystalChance = 7000 + crystalChanceIncrease
         }
-        var indivRoll = individualRoll(gotCurrentLevelDust, gotCrystal, crystalChance, currentCuttoff, possibleItems, rarityOfDisassemble)
+        let canGetCrystal = calculateCanGetCrystal(rarityOfDisassemble, templelevel )
+        var indivRoll = individualRoll(gotCurrentLevelDust, gotCrystal, crystalChance, currentCuttoff, possibleItems, rarityOfDisassemble, canGetCrystal)
         itemsCollected.push(indivRoll.item[0])
         currentCuttoff = currentCuttoff + indivRoll.cutoffIncrease
+        crystalChanceIncrease = crystalChanceIncrease + indivRoll.crystalChanceIncrease
         gotCurrentLevelDust = indivRoll.gotCurrentLevelDust
         gotCrystal = indivRoll.gotCrystal
     }
@@ -210,17 +217,30 @@ function rollForItems(rarityOfDisassemble, numberOfItems, possibleItems ){
     // roll for a regular shard/crystal, or elemental shard, crystal   80 - 20
 
     // *** elemental
-    // rares can give fire, ice, water
-    // ancients can give lightning, earth
-    // artifacts can give shadow, life
+    // rares can give fire, earth, water
+    // ancients can give lightning, ice, wind
+    // artifacts can give shadow, spirit, steel
 
-
-    // rares have small chance at shards 75 - 25, ancients have small chance at crystals 75 - 25
-    // rares have small chance at higher shards - step above, 87 - 13, **
-    // the cutoff roll for these should start at a certain number, and if you get one
-    // the cutoff should go up (lower chance to get next one) + 10
+    // the cutoff should go up (lower chance to get next one) or down, depending on the previous roll
 
     return itemsCollected
+}
+
+function calculateCanGetCrystal(rarityOfDisassemble, templelevel){
+    if (templelevel >= 9 
+    && (rarityOfDisassemble.startsWith("artifact") 
+    || rarityOfDisassemble.startsWith("ancient") 
+    || rarityOfDisassemble.startsWith("rare")) ){
+        return true
+    }else if (templelevel >= 5
+    && (rarityOfDisassemble.startsWith("ancient") 
+    || rarityOfDisassemble.startsWith("rare")) ){
+        return true
+    }else if (templelevel >= 4
+    && ( rarityOfDisassemble.startsWith("rare") ) ){
+        return true
+    }
+    return false
 }
 
 const rarityEssenceLevels = {
@@ -247,27 +267,27 @@ const rarityEssenceLevels = {
     "ancient": {
         level: 2,
         essenceRarity: "ancient",
-        crystalRarity: "ancient"
+        crystalRarity: [ "ancient", "rare" ]
     },
     "ancient+": {
         level: 3,
         essenceRarity: "ancient",
-        crystalRarity: "ancient"
+        crystalRarity: [ "ancient", "rare" ]
     },
     "ancient++": {
         level: 4,
         essenceRarity: "ancient",
-        crystalRarity: "ancient"
+        crystalRarity: [ "ancient", "rare" ]
     },
     "ancient+++": {
         level: 5,
         essenceRarity: "ancient",
-        crystalRarity: "ancient"
+        crystalRarity: [ "ancient", "rare" ]
     },
     "artifact": {
         level: 2,
         essenceRarity: "artifact",
-        crystalRarity: "artifact"
+        crystalRarity: ["artifact", "ancient", "rare" ] 
     }
 }
 
@@ -275,62 +295,86 @@ var armamentEssenceLevels = {
     "rare": {
         level: 1,
         essenceRarity: "rare",
-        crystalRarity: "rare"
+        crystalRarity: "rare",
+        essenceEmoji: ":small_blue_diamond:",
+        crystalEmoji: ":rosette:"
     },
     "rare+": {
         level: 2,
         essenceRarity: "rare",
-        crystalRarity: "rare"
+        crystalRarity: "rare",
+        essenceEmoji: ":small_blue_diamond:",
+        crystalEmoji: ":rosette:"
     },
     "rare++": {
         level: 3,
         essenceRarity: "rare",
-        crystalRarity: "rare"
+        crystalRarity: "rare",
+        essenceEmoji: ":small_blue_diamond:",
+        crystalEmoji: ":rosette:"
     },
     "rare+++": {
         level: 4,
         essenceRarity: "rare",
-        crystalRarity: "rare"
+        crystalRarity: "rare",
+        essenceEmoji: ":small_blue_diamond:",
+        crystalEmoji: ":rosette:"
     },
     "rare++++": {
         level: 5,
         essenceRarity: "rare",
-        crystalRarity: "rare"
+        crystalRarity: "rare",
+        essenceEmoji: ":small_blue_diamond:",
+        crystalEmoji: ":rosette:"
     },
     "ancient": {
         level: 1,
         essenceRarity: "ancient",
-        crystalRarity: "ancient"
+        crystalRarity: "ancient",
+        essenceEmoji: ":small_orange_diamond:",
+        crystalEmoji: ":rosette:"
     },
     "ancient+": {
         level: 2,
         essenceRarity: "ancient",
-        crystalRarity: "ancient"
+        crystalRarity: "ancient",
+        essenceEmoji: ":small_orange_diamond:",
+        crystalEmoji: ":rosette:"
     },
     "ancient++": {
         level: 3,
         essenceRarity: "ancient",
-        crystalRarity: "ancient"
+        crystalRarity: "ancient",
+        essenceEmoji: ":small_orange_diamond:",
+        crystalEmoji: ":rosette:"
     },
     "ancient+++": {
         level: 4,
         essenceRarity: "ancient",
-        crystalRarity: "ancient"
+        crystalRarity: "ancient",
+        essenceEmoji: ":small_orange_diamond:",
+        crystalEmoji: ":rosette:"
     },
     "ancient++++": {
         level: 5,
         essenceRarity: "ancient",
-        crystalRarity: "ancient"
+        crystalRarity: "ancient",
+        essenceEmoji: ":small_orange_diamond:",
+        crystalEmoji: ":rosette:"
     },
     "artifact": {
         level: 1,
         essenceRarity: "artifact",
-        crystalRarity: "artifact"
+        crystalRarity: "artifact",
+        essenceEmoji: ":diamond_shape_with_a_dot_inside:",
+        crystalEmoji: ":rosette:"
     },
     "myth": {
         level: 2,
         essenceRarity: "artifact",
-        crystalRarity: "artifact"
+        crystalRarity: "artifact",
+        essenceEmoji: ":diamond_shape_with_a_dot_inside:",
+        crystalEmoji: ":rosette:"
     }
 }
 
@@ -347,6 +391,28 @@ module.exports.getRarityOfItemGemCanCreateArmamentFor = function(item){
     }
 }
 
+module.exports.getEmojiBasedOnRarityToCraftFor = function(item){
+    for (var i in armamentEssenceLevels){
+        if (armamentEssenceLevels[i].level == item.essencelevel){
+            if (armamentEssenceLevels[i].essenceRarity == item.essencerarity){
+                return armamentEssenceLevels[i].essenceEmoji
+            }
+            if (armamentEssenceLevels[i].crystalRarity == item.crystalrarity){
+                return armamentEssenceLevels[i].crystalEmoji
+            }
+        }
+    }
+}
+
+ //// TODO: do something here with crystalrarity
+ /*
+Temple - 4 - elemental crystals rare items
+temple - 5 - elemental crystals ancient items
+temple - 8 craft ancient items
+temple - 9 - elemental crystals artiact items
+temple - 10 - craft artifacts and amulets
+temple - 12 - craft lvl 40 items
+ */
 module.exports.checkRequirements = function(item, itemToCreateArmament){
     var itemRarity = itemToCreateArmament.itemraritycategory
     var requirements = armamentEssenceLevels[itemRarity]
@@ -378,11 +444,6 @@ module.exports.rollForArmamentStats = function(itemToCreateArmament){
         itemMainDefensiveStat = "spirit"
     }
     // set floors and ceilings for the stats based on itemRarity
-    // based on rarity we will also get "extra bonuses" added ie if its a rare, we get + 5
-    // if we get a ancient++ we get +24
-    // once the distributions are done, the extra bonuses are added to the rolls
-    // if initially we get hpplus -10 then the extra bonus would kick in and give the roll -8 instead
-
     // distributions will not be equal, 65% of the time between 1/2 of the floor and ceilings
     // 20% of time other 25% of the floor and ceilings
     // 15% of the time will be other 25% of floor and ceilings
@@ -391,8 +452,6 @@ module.exports.rollForArmamentStats = function(itemToCreateArmament){
     // chest / legs / helm give MORE defensive stat - give LESS critical strike rating
     // back / belt / wrist give MORE critical strike rating - give LESS HP
     // feet / hands / shoulders give MORE HP - give LESS offensive stat
-
-    // 
 
     var armamentStats = {
         hpplus: 0,
@@ -762,29 +821,21 @@ function filterListOfObtainableItems(listOfObtainableItems, disassembleRarity, c
 
     for (var i in listOfObtainableItems){
         if (crystal){
-            if (current){
-                if ( listOfObtainableItems[i].essencelevel == essenceInfo.level - 1 
-                    && listOfObtainableItems[i].crystalrarity == essenceInfo.crystalRarity){
-                    // this one should be included
-                    adjustedList.push(listOfObtainableItems[i])
-                }
-            }else{
-                if ( listOfObtainableItems[i].essencelevel == essenceInfo.level 
-                    && listOfObtainableItems[i].crystalrarity == essenceInfo.crystalRarity){
-                    // this one should be included
-                    adjustedList.push(listOfObtainableItems[i])
-                }
+            if ( listOfObtainableItems[i].essencelevel < essenceInfo.level
+            && essenceInfo.crystalRarity.indexOf(listOfObtainableItems[i].crystalrarity) > -1){
+                // this one should be included          
+                adjustedList.push(listOfObtainableItems[i])
             }
         }else{
             if (current){
                 if ( listOfObtainableItems[i].essencelevel == essenceInfo.level - 1 
-                    && listOfObtainableItems[i].essencerarity == essenceInfo.essenceRarity){
+                && listOfObtainableItems[i].essencerarity == essenceInfo.essenceRarity){
                     // this one should be included
                     adjustedList.push(listOfObtainableItems[i])
                 }
             }else{
                 if ( listOfObtainableItems[i].essencelevel == essenceInfo.level 
-                    && listOfObtainableItems[i].essencerarity == essenceInfo.essenceRarity){
+                && listOfObtainableItems[i].essencerarity == essenceInfo.essenceRarity){
                     // this one should be included
                     adjustedList.push(listOfObtainableItems[i])
                 }
@@ -795,7 +846,7 @@ function filterListOfObtainableItems(listOfObtainableItems, disassembleRarity, c
     return adjustedList
 }
 
-module.exports.performDisassemble =  function(message, discordUserId, itemsToDisassemble, itemProfile, cb){
+module.exports.performDisassemble =  function(message, discordUserId, itemsToDisassemble, itemProfile, templelevel, cb){
     if (itemsToDisassemble){
         // first check the kind of item to disassemble
         console.log()
@@ -835,7 +886,7 @@ module.exports.performDisassemble =  function(message, discordUserId, itemsToDis
         // can get commons, uncommons, and shards (shards will be used for armaments, crafting, building)
         // console.log(itemsObtained);
         if (validDisassemble){
-            itemsObtained = rollForItems(itemProfile.itemraritycategory, numberOfItems, listOfObtainableItems )        
+            itemsObtained = rollForItems(itemProfile.itemraritycategory, numberOfItems, listOfObtainableItems, templelevel )        
             profileDB.addNewItemToUser(discordUserId, itemsObtained, function(error, response){
                 if (error){
                     console.log(error)
