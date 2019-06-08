@@ -652,10 +652,10 @@ module.exports = {
             name: "Whirlwind",
             abilityId: "whirlwind",
             dmg: 90,
-            adPercentage: 0.85,
+            adPercentage: 0.95,
             cooldown: 0,
             maxcooldown: 1,
-            description: "Deal 90 damage + 85% of your attack damage to all enemies",
+            description: "Deal 90 damage + 95% of your attack damage to all enemies",
             type: "physical",
             areawide: true,
             targets: "enemy"
@@ -710,11 +710,11 @@ module.exports = {
         plasmabeam: {
             name: "Plasma Beam",
             abilityId: "plasmabeam",
-            description: "Deal 125 damage + 143% of your attack damage, 6 charges",
-            dmg: 125,
+            description: "Deal 75 damage + 87% of your attack damage to all enemies, 6 charges",
+            dmg: 75,
             charges: 6,
             maxcharges: 6,
-            adPercentage: 1.43,
+            adPercentage: .90,
             type: "physical"
         },
         cannistershot: {
