@@ -710,6 +710,7 @@ module.exports = {
         plasmabeam: {
             name: "Plasma Beam",
             abilityId: "plasmabeam",
+            areawide: true,
             description: "Deal 75 damage + 87% of your attack damage to all enemies, 6 charges",
             dmg: 75,
             charges: 6,
