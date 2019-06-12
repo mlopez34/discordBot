@@ -1464,7 +1464,7 @@ function streakStringBuilder(profileData){
             }
         }
     }
-    s = s + " **" + (profileData.votestreak || 0) + "** Days"
+    s = s + " **" + (profileData.votestreak || 0) + "** Day(s)"
     return s
 }
 
