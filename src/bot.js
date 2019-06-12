@@ -10,6 +10,8 @@ var profileDB = require("./profileDB.js");
 
 const Discord = require("discord.js");
 const client = new Discord.Client();
+const DBL = require("dblapi.js");
+const dbl = new DBL(config.discordBotsToken, client);
 
 var BASE_INTERVAL = 18000000;
 var MAIN_CHANNELS = config.mainChannelName;
@@ -22,6 +24,18 @@ var tacoTuesdayEnabled = false;
 var botEnabled = true;
 var guildsRegistered = {}
 var messagesByUserCount = {}
+let TEST = config.test;
+
+// Optional events
+if (!TEST){
+    dbl.on('posted', () => {
+        console.log('Server count posted!');
+    })
+      
+    dbl.on('error', e => {
+       console.log(`Oops! ${e}`);
+    })
+}
 
 client.on('ready', function(err) {
     if (err){
@@ -218,6 +232,9 @@ client.on('message', function(message){
                 }
                 else if (commandIs("cook", message)){
                     commands.cookCommand(message)
+                }
+                else if (commandIs("daily", message)){
+                    commands.dailyCommand(message, args, dbl)
                 }
                 else if (commandIs("profile", message)){
                     commands.profileCommand(message);
@@ -758,6 +775,11 @@ client.on('message', function(message){
                 else if (commandIs("cook", message)){
                     commands.cookCommand(message)
                     data.command = "cook"
+                    profileDB.createUserActivity(data)
+                }
+                else if (commandIs("daily", message)){
+                    commands.dailyCommand(message, args, dbl)
+                    data.command = "daily"
                     profileDB.createUserActivity(data)
                 }
                 else if (commandIs("profile", message)){

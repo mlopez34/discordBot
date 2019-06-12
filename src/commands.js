@@ -88,6 +88,7 @@ var usersMinigames = {}
 var userTradeLock = {}
 var commandLock = {
     thank: {},
+    vote: {},
     sorry: {},
     prepare: {},
     cook: {},
@@ -1319,6 +1320,154 @@ module.exports.giveCommand = function(message, giveTacoAmount){
     }
 }
 
+module.exports.dailyCommand = function(message, args, dbl){
+    // based on the user level your daily will reward you with tacos + 
+    // create embed that shows the user what they will get, and what their streak is
+    // tacos are one reward, burritos are the vote only credit
+    // can purchase pets from the shop for burritos, access to burrito stand shop
+    // streak goes up to 30 days
+    // 1, 1, 2, 2, 3, 3, 5, 5, 8, 8, 13, 13, 20, 20, 30, 30, 45, 45, 60, 60, 75, 75, 90, 90, 110, 110
+    // can get commons from burritos 1 for 1, rares for 50, pets for 100, notes into the twisting nether 150,
+    // ancients 400
+    let discordUserId = message.author.id
+    if (args && args.length > 0 && args[1] == "claim" && !commandLock["vote"][discordUserId]){
+        exports.setCommandLock("vote", discordUserId, true)
+        profileDB.getUserProfileData(discordUserId, function(err, res){
+            if (err){
+                exports.setCommandLock("vote", discordUserId, false)
+            }
+            // check if user has voted
+            var now = new Date();
+            var oneDayAgo = new Date();
+            oneDayAgo = new Date(oneDayAgo.setHours(oneDayAgo.getHours() - 24));
+
+            if ( oneDayAgo > res.data.lastdailytime || !res.data.lastdailytime ){
+                let profileData = res.data
+                let streakReset = calculateStreakReset(profileData)
+                if (streakReset){
+                    profileData.votestreak = 1
+                }
+                let burritosGained = calculateBurritosGained(profileData)
+                let tacosGained = calculateTacosGained(profileData)
+                
+                dbl.hasVoted(message.author.id).then(voted => {
+                    if (voted){
+                        if (!profileData.burritos){
+                            profileDB.updateUserDaily(discordUserId, burritosGained, tacosGained, streakReset, true, function(error, result){
+                                if (error){
+                                    exports.setCommandLock("vote", discordUserId, false)
+                                    console.log(error)
+                                }else{
+                                    exports.setCommandLock("vote", discordUserId, false)
+                                    console.log(result)
+                                    message.channel.send("congrats you have voted and gained `" + burritosGained + "` :burrito: and `" + tacosGained + "` :taco:")
+                                    console.log(voted)        
+                                }
+                            })
+                        }else{
+                            profileDB.updateUserDaily(discordUserId, burritosGained, tacosGained, streakReset, false, function(error, result){
+                                if (error){
+                                    exports.setCommandLock("vote", discordUserId, false)
+                                    console.log(error)
+                                }else{
+                                    exports.setCommandLock("vote", discordUserId, false)
+                                    console.log(result)
+                                    message.channel.send("congrats you have voted and gained `" + burritosGained + "` :burrito: and `" + tacosGained + "` :taco:")
+                                    console.log(voted)        
+                                }
+                            })
+                        }
+                        
+                    }else{
+                        exports.setCommandLock("vote", discordUserId, false)
+                        message.channel.send("You have to vote in order to collect your daily")
+                    }
+                    
+                });
+            }else{
+                exports.setCommandLock("vote", discordUserId, false)
+                now = new Date(now.setSeconds(now.getSeconds()));
+                var numberOfHours = getDateDifference(res.data.lastdailytime, now, COOK_COOLDOWN_HOURS);
+                message.channel.send(message.author + " You cannot collect your daily currently! Please wait `" + numberOfHours + "` ");
+            }
+        })
+    }else{
+        profileDB.getUserProfileData(discordUserId, function(err, res){
+            if (err){
+                console.log(err)
+            }else{
+                let profileData = res.data
+                dailyEmbedBuilder(message, profileData)
+            }
+        })
+    }
+    
+}
+
+function dailyEmbedBuilder(message, profileData){
+    let rewardsString = "Vote for bender on [discordbots.org](https://discordbots.org/bot/320703328730349578) to get rewards every day! some perks are unique and can only be unlocked with voting rewards"
+    let streakString = streakStringBuilder(profileData)
+    let turninString = "1 Burrito for 1 common item \n 50 Burritos for a Rare item \n100 Burritos for a unique pet\n150 Burritos to throw a letter into the twisting nether\n400 Burritos Ancient Item"
+    const embed = new Discord.RichEmbed()
+    .setColor(0xF2E93E)
+    .addField("Bender Voting Rewards", rewardsString)
+    .addField("Streak", streakString)
+    .addField("Rewards", turninString)
+    message.channel.send({embed});
+}
+
+function calculateTacosGained(profileData){
+    let streakArray = [1, 1, 2, 2, 3, 3, 5, 5, 8, 8, 13, 13, 20, 20, 30, 30, 45, 45, 60, 60, 75, 75, 90, 90, 110, 110 ]
+    let streakIndex = profileData.votestreak || 0
+    if (streakIndex > streakArray.length - 1){
+        streakIndex = streakArray.length - 1
+    }
+    let tacosGained = 0
+    tacosGained = Math.floor(streakArray[streakIndex] * profileData.level)
+
+    return tacosGained
+}
+
+function calculateBurritosGained(profileData){
+    let streakArray = [1, 1, 2, 2, 3, 3, 5, 5, 8, 8, 13, 13, 20, 20, 30, 30, 45, 45, 60, 60, 75, 75, 90, 90, 110, 110 ]
+    let streakIndex = profileData.votestreak || 0
+    if (streakIndex > streakArray.length - 1){
+        streakIndex = streakArray.length - 1
+    }
+    let burritosGained = 0
+    burritosGained = streakArray[streakIndex]
+
+    return burritosGained
+}
+
+function calculateStreakReset(profileData){
+    if (profileData.votestreak){
+        // check if the vote has been longer than 2 days since previous vote
+        var twoDaysAgo = new Date();
+        twoDaysAgo = new Date(twoDaysAgo.setHours(twoDaysAgo.getHours() - 48));
+        if (twoDaysAgo > profileData.lastdailytime){
+            return true
+        }else{
+            return false
+        }
+    }else{
+        return false
+    }
+}
+
+function streakStringBuilder(profileData){
+    let s = ":zap:"
+    if (profileData.votestreak){
+        for (var i = 0; i <= profileData.votestreak; i++){
+            if (i < 6 ){
+                s = s + ":zap:"
+            }
+        }
+    }
+    s = s + " **" + profileData.votestreak + "** Days"
+    return s
+}
+
 module.exports.cookCommand = function(message){
     var discordUserId = message.author.id;
     var cookRoll = 20;
@@ -1540,6 +1689,7 @@ module.exports.profileCommand = function(message){
                 profileData.userName = mentionedUser;
                 profileData.avatarURL = mentionedUserAvatarURL;
                 profileData.userTacos = adjustedTacosForUser(mentionedId, profileResponse.data.tacos)
+                profileData.burritos = profileResponse.data.burritos
                 profileData.userTacoStands = profileResponse.data.tacostands ? profileResponse.data.tacostands : 0;
                 profileData.userItems = "none";
                 profileData.pasta = profileResponse.data.pasta;
@@ -1632,6 +1782,7 @@ module.exports.profileCommand = function(message){
                 profileData.avatarURL = message.author.avatarURL;
                 profileData.userTacos = adjustedTacosForUser(discordUserId, profileResponse.data.tacos)
                 profileData.userTacoStands = profileResponse.data.tacostands ? profileResponse.data.tacostands : 0;
+                profileData.burritos = profileResponse.data.burritos
                 profileData.userItems = "none";
                 profileData.pasta = profileResponse.data.pasta;
                 profileData.reputation = profileResponse.data.reputation;
@@ -2052,8 +2203,10 @@ function profileBuilder(message, profileData){
     */
     .setTimestamp()
     .addField('Tacos  :taco:', profileData.userTacos, true)
-    
-    .addField('Taco Stands :bus:', profileData.userTacoStands, true)
+    if (profileData.burritos){
+        embed.addField('Burritos  :burrito:', profileData.burritos, true)
+    }
+    embed.addField('Taco Stands :bus:', profileData.userTacoStands, true)
     .addField('Level ' + profileData.level + ' :trident:', "**Next Level:** " + profileData.experience + " / " + profileData.nextLevelExp, true)
     .addField('Bender Reputation :statue_of_liberty:', " **"+ profileData.reputationStatus +"** : " + profileData.reputation + " / " + REPUTATIONS[profileData.nextReputation].repToGet , true)
     if (profileData.petname){

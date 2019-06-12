@@ -158,6 +158,34 @@ module.exports.updateUserTacosEarly = function(userId, tacos, cb) {
     });
 }
 
+module.exports.updateUserDaily = function(userId, burritosGained, tacosGained, streakReset, firstBurritos, cb) {
+    var query = ""
+    if (streakReset){
+        if (firstBurritos){
+            query = 'update ' + config.profileTable + ' set tacos=tacos+$1, burritos=$3, lastdailytime=$4, votestreak=0 where discordid=$2'
+        }else{
+            query = 'update ' + config.profileTable + ' set tacos=tacos+$1, burritos=burritos+$3, lastdailytime=$4, votestreak=0 where discordid=$2'
+        }
+    }else{
+        if (firstBurritos){
+            query = 'update ' + config.profileTable + ' set tacos=tacos+$1, burritos=$3, lastdailytime=$4, votestreak=1 where discordid=$2'
+        }else{
+            query = 'update ' + config.profileTable + ' set tacos=tacos+$1, burritos=burritos+$3, lastdailytime=$4, votestreak=votestreak+1 where discordid=$2'
+        }
+    }
+    var lastVote = new Date();
+    db.none(query, [tacosGained, userId, burritosGained, lastVote])
+    .then(function () {
+    cb(null, {
+        status: 'success',
+        message: 'added tacos'
+        });
+    })
+    .catch(function (err) {
+        cb(err);
+    });
+}
+
 module.exports.updateUserTacosPresent = function(userId, tacos, cb) {
     var query = 'update ' + config.profileTable + ' set tacos=tacos+$1, lastpresenttime=$3 where discordid=$2'
     var lastPresent = new Date();
