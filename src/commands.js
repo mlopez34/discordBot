@@ -2283,7 +2283,7 @@ function shopBuilder(message, shopData, long){
             }
         }
         embed.addField('Your current tacos', shopData.userTacos + " :taco:", false)   
-        embed.addField('Descriptions', "-shop long to see descriptions", false)   
+        embed.addField('Descriptions', "-shop long to see descriptions and how to buy from the shop", false)   
         message.channel.send({embed});        
     }
     else {
@@ -2827,16 +2827,20 @@ module.exports.helpCommand = function(message){
         },
         "fields": [
           {
-            "name": "Command List",
-            "value": "`-profile [user]        >` Display someone's profile!\n`-ach                   >` Display your achievements!\n`-standings             >` Display your local leaderboard!\n\n`-welcome [user]        >` Welcome a user and they get **50** tacos!\n`-thank [user]          >` Thank a user and they get **10** tacos!\n`-sorry [user]          >` Say sorry to a user and they get **10** tacos!\n\n`-shop (long)           >` Display the (detailed) shop!\n`-repshop               >` Display the Reputation shop!\n\n`-scavenge              >` Scavenge items using your pickaxe!\n`-prepare               >` Prepare tacos using your stands!\n`-cook                  >` Cook some tacos!\n\n`-give [user] [number]  >` Give a user a certain amount of your tacos!\n`-throw [user]          >` Throw **10** tacos at a user!\n`-pickup                >` Pick up tacos off the ground!\n\n`-slots [number]        >` Play slots and lose or win tacos!\n`-raffle                >` Enter the raffle, joining costs for **50** tacos!\n"
+            "name": "Common Commands List",
+            "value": "`-profile [user] >` Display someone's profile!\n`-shop (long) >` Display the (detailed) shop!\n`-daily >` Display the daily voting feature!\n`\n`-welcome [user] >` Welcome a user and they get **50** tacos!\n`-thank [user] >` Thank a user and they get **10** tacos!\n`-sorry [user] >` Say sorry to a user and they get **10** tacos!\n\n`-prepare >` Prepare tacos using your stands!\n`-cook >` Cook some tacos!\n\n`-give [user] [number] >` Give a user a certain amount of your tacos!\n`-throw [user] >` Throw **10** tacos at a user!\n`-slots [number] >` Play slots and lose or win tacos!\n\n"
+          },
+          {
+            "name": "Misc Commands List",
+            "value": "`-standings >` Display your local leaderboard!\n-`scavenge >` Scavenge items using your pickaxe!\n`-repshop >` Display the Reputation shop!\n`-raffle >` Enter the raffle, joining costs for **50** tacos!\n`-ach >` Display your achievements!\n`-tacos >` Display your tacos!\n`-xp >` Display your experience and level!`-stands >` Display your taco stands!\n`-toprpg >` Display the RPG leaderboards!\n`-toplist >` Display the experience and level leaderboards!\n-pickup >` Pick up tacos off the ground!\n"
           },
           {
             "name": "-fruits [user] [user] [user] ...",
-            "value": "Play a game of fruits by tagging up to 9 other people with this command!\nTake one or two fruits and attempt to force your opponents to take a bomb!\n`-hint                >` Bender tells you a hint!"
+            "value": "Play a game of fruits by tagging up to 9 other people with this command!\nTake one or two fruits and attempt to force your opponents to take a bomb!\n"
           },
           {
             "name": "Other Help Commands",
-            "value": "`-itemhelp              >` Display all commands related to items!\n`-rpghelp               >` Display all commands related to RPGs!"
+            "value": "`-itemhelp >` Display all commands related to items!\n`-rpghelp >` Display all commands related to RPGs!\n`-hint >` Bender tells you a hint!\n `-markethelp >` display full black market commands!"
           }
         ]
       };
@@ -2914,12 +2918,16 @@ module.exports.rpghelpCommand = function(message){
         },
         "fields": [
           {
-            "name": "Inventories",
-            "value": "`-rpgstats                       >` Display your abilities and rpg stats!\n`-rpgstart [1-4 user mentions]   >` Start an rpg with up to four other people!\n`-rpgchallege [1-10] [1-4 users] >` Start an rpg challenge with four other people!\n`-cast [ability] [target number/user]   >` Cast an ability on a target or user!\n**example**: -cast attack 1 (attacks enemy 1)\n-cast barrier @user (casts barrier on the user mentioned)\n-cast slash (deals damage to all enemies)"
+            "name": "General Commands",
+            "value": "`-rpgstats                       >` Display your abilities and rpg stats!\n`-map   >` display your current area and zone as well as available areas you can travel to!\n`-travel [areaname]   >` travel to a new area in the current zone you are in!\n`-rpgstart [1-4 user mentions]   >` Start an rpg with up to four other people!\n`-rpgchallenge [1-10] [1-4 users] >` Start an rpg challenge with four other people! Rpg challenges must be defeated in order\n`-cast [ability] [target number/user]   >` Cast an ability on a target or user!\n**example**: -cast attack 1 (attacks enemy 1)\n-cast barrier @user (casts barrier on the user mentioned)\n-cast slash (deals damage to all enemies - only if the ability is areawide)"
+          },
+          {
+            "name": "Info",
+            "value": "Bender RPG is a turn based game that will challenge you and your group to overcome different obstacles. \nRPG requires between 2-5 players, you may not solo. Enemies drop items and grant experience when successfully defeating the RPG. \nYou will start in the `Prarie` and be able to discover more areas which will have different enemies and unique items to discover. \nTravel to different areas and zones by using the `-travel` command. The leader (player that starts the rpg) dictates the RPG battle and more items will be obtained if more players are in the same area as the leader"
           },
           {
             "name": "Abilities",
-            "value": "You will get different abilities and stats depending on what items you are wearing.\nAll users must cast one ability per event turn."
+            "value": "You will get different abilities and stats depending on what items you are wearing.\nAll users must cast one ability per event turn. Enemies will always attack first, unless you have the passive ability `haste`"
           },
           {
             "name": "Stats",
@@ -3161,7 +3169,7 @@ function raresEmbedBuilder(message, itemsMap, allItems, long, rarity){
 module.exports.itemDetailsCommand = function(message, args){
     var discordUserId = message.author.id;
     if (args && args.length >= 2){
-        var itemToWear = args[1]; // must be a valid itemname
+        var itemToWear = args[1].toLowerCase(); // must be a valid itemname
         profileDB.getUserItemsForInfo(discordUserId, function(err, inventoryResponse){
             if (err){
                 // console.log(err);
@@ -6084,7 +6092,7 @@ function templeEmbedBuilder(message, templeData, long){
     .setColor(0x87CEFA)
     .setTitle(templeData.name + "'s Temple 🕍")
     .setThumbnail(message.author.avatarURL)
-    .setDescription('Temple Level: ' + templeData.templeLevel)
+    .setDescription('Temple Level: ' + templeData.templeLevel + " \n-`mytemple` to display your temple perks\n-`disassemble [itemid]` to disassemble an item (requires a hacksaw)\n-`craft [itemid]` to craft an item from your list of craft recipes\n`-armament [itemid]` to create an armament for that item (requires an essence/shard/crystal)")
     .setColor(0x87CEFA)
 
     if (long){
@@ -7865,7 +7873,7 @@ module.exports.putonCommand = function(message, args, retry){
     var discordUserId = message.author.id;
     if (args && args.length >= 3 && !retry){
         var slot = args[1]; // must be a number between 1 and 7
-        var itemToWear = args[2]; // must be a valid itemname
+        var itemToWear = args[2].toLowerCase(); // must be a valid itemname
         // get the user's wear information, then get their item information, 
         // check user doesnt have the same slot category in 1 and 3, if so then valid command, update slot 2 with all the info for sundress
         profileDB.getUserWearInfo(discordUserId, function(getWearErr, getWearRes){
@@ -8693,7 +8701,7 @@ module.exports.marketHelpCommand = function(message){
         "fields": [
           {
             "name": "Market",
-            "value": "`-mkauction [itemname] bid [bid] buyout [buyout] time [short/medium/long]                       >` Create an auction in the market!\n**example**: -mkauction sundress bid 500 buyout 2000 time medium\n**NOTE**:   bid, buyout, and time parameters are optional\n`-mkbid [id] tacos [bid]   >` Bid on an item in the market!\n**example**: -mkbid 74832 tacos 500\n`-market rares,\n -market ancients,\n -market artifacts,\n -market commons,\n -market uncommons >` Display market items based on rarity!\n`-market [item short name]   >` Display market items based on their name id!\n**example**: -market sundress\n`-market page [page number]                       >` Display a different page of the Market!"
+            "value": "`-mkauction [itemname] bid [bid] buyout [buyout] time [short/medium/long]                       >` Create an auction in the market!\n**example**: -mkauction sundress bid 500 buyout 2000 time medium\n**NOTE**:   bid, buyout, and time parameters are optional\n`-mkbid [id] tacos [bid]   >` Bid on an item in the market!\n**example**: -mkbid 74832 tacos 500\n`-mkcancel [marketid]   >` Cancel an auction in the market (only if nobody has bid on the auction)\n`-market rares,\n -market ancients,\n -market artifacts,\n -market commons,\n -market uncommons >` Display market items based on rarity!\n`-market [item short name]   >` Display market items based on their name id!\n**example**: -market sundress\n`-market page [page number]                       >` Display a different page of the Market!"
           }
         ]
       };

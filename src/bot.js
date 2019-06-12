@@ -923,7 +923,7 @@ client.on('message', function(message){
                         // console.log(args[1])
                         commands.slotsCommand(message, bet);
                         data.command = "slots"
-                    profileDB.createUserActivity(data)
+                        profileDB.createUserActivity(data)
                     }
                 }
                 else if (commandIs("use", message)){
@@ -1028,33 +1028,53 @@ client.on('message', function(message){
                 }
                 else if (commandIs("mygreenhouse", message)){
                     commands.greenHouseCommand(message, true)
+                    data.command = "mygreenhouse"
+                    profileDB.createUserActivity(data)
                 }
                 else if (commandIs("greenhouse", message)){
                     commands.greenHouseCommand(message)
+                    data.command = "greenhouse"
+                    profileDB.createUserActivity(data)
                 }
                 else if (commandIs("buygreenhouse", message)){
                     commands.buyGreenHouseCommand(message)
+                    data.command = "buygreenhouse"
+                    profileDB.createUserActivity(data)
                 }
                 else if (commandIs("mystable", message)){
                     commands.stableCommand(message, true)
+                    data.command = "mystable"
+                    profileDB.createUserActivity(data)
                 }
                 else if (commandIs("stable", message)){
                     commands.stableCommand(message)
+                    data.command = "stable"
+                    profileDB.createUserActivity(data)
                 }
                 else if (commandIs("buystable", message)){
                     commands.buyStableCommand(message)
+                    data.command = "buystable"
+                    profileDB.createUserActivity(data)
                 }
                 else if (commandIs("mytemple", message)){
                     commands.templeCommand(message, true)
+                    data.command = "mytemple"
+                    profileDB.createUserActivity(data)
                 }
                 else if (commandIs("temple", message)){
                     commands.templeCommand(message)
+                    data.command = "temple"
+                    profileDB.createUserActivity(data)
                 }
                 else if (commandIs("buytemple", message)){
                     commands.buyTempleCommand(message)
+                    data.command = "buytemple"
+                    profileDB.createUserActivity(data)
                 }
                 else if (commandIs("collectrewards", message)){
                     commands.collectRewardsCommand(message)
+                    data.command = "collectrewards"
+                    profileDB.createUserActivity(data)
                 }
                 else if (commandIs("markethelp", message)){
                     commands.marketHelpCommand(message)
@@ -1072,6 +1092,8 @@ client.on('message', function(message){
                     profileDB.createUserActivity(data)
                 }else if (commandIs("mkcancel", message)){
                     commands.marketCancelCommand(message, args)
+                    data.command = "mkcancel"
+                    profileDB.createUserActivity(data)
                 }else if (commandIs("mkauction", message)){
                     commands.marketAuctionCommand(message, args)
                     data.command = "mkauction"
@@ -1079,42 +1101,66 @@ client.on('message', function(message){
                 }
                 else if (commandIs("plant", message)){
                     commands.plantCommand(message, args)
+                    data.command = "plant"
+                    profileDB.createUserActivity(data)
                 }
                 else if (commandIs("harvest", message)){
                     commands.harvestCommand(message)
+                    data.command = "harvest"
+                    profileDB.createUserActivity(data)
                 }
                 else if (commandIs("disassemble", message)){
                     // disassemble items - mark them as used - obtain items based on the item disassembled
                     commands.disassembleCommand(message, args);
+                    data.command = "disassemble"
+                    profileDB.createUserActivity(data)
                 }
                 else if (commandIs("bake", message)){
                     commands.bakeCommand(message, args);
+                    data.command = "bake"
+                    profileDB.createUserActivity(data)
                 }
                 else if (commandIs("createarmament", message)){
                     commands.createArmament(message, args);
+                    data.command = "createarmament"
+                    profileDB.createUserActivity(data)
                 }
                 else if (commandIs("armaments", message)){
                     commands.raresCommand(message, args, "armament");
+                    data.command = "armaments"
+                    profileDB.createUserActivity(data)
                 }
                 else if (commandIs("upgrade", message)){
                     // can be stable or greenhouse or temple
                     commands.upgradeCommand(message, args);
+                    data.command = "upgrade"
+                    profileDB.createUserActivity(data)
                 }
                 else if (commandIs("craft", message)){
                     // craft a specific item via id
                     commands.craftCommand(message, args)
+                    data.command = "craft"
+                    profileDB.createUserActivity(data)
                 }
                 else if (commandIs("buyhacksaw", message)){
                     commands.buyHacksawCommand(message, args)
+                    data.command = "buyhacksaw"
+                    profileDB.createUserActivity(data)
                 }
                 else if (commandIs("map", message)){
                     commands.mapCommand(message, args)
+                    data.command = "map"
+                    profileDB.createUserActivity(data)
                 }
                 else if (commandIs("keystones", message)){
                     commands.keystonesCommand(message, args)
+                    data.command = "keystones"
+                    profileDB.createUserActivity(data)
                 }
                 else if (commandIs("travel", message)){
                     commands.travelCommand(message, args)
+                    data.command = "travel"
+                    profileDB.createUserActivity(data)
                 }
                 else if (commandIs("rpgstart", message)){
                     if (message.channel.type == "text" && !message.author.bot){
