@@ -1459,7 +1459,7 @@ function streakStringBuilder(profileData){
     let s = ":zap:"
     if (profileData.votestreak){
         for (var i = 0; i <= profileData.votestreak; i++){
-            if (i < 6 ){
+            if (i < 6 && i > 0){
                 s = s + ":zap:"
             }
         }
