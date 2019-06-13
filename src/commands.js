@@ -4735,7 +4735,7 @@ module.exports.fetchCommand = function(message, args){
                                         var fetchTacos = PETS_AVAILABLE[userPet].fetch;
                                         ///////// CALCULATE THE EXTRA TACOS HERE 
                                         // instead do fetch * ( slot stable * 50 )
-                                        var extraTacosFromItems = (fetchTacos * ( stableSlot * stableSlot) * 10) + Math.floor( wearStats.calculateExtraTacos(wearRes, "fetch") / stableSlot ); // 0 or extra
+                                        var extraTacosFromItems = (fetchTacos * ( stableSlot * stableSlot) * 10) + Math.floor( wearStats.calculateExtraTacos(wearRes, "fetch") / (7 - stableSlot) ); // 0 or extra
                                         profileDB.updateUserTacosStableFetch(discordUserId, fetchTacos + extraTacosFromItems, stableSlot, function(err, updateResponse) {
                                             if (err){
                                                 // console.log(err);
