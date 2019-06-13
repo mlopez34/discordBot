@@ -325,10 +325,10 @@ module.exports = {
             areawide: true,
             cooldown: 0,
             maxcooldown: 5,
-            description: "Heal the group over time for 65 + 100% of your magical damage over 5 turns 5 turn cooldown",
+            description: "Heal the group over time for 100 + 100% of your magical damage over 5 turns 5 turn cooldown",
             hot: {
                 name: "Sanctuary",
-                heal: 65,
+                heal: 100,
                 emoji: ":ocean:",
                 areawide: true,
                 mdPercentage: 1,
@@ -1180,6 +1180,34 @@ module.exports = {
             afterNTurns: 4,
             currentTurn: 0,
             special: "absorb energy crystals"
+        },
+        entombTargets: {
+            belongsToMember: true,
+            processAbility: true,
+            onDeathEffect: true,
+            effectDone: false,
+            invalidIfBuff: "entombTargets",
+            targetNames: [
+                "Blue Energy Crystal",
+                "Yellow Energy Crystal",
+                "Black Energy Crystal",
+                "Red Energy Crystal",
+                "Green Energy Crystal",
+                "Purple Energy Crystal"
+            ],
+            abilityId: "entombTargets",
+            name: "Entomb",
+            buff: {
+                name: "Entomb",
+                emoji: "<:entomb:479288026388889621>",
+                turnsToExpire: 500,
+                abilityId: "entombTargets",
+                setAbleToAttack: false,
+                setAbleToTakeDamage: false,
+                setAbleToBeHealed: false,
+                removeEndOfTurn: true,
+                removeBuffs: true
+            }
         },
         blackEnergyCrystal: {
             name: "blackEnergyCrystal",
@@ -7189,6 +7217,9 @@ Hoover Dam
                 },
                 endOfTurnEvents : [
                 ],
+                effectsOnDeath: [
+                    "entombTargets"
+                ],
                 hpPerPartyMember: 0,
                 adPerPartyMember: 0,
                 mdPerPartyMember: 0,
@@ -7212,6 +7243,9 @@ Hoover Dam
                     abilities: []
                 },
                 endOfTurnEvents : [
+                ],
+                effectsOnDeath: [
+                    "entombTargets"
                 ],
                 hpPerPartyMember: 0,
                 adPerPartyMember: 0,
@@ -7237,6 +7271,9 @@ Hoover Dam
                 },
                 endOfTurnEvents : [
                 ],
+                effectsOnDeath: [
+                    "entombTargets"
+                ],
                 hpPerPartyMember: 0,
                 adPerPartyMember: 0,
                 mdPerPartyMember: 0,
@@ -7260,6 +7297,9 @@ Hoover Dam
                     abilities: []
                 },
                 endOfTurnEvents : [
+                ],
+                effectsOnDeath: [
+                    "entombTargets"
                 ],
                 hpPerPartyMember: 0,
                 adPerPartyMember: 0,
@@ -7285,6 +7325,9 @@ Hoover Dam
                 },
                 endOfTurnEvents : [
                 ],
+                effectsOnDeath: [
+                    "entombTargets"
+                ],
                 hpPerPartyMember: 0,
                 adPerPartyMember: 0,
                 mdPerPartyMember: 0,
@@ -7307,6 +7350,9 @@ Hoover Dam
                     magicDmg: [300, 500, 900, 1500, 2300],
                     abilities: []
                 },
+                effectsOnDeath: [
+                    "entombTargets"
+                ],
                 endOfTurnEvents : [
                 ],
                 hpPerPartyMember: 0,

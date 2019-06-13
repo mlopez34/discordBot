@@ -142,7 +142,7 @@ module.exports.showRpgStats = function(message, itemsAvailable, amuletItemsById,
     profileDB.getUserRpgProfleData(discordUserId, function(err, userData){
         if (err){
             console.log(err);
-            message.channel.send(err + " something went wrong [profile]");
+            message.channel.send("You do not have a profile yet! type -agree to agree to Bender's terms ");
         }else{
             var userStats = userData.data;
             // get amulets data
@@ -638,7 +638,7 @@ module.exports.rpgReady = function(message, itemsAvailable, amuletItemsById, buf
             if (err){
                 console.log(err);
                 exports.setreadyLock(rpgEventId, discordUserId, false)
-                message.channel.send(err + " something went wrong [profile]");
+                message.channel.send("You must agree to Bender's terms by typing -agree before rpging!");
             }else{
 
                 var now = new Date();
@@ -5021,94 +5021,135 @@ function effectsOnDeath(event, member){
                 //     }
                 // }
                 if (validCast){
-                    var abilityPicked = rpgAbility.abilityId
-                    var untargettable = rpgAbility.status ? rpgAbility.status.untargettable : undefined;
-                    // get the rpgAbility from lib
-
-                    var validTarget = false;
-                    var stuckCount = 0
-                    var target;
+                    // cast on multiple targets
                     
-                    if (rpgAbility.buff ){
-                        if (rpgAbility.targetSelf){
-                            target = idOfMember
-                        }else{
-                            // TODO: target can be another random enemy
-                            target = undefined // replace with random enemy
-                        }
-                    }else{
-                        while(!validTarget && stuckCount < 100){
-                            var targetRoll = Math.floor(Math.random() * event.members.length);
-                            var targetMember = event.members[targetRoll].id;
-                            var targetFocusedMember = false;
-                            if (stuckCount < 5){
-                                for (var member in event.members){
-                                    var idOfMemberBeingChecked = "rpg-" + event.members[member].id;
-                                    for (var statusToCheck in event.membersInParty[idOfMemberBeingChecked].statuses){
-                                        if (rpgAbility && rpgAbility.ignoreFocus){
-                                            console.log("ignoring focus for ability")
-                                            // IGNORE FOCUS EFFECT - check if the person being targetted by the ability is being focused by the caster
-                                            if ( (targetMember == event.members[member].id) 
-                                                &&  event.membersInParty[idOfMemberBeingChecked].statuses[statusToCheck].name == "Focus"
-                                                && event.membersInParty[idOfMemberBeingChecked].statuses[statusToCheck].focusedBy == enemy){
-                                                    targetFocusedMember = true;
-                                                }
-                                        }else{
-                                            // check if someone has focus on them if they do then the target should be the focused person 
-                                            if ( event.membersInParty[idOfMemberBeingChecked].statuses[statusToCheck].name == "Focus"
-                                                && event.membersInParty[idOfMemberBeingChecked].statuses[statusToCheck].focusedBy == enemy){
-                                                //target roll should be 
-                                                targetMember = event.members[member].id;
-                                                break;
-                                            }
-                                        }
-                                        
-                                    }
+                    if (rpgAbility.targetNames){
+                        for (var n in rpgAbility.targetNames){
+                            let toTarget = rpgAbility.targetNames[n]
+                            var abilityPicked = rpgAbility.abilityId
+                            var untargettable = rpgAbility.status ? rpgAbility.status.untargettable : undefined;
+                            // get the rpgAbility from lib
+
+                            var validTarget = false;
+                            var stuckCount = 0
+                            var target;
+
+                            for (var enemy in event.enemies){
+                                if (event.enemies[enemy].name == toTarget
+                                && !checkHasDied(event.enemies[enemy])){
+                                    target = enemy;
                                 }
                             }
-                            
-                            if (event.membersInParty["rpg-"+targetMember].statuses.indexOf("dead") == -1){
-                                // valid target
-                                if (untargettable && !targetFocusedMember){
-                                    // check that no status contains the id of the ability which the player
-                                    // cannot be targetted by
-                                    target = "rpg-"+targetMember;
-                                    validTarget = true;
-                                    for ( var s in event.membersInParty["rpg-"+targetMember].statuses ){
-                                        var statusToCheck = event.membersInParty["rpg-"+targetMember].statuses[s];
-                                        if ( statusToCheck.abilityId == abilityPicked ){
-                                            validTarget = false;
-                                            target = undefined;
-                                        }
-                                    }
-                                    console.log(stuckCount)
+                            if (target){
+                                var abilityToProcess = {
+                                    user: idOfMember,
+                                    ability: abilityPicked,
+                                    target: target
+                                }
+                                if (abilityToProcess.target != undefined){
+                                    onDeathString = onDeathString  + processAbility(abilityToProcess, event); 
+                                    // special case for entomb on death in ch6
+                                    recalculateStatBuffs(event)
+                                    if ( rpgAbility.effectDone == false ){
+                                        // remove this effect from effectsOnDeath Array
+                                        effectsToRemove.push(rpgAbility.abilityId)
+                                    }                                          
+                                }
+                            }
+                        }
+                        
+                    }else{
+                        // cast on a single target
+                        var abilityPicked = rpgAbility.abilityId
+                        var untargettable = rpgAbility.status ? rpgAbility.status.untargettable : undefined;
+                        // get the rpgAbility from lib
 
-                                }else{
-                                    if (!targetFocusedMember){
-                                        target = "rpg-"+targetMember;
-                                        validTarget = true;
-                                        console.log("stuck count" + stuckCount)
+                        var validTarget = false;
+                        var stuckCount = 0
+                        var target;
+                        
+                        if (rpgAbility.buff ){
+                            if (rpgAbility.targetSelf){
+                                target = idOfMember
+                            }else{
+                                // TODO: target can be another random enemy
+                                target = undefined // replace with random enemy
+                            }
+                        }else{
+                            while(!validTarget && stuckCount < 100){
+                                var targetRoll = Math.floor(Math.random() * event.members.length);
+                                var targetMember = event.members[targetRoll].id;
+                                var targetFocusedMember = false;
+                                if (stuckCount < 5){
+                                    for (var member in event.members){
+                                        var idOfMemberBeingChecked = "rpg-" + event.members[member].id;
+                                        for (var statusToCheck in event.membersInParty[idOfMemberBeingChecked].statuses){
+                                            if (rpgAbility && rpgAbility.ignoreFocus){
+                                                console.log("ignoring focus for ability")
+                                                // IGNORE FOCUS EFFECT - check if the person being targetted by the ability is being focused by the caster
+                                                if ( (targetMember == event.members[member].id) 
+                                                    &&  event.membersInParty[idOfMemberBeingChecked].statuses[statusToCheck].name == "Focus"
+                                                    && event.membersInParty[idOfMemberBeingChecked].statuses[statusToCheck].focusedBy == enemy){
+                                                        targetFocusedMember = true;
+                                                    }
+                                            }else{
+                                                // check if someone has focus on them if they do then the target should be the focused person 
+                                                if ( event.membersInParty[idOfMemberBeingChecked].statuses[statusToCheck].name == "Focus"
+                                                    && event.membersInParty[idOfMemberBeingChecked].statuses[statusToCheck].focusedBy == enemy){
+                                                    //target roll should be 
+                                                    targetMember = event.members[member].id;
+                                                    break;
+                                                }
+                                            }
+                                            
+                                        }
                                     }
                                 }
                                 
+                                if (event.membersInParty["rpg-"+targetMember].statuses.indexOf("dead") == -1){
+                                    // valid target
+                                    if (untargettable && !targetFocusedMember){
+                                        // check that no status contains the id of the ability which the player
+                                        // cannot be targetted by
+                                        target = "rpg-"+targetMember;
+                                        validTarget = true;
+                                        for ( var s in event.membersInParty["rpg-"+targetMember].statuses ){
+                                            var statusToCheck = event.membersInParty["rpg-"+targetMember].statuses[s];
+                                            if ( statusToCheck.abilityId == abilityPicked ){
+                                                validTarget = false;
+                                                target = undefined;
+                                            }
+                                        }
+                                        console.log(stuckCount)
+
+                                    }else{
+                                        if (!targetFocusedMember){
+                                            target = "rpg-"+targetMember;
+                                            validTarget = true;
+                                            console.log("stuck count" + stuckCount)
+                                        }
+                                    }
+                                    
+                                }
+                                stuckCount++;
                             }
-                            stuckCount++;
+                        }
+                        
+
+                        var abilityToProcess = {
+                            user: idOfMember,
+                            ability: abilityPicked,
+                            target: target
+                        }
+                        if (abilityToProcess.target != undefined){
+                            onDeathString = onDeathString  + processAbility(abilityToProcess, event); 
+                            if ( rpgAbility.effectDone == false ){
+                                // remove this effect from effectsOnDeath Array
+                                effectsToRemove.push(rpgAbility.abilityId)
+                            }                                          
                         }
                     }
                     
-
-                    var abilityToProcess = {
-                        user: idOfMember,
-                        ability: abilityPicked,
-                        target: target
-                    }
-                    if (abilityToProcess.target != undefined){
-                        onDeathString = onDeathString  + processAbility(abilityToProcess, event); 
-                        if ( rpgAbility.effectDone == false ){
-                            // remove this effect from effectsOnDeath Array
-                            effectsToRemove.push(rpgAbility.abilityId)
-                        }                                          
-                    }
                 }        
 
             }

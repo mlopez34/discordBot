@@ -516,7 +516,8 @@ module.exports.collectRewardsCommand = function(message){
     var discordUserId = message.author.id
     profileDB.getUserProfileData(discordUserId, function(error, userData){
         if (error){
-            message.channel.send(error)
+            console.log(error)
+            //message.channel.send(error)
         }else{
             // check that the user has the following:
             // legacytop1rpgpoints
@@ -1417,7 +1418,7 @@ function dailyEmbedBuilder(message, profileData){
 }
 
 function calculateTacosGained(profileData){
-    let streakArray = [1, 1, 2, 2, 3, 3, 5, 5, 8, 8, 13, 13, 20, 20, 30, 30, 45, 45, 60, 60, 75, 75, 90, 90, 110, 110 ]
+    let streakArray = [1, 1, 2, 3, 5, 8, 13, 20, 30, 45, 60, 75, 90, 110 ]
     let streakIndex = profileData.votestreak || 0
     if (streakIndex > streakArray.length - 1){
         streakIndex = streakArray.length - 1
@@ -1429,7 +1430,7 @@ function calculateTacosGained(profileData){
 }
 
 function calculateBurritosGained(profileData){
-    let streakArray = [1, 1, 2, 2, 3, 3, 5, 5, 8, 8, 13, 13, 20, 20, 30, 30, 45, 45, 60, 60, 75, 75, 90, 90, 110, 110 ]
+    let streakArray = [1, 1, 2, 3, 5, 8, 13, 20, 30, 45, 60, 75, 90, 110 ]
     let streakIndex = profileData.votestreak || 0
     if (streakIndex > streakArray.length - 1){
         streakIndex = streakArray.length - 1
@@ -4734,7 +4735,7 @@ module.exports.fetchCommand = function(message, args){
                                         var fetchTacos = PETS_AVAILABLE[userPet].fetch;
                                         ///////// CALCULATE THE EXTRA TACOS HERE 
                                         // instead do fetch * ( slot stable * 50 )
-                                        var extraTacosFromItems = fetchTacos * ( stableSlot * stableSlot) * 10 // wearStats.calculateExtraTacos(wearRes, "fetch"); // 0 or extra
+                                        var extraTacosFromItems = (fetchTacos * ( stableSlot * stableSlot) * 10) + Math.floor( wearStats.calculateExtraTacos(wearRes, "fetch") / stableSlot ); // 0 or extra
                                         profileDB.updateUserTacosStableFetch(discordUserId, fetchTacos + extraTacosFromItems, stableSlot, function(err, updateResponse) {
                                             if (err){
                                                 // console.log(err);
