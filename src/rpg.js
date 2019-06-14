@@ -2489,7 +2489,7 @@ function turnFinishedEmbedBuilder(message, event, turnString, passiveEffectsStri
         if (enemiesString.length > 700){
             embed.addField( "Enemy", enemiesString )
             enemiesString = "";
-            if (event.enemies[enemy].difficulty == "summoned"){
+            if (event.enemies[enemy].difficulty == "summoned" || event.enemies[enemy].difficulty == "summoned-boss"){
                 if (event.enemies[enemy].hp > 0){
                     var enemyInRpgEvent = event.enemies[enemy];
                     var enemyName = event.enemies[enemy].name;
@@ -2501,7 +2501,7 @@ function turnFinishedEmbedBuilder(message, event, turnString, passiveEffectsStri
                 enemiesString = enemiesString + "\n" + userStatsStringBuilder(enemyInRpgEvent, enemyName, true, event.turn);  
             }
         }else{
-            if (event.enemies[enemy].difficulty == "summoned"){
+            if (event.enemies[enemy].difficulty == "summoned" || event.enemies[enemy].difficulty == "summoned-boss"){
                 if (event.enemies[enemy].hp > 0){
                     var enemyInRpgEvent = event.enemies[enemy];
                     var enemyName = event.enemies[enemy].name;

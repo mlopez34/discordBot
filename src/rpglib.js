@@ -7601,7 +7601,7 @@ Hoover Dam
                 magicDmg: 500,
                 armor: 1000,
                 spirit: 1000,
-                difficulty: "summoned",
+                difficulty: "summoned-boss",
                 element: "normal"
             },
             escapedRobot: {
@@ -7684,7 +7684,7 @@ Hoover Dam
                 magicDmg: 410,
                 armor: 1300,
                 spirit: 900,
-                difficulty: "summoned",
+                difficulty: "summoned-boss",
                 element: "normal"
             }
         },
@@ -11774,7 +11774,7 @@ Hoover Dam
                         magicDmg: 475,
                         armor: 1250,
                         spirit: 1170,
-                        difficulty: "boss",
+                        difficulty: "medium",
                         element: "normal"
                     },
                     {
@@ -11795,7 +11795,7 @@ Hoover Dam
                         magicDmg: 475,
                         armor: 1150,
                         spirit: 1270,
-                        difficulty: "boss",
+                        difficulty: "medium",
                         element: "normal"
                     },
                     {
@@ -11816,7 +11816,7 @@ Hoover Dam
                         magicDmg: 475,
                         armor: 1450,
                         spirit: 1370,
-                        difficulty: "boss",
+                        difficulty: "medium",
                         element: "normal"
                     },
                     {
@@ -11837,7 +11837,7 @@ Hoover Dam
                         magicDmg: 475,
                         armor: 1450,
                         spirit: 1370,
-                        difficulty: "boss",
+                        difficulty: "medium",
                         element: "normal"
                     }
                 ],
@@ -12013,7 +12013,7 @@ Hoover Dam
                         magicDmg: 375,
                         armor: 1050,
                         spirit: 1170,
-                        difficulty: "boss",
+                        difficulty: "medium",
                         element: "normal"
                     },
                     {
@@ -12034,7 +12034,7 @@ Hoover Dam
                         magicDmg: 375,
                         armor: 1050,
                         spirit: 1170,
-                        difficulty: "boss",
+                        difficulty: "medium",
                         element: "normal"
                     }
                 ]
