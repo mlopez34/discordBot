@@ -1647,7 +1647,25 @@ module.exports.getUserItemsForArmaments = function(discordId, cb) {
         // console.log(err);
         cb(err);
       });
-  }
+}
+
+module.exports.getUserArmamentForItem = function(discordId, itemid, cb) {
+    var query = 'select * from ' + config.inventoryTable + ' where discordId = $1 AND armamentforitemid = $2 ORDER BY id DESC '
+    // console.log(query);
+    db.query(query, [discordId, itemid])
+      .then(function (data) {
+        cb(null, {
+            status: 'success',
+            data: data,
+            message: 'Retrieved All User Items'
+          });
+      })
+      .catch(function (err) {
+        // console.log(err);
+        cb(err);
+      });
+}
+
 // items for iteminfo
 module.exports.getUserItemsForInfo = function(discordId, cb) {
     var query = 'select * from ' + config.inventoryTable + ' where discordId = $1 AND (status is null OR status = \'wearing\' ) ORDER BY id DESC '

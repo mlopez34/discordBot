@@ -2967,10 +2967,15 @@ module.exports.raresCommand = function(message, args, rarity){
     // get all items for the discord id
     var discordUserId = message.author.id;
     var includeDescriptions = false;
+    let page = 0
     if (args && args.length > 1){
         var long = args[1];
         if (long == "long"){
             includeDescriptions = true;
+        }else if (long == "page" ){
+            if (args && args.length > 2){
+                page = parseInt(args[2])
+            }
         }
     }
     profileDB.getUserItems(discordUserId, function(err, inventoryResponse){
@@ -3001,7 +3006,7 @@ module.exports.raresCommand = function(message, args, rarity){
                 }
             }
             if (rarity == "armament"){
-                armamentsEmbedBuilder(message, inventoryResponse.data, itemsMapById, includeDescriptions, rarity)
+                armamentsEmbedBuilder(message, inventoryResponse.data, itemsMapById, includeDescriptions, rarity, page)
             }else{
                 raresEmbedBuilder(message, itemsInInventoryCountMap, itemsMapById, includeDescriptions, rarity);
             }
@@ -3174,8 +3179,7 @@ module.exports.itemDetailsCommand = function(message, args){
         profileDB.getUserItemsForInfo(discordUserId, function(err, inventoryResponse){
             if (err){
                 // console.log(err);
-            }
-            else{
+            }else{
                 // console.log(inventoryResponse.data);
                 // get all the data for each item
                 var itemsInInventoryCountMap = {}
@@ -3206,15 +3210,23 @@ module.exports.itemDetailsCommand = function(message, args){
                     // check that i have the item
                     var idOfItemChosen = itemsMapbyShortName[itemToWear].id
                     if (itemsInInventoryCountMap[idOfItemChosen]){
-                        var itemToDisplay = itemsMapbyShortName[itemToWear]
-                        var rpgItemInfoString = rpgInfoStringBuilder(message, itemToDisplay)
-                        itemInfoEmbedBuilder(message, itemToDisplay, rpgItemInfoString)    
+                        profileDB.getUserArmamentForItem(discordUserId, idOfItemChosen, function(err, armamentRes){
+                            if (err){
+                                console.log(err)
+                            }else{
+                                let armamentForItem = armamentRes.data.length > 0 ? armamentRes.data[0] : null;
+                                var itemToDisplay = itemsMapbyShortName[itemToWear]
+                                var rpgItemInfoString = rpgInfoStringBuilder(message, itemToDisplay)
+                                itemInfoEmbedBuilder(message, itemToDisplay, rpgItemInfoString, armamentForItem)        
+                            }
+                        })
                     }else{
                         message.channel.send("you do not own that item or item does not exist")
                     }
                 }else{
                     message.channel.send("you do not own that item or item does not exist")
                 }
+                
             }
         })
     }
@@ -3260,7 +3272,7 @@ function rpgInfoStringBuilder(message, item){
 
 }
 
-function itemInfoEmbedBuilder(message, item, rpgItemInfoString){
+function itemInfoEmbedBuilder(message, item, rpgItemInfoString, armamentForItem){
     const embed = new Discord.RichEmbed()
     console.log(item)
     embed
@@ -3276,6 +3288,19 @@ function itemInfoEmbedBuilder(message, item, rpgItemInfoString){
     }
     if (item.itemimage){
         embed.setThumbnail(item.itemimage)
+    }
+    if (armamentForItem){
+        var hpplus = armamentForItem.hpplus
+        var adplus = armamentForItem.adplus
+        var mdplus = armamentForItem.mdplus
+        var armorplus = armamentForItem.armorplus
+        var spiritplus = armamentForItem.spiritplus
+        var critplus = armamentForItem.critplus
+        var luckplus = armamentForItem.luckplus
+    
+        var armamentDescription = "**Armament Stats:**\n " + " 💚 " + hpplus + " 🗡️ "  + adplus + " ☄️ " + mdplus + " 🛡️ " + armorplus + " 🙌 " + spiritplus + " 💥 " + critplus + " 🌟 " + luckplus 
+    
+        embed.addField("Current Armament", armamentDescription, false )
     }
     // .setAuthor(message.author.username +"'s Inventory ")
     // .setDescription( ":left_luggage: \n-rares | -rares long to view your rare items\n-ancients | -ancients long to view your ancient items\n-artifacts | -artifacts long to view your artifacts\n-amulets to view your amulets " )
@@ -5634,6 +5659,7 @@ module.exports.createArmament = function(message, args){
                             // get the requirements for the armament to create
                             var itemsInInventoryCountMap = {}
                             var itemToCreateArmament = itemsMapbyShortName[myItemShortName]
+                            var haveItemToCreateArmamentFor = false
                             var armamentTemplateItem;
                             // find the armament template to obtain based on the rarity of the itemToCreateArmament
                             if (itemToCreateArmament && !itemToCreateArmament.isseed && itemToCreateArmament.itemraritycategory != "amulet"){
@@ -5649,17 +5675,35 @@ module.exports.createArmament = function(message, args){
                                     var auctionedItem = false;
                                     var ItemInQuestion = inventoryResponse.data[item]
                 
-                                    if (itemsInAuction[inventoryResponse.data[item].id]){
+                                    if (itemsInAuction[itemToCreateArmament.id]){
                                         auctionedItem = true;
                                     }
                                     var itemBeingTraded = false;
-                                    if (activeTradeItems[inventoryResponse.data[item].id]){
+                                    if (activeTradeItems[itemToCreateArmament.id]){
                                         itemBeingTraded = true;
                                     }
-                                    if (!itemsInInventoryCountMap[inventoryResponse.data[item].itemid] 
+                                    if (ItemInQuestion.itemid == itemToCreateArmament.id
+                                    && validItem && !auctionedItem && !itemBeingTraded){
+                                        // item hasnt been added to be counted, add it as 1
+                                        haveItemToCreateArmamentFor = true;
+                                    }
+                                }
+                                for (var item in inventoryResponse.data){
+                                    var validItem = useItem.itemValidate(inventoryResponse.data[item]);
+                                    var auctionedItem = false;
+                                    var ItemInQuestion = inventoryResponse.data[item]
+                
+                                    if (itemsInAuction[ItemInQuestion.id]){
+                                        auctionedItem = true;
+                                    }
+                                    var itemBeingTraded = false;
+                                    if (activeTradeItems[ItemInQuestion.id]){
+                                        itemBeingTraded = true;
+                                    }
+                                    if (!itemsInInventoryCountMap[ItemInQuestion.itemid] 
                                         && validItem && !auctionedItem && !itemBeingTraded){
                                         // item hasnt been added to be counted, add it as 1
-                                        itemsInInventoryCountMap[inventoryResponse.data[item].itemid] = 1;
+                                        itemsInInventoryCountMap[ItemInQuestion.itemid] = 1;
                 
                                         // check if the current item meets the criteria of armamentReqs
                                         var armamentCheck = disassembleItem.checkRequirements( itemsMapById[ ItemInQuestion.itemid ], itemToCreateArmament)
@@ -5670,7 +5714,8 @@ module.exports.createArmament = function(message, args){
                                         }
                                     }
                                 }
-                                if (itemBeingUsedForArmament.length > 0 ){
+                                if (itemBeingUsedForArmament.length > 0 
+                                && haveItemToCreateArmamentFor ){
                                     console.log(itemBeingUsedForArmament)
                                     // the armaments in itemstable is just armament, improvedarmament, refinedarmament, masterarmament
                                     // in inventory table we define what item the armament is for, armamentforitemid -> actual item in itemstable
@@ -5706,6 +5751,10 @@ module.exports.createArmament = function(message, args){
                                         message.channel.send("no armament template for this item")
                                         useItem.setItemsLock(discordUserId, false)
                                     }
+                                }else if (!haveItemToCreateArmamentFor){
+                                    useItem.setItemsLock(discordUserId, false)
+                                    message.channel.send("invalid item name")
+
                                 }else{
                                     useItem.setItemsLock(discordUserId, false)
                                     message.channel.send("missing requirements to create armament for this item")
@@ -5746,9 +5795,10 @@ function createArmamentEmbedBuilder(message, armamentTemplateItem){
     message.channel.send({embed});
 }
 
-function armamentsEmbedBuilder(message, userItems, itemsMapById, long, rarity){
+function armamentsEmbedBuilder(message, userItems, itemsMapById, long, rarity, pageParam){
     // display available armaments
     const embed = new Discord.RichEmbed()
+    let page = pageParam || 1
     var fieldCount = 0
     var totalLength = 0;
     var inventoryStringRegular = "";
@@ -5769,12 +5819,12 @@ function armamentsEmbedBuilder(message, userItems, itemsMapById, long, rarity){
                     embed.addField(emoji + " " + itemOfArmament.itemname + "", itemsMapById[idOfItemInMap].itemslot + " - " + itemsMapById[idOfItemInMap].itemstatistics, true)
                     fieldCount++
                 }else{
-                    if (inventoryStringRegular.length > 900 && totalLength <= 5050){
+                    if (inventoryStringRegular.length > 900){
                         totalLength = totalLength + inventoryStringRegular.length
                         inventoryStringsRegular.push(inventoryStringRegular);
                         inventoryStringRegular = "";
                         inventoryStringRegular = "**" + itemOfArmament.itemname + "** - " +  statsFromArmament + "\n" + inventoryStringRegular;                        
-                    }else if(totalLength <= 5050){
+                    }else {
                         inventoryStringRegular = "**" + itemOfArmament.itemname + "** - " +  statsFromArmament + "\n" + inventoryStringRegular;                        
                     }
                 }
@@ -5783,16 +5833,22 @@ function armamentsEmbedBuilder(message, userItems, itemsMapById, long, rarity){
         }
     }
     // push the leftover
-    if (inventoryStringRegular.length > 0 && totalLength <= 5050){
+    if (inventoryStringRegular.length > 0){
         inventoryStringsRegular.push(inventoryStringRegular);
     }
     if (!long){
+        if (page > inventoryStringsRegular.length){
+            page = inventoryStringsRegular.length
+        }
+        embed.setDescription("Page : " + (page) + " of " + inventoryStringsRegular.length + "\n use `-armaments page [pagenum]` to get other pages" )
         for (var invString = inventoryStringsRegular.length -1; invString >= 0; invString--){
-            var emoji = ""
-            if ( rarity == "armament"){
-                emoji = ":gear:"
+            if (invString == page - 1){
+                var emoji = ""
+                if ( rarity == "armament"){
+                    emoji = ":gear:"
+                }
+                embed.addField(emoji + " Item Name  |  STATS " + emoji, "||" + inventoryStringsRegular[invString] + "||", true)    
             }
-            embed.addField(emoji + " Item Name  |  STATS " + emoji, inventoryStringsRegular[invString], true)
         }
     }
 
