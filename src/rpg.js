@@ -471,9 +471,10 @@ module.exports.showRpgStats = function(message, itemsAvailable, amuletItemsById,
                                 partyMemberSpiritPlus = partyMemberStats.plusStats.spiritPlus ? partyMemberStats.plusStats.spiritPlus : 0
                                 partyMemberLuckPlus = partyMemberStats.plusStats.luckPlus ? partyMemberStats.plusStats.luckPlus: 0
                             }
+                            var playerName = message.author.username.length <= 15 ? message.author.username : "default"
                             var myStats = {
                                 id: message.author.id,
-                                name: message.author.username,
+                                name: playerName,
                                 username: message.author.username,
                                 hp: 250 + (7 *  partyMemberStats.level ) + (20 *  partyMemberStats.rpglevel ) + partyMemberHpPlus,
                                 attackDmg: 10 + (2 * partyMemberStats.level) + (7 * partyMemberStats.rpglevel ) + partyMemberAttackDmgPlus,
@@ -1756,7 +1757,8 @@ module.exports.rpgReady = function(message, itemsAvailable, amuletItemsById, buf
                                                                 var memberInRpgEvent = activeRPGEvents[rpgEvent].members[member];
                                                                 var memberInParty = activeRPGEvents[rpgEvent].membersInParty["rpg-" + memberInRpgEvent.id]
                                                                 var playerString = userStatsStringBuilder(memberInParty, memberInRpgEvent.username, false, 1);
-                                                                embed.addField( memberInRpgEvent.username, playerString )
+                                                                var playerUsername = memberInRpgEvent.username.length <= 15 ? memberInRpgEvent.username : "default"
+                                                                embed.addField( playerUsername, playerString )
                                                             }
                                                             // limit abilities
                                                             var limitsReadyString = "";
@@ -2471,7 +2473,8 @@ function turnFinishedEmbedBuilder(message, event, turnString, passiveEffectsStri
         var memberInRpgEvent = event.members[member];
         var memberInParty = event.membersInParty["rpg-" + memberInRpgEvent.id]
         var playerString = userStatsStringBuilder(memberInParty, memberInRpgEvent.username, false, event.turn);
-        embed.addField( memberInRpgEvent.username, playerString )
+        var playerUsername = memberInRpgEvent.username.length <= 15 ? memberInRpgEvent.username : "default"
+        embed.addField( playerUsername, playerString )
     }
     // show limit availables
     var limitsReadyString = "";
@@ -2657,8 +2660,8 @@ function eventEndedEmbedBuilder(message, event, partySuccess){
             rewardString = rewardString + " " + rewards + " \n";
             rewardStringForStatistics = rewardStringForStatistics + rewardString
         }
-        
-        embed.addField(memberInRpgEvent.username,  rewardString, true);
+        var playerUsername = memberInRpgEvent.username.length <= 15 ? memberInRpgEvent.username : "default"
+        embed.addField(playerUsername,  rewardString, true);
         // TODO: check for achievments, timed, special kills, 
     }
     var rpgStatData = createRpgStatData(rewardStringForStatistics, event, partySuccess)

@@ -10015,6 +10015,8 @@ function createParty(message, discordUserId, uncommonsToUse){
                         // party lasts 10 minutes - upon ending the reaction collector the party has ended
                         var ownerOfTable;
                         var ownerOfTableUsername;
+                        // to stop servers from removing emoji remove permissions
+                        let mapOfUsersReacted = {}
                         var idOfTable;
                         var reactionCount = 0;
                         collected.forEach(function(reactionEmoji){
@@ -10023,7 +10025,8 @@ function createParty(message, discordUserId, uncommonsToUse){
                             idOfTable = "table-" + reactionEmoji.message.id;
                             if (reactionEmoji._emoji.name == "🌮"){
                                 reactionEmoji.users.forEach(function(user){
-                                    if (!user.bot && ownerOfTable.id != user.id){
+                                    if (!user.bot && ownerOfTable.id != user.id && !mapOfUsersReacted[user.id]){
+                                        mapOfUsersReacted[user.id] = true
                                         tacoPartyReactRewards(message, user, "🌮", "taco")
                                         reactionCount++;
                                     }
@@ -10031,7 +10034,8 @@ function createParty(message, discordUserId, uncommonsToUse){
                             }
                             else if (reactionEmoji._emoji.name == "🍹"){
                                 reactionEmoji.users.forEach(function(user){
-                                    if (!user.bot && ownerOfTable.id != user.id){
+                                    if (!user.bot && ownerOfTable.id != user.id && !mapOfUsersReacted[user.id]){
+                                        mapOfUsersReacted[user.id] = true
                                         tacoPartyReactRewards(message, user, "🍹", "terrycloth")
                                         reactionCount++;
                                     }
@@ -10039,7 +10043,8 @@ function createParty(message, discordUserId, uncommonsToUse){
                             }
                             else if (reactionEmoji._emoji.name == "💃🏼"){
                                 reactionEmoji.users.forEach(function(user){
-                                    if (!user.bot && ownerOfTable.id != user.id){
+                                    if (!user.bot && ownerOfTable.id != user.id && !mapOfUsersReacted[user.id]){
+                                        mapOfUsersReacted[user.id] = true
                                         tacoPartyReactRewards(message, user, "💃🏼", "rock")
                                         reactionCount++;
                                     }

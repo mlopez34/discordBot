@@ -699,6 +699,7 @@ function handleTimeMachineArtifactStageOne(message, discordUserId, stage, team, 
 
             var leaderOfGroup;
             var leaderOfGroupUsername;
+            let mapOfUsersReacted = {}
             var idOfQuest;
             collected.forEach(function(reactionEmoji){
                 leaderOfGroup = activeQuests["quest-" + reactionEmoji.message.id].id; // discord id of leader
@@ -710,7 +711,8 @@ function handleTimeMachineArtifactStageOne(message, discordUserId, stage, team, 
                     
                     for (var m in team){
                         var teamUser = team[m]
-                        if (!user.bot && teamUser.id == user.id){
+                        if (!user.bot && teamUser.id == user.id  && !mapOfUsersReacted[user.id]){
+                            mapOfUsersReacted[user.id] = true
                             questFindRewards(message, user, reactionEmoji._emoji.name, allItems, questData.questname)
                         }
                     }
@@ -891,6 +893,7 @@ function handleTimeMachineArtifactStageThree(message, discordUserId, stage, team
 
             var leaderOfGroup;
             var leaderOfGroupUsername;
+            let mapOfUsersReacted = {}
             var idOfQuest;
             collected.forEach(function(reactionEmoji){
                 leaderOfGroup = activeQuests["quest-" + reactionEmoji.message.id].id; // discord id of leader
@@ -902,7 +905,8 @@ function handleTimeMachineArtifactStageThree(message, discordUserId, stage, team
                     
                     for (var m in team){
                         var teamUser = team[m]
-                        if (!user.bot && teamUser.id == user.id){
+                        if (!user.bot && teamUser.id == user.id && !mapOfUsersReacted[user.id]){
+                            mapOfUsersReacted[user.id] = true
                             questFindRewards(message, user, reactionEmoji._emoji.name, allItems, questData.questname)
                         }
                     }
@@ -1447,6 +1451,7 @@ function handleDemonicArtifactStageThree(message, discordUserId, stage, team, ch
 
             var leaderOfGroup;
             var leaderOfGroupUsername;
+            let mapOfUsersReacted = {}
             var idOfQuest;
             collected.forEach(function(reactionEmoji){
                 leaderOfGroup = activeQuests["quest-" + reactionEmoji.message.id].id; // discord id of leader
@@ -1458,7 +1463,8 @@ function handleDemonicArtifactStageThree(message, discordUserId, stage, team, ch
                     
                     for (var m in team){
                         var teamUser = team[m]
-                        if (!user.bot && teamUser.id == user.id){
+                        if (!user.bot && teamUser.id == user.id  && !mapOfUsersReacted[user.id]){
+                            mapOfUsersReacted[user.id] = true
                             questFindRewards(message, user, reactionEmoji._emoji.name, allItems, questData.questname)
                         }
                     }
@@ -1811,6 +1817,7 @@ function handleRingArtifactStageFour(message, discordUserId, stage, team, marrie
 
                 var leaderOfGroup;
                 var leaderOfGroupUsername;
+                let mapOfUsersReacted = {}
                 var idOfQuest;
                 collected.forEach(function(reactionEmoji){
                     leaderOfGroup = activeQuests["quest-" + reactionEmoji.message.id].id; // discord id of leader
@@ -1819,7 +1826,8 @@ function handleRingArtifactStageFour(message, discordUserId, stage, team, marrie
 
                     // only team members should be getting items
                     reactionEmoji.users.forEach(function(user){
-                        if (!user.bot){
+                        if (!user.bot && !mapOfUsersReacted[user.id]){
+                            mapOfUsersReacted[user.id] = true
                             questFindRewards(message, user, reactionEmoji._emoji.name, allItems, questData.questname)
                         }
                     })
@@ -2001,6 +2009,7 @@ function handleTombArtifactStageOne(message, discordUserId, stage, team, channel
             }
             var leaderOfGroup;
             var leaderOfGroupUsername;
+            let mapOfUsersReacted = {}
             var idOfQuest;
             collected.forEach(function(reactionEmoji){
                 leaderOfGroup = activeQuests["quest-" + reactionEmoji.message.id].id; // discord id of leader
@@ -2012,7 +2021,8 @@ function handleTombArtifactStageOne(message, discordUserId, stage, team, channel
                     
                     for (var m in team){
                         var teamUser = team[m]
-                        if (!user.bot && teamUser.id == user.id){
+                        if (!user.bot && teamUser.id == user.id && !mapOfUsersReacted[user.id]){
+                            mapOfUsersReacted[user.id] = true
                             questFindRewards(message, user, reactionEmoji._emoji.name, allItems, questData.questname)
                         }
                     }
