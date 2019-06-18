@@ -436,6 +436,9 @@ client.on('message', function(message){
                 else if (commandIs("markethelp", message)){
                     commands.marketHelpCommand(message)
                 }
+                else if (commandIs("patchnotes", message)){
+                    commands.patchnotesCommand(message)
+                }
                 else if (commandIs("market", message)){
                     commands.marketCommand(message, args)
                 }
@@ -1086,6 +1089,11 @@ client.on('message', function(message){
                 else if (commandIs("markethelp", message)){
                     commands.marketHelpCommand(message)
                     data.command = "markethelp"
+                    profileDB.createUserActivity(data)
+                }
+                else if (commandIs("patchnotes", message)){
+                    commands.patchnotesCommand(message)
+                    data.command = "patchnotes"
                     profileDB.createUserActivity(data)
                 }
                 else if (commandIs("market", message)){

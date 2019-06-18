@@ -2890,7 +2890,7 @@ module.exports.helpCommand = function(message){
           },
           {
             "name": "Other Help Commands",
-            "value": "`-itemhelp >` Display all commands related to items!\n`-rpghelp >` Display all commands related to RPGs!\n`-hint >` Bender tells you a hint!\n `-markethelp >` display full black market commands!"
+            "value": "`-itemhelp >` Display all commands related to items!\n`-rpghelp >` Display all commands related to RPGs!\n`-hint >` Bender tells you a hint!\n `-markethelp >` display full black market commands!\n`-patchnotes` > display the latest updates done to bender!"
           }
         ]
       };
@@ -2903,6 +2903,33 @@ module.exports.helpCommand = function(message){
         console.log(err)
         message.channel.send("Unable to display help embed, Enable embeds in this channel for future help announcements!")
     })     
+}
+
+module.exports.patchnotesCommand = function(message){
+    const embed = {
+        "description": "Bender is being consistently updated and the latest patchnotes are displayed here!",
+        "color": 11795163,
+        "author": {
+          "name": "Patch Notes",
+          "url": "http://benderdiscord.com/",
+          "icon_url": "https://cdn.discordapp.com/avatars/320703328730349578/af68d11f9ecf74bd3f9bf99cebcfe107.jpg"
+        },
+        "fields": [
+          {
+            "name": "June 13, 2019",
+            "value": "```- Only relevant to lvl 35 or above: Keystone items have been added to all keystones, starting with initial keystone items at keystone 2. Stronger keystone items will only be obtained at their respective keystone.\n- A new voting system has arrived! vote for us at https://discordbots.org/bot/320703328730349578 and claim your daily reward using -daily and -daily claim commands! streaks will reward you with more additional rewards, streaks must be maintained by voting every day with a 24 hour grace period.\n- Some RPG encounters have had their abilities fixed, this is an ongoing process and will be continued to be improved upon in later patches\n-When fetching with your stable pets, fetch tacos from items are taken into account using the formula (tacos gained / 7 - stable slot number ) these are added onto your regular stable pet fetches\n- Bender website has been slightly improved\n- Bender discordbots description has been slightly improved```"
+          }
+        ]
+      };
+      
+    message.channel.send({ embed })
+    .then(function(res){
+        console.log(res)
+    })
+    .catch(function(err){
+        console.log(err)
+        message.channel.send(JSON.stringify(err) )
+    })  
 }
 
 module.exports.itemhelpCommand = function(message){
@@ -10201,19 +10228,23 @@ function createParty(message, discordUserId, uncommonsToUse){
                                 if (getDataErr){
                                     // console.log(getDataErr);
                                     message.channel.send(err);
-                                }
-                                else{
+                                }else{
                                     // for gaining xp
                                     var userData = getDataRes;
                                     profileDB.updateUserTacos(ownerOfTable.id, reactionCount * 20, function(err, res){
                                         if (err){
                                             // console.log(err);
                                             message.channel.send(err);
-                                        }
-                                        else{
+                                        }else{
                                             // console.log(res);
                                             experience.gainExperience(message, ownerOfTable, reactionCount, userData);
                                             message.channel.send("The party for `" + ownerOfTableUsername + "` was a great success! There were `" + attendees + "` guests that showed up")
+                                            .then(function(res){
+                                                console.log(res)
+                                            })
+                                            .catch(function(err){
+                                                console.log(err)
+                                            })
                                             var achievements = getDataRes.data.achievements;
                                             var data = {}
                                             data.achievements = achievements;
@@ -10232,7 +10263,7 @@ function createParty(message, discordUserId, uncommonsToUse){
                         }
                     })
                 }).catch(function(err) {
-                    message.channel.send(err);
+                    message.channel.send(JSON.stringify(err + " error"));
                 });
             }
         }
