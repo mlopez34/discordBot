@@ -37,7 +37,7 @@
 ### Misc
 
 - play a game of `-fruits` with up to 10 users!
-- Use the black market auction house to buy and sell items! use the `-market` command to view the market, `-mkcreate [itemid]` to 
+- Use the black market auction house to buy and sell items! use the `-market` command to view the market, `-mkauction [itemid]` to 
 - Test your luck and slot some tacos using the `-slots [tacos]` command!
 
 ![](https://i.imgur.com/7H0Kkkj.png)

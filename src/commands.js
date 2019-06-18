@@ -2576,7 +2576,7 @@ module.exports.buyShopItem = function(message, args){
                         else{
                             var tacosFound = 0
                             shopItemEmbedBuilder(message, itemsToAddToInventory, tacosFound);
-                            message.channel.send(message.author + " successfully purchased `" + itemShortName.toLowerCase() + "`! \ndo -puton 1 " + itemShortName.toLowerCase() + " OR -puton 2 " + itemShortName.toLowerCase() + "  OR -puton 3 " + itemShortName.toLowerCase() + " \ndo -wearing to check your new item bonuses!")
+                            message.channel.send(message.author + " successfully purchased `" + itemShortName.toLowerCase() + "`! \n`do -puton 1 " + itemShortName.toLowerCase() + "` OR `-puton 2 " + itemShortName.toLowerCase() + "`  OR `-puton 3 " + itemShortName.toLowerCase() + "` \ndo `-wearing` to check your new item bonuses!")
                         }
                     })
                 }else{
@@ -6291,7 +6291,7 @@ function templeEmbedBuilder(message, templeData, long){
     .setColor(0x87CEFA)
     .setTitle(templeData.name + "'s Temple 🕍")
     .setThumbnail(message.author.avatarURL)
-    .setDescription('Temple Level: ' + templeData.templeLevel + " \n-`mytemple` to display your temple perks\n-`disassemble [itemid]` to disassemble an item (requires a hacksaw)\n-`craft [itemid]` to craft an item from your list of craft recipes\n`-armament [itemid]` to create an armament for that item (requires an essence/shard/crystal)")
+    .setDescription('Temple Level: ' + templeData.templeLevel + " \n-`mytemple` to display your temple perks\n-`disassemble [itemid]` to disassemble an item (requires a hacksaw)\n-`craft [itemid]` to craft an item from your list of craft recipes\n`-createarmament [itemid]` to create an armament for that item (requires an essence/shard/crystal)")
     .setColor(0x87CEFA)
 
     if (long){
