@@ -8620,7 +8620,7 @@ function handleMarketItemAuctionEnded(individualItem){
                                 guildId: 1,
                                 discordId: 1,
                                 username: "error",
-                                message: JSON.stringify(individualItem)
+                                message: "1 " + JSON.stringify(ex) + " " + JSON.stringify(individualItem)
                             }
                             profileDB.createUserActivity(data)
                         }
@@ -8647,7 +8647,7 @@ function handleMarketItemAuctionEnded(individualItem){
                                 guildId: 1,
                                 discordId: 1,
                                 username: "error",
-                                message: JSON.stringify(individualItem)
+                                message: "2 " + JSON.stringify(ex) + " " + JSON.stringify(individualItem)
                             }
                             profileDB.createUserActivity(data)
                             console.log(ex)
@@ -8670,7 +8670,7 @@ function handleMarketItemAuctionEnded(individualItem){
             guildId: 1,
             discordId: 1,
             username: "error",
-            message: JSON.stringify(individualItem)
+            message: " no individualItem.id" + JSON.stringify(individualItem)
         }
         profileDB.createUserActivity(data)
     }
