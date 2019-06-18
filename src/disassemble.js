@@ -36,7 +36,7 @@ function individualRoll(gotCurrentLevelDust, gotCrystal, crystalChance, cutoff, 
                 // got elemental crystal - roll for the elemental crystal to get
                 var adjustedListOfObtainableItems = filterListOfObtainableItems(possibleItems, rarityOfDisassemble, true, true)
                 var itemToGetRoll = Math.floor( Math.random() * adjustedListOfObtainableItems.length);
-                itemReturnedObject.item.push( adjustedListOfObtainableItems[itemToGetRoll] )
+                itemReturnedObject.item.push( JSON.parse(JSON.stringify(adjustedListOfObtainableItems[itemToGetRoll] ) ))
                 itemReturnedObject.item[0].itemAmount = 1
                 itemReturnedObject.gotCrystal = true;
                 itemReturnedObject.crystalChanceIncrease = 2500
@@ -50,7 +50,7 @@ function individualRoll(gotCurrentLevelDust, gotCrystal, crystalChance, cutoff, 
                         // got higher level dust, now roll for the amount to get
                         var adjustedListOfObtainableItems = filterListOfObtainableItems(possibleItems, rarityOfDisassemble, false, false)
                         var itemToGetRoll = Math.floor( Math.random() * adjustedListOfObtainableItems.length);
-                        itemReturnedObject.item.push( adjustedListOfObtainableItems[itemToGetRoll] )
+                        itemReturnedObject.item.push( JSON.parse(JSON.stringify( adjustedListOfObtainableItems[itemToGetRoll] ) ))
                         var itemCount = Math.floor(Math.random() * 1000) + 1;
                         if (itemCount > 900){
                             itemReturnedObject.item[0].itemAmount = 3
@@ -64,7 +64,7 @@ function individualRoll(gotCurrentLevelDust, gotCrystal, crystalChance, cutoff, 
                         // got current level dust, roll for the amount to get
                         var adjustedListOfObtainableItems = filterListOfObtainableItems(possibleItems, rarityOfDisassemble, true, false)
                         var itemToGetRoll = Math.floor( Math.random() * adjustedListOfObtainableItems.length);
-                        itemReturnedObject.item.push( adjustedListOfObtainableItems[itemToGetRoll] )
+                        itemReturnedObject.item.push( JSON.parse(JSON.stringify( adjustedListOfObtainableItems[itemToGetRoll] ) ))
                         var itemCount = Math.floor(Math.random() * 1000) + 1;
                         if (itemCount > 950){
                             itemReturnedObject.item[0].itemAmount = 5
@@ -105,7 +105,7 @@ function individualRoll(gotCurrentLevelDust, gotCrystal, crystalChance, cutoff, 
                 if (itemLevel > 8000){
                     var adjustedListOfObtainableItems = filterListOfObtainableItems(possibleItems, rarityOfDisassemble, false, false)
                     var itemToGetRoll = Math.floor( Math.random() * adjustedListOfObtainableItems.length);
-                    itemReturnedObject.item.push( adjustedListOfObtainableItems[itemToGetRoll] )
+                    itemReturnedObject.item.push( JSON.parse(JSON.stringify( adjustedListOfObtainableItems[itemToGetRoll] ) ))
                     // got higher level dust, now roll for the amount to get
                     var itemCount = Math.floor(Math.random() * 1000) + 1;
                     if (itemCount > 900){
@@ -119,7 +119,7 @@ function individualRoll(gotCurrentLevelDust, gotCrystal, crystalChance, cutoff, 
                 }else{
                     var adjustedListOfObtainableItems = filterListOfObtainableItems(possibleItems, rarityOfDisassemble, true, false)
                     var itemToGetRoll = Math.floor( Math.random() * adjustedListOfObtainableItems.length);
-                    itemReturnedObject.item.push( adjustedListOfObtainableItems[itemToGetRoll] )
+                    itemReturnedObject.item.push( JSON.parse(JSON.stringify( adjustedListOfObtainableItems[itemToGetRoll] ) ))
                     // got current level dust, roll for the amount to get
                     var itemCount = Math.floor(Math.random() * 1000) + 1;
                     if (itemCount > 950){
