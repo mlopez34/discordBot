@@ -160,7 +160,14 @@ function obtainReputationItem(message, reputationSource){
     }
     embed.addField("Reputation Rewards", rewardString, true)
     .setThumbnail(message.author.avatarURL)
-    message.channel.send({embed});
+    message.channel.send({embed})
+    .then(function(res){
+        console.log(res)
+    })
+    .catch(function(err){
+        console.log(err)
+        message.channel.send("Unable to display reputation embed, Enable embeds in this channel for future reputation announcements!")
+    })
 }
 
 function addToUserInventory(discordUserId, items){
@@ -293,5 +300,12 @@ function reputationEmbedBuilder(message, repstatus, rewards){
     if (rewards === "pandoras box"){
         embed.addField( "Rewards: " , ":crystal_ball: Pandora's Box - present this box to Bender to be able to shop ethereum from his shop", true)
     }
-    message.channel.send({embed});
+    message.channel.send({embed})
+    .then(function(res){
+        console.log(res)
+    })
+    .catch(function(err){
+        console.log(err)
+        message.channel.send("Unable to display reputation embed, Enable embeds in this channel for future reputation announcements!")
+    })
 }

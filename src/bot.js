@@ -85,6 +85,13 @@ client.on("guildCreate", guild => {
                 }
             }
         })
+        .then(function(res){
+            console.log(res)
+        })
+        .catch(function(err){
+            console.log(err)
+            message.channel.send("Unable to display guild join embed, Enable embeds in this channel for future announcements!")
+        })
     }
 })
 
@@ -1335,7 +1342,13 @@ function tacoTuesdayAnnouncement(message){
     .setColor(0xFFAE86)
     //.addField('Tacos  :taco:', profileData.userTacos, true)
     //.setFooter('use !give @user to give a user some tacos!')
-    message.channel.send({embed});
+    message.channel.send({embed})
+    .then(function(res){
+        console.log(res)
+    })
+    .catch(function(err){
+        console.log(err)
+    })
 }
 
 function messagesByUserTimeout(commandFunction, message){

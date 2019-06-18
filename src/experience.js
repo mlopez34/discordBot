@@ -36,7 +36,14 @@ function experienceEmbedBuilder(message, userThatLeveled, level, tacoRewards, is
     const embed = new Discord.RichEmbed()
     .setColor(0xED962D)
     .addField(levelUpString, "Level " + level + " "  + xpEmoji + "\n**Rewards:** " + tacoRewards + " tacos! :taco:",true)
-    message.channel.send({embed});
+    message.channel.send({embed})
+    .then(function(res){
+        console.log(res)
+    })
+    .catch(function(err){
+        console.log(err)
+        message.channel.send("Unable to display level up embed, Enable embeds in this channel for future level up announcements!")
+    })
 }
 
 function gainExperienceHandler(message, discordUser, experienceNumber, userProfileData, isRpgExperience){
@@ -410,7 +417,14 @@ function extraLevelRewardsEmbedBuilder(message, discordUser, itemsObtainedArray 
     }
     embed.addField("Level Up Rewards", rewardString, true)
     .setThumbnail(discordUser.avatarURL)
-    message.channel.send({embed});
+    message.channel.send({embed})
+    .then(function(res){
+        console.log(res)
+    })
+    .catch(function(err){
+        console.log(err)
+        message.channel.send("Unable to display level up embed, Enable embeds in this channel for future level up announcements!")
+    })
 }
 
 function addToUserInventory(discordUserId, items){

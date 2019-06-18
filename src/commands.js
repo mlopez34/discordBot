@@ -1414,7 +1414,14 @@ function dailyEmbedBuilder(message, profileData){
     .addField("Bender Voting Rewards", rewardsString)
     .addField("Streak", streakString)
     .addField("Rewards", turninString)
-    message.channel.send({embed});
+    message.channel.send({embed})
+    .then(function(res){
+        console.log(res)
+    })
+    .catch(function(err){
+        console.log(err)
+        message.channel.send("Unable to display daily embed, Enable embeds in this channel for future daily announcements!")
+    })
 }
 
 function calculateTacosGained(profileData){
@@ -1888,7 +1895,14 @@ function achievEmbedBuilder(message, profileData){
     for (var i = profileData.achievementStrings.length - 1; i >= 0; i--){
         embed.addField(profileData.userName + "'s Achievements " + ':medal:', profileData.achievementStrings[i])
     }
-    message.channel.send({embed});
+    message.channel.send({embed})
+    .then(function(res){
+        console.log(res)
+    })
+    .catch(function(err){
+        console.log(err)
+        message.channel.send("Unable to display achievements embed, Enable embeds in this channel for future achievements announcements!")
+    })
 }
 
 module.exports.xpCommand = function(message){
@@ -2219,7 +2233,14 @@ function profileBuilder(message, profileData){
     embed.addField('Items :shopping_bags:', profileData.userItems, true)
     .addField('Achievements :military_medal: ', profileData.achievementString, true)
     .addField('RPG stats :fleur_de_lis:  ', "Points : " + profileData.rpgLevel + " | " + profileData.rpgPoints + "/" + profileData.rpgPointsNextLevel + "\nChallenge: " + profileData.currentRpgChallenge + "\nRating: 1500 ", true)
-    message.channel.send({embed});
+    message.channel.send({embed})
+    .then(function(res){
+        console.log(res)
+    })
+    .catch(function(err){
+        console.log(err)
+        message.channel.send("Unable to display profile embed, Enable embeds in this channel to display profiles!")
+    })
 }
 
 function shopBuilder(message, shopData, long){
@@ -2285,7 +2306,14 @@ function shopBuilder(message, shopData, long){
         }
         embed.addField('Your current tacos', shopData.userTacos + " :taco:", false)   
         embed.addField('Descriptions', "-shop long to see descriptions and how to buy from the shop", false)   
-        message.channel.send({embed});        
+        message.channel.send({embed})
+        .then(function(res){
+            console.log(res)
+        })
+        .catch(function(err){
+            console.log(err)
+            message.channel.send("Unable to display shop embed, Enable embeds in this channel for future shop announcements!")
+        })     
     }
     else {
         var welcomeMessage = "Hey " + message.author.username + "! Welcome to Bender's shop."
@@ -2383,7 +2411,14 @@ function shopBuilder(message, shopData, long){
         embed.addBlankField(false)
         .addField('Your current tacos', shopData.userTacos + " :taco:", false)
         .setTimestamp()
-        message.channel.send({embed});
+        message.channel.send({embed})
+        .then(function(res){
+            console.log(res)
+        })
+        .catch(function(err){
+            console.log(err)
+            message.channel.send("Unable to display shop embed, Enable embeds in this channel for future shop announcements!")
+        })
     }
 }
 
@@ -2485,7 +2520,14 @@ function shopItemDetailsBuilder(message){
     .addField('Belt ', SHOP_ITEM_COST + " :taco: \ngives chance at additional tacos when **cooking**\n💚52 🗡️5 ☄️5 👕43 🙌43 \nassist - heal yourself and your target\nfreeze - reduce target's armor by 20%", true)
     .addField('Socks ', SHOP_ITEM_COST + " :taco: \ngives chance at additional tacos when **thanking**\n💚24 🗡️30 ☄️0 👕25 🙌25 \nscold - reduce your targets spirit by 20%\nslash - deal physical damage to all enemies (60% of your physical damage)", true)
     .setTimestamp()
-    message.channel.send({embed});
+    message.channel.send({embed})
+    .then(function(res){
+        console.log(res)
+    })
+    .catch(function(err){
+        console.log(err)
+        message.channel.send("Unable to display shop item embed, Enable embeds in this channel for future shop item announcements!")
+    })
 }
 
 module.exports.buyShopItem = function(message, args){
@@ -2698,7 +2740,14 @@ function repShopBuilder(message, shopData){
     embed.addBlankField(false)
     .addField('Your current tacos', shopData.userTacos + " :taco:", false)
     .setTimestamp()
-    message.channel.send({embed});
+    message.channel.send({embed})
+    .then(function(res){
+        console.log(res)
+    })
+    .catch(function(err){
+        console.log(err)
+        message.channel.send("Unable to display reputation shop embed, Enable embeds in this channel for future reputation shop announcements!")
+    })
 }
 
 module.exports.repShopCommand = function(message){
@@ -2846,7 +2895,14 @@ module.exports.helpCommand = function(message){
         ]
       };
       
-      message.channel.send({ embed });      
+      message.channel.send({ embed })
+      .then(function(res){
+        console.log(res)
+    })
+    .catch(function(err){
+        console.log(err)
+        message.channel.send("Unable to display help embed, Enable embeds in this channel for future help announcements!")
+    })     
 }
 
 module.exports.itemhelpCommand = function(message){
@@ -2894,7 +2950,14 @@ module.exports.itemhelpCommand = function(message){
           }
         ]
       };
-      message.channel.send({ embed });
+      message.channel.send({ embed })
+      .then(function(res){
+        console.log(res)
+    })
+    .catch(function(err){
+        console.log(err)
+        message.channel.send("Unable to display item help embed, Enable embeds in this channel for future item help announcements!")
+    })
 }
 
 module.exports.rpghelpCommand = function(message){
@@ -2936,7 +2999,14 @@ module.exports.rpghelpCommand = function(message){
           }
         ]
       };
-      message.channel.send({ embed });
+      message.channel.send({ embed })
+      .then(function(res){
+        console.log(res)
+    })
+    .catch(function(err){
+        console.log(err)
+        message.channel.send("Unable to display rpg help embed, Enable embeds in this channel for future rpghelp announcements!")
+    })
 }
 
 function getProfileForAchievement(discordUserId, message, profileResponse){
@@ -3169,7 +3239,14 @@ function raresEmbedBuilder(message, itemsMap, allItems, long, rarity){
     .setDescription( ":left_luggage:" )
     .setThumbnail(message.author.avatarURL)
     .setColor(0x06e8e8)
-    message.channel.send({embed});
+    message.channel.send({embed})
+    .then(function(res){
+        console.log(res)
+    })
+    .catch(function(err){
+        console.log(err)
+        message.channel.send("Unable to display inventory embed, Enable embeds in this channel for future inventory announcements!")
+    })
 }
 
 module.exports.itemDetailsCommand = function(message, args){
@@ -3305,7 +3382,14 @@ function itemInfoEmbedBuilder(message, item, rpgItemInfoString, armamentForItem)
     // .setAuthor(message.author.username +"'s Inventory ")
     // .setDescription( ":left_luggage: \n-rares | -rares long to view your rare items\n-ancients | -ancients long to view your ancient items\n-artifacts | -artifacts long to view your artifacts\n-amulets to view your amulets " )
     // TODO: create an image? .setThumbnail(message.author.avatarURL)
-    message.channel.send({embed});
+    message.channel.send({embed})
+    .then(function(res){
+        console.log(res)
+    })
+    .catch(function(err){
+        console.log(err)
+        message.channel.send("Unable to display item info embed, Enable embeds in this channel for future item info announcements!")
+    })
 }
 
 module.exports.inventoryCommand = function(message){
@@ -3367,7 +3451,14 @@ function inventoryEmbedBuilder(message, itemsMap, allItems){
     .setDescription( ":left_luggage: \n-rares | -rares long to view your rare items\n-seeds | seeds long to view your seeds\n-ancients | -ancients long to view your ancient items\n-artifacts | -artifacts long to view your artifacts\n-amulets to view your amulets " )
     .setThumbnail(message.author.avatarURL)
     .setColor(0x06e8e8)
-    message.channel.send({embed});
+    message.channel.send({embed})
+    .then(function(res){
+        console.log(res)
+    })
+    .catch(function(err){
+        console.log(err)
+        message.channel.send("Unable to display inventory embed, Enable embeds in this channel for future inventory announcements!")
+    })
 }
 
 module.exports.getItemsByRarity = function(rarityToReturn){
@@ -3721,7 +3812,14 @@ function scavengeEmbedBuilder(message, itemsScavenged, tacosFound){
     .addField("[" + message.author.username +"'s Scavenge] :pick: Items found: ", itemsMessage, true)
     .setThumbnail(message.author.avatarURL)
     .setColor(0xbfa5ff)
-    message.channel.send({embed});
+    message.channel.send({embed})
+    .then(function(res){
+        console.log(res)
+    })
+    .catch(function(err){
+        console.log(err)
+        message.channel.send("Unable to display scavenge embed, Enable embeds in this channel for future scavenge announcements!")
+    })
 }
 
 function shopItemEmbedBuilder(message, itemsScavenged, tacosFound){
@@ -3740,7 +3838,14 @@ function shopItemEmbedBuilder(message, itemsScavenged, tacosFound){
     .addField("Items purchased: ", itemsMessage, true)
     .setThumbnail(message.author.avatarURL)
     .setColor(0xbfa5ff)
-    message.channel.send({embed});
+    message.channel.send({embed})
+    .then(function(res){
+        console.log(res)
+    })
+    .catch(function(err){
+        console.log(err)
+        message.channel.send("Unable to display shop item embed, Enable embeds in this channel for future shop item announcements!")
+    })
 }
 
 function addToUserInventory(discordUserId, items){
@@ -3931,7 +4036,14 @@ function slotsEmbedBuilder(emojisRolled, tacosWon, message, extraTacosFromItems)
     if (extraTacosFromItems > 0){
         embed.addField('Extra tacos from Items!', extraTacosFromItems + " :taco: tacos won" , true)
     }
-    message.channel.send({embed});
+    message.channel.send({embed})
+    .then(function(res){
+        console.log(res)
+    })
+    .catch(function(err){
+        console.log(err)
+        message.channel.send("Unable to display slots embed, Enable embeds in this channel for future slots announcements!")
+    })
 }
 
 module.exports.miniGameCommand = function(message) {
@@ -4028,6 +4140,9 @@ function miniGameEmbedBuilder(message, data){
             currentGameLastMessage.delete()
             .then(function(res){
                 currentGame.setLastMessage(sentMessage);
+            })
+            .catch(function(err){
+                console.log(err)
             })
         }else{
             currentGame.setLastMessage(sentMessage);
@@ -8738,7 +8853,14 @@ function marketBuilder(message, marketData, long){
         .addField("Market Items :shinto_shrine:", marketItemsByPage[page] , false)
         .addField('Your current tacos', marketData.userTacos + " :taco:", true)
         .setTimestamp()
-        message.channel.send({embed});
+        message.channel.send({embed})
+        .then(function(res){
+            console.log(res)
+        })
+        .catch(function(err){
+            console.log(err)
+            message.channel.send("Unable to display market embed, Enable embeds in this channel for future market announcements!")
+        })
     }else{
         const embed = new Discord.RichEmbed()
         .setColor(0x000000)
@@ -8746,7 +8868,14 @@ function marketBuilder(message, marketData, long){
         .addField("Market Items :shinto_shrine:", marketItemsByPage[page] , false)
         .addField('Your current tacos', marketData.userTacos + " :taco:", true)
         .setTimestamp()
-        message.channel.send({embed});
+        message.channel.send({embed})
+        .then(function(res){
+            console.log(res)
+        })
+        .catch(function(err){
+            console.log(err)
+            message.channel.send("Unable to display market embed, Enable embeds in this channel for future market announcements!")
+        })
     }
 }
 
@@ -8762,7 +8891,14 @@ module.exports.marketHelpCommand = function(message){
           }
         ]
       };
-      message.channel.send({ embed });
+      message.channel.send({ embed })
+      .then(function(res){
+        console.log(res)
+    })
+    .catch(function(err){
+        console.log(err)
+        message.channel.send("Unable to display market help embed, Enable embeds in this channel for future market help announcements!")
+    })
 }
 
 function extractItemName(args){
@@ -9715,24 +9851,21 @@ module.exports.agreeTermsCommand = function(message, args){
                     if(err){
                         // console.log(err);
                         message.channel.send("user already exists")
-                    }
-                    else{
-                        profileDB.updateUserTacosWelcome(discordUserId, 50, function(err, updateResponse) {
+                    }else{
+                        profileDB.updateUserTacosWelcome(discordUserId, 200, function(err, updateResponse) {
                             if (err){
                                 // console.log(err);
-                            }
-                            else{
+                            }else{
                                 Last_Five_Welcomes.push(discordUserId);
                                 if (Last_Five_Welcomes.length >= 5){
                                     Last_Five_Welcomes.shift();
                                 }
-                                message.channel.send("welcome aboard ! " + message.author + " your profile has been created. " + host + " will be your host!" );
+                                message.channel.send("welcome aboard ! " + message.author + " your profile has been created. " + host + " will be your host! here are some initial commands you can try```\n-cook\n-tacos\n-prepare\n-thanks @user\n-sorry @user\n-profile\n-shop long\n-inventory\n-buypickaxe\n-help\n-rpghelp\n-itemhelp\n-markethelp\n-map\n-rpgstats\n-rpgstart```Enjoy your stay!" );
                                 if (host.id){
                                     stats.statisticsManage(host.id, "welcomecount", 1, function(err, statSuccess){
                                         if (err){
                                             // console.log(err);
-                                        }
-                                        else{
+                                        }else{
                                             // check achievements??
                                             getProfileForAchievement(host.id, message)
                                         }
@@ -10004,6 +10137,12 @@ function createParty(message, discordUserId, uncommonsToUse){
                                             if (collectorUser == userId && element.emoji.name != reaction.emoji.name){
                                                 // remove the reaction by the user
                                                 element.remove(userId)
+                                                .then(function(res){
+                                                    console.log(res)
+                                                })
+                                                .catch(function(err){
+                                                    console.log(err)
+                                                })
                                             }
                                         }
                                     })

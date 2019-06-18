@@ -86,6 +86,10 @@ module.exports.rpgInitialize = function(message, special){
                 activeRPGEvents["rpg-" + sentMessage.id].usersInArea = []
             }
         })
+        .catch(function(err){
+            console.log(err)
+            message.channel.send("Unable to display RPG initialize embed, Enable embeds in this channel to begin an RPG event!")
+        })
     }
     else{
         message.channel.send("not enough members in your party for this event or someone is already in an event, \ndo `-rpgstart @user @user ...` to start an rpg event with a group (2 minimum, 5 maximum) OR `-rpgchallenge 1 @user @user ..`")
@@ -471,7 +475,7 @@ module.exports.showRpgStats = function(message, itemsAvailable, amuletItemsById,
                                 partyMemberSpiritPlus = partyMemberStats.plusStats.spiritPlus ? partyMemberStats.plusStats.spiritPlus : 0
                                 partyMemberLuckPlus = partyMemberStats.plusStats.luckPlus ? partyMemberStats.plusStats.luckPlus: 0
                             }
-                            var playerName = message.author.username.length <= 15 ? message.author.username : "default"
+                            var playerName = message.author.username.length <= 35 ? message.author.username : "default"
                             var myStats = {
                                 id: message.author.id,
                                 name: playerName,
@@ -552,6 +556,13 @@ module.exports.showRpgStats = function(message, itemsAvailable, amuletItemsById,
                                 embed.addField( s, singleItemsStrings[s] )
                             }
                             message.channel.send({embed})
+                            .then(function(res){
+                                console.log(res)
+                            })
+                            .catch(function(err){
+                                console.log(err)
+                                message.channel.send("Unable to display rpg stats embed, Enable embeds in this channel for RPG stats announcements!")
+                            })
                         }
                     })
                 }
@@ -1757,7 +1768,7 @@ module.exports.rpgReady = function(message, itemsAvailable, amuletItemsById, buf
                                                                 var memberInRpgEvent = activeRPGEvents[rpgEvent].members[member];
                                                                 var memberInParty = activeRPGEvents[rpgEvent].membersInParty["rpg-" + memberInRpgEvent.id]
                                                                 var playerString = userStatsStringBuilder(memberInParty, memberInRpgEvent.username, false, 1);
-                                                                var playerUsername = memberInRpgEvent.username.length <= 15 ? memberInRpgEvent.username : "default"
+                                                                var playerUsername = memberInRpgEvent.username.length <= 35 ? memberInRpgEvent.username : "default"
                                                                 embed.addField( playerUsername, playerString )
                                                             }
                                                             // limit abilities
@@ -1797,6 +1808,10 @@ module.exports.rpgReady = function(message, itemsAvailable, amuletItemsById, buf
                                                                 }else{
                                                                     exports.setreadyLock(rpgEventId, discordUserId, false)
                                                                 }
+                                                            })
+                                                            .catch(function(err){
+                                                                console.log(err)
+                                                                message.channel.send("Unable to display RPG embed, Enable embeds in this channel to begin RPG events!")
                                                             })
                                             
                                                         }
@@ -1937,7 +1952,14 @@ function keystonesEmbedBuilder(message, keystonesString, userData){
     .addField("Keystones available: :key: :asterisk:", keystonesString, true)
     .setThumbnail(message.author.avatarURL)
     .setColor(0xbfa5ff)
-    message.channel.send({embed});
+    message.channel.send({embed})
+    .then(function(res){
+        console.log(res)
+    })
+    .catch(function(err){
+        console.log(err)
+        message.channel.send("Unable to display keystones embed, Enable embeds in this channel for keystones embeds!")
+    })
 }
 
 function mapEmbedBuilder(message, listOfAreasInZone, zonesAvailableForUserMap, currentZoneName, currentAreaName, zoneAvatar){
@@ -1968,7 +1990,14 @@ function mapEmbedBuilder(message, listOfAreasInZone, zonesAvailableForUserMap, c
     if (zoneAvatar){
         embed.setImage(zoneAvatar)
     }
-    message.channel.send({embed});
+    message.channel.send({embed})
+    .then(function(res){
+        console.log(res)
+    })
+    .catch(function(err){
+        console.log(err)
+        message.channel.send("Unable to display map embed, Enable embeds in this channel to display MAP embeds!")
+    })
 }
 
 function getAreasInZone(zoneid, userData){
@@ -2473,7 +2502,7 @@ function turnFinishedEmbedBuilder(message, event, turnString, passiveEffectsStri
         var memberInRpgEvent = event.members[member];
         var memberInParty = event.membersInParty["rpg-" + memberInRpgEvent.id]
         var playerString = userStatsStringBuilder(memberInParty, memberInRpgEvent.username, false, event.turn);
-        var playerUsername = memberInRpgEvent.username.length <= 15 ? memberInRpgEvent.username : "default"
+        var playerUsername = memberInRpgEvent.username.length <= 35 ? memberInRpgEvent.username : "default"
         embed.addField( playerUsername, playerString )
     }
     // show limit availables
@@ -2533,6 +2562,10 @@ function turnFinishedEmbedBuilder(message, event, turnString, passiveEffectsStri
                 console.log(err);
             })
         }
+    })
+    .catch(function(err){
+        console.log(err)
+        message.channel.send(JSON.stringify(err))
     })
 }
 
@@ -2660,7 +2693,7 @@ function eventEndedEmbedBuilder(message, event, partySuccess){
             rewardString = rewardString + " " + rewards + " \n";
             rewardStringForStatistics = rewardStringForStatistics + rewardString
         }
-        var playerUsername = memberInRpgEvent.username.length <= 15 ? memberInRpgEvent.username : "default"
+        var playerUsername = memberInRpgEvent.username.length <= 35 ? memberInRpgEvent.username : "default"
         embed.addField(playerUsername,  rewardString, true);
         // TODO: check for achievments, timed, special kills, 
     }
@@ -2673,6 +2706,13 @@ function eventEndedEmbedBuilder(message, event, partySuccess){
         }
     })
     message.channel.send({embed})
+    .then(function(res){
+        console.log(res)
+    })
+    .catch(function(err){
+        console.log(err)
+        message.channel.send("Unable to display event end embed, Enable embeds in this channel for future event end announcements!")
+    })
     cleanupEventEnded(event);
 }
 
@@ -2740,6 +2780,13 @@ function newAreaEmbedBuilder(username, areaId, message){
     var areaName = rpgZones[zoneAreaIsIn].areas[areaId].name
     embed.addField(username + " completed " + areaName ,  areaString);
     message.channel.send({embed})
+    .then(function(res){
+        console.log(res)
+    })
+    .catch(function(err){
+        console.log(err)
+        message.channel.send("Unable to display new area embed, Enable embeds in this channel for future area unlock announcements!")
+    })
 }
 
 function newZoneEmbedBuilder(username, zoneId, message){
@@ -2751,6 +2798,13 @@ function newZoneEmbedBuilder(username, zoneId, message){
     var zoneString = getZoneString(zoneId)
     embed.addField(username,  zoneString, true);
     message.channel.send({embed})
+    .then(function(res){
+        console.log(res)
+    })
+    .catch(function(err){
+        console.log(err)
+        message.channel.send("Unable to display new zone embed, Enable embeds in this channel for future zone unlock announcements!")
+    })
 }   
 
 function getAreaString(areaId){
@@ -2880,7 +2934,14 @@ function artifactEmbedBuilder(message, artifactItems, user){
     .addField("[" + user.username +" has created an myth item :cyclone: ]  Items found: ", itemsMessage, true)
     .setThumbnail(user.avatarURL)
     .setColor(0xbfa5ff)
-    message.channel.send({embed});
+    message.channel.send({embed})
+    .then(function(res){
+        console.log(res)
+    })
+    .catch(function(err){
+        console.log(err)
+        message.channel.send("Unable to display artifact reward, Enable embeds in this channel for future artifact reward announcements!")
+    })
 }
 
 function calculateRewards(event, memberInRpgEvent, allItems, numberOfMembers, firstKill){

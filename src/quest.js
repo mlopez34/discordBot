@@ -664,6 +664,12 @@ function handleTimeMachineArtifactStageOne(message, discordUserId, stage, team, 
                                 if (collectorUser == userId && element.emoji.name != reaction.emoji.name){
                                     // remove the reaction by the user
                                     element.remove(userId)
+                                    .then(function(res){
+                                        console.log(res)
+                                    })
+                                    .catch(function(err){
+                                        console.log(err)
+                                    })
                                 }
                             }
                         })
@@ -858,6 +864,12 @@ function handleTimeMachineArtifactStageThree(message, discordUserId, stage, team
                                 if (collectorUser == userId && element.emoji.name != reaction.emoji.name){
                                     // remove the reaction by the user
                                     element.remove(userId)
+                                    .then(function(res){
+                                        console.log(res)
+                                    })
+                                    .catch(function(err){
+                                        console.log(err)
+                                    })
                                 }
                             }
                         })
@@ -1136,6 +1148,12 @@ function handleDemonicArtifactStageOne(message, discordUserId, stage, team, chan
                                 if (collectorUser == userId && element.emoji.name != reaction.emoji.name){
                                     // remove the reaction by the user
                                     element.remove(userId)
+                                    .then(function(res){
+                                        console.log(res)
+                                    })
+                                    .catch(function(err){
+                                        console.log(err)
+                                    })
                                 }
                             }
                         })
@@ -1299,6 +1317,12 @@ function handleDemonicArtifactStageTwo(message, discordUserId, stage, team, chan
                                 if (collectorUser == userId && element.emoji.name != reaction.emoji.name){
                                     // remove the reaction by the user
                                     element.remove(userId)
+                                    .then(function(res){
+                                        console.log(res)
+                                    })
+                                    .catch(function(err){
+                                        console.log(err)
+                                    })
                                 }
                             }
                         })
@@ -1416,6 +1440,12 @@ function handleDemonicArtifactStageThree(message, discordUserId, stage, team, ch
                                 if (collectorUser == userId && element.emoji.name != reaction.emoji.name){
                                     // remove the reaction by the user
                                     element.remove(userId)
+                                    .then(function(res){
+                                        console.log(res)
+                                    })
+                                    .catch(function(err){
+                                        console.log(err)
+                                    })
                                 }
                             }
                         })
@@ -1806,6 +1836,12 @@ function handleRingArtifactStageFour(message, discordUserId, stage, team, marrie
                                     if (collectorUser == userId && element.emoji.name != reaction.emoji.name){
                                         // remove the reaction by the user
                                         element.remove(userId)
+                                        .then(function(res){
+                                            console.log(res)
+                                        })
+                                        .catch(function(err){
+                                            console.log(err)
+                                        })
                                     }
                                 }
                             })
@@ -1975,6 +2011,12 @@ function handleTombArtifactStageOne(message, discordUserId, stage, team, channel
                                 if (collectorUser == userId && element.emoji.name != reaction.emoji.name){
                                     // remove the reaction by the user
                                     element.remove(userId)
+                                    .then(function(res){
+                                        console.log(res)
+                                    })
+                                    .catch(function(err){
+                                        console.log(err)
+                                    })
                                 }
                             }
                         })
@@ -2252,6 +2294,12 @@ function handleTombArtifactStageFive(message, discordUserId, stage, team, channe
                                 if (collectorUser == userId && element.emoji.name != reaction.emoji.name){
                                     // remove the reaction by the user
                                     element.remove(userId)
+                                    .then(function(res){
+                                        console.log(res)
+                                    })
+                                    .catch(function(err){
+                                        console.log(err)
+                                    })
                                 }
                             }
                         })
