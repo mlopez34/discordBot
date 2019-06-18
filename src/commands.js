@@ -9601,8 +9601,7 @@ module.exports.tradeCommand = function(message, args){
                     // console.log(getProfileErr);
                     exports.setTradeLock(discordUserIdString, mentionedIdString, false)
                     agreeToTerms(message, discordUserId);
-                }
-                else{
+                }else{
                     // get the user's item based on discordid and shortname and check that they have an item that they want to trade
                     profileDB.getUserItems(discordUserId, function(err, inventoryResponse){
                         if (err){
@@ -9661,57 +9660,28 @@ module.exports.tradeCommand = function(message, args){
                                     itemsInInventoryCountMap[idOfMyItem] >= itemCount){
                                     // the item exists in my inventory
                                     // create an active trade with the mentioned use, myItem = trading
-                                    var userTrade = {
-                                        item: myItemShortName,
-                                        fullItemName: itemNameInTrade,
-                                        itemid: itemsMapbyShortName[myItemShortName].itemid,
-                                        idsToTransfer: [],
-                                        tradeFrom: discordUserIdString,
-                                        tradingWith: mentionedUser.username,
-                                        itemRarity: itemsMapbyShortName[myItemShortName].itemraritycategory,
-                                        tacoAsk: tacoAsk
-                                    }
-                                    activeTrades[mentionedIdString] = userTrade;
-                                    hasOpenTrade[discordUserIdString] = mentionedIdString;
-                                    hasOpenTrade[mentionedIdString] = discordUserIdString;
-
-                                    for (var item in IdsOfItemsBeingedTraded){
-                                        activeTradeItems[IdsOfItemsBeingedTraded[item]] = true;
-                                        userTrade.idsToTransfer.push(IdsOfItemsBeingedTraded[item])
-                                    }
-
-                                    message.channel.send(message.author + " has offered " + mentionedUser + " **" + itemNameInTrade + "** x`" + IdsOfItemsBeingedTraded.length + "` to trade for `" +tacoAsk + "` tacos :taco:" )
-                                    // if the trade is of an uncommon, tax = 1, rare tax = 2, ancient tax = 3, artifact tax = 5
-
-                                    var tradeEnds = setTimeout (function(){ 
-                                        // trade has expired if still there cancel the trade
-                                        // cancel the trade
-                                        if (activeTrades[mentionedIdString]){
-                                            // trade is still active, just cancel it
-                                            var itemToTradeName = activeTrades[mentionedIdString].fullItemName;
-                                            var userTradingWith = activeTrades[mentionedIdString].tradingWith;
-                                            var tradeFrom = activeTrades[mentionedIdString].tradeFrom
-                                            for (var transferId in activeTrades[mentionedIdString].idsToTransfer){
-                                                // delete from itemsInAuction
-                                                var idToDelete = activeTrades[mentionedIdString].idsToTransfer[transferId];
-                                                if (idToDelete){
-                                                    delete activeTradeItems[idToDelete];
+                                    if (itemsMapbyShortName[myItemShortName].itemraritycategory == "uncommon+"
+                                    && itemsMapbyShortName[myItemShortName].shoppotion == true){
+                                        // check that the user trading with is less than 10 levels above
+                                        profileDB.getUserProfileData(mentionedId, function(err, tradingWithRes){
+                                            if (err){
+                                                console.log(err)
+                                            }else{
+                                                let tradingWithLevel = tradingWithRes.data.level
+                                                let myLevel = getProfileRes.data.level
+                                                if ( ( tradingWithLevel - 10 >  myLevel )){
+                                                    message.channel.send("Unable to trade potions with a player that is more than 10 levels above you ;)")
+                                                    exports.setTradeLock(discordUserIdString, mentionedIdString, false)
+                                                }else{
+                                                    // trade as normal
+                                                    createTradeWithUser(myItemShortName, itemNameInTrade, discordUserIdString, tacoAsk, mentionedIdString, IdsOfItemsBeingedTraded, mentionedUser, message)
                                                 }
                                             }
-                                            delete activeTrades[mentionedIdString];
-                                            if (hasOpenTrade[tradeFrom]){
-                                                delete hasOpenTrade[tradeFrom];
-                                            }
-                                            if (hasOpenTrade[mentionedIdString]){
-                                                delete hasOpenTrade[mentionedIdString]
-                                            }
-                                            message.channel.send(message.author + " your trade offer of **" + itemToTradeName + "** with **" + userTradingWith + "** has expired :x:" )
-                                        }
-                                    }, 60000)
-                                    activeTrades[mentionedIdString].tradeTimeout = tradeEnds
-                                    exports.setTradeLock(discordUserIdString, mentionedIdString, false)
-                                }
-                                else{
+                                        })
+                                    }else{
+                                        createTradeWithUser(myItemShortName, itemNameInTrade, discordUserIdString, tacoAsk, mentionedIdString, IdsOfItemsBeingedTraded, mentionedUser, message)
+                                    }
+                                }else{
                                     message.channel.send(message.author + " you cannot create that trade")
                                     exports.setTradeLock(discordUserIdString, mentionedIdString, false)
                                 }
@@ -9740,6 +9710,70 @@ module.exports.tradeCommand = function(message, args){
             message.channel.send("example use:\n-trade @user rock \n-trade @user rock 10 \n-trade @user rock 10 tacos 5");
         }
     }
+}
+
+function createTradeWithUser(myItemShortName, itemNameInTrade, discordUserIdString, tacoAsk, mentionedIdString, IdsOfItemsBeingedTraded, mentionedUser, message){
+    var userTrade = {
+        item: myItemShortName,
+        fullItemName: itemNameInTrade,
+        itemid: itemsMapbyShortName[myItemShortName].itemid,
+        idsToTransfer: [],
+        tradeFrom: discordUserIdString,
+        tradingWith: mentionedUser.username,
+        itemRarity: itemsMapbyShortName[myItemShortName].itemraritycategory,
+        tacoAsk: tacoAsk
+    }
+    activeTrades[mentionedIdString] = userTrade;
+    hasOpenTrade[discordUserIdString] = mentionedIdString;
+    hasOpenTrade[mentionedIdString] = discordUserIdString;
+
+    for (var item in IdsOfItemsBeingedTraded){
+        activeTradeItems[IdsOfItemsBeingedTraded[item]] = true;
+        userTrade.idsToTransfer.push(IdsOfItemsBeingedTraded[item])
+    }
+
+    message.channel.send(message.author + " has offered " + mentionedUser + " **" + itemNameInTrade + "** x`" + IdsOfItemsBeingedTraded.length + "` to trade for `" +tacoAsk + "` tacos :taco:" )
+    .then(function(res){
+        console.log(res)
+    })
+    .catch(function(err){
+        message.channel.send(JSON.stringify(err))
+    })
+    // if the trade is of an uncommon, tax = 1, rare tax = 2, ancient tax = 3, artifact tax = 5
+
+    var tradeEnds = setTimeout (function(){
+        // trade has expired if still there cancel the trade
+        // cancel the trade
+        if (activeTrades[mentionedIdString]){
+            // trade is still active, just cancel it
+            var itemToTradeName = activeTrades[mentionedIdString].fullItemName;
+            var userTradingWith = activeTrades[mentionedIdString].tradingWith;
+            var tradeFrom = activeTrades[mentionedIdString].tradeFrom
+            for (var transferId in activeTrades[mentionedIdString].idsToTransfer){
+                // delete from itemsInAuction
+                var idToDelete = activeTrades[mentionedIdString].idsToTransfer[transferId];
+                if (idToDelete){
+                    delete activeTradeItems[idToDelete];
+                }
+            }
+            delete activeTrades[mentionedIdString];
+            if (hasOpenTrade[tradeFrom]){
+                delete hasOpenTrade[tradeFrom];
+            }
+            if (hasOpenTrade[mentionedIdString]){
+                delete hasOpenTrade[mentionedIdString]
+            }
+            message.channel.send(message.author + " your trade offer of **" + itemToTradeName + "** with **" + userTradingWith + "** has expired :x:" )
+            .then(function(res){
+                console.log(res)
+            })
+            .catch(function(err){
+                message.channel.send(JSON.stringify(err))
+            })
+        }
+    }, 60000)
+    activeTrades[mentionedIdString].tradeTimeout = tradeEnds
+    exports.setTradeLock(discordUserIdString, mentionedIdString, false)
 }
 
 module.exports.acceptTradeCommand = function(message, args){
