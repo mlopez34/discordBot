@@ -202,7 +202,7 @@ module.exports.showRpgStats = function(message, itemsAvailable, amuletItemsById,
                     profileDB.getUserWearInfo(discordUserId, function(wearErr, wearData){
                         if (wearErr){
                             console.log(wearErr);
-                            message.channel.send(wearErr + " something went wrong [wearing] - someone doesn't have a wearing profile");
+                            message.channel.send(" something went wrong in [wearing] - someone doesn't have a wearing profile! get some items from the shop");
                         }else{
                             // get the wearing data
                             var singleItemsStrings = {};

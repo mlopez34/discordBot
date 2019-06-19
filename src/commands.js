@@ -8079,7 +8079,7 @@ module.exports.putonCommand = function(message, args, retry){
             if (getWearErr){
                 // console.log(getWearErr);
                 // user isn't wearing any items
-                profileDB.createUserWearInfo(discordUserId, false, function(error, res){
+                profileDB.createUserWearInfo(discordUserId, function(error, res){
                     if (error){
                         // console.log(error);
                     }else{
