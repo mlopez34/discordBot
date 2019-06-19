@@ -8079,6 +8079,13 @@ module.exports.putonCommand = function(message, args, retry){
             if (getWearErr){
                 console.log(getWearErr);
                 // user isn't wearing any items
+                var data = {
+                    discordId : discordUserId,
+                    slot1replacing: false,
+                    slot2replacing: false,
+                    slot3replacing: false,
+                    slot4replacing: false
+                }
                 profileDB.createUserWearInfo(discordUserId, function(error, res){
                     if (error){
                         console.log(error);
@@ -8088,8 +8095,6 @@ module.exports.putonCommand = function(message, args, retry){
                 })
             }else{
                 // console.log("wear res " + JSON.stringify(getWearRes, null, 2));
-                var userLevel = getWearRes.data[0].level
-                var userRPGLevel = getWearRes.data[0].rpglevel
                 if (getWearRes.data.length == 0 || getWearRes.data.slot1replacing == null){
                     // create the user
                     var data = {
@@ -8110,6 +8115,8 @@ module.exports.putonCommand = function(message, args, retry){
                     })
                 }else{
                     // get the user's items
+                    var userLevel = getWearRes.data[0].level
+                    var userRPGLevel = getWearRes.data[0].rpglevel    
                     var greenHouseLevel = getWearRes.data[0].greenhouselevel;
                     var stableLevel = getWearRes.data[0].stablelevel;
                     var templeLevel = getWearRes.data[0].templelevel;
