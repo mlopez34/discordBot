@@ -8095,7 +8095,7 @@ module.exports.putonCommand = function(message, args, retry){
                 })
             }else{
                 // console.log("wear res " + JSON.stringify(getWearRes, null, 2));
-                if (getWearRes.data.length == 0 || getWearRes.data.slot1replacing == null){
+                if (getWearRes.data.length == 0 || getWearRes.data[0].slot1replacing == null){
                     // create the user
                     var data = {
                         discordId : discordUserId,
