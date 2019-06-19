@@ -842,10 +842,9 @@ module.exports.rpgAreaIncreaseCompletion = function(userId, areatoincrease, curr
         .catch(function (err) {
             cb(err);
         });
-    }
-    else{
-        var query = 'update ' + config.userRpgProfileTable + ' set '+ areatoincrease + '=1 where discordid=$1'
-        db.none(query, [ userId])
+    }else{
+        var query = 'update ' + config.userRpgProfileTable + ' set '+ areatoincrease + '=$2 where discordid=$1'
+        db.none(query, [ userId, enemiesCount])
         .then(function () {
         cb(null, {
             status: 'success',

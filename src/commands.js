@@ -8090,7 +8090,7 @@ module.exports.putonCommand = function(message, args, retry){
                 // console.log("wear res " + JSON.stringify(getWearRes, null, 2));
                 var userLevel = getWearRes.data[0].level
                 var userRPGLevel = getWearRes.data[0].rpglevel
-                if (getWearRes.data.length == 0){
+                if (getWearRes.data.length == 0 || getWearRes.data.slot1replacing == null){
                     // create the user
                     var data = {
                         discordId : discordUserId,
@@ -9170,7 +9170,7 @@ module.exports.marketAuctionCommand = function(message, args){
 
     }else{
         if (!auctionPost.valid){
-            message.channel.send("Your auction is not valid try: -mkauction [itemname] to start off with a simple auction!")
+            message.channel.send("Your auction is not valid try: `-mkauction [itemnameid]` to start off with a simple auction!")
 
         }else{
             message.channel.send("You have reached the maximum allowed auctions in the market!")

@@ -3576,13 +3576,13 @@ module.exports = {
             startingArea: "meadows",
             name: "Prarie",
             enemyStatBuffs: {
-                hpPlusPercentage: 1,
-                adPlusPercentage: 1,
-                mdPlusPercentage: 1,
-                armorPlusPercentage: 1,
-                spiritPlusPercentage: 1,
-                frenzyAdIncreasePercentage: 1,
-                echoIncreasePercentage: 1
+                hpPlusPercentage: 0.7,
+                adPlusPercentage: 0.7,
+                mdPlusPercentage: 0.7,
+                armorPlusPercentage: 0.7,
+                spiritPlusPercentage: 0.7,
+                frenzyAdIncreasePercentage: 0.7,
+                echoIncreasePercentage: 0.7
             },
             enemies: {
                 easy: [

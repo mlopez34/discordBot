@@ -1983,7 +1983,7 @@ function mapEmbedBuilder(message, listOfAreasInZone, zonesAvailableForUserMap, c
 
     const embed = new Discord.RichEmbed()
     .setAuthor(message.author.username + " Map")
-    .setDescription(":map: travel to different areas via -travel [areaname] OR -travel [zonename]\nYou are currently in " + currentZoneName + " - " + currentAreaName)
+    .setDescription(":map: travel to different areas via:\n-travel [areaname] OR -travel [zonename]\nBegin an RPG event via:\n-rpgstart @user @user (up to 5 users)\nYou are currently in " + currentZoneName + " - " + currentAreaName)
     .addField("Zones available", zonesAvailableString, true)
     .addField("Areas available in " + currentZoneName, areasInZoneString, true)
     .setColor(0xbfa5ff)
