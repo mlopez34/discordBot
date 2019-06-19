@@ -8077,13 +8077,13 @@ module.exports.putonCommand = function(message, args, retry){
         // check user doesnt have the same slot category in 1 and 3, if so then valid command, update slot 2 with all the info for sundress
         profileDB.getUserWearInfo(discordUserId, function(getWearErr, getWearRes){
             if (getWearErr){
-                // console.log(getWearErr);
+                console.log(getWearErr);
                 // user isn't wearing any items
                 profileDB.createUserWearInfo(discordUserId, function(error, res){
                     if (error){
-                        // console.log(error);
+                        console.log(error);
                     }else{
-                        // console.log(res);
+                        console.log(res);
                     }
                 })
             }else{
