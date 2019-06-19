@@ -8106,9 +8106,9 @@ module.exports.putonCommand = function(message, args, retry){
                     }
                     profileDB.createUserWearInfo(data, function(error, res){
                         if (error){
-                            // console.log(error);
+                            console.log(error);
                         }else{
-                            // console.log(res);
+                            console.log(res);
                             // call the same function again now that the user exists
                             exports.putonCommand(message, args, false)
                         }
