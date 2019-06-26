@@ -3576,13 +3576,13 @@ module.exports = {
             startingArea: "meadows",
             name: "Prarie",
             enemyStatBuffs: {
-                hpPlusPercentage: 0.7,
-                adPlusPercentage: 0.7,
-                mdPlusPercentage: 0.7,
-                armorPlusPercentage: 0.7,
-                spiritPlusPercentage: 0.7,
-                frenzyAdIncreasePercentage: 0.7,
-                echoIncreasePercentage: 0.7
+                hpPlusPercentage: 0.9,
+                adPlusPercentage: 0.8,
+                mdPlusPercentage: 0.8,
+                armorPlusPercentage: 0.8,
+                spiritPlusPercentage: 0.8,
+                frenzyAdIncreasePercentage: 0.8,
+                echoIncreasePercentage: 0.8
             },
             enemies: {
                 easy: [
@@ -7666,7 +7666,7 @@ Hoover Dam
                         attackDmgPlus : [120, 200, 300, 540, 790],
                         magicDmgPlus : [120, 200, 300, 540, 790]
                     },
-                    hp: [11500, 15900, 24900, 31000, 47000 ],
+                    hp: [6500, 9900, 18900, 25000, 37000 ],
                     attackDmg: [800, 1300, 1700, 2500, 3500],
                     magicDmg: [800, 1300, 1700, 2500, 3500],
                     abilities: []
