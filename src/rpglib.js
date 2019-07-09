@@ -3575,6 +3575,7 @@ module.exports = {
             zoneString : "The prarie was only the beginning, the dark woods, and mysterious underground tunnels contain uncharted life",
             startingArea: "meadows",
             name: "Prarie",
+            zoneDifficulty: 1,
             enemyStatBuffs: {
                 hpPlusPercentage: 0.9,
                 adPlusPercentage: 0.8,
@@ -3910,6 +3911,7 @@ module.exports = {
             zoneString : "Enemies are drawn to blood ....",
             startingArea: "archenland",
             name: "Woods",
+            zoneDifficulty: 2,
             enemyStatBuffs: {
                 hpPlusPercentage: 1.3,
                 adPlusPercentage: 1.4,
@@ -4163,6 +4165,7 @@ module.exports = {
             zoneAvatar: "https://i.imgur.com/BRxnfgf.png",
             zoneString : "The underground tunnels have led you into an uncovered secret",
             startingArea: "klencory",
+            zoneDifficulty: 2,
             name: "Underground Tunnels",
             enemyStatBuffs: {
                 hpPlusPercentage: 1.3,
@@ -4435,6 +4438,7 @@ module.exports = {
             zoneString : "You've reached the peak of the Grand Canyon, what are you gonna do next?",
             startingArea: "sanyoucave",
             name: "Grand Canyon",
+            zoneDifficulty: 3,
             enemyStatBuffs: {
                 hpPlusPercentage: 1.7,
                 adPlusPercentage: 2,
@@ -4708,6 +4712,7 @@ module.exports = {
             zoneString : "Buried deep inside the underground bunker in Crystal Peak is a small boat with specific directions",
             startingArea: "krellcanyon",
             name: "Crystal Peak",
+            zoneDifficulty: 3,
             enemyStatBuffs: {
                 hpPlusPercentage: 1.7,
                 adPlusPercentage: 2,
@@ -5052,6 +5057,7 @@ module.exports = {
             zoneString : "Una ruta directa por el mar",
             startingArea: "lajoyacove",
             name: "Matamoros",
+            zoneDifficulty: 3,
             enemyStatBuffs: {
                 hpPlusPercentage: 1.7,
                 adPlusPercentage: 2,
@@ -5325,6 +5331,7 @@ module.exports = {
             zoneString : "Have you found the secret stash under the MegaCorp Armory? of course not, it is securely guarded",
             startingArea: "karnaca",
             name: "Tadrart Acacus",
+            zoneDifficulty: 3,
             enemyStatBuffs: {
                 hpPlusPercentage: 2.2,
                 adPlusPercentage: 3.2,
@@ -5626,6 +5633,7 @@ module.exports = {
             zoneString : "Things get a little rough from here, you may need reinforcements",
             startingArea: "argentumbay",
             name: "Costa De Marfil",
+            zoneDifficulty: 4,
             enemyStatBuffs: {
                 hpPlusPercentage: 2.5,
                 adPlusPercentage: 3.7,
@@ -5935,23 +5943,1011 @@ module.exports = {
             },
             onCompleteZonesUnlocked: [
                 "tokyo",
-                "mounteverest",
             ]
         },
 
         //// NOT DONE TODO: FINISH THESE AND CONNECT
 
         patagonia: {
+            zoneAvatar: "https://i.imgur.com/X7tvrJp.png",
+            zoneString : "Freezing to death should be the least of your worries",
+            startingArea: "bloodfalls",
+            name: "Patagonia",
+            zoneDifficulty: 4,
+            enemyStatBuffs: {
+                hpPlusPercentage: 2.5,
+                adPlusPercentage: 3.7,
+                mdPlusPercentage: 3.7,
+                armorPlusPercentage: 2,
+                spiritPlusPercentage: 2,
+                frenzyAdIncreasePercentage: 2.2,
+                echoIncreasePercentage: 2.2
+            },
+            enemies: {
+                easy: [
+                    "angrydwarf", "angrydwarf", "angrydwarf", "angrydwarf", 
+                    "extremist", "extremist", "extremist", 
+                    "vagabond"
+                ],
+                medium: [
+                    "polarbear", "polarbear", "polarbear", "polarbear",
+                    "philistine",
+                    "suicidebomber",
+                ],
+                hard: [
+                    "wendigo", "wendigo", "wendigo",
+                    "walrus", "walrus", "walrus",
+                    "capo"
+                ],
+                boss: [
+                    "escapedrobot", "escapedrobot", "escapedrobot", 
+                    "bigfoot"
+                ]
+            },
+            areas: {
+                bloodfalls: {
+                    areaString : " ",
+                    name: "Blood Falls",
+                    enemiesToDefeat: 148,
+                    onCompleteAreasUnlocked: [
+                        "bozkovdolomite"
+                    ],
+                    shopItemsAvailable: [
 
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                },
+                bozkovdolomite: {
+                    areaString : " ",
+                    name: "Bozkov Dolomite Caves",
+                    enemiesToDefeat: 148,
+                    onCompleteAreasUnlocked: [
+                        "campsbay"
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                },
+                campsbay: {
+                    areaString : " ",
+                    name: "Camps Bay",
+                    enemiesToDefeat: 148,
+                    onCompleteAreasUnlocked: [
+                        "cobbspoint"
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                },
+                cobbspoint: {
+                    areaString : " ",
+                    name: "Cobb's Point",
+                    enemiesToDefeat: 148,
+                    onCompleteAreasUnlocked: [
+                        "dunwall"
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                },
+                dunwall: {
+                    areaString : " ",
+                    name: "Dunwall",
+                    enemiesToDefeat: 148,
+                    onCompleteAreasUnlocked: [
+                        "edurnaroch"
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                },
+                edurnaroch: {
+                    areaString : " ",
+                    name: "Edur Naroch",
+                    enemiesToDefeat: 148,
+                    onCompleteAreasUnlocked: [
+                        "giantscauseway"
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                },
+                giantscauseway: {
+                    areaString : " ",
+                    name: "Giant's Causeway",
+                    enemiesToDefeat: 148,
+                    onCompleteAreasUnlocked: [
+                        "grandteton"
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                },
+                grandteton: {
+                    areaString : " ",
+                    name: "Grand Teton",
+                    enemiesToDefeat: 148,
+                    onCompleteAreasUnlocked: [
+                        "hangingpillar"
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                },
+                hangingpillar: {
+                    areaString : " ",
+                    name: "Hanging Pillar",
+                    enemiesToDefeat: 148,
+                    onCompleteAreasUnlocked: [
+                        "hoolefarisland"
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                },
+                hoolefarisland: {
+                    areaString : " ",
+                    name: "Hoolefar Island",
+                    enemiesToDefeat: 148,
+                    onCompleteAreasUnlocked: [
+                        "lanzarote"
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                },
+                lanzarote: {
+                    areaString : " ",
+                    name: "Lanzarote",
+                    enemiesToDefeat: 148,
+                    onCompleteAreasUnlocked: [
+                        "morainelake"
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                },
+                morainelake: {
+                    areaString : " ",
+                    name: "Moraine Lake",
+                    enemiesToDefeat: 148,
+                    onCompleteAreasUnlocked: [
+
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                },
+            },
+            onCompleteZonesUnlocked: [
+                "sahara", // -> mounteverest
+            ]
         },
         yosemite: {
+            zoneAvatar: "https://i.imgur.com/79r8cPJ.png",
+            zoneString : "Do NOT abandon the hiking trail at any time",
+            startingArea: "arashiyamaforest",
+            name: "Yosemite",
+            zoneDifficulty: 4,
+            enemyStatBuffs: {
+                hpPlusPercentage: 2.5,
+                adPlusPercentage: 3.7,
+                mdPlusPercentage: 3.7,
+                armorPlusPercentage: 2,
+                spiritPlusPercentage: 2,
+                frenzyAdIncreasePercentage: 2.2,
+                echoIncreasePercentage: 2.2
+            },
+            enemies: {
+                easy: [
+                    "hungryboar", "hungryboar", "hungryboar", "hungryboar", 
+                    "seedthief", "seedthief", "seedthief", 
+                    "vagabond"
+                ],
+                medium: [
+                    "tarzan", "tarzan", "tarzan", "tarzan",
+                    "bear",
+                    "troglodyte",
+                ],
+                hard: [
+                    "delinquent", "delinquent", "delinquent",
+                    "mountainlion", "mountainlion", "mountainlion",
+                    "racketeer"
+                ],
+                boss: [
+                    "kidnaper", "kidnaper", "kidnaper", 
+                    "trex"
+                ]
+            },
+            areas: {
+                arashiyamaforest: {
+                    areaString : " ",
+                    name: "Arashiyama Forest",
+                    enemiesToDefeat: 148,
+                    onCompleteAreasUnlocked: [
+                        "bhangarhfort"
+                    ],
+                    shopItemsAvailable: [
 
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                },
+                bhangarhfort: {
+                    areaString : " ",
+                    name: "Bhangarh Fort",
+                    enemiesToDefeat: 148,
+                    onCompleteAreasUnlocked: [
+                        "bigben"
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                },
+                bigben: {
+                    areaString : " ",
+                    name: "Big Ben",
+                    enemiesToDefeat: 148,
+                    onCompleteAreasUnlocked: [
+                        "deathvalley"
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                },
+                deathvalley: {
+                    areaString : " ",
+                    name: "Death Valley",
+                    enemiesToDefeat: 148,
+                    onCompleteAreasUnlocked: [
+                        "giantcrystalcave"
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                },
+                giantcrystalcave: {
+                    areaString : " ",
+                    name: "Giant Crystal Cave",
+                    enemiesToDefeat: 148,
+                    onCompleteAreasUnlocked: [
+                        "guardianmountains"
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                },
+                guardianmountains: {
+                    areaString : " ",
+                    name: "Guardian Mountains",
+                    enemiesToDefeat: 148,
+                    onCompleteAreasUnlocked: [
+                        "helmsdeep"
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                },
+                helmsdeep: {
+                    areaString : " ",
+                    name: "Helm's Deep",
+                    enemiesToDefeat: 148,
+                    onCompleteAreasUnlocked: [
+                        "huacachinaoasis"
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                },
+                huacachinaoasis: {
+                    areaString : " ",
+                    name: "Huacachina Oasis",
+                    enemiesToDefeat: 148,
+                    onCompleteAreasUnlocked: [
+                        "parthenon"
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                },
+                parthenon: {
+                    areaString : " ",
+                    name: "Parthenon",
+                    enemiesToDefeat: 148,
+                    onCompleteAreasUnlocked: [
+                        "rockislands"
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                },
+                rockislands: {
+                    areaString : " ",
+                    name: "Rock Islands of Palau",
+                    enemiesToDefeat: 148,
+                    onCompleteAreasUnlocked: [
+                        "screamingtunnel"
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                },
+                screamingtunnel: {
+                    areaString : " ",
+                    name: "Screaming Tunnel",
+                    enemiesToDefeat: 148,
+                    onCompleteAreasUnlocked: [
+                        "stoneforest"
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                },
+                stoneforest: {
+                    areaString : " ",
+                    name: "Stone Forest of Shilin",
+                    enemiesToDefeat: 148,
+                    onCompleteAreasUnlocked: [
+                        "tomblioutpost"
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                },
+                tomblioutpost: {
+                    areaString : " ",
+                    name: "Tombli Outpost",
+                    enemiesToDefeat: 148,
+                    onCompleteAreasUnlocked: [
+                        "verdongorge"
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                },
+                verdongorge: {
+                    areaString : " ",
+                    name: "Verdon Gorge",
+                    enemiesToDefeat: 148,
+                    onCompleteAreasUnlocked: [
+
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                },
+            },
+            onCompleteZonesUnlocked: [
+                "pikecreek", // -> acognagua
+            ]
         },
         tokyo: {
+            zoneAvatar: "https://i.imgur.com/hFTO52y.png",
+            zoneString : "日本語のナンセンス",
+            startingArea: "academycity",
+            name: "Tokyo",
+            zoneDifficulty: 5,
+            enemyStatBuffs: {
+                hpPlusPercentage: 2.8,
+                adPlusPercentage: 3.9,
+                mdPlusPercentage: 3.9,
+                armorPlusPercentage: 2.2,
+                spiritPlusPercentage: 2.2,
+                frenzyAdIncreasePercentage: 2.5,
+                echoIncreasePercentage: 2.5
+            },
+            enemies: {
+                easy: [
+                    "tacosmuggler", "tacosmuggler", "tacosmuggler", "tacosmuggler", 
+                    "ruffian", "ruffian", "ruffian", 
+                    "burritohustler"
+                ],
+                medium: [
+                    "charlatan", "charlatan", "charlatan", "charlatan",
+                    "evilclown",
+                    "auctionsniper",
+                ],
+                hard: [
+                    "distributor", "distributor", "distributor",
+                    "racketeer", "racketeer", "racketeer",
+                    "zeta"
+                ],
+                boss: [
+                    "beheader", "beheader", "beheader", 
+                    "yakuza"
+                ]
+            },
+            areas: {
+                academycity: {
+                    areaString : " ",
+                    name: "Academy City",
+                    enemiesToDefeat: 148,
+                    onCompleteAreasUnlocked: [
+                        "easterisland"
+                    ],
+                    shopItemsAvailable: [
 
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                },
+                easterisland: {
+                    areaString : " ",
+                    name: "Easter Island",
+                    enemiesToDefeat: 148,
+                    onCompleteAreasUnlocked: [
+                        "ergubaridesert"
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                },
+                ergubaridesert: {
+                    areaString : " ",
+                    name: "Erg Ubari Desert",
+                    enemiesToDefeat: 148,
+                    onCompleteAreasUnlocked: [
+                        "juchetower"
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                },
+                juchetower: {
+                    areaString : " ",
+                    name: "Juche Tower",
+                    enemiesToDefeat: 148,
+                    onCompleteAreasUnlocked: [
+                        "kittyhawk"
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                },
+                kittyhawk: {
+                    areaString : " ",
+                    name: "Kitty Hawk",
+                    enemiesToDefeat: 148,
+                    onCompleteAreasUnlocked: [
+                        "kuangsifalls"
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                },
+                kuangsifalls: {
+                    areaString : " ",
+                    name: "Kuang Si Falls",
+                    enemiesToDefeat: 148,
+                    onCompleteAreasUnlocked: [
+                        "lakebaikal"
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                },
+                lakebaikal: {
+                    areaString : " ",
+                    name: "Lake Baikal",
+                    enemiesToDefeat: 148,
+                    onCompleteAreasUnlocked: [
+                        "laketekapo"
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                },
+                laketekapo: {
+                    areaString : " ",
+                    name: "Lake Tekapo",
+                    enemiesToDefeat: 148,
+                    onCompleteAreasUnlocked: [
+                        "negaverse"
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                },
+                negaverse: {
+                    areaString : " ",
+                    name: "Negaverse",
+                    enemiesToDefeat: 148,
+                    onCompleteAreasUnlocked: [
+                        "picdumidi"
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                },
+                pearlharbour: {
+                    areaString : " ",
+                    name: "Pearl Harbour",
+                    enemiesToDefeat: 148,
+                    onCompleteAreasUnlocked: [
+                        "tsukijfishmarket"
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                },
+                picdumidi: {
+                    areaString : " ",
+                    name: "Pic du Midi",
+                    enemiesToDefeat: 148,
+                    onCompleteAreasUnlocked: [
+                        "thefairypools"
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                },
+                thefairypools: {
+                    areaString : " ",
+                    name: "The Fairy Pools",
+                    enemiesToDefeat: 148,
+                    onCompleteAreasUnlocked: [
+                        "tsukijfishmarket"
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                },
+                tsukijfishmarket: {
+                    areaString : " ",
+                    name: "Tsukij fish market",
+                    enemiesToDefeat: 148,
+                    onCompleteAreasUnlocked: [
+
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                },
+            },
+            onCompleteZonesUnlocked: [
+                "johannesburg",
+            ]
         },
-        johanesburg: {
+        johannesburg: {
+            zoneAvatar: "https://i.imgur.com/qWXSUti.png",
+            zoneString : "☢️",
+            startingArea: "agorianbattleplex",
+            name: "Johannesburg",
+            zoneDifficulty: 6,
+            enemyStatBuffs: {
+                hpPlusPercentage: 3.1,
+                adPlusPercentage: 4.3,
+                mdPlusPercentage: 4.3,
+                armorPlusPercentage: 2.4,
+                spiritPlusPercentage: 2.4,
+                frenzyAdIncreasePercentage: 2.8,
+                echoIncreasePercentage: 2.8
+            },
+            enemies: {
+                easy: [
+                    "tacodealer", "tacodealer", "tacodealer", "tacodealer", 
+                    "burritohustler", "burritohustler", "burritohustler", 
+                    "ruffian"
+                ],
+                medium: [
+                    "dolt", "dolt", "dolt", "dolt",
+                    "disassembler", "disassembler",
+                    "nigerianprince",
+                ],
+                hard: [
+                    "prawn", "prawn", "prawn",
+                    "funnypolitician", "funnypolitician", "funnypolitician",
+                    "voodoowitch"
+                ],
+                boss: [
+                    "kidnaper", "kidnaper", "kidnaper", 
+                    "beheader"
+                ]
+            },
+            areas: {
+                agorianbattleplex: {
+                    areaString : " ",
+                    name: "Agorian Battleplex",
+                    enemiesToDefeat: 148,
+                    onCompleteAreasUnlocked: [
+                        "waileabeach"
+                    ],
+                    shopItemsAvailable: [
 
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                },
+                district10: {
+                    areaString : " ",
+                    name: "District 10",
+                    enemiesToDefeat: 148,
+                    onCompleteAreasUnlocked: [
+
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                },
+                newmombasa: {
+                    areaString : " ",
+                    name: "New Mombasa",
+                    enemiesToDefeat: 148,
+                    onCompleteAreasUnlocked: [
+                        "district10"
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                },
+                ouagadougou: {
+                    areaString : " ",
+                    name: "Ouagadougou",
+                    enemiesToDefeat: 148,
+                    onCompleteAreasUnlocked: [
+                        "newmombasa"
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                },
+                pripyattown: {
+                    areaString : " ",
+                    name: "Pripyat Town",
+                    enemiesToDefeat: 148,
+                    onCompleteAreasUnlocked: [
+                        "ouagadougou"
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                },
+                rootbridges: {
+                    areaString : " ",
+                    name: "Root Bridges",
+                    enemiesToDefeat: 148,
+                    onCompleteAreasUnlocked: [
+                        "pripyattown"
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                },
+                stgeorgestation: {
+                    areaString : " ",
+                    name: "St George station",
+                    enemiesToDefeat: 148,
+                    onCompleteAreasUnlocked: [
+                        "rootbridges"
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                },
+                tanahlot: {
+                    areaString : " ",
+                    name: "tanahlot",
+                    enemiesToDefeat: 148,
+                    onCompleteAreasUnlocked: [
+                        "stgeorgestation"
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                },
+                themisarena: {
+                    areaString : " ",
+                    name: "Themis Arena",
+                    enemiesToDefeat: 148,
+                    onCompleteAreasUnlocked: [
+                        "tanahlot"
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                },
+                waileabeach: {
+                    areaString : " ",
+                    name: "Wailea Beach",
+                    enemiesToDefeat: 148,
+                    onCompleteAreasUnlocked: [
+                        "themisarena"
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                },
+            },
+            onCompleteZonesUnlocked: [
+                "chicago", // ->london -> new york
+            ]
         },
         london: {
 
@@ -6434,6 +7430,57 @@ Hoover Dam
         puertoprincesa: "costademarfil",
         scorpiashipyards: "costademarfil",
 
+        bloodfalls: "patagonia",
+        bozkovdolomite: "patagonia",
+        campsbay: "patagonia",
+        cobbspoint: "patagonia",
+        edurnaroch: "patagonia",
+        giantscauseway: "giantscauseway",
+        grandteton: "patagonia",
+        hangingpillar: "patagonia",
+        hoolefarisland: "patagonia",
+        lanzarote: "patagonia",
+        morainelake: "patagonia",
+
+        arashiyamaforest: "yosemite",
+        bhangarhfort: "yosemite",
+        bigben: "yosemite",
+        deathvalley: "yosemite",
+        giantcrystalcave: "yosemite",
+        guardianmountains: "yosemite",
+        helmsdeep: "yosemite",
+        huacachinaoasis: "yosemite",
+        parthenon: "yosemite",
+        rockislands: "yosemite",
+        screamingtunnel: "yosemite",
+        stoneforest: "yosemite",
+        tomblioutpost: "yosemite",
+        verdongorge: "yosemite",
+
+        academycity: "tokyo",
+        easterisland: "tokyo",
+        ergubaridesert: "tokyo",
+        juchetower: "tokyo",
+        kittyhawk: "tokyo",
+        kuangsifalls: "tokyo",
+        lakebaikal: "tokyo",
+        laketekapo: "tokyo",
+        negaverse: "tokyo",
+        pearlharbour: "tokyo",
+        picdumidi: "tokyo",
+        thefairypools: "tokyo",
+        tsukijfishmarket: "tokyo",
+
+        agorianbattleplex: "johannesburg",
+        district10: "johannesburg",
+        newmombasa: "johannesburg",
+        ouagadougou: "johannesburg",
+        pripyattown: "johannesburg",
+        rootbridges: "johannesburg",
+        stgeorgestation: "johannesburg",
+        tanahlot: "johannesburg",
+        themisarena: "johannesburg",
+        waileabeach: "johannesburg",
 
     },
     enemiesToEncounter: {
@@ -8354,6 +9401,27 @@ Hoover Dam
                 difficulty: "medium",
                 element: "normal"
             },
+            polarbear: {
+                name: "Polar Bear",
+                abilities: ["ferociousBite", "ferociousBite", "ferociousBite", "iceshards", "shield"],
+                buffs: [],
+                keystoneStats: {
+                    hp: [1200, 3500, 6200, 10000, 15000 ],
+                    attackDmg: [300, 500, 900, 1500, 2300],
+                    magicDmg: [300, 500, 900, 1500, 2300],
+                    abilities: []
+                },
+                hpPerPartyMember: 190,
+                adPerPartyMember: 14,
+                mdPerPartyMember: 14,
+                hp: 640,
+                attackDmg: 90,
+                magicDmg: 90,
+                armor: 350,
+                spirit: 550,
+                difficulty: "medium",
+                element: "normal"
+            },
             philistine: {
                 name: "Philistine",
                 abilities: ["clap", "clap", "clap", "smuggle", "poke"],
@@ -8590,6 +9658,38 @@ Hoover Dam
             },
             warewolf: {
                 name: "Werewolf",
+                abilities: ["attack", "attack", "ferociousBite", "ferociousBite", "uppercut"],
+                buffs: [
+                    {
+                        name: "frenzy",
+                        emoji: "<:frenzy:479298214453968896>",
+                        onTurnEnd: {
+                            attackDmgPlus : 60,
+                            magicDmgPlus : 60,
+                            everyNTurns: 2,
+                            startTurn: 2
+                        }
+                    }
+                ],
+                keystoneStats: {
+                    hp: [1200, 3500, 6200, 10000, 15000 ],
+                    attackDmg: [300, 500, 900, 1500, 2300],
+                    magicDmg: [300, 500, 900, 1500, 2300],
+                    abilities: []
+                },
+                hpPerPartyMember: 1090,
+                adPerPartyMember: 21,
+                mdPerPartyMember: 21,
+                hp: 700,
+                attackDmg: 170,
+                magicDmg: 123,
+                armor: 750,
+                spirit: 600,
+                difficulty: "hard",
+                element: "normal"
+            },
+            prawn: {
+                name: "Prawn",
                 abilities: ["attack", "attack", "ferociousBite", "ferociousBite", "uppercut"],
                 buffs: [
                     {
@@ -8903,6 +10003,76 @@ Hoover Dam
             walrus: {
                 name: "Walrus",
                 abilities: ["ferociousBite" , "ferociousBite" , "iceshards", "iceshards","freeze"],
+                buffs: [
+                    {
+                        name: "frenzy",
+                        emoji: "<:frenzy:479298214453968896>",
+                        onTurnEnd: {
+                            attackDmgPlus : 60,
+                            magicDmgPlus : 60,
+                            everyNTurns: 2,
+                            startTurn: 2
+                        }
+                    }
+                ],
+                keystoneStats: {
+                    hp: [1200, 3500, 6200, 10000, 15000 ],
+                    attackDmg: [300, 500, 900, 1500, 2300],
+                    magicDmg: [300, 500, 900, 1500, 2300],
+                    abilities: []
+                },
+                effectsOnDeath: [
+                    "explode"
+                ],
+                hpPerPartyMember: 1090,
+                adPerPartyMember: 21,
+                mdPerPartyMember: 21,
+                hp: 650,
+                attackDmg: 125,
+                magicDmg: 170,
+                armor: 600,
+                spirit: 900,
+                difficulty: "hard",
+                element: "normal"
+            },
+            wendigo: {
+                name: "Wendigo",
+                abilities: ["ferociousBite" , "ferociousBite" , "iceshards", "iceshards", "freeze"],
+                buffs: [
+                    {
+                        name: "frenzy",
+                        emoji: "<:frenzy:479298214453968896>",
+                        onTurnEnd: {
+                            attackDmgPlus : 60,
+                            magicDmgPlus : 60,
+                            everyNTurns: 2,
+                            startTurn: 2
+                        }
+                    }
+                ],
+                keystoneStats: {
+                    hp: [1200, 3500, 6200, 10000, 15000 ],
+                    attackDmg: [300, 500, 900, 1500, 2300],
+                    magicDmg: [300, 500, 900, 1500, 2300],
+                    abilities: []
+                },
+                effectsOnDeath: [
+                    "explode"
+                ],
+                hpPerPartyMember: 1090,
+                adPerPartyMember: 21,
+                mdPerPartyMember: 21,
+                hp: 650,
+                attackDmg: 125,
+                magicDmg: 170,
+                armor: 600,
+                spirit: 900,
+                difficulty: "hard",
+                element: "normal"
+            },
+            mountainlion: {
+                name: "Mountain Lion",
+                abilities: ["ferociousBite" , "ferociousBite" , "ferociousBite", "slash", "slash", "cripple"],
                 buffs: [
                     {
                         name: "frenzy",
@@ -9273,6 +10443,82 @@ Hoover Dam
                 difficulty: "boss",
                 element: "normal"
             },
+            kidnaper: {
+                name: "Kidnaper",
+                abilities: [
+                    "attack", "attack", "execute", "execute", "slash", "slash", "weaken"
+                ],
+                buffs: [
+                    {
+                        name: "frenzy",
+                        emoji: "<:frenzy:479298214453968896>",
+                        onTurnEnd: {
+                            attackDmgPlus : 85,
+                            magicDmgPlus : 85,
+                            everyNTurns: 2,
+                            startTurn: 2
+                        }
+                    }
+                ],
+                keystoneStats: {
+                    hp: [1200, 3500, 6200, 10000, 15000 ],
+                    attackDmg: [300, 500, 900, 1500, 2300],
+                    magicDmg: [300, 500, 900, 1500, 2300],
+                    abilities: []
+                },
+                endOfTurnEvents : [
+                    "echo",
+                    "focus"
+                ],
+                hpPerPartyMember: 1222,
+                hp: 950,
+                adPerPartyMember: 29,
+                mdPerPartyMember: 29,
+                attackDmg: 240,
+                magicDmg: 190,
+                armor: 1600,
+                spirit: 1600,
+                difficulty: "boss",
+                element: "normal"
+            },
+            yakuza: {
+                name: "Yakuza",
+                abilities: [
+                    "attack", "attack", "execute", "execute", "slash", "slash", "weaken"
+                ],
+                buffs: [
+                    {
+                        name: "frenzy",
+                        emoji: "<:frenzy:479298214453968896>",
+                        onTurnEnd: {
+                            attackDmgPlus : 85,
+                            magicDmgPlus : 85,
+                            everyNTurns: 2,
+                            startTurn: 2
+                        }
+                    }
+                ],
+                keystoneStats: {
+                    hp: [1200, 3500, 6200, 10000, 15000 ],
+                    attackDmg: [300, 500, 900, 1500, 2300],
+                    magicDmg: [300, 500, 900, 1500, 2300],
+                    abilities: []
+                },
+                endOfTurnEvents : [
+                    "echo",
+                    "focus"
+                ],
+                hpPerPartyMember: 1222,
+                hp: 950,
+                adPerPartyMember: 29,
+                mdPerPartyMember: 29,
+                attackDmg: 240,
+                magicDmg: 190,
+                armor: 1600,
+                spirit: 1600,
+                difficulty: "boss",
+                element: "normal"
+            },
             beheader: {
                 name: "Beheader",
                 abilities: [
@@ -9387,10 +10633,10 @@ Hoover Dam
                 difficulty: "boss",
                 element: "normal"
             },
-            cyclops2: {
-                name: "Cyclops2",
+            bigfoot: {
+                name: "Big Foot",
                 abilities: [
-                    "attack", "attack", "enemyshoot", "enemyshoot", "slash", "slash", "cripple"
+                    "attack", "attack", "iceshards", "iceshards", "slash", "slash", "cripple"
                 ],
                 buffs: [
                     {
@@ -11070,9 +12316,9 @@ Hoover Dam
                         abilities: ["attack", "attack", "flameblast", "flameblast", "orchatasip"],
                         buffs: [],
                         keystoneStats: {
-                            hp: [1200, 3500, 6200, 10000, 15000 ],
-                            attackDmg: [300, 500, 900, 1500, 2300],
-                            magicDmg: [300, 500, 900, 1500, 2300],
+                            hp: [1200, 3500, 6200, 10000, 15000, 25000 ],
+                            attackDmg: [300, 500, 900, 1500, 2300, 3500 ],
+                            magicDmg: [300, 500, 900, 1500, 2300, 3500 ],
                             abilities: []
                         },
                         effectsOnDeath: [
@@ -11094,9 +12340,9 @@ Hoover Dam
                         abilities: ["attack", "attack", "elixir", "elixir", "orchatasip"],
                         buffs: [],
                         keystoneStats: {
-                            hp: [1100, 3400, 5200, 8000, 13000 ],
-                            attackDmg: [300, 500, 900, 1500, 2300],
-                            magicDmg: [300, 500, 900, 1500, 2300],
+                            hp: [1100, 3400, 5200, 8000, 13000, 25000 ],
+                            attackDmg: [300, 500, 900, 1500, 2300, 3500 ],
+                            magicDmg: [300, 500, 900, 1500, 2300, 3500 ],
                             abilities: []
                         },
                         hpPerPartyMember: 140,
@@ -11129,12 +12375,12 @@ Hoover Dam
                         ],
                         keystoneStats: {
                             frenzy: {
-                                attackDmgPlus : [150, 220, 350, 640, 990],
-                                magicDmgPlus : [150, 220, 350, 640, 990]
+                                attackDmgPlus : [150, 220, 350, 640, 990, 1400],
+                                magicDmgPlus : [150, 220, 350, 640, 990, 1400]
                             },
-                            hp: [9500, 19900, 34900, 51000, 137000 ],
-                            attackDmg: [1000, 1500, 2000, 2900, 4500],
-                            magicDmg: [1000, 1500, 2000, 2900, 4500],
+                            hp: [9500, 19900, 34900, 51000, 137000, 230000 ],
+                            attackDmg: [1000, 1500, 2000, 2900, 4500, 4500 ],
+                            magicDmg: [1000, 1500, 2000, 2900, 4500, 4500 ],
                             abilities: []
                         },
                         abilityOrder: [
@@ -11161,9 +12407,9 @@ Hoover Dam
                         abilities: ["attack", "attack", "flameblast", "flameblast", "orchatasip"],
                         buffs: [],
                         keystoneStats: {
-                            hp: [1200, 3500, 6200, 10000, 15000 ],
-                            attackDmg: [300, 500, 900, 1500, 2300],
-                            magicDmg: [300, 500, 900, 1500, 2300],
+                            hp: [1200, 3500, 6200, 10000, 15000, 25000 ],
+                            attackDmg: [300, 500, 900, 1500, 2300, 3500 ],
+                            magicDmg: [300, 500, 900, 1500, 2300, 3500 ],
                             abilities: []
                         },
                         effectsOnDeath: [
@@ -11185,9 +12431,9 @@ Hoover Dam
                         abilities: ["attack", "attack", "elixir", "elixir", "orchatasip"],
                         buffs: [],
                         keystoneStats: {
-                            hp: [1100, 3400, 5200, 8000, 13000 ],
-                            attackDmg: [300, 500, 900, 1500, 2300],
-                            magicDmg: [300, 500, 900, 1500, 2300],
+                            hp: [1100, 3400, 5200, 8000, 13000, 25000 ],
+                            attackDmg: [300, 500, 900, 1500, 2300, 3500],
+                            magicDmg: [300, 500, 900, 1500, 2300, 3500],
                             abilities: []
                         },
                         hpPerPartyMember: 140,

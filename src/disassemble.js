@@ -765,6 +765,305 @@ module.exports.rollForArmamentStats = function(itemToCreateArmament){
         statMap.mdplus.ceiling = statMap.mdplus.ceiling - 10
 
     }
+    
+    if (itemToCreateArmament.itemlevelrequirement 
+    && itemToCreateArmament.rpglevelrequirement >= 40){
+        // add floors and ceilings based on a percentage of the item's stats
+        let itemhpplus = itemToCreateArmament.hpplus
+        let itemadplus = itemToCreateArmament.attackdmgplus
+        let itemmdplus = itemToCreateArmament.magicdmgplus
+        let itemarmorplus = itemToCreateArmament.armorplus
+        let itemspiritplus = itemToCreateArmament.spiritplus
+        if (itemmdplus > itemadplus){
+            itemadplus = itemmdplus
+        }else{
+            itemmdplus = itemadplus
+        }
+        if (itemarmorplus > itemspiritplus){
+            itemspiritplus = itemarmorplus
+        }else{
+            itemarmorplus = itemspiritplus
+        }
+        if (itemRarity == "rare"){
+            statMap.hpplus.floor = statMap.hpplus.floor + ( itemhpplus * 0.1 * -1 )
+            statMap.hpplus.ceiling = statMap.hpplus.ceiling + ( itemhpplus * 0.33 )
+    
+            statMap.adplus.floor = statMap.adplus.floor + (itemadplus * 0.1 * -1 )
+            statMap.adplus.ceiling = statMap.adplus.ceiling + ( itemadplus * 0.33 )
+    
+            statMap.mdplus.floor = statMap.mdplus.floor + (itemmdplus * 0.1 * -1 )
+            statMap.mdplus.ceiling = statMap.mdplus.ceiling + ( itemmdplus * 0.33 )
+    
+            statMap.armorplus.floor = statMap.armorplus.floor + (itemarmorplus * 0.05 * -1 )
+            statMap.armorplus.ceiling = statMap.armorplus.ceiling + ( itemarmorplus * 0.20 )
+    
+            statMap.spiritplus.floor = statMap.spiritplus.floor + (itemspiritplus * 0.05 * -1 )
+            statMap.spiritplus.ceiling = statMap.spiritplus.ceiling + ( itemspiritplus * 0.20 )
+    
+            statMap.critplus.floor = statMap.critplus.floor + (statMap.critplus.floor * 0.33 * -1 )
+            statMap.critplus.ceiling = statMap.critplus.ceiling + ( statMap.critplus.ceiling * 0.33 )
+    
+            statMap.luckplus.floor = statMap.luckplus.floor + (statMap.luckplus.floor * 0.33 * -1 )
+            statMap.luckplus.ceiling = statMap.luckplus.ceiling + ( statMap.luckplus.ceiling * 0.33 )
+    
+        }else if (itemRarity == "rare+"){
+            statMap.hpplus.floor = statMap.hpplus.floor + ( itemhpplus * 0.1 * -1 )
+            statMap.hpplus.ceiling = statMap.hpplus.ceiling + ( itemhpplus * 0.33 )
+    
+            statMap.adplus.floor = statMap.adplus.floor + (itemadplus * 0.1 * -1 )
+            statMap.adplus.ceiling = statMap.adplus.ceiling + ( itemadplus * 0.33 )
+    
+            statMap.mdplus.floor = statMap.mdplus.floor + (itemmdplus * 0.1 * -1 )
+            statMap.mdplus.ceiling = statMap.mdplus.ceiling + ( itemmdplus * 0.33 )
+    
+            statMap.armorplus.floor = statMap.armorplus.floor + (itemarmorplus * 0.05 * -1 )
+            statMap.armorplus.ceiling = statMap.armorplus.ceiling + ( itemarmorplus * 0.20 )
+    
+            statMap.spiritplus.floor = statMap.spiritplus.floor + (itemspiritplus * 0.05 * -1 )
+            statMap.spiritplus.ceiling = statMap.spiritplus.ceiling + ( itemspiritplus * 0.20 )
+    
+            statMap.critplus.floor = statMap.critplus.floor + (statMap.critplus.floor * 0.33 * -1 )
+            statMap.critplus.ceiling = statMap.critplus.ceiling + ( statMap.critplus.ceiling * 0.33 )
+    
+            statMap.luckplus.floor = statMap.luckplus.floor + (statMap.luckplus.floor * 0.33 * -1 )
+            statMap.luckplus.ceiling = statMap.luckplus.ceiling + ( statMap.luckplus.ceiling * 0.33 )
+
+    
+        }else if (itemRarity == "rare++"){
+            statMap.hpplus.floor = statMap.hpplus.floor + ( itemhpplus * 0.1 * -1 )
+            statMap.hpplus.ceiling = statMap.hpplus.ceiling + ( itemhpplus * 0.33 )
+    
+            statMap.adplus.floor = statMap.adplus.floor + (itemadplus * 0.1 * -1 )
+            statMap.adplus.ceiling = statMap.adplus.ceiling + ( itemadplus * 0.33 )
+    
+            statMap.mdplus.floor = statMap.mdplus.floor + (itemmdplus * 0.1 * -1 )
+            statMap.mdplus.ceiling = statMap.mdplus.ceiling + ( itemmdplus * 0.33 )
+    
+            statMap.armorplus.floor = statMap.armorplus.floor + (itemarmorplus * 0.05 * -1 )
+            statMap.armorplus.ceiling = statMap.armorplus.ceiling + ( itemarmorplus * 0.20 )
+    
+            statMap.spiritplus.floor = statMap.spiritplus.floor + (itemspiritplus * 0.05 * -1 )
+            statMap.spiritplus.ceiling = statMap.spiritplus.ceiling + ( itemspiritplus * 0.20 )
+    
+            statMap.critplus.floor = statMap.critplus.floor + (statMap.critplus.floor * 0.33 * -1 )
+            statMap.critplus.ceiling = statMap.critplus.ceiling + ( statMap.critplus.ceiling * 0.33 )
+    
+            statMap.luckplus.floor = statMap.luckplus.floor + (statMap.luckplus.floor * 0.33 * -1 )
+            statMap.luckplus.ceiling = statMap.luckplus.ceiling + ( statMap.luckplus.ceiling * 0.33 )
+
+    
+        }else if (itemRarity == "rare+++"){
+            statMap.hpplus.floor = statMap.hpplus.floor + ( itemhpplus * 0.1 * -1 )
+            statMap.hpplus.ceiling = statMap.hpplus.ceiling + ( itemhpplus * 0.33 )
+    
+            statMap.adplus.floor = statMap.adplus.floor + (itemadplus * 0.1 * -1 )
+            statMap.adplus.ceiling = statMap.adplus.ceiling + ( itemadplus * 0.33 )
+    
+            statMap.mdplus.floor = statMap.mdplus.floor + (itemmdplus * 0.1 * -1 )
+            statMap.mdplus.ceiling = statMap.mdplus.ceiling + ( itemmdplus * 0.33 )
+    
+            statMap.armorplus.floor = statMap.armorplus.floor + (itemarmorplus * 0.05 * -1 )
+            statMap.armorplus.ceiling = statMap.armorplus.ceiling + ( itemarmorplus * 0.20 )
+    
+            statMap.spiritplus.floor = statMap.spiritplus.floor + (itemspiritplus * 0.05 * -1 )
+            statMap.spiritplus.ceiling = statMap.spiritplus.ceiling + ( itemspiritplus * 0.20 )
+    
+            statMap.critplus.floor = statMap.critplus.floor + (statMap.critplus.floor * 0.33 * -1 )
+            statMap.critplus.ceiling = statMap.critplus.ceiling + ( statMap.critplus.ceiling * 0.33 )
+    
+            statMap.luckplus.floor = statMap.luckplus.floor + (statMap.luckplus.floor * 0.33 * -1 )
+            statMap.luckplus.ceiling = statMap.luckplus.ceiling + ( statMap.luckplus.ceiling * 0.33 )
+
+    
+        }else if (itemRarity == "ancient"){
+            statMap.hpplus.floor = statMap.hpplus.floor + ( itemhpplus * 0.1 * -1 )
+            statMap.hpplus.ceiling = statMap.hpplus.ceiling + ( itemhpplus * 0.33 )
+    
+            statMap.adplus.floor = statMap.adplus.floor + (itemadplus * 0.1 * -1 )
+            statMap.adplus.ceiling = statMap.adplus.ceiling + ( itemadplus * 0.33 )
+    
+            statMap.mdplus.floor = statMap.mdplus.floor + (itemmdplus * 0.1 * -1 )
+            statMap.mdplus.ceiling = statMap.mdplus.ceiling + ( itemmdplus * 0.33 )
+    
+            statMap.armorplus.floor = statMap.armorplus.floor + (itemarmorplus * 0.05 * -1 )
+            statMap.armorplus.ceiling = statMap.armorplus.ceiling + ( itemarmorplus * 0.20 )
+    
+            statMap.spiritplus.floor = statMap.spiritplus.floor + (itemspiritplus * 0.05 * -1 )
+            statMap.spiritplus.ceiling = statMap.spiritplus.ceiling + ( itemspiritplus * 0.20 )
+    
+            statMap.critplus.floor = statMap.critplus.floor + (statMap.critplus.floor * 0.33 * -1 )
+            statMap.critplus.ceiling = statMap.critplus.ceiling + ( statMap.critplus.ceiling * 0.33 )
+    
+            statMap.luckplus.floor = statMap.luckplus.floor + (statMap.luckplus.floor * 0.33 * -1 )
+            statMap.luckplus.ceiling = statMap.luckplus.ceiling + ( statMap.luckplus.ceiling * 0.33 )
+
+    
+        }else if (itemRarity == "ancient+"){
+            statMap.hpplus.floor = statMap.hpplus.floor + ( itemhpplus * 0.1 * -1 )
+            statMap.hpplus.ceiling = statMap.hpplus.ceiling + ( itemhpplus * 0.33 )
+    
+            statMap.adplus.floor = statMap.adplus.floor + (itemadplus * 0.1 * -1 )
+            statMap.adplus.ceiling = statMap.adplus.ceiling + ( itemadplus * 0.33 )
+    
+            statMap.mdplus.floor = statMap.mdplus.floor + (itemmdplus * 0.1 * -1 )
+            statMap.mdplus.ceiling = statMap.mdplus.ceiling + ( itemmdplus * 0.33 )
+    
+            statMap.armorplus.floor = statMap.armorplus.floor + (itemarmorplus * 0.05 * -1 )
+            statMap.armorplus.ceiling = statMap.armorplus.ceiling + ( itemarmorplus * 0.20 )
+    
+            statMap.spiritplus.floor = statMap.spiritplus.floor + (itemspiritplus * 0.05 * -1 )
+            statMap.spiritplus.ceiling = statMap.spiritplus.ceiling + ( itemspiritplus * 0.20 )
+    
+            statMap.critplus.floor = statMap.critplus.floor + (statMap.critplus.floor * 0.33 * -1 )
+            statMap.critplus.ceiling = statMap.critplus.ceiling + ( statMap.critplus.ceiling * 0.33 )
+    
+            statMap.luckplus.floor = statMap.luckplus.floor + (statMap.luckplus.floor * 0.33 * -1 )
+            statMap.luckplus.ceiling = statMap.luckplus.ceiling + ( statMap.luckplus.ceiling * 0.33 )
+
+    
+        }else if (itemRarity == "ancient++"){
+            statMap.hpplus.floor = statMap.hpplus.floor + ( itemhpplus * 0.1 * -1 )
+            statMap.hpplus.ceiling = statMap.hpplus.ceiling + ( itemhpplus * 0.33 )
+    
+            statMap.adplus.floor = statMap.adplus.floor + (itemadplus * 0.1 * -1 )
+            statMap.adplus.ceiling = statMap.adplus.ceiling + ( itemadplus * 0.33 )
+    
+            statMap.mdplus.floor = statMap.mdplus.floor + (itemmdplus * 0.1 * -1 )
+            statMap.mdplus.ceiling = statMap.mdplus.ceiling + ( itemmdplus * 0.33 )
+    
+            statMap.armorplus.floor = statMap.armorplus.floor + (itemarmorplus * 0.05 * -1 )
+            statMap.armorplus.ceiling = statMap.armorplus.ceiling + ( itemarmorplus * 0.20 )
+    
+            statMap.spiritplus.floor = statMap.spiritplus.floor + (itemspiritplus * 0.05 * -1 )
+            statMap.spiritplus.ceiling = statMap.spiritplus.ceiling + ( itemspiritplus * 0.20 )
+    
+            statMap.critplus.floor = statMap.critplus.floor + (statMap.critplus.floor * 0.33 * -1 )
+            statMap.critplus.ceiling = statMap.critplus.ceiling + ( statMap.critplus.ceiling * 0.33 )
+    
+            statMap.luckplus.floor = statMap.luckplus.floor + (statMap.luckplus.floor * 0.33 * -1 )
+            statMap.luckplus.ceiling = statMap.luckplus.ceiling + ( statMap.luckplus.ceiling * 0.33 )
+
+    
+        }else if (itemRarity == "ancient+++"){
+            statMap.hpplus.floor = statMap.hpplus.floor + ( itemhpplus * 0.1 * -1 )
+            statMap.hpplus.ceiling = statMap.hpplus.ceiling + ( itemhpplus * 0.33 )
+    
+            statMap.adplus.floor = statMap.adplus.floor + (itemadplus * 0.1 * -1 )
+            statMap.adplus.ceiling = statMap.adplus.ceiling + ( itemadplus * 0.33 )
+    
+            statMap.mdplus.floor = statMap.mdplus.floor + (itemmdplus * 0.1 * -1 )
+            statMap.mdplus.ceiling = statMap.mdplus.ceiling + ( itemmdplus * 0.33 )
+    
+            statMap.armorplus.floor = statMap.armorplus.floor + (itemarmorplus * 0.05 * -1 )
+            statMap.armorplus.ceiling = statMap.armorplus.ceiling + ( itemarmorplus * 0.20 )
+    
+            statMap.spiritplus.floor = statMap.spiritplus.floor + (itemspiritplus * 0.05 * -1 )
+            statMap.spiritplus.ceiling = statMap.spiritplus.ceiling + ( itemspiritplus * 0.20 )
+    
+            statMap.critplus.floor = statMap.critplus.floor + (statMap.critplus.floor * 0.33 * -1 )
+            statMap.critplus.ceiling = statMap.critplus.ceiling + ( statMap.critplus.ceiling * 0.33 )
+    
+            statMap.luckplus.floor = statMap.luckplus.floor + (statMap.luckplus.floor * 0.33 * -1 )
+            statMap.luckplus.ceiling = statMap.luckplus.ceiling + ( statMap.luckplus.ceiling * 0.33 )
+    
+        }
+        else if (itemRarity == "artifact"){
+            statMap.hpplus.floor = statMap.hpplus.floor + ( itemhpplus * 0.1 * -1 )
+            statMap.hpplus.ceiling = statMap.hpplus.ceiling + ( itemhpplus * 0.33 )
+    
+            statMap.adplus.floor = statMap.adplus.floor + (itemadplus * 0.1 * -1 )
+            statMap.adplus.ceiling = statMap.adplus.ceiling + ( itemadplus * 0.33 )
+    
+            statMap.mdplus.floor = statMap.mdplus.floor + (itemmdplus * 0.1 * -1 )
+            statMap.mdplus.ceiling = statMap.mdplus.ceiling + ( itemmdplus * 0.33 )
+    
+            statMap.armorplus.floor = statMap.armorplus.floor + (itemarmorplus * 0.05 * -1 )
+            statMap.armorplus.ceiling = statMap.armorplus.ceiling + ( itemarmorplus * 0.20 )
+    
+            statMap.spiritplus.floor = statMap.spiritplus.floor + (itemspiritplus * 0.05 * -1 )
+            statMap.spiritplus.ceiling = statMap.spiritplus.ceiling + ( itemspiritplus * 0.20 )
+    
+            statMap.critplus.floor = statMap.critplus.floor + (statMap.critplus.floor * 0.33 * -1 )
+            statMap.critplus.ceiling = statMap.critplus.ceiling + ( statMap.critplus.ceiling * 0.33 )
+    
+            statMap.luckplus.floor = statMap.luckplus.floor + (statMap.luckplus.floor * 0.33 * -1 )
+            statMap.luckplus.ceiling = statMap.luckplus.ceiling + ( statMap.luckplus.ceiling * 0.33 )
+
+        }else if (itemRarity == "myth"){
+            statMap.hpplus.floor = statMap.hpplus.floor + ( itemhpplus * 0.1 * -1 )
+            statMap.hpplus.ceiling = statMap.hpplus.ceiling + ( itemhpplus * 0.33 )
+    
+            statMap.adplus.floor = statMap.adplus.floor + (itemadplus * 0.1 * -1 )
+            statMap.adplus.ceiling = statMap.adplus.ceiling + ( itemadplus * 0.33 )
+    
+            statMap.mdplus.floor = statMap.mdplus.floor + (itemmdplus * 0.1 * -1 )
+            statMap.mdplus.ceiling = statMap.mdplus.ceiling + ( itemmdplus * 0.33 )
+    
+            statMap.armorplus.floor = statMap.armorplus.floor + (itemarmorplus * 0.05 * -1 )
+            statMap.armorplus.ceiling = statMap.armorplus.ceiling + ( itemarmorplus * 0.20 )
+    
+            statMap.spiritplus.floor = statMap.spiritplus.floor + (itemspiritplus * 0.05 * -1 )
+            statMap.spiritplus.ceiling = statMap.spiritplus.ceiling + ( itemspiritplus * 0.20 )
+    
+            statMap.critplus.floor = statMap.critplus.floor + (statMap.critplus.floor * 0.33 * -1 )
+            statMap.critplus.ceiling = statMap.critplus.ceiling + ( statMap.critplus.ceiling * 0.33 )
+    
+            statMap.luckplus.floor = statMap.luckplus.floor + (statMap.luckplus.floor * 0.33 * -1 )
+            statMap.luckplus.ceiling = statMap.luckplus.ceiling + ( statMap.luckplus.ceiling * 0.33 )
+
+        }
+    
+        if (itemSlot == "weapon"){
+            statMap.adplus.floor = statMap.adplus.floor + (itemadplus * 0.06 )
+            statMap.adplus.ceiling = statMap.adplus.ceiling + ( itemadplus * 0.06 )
+    
+            statMap.mdplus.floor = statMap.mdplus.floor + (itemadplus * 0.06 )
+            statMap.mdplus.ceiling = statMap.mdplus.ceiling + ( itemadplus * 0.06 )
+    
+            statMap.armorplus.floor = statMap.armorplus.floor - (itemarmorplus * 0.06 )
+            statMap.armorplus.ceiling = statMap.armorplus.ceiling - ( itemarmorplus * 0.06 )
+    
+            statMap.spiritplus.floor = statMap.spiritplus.floor - (itemspiritplus * 0.06)
+            statMap.spiritplus.ceiling = statMap.spiritplus.ceiling - (itemspiritplus * 0.06 )
+    
+        }else if (itemSlot == "chest"
+            || itemSlot == "legs"
+            || itemSlot == "head"){
+    
+            statMap.armorplus.floor = statMap.armorplus.floor + (itemarmorplus * 0.06 )
+            statMap.armorplus.ceiling = statMap.armorplus.ceiling + ( itemarmorplus * 0.06 )
+    
+            statMap.spiritplus.floor = statMap.spiritplus.floor + (itemspiritplus * 0.06)
+            statMap.spiritplus.ceiling = statMap.spiritplus.ceiling + (itemspiritplus * 0.06 )
+    
+            statMap.critplus.floor = statMap.critplus.floor - ( statMap.critplus.floor * 0.06)
+            statMap.critplus.ceiling = statMap.critplus.ceiling - ( statMap.critplus.ceiling * 0.06 )
+    
+        
+        }else if (itemSlot == "back"
+            || itemSlot == "belt"
+            || itemSlot == "wrist"){
+            statMap.critplus.floor = statMap.critplus.floor + ( statMap.critplus.floor * 0.06)
+            statMap.critplus.ceiling = statMap.critplus.ceiling + ( statMap.critplus.ceiling * 0.06 )
+    
+            statMap.hpplus.floor = statMap.hpplus.floor - (itemhpplus * 0.06 )
+            statMap.hpplus.ceiling = statMap.hpplus.ceiling - (itemhpplus * 0.06 )
+    
+    
+        }else if (itemSlot == "feet"
+            || itemSlot == "hands"
+            || itemSlot == "shoulders"){
+            statMap.hpplus.floor = statMap.hpplus.floor + (itemhpplus * 0.06 )
+            statMap.hpplus.ceiling = statMap.hpplus.ceiling + (itemhpplus * 0.06 )
+    
+            statMap.adplus.floor = statMap.adplus.floor - (itemadplus * 0.06 )
+            statMap.adplus.ceiling = statMap.adplus.ceiling - (itemadplus * 0.06 )
+    
+            statMap.mdplus.floor = statMap.mdplus.floor - ( itemadplus * 0.06 )
+            statMap.mdplus.ceiling = statMap.mdplus.ceiling - ( itemadplus * 0.06 )
+    
+        }
+    }
 
     // roll for stat distribution
     for (var stat in statMap){

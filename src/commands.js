@@ -89,6 +89,7 @@ var userTradeLock = {}
 var commandLock = {
     thank: {},
     vote: {},
+    claim: {},
     sorry: {},
     prepare: {},
     cook: {},
@@ -1403,6 +1404,147 @@ module.exports.dailyCommand = function(message, args, dbl){
         })
     }
     
+}
+
+module.exports.claimCommand = function(message, args){
+    let discordUserId = message.author.id
+    if (!commandLock["claim"][discordUserId]){
+        exports.setCommandLock("claim", discordUserId, true)
+        profileDB.getUserProfileData(discordUserId, function(err, res){
+            if (err){
+                message.channel.send("error " + err)
+            }else{
+                let userBurritos = res.data.burritos || 0
+                if (args && args.length > 0 
+                && args[1] == "rare" 
+                && userBurritos >= 50){
+                    // add a random rare
+                    var listOfRares = []
+                    var itemsForClaim = exports.getAllItems()
+                    for (var index in itemsForClaim){
+                        if (itemsForClaim[index].itemraritycategory == "rare"
+                        && itemsForClaim[index].fromscavenge == true
+                        && !itemsForClaim[index].isseed){
+                            // add to list of rares
+                            listOfRares.push(itemsForClaim[index]);
+                        }
+                    }
+                    var indexOfRare = Math.floor(Math.random() * listOfRares.length);
+                    var rareWon = [listOfRares[indexOfRare]];
+                    // spend burritos
+                    profileDB.updateUserBurritos(discordUserId, -50, function(err, updateRes){
+                        if (err){
+                            message.channel.send("error " + err)
+                        }else{
+                            addToUserInventory(discordUserId, rareWon);
+                            let itemname = rareWon[0].itemname
+                            let itemshortname = rareWon[0].itemshortname
+                            message.channel.send("You have claimed your reward! your item is `" + itemname + "`! \ntype `-iteminfo " + itemshortname + "` for more information on this item!")
+                            exports.setCommandLock("claim", discordUserId, false)        
+                        }
+                    })
+                }
+                else if(args && args.length > 0 && args[1] == "letter"
+                && userBurritos >= 150){
+                    var letter = "";
+                    for (var arg in args){
+                        if (arg > 1){
+                            letter = letter.concat(args[arg] + " ");
+                        }
+                    }
+                    if (letter.length > 0 && letter.length < 150){
+                        profileDB.updateUserBurritos(discordUserId, -150, function(err, updateRes){
+                            if (err){
+                                exports.setCommandLock("claim", discordUserId, false)
+                                message.channel.send("error " + err)
+                            }else{
+                                let creatorUsername = message.author.username
+                                profileDB.createLetter(discordUserId, letter, creatorUsername, function(err, letterRes){
+                                    if (err){
+                                        exports.setCommandLock("claim", discordUserId, false)
+                                        message.channel.send("error " + err)
+                                    }else{
+                                        exports.setCommandLock("claim", discordUserId, false)
+                                        message.channel.send("Your letter has been sent into the twisting nether :asterisk:  :cyclone: :asterisk: 49 74 20 6d 61 79 20 6f 6e 65 20 64 61 79 20 62 65 20 66 6f 75 6e 64 20 62 79 20 74 68 6f 73 65 20 77 68 6f 20 65 6e 74 65 72 20 69 74 ")
+                                    }
+                                })
+                            }
+                        })
+                    }else{
+                        exports.setCommandLock("claim", discordUserId, false)
+                        message.channel.send("Your letter is too long to, it must be less than 150 characters in length")
+                    }
+                }
+                else if (args && args.length > 0 
+                && args[1] == "ancient" 
+                && userBurritos >= 400){
+                    // add a random ancient
+                    var listOfAncients = []
+                    var itemsForClaim = exports.getAllItems()
+                    for (var index in itemsForClaim){
+                        if (itemsForClaim[index].itemraritycategory == "ancient"
+                        && itemsForClaim[index].fromscavenge == true
+                        && !itemsForClaim[index].isseed){
+                            // add to list of ancients
+                            listOfAncients.push(itemsForClaim[index]);
+                        }
+                    }
+                    var indexOfAncient = Math.floor(Math.random() * listOfAncients.length);
+                    var ancientWon = [listOfAncients[indexOfAncient]];
+                    // spend burritos
+                    profileDB.updateUserBurritos(discordUserId, -400, function(err, updateRes){
+                        if (err){
+                            message.channel.send("error " + err)
+                        }else{
+                            addToUserInventory(discordUserId, ancientWon);
+                            let itemname = ancientWon[0].itemname
+                            let itemshortname = ancientWon[0].itemshortname
+                            message.channel.send("You have claimed your reward! your item is `" + itemname + "`! \ntype `-iteminfo " + itemshortname + "` for more information on this item!")
+                            exports.setCommandLock("claim", discordUserId, false)        
+                        }
+                    })
+                }
+                else if(args && args.length > 0
+                && userBurritos >= 1){
+                    // check that there is a common with the itemshortname
+                    // need 1 burrito
+                    var commonsToClaim = args[2] ? args[2] : 1;
+                    let commonNameToGet = args[1]
+                    if (typeof commonsToClaim == "string" && commonsToClaim.toLowerCase() == "all"){
+                        // make sure we only add up to as many burritos the user has or the
+                        commonsToClaim = parseInt(userBurritos)
+                    }
+
+                    if (itemsMapbyShortName[commonNameToGet] 
+                    && itemsMapbyShortName[commonNameToGet].itemraritycategory == "common"
+                    && commonsToClaim <= userBurritos
+                    && commonsToClaim > 0){
+                        // add the common to the user X commons to claim
+                        let commonsToClaimFloor = Math.floor(commonsToClaim)
+                        profileDB.updateUserBurritos(discordUserId, commonsToClaimFloor * -1, function(err, updateRes){
+                            if (err){
+                                message.channel.send("error " + err)
+                                exports.setCommandLock("claim", discordUserId, false)
+                            }else{
+                                let commonItem = JSON.parse(JSON.stringify(itemsMapbyShortName[commonNameToGet]))
+                                commonItem.itemAmount = commonsToClaimFloor
+                                addToUserInventory(discordUserId, [ commonItem ] );
+                                message.channel.send("You have claimed your reward! your item is `" + commonItem.itemname + " x " + commonItem.itemAmount + "`! \ntype `-iteminfo " + commonItem.itemshortname + "` for more information on this item!")        
+                                exports.setCommandLock("claim", discordUserId, false)
+                            }
+                        })
+                    }else{
+                        message.channel.send("Invalid item to claim, or you do not have the burritos to claim that amount")
+                        exports.setCommandLock("claim", discordUserId, false)
+                    }
+
+                }else{
+                    exports.setCommandLock("claim", discordUserId, false)
+                    message.channel.send("invalid claim use, try `-claim rare`, or `-claim ancient`, or `-claim [common] [1]`")
+                }
+            }
+        })
+    }
 }
 
 function dailyEmbedBuilder(message, profileData){
@@ -5805,6 +5947,7 @@ module.exports.createArmament = function(message, args){
                             var armamentTemplateItem;
                             // find the armament template to obtain based on the rarity of the itemToCreateArmament
                             if (itemToCreateArmament && !itemToCreateArmament.isseed && itemToCreateArmament.itemraritycategory != "amulet"){
+                                itemToCreateArmament = JSON.parse(JSON.stringify(itemToCreateArmament))
                                 for (var i in allItems){
                                     if (allItems[i].armamentcategory && allItems[i].armamentcategory == itemToCreateArmament.itemraritycategory){
                                         armamentTemplateItem = allItems[i]

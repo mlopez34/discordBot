@@ -12,9 +12,9 @@ var percentageToReduceForCommand = {
     thank: .50,
     sorry: .33,
     fetch: .30,
-    cook: .08,
-    prepare: .02,
-    RPG: .50
+    cook: .15,
+    prepare: .07,
+    RPG: 1
 }
 
 module.exports.setItemsLock = function(discordUserId, set){

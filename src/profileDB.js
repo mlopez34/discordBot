@@ -158,6 +158,20 @@ module.exports.updateUserTacosEarly = function(userId, tacos, cb) {
     });
 }
 
+module.exports.updateUserBurritos = function(userId, burritos, cb){
+    var query = 'update ' + config.profileTable + ' set burritos=burritos+$1 where discordid=$2'
+    db.none(query, [ burritos, userId ])
+    .then(function () {
+    cb(null, {
+        status: 'success',
+        message: 'updated burritos'
+        });
+    })
+    .catch(function (err) {
+        cb(err);
+    });
+}
+
 module.exports.updateUserDaily = function(userId, burritosGained, tacosGained, streakReset, firstBurritos, cb) {
     var query = ""
     if (streakReset){
@@ -619,6 +633,29 @@ module.exports.updateUserPasta = function( userId, pastaTacoCost, pasta, cb){
     cb(null, {
         status: 'success',
         message: 'added tacos'
+        });
+    })
+    .catch(function (err) {
+        // console.log(err);
+        cb(err);
+    });
+}
+
+module.exports.createLetter = function(userId, letter, username, cb){
+    let letterCreateTime = new Date()
+    let data = {
+        userId: userId,
+        letter: letter,
+        letterCreateTime: letterCreateTime,
+        creatorUsername: username
+    }
+    var query = 'insert into '+ config.lettersTable + '(discordid, letter, lettercreatetime, creatorusername)' +
+    'values(${userId}, ${letter}, ${letterCreateTime}, ${creatorUsername})'
+    db.none(query, data)
+    .then(function () {
+    cb(null, {
+        status: 'success',
+        message: 'added letter into the twisting nether'
         });
     })
     .catch(function (err) {

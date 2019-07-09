@@ -2,6 +2,7 @@
 var profileDB = require("./profileDB.js")
 
 var THANK_BASE_SECONDS = 7200;
+var RPG_BASE_SECONDS = 3600;
 var SORRY_BASE_SECONDS = 21600;
 var SCAVENGE_BASE_SECONDS = 3600;
 var FETCH_BASE_SECONDS = 10800;
@@ -16,7 +17,7 @@ module.exports.getCommandTimesInSeconds = function() {
         fetch: FETCH_BASE_SECONDS,
         cook: COOK_BASE_SECONDS,
         prepare: PREPARE_BASE_SECONDS,
-        RPG: THANK_BASE_SECONDS
+        RPG: RPG_BASE_SECONDS
     }
 }
 

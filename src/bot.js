@@ -243,6 +243,9 @@ client.on('message', function(message){
                 else if (commandIs("daily", message)){
                     commands.dailyCommand(message, args, dbl)
                 }
+                else if (commandIs("claim", message)){
+                    commands.claimCommand(message, args)
+                }
                 else if (commandIs("profile", message)){
                     commands.profileCommand(message);
                 }
@@ -790,6 +793,11 @@ client.on('message', function(message){
                 else if (commandIs("daily", message)){
                     commands.dailyCommand(message, args, dbl)
                     data.command = "daily"
+                    profileDB.createUserActivity(data)
+                }
+                else if (commandIs("claim", message)){
+                    commands.claimCommand(message, args)
+                    data.command = "claim"
                     profileDB.createUserActivity(data)
                 }
                 else if (commandIs("profile", message)){

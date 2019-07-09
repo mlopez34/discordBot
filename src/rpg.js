@@ -2728,7 +2728,21 @@ function increaseCompletionForUser(eventUser, rpgareaId, message, enemiesCount){
             var areaCompletedCheck = 0 
             if ( areaCompletionForUser >= enemiesToDefeatArea
             && currentareacompletion < enemiesToDefeatArea ){
-                newAreaEmbedBuilder( eventUser.username, rpgareaId, message)
+                var listOfRares = []
+                var itemsForClaim = commands.getAllItems()
+                for (var index in itemsForClaim){
+                    if (itemsForClaim[index].itemraritycategory == "rare"
+                    && itemsForClaim[index].fromscavenge == true
+                    && !itemsForClaim[index].isseed){
+                        // add to list of rares
+                        listOfRares.push(itemsForClaim[index]);
+                    }
+                }
+                var indexOfRare = Math.floor(Math.random() * listOfRares.length);
+                var rareWon = [listOfRares[indexOfRare]];
+                addToUserInventory(discordUserId, rareWon);
+                newAreaEmbedBuilder( eventUser.username, rpgareaId, message, rareWon)
+                // reward the user with a rare
                 areaCompletedCheck = 1
             }
             var zoneUserIsIn = getRpgZone(rpgareaId)
@@ -2737,8 +2751,22 @@ function increaseCompletionForUser(eventUser, rpgareaId, message, enemiesCount){
             var areascompletedForUser = getAreasCompletedInZoneForUser(eventUser.userdata, zoneUserIsIn) + areaCompletedCheck
             // calculate areascompletedForUser 
             if (!zoneComplete && ( areascompletedForUser >= areasToComplete ) ){
+                // reward the user with an ancient
+                var listOfAncients = []
+                var itemsForZoneComplete = commands.getAllItems()
+                for (var index in itemsForZoneComplete){
+                    if (itemsForZoneComplete[index].itemraritycategory == "ancient"
+                    && itemsForZoneComplete[index].fromscavenge == true
+                    && !itemsForZoneComplete[index].isseed){
+                        // add to list of ancients
+                        listOfAncients.push(itemsForZoneComplete[index]);
+                    }
+                }
+                var indexOfAncient = Math.floor(Math.random() * listOfAncients.length);
+                var ancientWon = [listOfAncients[indexOfAncient]];
+                addToUserInventory(discordUserId, ancientWon);
                 // complete zone
-                newZoneEmbedBuilder( eventUser.username, zoneUserIsIn, message )
+                newZoneEmbedBuilder( eventUser.username, zoneUserIsIn, message, ancientWon )
                 profileDB.setZoneComplete(discordUserId, zoneUserIsIn, function(err, res){
                     if (err){
                         console.log(err)
@@ -2769,7 +2797,9 @@ function getAreasCompletedInZoneForUser(userdata, zoneUserIsIn){
     return numberOfAreasCompleted
 }
 
-function newAreaEmbedBuilder(username, areaId, message){
+function newAreaEmbedBuilder(username, areaId, message, itemWon){
+    let itemname = itemWon[0].itemname
+    let itemshortname = itemWon[0].itemshortname
     const embed = new Discord.RichEmbed()
     .setAuthor("Area completed!")
     .setColor(0xF2E93E)
@@ -2779,6 +2809,7 @@ function newAreaEmbedBuilder(username, areaId, message){
     var zoneAreaIsIn = getRpgZone(areaId)
     var areaName = rpgZones[zoneAreaIsIn].areas[areaId].name
     embed.addField(username + " completed " + areaName ,  areaString);
+    embed.addField("Item Reward", "Found a :small_blue_diamond: `" + itemname + "`! use `-iteminfo " + itemshortname + "` for more information on this item!", true);
     message.channel.send({embed})
     .then(function(res){
         console.log(res)
@@ -2789,7 +2820,9 @@ function newAreaEmbedBuilder(username, areaId, message){
     })
 }
 
-function newZoneEmbedBuilder(username, zoneId, message){
+function newZoneEmbedBuilder(username, zoneId, message, itemWon){
+    let itemname = itemWon[0].itemname
+    let itemshortname = itemWon[0].itemshortname
     const embed = new Discord.RichEmbed()
     .setAuthor("Zone completed!")
     .setColor(0xF2E93E)
@@ -2797,6 +2830,7 @@ function newZoneEmbedBuilder(username, zoneId, message){
     // new Zone + the level requirements
     var zoneString = getZoneString(zoneId)
     embed.addField(username,  zoneString, true);
+    embed.addField("Item Reward",  "Found a :small_orange_diamond: `" + itemname + "`! use `-iteminfo " + itemshortname + "` for more information on this item!", true);
     message.channel.send({embed})
     .then(function(res){
         console.log(res)
@@ -3103,17 +3137,20 @@ function calculateRewards(event, memberInRpgEvent, allItems, numberOfMembers, fi
     }else{
         for (var enemy in event.enemies){
             let getThisRoll = true;
+            let rpgZoneDifficulty = 1
             if (event.area){
                 let rareRpgMapItems = []
                 let ancientRpgMapItems = []
                 // number of rolls based on the number of people in the area
+                let zoneAreaIsIn = getRpgZone(event.area)
+                rpgZoneDifficulty = rpgZones[zoneAreaIsIn].zoneDifficulty
                 for (var item in allItems){
                     if (allItems[item].itemraritycategory == "ancient"
-                    && (event.area && allItems[item].findinzone == getRpgZone(event.area) )
+                    && (event.area && allItems[item].findinzone == zoneAreaIsIn )
                     && (event.area && allItems[item].findinarea == event.area)){
                         ancientRpgMapItems.push(allItems[item]);
                     }else if (allItems[item].itemraritycategory == "rare"
-                    && (event.area && allItems[item].findinzone == getRpgZone(event.area))
+                    && (event.area && allItems[item].findinzone == zoneAreaIsIn)
                     && (event.area &&allItems[item].findinarea == event.area)){
                         rareRpgMapItems.push(allItems[item]);
                     }
@@ -3136,31 +3173,31 @@ function calculateRewards(event, memberInRpgEvent, allItems, numberOfMembers, fi
                 var rarityRoll = undefined;
                 var enemyDifficulty =  event.enemies[enemy].difficulty
                 if (enemyDifficulty == "easy"){
-                    additionalExperience = additionalExperience + 1
-                    additionalRpgPoints = additionalRpgPoints + 1
+                    additionalExperience = additionalExperience + (1 * rpgZoneDifficulty)
+                    additionalRpgPoints = additionalRpgPoints + (1 * rpgZoneDifficulty)
                     // common items
                     rarityRoll = Math.floor(Math.random() * COMMON_MAX_ROLL) + 1;
                 }
                 else if (enemyDifficulty == "medium"){
-                    additionalExperience = additionalExperience + 2
-                    additionalRpgPoints = additionalRpgPoints + 2
+                    additionalExperience = additionalExperience + (2 * rpgZoneDifficulty)
+                    additionalRpgPoints = additionalRpgPoints + (2 * rpgZoneDifficulty)
                     // common ? uncommon
                     rarityRoll = Math.floor(Math.random() * UNCOMMON_MAX_ROLL) + 1;
                 }
                 else if (enemyDifficulty == "hard"){
-                    additionalExperience = additionalExperience + 9
-                    additionalRpgPoints = additionalRpgPoints + 9
+                    additionalExperience = additionalExperience + (9 * rpgZoneDifficulty)
+                    additionalRpgPoints = additionalRpgPoints + (9 * rpgZoneDifficulty)
                     // common + uncommon maybe rare
                     rarityRoll = Math.floor(Math.random() * 3975) + 6000;
                 }
                 else if (enemyDifficulty == "boss"){
-                    additionalExperience = additionalExperience + 19
-                    additionalRpgPoints = additionalRpgPoints + 19
+                    additionalExperience = additionalExperience + (19 * rpgZoneDifficulty)
+                    additionalRpgPoints = additionalRpgPoints + (19 * rpgZoneDifficulty)
                     // common + uncommon maybe rare maybe ancient
                     rarityRoll = Math.floor(Math.random() * 2000) + 8000;
                 }else if (enemyDifficulty == "special"){
-                    additionalExperience = additionalExperience + 19
-                    additionalRpgPoints = additionalRpgPoints + 19
+                    additionalExperience = additionalExperience + (19 * rpgZoneDifficulty)
+                    additionalRpgPoints = additionalRpgPoints + (19 * rpgZoneDifficulty)
                     // common + uncommon maybe rare maybe ancient
                     rarityRoll = Math.floor(Math.random() * 2000) + 8000;
                 }
@@ -6963,11 +7000,11 @@ function processAbility(abilityObject, event){
         validAbility = false;
     }
 
-    if (rpgAbility.limitDefensive && event.limitDefensiveReady && stillAlive){
+    if (rpgAbility.limitDefensive && abilityCaster > 1000 && event.limitDefensiveReady && stillAlive){
         event.limitDefensiveReady = false;
         event.limitDefensiveTurnUsed = currentTurn
     }
-    if (rpgAbility.limitOffensive && event.limitOffensiveReady && stillAlive){
+    if (rpgAbility.limitOffensive && abilityCaster > 1000 && event.limitOffensiveReady && stillAlive){
         event.limitOffensiveReady = false;
         event.limitOffensiveTurnUsed = currentTurn
     }
@@ -7177,12 +7214,18 @@ function processAbility(abilityObject, event){
                     if (event.enemies[targetToAddStatus].hp > 0
                         && event.enemies[targetToAddStatus].buffs.indexOf("dead") == -1){
                         var alreadyHaveStatus = false;
+                        var buffsToStop = []
                         for (var status in event.enemies[targetToAddStatus].buffs){
                             if (event.enemies[targetToAddStatus].buffs[status]
                                 && event.enemies[targetToAddStatus].buffs[status].caster == abilityObject.user
                                 && event.enemies[targetToAddStatus].buffs[status].name == statusToAdd.name
                                 && !event.enemies[targetToAddStatus].buffs[status].ignoreUnique ){
                                 alreadyHaveStatus = true;
+                            }
+                        }
+                        for (var status in event.enemies[targetToAddStatus].statuses){
+                            if (event.enemies[targetToAddStatus].statuses[status].buffToStop){
+                                buffsToStop.push(event.enemies[targetToAddStatus].statuses[status].buffToStop)
                             }
                         }
                         if (!alreadyHaveStatus){
