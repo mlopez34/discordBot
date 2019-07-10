@@ -3058,8 +3058,12 @@ module.exports.patchnotesCommand = function(message){
         },
         "fields": [
           {
-            "name": "June 13, 2019",
-            "value": "```- Only relevant to lvl 35 or above: Keystone items have been added to all keystones, starting with initial keystone items at keystone 2. Stronger keystone items will only be obtained at their respective keystone.\n- A new voting system has arrived! vote for us at https://discordbots.org/bot/320703328730349578 and claim your daily reward using -daily and -daily claim commands! streaks will reward you with more additional rewards, streaks must be maintained by voting every day with a 24 hour grace period.\n- Some RPG encounters have had their abilities fixed, this is an ongoing process and will be continued to be improved upon in later patches\n-When fetching with your stable pets, fetch tacos from items are taken into account using the formula (tacos gained / 7 - stable slot number ) these are added onto your regular stable pet fetches\n- Bender website has been slightly improved\n- Bender discordbots description has been slightly improved```"
+            "name": "July 9, 2019",
+            "value": "```-Fixed some rpg zones from not being accessible\n-Completing areas and zones will now grant rewards\n-The item requirements of building upgrades has been reduced by 33%, tacos requirements reduced by 20%\n-New command available -claim rare, -claim ancient, -claim [common], -claim [common] [amount], -claim [common] all, -claim letter [letter text] are now available, rares and ancients are randomly selected, commons can be selected by the user, letters can be obtained through claim rewards and will be thrown into the twisting nether.```"
+          },
+          {
+            "name": "July 9, 2019",
+            "value": "```-Experience in regular rpg for higher level zones has been increased\n-Master versions of some items have been introduced\n-Armaments for keystone items are now percentage based on their base stat on top of their original floors and ceiling ranges, slot bonuses are also added and reduced based on the slot by 6%, crit and luck remain at current rates\n-Enemy limit abilities will no longer consume regular group limit abilities\n-Debuffs that prevent buffs from being obtained will now properly work for enemies```"
           }
         ]
       };
