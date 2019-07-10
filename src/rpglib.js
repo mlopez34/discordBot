@@ -3911,7 +3911,7 @@ module.exports = {
             zoneString : "Enemies are drawn to blood ....",
             startingArea: "archenland",
             name: "Woods",
-            zoneDifficulty: 2,
+            zoneDifficulty: 1.4,
             enemyStatBuffs: {
                 hpPlusPercentage: 1.3,
                 adPlusPercentage: 1.4,
@@ -4165,7 +4165,7 @@ module.exports = {
             zoneAvatar: "https://i.imgur.com/BRxnfgf.png",
             zoneString : "The underground tunnels have led you into an uncovered secret",
             startingArea: "klencory",
-            zoneDifficulty: 2,
+            zoneDifficulty: 1.4,
             name: "Underground Tunnels",
             enemyStatBuffs: {
                 hpPlusPercentage: 1.3,
@@ -4438,7 +4438,7 @@ module.exports = {
             zoneString : "You've reached the peak of the Grand Canyon, what are you gonna do next?",
             startingArea: "sanyoucave",
             name: "Grand Canyon",
-            zoneDifficulty: 3,
+            zoneDifficulty: 1.8,
             enemyStatBuffs: {
                 hpPlusPercentage: 1.7,
                 adPlusPercentage: 2,
@@ -4712,7 +4712,7 @@ module.exports = {
             zoneString : "Buried deep inside the underground bunker in Crystal Peak is a small boat with specific directions",
             startingArea: "krellcanyon",
             name: "Crystal Peak",
-            zoneDifficulty: 3,
+            zoneDifficulty: 1.8,
             enemyStatBuffs: {
                 hpPlusPercentage: 1.7,
                 adPlusPercentage: 2,
@@ -5057,7 +5057,7 @@ module.exports = {
             zoneString : "Una ruta directa por el mar",
             startingArea: "lajoyacove",
             name: "Matamoros",
-            zoneDifficulty: 3,
+            zoneDifficulty: 1.8,
             enemyStatBuffs: {
                 hpPlusPercentage: 1.7,
                 adPlusPercentage: 2,
@@ -5331,7 +5331,7 @@ module.exports = {
             zoneString : "Have you found the secret stash under the MegaCorp Armory? of course not, it is securely guarded",
             startingArea: "karnaca",
             name: "Tadrart Acacus",
-            zoneDifficulty: 3,
+            zoneDifficulty: 1.8,
             enemyStatBuffs: {
                 hpPlusPercentage: 2.2,
                 adPlusPercentage: 3.2,
@@ -5633,7 +5633,7 @@ module.exports = {
             zoneString : "Things get a little rough from here, you may need reinforcements",
             startingArea: "argentumbay",
             name: "Costa De Marfil",
-            zoneDifficulty: 4,
+            zoneDifficulty: 2.3,
             enemyStatBuffs: {
                 hpPlusPercentage: 2.5,
                 adPlusPercentage: 3.7,
@@ -5953,7 +5953,7 @@ module.exports = {
             zoneString : "Freezing to death should be the least of your worries",
             startingArea: "bloodfalls",
             name: "Patagonia",
-            zoneDifficulty: 4,
+            zoneDifficulty: 2.3,
             enemyStatBuffs: {
                 hpPlusPercentage: 2.5,
                 adPlusPercentage: 3.7,
@@ -6199,7 +6199,7 @@ module.exports = {
             zoneString : "Do NOT abandon the hiking trail at any time",
             startingArea: "arashiyamaforest",
             name: "Yosemite",
-            zoneDifficulty: 4,
+            zoneDifficulty: 2.3,
             enemyStatBuffs: {
                 hpPlusPercentage: 2.5,
                 adPlusPercentage: 3.7,
@@ -6479,7 +6479,7 @@ module.exports = {
             zoneString : "日本語のナンセンス",
             startingArea: "academycity",
             name: "Tokyo",
-            zoneDifficulty: 5,
+            zoneDifficulty: 3,
             enemyStatBuffs: {
                 hpPlusPercentage: 2.8,
                 adPlusPercentage: 3.9,
@@ -6742,7 +6742,7 @@ module.exports = {
             zoneString : "☢️",
             startingArea: "agorianbattleplex",
             name: "Johannesburg",
-            zoneDifficulty: 6,
+            zoneDifficulty: 3.7,
             enemyStatBuffs: {
                 hpPlusPercentage: 3.1,
                 adPlusPercentage: 4.3,
