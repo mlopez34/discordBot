@@ -1550,7 +1550,7 @@ module.exports.claimCommand = function(message, args){
 function dailyEmbedBuilder(message, profileData){
     let rewardsString = "Vote for bender on [discordbots.org](https://discordbots.org/bot/320703328730349578) to get rewards every day! some perks are unique and can only be unlocked with voting rewards use -daily claim to claim your vote rewards"
     let streakString = streakStringBuilder(profileData)
-    let turninString = "1 Burrito for 1 common item \n 50 Burritos for a Rare item \n100 Burritos for a unique pet\n150 Burritos to throw a letter into the twisting nether\n400 Burritos Ancient Item"
+    let turninString = "1 Burrito for 1 common item \n 100 Burritos for a Rare item \n200 Burritos for a unique pet\n300 Burritos to throw a letter into the twisting nether\n800 Burritos Ancient Item"
     const embed = new Discord.RichEmbed()
     .setColor(0xF2E93E)
     .addField("Bender Voting Rewards", rewardsString)
