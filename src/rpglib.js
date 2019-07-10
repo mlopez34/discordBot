@@ -9574,7 +9574,18 @@ Hoover Dam
             silverback: {
                 name: "Silverback",
                 abilities: ["ferociousBite", "claw", "slash", "slash", "cripple"],
-                buffs: [],
+                buffs: [
+                    {
+                        name: "frenzy",
+                        emoji: "<:frenzy:479298214453968896>",
+                        onTurnEnd: {
+                            attackDmgPlus : 60,
+                            magicDmgPlus : 60,
+                            everyNTurns: 2,
+                            startTurn: 2
+                        }
+                    }
+                ],
                 keystoneStats: {
                     hp: [1200, 3500, 6200, 10000, 15000 ],
                     attackDmg: [300, 500, 900, 1500, 2300],
