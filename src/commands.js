@@ -1389,7 +1389,7 @@ module.exports.dailyCommand = function(message, args, dbl){
             }else{
                 exports.setCommandLock("vote", discordUserId, false)
                 now = new Date(now.setSeconds(now.getSeconds()));
-                var numberOfHours = getDateDifference(res.data.lastdailytime, now, COOK_COOLDOWN_HOURS);
+                var numberOfHours = getDateDifference(res.data.lastdailytime, now, 12);
                 message.channel.send(message.author + " You cannot collect your daily currently! Please wait `" + numberOfHours + "` ");
             }
         })
