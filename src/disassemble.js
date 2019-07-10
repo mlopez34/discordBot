@@ -715,7 +715,10 @@ module.exports.rollForArmamentStats = function(itemToCreateArmament){
         statMap.luckplus.ceiling = 55
     }
 
-    if (itemSlot == "weapon"){
+    if (itemSlot == "weapon"
+        || itemSlot == "finger"
+        || itemSlot == "neck"){
+
         statMap.adplus.floor = statMap.adplus.floor + 3
         statMap.adplus.ceiling = statMap.adplus.ceiling + 10
 

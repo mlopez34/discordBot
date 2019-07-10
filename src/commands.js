@@ -5952,9 +5952,10 @@ module.exports.createArmament = function(message, args){
                             // find the armament template to obtain based on the rarity of the itemToCreateArmament
                             if (itemToCreateArmament && !itemToCreateArmament.isseed && itemToCreateArmament.itemraritycategory != "amulet"){
                                 itemToCreateArmament = JSON.parse(JSON.stringify(itemToCreateArmament))
-                                for (var i in allItems){
-                                    if (allItems[i].armamentcategory && allItems[i].armamentcategory == itemToCreateArmament.itemraritycategory){
-                                        armamentTemplateItem = allItems[i]
+                                let itemsForArmament = exports.getAllItems()
+                                for (var i in itemsForArmament){
+                                    if (itemsForArmament[i].armamentcategory && itemsForArmament[i].armamentcategory == itemToCreateArmament.itemraritycategory){
+                                        armamentTemplateItem = itemsForArmament[i]
                                     }
                                 }
                                 // if we have an item that meets the requirements then use that item to create the armament
@@ -9820,6 +9821,8 @@ module.exports.tradeCommand = function(message, args){
                                         profileDB.getUserProfileData(mentionedId, function(err, tradingWithRes){
                                             if (err){
                                                 console.log(err)
+                                                message.channel.send("User you are attempting to trade with has not yet agreed to terms for bender!")
+                                                exports.setTradeLock(discordUserIdString, mentionedIdString, false)
                                             }else{
                                                 let tradingWithLevel = tradingWithRes.data.level
                                                 let myLevel = getProfileRes.data.level
