@@ -296,85 +296,85 @@ var armamentEssenceLevels = {
         level: 1,
         essenceRarity: "rare",
         crystalRarity: "rare",
-        essenceEmoji: ":small_blue_diamond:",
-        crystalEmoji: ":rosette:"
+        essenceEmoji: "🔹",
+        crystalEmoji: "🏵️"
     },
     "rare+": {
         level: 2,
         essenceRarity: "rare",
         crystalRarity: "rare",
-        essenceEmoji: ":small_blue_diamond:",
-        crystalEmoji: ":rosette:"
+        essenceEmoji: "🔹",
+        crystalEmoji: "🏵️"
     },
     "rare++": {
         level: 3,
         essenceRarity: "rare",
         crystalRarity: "rare",
-        essenceEmoji: ":small_blue_diamond:",
-        crystalEmoji: ":rosette:"
+        essenceEmoji: "🔹",
+        crystalEmoji: "🏵️"
     },
     "rare+++": {
         level: 4,
         essenceRarity: "rare",
         crystalRarity: "rare",
-        essenceEmoji: ":small_blue_diamond:",
-        crystalEmoji: ":rosette:"
+        essenceEmoji: "🔹",
+        crystalEmoji: "🏵️"
     },
     "rare++++": {
         level: 5,
         essenceRarity: "rare",
         crystalRarity: "rare",
-        essenceEmoji: ":small_blue_diamond:",
-        crystalEmoji: ":rosette:"
+        essenceEmoji: "🔹",
+        crystalEmoji: "🏵️"
     },
     "ancient": {
         level: 1,
         essenceRarity: "ancient",
         crystalRarity: "ancient",
         essenceEmoji: ":small_orange_diamond:",
-        crystalEmoji: ":rosette:"
+        crystalEmoji: "🏵️"
     },
     "ancient+": {
         level: 2,
         essenceRarity: "ancient",
         crystalRarity: "ancient",
-        essenceEmoji: ":small_orange_diamond:",
-        crystalEmoji: ":rosette:"
+        essenceEmoji: "🔸",
+        crystalEmoji: "🏵️"
     },
     "ancient++": {
         level: 3,
         essenceRarity: "ancient",
         crystalRarity: "ancient",
-        essenceEmoji: ":small_orange_diamond:",
-        crystalEmoji: ":rosette:"
+        essenceEmoji: "🔸",
+        crystalEmoji: "🏵️"
     },
     "ancient+++": {
         level: 4,
         essenceRarity: "ancient",
         crystalRarity: "ancient",
-        essenceEmoji: ":small_orange_diamond:",
-        crystalEmoji: ":rosette:"
+        essenceEmoji: "🔸",
+        crystalEmoji: "🏵️"
     },
     "ancient++++": {
         level: 5,
         essenceRarity: "ancient",
         crystalRarity: "ancient",
-        essenceEmoji: ":small_orange_diamond:",
-        crystalEmoji: ":rosette:"
+        essenceEmoji: "🔸",
+        crystalEmoji: "🏵️"
     },
     "artifact": {
         level: 1,
         essenceRarity: "artifact",
         crystalRarity: "artifact",
-        essenceEmoji: ":diamond_shape_with_a_dot_inside:",
-        crystalEmoji: ":rosette:"
+        essenceEmoji: "💠",
+        crystalEmoji: "🏵️"
     },
     "myth": {
         level: 2,
         essenceRarity: "artifact",
         crystalRarity: "artifact",
-        essenceEmoji: ":diamond_shape_with_a_dot_inside:",
-        crystalEmoji: ":rosette:"
+        essenceEmoji: "💠",
+        crystalEmoji: "🏵️"
     }
 }
 
