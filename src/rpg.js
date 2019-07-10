@@ -3237,8 +3237,8 @@ function calculateRewards(event, memberInRpgEvent, allItems, numberOfMembers, fi
         rewardsForPlayer.rpgPoints = rewardsForPlayer.rpgPoints + specialPts;
     }
     // calculate finds based on luck and diff of enemies
-    rewardsForPlayer.xp = rewardsForPlayer.xp + additionalExperience + numberOfMembers
-    rewardsForPlayer.rpgPoints = rewardsForPlayer.rpgPoints + additionalRpgPoints + numberOfMembers;
+    rewardsForPlayer.xp = Math.floor(rewardsForPlayer.xp + additionalExperience + numberOfMembers)
+    rewardsForPlayer.rpgPoints = Math.floor(rewardsForPlayer.rpgPoints + additionalRpgPoints + numberOfMembers);
     rewardsForPlayer.extraTacos = rewardsForPlayer.extraTacos + memberInRpgEvent.extraTacosForUser
     rewardsForPlayer.items = itemsObtainedArray
     return rewardsForPlayer;
