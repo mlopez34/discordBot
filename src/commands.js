@@ -1594,7 +1594,7 @@ function calculateStreakReset(profileData){
     if (profileData.votestreak){
         // check if the vote has been longer than 2 days since previous vote
         var twoDaysAgo = new Date();
-        twoDaysAgo = new Date(twoDaysAgo.setHours(twoDaysAgo.getHours() - 48));
+        twoDaysAgo = new Date(twoDaysAgo.setHours(twoDaysAgo.getHours() - 36));
         if (twoDaysAgo > profileData.lastdailytime){
             return true
         }else{
