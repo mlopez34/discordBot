@@ -297,84 +297,84 @@ var armamentEssenceLevels = {
         essenceRarity: "rare",
         crystalRarity: "rare",
         essenceEmoji: "🔹",
-        crystalEmoji: "🏵️"
+        crystalEmoji: ":rosette:"
     },
     "rare+": {
         level: 2,
         essenceRarity: "rare",
         crystalRarity: "rare",
         essenceEmoji: "🔹",
-        crystalEmoji: "🏵️"
+        crystalEmoji: ":rosette:"
     },
     "rare++": {
         level: 3,
         essenceRarity: "rare",
         crystalRarity: "rare",
         essenceEmoji: "🔹",
-        crystalEmoji: "🏵️"
+        crystalEmoji: ":rosette:"
     },
     "rare+++": {
         level: 4,
         essenceRarity: "rare",
         crystalRarity: "rare",
         essenceEmoji: "🔹",
-        crystalEmoji: "🏵️"
+        crystalEmoji: ":rosette:"
     },
     "rare++++": {
         level: 5,
         essenceRarity: "rare",
         crystalRarity: "rare",
         essenceEmoji: "🔹",
-        crystalEmoji: "🏵️"
+        crystalEmoji: ":rosette:"
     },
     "ancient": {
         level: 1,
         essenceRarity: "ancient",
         crystalRarity: "ancient",
-        essenceEmoji: ":small_orange_diamond:",
-        crystalEmoji: "🏵️"
+        essenceEmoji: "🔸",
+        crystalEmoji: ":rosette:"
     },
     "ancient+": {
         level: 2,
         essenceRarity: "ancient",
         crystalRarity: "ancient",
         essenceEmoji: "🔸",
-        crystalEmoji: "🏵️"
+        crystalEmoji: ":rosette:"
     },
     "ancient++": {
         level: 3,
         essenceRarity: "ancient",
         crystalRarity: "ancient",
         essenceEmoji: "🔸",
-        crystalEmoji: "🏵️"
+        crystalEmoji: ":rosette:"
     },
     "ancient+++": {
         level: 4,
         essenceRarity: "ancient",
         crystalRarity: "ancient",
         essenceEmoji: "🔸",
-        crystalEmoji: "🏵️"
+        crystalEmoji: ":rosette:"
     },
     "ancient++++": {
         level: 5,
         essenceRarity: "ancient",
         crystalRarity: "ancient",
         essenceEmoji: "🔸",
-        crystalEmoji: "🏵️"
+        crystalEmoji: ":rosette:"
     },
     "artifact": {
         level: 1,
         essenceRarity: "artifact",
         crystalRarity: "artifact",
         essenceEmoji: "💠",
-        crystalEmoji: "🏵️"
+        crystalEmoji: ":rosette:"
     },
     "myth": {
         level: 2,
         essenceRarity: "artifact",
         crystalRarity: "artifact",
         essenceEmoji: "💠",
-        crystalEmoji: "🏵️"
+        crystalEmoji: ":rosette:"
     }
 }
 
