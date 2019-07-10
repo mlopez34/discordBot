@@ -1341,7 +1341,7 @@ module.exports.dailyCommand = function(message, args, dbl){
             // check if user has voted
             var now = new Date();
             var oneDayAgo = new Date();
-            oneDayAgo = new Date(oneDayAgo.setHours(oneDayAgo.getHours() - 24));
+            oneDayAgo = new Date(oneDayAgo.setHours(oneDayAgo.getHours() - 12));
 
             if ( oneDayAgo > res.data.lastdailytime || !res.data.lastdailytime ){
                 let profileData = res.data
@@ -1417,7 +1417,7 @@ module.exports.claimCommand = function(message, args){
                 let userBurritos = res.data.burritos || 0
                 if (args && args.length > 0 
                 && args[1] == "rare" 
-                && userBurritos >= 50){
+                && userBurritos >= 100){
                     // add a random rare
                     var listOfRares = []
                     var itemsForClaim = exports.getAllItems()
@@ -1432,7 +1432,7 @@ module.exports.claimCommand = function(message, args){
                     var indexOfRare = Math.floor(Math.random() * listOfRares.length);
                     var rareWon = [listOfRares[indexOfRare]];
                     // spend burritos
-                    profileDB.updateUserBurritos(discordUserId, -50, function(err, updateRes){
+                    profileDB.updateUserBurritos(discordUserId, -100, function(err, updateRes){
                         if (err){
                             message.channel.send("error " + err)
                         }else{
@@ -1445,7 +1445,7 @@ module.exports.claimCommand = function(message, args){
                     })
                 }
                 else if(args && args.length > 0 && args[1] == "letter"
-                && userBurritos >= 150){
+                && userBurritos >= 300){
                     var letter = "";
                     for (var arg in args){
                         if (arg > 1){
@@ -1453,7 +1453,7 @@ module.exports.claimCommand = function(message, args){
                         }
                     }
                     if (letter.length > 0 && letter.length < 150){
-                        profileDB.updateUserBurritos(discordUserId, -150, function(err, updateRes){
+                        profileDB.updateUserBurritos(discordUserId, -300, function(err, updateRes){
                             if (err){
                                 exports.setCommandLock("claim", discordUserId, false)
                                 message.channel.send("error " + err)
@@ -1477,7 +1477,7 @@ module.exports.claimCommand = function(message, args){
                 }
                 else if (args && args.length > 0 
                 && args[1] == "ancient" 
-                && userBurritos >= 400){
+                && userBurritos >= 800){
                     // add a random ancient
                     var listOfAncients = []
                     var itemsForClaim = exports.getAllItems()
@@ -1492,7 +1492,7 @@ module.exports.claimCommand = function(message, args){
                     var indexOfAncient = Math.floor(Math.random() * listOfAncients.length);
                     var ancientWon = [listOfAncients[indexOfAncient]];
                     // spend burritos
-                    profileDB.updateUserBurritos(discordUserId, -400, function(err, updateRes){
+                    profileDB.updateUserBurritos(discordUserId, -800, function(err, updateRes){
                         if (err){
                             message.channel.send("error " + err)
                         }else{
