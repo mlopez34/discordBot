@@ -3063,7 +3063,7 @@ module.exports.patchnotesCommand = function(message){
           },
           {
             "name": "July 9, 2019",
-            "value": "```-Experience in regular rpg for higher level zones has been increased\n-Master versions of some items have been introduced\n-Armaments for keystone items are now percentage based on their base stat on top of their original floors and ceiling ranges, slot bonuses are also added and reduced based on the slot by 6%, crit and luck remain at current rates\n-Enemy limit abilities will no longer consume regular group limit abilities\n-Debuffs that prevent buffs from being obtained will now properly work for enemies```"
+            "value": "```-Experience in regular rpg for higher level zones has been increased\n-Master versions of some items have been introduced\n-Armaments for keystone items are now percentage based on their base stat on top of their original floors and ceiling ranges, slot bonuses are also added and reduced based on the slot by 6%, crit and luck remain at current rates\n-Enemy limit abilities will no longer consume regular group limit abilities\n-Debuffs that prevent buffs from being obtained will now properly work for enemies\n- Cook, Prepare, and RPG potions have had their reduction time improved```"
           }
         ]
       };
