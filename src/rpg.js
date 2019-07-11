@@ -1218,6 +1218,7 @@ module.exports.rpgReady = function(message, itemsAvailable, amuletItemsById, buf
                                                                     enemies[enemyIdCount] = {
                                                                         id: enemyIdCount,
                                                                         name: enemyFound.name,
+                                                                        emoji: enemyFound.emoji,
                                                                         hp: enemyFound.hp + (21 * maxLevelInParty) + (enemyFound.hpPerPartyMember * enemyCount), 
                                                                         attackDmg: enemyFound.attackDmg + (10 * maxLevelInParty) + (enemyFound.adPerPartyMember * enemyCount), 
                                                                         magicDmg: enemyFound.magicDmg + (10 * maxLevelInParty) + (enemyFound.mdPerPartyMember * enemyCount),
@@ -1361,6 +1362,7 @@ module.exports.rpgReady = function(message, itemsAvailable, amuletItemsById, buf
                                                                     enemies[enemyIdCount] = {
                                                                         id: enemyIdCount,
                                                                         name: enemyFound.name,
+                                                                        emoji: enemyFound.emoji,
                                                                         hp: enemyFound.hp + (21 * averageLevelInParty),
                                                                         attackDmg: enemyFound.attackDmg + (11 * averageLevelInParty),
                                                                         magicDmg: enemyFound.magicDmg + (11 * averageLevelInParty),
@@ -1467,6 +1469,7 @@ module.exports.rpgReady = function(message, itemsAvailable, amuletItemsById, buf
 
                                                                         enemies[enemyIdCount] = {
                                                                             id: enemyIdCount,
+                                                                            emoji: enemyFound.emoji,
                                                                             name: enemyFound.name,
                                                                             hp: Math.floor( hpAreaBuff * ( enemyFound.hp + (21 * averageLevelInParty) + (enemyFound.hpPerPartyMember * enemyCount)) ) , 
                                                                             attackDmg: Math.floor( adAreaBuff * ( enemyFound.attackDmg + (10 * averageLevelInParty) + (enemyFound.adPerPartyMember * enemyCount)) ), 
@@ -1643,6 +1646,7 @@ module.exports.rpgReady = function(message, itemsAvailable, amuletItemsById, buf
                                                                         enemies[enemyIdCount] = {
                                                                             id: enemyIdCount,
                                                                             name: enemyFound.name,
+                                                                            emoji: enemyFound.emoji,
                                                                             hp: Math.floor( hpAreaBuff * ( enemyFound.hp + (21 * averageLevelInParty) + (enemyFound.hpPerPartyMember * enemyCount)) ) , 
                                                                             attackDmg: Math.floor( adAreaBuff * ( enemyFound.attackDmg + (10 * averageLevelInParty) + (enemyFound.adPerPartyMember * enemyCount)) ), 
                                                                             magicDmg: Math.floor( mdAreaBuff * ( enemyFound.magicDmg + (10 * averageLevelInParty) + (enemyFound.mdPerPartyMember * enemyCount)) ) ,
@@ -5023,16 +5027,16 @@ function effectsOnDeath(event, member){
                             // improve the effect
                             var rpgAbility = eotEffect;
                             if (rpgAbility.name == "Summon Demon" && !rpgAbility.transferred){
-                                rpgAbility.summon.attackDmg = rpgAbility.summon.attackDmg + 100;
-                                rpgAbility.summon.magicDmg = rpgAbility.summon.magicDmg + 100;
+                                rpgAbility.summon.attackDmg = rpgAbility.summon.attackDmg + (rpgAbility.summon.attackDmg * .1);
+                                rpgAbility.summon.magicDmg = rpgAbility.summon.magicDmg + (rpgAbility.summon.magicDmg * .1);;
                                 rpgAbility.everyNTurns = rpgAbility.everyNTurns - 1;
                             }else if (rpgAbility.name == "Electric Orb" && !rpgAbility.transferred){
-                                rpgAbility.dmg = rpgAbility.dmg + 100;
-                                rpgAbility.status.dmgOnExpire = rpgAbility.status.dmgOnExpire + 350;
-                                rpgAbility.status.dmgOnRemove = rpgAbility.status.dmgOnRemove + 350
+                                rpgAbility.dmg = rpgAbility.dmg + (rpgAbility.dmg * .05);
+                                rpgAbility.status.dmgOnExpire = rpgAbility.status.dmgOnExpire + (rpgAbility.status.dmgOnExpire * .15);
+                                rpgAbility.status.dmgOnRemove = rpgAbility.status.dmgOnRemove + (rpgAbility.status.dmgOnRemove * .15);
                                 rpgAbility.everyNTurns = rpgAbility.everyNTurns - 1;
                             }else if (rpgAbility.name == "Tremor" && !rpgAbility.transferred){
-                                rpgAbility.areawidedmg.dmg = rpgAbility.areawidedmg.dmg + 250;
+                                rpgAbility.areawidedmg.dmg = rpgAbility.areawidedmg.dmg + (rpgAbility.areawidedmg.dmg * .1);;
                                 rpgAbility.everyNTurns = rpgAbility.everyNTurns - 1;
                             }
                         })
@@ -5040,19 +5044,19 @@ function effectsOnDeath(event, member){
                 }
 
                 if (bossesAlive.length == 1){
-                    onDeathString = onDeathString + bossesAlive[0].name + " Gains Unimaginable Power 🗡 +400, ☄️ + 200 \n";
-                    // give the enemy + 600 magic and attack
+                    onDeathString = onDeathString + bossesAlive[0].name + " Gains Unimaginable Power 🗡 +30%, ☄️ +15% \n";
+                    // give the enemy + 30%/15% magic and attack
                     var enemy = bossesAlive[0].enemyNumber;
-                    event.enemies[enemy].attackDmg = event.enemies[enemy].attackDmg + 400;
-                    event.enemies[enemy].magicDmg = event.enemies[enemy].magicDmg + 200;                
+                    event.enemies[enemy].attackDmg = event.enemies[enemy].attackDmg + ( event.enemies[enemy].attackDmg * .3 );
+                    event.enemies[enemy].magicDmg = event.enemies[enemy].magicDmg + ( event.enemies[enemy].magicDmg * .15 );           
                 }else if (bossesAlive.length == 2){
-                    // give the enemy + 300 magic and attack
+                    // give the enemy + 10%/5% magic and attack
                     var enemyOne = bossesAlive[0].enemyNumber;
                     var enemyTwo = bossesAlive[1].enemyNumber;
-                    event.enemies[enemyOne].attackDmg = event.enemies[enemyOne].attackDmg + 200;
-                    event.enemies[enemyOne].magicDmg = event.enemies[enemyOne].magicDmg + 100;
-                    event.enemies[enemyTwo].attackDmg = event.enemies[enemyTwo].attackDmg + 200; 
-                    event.enemies[enemyTwo].magicDmg = event.enemies[enemyTwo].magicDmg + 100;
+                    event.enemies[enemyOne].attackDmg = event.enemies[enemyOne].attackDmg + ( event.enemies[enemy].attackDmg * .1 );
+                    event.enemies[enemyOne].magicDmg = event.enemies[enemyOne].magicDmg + ( event.enemies[enemy].magicDmg * .05 );
+                    event.enemies[enemyTwo].attackDmg = event.enemies[enemyTwo].attackDmg ( event.enemies[enemy].attackDmg * .1 );
+                    event.enemies[enemyTwo].magicDmg = event.enemies[enemyTwo].magicDmg ( event.enemies[enemy].magicDmg * .05 );
                 }
 
                 // array of end of turn abilities
@@ -6412,6 +6416,8 @@ function calculateDamageDealt(event, caster, target, rpgAbility){
     var criticalDamagePlus = 1
 
     if (caster <= 1000){
+        let keystoneBaseDmgMultiplier = 1 + (event.challenge && event.challenge.keystone ? event.challenge.keystone * 0.5 : 0)
+        var baseDamage = baseDamage * keystoneBaseDmgMultiplier
         // the caster is an enemy
         var checkTarget = event.membersInParty[target];
         
@@ -7234,7 +7240,11 @@ function processAbility(abilityObject, event){
                                 statusToAdd.caster = abilityCaster // id of the caster
                                 statusToAdd.expireOnTurn = currentTurn + statusToAdd.turnsToExpire;
                             }
-                            event.enemies[targetToAddStatus].buffs.push(statusToAdd);
+                            // check the 
+                            if (buffsToStop.indexOf(statusToAdd.abilityId) == -1){
+                                event.enemies[targetToAddStatus].buffs.push(statusToAdd);
+                            }
+                            
                         }
                     }
                 }
@@ -8522,7 +8532,7 @@ function userStatsStringBuilder(userStats, name, isEnemy, currentTurn){
     var userString = "";
     if (isEnemy){
         userString = ":heart_decoration: "  + (userStats.hp + userStats.statBuffs.hp) + "/" + (userStats.maxhp + userStats.statBuffs.maxhp)
-        userString = userString + " - **" + userStats.id + "** **" + name + "**" + "\n"
+        userString = userString + " - **" + userStats.id + "** " + (userStats.emoji || "") +  " **" + name + "**" + "\n"
     }else{
         userString = " :green_heart:  " + (userStats.hp + userStats.statBuffs.maxhp) + "/" + (userStats.maxhp + userStats.statBuffs.maxhp) + " "
         userString = userString + " :shield: " + (userStats.armor + userStats.statBuffs.armor)

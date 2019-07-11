@@ -413,8 +413,11 @@ temple - 9 - elemental crystals artiact items
 temple - 10 - craft artifacts and amulets
 temple - 12 - craft lvl 40 items
  */
-module.exports.checkRequirements = function(item, itemToCreateArmament){
+module.exports.checkRequirements = function(item, itemToCreateArmament, itemlevelrequirement){
     var itemRarity = itemToCreateArmament.itemraritycategory
+    if (itemlevelrequirement >= 40){
+        itemRarity = itemRarity + "+"
+    }
     var requirements = armamentEssenceLevels[itemRarity]
     if (requirements){
         if (item.essencelevel){
@@ -789,13 +792,13 @@ module.exports.rollForArmamentStats = function(itemToCreateArmament){
         }
         if (itemRarity == "rare"){
             statMap.hpplus.floor = statMap.hpplus.floor + ( itemhpplus * 0.1 * -1 )
-            statMap.hpplus.ceiling = statMap.hpplus.ceiling + ( itemhpplus * 0.33 )
+            statMap.hpplus.ceiling = statMap.hpplus.ceiling + ( itemhpplus * 0.23 )
     
             statMap.adplus.floor = statMap.adplus.floor + (itemadplus * 0.1 * -1 )
-            statMap.adplus.ceiling = statMap.adplus.ceiling + ( itemadplus * 0.33 )
+            statMap.adplus.ceiling = statMap.adplus.ceiling + ( itemadplus * 0.23 )
     
             statMap.mdplus.floor = statMap.mdplus.floor + (itemmdplus * 0.1 * -1 )
-            statMap.mdplus.ceiling = statMap.mdplus.ceiling + ( itemmdplus * 0.33 )
+            statMap.mdplus.ceiling = statMap.mdplus.ceiling + ( itemmdplus * 0.23 )
     
             statMap.armorplus.floor = statMap.armorplus.floor + (itemarmorplus * 0.05 * -1 )
             statMap.armorplus.ceiling = statMap.armorplus.ceiling + ( itemarmorplus * 0.20 )
@@ -803,21 +806,21 @@ module.exports.rollForArmamentStats = function(itemToCreateArmament){
             statMap.spiritplus.floor = statMap.spiritplus.floor + (itemspiritplus * 0.05 * -1 )
             statMap.spiritplus.ceiling = statMap.spiritplus.ceiling + ( itemspiritplus * 0.20 )
     
-            statMap.critplus.floor = statMap.critplus.floor + (statMap.critplus.floor * 0.33 * -1 )
-            statMap.critplus.ceiling = statMap.critplus.ceiling + ( statMap.critplus.ceiling * 0.33 )
+            statMap.critplus.floor = statMap.critplus.floor + (statMap.critplus.floor * 0.23 * -1 )
+            statMap.critplus.ceiling = statMap.critplus.ceiling + ( statMap.critplus.ceiling * 0.23 )
     
-            statMap.luckplus.floor = statMap.luckplus.floor + (statMap.luckplus.floor * 0.33 * -1 )
-            statMap.luckplus.ceiling = statMap.luckplus.ceiling + ( statMap.luckplus.ceiling * 0.33 )
+            statMap.luckplus.floor = statMap.luckplus.floor + (statMap.luckplus.floor * 0.23 * -1 )
+            statMap.luckplus.ceiling = statMap.luckplus.ceiling + ( statMap.luckplus.ceiling * 0.23 )
     
         }else if (itemRarity == "rare+"){
             statMap.hpplus.floor = statMap.hpplus.floor + ( itemhpplus * 0.1 * -1 )
-            statMap.hpplus.ceiling = statMap.hpplus.ceiling + ( itemhpplus * 0.33 )
+            statMap.hpplus.ceiling = statMap.hpplus.ceiling + ( itemhpplus * 0.23 )
     
             statMap.adplus.floor = statMap.adplus.floor + (itemadplus * 0.1 * -1 )
-            statMap.adplus.ceiling = statMap.adplus.ceiling + ( itemadplus * 0.33 )
+            statMap.adplus.ceiling = statMap.adplus.ceiling + ( itemadplus * 0.23 )
     
             statMap.mdplus.floor = statMap.mdplus.floor + (itemmdplus * 0.1 * -1 )
-            statMap.mdplus.ceiling = statMap.mdplus.ceiling + ( itemmdplus * 0.33 )
+            statMap.mdplus.ceiling = statMap.mdplus.ceiling + ( itemmdplus * 0.23 )
     
             statMap.armorplus.floor = statMap.armorplus.floor + (itemarmorplus * 0.05 * -1 )
             statMap.armorplus.ceiling = statMap.armorplus.ceiling + ( itemarmorplus * 0.20 )
@@ -825,22 +828,22 @@ module.exports.rollForArmamentStats = function(itemToCreateArmament){
             statMap.spiritplus.floor = statMap.spiritplus.floor + (itemspiritplus * 0.05 * -1 )
             statMap.spiritplus.ceiling = statMap.spiritplus.ceiling + ( itemspiritplus * 0.20 )
     
-            statMap.critplus.floor = statMap.critplus.floor + (statMap.critplus.floor * 0.33 * -1 )
-            statMap.critplus.ceiling = statMap.critplus.ceiling + ( statMap.critplus.ceiling * 0.33 )
+            statMap.critplus.floor = statMap.critplus.floor + (statMap.critplus.floor * 0.23 * -1 )
+            statMap.critplus.ceiling = statMap.critplus.ceiling + ( statMap.critplus.ceiling * 0.23 )
     
-            statMap.luckplus.floor = statMap.luckplus.floor + (statMap.luckplus.floor * 0.33 * -1 )
-            statMap.luckplus.ceiling = statMap.luckplus.ceiling + ( statMap.luckplus.ceiling * 0.33 )
+            statMap.luckplus.floor = statMap.luckplus.floor + (statMap.luckplus.floor * 0.23 * -1 )
+            statMap.luckplus.ceiling = statMap.luckplus.ceiling + ( statMap.luckplus.ceiling * 0.23 )
 
     
         }else if (itemRarity == "rare++"){
             statMap.hpplus.floor = statMap.hpplus.floor + ( itemhpplus * 0.1 * -1 )
-            statMap.hpplus.ceiling = statMap.hpplus.ceiling + ( itemhpplus * 0.33 )
+            statMap.hpplus.ceiling = statMap.hpplus.ceiling + ( itemhpplus * 0.23 )
     
             statMap.adplus.floor = statMap.adplus.floor + (itemadplus * 0.1 * -1 )
-            statMap.adplus.ceiling = statMap.adplus.ceiling + ( itemadplus * 0.33 )
+            statMap.adplus.ceiling = statMap.adplus.ceiling + ( itemadplus * 0.23 )
     
             statMap.mdplus.floor = statMap.mdplus.floor + (itemmdplus * 0.1 * -1 )
-            statMap.mdplus.ceiling = statMap.mdplus.ceiling + ( itemmdplus * 0.33 )
+            statMap.mdplus.ceiling = statMap.mdplus.ceiling + ( itemmdplus * 0.23 )
     
             statMap.armorplus.floor = statMap.armorplus.floor + (itemarmorplus * 0.05 * -1 )
             statMap.armorplus.ceiling = statMap.armorplus.ceiling + ( itemarmorplus * 0.20 )
@@ -848,22 +851,22 @@ module.exports.rollForArmamentStats = function(itemToCreateArmament){
             statMap.spiritplus.floor = statMap.spiritplus.floor + (itemspiritplus * 0.05 * -1 )
             statMap.spiritplus.ceiling = statMap.spiritplus.ceiling + ( itemspiritplus * 0.20 )
     
-            statMap.critplus.floor = statMap.critplus.floor + (statMap.critplus.floor * 0.33 * -1 )
-            statMap.critplus.ceiling = statMap.critplus.ceiling + ( statMap.critplus.ceiling * 0.33 )
+            statMap.critplus.floor = statMap.critplus.floor + (statMap.critplus.floor * 0.23 * -1 )
+            statMap.critplus.ceiling = statMap.critplus.ceiling + ( statMap.critplus.ceiling * 0.23 )
     
-            statMap.luckplus.floor = statMap.luckplus.floor + (statMap.luckplus.floor * 0.33 * -1 )
-            statMap.luckplus.ceiling = statMap.luckplus.ceiling + ( statMap.luckplus.ceiling * 0.33 )
+            statMap.luckplus.floor = statMap.luckplus.floor + (statMap.luckplus.floor * 0.23 * -1 )
+            statMap.luckplus.ceiling = statMap.luckplus.ceiling + ( statMap.luckplus.ceiling * 0.23 )
 
     
         }else if (itemRarity == "rare+++"){
             statMap.hpplus.floor = statMap.hpplus.floor + ( itemhpplus * 0.1 * -1 )
-            statMap.hpplus.ceiling = statMap.hpplus.ceiling + ( itemhpplus * 0.33 )
+            statMap.hpplus.ceiling = statMap.hpplus.ceiling + ( itemhpplus * 0.23 )
     
             statMap.adplus.floor = statMap.adplus.floor + (itemadplus * 0.1 * -1 )
-            statMap.adplus.ceiling = statMap.adplus.ceiling + ( itemadplus * 0.33 )
+            statMap.adplus.ceiling = statMap.adplus.ceiling + ( itemadplus * 0.23 )
     
             statMap.mdplus.floor = statMap.mdplus.floor + (itemmdplus * 0.1 * -1 )
-            statMap.mdplus.ceiling = statMap.mdplus.ceiling + ( itemmdplus * 0.33 )
+            statMap.mdplus.ceiling = statMap.mdplus.ceiling + ( itemmdplus * 0.23 )
     
             statMap.armorplus.floor = statMap.armorplus.floor + (itemarmorplus * 0.05 * -1 )
             statMap.armorplus.ceiling = statMap.armorplus.ceiling + ( itemarmorplus * 0.20 )
@@ -871,22 +874,22 @@ module.exports.rollForArmamentStats = function(itemToCreateArmament){
             statMap.spiritplus.floor = statMap.spiritplus.floor + (itemspiritplus * 0.05 * -1 )
             statMap.spiritplus.ceiling = statMap.spiritplus.ceiling + ( itemspiritplus * 0.20 )
     
-            statMap.critplus.floor = statMap.critplus.floor + (statMap.critplus.floor * 0.33 * -1 )
-            statMap.critplus.ceiling = statMap.critplus.ceiling + ( statMap.critplus.ceiling * 0.33 )
+            statMap.critplus.floor = statMap.critplus.floor + (statMap.critplus.floor * 0.23 * -1 )
+            statMap.critplus.ceiling = statMap.critplus.ceiling + ( statMap.critplus.ceiling * 0.23 )
     
-            statMap.luckplus.floor = statMap.luckplus.floor + (statMap.luckplus.floor * 0.33 * -1 )
-            statMap.luckplus.ceiling = statMap.luckplus.ceiling + ( statMap.luckplus.ceiling * 0.33 )
+            statMap.luckplus.floor = statMap.luckplus.floor + (statMap.luckplus.floor * 0.23 * -1 )
+            statMap.luckplus.ceiling = statMap.luckplus.ceiling + ( statMap.luckplus.ceiling * 0.23 )
 
     
         }else if (itemRarity == "ancient"){
             statMap.hpplus.floor = statMap.hpplus.floor + ( itemhpplus * 0.1 * -1 )
-            statMap.hpplus.ceiling = statMap.hpplus.ceiling + ( itemhpplus * 0.33 )
+            statMap.hpplus.ceiling = statMap.hpplus.ceiling + ( itemhpplus * 0.23 )
     
             statMap.adplus.floor = statMap.adplus.floor + (itemadplus * 0.1 * -1 )
-            statMap.adplus.ceiling = statMap.adplus.ceiling + ( itemadplus * 0.33 )
+            statMap.adplus.ceiling = statMap.adplus.ceiling + ( itemadplus * 0.23 )
     
             statMap.mdplus.floor = statMap.mdplus.floor + (itemmdplus * 0.1 * -1 )
-            statMap.mdplus.ceiling = statMap.mdplus.ceiling + ( itemmdplus * 0.33 )
+            statMap.mdplus.ceiling = statMap.mdplus.ceiling + ( itemmdplus * 0.23 )
     
             statMap.armorplus.floor = statMap.armorplus.floor + (itemarmorplus * 0.05 * -1 )
             statMap.armorplus.ceiling = statMap.armorplus.ceiling + ( itemarmorplus * 0.20 )
@@ -894,22 +897,22 @@ module.exports.rollForArmamentStats = function(itemToCreateArmament){
             statMap.spiritplus.floor = statMap.spiritplus.floor + (itemspiritplus * 0.05 * -1 )
             statMap.spiritplus.ceiling = statMap.spiritplus.ceiling + ( itemspiritplus * 0.20 )
     
-            statMap.critplus.floor = statMap.critplus.floor + (statMap.critplus.floor * 0.33 * -1 )
-            statMap.critplus.ceiling = statMap.critplus.ceiling + ( statMap.critplus.ceiling * 0.33 )
+            statMap.critplus.floor = statMap.critplus.floor + (statMap.critplus.floor * 0.23 * -1 )
+            statMap.critplus.ceiling = statMap.critplus.ceiling + ( statMap.critplus.ceiling * 0.23 )
     
-            statMap.luckplus.floor = statMap.luckplus.floor + (statMap.luckplus.floor * 0.33 * -1 )
-            statMap.luckplus.ceiling = statMap.luckplus.ceiling + ( statMap.luckplus.ceiling * 0.33 )
+            statMap.luckplus.floor = statMap.luckplus.floor + (statMap.luckplus.floor * 0.23 * -1 )
+            statMap.luckplus.ceiling = statMap.luckplus.ceiling + ( statMap.luckplus.ceiling * 0.23 )
 
     
         }else if (itemRarity == "ancient+"){
             statMap.hpplus.floor = statMap.hpplus.floor + ( itemhpplus * 0.1 * -1 )
-            statMap.hpplus.ceiling = statMap.hpplus.ceiling + ( itemhpplus * 0.33 )
+            statMap.hpplus.ceiling = statMap.hpplus.ceiling + ( itemhpplus * 0.23 )
     
             statMap.adplus.floor = statMap.adplus.floor + (itemadplus * 0.1 * -1 )
-            statMap.adplus.ceiling = statMap.adplus.ceiling + ( itemadplus * 0.33 )
+            statMap.adplus.ceiling = statMap.adplus.ceiling + ( itemadplus * 0.23 )
     
             statMap.mdplus.floor = statMap.mdplus.floor + (itemmdplus * 0.1 * -1 )
-            statMap.mdplus.ceiling = statMap.mdplus.ceiling + ( itemmdplus * 0.33 )
+            statMap.mdplus.ceiling = statMap.mdplus.ceiling + ( itemmdplus * 0.23 )
     
             statMap.armorplus.floor = statMap.armorplus.floor + (itemarmorplus * 0.05 * -1 )
             statMap.armorplus.ceiling = statMap.armorplus.ceiling + ( itemarmorplus * 0.20 )
@@ -917,22 +920,22 @@ module.exports.rollForArmamentStats = function(itemToCreateArmament){
             statMap.spiritplus.floor = statMap.spiritplus.floor + (itemspiritplus * 0.05 * -1 )
             statMap.spiritplus.ceiling = statMap.spiritplus.ceiling + ( itemspiritplus * 0.20 )
     
-            statMap.critplus.floor = statMap.critplus.floor + (statMap.critplus.floor * 0.33 * -1 )
-            statMap.critplus.ceiling = statMap.critplus.ceiling + ( statMap.critplus.ceiling * 0.33 )
+            statMap.critplus.floor = statMap.critplus.floor + (statMap.critplus.floor * 0.23 * -1 )
+            statMap.critplus.ceiling = statMap.critplus.ceiling + ( statMap.critplus.ceiling * 0.23 )
     
-            statMap.luckplus.floor = statMap.luckplus.floor + (statMap.luckplus.floor * 0.33 * -1 )
-            statMap.luckplus.ceiling = statMap.luckplus.ceiling + ( statMap.luckplus.ceiling * 0.33 )
+            statMap.luckplus.floor = statMap.luckplus.floor + (statMap.luckplus.floor * 0.23 * -1 )
+            statMap.luckplus.ceiling = statMap.luckplus.ceiling + ( statMap.luckplus.ceiling * 0.23 )
 
     
         }else if (itemRarity == "ancient++"){
             statMap.hpplus.floor = statMap.hpplus.floor + ( itemhpplus * 0.1 * -1 )
-            statMap.hpplus.ceiling = statMap.hpplus.ceiling + ( itemhpplus * 0.33 )
+            statMap.hpplus.ceiling = statMap.hpplus.ceiling + ( itemhpplus * 0.23 )
     
             statMap.adplus.floor = statMap.adplus.floor + (itemadplus * 0.1 * -1 )
-            statMap.adplus.ceiling = statMap.adplus.ceiling + ( itemadplus * 0.33 )
+            statMap.adplus.ceiling = statMap.adplus.ceiling + ( itemadplus * 0.23 )
     
             statMap.mdplus.floor = statMap.mdplus.floor + (itemmdplus * 0.1 * -1 )
-            statMap.mdplus.ceiling = statMap.mdplus.ceiling + ( itemmdplus * 0.33 )
+            statMap.mdplus.ceiling = statMap.mdplus.ceiling + ( itemmdplus * 0.23 )
     
             statMap.armorplus.floor = statMap.armorplus.floor + (itemarmorplus * 0.05 * -1 )
             statMap.armorplus.ceiling = statMap.armorplus.ceiling + ( itemarmorplus * 0.20 )
@@ -940,22 +943,22 @@ module.exports.rollForArmamentStats = function(itemToCreateArmament){
             statMap.spiritplus.floor = statMap.spiritplus.floor + (itemspiritplus * 0.05 * -1 )
             statMap.spiritplus.ceiling = statMap.spiritplus.ceiling + ( itemspiritplus * 0.20 )
     
-            statMap.critplus.floor = statMap.critplus.floor + (statMap.critplus.floor * 0.33 * -1 )
-            statMap.critplus.ceiling = statMap.critplus.ceiling + ( statMap.critplus.ceiling * 0.33 )
+            statMap.critplus.floor = statMap.critplus.floor + (statMap.critplus.floor * 0.23 * -1 )
+            statMap.critplus.ceiling = statMap.critplus.ceiling + ( statMap.critplus.ceiling * 0.23 )
     
-            statMap.luckplus.floor = statMap.luckplus.floor + (statMap.luckplus.floor * 0.33 * -1 )
-            statMap.luckplus.ceiling = statMap.luckplus.ceiling + ( statMap.luckplus.ceiling * 0.33 )
+            statMap.luckplus.floor = statMap.luckplus.floor + (statMap.luckplus.floor * 0.23 * -1 )
+            statMap.luckplus.ceiling = statMap.luckplus.ceiling + ( statMap.luckplus.ceiling * 0.23 )
 
     
         }else if (itemRarity == "ancient+++"){
             statMap.hpplus.floor = statMap.hpplus.floor + ( itemhpplus * 0.1 * -1 )
-            statMap.hpplus.ceiling = statMap.hpplus.ceiling + ( itemhpplus * 0.33 )
+            statMap.hpplus.ceiling = statMap.hpplus.ceiling + ( itemhpplus * 0.23 )
     
             statMap.adplus.floor = statMap.adplus.floor + (itemadplus * 0.1 * -1 )
-            statMap.adplus.ceiling = statMap.adplus.ceiling + ( itemadplus * 0.33 )
+            statMap.adplus.ceiling = statMap.adplus.ceiling + ( itemadplus * 0.23 )
     
             statMap.mdplus.floor = statMap.mdplus.floor + (itemmdplus * 0.1 * -1 )
-            statMap.mdplus.ceiling = statMap.mdplus.ceiling + ( itemmdplus * 0.33 )
+            statMap.mdplus.ceiling = statMap.mdplus.ceiling + ( itemmdplus * 0.23 )
     
             statMap.armorplus.floor = statMap.armorplus.floor + (itemarmorplus * 0.05 * -1 )
             statMap.armorplus.ceiling = statMap.armorplus.ceiling + ( itemarmorplus * 0.20 )
@@ -963,22 +966,22 @@ module.exports.rollForArmamentStats = function(itemToCreateArmament){
             statMap.spiritplus.floor = statMap.spiritplus.floor + (itemspiritplus * 0.05 * -1 )
             statMap.spiritplus.ceiling = statMap.spiritplus.ceiling + ( itemspiritplus * 0.20 )
     
-            statMap.critplus.floor = statMap.critplus.floor + (statMap.critplus.floor * 0.33 * -1 )
-            statMap.critplus.ceiling = statMap.critplus.ceiling + ( statMap.critplus.ceiling * 0.33 )
+            statMap.critplus.floor = statMap.critplus.floor + (statMap.critplus.floor * 0.23 * -1 )
+            statMap.critplus.ceiling = statMap.critplus.ceiling + ( statMap.critplus.ceiling * 0.23 )
     
-            statMap.luckplus.floor = statMap.luckplus.floor + (statMap.luckplus.floor * 0.33 * -1 )
-            statMap.luckplus.ceiling = statMap.luckplus.ceiling + ( statMap.luckplus.ceiling * 0.33 )
+            statMap.luckplus.floor = statMap.luckplus.floor + (statMap.luckplus.floor * 0.23 * -1 )
+            statMap.luckplus.ceiling = statMap.luckplus.ceiling + ( statMap.luckplus.ceiling * 0.23 )
     
         }
         else if (itemRarity == "artifact"){
             statMap.hpplus.floor = statMap.hpplus.floor + ( itemhpplus * 0.1 * -1 )
-            statMap.hpplus.ceiling = statMap.hpplus.ceiling + ( itemhpplus * 0.33 )
+            statMap.hpplus.ceiling = statMap.hpplus.ceiling + ( itemhpplus * 0.23 )
     
             statMap.adplus.floor = statMap.adplus.floor + (itemadplus * 0.1 * -1 )
-            statMap.adplus.ceiling = statMap.adplus.ceiling + ( itemadplus * 0.33 )
+            statMap.adplus.ceiling = statMap.adplus.ceiling + ( itemadplus * 0.23 )
     
             statMap.mdplus.floor = statMap.mdplus.floor + (itemmdplus * 0.1 * -1 )
-            statMap.mdplus.ceiling = statMap.mdplus.ceiling + ( itemmdplus * 0.33 )
+            statMap.mdplus.ceiling = statMap.mdplus.ceiling + ( itemmdplus * 0.23 )
     
             statMap.armorplus.floor = statMap.armorplus.floor + (itemarmorplus * 0.05 * -1 )
             statMap.armorplus.ceiling = statMap.armorplus.ceiling + ( itemarmorplus * 0.20 )
@@ -986,21 +989,21 @@ module.exports.rollForArmamentStats = function(itemToCreateArmament){
             statMap.spiritplus.floor = statMap.spiritplus.floor + (itemspiritplus * 0.05 * -1 )
             statMap.spiritplus.ceiling = statMap.spiritplus.ceiling + ( itemspiritplus * 0.20 )
     
-            statMap.critplus.floor = statMap.critplus.floor + (statMap.critplus.floor * 0.33 * -1 )
-            statMap.critplus.ceiling = statMap.critplus.ceiling + ( statMap.critplus.ceiling * 0.33 )
+            statMap.critplus.floor = statMap.critplus.floor + (statMap.critplus.floor * 0.23 * -1 )
+            statMap.critplus.ceiling = statMap.critplus.ceiling + ( statMap.critplus.ceiling * 0.23 )
     
-            statMap.luckplus.floor = statMap.luckplus.floor + (statMap.luckplus.floor * 0.33 * -1 )
-            statMap.luckplus.ceiling = statMap.luckplus.ceiling + ( statMap.luckplus.ceiling * 0.33 )
+            statMap.luckplus.floor = statMap.luckplus.floor + (statMap.luckplus.floor * 0.23 * -1 )
+            statMap.luckplus.ceiling = statMap.luckplus.ceiling + ( statMap.luckplus.ceiling * 0.23 )
 
         }else if (itemRarity == "myth"){
             statMap.hpplus.floor = statMap.hpplus.floor + ( itemhpplus * 0.1 * -1 )
-            statMap.hpplus.ceiling = statMap.hpplus.ceiling + ( itemhpplus * 0.33 )
+            statMap.hpplus.ceiling = statMap.hpplus.ceiling + ( itemhpplus * 0.23 )
     
             statMap.adplus.floor = statMap.adplus.floor + (itemadplus * 0.1 * -1 )
-            statMap.adplus.ceiling = statMap.adplus.ceiling + ( itemadplus * 0.33 )
+            statMap.adplus.ceiling = statMap.adplus.ceiling + ( itemadplus * 0.23 )
     
             statMap.mdplus.floor = statMap.mdplus.floor + (itemmdplus * 0.1 * -1 )
-            statMap.mdplus.ceiling = statMap.mdplus.ceiling + ( itemmdplus * 0.33 )
+            statMap.mdplus.ceiling = statMap.mdplus.ceiling + ( itemmdplus * 0.23 )
     
             statMap.armorplus.floor = statMap.armorplus.floor + (itemarmorplus * 0.05 * -1 )
             statMap.armorplus.ceiling = statMap.armorplus.ceiling + ( itemarmorplus * 0.20 )
@@ -1008,11 +1011,11 @@ module.exports.rollForArmamentStats = function(itemToCreateArmament){
             statMap.spiritplus.floor = statMap.spiritplus.floor + (itemspiritplus * 0.05 * -1 )
             statMap.spiritplus.ceiling = statMap.spiritplus.ceiling + ( itemspiritplus * 0.20 )
     
-            statMap.critplus.floor = statMap.critplus.floor + (statMap.critplus.floor * 0.33 * -1 )
-            statMap.critplus.ceiling = statMap.critplus.ceiling + ( statMap.critplus.ceiling * 0.33 )
+            statMap.critplus.floor = statMap.critplus.floor + (statMap.critplus.floor * 0.23 * -1 )
+            statMap.critplus.ceiling = statMap.critplus.ceiling + ( statMap.critplus.ceiling * 0.23 )
     
-            statMap.luckplus.floor = statMap.luckplus.floor + (statMap.luckplus.floor * 0.33 * -1 )
-            statMap.luckplus.ceiling = statMap.luckplus.ceiling + ( statMap.luckplus.ceiling * 0.33 )
+            statMap.luckplus.floor = statMap.luckplus.floor + (statMap.luckplus.floor * 0.23 * -1 )
+            statMap.luckplus.ceiling = statMap.luckplus.ceiling + ( statMap.luckplus.ceiling * 0.23 )
 
         }
     

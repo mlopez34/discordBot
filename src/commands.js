@@ -5948,10 +5948,14 @@ module.exports.createArmament = function(message, args){
                             var itemsInInventoryCountMap = {}
                             var itemToCreateArmament = itemsMapbyShortName[myItemShortName]
                             var haveItemToCreateArmamentFor = false
+                            var isLevel40Item = false
                             var armamentTemplateItem;
                             // find the armament template to obtain based on the rarity of the itemToCreateArmament
                             if (itemToCreateArmament && !itemToCreateArmament.isseed && itemToCreateArmament.itemraritycategory != "amulet"){
                                 itemToCreateArmament = JSON.parse(JSON.stringify(itemToCreateArmament))
+                                if (itemToCreateArmament.itemlevelrequirement >= 40){
+                                    isLevel40Item = true
+                                }
                                 let itemsForArmament = exports.getAllItems()
                                 for (var i in itemsForArmament){
                                     if (itemsForArmament[i].armamentcategory && itemsForArmament[i].armamentcategory == itemToCreateArmament.itemraritycategory){
@@ -5960,6 +5964,7 @@ module.exports.createArmament = function(message, args){
                                 }
                                 // if we have an item that meets the requirements then use that item to create the armament
                                 var itemBeingUsedForArmament = []
+                                var itemBeingUsedForArmament40 = []
                                 for (var item in inventoryResponse.data){
                                     var validItem = useItem.itemValidate(inventoryResponse.data[item]);
                                     var auctionedItem = false;
@@ -5996,7 +6001,7 @@ module.exports.createArmament = function(message, args){
                                         itemsInInventoryCountMap[ItemInQuestion.itemid] = 1;
                 
                                         // check if the current item meets the criteria of armamentReqs
-                                        var armamentCheck = disassembleItem.checkRequirements( itemsMapById[ ItemInQuestion.itemid ], itemToCreateArmament)
+                                        var armamentCheck = disassembleItem.checkRequirements( itemsMapById[ ItemInQuestion.itemid ], itemToCreateArmament, 1)
                                         // console.log(ItemInQuestion);
                                         if (armamentCheck){
                                             itemBeingUsedForArmament.push(ItemInQuestion);
@@ -6004,8 +6009,32 @@ module.exports.createArmament = function(message, args){
                                         }
                                     }
                                 }
+                                if (isLevel40Item){
+                                    for (var item in inventoryResponse.data){
+                                        var validItem = useItem.itemValidate(inventoryResponse.data[item]);
+                                        var auctionedItem = false;
+                                        var ItemInQuestion = inventoryResponse.data[item]
+                    
+                                        if (itemsInAuction[ItemInQuestion.id]){
+                                            auctionedItem = true;
+                                        }
+                                        var itemBeingTraded = false;
+                                        if (activeTradeItems[ItemInQuestion.id]){
+                                            itemBeingTraded = true;
+                                        }
+                                        if (validItem && !auctionedItem && !itemBeingTraded){
+                                            // check if the current item meets the criteria of armamentReqs
+                                            var armamentCheckFor40 = disassembleItem.checkRequirements( itemsMapById[ ItemInQuestion.itemid ], itemToCreateArmament, 40)
+                                            if (armamentCheckFor40){
+                                                itemBeingUsedForArmament40.push(ItemInQuestion);
+                                                break;
+                                            }
+                                        }
+                                    }
+                                }
                                 if (itemBeingUsedForArmament.length > 0 
-                                && haveItemToCreateArmamentFor ){
+                                && haveItemToCreateArmamentFor
+                                && (!isLevel40Item || itemBeingUsedForArmament40.length > 0) ){
                                     console.log(itemBeingUsedForArmament)
                                     // the armaments in itemstable is just armament, improvedarmament, refinedarmament, masterarmament
                                     // in inventory table we define what item the armament is for, armamentforitemid -> actual item in itemstable
@@ -6031,10 +6060,25 @@ module.exports.createArmament = function(message, args){
                                                 useItem.setItemsLock(discordUserId, false)
                                                 console.log(err)
                                             }else{
-                                                useItem.setItemsLock(discordUserId, false)
-                                                // add the armament to inventory - armaments are "armament" rarity
-                                                addToUserInventory(discordUserId, [ armamentTemplateItem ]);
-                                                createArmamentEmbedBuilder(message, armamentTemplateItem)
+                                                if (isLevel40Item){
+                                                    profileDB.updateItemStatus(itemBeingUsedForArmament40[0].id, "used", function(err, res){
+                                                        if (err){
+                                                            useItem.setItemsLock(discordUserId, false)
+                                                            console.log(err)
+                                                        }else{
+                                                            useItem.setItemsLock(discordUserId, false)
+                                                            // add the armament to inventory - armaments are "armament" rarity
+                                                            addToUserInventory(discordUserId, [ armamentTemplateItem ]);
+                                                            createArmamentEmbedBuilder(message, armamentTemplateItem)
+                                                        }
+                                                    })
+                                                }else{
+                                                    useItem.setItemsLock(discordUserId, false)
+                                                    // add the armament to inventory - armaments are "armament" rarity
+                                                    addToUserInventory(discordUserId, [ armamentTemplateItem ]);
+                                                    createArmamentEmbedBuilder(message, armamentTemplateItem)
+    
+                                                }
                                             }
                                         })
                                     }else{
