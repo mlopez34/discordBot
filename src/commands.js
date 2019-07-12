@@ -1354,37 +1354,26 @@ module.exports.dailyCommand = function(message, args, dbl){
                 
                 dbl.hasVoted(message.author.id).then(voted => {
                     if (voted){
-                        if (!profileData.burritos){
-                            profileDB.updateUserDaily(discordUserId, burritosGained, tacosGained, streakReset, true, function(error, result){
-                                if (error){
-                                    exports.setCommandLock("vote", discordUserId, false)
-                                    console.log(error)
-                                }else{
-                                    exports.setCommandLock("vote", discordUserId, false)
-                                    console.log(result)
-                                    message.channel.send("congrats you have voted and gained `" + burritosGained + "` :burrito: and `" + tacosGained + "` :taco:")
-                                    console.log(voted)        
-                                }
-                            })
-                        }else{
-                            profileDB.updateUserDaily(discordUserId, burritosGained, tacosGained, streakReset, false, function(error, result){
-                                if (error){
-                                    exports.setCommandLock("vote", discordUserId, false)
-                                    console.log(error)
-                                }else{
-                                    exports.setCommandLock("vote", discordUserId, false)
-                                    console.log(result)
-                                    message.channel.send("congrats you have voted and gained `" + burritosGained + "` :burrito: and `" + tacosGained + "` :taco:")
-                                    console.log(voted)        
-                                }
-                            })
-                        }
-                        
+                        profileDB.updateUserDaily(discordUserId, burritosGained, tacosGained, streakReset, (!profileData.burritos), function(error, result){
+                            if (error){
+                                exports.setCommandLock("vote", discordUserId, false)
+                                console.log(error)
+                            }else{
+                                exports.setCommandLock("vote", discordUserId, false)
+                                console.log(result)
+                                message.channel.send("congrats you have voted and gained `" + burritosGained + "` :burrito: and `" + tacosGained + "` :taco:")
+                                console.log(voted)        
+                            }
+                        })
                     }else{
                         exports.setCommandLock("vote", discordUserId, false)
                         message.channel.send("You have to vote in order to collect your daily")
                     }
                     
+                })
+                .catch(function(err){
+                    exports.setCommandLock("vote", discordUserId, false)
+                    message.channel.send("err " + err)
                 });
             }else{
                 exports.setCommandLock("vote", discordUserId, false)
@@ -1400,6 +1389,7 @@ module.exports.dailyCommand = function(message, args, dbl){
             }else{
                 let profileData = res.data
                 dailyEmbedBuilder(message, profileData)
+                exports.setCommandLock("vote", discordUserId, false)
             }
         })
     }
