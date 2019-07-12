@@ -5053,10 +5053,10 @@ function effectsOnDeath(event, member){
                     // give the enemy + 10%/5% magic and attack
                     var enemyOne = bossesAlive[0].enemyNumber;
                     var enemyTwo = bossesAlive[1].enemyNumber;
-                    event.enemies[enemyOne].attackDmg = event.enemies[enemyOne].attackDmg + ( event.enemies[enemy].attackDmg * .1 );
-                    event.enemies[enemyOne].magicDmg = event.enemies[enemyOne].magicDmg + ( event.enemies[enemy].magicDmg * .05 );
-                    event.enemies[enemyTwo].attackDmg = event.enemies[enemyTwo].attackDmg ( event.enemies[enemy].attackDmg * .1 );
-                    event.enemies[enemyTwo].magicDmg = event.enemies[enemyTwo].magicDmg ( event.enemies[enemy].magicDmg * .05 );
+                    event.enemies[enemyOne].attackDmg = event.enemies[enemyOne].attackDmg + ( event.enemies[enemyOne].attackDmg * .1 );
+                    event.enemies[enemyOne].magicDmg = event.enemies[enemyOne].magicDmg + ( event.enemies[enemyOne].magicDmg * .05 );
+                    event.enemies[enemyTwo].attackDmg = event.enemies[enemyTwo].attackDmg + ( event.enemies[enemyTwo].attackDmg * .1 );
+                    event.enemies[enemyTwo].magicDmg = event.enemies[enemyTwo].magicDmg + ( event.enemies[enemyTwo].magicDmg * .05 );
                 }
 
                 // array of end of turn abilities
