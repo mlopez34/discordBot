@@ -10135,7 +10135,31 @@ module.exports.agreeTermsCommand = function(message, args){
         })
     }
     else{
-        message.channel.send("already accepted");
+        profileDB.getUserProfileData(discordUserId, function(error, data){
+            if (error){
+                // this is what we are expecting, from here we expect to create the user profile
+                var userData = initialUserProfile(discordUserId);
+                profileDB.createUserProfile(userData, function(err, createResponse){
+                    if(err){
+                        message.channel.send("user already exists! You do not need to agree anymore")
+                    }else{
+                        profileDB.updateUserTacosWelcome(discordUserId, 200, function(err, updateResponse) {
+                            if (err){
+                                // console.log(err);
+                            }else{
+                                Last_Five_Welcomes.push(discordUserId);
+                                if (Last_Five_Welcomes.length >= 5){
+                                    Last_Five_Welcomes.shift();
+                                }
+                                message.channel.send("welcome aboard ! " + message.author + " your profile has been created. \nhere are some initial commands you can try```\n-cook\n-tacos\n-prepare\n-thanks @user\n-sorry @user\n-profile\n-shop long\n-inventory\n-buypickaxe\n-help\n-rpghelp\n-itemhelp\n-markethelp\n-map\n-rpgstats\n-rpgstart```Enjoy your stay!" );
+                            }
+                        })
+                    }
+                })
+            }else{
+                message.channel.send("already accepted");
+            }
+        })
     }
 }
 
@@ -10554,6 +10578,39 @@ module.exports.rpgChallengeCommand = function(message, args){
     var keystone = args.length > 3 && args[2].toLowerCase() == "keystone" && Math.floor( args[3] ) && Math.floor( args[3] ) > 0 ? Math.floor( args[3] ) : 0
     var special = { challenge: challengeNumber, keystone: keystone }
     rpg.rpgInitialize(message, special);
+}
+
+// rules for queue
+// entering queue will drop you all other queues entered
+// can leave queue at any time, it will remove you from queue
+// skipping once event started puts a cooldown on entering queue
+// once you enter an rpg the queue will pop u, when in an rpg you cannot enter another queue
+// area is determined randomly based on user
+module.exports.rpgQueueLeaveCommand = function(message){
+    // remove the user from the queue entirely
+    rpg.removeUserFromQueue(message)
+}
+
+module.exports.rpgQueueJoinCommand = function(message, args){
+    // get the users profile
+
+    // enter the player into the queue for args 2-5
+    let discordUserId = message.author.id
+    if (args && args.length > 1){
+        var queueToEnter = parseInt( args[1] );
+        // only enter the queue if you have an rpg profile
+        profileDB.getUserRpgProfleData(discordUserId, function(err, res){
+            if (err){
+                console.log(err)
+                message.channel.send("You have not agreed to bender's terms yet, type -agree to begin!")
+            }else{
+                let userArea = res.data.currentarea
+                rpg.enterUserToQueue(message, queueToEnter, userArea );
+            }
+        })
+    }else{
+        message.channel.send("Invalid queue parameters, try `-rpgqueue 2`, `-rpgqueue 3`, `-rpgqueue 4`, `-rpgqueue 5`, to leave the queue type `-rpgleave`")
+    }
 }
 
 module.exports.rpgReadyCommand = function(message){

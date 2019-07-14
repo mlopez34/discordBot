@@ -499,6 +499,12 @@ client.on('message', function(message){
                 else if (commandIs("travel", message)){
                     commands.travelCommand(message, args)
                 }
+                else if (commandIs("rpgqueue", message)){
+                    commands.rpgQueueJoinCommand(message, args)
+                }
+                else if (commandIs("rpgleave", message)){
+                    commands.rpgQueueLeaveCommand(message)
+                }
                 else if (commandIs("rpgstart", message)){
                     if (message.channel.type == "text" && (RPG_CHANNELS.indexOf(message.channel.name) != -1) && !message.author.bot){
                         commands.rpgBattleCommand(message);
@@ -1184,6 +1190,24 @@ client.on('message', function(message){
                     commands.travelCommand(message, args)
                     data.command = "travel"
                     profileDB.createUserActivity(data)
+                }
+                else if (commandIs("rpgqueue", message)){
+                    if (message.channel.type == "text" && !message.author.bot){
+                        commands.rpgQueueJoinCommand(message, args);
+                        data.command = "rpgqueue"
+                        profileDB.createUserActivity(data)
+                    }else{
+                        message.channel.send("use the rpg channel for this")
+                    }
+                }
+                else if (commandIs("rpgleave", message)){
+                    if (message.channel.type == "text" && !message.author.bot){
+                        commands.rpgQueueLeaveCommand(message);
+                        data.command = "rpgleave"
+                        profileDB.createUserActivity(data)
+                    }else{
+                        message.channel.send("use the rpg channel for this")
+                    }
                 }
                 else if (commandIs("rpgstart", message)){
                     if (message.channel.type == "text" && !message.author.bot){

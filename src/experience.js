@@ -10,22 +10,22 @@ var Levels = config.Levels
 var RPGLevels = config.RPGLevels
 var levelRewards = config.levelTacoRewards;
 
-module.exports.gainExperience = function (message, discordUser, experienceNumber, userProfileData, isRpgExperience){
+module.exports.gainExperience = function (message, discordUser, experienceNumber, userProfileData, isRpgExperience, customChannel){
     if (!userProfileData){
         profileDB.getUserProfileData( discordUser.id, function(err, profileResponse) {
             if(err){
                 // console.log(err);
             }else{
-                gainExperienceHandler(message, discordUser, experienceNumber, profileResponse, isRpgExperience)
+                gainExperienceHandler(message, discordUser, experienceNumber, profileResponse, isRpgExperience, customChannel)
             }
         })
     }
     else{
-        gainExperienceHandler(message, discordUser, experienceNumber, userProfileData, isRpgExperience)
+        gainExperienceHandler(message, discordUser, experienceNumber, userProfileData, isRpgExperience, customChannel)
     }
 }
 
-function experienceEmbedBuilder(message, userThatLeveled, level, tacoRewards, isRpgExperience){
+function experienceEmbedBuilder(message, userThatLeveled, level, tacoRewards, isRpgExperience, customChannel){
     var xpEmoji = (!isRpgExperience ? ":arrow_up: :tada:" : ":fleur_de_lis:")
     var levelUpString = ""
     if (isRpgExperience){
@@ -36,17 +36,29 @@ function experienceEmbedBuilder(message, userThatLeveled, level, tacoRewards, is
     const embed = new Discord.RichEmbed()
     .setColor(0xED962D)
     .addField(levelUpString, "Level " + level + " "  + xpEmoji + "\n**Rewards:** " + tacoRewards + " tacos! :taco:",true)
-    message.channel.send({embed})
-    .then(function(res){
-        console.log(res)
-    })
-    .catch(function(err){
-        console.log(err)
-        message.channel.send("Unable to display level up embed, Enable embeds in this channel for future level up announcements!")
-    })
+    if (customChannel){
+        customChannel.send({embed})
+        .then(function(res){
+            console.log(res)
+        })
+        .catch(function(err){
+            console.log(err)
+            customChannel.send("Unable to display level up embed, Enable embeds in this channel for future level up announcements!")
+        })
+    }else{
+        message.channel.send({embed})
+        .then(function(res){
+            console.log(res)
+        })
+        .catch(function(err){
+            console.log(err)
+            message.channel.send("Unable to display level up embed, Enable embeds in this channel for future level up announcements!")
+        })
+    }
+    
 }
 
-function gainExperienceHandler(message, discordUser, experienceNumber, userProfileData, isRpgExperience){
+function gainExperienceHandler(message, discordUser, experienceNumber, userProfileData, isRpgExperience, customChannel){
     // once the user has gained experience, check if the user has leveled and check which level the user is in 
     if (isRpgExperience){
         // get user's experience, and level
@@ -84,7 +96,7 @@ function gainExperienceHandler(message, discordUser, experienceNumber, userProfi
                     // }
                     // data.achievements = userProfileData.data.achievements;
                     // achiev.checkForAchievements(discordUser.id, data, message);
-                    experienceEmbedBuilder(message, discordUser, userLeveledUpTo, tacoRewards, isRpgExperience);
+                    experienceEmbedBuilder(message, discordUser, userLeveledUpTo, tacoRewards, isRpgExperience, customChannel);
                     //var allItems = commands.getAllItems()
                     //extraLevelRewards(message, discordUser, userLeveledUpTo, allItems)
                 }
@@ -137,9 +149,9 @@ function gainExperienceHandler(message, discordUser, experienceNumber, userProfi
                         }
                         data.achievements = userProfileData.data.achievements;
                         achiev.checkForAchievements(discordUser.id, data, message);
-                        experienceEmbedBuilder(message, discordUser, userLeveledUpTo, tacoRewards);
+                        experienceEmbedBuilder(message, discordUser, userLeveledUpTo, tacoRewards, null, customChannel);
                         var allItems = commands.getAllItems()
-                        extraLevelRewards(message, discordUser, userLeveledUpTo, allItems)
+                        extraLevelRewards(message, discordUser, userLeveledUpTo, allItems, customChannel)
                     }
                 })
             }
@@ -161,7 +173,7 @@ function gainExperienceHandler(message, discordUser, experienceNumber, userProfi
     
 }
 
-function extraLevelRewards(message, discordUser, userLeveledUpTo, allItems){
+function extraLevelRewards(message, discordUser, userLeveledUpTo, allItems, customChannel){
 
     var itemsObtainedArray = [];
 
@@ -399,12 +411,12 @@ function extraLevelRewards(message, discordUser, userLeveledUpTo, allItems){
 
     if (itemsObtainedArray.length > 0){
         addToUserInventory(discordUser.id, itemsObtainedArray);
-        extraLevelRewardsEmbedBuilder(message, discordUser, itemsObtainedArray )
+        extraLevelRewardsEmbedBuilder(message, discordUser, itemsObtainedArray, customChannel )
     }
 
 }
 
-function extraLevelRewardsEmbedBuilder(message, discordUser, itemsObtainedArray ){
+function extraLevelRewardsEmbedBuilder(message, discordUser, itemsObtainedArray, customChannel ){
     const embed = new Discord.RichEmbed()
     .setColor(0xF2E93E)
     var rewardString = "";
@@ -417,14 +429,25 @@ function extraLevelRewardsEmbedBuilder(message, discordUser, itemsObtainedArray 
     }
     embed.addField("Level Up Rewards", rewardString, true)
     .setThumbnail(discordUser.avatarURL)
-    message.channel.send({embed})
-    .then(function(res){
-        console.log(res)
-    })
-    .catch(function(err){
-        console.log(err)
-        message.channel.send("Unable to display level up embed, Enable embeds in this channel for future level up announcements!")
-    })
+    if (customChannel){
+        customChannel.send({embed})
+        .then(function(res){
+            console.log(res)
+        })
+        .catch(function(err){
+            console.log(err)
+            message.channel.send("Unable to display level up embed, Enable embeds in this channel for future level up announcements!")
+        })
+    }else{
+        message.channel.send({embed})
+        .then(function(res){
+            console.log(res)
+        })
+        .catch(function(err){
+            console.log(err)
+            message.channel.send("Unable to display level up embed, Enable embeds in this channel for future level up announcements!")
+        })
+    }
 }
 
 function addToUserInventory(discordUserId, items){

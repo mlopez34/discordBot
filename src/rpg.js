@@ -14,6 +14,12 @@ var RPG_COOLDOWN_HOURS = 1
 var activeRPGEvents = {};
 var activeRPGItemIds = {};
 var usersInRPGEvents = {};
+var rpgQueuesByUsers = {
+    2: [],
+    3: [],
+    4: [],
+    5: []
+}
 var TEAM_MAX_LENGTH = 5;
 var CURRENT_CHALLENGES_AVAILABLE = 13
 var CHALLENGE_TO_TEST = 12
@@ -41,6 +47,10 @@ module.exports.rpgInitialize = function(message, special){
     for (var member in team){
         if (usersInRPGEvents["rpg-"+team[member].id]){
             validTeam = false;
+        }
+
+        if (checkIfUserInQueue(team[member].id)){
+            validTeam = false
         }
         
         if (team[member].bot){
@@ -96,42 +106,82 @@ module.exports.rpgInitialize = function(message, special){
     }
 }
 
+function checkIfUserInQueue(discordUserId){
+    let isInQueue = false
+    for(var queue in rpgQueuesByUsers){
+        for(var i in rpgQueuesByUsers[queue]){
+            if (rpgQueuesByUsers[queue][i].discordUserId == discordUserId){
+                return true
+            }
+        }
+    }
+
+    return isInQueue
+}
+
+function removeUserFromQueue(discordUserId){
+    for(var queue in rpgQueuesByUsers){
+        for(var i in rpgQueuesByUsers[queue]){
+            if (rpgQueuesByUsers[queue][i].discordUserId == discordUserId){
+                rpgQueuesByUsers[queue].splice(i, 1)
+            }
+        }
+    }
+}
+
 module.exports.rpgSkip = function(message){
     var discordUserId = message.author.id;
     var idOfUserInEvent = usersInRPGEvents["rpg-" + discordUserId] ? usersInRPGEvents["rpg-" + discordUserId].id : undefined;
     var idOfActiveRPGEvent = activeRPGEvents["rpg-"+idOfUserInEvent] ? activeRPGEvents["rpg-"+idOfUserInEvent] : undefined;
     var statusOfEvent;
+    var isQueueEvent;
     if (idOfActiveRPGEvent){
-        statusOfEvent = activeRPGEvents["rpg-"+idOfUserInEvent].status ? activeRPGEvents["rpg-"+idOfUserInEvent].status : undefined;        
+        statusOfEvent = activeRPGEvents["rpg-"+idOfUserInEvent].status ? activeRPGEvents["rpg-"+idOfUserInEvent].status : undefined;  
+        isQueueEvent = activeRPGEvents["rpg-"+idOfUserInEvent].queueEvent ? activeRPGEvents["rpg-"+idOfUserInEvent].queueEvent : undefined;  
     }
     if (!exports.getreadyLock(idOfUserInEvent)
-        && idOfUserInEvent
-        && idOfActiveRPGEvent
-        && (statusOfEvent == "waiting"
-        || statusOfEvent == "in progress") ){
+    && idOfUserInEvent
+    && idOfActiveRPGEvent
+    && (statusOfEvent == "waiting"
+    || statusOfEvent == "in progress") ){
+        if (isQueueEvent == true){
+            // tell all the channels that the event was skipped
+            let groupOfMessagesSent = activeRPGEvents["rpg-"+idOfUserInEvent].groupOfMessagesSent
+            let groupOfUniqueChannels = filterForUniqueChannels(groupOfMessagesSent)
+            for (var m in groupOfUniqueChannels){
+                groupOfUniqueChannels[m].channel.send("A user has skipped and event has been canceled")
+                .then(function(sentMessage){
+                })
+                .catch(function(err){
+                    console.log(err)
+                })
+            }
+
+        }else{
             message.channel.send( message.author + " skipped and event has been canceled");
-            activeRPGEvents["rpg-"+idOfUserInEvent].status = "ended"
-            var idOfEventToDelete = "";
-            for (var member in idOfActiveRPGEvent.members){
-                var idToRemove = idOfActiveRPGEvent.members[member].id
-                if (usersInRPGEvents["rpg-" + idToRemove]){
-                    idOfEventToDelete = "rpg-" + usersInRPGEvents["rpg-" + idToRemove].id;
-                    // also delete the list of items the user is using from activeItems
-                    if (usersInRPGEvents["rpg-" + idToRemove] && usersInRPGEvents["rpg-" + idToRemove].memberStats){
-                        // free up the items the user is using
-                        for (var item in usersInRPGEvents["rpg-" + idToRemove].memberStats.itemsBeingWornUserIds){
-                            var itemInQuestion = usersInRPGEvents["rpg-" + idToRemove].memberStats.itemsBeingWornUserIds[item];
-                            if (activeRPGItemIds[itemInQuestion]){
-                                delete activeRPGItemIds[itemInQuestion]
-                            }
+        }
+        activeRPGEvents["rpg-"+idOfUserInEvent].status = "ended"
+        var idOfEventToDelete = "";
+        for (var member in idOfActiveRPGEvent.members){
+            var idToRemove = idOfActiveRPGEvent.members[member].id
+            if (usersInRPGEvents["rpg-" + idToRemove]){
+                idOfEventToDelete = "rpg-" + usersInRPGEvents["rpg-" + idToRemove].id;
+                // also delete the list of items the user is using from activeItems
+                if (usersInRPGEvents["rpg-" + idToRemove] && usersInRPGEvents["rpg-" + idToRemove].memberStats){
+                    // free up the items the user is using
+                    for (var item in usersInRPGEvents["rpg-" + idToRemove].memberStats.itemsBeingWornUserIds){
+                        var itemInQuestion = usersInRPGEvents["rpg-" + idToRemove].memberStats.itemsBeingWornUserIds[item];
+                        if (activeRPGItemIds[itemInQuestion]){
+                            delete activeRPGItemIds[itemInQuestion]
                         }
                     }
-                    delete usersInRPGEvents["rpg-" + idToRemove];
                 }
+                delete usersInRPGEvents["rpg-" + idToRemove];
             }
-            if (activeRPGEvents[idOfEventToDelete]){
-                delete activeRPGEvents[idOfEventToDelete];
-            }
+        }
+        if (activeRPGEvents[idOfEventToDelete]){
+            delete activeRPGEvents[idOfEventToDelete];
+        }
     }
     else if(exports.getreadyLock(idOfUserInEvent)){
         message.channel.send(message.author + " a user recently readied, try again!")
@@ -634,6 +684,75 @@ module.exports.getReadyLockUser = function(activeRPGEvent, discordUserId){
     }
 }
 
+module.exports.removeUserFromQueue = function(message){
+    let discordUserId = message.author.id
+    removeUserFromQueue(discordUserId)
+    message.channel.send("You have been removed from the RPG queue")
+}
+
+module.exports.enterUserToQueue = function(message, queueToEnter, userArea){
+    // user can enter the queue at any time, then they will be notified that their rpg is ready
+    // only allow 2-5
+    let discordUserId = message.author.id
+    if (rpgQueuesByUsers[queueToEnter]){
+        // check the user is not already in an rpg
+        var ableToJoinQueue = true
+        if (usersInRPGEvents["rpg-"+discordUserId]){
+            ableToJoinQueue = false;
+        }
+        if (checkIfUserInQueue(discordUserId)){
+            ableToJoinQueue = false
+        }
+        if (ableToJoinQueue){
+            rpgQueuesByUsers[queueToEnter].push({
+                discordUserId: discordUserId,
+                author: message.author,
+                userArea: userArea,
+                channelToAnnounceIn: message.channel
+            })
+            // check if the queue is full and there is enough to start
+            if (rpgQueuesByUsers[queueToEnter].length >= queueToEnter){
+                let teamInQueueByDiscordIds = []
+                let areasForUsers = []
+                let groupOfMessagesSent = []
+                for (var i = 0; i < queueToEnter; i++){
+                    let userObjectToEnterRPG = rpgQueuesByUsers[queueToEnter].shift()
+                    // announce in the users channel that their rpg is ready
+                    let channelToAnnounceIn = userObjectToEnterRPG.channelToAnnounceIn
+                    let authorToPing = userObjectToEnterRPG.author
+                    let userId = userObjectToEnterRPG.discordUserId
+                    let userarea = userObjectToEnterRPG.userArea
+                    channelToAnnounceIn.send(authorToPing + " Your rpg event is ready, type `-ready` to begin, or `-skip` to skip! you have 60 seconds until you are automatically skipped")
+                    .then(function(sentMessage){
+                        groupOfMessagesSent.push(sentMessage)
+                    })
+                    .catch(function(error){
+
+                    })
+                    usersInRPGEvents["rpg-"+userId] = { id: message.channel.id, ready: false }; // basing off of last message sent id
+                    teamInQueueByDiscordIds.push(authorToPing)
+                    areasForUsers.push(userarea)
+                }
+                let userToUseAreaIndex = Math.floor(Math.random() * areasForUsers.length);
+                let userToUseAreaId = areasForUsers[userToUseAreaIndex]
+                activeRPGEvents["rpg-" + message.channel.id] = { members: teamInQueueByDiscordIds };
+                activeRPGEvents["rpg-" + message.channel.id].status = "waiting";
+                activeRPGEvents["rpg-" + message.channel.id].groupOfMessagesSent = groupOfMessagesSent;
+                activeRPGEvents["rpg-" + message.channel.id].endOfTurnEvents = [];
+                activeRPGEvents["rpg-" + message.channel.id].area = userToUseAreaId
+                activeRPGEvents["rpg-" + message.channel.id].usersInArea = []
+                activeRPGEvents["rpg-" + message.channel.id].queueEvent = true;                
+            }else{
+                message.channel.send("You have entered the queue for an rpg event of `" + queueToEnter + "` players!")
+            }
+        }else{
+            message.channel.send("You cannot join the queue at this time, you may be in queue or in an rpg event already, type `-rpgleave` to be removed from the queue, or `-rpgskip` to skip the event ")
+        }
+    }else{
+        message.channel.send("Invalid queue parameters, try `-rpgqueue 2`, `-rpgqueue 3`, `-rpgqueue 4`, `-rpgqueue 5`")
+    }
+}
+
 module.exports.rpgReady = function(message, itemsAvailable, amuletItemsById, buffItemsById, allItems){
     // create an embed saying that b is about to happen, for users MAX of 5 users and they must all say -ready to start costs 5 tacos per person
     var discordUserId = message.author.id;
@@ -660,6 +779,7 @@ module.exports.rpgReady = function(message, itemsAvailable, amuletItemsById, buf
                     extraPetHelp = true
                 }
                 var isSpecialEvent = activeRPGEvents[ "rpg-" +  rpgEventId ] ? activeRPGEvents[ "rpg-" + rpgEventId ].special : false;
+                let isQueueEvent = activeRPGEvents[ "rpg-" +  rpgEventId ].queueEvent
                 var currentPlayerChallenge = userData.data.currentchallenge || 0 ;
                 var challengePicked = (activeRPGEvents[ "rpg-" +  rpgEventId ] && activeRPGEvents[ "rpg-" +  rpgEventId ].challenge) ? activeRPGEvents[ "rpg-" + rpgEventId ].challenge.challenge : false;
                 var challengeId = getKeystoneIdFromChallenge(parseInt( challengePicked ))
@@ -1731,7 +1851,7 @@ module.exports.rpgReady = function(message, itemsAvailable, amuletItemsById, buf
                                                             activeRPGEvents[rpgEvent].enemiesCount = enemyIdCount - 1;
     
                                                             activeRPGEvents[rpgEvent].membersInParty = membersInParty
-                                            
+                                                            activeRPGEvents[rpgEvent].memberLastChannel = {}
                                                             activeRPGEvents[rpgEvent].turn = 1;
                                                             activeRPGEvents[rpgEvent].enemyTurnAbilities = [];
                                                             activeRPGEvents[rpgEvent].memberTurnAbilities = [];
@@ -1794,30 +1914,70 @@ module.exports.rpgReady = function(message, itemsAvailable, amuletItemsById, buf
                                                             }
                                                             //embed.addField( "Group", groupString )
                                                             embed.addField( "Enemy", enemiesString )
-                                                            message.channel.send({embed})
-                                                            .then(function (sentMessage) {
-                                                                recalculateStatBuffs(activeRPGEvents[rpgEvent])
-    
-                                                                var lastMessage = activeRPGEvents[rpgEvent].lastEmbedMessage
-                                                                if (lastMessage){
-                                                                    lastMessage.delete()
-                                                                    .then(function(res){
-                                                                        exports.setreadyLock(rpgEventId, discordUserId, false)
-                                                                        activeRPGEvents[rpgEvent].lastEmbedMessage = sentMessage
+                                                            if (isQueueEvent){
+                                                                // send embed to all channels
+                                                                var groupOfMessagesSent = activeRPGEvents[rpgEvent].groupOfMessagesSent
+                                                                // filter to only unique channels to send
+                                                                let groupOfUniqueChannels = filterForUniqueChannels(groupOfMessagesSent)
+                                                                let newGroupOfMessagesSent = []
+                                                                if (groupOfMessagesSent){
+                                                                    groupOfUniqueChannels.forEach(function(uniqueChannel){
+                                                                        uniqueChannel.channel.send({embed})
+                                                                        .then(function(sentMessage){
+                                                                            recalculateStatBuffs(activeRPGEvents[rpgEvent])
+                                                                            newGroupOfMessagesSent.push(sentMessage)
+                                                                            exports.setreadyLock(rpgEventId, discordUserId, false)
+                                                                            if (newGroupOfMessagesSent.length == groupOfUniqueChannels.length){
+                                                                                activeRPGEvents[rpgEvent].groupOfMessagesSent = newGroupOfMessagesSent
+                                                                            }
+                                                                        })
+                                                                        .catch(function(err){
+                                                                            console.log(err)
+                                                                            exports.setreadyLock(rpgEventId, discordUserId, false)
+                                                                            newGroupOfMessagesSent.push(uniqueChannel)
+                                                                            if (newGroupOfMessagesSent.length == groupOfUniqueChannels.length){
+                                                                                activeRPGEvents[rpgEvent].groupOfMessagesSent = newGroupOfMessagesSent
+                                                                            }
+                                                                            message.channel.send("Unable to display RPG embed, Enable embeds in this channel to begin RPG events!")
+                                                                        })
                                                                     })
-                                                                    .catch(function(err){
-                                                                        exports.setreadyLock(rpgEventId, discordUserId, false)
-                                                                        console.log(err);
-                                                                    })
+                                                                    // sent the messages
+                                                                    for (var m in groupOfMessagesSent){
+                                                                        groupOfMessagesSent[m].delete()
+                                                                        .then(function(res){
+                                                                            console.log(res)
+                                                                        })
+                                                                        .catch(function(err){
+                                                                            console.log(err)
+                                                                        })
+                                                                    }
                                                                 }else{
                                                                     exports.setreadyLock(rpgEventId, discordUserId, false)
                                                                 }
-                                                            })
-                                                            .catch(function(err){
-                                                                console.log(err)
-                                                                message.channel.send("Unable to display RPG embed, Enable embeds in this channel to begin RPG events!")
-                                                            })
-                                            
+                                                            }else{
+                                                                message.channel.send({embed})
+                                                                .then(function (sentMessage) {
+                                                                    recalculateStatBuffs(activeRPGEvents[rpgEvent])
+                                                                    var lastMessage = activeRPGEvents[rpgEvent].lastEmbedMessage
+                                                                    if (lastMessage){
+                                                                        lastMessage.delete()
+                                                                        .then(function(res){
+                                                                            exports.setreadyLock(rpgEventId, discordUserId, false)
+                                                                            activeRPGEvents[rpgEvent].lastEmbedMessage = sentMessage
+                                                                        })
+                                                                        .catch(function(err){
+                                                                            exports.setreadyLock(rpgEventId, discordUserId, false)
+                                                                            console.log(err);
+                                                                        })
+                                                                    }else{
+                                                                        exports.setreadyLock(rpgEventId, discordUserId, false)
+                                                                    }
+                                                                })
+                                                                .catch(function(err){
+                                                                    console.log(err)
+                                                                    message.channel.send("Unable to display RPG embed, Enable embeds in this channel to begin RPG events!")
+                                                                })
+                                                            }
                                                         }
                                                         else{
                                                             exports.setreadyLock(rpgEventId, discordUserId, false)
@@ -2265,7 +2425,7 @@ module.exports.useRpgAbility = function(message, args){
                         if (validTarget && !alreadyUsedAbility){
                             activeRPGEvents["rpg-"+idOfEventUserIsIn].memberTurnAbilities.push(abilityToProcess);
                             // if all users have used their abilities the turn should be processed
-
+                            activeRPGEvents["rpg-"+idOfEventUserIsIn].memberLastChannel[discordUserId] = message.channel
                             // get the number of users that are alive and compare to the memberturnabilities array length
                             var membersAlive = 0;
                             for (var member in activeRPGEvents["rpg-"+idOfEventUserIsIn].membersInParty){
@@ -2554,23 +2714,76 @@ function turnFinishedEmbedBuilder(message, event, turnString, passiveEffectsStri
     if (enemiesString.length > 0 ){
         embed.addField( "Enemy", enemiesString )
     }
-    message.channel.send({embed})
-    .then(function (sentMessage) {
-        var lastMessage = event.lastEmbedMessage
-        if (lastMessage){
-            lastMessage.delete()
-            .then(function(res){
-                event.lastEmbedMessage = sentMessage
+    let isQueueEvent = event.queueEvent
+    if (isQueueEvent){
+        let groupOfMessagesSent = event.groupOfMessagesSent
+        // filter to only unique channels to send
+        let groupOfUniqueChannels = filterForUniqueChannels(groupOfMessagesSent)
+        let newGroupOfMessagesSent = []
+        for (var m in groupOfUniqueChannels){
+            groupOfUniqueChannels[m].channel.send({embed})
+            .then(function(sentMessage){
+                newGroupOfMessagesSent.push(sentMessage)
+                if (newGroupOfMessagesSent.length == groupOfUniqueChannels.length){
+                    event.groupOfMessagesSent = newGroupOfMessagesSent
+                }
             })
             .catch(function(err){
-                console.log(err);
+                console.log(err)
+                newGroupOfMessagesSent.push(groupOfUniqueChannels[m])
+                if (newGroupOfMessagesSent.length == groupOfUniqueChannels.length){
+                    event.groupOfMessagesSent = newGroupOfMessagesSent
+                }
+                message.channel.send("Unable to display RPG embed, Enable embeds in this channel to begin RPG events!")
             })
         }
-    })
-    .catch(function(err){
-        console.log(err)
-        message.channel.send(JSON.stringify(err))
-    })
+        // sent the messages
+        for (var m in groupOfMessagesSent){
+            groupOfMessagesSent[m].delete()
+            .then(function(res){
+                console.log(res)
+            })
+            .catch(function(err){
+                console.log(err)
+            })
+        }
+    }else{
+        message.channel.send({embed})
+        .then(function (sentMessage) {
+            var lastMessage = event.lastEmbedMessage
+            if (lastMessage){
+                lastMessage.delete()
+                .then(function(res){
+                    event.lastEmbedMessage = sentMessage
+                })
+                .catch(function(err){
+                    console.log(err);
+                })
+            }
+        })
+        .catch(function(err){
+            console.log(err)
+            message.channel.send(JSON.stringify(err))
+        })
+    }
+}
+
+function filterForUniqueChannels(groupOfMessagesSent){
+    // filter to only unique channels to send
+    let groupOfUniqueChannels = []
+    for (var c in groupOfMessagesSent){
+        let isUniqueChannel = true
+        for (var u in groupOfUniqueChannels){
+            if (groupOfMessagesSent[c].channel.id == groupOfUniqueChannels[u].channel.id){
+                isUniqueChannel = false
+                break;
+            }
+        }
+        if (isUniqueChannel){
+            groupOfUniqueChannels.push(groupOfMessagesSent[c])
+        }
+    }
+    return groupOfUniqueChannels
 }
 
 function eventEndedEmbedBuilder(message, event, partySuccess){
@@ -2645,8 +2858,11 @@ function eventEndedEmbedBuilder(message, event, partySuccess){
 
     else if (event.area && event.usersInArea && partySuccess){
         // give completion to everyone in the area
+        // TODO: send in correct channels
         for (var u in event.usersInArea){
-            increaseCompletionForUser(event.usersInArea[u], event.area, message, event.enemiesCount)
+            var discordUserId = event.usersInArea[u].userid
+            let customChannel = event.memberLastChannel[discordUserId]
+            increaseCompletionForUser(event.usersInArea[u], event.area, message, event.enemiesCount, customChannel)
         }
     }
 
@@ -2670,7 +2886,8 @@ function eventEndedEmbedBuilder(message, event, partySuccess){
             
             var rewards =  calculateRewards( event, memberInRpgEvent, allItems, numberOfMembers, firstKill)
             // add experience and rpgpoints to user
-            updateUserRewards(message, memberInParty, rewards);
+            let memberLastChannel = event.memberLastChannel[memberInRpgEvent.id]
+            updateUserRewards(message, memberInParty, rewards, memberLastChannel);
             if (rewards.extraTacos && rewards.extraTacos > 0 ){
                 rewardString = rewardString + "**Tacos:** " + rewards.extraTacos + "\n"
             }
@@ -2709,18 +2926,44 @@ function eventEndedEmbedBuilder(message, event, partySuccess){
             console.log(statRes)
         }
     })
-    message.channel.send({embed})
-    .then(function(res){
-        console.log(res)
-    })
-    .catch(function(err){
-        console.log(err)
-        message.channel.send("Unable to display event end embed, Enable embeds in this channel for future event end announcements!")
-    })
+    let isQueueEvent = event.queueEvent
+    if (isQueueEvent){
+        let groupOfMessagesSent = event.groupOfMessagesSent
+        // filter to only unique channels to send
+        let groupOfUniqueChannels = filterForUniqueChannels(groupOfMessagesSent)
+        let newGroupOfMessagesSent = []
+        for (var m in groupOfUniqueChannels){
+            groupOfUniqueChannels[m].channel.send({embed})
+            .then(function(sentMessage){
+                newGroupOfMessagesSent.push(sentMessage)
+                if (newGroupOfMessagesSent.length == groupOfUniqueChannels.length){
+                    event.groupOfMessagesSent = newGroupOfMessagesSent
+                }
+            })
+            .catch(function(err){
+                console.log(err)
+                newGroupOfMessagesSent.push(groupOfUniqueChannels[m])
+                if (newGroupOfMessagesSent.length == groupOfUniqueChannels.length){
+                    event.groupOfMessagesSent = newGroupOfMessagesSent
+                }
+                message.channel.send("Unable to display RPG embed, Enable embeds in this channel to begin RPG events!")
+            })
+        }
+    }else{
+        message.channel.send({embed})
+        .then(function(res){
+            console.log(res)
+        })
+        .catch(function(err){
+            console.log(err)
+            message.channel.send("Unable to display event end embed, Enable embeds in this channel for future event end announcements!")
+        })
+    }
+    
     cleanupEventEnded(event);
 }
 
-function increaseCompletionForUser(eventUser, rpgareaId, message, enemiesCount){
+function increaseCompletionForUser(eventUser, rpgareaId, message, enemiesCount, customChannel){
     var discordUserId = eventUser.userid
     var currentareacompletion = eventUser.currentareacompletion || 0
     var enemiesToDefeatArea = getEnemiesToDefeatForArea(rpgareaId)
@@ -2745,7 +2988,7 @@ function increaseCompletionForUser(eventUser, rpgareaId, message, enemiesCount){
                 var indexOfRare = Math.floor(Math.random() * listOfRares.length);
                 var rareWon = [listOfRares[indexOfRare]];
                 addToUserInventory(discordUserId, rareWon);
-                newAreaEmbedBuilder( eventUser.username, rpgareaId, message, rareWon)
+                newAreaEmbedBuilder( eventUser.username, rpgareaId, message, rareWon, customChannel)
                 // reward the user with a rare
                 areaCompletedCheck = 1
             }
@@ -2770,7 +3013,7 @@ function increaseCompletionForUser(eventUser, rpgareaId, message, enemiesCount){
                 var ancientWon = [listOfAncients[indexOfAncient]];
                 addToUserInventory(discordUserId, ancientWon);
                 // complete zone
-                newZoneEmbedBuilder( eventUser.username, zoneUserIsIn, message, ancientWon )
+                newZoneEmbedBuilder( eventUser.username, zoneUserIsIn, message, ancientWon, customChannel )
                 profileDB.setZoneComplete(discordUserId, zoneUserIsIn, function(err, res){
                     if (err){
                         console.log(err)
@@ -2801,7 +3044,7 @@ function getAreasCompletedInZoneForUser(userdata, zoneUserIsIn){
     return numberOfAreasCompleted
 }
 
-function newAreaEmbedBuilder(username, areaId, message, itemWon){
+function newAreaEmbedBuilder(username, areaId, message, itemWon, customChannel){
     let itemname = itemWon[0].itemname
     let itemshortname = itemWon[0].itemshortname
     const embed = new Discord.RichEmbed()
@@ -2814,17 +3057,29 @@ function newAreaEmbedBuilder(username, areaId, message, itemWon){
     var areaName = rpgZones[zoneAreaIsIn].areas[areaId].name
     embed.addField(username + " completed " + areaName ,  areaString);
     embed.addField("Item Reward", "Found a :small_blue_diamond: `" + itemname + "`! use `-iteminfo " + itemshortname + "` for more information on this item!", true);
-    message.channel.send({embed})
-    .then(function(res){
-        console.log(res)
-    })
-    .catch(function(err){
-        console.log(err)
-        message.channel.send("Unable to display new area embed, Enable embeds in this channel for future area unlock announcements!")
-    })
+    if (customChannel){
+        customChannel.send({embed})
+        .then(function(res){
+            console.log(res)
+        })
+        .catch(function(err){
+            console.log(err)
+            message.channel.send("Unable to display new area embed, Enable embeds in this channel for future area unlock announcements!")
+        })
+    }else{
+        message.channel.send({embed})
+        .then(function(res){
+            console.log(res)
+        })
+        .catch(function(err){
+            console.log(err)
+            message.channel.send("Unable to display new area embed, Enable embeds in this channel for future area unlock announcements!")
+        })
+    }
+    
 }
 
-function newZoneEmbedBuilder(username, zoneId, message, itemWon){
+function newZoneEmbedBuilder(username, zoneId, message, itemWon, customChannel){
     let itemname = itemWon[0].itemname
     let itemshortname = itemWon[0].itemshortname
     const embed = new Discord.RichEmbed()
@@ -2835,14 +3090,25 @@ function newZoneEmbedBuilder(username, zoneId, message, itemWon){
     var zoneString = getZoneString(zoneId)
     embed.addField(username,  zoneString, true);
     embed.addField("Item Reward",  "Found a :small_orange_diamond: `" + itemname + "`! use `-iteminfo " + itemshortname + "` for more information on this item!", true);
-    message.channel.send({embed})
-    .then(function(res){
-        console.log(res)
-    })
-    .catch(function(err){
-        console.log(err)
-        message.channel.send("Unable to display new zone embed, Enable embeds in this channel for future zone unlock announcements!")
-    })
+    if (customChannel){
+        customChannel.send({embed})
+        .then(function(res){
+            console.log(res)
+        })
+        .catch(function(err){
+            console.log(err)
+            message.channel.send("Unable to display new zone embed, Enable embeds in this channel for future zone unlock announcements!")
+        })
+    }else{
+        message.channel.send({embed})
+        .then(function(res){
+            console.log(res)
+        })
+        .catch(function(err){
+            console.log(err)
+            message.channel.send("Unable to display new zone embed, Enable embeds in this channel for future zone unlock announcements!")
+        })
+    }
 }   
 
 function getAreaString(areaId){
@@ -2913,9 +3179,9 @@ function createRpgStatData(rewardString, event, partySuccess){
     return dataToReturn
 }
 
-function updateUserRewards(message, memberInParty, rewards){
-    experience.gainExperience(message, memberInParty, rewards.rpgPoints, null, true) // true for RPG points
-    experience.gainExperience(message, memberInParty, rewards.xp);
+function updateUserRewards(message, memberInParty, rewards, memberLastChannel){
+    experience.gainExperience(message, memberInParty, rewards.rpgPoints, null, true, memberLastChannel) // true for RPG points
+    experience.gainExperience(message, memberInParty, rewards.xp, null, false, memberLastChannel);
     if (rewards.items.length > 0){
         addToUserInventory(memberInParty.id, rewards.items);                        
     }
@@ -6416,7 +6682,7 @@ function calculateDamageDealt(event, caster, target, rpgAbility){
     var criticalDamagePlus = 1
 
     if (caster <= 1000){
-        let keystoneBaseDmgMultiplier = 1 + (event.challenge && event.challenge.keystone ? event.challenge.keystone * 0.5 : 0)
+        let keystoneBaseDmgMultiplier = 1 + (event.challenge && event.challenge.keystone ? event.challenge.keystone * 0.33 : 0)
         var baseDamage = baseDamage * keystoneBaseDmgMultiplier
         // the caster is an enemy
         var checkTarget = event.membersInParty[target];
