@@ -2402,6 +2402,7 @@ module.exports.useRpgAbility = function(message, args){
                     if (cooldown == 0 && validAbility){
                         // queue up the ability into the list of abilities that will be used and their target
                         var abilityToProcess = {}
+                        let aliasTarget = false;
                         if (target == "p1"
                         || target == "p2"
                         || target == "p3"
@@ -2411,11 +2412,18 @@ module.exports.useRpgAbility = function(message, args){
                             for (var m in ev.membersInParty){
                                 if (ev.membersInParty[m].alias == target){
                                     target = ev.membersInParty[m].id
+                                    aliasTarget = true
                                 }
                             }
                         }
 
                         if (mentionedUser && target == mentionedUser.id){
+                            abilityToProcess = {
+                                user: discordUserId,
+                                ability: abilityToUse,
+                                target: "rpg-"+target
+                            }
+                        }else if(aliasTarget){
                             abilityToProcess = {
                                 user: discordUserId,
                                 ability: abilityToUse,
