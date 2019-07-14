@@ -500,7 +500,11 @@ client.on('message', function(message){
                     commands.travelCommand(message, args)
                 }
                 else if (commandIs("rpgqueue", message)){
-                    commands.rpgQueueJoinCommand(message, args)
+                    if (message.channel.type == "text" && (RPG_CHANNELS.indexOf(message.channel.name) != -1) && !message.author.bot){
+                        commands.rpgQueueJoinCommand(message, args)
+                    }else{
+                        message.channel.send("use the rpg channel for this")
+                    }
                 }
                 else if (commandIs("rpgleave", message)){
                     commands.rpgQueueLeaveCommand(message)
