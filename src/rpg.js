@@ -1194,6 +1194,7 @@ module.exports.rpgReady = function(message, itemsAvailable, amuletItemsById, buf
                                                             // create their stats based on their level + items
                                                             // hp, attack dmg, magic dmg, armor
                                                             var membersInParty = {};
+                                                            let aliasCount = 1
                                                             for (var member in activeRPGEvents[rpgEvent].members){
                                                                 var partyMember = activeRPGEvents[rpgEvent].members[member];
                                                                 var partyMemberStats = usersInRPGEvents["rpg-"+partyMember.id].memberStats ? usersInRPGEvents["rpg-"+partyMember.id].memberStats : undefined;
@@ -1241,6 +1242,7 @@ module.exports.rpgReady = function(message, itemsAvailable, amuletItemsById, buf
                                                                 membersInParty["rpg-" + partyMember.id] = {
                                                                     id: partyMember.id,
                                                                     name: partyMember.username,
+                                                                    alias: "p" + aliasCount++,
                                                                     username: partyMember.username,
                                                                     hp: 250 + (7 *  partyMemberStats.level ) + (20 *  partyMemberStats.rpglevel ) + partyMemberHpPlus,
                                                                     attackDmg: 10 + (2 * partyMemberStats.level) + (7 * partyMemberStats.rpglevel ) + partyMemberAttackDmgPlus,
@@ -1892,8 +1894,9 @@ module.exports.rpgReady = function(message, itemsAvailable, amuletItemsById, buf
                                                                 var memberInRpgEvent = activeRPGEvents[rpgEvent].members[member];
                                                                 var memberInParty = activeRPGEvents[rpgEvent].membersInParty["rpg-" + memberInRpgEvent.id]
                                                                 var playerString = userStatsStringBuilder(memberInParty, memberInRpgEvent.username, false, 1);
+                                                                var playerAlias = memberInParty.alias
                                                                 var playerUsername = memberInRpgEvent.username.length <= 35 ? memberInRpgEvent.username : "default"
-                                                                embed.addField( playerUsername, playerString )
+                                                                embed.addField( playerUsername + " (" + playerAlias + ")", playerString )
                                                             }
                                                             // limit abilities
                                                             var limitsReadyString = "";
@@ -2399,6 +2402,19 @@ module.exports.useRpgAbility = function(message, args){
                     if (cooldown == 0 && validAbility){
                         // queue up the ability into the list of abilities that will be used and their target
                         var abilityToProcess = {}
+                        if (target == "p1"
+                        || target == "p2"
+                        || target == "p3"
+                        || target == "p4"
+                        || target == "p5"){
+                            let ev = activeRPGEvents["rpg-"+idOfEventUserIsIn]
+                            for (var m in ev.membersInParty){
+                                if (ev.membersInParty[m].alias == target){
+                                    target = ev.membersInParty[m].id
+                                }
+                            }
+                        }
+
                         if (mentionedUser && target == mentionedUser.id){
                             abilityToProcess = {
                                 user: discordUserId,
@@ -2483,6 +2499,20 @@ function validateTarget(target, abilityToUse, event, caster){
         if (target == caster){
             return false
         }
+    }
+    // using player aliases
+    if (target == "p1"
+    || target =="p2"
+    || target =="p3"
+    || target =="p4"
+    || target =="p5"){
+        // check that there is a user with that alias
+        for (var m in event.membersInParty){
+            if (event.membersInParty[m].alias == target){
+                return true
+            }
+        }
+
     }
     // check that target is valid
     if (target > 0 && target <= event.enemiesCount){
@@ -2667,7 +2697,8 @@ function turnFinishedEmbedBuilder(message, event, turnString, passiveEffectsStri
         var memberInParty = event.membersInParty["rpg-" + memberInRpgEvent.id]
         var playerString = userStatsStringBuilder(memberInParty, memberInRpgEvent.username, false, event.turn);
         var playerUsername = memberInRpgEvent.username.length <= 35 ? memberInRpgEvent.username : "default"
-        embed.addField( playerUsername, playerString )
+        var playerAlias = memberInParty.alias
+        embed.addField( playerUsername + " (" + playerAlias + ")", playerString )
     }
     // show limit availables
     var limitsReadyString = "";
