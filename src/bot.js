@@ -501,6 +501,7 @@ client.on('message', function(message){
                 }
                 else if (commandIs("rpgqueue", message)){
                     if (message.channel.type == "text" && (RPG_CHANNELS.indexOf(message.channel.name) != -1) && !message.author.bot){
+                        message.channel.send("in here")
                         commands.rpgQueueJoinCommand(message, args)
                     }else{
                         message.channel.send("use the rpg channel for this")
