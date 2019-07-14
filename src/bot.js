@@ -501,7 +501,6 @@ client.on('message', function(message){
                 }
                 else if (commandIs("rpgqueue", message)){
                     if (message.channel.type == "text" && (RPG_CHANNELS.indexOf(message.channel.name) != -1) && !message.author.bot){
-                        message.channel.send("in here")
                         commands.rpgQueueJoinCommand(message, args)
                     }else{
                         message.channel.send("use the rpg channel for this")
@@ -645,6 +644,16 @@ client.on('message', function(message){
                         })
     
                         commands.timeTravelCommand(message, args, channelName);
+                    }
+                    else if (commandIs("rpgqueue", message)){
+                        if (message.channel.type == "text" && (RPG_CHANNELS.indexOf(message.channel.name) != -1) && !message.author.bot){
+                            commands.rpgQueueJoinCommand(message, args)
+                        }else{
+                            message.channel.send("use the rpg channel for this")
+                        }
+                    }
+                    else if (commandIs("rpgleave", message)){
+                        commands.rpgQueueLeaveCommand(message)
                     }
                     else if (commandIs("rpgstart", message)){
                         commands.rpgBattleCommand(message);
