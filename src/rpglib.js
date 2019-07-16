@@ -5778,6 +5778,28 @@ module.exports = {
                     areaString : " ",
                     name: "Abandon all hope those who enter here",
                     enemiesToDefeat: 204,
+                    enemies: [
+                        {
+                            enemyId: "walrus",
+                            enemyDifficulty: "hard"
+                        },
+                        {
+                            enemyId: "walrus",
+                            enemyDifficulty: "hard"
+                        },
+                        {
+                            enemyId: "trex",
+                            enemyDifficulty: "boss"
+                        },
+                        {
+                            enemyId: "walrus",
+                            enemyDifficulty: "hard"
+                        },
+                        {
+                            enemyId: "walrus",
+                            enemyDifficulty: "hard"
+                        },
+                    ],
                     onCompleteAreasUnlocked: [
                         "bubblehouses"
                     ],
@@ -6125,6 +6147,28 @@ module.exports = {
                     areaString : " ",
                     name: "Hanging Pillar",
                     enemiesToDefeat: 190,
+                    enemies: [
+                        {
+                            enemyId: "polarbear",
+                            enemyDifficulty: "medium"
+                        },
+                        {
+                            enemyId: "wendigo",
+                            enemyDifficulty: "hard"
+                        },
+                        {
+                            enemyId: "bigfoot",
+                            enemyDifficulty: "boss"
+                        },
+                        {
+                            enemyId: "wendigo",
+                            enemyDifficulty: "hard"
+                        },
+                        {
+                            enemyId: "polarbear",
+                            enemyDifficulty: "medium"
+                        },
+                    ],
                     onCompleteAreasUnlocked: [
                         "hoolefarisland"
                     ],
