@@ -1338,49 +1338,54 @@ module.exports.dailyCommand = function(message, args, dbl){
         profileDB.getUserProfileData(discordUserId, function(err, res){
             if (err){
                 exports.setCommandLock("vote", discordUserId, false)
-            }
-            // check if user has voted
-            var now = new Date();
-            var oneDayAgo = new Date();
-            oneDayAgo = new Date(oneDayAgo.setHours(oneDayAgo.getHours() - 12));
-
-            if ( oneDayAgo > res.data.lastdailytime || !res.data.lastdailytime ){
-                let profileData = res.data
-                let streakReset = calculateStreakReset(profileData)
-                if (streakReset){
-                    profileData.votestreak = 1
-                }
-                let burritosGained = calculateBurritosGained(profileData)
-                let tacosGained = calculateTacosGained(profileData)
-                
-                dbl.hasVoted(message.author.id).then(voted => {
-                    if (voted){
-                        profileDB.updateUserDaily(discordUserId, burritosGained, tacosGained, streakReset, (!profileData.burritos), function(error, result){
-                            if (error){
-                                exports.setCommandLock("vote", discordUserId, false)
-                                console.log(error)
-                            }else{
-                                exports.setCommandLock("vote", discordUserId, false)
-                                console.log(result)
-                                message.channel.send("congrats you have voted and gained `" + burritosGained + "` :burrito: and `" + tacosGained + "` :taco:")
-                                console.log(voted)        
-                            }
-                        })
-                    }else{
-                        exports.setCommandLock("vote", discordUserId, false)
-                        message.channel.send("You have to vote in order to collect your daily")
-                    }
-                    
-                })
-                .catch(function(err){
-                    exports.setCommandLock("vote", discordUserId, false)
-                    message.channel.send("err " + err)
-                });
             }else{
-                exports.setCommandLock("vote", discordUserId, false)
-                now = new Date(now.setSeconds(now.getSeconds()));
-                var numberOfHours = getDateDifference(res.data.lastdailytime, now, 12);
-                message.channel.send(message.author + " You cannot collect your daily currently! Please wait `" + numberOfHours + "` ");
+                // check if user has voted
+                var now = new Date();
+                var oneDayAgo = new Date();
+                oneDayAgo = new Date(oneDayAgo.setHours(oneDayAgo.getHours() - 12));
+
+                if ( oneDayAgo > res.data.lastdailytime || !res.data.lastdailytime ){
+                    let profileData = res.data
+                    let streakReset = calculateStreakReset(profileData)
+                    if (streakReset){
+                        profileData.votestreak = 1
+                    }
+                    let burritosGained = calculateBurritosGained(profileData)
+                    let tacosGained = calculateTacosGained(profileData)
+                    
+                    dbl.hasVoted(message.author.id).then(voted => {
+                        if (voted){
+                            let firstBurritos = false
+                            if (profileData.burritos == null){
+                                firstBurritos = true
+                            }
+                            profileDB.updateUserDaily(discordUserId, burritosGained, tacosGained, streakReset, firstBurritos, function(error, result){
+                                if (error){
+                                    exports.setCommandLock("vote", discordUserId, false)
+                                    console.log(error)
+                                }else{
+                                    exports.setCommandLock("vote", discordUserId, false)
+                                    console.log(result)
+                                    message.channel.send("congrats you have voted and gained `" + burritosGained + "` :burrito: and `" + tacosGained + "` :taco:")
+                                    console.log(voted)        
+                                }
+                            })
+                        }else{
+                            exports.setCommandLock("vote", discordUserId, false)
+                            message.channel.send("You have to vote in order to collect your daily")
+                        }
+                    })
+                    .catch(function(err){
+                        exports.setCommandLock("vote", discordUserId, false)
+                        message.channel.send("err " + err)
+                    });
+
+                }else{
+                    exports.setCommandLock("vote", discordUserId, false)
+                    now = new Date(now.setSeconds(now.getSeconds()));
+                    var numberOfHours = getDateDifference(res.data.lastdailytime, now, 12);
+                    message.channel.send(message.author + " You cannot collect your daily currently! Please wait `" + numberOfHours + "` ");
+                }
             }
         })
     }else{
