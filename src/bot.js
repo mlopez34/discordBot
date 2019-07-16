@@ -290,7 +290,7 @@ client.on('message', function(message){
                     commands.scavangeCommand(message)
                 }
                 else if (commandIs("inventory", message) || commandIs("inv", message)){
-                    commands.inventoryCommand(message);
+                    commands.inventoryCommand(message, args);
                 }
                 else if (commandIs("rares", message)){
                     commands.raresCommand(message, args, "rare");
@@ -888,7 +888,7 @@ client.on('message', function(message){
                     profileDB.createUserActivity(data)
                 }
                 else if (commandIs("inventory", message) || commandIs("inv", message)){
-                    commands.inventoryCommand(message);
+                    commands.inventoryCommand(message, args);
                     data.command = "inventory"
                     profileDB.createUserActivity(data)
                 }

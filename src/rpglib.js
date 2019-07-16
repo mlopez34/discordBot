@@ -5669,7 +5669,7 @@ module.exports = {
                 argentumbay: {
                     areaString : "Welcome to the coast of marvels",
                     name: "Argentum Bay",
-                    enemiesToDefeat: 148,
+                    enemiesToDefeat: 105,
                     onCompleteAreasUnlocked: [
                         "scorpiashipyards",
 
@@ -5688,7 +5688,7 @@ module.exports = {
                 ardwenlake: {
                     areaString : " ",
                     name: "Ardwen Lake",
-                    enemiesToDefeat: 205,
+                    enemiesToDefeat: 114,
                     onCompleteAreasUnlocked: [
                         "galatabridge"
                     ],
@@ -5706,7 +5706,7 @@ module.exports = {
                 beirlandisland: {
                     areaString : " ",
                     name: "Beirland Island",
-                    enemiesToDefeat: 203,
+                    enemiesToDefeat: 152,
                     onCompleteAreasUnlocked: [
                         "floatingislands"
                     ],
@@ -5724,7 +5724,7 @@ module.exports = {
                 berryheadarch: {
                     areaString : " ",
                     name: "Berry Head Arch",
-                    enemiesToDefeat: 193,
+                    enemiesToDefeat: 95,
                     onCompleteAreasUnlocked: [
                         "beirlandisland"
                     ],
@@ -5741,7 +5741,7 @@ module.exports = {
                 bubblehouses: {
                     areaString : " ",
                     name: "Bubble Houses",
-                    enemiesToDefeat: 182,
+                    enemiesToDefeat: 199,
                     onCompleteAreasUnlocked: [
 
                     ],
@@ -5759,7 +5759,7 @@ module.exports = {
                 capecod: {
                     areaString : " ",
                     name: "Cape Cod",
-                    enemiesToDefeat: 227,
+                    enemiesToDefeat: 130,
                     onCompleteAreasUnlocked: [
                         "berryheadarch",
                         "ardwenlake"
@@ -5777,7 +5777,7 @@ module.exports = {
                 devilssea: {
                     areaString : " ",
                     name: "Abandon all hope those who enter here",
-                    enemiesToDefeat: 266,
+                    enemiesToDefeat: 204,
                     onCompleteAreasUnlocked: [
                         "bubblehouses"
                     ],
@@ -5795,7 +5795,7 @@ module.exports = {
                 faroeislands: {
                     areaString : " ",
                     name: "Faroe Islands",
-                    enemiesToDefeat: 195,
+                    enemiesToDefeat: 149,
                     onCompleteAreasUnlocked: [
                         "capecod",
                         "floatingislands",
@@ -5814,7 +5814,7 @@ module.exports = {
                 floatingislands: {
                     areaString : " ",
                     name: "Floating Islands",
-                    enemiesToDefeat: 214,
+                    enemiesToDefeat: 73,
                     onCompleteAreasUnlocked: [
                         "devilssea"
                     ],
@@ -5832,7 +5832,7 @@ module.exports = {
                 galatabridge: {
                     areaString : " ",
                     name: "Galata Bridge",
-                    enemiesToDefeat: 201,
+                    enemiesToDefeat: 120,
                     onCompleteAreasUnlocked: [
                         "devilssea"
                     ],
@@ -5850,7 +5850,7 @@ module.exports = {
                 barrierreef: {
                     areaString : " ",
                     name: "Barrier Reef",
-                    enemiesToDefeat: 196,
+                    enemiesToDefeat: 135,
                     onCompleteAreasUnlocked: [
                         "puertoprincesa",
                     ],
@@ -5868,7 +5868,7 @@ module.exports = {
                 halongbay: {
                     areaString : " ",
                     name: "Ha Long Bay",
-                    enemiesToDefeat: 184,
+                    enemiesToDefeat: 101,
                     onCompleteAreasUnlocked: [
                         "devilssea",
                     ],
@@ -5886,7 +5886,7 @@ module.exports = {
                 napalicoast: {
                     areaString : " ",
                     name: "Na Pali Coast",
-                    enemiesToDefeat: 213,
+                    enemiesToDefeat: 173,
                     onCompleteAreasUnlocked: [
                         "halongbay"
                     ],
@@ -5904,7 +5904,7 @@ module.exports = {
                 puertoprincesa: {
                     areaString : " ",
                     name: "Puerto princesa",
-                    enemiesToDefeat: 198,
+                    enemiesToDefeat: 134,
                     onCompleteAreasUnlocked: [
                         "devilssea",
 
@@ -5923,7 +5923,7 @@ module.exports = {
                 scorpiashipyards: {
                     areaString : " ",
                     name: "Scorpia Shipyards",
-                    enemiesToDefeat: 231,
+                    enemiesToDefeat: 87,
                     onCompleteAreasUnlocked: [
                         "faroeislands",
                         "barrierreef",
@@ -5988,7 +5988,7 @@ module.exports = {
                 bloodfalls: {
                     areaString : " ",
                     name: "Blood Falls",
-                    enemiesToDefeat: 148,
+                    enemiesToDefeat: 104,
                     onCompleteAreasUnlocked: [
                         "bozkovdolomite"
                     ],
@@ -6005,7 +6005,7 @@ module.exports = {
                 bozkovdolomite: {
                     areaString : " ",
                     name: "Bozkov Dolomite Caves",
-                    enemiesToDefeat: 148,
+                    enemiesToDefeat: 128,
                     onCompleteAreasUnlocked: [
                         "campsbay"
                     ],
@@ -6022,7 +6022,7 @@ module.exports = {
                 campsbay: {
                     areaString : " ",
                     name: "Camps Bay",
-                    enemiesToDefeat: 148,
+                    enemiesToDefeat: 204,
                     onCompleteAreasUnlocked: [
                         "cobbspoint"
                     ],
@@ -6039,7 +6039,7 @@ module.exports = {
                 cobbspoint: {
                     areaString : " ",
                     name: "Cobb's Point",
-                    enemiesToDefeat: 148,
+                    enemiesToDefeat: 95,
                     onCompleteAreasUnlocked: [
                         "dunwall"
                     ],
@@ -6056,7 +6056,7 @@ module.exports = {
                 dunwall: {
                     areaString : " ",
                     name: "Dunwall",
-                    enemiesToDefeat: 148,
+                    enemiesToDefeat: 77,
                     onCompleteAreasUnlocked: [
                         "edurnaroch"
                     ],
@@ -6073,7 +6073,7 @@ module.exports = {
                 edurnaroch: {
                     areaString : " ",
                     name: "Edur Naroch",
-                    enemiesToDefeat: 148,
+                    enemiesToDefeat: 58,
                     onCompleteAreasUnlocked: [
                         "giantscauseway"
                     ],
@@ -6090,7 +6090,7 @@ module.exports = {
                 giantscauseway: {
                     areaString : " ",
                     name: "Giant's Causeway",
-                    enemiesToDefeat: 148,
+                    enemiesToDefeat: 159,
                     onCompleteAreasUnlocked: [
                         "grandteton"
                     ],
@@ -6107,7 +6107,7 @@ module.exports = {
                 grandteton: {
                     areaString : " ",
                     name: "Grand Teton",
-                    enemiesToDefeat: 148,
+                    enemiesToDefeat: 180,
                     onCompleteAreasUnlocked: [
                         "hangingpillar"
                     ],
@@ -6124,7 +6124,7 @@ module.exports = {
                 hangingpillar: {
                     areaString : " ",
                     name: "Hanging Pillar",
-                    enemiesToDefeat: 148,
+                    enemiesToDefeat: 190,
                     onCompleteAreasUnlocked: [
                         "hoolefarisland"
                     ],
@@ -6141,7 +6141,7 @@ module.exports = {
                 hoolefarisland: {
                     areaString : " ",
                     name: "Hoolefar Island",
-                    enemiesToDefeat: 148,
+                    enemiesToDefeat: 105,
                     onCompleteAreasUnlocked: [
                         "lanzarote"
                     ],
@@ -6158,7 +6158,7 @@ module.exports = {
                 lanzarote: {
                     areaString : " ",
                     name: "Lanzarote",
-                    enemiesToDefeat: 148,
+                    enemiesToDefeat: 113,
                     onCompleteAreasUnlocked: [
                         "morainelake"
                     ],
@@ -6175,7 +6175,7 @@ module.exports = {
                 morainelake: {
                     areaString : " ",
                     name: "Moraine Lake",
-                    enemiesToDefeat: 148,
+                    enemiesToDefeat: 187,
                     onCompleteAreasUnlocked: [
 
                     ],
@@ -6234,7 +6234,7 @@ module.exports = {
                 arashiyamaforest: {
                     areaString : " ",
                     name: "Arashiyama Forest",
-                    enemiesToDefeat: 148,
+                    enemiesToDefeat: 80,
                     onCompleteAreasUnlocked: [
                         "bhangarhfort"
                     ],
@@ -6251,7 +6251,7 @@ module.exports = {
                 bhangarhfort: {
                     areaString : " ",
                     name: "Bhangarh Fort",
-                    enemiesToDefeat: 148,
+                    enemiesToDefeat: 95,
                     onCompleteAreasUnlocked: [
                         "bigben"
                     ],
@@ -6268,7 +6268,7 @@ module.exports = {
                 bigben: {
                     areaString : " ",
                     name: "Big Ben",
-                    enemiesToDefeat: 148,
+                    enemiesToDefeat: 134,
                     onCompleteAreasUnlocked: [
                         "deathvalley"
                     ],
@@ -6285,7 +6285,7 @@ module.exports = {
                 deathvalley: {
                     areaString : " ",
                     name: "Death Valley",
-                    enemiesToDefeat: 148,
+                    enemiesToDefeat: 121,
                     onCompleteAreasUnlocked: [
                         "giantcrystalcave"
                     ],
@@ -6302,7 +6302,7 @@ module.exports = {
                 giantcrystalcave: {
                     areaString : " ",
                     name: "Giant Crystal Cave",
-                    enemiesToDefeat: 148,
+                    enemiesToDefeat: 175,
                     onCompleteAreasUnlocked: [
                         "guardianmountains"
                     ],
@@ -6319,7 +6319,7 @@ module.exports = {
                 guardianmountains: {
                     areaString : " ",
                     name: "Guardian Mountains",
-                    enemiesToDefeat: 148,
+                    enemiesToDefeat: 31,
                     onCompleteAreasUnlocked: [
                         "helmsdeep"
                     ],
@@ -6336,7 +6336,7 @@ module.exports = {
                 helmsdeep: {
                     areaString : " ",
                     name: "Helm's Deep",
-                    enemiesToDefeat: 148,
+                    enemiesToDefeat: 188,
                     onCompleteAreasUnlocked: [
                         "huacachinaoasis"
                     ],
@@ -6353,7 +6353,7 @@ module.exports = {
                 huacachinaoasis: {
                     areaString : " ",
                     name: "Huacachina Oasis",
-                    enemiesToDefeat: 148,
+                    enemiesToDefeat: 154,
                     onCompleteAreasUnlocked: [
                         "parthenon"
                     ],
@@ -6370,7 +6370,7 @@ module.exports = {
                 parthenon: {
                     areaString : " ",
                     name: "Parthenon",
-                    enemiesToDefeat: 148,
+                    enemiesToDefeat: 95,
                     onCompleteAreasUnlocked: [
                         "rockislands"
                     ],
@@ -6387,7 +6387,7 @@ module.exports = {
                 rockislands: {
                     areaString : " ",
                     name: "Rock Islands of Palau",
-                    enemiesToDefeat: 148,
+                    enemiesToDefeat: 108,
                     onCompleteAreasUnlocked: [
                         "screamingtunnel"
                     ],
@@ -6404,7 +6404,7 @@ module.exports = {
                 screamingtunnel: {
                     areaString : " ",
                     name: "Screaming Tunnel",
-                    enemiesToDefeat: 148,
+                    enemiesToDefeat: 78,
                     onCompleteAreasUnlocked: [
                         "stoneforest"
                     ],
@@ -6421,7 +6421,7 @@ module.exports = {
                 stoneforest: {
                     areaString : " ",
                     name: "Stone Forest of Shilin",
-                    enemiesToDefeat: 148,
+                    enemiesToDefeat: 144,
                     onCompleteAreasUnlocked: [
                         "tomblioutpost"
                     ],
@@ -6438,7 +6438,7 @@ module.exports = {
                 tomblioutpost: {
                     areaString : " ",
                     name: "Tombli Outpost",
-                    enemiesToDefeat: 148,
+                    enemiesToDefeat: 218,
                     onCompleteAreasUnlocked: [
                         "verdongorge"
                     ],
@@ -6455,7 +6455,7 @@ module.exports = {
                 verdongorge: {
                     areaString : " ",
                     name: "Verdon Gorge",
-                    enemiesToDefeat: 148,
+                    enemiesToDefeat: 150,
                     onCompleteAreasUnlocked: [
 
                     ],
@@ -6514,7 +6514,7 @@ module.exports = {
                 academycity: {
                     areaString : " ",
                     name: "Academy City",
-                    enemiesToDefeat: 148,
+                    enemiesToDefeat: 93,
                     onCompleteAreasUnlocked: [
                         "easterisland"
                     ],
@@ -6531,7 +6531,7 @@ module.exports = {
                 easterisland: {
                     areaString : " ",
                     name: "Easter Island",
-                    enemiesToDefeat: 148,
+                    enemiesToDefeat: 73,
                     onCompleteAreasUnlocked: [
                         "ergubaridesert"
                     ],
@@ -6548,7 +6548,7 @@ module.exports = {
                 ergubaridesert: {
                     areaString : " ",
                     name: "Erg Ubari Desert",
-                    enemiesToDefeat: 148,
+                    enemiesToDefeat: 172,
                     onCompleteAreasUnlocked: [
                         "juchetower"
                     ],
@@ -6565,7 +6565,7 @@ module.exports = {
                 juchetower: {
                     areaString : " ",
                     name: "Juche Tower",
-                    enemiesToDefeat: 148,
+                    enemiesToDefeat: 130,
                     onCompleteAreasUnlocked: [
                         "kittyhawk"
                     ],
@@ -6582,7 +6582,7 @@ module.exports = {
                 kittyhawk: {
                     areaString : " ",
                     name: "Kitty Hawk",
-                    enemiesToDefeat: 148,
+                    enemiesToDefeat: 101,
                     onCompleteAreasUnlocked: [
                         "kuangsifalls"
                     ],
@@ -6599,7 +6599,7 @@ module.exports = {
                 kuangsifalls: {
                     areaString : " ",
                     name: "Kuang Si Falls",
-                    enemiesToDefeat: 148,
+                    enemiesToDefeat: 165,
                     onCompleteAreasUnlocked: [
                         "lakebaikal"
                     ],
@@ -6616,7 +6616,7 @@ module.exports = {
                 lakebaikal: {
                     areaString : " ",
                     name: "Lake Baikal",
-                    enemiesToDefeat: 148,
+                    enemiesToDefeat: 130,
                     onCompleteAreasUnlocked: [
                         "laketekapo"
                     ],
@@ -6633,7 +6633,7 @@ module.exports = {
                 laketekapo: {
                     areaString : " ",
                     name: "Lake Tekapo",
-                    enemiesToDefeat: 148,
+                    enemiesToDefeat: 57,
                     onCompleteAreasUnlocked: [
                         "negaverse"
                     ],
@@ -6650,7 +6650,7 @@ module.exports = {
                 negaverse: {
                     areaString : " ",
                     name: "Negaverse",
-                    enemiesToDefeat: 148,
+                    enemiesToDefeat: 201,
                     onCompleteAreasUnlocked: [
                         "picdumidi"
                     ],
@@ -6667,7 +6667,7 @@ module.exports = {
                 pearlharbour: {
                     areaString : " ",
                     name: "Pearl Harbour",
-                    enemiesToDefeat: 148,
+                    enemiesToDefeat: 44,
                     onCompleteAreasUnlocked: [
                         "tsukijfishmarket"
                     ],
@@ -6684,7 +6684,7 @@ module.exports = {
                 picdumidi: {
                     areaString : " ",
                     name: "Pic du Midi",
-                    enemiesToDefeat: 148,
+                    enemiesToDefeat: 150,
                     onCompleteAreasUnlocked: [
                         "thefairypools"
                     ],
@@ -6701,7 +6701,7 @@ module.exports = {
                 thefairypools: {
                     areaString : " ",
                     name: "The Fairy Pools",
-                    enemiesToDefeat: 148,
+                    enemiesToDefeat: 130,
                     onCompleteAreasUnlocked: [
                         "tsukijfishmarket"
                     ],
@@ -6718,7 +6718,7 @@ module.exports = {
                 tsukijfishmarket: {
                     areaString : " ",
                     name: "Tsukij fish market",
-                    enemiesToDefeat: 148,
+                    enemiesToDefeat: 189,
                     onCompleteAreasUnlocked: [
 
                     ],
@@ -6777,7 +6777,7 @@ module.exports = {
                 agorianbattleplex: {
                     areaString : " ",
                     name: "Agorian Battleplex",
-                    enemiesToDefeat: 148,
+                    enemiesToDefeat: 130,
                     onCompleteAreasUnlocked: [
                         "waileabeach"
                     ],
@@ -6794,7 +6794,7 @@ module.exports = {
                 district10: {
                     areaString : " ",
                     name: "District 10",
-                    enemiesToDefeat: 148,
+                    enemiesToDefeat: 154,
                     onCompleteAreasUnlocked: [
 
                     ],
@@ -6811,7 +6811,7 @@ module.exports = {
                 newmombasa: {
                     areaString : " ",
                     name: "New Mombasa",
-                    enemiesToDefeat: 148,
+                    enemiesToDefeat: 101,
                     onCompleteAreasUnlocked: [
                         "district10"
                     ],
@@ -6828,7 +6828,7 @@ module.exports = {
                 ouagadougou: {
                     areaString : " ",
                     name: "Ouagadougou",
-                    enemiesToDefeat: 148,
+                    enemiesToDefeat: 40,
                     onCompleteAreasUnlocked: [
                         "newmombasa"
                     ],
@@ -6845,7 +6845,7 @@ module.exports = {
                 pripyattown: {
                     areaString : " ",
                     name: "Pripyat Town",
-                    enemiesToDefeat: 148,
+                    enemiesToDefeat: 180,
                     onCompleteAreasUnlocked: [
                         "ouagadougou"
                     ],
@@ -6862,7 +6862,7 @@ module.exports = {
                 rootbridges: {
                     areaString : " ",
                     name: "Root Bridges",
-                    enemiesToDefeat: 148,
+                    enemiesToDefeat: 84,
                     onCompleteAreasUnlocked: [
                         "pripyattown"
                     ],
@@ -6879,7 +6879,7 @@ module.exports = {
                 stgeorgestation: {
                     areaString : " ",
                     name: "St George station",
-                    enemiesToDefeat: 148,
+                    enemiesToDefeat: 151,
                     onCompleteAreasUnlocked: [
                         "rootbridges"
                     ],
@@ -6896,7 +6896,7 @@ module.exports = {
                 tanahlot: {
                     areaString : " ",
                     name: "tanahlot",
-                    enemiesToDefeat: 148,
+                    enemiesToDefeat: 120,
                     onCompleteAreasUnlocked: [
                         "stgeorgestation"
                     ],
@@ -6913,7 +6913,7 @@ module.exports = {
                 themisarena: {
                     areaString : " ",
                     name: "Themis Arena",
-                    enemiesToDefeat: 148,
+                    enemiesToDefeat: 170,
                     onCompleteAreasUnlocked: [
                         "tanahlot"
                     ],
@@ -6930,7 +6930,7 @@ module.exports = {
                 waileabeach: {
                     areaString : " ",
                     name: "Wailea Beach",
-                    enemiesToDefeat: 148,
+                    enemiesToDefeat: 59,
                     onCompleteAreasUnlocked: [
                         "themisarena"
                     ],
@@ -10054,6 +10054,41 @@ Hoover Dam
                 name: "Wendigo",
                 emoji: "<:wendigo:598743668664565789>",
                 abilities: ["ferociousBite" , "ferociousBite" , "iceshards", "iceshards", "freeze"],
+                buffs: [
+                    {
+                        name: "frenzy",
+                        emoji: "<:frenzy:479298214453968896>",
+                        onTurnEnd: {
+                            attackDmgPlus : 60,
+                            magicDmgPlus : 60,
+                            everyNTurns: 2,
+                            startTurn: 2
+                        }
+                    }
+                ],
+                keystoneStats: {
+                    hp: [1200, 3500, 6200, 10000, 15000 ],
+                    attackDmg: [300, 500, 900, 1500, 2300],
+                    magicDmg: [300, 500, 900, 1500, 2300],
+                    abilities: []
+                },
+                effectsOnDeath: [
+                    "explode"
+                ],
+                hpPerPartyMember: 1090,
+                adPerPartyMember: 21,
+                mdPerPartyMember: 21,
+                hp: 650,
+                attackDmg: 125,
+                magicDmg: 170,
+                armor: 600,
+                spirit: 900,
+                difficulty: "hard",
+                element: "normal"
+            },
+            iconoclast: {
+                name: "Iconoclast",
+                abilities: ["slap" , "slap" , "scam", "slash", "slash", "cripple"],
                 buffs: [
                     {
                         name: "frenzy",
@@ -13331,7 +13366,7 @@ Hoover Dam
                                 attackDmgPlus : [855, 1310, 1840, 2430, 3750, 5500, 7000, 9000, 11500, 13000 ],
                                 magicDmgPlus : [855, 1310, 1840, 2430, 3750, 5500, 7000, 9000, 11500, 13000]
                             },
-                            hp: [331500, 500900, 1109900, 1910000, 2907000, 4200000,  ],
+                            hp: [331500, 500900, 1109900, 1910000, 2907000, 4200000, 5500000, 7200000, 9200000, 15500000, ],
                             attackDmg: [700, 1100, 1700, 3100, 3500, 4250, 5000, 6000, 7250, 8500 ],
                             magicDmg: [700, 1100, 2500, 3800, 4500, 5250, 6000, 7000, 8250, 9500 ],
                             abilities: []

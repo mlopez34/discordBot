@@ -3048,6 +3048,10 @@ module.exports.patchnotesCommand = function(message){
         },
         "fields": [
           {
+            "name": "July 15, 2019",
+            "value": "```-RPG Queue command is here! You can now enter the rpg queue to join users in your rpg adventure from any server, use `-rpgqueue 2`, `-rpgqueue 3`, `-rpgqueue 4`, `-rpgqueue 5` to begin\n Use `-rpgleave` to leave the current queue you are in\nYou can only be in one queue at at time\n-RPG aliases can be used, you do not need to tag a user anymore and can instead use `p1`, `p2`, `p3`, `p4`, `p5`, to target them instead, their alias is listed next to their name in the RPG embed.\n-Inventory, Rares, Ancients, and Artifacts embeds now have paging\n-RPG areas have had their progress updated```"
+          },
+          {
             "name": "July 9, 2019",
             "value": "```-Fixed some rpg zones from not being accessible\n-Completing areas and zones will now grant rewards\n-The item requirements of building upgrades has been reduced by 33%, tacos requirements reduced by 20%\n-New command available -claim rare, -claim ancient, -claim [common], -claim [common] [amount], -claim [common] all, -claim letter [letter text] are now available, rares and ancients are randomly selected, commons can be selected by the user, letters can be obtained through claim rewards and will be thrown into the twisting nether.```"
           },
@@ -3146,7 +3150,7 @@ module.exports.rpghelpCommand = function(message){
         "fields": [
           {
             "name": "General Commands",
-            "value": "`-rpgstats                       >` Display your abilities and rpg stats!\n`-map   >` display your current area and zone as well as available areas you can travel to!\n`-travel [areaname]   >` travel to a new area in the current zone you are in!\n`-rpgstart [1-4 user mentions]   >` Start an rpg with up to four other people!\n`-rpgchallenge [1-10] [1-4 users] >` Start an rpg challenge with four other people! Rpg challenges must be defeated in order\n`-cast [ability] [target number/user]   >` Cast an ability on a target or user!\n**example**: -cast attack 1 (attacks enemy 1)\n-cast barrier @user (casts barrier on the user mentioned)\n-cast slash (deals damage to all enemies - only if the ability is areawide)"
+            "value": "`-rpgstats >` Display your abilities and rpg stats!\n`-map >` display your current area and zone as well as available areas you can travel to!\n`-travel [areaname]   >` travel to a new area in the current zone you are in!\n`-rpgstart [1-4 user mentions]   >` Start an rpg with up to four other people!\n`-rpgqueue [2-5] >` Enter the RPG queue for a group of size 2-5\n`-rpgleave >` Leave the RPG queue\n`-rpgchallenge [1-10] [1-4 users] >` Start an rpg challenge with four other people! Rpg challenges must be defeated in order\n`-cast [ability] [target number/user]   >` Cast an ability on a target or user!\n**example**: -cast attack 1 (attacks enemy 1)\n-cast barrier @user (casts barrier on the user mentioned)\n-cast slash (deals damage to all enemies - only if the ability is areawide)"
           },
           {
             "name": "Info",
@@ -3241,15 +3245,16 @@ module.exports.raresCommand = function(message, args, rarity){
             if (rarity == "armament"){
                 armamentsEmbedBuilder(message, inventoryResponse.data, itemsMapById, includeDescriptions, rarity, page)
             }else{
-                raresEmbedBuilder(message, itemsInInventoryCountMap, itemsMapById, includeDescriptions, rarity);
+                raresEmbedBuilder(message, itemsInInventoryCountMap, itemsMapById, includeDescriptions, rarity, page);
             }
         }
     })
 }
 
-function raresEmbedBuilder(message, itemsMap, allItems, long, rarity){
+function raresEmbedBuilder(message, itemsMap, allItems, long, rarity, pageParam){
     // create a field for each item and add the count
     const embed = new Discord.RichEmbed()
+    let page = pageParam || 1
     var inventoryStringsRegular = [];
     var inventoryStringsImproved = [];
     var inventoryStringsRefined = [];
@@ -3345,12 +3350,21 @@ function raresEmbedBuilder(message, itemsMap, allItems, long, rarity){
                         }else{
                             inventoryStringRefined = "**"+allItems[key].itemname + "** - " +  itemsMap[key] + " - " + allItems[key].itemslot + "\n" + inventoryStringRefined;                        
                         }
-
                     }
-
                 }
             }
         }
+    }
+    // for visual purposes
+    let largestPageNum = 1
+    if (inventoryStringsRegular.length > largestPageNum){
+        largestPageNum = inventoryStringsRegular.length
+    }
+    if (inventoryStringsImproved.length > largestPageNum){
+        largestPageNum = inventoryStringsImproved.length
+    }
+    if (inventoryStringsRefined.length > largestPageNum){
+        largestPageNum = inventoryStringsRefined.length
     }
     // push the leftover
     if (inventoryStringRegular.length > 0){
@@ -3364,42 +3378,57 @@ function raresEmbedBuilder(message, itemsMap, allItems, long, rarity){
     }
     if (!long){
         for (var invString = inventoryStringsRefined.length -1; invString >= 0; invString--){
-            var emoji = ""
-            if ( rarity == "rare"){
-                emoji = ":diamonds: "
-            }else if (rarity == "ancient"){
-                emoji = ":star:  "
-            }else if (rarity == "artifact"){
-                emoji = ":cyclone:  "
+            if (page > inventoryStringsRefined.length){
+                page = inventoryStringsRefined.length
             }
-            embed.addField(emoji + " Item Name  |  Count  |  Slot " + emoji, inventoryStringsRefined[invString], true)
+            if (invString == page - 1){
+                var emoji = ""
+                if ( rarity == "rare"){
+                    emoji = ":diamonds: "
+                }else if (rarity == "ancient"){
+                    emoji = ":star:  "
+                }else if (rarity == "artifact"){
+                    emoji = ":cyclone:  "
+                }
+                embed.addField(emoji + " Item Name  |  Count  |  Slot " + emoji, inventoryStringsRefined[invString], true)    
+            }
         }
         for (var invString = inventoryStringsImproved.length -1; invString >= 0; invString--){
-            var emoji = ""
-            if ( rarity == "rare"){
-                emoji = ":large_blue_diamond: "
-            }else if (rarity == "ancient"){
-                emoji = ":large_orange_diamond: "
-            }else if (rarity == "artifact"){
-                emoji = ":diamond_shape_with_a_dot_inside: "
+            if (page > inventoryStringsImproved.length){
+                page = inventoryStringsImproved.length
             }
-            embed.addField(emoji + " Item Name  |  Count  |  Slot " + emoji, inventoryStringsImproved[invString], true)
+            if (invString == page - 1){
+                var emoji = ""
+                if ( rarity == "rare"){
+                    emoji = ":large_blue_diamond: "
+                }else if (rarity == "ancient"){
+                    emoji = ":large_orange_diamond: "
+                }else if (rarity == "artifact"){
+                    emoji = ":diamond_shape_with_a_dot_inside: "
+                }
+                embed.addField(emoji + " Item Name  |  Count  |  Slot " + emoji, inventoryStringsImproved[invString], true)    
+            }
         }
         for (var invString = inventoryStringsRegular.length -1; invString >= 0; invString--){
-            var emoji = ""
-            if ( rarity == "rare"){
-                emoji = ":small_blue_diamond: "
-            }else if (rarity == "ancient"){
-                emoji = ":small_orange_diamond: "
-            }else if (rarity == "artifact"){
-                emoji = ":diamond_shape_with_a_dot_inside: "
+            if (page > inventoryStringsRegular.length){
+                page = inventoryStringsRegular.length
             }
-            embed.addField(emoji + " Item Name  |  Count  |  Slot " + emoji, inventoryStringsRegular[invString], true)
+            if (invString == page - 1){
+                var emoji = ""
+                if ( rarity == "rare"){
+                    emoji = ":small_blue_diamond: "
+                }else if (rarity == "ancient"){
+                    emoji = ":small_orange_diamond: "
+                }else if (rarity == "artifact"){
+                    emoji = ":diamond_shape_with_a_dot_inside: "
+                }
+                embed.addField(emoji + " Item Name  |  Count  |  Slot " + emoji, inventoryStringsRegular[invString], true)    
+            }
         }
     }
     embed
     .setAuthor(message.author.username +"'s Inventory ")
-    .setDescription( ":left_luggage:" )
+    .setDescription("Page : " + (page) + " of " + largestPageNum + "\n use `-armaments page [pagenum]` to get other pages\n:left_luggage:" )
     .setThumbnail(message.author.avatarURL)
     .setColor(0x06e8e8)
     message.channel.send({embed})
@@ -3555,9 +3584,20 @@ function itemInfoEmbedBuilder(message, item, rpgItemInfoString, armamentForItem)
     })
 }
 
-module.exports.inventoryCommand = function(message){
+module.exports.inventoryCommand = function(message, args){
     // get all items for the discord id
     var discordUserId = message.author.id;
+    let page = 0
+    if (args && args.length > 1){
+        var long = args[1];
+        if (long == "long"){
+            includeDescriptions = true;
+        }else if (long == "page" ){
+            if (args && args.length > 2){
+                page = parseInt(args[2])
+            }
+        }
+    }
     profileDB.getUserItems(discordUserId, function(err, inventoryResponse){
         if (err){
             // console.log(err);
@@ -3586,15 +3626,18 @@ module.exports.inventoryCommand = function(message){
                     itemsInInventoryCountMap[inventoryResponse.data[item].itemid] = itemsInInventoryCountMap[inventoryResponse.data[item].itemid] + 1
                 }
             }
-            inventoryEmbedBuilder(message, itemsInInventoryCountMap, itemsMapById);
+            inventoryEmbedBuilder(message, itemsInInventoryCountMap, itemsMapById, page);
         }
     })
 }
 
-function inventoryEmbedBuilder(message, itemsMap, allItems){
+function inventoryEmbedBuilder(message, itemsMap, allItems, pageParam){
     // create a field for each item and add the count
     const embed = new Discord.RichEmbed()
+    let page = pageParam || 1
     var inventoryString = "";
+    var inventoryStringsRegular = [];
+    
     for (var key in itemsMap) {
         if (itemsMap.hasOwnProperty(key)) {
             // 
@@ -3603,15 +3646,33 @@ function inventoryEmbedBuilder(message, itemsMap, allItems){
             || allItems[key].itemraritycategory == "uncommon+"
             && !allItems[key].essencerarity 
             && !allItems[key].crystalrarity ) ) {
-                // console.log(key + " " + allItems[key].itemname)
-                inventoryString = "**"+allItems[key].itemname + "** - " +  itemsMap[key] + " - " + allItems[key].itemslot +"\n" + inventoryString;
+
+                if (inventoryString.length > 900){
+                    inventoryStringsRegular.push(inventoryString);
+                    inventoryString = "";
+                    inventoryString = "**" + itemOfArmament.itemname + "** - " +  statsFromArmament + "\n" + inventoryStrin;
+                }else{
+                    // console.log(key + " " + allItems[key].itemname)
+                    inventoryString = "**"+allItems[key].itemname + "** - " +  itemsMap[key] + " - " + allItems[key].itemslot +"\n" + inventoryString;
+                }
             }
         }
     }
+    // push the leftover
+    if (inventoryString.length > 0){
+        inventoryStringsRegular.push(inventoryString);
+    }
+    if (page > inventoryStringsRegular.length){
+        page = inventoryStringsRegular.length
+    }
+    embed.setDescription(":left_luggage: \n-rares | -rares long to view your rare items\n-seeds | seeds long to view your seeds\n-ancients | -ancients long to view your ancient items\n-artifacts | -artifacts long to view your artifacts\n-amulets to view your amulets \nPage : " + (page) + " of " + inventoryStringsRegular.length + "\n use `-inv page [pagenum]` to get other pages" )
+    for (var invString = inventoryStringsRegular.length -1; invString >= 0; invString--){
+        if (invString == page - 1){
+            embed.addField("Item Name  |  Count  |  Slot", inventoryStringsRegular[invString], true)
+        }
+    }
     embed
-    .addField("Item Name  |  Count  |  Slot", inventoryString, true)
     .setAuthor(message.author.username +"'s Inventory ")
-    .setDescription( ":left_luggage: \n-rares | -rares long to view your rare items\n-seeds | seeds long to view your seeds\n-ancients | -ancients long to view your ancient items\n-artifacts | -artifacts long to view your artifacts\n-amulets to view your amulets " )
     .setThumbnail(message.author.avatarURL)
     .setColor(0x06e8e8)
     message.channel.send({embed})
@@ -3973,6 +4034,7 @@ function scavengeEmbedBuilder(message, itemsScavenged, tacosFound){
 
     const embed = new Discord.RichEmbed()
     .addField("[" + message.author.username +"'s Scavenge] :pick: Items found: ", itemsMessage, true)
+    .addField("New Feature Introduced!", "You can now enter the RPG queue!\nUse commands `-rpgqueue [2-5]` to enter an rpg queue of group size 2-5.\n`-rpgleave` to leave the queue.", true)
     .setThumbnail(message.author.avatarURL)
     .setColor(0xbfa5ff)
     message.channel.send({embed})
