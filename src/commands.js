@@ -3600,7 +3600,7 @@ module.exports.inventoryCommand = function(message, args){
     }
     profileDB.getUserItems(discordUserId, function(err, inventoryResponse){
         if (err){
-            // console.log(err);
+            console.log(err);
         }else{
             // console.log(inventoryResponse.data);
             var itemsInInventoryCountMap = {};
@@ -3650,7 +3650,7 @@ function inventoryEmbedBuilder(message, itemsMap, allItems, pageParam){
                 if (inventoryString.length > 900){
                     inventoryStringsRegular.push(inventoryString);
                     inventoryString = "";
-                    inventoryString = "**" + itemOfArmament.itemname + "** - " +  statsFromArmament + "\n" + inventoryStrin;
+                    inventoryString = "**"+allItems[key].itemname + "** - " +  itemsMap[key] + " - " + allItems[key].itemslot +"\n" + inventoryString;
                 }else{
                     // console.log(key + " " + allItems[key].itemname)
                     inventoryString = "**"+allItems[key].itemname + "** - " +  itemsMap[key] + " - " + allItems[key].itemslot +"\n" + inventoryString;
