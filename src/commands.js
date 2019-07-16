@@ -4034,7 +4034,7 @@ function scavengeEmbedBuilder(message, itemsScavenged, tacosFound){
 
     const embed = new Discord.RichEmbed()
     .addField("[" + message.author.username +"'s Scavenge] :pick: Items found: ", itemsMessage, true)
-    .addField("New Feature Introduced!", "You can now enter the RPG queue!\nUse commands `-rpgqueue [2-5]` to enter an rpg queue of group size 2-5.\n`-rpgleave` to leave the queue.", true)
+    .addField("New Feature Introduced!", "You can now enter the RPG queue!\nUse commands `-rpgqueue [2-5]` to enter an rpg queue of group size 2-5.\n`-rpgleave` to leave the queue. Read `-patchnotes` for more info", true)
     .setThumbnail(message.author.avatarURL)
     .setColor(0xbfa5ff)
     message.channel.send({embed})
