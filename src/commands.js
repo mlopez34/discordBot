@@ -1066,6 +1066,7 @@ module.exports.prepareCommand = function (message){
                                                 }else{
                                                     message.channel.send(message.author + " You have prepared `" + tacosToPrepare + "` tacos :taco:! `" + soiledToTaco +"` were from soiled crops. The tacos also come with `1` warranty protection");
                                                 }
+                                                message.channel.send("New Feature Introduced!\nYou can now enter the RPG queue!\nUse commands `-rpgqueue [2-5]` to enter an rpg queue of group size 2-5.\n`-rpgleave` to leave the queue. Read `-patchnotes` for more info")
                                                 var experienceFromItems = wearStats.calculateExtraExperienceGained(wearRes, "prepare", null)
                                                 experience.gainExperience(message, message.author, (EXPERIENCE_GAINS.prepare + (EXPERIENCE_GAINS.preparePerStand * userTacoStands) + experienceFromItems) , prepareResponse);
                                                 stats.statisticsManage(discordUserId, "maxextratacos", soiledToTaco, function(staterr, statSuccess){
@@ -3637,6 +3638,12 @@ function inventoryEmbedBuilder(message, itemsMap, allItems, pageParam){
     let page = pageParam || 1
     var inventoryString = "";
     var inventoryStringsRegular = [];
+    let emojiMap = {
+        common: "◾",
+        uncommon: "◻️",
+        potion: "⚗️",
+        bake: "🍰"
+    }
     
     for (var key in itemsMap) {
         if (itemsMap.hasOwnProperty(key)) {
@@ -3646,14 +3653,27 @@ function inventoryEmbedBuilder(message, itemsMap, allItems, pageParam){
             || allItems[key].itemraritycategory == "uncommon+"
             && !allItems[key].essencerarity 
             && !allItems[key].crystalrarity ) ) {
+                let emoji = ""
+                if ( (allItems[key].itemraritycategory == "uncommon+"
+                || allItems[key].itemraritycategory == "uncommon")
+                && !allItems[key].shoppotion
+                && allItems[key].amuletsource != "rpgbuff"){
+                    emoji = emojiMap["uncommon"]
+                }else if (allItems[key].itemraritycategory == "common"){
+                    emoji = emojiMap["common"]
+                }else if (allItems[key].shoppotion){
+                    emoji = emojiMap["potion"]
+                }else if (allItems[key].amuletsource == "rpgbuff"){
+                    emoji = emojiMap["bake"]
+                }
 
                 if (inventoryString.length > 900){
                     inventoryStringsRegular.push(inventoryString);
                     inventoryString = "";
-                    inventoryString = "**"+allItems[key].itemname + "** - " +  itemsMap[key] + " - " + allItems[key].itemslot +"\n" + inventoryString;
+                    inventoryString = emoji + "**"+allItems[key].itemname + "** - " +  itemsMap[key] + " - " + allItems[key].itemslot +"\n" + inventoryString;
                 }else{
                     // console.log(key + " " + allItems[key].itemname)
-                    inventoryString = "**"+allItems[key].itemname + "** - " +  itemsMap[key] + " - " + allItems[key].itemslot +"\n" + inventoryString;
+                    inventoryString = emoji + "**"+allItems[key].itemname + "** - " +  itemsMap[key] + " - " + allItems[key].itemslot +"\n" + inventoryString;
                 }
             }
         }
@@ -4034,7 +4054,6 @@ function scavengeEmbedBuilder(message, itemsScavenged, tacosFound){
 
     const embed = new Discord.RichEmbed()
     .addField("[" + message.author.username +"'s Scavenge] :pick: Items found: ", itemsMessage, true)
-    .addField("New Feature Introduced!", "You can now enter the RPG queue!\nUse commands `-rpgqueue [2-5]` to enter an rpg queue of group size 2-5.\n`-rpgleave` to leave the queue. Read `-patchnotes` for more info", true)
     .setThumbnail(message.author.avatarURL)
     .setColor(0xbfa5ff)
     message.channel.send({embed})
