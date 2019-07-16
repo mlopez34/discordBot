@@ -3428,7 +3428,7 @@ function raresEmbedBuilder(message, itemsMap, allItems, long, rarity, pageParam)
     }
     embed
     .setAuthor(message.author.username +"'s Inventory ")
-    .setDescription("Page : " + (page) + " of " + largestPageNum + "\n use `-armaments page [pagenum]` to get other pages\n:left_luggage:" )
+    .setDescription("Page : " + (page) + " of " + largestPageNum + "\n:left_luggage:" )
     .setThumbnail(message.author.avatarURL)
     .setColor(0x06e8e8)
     message.channel.send({embed})
