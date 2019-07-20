@@ -1,12 +1,8 @@
 module.exports = {
     // TODO:
     // DONE aoe heal over time lasts 5 turns total of 85% of magical
-    // 10 turn dot phys
-    // 10 turn dot magical
     // DONE cocoon - 15% damage reduct, -10% damage dealt
     // cannister shot chance to deal 1 to 7 shots
-    // 17% more magical damage 0% healing
-    // 17% more ad 0% healing
     // mindflaylike ability 90%, 120%, 150%
     // lightwell ability - 5 random heals
 
@@ -124,20 +120,23 @@ module.exports = {
             abilityId: "cocoon",
             cooldown: 0,
             maxcooldown: 6,
-            description: "Reduce all damage taken by 15% for 3 turns 6 turn cooldown",
+            description: "Reduce all damage taken and all damage done by 20% for 3 turns 6 turn cooldown",
             buff: {
                 buff: true,
                 name: "Cocoon",
                 emoji : ":egg:",
                 affectsGlobal: ["damageTakenPercentage", "damageDealtPercentage"],
                 turnsToExpire: 3,
-                multiplier: 0.85
+                multiplier: 0.8
             }
         },
 
         overload : {
             name : "Overload",
             abilityId: "overload",
+            description: "reflect back 50% of all damage taken, 5 turn cooldown (NYI)",
+            cooldown: 0,
+            maxcooldown: 5,
             buff: {
                 name: "Overloading",
                 abilityId: "overloading",
@@ -414,6 +413,24 @@ module.exports = {
                 dmgOnExpire: 0
             }
         },
+        cramp: {
+            name:"Cramp",
+            abilityId: "cramp",
+            type:"physical",
+            limitOffensive: true,
+            description: "deal 150 damage + 150% of your physical damage over 10 turns",
+            dot: {
+                name: "Cramp",
+                type:"physical",
+                dmg: 150,
+                adPercentage: 1.5,
+                emoji: "📌",
+                dmgOnDotApply: false,
+                turnsToExpire: 10,
+                dmgOnDotExpire: false,
+                dmgOnExpire: 0
+            }
+        },
         curse: {
             name:"Curse",
             abilityId: "curse",
@@ -427,6 +444,24 @@ module.exports = {
                 emoji: "🌑",
                 dmgOnDotApply: false,
                 turnsToExpire: 4,
+                dmgOnDotExpire: false,
+                dmgOnExpire: 0
+            }
+        },
+        doom: {
+            name:"Doom",
+            abilityId: "doom",
+            type:"shadow",
+            limitOffensive: true,
+            description: "Deal 150 damage + 150% of your magical damage over 10 turns",
+            dot: {
+                name: "Doom",
+                type:"shadow",
+                dmg: 150,
+                mdPercentage: 1.5,
+                emoji: "🌑",
+                dmgOnDotApply: false,
+                turnsToExpire: 10,
                 dmgOnDotExpire: false,
                 dmgOnExpire: 0
             }
@@ -655,7 +690,7 @@ module.exports = {
             adPercentage: 0.95,
             cooldown: 0,
             maxcooldown: 1,
-            description: "Deal 90 damage + 95% of your attack damage to all enemies",
+            description: "Deal 90 damage + 95% of your attack damage to all enemies, 1 turn cooldown",
             type: "physical",
             areawide: true,
             targets: "enemy"
@@ -775,7 +810,7 @@ module.exports = {
             type: "physical"
             
         },
-        puleseshot: {
+        pulseshot: {
             name: "Pulse Shot",
             abilityId: "pulseshot",
             limitOffensive: true,
@@ -919,6 +954,30 @@ module.exports = {
             description: "Your spells are cast before the enemy spells",
             buff: {
                 name: "Haste",
+                emoji: "<:haste:479293276424241163>"
+            }
+        },
+
+        meditate: {
+            passive: true,
+            abilityId: "meditate",
+            name: "Meditate",
+            description: "Permanently increase your magical damage by 21% and reduce your healing by 0% (NYI)",
+            // buff should be 17% more magical 0% healing
+            buff: {
+                name: "Meditate",
+                emoji: "<:haste:479293276424241163>"
+            }
+        },
+
+        pumped: {
+            passive: true,
+            abilityId: "pumped",
+            name: "Pumped",
+            description: "Permanently increase your attack damage by 21% and reduce your healing by 0% (NYI)",
+            // buff should be 17% more magical 0% healing
+            buff: {
+                name: "Pumped",
                 emoji: "<:haste:479293276424241163>"
             }
         },

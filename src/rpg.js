@@ -22,7 +22,7 @@ var rpgQueuesByUsers = {
 }
 var TEAM_MAX_LENGTH = 5;
 var CURRENT_CHALLENGES_AVAILABLE = 13
-var CHALLENGE_TO_TEST = 12
+var CHALLENGE_TO_TEST = 13
 var KEYSTONE_UNLOCK_LEVEL = 35
 var RPG_TEMPLE_LEVEL_PET = 5
 var rpgAbilities = rpglib.rpgAbilities;
@@ -464,7 +464,15 @@ module.exports.showRpgStats = function(message, itemsAvailable, amuletItemsById,
                             if (userAmuletData.length > 0){
                                 singleItemsStrings['Amulets'] = amuletString
                             }
-
+                            // added stats from level
+                            statisticsFromItemsAndLevel.hpPlus = statisticsFromItemsAndLevel.hpPlus + userStats.level
+                            statisticsFromItemsAndLevel.attackDmgPlus = statisticsFromItemsAndLevel.attackDmgPlus + userStats.level
+                            statisticsFromItemsAndLevel.magicDmgPlus = statisticsFromItemsAndLevel.magicDmgPlus + userStats.level
+                            statisticsFromItemsAndLevel.armorPlus = statisticsFromItemsAndLevel.armorPlus + userStats.level
+                            statisticsFromItemsAndLevel.spiritPlus = statisticsFromItemsAndLevel.spiritPlus + userStats.level
+                            statisticsFromItemsAndLevel.luckPlus = statisticsFromItemsAndLevel.luckPlus + userStats.level
+                            
+                            let usingBakeEmoji = ""
                             for (var i in userTemporaryBuffData){
                                 var hppluspercentage = itemsAvailable[userTemporaryBuffData[i].id].hppluspercentage ? itemsAvailable[userTemporaryBuffData[i].id].hppluspercentage : 0
                                 var attackdmgpluspercentage = itemsAvailable[userTemporaryBuffData[i].id].attackdmgpluspercentage ? itemsAvailable[userTemporaryBuffData[i].id].attackdmgpluspercentage : 0
@@ -484,24 +492,16 @@ module.exports.showRpgStats = function(message, itemsAvailable, amuletItemsById,
                                 critdamagepluspercentage = critdamagepluspercentage / 100
                                 luckpluspercentage = luckpluspercentage / 100
                                 
-                                statisticsFromItemsAndLevel.hpPlus = statisticsFromItemsAndLevel.hpPlus + Math.floor(statisticsFromItemsAndLevel.hpPlus * hppluspercentage);
-                                statisticsFromItemsAndLevel.attackDmgPlus = statisticsFromItemsAndLevel.attackDmgPlus + Math.floor(statisticsFromItemsAndLevel.attackDmgPlus * attackdmgpluspercentage);
-                                statisticsFromItemsAndLevel.magicDmgPlus = statisticsFromItemsAndLevel.magicDmgPlus + Math.floor(statisticsFromItemsAndLevel.magicDmgPlus * magicdmgpluspercentage);
-                                statisticsFromItemsAndLevel.armorPlus = statisticsFromItemsAndLevel.armorPlus + Math.floor(statisticsFromItemsAndLevel.armorPlus * armorpluspercentage);
-                                statisticsFromItemsAndLevel.spiritPlus = statisticsFromItemsAndLevel.spiritPlus + Math.floor(statisticsFromItemsAndLevel.spiritPlus * spiritpluspercentage);
-                                statisticsFromItemsAndLevel.critPlus = statisticsFromItemsAndLevel.critPlus + Math.floor(statisticsFromItemsAndLevel.critPlus * critpluspercentage);
-                                statisticsFromItemsAndLevel.critDamagePlus = statisticsFromItemsAndLevel.critDamagePlus + Math.floor(statisticsFromItemsAndLevel.critDamagePlus * critdamagepluspercentage);
-                                statisticsFromItemsAndLevel.luckPlus = statisticsFromItemsAndLevel.luckPlus + Math.floor(statisticsFromItemsAndLevel.luckPlus * luckpluspercentage);
+                                statisticsFromItemsAndLevel.hpPlusPercentage = hppluspercentage;
+                                statisticsFromItemsAndLevel.attackDmgPlusPercentage = attackdmgpluspercentage;
+                                statisticsFromItemsAndLevel.magicDmgPlusPercentage = magicdmgpluspercentage;
+                                statisticsFromItemsAndLevel.armorPlusPercentage = armorpluspercentage;
+                                statisticsFromItemsAndLevel.spiritPlusPercentage = spiritpluspercentage;
+                                statisticsFromItemsAndLevel.critPlusPercentage = critpluspercentage;
+                                statisticsFromItemsAndLevel.critDamagePlusPercentage = critdamagepluspercentage;
+                                statisticsFromItemsAndLevel.luckPlusPercentage = luckpluspercentage;
+                                usingBakeEmoji = ":cake:"
                             }
-
-                            // added stats from level
-                            statisticsFromItemsAndLevel.hpPlus = statisticsFromItemsAndLevel.hpPlus + userStats.level
-                            statisticsFromItemsAndLevel.attackDmgPlus = statisticsFromItemsAndLevel.attackDmgPlus + userStats.level
-                            statisticsFromItemsAndLevel.magicDmgPlus = statisticsFromItemsAndLevel.magicDmgPlus + userStats.level
-                            statisticsFromItemsAndLevel.armorPlus = statisticsFromItemsAndLevel.armorPlus + userStats.level
-                            statisticsFromItemsAndLevel.spiritPlus = statisticsFromItemsAndLevel.spiritPlus + userStats.level
-                            statisticsFromItemsAndLevel.luckPlus = statisticsFromItemsAndLevel.luckPlus + userStats.level
-
 
                             var partyMemberStats = {
                                 level: userStats.level,
@@ -529,6 +529,7 @@ module.exports.showRpgStats = function(message, itemsAvailable, amuletItemsById,
                             var myStats = {
                                 id: message.author.id,
                                 name: playerName,
+                                bakeEmoji: usingBakeEmoji,
                                 username: message.author.username,
                                 hp: 250 + (7 *  partyMemberStats.level ) + (20 *  partyMemberStats.rpglevel ) + partyMemberHpPlus,
                                 attackDmg: 10 + (2 * partyMemberStats.level) + (7 * partyMemberStats.rpglevel ) + partyMemberAttackDmgPlus,
@@ -552,6 +553,16 @@ module.exports.showRpgStats = function(message, itemsAvailable, amuletItemsById,
                                 buffs: [
                                 ]
                             }
+                            myStats.hp = myStats.hp + Math.floor( myStats.hp * partyMemberStats.plusStats.hpPlusPercentage || 0)
+                            myStats.attackDmg = myStats.attackDmg + Math.floor( myStats.attackDmg * partyMemberStats.plusStats.attackDmgPlusPercentage || 0)
+                            myStats.magicDmg = myStats.magicDmg + Math.floor( myStats.magicDmg * partyMemberStats.plusStats.magicDmgPlusPercentage || 0)
+                            myStats.spirit = myStats.spirit + Math.floor( myStats.spirit * partyMemberStats.plusStats.spiritPlusPercentage || 0)
+                            myStats.armor = myStats.armor + Math.floor( myStats.armor * partyMemberStats.plusStats.armorPlusPercentage || 0)
+                            myStats.criticalChance = myStats.criticalChance + Math.floor( myStats.criticalChance * partyMemberStats.plusStats.critPlusPercentage || 0)
+                            myStats.criticalDamagePlus = myStats.criticalDamagePlus + Math.floor( myStats.criticalDamagePlus * partyMemberStats.plusStats.critDamagePlusPercentage || 0)
+
+                            myStats.criticalChance = calculateCritChance( myStats.criticalChance )
+                            myStats.criticalDamagePlus = calculateCritDamagePlus( myStats.criticalDamagePlus )
                             myStats.maxhp = myStats.hp;
                             // insert the abilities and statuses for the party member
                             if (partyMemberStats && partyMemberStats.abilities){
@@ -1006,56 +1017,68 @@ module.exports.rpgReady = function(message, itemsAvailable, amuletItemsById, buf
                                             }
                                             // added stats from items
                                             for (var i in items){
-                                                var slotItemId = items[i].itemid
-                                                if (items[i].ability1){
-                                                    if (itemsAvailable[slotItemId].ability1){
-                                                        abilities.push(itemsAvailable[slotItemId].ability1);
+                                                let validItem = true;
+                                                if (activeRPGEvents[ "rpg-" +  rpgEventId ].challenge 
+                                                && activeRPGEvents[ "rpg-" +  rpgEventId ].challenge.keystone == 0
+                                                && (currentPlayerChallenge + 1) == activeRPGEvents[ "rpg-" +  rpgEventId ].challenge.challenge){
+                                                    console.log("in challenge without keystone")
+                                                    var slotItemId = items[i].itemid
+                                                    if (itemsAvailable[slotItemId].rpglevelrequirement >= 40){
+                                                        validItem = false
                                                     }
                                                 }
-                                                if (items[i].ability2){
-                                                    if (itemsAvailable[slotItemId].ability2){
-                                                        abilities.push(itemsAvailable[slotItemId].ability2);
+                                                if (validItem){
+                                                    var slotItemId = items[i].itemid
+                                                    if (items[i].ability1){
+                                                        if (itemsAvailable[slotItemId].ability1){
+                                                            abilities.push(itemsAvailable[slotItemId].ability1);
+                                                        }
                                                     }
-                                                }
-                                                if (items[i].specialability){
-                                                    if (itemsAvailable[slotItemId].specialability){
-                                                        abilities.push(itemsAvailable[slotItemId].specialability)
+                                                    if (items[i].ability2){
+                                                        if (itemsAvailable[slotItemId].ability2){
+                                                            abilities.push(itemsAvailable[slotItemId].ability2);
+                                                        }
                                                     }
-                                                }
-                                                if (items[i].passiveability){
-                                                    if (itemsAvailable[slotItemId].passiveability){
-                                                        abilities.push(itemsAvailable[slotItemId].passiveability);
+                                                    if (items[i].specialability){
+                                                        if (itemsAvailable[slotItemId].specialability){
+                                                            abilities.push(itemsAvailable[slotItemId].specialability)
+                                                        }
                                                     }
+                                                    if (items[i].passiveability){
+                                                        if (itemsAvailable[slotItemId].passiveability){
+                                                            abilities.push(itemsAvailable[slotItemId].passiveability);
+                                                        }
+                                                    }
+    
+                                                    var hpPlus = itemsAvailable[slotItemId].hpplus ? itemsAvailable[slotItemId].hpplus : 0;
+                                                    var attackDmgPlus = itemsAvailable[slotItemId].attackdmgplus ? itemsAvailable[slotItemId].attackdmgplus : 0;
+                                                    var magicDmgPlus = itemsAvailable[slotItemId].magicdmgplus ? itemsAvailable[slotItemId].magicdmgplus : 0;
+                                                    var armorPlus = itemsAvailable[slotItemId].armorplus ? itemsAvailable[slotItemId].armorplus : 0;
+                                                    var spiritPlus = itemsAvailable[slotItemId].spiritplus ? itemsAvailable[slotItemId].spiritplus : 0;
+                                                    var critPlus = itemsAvailable[slotItemId].critplus ? itemsAvailable[slotItemId].critplus : 0;
+                                                    var critDamagePlus = itemsAvailable[slotItemId].critdmgplus ? itemsAvailable[slotItemId].critdmgplus : 0;
+                                                    var luckPlus = itemsAvailable[slotItemId].luckplus ? itemsAvailable[slotItemId].luckplus : 0;
+                                                    // check for an amulet for this item
+                                                    if (userArmamentForItemId[slotItemId]){
+                                                        // HAVE armament for this item - add the stats to the item
+                                                        hpPlus = hpPlus + userArmamentForItemId[slotItemId].hpplus;
+                                                        attackDmgPlus = attackDmgPlus + userArmamentForItemId[slotItemId].adplus;
+                                                        magicDmgPlus = magicDmgPlus + userArmamentForItemId[slotItemId].mdplus;
+                                                        armorPlus = armorPlus + userArmamentForItemId[slotItemId].armorplus;
+                                                        spiritPlus = spiritPlus + userArmamentForItemId[slotItemId].spiritplus;
+                                                        critPlus = critPlus + userArmamentForItemId[slotItemId].critplus;
+                                                        critDamagePlus = critDamagePlus + userArmamentForItemId[slotItemId].critdmgplus || 0;
+                                                        luckPlus = luckPlus + userArmamentForItemId[slotItemId].luckplus;
+                                                    }
+                                                    statisticsFromItemsAndLevel.hpPlus = statisticsFromItemsAndLevel.hpPlus + hpPlus;
+                                                    statisticsFromItemsAndLevel.attackDmgPlus = statisticsFromItemsAndLevel.attackDmgPlus + attackDmgPlus;
+                                                    statisticsFromItemsAndLevel.magicDmgPlus = statisticsFromItemsAndLevel.magicDmgPlus + magicDmgPlus;
+                                                    statisticsFromItemsAndLevel.armorPlus = statisticsFromItemsAndLevel.armorPlus + armorPlus;
+                                                    statisticsFromItemsAndLevel.spiritPlus = statisticsFromItemsAndLevel.spiritPlus + spiritPlus;
+                                                    statisticsFromItemsAndLevel.critPlus = statisticsFromItemsAndLevel.critPlus + critPlus;
+                                                    statisticsFromItemsAndLevel.critDamagePlus = statisticsFromItemsAndLevel.critDamagePlus + critDamagePlus;
+                                                    statisticsFromItemsAndLevel.luckPlus = statisticsFromItemsAndLevel.luckPlus + luckPlus;
                                                 }
-
-                                                var hpPlus = itemsAvailable[slotItemId].hpplus ? itemsAvailable[slotItemId].hpplus : 0;
-                                                var attackDmgPlus = itemsAvailable[slotItemId].attackdmgplus ? itemsAvailable[slotItemId].attackdmgplus : 0;
-                                                var magicDmgPlus = itemsAvailable[slotItemId].magicdmgplus ? itemsAvailable[slotItemId].magicdmgplus : 0;
-                                                var armorPlus = itemsAvailable[slotItemId].armorplus ? itemsAvailable[slotItemId].armorplus : 0;
-                                                var spiritPlus = itemsAvailable[slotItemId].spiritplus ? itemsAvailable[slotItemId].spiritplus : 0;
-                                                var critPlus = itemsAvailable[slotItemId].critplus ? itemsAvailable[slotItemId].critplus : 0;
-                                                var critDamagePlus = itemsAvailable[slotItemId].critdmgplus ? itemsAvailable[slotItemId].critdmgplus : 0;
-                                                var luckPlus = itemsAvailable[slotItemId].luckplus ? itemsAvailable[slotItemId].luckplus : 0;
-                                                // check for an amulet for this item
-                                                if (userArmamentForItemId[slotItemId]){
-                                                    // HAVE armament for this item - add the stats to the item
-                                                    hpPlus = hpPlus + userArmamentForItemId[slotItemId].hpplus;
-                                                    attackDmgPlus = attackDmgPlus + userArmamentForItemId[slotItemId].adplus;
-                                                    magicDmgPlus = magicDmgPlus + userArmamentForItemId[slotItemId].mdplus;
-                                                    armorPlus = armorPlus + userArmamentForItemId[slotItemId].armorplus;
-                                                    spiritPlus = spiritPlus + userArmamentForItemId[slotItemId].spiritplus;
-                                                    critPlus = critPlus + userArmamentForItemId[slotItemId].critplus;
-                                                    critDamagePlus = critDamagePlus + userArmamentForItemId[slotItemId].critdmgplus || 0;
-                                                    luckPlus = luckPlus + userArmamentForItemId[slotItemId].luckplus;
-                                                }
-                                                statisticsFromItemsAndLevel.hpPlus = statisticsFromItemsAndLevel.hpPlus + hpPlus;
-                                                statisticsFromItemsAndLevel.attackDmgPlus = statisticsFromItemsAndLevel.attackDmgPlus + attackDmgPlus;
-                                                statisticsFromItemsAndLevel.magicDmgPlus = statisticsFromItemsAndLevel.magicDmgPlus + magicDmgPlus;
-                                                statisticsFromItemsAndLevel.armorPlus = statisticsFromItemsAndLevel.armorPlus + armorPlus;
-                                                statisticsFromItemsAndLevel.spiritPlus = statisticsFromItemsAndLevel.spiritPlus + spiritPlus;
-                                                statisticsFromItemsAndLevel.critPlus = statisticsFromItemsAndLevel.critPlus + critPlus;
-                                                statisticsFromItemsAndLevel.critDamagePlus = statisticsFromItemsAndLevel.critDamagePlus + critDamagePlus;
-                                                statisticsFromItemsAndLevel.luckPlus = statisticsFromItemsAndLevel.luckPlus + luckPlus;
                                             }
 
                                             for (var i in userAmuletData){
@@ -2681,7 +2704,7 @@ function turnFinishedEmbedBuilder(message, event, turnString, passiveEffectsStri
         descriptionString = descriptionString.substring(0, 1950)
     }
     const embed = new Discord.RichEmbed()
-    .setAuthor("Taco RPG Event")
+    .setAuthor("Taco RPG Event | Turn: " + event.turn)
     .setColor(0xF2E93E)
     .setDescription( descriptionString )
     // party members
@@ -3355,6 +3378,20 @@ function calculateRewards(event, memberInRpgEvent, allItems, numberOfMembers, fi
 
         var rareKeystoneItems = []
         var ancientsKeystoneItems = []
+        // items based on 
+        for (var item in allItems){
+            let challengeDivider = Math.floor( (challengeNum - 1) / 3 ) + 1
+            let itemRequirementDivider = (allItems[item].rpglevelrequirement / 9 )
+            if (itemRequirementDivider == challengeDivider
+            && allItems[item].itemraritycategory == "rare"
+            && !allItems[item].findinchallenge){
+                rareItems.push(allItems[item])
+            }else if (itemRequirementDivider == challengeDivider
+            && allItems[item].itemraritycategory == "ancient"
+            && !allItems[item].findinchallenge){
+                ancientItems.push(allItems[item])
+            }
+        }
         for (var item in allItems){
             if (allItems[item].itemraritycategory == "ancient"
             && allItems[item].findinchallenge == challengeNum
@@ -3455,14 +3492,21 @@ function calculateRewards(event, memberInRpgEvent, allItems, numberOfMembers, fi
                 rpgZoneDifficulty = rpgZones[zoneAreaIsIn].zoneDifficulty
                 for (var item in allItems){
                     if (allItems[item].itemraritycategory == "ancient"
-                    && (event.area && allItems[item].findinzone == zoneAreaIsIn )
-                    && (event.area && allItems[item].findinarea == event.area)){
+                    && ( (event.area && allItems[item].findinzone == zoneAreaIsIn )
+                    || (event.area && allItems[item].findinarea == event.area) ) ){
                         ancientRpgMapItems.push(allItems[item]);
                     }else if (allItems[item].itemraritycategory == "rare"
-                    && (event.area && allItems[item].findinzone == zoneAreaIsIn)
-                    && (event.area &&allItems[item].findinarea == event.area)){
+                    && ( (event.area && allItems[item].findinzone == zoneAreaIsIn)
+                    || (event.area &&allItems[item].findinarea == event.area)) ){
                         rareRpgMapItems.push(allItems[item]);
                     }
+                }
+                // add the newly added items to the list of items to possibly obtain
+                for (var p in rareRpgMapItems){
+                    rareItems.push(rareRpgMapItems[p])
+                }
+                for (var p in ancientRpgMapItems){
+                    ancientItems.push(ancientRpgMapItems[p])
                 }
                 let thresholdMap = {
                     2: 500,
@@ -8843,7 +8887,8 @@ function userStatsStringBuilder(userStats, name, isEnemy, currentTurn){
         userString = userString + " :shield: " + (userStats.armor + userStats.statBuffs.armor)
         userString = userString + " 🙌 " + (userStats.spirit + userStats.statBuffs.spirit)
         userString = userString + " 🗡 " + (userStats.attackDmg + userStats.statBuffs.attackDmg)
-        userString = userString + " :comet: " + (userStats.magicDmg + userStats.statBuffs.magicDmg) + "\n"
+        userString = userString + " :comet: " + (userStats.magicDmg + userStats.statBuffs.magicDmg)
+        userString = userString + " " + ( userStats.bakeEmoji || "") + "\n"
     }
     if (userStats.element){
         // TODO: show that they are of a certain element
