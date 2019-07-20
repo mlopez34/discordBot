@@ -3035,6 +3035,7 @@ function increaseCompletionForUser(eventUser, rpgareaId, message, enemiesCount, 
         }else{
             var areaCompletionForUser = currentareacompletion + enemiesCount
             var areaCompletedCheck = 0 
+            var zoneUserIsIn = getRpgZone(rpgareaId)
             if ( areaCompletionForUser >= enemiesToDefeatArea
             && currentareacompletion < enemiesToDefeatArea ){
                 var listOfRares = []
@@ -3046,6 +3047,10 @@ function increaseCompletionForUser(eventUser, rpgareaId, message, enemiesCount, 
                         // add to list of rares
                         listOfRares.push(itemsForClaim[index]);
                     }
+                    if (itemsForClaim[index].itemraritycategory == "rare"
+                    && itemsForClaim[index].findinzone == zoneUserIsIn){
+                        listOfRares.push(itemsForClaim[index]);
+                    }
                 }
                 var indexOfRare = Math.floor(Math.random() * listOfRares.length);
                 var rareWon = [listOfRares[indexOfRare]];
@@ -3054,7 +3059,6 @@ function increaseCompletionForUser(eventUser, rpgareaId, message, enemiesCount, 
                 // reward the user with a rare
                 areaCompletedCheck = 1
             }
-            var zoneUserIsIn = getRpgZone(rpgareaId)
             var zoneComplete = eventUser.userdata[zoneUserIsIn]
             var areasToComplete = getAreasToCompletForZone(zoneUserIsIn)
             var areascompletedForUser = getAreasCompletedInZoneForUser(eventUser.userdata, zoneUserIsIn) + areaCompletedCheck
@@ -3068,6 +3072,10 @@ function increaseCompletionForUser(eventUser, rpgareaId, message, enemiesCount, 
                     && itemsForZoneComplete[index].fromscavenge == true
                     && !itemsForZoneComplete[index].isseed){
                         // add to list of ancients
+                        listOfAncients.push(itemsForZoneComplete[index]);
+                    }
+                    if (itemsForZoneComplete[index].itemraritycategory == "ancient"
+                    && itemsForZoneComplete[index].findinzone == zoneUserIsIn){
                         listOfAncients.push(itemsForZoneComplete[index]);
                     }
                 }

@@ -8850,7 +8850,7 @@ function setTimeOutForIndividualItem(individualItem, milisecondsUntilEnd){
         // someone has bid on the item - announce, and change item to belong to them
         handleMarketItemAuctionEnded(individualItem)
 
-    }, milisecondsUntilEnd) // replace this with milisecondsuntilend
+    }, milisecondsUntilEnd) // replace this with milisecondsUntilEnd
 
     marketItems[individualItem.id].auctionTimeout = itemAuctionTimeout
 }
@@ -8881,13 +8881,13 @@ function handleMarketItemAuctionEnded(individualItem){
                         console.log(transferErr)
                     }else{
                         try{
-                            removeItemFromMarket(individualItem)
                             if (marketItems[individualItem.id].lastHighestbidderchannel){
                                 // send a message to the winners channel that they won the auction    
                                 client.channels.get(marketItems[individualItem.id].lastHighestbidderchannel).send(winner + " :loudspeaker: - You WON " + marketItems[individualItem.id].name + " for :taco: " + marketItems[individualItem.id].currentbid + " in the marketplace")
                             }
                             // send message to the creator channel that they sold an item 
                             client.channels.get(marketItems[individualItem.id].creatorchannel).send(seller + " :loudspeaker: - Your " + marketItems[individualItem.id].name + " sold for :taco: " + tacosWon + " in the marketplace")
+                            removeItemFromMarket(individualItem)
                         }catch(ex){
                             console.log(ex)
                             var data = {
@@ -8895,7 +8895,7 @@ function handleMarketItemAuctionEnded(individualItem){
                                 guildId: 1,
                                 discordId: 1,
                                 username: "error",
-                                message: "1 " + JSON.stringify(ex) + " " + JSON.stringify(individualItem)
+                                message: "3 " + JSON.stringify(ex) + " " + JSON.stringify(individualItem)
                             }
                             profileDB.createUserActivity(data)
                         }
@@ -8913,8 +8913,8 @@ function handleMarketItemAuctionEnded(individualItem){
                         console.log(noSellErr)
                     }else{
                         try{
-                            removeItemFromMarket(individualItem)
                             client.channels.get(marketItems[individualItem.id].creatorchannel).send(seller + " :x: - Your " + marketItems[individualItem.id].name + " did not sell in the marketplace")
+                            removeItemFromMarket(individualItem)
                         }catch(ex){
                             // unable to send to channel
                             var data = {
@@ -8922,7 +8922,7 @@ function handleMarketItemAuctionEnded(individualItem){
                                 guildId: 1,
                                 discordId: 1,
                                 username: "error",
-                                message: "2 " + JSON.stringify(ex) + " " + JSON.stringify(individualItem)
+                                message: "4 " + JSON.stringify(ex) + " " + JSON.stringify(individualItem)
                             }
                             profileDB.createUserActivity(data)
                             console.log(ex)
