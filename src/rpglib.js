@@ -1,7 +1,5 @@
 module.exports = {
     // TODO:
-    // DONE aoe heal over time lasts 5 turns total of 85% of magical
-    // DONE cocoon - 15% damage reduct, -10% damage dealt
     // cannister shot chance to deal 1 to 7 shots
     // mindflaylike ability 90%, 120%, 150%
     // lightwell ability - 5 random heals
@@ -29,7 +27,7 @@ module.exports = {
             abilityId: "impale",
             dmg: 125,
             adPercentage: 1.1,
-            description: "Deal 125 physical damage + 110% of your attack damage and 40 physical damage + 30% to 1 random enemy",
+            description: "Deal 125 physical damage + 110% of your attack damage and 40 physical damage + 30% of your attack damage to 1 random enemy",
             type: "physical",
             special: {
                 name: "Impale",
@@ -103,7 +101,7 @@ module.exports = {
             abilityId: "shell",
             cooldown: 0,
             maxcooldown: 7,
-            description: "Reduce all damage taken by 33% for 3 turns 7 turn cooldown",
+            description: "Reduce all damage taken by 35% for 3 turns 7 turn cooldown",
             buff: {
                 selfbuff: true,
                 buff: true,
@@ -111,7 +109,7 @@ module.exports = {
                 emoji : "<:shell:479293276462252042>",
                 affectsGlobal: ["damageTakenPercentage"],
                 turnsToExpire: 3,
-                multiplier: 0.67
+                multiplier: 0.65
             }
         },
 
@@ -120,13 +118,13 @@ module.exports = {
             abilityId: "cocoon",
             cooldown: 0,
             maxcooldown: 6,
-            description: "Reduce all damage taken and all damage done by 20% for 3 turns 6 turn cooldown",
+            description: "Reduce all damage taken and all damage done by 20% for 2 turns 6 turn cooldown",
             buff: {
                 buff: true,
                 name: "Cocoon",
                 emoji : ":egg:",
                 affectsGlobal: ["damageTakenPercentage", "damageDealtPercentage"],
-                turnsToExpire: 3,
+                turnsToExpire: 2,
                 multiplier: 0.8
             }
         },
@@ -134,16 +132,20 @@ module.exports = {
         overload : {
             name : "Overload",
             abilityId: "overload",
-            description: "reflect back 50% of all damage taken, 5 turn cooldown (NYI)",
+            description: "reflect back 30% of all damage taken for 2 turns, 5 turn cooldown",
             cooldown: 0,
             maxcooldown: 5,
             buff: {
-                name: "Overloading",
-                abilityId: "overloading",
-                emoji : "<:overload:479301622275637248>",
-                turnsToExpire: 1,
-                addDamageTaken: true,
-                damageOnExpireFromDamageTaken: true
+                buff: true,
+                name: "Overload",
+                selfbuff: true,
+                abilityId: "overload",
+                reflectPercentage: 0.30,
+                areaewideReflectPercentage: 0.30,
+                emoji: ":level_slider:",
+                abType: "electric",
+                ignoreUnique: true,
+                turnsToExpire: 2
             }
         },
 
@@ -324,13 +326,13 @@ module.exports = {
             areawide: true,
             cooldown: 0,
             maxcooldown: 5,
-            description: "Heal the group over time for 100 + 100% of your magical damage over 5 turns 5 turn cooldown",
+            description: "Heal the group over time for 100 + 80% of your magical damage over 5 turns 5 turn cooldown",
             hot: {
                 name: "Sanctuary",
                 heal: 100,
                 emoji: ":ocean:",
                 areawide: true,
-                mdPercentage: 1,
+                mdPercentage: .80,
                 healingOnHotApply: false,
                 turnsToExpire: 5,
                 healingOnDotExpire: false,
@@ -341,12 +343,12 @@ module.exports = {
         orchatasip: {
             name:"Orchata Sip",
             abilityId: "orchatasip",
-            description: "Heal your target over time for 150 + 155% of your magical damage over 5 turns",
+            description: "Heal your target over time for 150 + 165% of your magical damage over 5 turns",
             hot: {
                 name: "Orchata Sip",
                 heal: 150,
                 emoji: "<:orchatasip:479296604831219714>",
-                mdPercentage: 1.55,
+                mdPercentage: 1.65,
                 healingOnHotApply: false,
                 turnsToExpire: 5,
                 healingOnDotExpire: false,
@@ -418,13 +420,13 @@ module.exports = {
             abilityId: "cramp",
             type:"physical",
             limitOffensive: true,
-            description: "deal 150 damage + 150% of your physical damage over 10 turns",
+            description: "Limit ability - deal 150 damage + 170% of your physical damage over 10 turns",
             dot: {
                 name: "Cramp",
                 type:"physical",
                 dmg: 150,
-                adPercentage: 1.5,
-                emoji: "📌",
+                adPercentage: 1.7,
+                emoji: ":triangular_flag_on_post:",
                 dmgOnDotApply: false,
                 turnsToExpire: 10,
                 dmgOnDotExpire: false,
@@ -453,13 +455,13 @@ module.exports = {
             abilityId: "doom",
             type:"shadow",
             limitOffensive: true,
-            description: "Deal 150 damage + 150% of your magical damage over 10 turns",
+            description: "Limit ability - Deal 150 damage + 170% of your magical damage over 10 turns",
             dot: {
                 name: "Doom",
                 type:"shadow",
                 dmg: 150,
-                mdPercentage: 1.5,
-                emoji: "🌑",
+                mdPercentage: 1.7,
+                emoji: ":wind_chime:",
                 dmgOnDotApply: false,
                 turnsToExpire: 10,
                 dmgOnDotExpire: false,
@@ -566,6 +568,24 @@ module.exports = {
                 emoji: "<:exhausted:479294904858836992>",
                 buffToStop: "empower",
                 turnsToExpire: 10,
+            }
+        },
+        empowerDeath: {
+            name: "Empower",
+            onDeathEffect: true,
+            abilityId: "empowerDeath",
+            areawide: true,
+            targets: "friendly",
+            description: "Increase the group's magical damage and attack damage by 60% for 4 turns - 5 turn cooldown, applies Exhausted",
+            buff: {
+                buff: true,
+                areawide: true,
+                name: "Empower",
+                abilityId: "empower",
+                emoji: "<:empower:479293276298412033>",
+                turnsToExpire: 4,
+                affects: ["attackDmg", "magicDmg"],
+                multiplier: 1.6
             }
         },
         flameblast: {
@@ -962,11 +982,24 @@ module.exports = {
             passive: true,
             abilityId: "meditate",
             name: "Meditate",
-            description: "Permanently increase your magical damage by 21% and reduce your healing by 0% (NYI)",
+            description: "Permanently increase your magical damage by 17% and reduce your healing by 99%",
             // buff should be 17% more magical 0% healing
             buff: {
+                buff: true,
                 name: "Meditate",
-                emoji: "<:haste:479293276424241163>"
+                abilityId: "pumped",
+                affects: ["magicDmg"],
+                multiplier: 1.17,
+                emoji: ":peace:"
+            },
+            status: {
+                status: true,
+                ignoreBandaid: true,
+                name: "Meditate",
+                abilityId: "pumped",
+                affectsGlobal: ["healingDonePercentage"],
+                multiplier: .01,
+                emoji: ""
             }
         },
 
@@ -974,11 +1007,24 @@ module.exports = {
             passive: true,
             abilityId: "pumped",
             name: "Pumped",
-            description: "Permanently increase your attack damage by 21% and reduce your healing by 0% (NYI)",
+            description: "Permanently increase your attack damage by 17% and reduce your healing by 99%",
             // buff should be 17% more magical 0% healing
             buff: {
+                buff: true,
                 name: "Pumped",
-                emoji: "<:haste:479293276424241163>"
+                abilityId: "pumped",
+                affects: ["attackDmg"],
+                multiplier: 1.17,
+                emoji: "⛽"
+            },
+            status: {
+                status: true,
+                ignoreBandaid: true,
+                name: "Pumped",
+                abilityId: "pumped",
+                affectsGlobal: ["healingDonePercentage"],
+                multiplier: .01,
+                emoji: ""
             }
         },
 
@@ -1008,7 +1054,7 @@ module.exports = {
                 aura: true,
                 abilityId: "divineaura",
                 // armor
-                affects: [, "magicDmg"],
+                affects: ["magicDmg"],
                 multiplier: 1.1,
                 name: "Divine Aura",
                 emoji: "<:divine_aura:479287370789683210>"
@@ -1059,6 +1105,26 @@ module.exports = {
             everyNTurns: 8,
             afterNTurns: 1,
             currentTurn: 0,
+            dot: {
+                name: "Decay",
+                type:"shadow",
+                dmg: 65,
+                areawide: true,
+                mdPercentage: 1,
+                emoji: "<:decay:479296558748270601>",
+                dmgOnDotApply: false,
+                turnsToExpire: 6,
+                dmgOnDotExpire: false,
+                dmgOnExpire: 0
+            }
+        },
+        decayDeath: {
+            name:"Decay",
+            type:"shadow",
+            abilityId: "decayDeath",
+            processAbility: true,
+            belongsToMember: true,
+            onDeathEffect: true,
             dot: {
                 name: "Decay",
                 type:"shadow",
@@ -1419,6 +1485,19 @@ module.exports = {
                 enemies: [
                     "torturedRobot",
                     "torturedRobot",
+                    "torturedRobot",
+                    "torturedRobot",
+                    "torturedRobot",
+                    "torturedRobot"
+                ]
+            }
+        },
+        summonTorturedRobotsDeath: {
+            name: "summonTorturedRobots",
+            belongsToMember: true,
+            onDeathEffect: true,
+            summon: {
+                enemies: [
                     "torturedRobot",
                     "torturedRobot",
                     "torturedRobot",
@@ -2033,6 +2112,7 @@ module.exports = {
         burst: {
             belongsToMember: true,
             processAbility: true,
+            onDeathEffect: true,
             ignoreFocus: true,
             ignoreBandaid: true,
             targetToApplyOn: "random",
@@ -3437,6 +3517,13 @@ module.exports = {
         /*
         summon effects
         */
+        totemOfDoomDeath: {
+            belongsToMember: true,
+            onDeathEffect: true,
+            summon: {
+                enemy: "totemOfDoom"
+            }
+        },
         totemOfDoom80: {
             belongsToMember: true,
             hppercentage: 0.80,
@@ -5800,7 +5887,7 @@ module.exports = {
                 bubblehouses: {
                     areaString : " ",
                     name: "Bubble Houses",
-                    enemiesToDefeat: 199,
+                    enemiesToDefeat: 146,
                     onCompleteAreasUnlocked: [
 
                     ],
@@ -8935,6 +9022,9 @@ Hoover Dam
                     magicDmg: [300, 500, 900, 1500, 2300],
                     abilities: []
                 },
+                effectsOnDeath: [
+
+                ],
                 hpPerPartyMember: 60,
                 adPerPartyMember: 7,
                 mdPerPartyMember: 7,
@@ -8998,6 +9088,9 @@ Hoover Dam
                     magicDmg: [300, 500, 900, 1500, 2300],
                     abilities: []
                 },
+                effectsOnDeath: [
+                    "explode"
+                ],
                 hpPerPartyMember: 60,
                 adPerPartyMember: 7,
                 mdPerPartyMember: 7,
@@ -9106,6 +9199,7 @@ Hoover Dam
                     magicDmg: [300, 500, 900, 1500, 2300],
                     abilities: []
                 },
+                
                 hpPerPartyMember: 170,
                 adPerPartyMember: 7,
                 mdPerPartyMember: 7,
@@ -9328,6 +9422,9 @@ Hoover Dam
                     magicDmg: [300, 500, 900, 1500, 2300],
                     abilities: []
                 },
+                effectsOnDeath: [
+                    "empowerDeath"
+                ],
                 hpPerPartyMember: 190,
                 adPerPartyMember: 14,
                 mdPerPartyMember: 14,
@@ -9349,6 +9446,9 @@ Hoover Dam
                     magicDmg: [300, 500, 900, 1500, 2300],
                     abilities: []
                 },
+                effectsOnDeath: [
+                    "explode"
+                ],
                 hpPerPartyMember: 190,
                 adPerPartyMember: 14,
                 mdPerPartyMember: 14,
@@ -9370,6 +9470,9 @@ Hoover Dam
                     magicDmg: [300, 500, 900, 1500, 2300],
                     abilities: []
                 },
+                effectsOnDeath: [
+                    "healAll"
+                ],
                 hpPerPartyMember: 190,
                 adPerPartyMember: 14,
                 mdPerPartyMember: 14,
@@ -9391,6 +9494,9 @@ Hoover Dam
                     magicDmg: [300, 500, 900, 1500, 2300],
                     abilities: []
                 },
+                effectsOnDeath: [
+                    "explode"
+                ],
                 hpPerPartyMember: 190,
                 adPerPartyMember: 14,
                 mdPerPartyMember: 14,
@@ -9412,6 +9518,9 @@ Hoover Dam
                     magicDmg: [300, 500, 900, 1500, 2300],
                     abilities: []
                 },
+                effectsOnDeath: [
+                    "summonTorturedRobotsDeath"
+                ],
                 hpPerPartyMember: 190,
                 adPerPartyMember: 14,
                 mdPerPartyMember: 14,
@@ -9454,6 +9563,9 @@ Hoover Dam
                     magicDmg: [300, 500, 900, 1500, 2300],
                     abilities: []
                 },
+                effectsOnDeath: [
+                    "explode"
+                ],
                 hpPerPartyMember: 190,
                 adPerPartyMember: 14,
                 mdPerPartyMember: 14,
@@ -9475,6 +9587,9 @@ Hoover Dam
                     magicDmg: [300, 500, 900, 1500, 2300],
                     abilities: []
                 },
+                effectsOnDeath: [
+                    "explode"
+                ],
                 hpPerPartyMember: 190,
                 adPerPartyMember: 14,
                 mdPerPartyMember: 14,
@@ -9518,6 +9633,9 @@ Hoover Dam
                     magicDmg: [300, 500, 900, 1500, 2300],
                     abilities: []
                 },
+                effectsOnDeath: [
+                    "empowerDeath"
+                ],
                 hpPerPartyMember: 190,
                 adPerPartyMember: 14,
                 mdPerPartyMember: 14,
@@ -9539,6 +9657,9 @@ Hoover Dam
                     magicDmg: [300, 500, 900, 1500, 2300],
                     abilities: []
                 },
+                effectsOnDeath: [
+                    "burst"
+                ],
                 hpPerPartyMember: 190,
                 adPerPartyMember: 14,
                 mdPerPartyMember: 14,
@@ -9560,6 +9681,12 @@ Hoover Dam
                     magicDmg: [300, 500, 900, 1500, 2300],
                     abilities: []
                 },
+                effectsOnDeath: [
+                    "explode",
+                    "explode",
+                    "explode",
+                    "explode"
+                ],
                 hpPerPartyMember: 190,
                 adPerPartyMember: 14,
                 mdPerPartyMember: 14,
@@ -9581,6 +9708,9 @@ Hoover Dam
                     magicDmg: [300, 500, 900, 1500, 2300],
                     abilities: []
                 },
+                effectsOnDeath: [
+                    "totemOfDoomDeath"
+                ],
                 hpPerPartyMember: 190,
                 adPerPartyMember: 14,
                 mdPerPartyMember: 14,
@@ -9602,6 +9732,9 @@ Hoover Dam
                     magicDmg: [300, 500, 900, 1500, 2300],
                     abilities: []
                 },
+                effectsOnDeath: [
+                    "empowerDeath"
+                ],
                 hpPerPartyMember: 190,
                 adPerPartyMember: 14,
                 mdPerPartyMember: 14,
@@ -9623,6 +9756,9 @@ Hoover Dam
                     magicDmg: [300, 500, 900, 1500, 2300],
                     abilities: []
                 },
+                effectsOnDeath: [
+                    "decayDeath"
+                ],
                 hpPerPartyMember: 190,
                 adPerPartyMember: 14,
                 mdPerPartyMember: 14,
@@ -9644,6 +9780,9 @@ Hoover Dam
                     magicDmg: [300, 500, 900, 1500, 2300],
                     abilities: []
                 },
+                effectsOnDeath: [
+                    "healAll"
+                ],
                 hpPerPartyMember: 190,
                 adPerPartyMember: 14,
                 mdPerPartyMember: 14,
@@ -9665,6 +9804,9 @@ Hoover Dam
                     magicDmg: [300, 500, 900, 1500, 2300],
                     abilities: []
                 },
+                effectsOnDeath: [
+                    "explode"
+                ],
                 hpPerPartyMember: 190,
                 adPerPartyMember: 14,
                 mdPerPartyMember: 14,
@@ -9692,6 +9834,9 @@ Hoover Dam
                             startTurn: 2
                         }
                     }
+                ],
+                effectsOnDeath: [
+                    "empowerDeath"
                 ],
                 keystoneStats: {
                     hp: [1200, 3500, 6200, 10000, 15000 ],
@@ -9731,6 +9876,9 @@ Hoover Dam
                     magicDmg: [300, 500, 900, 1500, 2300],
                     abilities: []
                 },
+                effectsOnDeath: [
+                    "explode"
+                ],
                 hpPerPartyMember: 950,
                 adPerPartyMember: 21,
                 mdPerPartyMember: 21,
@@ -9763,6 +9911,9 @@ Hoover Dam
                     magicDmg: [300, 500, 900, 1500, 2300],
                     abilities: []
                 },
+                effectsOnDeath: [
+                    "healAll"
+                ],
                 hpPerPartyMember: 1090,
                 adPerPartyMember: 21,
                 mdPerPartyMember: 21,
@@ -9795,6 +9946,9 @@ Hoover Dam
                     magicDmg: [300, 500, 900, 1500, 2300],
                     abilities: []
                 },
+                effectsOnDeath: [
+                    "empowerDeath"
+                ],
                 hpPerPartyMember: 1090,
                 adPerPartyMember: 21,
                 mdPerPartyMember: 21,
@@ -9827,6 +9981,10 @@ Hoover Dam
                     magicDmg: [300, 500, 900, 1500, 2300],
                     abilities: []
                 },
+                // summon prawn minions
+                effectsOnDeath: [
+                    "summonTorturedRobotsDeath"
+                ],
                 hpPerPartyMember: 1090,
                 adPerPartyMember: 21,
                 mdPerPartyMember: 21,
@@ -9888,6 +10046,7 @@ Hoover Dam
                         }
                     }
                 ],
+                // summon totems
                 keystoneStats: {
                     hp: [1200, 3500, 6200, 10000, 15000 ],
                     attackDmg: [300, 500, 900, 1500, 2300],
@@ -9895,7 +10054,9 @@ Hoover Dam
                     abilities: []
                 },
                 effectsOnDeath: [
-                    "explode"
+                    "totemOfDoomDeath",
+                    "totemOfDoomDeath",
+                    "totemOfDoomDeath"
                 ],
                 hpPerPartyMember: 1090,
                 adPerPartyMember: 21,
@@ -9930,7 +10091,7 @@ Hoover Dam
                     abilities: []
                 },
                 effectsOnDeath: [
-                    "explode"
+                    "decayDeath"
                 ],
                 hpPerPartyMember: 1090,
                 adPerPartyMember: 21,
@@ -10000,7 +10161,7 @@ Hoover Dam
                     abilities: []
                 },
                 effectsOnDeath: [
-                    "explode"
+                    "burst"
                 ],
                 hpPerPartyMember: 1090,
                 adPerPartyMember: 21,
@@ -10035,7 +10196,7 @@ Hoover Dam
                     abilities: []
                 },
                 effectsOnDeath: [
-                    "explode"
+                    "burst"
                 ],
                 hpPerPartyMember: 1090,
                 adPerPartyMember: 21,
@@ -10070,7 +10231,7 @@ Hoover Dam
                     abilities: []
                 },
                 effectsOnDeath: [
-                    "explode"
+                    "healAll"
                 ],
                 hpPerPartyMember: 1090,
                 adPerPartyMember: 21,
@@ -10176,7 +10337,7 @@ Hoover Dam
                     abilities: []
                 },
                 effectsOnDeath: [
-                    "explode"
+                    "empower"
                 ],
                 hpPerPartyMember: 1090,
                 adPerPartyMember: 21,
@@ -10210,6 +10371,7 @@ Hoover Dam
                     magicDmg: [300, 500, 900, 1500, 2300],
                     abilities: []
                 },
+                // summon normal enemies
                 effectsOnDeath: [
                     "explode"
                 ],
@@ -10246,7 +10408,7 @@ Hoover Dam
                     abilities: []
                 },
                 effectsOnDeath: [
-                    "explode"
+                    "decayDeath"
                 ],
                 hpPerPartyMember: 1090,
                 adPerPartyMember: 21,
@@ -10316,7 +10478,7 @@ Hoover Dam
                     abilities: []
                 },
                 effectsOnDeath: [
-                    "explode"
+                    "empower"
                 ],
                 hpPerPartyMember: 1090,
                 adPerPartyMember: 21,
@@ -14133,7 +14295,7 @@ Hoover Dam
                         ],
                         effectsOnDeath: [
                         ],
-                        hp: 82600,
+                        hp: 1982600,
                         attackDmg: 238000,
                         magicDmg: 257000,
                         armor: 2100,

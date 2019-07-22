@@ -3361,6 +3361,16 @@ function raresEmbedBuilder(message, itemsMap, allItems, long, rarity, pageParam)
             }
         }
     }
+    // push the leftover
+    if (inventoryStringRegular.length > 0){
+        inventoryStringsRegular.push(inventoryStringRegular);
+    }
+    if (inventoryStringImproved.length > 0){
+        inventoryStringsImproved.push(inventoryStringImproved);
+    }
+    if (inventoryStringRefined.length > 0){
+        inventoryStringsRefined.push(inventoryStringRefined);
+    }
     // for visual purposes
     let largestPageNum = 1
     if (inventoryStringsRegular.length > largestPageNum){
@@ -3371,16 +3381,6 @@ function raresEmbedBuilder(message, itemsMap, allItems, long, rarity, pageParam)
     }
     if (inventoryStringsRefined.length > largestPageNum){
         largestPageNum = inventoryStringsRefined.length
-    }
-    // push the leftover
-    if (inventoryStringRegular.length > 0){
-        inventoryStringsRegular.push(inventoryStringRegular);
-    }
-    if (inventoryStringImproved.length > 0){
-        inventoryStringsImproved.push(inventoryStringImproved);
-    }
-    if (inventoryStringRefined.length > 0){
-        inventoryStringsRefined.push(inventoryStringRefined);
     }
     if (!long){
         for (var invString = inventoryStringsRefined.length -1; invString >= 0; invString--){

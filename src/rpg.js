@@ -573,6 +573,12 @@ module.exports.showRpgStats = function(message, itemsAvailable, amuletItemsById,
                                         myStats.buffs.push(passiveAbilityBuff);
                                         myStats.passiveAbilities.push(passiveAbilityBuff);
                                         myStats.abilitiesMap[passiveAbilityBuff.name] = passiveAbilityBuff;
+                                        if (rpgAbilities[partyMemberStats.abilities[ability]].status){
+                                            var passiveAbilityStatus = JSON.parse(JSON.stringify( rpgAbilities[partyMemberStats.abilities[ability]].status ));
+                                            myStats.statuses.push(passiveAbilityStatus);
+                                            myStats.passiveAbilities.push(passiveAbilityStatus);
+                                            myStats.abilitiesMap[passiveAbilityStatus.name] = passiveAbilityStatus;    
+                                        }
                                     }
                                     else{
                                         if (myStats.abilities.indexOf(partyMemberStats.abilities[ability]) == -1){
@@ -1324,6 +1330,12 @@ module.exports.rpgReady = function(message, itemsAvailable, amuletItemsById, buf
                                                                             membersInParty["rpg-" + partyMember.id].buffs.push(passiveAbilityBuff);
                                                                             membersInParty["rpg-" + partyMember.id].passiveAbilities.push(passiveAbilityBuff);
                                                                             membersInParty["rpg-" + partyMember.id].abilitiesMap[passiveAbilityBuff.name] = passiveAbilityBuff;
+                                                                            if (rpgAbilities[partyMemberStats.abilities[ability]].status){
+                                                                                var passiveAbilityStatus = JSON.parse(JSON.stringify( rpgAbilities[partyMemberStats.abilities[ability]].status ));
+                                                                                membersInParty["rpg-" + partyMember.id].statuses.push(passiveAbilityStatus);
+                                                                                membersInParty["rpg-" + partyMember.id].passiveAbilities.push(passiveAbilityStatus);
+                                                                                membersInParty["rpg-" + partyMember.id].abilitiesMap[passiveAbilityStatus.name] = passiveAbilityStatus;    
+                                                                            }
                                                                         }else{
                                                                             if (membersInParty["rpg-" + partyMember.id].abilities.indexOf(partyMemberStats.abilities[ability]) == -1){
                                                                                 var playerAbility = JSON.parse(JSON.stringify( partyMemberStats.abilities[ability] ));
@@ -1442,6 +1454,12 @@ module.exports.rpgReady = function(message, itemsAvailable, amuletItemsById, buf
                                                                             enemies[enemyIdCount].buffs.push(passiveAbilityBuff);
                                                                             enemies[enemyIdCount].passiveAbilities.push(passiveAbilityBuff);
                                                                             enemies[enemyIdCount].abilitiesMap[passiveAbilityBuff.name] = passiveAbilityBuff;
+                                                                            if (rpgAbilities[rpgAbilities[abilityName]].status){
+                                                                                var passiveAbilityStatus = JSON.parse(JSON.stringify( rpgAbilities[rpgAbilities[abilityName]].status ));
+                                                                                enemies[enemyIdCount].statuses.push(passiveAbilityStatus);
+                                                                                enemies[enemyIdCount].passiveAbilities.push(passiveAbilityStatus);
+                                                                                enemies[enemyIdCount].abilitiesMap[passiveAbilityStatus.name] = passiveAbilityStatus;    
+                                                                            }
                                                                         }
                                                                         else if (rpgAbilities[abilityName]){
                                                                             var playerAbility = JSON.parse(JSON.stringify( abilityName ));
@@ -1558,6 +1576,12 @@ module.exports.rpgReady = function(message, itemsAvailable, amuletItemsById, buf
                                                                             enemies[enemyIdCount].buffs.push(passiveAbilityBuff);
                                                                             enemies[enemyIdCount].passiveAbilities.push(passiveAbilityBuff);
                                                                             enemies[enemyIdCount].abilitiesMap[passiveAbilityBuff.name] = passiveAbilityBuff;
+                                                                            if (rpgAbilities[rpgAbilities[abilityName]].status){
+                                                                                var passiveAbilityStatus = JSON.parse(JSON.stringify( rpgAbilities[rpgAbilities[abilityName]].status ));
+                                                                                enemies[enemyIdCount].statuses.push(passiveAbilityStatus);
+                                                                                enemies[enemyIdCount].passiveAbilities.push(passiveAbilityStatus);
+                                                                                enemies[enemyIdCount].abilitiesMap[passiveAbilityStatus.name] = passiveAbilityStatus;    
+                                                                            }
                                                                         }
                                                                         else if (rpgAbilities[abilityName]){
                                                                             var playerAbility = JSON.parse(JSON.stringify( abilityName ));
@@ -1668,6 +1692,12 @@ module.exports.rpgReady = function(message, itemsAvailable, amuletItemsById, buf
                                                                                 enemies[enemyIdCount].buffs.push(passiveAbilityBuff);
                                                                                 enemies[enemyIdCount].passiveAbilities.push(passiveAbilityBuff);
                                                                                 enemies[enemyIdCount].abilitiesMap[passiveAbilityBuff.name] = passiveAbilityBuff;
+                                                                                if (rpgAbilities[rpgAbilities[abilityName]].status){
+                                                                                    var passiveAbilityStatus = JSON.parse(JSON.stringify( rpgAbilities[rpgAbilities[abilityName]].status ));
+                                                                                    enemies[enemyIdCount].statuses.push(passiveAbilityStatus);
+                                                                                    enemies[enemyIdCount].passiveAbilities.push(passiveAbilityStatus);
+                                                                                    enemies[enemyIdCount].abilitiesMap[passiveAbilityStatus.name] = passiveAbilityStatus;    
+                                                                                }
                                                                             }
                                                                             else if (rpgAbilities[abilityName]){
                                                                                 var playerAbility = JSON.parse(JSON.stringify( abilityName ));
@@ -1844,6 +1874,12 @@ module.exports.rpgReady = function(message, itemsAvailable, amuletItemsById, buf
                                                                                 enemies[enemyIdCount].buffs.push(passiveAbilityBuff);
                                                                                 enemies[enemyIdCount].passiveAbilities.push(passiveAbilityBuff);
                                                                                 enemies[enemyIdCount].abilitiesMap[passiveAbilityBuff.name] = passiveAbilityBuff;
+                                                                                if (rpgAbilities[rpgAbilities[abilityName]].status){
+                                                                                    var passiveAbilityStatus = JSON.parse(JSON.stringify( rpgAbilities[rpgAbilities[abilityName]].status ));
+                                                                                    enemies[enemyIdCount].statuses.push(passiveAbilityStatus);
+                                                                                    enemies[enemyIdCount].passiveAbilities.push(passiveAbilityStatus);
+                                                                                    enemies[enemyIdCount].abilitiesMap[passiveAbilityStatus.name] = passiveAbilityStatus;    
+                                                                                }
                                                                             }
                                                                             else if (rpgAbilities[abilityName]){
                                                                                 var playerAbility = JSON.parse(JSON.stringify( abilityName ));
@@ -4139,6 +4175,12 @@ function effectsOnTurnEnd(event){
                                             enemySummoned.buffs.push(passiveAbilityBuff);
                                             enemySummoned.passiveAbilities.push(passiveAbilityBuff);
                                             enemySummoned.abilitiesMap[passiveAbilityBuff.name] = passiveAbilityBuff;
+                                            if (rpgAbilities[rpgAbilities[abilityName]].status){
+                                                var passiveAbilityStatus = JSON.parse(JSON.stringify( rpgAbilities[rpgAbilities[abilityName]].status ));
+                                                enemySummoned.statuses.push(passiveAbilityStatus);
+                                                enemySummoned.passiveAbilities.push(passiveAbilityStatus);
+                                                enemySummoned.abilitiesMap[passiveAbilityStatus.name] = passiveAbilityStatus;    
+                                            }
                                         }
                                         else if (rpgAbilities[abilityName]){
                                             var playerAbility = JSON.parse(JSON.stringify( abilityName ));
@@ -5020,6 +5062,12 @@ function summonEnemy(event, enemy, index, enemyFound, summonRpgAbility){
                 enemySummoned.buffs.push(passiveAbilityBuff);
                 enemySummoned.passiveAbilities.push(passiveAbilityBuff);
                 enemySummoned.abilitiesMap[passiveAbilityBuff.name] = passiveAbilityBuff;
+                if (rpgAbilities[rpgAbilities[abilityName]].status){
+                    var passiveAbilityStatus = JSON.parse(JSON.stringify( rpgAbilities[rpgAbilities[abilityName]].status ));
+                    enemySummoned.statuses.push(passiveAbilityStatus);
+                    enemySummoned.passiveAbilities.push(passiveAbilityStatus);
+                    enemySummoned.abilitiesMap[passiveAbilityStatus.name] = passiveAbilityStatus;    
+                }
             }
             else if (rpgAbilities[abilityName]){
                 var playerAbility = JSON.parse(JSON.stringify( abilityName ));
@@ -5340,14 +5388,14 @@ function effectsOnDeath(event, member){
                 var caster = event.enemies[abilityCaster] ? event.enemies[abilityCaster].name : undefined;
                 
                 var hpToHeal = calculateHealingDone(event, abilityCaster, abilityObject.target, rpgAbility);
-
-                onDeathString = onDeathString + caster +  " healed the group for " + hpToHeal + " with " + ability + "\n";                
+                var critStrike = hpToHeal.critical ? ">" : ""
+                onDeathString = onDeathString + critStrike + caster +  " healed the group for " + hpToHeal.heal + " with " + ability + "\n";                
                 for (var targetToHeal in event.enemies){
                     if (event.enemies[targetToHeal].hp > 0
                     && event.enemies[targetToHeal].statuses.indexOf("dead") == -1
                     && event.enemies[targetToHeal].difficulty == "boss"){
-                        //event.enemies[targetToHeal].hp = event.enemies[targetToHeal].hp + hpToHeal;
-                        healTarget( event.enemies[targetToHeal], hpToHeal)
+                        //event.enemies[targetToHeal].hp = event.enemies[targetToHeal].hp + hpToHeal.heal;
+                        healTarget( event.enemies[targetToHeal], hpToHeal.heal)
                         if (event.enemies[targetToHeal].hp > event.enemies[targetToHeal].maxhp){
                             event.enemies[targetToHeal].hp = event.enemies[targetToHeal].maxhp
                         }
@@ -5888,7 +5936,7 @@ function processReflectEffects(event, target, damageToDealToPlayer, damageCaster
             // deal damage to the caster
 
             if (buffToCheck.reflectPercentage
-                && (abilityType == "dmg" || abilityType == "dot")) {
+            && (abilityType == "dmg" || abilityType == "dot")) {
                 var damageToReflect = Math.floor( damageToDealToPlayer * buffToCheck.reflectPercentage )
                 var abType = buffToCheck.abType
                 dealDamageTo(event.membersInParty["rpg-"+damageCaster], damageToReflect, event, abType)
@@ -5896,7 +5944,7 @@ function processReflectEffects(event, target, damageToDealToPlayer, damageCaster
                 reflectString = reflectString + damageReflectedToName + " suffered " + damageToReflect + " reflected damage\n"
             }
             if (buffToCheck.reflectPercentageToAll
-                && (abilityType == "dmg" || abilityType == "dot")){
+            && (abilityType == "dmg" || abilityType == "dot")){
                 var damageToReflect = Math.floor( damageToDealToPlayer * buffToCheck.reflectPercentageToAll )
                 // damage reflected to the group
                 var abType = buffToCheck.abType
@@ -5941,6 +5989,66 @@ function processReflectEffects(event, target, damageToDealToPlayer, damageCaster
         }
     }else{
         // target is a player - means reflect buff is on player - dont implement for now
+        for (var b in event.membersInParty[target].buffs){
+            var buffToCheck = event.membersInParty[target].buffs[b]
+            // if the target has a reflection buff then
+            // calculate the amount of damage to reflect back at the caster
+            // deal damage to the caster
+            if (buffToCheck.reflectPercentage
+            && (abilityType == "dmg" || abilityType == "dot")) {
+                var damageToReflect = Math.floor( damageToDealToPlayer * buffToCheck.reflectPercentage )
+                var abType = buffToCheck.abType
+                if (event.enemies[damageCaster]){
+                    dealDamageTo(event.enemies[damageCaster], damageToReflect, event, abType)
+                    var damageReflectedToName = event.enemies[damageCaster].name
+                    reflectString = reflectString + damageReflectedToName + " suffered " + damageToReflect + " reflected damage\n"    
+                }
+            }
+            if (buffToCheck.reflectPercentageToAll
+            && (abilityType == "dmg" || abilityType == "dot")){
+                var damageToReflect = Math.floor( damageToDealToPlayer * buffToCheck.reflectPercentageToAll )
+                // damage reflected to the group
+                var abType = buffToCheck.abType
+                reflectString = reflectString + "The group suffered " + damageToReflect + " reflected damage\n"
+                for (var targetToDealDmg in event.enemies){
+                    if (event.enemies[targetToDealDmg].statuses.indexOf("dead") == -1
+                    && !event.enemies[targetToDealDmg].immuneToAoe){
+                        damageToDealToPlayer = dealDamageTo(event.enemies[targetToDealDmg], damageToReflect, event, abType)
+                        if (checkHasDied(event.enemies[targetToDealDmg])){
+                            reflectString = reflectString + hasDied(event, event.enemies[targetToDealDmg]);
+                        }
+                    }
+                }
+
+            }
+            if (buffToCheck.areaewideReflectPercentage 
+            && abilityType == "areawide"){
+                var damageToReflect = Math.floor( damageToDealToPlayer * buffToCheck.areaewideReflectPercentage )
+                var abType = buffToCheck.abType
+                if (event.enemies[damageCaster]){
+                    dealDamageTo(event.enemies[damageCaster], damageToReflect, event, abType)
+                    var damageReflectedToName = event.enemies[damageCaster].name
+                    reflectString = reflectString + damageReflectedToName + " suffered " + damageToReflect + " reflected damage\n"    
+                }
+            }
+            if (buffToCheck.areaewideReflectPercentageToAll
+            && abilityType == "areawide"){
+                var damageToReflect = Math.floor( damageToDealToPlayer * buffToCheck.areaewideReflectPercentageToAll )
+                // damage reflected to the group
+                reflectString = reflectString + "The group suffered " + damageToReflect + " damage from reflected damage\n"
+
+                var abType = buffToCheck.abType
+                for (var targetToDealDmg in event.enemies){
+                    if (event.enemies[targetToDealDmg].statuses.indexOf("dead") == -1
+                    && !event.enemies[targetToDealDmg].immuneToAoe){
+                        damageToDealToPlayer = dealDamageTo(event.enemies[targetToDealDmg], damageToReflect, event, abType)
+                        if (checkHasDied(event.enemies[targetToDealDmg])){
+                            reflectString = reflectString + hasDied(event, event.enemies[targetToDealDmg]);
+                        }
+                    }
+                }
+            }
+        }
     }
 
     return reflectString
@@ -6323,7 +6431,11 @@ function hasRevived(member, deadIndex, hpPercentageToReviveAt){
     member.buffs = []
     if (member.passiveAbilities){
         for (var passive in member.passiveAbilities){
-            member.buffs.push(member.passiveAbilities[passive])
+            if (member.passiveAbilities[passive].buff){
+                member.buffs.push(member.passiveAbilities[passive])
+            }else if (member.passiveAbilities[passive].status){
+                member.statuses.push(member.passiveAbilities[passive])
+            }
         }
     }
 }
@@ -6383,12 +6495,14 @@ function processPassiveEffects(event){
                             }
                         }
                         // process the dot
-                        var damageToDealToPlayer = calculateDamageDealt(event, event.membersInParty[member].statuses[index].dot.caster, member, event.membersInParty[member].statuses[index].dot)
+                        var dotCaster = event.membersInParty[member].statuses[index].dot.caster
+                        var damageToDealToPlayer = calculateDamageDealt(event, dotCaster, member, event.membersInParty[member].statuses[index].dot)
                         var critStrike = damageToDealToPlayer.critical ? ">" : ""
                         //event.membersInParty[member].hp = event.membersInParty[member].hp - damageToDealToPlayer;
                         var abType = event.membersInParty[member].statuses[index].dot.type
                         damageToDealToPlayer = dealDamageTo( event.membersInParty[member], damageToDealToPlayer.dmg, event, abType)
                         passiveEffectsString = passiveEffectsString + critStrike + event.membersInParty[member].name + " took " + damageToDealToPlayer + " damage from " + event.membersInParty[member].statuses[index].dot.name + "\n"
+                        passiveEffectsString = passiveEffectsString + processReflectEffects(event, member, damageToDealToPlayer, dotCaster, "dot")
                         if ( checkHasDied(event.membersInParty[member])){
                             // player is dead, remove all statuses, add dead
                             passiveEffectsString = passiveEffectsString + hasDied(event, event.membersInParty[member]);
@@ -6430,7 +6544,7 @@ function processPassiveEffects(event){
 
                     /// status is expiring
                     if (event.membersInParty[member].statuses[index].status){
-
+                        var statusCaster = event.membersInParty[member].statuses[index].caster
                         if (event.membersInParty[member].statuses[index].expireOnTurn == event.turn){
                             // remove the status if it is the turn to expire on
                             if (event.membersInParty[member].statuses[index].dmgOnStatusExpire){
@@ -6442,6 +6556,7 @@ function processPassiveEffects(event){
                                 var abType = event.membersInParty[member].statuses[index].type
                                 damageToDealToPlayer = dealDamageTo( event.membersInParty[member], damageToDealToPlayer.dmg, event, abType)
                                 passiveEffectsString = passiveEffectsString + critStrike + event.membersInParty[member].name + " took " + damageToDealToPlayer + " damage from " + event.membersInParty[member].statuses[index].name + "\n"
+                                passiveEffectsString = passiveEffectsString + processReflectEffects(event, member, damageToDealToPlayer, statusCaster, "dot")
                                 if ( checkHasDied(event.membersInParty[member])){
                                     // player is dead, remove all statuses, add dead
                                     passiveEffectsString = passiveEffectsString + hasDied(event, event.membersInParty[member]);
@@ -6469,8 +6584,9 @@ function processPassiveEffects(event){
                         // process the hot
                         var healingToPlayer = calculateHealingDone(event, event.membersInParty[member].buffs[index].hot.caster, member, event.membersInParty[member].buffs[index].hot)
                         //event.membersInParty[member].hp = event.membersInParty[member].hp + healingToPlayer;
-                        healTarget( event.membersInParty[member], healingToPlayer)
-                        passiveEffectsString = passiveEffectsString + event.membersInParty[member].name + " took " + healingToPlayer + " healing from " + event.membersInParty[member].buffs[index].hot.name + "\n"                        
+                        healTarget( event.membersInParty[member], healingToPlayer.heal)
+                        var critStrike = healingToPlayer.critical ? ">" : ""
+                        passiveEffectsString = passiveEffectsString + critStrike + event.membersInParty[member].name + " took " + healingToPlayer.heal + " healing from " + event.membersInParty[member].buffs[index].hot.name + "\n"                        
                         if (event.membersInParty[member].hp > event.membersInParty[member].maxhp){
                             event.membersInParty[member].hp = event.membersInParty[member].maxhp
                         }
@@ -6587,8 +6703,9 @@ function processPassiveEffects(event){
                         // process the hot
                         var healingToPlayer = calculateHealingDone(event, event.enemies[enemy].buffs[index].hot.caster, enemy, event.enemies[enemy].buffs[index].hot)
                         //event.enemies[enemy].hp = event.enemies[enemy].hp + healingToPlayer;
-                        healTarget( event.enemies[enemy], healingToPlayer)
-                        passiveEffectsString = passiveEffectsString + event.enemies[enemy].name + " took " + healingToPlayer + " healing from " + event.enemies[enemy].buffs[index].hot.name + "\n"                                                
+                        healTarget( event.enemies[enemy], healingToPlayer.heal)
+                        var critStrike = healingToPlayer.critical ? ">" : ""
+                        passiveEffectsString = passiveEffectsString + critStrike + event.enemies[enemy].name + " took " + healingToPlayer.heal + " healing from " + event.enemies[enemy].buffs[index].hot.name + "\n"                                                
                         if (event.enemies[enemy].hp > event.enemies[enemy].maxhp){
                             event.enemies[enemy].hp = event.enemies[enemy].maxhp
                         }
@@ -7023,6 +7140,9 @@ function calculateHealingDone(event, caster, target, rpgAbility){
     var abilityType = rpgAbility.type;
     var areaWideAbility = rpgAbility.areawide;
     var endOfTurnAura = rpgAbility.endOfTurnAura;
+    var casterHealingDonePercentage = 1
+    var criticalStrikeChance = 0
+    var criticalHealingPlus = 1
     let useAdStat = false
     if (!rpgAbility.mdPercentage && rpgAbility.adPercentage){
         useAdStat = true
@@ -7032,7 +7152,9 @@ function calculateHealingDone(event, caster, target, rpgAbility){
         var checkTarget = event.enemies[target]
         if (checkTarget || areaWideAbility || endOfTurnAura){
             var userStats = event.enemies[caster];
-            
+            if (userStats && userStats.globalStatuses){
+                casterHealingDonePercentage = userStats.globalStatuses.healingDonePercentage
+            }
             var healingToDo = 0
 
             if (rpgAbility.turnsToExpire){
@@ -7080,7 +7202,9 @@ function calculateHealingDone(event, caster, target, rpgAbility){
             checkTarget = event.membersInParty[target]
             if (checkTarget){
                 var userStats = event.enemies[caster];
-                
+                if (userStats && userStats.globalStatuses){
+                    casterHealingDonePercentage = userStats.globalStatuses.healingDonePercentage
+                }
                 var healingToDo = 0
 
                 if (rpgAbility.turnsToExpire){
@@ -7120,7 +7244,11 @@ function calculateHealingDone(event, caster, target, rpgAbility){
     else{
         // the caster is a user
         var userStats = event.membersInParty["rpg-"+caster];
-        
+        if (userStats && userStats.globalStatuses){
+            casterHealingDonePercentage = userStats.globalStatuses.healingDonePercentage
+        }
+        criticalStrikeChance = userStats.criticalChance
+        criticalHealingPlus = criticalHealingPlus + userStats.criticalDamagePlus // damage and healing are same stat
         var checkTarget = event.membersInParty[target];
         if (checkTarget || areaWideAbility || endOfTurnAura){
             var healingToDo = 0
@@ -7204,7 +7332,19 @@ function calculateHealingDone(event, caster, target, rpgAbility){
             }
         }
     }
-    return Math.floor(baseHealing);
+    // roll for crit strike
+    var criticalStrike = rollForCriticalStrike(criticalStrikeChance)
+    if (criticalStrike){
+        return {
+            heal: Math.floor( (baseHealing * casterHealingDonePercentage)  *  criticalHealingPlus ),
+            critical: true
+        }
+    }else{
+        return {
+            heal: Math.floor(baseHealing * casterHealingDonePercentage),
+            critical: false
+        }
+    }
 }
 
 function healTarget(target, healingDone){
@@ -7425,6 +7565,7 @@ function processAbility(abilityObject, event){
                         // event.membersInParty[targetToDealDmg].hp = event.membersInParty[targetToDealDmg].hp - damageToDeal;
                         var abType = rpgAbility.type
                         damageToDealToPlayer = dealDamageTo( event.membersInParty[targetToDealDmg] , damageToDeal.dmg, event, abType)
+                        abilityToString = abilityToString + processReflectEffects(event, targetToDealDmg, damageToDealToPlayer, abilityCaster, "areawide")
                         if (checkHasDied(event.membersInParty[targetToDealDmg])){
                             abilityToString = abilityToString + hasDied(event, event.membersInParty[targetToDealDmg]);
                         }
@@ -7458,6 +7599,7 @@ function processAbility(abilityObject, event){
                 abilityToString = abilityToString + critStrike + targetToDealDmgName + " took " + damageToDealToPlayer + " damage from " + rpgAbility.name + "\n";
                 // check if the caster dealing damage has "maniac" buff, if so, deal aoe damage to everyone else except the target
                 abilityToString = abilityToString + processDamageDealingBuffs(event, damageToDealToPlayer, event.membersInParty[targetToDealDmg], abilityCaster)
+                abilityToString = abilityToString + processReflectEffects(event, targetToDealDmg, damageToDealToPlayer, abilityCaster, "dmg")
                 if (checkHasDied(event.membersInParty[targetToDealDmg])){
                     abilityToString = abilityToString + hasDied(event, event.membersInParty[targetToDealDmg]);
                 }
@@ -7467,18 +7609,19 @@ function processAbility(abilityObject, event){
     if (rpgAbility && rpgAbility.heal && stillAlive && validAbility){
         // this is a healing ability, heal the target
         var hpToHeal = calculateHealingDone(event, abilityCaster, abilityObject.target, rpgAbility);
+        var critStrike = hpToHeal.critical ? ">" : ""
         let validHeal = true
         if (rpgAbility.areawide){
             
             if (validHeal && abilityCaster > 1000){
                 // if caster is party of membersInParty then target = all the membersInParty
                 var caster = event.membersInParty["rpg-"+abilityCaster] ? event.membersInParty["rpg-"+abilityCaster].name : undefined;
-                abilityToString = abilityToString + caster +  " healed the group for " + hpToHeal + " with " + rpgAbility.name + "\n";                
+                abilityToString = abilityToString + critStrike + caster +  " healed the group for " + hpToHeal.heal + " with " + rpgAbility.name + "\n";                
                 for (var targetToHeal in event.membersInParty){
                     if (event.membersInParty[targetToHeal].hp + event.membersInParty[targetToHeal].statBuffs.maxhp > 0
                     && event.membersInParty[targetToHeal].statuses.indexOf("dead") == -1){
-                        //event.membersInParty[targetToHeal].hp = event.membersInParty[targetToHeal].hp + hpToHeal;
-                        healTarget( event.membersInParty[targetToHeal] , hpToHeal)
+                        //event.membersInParty[targetToHeal].hp = event.membersInParty[targetToHeal].hp + hpToHeal.heal;
+                        healTarget( event.membersInParty[targetToHeal] , hpToHeal.heal)
                         // gain stack of radioactive
                         abilityToString = abilityToString + checkRadioactive(event, event.membersInParty[targetToHeal])
                         if (event.membersInParty[targetToHeal].hp > event.membersInParty[targetToHeal].maxhp){
@@ -7490,12 +7633,12 @@ function processAbility(abilityObject, event){
             else if (validHeal){
                 // if caster is in enemies then target = all the members of party
                 var caster = event.enemies[abilityCaster] ? event.enemies[abilityCaster].name : undefined;
-                abilityToString = abilityToString + caster +  " healed the group for " + hpToHeal + " with " + rpgAbility.name + "\n";                
+                abilityToString = abilityToString + critStrike + caster +  " healed the group for " + hpToHeal.heal + " with " + rpgAbility.name + "\n";                
                 for (var targetToHeal in event.enemies){
                     if (event.enemies[targetToHeal].hp > 0
                         && event.enemies[targetToHeal].statuses.indexOf("dead") == -1){
-                        //event.enemies[targetToHeal].hp = event.enemies[targetToHeal].hp + hpToHeal;
-                        healTarget( event.enemies[targetToHeal], hpToHeal)
+                        //event.enemies[targetToHeal].hp = event.enemies[targetToHeal].hp + hpToHeal.heal;
+                        healTarget( event.enemies[targetToHeal], hpToHeal.heal)
                         if (event.enemies[targetToHeal].hp > event.enemies[targetToHeal].maxhp){
                             event.enemies[targetToHeal].hp = event.enemies[targetToHeal].maxhp
                         }
@@ -7506,7 +7649,7 @@ function processAbility(abilityObject, event){
             var targetToHeal = abilityObject.target;
             if (validHeal && rpgAbility.healMaxHpPercentage){
                 if (event.enemies[targetToHeal]){
-                    hpToHeal = Math.floor(event.enemies[targetToHeal].maxhp * rpgAbility.healMaxHpPercentage)
+                    hpToHeal.heal = Math.floor(event.enemies[targetToHeal].maxhp * rpgAbility.healMaxHpPercentage)
                 }else{
                     abilityToString = abilityToString + "could not heal anyone\n"
                     validHeal = false
@@ -7517,10 +7660,10 @@ function processAbility(abilityObject, event){
                 if (event.membersInParty[targetToHeal].statuses.indexOf("dead") == -1){
                     // target is not dead
                     //event.membersInParty[targetToHeal].hp = event.membersInParty[targetToHeal].hp + hpToHeal;
-                    healTarget( event.membersInParty[targetToHeal], hpToHeal)
+                    healTarget( event.membersInParty[targetToHeal], hpToHeal.heal)
                     // gain stack of radioactive
                     abilityToString = abilityToString + checkRadioactive(event, event.membersInParty[targetToHeal])
-                    abilityToString = abilityToString + targetToHealName + " was healed for " + hpToHeal + "\n"
+                    abilityToString = abilityToString + critStrike + targetToHealName + " was healed for " + hpToHeal.heal + "\n"
                     if (event.membersInParty[targetToHeal].hp > event.membersInParty[targetToHeal].maxhp){
                         event.membersInParty[targetToHeal].hp = event.membersInParty[targetToHeal].maxhp
                     }
@@ -7529,9 +7672,9 @@ function processAbility(abilityObject, event){
             else if (validHeal && event.enemies[targetToHeal]){
                 var targetToHealName = event.enemies[targetToHeal].name;
                 if (event.enemies[targetToHeal].statuses.indexOf("dead") == -1){
-                    //event.enemies[targetToHeal].hp = event.enemies[targetToHeal].hp + hpToHeal;
-                    healTarget( event.enemies[targetToHeal] , hpToHeal)
-                    abilityToString = abilityToString + targetToHealName + " was healed for " + hpToHeal + "\n"
+                    //event.enemies[targetToHeal].hp = event.enemies[targetToHeal].hp + hpToHeal.heal;
+                    healTarget( event.enemies[targetToHeal] , hpToHeal.heal)
+                    abilityToString = abilityToString + critStrike + targetToHealName + " was healed for " + hpToHeal.heal + "\n"
                     if (event.enemies[targetToHeal].hp > event.enemies[targetToHeal].maxhp){
                         event.enemies[targetToHeal].hp = event.enemies[targetToHeal].maxhp
                     }
@@ -7922,6 +8065,7 @@ function processAbility(abilityObject, event){
                         for (var status in event.membersInParty[targetToAddDot].statuses){
                             if (event.membersInParty[targetToAddDot].statuses[status].dot
                                 && event.membersInParty[targetToAddDot].statuses[status].dot.caster == abilityObject.user
+                                && event.membersInParty[targetToAddDot].statuses[status].dot.name == dotToAdd.dot.name
                                 && !event.membersInParty[targetToAddDot].statuses[status].dot.ignoreUnique ){
                                 alreadyHaveStatus = true;
                             }
@@ -8263,6 +8407,7 @@ function processAbility(abilityObject, event){
                         var abType = rpgAbility.special.type
                         damageToDeal = dealDamageTo( event.membersInParty[targetToDealDmg], damageToDeal.dmg, event, abType )
                         abilityToString = abilityToString + targetToDealDmgName + " took " + damageToDeal + " damage from " + rpgAbility.special.name + "\n";
+                        abilityToString = abilityToString + processReflectEffects(event, targetToDealDmg, damageToDeal, abilityCaster, "dmg")
                         if (checkHasDied(event.membersInParty[targetToDealDmg])){
                             abilityToString = abilityToString + hasDied(event, event.membersInParty[targetToDealDmg]);
                         }
@@ -8280,14 +8425,14 @@ function processAbility(abilityObject, event){
                         // heal the targets one by one
                         rpgAbility.special.mdPercentage = rpgAbility.special.mdPercentages[i]
                         var hpToHeal = calculateHealingDone(event, abilityCaster, targetsToHeal[i].targetId, rpgAbility.special);
-                        
+                        var critStrike = hpToHeal.critical ? ">" : ""
                         var targetToHealName = event.membersInParty[targetsToHeal[i].targetId].name;
                         if (event.membersInParty[targetsToHeal[i].targetId].statuses.indexOf("dead") == -1){
                             // target is not dead
-                            healTarget( event.membersInParty[targetsToHeal[i].targetId], hpToHeal)
+                            healTarget( event.membersInParty[targetsToHeal[i].targetId], hpToHeal.heal)
                             // gain stack of radioactive
                             abilityToString = abilityToString + checkRadioactive(event, event.membersInParty[targetsToHeal[i].targetId])
-                            abilityToString = abilityToString + targetToHealName + " was healed for " + hpToHeal + " From " + rpgAbility.special.name + "\n"
+                            abilityToString = abilityToString + critStrike + targetToHealName + " was healed for " + hpToHeal.heal + " From " + rpgAbility.special.name + "\n"
                             if (event.membersInParty[targetsToHeal[i].targetId].hp > event.membersInParty[targetsToHeal[i].targetId].maxhp){
                                 event.membersInParty[targetsToHeal[i].targetId].hp = event.membersInParty[targetsToHeal[i].targetId].maxhp
                             }
@@ -8576,6 +8721,7 @@ function processAbility(abilityObject, event){
                 var abType = rpgAbility.special.type
                 damageToDeal = dealDamageTo(event.membersInParty[targetToDealDmg], damageToDeal.dmg, event, abType);
                 abilityToString = abilityToString + critStrike + targetToDealDmgName + " took " + damageToDeal + " damage from " + rpgAbility.name + "\n";
+                abilityToString = abilityToString + processReflectEffects(event, targetToDealDmg, damageToDeal, abilityCaster, "dmg")
                 if ( checkHasDied(event.membersInParty[targetToDealDmg])){
                     abilityToString = abilityToString + hasDied(event, event.membersInParty[targetToDealDmg]);
                 }
@@ -8583,15 +8729,16 @@ function processAbility(abilityObject, event){
 
             var targetToHeal = abilityObject.user;
             var hpToHeal = calculateHealingDone(event, abilityCaster, abilityObject.target, rpgAbility.special);
-            hpToHeal = Math.floor(hpToHeal * rpgAbility.special.healPercentage);
+            hpToHeal.heal = Math.floor(hpToHeal.heal * rpgAbility.special.healPercentage);
+            var critStrike = hpToHeal.critical ? ">" : ""
             if (event.membersInParty["rpg-"+targetToHeal]){
                 targetToHeal = "rpg-"+targetToHeal;
                 var targetToHealName = event.membersInParty[targetToHeal].name;
                 if (event.membersInParty[targetToHeal].statuses.indexOf("dead") == -1){
                     // target is not dead
                     //event.membersInParty[targetToHeal].hp = event.membersInParty[targetToHeal].hp + hpToHeal;
-                    healTarget( event.membersInParty[targetToHeal], hpToHeal)
-                    abilityToString = abilityToString + targetToHealName + " was healed for " + hpToHeal + " from " + rpgAbility.name + "\n"
+                    healTarget( event.membersInParty[targetToHeal], hpToHeal.heal)
+                    abilityToString = abilityToString + critStrike + targetToHealName + " was healed for " + hpToHeal.heal + " from " + rpgAbility.name + "\n"
                     if (event.membersInParty[targetToHeal].hp > event.membersInParty[targetToHeal].maxhp){
                         event.membersInParty[targetToHeal].hp = event.membersInParty[targetToHeal].maxhp
                     }
@@ -8601,8 +8748,8 @@ function processAbility(abilityObject, event){
                 var targetToHealName = event.enemies[targetToHeal].name;
                 if (event.enemies[targetToHeal].statuses.indexOf("dead") == -1){
                     //event.enemies[targetToHeal].hp = event.enemies[targetToHeal].hp + hpToHeal;
-                    healTarget( event.enemies[targetToHeal], hpToHeal)
-                    abilityToString = abilityToString + targetToHealName + " was healed for " + hpToHeal + " from " + rpgAbility.name + "\n"
+                    healTarget( event.enemies[targetToHeal], hpToHeal.heal)
+                    abilityToString = abilityToString + critStrike + targetToHealName + " was healed for " + hpToHeal.heal + " from " + rpgAbility.name + "\n"
                     if (event.enemies[targetToHeal].hp > event.enemies[targetToHeal].maxhp){
                         event.enemies[targetToHeal].hp = event.enemies[targetToHeal].maxhp
                     }
@@ -8649,6 +8796,7 @@ function processAbility(abilityObject, event){
                                 var abType = rpgAbility.type
                                 damageToDeal = dealDamageTo(event.membersInParty[targetToDealDmg], damageToDeal.dmg, event, abType)
                                 abilityToString = abilityToString + critStrike + targetToDealDmgName + " took " + damageToDeal + " damage from " + rpgAbility.name + "\n";
+                                abilityToString = abilityToString + processReflectEffects(event, targetToDealDmg, damageToDeal, abilityCaster, "dmg")
                                 if (checkHasDied(event.membersInParty[targetToDealDmg])){
                                     abilityToString = abilityToString + hasDied(event, event.membersInParty[targetToDealDmg]);
                                 }
@@ -8700,6 +8848,7 @@ function processAbility(abilityObject, event){
                                 var abType = rpgAbility.type
                                 damageToDeal = dealDamageTo( event.enemies[targetToDealDmg], damageToDeal.dmg, event, abType)
                                 abilityToString = abilityToString + targetToDealDmgName + " took " + damageToDeal + " damage from " + rpgAbility.name + "\n";
+                                abilityToString = abilityToString + processReflectEffects(event, targetToDealDmg, damageToDeal, abilityCaster, "dmg")
                                 if (checkHasDied(event.enemies[targetToDealDmg])){
                                     abilityToString = abilityToString + hasDied(event, event.enemies[targetToDealDmg]);
                                 }
