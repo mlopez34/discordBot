@@ -2094,18 +2094,32 @@ module.exports.displayMap = function(message, zoneToCheck){
             console.log(err)
         }else{
             if (!zoneToCheck){
-                var usercurrentarea = userData.data.currentarea
+                let usercurrentarea = userData.data.currentarea
                 zoneToCheck = getRpgZone(usercurrentarea)
             }
 
             // create an embed that includes the zone name currently and available zones
             // and areas in current zone
-            var listOfAreasInZone = getAreasInZone(zoneToCheck, userData.data)
-            var zonesAvailableForUserMap = getZonesAvailableForUser(userData.data)
-            var currentZoneName = rpgZones[ getRpgZone( userData.data.currentarea ) ].name
-            var currentAreaName = rpgZones[ getRpgZone( userData.data.currentarea ) ].areas[userData.data.currentarea].name
-            var zoneAvatar = rpgZones[ getRpgZone( userData.data.currentarea ) ].zoneAvatar
-            mapEmbedBuilder(message, listOfAreasInZone, zonesAvailableForUserMap, currentZoneName, currentAreaName, zoneAvatar)
+            var zonesAvailable = getZonesAvailableForUser(userData.data)
+            if (rpgZones[zoneToCheck] && zonesAvailable[zoneToCheck]){
+                var listOfAreasInZone = getAreasInZone(zoneToCheck, userData.data)
+                var zonesAvailableForUserMap = getZonesAvailableForUser(userData.data)
+                var currentZoneName = rpgZones[ getRpgZone( userData.data.currentarea ) ].name
+                var zonePicked = rpgZones[ zoneToCheck ].name
+                var currentAreaName = rpgZones[ getRpgZone( userData.data.currentarea ) ].areas[userData.data.currentarea].name
+                var zoneAvatar = rpgZones[ zoneToCheck ].zoneAvatar
+                mapEmbedBuilder(message, listOfAreasInZone, zonesAvailableForUserMap, currentZoneName, currentAreaName, zoneAvatar, zonePicked)    
+            }else{
+                let usercurrentarea = userData.data.currentarea
+                zoneToCheck = getRpgZone(usercurrentarea)
+
+                var listOfAreasInZone = getAreasInZone(zoneToCheck, userData.data)
+                var zonesAvailableForUserMap = getZonesAvailableForUser(userData.data)
+                var currentZoneName = rpgZones[ getRpgZone( usercurrentarea ) ].name
+                var currentAreaName = rpgZones[ getRpgZone( usercurrentarea ) ].areas[usercurrentarea].name
+                var zoneAvatar = rpgZones[ getRpgZone( usercurrentarea ) ].zoneAvatar
+                mapEmbedBuilder(message, listOfAreasInZone, zonesAvailableForUserMap, currentZoneName, currentAreaName, zoneAvatar, currentZoneName)
+            }
         }
     })
 }
@@ -2152,7 +2166,7 @@ function keystonesEmbedBuilder(message, keystonesString, userData){
     })
 }
 
-function mapEmbedBuilder(message, listOfAreasInZone, zonesAvailableForUserMap, currentZoneName, currentAreaName, zoneAvatar){
+function mapEmbedBuilder(message, listOfAreasInZone, zonesAvailableForUserMap, currentZoneName, currentAreaName, zoneAvatar, zonePicked){
     var zonesAvailableString = ""
     var areasInZoneString = ""
     for (var z in zonesAvailableForUserMap){
@@ -2175,7 +2189,7 @@ function mapEmbedBuilder(message, listOfAreasInZone, zonesAvailableForUserMap, c
     .setAuthor(message.author.username + " Map")
     .setDescription(":map: travel to different areas via:\n-travel [areaname] OR -travel [zonename]\nBegin an RPG event via:\n-rpgstart @user @user (up to 5 users)\nYou are currently in " + currentZoneName + " - " + currentAreaName)
     .addField("Zones available", zonesAvailableString, true)
-    .addField("Areas available in " + currentZoneName, areasInZoneString, true)
+    .addField("Areas available in " + zonePicked, areasInZoneString, true)
     .setColor(0xbfa5ff)
     if (zoneAvatar){
         embed.setImage(zoneAvatar)
