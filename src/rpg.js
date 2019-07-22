@@ -2314,7 +2314,7 @@ module.exports.travelToNewArea = function(message, placeName){
 
                 if (!userData.data.lasttraveltime || oneHourAgo > userData.data.lasttraveltime){
                     var rpgZoneToTravel = getRpgZone(placeName)
-                    if (rpgZones[rpgZoneToTravel]){
+                    if (rpgZones[rpgZoneToTravel] && zonesAvailable[rpgZoneToTravel]){
                         var area = placeName
                         // if an area then give them a cooldown and change their area there
                         let areasAvailable = getAreasInZone(rpgZoneToTravel, userData.data)

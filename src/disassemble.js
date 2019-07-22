@@ -772,7 +772,7 @@ module.exports.rollForArmamentStats = function(itemToCreateArmament){
 
     }
     
-    if (itemToCreateArmament.itemlevelrequirement 
+    if (itemToCreateArmament.itemlevelrequirement >= 40
     && itemToCreateArmament.rpglevelrequirement >= 40){
         // add floors and ceilings based on a percentage of the item's stats
         let itemhpplus = itemToCreateArmament.hpplus
