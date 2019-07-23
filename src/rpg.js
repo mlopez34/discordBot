@@ -5596,8 +5596,12 @@ function effectsOnDeath(event, member){
                             if (rpgAbility.targetSelf){
                                 target = idOfMember
                             }else{
-                                // TODO: target can be another random enemy
-                                target = undefined // replace with random enemy
+                                if (rpgAbility.buff.areawide == true){
+                                    target = "areawide"
+                                }else{
+                                    // TODO: target can be another random enemy
+                                    target = undefined // replace with random enemy
+                                }
                             }
                         }else{
                             while(!validTarget && stuckCount < 100){

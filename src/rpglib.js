@@ -5778,7 +5778,7 @@ module.exports = {
         // - Costa de marfil - Scorpia Shipyards,  
         costademarfil: {
             zoneAvatar: "https://i.imgur.com/3Eohx8s.png",
-            zoneString : "Things get a little rough from here, you may need reinforcements",
+            zoneString : "日本語のナンセンス",
             startingArea: "argentumbay",
             name: "Costa De Marfil",
             zoneDifficulty: 3,
@@ -6668,7 +6668,7 @@ module.exports = {
         },
         tokyo: {
             zoneAvatar: "https://i.imgur.com/hFTO52y.png",
-            zoneString : "日本語のナンセンス",
+            zoneString : "☢️",
             startingArea: "academycity",
             name: "Tokyo",
             zoneDifficulty: 4,
@@ -14258,6 +14258,30 @@ Hoover Dam
                     }
                 ]
             },
+            // 1 main boss with low HP (50k hp) but extremely high healing, heals for 500 * ( number of stacks * 10 ) every turn
+            // doesnt hit too hard, ~2-2.5k per hit on tank
+            // aoe every 5 turns for 2k
+            // 6 sets of groups, 3 different kind of groups
+            // each set lasts 6 turns
+            // first 2 turns are free so 38 turns total
+            // each set killed adds a debuff on the boss that reducing healing 
+            // first set :
+            // 3 enemies, 1 of them does HUGE aoe every 3 turns (5k aoe) 13k HP
+            // second enemy does fury, lower hp more it hits 17K HP
+            // third enemy does chain lightning on random players, like nourish 10k HP
+            // second set:
+            // 1 big enemy (HUGE HP) 60k HP
+            // end of turn will put a -75% damage dealt, and healing done debuff
+            // small non hitting enemies will appear, must kill one to gain buff to stop debuff
+            // buff lasts 4 turns
+            // enemy puts a dot on players every 2 turns that deals damage to the group equal to their missing health (last 3 turns)
+            // third set:
+            // group of exploding lashers, deal low amount of damage, but will detonate for 800
+            // 2 full sets of each randimized, but in same order
+            // boss summons a tree that heals all enemies at end of turn for 10k HP = 9000
+            // boss summons 3 roots that will deal small amounts of damage to players HP = 1500, immune to aoe
+            // 
+            
             13: {
                 challengeId: "dragon",
                 keystoneUnlockName: "Emperor Keystone",
