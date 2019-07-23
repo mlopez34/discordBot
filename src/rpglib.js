@@ -572,7 +572,9 @@ module.exports = {
         },
         empowerDeath: {
             name: "Empower",
+            belongsToMember: true,
             onDeathEffect: true,
+            processAbility: true,
             abilityId: "empowerDeath",
             areawide: true,
             targets: "friendly",
@@ -9023,7 +9025,7 @@ Hoover Dam
                     abilities: []
                 },
                 effectsOnDeath: [
-
+                    "empowerDeath"
                 ],
                 hpPerPartyMember: 60,
                 adPerPartyMember: 7,
@@ -9380,6 +9382,9 @@ Hoover Dam
                     magicDmg: [300, 500, 900, 1500, 2300],
                     abilities: []
                 },
+                effectsOnDeath: [
+                    "decayDeath"
+                ],
                 hpPerPartyMember: 190,
                 adPerPartyMember: 14,
                 mdPerPartyMember: 14,
@@ -9401,6 +9406,9 @@ Hoover Dam
                     magicDmg: [300, 500, 900, 1500, 2300],
                     abilities: []
                 },
+                effectsOnDeath: [
+                    "healAll"
+                ],
                 hpPerPartyMember: 190,
                 adPerPartyMember: 14,
                 mdPerPartyMember: 14,
@@ -9588,7 +9596,7 @@ Hoover Dam
                     abilities: []
                 },
                 effectsOnDeath: [
-                    "explode"
+                    "empowerDeath"
                 ],
                 hpPerPartyMember: 190,
                 adPerPartyMember: 14,
@@ -9612,6 +9620,9 @@ Hoover Dam
                     magicDmg: [300, 500, 900, 1500, 2300],
                     abilities: []
                 },
+                effectsOnDeath: [
+                    "empowerDeath"
+                ],
                 hpPerPartyMember: 190,
                 adPerPartyMember: 14,
                 mdPerPartyMember: 14,
@@ -9682,6 +9693,7 @@ Hoover Dam
                     abilities: []
                 },
                 effectsOnDeath: [
+                    "explode",
                     "explode",
                     "explode",
                     "explode",
@@ -9805,7 +9817,7 @@ Hoover Dam
                     abilities: []
                 },
                 effectsOnDeath: [
-                    "explode"
+                    "healAll"
                 ],
                 hpPerPartyMember: 190,
                 adPerPartyMember: 14,
