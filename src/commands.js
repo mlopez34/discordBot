@@ -3434,9 +3434,12 @@ function raresEmbedBuilder(message, itemsMap, allItems, long, rarity, pageParam)
             }
         }
     }
+    if (pageParam > largestPageNum){
+        pageParam = largestPageNum
+    }
     embed
     .setAuthor(message.author.username +"'s Inventory ")
-    .setDescription("Page : " + (pageParam) + " of " + largestPageNum + "\n:left_luggage:" )
+    .setDescription("Page : " + (pageParam || 1) + " of " + largestPageNum + "\n:left_luggage:" )
     .setThumbnail(message.author.avatarURL)
     .setColor(0x06e8e8)
     message.channel.send({embed})
