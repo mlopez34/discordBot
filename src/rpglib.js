@@ -2333,6 +2333,29 @@ module.exports = {
                 dmgOnExpire: 0
             }
         },
+        hexNormie: {
+            name:"Hex",
+            abilityId: "hexNormie",
+            type:"shadow",
+            processAbility: true,
+            belongsToMember: true,
+            everyNTurns: 1,
+            ignoreFocus: true,
+            afterNTurns: 1,
+            currentTurn: 0,
+            dot: {
+                name: "Hex",
+                type:"shadow",
+                dmg: 100,
+                untargettable: true,
+                mdPercentage: 1,
+                emoji: "<:hex:479301622732816403>",
+                dmgOnDotApply: false,
+                turnsToExpire: 3,
+                dmgOnDotExpire: false,
+                dmgOnExpire: 0
+            }
+        },
         hex: {
             name:"Hex",
             abilityId: "hex",
@@ -2370,6 +2393,28 @@ module.exports = {
                 dmg: 580,
                 adPercentage: 0.1,
                 type: "physical"
+            }
+        },
+        starve: {
+            onDeathEffect: true,
+            effectDone: false,
+            processAbility: true,
+            name:"Starve",
+            abilityId: "starve",
+            type:"shadow",
+            dot: {
+                dotApplyOnDeath: true,
+                name: "Starve",
+                abilityId: "starve",
+                type:"shadow",
+                dmg: 100,
+                mdPercentage: .25,
+                dmgIncreasePerTick: 200,
+                emoji: "🏴",
+                dmgOnDotApply: false,
+                turnsToExpire: 99,
+                dmgOnDotExpire: false,
+                dmgOnExpire: 0
             }
         },
         radiation: {
@@ -9025,7 +9070,7 @@ Hoover Dam
                     abilities: []
                 },
                 effectsOnDeath: [
-                    "empowerDeath"
+                    "starve"
                 ],
                 hpPerPartyMember: 60,
                 adPerPartyMember: 7,
@@ -9135,6 +9180,9 @@ Hoover Dam
                     magicDmg: [300, 500, 900, 1500, 2300],
                     abilities: []
                 },
+                effectsOnDeath: [
+                    "starve"
+                ],
                 hpPerPartyMember: 60,
                 adPerPartyMember: 7,
                 mdPerPartyMember: 7,
@@ -9337,6 +9385,9 @@ Hoover Dam
                     magicDmg: [300, 500, 900, 1500, 2300],
                     abilities: []
                 },
+                effectsOnDeath: [
+                    "explode"
+                ],
                 hpPerPartyMember: 230,
                 adPerPartyMember: 14,
                 mdPerPartyMember: 14,
@@ -9550,6 +9601,9 @@ Hoover Dam
                     magicDmg: [300, 500, 900, 1500, 2300],
                     abilities: []
                 },
+                effectsOnDeath: [
+                    "starve"
+                ],
                 hpPerPartyMember: 190,
                 adPerPartyMember: 14,
                 mdPerPartyMember: 14,
@@ -9693,7 +9747,6 @@ Hoover Dam
                     abilities: []
                 },
                 effectsOnDeath: [
-                    "explode",
                     "explode",
                     "explode",
                     "explode",
@@ -10065,6 +10118,9 @@ Hoover Dam
                     magicDmg: [300, 500, 900, 1500, 2300],
                     abilities: []
                 },
+                endOfTurnEvents: [
+                    "hexNormie",
+                ],
                 effectsOnDeath: [
                     "totemOfDoomDeath",
                     "totemOfDoomDeath",
@@ -10172,6 +10228,9 @@ Hoover Dam
                     magicDmg: [300, 500, 900, 1500, 2300],
                     abilities: []
                 },
+                endOfTurnEvents: [
+                    "hexNormie",
+                ],
                 effectsOnDeath: [
                     "burst"
                 ],

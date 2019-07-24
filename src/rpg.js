@@ -6909,6 +6909,13 @@ function calculateDamageDealt(event, caster, target, rpgAbility){
 
     if (caster <= 1000){
         let keystoneBaseDmgMultiplier = 1 + (event.challenge && event.challenge.keystone ? event.challenge.keystone * 0.33 : 0)
+        if (event.area){
+            var areaToCheck = event.area
+            var zoneAreaIsIn = getRpgZone(areaToCheck)
+            let rpgZoneDifficulty = 1
+            rpgZoneDifficulty = rpgZones[zoneAreaIsIn].zoneDifficulty || 1
+            keystoneBaseDmgMultiplier = 1 + ( rpgZoneDifficulty )
+        }
         var baseDamage = baseDamage * keystoneBaseDmgMultiplier
         // the caster is an enemy
         var checkTarget = event.membersInParty[target];

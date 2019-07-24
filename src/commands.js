@@ -3260,7 +3260,9 @@ module.exports.raresCommand = function(message, args, rarity){
 function raresEmbedBuilder(message, itemsMap, allItems, long, rarity, pageParam){
     // create a field for each item and add the count
     const embed = new Discord.RichEmbed()
-    let page = pageParam || 1
+    let pageRegular = pageParam || 1
+    let pageImproved = pageParam || 1
+    let pageRefined = pageParam || 1
     var inventoryStringsRegular = [];
     var inventoryStringsImproved = [];
     var inventoryStringsRefined = [];
@@ -3384,10 +3386,10 @@ function raresEmbedBuilder(message, itemsMap, allItems, long, rarity, pageParam)
     }
     if (!long){
         for (var invString = inventoryStringsRefined.length -1; invString >= 0; invString--){
-            if (page > inventoryStringsRefined.length){
-                page = inventoryStringsRefined.length
+            if (pageRefined > inventoryStringsRefined.length){
+                pageRefined = inventoryStringsRefined.length
             }
-            if (invString == page - 1){
+            if (invString == pageRefined - 1){
                 var emoji = ""
                 if ( rarity == "rare"){
                     emoji = ":diamonds: "
@@ -3400,10 +3402,10 @@ function raresEmbedBuilder(message, itemsMap, allItems, long, rarity, pageParam)
             }
         }
         for (var invString = inventoryStringsImproved.length -1; invString >= 0; invString--){
-            if (page > inventoryStringsImproved.length){
-                page = inventoryStringsImproved.length
+            if (pageImproved > inventoryStringsImproved.length){
+                pageImproved = inventoryStringsImproved.length
             }
-            if (invString == page - 1){
+            if (invString == pageImproved - 1){
                 var emoji = ""
                 if ( rarity == "rare"){
                     emoji = ":large_blue_diamond: "
@@ -3416,10 +3418,10 @@ function raresEmbedBuilder(message, itemsMap, allItems, long, rarity, pageParam)
             }
         }
         for (var invString = inventoryStringsRegular.length -1; invString >= 0; invString--){
-            if (page > inventoryStringsRegular.length){
-                page = inventoryStringsRegular.length
+            if (pageRegular > inventoryStringsRegular.length){
+                pageRegular = inventoryStringsRegular.length
             }
-            if (invString == page - 1){
+            if (invString == pageRegular - 1){
                 var emoji = ""
                 if ( rarity == "rare"){
                     emoji = ":small_blue_diamond: "
@@ -3434,7 +3436,7 @@ function raresEmbedBuilder(message, itemsMap, allItems, long, rarity, pageParam)
     }
     embed
     .setAuthor(message.author.username +"'s Inventory ")
-    .setDescription("Page : " + (page) + " of " + largestPageNum + "\n:left_luggage:" )
+    .setDescription("Page : " + (pageParam) + " of " + largestPageNum + "\n:left_luggage:" )
     .setThumbnail(message.author.avatarURL)
     .setColor(0x06e8e8)
     message.channel.send({embed})
