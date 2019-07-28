@@ -3473,9 +3473,9 @@ module.exports.itemDetailsCommand = function(message, args){
                         itemBeingTraded = true;
                     }
                     if (!itemsInInventoryCountMap[inventoryResponse.data[item].itemid] 
-                        && validItem 
-                        && !itemBeingAuctioned
-                        && !itemBeingTraded){
+                    && validItem 
+                    && !itemBeingAuctioned
+                    && !itemBeingTraded){
                         // item hasnt been added to be counted, add it as 1
                         itemsInInventoryCountMap[inventoryResponse.data[item].itemid] = 1;
                     }
@@ -3483,24 +3483,27 @@ module.exports.itemDetailsCommand = function(message, args){
                         itemsInInventoryCountMap[inventoryResponse.data[item].itemid] = itemsInInventoryCountMap[inventoryResponse.data[item].itemid] + 1
                     }
                 }
-
-                if (itemsMapbyShortName[itemToWear]){
-                    // check that i have the item
-                    var idOfItemChosen = itemsMapbyShortName[itemToWear].id
-                    if (itemsInInventoryCountMap[idOfItemChosen]){
-                        profileDB.getUserArmamentForItem(discordUserId, idOfItemChosen, function(err, armamentRes){
-                            if (err){
-                                console.log(err)
-                            }else{
-                                let armamentForItem = armamentRes.data.length > 0 ? armamentRes.data[0] : null;
-                                var itemToDisplay = itemsMapbyShortName[itemToWear]
-                                var rpgItemInfoString = rpg.rpgInfoStringBuilder(itemToDisplay)
-                                itemInfoEmbedBuilder(message, itemToDisplay, rpgItemInfoString, armamentForItem)        
-                            }
-                        })
-                    }else{
-                        message.channel.send("you do not own that item or item does not exist")
+                let itemsInMarketByShortName = {}
+                for (var i in marketItems){
+                    if (!itemsInMarketByShortName[marketItems[i].itemshortname]){
+                        itemsInMarketByShortName[marketItems[i].itemshortname] = itemsMapbyShortName[marketItems[i].itemshortname]
                     }
+                }
+
+                
+                // check that i have the item
+                var idOfItemChosen = itemsMapbyShortName[itemToWear] ? itemsMapbyShortName[itemToWear].id : undefined
+                if (itemsInInventoryCountMap[idOfItemChosen]){
+                    itemInfoBuilder(message, discordUserId, idOfItemChosen, itemToWear)
+                }else if (marketItems[itemToWear]){
+                    // item id
+                    var itemInMarketShortName = marketItems[itemToWear].itemshortname
+                    idOfItemChosen = itemsMapbyShortName[itemInMarketShortName].id
+                    itemInfoBuilder(message, discordUserId, idOfItemChosen, itemInMarketShortName)
+                }else if(itemsInMarketByShortName[itemToWear]){
+                    // item short name in market
+                    idOfItemChosen = itemsMapbyShortName[itemToWear].id
+                    itemInfoBuilder(message, discordUserId, idOfItemChosen, itemToWear)
                 }else{
                     message.channel.send("you do not own that item or item does not exist")
                 }
@@ -3508,6 +3511,19 @@ module.exports.itemDetailsCommand = function(message, args){
             }
         })
     }
+}
+
+function itemInfoBuilder (message, discordUserId, idOfItemChosen, itemToWear){
+    profileDB.getUserArmamentForItem(discordUserId, idOfItemChosen, function(err, armamentRes){
+        if (err){
+            console.log(err)
+        }else{
+            let armamentForItem = armamentRes.data.length > 0 ? armamentRes.data[0] : null;
+            var itemToDisplay = itemsMapbyShortName[itemToWear]
+            var rpgItemInfoString = rpg.rpgInfoStringBuilder(itemToDisplay)
+            itemInfoEmbedBuilder(message, itemToDisplay, rpgItemInfoString, armamentForItem)        
+        }
+    })
 }
 
 function itemInfoEmbedBuilder(message, item, rpgItemInfoString, armamentForItem){

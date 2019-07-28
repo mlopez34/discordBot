@@ -7541,18 +7541,18 @@ function processAbility(abilityObject, event){
     if (abilityCaster > 1000){
         // this is a user
         if (checkIfDeadByObject(event.membersInParty["rpg-"+abilityCaster])){
-                // caster is no longer alive
-                stillAlive = false;
-            }
+            // caster is no longer alive
+            stillAlive = false;
+        }
         if (!event.membersInParty["rpg-"+abilityCaster].globalStatuses.ableToAttack){
             validAbility = false
         }
     }else{
         // this is an enemy
         if (checkIfDeadByObject(event.enemies[abilityCaster])){
-                // enemy is no longer alive
-                stillAlive = false;
-            }
+            // enemy is no longer alive
+            stillAlive = false;
+        }
         if (!event.enemies[abilityCaster].globalStatuses.ableToAttack){
             validAbility = false
         }
@@ -8743,7 +8743,7 @@ function processAbility(abilityObject, event){
                 if (!checkIfDeadByObject(event.membersInParty[targetToHeal])){
                     // target is not dead
                     healTarget( event.membersInParty[targetToHeal], hpToHeal.heal)
-                    abilityToString = abilityToString + critStrike + targetToHealName + " was healed for " + hpToHeal.heal + " from " + rpgAbility.name + "\n"
+                    abilityToString = abilityToString + critStrike + targetToHealName + " was healed for " + hpToHeal.heal + " - " + rpgAbility.name + "\n"
                     if (event.membersInParty[targetToHeal].hp > event.membersInParty[targetToHeal].maxhp){
                         event.membersInParty[targetToHeal].hp = event.membersInParty[targetToHeal].maxhp
                     }
@@ -8752,7 +8752,7 @@ function processAbility(abilityObject, event){
                 var targetToHealName = event.enemies[targetToHeal].name;
                 if (!checkIfDeadByObject(event.enemies[targetToHeal])){
                     healTarget( event.enemies[targetToHeal], hpToHeal.heal)
-                    abilityToString = abilityToString + critStrike + targetToHealName + " was healed for " + hpToHeal.heal + " from " + rpgAbility.name + "\n"
+                    abilityToString = abilityToString + critStrike + targetToHealName + " was healed for " + hpToHeal.heal + " - " + rpgAbility.name + "\n"
                     if (event.enemies[targetToHeal].hp > event.enemies[targetToHeal].maxhp){
                         event.enemies[targetToHeal].hp = event.enemies[targetToHeal].maxhp
                     }
