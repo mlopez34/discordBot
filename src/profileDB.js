@@ -1668,6 +1668,23 @@ module.exports.getUserItems = function(discordId, cb) {
     });
 }
 
+module.exports.getUserItemsForRpg = function(discordId, cb) {
+    var query = 'select id, itemid, armamentforitemid from ' + config.inventoryTable + ' where discordId = $1 AND status is null ORDER BY id DESC '
+    // console.log(query);
+    db.query(query, [discordId])
+      .then(function (data) {
+        cb(null, {
+            status: 'success',
+            data: data,
+            message: 'Retrieved All User Items'
+          });
+      })
+      .catch(function (err) {
+        // console.log(err);
+        cb(err);
+      });
+  }
+
 module.exports.getUserItemsForArmaments = function(discordId, cb) {
     var query = 'select * from ' + config.inventoryTable + ' where discordId = $1 AND (status is null OR status = \'wearing\') ORDER BY id DESC '
     // console.log(query);

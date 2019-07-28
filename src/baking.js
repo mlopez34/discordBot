@@ -1,6 +1,5 @@
 'use strict'
 var profileDB = require("./profileDB.js");
-const Discord = require("discord.js");
 
 const greenHouseBakingLevels = {
     regular: 4,

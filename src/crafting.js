@@ -1,6 +1,5 @@
 'use strict'
 var profileDB = require("./profileDB.js");
-const Discord = require("discord.js");
 
 // commands used for crafting items from the TEMPLE
 
@@ -203,18 +202,21 @@ module.exports.getRecipeRequirements = function(itemshortname){
     return availableRecipesByShortName[itemshortname]
 }
 
-module.exports.craftRecipe = function(message, params){
+module.exports.craftRecipe = function(message, params, callback){
     var discordUserId = message.author.id
     consumeTacos(discordUserId, params, function(error, res){
         if (error){
             console.log(error)
+            callback(error)
         }else{
             useItems(params, function(error, res){
                 if (error){
                     console.log(error)
+                    callback(error)
                 }else{
                     addToUserInventory(discordUserId, params.itemToCreate)
                     message.channel.send(message.author + " crafted **" + params.itemToCreate[0].itemname +"**")
+                    callback(null, "done")
                 }
             })
         }

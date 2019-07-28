@@ -719,8 +719,8 @@ module.exports.rollForArmamentStats = function(itemToCreateArmament){
     }
 
     if (itemSlot == "weapon"
-        || itemSlot == "finger"
-        || itemSlot == "neck"){
+    || itemSlot == "finger"
+    || itemSlot == "neck"){
 
         statMap.adplus.floor = statMap.adplus.floor + 3
         statMap.adplus.ceiling = statMap.adplus.ceiling + 10
@@ -735,8 +735,8 @@ module.exports.rollForArmamentStats = function(itemToCreateArmament){
         statMap.spiritplus.ceiling = statMap.spiritplus.ceiling - 20
 
     }else if (itemSlot == "chest"
-        || itemSlot == "legs"
-        || itemSlot == "head"){
+    || itemSlot == "legs"
+    || itemSlot == "head"){
 
         statMap.armorplus.floor = statMap.armorplus.floor + 5
         statMap.armorplus.ceiling = statMap.armorplus.ceiling + 20
@@ -749,8 +749,8 @@ module.exports.rollForArmamentStats = function(itemToCreateArmament){
 
     
     }else if (itemSlot == "back"
-        || itemSlot == "belt"
-        || itemSlot == "wrist"){
+    || itemSlot == "belt"
+    || itemSlot == "wrist"){
         statMap.critplus.floor = statMap.critplus.floor + 4 
         statMap.critplus.ceiling = statMap.critplus.ceiling + 8
 
@@ -759,8 +759,8 @@ module.exports.rollForArmamentStats = function(itemToCreateArmament){
 
 
     }else if (itemSlot == "feet"
-        || itemSlot == "hands"
-        || itemSlot == "shoulders"){
+    || itemSlot == "hands"
+    || itemSlot == "shoulders"){
         statMap.hpplus.floor = statMap.hpplus.floor + 4
         statMap.hpplus.ceiling = statMap.hpplus.ceiling + 10
 
@@ -1033,8 +1033,8 @@ module.exports.rollForArmamentStats = function(itemToCreateArmament){
             statMap.spiritplus.ceiling = statMap.spiritplus.ceiling - (itemspiritplus * 0.06 )
     
         }else if (itemSlot == "chest"
-            || itemSlot == "legs"
-            || itemSlot == "head"){
+        || itemSlot == "legs"
+        || itemSlot == "head"){
     
             statMap.armorplus.floor = statMap.armorplus.floor + (itemarmorplus * 0.06 )
             statMap.armorplus.ceiling = statMap.armorplus.ceiling + ( itemarmorplus * 0.06 )
@@ -1047,8 +1047,8 @@ module.exports.rollForArmamentStats = function(itemToCreateArmament){
     
         
         }else if (itemSlot == "back"
-            || itemSlot == "belt"
-            || itemSlot == "wrist"){
+        || itemSlot == "belt"
+        || itemSlot == "wrist"){
             statMap.critplus.floor = statMap.critplus.floor + ( statMap.critplus.floor * 0.06)
             statMap.critplus.ceiling = statMap.critplus.ceiling + ( statMap.critplus.ceiling * 0.06 )
     
@@ -1057,8 +1057,8 @@ module.exports.rollForArmamentStats = function(itemToCreateArmament){
     
     
         }else if (itemSlot == "feet"
-            || itemSlot == "hands"
-            || itemSlot == "shoulders"){
+        || itemSlot == "hands"
+        || itemSlot == "shoulders"){
             statMap.hpplus.floor = statMap.hpplus.floor + (itemhpplus * 0.06 )
             statMap.hpplus.ceiling = statMap.hpplus.ceiling + (itemhpplus * 0.06 )
     

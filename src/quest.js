@@ -1,4 +1,4 @@
-var rpg = require("./rpg.js")
+var rpg = require("./rpg/rpg.js")
 var profileDB = require("./profileDB.js");
 const Discord = require("discord.js");
 const ytdl = require("ytdl-core");

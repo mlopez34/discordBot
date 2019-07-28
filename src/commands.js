@@ -1,11 +1,9 @@
 
 var achiev = require("./achievements.js");
-var rpg = require("./rpg.js")
-var rpglib = require("./rpglib");
+var rpg = require("./rpg/rpg.js")
 var profileDB = require("./profileDB.js");
 var stats = require("./statistics.js");
 const Discord = require("discord.js");
-var Promise = require('bluebird');
 var config = require("./config.js");
 var useItem = require("./useItem.js")
 var baking = require("./baking.js")
@@ -1066,7 +1064,7 @@ module.exports.prepareCommand = function (message){
                                                 }else{
                                                     message.channel.send(message.author + " You have prepared `" + tacosToPrepare + "` tacos :taco:! `" + soiledToTaco +"` were from soiled crops. The tacos also come with `1` warranty protection");
                                                 }
-                                                message.channel.send("New Feature Introduced!\nYou can now enter the RPG queue!\nUse commands `-rpgqueue [2-5]` to enter an rpg queue of group size 2-5.\n`-rpgleave` to leave the queue. Read `-patchnotes` for more info")
+                                                //// message.channel.send("New Feature Introduced!\nYou can now enter the RPG queue!\nUse commands `-rpgqueue [2-5]` to enter an rpg queue of group size 2-5.\n`-rpgleave` to leave the queue. Read `-patchnotes` for more info")
                                                 var experienceFromItems = wearStats.calculateExtraExperienceGained(wearRes, "prepare", null)
                                                 experience.gainExperience(message, message.author, (EXPERIENCE_GAINS.prepare + (EXPERIENCE_GAINS.preparePerStand * userTacoStands) + experienceFromItems) , prepareResponse);
                                                 stats.statisticsManage(discordUserId, "maxextratacos", soiledToTaco, function(staterr, statSuccess){
@@ -3496,7 +3494,7 @@ module.exports.itemDetailsCommand = function(message, args){
                             }else{
                                 let armamentForItem = armamentRes.data.length > 0 ? armamentRes.data[0] : null;
                                 var itemToDisplay = itemsMapbyShortName[itemToWear]
-                                var rpgItemInfoString = rpgInfoStringBuilder(message, itemToDisplay)
+                                var rpgItemInfoString = rpg.rpgInfoStringBuilder(itemToDisplay)
                                 itemInfoEmbedBuilder(message, itemToDisplay, rpgItemInfoString, armamentForItem)        
                             }
                         })
@@ -3510,46 +3508,6 @@ module.exports.itemDetailsCommand = function(message, args){
             }
         })
     }
-}
-
-// build the string for rpgstats and abilities
-function rpgInfoStringBuilder(message, item){
-    if (item.hpplus || item.attackdmgplus || item.magicdmgplus || item.armorplus || item.spiritplus){
-        var hp = item.hpplus || 0
-        var attackdmg = item.attackdmgplus || 0
-        var magicdmg = item.magicdmgplus || 0
-        var armor = item.armorplus || 0 
-        var spirit = item.spiritplus || 0
-
-        var rpgItemInfoString = " 💚 " + hp + " 🗡️ " + attackdmg + " ☄️ " + magicdmg + " 🛡️ " + armor + " 🙌 " + spirit + "\n"
-        rpgItemInfoString = rpgItemInfoString + "**Abilities:**\n"
-        var rpgAbilities = rpglib.rpgAbilities
-        if (item.ability1){
-            var abilityName = rpgAbilities[item.ability1].name
-            var abilityDescription = rpgAbilities[item.ability1].description
-            rpgItemInfoString = rpgItemInfoString + "**" + abilityName + "** - " + abilityDescription + "\n"
-        }
-        if (item.ability2){
-            var abilityName = rpgAbilities[item.ability2].name
-            var abilityDescription = rpgAbilities[item.ability2].description
-            rpgItemInfoString = rpgItemInfoString + "**" + abilityName + "** - " + abilityDescription + "\n"
-        }
-        if (item.specialability){
-            var abilityName = rpgAbilities[item.specialability].name
-            var abilityDescription = rpgAbilities[item.specialability].description
-            rpgItemInfoString = rpgItemInfoString + "**" + abilityName + "** - " + abilityDescription + "\n"
-        }
-        if (item.passiveability){
-            var abilityName = rpgAbilities[item.passiveability].name
-            var abilityDescription = rpgAbilities[item.passiveability].description
-            rpgItemInfoString = rpgItemInfoString + "**" + abilityName + "** - " + abilityDescription + "\n"
-        }
-        return rpgItemInfoString
-    }else{
-        return ""
-    }
-    
-
 }
 
 function itemInfoEmbedBuilder(message, item, rpgItemInfoString, armamentForItem){
@@ -7118,68 +7076,76 @@ function craftItem(message, discordUserId, recipeRequirements, recipeData, myIte
     }
     var itemsToUse = []
     var itemToCreate;
-    profileDB.getUserItems(discordUserId, function(err, inventoryResponse){
-        if (err){
-            // console.log(err);
-            agreeToTerms(message, discordUserId);
-            useItem.setItemsLock(discordUserId, false)
-        }else{
-            // must have the materials required to upgrade the building
-            var itemsInInventoryCountMap = {}
-            
-            for (var item in inventoryResponse.data){
-                var ItemInQuestion = inventoryResponse.data[item];
-                var validItem = useItem.itemValidate(ItemInQuestion);
-                var itemBeingAuctioned = false;
-                if (itemsInAuction[ItemInQuestion.id]){
-                    itemBeingAuctioned = true;
-                }
-                var itemBeingTraded = false;
-                if (activeTradeItems[inventoryResponse.data[item].id]){
-                    itemBeingTraded = true;
-                }
-                if (!itemsInInventoryCountMap[inventoryResponse.data[item].itemid] 
+    ///// lock crafting, then release lock
+    useItem.setItemsLock(discordUserId, true)
+    if (!useItem.getItemsLock(discordUserId)){
+        profileDB.getUserItems(discordUserId, function(err, inventoryResponse){
+            if (err){
+                // console.log(err);
+                agreeToTerms(message, discordUserId);
+                useItem.setItemsLock(discordUserId, false)
+            }else{
+                // must have the materials required to upgrade the building
+                var itemsInInventoryCountMap = {}
+                
+                for (var item in inventoryResponse.data){
+                    var ItemInQuestion = inventoryResponse.data[item];
+                    var validItem = useItem.itemValidate(ItemInQuestion);
+                    var itemBeingAuctioned = false;
+                    if (itemsInAuction[ItemInQuestion.id]){
+                        itemBeingAuctioned = true;
+                    }
+                    var itemBeingTraded = false;
+                    if (activeTradeItems[inventoryResponse.data[item].id]){
+                        itemBeingTraded = true;
+                    }
+                    if (!itemsInInventoryCountMap[inventoryResponse.data[item].itemid] 
                     && validItem 
                     && !itemBeingAuctioned
                     && !itemBeingTraded){
-                    // item hasnt been added to be counted, add it as 1
-                    itemsInInventoryCountMap[inventoryResponse.data[item].itemid] = 1;
-                    if (itemsToCheckMap[ItemInQuestion.itemid] 
+                        // item hasnt been added to be counted, add it as 1
+                        itemsInInventoryCountMap[inventoryResponse.data[item].itemid] = 1;
+                        if (itemsToCheckMap[ItemInQuestion.itemid] 
                         && itemsInInventoryCountMap[ItemInQuestion.itemid] <= itemsToCheckMap[ItemInQuestion.itemid]){
                             itemsToUse.push(ItemInQuestion)
+                        }
+                    }
+                    else if (validItem && !itemBeingAuctioned && !itemBeingTraded){
+                        itemsInInventoryCountMap[inventoryResponse.data[item].itemid] = itemsInInventoryCountMap[inventoryResponse.data[item].itemid] + 1
+                        if (itemsToCheckMap[ItemInQuestion.itemid] 
+                            && itemsInInventoryCountMap[ItemInQuestion.itemid] <= itemsToCheckMap[ItemInQuestion.itemid]){
+                                itemsToUse.push(ItemInQuestion)
+                        }
                     }
                 }
-                else if (validItem && !itemBeingAuctioned && !itemBeingTraded){
-                    itemsInInventoryCountMap[inventoryResponse.data[item].itemid] = itemsInInventoryCountMap[inventoryResponse.data[item].itemid] + 1
-                    if (itemsToCheckMap[ItemInQuestion.itemid] 
-                        && itemsInInventoryCountMap[ItemInQuestion.itemid] <= itemsToCheckMap[ItemInQuestion.itemid]){
-                            itemsToUse.push(ItemInQuestion)
-                    }
+    
+                // CHECK here if requirements are met
+                itemToCreate = itemsMapbyShortName[myItemShortName]
+                itemToCreate.itemAmount = 1
+                var params = {
+                    userLevel : recipeData.level, // my level
+                    reputationLevel: REPUTATIONS[recipeData.repstatus.toLowerCase()].level, // my rep
+                    tacos: recipeData.tacos, // my tacos
+                    inventoryCountMap: itemsInInventoryCountMap,
+                    itemsToUse: itemsToUse,  // items to use for craft
+                    recipeRequirements: recipeRequirements,
+                    itemToCreate: [ itemToCreate ]
+                }
+    
+                var requirementsMet = crafting.checkRequirements(params)
+    
+                if (requirementsMet){
+                    crafting.craftRecipe(message, params, function(err, res){
+                        useItem.setItemsLock(discordUserId, false)
+                    })
+                }else{
+                    message.channel.send("requirements not met")
+                    useItem.setItemsLock(discordUserId, false)
                 }
             }
-
-            // CHECK here if requirements are met
-            itemToCreate = itemsMapbyShortName[myItemShortName]
-            itemToCreate.itemAmount = 1
-            var params = {
-                userLevel : recipeData.level, // my level
-                reputationLevel: REPUTATIONS[recipeData.repstatus.toLowerCase()].level, // my rep
-                tacos: recipeData.tacos, // my tacos
-                inventoryCountMap: itemsInInventoryCountMap,
-                itemsToUse: itemsToUse,  // items to use for craft
-                recipeRequirements: recipeRequirements,
-                itemToCreate: [ itemToCreate ]
-            }
-
-            var requirementsMet = crafting.checkRequirements(params)
-
-            if (requirementsMet){
-                crafting.craftRecipe(message, params)
-            }else{
-                message.channel.send("requirements not met")
-            }
-        }
-    })
+        })
+    }
+    
 }
 
 

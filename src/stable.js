@@ -1,6 +1,5 @@
 'use strict'
 var profileDB = require("./profileDB.js");
-const Discord = require("discord.js");
 const PETS_FETCH_SEEDS_LEVEL = 8;
 
 var upgradeLock = {}
