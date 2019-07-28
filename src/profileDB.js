@@ -1669,7 +1669,7 @@ module.exports.getUserItems = function(discordId, cb) {
 }
 
 module.exports.getUserItemsForRpg = function(discordId, cb) {
-    var query = 'select id, itemid, armamentforitemid from ' + config.inventoryTable + ' where discordId = $1 AND status is null ORDER BY id DESC '
+    var query = 'select id, itemid, armamentforitemid, hpplus, adplus, mdplus, armorplus, spiritplus, critplus, luckplus from ' + config.inventoryTable + ' where discordId = $1 AND status is null ORDER BY id DESC '
     // console.log(query);
     db.query(query, [discordId])
       .then(function (data) {
