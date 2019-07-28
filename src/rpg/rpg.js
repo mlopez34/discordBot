@@ -855,7 +855,7 @@ module.exports.rpgReady = function(message, itemsAvailable, amuletItemsById, buf
                             }
                             for (var arm in inventoryResponse.data){
                                 if (inventoryResponse.data[arm].armamentforitemid 
-                                    && !userArmamentForItemId[inventoryResponse.data[arm].armamentforitemid]){
+                                && !userArmamentForItemId[inventoryResponse.data[arm].armamentforitemid]){
                                     userArmamentForItemId[inventoryResponse.data[arm].armamentforitemid] = inventoryResponse.data[arm]
                                 }
                             }
@@ -7538,7 +7538,7 @@ function processAbility(abilityObject, event){
 
     if (abilityCaster > 1000){
         // this is a user
-        if (!checkIfDeadByObject(event.membersInParty["rpg-"+abilityCaster])){
+        if (checkIfDeadByObject(event.membersInParty["rpg-"+abilityCaster])){
                 // caster is no longer alive
                 stillAlive = false;
             }
@@ -7547,7 +7547,7 @@ function processAbility(abilityObject, event){
         }
     }else{
         // this is an enemy
-        if (!checkIfDeadByObject(event.enemies[abilityCaster])){
+        if (checkIfDeadByObject(event.enemies[abilityCaster])){
                 // enemy is no longer alive
                 stillAlive = false;
             }
