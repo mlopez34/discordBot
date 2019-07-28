@@ -3651,7 +3651,7 @@ function calculateRewards(event, memberInRpgEvent, allItems, numberOfMembers, fi
                         itemsObtainedArray.push( commonItems[itemRoll] );
                     }
                 }
-                if (event.isQueueEvent){
+                if (event.queueEvent){
                     if(rarityRoll > ANCIENT_MIN_ROLL ){
                         var itemRoll = Math.floor(Math.random() * ancientItems.length);
                         console.log(ancientItems[itemRoll]);
