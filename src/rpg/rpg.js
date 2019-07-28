@@ -1254,6 +1254,8 @@ module.exports.rpgReady = function(message, itemsAvailable, amuletItemsById, buf
                                                                         abilities: abilities
                                                                     };
                                                                 }
+                                                                console.log("STATISTICS FROM ITEMS N LEVEL" ) 
+                                                                console.log(JSON.stringify(statisticsFromItemsAndLevel, null, 2))
                                                                 var partyMemberHpPlus =  0
                                                                 var partyMemberAttackDmgPlus =  0
                                                                 var partyMemberMagicDmgPlus =  0

@@ -1266,8 +1266,7 @@ function userWearingStatsPerform(message, discordUserId, userData, amuletItemsBy
         if (getWearErr){
             console.log(getWearErr);
             cb(getWearErr)
-        }
-        else{
+        }else{
             // console.log(getWearRes);
             // get the item info by calling items table
             if (getWearRes.data.length > 0){
