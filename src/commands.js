@@ -63,9 +63,9 @@ var ETHEREUM_ID = 200;
 var TACO_PARTY_TIME_TO_LIVE = 300000
 var SHOP_ITEM_COST = 125
 const GREENHOUSE_COST = 10000
-const TEMPLE_COST = 25000
+const TEMPLE_COST = 15000
 const HACKSAW_COST = 5000
-const STABLE_COST = 35000
+const STABLE_COST = 25000
 
 
 var activeAuctions = {};
@@ -2143,7 +2143,7 @@ module.exports.buyPickaxeCommand = function(message){
                         }
                         else{
                             experience.gainExperience(message, message.author, EXPERIENCE_GAINS.buyPickaxe , pickaxeResponse);
-                            message.channel.send(message.author + " Congratulations, you have purchased a pickaxe :pick:!");
+                            message.channel.send(message.author + " Congratulations, you have purchased a pickaxe :pick:! use `-scavenge` command to scavenge some items!");
                         }
                     })
                 }
@@ -2241,7 +2241,7 @@ module.exports.buyStableCommand = function(message){
                             // console.log(err);
                         }else{
                             experience.gainExperience(message, message.author, EXPERIENCE_GAINS.buyStable * 50 , stableResponse);
-                            message.channel.send(message.author + " Congratulations, you have purchased the Stable!");
+                            message.channel.send(message.author + " Congratulations, you have purchased the Stable! use `-stable` command to display your Stable.");
                         }
                     })
                 }
@@ -2269,7 +2269,7 @@ module.exports.buyGreenHouseCommand = function(message){
                             // console.log(err);
                         }else{
                             experience.gainExperience(message, message.author, EXPERIENCE_GAINS.buyGreenHouse * 50 , greenhouseResponse);
-                            message.channel.send(message.author + " Congratulations, you have purchased the Greenhouse!");
+                            message.channel.send(message.author + " Congratulations, you have purchased the Greenhouse! use `-greenhouse` command to display your Greenhouse.");
                         }
                     })
                 }
@@ -2287,7 +2287,7 @@ module.exports.buyTempleCommand = function(message){
         if(err){
             // user doesnt exist tell the user they should get some tacos
             agreeToTerms(message, discordUserId);
-            message.channel.send(message.author + " You can't afford a Stable!");
+            message.channel.send(message.author + " You can't afford a Temple!");
         }
         else{
             if (!templeResponse.data.temple){
@@ -2298,7 +2298,7 @@ module.exports.buyTempleCommand = function(message){
                             // console.log(err);
                         }else{
                             experience.gainExperience(message, message.author, EXPERIENCE_GAINS.buyPickaxe * 50 , templeResponse);
-                            message.channel.send(message.author + " Congratulations, you have purchased the Temple!");
+                            message.channel.send(message.author + " Congratulations, you have purchased the Temple! use `-temple` command to display your Temple.");
                         }
                     })
                 }
@@ -2326,7 +2326,7 @@ module.exports.buyHacksawCommand = function(message){
                             // console.log(err);
                         }else{
                             experience.gainExperience(message, message.author, EXPERIENCE_GAINS.buyPickaxe * 50 , hacksawResponse);
-                            message.channel.send(message.author + " Congratulations, you have purchased a Hacksaw!");
+                            message.channel.send(message.author + " Congratulations, you have purchased a Hacksaw! you can now use `-disassemble [itemname]` command to disassemble your items.");
                         }
                     })
                 }
@@ -4968,7 +4968,7 @@ module.exports.buypetCommand = function(message, args){
                                                     }
                                                     else{
                                                         // anounce the user has a new pet!
-                                                        message.channel.send(" Congratulations! " + message.author + " has a new " + pet + " called: `" + petName + "` \n" + PETS_AVAILABLE[pet].emoji + " " + PETS_AVAILABLE[pet].speak + "\n use -fetch while your pet is not tired!");
+                                                        message.channel.send(" Congratulations! " + message.author + " has a new " + pet + " called: `" + petName + "` \n" + PETS_AVAILABLE[pet].emoji + " " + PETS_AVAILABLE[pet].speak + "\n use `-fetch` while your pet is not tired!");
                                                     }
                                                 })
                                             }
@@ -4989,7 +4989,7 @@ module.exports.buypetCommand = function(message, args){
                                                             message.channel.send(" error, check bender now");
                                                         }
                                                         else{
-                                                            message.channel.send(" Congratulations! " + message.author + " has a new " + pet + " called: `" + petName + "` \n" + PETS_AVAILABLE[pet].emoji + " " + PETS_AVAILABLE[pet].speak + "\n use -fetch " + petName +" while your pet is not tired!");
+                                                            message.channel.send(" Congratulations! " + message.author + " has a new " + pet + " called: `" + petName + "` \n" + PETS_AVAILABLE[pet].emoji + " " + PETS_AVAILABLE[pet].speak + "\n use `-fetch " + petName +"` while your pet is not tired!");
                                                         }
                                                     })
                                                 }
@@ -6309,12 +6309,16 @@ function greenHouseEmbedBuilder(message, greenHouseData, itemsMapById, long){
     var weather = ":sunny:"
     var shears = ":scissors:"
     var harvestTimeRemaining = "1 hour" // GET the harvest time, should be every 24 hours
-
+    let greenhousedescription = 'Greenhouse Level: ' + greenHouseData.greenhouseLevel
+    if (greenHouseData.greenhouseLevel >=1 
+    && greenHouseData.greenhouseLevel <= 3){
+        greenhousedescription = greenhousedescription + "\nFind seeds to plant on your empty plots\nuse `-harvest` command to harvest your plots"
+    } 
     const embed = new Discord.RichEmbed()
     .setColor(0x87CEFA)
     .setTitle(greenHouseData.name + "'s Green House :house_with_garden:")
     .setThumbnail(message.author.avatarURL)
-    .setDescription('Greenhouse Level: ' + greenHouseData.greenhouseLevel)
+    .setDescription(greenhousedescription)
     .setColor(0x87CEFA)
     if (long){
         if (greenHouseData.allMyLevelsInfo && greenHouseData.allMyLevelsInfo.length > 0 ){
@@ -6407,11 +6411,16 @@ module.exports.feedCommand = function(message, args){
 }
 
 function stableEmbedBuilder(message, stableData, long){
+    // display command to buy stable pets in description
+    let stableDescription = 'Stable Level: ' + stableData.stableLevel
+    if (stableData.stableLevel >= 2){
+        stableDescription = stableDescription + "\nuse `-buypet [type of pet] [petname] stable [stable slot]`\nexample: `-buypet dog donut stable 1`"
+    }
     const embed = new Discord.RichEmbed()
     .setColor(0x87CEFA)
     .setTitle(stableData.name + "'s Stables")
     .setThumbnail(message.author.avatarURL)
-    .setDescription('Stable Level: ' + stableData.stableLevel)
+    .setDescription(stableDescription)
     .setColor(0x87CEFA)
     if (long){
         if (stableData.allMyLevelsInfo && stableData.allMyLevelsInfo.length > 0 ){
@@ -7093,8 +7102,8 @@ function craftItem(message, discordUserId, recipeRequirements, recipeData, myIte
     var itemsToUse = []
     var itemToCreate;
     ///// lock crafting, then release lock
-    useItem.setItemsLock(discordUserId, true)
     if (!useItem.getItemsLock(discordUserId)){
+        useItem.setItemsLock(discordUserId, true)
         profileDB.getUserItems(discordUserId, function(err, inventoryResponse){
             if (err){
                 // console.log(err);
@@ -9312,8 +9321,7 @@ module.exports.marketAuctionCommand = function(message, args){
             profileDB.getUserItems(discordUserId, function(err, inventoryResponse){
                 if (err){
                     console.log(err);
-                }
-                else{
+                }else{
                     // get all the data for each item
                     var itemsInInventoryCountMap = {};
                     var ItemsBeingedAuctioned = []
@@ -9332,14 +9340,14 @@ module.exports.marketAuctionCommand = function(message, args){
                             itemBeingTraded = true;
                         }
                         if (!itemsInInventoryCountMap[inventoryResponse.data[item].itemid] 
-                            && validItem && notWearing && !auctionedItem && !itemBeingTraded){
+                        && validItem && notWearing && !auctionedItem && !itemBeingTraded){
                             // item hasnt been added to be counted, add it as 1
                             itemsInInventoryCountMap[inventoryResponse.data[item].itemid] = 1;
                             
                             // console.log(ItemInQuestion);
                             if (itemsMapbyShortName[myItemShortName] 
-                                && ItemsBeingedAuctioned.length < itemCount
-                                && itemsMapById[ItemInQuestion.itemid].itemshortname === myItemShortName){
+                            && ItemsBeingedAuctioned.length < itemCount
+                            && itemsMapById[ItemInQuestion.itemid].itemshortname === myItemShortName){
                                 // console.log("IN HERE");
                                 ItemsBeingedAuctioned.push(ItemInQuestion.id);
                                 individualItem.push(ItemInQuestion)
@@ -9348,8 +9356,8 @@ module.exports.marketAuctionCommand = function(message, args){
                         else if (validItem && notWearing && !auctionedItem && !itemBeingTraded){
                             itemsInInventoryCountMap[inventoryResponse.data[item].itemid] = itemsInInventoryCountMap[inventoryResponse.data[item].itemid] + 1;
                             if (itemsMapbyShortName[myItemShortName] 
-                                && ItemsBeingedAuctioned.length < itemCount
-                                && itemsMapById[ItemInQuestion.itemid].itemshortname === myItemShortName){
+                            && ItemsBeingedAuctioned.length < itemCount
+                            && itemsMapById[ItemInQuestion.itemid].itemshortname === myItemShortName){
                                 // console.log("IN HERE");
                                 ItemsBeingedAuctioned.push(ItemInQuestion.id);
                                 individualItem.push(ItemInQuestion)
@@ -9357,9 +9365,9 @@ module.exports.marketAuctionCommand = function(message, args){
                         }
                     }
                     if (itemsMapbyShortName[myItemShortName] 
-                        && itemsMapbyShortName[myItemShortName].itemraritycategory != "myth"
-                        && itemsMapbyShortName[myItemShortName].itemraritycategory != "artifact+"
-                        && itemsMapbyShortName[myItemShortName].itemraritycategory != "amulet"){
+                    && itemsMapbyShortName[myItemShortName].itemraritycategory != "myth"
+                    && itemsMapbyShortName[myItemShortName].itemraritycategory != "artifact+"
+                    && itemsMapbyShortName[myItemShortName].itemraritycategory != "amulet"){
                         var idOfMyItem = itemsMapbyShortName[myItemShortName].id;
                         var itemNameInMarket = itemsMapbyShortName[myItemShortName].itemname
                         // console.log(idOfMyItem);
@@ -9418,12 +9426,10 @@ module.exports.marketAuctionCommand = function(message, args){
                                     handleAuctionItem(individualItem)
                                 }
                             })
-                        }
-                        else{
+                        }else{
                             message.channel.send(message.author + " example: `-mkauction [item] bid [minimum bid] buyout [maximum bid] time [short/medium/long]`")  
                         }
-                    }
-                    else{
+                    }else{
                         message.channel.send(message.author + " invalid item! example: `-mkauction [item] bid [minimum bid] buyout [maximum bid] time [short/medium/long]`")  
                     }
                 }

@@ -117,8 +117,8 @@ module.exports = {
             name : "Cocoon",
             abilityId: "cocoon",
             cooldown: 0,
-            maxcooldown: 6,
-            description: "Reduce all damage taken and all damage done by 20% for 2 turns 6 turn cooldown",
+            maxcooldown: 1,
+            description: "Reduce all damage taken and all damage done by 20% for 2 turns 1 turn cooldown",
             buff: {
                 buff: true,
                 name: "Cocoon",

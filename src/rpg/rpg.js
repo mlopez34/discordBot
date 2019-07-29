@@ -4415,20 +4415,19 @@ function effectsOnTurnEnd(event){
                                         var damageDrained = 0;
                                         for (var targetToDealDmg in event.membersInParty){
                                             var targetCurrentHp = event.membersInParty[targetToDealDmg].hp + event.membersInParty[targetToDealDmg].statBuffs.maxhp
-                                            var targetToDealDmgName = event.membersInParty[targetToDealDmg].name
                                             damageToDeal = Math.floor( targetCurrentHp * (1 - percentageToDeal) )
                                             if (rpgAbility.minimumDamageToDeal && damageToDeal.dmg < rpgAbility.minimumDamageToDeal){
                                                 damageToDeal = Math.floor( rpgAbility.minimumDamageToDeal )
                                             }
                                             if (!checkIfDeadByObject(event.membersInParty[targetToDealDmg])
                                             && !event.membersInParty[targetToDealDmg].immuneToAoe){
-                                                //event.membersInParty[targetToDealDmg].hp = event.membersInParty[targetToDealDmg].hp - damageToDeal
                                                 var abType = "physical"
                                                 damageToDealToPlayer = dealDamageTo( event.membersInParty[targetToDealDmg] , damageToDeal, event, abType)
                                                 //// CHECK if damage should be drained
                                                 if (event.enemies[enemy].endOfTurnEvents[index].drainDamage){
+                                                    // check if keystone and multiply  the .drainDamage by .33
                                                     damageDrained = damageDrained + Math.floor( damageToDeal * event.enemies[enemy].endOfTurnEvents[index].drainDamage )
-                                                    event.enemies[enemy].hp = event.enemies[enemy].hp + Math.floor( damageToDeal * event.enemies[enemy].endOfTurnEvents[index].drainDamage )
+                                                    healTarget( event.enemies[enemy], damageDrained)
                                                     if (event.enemies[enemy].hp > event.enemies[enemy].maxhp){
                                                         event.enemies[enemy].hp = event.enemies[enemy].maxhp
                                                     }
@@ -5445,7 +5444,6 @@ function effectsOnDeath(event, member){
                     if (event.enemies[targetToHeal].hp > 0
                     && !checkIfDeadByObject(event.enemies[targetToHeal])
                     && event.enemies[targetToHeal].difficulty == "boss"){
-                        //event.enemies[targetToHeal].hp = event.enemies[targetToHeal].hp + hpToHeal.heal;
                         healTarget( event.enemies[targetToHeal], hpToHeal.heal)
                         if (event.enemies[targetToHeal].hp > event.enemies[targetToHeal].maxhp){
                             event.enemies[targetToHeal].hp = event.enemies[targetToHeal].maxhp
