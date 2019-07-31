@@ -8569,7 +8569,7 @@ module.exports.putonCommand = function(message, args, retry){
                                         }
                                     }
                                 }else{
-                                    if (userLevel < itemLevelRequirement || userRPGLevel < itemLevelRequirementRPG){
+                                    if (itemuserid && (userLevel < itemLevelRequirement || userRPGLevel < itemLevelRequirementRPG)){
                                         message.channel.send(message.author + " requires level `" + itemLevelRequirement + "` and rpg level `" + itemLevelRequirementRPG + "`")
                                     }else{
                                         message.channel.send(message.author + " invalid item!")
