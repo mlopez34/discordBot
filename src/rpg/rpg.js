@@ -1513,6 +1513,34 @@ module.exports.rpgReady = function(message, itemsAvailable, amuletItemsById, buf
                                                                                 enemies[enemyIdCount].endOfTurnEvents[eventAtEndOfTurn].afterNTurns = 51
                                                                             }
                                                                         }
+                                                                    }else if (challengeNum == 13){
+                                                                        let duplicateEOTevents = []
+                                                                        if (enemyFound.summonsToRearrangeAndDuplicate){
+                                                                            var shuffledSummons = _.shuffle(JSON.parse(JSON.stringify(enemyFound.summonsToRearrangeAndDuplicate)))
+                                                                            for (var eventAtEndOfTurn in enemies[enemyIdCount].endOfTurnEvents){
+                                                                                let endOfTurnEventObject = enemies[enemyIdCount].endOfTurnEvents[eventAtEndOfTurn]
+                                                                                if (endOfTurnEventObject.name == shuffledSummons[0]){
+                                                                                    endOfTurnEventObject.afterNTurns = 2
+                                                                                    var dupEOTEventObject = JSON.parse(JSON.stringify(endOfTurnEventObject))
+                                                                                    dupEOTEventObject.afterNTurns = 23
+                                                                                    duplicateEOTevents.push(dupEOTEventObject)
+                                                                                }
+                                                                                if (endOfTurnEventObject.name == shuffledSummons[1]){
+                                                                                    endOfTurnEventObject.afterNTurns = 9
+                                                                                    var dupEOTEventObject = JSON.parse(JSON.stringify(endOfTurnEventObject))
+                                                                                    dupEOTEventObject.afterNTurns = 30
+                                                                                    duplicateEOTevents.push(dupEOTEventObject)
+                                                                                }
+                                                                                if (endOfTurnEventObject.name == shuffledSummons[2]){
+                                                                                    endOfTurnEventObject.afterNTurns = 16
+                                                                                    var dupEOTEventObject = JSON.parse(JSON.stringify(endOfTurnEventObject))
+                                                                                    dupEOTEventObject.afterNTurns = 37
+                                                                                    duplicateEOTevents.push(dupEOTEventObject)
+                                                                                }
+                                                                            }
+                                                                            enemies[enemyIdCount].endOfTurnEvents = enemies[enemyIdCount].endOfTurnEvents.concat(duplicateEOTevents)
+                                                                        }
+                                                                        
                                                                     }
     
                                                                     enemies[enemyIdCount].maxhp = enemies[enemyIdCount].hp;
@@ -8389,12 +8417,14 @@ function processAbility(abilityObject, event){
                     targetToHeal = "rpg-" + targetToHeal
                 }
                 if (event.membersInParty[targetToHeal]){
+                    var hpToHeal = calculateHealingDone(event, abilityCaster, abilityObject.target, rpgAbility);
+                    var critStrike = hpToHeal.critical ? ">" : ""
                     var targetToHealName = event.membersInParty[targetToHeal].name;
                     if (!checkIfDeadByObject(event.membersInParty[targetToHeal])){
-                        healTarget( event.membersInParty[targetToHeal], hpToHeal)
+                        healTarget( event.membersInParty[targetToHeal], hpToHeal.heal)
                         // gain stack of radioactive
                         abilityToString = abilityToString + checkRadioactive(event, event.membersInParty[targetToHeal])
-                        abilityToString = abilityToString + targetToHealName + " was healed for " + hpToHeal + "\n"
+                        abilityToString = abilityToString + critStrike + targetToHealName + " was healed for " + hpToHeal.heal + "\n"
                         if (event.membersInParty[targetToHeal].hp > event.membersInParty[targetToHeal].maxhp){
                             event.membersInParty[targetToHeal].hp = event.membersInParty[targetToHeal].maxhp
                         }
