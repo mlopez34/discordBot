@@ -778,7 +778,8 @@ module.exports.rpgReady = function(message, itemsAvailable, amuletItemsById, buf
     if ( usersInRPGEvents["rpg-" + discordUserId] 
     && usersInRPGEvents["rpg-" + discordUserId].ready != true
     && !exports.getReadyLockUser(idOfUserInEvent, discordUserId) ){
-        message.channel.send( message.author + " is ready");
+        // message.channel.send( message.author + " is ready");
+        var readyString = message.author.username + " is ready"
         var rpgEventId = usersInRPGEvents["rpg-" + discordUserId].id;
         // get the user's profile and get the user's wearing
         // lock the RPG event so that skipping doesnt cause users to lock their rpg items
@@ -2094,10 +2095,9 @@ module.exports.rpgReady = function(message, itemsAvailable, amuletItemsById, buf
                                                             message.channel.send("cannot start this challenge")
                                                         }
                                                         // unlock readying
-                                                    }
-                                                    else{
+                                                    }else{
                                                         exports.setreadyLock(rpgEventId, discordUserId, false)
-                                                        message.channel.send("waiting on the rest of the group");
+                                                        message.channel.send( readyString + ", waiting on the rest of the group");
                                                     }
                                                 }else{
                                                     exports.setreadyLock(rpgEventId, discordUserId, false)

@@ -2,6 +2,8 @@ module.exports = {
     // TODO:
     // cannister shot chance to deal 1 to 7 shots
     // mindflaylike ability 90%, 120%, 150%
+    // deal 157% damage, consume 20% of spirit / armor for the turn
+    // 
     // lightwell ability - 5 random heals
 
     
@@ -26,8 +28,8 @@ module.exports = {
             name: "Impale",
             abilityId: "impale",
             dmg: 125,
-            adPercentage: 1.1,
-            description: "Deal 125 physical damage + 110% of your attack damage and 40 physical damage + 30% of your attack damage to 1 random enemy",
+            adPercentage: 1.47,
+            description: "Deal 125 physical damage + 147% of your attack damage and 40 physical damage + 30% of your attack damage to 1 random enemy",
             type: "physical",
             special: {
                 name: "Impale",
@@ -975,6 +977,7 @@ module.exports = {
             name: "Haste",
             description: "Your spells are cast before the enemy spells",
             buff: {
+                buff: true,
                 name: "Haste",
                 emoji: "<:haste:479293276424241163>"
             }
@@ -1504,6 +1507,98 @@ module.exports = {
                     "torturedRobot",
                     "torturedRobot",
                     "torturedRobot"
+                ]
+            }
+        },
+        summonWhelps: {
+            name: "summonWhelps",
+            belongsToMember: true,
+            oneTimeCast: true,
+            everyNTurns: 7,
+            afterNTurns: 3,
+            currentTurn: 0,
+            summon: {
+                enemies: [
+                    "whelpling",
+                    "whelpling",
+                    "whelpling",
+                    "whelpling",
+                    "whelpling",
+                    "whelpling",
+                    "whelpling",
+                    "whelpling",
+                    "whelpling"
+                ]
+            }
+        },
+        summonDrake: {
+            name: "summonDrake",
+            belongsToMember: true,
+            oneTimeCast: true,
+            everyNTurns: 7,
+            afterNTurns: 3,
+            currentTurn: 0,
+            summon: {
+                enemy: "amberDrake",
+            }
+        },
+        summonDefenders: {
+            name: "summonDefenders",
+            belongsToMember: true,
+            oneTimeCast: true,
+            everyNTurns: 7,
+            afterNTurns: 3,
+            currentTurn: 0,
+            summon: {
+                enemies: [
+                    "fireGuardian",
+                    "stormGuardian",
+                    "earthGuardian",
+                ]
+            }
+        },
+        summonAmberPool: {
+            name: "summonAmberPool",
+            belongsToMember: true,
+            everyNTurns: 5,
+            afterNTurns: 5,
+            currentTurn: 0,
+            summon: {
+                enemy: "amberPool",
+            }
+        },
+        summonRoots: {
+            name: "summonRoots",
+            belongsToMember: true,
+            everyNTurns: 6,
+            afterNTurns: 4,
+            currentTurn: 0,
+            summon: {
+                enemies: [
+                    "roots",
+                    "roots",
+                    "roots",
+                ]
+            }
+        },
+        summonPods: {
+            name: "summonPods",
+            belongsToMember: true,
+            everyNTurns: 10,
+            afterNTurns: 5,
+            currentTurn: 0,
+            summon: {
+                enemies: [
+                    "pod",
+                    "pod",
+                    "pod",
+                    "pod",
+                    "pod",
+                    "pod",
+                    "pod",
+                    "pod",
+                    "pod",
+                    "pod",
                 ]
             }
         },
