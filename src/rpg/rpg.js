@@ -4454,7 +4454,11 @@ function effectsOnTurnEnd(event){
                                                 //// CHECK if damage should be drained
                                                 if (event.enemies[enemy].endOfTurnEvents[index].drainDamage){
                                                     // check if keystone and multiply  the .drainDamage by .33
-                                                    let damageDrainedFromPlayer = Math.floor( damageToDeal * event.enemies[enemy].endOfTurnEvents[index].drainDamage )
+                                                    let keystoneBaseHealAddition = (event.challenge && event.challenge.keystone ? event.challenge.keystone : 0)
+                                                    let keystoneExtraDrainDamage = .333 * keystoneBaseHealAddition
+                                                    let drainDamageEOT = event.enemies[enemy].endOfTurnEvents[index].drainDamage 
+                                                    drainDamageEOT = drainDamageEOT + (drainDamageEOT * keystoneExtraDrainDamage )
+                                                    let damageDrainedFromPlayer = Math.floor( damageToDeal * drainDamageEOT )
                                                     damageDrained = damageDrained + damageDrainedFromPlayer
                                                     healTarget( event.enemies[enemy], damageDrainedFromPlayer)
                                                     if (event.enemies[enemy].hp > event.enemies[enemy].maxhp){
