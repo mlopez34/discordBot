@@ -7240,14 +7240,15 @@ function calculateHealingDone(event, caster, target, rpgAbility){
     }
 
     if (caster < 1000){
+        let keystoneBaseHealingMultiplier = 1 + (event.challenge && event.challenge.keystone ? event.challenge.keystone * 0.33 : 0)
         var checkTarget = event.enemies[target]
+        baseHealing = baseHealing * keystoneBaseHealingMultiplier
         if (checkTarget || areaWideAbility || endOfTurnAura){
             var userStats = event.enemies[caster];
             if (userStats && userStats.globalStatuses){
                 casterHealingDonePercentage = userStats.globalStatuses.healingDonePercentage
             }
             var healingToDo = 0
-
             if (rpgAbility.turnsToExpire){
                 if (rpgAbility.arAndSpPercentage){
                     var armor = userStats.armor + userStats.statBuffs.armor
