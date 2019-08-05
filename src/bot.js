@@ -46,6 +46,7 @@ client.on('ready', function(err) {
     // initialize market
     commands.initializeItemsMaps(client, function(err, res){
         commands.initializeMarketPlace()
+        commands.initializeReminders()
         console.log(res)
     })
     //steal(channelName);
@@ -498,6 +499,12 @@ client.on('message', function(message){
                 }
                 else if (commandIs("travel", message)){
                     commands.travelCommand(message, args)
+                }
+                else if (commandIs("cd", message)){
+                    commands.cdCommand(message)
+                }
+                else if (commandIs("toggle", message)){
+                    commands.cdToggleCommand(message, args)
                 }
                 else if (commandIs("rpgqueue", message)){
                     if (message.channel.type == "text" && (RPG_CHANNELS.indexOf(message.channel.name) != -1) && !message.author.bot){
@@ -1203,6 +1210,16 @@ client.on('message', function(message){
                 else if (commandIs("travel", message)){
                     commands.travelCommand(message, args)
                     data.command = "travel"
+                    profileDB.createUserActivity(data)
+                }
+                else if (commandIs("cd", message)){
+                    commands.cdCommand(message)
+                    data.command = "cd"
+                    profileDB.createUserActivity(data)
+                }
+                else if (commandIs("toggle", message)){
+                    commands.cdToggleCommand(message, args)
+                    data.command = "toggle"
                     profileDB.createUserActivity(data)
                 }
                 else if (commandIs("rpgqueue", message)){

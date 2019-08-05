@@ -2101,6 +2101,44 @@ module.exports.updateUserFruits = function(userId, fruit, fruitcount, cb) {
     });
 }
 
+module.exports.updateUserCommandToggle = function(userId, command, channelId, toggle, cb) {
+    var query = 'update ' + config.profileTable + ' set ' + command + 'toggle=$3, ' + command + 'togglechannel = $4 where discordid=$2'
+    db.none(query, [ command, userId, toggle, channelId ])
+    .then(function () {
+        cb(null, { status: 'success', message: 'added command toggle' });
+    })
+    .catch(function (err) {
+        cb(err);
+    });
+}
+
+module.exports.updateCommandNextReminder = function(userId, command, nextReminder, cb) {
+    var query = 'update ' + config.profileTable + ' set ' + command + 'nextreminder=$3 where discordid=$2'
+    db.none(query, [ command, userId, nextReminder ])
+    .then(function () {
+        cb(null, { status: 'success', message: 'updated command next reminder' });
+    })
+    .catch(function (err) {
+        cb(err);
+    });
+}
+
+module.exports.getRemindersForUsers = function(cb) {
+    var query = 'select * from ' + config.profileTable + ' where scavengetoggle = true OR thanktoggle = true OR sorrytoggle = true OR fetchtoggle = true OR harvesttoggle = true OR cooktoggle = true OR preparetoggle = true OR dailytoggle = true'
+    db.query(query, [ ])
+    .then(function (data) {
+    cb(null, {
+        status: 'success',
+        data: data,
+        message: 'Retrieved All users with reminders'
+        });
+    })
+    .catch(function (err) {
+    // console.log(err);
+    cb(err);
+    });
+}
+
 module.exports.bulkupdateUserFruits = function(userId, fruits, increment, cb){
     
     var fruitNames = []

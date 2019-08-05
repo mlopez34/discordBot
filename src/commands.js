@@ -51,6 +51,7 @@ var SORRY_COOLDOWN_HOURS = 6;
 var COOK_COOLDOWN_HOURS = 24;
 var PREPARE_COOLDOWN_HOURS = 48;
 var HARVEST_COOLDOWN_HOURS = 4;
+var DAILY_COOLDOWN_HOURS = 12;
 var SCAVENGE_COOLDOWN_HOURS = 1;
 var RAFFLE_ENTRY_COST = 50;
 var RAFFLE_USER_SIZE = 7
@@ -81,6 +82,7 @@ var activeRaffle = {
 var activeTables = {};
 var marketItems = {}
 var marketItemsUserCount = {} // keeps track of number of items a user has in the market
+var commandTimersMap = {}
 var client;
 var usersMinigames = {}
 var userTradeLock = {}
@@ -374,14 +376,10 @@ module.exports.trickOrTreatCommand = function(message){
                     profileDB.updateUserTacosTrickOrTreat(discordUserId, -50, function(updateerr, updateResponse) {
                         if (updateerr){
                             // console.log(updateerr);
-                        }
-                        else{
+                        }else{
                             message.channel.send("You have been tricked! 👻 Bender took 50 tacos from your candy bag");
-                            // update lasttrickortreattime
-                            
                         }
                     })
-                    
                 }else if (trickOrTreat == 1){
                     var trickOrTreatDate = new Date();
                     trickOrTreatMap["tot-" + discordUserId] = {
@@ -391,17 +389,15 @@ module.exports.trickOrTreatCommand = function(message){
                     profileDB.updateUserTacosTrickOrTreat(discordUserId, 100, function(updateerr, updateResponse) {
                         if (updateerr){
                             // console.log(updateerr);
-                        }
-                        else{
+                        }else{
                             message.channel.send("You have been treated! 🎃 Bender put 100 tacos in your candy bag");
-                            // update lasttrickortreattime
                         }
                     })
                 }
             }else{
                 now = new Date(now.setMinutes(now.getMinutes() + 0 ));
                 var numberOfHours = getDateDifference(totData.data.lasttrickortreattime, now, 1);
-                message.channel.send(message.author + " You are being too greedy! Please wait `" + numberOfHours +"` ");
+                message.channel.send(message.author.username + " You are being too greedy! Please wait `" + numberOfHours +"` ");
             }
         }
     })
@@ -439,12 +435,10 @@ module.exports.openPresentCommand = function(message){
                         if(allItems[item].itemraritycategory == "uncommon"
                         && allItems[item].fromscavenge == true){
                             uncommonItems.push(allItems[item]);
-                        }
-                        else if(allItems[item].itemraritycategory == "rare"
+                        }else if(allItems[item].itemraritycategory == "rare"
                         && allItems[item].fromscavenge == true){
                             rareItems.push(allItems[item]);
-                        }
-                        else if(allItems[item].itemraritycategory == "ancient"
+                        }else if(allItems[item].itemraritycategory == "ancient"
                         && allItems[item].fromscavenge == true){
                             ancientItems.push(allItems[item]);
                         }
@@ -459,12 +453,10 @@ module.exports.openPresentCommand = function(message){
                     if(rarityRoll > ANCIENT_MIN_ROLL && rarityRoll <= ANCIENT_MAX_ROLL){
                         var itemRoll = Math.floor(Math.random() * ancientItems.length);
                         itemsObtainedArray.push(ancientItems[itemRoll])
-                    }
-                    else if(rarityRoll > RARE_MIN_ROLL && rarityRoll <= RARE_MAX_ROLL){
+                    }else if(rarityRoll > RARE_MIN_ROLL && rarityRoll <= RARE_MAX_ROLL){
                         var itemRoll = Math.floor(Math.random() * rareItems.length);
                         itemsObtainedArray.push(rareItems[itemRoll]);
-                    }
-                    else {
+                    }else {
                         var itemRoll = Math.floor(Math.random() * uncommonItems.length);
                         itemsObtainedArray.push( uncommonItems[itemRoll] );
                     }
@@ -474,8 +466,7 @@ module.exports.openPresentCommand = function(message){
                     profileDB.updateUserTacosPresent(discordUserId, tacosFound, function(updateerr, updateResponse) {
                         if (updateerr){
                             console.log(updateerr);
-                        }
-                        else{
+                        }else{
                             var itemsMessage = ""
                             for (var item in itemsObtainedArray){
                                 itemsMessage = itemsMessage + "[**" + itemsObtainedArray[item].itemraritycategory +"**] " + "**"  + itemsObtainedArray[item].itemname + "** - " + itemsObtainedArray[item].itemdescription + ", " +
@@ -489,23 +480,21 @@ module.exports.openPresentCommand = function(message){
                             message.channel.send({embed});
                         }
                     })
-                }
-                else if (roll < 50){
+                }else if (roll < 50){
                     // give the user tacos           
                     tacosFound = 250;
                     profileDB.updateUserTacosPresent(discordUserId, tacosFound, function(updateerr, updateResponse) {
                         if (updateerr){
                             console.log(updateerr);
-                        }
-                        else{
-                            message.channel.send(message.author + " received `" + tacosFound + "` tacos :taco: :gift: :christmas_tree: ")
+                        }else{
+                            message.channel.send(message.author.username + " received `" + tacosFound + "` tacos :taco: :gift: :christmas_tree: ")
                         }
                     })
                 }
-            } else{
+            }else{
                 now = new Date(now.setMinutes(now.getMinutes()));
                 var numberOfHours = getDateDifference(getUserResponse.data.lastpresenttime, now, 24);
-                message.channel.send(message.author + " You have recently opened a present! :gift: Please wait `" + numberOfHours +"` ");
+                message.channel.send(message.author.username + " You have recently opened a present! :gift: Please wait `" + numberOfHours +"` ");
             }
         }
     })
@@ -730,8 +719,7 @@ module.exports.thankCommand = function(message){
                                         if (updateerr){
                                             // console.log(updateerr);
                                             exports.setCommandLock("thank", discordUserId, false)
-                                        }
-                                        else{
+                                        }else{
                                             // // console.log(updateResponse);
                                             exports.setCommandLock("thank", discordUserId, false)
                                             ///// for temple recipes
@@ -751,20 +739,19 @@ module.exports.thankCommand = function(message){
                                             stats.statisticsManage(discordUserId, "thankcount", 1, function(staterr, statSuccess){
                                                 if (staterr){
                                                     // console.log(staterr);
-                                                }
-                                                else{
+                                                }else{
                                                     // check achievements??
                                                     getProfileForAchievement(discordUserId, message, thankResponse )
                                                 }
                                             })
+                                            createTimeOutForCommandAfterUse("thank", now, secondsToRemove, THANK_COOLDOWN_HOURS, discordUserId, thankResponse.data)
                                         }
                                     })
                                     // send message that the user has 1 more taco
                                     if (extraTacosFromItems > 0){
-                                        message.channel.send(message.author + " thanked " + mentionedUser.username + ", they received `" + tacosThanked + "` tacos! :taco:" + " you received `" + extraTacosFromItems + "` extra tacos");
-                                    }
-                                    else{
-                                        message.channel.send(message.author + " thanked " + mentionedUser.username + ", they received `" + tacosThanked + "` tacos! :taco: ");
+                                        message.channel.send(message.author.username + " thanked " + mentionedUser.username + ", they received `" + tacosThanked + "` tacos! :taco:" + " you received `" + extraTacosFromItems + "` extra tacos");
+                                    }else{
+                                        message.channel.send(message.author.username + " thanked " + mentionedUser.username + ", they received `" + tacosThanked + "` tacos! :taco: ");
                                     }
                                 }
                             })
@@ -772,8 +759,8 @@ module.exports.thankCommand = function(message){
                             // six hours have not passed, tell the user they need to wait 
                             exports.setCommandLock("thank", discordUserId, false)
                             now = new Date(now.setSeconds(now.getSeconds() + secondsToRemove));
-                            var numberOfHours = getDateDifference(thankResponse.data.lastthanktime, now, 2);
-                            message.channel.send(message.author + " You are being too thankful! Please wait `" + numberOfHours +"` ");
+                            var numberOfHours = getDateDifference(thankResponse.data.lastthanktime, now, THANK_COOLDOWN_HOURS);
+                            message.channel.send(message.author.username + " You are being too thankful! Please wait `" + numberOfHours +"` ");
                         }
                     }
                 })
@@ -791,7 +778,7 @@ function calculateResetScavengeCD(message, discordUserId, userProfile){
             if (err){
                 console.log(err)
             }else{
-                message.channel.send(message.author + " You are able to scavange again!")
+                message.channel.send(message.author.username + " You are able to scavange again!")
             }
         })
     }
@@ -817,8 +804,7 @@ module.exports.sorryCommand = function(message){
             if(err){
                 exports.setCommandLock("sorry", discordUserId, false)
                 agreeToTerms(message, discordUserId);
-            }
-            else{
+            }else{
                 var userLevel = sorryResponse.data.level;
                 wearStats.getUserWearingStats(message, discordUserId, {userLevel: userLevel}, allItems, function(wearErr, wearRes){
                     if (wearErr){
@@ -851,8 +837,7 @@ module.exports.sorryCommand = function(message){
                                         if (createerr){
                                             // console.log(createerr); // cant create user RIP
                                             exports.setCommandLock("sorry", discordUserId, false)
-                                        }
-                                        else{
+                                        }else{
                                             exports.setCommandLock("sorry", discordUserId, false)
                                             ///// for temple recipes
                                             var recipeParams = {
@@ -871,22 +856,19 @@ module.exports.sorryCommand = function(message){
                                             stats.statisticsManage(discordUserId, "sorrycount", 1, function(staterr, statSuccess){
                                                 if (staterr){
                                                     // console.log(staterr);
-                                                }
-                                                else{
+                                                }else{
                                                     // check achievements??
                                                     getProfileForAchievement(discordUserId, message, sorryResponse )
                                                 }
                                             })
                                         }
                                     }) 
-                                }
-                                else{
+                                }else{
                                     profileDB.updateUserTacosSorry(discordUserId, extraTacosFromItems, function(updateerr, updateResponse) {
                                         if (updateerr){
                                             exports.setCommandLock("sorry", discordUserId, false)
                                             // console.log(updateerr);
-                                        }
-                                        else{
+                                        }else{
                                             //// console.log(updateResponse);
                                             exports.setCommandLock("sorry", discordUserId, false)
                                             ///// for temple recipes
@@ -902,19 +884,19 @@ module.exports.sorryCommand = function(message){
                                             stats.statisticsManage(discordUserId, "sorrycount", 1, function(staterr, statSuccess){
                                                 if (staterr){
                                                     console.log(staterr);
-                                                }
-                                                else{
+                                                }else{
                                                     // check achievements??
                                                     getProfileForAchievement(discordUserId, message, sorryResponse)
                                                 }
                                             })
+                                            createTimeOutForCommandAfterUse("sorry", now, secondsToRemove, SORRY_COOLDOWN_HOURS, discordUserId, sorryResponse.data)
                                         }
                                     })
                                     // send message that the user has 1 more taco
                                     if (extraTacosFromItems > 0){
-                                        message.channel.send(message.author + " apologized to " + mentionedUser + ", they received `" + tacosSorried + "` tacos! :taco:" + " " + " received `" + extraTacosFromItems + "` extra tacos");
+                                        message.channel.send(message.author.username + " apologized to " + mentionedUser + ", they received `" + tacosSorried + "` tacos! :taco:" + " " + " received `" + extraTacosFromItems + "` extra tacos");
                                     }else{
-                                        message.channel.send(message.author + " apologized to " + mentionedUser + ", they received `" + tacosSorried + "` tacos! :taco:");
+                                        message.channel.send(message.author.username + " apologized to " + mentionedUser + ", they received `" + tacosSorried + "` tacos! :taco:");
                                     }
                                 }
                             })
@@ -922,18 +904,16 @@ module.exports.sorryCommand = function(message){
                             // six hours have not passed, tell the user they need to wait 
                             exports.setCommandLock("sorry", discordUserId, false)
                             now = new Date(now.setSeconds(now.getSeconds() + secondsToRemove));
-                            var numberOfHours = getDateDifference(sorryResponse.data.lastsorrytime, now, 6);
-                            message.channel.send(message.author + " You are being too apologetic! Please wait `" + numberOfHours +"` ");
+                            var numberOfHours = getDateDifference(sorryResponse.data.lastsorrytime, now, SORRY_COOLDOWN_HOURS);
+                            message.channel.send(message.author.username + " You are being too apologetic! Please wait `" + numberOfHours +"` ");
                         }
                     }
                 })
                 
             }
         })
-    }
-    else if (!commandLock["sorry"][discordUserId] &&NeedsToAgree[mentionedId] && NeedsToAgree[mentionedId].hasNotAgreed){
+    }else if (!commandLock["sorry"][discordUserId] &&NeedsToAgree[mentionedId] && NeedsToAgree[mentionedId].hasNotAgreed){
         message.channel.send("the user has not yet agreed to the terms!")
-        // message.channel.send(message.author + " You must mention a user or a user that isn't you whom you want to apologize to!");
     }
 }
 
@@ -944,10 +924,9 @@ module.exports.buyStandCommand = function (message){
     profileDB.getUserProfileData( discordUserId, function(err, buyStandResponse) {
         if(err){
             // user doesnt exist tell the user they should get some tacos
-            message.channel.send(message.author + " You can't afford a stand atm!");
+            message.channel.send(message.author.username + " You can't afford a stand atm!");
             agreeToTerms(message, discordUserId);
-        }
-        else{
+        }else{
             // if user has enough tacos to purchase the stand, add 1 tree, subtract x tacos
             var achievements = buyStandResponse.data.achievements;
             var userTacoStands = 0;
@@ -962,9 +941,8 @@ module.exports.buyStandCommand = function (message){
                     if (err){
                         // console.log(err);
                         // couldn't purchase stand
-                    }
-                    else{
-                        message.channel.send(message.author + " Congratulations!, you have purchased a taco stand! :bus:");
+                    }else{
+                        message.channel.send(message.author.username + " Congratulations!, you have purchased a taco stand! :bus:");
                         experience.gainExperience(message, message.author, EXPERIENCE_GAINS.buyStand + (EXPERIENCE_GAINS.buyStandPerStand * userTacoStands) , buyStandResponse);
                         // check achievements??
                         var data = {}
@@ -975,11 +953,10 @@ module.exports.buyStandCommand = function (message){
                             
                     }
                  })
-            }
-            else{
+            }else{
                 // can't afford stand
                 var standCost = BASE_TACO_COST + (userTacoStands * 250);
-                message.channel.send(message.author + " You can't afford a stand , you need `" + standCost + " tacos`!");
+                message.channel.send(message.author.username + " You can't afford a stand , you need `" + standCost + " tacos`!");
             }
         }
     })
@@ -996,8 +973,7 @@ module.exports.prepareCommand = function (message){
                 exports.setCommandLock("prepare", discordUserId, false)
                 var userData = initialUserProfile(discordUserId);
                 agreeToTerms(message, discordUserId);
-            }
-            else{
+            }else{
                 // get number of trees the user has
                 // check lastprepare time
                 var HAS_SPRINTING_SHOES = prepareResponse.data.sprintingshoes;
@@ -1047,38 +1023,35 @@ module.exports.prepareCommand = function (message){
                                         exports.setCommandLock("prepare", discordUserId, false)
                                         // console.log(err);
                                         // something happened
-                                    }
-                                    else{
+                                    }else{
                                         // update protection also
                                         var protection = prepareResponse.data.protect;
                                         profileDB.updateUserProtect(discordUserId, 1, protection, function(updateerr, updateResponse) {
                                             if (updateerr){
                                                 exports.setCommandLock("prepare", discordUserId, false)
                                                 // console.log(updateerr);
-                                            }
-                                            else{
+                                            }else{
                                                 //// console.log(updateResponse);
                                                 exports.setCommandLock("prepare", discordUserId, false)
                                                 if (extraTacosFromItems > 0){
-                                                    message.channel.send(message.author + " You have prepared `" + tacosToPrepare + "` tacos :taco:! `" + soiledToTaco +"` were from soiled crops. The tacos also come with `1` warranty protection" + " received `" + extraTacosFromItems + "` extra tacos");
+                                                    message.channel.send(message.author.username + " You have prepared `" + tacosToPrepare + "` tacos :taco:! `" + soiledToTaco +"` were from soiled crops. The tacos also come with `1` warranty protection" + " received `" + extraTacosFromItems + "` extra tacos");
                                                 }else{
-                                                    message.channel.send(message.author + " You have prepared `" + tacosToPrepare + "` tacos :taco:! `" + soiledToTaco +"` were from soiled crops. The tacos also come with `1` warranty protection");
+                                                    message.channel.send(message.author.username + " You have prepared `" + tacosToPrepare + "` tacos :taco:! `" + soiledToTaco +"` were from soiled crops. The tacos also come with `1` warranty protection");
                                                 }
+                                                // check if prepare is toggled
+                                                createTimeOutForCommandAfterUse("prepare", now, secondsToRemove, PREPARE_COOLDOWN_HOURS, discordUserId, prepareResponse.data)
                                                 //// message.channel.send("New Feature Introduced!\nYou can now enter the RPG queue!\nUse commands `-rpgqueue [2-5]` to enter an rpg queue of group size 2-5.\n`-rpgleave` to leave the queue. Read `-patchnotes` for more info")
                                                 var experienceFromItems = wearStats.calculateExtraExperienceGained(wearRes, "prepare", null)
                                                 experience.gainExperience(message, message.author, (EXPERIENCE_GAINS.prepare + (EXPERIENCE_GAINS.preparePerStand * userTacoStands) + experienceFromItems) , prepareResponse);
                                                 stats.statisticsManage(discordUserId, "maxextratacos", soiledToTaco, function(staterr, statSuccess){
                                                     if (staterr){
                                                         // console.log(staterr);
-                                                    }
-                                                    else{
-                                                        // check achievements??
+                                                    }else{
                                                         // console.log(statSuccess);
                                                         // check achievements??
                                                         var data = {}
                                                         data.achievements = achievements;
                                                         data.maxextratacos = soiledToTaco;
-                                                        // console.log(data);
                                                         achiev.checkForAchievements(discordUserId, data, message);
                                                     }
                                                 })
@@ -1086,17 +1059,15 @@ module.exports.prepareCommand = function (message){
                                         })
                                     }
                                 })
-                            }
-                            else{
+                            }else{
                                 exports.setCommandLock("prepare", discordUserId, false)
-                                message.channel.send(message.author + " You do not have any stands to prepare tacos with! buy some from the shop. Do -shop to see what you can buy");
+                                message.channel.send(message.author.username + " You do not have any stands to prepare tacos with! buy some from the shop. Do -shop to see what you can buy");
                             }
-                        }
-                        else{
+                        }else{
                             exports.setCommandLock("prepare", discordUserId, false)
                             now = new Date(now.setSeconds(now.getSeconds() + secondsToRemove));
-                            var numberOfHours = getDateDifference(prepareResponse.data.lastpreparetime, now, 48);
-                            message.channel.send(message.author + " You ran out of ingredients! Please wait `" + numberOfHours + "` ");
+                            var numberOfHours = getDateDifference(prepareResponse.data.lastpreparetime, now, PREPARE_COOLDOWN_HOURS);
+                            message.channel.send(message.author.username + " You ran out of ingredients! Please wait `" + numberOfHours + "` ");
                         }
                     }
                 })
@@ -1128,12 +1099,10 @@ module.exports.welcomeCommand = function(message){
     }
     
     if (!valid){
-        message.channel.send(message.author +" Stop. you are spamming!")
-    }
-    else if (mentionedId == discordUserId){
-        message.channel.send(message.author +" You can't welcome yourself!")
-    }
-    else if(mentionedUser && !mentionedUser.bot){
+        message.channel.send(message.author.username +" Stop. you are spamming!")
+    }else if (mentionedId == discordUserId){
+        message.channel.send(message.author.username +" You can't welcome yourself!")
+    }else if(mentionedUser && !mentionedUser.bot){
         // check first that user exists, if user doesn't exist create user, then check if welcomed user exists
         // if welcomed user exists set to true, if not then create the user and set to true
         profileDB.getUserProfileData( mentionedId, function(err, welcomeResponse) {
@@ -1141,12 +1110,10 @@ module.exports.welcomeCommand = function(message){
                 // user doesnt exist, create their profile first
                 if(err.code === 0 && ( !NeedsToAgree[mentionedId] || (NeedsToAgree[mentionedId] && NeedsToAgree[mentionedId].hostUser == "Bender")) ){
                     welcomeAgreeToTerms(message, mentionedId, mentionedUser, message.author);
-                }
-                else{
+                }else{
                     message.channel.send("The user has already been welcomed and needs to agree, or deny the terms.");
                 }
-            }
-            else{
+            }else{
                 // user exists, check if user has already been welcomed
                 if ( !welcomeResponse.data.welcomed ){
                     profileDB.updateUserTacosWelcome(mentionedId, 50, function(err, updateResponse) {
@@ -1171,13 +1138,12 @@ module.exports.welcomeCommand = function(message){
                             })
                         }
                     })
-                }
-                else{
+                }else{
                     Last_Five_Welcomes.push(discordUserId);
                     if (Last_Five_Welcomes.length >= 5){
                         Last_Five_Welcomes.shift();
                     }
-                    message.channel.send(message.author + " This user has already been welcomed!");
+                    message.channel.send(message.author.username + " This user has already been welcomed!");
                 }
             }
         }) 
@@ -1201,27 +1167,22 @@ module.exports.giveCommand = function(message, giveTacoAmount){
     })
     // get user
     if (!mentionedId || !mentionedUser){
-        message.channel.send(message.author + " You must mention a user whom you want to give your tacos to!")
-    }
-    else if (mentionedId == discordUserId){
-        message.channel.send(message.author + " You can't give yourself taco!")
-    }
-    else if(giveTacoAmount < 2){
-        message.channel.send(message.author + " You must give more than 2 tacos!")
-    }
-    else if (NeedsToAgree[mentionedId] && NeedsToAgree[mentionedId].hasNotAgreed){
+        message.channel.send(message.author.username + " You must mention a user whom you want to give your tacos to!")
+    }else if (mentionedId == discordUserId){
+        message.channel.send(message.author.username + " You can't give yourself taco!")
+    }else if(giveTacoAmount < 2){
+        message.channel.send(message.author.username + " You must give more than 2 tacos!")
+    }else if (NeedsToAgree[mentionedId] && NeedsToAgree[mentionedId].hasNotAgreed){
         message.channel.send("the user has not yet agreed to the terms!")
-    }
-    else{
+    }else{
         profileDB.getUserProfileData( discordUserId, function(err, giveResponse) {
             if(err){
                 // user doesnt exist, 
                 if(err.code === 0){
                     agreeToTerms(message, discordUserId);
-                    message.channel.send(message.author + " You have no tacos to give!");
+                    message.channel.send(message.author.username + " You have no tacos to give!");
                 }
-            }
-            else{
+            }else{
                 // check if user has enough tacos to give
                 var achievements = giveResponse.data.achievements;
                 if (adjustedTacosForUser(discordUserId, giveResponse.data.tacos) - giveTacoAmount >= 0 ){
@@ -1274,29 +1235,25 @@ module.exports.giveCommand = function(message, giveTacoAmount){
                             profileDB.updateUserTacosGive(discordUserId, negativeGiveTacoAmount, function(givererr, giverUpdateResponse) {
                                 if (givererr){
                                     // console.log(givererr);
-                                }
-                                else{
+                                }else{
                                     // 
                                     giveTacoAmount = giveTacoAmount - tacoTax;
                                     // console.log(giveTacoAmount);
                                     profileDB.updateUserTacosGive(mentionedId, giveTacoAmount, function(receivererr, receiverUpdateResponse) {
                                         if (receivererr){
                                             // console.log(receivererr);
-                                        }
-                                        else{
+                                        }else{
                                             // send message that the user has gotten tacos
-                                            message.channel.send(message.author + " gifted " + mentionedUser + " `" + giveTacoAmount + "` tacos! :taco: and Bender kept `" + tacoTax + "` tacos for tax purposes." );
+                                            message.channel.send(message.author.username + " gifted " + mentionedUser + " `" + giveTacoAmount + "` tacos! :taco: and Bender kept `" + tacoTax + "` tacos for tax purposes." );
                                             ///// For Artifact or Missions
                                             var dataForMission = {
                                                 giveAmount: giveTacoAmount
                                             }
                                             missionCheckCommand(message, discordUserId, "give", mentionedId, dataForMission)
-                                            
                                             stats.statisticsManage(discordUserId, "givecount", giveTacoAmount, function(err, statSuccess){
                                                 if (err){
                                                     // console.log(err);
-                                                }
-                                                else{
+                                                }else{
                                                     // console.log(statSuccess);
                                                     // check achievements??
                                                     var data = {}
@@ -1312,8 +1269,7 @@ module.exports.giveCommand = function(message, giveTacoAmount){
                             })
                         }
                     })
-                }
-                else{
+                }else{
                     // console.log('dont have enough tacos.')
                 }
             }
@@ -1340,7 +1296,7 @@ module.exports.dailyCommand = function(message, args, dbl){
                 // check if user has voted
                 var now = new Date();
                 var oneDayAgo = new Date();
-                oneDayAgo = new Date(oneDayAgo.setHours(oneDayAgo.getHours() - 12));
+                oneDayAgo = new Date(oneDayAgo.setHours(oneDayAgo.getHours() - DAILY_COOLDOWN_HOURS));
 
                 if ( oneDayAgo > res.data.lastdailytime || !res.data.lastdailytime ){
                     let profileData = res.data
@@ -1363,9 +1319,8 @@ module.exports.dailyCommand = function(message, args, dbl){
                                     console.log(error)
                                 }else{
                                     exports.setCommandLock("vote", discordUserId, false)
-                                    console.log(result)
                                     message.channel.send("congrats you have voted and gained `" + burritosGained + "` :burrito: and `" + tacosGained + "` :taco:")
-                                    console.log(voted)        
+                                    createTimeOutForCommandAfterUse("daily", now, 0, DAILY_COOLDOWN_HOURS, discordUserId, profileData)
                                 }
                             })
                         }else{
@@ -1381,8 +1336,8 @@ module.exports.dailyCommand = function(message, args, dbl){
                 }else{
                     exports.setCommandLock("vote", discordUserId, false)
                     now = new Date(now.setSeconds(now.getSeconds()));
-                    var numberOfHours = getDateDifference(res.data.lastdailytime, now, 12);
-                    message.channel.send(message.author + " You cannot collect your daily currently! Please wait `" + numberOfHours + "` ");
+                    var numberOfHours = getDateDifference(res.data.lastdailytime, now, DAILY_COOLDOWN_HOURS);
+                    message.channel.send(message.author.username + " You cannot collect your daily currently! Please wait `" + numberOfHours + "` ");
                 }
             }
         })
@@ -1673,20 +1628,18 @@ module.exports.cookCommand = function(message){
                                 if (err){
                                     // console.log(err);
                                     exports.setCommandLock("cook", discordUserId, false)
-                                }
-                                else{
+                                }else{
                                     // send message that the user has 1 more taco
                                     exports.setCommandLock("cook", discordUserId, false)
                                     if (extraTacosFromItems > 0 && HAS_CASSEROLE){
-                                        message.channel.send(message.author + " Cooked `" + cookRoll + "` tacos! you now have `" + ( adjustedTacosForUser(discordUserId, cookResponse.data.tacos) + cookRoll) + "` tacos :taco:" + "! received `" + extraTacosFromCasserole + "` extra tacos :taco: from your casserole " + " and received `" + extraTacosFromItems + "` extra tacos from items" );
-                                    }
-                                    else if (extraTacosFromItems > 0 && !HAS_CASSEROLE){
-                                        message.channel.send(message.author + " Cooked `" + cookRoll + "` tacos! you now have `" + ( adjustedTacosForUser(discordUserId, cookResponse.data.tacos) + cookRoll) + "` tacos :taco:" + "! " + "received `" + extraTacosFromItems + "` extra tacos");
+                                        message.channel.send(message.author.username + " Cooked `" + cookRoll + "` tacos! you now have `" + ( adjustedTacosForUser(discordUserId, cookResponse.data.tacos) + cookRoll) + "` tacos :taco:" + "! received `" + extraTacosFromCasserole + "` extra tacos :taco: from your casserole " + " and received `" + extraTacosFromItems + "` extra tacos from items" );
+                                    }else if (extraTacosFromItems > 0 && !HAS_CASSEROLE){
+                                        message.channel.send(message.author.username + " Cooked `" + cookRoll + "` tacos! you now have `" + ( adjustedTacosForUser(discordUserId, cookResponse.data.tacos) + cookRoll) + "` tacos :taco:" + "! " + "received `" + extraTacosFromItems + "` extra tacos");
                                     }
                                     else if (HAS_CASSEROLE){
-                                        message.channel.send(message.author + " Cooked `" + cookRoll + "` tacos! you now have `" + ( adjustedTacosForUser(discordUserId, cookResponse.data.tacos) + cookRoll) + "` tacos :taco:" + "! received `" + extraTacosFromCasserole + "` extra tacos :taco: from your casserole" );
+                                        message.channel.send(message.author.username + " Cooked `" + cookRoll + "` tacos! you now have `" + ( adjustedTacosForUser(discordUserId, cookResponse.data.tacos) + cookRoll) + "` tacos :taco:" + "! received `" + extraTacosFromCasserole + "` extra tacos :taco: from your casserole" );
                                     }else{
-                                        message.channel.send(message.author + " Cooked `" + cookRoll + "` tacos! you now have `" + ( adjustedTacosForUser(discordUserId, cookResponse.data.tacos) + cookRoll) + "` tacos :taco:" );
+                                        message.channel.send(message.author.username + " Cooked `" + cookRoll + "` tacos! you now have `" + ( adjustedTacosForUser(discordUserId, cookResponse.data.tacos) + cookRoll) + "` tacos :taco:" );
                                     }
                                     var data = {}
                                     data.achievements = achievements;
@@ -1695,14 +1648,15 @@ module.exports.cookCommand = function(message){
                                     achiev.checkForAchievements(discordUserId, data, message);
                                     var experienceFromItems = wearStats.calculateExtraExperienceGained(wearRes, "cook", null);
                                     experience.gainExperience(message, message.author, (EXPERIENCE_GAINS.cook + experienceFromItems), cookResponse);
+                                    // check if cook is toggled
+                                    createTimeOutForCommandAfterUse("cook", now, secondsToRemove, COOK_COOLDOWN_HOURS, discordUserId, cookResponse.data)
                                 }
                             })
                         }else{
-                            // six hours have not passed, tell the user they need to wait 
                             exports.setCommandLock("cook", discordUserId, false)
                             now = new Date(now.setSeconds(now.getSeconds() + secondsToRemove));
-                            var numberOfHours = getDateDifference(cookResponse.data.lastcooktime, now, 24);
-                            message.channel.send(message.author + " You cannot cook tacos currently! Please wait `" + numberOfHours + "` ");
+                            var numberOfHours = getDateDifference(cookResponse.data.lastcooktime, now, COOK_COOLDOWN_HOURS );
+                            message.channel.send(message.author.username + " You cannot cook tacos currently! Please wait `" + numberOfHours + "` ");
                         }
                     }
                 })
@@ -1750,7 +1704,7 @@ module.exports.throwCommand = function(message){
                         }
                         else{
                             // send message that the user has 1 more taco
-                            message.channel.send(message.author + " threw `10` tacos at " + userMentioned + " :dizzy_face: :taco: :wave: :smiling_imp:");
+                            message.channel.send(message.author.username + " threw `10` tacos at " + userMentioned + " :dizzy_face: :taco: :wave: :smiling_imp:");
                             // if they drop a taco someone else can pick it up
                             var poisonedTacoRoll = Math.floor(Math.random() * 100) + 1;
                             var poisonedTaco = false;
@@ -2131,24 +2085,21 @@ module.exports.buyPickaxeCommand = function(message){
     profileDB.getUserProfileData( discordUserId, function(err, pickaxeResponse) {
         if(err){
             agreeToTerms(message, discordUserId);
-            message.channel.send(message.author + " You can't afford a pickaxe!");
-        }
-        else{
+            message.channel.send(message.author.username + " You can't afford a pickaxe!");
+        }else{
             if (pickaxeResponse.data.pickaxe == "none"){
                 if ( adjustedTacosForUser(discordUserId, pickaxeResponse.data.tacos) >= PICKAXE_COST){
                     var tacosSpent = PICKAXE_COST * -1;
                     profileDB.purchasePickAxe(discordUserId, tacosSpent, function(err, data){
                         if (err){
                             // console.log(err);
-                        }
-                        else{
+                        }else{
                             experience.gainExperience(message, message.author, EXPERIENCE_GAINS.buyPickaxe , pickaxeResponse);
-                            message.channel.send(message.author + " Congratulations, you have purchased a pickaxe :pick:! use `-scavenge` command to scavenge some items!");
+                            message.channel.send(message.author.username + " Congratulations, you have purchased a pickaxe :pick:! use `-scavenge` command to scavenge some items!");
                         }
                     })
-                }
-                else{
-                    message.channel.send(message.author + " You cannot afford the `Pickaxe`");
+                }else{
+                    message.channel.send(message.author.username + " You cannot afford the `Pickaxe`");
                 }
             }
             else if (pickaxeResponse.data.pickaxe == "basic"){
@@ -2157,15 +2108,13 @@ module.exports.buyPickaxeCommand = function(message){
                     profileDB.purchasePickAxe(discordUserId, tacosSpent, function(err, data){
                         if (err){
                             // console.log(err);
-                        }
-                        else{
+                        }else{
                             experience.gainExperience(message, message.author, EXPERIENCE_GAINS.buyPickaxe * 3 , pickaxeResponse);
-                            message.channel.send(message.author + " Congratulations, you have purchased an Improved Pickaxe :pick:!");
+                            message.channel.send(message.author.username + " Congratulations, you have purchased an Improved Pickaxe :pick:!");
                         }
                     })
-                }
-                else{
-                    message.channel.send(message.author + " You cannot afford the `Improved Pickaxe`");
+                }else{
+                    message.channel.send(message.author.username + " You cannot afford the `Improved Pickaxe`");
                 }
             }
             else if (pickaxeResponse.data.pickaxe == "improved"){
@@ -2174,15 +2123,13 @@ module.exports.buyPickaxeCommand = function(message){
                     profileDB.purchasePickAxe(discordUserId, tacosSpent, function(err, data){
                         if (err){
                             // console.log(err);
-                        }
-                        else{
+                        }else{
                             experience.gainExperience(message, message.author, EXPERIENCE_GAINS.buyPickaxe * 10 , pickaxeResponse);
-                            message.channel.send(message.author + " Congratulations, you have purchased the Master Pickaxe :pick:!");
+                            message.channel.send(message.author.username + " Congratulations, you have purchased the Master Pickaxe :pick:!");
                         }
                     })
-                }
-                else{
-                    message.channel.send(message.author + " You cannot afford the `Master Pickaxe`");
+                }else{
+                    message.channel.send(message.author.username + " You cannot afford the `Master Pickaxe`");
                 }
             }
             else if (pickaxeResponse.data.pickaxe == "master"){
@@ -2191,15 +2138,13 @@ module.exports.buyPickaxeCommand = function(message){
                     profileDB.purchasePickAxe(discordUserId, tacosSpent, function(err, data){
                         if (err){
                             // console.log(err);
-                        }
-                        else{
+                        }else{
                             experience.gainExperience(message, message.author, EXPERIENCE_GAINS.buyPickaxe * 50 , pickaxeResponse);
-                            message.channel.send(message.author + " Congratulations, you have purchased the Ethereal Pickaxe :pick:!");
+                            message.channel.send(message.author.username + " Congratulations, you have purchased the Ethereal Pickaxe :pick:!");
                         }
                     })
-                }
-                else{
-                    message.channel.send(message.author + " You cannot afford the `Ethereal Pickaxe`");
+                }else{
+                    message.channel.send(message.author.username + " You cannot afford the `Ethereal Pickaxe`");
                 }
             }
             else if (pickaxeResponse.data.pickaxe == "ethereal"){
@@ -2208,15 +2153,13 @@ module.exports.buyPickaxeCommand = function(message){
                     profileDB.purchasePickAxe(discordUserId, tacosSpent, function(err, data){
                         if (err){
                             // console.log(err);
-                        }
-                        else{
+                        }else{
                             experience.gainExperience(message, message.author, EXPERIENCE_GAINS.buyPickaxe * 500 , pickaxeResponse);
-                            message.channel.send(message.author + " Congratulations, you have purchased Zeus' Trident :pick:!");
+                            message.channel.send(message.author.username + " Congratulations, you have purchased Zeus' Trident :pick:!");
                         }
                     })
-                }
-                else{
-                    message.channel.send(message.author + " You cannot afford `Zeus' Trident`");
+                }else{
+                    message.channel.send(message.author.username + " You cannot afford `Zeus' Trident`");
                 }
             }
         }
@@ -2230,9 +2173,8 @@ module.exports.buyStableCommand = function(message){
     profileDB.getUserProfileData( discordUserId, function(err, stableResponse) {
         if(err){
             agreeToTerms(message, discordUserId);
-            message.channel.send(message.author + " You can't afford a Stable!");
-        }
-        else{
+            message.channel.send(message.author.username + " You can't afford a Stable!");
+        }else{
             if (!stableResponse.data.stable){
                 if ( adjustedTacosForUser(discordUserId, stableResponse.data.tacos) >= STABLE_COST){
                     var tacosSpent = STABLE_COST * -1;
@@ -2241,7 +2183,7 @@ module.exports.buyStableCommand = function(message){
                             // console.log(err);
                         }else{
                             experience.gainExperience(message, message.author, EXPERIENCE_GAINS.buyStable * 50 , stableResponse);
-                            message.channel.send(message.author + " Congratulations, you have purchased the Stable! use `-stable` command to display your Stable.");
+                            message.channel.send(message.author.username + " Congratulations, you have purchased the Stable! use `-stable` command to display your Stable.");
                         }
                     })
                 }
@@ -2258,7 +2200,7 @@ module.exports.buyGreenHouseCommand = function(message){
     profileDB.getUserProfileData( discordUserId, function(err, greenhouseResponse) {
         if(err){
             agreeToTerms(message, discordUserId);
-            message.channel.send(message.author + " You can't afford a Greenhouse!");
+            message.channel.send(message.author.username + " You can't afford a Greenhouse!");
         }
         else{
             if (!greenhouseResponse.data.greenhouse){
@@ -2269,7 +2211,7 @@ module.exports.buyGreenHouseCommand = function(message){
                             // console.log(err);
                         }else{
                             experience.gainExperience(message, message.author, EXPERIENCE_GAINS.buyGreenHouse * 50 , greenhouseResponse);
-                            message.channel.send(message.author + " Congratulations, you have purchased the Greenhouse! use `-greenhouse` command to display your Greenhouse.");
+                            message.channel.send(message.author.username + " Congratulations, you have purchased the Greenhouse! use `-greenhouse` command to display your Greenhouse.");
                         }
                     })
                 }
@@ -2287,7 +2229,7 @@ module.exports.buyTempleCommand = function(message){
         if(err){
             // user doesnt exist tell the user they should get some tacos
             agreeToTerms(message, discordUserId);
-            message.channel.send(message.author + " You can't afford a Temple!");
+            message.channel.send(message.author.username + " You can't afford a Temple!");
         }
         else{
             if (!templeResponse.data.temple){
@@ -2298,7 +2240,7 @@ module.exports.buyTempleCommand = function(message){
                             // console.log(err);
                         }else{
                             experience.gainExperience(message, message.author, EXPERIENCE_GAINS.buyPickaxe * 50 , templeResponse);
-                            message.channel.send(message.author + " Congratulations, you have purchased the Temple! use `-temple` command to display your Temple.");
+                            message.channel.send(message.author.username + " Congratulations, you have purchased the Temple! use `-temple` command to display your Temple.");
                         }
                     })
                 }
@@ -2315,7 +2257,7 @@ module.exports.buyHacksawCommand = function(message){
         if(err){
             // user doesnt exist tell the user they should get some tacos
             agreeToTerms(message, discordUserId);
-            message.channel.send(message.author + " You can't afford the Hacksaw!");
+            message.channel.send(message.author.username + " You can't afford the Hacksaw!");
         }
         else{
             if (!hacksawResponse.data.hacksaw && hacksawResponse.data.temple){
@@ -2326,12 +2268,12 @@ module.exports.buyHacksawCommand = function(message){
                             // console.log(err);
                         }else{
                             experience.gainExperience(message, message.author, EXPERIENCE_GAINS.buyPickaxe * 50 , hacksawResponse);
-                            message.channel.send(message.author + " Congratulations, you have purchased a Hacksaw! you can now use `-disassemble [itemname]` command to disassemble your items.");
+                            message.channel.send(message.author.username + " Congratulations, you have purchased a Hacksaw! you can now use `-disassemble [itemname]` command to disassemble your items.");
                         }
                     })
                 }
             }else{
-                message.channel.send(message.author + " You already own the Hacksaw")
+                message.channel.send(message.author.username + " You already own the Hacksaw")
             }
         }
     })
@@ -2708,11 +2650,10 @@ module.exports.buyShopItem = function(message, args){
                     profileDB.updateUserTacos(discordUserId, SHOP_ITEM_COST * -1, function(updateLSErr, updateLSres){
                         if(updateLSErr){
                             console.log(updateLSErr);
-                        }
-                        else{
+                        }else{
                             var tacosFound = 0
                             shopItemEmbedBuilder(message, itemsToAddToInventory, tacosFound);
-                            message.channel.send(message.author + " successfully purchased `" + itemShortName.toLowerCase() + "`! \n`do -puton 1 " + itemShortName.toLowerCase() + "` OR `-puton 2 " + itemShortName.toLowerCase() + "`  OR `-puton 3 " + itemShortName.toLowerCase() + "` \ndo `-wearing` to check your new item bonuses!")
+                            message.channel.send(message.author.username + " successfully purchased `" + itemShortName.toLowerCase() + "`! \n`do -puton 1 " + itemShortName.toLowerCase() + "` OR `-puton 2 " + itemShortName.toLowerCase() + "`  OR `-puton 3 " + itemShortName.toLowerCase() + "` \ndo `-wearing` to check your new item bonuses!")
                         }
                     })
                 }else{
@@ -2752,7 +2693,7 @@ module.exports.buyFlaskCommand = function(message){
                         }else{
                             console.log(flaskRes);
                             // create message that the user purchased a flask
-                            message.channel.send(message.author + " has purchased a flask! :alembic:")
+                            message.channel.send(message.author.username + " has purchased a flask! :alembic:")
                         }
                     })
                 }
@@ -2788,19 +2729,16 @@ module.exports.buyRecipeCommand = function(message){
                         addToUserInventory(discordUserId, artifactRecipeItem);
                         profileDB.updateUserTacos(discordUserId, ARTIFACT_RECIPE_COST * -1, function(updateLSErr, updateLSres){
                             if(updateLSErr){
-                                // console.log(updateLSErr);
-                            }
-                            else{
-                                message.channel.send(message.author + " successfully purchased an artifact recipe :rosette:!")
+                                console.log(updateLSErr);
+                            }else{
+                                message.channel.send(message.author.username + " successfully purchased an artifact recipe :rosette:!")
                             }
                         })
                     }
-                }
-                else{
+                }else{
                     message.channel.send("You cannot afford this item.")
                 }
-            }
-            else{
+            }else{
                 // unavailable
                 message.channel.send("You cannot afford this item.")
             }
@@ -2953,27 +2891,24 @@ module.exports.buyPastaCommand = function(message, pasta){
     profileDB.getUserProfileData( discordUserId, function(err, pastaRespond) {
         if(err){
             // user doesnt exist tell the user they should get some tacos
-            message.channel.send(message.author + " you can't afford pasta currently!");
+            message.channel.send(message.author.username + " you can't afford pasta currently!");
             agreeToTerms(message, discordUserId);
-        }
-        else{
+        }else{
             if ( adjustedTacosForUser(discordUserId, pastaRespond.data.tacos) >= PASTA_COST && pasta.length > 0 && pasta.length < 125){
                 // user can buy the pasta, insert the pasta message into the user's pasta column
                 profileDB.updateUserPasta( discordUserId, PASTA_COST * -1, pasta, function(err, pastaRespond) {
                     if(err){
-                        message.channel.send(message.author + " Could not purchase pasta!");
+                        message.channel.send(message.author.username + " Could not purchase pasta!");
                     }
                     else{
                         // user has updated their pasta
-                        message.channel.send(message.author + " You have purchased a new pasta :spaghetti:!");
+                        message.channel.send(message.author.username + " You have purchased a new pasta :spaghetti:!");
                     }
                 });
-            }
-            else if (adjustedTacosForUser(discordUserId, pastaRespond.data.tacos) >= PASTA_COST){
-                message.channel.send(message.author + " You do not have enough tacos to purchase a pasta!");
-            }
-            else if(pasta.length > 125){
-                message.channel.send(message.author + " The pasta is too long. Pasta must be less than 125 characters long");
+            }else if (adjustedTacosForUser(discordUserId, pastaRespond.data.tacos) >= PASTA_COST){
+                message.channel.send(message.author.username + " You do not have enough tacos to purchase a pasta!");
+            }else if(pasta.length > 125){
+                message.channel.send(message.author.username + " The pasta is too long. Pasta must be less than 125 characters long");
             }
 
         }
@@ -3751,7 +3686,7 @@ module.exports.scavangeCommand = function (message){
                         oneHourAgo = new Date(oneHourAgo.setHours(oneHourAgo.getHours() - SCAVENGE_COOLDOWN_HOURS));
                         oneHourAgo = new Date(oneHourAgo.setSeconds(oneHourAgo.getSeconds() + secondsToRemove));
     
-                        if ( oneHourAgo > getUserResponse.data.lastscavangetime ){
+                        if (oneHourAgo > getUserResponse.data.lastscavangetime ){
                             var allScavengeableItems = exports.getAllItems()
                             var ARTIFACT_MIN_ROLL = 9995;
                             var ANCIENT_MAX_ROLL = 9995
@@ -3946,7 +3881,7 @@ module.exports.scavangeCommand = function (message){
                             ///////// CALCULATE THE EXTRA TACOS HERE 
                             var extraTacosFromItems = wearStats.calculateExtraTacos(wearRes, "scavenge"); // 0 or extra
                             if (extraTacosFromItems > 0){
-                                message.channel.send(message.author + " received `" + extraTacosFromItems + "` for scavenging! :taco:" + " received `" + extraTacosFromItems + "` extra tacos" );
+                                message.channel.send(message.author.username + " received `" + extraTacosFromItems + "` for scavenging! :taco:" + " received `" + extraTacosFromItems + "` extra tacos" );
                             }
                             // early adopter ids to get tacos
                             var earlyAdopterIds = config.earlyAdopterIds
@@ -3960,7 +3895,7 @@ module.exports.scavangeCommand = function (message){
                                     }
                                 })
                             }
-
+                            createTimeOutForCommandAfterUse("scavenge", now, secondsToRemove, SCAVENGE_COOLDOWN_HOURS, discordUserId, getUserResponse.data)
                             profileDB.updateUserTacos(discordUserId, tacosFound + extraTacosFromItems, function(updateLSErr, updateLSres){
                                 if(updateLSErr){
                                     // console.log(updateLSErr);
@@ -4001,20 +3936,18 @@ module.exports.scavangeCommand = function (message){
                                     })
                                 }
                             })
-                        }
-                        else{
+                        }else{
                             exports.setCommandLock("scavenge", discordUserId, false)
                             now = new Date(now.setSeconds(now.getSeconds() + secondsToRemove));
                             var numberOfHours = getDateDifference(getUserResponse.data.lastscavangetime, now, 1);
-                            message.channel.send(message.author + " You have scavenged too recently! Please wait `" + numberOfHours +"` ");
+                            message.channel.send(message.author.username + " You have scavenged too recently! Please wait `" + numberOfHours +"` ");
                         }
                     }
                 })
                 
-            }
-            else{
+            }else{
                 exports.setCommandLock("scavenge", discordUserId, false)
-                message.channel.send(message.author + " You need a pickaxe! buy one from the shop, do `-shop` OR `-shop long` to see what you can buy");
+                message.channel.send(message.author.username + " You need a pickaxe! buy one from the shop, do `-shop` OR `-shop long` to see what you can buy");
             }
         })
     }
@@ -4165,13 +4098,13 @@ module.exports.slotsCommand = function(message, tacosBet){
                     
                 }
                 else{
-                    message.channel.send(message.author + " You don't have enough tacos!");
+                    message.channel.send(message.author.username + " You don't have enough tacos!");
                 }
             }
         })
     }
     else{
-        message.channel.send(message.author + " You must bet more than 19 tacos when using slots!");
+        message.channel.send(message.author.username + " You must bet more than 19 tacos when using slots!");
     }
 }
 
@@ -4332,7 +4265,7 @@ module.exports.miniGameCommand = function(message) {
             for (var user in team){
                 usersMinigames[team[user].id] = currentGame;
             }
-            message.channel.send(message.author + " has started a game of fruits :strawberry: type -ready to start!")
+            message.channel.send(message.author.username + " has started a game of fruits :strawberry: type -ready to start!")
         }else{
             message.channel.send("there must be more than 3 players in the game! OR your someone is already in a game")
         }
@@ -4867,7 +4800,7 @@ module.exports.pickupCommand = function (message){
                             getProfileForAchievement(discordUserId, message) // FIX THIS SHIT
                         }
                     })
-                    message.channel.send(message.author + " picked up `10` tacos from the ground :taco: but one was poisoned.. :nauseated_face: you ate `10` tacos to cure your sickness.");
+                    message.channel.send(message.author.username + " picked up `10` tacos from the ground :taco: but one was poisoned.. :nauseated_face: you ate `10` tacos to cure your sickness.");
                 }
             })
         }
@@ -4890,7 +4823,7 @@ module.exports.pickupCommand = function (message){
                             getProfileForAchievement(discordUserId, message) // FIX THSI SHIT
                         }
                     })
-                    message.channel.send(message.author + " picked up `10` tacos from the ground :taco:");
+                    message.channel.send(message.author.username + " picked up `10` tacos from the ground :taco:");
                 }
             })
         }
@@ -4968,7 +4901,7 @@ module.exports.buypetCommand = function(message, args){
                                                     }
                                                     else{
                                                         // anounce the user has a new pet!
-                                                        message.channel.send(" Congratulations! " + message.author + " has a new " + pet + " called: `" + petName + "` \n" + PETS_AVAILABLE[pet].emoji + " " + PETS_AVAILABLE[pet].speak + "\n use `-fetch` while your pet is not tired!");
+                                                        message.channel.send(" Congratulations! " + message.author.username + " has a new " + pet + " called: `" + petName + "` \n" + PETS_AVAILABLE[pet].emoji + " " + PETS_AVAILABLE[pet].speak + "\n use `-fetch` while your pet is not tired!");
                                                     }
                                                 })
                                             }
@@ -4989,7 +4922,7 @@ module.exports.buypetCommand = function(message, args){
                                                             message.channel.send(" error, check bender now");
                                                         }
                                                         else{
-                                                            message.channel.send(" Congratulations! " + message.author + " has a new " + pet + " called: `" + petName + "` \n" + PETS_AVAILABLE[pet].emoji + " " + PETS_AVAILABLE[pet].speak + "\n use `-fetch " + petName +"` while your pet is not tired!");
+                                                            message.channel.send(" Congratulations! " + message.author.username + " has a new " + pet + " called: `" + petName + "` \n" + PETS_AVAILABLE[pet].emoji + " " + PETS_AVAILABLE[pet].speak + "\n use `-fetch " + petName +"` while your pet is not tired!");
                                                         }
                                                     })
                                                 }
@@ -5127,7 +5060,7 @@ module.exports.fetchCommand = function(message, args){
                                         exports.setCommandLock("fetch", discordUserId, false)
                                         now = new Date(now.setSeconds(now.getSeconds() + secondsToRemove));
                                         var numberOfHours = getDateDifference(lastFetchTime, now, PETS_AVAILABLE[userPet].cooldown);
-                                        message.channel.send(message.author + " **" + userPetName + "** needs to rest and cannot fetch currently! Please wait `" + numberOfHours + "` ");
+                                        message.channel.send("**" + userPetName + "** needs to rest and cannot fetch currently! Please wait `" + numberOfHours + "` ");
                                     }
                                 }else{
                                     exports.setCommandLock("fetch", discordUserId, false)
@@ -5182,14 +5115,14 @@ module.exports.fetchCommand = function(message, args){
                                             if (err){
                                                 // console.log(err);
                                                 exports.setCommandLock("fetch", discordUserId, false)
-                                            }
-                                            else{
+                                            }else{
                                                 exports.setCommandLock("fetch", discordUserId, false)
                                                 var experienceFromItems = wearStats.calculateExtraExperienceGained(wearRes, "fetch", null);                                                                             
                                                 experience.gainExperience(message, message.author, (( (EXPERIENCE_GAINS.perFetchCd * PETS_AVAILABLE[userPet].fetch) / 10) + experienceFromItems) , fetchResponse);
                                                 // TODO: create events that are processed by other modules: ie - temple, greenhouse, temple 
                                                 eventParams = { command: "fetch", userData: fetchResponse, fetchCD: userData.fetchCD, discordUserId: discordUserId, userPetName: userPetName, emoji: PETS_AVAILABLE[userPet].emoji  }
                                                 additionalEventsForCommand(message, eventParams)
+                                                createTimeOutForCommandAfterUse("fetch", now, secondsToRemove, PETS_AVAILABLE[userPet].cooldown, discordUserId, fetchResponse.data)
                                                 // user's pet fetched some tacos
                                                 if (extraTacosFromItems > 0){
                                                     /* SEASONAL
@@ -5220,7 +5153,7 @@ module.exports.fetchCommand = function(message, args){
                                         exports.setCommandLock("fetch", discordUserId, false)
                                         now = new Date(now.setSeconds(now.getSeconds() + secondsToRemove));
                                         var numberOfHours = getDateDifference(fetchResponse.data.lastfetchtime, now, PETS_AVAILABLE[userPet].cooldown);
-                                        message.channel.send(message.author + " **" + userPetName + "** needs to rest and cannot fetch currently! Please wait `" + numberOfHours + "` ");
+                                        message.channel.send("**" + userPetName + "** needs to rest and cannot fetch currently! Please wait `" + numberOfHours + "` ");
                                     }
                                 }
                                 else{
@@ -5322,13 +5255,13 @@ module.exports.useCommand = function(message, args){
                             useItem.setItemsLock(discordUserId, false)
                         }else{
                             if (useRes.length && useRes.length > 0 && useRes[0].itemname){
-                                message.channel.send(message.author + " has polished a **" + useRes[0].itemname + "** -" + "`" + useRes[0].itemdescription + ", " + useRes[0].itemslot + ", " + useRes[0].itemstatistics + "`");
+                                message.channel.send(message.author.username + " has polished a **" + useRes[0].itemname + "** -" + "`" + useRes[0].itemdescription + ", " + useRes[0].itemslot + ", " + useRes[0].itemstatistics + "`");
                             }
                             else if (useRes == 50){
-                                message.channel.send(message.author + " polished something that Bender really likes, Bender gave you `50` tacos :taco:");
+                                message.channel.send(message.author.username + " polished something that Bender really likes, Bender gave you `50` tacos :taco:");
                             }
                             else if (useRes == 20){
-                                message.channel.send(message.author + " polished something that Bender likes, Bender gave you `20` tacos :taco:");
+                                message.channel.send(message.author.username + " polished something that Bender likes, Bender gave you `20` tacos :taco:");
                             }
                             var timeout = setTimeout (function(){ 
                                 experience.gainExperience(message, message.author, EXPERIENCE_GAINS.useCommonItemFive);
@@ -5347,7 +5280,7 @@ module.exports.useCommand = function(message, args){
                 }
                 else{
                     useItem.setItemsLock(discordUserId, false)
-                    message.channel.send(message.author + " you need at least `10` rocks to polish something shiny");
+                    message.channel.send(message.author.username + " you need at least `10` rocks to polish something shiny");
                 }
             }
         })
@@ -5412,7 +5345,7 @@ module.exports.useCommand = function(message, args){
                                 // console.log(throwRes);
                                 useItem.setItemsLock(discordUserId, false)
                                 if (throwRes == "success"){
-                                    message.channel.send( message.author + " threw a rock at " + mentionedUserName + ", they became dizzy and dropped `10` tacos :taco:");
+                                    message.channel.send( message.author.username + " threw a rock at " + mentionedUserName + ", they became dizzy and dropped `10` tacos :taco:");
                                     // if they drop a taco someone else can pick it up
                                     var poisonedTacoRoll = Math.floor(Math.random() * 100) + 1;
                                     var poisonedTaco = false;
@@ -5422,10 +5355,10 @@ module.exports.useCommand = function(message, args){
                                     QueueOfTacosDropped.push({ droppedBy: mentionedId, cannotPickUp: discordUserId, poisoned: poisonedTaco })
                                 }
                                 else if (throwRes == "protection"){
-                                    message.channel.send(message.author + " threw a rock at " + mentionedUserName + " but one of their fences protected them!");
+                                    message.channel.send(message.author.username + " threw a rock at " + mentionedUserName + " but one of their fences protected them!");
                                 }
                                 else{
-                                    message.channel.send(message.author + " threw a rock at " + mentionedUserName);
+                                    message.channel.send(message.author.username + " threw a rock at " + mentionedUserName);
                                 }
                                 var timeout = setTimeout (function(){ 
                                     experience.gainExperience(message, message.author, EXPERIENCE_GAINS.useCommonItem);
@@ -5516,13 +5449,13 @@ module.exports.useCommand = function(message, args){
                             var timeout = setTimeout (function(){ 
                                 experience.gainExperience(message, message.author, EXPERIENCE_GAINS.useCommonItemFive);
                             }, 1000);
-                            message.channel.send(message.author + " has built a fence, counts as `3` protection points");
+                            message.channel.send(message.author.username + " has built a fence, counts as `3` protection points");
                         }
                     });
                 }
                 else{
                     useItem.setItemsLock(discordUserId, false)
-                    message.channel.send(message.author + " you need at least `5` pieces of wood to build a fence");
+                    message.channel.send(message.author.username + " you need at least `5` pieces of wood to build a fence");
                 }
             }
         })
@@ -5589,13 +5522,13 @@ module.exports.useCommand = function(message, args){
                         }else{
                             // console.log(useRes[0]);
                             if (useRes.length && useRes.length > 0 && useRes[0].itemname){
-                                message.channel.send(message.author + " has tailored a **" + useRes[0].itemname + "** -" + "`" + useRes[0].itemdescription + ", " + useRes[0].itemslot + ", " + useRes[0].itemstatistics + "`");
+                                message.channel.send(message.author.username + " has tailored a **" + useRes[0].itemname + "** -" + "`" + useRes[0].itemdescription + ", " + useRes[0].itemslot + ", " + useRes[0].itemstatistics + "`");
                             }
                             else if (useRes == 50){
-                                message.channel.send(message.author + " tailored something that Bender really likes, Bender gave you `50` tacos :taco:");
+                                message.channel.send(message.author.username + " tailored something that Bender really likes, Bender gave you `50` tacos :taco:");
                             }
                             else if (useRes == 20){
-                                message.channel.send(message.author + " tailored something that Bender likes, Bender gave you `20` tacos :taco:");
+                                message.channel.send(message.author.username + " tailored something that Bender likes, Bender gave you `20` tacos :taco:");
                             }
                             var timeout = setTimeout (function(){ 
                                 experience.gainExperience(message, message.author, EXPERIENCE_GAINS.useCommonItemFive);
@@ -5616,7 +5549,7 @@ module.exports.useCommand = function(message, args){
                 }
                 else{
                     useItem.setItemsLock(discordUserId, false)
-                    message.channel.send(message.author + " you need at least `5` terry cloths to tailor some clothes");
+                    message.channel.send(message.author.username + " you need at least `5` terry cloths to tailor some clothes");
                 }
             }
         })
@@ -5692,20 +5625,20 @@ module.exports.useCommand = function(message, args){
                                 experience.gainExperience(message, message.author, EXPERIENCE_GAINS.useCommonItem * cansToUse);
                             }, 200);
                             
-                            message.channel.send(message.author + " recycled a soda can, you have gained `" + cansToUse + "` reputation with Bender.\n`" + message.author.username + "'s Current reputation " + useRes.repNumber + ", Status: " + useRes.repStatus + "`")
+                            message.channel.send(message.author.username + " recycled a soda can, you have gained `" + cansToUse + "` reputation with Bender.\n`" + message.author.username + "'s Current reputation " + useRes.repNumber + ", Status: " + useRes.repStatus + "`")
                         }
                     })
                 }
                 else if (sodaCansToUse.length < cansToUse && sodaCansToUse.length == 0){
                     useItem.setItemsLock(discordUserId, false)
-                    message.channel.send(message.author + " you do not have any soda cans to recycle..")
+                    message.channel.send(message.author.username + " you do not have any soda cans to recycle..")
                 }
                 else if (sodaCansToUse.length < cansToUse){
                     useItem.setItemsLock(discordUserId, false)
-                    message.channel.send(message.author + " you do not have that many soda cans to recycle..")
+                    message.channel.send(message.author.username + " you do not have that many soda cans to recycle..")
                 }else{
                     useItem.setItemsLock(discordUserId, false)
-                    message.channel.send(message.author + " invalid number of cans to use")
+                    message.channel.send(message.author.username + " invalid number of cans to use")
 
                 }
             }
@@ -5794,20 +5727,20 @@ module.exports.useCommand = function(message, args){
                                 })
                             }, 1000);
                             
-                            message.channel.send(message.author + " soiled their crops, Bender planted some seeds. current soiled crops `" + useRes + "` \n")
+                            message.channel.send(message.author.username + " soiled their crops, Bender planted some seeds. current soiled crops `" + useRes + "` \n")
                         }
                     })
                 }
                 else if (soilToUse.length < soilsCountToUse && soilToUse.length == 0){
                     useItem.setItemsLock(discordUserId, false)
-                    message.channel.send(message.author + " you do not have any soil to use..")
+                    message.channel.send(message.author.username + " you do not have any soil to use..")
                 }
                 else if (soilToUse.length < soilsCountToUse){
                     useItem.setItemsLock(discordUserId, false)
-                    message.channel.send(message.author + " you do not have that many soil to use..")
+                    message.channel.send(message.author.username + " you do not have that many soil to use..")
                 }else{
                     useItem.setItemsLock(discordUserId, false)
-                    message.channel.send(message.author + " invalid number of soils to use")
+                    message.channel.send(message.author.username + " invalid number of soils to use")
                 }
             }
         })
@@ -6667,7 +6600,7 @@ module.exports.bakeCommand = function(message, args){
                                 console.log(error)
                             }else{
                                 var itemBaked = res[0].itemname
-                                message.channel.send(message.author + " has created a `" + itemBaked + "`!")
+                                message.channel.send(message.author.username + " has created a `" + itemBaked + "`!")
                             }
                         })
                     }
@@ -6857,7 +6790,7 @@ function plantOnPlotOfLand(message, discordUserId, plotOfLand, greenHouseData, p
                     console.log(plotErr)
                 }else{
                     console.log(plotRes)
-                    message.channel.send(message.author + " has planted a `" + greenHouseData.plantName + "` !")
+                    message.channel.send(message.author.username + " has planted a `" + greenHouseData.plantName + "` !")
                 }
             })
         }
@@ -6966,18 +6899,19 @@ module.exports.harvestCommand = function(message, args){
                                             }else{
                                                 console.log(plotRes)
                                                 harvestEmbedBuilder(message, fruitsColumnsWithCount)
+                                                createTimeOutForCommandAfterUse("harvest", now, secondsToRemove, userCooldown, discordUserId, profileData.data)
                                             }
                                         })
                                     }
                                 })
                             }else{
-                                message.channel.send(message.author + " You have no crops to harvest!")
+                                message.channel.send(message.author.username + " You have no crops to harvest!")
                             }
                             
                         }else{
                             now = new Date(now.setSeconds(now.getSeconds() + secondsToRemove));
                             var numberOfHours = getDateDifference(greenHouseData.lastharvest, now, userCooldown);
-                            message.channel.send(message.author + " You are tired! Please wait `" + numberOfHours + "` ");
+                            message.channel.send(message.author.username + " You are tired! Please wait `" + numberOfHours + "` ");
                         }
                     }
                 })
@@ -7210,7 +7144,7 @@ module.exports.upgradeCommand = function(message, args){
                         }else{
                             now = new Date(now.setSeconds(now.getSeconds()));
                             var numberOfHours = getDateDifference(profileRes.data.laststableupgrade, now, stableLevelUpgradeTime);
-                            message.channel.send(message.author + " You have recently upgraded your Stable! Please wait `" + numberOfHours +"` ");
+                            message.channel.send(message.author.username + " You have recently upgraded your Stable! Please wait `" + numberOfHours +"` ");
                         }
                     }else{
                         message.channel.send("You do not own a Stable")
@@ -7234,7 +7168,7 @@ module.exports.upgradeCommand = function(message, args){
                         }else{
                             now = new Date(now.setSeconds(now.getSeconds()));
                             var numberOfHours = getDateDifference(profileRes.data.lastgreenhouseupgrade, now, greenHouseLevelUpgradeTime);
-                            message.channel.send(message.author + " You have recently upgraded your Greenhouse! Please wait `" + numberOfHours +"` ");
+                            message.channel.send(message.author.username + " You have recently upgraded your Greenhouse! Please wait `" + numberOfHours +"` ");
                         }
                     }else{
                         message.channel.send("You do not own a Greenhouse")
@@ -7258,7 +7192,7 @@ module.exports.upgradeCommand = function(message, args){
                         }else{
                             now = new Date(now.setSeconds(now.getSeconds()));
                             var numberOfHours = getDateDifference(profileRes.data.lasttempleupgrade, now, templeLevelUpgradeTime);
-                            message.channel.send(message.author + " You have recently upgraded your Temple! Please wait `" + numberOfHours +"` ");
+                            message.channel.send(message.author.username + " You have recently upgraded your Temple! Please wait `" + numberOfHours +"` ");
                         }
                     }else{
                         message.channel.send("You do not own a Temple")
@@ -8282,7 +8216,7 @@ module.exports.wearingCommand = function(message, args){
                         })
                     }
                     else{
-                        message.channel.send(message.author + " you are not wearing any items. if you are new, check the shop for cheap starter items!")
+                        message.channel.send(message.author.username + " you are not wearing any items. if you are new, check the shop for cheap starter items!")
                     }
                 }
             })
@@ -8550,29 +8484,29 @@ module.exports.putonCommand = function(message, args, retry){
                                                     if (updateRockStatusErr){
                                                         console.log(updateRockStatusErr);
                                                     }else{
-                                                        message.channel.send(message.author + " you are now wearing **" + itemsMapbyShortName[itemToWear].itemname + "**")
+                                                        message.channel.send(message.author.username + " you are now wearing **" + itemsMapbyShortName[itemToWear].itemname + "**")
                                                     }
                                                 })
                                             }
                                         })
                                     }else{
                                         if (templeLevel < 6 && slot == 5){
-                                            message.channel.send(message.author + " invalid slot!")
+                                            message.channel.send(message.author.username + " invalid slot!")
                                         }
                                         else if (stableLevel < 11 && slot == 6){
-                                            message.channel.send(message.author + " invalid slot!")
+                                            message.channel.send(message.author.username + " invalid slot!")
                                         }
                                         else if (greenHouseLevel < 12 && slot == 7){
-                                            message.channel.send(message.author + " invalid slot!") 
+                                            message.channel.send(message.author.username + " invalid slot!") 
                                         }else{
-                                            message.channel.send(message.author + " invalid slot!")
+                                            message.channel.send(message.author.username + " invalid slot!")
                                         }
                                     }
                                 }else{
                                     if (itemuserid && (userLevel < itemLevelRequirement || userRPGLevel < itemLevelRequirementRPG)){
-                                        message.channel.send(message.author + " requires level `" + itemLevelRequirement + "` and rpg level `" + itemLevelRequirementRPG + "`")
+                                        message.channel.send(message.author.username + " requires level `" + itemLevelRequirement + "` and rpg level `" + itemLevelRequirementRPG + "`")
                                     }else{
-                                        message.channel.send(message.author + " invalid item!")
+                                        message.channel.send(message.author.username + " invalid item!")
                                     }
                                 }
                             }
@@ -8582,7 +8516,7 @@ module.exports.putonCommand = function(message, args, retry){
             }
         })
     }else{
-        message.channel.send(message.author + " do -puton [1-4] [itemname] \n example: -puton 2 loincloth OR -puton 2 loinclothimproved \n Slot 4 is only for artifact+ items or higher");
+        message.channel.send(message.author.username + " do -puton [1-4] [itemname] \n example: -puton 2 loincloth OR -puton 2 loinclothimproved \n Slot 4 is only for artifact+ items or higher");
     }
 }
 
@@ -8609,8 +8543,7 @@ module.exports.takeoffCommand = function(message, args){
     profileDB.getUserWearInfo(discordUserId, function(takeoffError, takeoffRes){
         if (takeoffError){
             console.log(takeoffError);
-        }
-        else{
+        }else{
             // console.log(takeoffRes);
             // item id of item to be set status to null in userinventory
             var itemId;
@@ -8649,8 +8582,7 @@ module.exports.takeoffCommand = function(message, args){
                 profileDB.updateItemStatus(itemId, null, function(updateErr, updateRes){
                     if (updateErr){
                         console.log(updateErr);
-                    }
-                    else{
+                    }else{
                         //user wearing slot to null
                         profileDB.takeOffWear(discordUserId, slot, function(err, res){
                             if (err){
@@ -8662,8 +8594,7 @@ module.exports.takeoffCommand = function(message, args){
                         })
                     }
                 })
-            }
-            else if (!itemId && itemslot){
+            }else if (!itemId && itemslot){
                 // have an item lingering, just take off everything
                 //user wearing slot to null
                 profileDB.takeOffWear(discordUserId, slot, function(err, res){
@@ -8684,8 +8615,7 @@ module.exports.initializeItemsMaps = function(c, cb){
     profileDB.getItemData(function(error, allItemsResponse){
         if (error){
             console.log(error);
-        }
-        else{
+        }else{
             allItems = allItemsResponse.data
             for (var index in allItemsResponse.data){
                 itemsMapById[allItemsResponse.data[index].id] = allItemsResponse.data[index];
@@ -8737,6 +8667,159 @@ module.exports.initializeItemsMaps = function(c, cb){
                     })
                 })
             })
+        }
+    })
+}
+
+module.exports.initializeReminders = function(){
+    profileDB.getRemindersForUsers(function(error, remindersRes){
+        if (error){
+            console.log(error)
+        }else{
+            var users = remindersRes.data
+            for (var u in users){
+                let discordUserId = users[u].discordid
+                if (!commandTimersMap[discordUserId]){
+                    commandTimersMap[discordUserId] = {}
+                }
+                if (users[u].scavengetoggle){
+                    // user wants to be reminded of scavenge
+                    
+                    let nextReminder = users[u].scavengenextreminder // should be a date
+                    let now = new Date()
+                    var milisecondsUntilNext = getMilisFromDates(nextReminder, now, 0)
+                    let channelId = users[u].scavengetogglechannel
+                    // create reminder of miliseconds nextReminder - now
+                    commandTimersMap[discordUserId]["scavenge"] = {
+                        channel: channelId
+                    }
+                    if (milisecondsUntilNext > 1){
+                        setTimeOutForToggleCommand("scavenge", milisecondsUntilNext, discordUserId)
+                    }else{
+                        handleCommandTimerAvailable("scavenge", channelId, discordUserId)
+                    }
+                }
+                if (users[u].thanktoggle){
+                    // user wants to be reminded of scavenge
+                    
+                    let nextReminder = users[u].thanknextreminder // should be a date
+                    let now = new Date()
+                    var milisecondsUntilNext = getMilisFromDates(nextReminder, now, 0)
+                    let channelId = users[u].thanktogglechannel
+                    // create reminder of miliseconds nextReminder - now
+                    commandTimersMap[discordUserId]["thank"] = {
+                        channel: channelId
+                    }
+                    if (milisecondsUntilNext > 1){
+                        setTimeOutForToggleCommand("thank", milisecondsUntilNext, discordUserId)
+                    }else{
+                        handleCommandTimerAvailable("thank", channelId, discordUserId)
+                    }
+                }
+                if (users[u].sorrytoggle){
+                    // user wants to be reminded of scavenge
+                    
+                    let nextReminder = users[u].sorrynextreminder // should be a date
+                    let now = new Date()
+                    var milisecondsUntilNext = getMilisFromDates(nextReminder, now, 0)
+                    let channelId = users[u].sorrytogglechannel
+                    // create reminder of miliseconds nextReminder - now
+                    commandTimersMap[discordUserId]["sorry"] = {
+                        channel: channelId
+                    }
+                    if (milisecondsUntilNext > 1){
+                        setTimeOutForToggleCommand("sorry", milisecondsUntilNext, discordUserId)
+                    }else{
+                        handleCommandTimerAvailable("sorry", channelId, discordUserId)
+                    }
+                }
+                if (users[u].fetchtoggle){
+                    // user wants to be reminded of scavenge
+                    
+                    let nextReminder = users[u].fetchnextreminder // should be a date
+                    let now = new Date()
+                    var milisecondsUntilNext = getMilisFromDates(nextReminder, now, 0)
+                    let channelId = users[u].fetchtogglechannel
+                    // create reminder of miliseconds nextReminder - now
+                    commandTimersMap[discordUserId]["fetch"] = {
+                        channel: channelId
+                    }
+                    if (milisecondsUntilNext > 1){
+                        setTimeOutForToggleCommand("fetch", milisecondsUntilNext, discordUserId)
+                    }else{
+                        handleCommandTimerAvailable("fetch", channelId, discordUserId)
+                    }
+                }
+                if (users[u].cooktoggle){
+                    // user wants to be reminded of scavenge
+                    
+                    let nextReminder = users[u].cooknextreminder // should be a date
+                    let now = new Date()
+                    var milisecondsUntilNext = getMilisFromDates(nextReminder, now, 0)
+                    let channelId = users[u].cooktogglechannel
+                    // create reminder of miliseconds nextReminder - now
+                    commandTimersMap[discordUserId]["cook"] = {
+                        channel: channelId
+                    }
+                    if (milisecondsUntilNext > 1){
+                        setTimeOutForToggleCommand("cook", milisecondsUntilNext, discordUserId)
+                    }else{
+                        handleCommandTimerAvailable("cook", channelId, discordUserId)
+                    }
+                }
+                if (users[u].preparetoggle){
+                    // user wants to be reminded of scavenge
+                    
+                    let nextReminder = users[u].preparenextreminder // should be a date
+                    let now = new Date()
+                    var milisecondsUntilNext = getMilisFromDates(nextReminder, now, 0)
+                    let channelId = users[u].preparetogglechannel
+                    // create reminder of miliseconds nextReminder - now
+                    commandTimersMap[discordUserId]["prepare"] = {
+                        channel: channelId
+                    }
+                    if (milisecondsUntilNext > 1){
+                        setTimeOutForToggleCommand("prepare", milisecondsUntilNext, discordUserId)
+                    }else{
+                        handleCommandTimerAvailable("prepare", channelId, discordUserId)
+                    }
+                }
+                if (users[u].harvesttoggle){
+                    // user wants to be reminded of scavenge
+                    
+                    let nextReminder = users[u].harvestnextreminder // should be a date
+                    let now = new Date()
+                    var milisecondsUntilNext = getMilisFromDates(nextReminder, now, 0)
+                    let channelId = users[u].harvesttogglechannel
+                    // create reminder of miliseconds nextReminder - now
+                    commandTimersMap[discordUserId]["harvest"] = {
+                        channel: channelId
+                    }
+                    if (milisecondsUntilNext > 1){
+                        setTimeOutForToggleCommand("harvest", milisecondsUntilNext, discordUserId)
+                    }else{
+                        handleCommandTimerAvailable("harvest", channelId, discordUserId)
+                    }
+                }
+                if (users[u].dailytoggle){
+                    // user wants to be reminded of scavenge
+                    
+                    let nextReminder = users[u].dailynextreminder // should be a date
+                    let now = new Date()
+                    var milisecondsUntilNext = getMilisFromDates(nextReminder, now, 0)
+                    let channelId = users[u].dailytogglechannel
+                    // create reminder of miliseconds nextReminder - now
+                    commandTimersMap[discordUserId]["daily"] = {
+                        channel: channelId
+                    }
+                    if (milisecondsUntilNext > 1){
+                        setTimeOutForToggleCommand("daily", milisecondsUntilNext, discordUserId)
+                    }else{
+                        handleCommandTimerAvailable("daily", channelId, discordUserId)
+                    }
+                }
+            }
+            console.log("Reminders Initialized")
         }
     })
 }
@@ -8797,7 +8880,7 @@ function getEmojiBasedOnRarityCategory(itemDetails){
         emoji = ":cyclone: "
     }
     else if (itemDetails.itemraritycategory === "artifact" 
-        || itemDetails.itemraritycategory === "artifact+"){
+    || itemDetails.itemraritycategory === "artifact+"){
         emoji = ":diamond_shape_with_a_dot_inside: "
     }
     else if (itemDetails.itemraritycategory === "ancient"){
@@ -8867,8 +8950,7 @@ function handleMarketItemAuctionEnded(individualItem){
                 var initialTacoTax = 0;
                 if (tacosWon > 50){
                     initialTacoTax = Math.floor(tacosWon * 0.1);
-                }
-                else if (tacosWon >= 5 && tacosWon <= 50){
+                }else if (tacosWon >= 5 && tacosWon <= 50){
                     initialTacoTax = Math.floor(tacosWon * 0.1);
                 }
                 tacosWon = tacosWon - initialTacoTax
@@ -9089,8 +9171,7 @@ function marketBuilder(message, marketData, long){
     var filteredMarketItems = {}
     if (marketData.marketParams.itemshortname){
         filteredMarketItems = filterMarketItemsByShortName(marketData.marketParams.itemshortname)
-    }
-    else if (marketData.marketParams.rarityCategory){
+    }else if (marketData.marketParams.rarityCategory){
         filteredMarketItems = filterMarketItemsByRarity(marketData.marketParams.rarityCategory)
     }else{
         filteredMarketItems = marketItems
@@ -9225,7 +9306,6 @@ function extractStartBid(args){
             startBid = 10000000
         }
         return startBid
-
     }
 }
 
@@ -9348,7 +9428,6 @@ module.exports.marketAuctionCommand = function(message, args){
                             if (itemsMapbyShortName[myItemShortName] 
                             && ItemsBeingedAuctioned.length < itemCount
                             && itemsMapById[ItemInQuestion.itemid].itemshortname === myItemShortName){
-                                // console.log("IN HERE");
                                 ItemsBeingedAuctioned.push(ItemInQuestion.id);
                                 individualItem.push(ItemInQuestion)
                             }
@@ -9358,7 +9437,6 @@ module.exports.marketAuctionCommand = function(message, args){
                             if (itemsMapbyShortName[myItemShortName] 
                             && ItemsBeingedAuctioned.length < itemCount
                             && itemsMapById[ItemInQuestion.itemid].itemshortname === myItemShortName){
-                                // console.log("IN HERE");
                                 ItemsBeingedAuctioned.push(ItemInQuestion.id);
                                 individualItem.push(ItemInQuestion)
                             }
@@ -9422,15 +9500,15 @@ module.exports.marketAuctionCommand = function(message, args){
                                     }else{
                                         marketItemsUserCount[discordUserId] = marketItemsUserCount[discordUserId] + 1
                                     }
-                                    message.channel.send(message.author + ", your auction for **" + marketItems[individualItem.id].name +  "** was successfully created!")
+                                    message.channel.send(message.author.username + ", your auction for **" + marketItems[individualItem.id].name +  "** was successfully created!")
                                     handleAuctionItem(individualItem)
                                 }
                             })
                         }else{
-                            message.channel.send(message.author + " example: `-mkauction [item] bid [minimum bid] buyout [maximum bid] time [short/medium/long]`")  
+                            message.channel.send(message.author.username + " example: `-mkauction [item] bid [minimum bid] buyout [maximum bid] time [short/medium/long]`")  
                         }
                     }else{
-                        message.channel.send(message.author + " invalid item! example: `-mkauction [item] bid [minimum bid] buyout [maximum bid] time [short/medium/long]`")  
+                        message.channel.send(message.author.username + " invalid item! example: `-mkauction [item] bid [minimum bid] buyout [maximum bid] time [short/medium/long]`")  
                     }
                 }
             })
@@ -9453,19 +9531,16 @@ module.exports.auctionCommand = function(message, args){
     // arguments are 1 = item short name, item number
     if (!activeAuctions[discordUserIdString]){
         // dont have an active auction yet
-
         if ( args && args.length > 1){
             var myItemShortName = args[1].toLowerCase();
             var itemCount = 1;
             if (args.length > 2){
                 itemCount = args[2];
             }
-            
             profileDB.getUserItems(discordUserId, function(err, inventoryResponse){
                 if (err){
                     // console.log(err);
-                }
-                else{
+                }else{
                     // get all the data for each item
                     var itemsInInventoryCountMap = {};
                     var IdsOfItemsBeingedAuctioned = []
@@ -9483,37 +9558,34 @@ module.exports.auctionCommand = function(message, args){
                             itemBeingTraded = true;
                         }
                         if (!itemsInInventoryCountMap[inventoryResponse.data[item].itemid] 
-                            && validItem && notWearing && !auctionedItem && !itemBeingTraded){
+                        && validItem && notWearing && !auctionedItem && !itemBeingTraded){
                             // item hasnt been added to be counted, add it as 1
                             itemsInInventoryCountMap[inventoryResponse.data[item].itemid] = 1;
                             
                             // console.log(ItemInQuestion);
                             if (itemsMapbyShortName[myItemShortName] 
-                                && IdsOfItemsBeingedAuctioned.length < itemCount
-                                && itemsMapById[ItemInQuestion.itemid].itemshortname === myItemShortName){
-                                // console.log("IN HERE");
+                            && IdsOfItemsBeingedAuctioned.length < itemCount
+                            && itemsMapById[ItemInQuestion.itemid].itemshortname === myItemShortName){
                                 IdsOfItemsBeingedAuctioned.push(ItemInQuestion.id);
                             }
-                        }
-                        else if (validItem && notWearing && !auctionedItem && !itemBeingTraded){
+                        }else if (validItem && notWearing && !auctionedItem && !itemBeingTraded){
                             itemsInInventoryCountMap[inventoryResponse.data[item].itemid] = itemsInInventoryCountMap[inventoryResponse.data[item].itemid] + 1;
                             if (itemsMapbyShortName[myItemShortName] 
-                                && IdsOfItemsBeingedAuctioned.length < itemCount
-                                && itemsMapById[ItemInQuestion.itemid].itemshortname === myItemShortName){
-                                // console.log("IN HERE");
+                            && IdsOfItemsBeingedAuctioned.length < itemCount
+                            && itemsMapById[ItemInQuestion.itemid].itemshortname === myItemShortName){
                                 IdsOfItemsBeingedAuctioned.push(ItemInQuestion.id);
                             }
                         }
                     }
                     if (itemsMapbyShortName[myItemShortName] 
-                        && itemsMapbyShortName[myItemShortName].itemraritycategory != "myth"
-                        && itemsMapbyShortName[myItemShortName].itemraritycategory != "artifact+"
-                        && itemsMapbyShortName[myItemShortName].itemraritycategory != "amulet"){
+                    && itemsMapbyShortName[myItemShortName].itemraritycategory != "myth"
+                    && itemsMapbyShortName[myItemShortName].itemraritycategory != "artifact+"
+                    && itemsMapbyShortName[myItemShortName].itemraritycategory != "amulet"){
                         var idOfMyItem = itemsMapbyShortName[myItemShortName].id;
                         var itemNameInAuction = itemsMapbyShortName[myItemShortName].itemname
                         // console.log(idOfMyItem);
-                        if (itemsInInventoryCountMap[idOfMyItem] && 
-                            itemsInInventoryCountMap[idOfMyItem] >= itemCount){
+                        if (itemsInInventoryCountMap[idOfMyItem] 
+                        && itemsInInventoryCountMap[idOfMyItem] >= itemCount){
                             // if so, then I can create an auction just fine
                             // create an auction
                             var userAuction = {
@@ -9549,8 +9621,7 @@ module.exports.auctionCommand = function(message, args){
                                         delete itemsInAuction[idToDelete];
                                     }
                                     delete activeAuctions[discordUserIdString];
-                                }
-                                else if (activeAuctions[discordUserIdString]){
+                                }else if (activeAuctions[discordUserIdString]){
                                     // somebody bought the auction, transfer the items and adjust tacos
                                     var winner = activeAuctions[discordUserIdString].highestBidder;
                                     var auctionCreator = discordUserId;
@@ -9562,8 +9633,7 @@ module.exports.auctionCommand = function(message, args){
                                     var initialTacoTax = 0;
                                     if (tacosWon > 50){
                                         initialTacoTax = Math.floor(tacosWon * 0.1);
-                                    }
-                                    else if (tacosWon >= 5 && tacosWon <= 50){
+                                    }else if (tacosWon >= 5 && tacosWon <= 50){
                                         initialTacoTax = Math.floor(tacosWon * 0.1);
                                     }
                                     message.channel.send(":loudspeaker: " + activeAuctions[discordUserIdString].highestBidderUserObj + " has won the auction of **" + activeAuctions[discordUserIdString].itemName + "** for `" + activeAuctions[discordUserIdString].tacoBid + "` :taco: tacos! " + "Bender kept `" + initialTacoTax + "` for tax purposes.") 
@@ -9589,29 +9659,24 @@ module.exports.auctionCommand = function(message, args){
                                 }
                                 
                             }, 360000);
-                            message.channel.send(message.author + " has created an auction for **" + itemNameInAuction +"** x`" + itemCount + "` !")  
+                            message.channel.send(message.author.username + " has created an auction for **" + itemNameInAuction +"** x`" + itemCount + "` !")  
+                            // console.log("items in auction " + JSON.stringify(itemsInAuction, null, 2));
+                        }else{
+                            message.channel.send(message.author.username + " can't create that auction! example use: -auction loincloth OR example use: -auction polyester")  
                             // console.log("items in auction " + JSON.stringify(itemsInAuction, null, 2));
                         }
-                        else{
-                            message.channel.send(message.author + " can't create that auction! example use: -auction loincloth OR example use: -auction polyester")  
-                            // console.log("items in auction " + JSON.stringify(itemsInAuction, null, 2));
-                        }
-                    }
-                    else{
-                        message.channel.send(message.author + " invalid item! example use: -auction loincloth OR example use: -auction polyester")  
+                    }else{
+                        message.channel.send(message.author.username + " invalid item! example use: -auction loincloth OR example use: -auction polyester")  
                         // console.log("items in auction " + JSON.stringify(itemsInAuction, null, 2));
                     }
                     // check if myItem exists in items, check if otherItem exists in items, if not then turn the string
                 }
             })
-        }
-        else{
-            // message use case
+        }else{
             message.channel.send("example use: -auction loincloth OR -auction polyester")
         }
-    }
-    else{
-        message.channel.send(message.author + " You already have an active auction! Please wait until it ends to create a new one!")
+    }else{
+        message.channel.send(message.author.username + " You already have an active auction! Please wait until it ends to create a new one!")
     }
 }
 
@@ -9631,8 +9696,7 @@ function transferItemsAndTacos(winner, auctionCreator, itemsArray, tacosPaid, ta
                         profileDB.bulkUpdateItemOwner(itemsArray, winner, function(transferErr, transferRes){
                             if (transferErr){
                                 cb('fail');
-                            }
-                            else{
+                            }else{
                                 cb(null, transferRes);
                             }
                         })
@@ -9640,8 +9704,7 @@ function transferItemsAndTacos(winner, auctionCreator, itemsArray, tacosPaid, ta
                         profileDB.updateMarketItemSold(itemsArray, winner, function(transferErr, transferRes){
                             if (transferErr){
                                 cb('fail');
-                            }
-                            else{
+                            }else{
                                 cb(null, transferRes);
                             }
                         })
@@ -9706,7 +9769,7 @@ module.exports.marketBidCommand = function(message, args){
                                 }
                                 // cannot use these tacos
                                 tacosInUseAuction[discordUserId] = tacosInUseAuction[discordUserId] + biddingTacos;
-                                message.channel.send(message.author + " is now the highest bidder on **" + auctionToBidOn.name + "**!")
+                                message.channel.send(message.author.username + " is now the highest bidder on **" + auctionToBidOn.name + "**!")
                                 if (biddingTacos >= auctionToBidOn.buyout){
                                     var individualItem = auctionToBidOn.item
                                     handleMarketItemAuctionEnded(individualItem)
@@ -9715,12 +9778,12 @@ module.exports.marketBidCommand = function(message, args){
                         })
                     }else{
                         if (!auctionToBidOn){
-                            message.channel.send(message.author + " that item is not available on the market"); 
+                            message.channel.send(message.author.username + " that item is not available on the market"); 
                         }else if (auctionToBidOn.seller == discordUserId){
-                            message.channel.send(message.author + " can't bid on your own items in the market"); 
+                            message.channel.send(message.author.username + " can't bid on your own items in the market"); 
                         }
                         else{
-                            message.channel.send(message.author + " your bid is lower than the current highest bid. Highest bid is `" + adjustedCurrentBid + "` tacos!")                            
+                            message.channel.send(message.author.username + " your bid is lower than the current highest bid. Highest bid is `" + adjustedCurrentBid + "` tacos!")                            
                         }
                     }
                 }else{
@@ -9730,7 +9793,7 @@ module.exports.marketBidCommand = function(message, args){
         })
     }else{
         // print example on how to bid on the market
-        message.channel.send(message.author + " example: `-mkbid [id] tacos [bid]` "  )
+        message.channel.send(message.author.username + " example: `-mkbid [id] tacos [bid]` "  )
     }
 }
 
@@ -9770,8 +9833,7 @@ module.exports.bidCommand = function(message, args){
             if (profileErr){
                 // console.log(profileErr);
                 agreeToTerms(message, discordUserId);
-            }
-            else{
+            }else{
                 var userTacosToBid = adjustedTacosForUser(discordUserId, profileRes.data.tacos)
                 if (userTacosToBid >= biddingTacos){
                     // can bid, get the auction that the mentioned user has available
@@ -9795,24 +9857,21 @@ module.exports.bidCommand = function(message, args){
                         }
                         // cannot use these tacos
                         tacosInUseAuction[discordUserId] = tacosInUseAuction[discordUserId] + biddingTacos;
-                        message.channel.send(message.author + " is now the highest bidder on **" + auctionToBidOn.itemName + "** x`" + itemCountBeingAuctioned + "` with `" + biddingTacos + "` tacos!")
+                        message.channel.send(message.author.username + " is now the highest bidder on **" + auctionToBidOn.itemName + "** x`" + itemCountBeingAuctioned + "` with `" + biddingTacos + "` tacos!")
                     }
                     else{
                         if (!auctionToBidOn){
-                            message.channel.send(message.author + " the user currently does not have an auction open"); 
-                        }
-                        else{
-                            message.channel.send(message.author + " your bid is lower than the current highest bid. Highest bid is `" + auctionToBidOn.tacoBid + "` tacos!")                            
+                            message.channel.send(message.author.username + " the user currently does not have an auction open"); 
+                        }else{
+                            message.channel.send(message.author.username + " your bid is lower than the current highest bid. Highest bid is `" + auctionToBidOn.tacoBid + "` tacos!")                            
                         }
                     }
-                }
-                else{
-                    message.channel.send(message.author + " you only have `" + userTacosToBid + "` tacos to bid!")
+                }else{
+                    message.channel.send(message.author.username + " you only have `" + userTacosToBid + "` tacos to bid!")
                 }
             }
         })
-    }
-    else{
+    }else{
         message.channel.send("example use: -bid @user 5")
     }
 }
@@ -9840,12 +9899,12 @@ module.exports.tradeCommand = function(message, args){
     }
     var discordUserIdString = "trading-" + discordUserId;
     if (args && args.length >= 3 
-        && mentionedUser 
-        && !activeTrades[mentionedIdString] 
-        && !hasOpenTrade[discordUserIdString] 
-        && !hasOpenTrade[mentionedIdString] 
-        && !userTradeLock[discordUserIdString]
-        && !userTradeLock[mentionedIdString]){
+    && mentionedUser 
+    && !activeTrades[mentionedIdString] 
+    && !hasOpenTrade[discordUserIdString] 
+    && !hasOpenTrade[mentionedIdString] 
+    && !userTradeLock[discordUserIdString]
+    && !userTradeLock[mentionedIdString]){
         //&& mentionedId != discordUserId){
         // lock trading between both users
         exports.setTradeLock(discordUserIdString, mentionedIdString, true)
@@ -9875,8 +9934,7 @@ module.exports.tradeCommand = function(message, args){
                         if (err){
                             // console.log(err);
                             exports.setTradeLock(discordUserIdString, mentionedIdString, false)
-                        }
-                        else{
+                        }else{
                             // console.log(inventoryResponse.data);
                             // get all the data for each item
                             var itemsInInventoryCountMap = {};
@@ -9904,8 +9962,7 @@ module.exports.tradeCommand = function(message, args){
                                         && itemsMapById[ItemInQuestion.itemid].itemshortname === myItemShortName){
                                         IdsOfItemsBeingedTraded.push(ItemInQuestion.id);
                                     }
-                                }
-                                else if (validItem && notWearing && !auctionedItem && !itemBeingTraded){
+                                }else if (validItem && notWearing && !auctionedItem && !itemBeingTraded){
                                     itemsInInventoryCountMap[inventoryResponse.data[item].itemid] = itemsInInventoryCountMap[inventoryResponse.data[item].itemid] + 1
 
                                     if (itemsMapbyShortName[myItemShortName] 
@@ -9952,29 +10009,27 @@ module.exports.tradeCommand = function(message, args){
                                         createTradeWithUser(myItemShortName, itemNameInTrade, discordUserIdString, tacoAsk, mentionedIdString, IdsOfItemsBeingedTraded, mentionedUser, message)
                                     }
                                 }else{
-                                    message.channel.send(message.author + " you cannot create that trade")
+                                    message.channel.send(message.author.username + " you cannot create that trade")
                                     exports.setTradeLock(discordUserIdString, mentionedIdString, false)
                                 }
                             }else{
-                                message.channel.send(message.author + " invalid item!");
+                                message.channel.send(message.author.username + " invalid item!");
                                 exports.setTradeLock(discordUserIdString, mentionedIdString, false)
                             }
                         }
                     })
                 }
             })
-        }
-        else{
-            message.channel.send(message.author + " trade for more than 1 taco, cannot tax 1 taco :(")
+        }else{
+            message.channel.send(message.author.username + " trade for more than 1 taco, cannot tax 1 taco :(")
             exports.setTradeLock(discordUserIdString, mentionedIdString, false)
         }
-    }
-    else{
+    }else{
         if (activeTrades[mentionedIdString] || hasOpenTrade[mentionedIdString]){
             // can't trade with the user at this time
             message.channel.send("the user is currently trading with someone else");
         }else if (userTradeLock[mentionedIdString] || userTradeLock[discordUserIdString]){
-            message.channel.send(message.author + " try again. one of you was trading at the time")
+            message.channel.send(message.author.username + " try again. one of you was trading at the time")
         }else{
             //print usage
             message.channel.send("example use:\n-trade @user rock \n-trade @user rock 10 \n-trade @user rock 10 tacos 5");
@@ -10002,7 +10057,7 @@ function createTradeWithUser(myItemShortName, itemNameInTrade, discordUserIdStri
         userTrade.idsToTransfer.push(IdsOfItemsBeingedTraded[item])
     }
 
-    message.channel.send(message.author + " has offered " + mentionedUser + " **" + itemNameInTrade + "** x`" + IdsOfItemsBeingedTraded.length + "` to trade for `" +tacoAsk + "` tacos :taco:" )
+    message.channel.send(message.author.username + " has offered " + mentionedUser + " **" + itemNameInTrade + "** x`" + IdsOfItemsBeingedTraded.length + "` to trade for `" +tacoAsk + "` tacos :taco:" )
     .then(function(res){
         console.log(res)
     })
@@ -10033,7 +10088,7 @@ function createTradeWithUser(myItemShortName, itemNameInTrade, discordUserIdStri
             if (hasOpenTrade[mentionedIdString]){
                 delete hasOpenTrade[mentionedIdString]
             }
-            message.channel.send(message.author + " your trade offer of **" + itemToTradeName + "** with **" + userTradingWith + "** has expired :x:" )
+            message.channel.send(message.author.username + " your trade offer of **" + itemToTradeName + "** with **" + userTradingWith + "** has expired :x:" )
             .then(function(res){
                 console.log(res)
             })
@@ -10058,8 +10113,7 @@ module.exports.acceptTradeCommand = function(message, args){
     profileDB.getUserProfileData(discordUserId, function(profileErr, profileRes){
         if (profileErr){
             // console.log(profileErr);
-        }
-        else{
+        }else{
             // there is an active trade with the user
             if (activeTrades[discordUserIdString] && hasOpenTrade[discordUserIdString]){
                 var mentionedId = hasOpenTrade[discordUserIdString].substr(8);
@@ -10077,7 +10131,7 @@ module.exports.acceptTradeCommand = function(message, args){
                 }
                 if (currentTacos - tacosToPay >= 0 && tacosToPay == tacosAgreedOn){
                     // accept the trade and transfer the item
-                    message.channel.send(":handshake:  " + message.author + " has accepted the trade of **" + activeTrades[discordUserIdString].fullItemName + "** ! " + " Bender kept `" + tacoTax + "` tacos for tax purposes.") 
+                    message.channel.send(":handshake:  " + message.author.username + " has accepted the trade of **" + activeTrades[discordUserIdString].fullItemName + "** ! " + " Bender kept `" + tacoTax + "` tacos for tax purposes.") 
                     transferItemsAndTacos(discordUserId, mentionedId, itemsArray, tacosToPay, tacosToPay-tacoTax, function(transErr, transRes){
                         if (transErr){
                             console.log(transErr);
@@ -10104,13 +10158,11 @@ module.exports.acceptTradeCommand = function(message, args){
                         clearTimeout(activeTrades[discordUserIdString].tradeTimeout)
                     }
                     delete activeTrades[discordUserIdString];
-                }
-                else{
+                }else{
                     message.channel.send("You can't afford that trade OR you need to do -accept #oftacos")
                 }
-            }
-            else{
-                message.channel.send(message.author + " You do not currently have open trades!")
+            }else{
+                message.channel.send(message.author.username + " You do not currently have open trades!")
             }
         }
     })
@@ -10137,9 +10189,8 @@ module.exports.cancelTradeCommand = function(message, args){
                 delete hasOpenTrade[discordUserIdString];
             }
             delete activeTrades[tradingWith];
-            message.channel.send(":x:  " + message.author + " Canceled a trade ") 
-        }
-        else{
+            message.channel.send(":x:  " + message.author.username + " Canceled a trade ") 
+        }else{
             if (activeTrades[discordUserIdString]){
                 for (var transferId in activeTrades[discordUserIdString].idsToTransfer){
                     // delete from itemsInAuction
@@ -10156,7 +10207,7 @@ module.exports.cancelTradeCommand = function(message, args){
                     clearTimeout(activeTrades[discordUserIdString].tradeTimeout)
                 }
                 delete activeTrades[discordUserIdString];
-                message.channel.send(":x:  " + message.author + " Canceled a trade ") 
+                message.channel.send(":x:  " + message.author.username + " Canceled a trade ") 
             }else{
                 message.channel.send("there is some fishy stuff going on and I am investigating....(for now i have cleared your trades)")
                 if (hasOpenTrade[discordUserIdString]){
@@ -10164,9 +10215,8 @@ module.exports.cancelTradeCommand = function(message, args){
                 }
             }
         }
-    }
-    else{
-        message.channel.send(message.author + " You do not currently have open trades !")
+    }else{
+        message.channel.send(message.author.username + " You do not currently have open trades !")
     }
 }
 
@@ -10191,7 +10241,7 @@ module.exports.agreeTermsCommand = function(message, args){
                                 if (Last_Five_Welcomes.length >= 5){
                                     Last_Five_Welcomes.shift();
                                 }
-                                message.channel.send("welcome aboard ! " + message.author + " your profile has been created. " + host + " will be your host! here are some initial commands you can try```\n-cook\n-tacos\n-prepare\n-thanks @user\n-sorry @user\n-profile\n-shop long\n-inventory\n-buypickaxe\n-help\n-rpghelp\n-itemhelp\n-markethelp\n-map\n-rpgstats\n-rpgstart```Enjoy your stay!" );
+                                message.channel.send("welcome aboard ! " + message.author.username + " your profile has been created. " + host + " will be your host! here are some initial commands you can try```\n-cook\n-tacos\n-prepare\n-thanks @user\n-sorry @user\n-profile\n-shop long\n-inventory\n-buypickaxe\n-help\n-rpghelp\n-itemhelp\n-markethelp\n-map\n-rpgstats\n-rpgstart```Enjoy your stay!" );
                                 if (host.id){
                                     stats.statisticsManage(host.id, "welcomecount", 1, function(err, statSuccess){
                                         if (err){
@@ -10207,13 +10257,11 @@ module.exports.agreeTermsCommand = function(message, args){
                         delete NeedsToAgree[discordUserId]
                     }
                 })
-            }
-            else{
+            }else{
                 // the user profile already exists, ignore this command
             }
         })
-    }
-    else{
+    }else{
         profileDB.getUserProfileData(discordUserId, function(error, data){
             if (error){
                 // this is what we are expecting, from here we expect to create the user profile
@@ -10230,7 +10278,7 @@ module.exports.agreeTermsCommand = function(message, args){
                                 if (Last_Five_Welcomes.length >= 5){
                                     Last_Five_Welcomes.shift();
                                 }
-                                message.channel.send("welcome aboard ! " + message.author + " your profile has been created. \nhere are some initial commands you can try```\n-cook\n-tacos\n-prepare\n-thanks @user\n-sorry @user\n-profile\n-shop long\n-inventory\n-buypickaxe\n-help\n-rpghelp\n-itemhelp\n-markethelp\n-map\n-rpgstats\n-rpgstart```Enjoy your stay!" );
+                                message.channel.send("welcome aboard ! " + message.author.username + " your profile has been created. \nhere are some initial commands you can try```\n-cook\n-tacos\n-prepare\n-thanks @user\n-sorry @user\n-profile\n-shop long\n-inventory\n-buypickaxe\n-help\n-rpghelp\n-itemhelp\n-markethelp\n-map\n-rpgstats\n-rpgstart```Enjoy your stay!" );
                             }
                         })
                     }
@@ -10245,9 +10293,8 @@ module.exports.agreeTermsCommand = function(message, args){
 module.exports.denyTermsCommand = function(message, args){
     var discordUserId = message.author.id
     if (NeedsToAgree[discordUserId] && NeedsToAgree[discordUserId].hasNotAgreed){
-        message.channel.send(message.author + " Your profile will not be created.")
-    }
-    else{
+        message.channel.send(message.author.username + " Your profile will not be created.")
+    }else{
         message.channel.send("already accepted contact an admin to have your data deleted");
     }
 }
@@ -10279,10 +10326,8 @@ module.exports.enterRaffleCommand = function(message, args){
     if (!activeRaffle.users[discordUserId]){
         profileDB.getUserProfileData(discordUserId, function(profileErr, profileRes){
             if (profileErr){
-                // console.log(profileErr);
-                // they need to agree to terms
-            }
-            else{
+                console.log(profileErr);
+            }else{
                 var userTacos = adjustedTacosForUser(discordUserId, profileRes.data.tacos)
                 if (userTacos >= RAFFLE_ENTRY_COST){
                     // add the user to the raffle
@@ -10290,31 +10335,27 @@ module.exports.enterRaffleCommand = function(message, args){
                     activeRaffle.entriesId.push(discordUserId);
                     var size = activeRaffle.entriesId.length
                     if (size <= RAFFLE_USER_SIZE){
-                        message.channel.send(":ticket: " + message.author + " you have entered the taco raffle!")
+                        message.channel.send(":ticket: " + message.author.username + " you have entered the taco raffle!")
                     }
                     if (size == RAFFLE_USER_SIZE){
                         // just got to 7, trigger the raffle event for someone to win
                         calculateRaffleWinner(message);
                         
-                    }
-                    else if (size >= RAFFLE_USER_SIZE + 1){
+                    }else if (size >= RAFFLE_USER_SIZE + 1){
                         activeRaffle = {
                             entriesId: [],
                             users: {}
                         }
-                        message.channel.send(message.author + " Try again, a raffle might have been in session ;(")
+                        message.channel.send(message.author.username + " Try again, a raffle might have been in session ;(")
                     }
-                }
-                else{
-                    message.channel.send(message.author + " You cannot afford the raffle!")
+                }else{
+                    message.channel.send(message.author.username + " You cannot afford the raffle!")
                 }
             }
         })
     }else{
         message.channel.send("You are already in the raffle!");
     }
-    
-    
 }
 
 function calculateRaffleWinner(message){
@@ -10337,8 +10378,7 @@ function calculateRaffleWinner(message){
     profileDB.updateUserTacos(raffleWinner, (RAFFLE_ENTRY_COST * (activeRaffle.entriesId.length - 2)), function(updateErr, updateRes){
         if (updateErr){
             // console.log(updateErr);
-        }
-        else{
+        }else{
             var copyOfEntries = []
             for (var i in activeRaffle.entriesId){
                 copyOfEntries.push(activeRaffle.entriesId[i])
@@ -10350,8 +10390,7 @@ function calculateRaffleWinner(message){
                     profileDB.updateUserTacos(copyOfEntries[entry], (RAFFLE_ENTRY_COST * -1), function(removeErr, removeRes){
                         if (removeErr){
                             // console.log(removeErr);
-                        }
-                        else{
+                        }else{
                             // console.log(removeRes);
                         }
                     })
@@ -10378,8 +10417,7 @@ module.exports.createTableCommand = function(message){
             if (err){
                 // console.log(err);
                 useItem.setItemsLock(discordUserId, false)
-            }
-            else{
+            }else{
                 // console.log(inventoryResponse.data);
                 // get all the data for each item
                 var itemsInInventoryCountMap = {};
@@ -10445,8 +10483,7 @@ module.exports.createTableCommand = function(message){
                         }
                     }
                     createParty(message, discordUserId, uncommonsToUse);
-                }
-                else{
+                }else{
                     useItem.setItemsLock(discordUserId, false)
                     message.channel.send("Missing ingredients for the Taco Party!!");
                 }
@@ -10466,8 +10503,7 @@ function createParty(message, discordUserId, uncommonsToUse){
         if (useError){
             useItem.setItemsLock(discordUserId, false)
             console.log(useError);
-        }
-        else{
+        }else{
             // console.log(useRes);
             if (useRes == "success"){
                 message.channel.send({embed})
@@ -10727,7 +10763,7 @@ module.exports.rpgReadyCommand = function(message){
                 
             }, 10000);
         }else{
-            message.channel.send(message.author + " is ready, waiting on players")
+            message.channel.send(message.author.username + " is ready, waiting on players")
         }
     }else{
         var amuletItemsById = {}
@@ -10759,9 +10795,9 @@ module.exports.rpgSkipCommand = function(message){
                     delete usersMinigames[usersToCleanUp[user]];
                 }
             }
-            message.channel.send(message.author + " has skipped! game will not start");            
+            message.channel.send(message.author.username + " has skipped! game will not start");            
         }else if (gameStatus == "in progress"){
-            message.channel.send(message.author + " game is in progress, you cannot skip!");                        
+            message.channel.send(message.author.username + " game is in progress, you cannot skip!");                        
         }
     }else{
         rpg.rpgSkip(message);
@@ -10815,3 +10851,327 @@ module.exports.travelCommand = function(message, args){
         message.channel.send("invalid use of travel command")
     }
 }
+
+module.exports.cdCommand = function(message){
+
+    var discordUserId = message.author.id
+    profileDB.getUserWearInfo(discordUserId, function(err, res){
+        if (err){
+            console.log(err)
+        }else{
+            var userLevel = res.data[0].level
+            var userPet = res.data[0].pet ? res.data[0].pet : undefined;
+            var userWearingData = {
+                userLevel : userLevel,
+                fetchCD: PETS_AVAILABLE[userPet].cooldown,
+                fetchCount: PETS_AVAILABLE[userPet].fetch
+            }
+            wearStats.getUserWearingStats(message, discordUserId, userWearingData, allItems, function(wearErr, wearRes){
+                if (wearErr){
+                    console.log(wearErr)
+                }else{
+                    let commandsToList = [
+                        {
+                            command: "scavenge",
+                            lastCommandTime: res.data[0].lastscavangetime,
+                            commandTime: SCAVENGE_COOLDOWN_HOURS
+                        },
+                        {
+                            command: "cook",
+                            lastCommandTime: res.data[0].lastcooktime,
+                            commandTime: COOK_COOLDOWN_HOURS
+                        },
+                        {
+                            command: "thank",
+                            lastCommandTime: res.data[0].lastthanktime,
+                            commandTime: THANK_COOLDOWN_HOURS
+                        },
+                        {
+                            command: "sorry",
+                            lastCommandTime: res.data[0].lastsorrytime,
+                            commandTime: SORRY_COOLDOWN_HOURS
+                        },
+                        {
+                            command: "prepare",
+                            lastCommandTime: res.data[0].lastpreparetime,
+                            commandTime: PREPARE_COOLDOWN_HOURS
+                        },
+                        {
+                            command: "daily",
+                            lastCommandTime: res.data[0].lastdailytime,
+                            commandTime: DAILY_COOLDOWN_HOURS
+                        }
+                    ]
+                    if (res.data[0].greenhouselevel > 0){
+                        commandsToList.push({
+                            command: "harvest",
+                            lastCommandTime: res.data[0].lastharvest,
+                            commandTime: HARVEST_COOLDOWN_HOURS
+                        })
+                    }
+                    if (userPet){
+                        commandsToList.push({
+                            command: "fetch",
+                            lastCommandTime: res.data[0].lastfetchtime,
+                            commandTime: PETS_AVAILABLE[userPet].cooldown
+                        })
+                    }
+                    for (var command in commandsToList ){
+                        commandsToList[command].cdString = getCDString(wearRes, res, commandsToList[command])
+                    }
+                    cdEmbedBuilder(message, commandsToList)
+                }
+            })
+        }
+    })
+}
+
+function getCDString(wearRes, res, command){
+    let cdString = "**" + command.command + "** is available"
+    if (command.command == "harvest"){
+        command.commandTime = HARVEST_COOLDOWN_HOURS;
+        if (res.data[0].greenhouselevel >= 11){
+            command.commandTime = 2;
+        }else if (res.data[0].greenhouselevel >= 9){
+            command.commandTime = 3;
+        }
+    }
+    
+    var now = new Date();
+    var threeDaysAgo = new Date();
+    ///////// CALCULATE THE MINUTES REDUCED HERE 
+    var secondsToRemove = wearStats.calculateSecondsReduced(wearRes, command.command);
+    threeDaysAgo = new Date(threeDaysAgo.setHours(threeDaysAgo.getHours() - command.commandTime));
+    threeDaysAgo = new Date(threeDaysAgo.setSeconds(threeDaysAgo.getSeconds() + secondsToRemove));
+    if ( threeDaysAgo < command.lastCommandTime ){
+        now = new Date(now.setSeconds(now.getSeconds() + secondsToRemove));
+        var numberOfHours = getDateDifference(command.lastCommandTime, now, command.commandTime);
+        cdString = "**" +command.command + "** in " + numberOfHours    
+    }
+    return cdString
+}   
+
+function cdEmbedBuilder(message, cdParams){
+    let cdString = ""
+    for (var index in cdParams){
+        cdString = cdString + cdParams[index].cdString + "\n"
+    }
+    const embed = new Discord.RichEmbed()
+    .setColor(0x00AE86)
+    .addField(message.author.username + "'s Cooldowns", cdString, false)
+    embed.setThumbnail(message.author.avatarURL)
+    message.channel.send({embed});
+
+}
+
+module.exports.cdToggleCommand = function(message, args){
+    // toggle on or off your cooldown reminder
+    var discordUserId = message.author.id
+    var channelId = message.channel.id
+    if (args && args.length > 1){
+        var commandToToggle = args[1]
+        profileDB.getUserWearInfo(discordUserId, function(err, res){
+            if (err){
+                console.log(err)
+            }else{
+                var userProfile = res.data[0]
+                var userLevel = userProfile.level
+                var userPet = userProfile.pet ? userProfile.pet : undefined;
+                var HAS_SPRINTING_SHOES = userProfile.sprintingshoes;
+                
+                var userWearingData = {
+                    userLevel : userLevel,
+                    fetchCD: PETS_AVAILABLE[userPet].cooldown,
+                    fetchCount: PETS_AVAILABLE[userPet].fetch,
+                    hasSprintingShoes : HAS_SPRINTING_SHOES
+                }
+                wearStats.getUserWearingStats(message, discordUserId, userWearingData, allItems, function(wearErr, wearRes){
+                    if (wearErr){
+                        console.log(wearErr)
+                    }else{
+                        let currentCommandToggled = false
+                        let acceptedCommand = false
+                        let lastCommandTime;
+                        let commandCooldownHours;
+                        var secondsToRemove =  0
+                        if (commandToToggle == "scavenge" && userProfile.pickaxe != "none"){
+                            currentCommandToggled = userProfile.scavengetoggle
+                            acceptedCommand = true
+                            lastCommandTime = userProfile.lastscavangetime
+                            commandCooldownHours = SCAVENGE_COOLDOWN_HOURS
+                            secondsToRemove = wearStats.calculateSecondsReduced(wearRes, "scavenge");
+                        }
+                        if (commandToToggle == "thank"){
+                            currentCommandToggled = userProfile.thanktoggle
+                            acceptedCommand = true
+                            lastCommandTime = userProfile.lastthanktime
+                            commandCooldownHours = THANK_COOLDOWN_HOURS
+                            secondsToRemove = wearStats.calculateSecondsReduced(wearRes, "thank");
+                        }
+                        if (commandToToggle == "sorry"){
+                            currentCommandToggled = userProfile.sorrytoggle
+                            acceptedCommand = true
+                            lastCommandTime = userProfile.lastsorrytime
+                            commandCooldownHours = SORRY_COOLDOWN_HOURS
+                            secondsToRemove = wearStats.calculateSecondsReduced(wearRes, "sorry");
+                        }
+                        if (commandToToggle == "harvest" 
+                        && userProfile.greenhouselevel
+                        && userProfile.greenhouselevel > 0){
+                            currentCommandToggled = userProfile.harvesttoggle
+                            acceptedCommand = true
+                            lastCommandTime = userProfile.lastharvest
+                            commandCooldownHours = HARVEST_COOLDOWN_HOURS
+                            if (userProfile.greenhouselevel >= 11){
+                                commandCooldownHours = 2;
+                            }else if (userProfile.greenhouselevel >= 9){
+                                commandCooldownHours = 3;
+                            }
+                            secondsToRemove = wearStats.calculateSecondsReduced(wearRes, "harvest");
+                        }
+                        if (commandToToggle == "fetch" && userPet){
+                            currentCommandToggled = userProfile.fetchtoggle
+                            acceptedCommand = true
+                            lastCommandTime = userProfile.lastfetchtime
+                            commandCooldownHours = PETS_AVAILABLE[userPet].cooldown
+                            secondsToRemove = wearStats.calculateSecondsReduced(wearRes, "fetch");
+                        }
+                        if (commandToToggle == "cook"){
+                            currentCommandToggled = userProfile.cooktoggle
+                            acceptedCommand = true
+                            lastCommandTime = userProfile.lastcooktime
+                            commandCooldownHours = COOK_COOLDOWN_HOURS
+                            secondsToRemove = wearStats.calculateSecondsReduced(wearRes, "cook");
+                        }
+                        if (commandToToggle == "prepare"){
+                            currentCommandToggled = userProfile.preparetoggle
+                            acceptedCommand = true
+                            lastCommandTime = userProfile.lastpreparetime
+                            commandCooldownHours = PREPARE_COOLDOWN_HOURS
+                            secondsToRemove = wearStats.calculateSecondsReduced(wearRes, "prepare");
+                        }
+                        if (commandToToggle == "daily"){
+                            currentCommandToggled = userProfile.dailytoggle
+                            acceptedCommand = true
+                            lastCommandTime = userProfile.lastdailytime
+                            commandCooldownHours = DAILY_COOLDOWN_HOURS
+                            secondsToRemove = wearStats.calculateSecondsReduced(wearRes, "daily");
+                        }
+                        if (acceptedCommand){
+                            // add it to timers map
+                            if (!commandTimersMap[discordUserId]){
+                                commandTimersMap[discordUserId] = {}
+                            }
+                            commandTimersMap[discordUserId][commandToToggle] = {
+                                channel: channelId
+                            }
+                            handleCommandTimerToggle(commandToToggle, discordUserId, currentCommandToggled, lastCommandTime, commandCooldownHours, secondsToRemove, message)                    
+                        }
+                    }
+                })
+                
+            }
+        })
+    }
+}
+
+function handleCommandTimerToggle(commandToToggle, discordUserId, currentCommandToggled, lastCommandTime, commandCooldownHours, secondsToRemove, message ){
+    var now = new Date()
+    // get miliseconds until command is available
+    if (currentCommandToggled == true){
+        // set to false, and remove from timers
+        if (commandTimersMap[discordUserId][commandToToggle]){
+            clearTimeout( commandTimersMap[discordUserId][commandToToggle].readyTimeout )
+        }
+        // toggle on profile and set to toggle = false
+        profileDB.updateUserCommandToggle(discordUserId, commandToToggle, null, false, function(err, res){
+            if (err){
+                console.log(err)
+            }else{
+                console.log(res)
+                message.channel.send(message.author.username + "'s " + commandToToggle + " reminder turned off")
+            }
+        })
+    }else{
+        // get miliseconds until available
+        now = new Date(now.setSeconds(now.getSeconds() + secondsToRemove));
+        var milisecondsUntilNext = getMilisFromDates( lastCommandTime, now, commandCooldownHours)
+        let channelId = commandTimersMap[discordUserId][commandToToggle].channel
+        if (milisecondsUntilNext > 1){
+            setTimeOutForToggleCommand(commandToToggle, milisecondsUntilNext, discordUserId)
+            var numberOfHours = getDateDifference(lastCommandTime, now, 0);
+            message.channel.send(message.author.username + "'s " + commandToToggle + " reminder on - next reminder in `" + numberOfHours + "`")
+        }else{
+            handleCommandTimerAvailable(commandToToggle, channelId, discordUserId)
+        }
+        profileDB.updateUserCommandToggle(discordUserId, commandToToggle, channelId, true, function(err, res){
+            if (err){
+                console.log(err)
+            }else{
+                console.log(res)
+            }
+        })
+    }
+}
+
+function getMilisFromDates(beforeDate, now, hoursDifference){
+    if (beforeDate){
+        var afterDate = new Date(beforeDate.setHours(beforeDate.getHours() + hoursDifference));
+        var momentAfterDate = moment(afterDate);
+        var dateDiff = momentAfterDate.diff(now, 'milliseconds');
+        return dateDiff
+    }else{
+        return 0
+    }
+    
+}
+
+function setTimeOutForToggleCommand(command, milisecondsUntilNext, discordUserId ){
+
+    var commandToggleTimeout = setTimeout(function(){
+        // do things here
+        if (commandTimersMap[discordUserId] && commandTimersMap[discordUserId][command]){
+            console.log( command + " reminder" )
+        }
+        let channelId = commandTimersMap[discordUserId][command].channel
+        handleCommandTimerAvailable(command, channelId, discordUserId)
+
+    }, milisecondsUntilNext)
+
+    commandTimersMap[discordUserId][command].readyTimeout = commandToggleTimeout
+}
+
+function handleCommandTimerAvailable(command, channelId, discordUserId){
+    // the command is available for the user, announce it in the channel
+    var channel = client.channels.get(channelId);
+    var discordUser = client.users.get(discordUserId)
+    if (channel && discordUser){
+        channel.send(discordUser + " " + command + " reminder")
+    }
+}
+
+function createTimeOutForCommandAfterUse(command, now, secondsToRemove, commandCooldownHours, discordUserId, profileData){
+    // check if prepare is toggled
+    if (profileData[command + "toggle"]){
+        var nowCopy = new Date()
+        now = new Date(now.setSeconds(now.getSeconds() + secondsToRemove));
+        var milisecondsUntilNext = getMilisFromDates( nowCopy, now, commandCooldownHours)
+        setTimeOutForToggleCommand(command, milisecondsUntilNext, discordUserId )
+        // update database with next reminder as date
+        // next reminder should be now + (commandCooldownHours in seconds - secondsToRemove)
+        var nextReminder = new Date(now.setSeconds(now.getSeconds() + (commandCooldownHours * 60 * 60) - secondsToRemove))
+        profileDB.updateCommandNextReminder(discordUserId, command, nextReminder, function(err,res){
+            if (err){
+                console.log(err)
+            }else{
+                var testDate = new Date()
+                console.log("now " + testDate)
+                console.log("next reminder " + nextReminder)
+            }
+        })
+    }
+}
+
+// on startup, load timeouts for each of the cooldowns if they are toggled on
+// keep a map of all the timeouts for each person and their cooldowns
+// toggle off should clear the timeout
