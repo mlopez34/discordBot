@@ -744,7 +744,7 @@ module.exports.thankCommand = function(message){
                                                     getProfileForAchievement(discordUserId, message, thankResponse )
                                                 }
                                             })
-                                            createTimeOutForCommandAfterUse("thank", now, secondsToRemove, THANK_COOLDOWN_HOURS, discordUserId, thankResponse.data)
+                                            createTimeOutForCommandAfterUse("thank", now, secondsToRemove, THANK_COOLDOWN_HOURS, discordUserId, thankResponse.data, message)
                                         }
                                     })
                                     // send message that the user has 1 more taco
@@ -889,7 +889,7 @@ module.exports.sorryCommand = function(message){
                                                     getProfileForAchievement(discordUserId, message, sorryResponse)
                                                 }
                                             })
-                                            createTimeOutForCommandAfterUse("sorry", now, secondsToRemove, SORRY_COOLDOWN_HOURS, discordUserId, sorryResponse.data)
+                                            createTimeOutForCommandAfterUse("sorry", now, secondsToRemove, SORRY_COOLDOWN_HOURS, discordUserId, sorryResponse.data, message)
                                         }
                                     })
                                     // send message that the user has 1 more taco
@@ -1039,7 +1039,7 @@ module.exports.prepareCommand = function (message){
                                                     message.channel.send(message.author.username + " You have prepared `" + tacosToPrepare + "` tacos :taco:! `" + soiledToTaco +"` were from soiled crops. The tacos also come with `1` warranty protection");
                                                 }
                                                 // check if prepare is toggled
-                                                createTimeOutForCommandAfterUse("prepare", now, secondsToRemove, PREPARE_COOLDOWN_HOURS, discordUserId, prepareResponse.data)
+                                                createTimeOutForCommandAfterUse("prepare", now, secondsToRemove, PREPARE_COOLDOWN_HOURS, discordUserId, prepareResponse.data, message)
                                                 //// message.channel.send("New Feature Introduced!\nYou can now enter the RPG queue!\nUse commands `-rpgqueue [2-5]` to enter an rpg queue of group size 2-5.\n`-rpgleave` to leave the queue. Read `-patchnotes` for more info")
                                                 var experienceFromItems = wearStats.calculateExtraExperienceGained(wearRes, "prepare", null)
                                                 experience.gainExperience(message, message.author, (EXPERIENCE_GAINS.prepare + (EXPERIENCE_GAINS.preparePerStand * userTacoStands) + experienceFromItems) , prepareResponse);
@@ -1320,7 +1320,7 @@ module.exports.dailyCommand = function(message, args, dbl){
                                 }else{
                                     exports.setCommandLock("vote", discordUserId, false)
                                     message.channel.send("congrats you have voted and gained `" + burritosGained + "` :burrito: and `" + tacosGained + "` :taco:")
-                                    createTimeOutForCommandAfterUse("daily", now, 0, DAILY_COOLDOWN_HOURS, discordUserId, profileData)
+                                    createTimeOutForCommandAfterUse("daily", now, 0, DAILY_COOLDOWN_HOURS, discordUserId, profileData, message)
                                 }
                             })
                         }else{
@@ -1649,7 +1649,7 @@ module.exports.cookCommand = function(message){
                                     var experienceFromItems = wearStats.calculateExtraExperienceGained(wearRes, "cook", null);
                                     experience.gainExperience(message, message.author, (EXPERIENCE_GAINS.cook + experienceFromItems), cookResponse);
                                     // check if cook is toggled
-                                    createTimeOutForCommandAfterUse("cook", now, secondsToRemove, COOK_COOLDOWN_HOURS, discordUserId, cookResponse.data)
+                                    createTimeOutForCommandAfterUse("cook", now, secondsToRemove, COOK_COOLDOWN_HOURS, discordUserId, cookResponse.data, message)
                                 }
                             })
                         }else{
@@ -3895,7 +3895,7 @@ module.exports.scavangeCommand = function (message){
                                     }
                                 })
                             }
-                            createTimeOutForCommandAfterUse("scavenge", now, secondsToRemove, SCAVENGE_COOLDOWN_HOURS, discordUserId, getUserResponse.data)
+                            createTimeOutForCommandAfterUse("scavenge", now, secondsToRemove, SCAVENGE_COOLDOWN_HOURS, discordUserId, getUserResponse.data, message)
                             profileDB.updateUserTacos(discordUserId, tacosFound + extraTacosFromItems, function(updateLSErr, updateLSres){
                                 if(updateLSErr){
                                     // console.log(updateLSErr);
@@ -5122,7 +5122,7 @@ module.exports.fetchCommand = function(message, args){
                                                 // TODO: create events that are processed by other modules: ie - temple, greenhouse, temple 
                                                 eventParams = { command: "fetch", userData: fetchResponse, fetchCD: userData.fetchCD, discordUserId: discordUserId, userPetName: userPetName, emoji: PETS_AVAILABLE[userPet].emoji  }
                                                 additionalEventsForCommand(message, eventParams)
-                                                createTimeOutForCommandAfterUse("fetch", now, secondsToRemove, PETS_AVAILABLE[userPet].cooldown, discordUserId, fetchResponse.data)
+                                                createTimeOutForCommandAfterUse("fetch", now, secondsToRemove, PETS_AVAILABLE[userPet].cooldown, discordUserId, fetchResponse.data, message)
                                                 // user's pet fetched some tacos
                                                 if (extraTacosFromItems > 0){
                                                     /* SEASONAL
@@ -5202,8 +5202,7 @@ module.exports.useCommand = function(message, args){
                 // console.log(error);
                 useItem.setItemsLock(discordUserId, false)
                 agreeToTerms(message, discordUserId);
-            }
-            else{
+            }else{
                 console.log("got item")
                  // map of user's inventory
                 var itemsInInventoryCountMap = {};
@@ -5286,107 +5285,107 @@ module.exports.useCommand = function(message, args){
         })
     }
 
-    else if (args && args.length > 1 && args[1].toLowerCase() == "rock" && !useItem.getItemsLock(discordUserId)){
-        if (mentionedUser && !mentionedUser.bot && mentionedId != message.author.id){
-            // use rock
-            useItem.setItemsLock(discordUserId, true)
-            profileDB.getUserItems(discordUserId, function(error, inventoryResponse){
-                if (error){
-                    // console.log(error);
-                    useItem.setItemsLock(discordUserId, false)
-                    agreeToTerms(message, discordUserId);
-                }
-                else{
-                    // check that the user has enough rocks to throw at someone
-                    // map of user's inventory
-                    var itemsInInventoryCountMap = {};
-                    // item object for rock to use
-                    var rockToUse;
-                    for (var item in inventoryResponse.data){
-                        // check the rock hasnt been used
-                        var validItem = useItem.itemValidate(inventoryResponse.data[item]);
-                        var itemBeingAuctioned = false;
-                        if (itemsInAuction[inventoryResponse.data[item].id]){
-                            itemBeingAuctioned = true;
-                        }
-                        var itemBeingTraded = false;
-                        if (activeTradeItems[inventoryResponse.data[item].id]){
-                            itemBeingTraded = true;
-                        }
-                        if (!itemsInInventoryCountMap[inventoryResponse.data[item].itemid] && validItem
-                            && !itemBeingAuctioned && !itemBeingTraded){
-                            // item hasnt been added to be counted, add it as 1
-                            itemsInInventoryCountMap[inventoryResponse.data[item].itemid] = 1;
+    // else if (args && args.length > 1 && args[1].toLowerCase() == "rock" && !useItem.getItemsLock(discordUserId)){
+    //     if (mentionedUser && !mentionedUser.bot && mentionedId != message.author.id){
+    //         // use rock
+    //         useItem.setItemsLock(discordUserId, true)
+    //         profileDB.getUserItems(discordUserId, function(error, inventoryResponse){
+    //             if (error){
+    //                 // console.log(error);
+    //                 useItem.setItemsLock(discordUserId, false)
+    //                 agreeToTerms(message, discordUserId);
+    //             }
+    //             else{
+    //                 // check that the user has enough rocks to throw at someone
+    //                 // map of user's inventory
+    //                 var itemsInInventoryCountMap = {};
+    //                 // item object for rock to use
+    //                 var rockToUse;
+    //                 for (var item in inventoryResponse.data){
+    //                     // check the rock hasnt been used
+    //                     var validItem = useItem.itemValidate(inventoryResponse.data[item]);
+    //                     var itemBeingAuctioned = false;
+    //                     if (itemsInAuction[inventoryResponse.data[item].id]){
+    //                         itemBeingAuctioned = true;
+    //                     }
+    //                     var itemBeingTraded = false;
+    //                     if (activeTradeItems[inventoryResponse.data[item].id]){
+    //                         itemBeingTraded = true;
+    //                     }
+    //                     if (!itemsInInventoryCountMap[inventoryResponse.data[item].itemid] && validItem
+    //                         && !itemBeingAuctioned && !itemBeingTraded){
+    //                         // item hasnt been added to be counted, add it as 1
+    //                         itemsInInventoryCountMap[inventoryResponse.data[item].itemid] = 1;
 
-                            if (inventoryResponse.data[item].itemid == ROCK_ITEM_ID){
-                                // make this the rockToUse
-                                rockToUse = inventoryResponse.data[item];
-                            }
-                        }
-                        else if (validItem && !itemBeingAuctioned && !itemBeingTraded){
-                            itemsInInventoryCountMap[inventoryResponse.data[item].itemid] = itemsInInventoryCountMap[inventoryResponse.data[item].itemid] + 1
-                        }
-                    }
-                    // console.log(itemsInInventoryCountMap);
-                    if (itemsInInventoryCountMap[ROCK_ITEM_ID] && itemsInInventoryCountMap[ROCK_ITEM_ID] > 0){
-                        // user has this many rocks if greater than 0 then able to throw rock
-                        // console.log(itemsInInventoryCountMap[ROCK_ITEM_ID]);
-                        //tacos being used in auction
-                        var tacosInUse = 0;
-                        if (tacosInUseAuction[mentionedId] && tacosInUseAuction[mentionedId] > 0){
-                            tacosInUse = tacosInUseAuction[mentionedId];
-                        }
-                        useItem.useRock(message, mentionedId, rockToUse, tacosInUse, function(throwRockError, throwRes){
-                            if (throwRockError){
-                                // console.log(throwRockError);
-                                useItem.setItemsLock(discordUserId, false)
-                            }
-                            else{
-                                // console.log(throwRes);
-                                useItem.setItemsLock(discordUserId, false)
-                                if (throwRes == "success"){
-                                    message.channel.send( message.author.username + " threw a rock at " + mentionedUserName + ", they became dizzy and dropped `10` tacos :taco:");
-                                    // if they drop a taco someone else can pick it up
-                                    var poisonedTacoRoll = Math.floor(Math.random() * 100) + 1;
-                                    var poisonedTaco = false;
-                                    if (poisonedTacoRoll > 75){
-                                        poisonedTaco = true;
-                                    }
-                                    QueueOfTacosDropped.push({ droppedBy: mentionedId, cannotPickUp: discordUserId, poisoned: poisonedTaco })
-                                }
-                                else if (throwRes == "protection"){
-                                    message.channel.send(message.author.username + " threw a rock at " + mentionedUserName + " but one of their fences protected them!");
-                                }
-                                else{
-                                    message.channel.send(message.author.username + " threw a rock at " + mentionedUserName);
-                                }
-                                var timeout = setTimeout (function(){ 
-                                    experience.gainExperience(message, message.author, EXPERIENCE_GAINS.useCommonItem);
-                                    stats.statisticsManage(discordUserId, "rocksthrown", 1, function(staterr, statSuccess){
-                                        if (staterr){
-                                            // console.log(staterr);
-                                        }
-                                        else{
-                                            // check achievements??
-                                            getProfileForAchievement(discordUserId, message) 
-                                        }
-                                    })
-                                }, 1000);
-                            }
-                        })
-                    }
-                    else{
-                        // tell the user they don't have enough rocks
-                        useItem.setItemsLock(discordUserId, false)
-                        message.channel.send("don't have enough rocks to throw...");
-                    }
-                }
-            })
-        }
-        else{
-            message.channel.send("mention a user to throw a rock at, you cannot throw rocks at bots or yourself... grind");
-        }
-    }
+    //                         if (inventoryResponse.data[item].itemid == ROCK_ITEM_ID){
+    //                             // make this the rockToUse
+    //                             rockToUse = inventoryResponse.data[item];
+    //                         }
+    //                     }
+    //                     else if (validItem && !itemBeingAuctioned && !itemBeingTraded){
+    //                         itemsInInventoryCountMap[inventoryResponse.data[item].itemid] = itemsInInventoryCountMap[inventoryResponse.data[item].itemid] + 1
+    //                     }
+    //                 }
+    //                 // console.log(itemsInInventoryCountMap);
+    //                 if (itemsInInventoryCountMap[ROCK_ITEM_ID] && itemsInInventoryCountMap[ROCK_ITEM_ID] > 0){
+    //                     // user has this many rocks if greater than 0 then able to throw rock
+    //                     // console.log(itemsInInventoryCountMap[ROCK_ITEM_ID]);
+    //                     //tacos being used in auction
+    //                     var tacosInUse = 0;
+    //                     if (tacosInUseAuction[mentionedId] && tacosInUseAuction[mentionedId] > 0){
+    //                         tacosInUse = tacosInUseAuction[mentionedId];
+    //                     }
+    //                     useItem.useRock(message, mentionedId, rockToUse, tacosInUse, function(throwRockError, throwRes){
+    //                         if (throwRockError){
+    //                             // console.log(throwRockError);
+    //                             useItem.setItemsLock(discordUserId, false)
+    //                         }
+    //                         else{
+    //                             // console.log(throwRes);
+    //                             useItem.setItemsLock(discordUserId, false)
+    //                             if (throwRes == "success"){
+    //                                 message.channel.send( message.author.username + " threw a rock at " + mentionedUserName + ", they became dizzy and dropped `10` tacos :taco:");
+    //                                 // if they drop a taco someone else can pick it up
+    //                                 var poisonedTacoRoll = Math.floor(Math.random() * 100) + 1;
+    //                                 var poisonedTaco = false;
+    //                                 if (poisonedTacoRoll > 75){
+    //                                     poisonedTaco = true;
+    //                                 }
+    //                                 QueueOfTacosDropped.push({ droppedBy: mentionedId, cannotPickUp: discordUserId, poisoned: poisonedTaco })
+    //                             }
+    //                             else if (throwRes == "protection"){
+    //                                 message.channel.send(message.author.username + " threw a rock at " + mentionedUserName + " but one of their fences protected them!");
+    //                             }
+    //                             else{
+    //                                 message.channel.send(message.author.username + " threw a rock at " + mentionedUserName);
+    //                             }
+    //                             var timeout = setTimeout (function(){ 
+    //                                 experience.gainExperience(message, message.author, EXPERIENCE_GAINS.useCommonItem);
+    //                                 stats.statisticsManage(discordUserId, "rocksthrown", 1, function(staterr, statSuccess){
+    //                                     if (staterr){
+    //                                         // console.log(staterr);
+    //                                     }
+    //                                     else{
+    //                                         // check achievements??
+    //                                         getProfileForAchievement(discordUserId, message) 
+    //                                     }
+    //                                 })
+    //                             }, 1000);
+    //                         }
+    //                     })
+    //                 }
+    //                 else{
+    //                     // tell the user they don't have enough rocks
+    //                     useItem.setItemsLock(discordUserId, false)
+    //                     message.channel.send("don't have enough rocks to throw...");
+    //                 }
+    //             }
+    //         })
+    //     }
+    //     else{
+    //         message.channel.send("mention a user to throw a rock at, you cannot throw rocks at bots or yourself... grind");
+    //     }
+    // }
     else if(args && args.length > 1 && !useItem.getItemsLock(discordUserId) && (args[1].toLowerCase() == "pieceofwood" || args[1].toLowerCase() == "wood")){
         // use pieces of wood - protect against rocks being thrown at you (uses 6 pieces, protects against 3)
         useItem.setItemsLock(discordUserId, true)
@@ -6899,7 +6898,7 @@ module.exports.harvestCommand = function(message, args){
                                             }else{
                                                 console.log(plotRes)
                                                 harvestEmbedBuilder(message, fruitsColumnsWithCount)
-                                                createTimeOutForCommandAfterUse("harvest", now, secondsToRemove, userCooldown, discordUserId, profileData.data)
+                                                createTimeOutForCommandAfterUse("harvest", now, secondsToRemove, userCooldown, discordUserId, profileData.data, message)
                                             }
                                         })
                                     }
@@ -8685,8 +8684,6 @@ function initializeUserReminders(user, fromCdCommand){
         commandTimersUpdateChannelForCommand(discordUserId, "scavenge", channelId)
         if (milisecondsUntilNext > 1){
             setTimeOutForToggleCommand("scavenge", milisecondsUntilNext, discordUserId)
-        }else if(!fromCdCommand){
-            handleCommandTimerAvailable("scavenge", channelId, discordUserId)
         }
     }
     if (user.thanktoggle){
@@ -8700,8 +8697,6 @@ function initializeUserReminders(user, fromCdCommand){
         commandTimersUpdateChannelForCommand(discordUserId, "thank", channelId)
         if (milisecondsUntilNext > 1){
             setTimeOutForToggleCommand("thank", milisecondsUntilNext, discordUserId)
-        }else if(!fromCdCommand){
-            handleCommandTimerAvailable("thank", channelId, discordUserId)
         }
     }
     if (user.sorrytoggle){
@@ -8715,8 +8710,6 @@ function initializeUserReminders(user, fromCdCommand){
         commandTimersUpdateChannelForCommand(discordUserId, "sorry", channelId)
         if (milisecondsUntilNext > 1){
             setTimeOutForToggleCommand("sorry", milisecondsUntilNext, discordUserId)
-        }else if(!fromCdCommand){
-            handleCommandTimerAvailable("sorry", channelId, discordUserId)
         }
     }
     if (user.fetchtoggle){
@@ -8730,8 +8723,6 @@ function initializeUserReminders(user, fromCdCommand){
         commandTimersUpdateChannelForCommand(discordUserId, "fetch", channelId)
         if (milisecondsUntilNext > 1){
             setTimeOutForToggleCommand("fetch", milisecondsUntilNext, discordUserId)
-        }else if(!fromCdCommand){
-            handleCommandTimerAvailable("fetch", channelId, discordUserId)
         }
     }
     if (user.cooktoggle){
@@ -8745,8 +8736,6 @@ function initializeUserReminders(user, fromCdCommand){
         commandTimersUpdateChannelForCommand(discordUserId, "cook", channelId)
         if (milisecondsUntilNext > 1){
             setTimeOutForToggleCommand("cook", milisecondsUntilNext, discordUserId)
-        }else if(!fromCdCommand){
-            handleCommandTimerAvailable("cook", channelId, discordUserId)
         }
     }
     if (user.preparetoggle){
@@ -8760,8 +8749,6 @@ function initializeUserReminders(user, fromCdCommand){
         commandTimersUpdateChannelForCommand(discordUserId, "prepare", channelId)
         if (milisecondsUntilNext > 1){
             setTimeOutForToggleCommand("prepare", milisecondsUntilNext, discordUserId)
-        }else if(!fromCdCommand){
-            handleCommandTimerAvailable("prepare", channelId, discordUserId)
         }
     }
     if (user.harvesttoggle){
@@ -8775,8 +8762,6 @@ function initializeUserReminders(user, fromCdCommand){
         commandTimersUpdateChannelForCommand(discordUserId, "harvest", channelId)
         if (milisecondsUntilNext > 1){
             setTimeOutForToggleCommand("harvest", milisecondsUntilNext, discordUserId)
-        }else if(!fromCdCommand){
-            handleCommandTimerAvailable("harvest", channelId, discordUserId)
         }
     }
     if (user.dailytoggle){
@@ -8790,8 +8775,6 @@ function initializeUserReminders(user, fromCdCommand){
         commandTimersUpdateChannelForCommand(discordUserId, "daily", channelId)
         if (milisecondsUntilNext > 1){
             setTimeOutForToggleCommand("daily", milisecondsUntilNext, discordUserId)
-        }else if(!fromCdCommand){
-            handleCommandTimerAvailable("daily", channelId, discordUserId)
         }
     }
 }
@@ -10944,7 +10927,14 @@ function getCDString(wearRes, res, command){
 function cdEmbedBuilder(message, cdParams){
     let cdString = ""
     for (var index in cdParams){
-        cdString = cdString + cdParams[index].cdString + "\n"
+        if (cdParams[index].cdString.includes("is available")){
+            cdString = cdString + cdParams[index].cdString + "\n"
+        }
+    }
+    for (var index in cdParams){
+        if (!cdParams[index].cdString.includes("is available")){
+            cdString = cdString + cdParams[index].cdString + "\n"
+        }
     }
     const embed = new Discord.RichEmbed()
     .setColor(0x00AE86)
@@ -11168,15 +11158,15 @@ function handleCommandTimerAvailable(command, channelId, discordUserId){
     }
 }
 
-function createTimeOutForCommandAfterUse(command, now, secondsToRemove, commandCooldownHours, discordUserId, profileData){
-    // check if prepare is toggled
+function createTimeOutForCommandAfterUse(command, now, secondsToRemove, commandCooldownHours, discordUserId, profileData, message){
     if (profileData[command + "toggle"]){
         var nowCopy = new Date()
         now = new Date(now.setSeconds(now.getSeconds() + secondsToRemove));
         var milisecondsUntilNext = getMilisFromDates( nowCopy, now, commandCooldownHours)
         setTimeOutForToggleCommand(command, milisecondsUntilNext, discordUserId )
         // next reminder should be now + (commandCooldownHours in seconds - secondsToRemove)
-        var nextReminder = new Date(now.setSeconds(now.getSeconds() + (commandCooldownHours * 60 * 60) - secondsToRemove))
+        var currentTime = new Date()
+        var nextReminder = new Date(currentTime.setSeconds(currentTime.getSeconds() + (commandCooldownHours * 60 * 60) - secondsToRemove))
         profileDB.updateCommandNextReminder(discordUserId, command, nextReminder, function(err,res){
             if (err){
                 console.log(err)
@@ -11184,6 +11174,7 @@ function createTimeOutForCommandAfterUse(command, now, secondsToRemove, commandC
                 var testDate = new Date()
                 console.log("now " + testDate)
                 console.log("next reminder " + nextReminder)
+                message.channel.send(message.author.username + " Next Reminder : `" + nextReminder + "`")
             }
         })
     }
