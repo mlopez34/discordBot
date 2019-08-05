@@ -8679,9 +8679,7 @@ module.exports.initializeReminders = function(){
             var users = remindersRes.data
             for (var u in users){
                 let discordUserId = users[u].discordid
-                if (!commandTimersMap[discordUserId]){
-                    commandTimersMap[discordUserId] = {}
-                }
+                commandTimersMapHandleUser(discordUserId)
                 if (users[u].scavengetoggle){
                     // user wants to be reminded of scavenge
                     
@@ -8690,9 +8688,7 @@ module.exports.initializeReminders = function(){
                     var milisecondsUntilNext = getMilisFromDates(nextReminder, now, 0)
                     let channelId = users[u].scavengetogglechannel
                     // create reminder of miliseconds nextReminder - now
-                    commandTimersMap[discordUserId]["scavenge"] = {
-                        channel: channelId
-                    }
+                    commandTimersUpdateChannelForCommand(discordUserId, "scavenge", channelId)
                     if (milisecondsUntilNext > 1){
                         setTimeOutForToggleCommand("scavenge", milisecondsUntilNext, discordUserId)
                     }else{
@@ -8707,9 +8703,7 @@ module.exports.initializeReminders = function(){
                     var milisecondsUntilNext = getMilisFromDates(nextReminder, now, 0)
                     let channelId = users[u].thanktogglechannel
                     // create reminder of miliseconds nextReminder - now
-                    commandTimersMap[discordUserId]["thank"] = {
-                        channel: channelId
-                    }
+                    commandTimersUpdateChannelForCommand(discordUserId, "thank", channelId)
                     if (milisecondsUntilNext > 1){
                         setTimeOutForToggleCommand("thank", milisecondsUntilNext, discordUserId)
                     }else{
@@ -8724,9 +8718,7 @@ module.exports.initializeReminders = function(){
                     var milisecondsUntilNext = getMilisFromDates(nextReminder, now, 0)
                     let channelId = users[u].sorrytogglechannel
                     // create reminder of miliseconds nextReminder - now
-                    commandTimersMap[discordUserId]["sorry"] = {
-                        channel: channelId
-                    }
+                    commandTimersUpdateChannelForCommand(discordUserId, "sorry", channelId)
                     if (milisecondsUntilNext > 1){
                         setTimeOutForToggleCommand("sorry", milisecondsUntilNext, discordUserId)
                     }else{
@@ -8741,9 +8733,7 @@ module.exports.initializeReminders = function(){
                     var milisecondsUntilNext = getMilisFromDates(nextReminder, now, 0)
                     let channelId = users[u].fetchtogglechannel
                     // create reminder of miliseconds nextReminder - now
-                    commandTimersMap[discordUserId]["fetch"] = {
-                        channel: channelId
-                    }
+                    commandTimersUpdateChannelForCommand(discordUserId, "fetch", channelId)
                     if (milisecondsUntilNext > 1){
                         setTimeOutForToggleCommand("fetch", milisecondsUntilNext, discordUserId)
                     }else{
@@ -8758,9 +8748,7 @@ module.exports.initializeReminders = function(){
                     var milisecondsUntilNext = getMilisFromDates(nextReminder, now, 0)
                     let channelId = users[u].cooktogglechannel
                     // create reminder of miliseconds nextReminder - now
-                    commandTimersMap[discordUserId]["cook"] = {
-                        channel: channelId
-                    }
+                    commandTimersUpdateChannelForCommand(discordUserId, "cook", channelId)
                     if (milisecondsUntilNext > 1){
                         setTimeOutForToggleCommand("cook", milisecondsUntilNext, discordUserId)
                     }else{
@@ -8775,9 +8763,7 @@ module.exports.initializeReminders = function(){
                     var milisecondsUntilNext = getMilisFromDates(nextReminder, now, 0)
                     let channelId = users[u].preparetogglechannel
                     // create reminder of miliseconds nextReminder - now
-                    commandTimersMap[discordUserId]["prepare"] = {
-                        channel: channelId
-                    }
+                    commandTimersUpdateChannelForCommand(discordUserId, "prepare", channelId)
                     if (milisecondsUntilNext > 1){
                         setTimeOutForToggleCommand("prepare", milisecondsUntilNext, discordUserId)
                     }else{
@@ -8792,9 +8778,7 @@ module.exports.initializeReminders = function(){
                     var milisecondsUntilNext = getMilisFromDates(nextReminder, now, 0)
                     let channelId = users[u].harvesttogglechannel
                     // create reminder of miliseconds nextReminder - now
-                    commandTimersMap[discordUserId]["harvest"] = {
-                        channel: channelId
-                    }
+                    commandTimersUpdateChannelForCommand(discordUserId, "harvest", channelId)
                     if (milisecondsUntilNext > 1){
                         setTimeOutForToggleCommand("harvest", milisecondsUntilNext, discordUserId)
                     }else{
@@ -8809,9 +8793,7 @@ module.exports.initializeReminders = function(){
                     var milisecondsUntilNext = getMilisFromDates(nextReminder, now, 0)
                     let channelId = users[u].dailytogglechannel
                     // create reminder of miliseconds nextReminder - now
-                    commandTimersMap[discordUserId]["daily"] = {
-                        channel: channelId
-                    }
+                    commandTimersUpdateChannelForCommand(discordUserId, "daily", channelId)
                     if (milisecondsUntilNext > 1){
                         setTimeOutForToggleCommand("daily", milisecondsUntilNext, discordUserId)
                     }else{
@@ -10861,10 +10843,12 @@ module.exports.cdCommand = function(message){
         }else{
             var userLevel = res.data[0].level
             var userPet = res.data[0].pet ? res.data[0].pet : undefined;
+            var HAS_SPRINTING_SHOES = res.data[0].sprintingshoes;
             var userWearingData = {
                 userLevel : userLevel,
                 fetchCD: PETS_AVAILABLE[userPet].cooldown,
-                fetchCount: PETS_AVAILABLE[userPet].fetch
+                fetchCount: PETS_AVAILABLE[userPet].fetch,
+                hasSprintingShoes : HAS_SPRINTING_SHOES
             }
             wearStats.getUserWearingStats(message, discordUserId, userWearingData, allItems, function(wearErr, wearRes){
                 if (wearErr){
@@ -11059,12 +11043,8 @@ module.exports.cdToggleCommand = function(message, args){
                         }
                         if (acceptedCommand){
                             // add it to timers map
-                            if (!commandTimersMap[discordUserId]){
-                                commandTimersMap[discordUserId] = {}
-                            }
-                            commandTimersMap[discordUserId][commandToToggle] = {
-                                channel: channelId
-                            }
+                            // TODO: handle this in a separate function
+                            commandTimersUpdateChannelForCommand(discordUserId, commandToToggle, channelId)
                             handleCommandTimerToggle(commandToToggle, discordUserId, currentCommandToggled, lastCommandTime, commandCooldownHours, secondsToRemove, message)                    
                         }
                     }
@@ -11075,14 +11055,46 @@ module.exports.cdToggleCommand = function(message, args){
     }
 }
 
+function commandTimersMapHandleUser(discordUserId){
+    if (!commandTimersMap[discordUserId]){
+        commandTimersMap[discordUserId] = {}
+    }
+}
+
+function commandTimersHandleCommand(discordUserId, commandToToggle){
+    if (!commandTimersMap[discordUserId][commandToToggle]){
+        commandTimersMap[discordUserId][commandToToggle] = {}
+    }
+}
+
+function commandTimersUpdateChannelForCommand(discordUserId, commandToToggle, channelId){
+    // ensure user exists in map
+    commandTimersMapHandleUser(discordUserId)
+    commandTimersHandleCommand(discordUserId, commandToToggle)
+    commandTimersMap[discordUserId][commandToToggle].channel = channelId
+}
+
+function commandTimersClearTimeout(commandToToggle, discordUserId){
+    commandTimersMapHandleUser(discordUserId)
+    if (commandTimersMap[discordUserId][commandToToggle]){
+        clearTimeout( commandTimersMap[discordUserId][commandToToggle].readyTimeout )
+    }
+}
+
+function commandTimersAddTimeout(command, discordUserId, commandToggleTimeout){
+    // clear old timeout and then add the new timeout
+    if (commandTimersMap[discordUserId][command].readyTimeout){
+        commandTimersClearTimeout(command, discordUserId)
+    }
+    commandTimersMap[discordUserId][command].readyTimeout = commandToggleTimeout
+}
+
 function handleCommandTimerToggle(commandToToggle, discordUserId, currentCommandToggled, lastCommandTime, commandCooldownHours, secondsToRemove, message ){
     var now = new Date()
     // get miliseconds until command is available
     if (currentCommandToggled == true){
         // set to false, and remove from timers
-        if (commandTimersMap[discordUserId][commandToToggle]){
-            clearTimeout( commandTimersMap[discordUserId][commandToToggle].readyTimeout )
-        }
+        commandTimersClearTimeout(commandToToggle, discordUserId)
         // toggle on profile and set to toggle = false
         profileDB.updateUserCommandToggle(discordUserId, commandToToggle, null, false, function(err, res){
             if (err){
@@ -11137,8 +11149,8 @@ function setTimeOutForToggleCommand(command, milisecondsUntilNext, discordUserId
         handleCommandTimerAvailable(command, channelId, discordUserId)
 
     }, milisecondsUntilNext)
-
-    commandTimersMap[discordUserId][command].readyTimeout = commandToggleTimeout
+    // clear old timeout and then add the new timeout
+    commandTimersAddTimeout(command, discordUserId, commandToggleTimeout)
 }
 
 function handleCommandTimerAvailable(command, channelId, discordUserId){
@@ -11157,7 +11169,6 @@ function createTimeOutForCommandAfterUse(command, now, secondsToRemove, commandC
         now = new Date(now.setSeconds(now.getSeconds() + secondsToRemove));
         var milisecondsUntilNext = getMilisFromDates( nowCopy, now, commandCooldownHours)
         setTimeOutForToggleCommand(command, milisecondsUntilNext, discordUserId )
-        // update database with next reminder as date
         // next reminder should be now + (commandCooldownHours in seconds - secondsToRemove)
         var nextReminder = new Date(now.setSeconds(now.getSeconds() + (commandCooldownHours * 60 * 60) - secondsToRemove))
         profileDB.updateCommandNextReminder(discordUserId, command, nextReminder, function(err,res){
