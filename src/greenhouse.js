@@ -213,6 +213,10 @@ module.exports.getFruitString = function(userFruitsCount){
     return fruitString
 }
 
+module.exports.eventsForCommand = function(message, eventParams){
+    
+}
+
 const upgradeRequirements = {
     1: {
         items: [

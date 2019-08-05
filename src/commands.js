@@ -1,11 +1,9 @@
 
 var achiev = require("./achievements.js");
-var rpg = require("./rpg.js")
-var rpglib = require("./rpglib");
+var rpg = require("./rpg/rpg.js")
 var profileDB = require("./profileDB.js");
 var stats = require("./statistics.js");
 const Discord = require("discord.js");
-var Promise = require('bluebird');
 var config = require("./config.js");
 var useItem = require("./useItem.js")
 var baking = require("./baking.js")
@@ -53,6 +51,7 @@ var SORRY_COOLDOWN_HOURS = 6;
 var COOK_COOLDOWN_HOURS = 24;
 var PREPARE_COOLDOWN_HOURS = 48;
 var HARVEST_COOLDOWN_HOURS = 4;
+var DAILY_COOLDOWN_HOURS = 12;
 var SCAVENGE_COOLDOWN_HOURS = 1;
 var RAFFLE_ENTRY_COST = 50;
 var RAFFLE_USER_SIZE = 7
@@ -65,9 +64,9 @@ var ETHEREUM_ID = 200;
 var TACO_PARTY_TIME_TO_LIVE = 300000
 var SHOP_ITEM_COST = 125
 const GREENHOUSE_COST = 10000
-const TEMPLE_COST = 25000
+const TEMPLE_COST = 15000
 const HACKSAW_COST = 5000
-const STABLE_COST = 35000
+const STABLE_COST = 25000
 
 
 var activeAuctions = {};
@@ -83,11 +82,14 @@ var activeRaffle = {
 var activeTables = {};
 var marketItems = {}
 var marketItemsUserCount = {} // keeps track of number of items a user has in the market
+var commandTimersMap = {}
 var client;
 var usersMinigames = {}
 var userTradeLock = {}
 var commandLock = {
     thank: {},
+    vote: {},
+    claim: {},
     sorry: {},
     prepare: {},
     cook: {},
@@ -374,14 +376,10 @@ module.exports.trickOrTreatCommand = function(message){
                     profileDB.updateUserTacosTrickOrTreat(discordUserId, -50, function(updateerr, updateResponse) {
                         if (updateerr){
                             // console.log(updateerr);
-                        }
-                        else{
+                        }else{
                             message.channel.send("You have been tricked! 👻 Bender took 50 tacos from your candy bag");
-                            // update lasttrickortreattime
-                            
                         }
                     })
-                    
                 }else if (trickOrTreat == 1){
                     var trickOrTreatDate = new Date();
                     trickOrTreatMap["tot-" + discordUserId] = {
@@ -391,17 +389,15 @@ module.exports.trickOrTreatCommand = function(message){
                     profileDB.updateUserTacosTrickOrTreat(discordUserId, 100, function(updateerr, updateResponse) {
                         if (updateerr){
                             // console.log(updateerr);
-                        }
-                        else{
+                        }else{
                             message.channel.send("You have been treated! 🎃 Bender put 100 tacos in your candy bag");
-                            // update lasttrickortreattime
                         }
                     })
                 }
             }else{
                 now = new Date(now.setMinutes(now.getMinutes() + 0 ));
                 var numberOfHours = getDateDifference(totData.data.lasttrickortreattime, now, 1);
-                message.channel.send(message.author + " You are being too greedy! Please wait `" + numberOfHours +"` ");
+                message.channel.send(message.author.username + " You are being too greedy! Please wait `" + numberOfHours +"` ");
             }
         }
     })
@@ -439,12 +435,10 @@ module.exports.openPresentCommand = function(message){
                         if(allItems[item].itemraritycategory == "uncommon"
                         && allItems[item].fromscavenge == true){
                             uncommonItems.push(allItems[item]);
-                        }
-                        else if(allItems[item].itemraritycategory == "rare"
+                        }else if(allItems[item].itemraritycategory == "rare"
                         && allItems[item].fromscavenge == true){
                             rareItems.push(allItems[item]);
-                        }
-                        else if(allItems[item].itemraritycategory == "ancient"
+                        }else if(allItems[item].itemraritycategory == "ancient"
                         && allItems[item].fromscavenge == true){
                             ancientItems.push(allItems[item]);
                         }
@@ -459,12 +453,10 @@ module.exports.openPresentCommand = function(message){
                     if(rarityRoll > ANCIENT_MIN_ROLL && rarityRoll <= ANCIENT_MAX_ROLL){
                         var itemRoll = Math.floor(Math.random() * ancientItems.length);
                         itemsObtainedArray.push(ancientItems[itemRoll])
-                    }
-                    else if(rarityRoll > RARE_MIN_ROLL && rarityRoll <= RARE_MAX_ROLL){
+                    }else if(rarityRoll > RARE_MIN_ROLL && rarityRoll <= RARE_MAX_ROLL){
                         var itemRoll = Math.floor(Math.random() * rareItems.length);
                         itemsObtainedArray.push(rareItems[itemRoll]);
-                    }
-                    else {
+                    }else {
                         var itemRoll = Math.floor(Math.random() * uncommonItems.length);
                         itemsObtainedArray.push( uncommonItems[itemRoll] );
                     }
@@ -474,8 +466,7 @@ module.exports.openPresentCommand = function(message){
                     profileDB.updateUserTacosPresent(discordUserId, tacosFound, function(updateerr, updateResponse) {
                         if (updateerr){
                             console.log(updateerr);
-                        }
-                        else{
+                        }else{
                             var itemsMessage = ""
                             for (var item in itemsObtainedArray){
                                 itemsMessage = itemsMessage + "[**" + itemsObtainedArray[item].itemraritycategory +"**] " + "**"  + itemsObtainedArray[item].itemname + "** - " + itemsObtainedArray[item].itemdescription + ", " +
@@ -489,23 +480,21 @@ module.exports.openPresentCommand = function(message){
                             message.channel.send({embed});
                         }
                     })
-                }
-                else if (roll < 50){
+                }else if (roll < 50){
                     // give the user tacos           
                     tacosFound = 250;
                     profileDB.updateUserTacosPresent(discordUserId, tacosFound, function(updateerr, updateResponse) {
                         if (updateerr){
                             console.log(updateerr);
-                        }
-                        else{
-                            message.channel.send(message.author + " received `" + tacosFound + "` tacos :taco: :gift: :christmas_tree: ")
+                        }else{
+                            message.channel.send(message.author.username + " received `" + tacosFound + "` tacos :taco: :gift: :christmas_tree: ")
                         }
                     })
                 }
-            } else{
+            }else{
                 now = new Date(now.setMinutes(now.getMinutes()));
                 var numberOfHours = getDateDifference(getUserResponse.data.lastpresenttime, now, 24);
-                message.channel.send(message.author + " You have recently opened a present! :gift: Please wait `" + numberOfHours +"` ");
+                message.channel.send(message.author.username + " You have recently opened a present! :gift: Please wait `" + numberOfHours +"` ");
             }
         }
     })
@@ -515,7 +504,8 @@ module.exports.collectRewardsCommand = function(message){
     var discordUserId = message.author.id
     profileDB.getUserProfileData(discordUserId, function(error, userData){
         if (error){
-            message.channel.send(error)
+            console.log(error)
+            //message.channel.send(error)
         }else{
             // check that the user has the following:
             // legacytop1rpgpoints
@@ -729,8 +719,7 @@ module.exports.thankCommand = function(message){
                                         if (updateerr){
                                             // console.log(updateerr);
                                             exports.setCommandLock("thank", discordUserId, false)
-                                        }
-                                        else{
+                                        }else{
                                             // // console.log(updateResponse);
                                             exports.setCommandLock("thank", discordUserId, false)
                                             ///// for temple recipes
@@ -750,20 +739,19 @@ module.exports.thankCommand = function(message){
                                             stats.statisticsManage(discordUserId, "thankcount", 1, function(staterr, statSuccess){
                                                 if (staterr){
                                                     // console.log(staterr);
-                                                }
-                                                else{
+                                                }else{
                                                     // check achievements??
                                                     getProfileForAchievement(discordUserId, message, thankResponse )
                                                 }
                                             })
+                                            createTimeOutForCommandAfterUse("thank", now, secondsToRemove, THANK_COOLDOWN_HOURS, discordUserId, thankResponse.data)
                                         }
                                     })
                                     // send message that the user has 1 more taco
                                     if (extraTacosFromItems > 0){
-                                        message.channel.send(message.author + " thanked " + mentionedUser.username + ", they received `" + tacosThanked + "` tacos! :taco:" + " you received `" + extraTacosFromItems + "` extra tacos");
-                                    }
-                                    else{
-                                        message.channel.send(message.author + " thanked " + mentionedUser.username + ", they received `" + tacosThanked + "` tacos! :taco: ");
+                                        message.channel.send(message.author.username + " thanked " + mentionedUser.username + ", they received `" + tacosThanked + "` tacos! :taco:" + " you received `" + extraTacosFromItems + "` extra tacos");
+                                    }else{
+                                        message.channel.send(message.author.username + " thanked " + mentionedUser.username + ", they received `" + tacosThanked + "` tacos! :taco: ");
                                     }
                                 }
                             })
@@ -771,8 +759,8 @@ module.exports.thankCommand = function(message){
                             // six hours have not passed, tell the user they need to wait 
                             exports.setCommandLock("thank", discordUserId, false)
                             now = new Date(now.setSeconds(now.getSeconds() + secondsToRemove));
-                            var numberOfHours = getDateDifference(thankResponse.data.lastthanktime, now, 2);
-                            message.channel.send(message.author + " You are being too thankful! Please wait `" + numberOfHours +"` ");
+                            var numberOfHours = getDateDifference(thankResponse.data.lastthanktime, now, THANK_COOLDOWN_HOURS);
+                            message.channel.send(message.author.username + " You are being too thankful! Please wait `" + numberOfHours +"` ");
                         }
                     }
                 })
@@ -790,7 +778,7 @@ function calculateResetScavengeCD(message, discordUserId, userProfile){
             if (err){
                 console.log(err)
             }else{
-                message.channel.send(message.author + " You are able to scavange again!")
+                message.channel.send(message.author.username + " You are able to scavange again!")
             }
         })
     }
@@ -816,8 +804,7 @@ module.exports.sorryCommand = function(message){
             if(err){
                 exports.setCommandLock("sorry", discordUserId, false)
                 agreeToTerms(message, discordUserId);
-            }
-            else{
+            }else{
                 var userLevel = sorryResponse.data.level;
                 wearStats.getUserWearingStats(message, discordUserId, {userLevel: userLevel}, allItems, function(wearErr, wearRes){
                     if (wearErr){
@@ -850,8 +837,7 @@ module.exports.sorryCommand = function(message){
                                         if (createerr){
                                             // console.log(createerr); // cant create user RIP
                                             exports.setCommandLock("sorry", discordUserId, false)
-                                        }
-                                        else{
+                                        }else{
                                             exports.setCommandLock("sorry", discordUserId, false)
                                             ///// for temple recipes
                                             var recipeParams = {
@@ -870,22 +856,19 @@ module.exports.sorryCommand = function(message){
                                             stats.statisticsManage(discordUserId, "sorrycount", 1, function(staterr, statSuccess){
                                                 if (staterr){
                                                     // console.log(staterr);
-                                                }
-                                                else{
+                                                }else{
                                                     // check achievements??
                                                     getProfileForAchievement(discordUserId, message, sorryResponse )
                                                 }
                                             })
                                         }
                                     }) 
-                                }
-                                else{
+                                }else{
                                     profileDB.updateUserTacosSorry(discordUserId, extraTacosFromItems, function(updateerr, updateResponse) {
                                         if (updateerr){
                                             exports.setCommandLock("sorry", discordUserId, false)
                                             // console.log(updateerr);
-                                        }
-                                        else{
+                                        }else{
                                             //// console.log(updateResponse);
                                             exports.setCommandLock("sorry", discordUserId, false)
                                             ///// for temple recipes
@@ -901,19 +884,19 @@ module.exports.sorryCommand = function(message){
                                             stats.statisticsManage(discordUserId, "sorrycount", 1, function(staterr, statSuccess){
                                                 if (staterr){
                                                     console.log(staterr);
-                                                }
-                                                else{
+                                                }else{
                                                     // check achievements??
                                                     getProfileForAchievement(discordUserId, message, sorryResponse)
                                                 }
                                             })
+                                            createTimeOutForCommandAfterUse("sorry", now, secondsToRemove, SORRY_COOLDOWN_HOURS, discordUserId, sorryResponse.data)
                                         }
                                     })
                                     // send message that the user has 1 more taco
                                     if (extraTacosFromItems > 0){
-                                        message.channel.send(message.author + " apologized to " + mentionedUser + ", they received `" + tacosSorried + "` tacos! :taco:" + " " + " received `" + extraTacosFromItems + "` extra tacos");
+                                        message.channel.send(message.author.username + " apologized to " + mentionedUser + ", they received `" + tacosSorried + "` tacos! :taco:" + " " + " received `" + extraTacosFromItems + "` extra tacos");
                                     }else{
-                                        message.channel.send(message.author + " apologized to " + mentionedUser + ", they received `" + tacosSorried + "` tacos! :taco:");
+                                        message.channel.send(message.author.username + " apologized to " + mentionedUser + ", they received `" + tacosSorried + "` tacos! :taco:");
                                     }
                                 }
                             })
@@ -921,18 +904,16 @@ module.exports.sorryCommand = function(message){
                             // six hours have not passed, tell the user they need to wait 
                             exports.setCommandLock("sorry", discordUserId, false)
                             now = new Date(now.setSeconds(now.getSeconds() + secondsToRemove));
-                            var numberOfHours = getDateDifference(sorryResponse.data.lastsorrytime, now, 6);
-                            message.channel.send(message.author + " You are being too apologetic! Please wait `" + numberOfHours +"` ");
+                            var numberOfHours = getDateDifference(sorryResponse.data.lastsorrytime, now, SORRY_COOLDOWN_HOURS);
+                            message.channel.send(message.author.username + " You are being too apologetic! Please wait `" + numberOfHours +"` ");
                         }
                     }
                 })
                 
             }
         })
-    }
-    else if (!commandLock["sorry"][discordUserId] &&NeedsToAgree[mentionedId] && NeedsToAgree[mentionedId].hasNotAgreed){
+    }else if (!commandLock["sorry"][discordUserId] &&NeedsToAgree[mentionedId] && NeedsToAgree[mentionedId].hasNotAgreed){
         message.channel.send("the user has not yet agreed to the terms!")
-        // message.channel.send(message.author + " You must mention a user or a user that isn't you whom you want to apologize to!");
     }
 }
 
@@ -943,10 +924,9 @@ module.exports.buyStandCommand = function (message){
     profileDB.getUserProfileData( discordUserId, function(err, buyStandResponse) {
         if(err){
             // user doesnt exist tell the user they should get some tacos
-            message.channel.send(message.author + " You can't afford a stand atm!");
+            message.channel.send(message.author.username + " You can't afford a stand atm!");
             agreeToTerms(message, discordUserId);
-        }
-        else{
+        }else{
             // if user has enough tacos to purchase the stand, add 1 tree, subtract x tacos
             var achievements = buyStandResponse.data.achievements;
             var userTacoStands = 0;
@@ -961,9 +941,8 @@ module.exports.buyStandCommand = function (message){
                     if (err){
                         // console.log(err);
                         // couldn't purchase stand
-                    }
-                    else{
-                        message.channel.send(message.author + " Congratulations!, you have purchased a taco stand! :bus:");
+                    }else{
+                        message.channel.send(message.author.username + " Congratulations!, you have purchased a taco stand! :bus:");
                         experience.gainExperience(message, message.author, EXPERIENCE_GAINS.buyStand + (EXPERIENCE_GAINS.buyStandPerStand * userTacoStands) , buyStandResponse);
                         // check achievements??
                         var data = {}
@@ -974,11 +953,10 @@ module.exports.buyStandCommand = function (message){
                             
                     }
                  })
-            }
-            else{
+            }else{
                 // can't afford stand
                 var standCost = BASE_TACO_COST + (userTacoStands * 250);
-                message.channel.send(message.author + " You can't afford a stand , you need `" + standCost + " tacos`!");
+                message.channel.send(message.author.username + " You can't afford a stand , you need `" + standCost + " tacos`!");
             }
         }
     })
@@ -995,8 +973,7 @@ module.exports.prepareCommand = function (message){
                 exports.setCommandLock("prepare", discordUserId, false)
                 var userData = initialUserProfile(discordUserId);
                 agreeToTerms(message, discordUserId);
-            }
-            else{
+            }else{
                 // get number of trees the user has
                 // check lastprepare time
                 var HAS_SPRINTING_SHOES = prepareResponse.data.sprintingshoes;
@@ -1046,37 +1023,35 @@ module.exports.prepareCommand = function (message){
                                         exports.setCommandLock("prepare", discordUserId, false)
                                         // console.log(err);
                                         // something happened
-                                    }
-                                    else{
+                                    }else{
                                         // update protection also
                                         var protection = prepareResponse.data.protect;
                                         profileDB.updateUserProtect(discordUserId, 1, protection, function(updateerr, updateResponse) {
                                             if (updateerr){
                                                 exports.setCommandLock("prepare", discordUserId, false)
                                                 // console.log(updateerr);
-                                            }
-                                            else{
+                                            }else{
                                                 //// console.log(updateResponse);
                                                 exports.setCommandLock("prepare", discordUserId, false)
                                                 if (extraTacosFromItems > 0){
-                                                    message.channel.send(message.author + " You have prepared `" + tacosToPrepare + "` tacos :taco:! `" + soiledToTaco +"` were from soiled crops. The tacos also come with `1` warranty protection" + " received `" + extraTacosFromItems + "` extra tacos");
+                                                    message.channel.send(message.author.username + " You have prepared `" + tacosToPrepare + "` tacos :taco:! `" + soiledToTaco +"` were from soiled crops. The tacos also come with `1` warranty protection" + " received `" + extraTacosFromItems + "` extra tacos");
                                                 }else{
-                                                    message.channel.send(message.author + " You have prepared `" + tacosToPrepare + "` tacos :taco:! `" + soiledToTaco +"` were from soiled crops. The tacos also come with `1` warranty protection");
+                                                    message.channel.send(message.author.username + " You have prepared `" + tacosToPrepare + "` tacos :taco:! `" + soiledToTaco +"` were from soiled crops. The tacos also come with `1` warranty protection");
                                                 }
+                                                // check if prepare is toggled
+                                                createTimeOutForCommandAfterUse("prepare", now, secondsToRemove, PREPARE_COOLDOWN_HOURS, discordUserId, prepareResponse.data)
+                                                //// message.channel.send("New Feature Introduced!\nYou can now enter the RPG queue!\nUse commands `-rpgqueue [2-5]` to enter an rpg queue of group size 2-5.\n`-rpgleave` to leave the queue. Read `-patchnotes` for more info")
                                                 var experienceFromItems = wearStats.calculateExtraExperienceGained(wearRes, "prepare", null)
                                                 experience.gainExperience(message, message.author, (EXPERIENCE_GAINS.prepare + (EXPERIENCE_GAINS.preparePerStand * userTacoStands) + experienceFromItems) , prepareResponse);
                                                 stats.statisticsManage(discordUserId, "maxextratacos", soiledToTaco, function(staterr, statSuccess){
                                                     if (staterr){
                                                         // console.log(staterr);
-                                                    }
-                                                    else{
-                                                        // check achievements??
+                                                    }else{
                                                         // console.log(statSuccess);
                                                         // check achievements??
                                                         var data = {}
                                                         data.achievements = achievements;
                                                         data.maxextratacos = soiledToTaco;
-                                                        // console.log(data);
                                                         achiev.checkForAchievements(discordUserId, data, message);
                                                     }
                                                 })
@@ -1084,17 +1059,15 @@ module.exports.prepareCommand = function (message){
                                         })
                                     }
                                 })
-                            }
-                            else{
+                            }else{
                                 exports.setCommandLock("prepare", discordUserId, false)
-                                message.channel.send(message.author + " You do not have any stands to prepare tacos with! buy some from the shop. Do -shop to see what you can buy");
+                                message.channel.send(message.author.username + " You do not have any stands to prepare tacos with! buy some from the shop. Do -shop to see what you can buy");
                             }
-                        }
-                        else{
+                        }else{
                             exports.setCommandLock("prepare", discordUserId, false)
                             now = new Date(now.setSeconds(now.getSeconds() + secondsToRemove));
-                            var numberOfHours = getDateDifference(prepareResponse.data.lastpreparetime, now, 48);
-                            message.channel.send(message.author + " You ran out of ingredients! Please wait `" + numberOfHours + "` ");
+                            var numberOfHours = getDateDifference(prepareResponse.data.lastpreparetime, now, PREPARE_COOLDOWN_HOURS);
+                            message.channel.send(message.author.username + " You ran out of ingredients! Please wait `" + numberOfHours + "` ");
                         }
                     }
                 })
@@ -1126,12 +1099,10 @@ module.exports.welcomeCommand = function(message){
     }
     
     if (!valid){
-        message.channel.send(message.author +" Stop. you are spamming!")
-    }
-    else if (mentionedId == discordUserId){
-        message.channel.send(message.author +" You can't welcome yourself!")
-    }
-    else if(mentionedUser && !mentionedUser.bot){
+        message.channel.send(message.author.username +" Stop. you are spamming!")
+    }else if (mentionedId == discordUserId){
+        message.channel.send(message.author.username +" You can't welcome yourself!")
+    }else if(mentionedUser && !mentionedUser.bot){
         // check first that user exists, if user doesn't exist create user, then check if welcomed user exists
         // if welcomed user exists set to true, if not then create the user and set to true
         profileDB.getUserProfileData( mentionedId, function(err, welcomeResponse) {
@@ -1139,12 +1110,10 @@ module.exports.welcomeCommand = function(message){
                 // user doesnt exist, create their profile first
                 if(err.code === 0 && ( !NeedsToAgree[mentionedId] || (NeedsToAgree[mentionedId] && NeedsToAgree[mentionedId].hostUser == "Bender")) ){
                     welcomeAgreeToTerms(message, mentionedId, mentionedUser, message.author);
-                }
-                else{
+                }else{
                     message.channel.send("The user has already been welcomed and needs to agree, or deny the terms.");
                 }
-            }
-            else{
+            }else{
                 // user exists, check if user has already been welcomed
                 if ( !welcomeResponse.data.welcomed ){
                     profileDB.updateUserTacosWelcome(mentionedId, 50, function(err, updateResponse) {
@@ -1169,13 +1138,12 @@ module.exports.welcomeCommand = function(message){
                             })
                         }
                     })
-                }
-                else{
+                }else{
                     Last_Five_Welcomes.push(discordUserId);
                     if (Last_Five_Welcomes.length >= 5){
                         Last_Five_Welcomes.shift();
                     }
-                    message.channel.send(message.author + " This user has already been welcomed!");
+                    message.channel.send(message.author.username + " This user has already been welcomed!");
                 }
             }
         }) 
@@ -1199,27 +1167,22 @@ module.exports.giveCommand = function(message, giveTacoAmount){
     })
     // get user
     if (!mentionedId || !mentionedUser){
-        message.channel.send(message.author + " You must mention a user whom you want to give your tacos to!")
-    }
-    else if (mentionedId == discordUserId){
-        message.channel.send(message.author + " You can't give yourself taco!")
-    }
-    else if(giveTacoAmount < 2){
-        message.channel.send(message.author + " You must give more than 2 tacos!")
-    }
-    else if (NeedsToAgree[mentionedId] && NeedsToAgree[mentionedId].hasNotAgreed){
+        message.channel.send(message.author.username + " You must mention a user whom you want to give your tacos to!")
+    }else if (mentionedId == discordUserId){
+        message.channel.send(message.author.username + " You can't give yourself taco!")
+    }else if(giveTacoAmount < 2){
+        message.channel.send(message.author.username + " You must give more than 2 tacos!")
+    }else if (NeedsToAgree[mentionedId] && NeedsToAgree[mentionedId].hasNotAgreed){
         message.channel.send("the user has not yet agreed to the terms!")
-    }
-    else{
+    }else{
         profileDB.getUserProfileData( discordUserId, function(err, giveResponse) {
             if(err){
                 // user doesnt exist, 
                 if(err.code === 0){
                     agreeToTerms(message, discordUserId);
-                    message.channel.send(message.author + " You have no tacos to give!");
+                    message.channel.send(message.author.username + " You have no tacos to give!");
                 }
-            }
-            else{
+            }else{
                 // check if user has enough tacos to give
                 var achievements = giveResponse.data.achievements;
                 if (adjustedTacosForUser(discordUserId, giveResponse.data.tacos) - giveTacoAmount >= 0 ){
@@ -1272,29 +1235,25 @@ module.exports.giveCommand = function(message, giveTacoAmount){
                             profileDB.updateUserTacosGive(discordUserId, negativeGiveTacoAmount, function(givererr, giverUpdateResponse) {
                                 if (givererr){
                                     // console.log(givererr);
-                                }
-                                else{
+                                }else{
                                     // 
                                     giveTacoAmount = giveTacoAmount - tacoTax;
                                     // console.log(giveTacoAmount);
                                     profileDB.updateUserTacosGive(mentionedId, giveTacoAmount, function(receivererr, receiverUpdateResponse) {
                                         if (receivererr){
                                             // console.log(receivererr);
-                                        }
-                                        else{
+                                        }else{
                                             // send message that the user has gotten tacos
-                                            message.channel.send(message.author + " gifted " + mentionedUser + " `" + giveTacoAmount + "` tacos! :taco: and Bender kept `" + tacoTax + "` tacos for tax purposes." );
+                                            message.channel.send(message.author.username + " gifted " + mentionedUser + " `" + giveTacoAmount + "` tacos! :taco: and Bender kept `" + tacoTax + "` tacos for tax purposes." );
                                             ///// For Artifact or Missions
                                             var dataForMission = {
                                                 giveAmount: giveTacoAmount
                                             }
                                             missionCheckCommand(message, discordUserId, "give", mentionedId, dataForMission)
-                                            
                                             stats.statisticsManage(discordUserId, "givecount", giveTacoAmount, function(err, statSuccess){
                                                 if (err){
                                                     // console.log(err);
-                                                }
-                                                else{
+                                                }else{
                                                     // console.log(statSuccess);
                                                     // check achievements??
                                                     var data = {}
@@ -1310,13 +1269,302 @@ module.exports.giveCommand = function(message, giveTacoAmount){
                             })
                         }
                     })
-                }
-                else{
+                }else{
                     // console.log('dont have enough tacos.')
                 }
             }
         })
     }
+}
+
+module.exports.dailyCommand = function(message, args, dbl){
+    // based on the user level your daily will reward you with tacos + 
+    // create embed that shows the user what they will get, and what their streak is
+    // tacos are one reward, burritos are the vote only credit
+    // can purchase pets from the shop for burritos, access to burrito stand shop
+    // streak goes up to 30 days
+    // 1, 1, 2, 2, 3, 3, 5, 5, 8, 8, 13, 13, 20, 20, 30, 30, 45, 45, 60, 60, 75, 75, 90, 90, 110, 110
+    // can get commons from burritos 1 for 1, rares for 50, pets for 100, notes into the twisting nether 150,
+    // ancients 400
+    let discordUserId = message.author.id
+    if (args && args.length > 0 && args[1] == "claim" && !commandLock["vote"][discordUserId]){
+        exports.setCommandLock("vote", discordUserId, true)
+        profileDB.getUserProfileData(discordUserId, function(err, res){
+            if (err){
+                exports.setCommandLock("vote", discordUserId, false)
+            }else{
+                // check if user has voted
+                var now = new Date();
+                var oneDayAgo = new Date();
+                oneDayAgo = new Date(oneDayAgo.setHours(oneDayAgo.getHours() - DAILY_COOLDOWN_HOURS));
+
+                if ( oneDayAgo > res.data.lastdailytime || !res.data.lastdailytime ){
+                    let profileData = res.data
+                    let streakReset = calculateStreakReset(profileData)
+                    if (streakReset){
+                        profileData.votestreak = 1
+                    }
+                    let burritosGained = calculateBurritosGained(profileData)
+                    let tacosGained = calculateTacosGained(profileData)
+                    
+                    dbl.hasVoted(message.author.id).then(voted => {
+                        if (voted){
+                            let firstBurritos = false
+                            if (profileData.burritos == null){
+                                firstBurritos = true
+                            }
+                            profileDB.updateUserDaily(discordUserId, burritosGained, tacosGained, streakReset, firstBurritos, function(error, result){
+                                if (error){
+                                    exports.setCommandLock("vote", discordUserId, false)
+                                    console.log(error)
+                                }else{
+                                    exports.setCommandLock("vote", discordUserId, false)
+                                    message.channel.send("congrats you have voted and gained `" + burritosGained + "` :burrito: and `" + tacosGained + "` :taco:")
+                                    createTimeOutForCommandAfterUse("daily", now, 0, DAILY_COOLDOWN_HOURS, discordUserId, profileData)
+                                }
+                            })
+                        }else{
+                            exports.setCommandLock("vote", discordUserId, false)
+                            message.channel.send("You have to vote in order to collect your daily")
+                        }
+                    })
+                    .catch(function(err){
+                        exports.setCommandLock("vote", discordUserId, false)
+                        message.channel.send("err " + err)
+                    });
+
+                }else{
+                    exports.setCommandLock("vote", discordUserId, false)
+                    now = new Date(now.setSeconds(now.getSeconds()));
+                    var numberOfHours = getDateDifference(res.data.lastdailytime, now, DAILY_COOLDOWN_HOURS);
+                    message.channel.send(message.author.username + " You cannot collect your daily currently! Please wait `" + numberOfHours + "` ");
+                }
+            }
+        })
+    }else{
+        profileDB.getUserProfileData(discordUserId, function(err, res){
+            if (err){
+                console.log(err)
+            }else{
+                let profileData = res.data
+                dailyEmbedBuilder(message, profileData)
+                exports.setCommandLock("vote", discordUserId, false)
+            }
+        })
+    }
+    
+}
+
+module.exports.claimCommand = function(message, args){
+    let discordUserId = message.author.id
+    if (!commandLock["claim"][discordUserId]){
+        exports.setCommandLock("claim", discordUserId, true)
+        profileDB.getUserProfileData(discordUserId, function(err, res){
+            if (err){
+                message.channel.send("error " + err)
+            }else{
+                let userBurritos = res.data.burritos || 0
+                if (args && args.length > 0 
+                && args[1] == "rare" 
+                && userBurritos >= 100){
+                    // add a random rare
+                    var listOfRares = []
+                    var itemsForClaim = exports.getAllItems()
+                    for (var index in itemsForClaim){
+                        if (itemsForClaim[index].itemraritycategory == "rare"
+                        && itemsForClaim[index].fromscavenge == true
+                        && !itemsForClaim[index].isseed){
+                            // add to list of rares
+                            listOfRares.push(itemsForClaim[index]);
+                        }
+                    }
+                    var indexOfRare = Math.floor(Math.random() * listOfRares.length);
+                    var rareWon = [listOfRares[indexOfRare]];
+                    // spend burritos
+                    profileDB.updateUserBurritos(discordUserId, -100, function(err, updateRes){
+                        if (err){
+                            message.channel.send("error " + err)
+                        }else{
+                            addToUserInventory(discordUserId, rareWon);
+                            let itemname = rareWon[0].itemname
+                            let itemshortname = rareWon[0].itemshortname
+                            message.channel.send("You have claimed your reward! your item is `" + itemname + "`! \ntype `-iteminfo " + itemshortname + "` for more information on this item!")
+                            exports.setCommandLock("claim", discordUserId, false)        
+                        }
+                    })
+                }
+                else if(args && args.length > 0 && args[1] == "letter"
+                && userBurritos >= 300){
+                    var letter = "";
+                    for (var arg in args){
+                        if (arg > 1){
+                            letter = letter.concat(args[arg] + " ");
+                        }
+                    }
+                    if (letter.length > 0 && letter.length < 150){
+                        profileDB.updateUserBurritos(discordUserId, -300, function(err, updateRes){
+                            if (err){
+                                exports.setCommandLock("claim", discordUserId, false)
+                                message.channel.send("error " + err)
+                            }else{
+                                let creatorUsername = message.author.username
+                                profileDB.createLetter(discordUserId, letter, creatorUsername, function(err, letterRes){
+                                    if (err){
+                                        exports.setCommandLock("claim", discordUserId, false)
+                                        message.channel.send("error " + err)
+                                    }else{
+                                        exports.setCommandLock("claim", discordUserId, false)
+                                        message.channel.send("Your letter has been sent into the twisting nether :asterisk:  :cyclone: :asterisk: 49 74 20 6d 61 79 20 6f 6e 65 20 64 61 79 20 62 65 20 66 6f 75 6e 64 20 62 79 20 74 68 6f 73 65 20 77 68 6f 20 65 6e 74 65 72 20 69 74 ")
+                                    }
+                                })
+                            }
+                        })
+                    }else{
+                        exports.setCommandLock("claim", discordUserId, false)
+                        message.channel.send("Your letter is too long to, it must be less than 150 characters in length")
+                    }
+                }
+                else if (args && args.length > 0 
+                && args[1] == "ancient" 
+                && userBurritos >= 800){
+                    // add a random ancient
+                    var listOfAncients = []
+                    var itemsForClaim = exports.getAllItems()
+                    for (var index in itemsForClaim){
+                        if (itemsForClaim[index].itemraritycategory == "ancient"
+                        && itemsForClaim[index].fromscavenge == true
+                        && !itemsForClaim[index].isseed){
+                            // add to list of ancients
+                            listOfAncients.push(itemsForClaim[index]);
+                        }
+                    }
+                    var indexOfAncient = Math.floor(Math.random() * listOfAncients.length);
+                    var ancientWon = [listOfAncients[indexOfAncient]];
+                    // spend burritos
+                    profileDB.updateUserBurritos(discordUserId, -800, function(err, updateRes){
+                        if (err){
+                            message.channel.send("error " + err)
+                        }else{
+                            addToUserInventory(discordUserId, ancientWon);
+                            let itemname = ancientWon[0].itemname
+                            let itemshortname = ancientWon[0].itemshortname
+                            message.channel.send("You have claimed your reward! your item is `" + itemname + "`! \ntype `-iteminfo " + itemshortname + "` for more information on this item!")
+                            exports.setCommandLock("claim", discordUserId, false)        
+                        }
+                    })
+                }
+                else if(args && args.length > 0
+                && userBurritos >= 1){
+                    // check that there is a common with the itemshortname
+                    // need 1 burrito
+                    var commonsToClaim = args[2] ? args[2] : 1;
+                    let commonNameToGet = args[1]
+                    if (typeof commonsToClaim == "string" && commonsToClaim.toLowerCase() == "all"){
+                        // make sure we only add up to as many burritos the user has or the
+                        commonsToClaim = parseInt(userBurritos)
+                    }
+
+                    if (itemsMapbyShortName[commonNameToGet] 
+                    && itemsMapbyShortName[commonNameToGet].itemraritycategory == "common"
+                    && commonsToClaim <= userBurritos
+                    && commonsToClaim > 0){
+                        // add the common to the user X commons to claim
+                        let commonsToClaimFloor = Math.floor(commonsToClaim)
+                        profileDB.updateUserBurritos(discordUserId, commonsToClaimFloor * -1, function(err, updateRes){
+                            if (err){
+                                message.channel.send("error " + err)
+                                exports.setCommandLock("claim", discordUserId, false)
+                            }else{
+                                let commonItem = JSON.parse(JSON.stringify(itemsMapbyShortName[commonNameToGet]))
+                                commonItem.itemAmount = commonsToClaimFloor
+                                addToUserInventory(discordUserId, [ commonItem ] );
+                                message.channel.send("You have claimed your reward! your item is `" + commonItem.itemname + " x " + commonItem.itemAmount + "`! \ntype `-iteminfo " + commonItem.itemshortname + "` for more information on this item!")        
+                                exports.setCommandLock("claim", discordUserId, false)
+                            }
+                        })
+                    }else{
+                        message.channel.send("Invalid item to claim, or you do not have the burritos to claim that amount")
+                        exports.setCommandLock("claim", discordUserId, false)
+                    }
+
+                }else{
+                    exports.setCommandLock("claim", discordUserId, false)
+                    message.channel.send("invalid claim use, try `-claim rare`, or `-claim ancient`, or `-claim [common] [1]`")
+                }
+            }
+        })
+    }
+}
+
+function dailyEmbedBuilder(message, profileData){
+    let rewardsString = "Vote for bender on [discordbots.org](https://discordbots.org/bot/320703328730349578) to get rewards every day! some perks are unique and can only be unlocked with voting rewards use -daily claim to claim your vote rewards"
+    let streakString = streakStringBuilder(profileData)
+    let turninString = "1 Burrito for 1 common item \n 100 Burritos for a Rare item \n200 Burritos for a unique pet\n300 Burritos to throw a letter into the twisting nether\n800 Burritos Ancient Item"
+    const embed = new Discord.RichEmbed()
+    .setColor(0xF2E93E)
+    .addField("Bender Voting Rewards", rewardsString)
+    .addField("Streak", streakString)
+    .addField("Rewards", turninString)
+    message.channel.send({embed})
+    .then(function(res){
+        console.log(res)
+    })
+    .catch(function(err){
+        console.log(err)
+        message.channel.send("Unable to display daily embed, Enable embeds in this channel for future daily announcements!")
+    })
+}
+
+function calculateTacosGained(profileData){
+    let streakArray = [1, 1, 2, 3, 5, 8, 13, 20, 30, 45, 60, 75, 90, 110 ]
+    let streakIndex = profileData.votestreak || 0
+    if (streakIndex > streakArray.length - 1){
+        streakIndex = streakArray.length - 1
+    }
+    let tacosGained = 0
+    tacosGained = Math.floor(streakArray[streakIndex] * profileData.level)
+
+    return tacosGained
+}
+
+function calculateBurritosGained(profileData){
+    let streakArray = [1, 1, 2, 3, 5, 8, 13, 20, 30, 45, 60, 75, 90, 110 ]
+    let streakIndex = profileData.votestreak || 0
+    if (streakIndex > streakArray.length - 1){
+        streakIndex = streakArray.length - 1
+    }
+    let burritosGained = 0
+    burritosGained = streakArray[streakIndex]
+
+    return burritosGained
+}
+
+function calculateStreakReset(profileData){
+    if (profileData.votestreak){
+        // check if the vote has been longer than 2 days since previous vote
+        var twoDaysAgo = new Date();
+        twoDaysAgo = new Date(twoDaysAgo.setHours(twoDaysAgo.getHours() - 36));
+        if (twoDaysAgo > profileData.lastdailytime){
+            return true
+        }else{
+            return false
+        }
+    }else{
+        return false
+    }
+}
+
+function streakStringBuilder(profileData){
+    let s = ":zap:"
+    if (profileData.votestreak){
+        for (var i = 0; i <= profileData.votestreak; i++){
+            if (i < 6 && i > 0){
+                s = s + ":zap:"
+            }
+        }
+    }
+    s = s + " **" + (profileData.votestreak || 0) + "** Day(s)"
+    return s
 }
 
 module.exports.cookCommand = function(message){
@@ -1380,20 +1628,18 @@ module.exports.cookCommand = function(message){
                                 if (err){
                                     // console.log(err);
                                     exports.setCommandLock("cook", discordUserId, false)
-                                }
-                                else{
+                                }else{
                                     // send message that the user has 1 more taco
                                     exports.setCommandLock("cook", discordUserId, false)
                                     if (extraTacosFromItems > 0 && HAS_CASSEROLE){
-                                        message.channel.send(message.author + " Cooked `" + cookRoll + "` tacos! you now have `" + ( adjustedTacosForUser(discordUserId, cookResponse.data.tacos) + cookRoll) + "` tacos :taco:" + "! received `" + extraTacosFromCasserole + "` extra tacos :taco: from your casserole " + " and received `" + extraTacosFromItems + "` extra tacos from items" );
-                                    }
-                                    else if (extraTacosFromItems > 0 && !HAS_CASSEROLE){
-                                        message.channel.send(message.author + " Cooked `" + cookRoll + "` tacos! you now have `" + ( adjustedTacosForUser(discordUserId, cookResponse.data.tacos) + cookRoll) + "` tacos :taco:" + "! " + "received `" + extraTacosFromItems + "` extra tacos");
+                                        message.channel.send(message.author.username + " Cooked `" + cookRoll + "` tacos! you now have `" + ( adjustedTacosForUser(discordUserId, cookResponse.data.tacos) + cookRoll) + "` tacos :taco:" + "! received `" + extraTacosFromCasserole + "` extra tacos :taco: from your casserole " + " and received `" + extraTacosFromItems + "` extra tacos from items" );
+                                    }else if (extraTacosFromItems > 0 && !HAS_CASSEROLE){
+                                        message.channel.send(message.author.username + " Cooked `" + cookRoll + "` tacos! you now have `" + ( adjustedTacosForUser(discordUserId, cookResponse.data.tacos) + cookRoll) + "` tacos :taco:" + "! " + "received `" + extraTacosFromItems + "` extra tacos");
                                     }
                                     else if (HAS_CASSEROLE){
-                                        message.channel.send(message.author + " Cooked `" + cookRoll + "` tacos! you now have `" + ( adjustedTacosForUser(discordUserId, cookResponse.data.tacos) + cookRoll) + "` tacos :taco:" + "! received `" + extraTacosFromCasserole + "` extra tacos :taco: from your casserole" );
+                                        message.channel.send(message.author.username + " Cooked `" + cookRoll + "` tacos! you now have `" + ( adjustedTacosForUser(discordUserId, cookResponse.data.tacos) + cookRoll) + "` tacos :taco:" + "! received `" + extraTacosFromCasserole + "` extra tacos :taco: from your casserole" );
                                     }else{
-                                        message.channel.send(message.author + " Cooked `" + cookRoll + "` tacos! you now have `" + ( adjustedTacosForUser(discordUserId, cookResponse.data.tacos) + cookRoll) + "` tacos :taco:" );
+                                        message.channel.send(message.author.username + " Cooked `" + cookRoll + "` tacos! you now have `" + ( adjustedTacosForUser(discordUserId, cookResponse.data.tacos) + cookRoll) + "` tacos :taco:" );
                                     }
                                     var data = {}
                                     data.achievements = achievements;
@@ -1402,14 +1648,15 @@ module.exports.cookCommand = function(message){
                                     achiev.checkForAchievements(discordUserId, data, message);
                                     var experienceFromItems = wearStats.calculateExtraExperienceGained(wearRes, "cook", null);
                                     experience.gainExperience(message, message.author, (EXPERIENCE_GAINS.cook + experienceFromItems), cookResponse);
+                                    // check if cook is toggled
+                                    createTimeOutForCommandAfterUse("cook", now, secondsToRemove, COOK_COOLDOWN_HOURS, discordUserId, cookResponse.data)
                                 }
                             })
                         }else{
-                            // six hours have not passed, tell the user they need to wait 
                             exports.setCommandLock("cook", discordUserId, false)
                             now = new Date(now.setSeconds(now.getSeconds() + secondsToRemove));
-                            var numberOfHours = getDateDifference(cookResponse.data.lastcooktime, now, 24);
-                            message.channel.send(message.author + " You cannot cook tacos currently! Please wait `" + numberOfHours + "` ");
+                            var numberOfHours = getDateDifference(cookResponse.data.lastcooktime, now, COOK_COOLDOWN_HOURS );
+                            message.channel.send(message.author.username + " You cannot cook tacos currently! Please wait `" + numberOfHours + "` ");
                         }
                     }
                 })
@@ -1457,7 +1704,7 @@ module.exports.throwCommand = function(message){
                         }
                         else{
                             // send message that the user has 1 more taco
-                            message.channel.send(message.author + " threw `10` tacos at " + userMentioned + " :dizzy_face: :taco: :wave: :smiling_imp:");
+                            message.channel.send(message.author.username + " threw `10` tacos at " + userMentioned + " :dizzy_face: :taco: :wave: :smiling_imp:");
                             // if they drop a taco someone else can pick it up
                             var poisonedTacoRoll = Math.floor(Math.random() * 100) + 1;
                             var poisonedTaco = false;
@@ -1540,6 +1787,7 @@ module.exports.profileCommand = function(message){
                 profileData.userName = mentionedUser;
                 profileData.avatarURL = mentionedUserAvatarURL;
                 profileData.userTacos = adjustedTacosForUser(mentionedId, profileResponse.data.tacos)
+                profileData.burritos = profileResponse.data.burritos
                 profileData.userTacoStands = profileResponse.data.tacostands ? profileResponse.data.tacostands : 0;
                 profileData.userItems = "none";
                 profileData.pasta = profileResponse.data.pasta;
@@ -1632,6 +1880,7 @@ module.exports.profileCommand = function(message){
                 profileData.avatarURL = message.author.avatarURL;
                 profileData.userTacos = adjustedTacosForUser(discordUserId, profileResponse.data.tacos)
                 profileData.userTacoStands = profileResponse.data.tacostands ? profileResponse.data.tacostands : 0;
+                profileData.burritos = profileResponse.data.burritos
                 profileData.userItems = "none";
                 profileData.pasta = profileResponse.data.pasta;
                 profileData.reputation = profileResponse.data.reputation;
@@ -1736,7 +1985,14 @@ function achievEmbedBuilder(message, profileData){
     for (var i = profileData.achievementStrings.length - 1; i >= 0; i--){
         embed.addField(profileData.userName + "'s Achievements " + ':medal:', profileData.achievementStrings[i])
     }
-    message.channel.send({embed});
+    message.channel.send({embed})
+    .then(function(res){
+        console.log(res)
+    })
+    .catch(function(err){
+        console.log(err)
+        message.channel.send("Unable to display achievements embed, Enable embeds in this channel for future achievements announcements!")
+    })
 }
 
 module.exports.xpCommand = function(message){
@@ -1829,24 +2085,21 @@ module.exports.buyPickaxeCommand = function(message){
     profileDB.getUserProfileData( discordUserId, function(err, pickaxeResponse) {
         if(err){
             agreeToTerms(message, discordUserId);
-            message.channel.send(message.author + " You can't afford a pickaxe!");
-        }
-        else{
+            message.channel.send(message.author.username + " You can't afford a pickaxe!");
+        }else{
             if (pickaxeResponse.data.pickaxe == "none"){
                 if ( adjustedTacosForUser(discordUserId, pickaxeResponse.data.tacos) >= PICKAXE_COST){
                     var tacosSpent = PICKAXE_COST * -1;
                     profileDB.purchasePickAxe(discordUserId, tacosSpent, function(err, data){
                         if (err){
                             // console.log(err);
-                        }
-                        else{
+                        }else{
                             experience.gainExperience(message, message.author, EXPERIENCE_GAINS.buyPickaxe , pickaxeResponse);
-                            message.channel.send(message.author + " Congratulations, you have purchased a pickaxe :pick:!");
+                            message.channel.send(message.author.username + " Congratulations, you have purchased a pickaxe :pick:! use `-scavenge` command to scavenge some items!");
                         }
                     })
-                }
-                else{
-                    message.channel.send(message.author + " You cannot afford the `Pickaxe`");
+                }else{
+                    message.channel.send(message.author.username + " You cannot afford the `Pickaxe`");
                 }
             }
             else if (pickaxeResponse.data.pickaxe == "basic"){
@@ -1855,15 +2108,13 @@ module.exports.buyPickaxeCommand = function(message){
                     profileDB.purchasePickAxe(discordUserId, tacosSpent, function(err, data){
                         if (err){
                             // console.log(err);
-                        }
-                        else{
+                        }else{
                             experience.gainExperience(message, message.author, EXPERIENCE_GAINS.buyPickaxe * 3 , pickaxeResponse);
-                            message.channel.send(message.author + " Congratulations, you have purchased an Improved Pickaxe :pick:!");
+                            message.channel.send(message.author.username + " Congratulations, you have purchased an Improved Pickaxe :pick:!");
                         }
                     })
-                }
-                else{
-                    message.channel.send(message.author + " You cannot afford the `Improved Pickaxe`");
+                }else{
+                    message.channel.send(message.author.username + " You cannot afford the `Improved Pickaxe`");
                 }
             }
             else if (pickaxeResponse.data.pickaxe == "improved"){
@@ -1872,15 +2123,13 @@ module.exports.buyPickaxeCommand = function(message){
                     profileDB.purchasePickAxe(discordUserId, tacosSpent, function(err, data){
                         if (err){
                             // console.log(err);
-                        }
-                        else{
+                        }else{
                             experience.gainExperience(message, message.author, EXPERIENCE_GAINS.buyPickaxe * 10 , pickaxeResponse);
-                            message.channel.send(message.author + " Congratulations, you have purchased the Master Pickaxe :pick:!");
+                            message.channel.send(message.author.username + " Congratulations, you have purchased the Master Pickaxe :pick:!");
                         }
                     })
-                }
-                else{
-                    message.channel.send(message.author + " You cannot afford the `Master Pickaxe`");
+                }else{
+                    message.channel.send(message.author.username + " You cannot afford the `Master Pickaxe`");
                 }
             }
             else if (pickaxeResponse.data.pickaxe == "master"){
@@ -1889,15 +2138,13 @@ module.exports.buyPickaxeCommand = function(message){
                     profileDB.purchasePickAxe(discordUserId, tacosSpent, function(err, data){
                         if (err){
                             // console.log(err);
-                        }
-                        else{
+                        }else{
                             experience.gainExperience(message, message.author, EXPERIENCE_GAINS.buyPickaxe * 50 , pickaxeResponse);
-                            message.channel.send(message.author + " Congratulations, you have purchased the Ethereal Pickaxe :pick:!");
+                            message.channel.send(message.author.username + " Congratulations, you have purchased the Ethereal Pickaxe :pick:!");
                         }
                     })
-                }
-                else{
-                    message.channel.send(message.author + " You cannot afford the `Ethereal Pickaxe`");
+                }else{
+                    message.channel.send(message.author.username + " You cannot afford the `Ethereal Pickaxe`");
                 }
             }
             else if (pickaxeResponse.data.pickaxe == "ethereal"){
@@ -1906,15 +2153,13 @@ module.exports.buyPickaxeCommand = function(message){
                     profileDB.purchasePickAxe(discordUserId, tacosSpent, function(err, data){
                         if (err){
                             // console.log(err);
-                        }
-                        else{
+                        }else{
                             experience.gainExperience(message, message.author, EXPERIENCE_GAINS.buyPickaxe * 500 , pickaxeResponse);
-                            message.channel.send(message.author + " Congratulations, you have purchased Zeus' Trident :pick:!");
+                            message.channel.send(message.author.username + " Congratulations, you have purchased Zeus' Trident :pick:!");
                         }
                     })
-                }
-                else{
-                    message.channel.send(message.author + " You cannot afford `Zeus' Trident`");
+                }else{
+                    message.channel.send(message.author.username + " You cannot afford `Zeus' Trident`");
                 }
             }
         }
@@ -1928,9 +2173,8 @@ module.exports.buyStableCommand = function(message){
     profileDB.getUserProfileData( discordUserId, function(err, stableResponse) {
         if(err){
             agreeToTerms(message, discordUserId);
-            message.channel.send(message.author + " You can't afford a Stable!");
-        }
-        else{
+            message.channel.send(message.author.username + " You can't afford a Stable!");
+        }else{
             if (!stableResponse.data.stable){
                 if ( adjustedTacosForUser(discordUserId, stableResponse.data.tacos) >= STABLE_COST){
                     var tacosSpent = STABLE_COST * -1;
@@ -1939,7 +2183,7 @@ module.exports.buyStableCommand = function(message){
                             // console.log(err);
                         }else{
                             experience.gainExperience(message, message.author, EXPERIENCE_GAINS.buyStable * 50 , stableResponse);
-                            message.channel.send(message.author + " Congratulations, you have purchased the Stable!");
+                            message.channel.send(message.author.username + " Congratulations, you have purchased the Stable! use `-stable` command to display your Stable.");
                         }
                     })
                 }
@@ -1956,7 +2200,7 @@ module.exports.buyGreenHouseCommand = function(message){
     profileDB.getUserProfileData( discordUserId, function(err, greenhouseResponse) {
         if(err){
             agreeToTerms(message, discordUserId);
-            message.channel.send(message.author + " You can't afford a Greenhouse!");
+            message.channel.send(message.author.username + " You can't afford a Greenhouse!");
         }
         else{
             if (!greenhouseResponse.data.greenhouse){
@@ -1967,7 +2211,7 @@ module.exports.buyGreenHouseCommand = function(message){
                             // console.log(err);
                         }else{
                             experience.gainExperience(message, message.author, EXPERIENCE_GAINS.buyGreenHouse * 50 , greenhouseResponse);
-                            message.channel.send(message.author + " Congratulations, you have purchased the Greenhouse!");
+                            message.channel.send(message.author.username + " Congratulations, you have purchased the Greenhouse! use `-greenhouse` command to display your Greenhouse.");
                         }
                     })
                 }
@@ -1985,7 +2229,7 @@ module.exports.buyTempleCommand = function(message){
         if(err){
             // user doesnt exist tell the user they should get some tacos
             agreeToTerms(message, discordUserId);
-            message.channel.send(message.author + " You can't afford a Stable!");
+            message.channel.send(message.author.username + " You can't afford a Temple!");
         }
         else{
             if (!templeResponse.data.temple){
@@ -1996,7 +2240,7 @@ module.exports.buyTempleCommand = function(message){
                             // console.log(err);
                         }else{
                             experience.gainExperience(message, message.author, EXPERIENCE_GAINS.buyPickaxe * 50 , templeResponse);
-                            message.channel.send(message.author + " Congratulations, you have purchased the Temple!");
+                            message.channel.send(message.author.username + " Congratulations, you have purchased the Temple! use `-temple` command to display your Temple.");
                         }
                     })
                 }
@@ -2013,7 +2257,7 @@ module.exports.buyHacksawCommand = function(message){
         if(err){
             // user doesnt exist tell the user they should get some tacos
             agreeToTerms(message, discordUserId);
-            message.channel.send(message.author + " You can't afford the Hacksaw!");
+            message.channel.send(message.author.username + " You can't afford the Hacksaw!");
         }
         else{
             if (!hacksawResponse.data.hacksaw && hacksawResponse.data.temple){
@@ -2024,12 +2268,12 @@ module.exports.buyHacksawCommand = function(message){
                             // console.log(err);
                         }else{
                             experience.gainExperience(message, message.author, EXPERIENCE_GAINS.buyPickaxe * 50 , hacksawResponse);
-                            message.channel.send(message.author + " Congratulations, you have purchased a Hacksaw!");
+                            message.channel.send(message.author.username + " Congratulations, you have purchased a Hacksaw! you can now use `-disassemble [itemname]` command to disassemble your items.");
                         }
                     })
                 }
             }else{
-                message.channel.send(message.author + " You already own the Hacksaw")
+                message.channel.send(message.author.username + " You already own the Hacksaw")
             }
         }
     })
@@ -2052,8 +2296,10 @@ function profileBuilder(message, profileData){
     */
     .setTimestamp()
     .addField('Tacos  :taco:', profileData.userTacos, true)
-    
-    .addField('Taco Stands :bus:', profileData.userTacoStands, true)
+    if (profileData.burritos){
+        embed.addField('Burritos  :burrito:', profileData.burritos, true)
+    }
+    embed.addField('Taco Stands :bus:', profileData.userTacoStands, true)
     .addField('Level ' + profileData.level + ' :trident:', "**Next Level:** " + profileData.experience + " / " + profileData.nextLevelExp, true)
     .addField('Bender Reputation :statue_of_liberty:', " **"+ profileData.reputationStatus +"** : " + profileData.reputation + " / " + REPUTATIONS[profileData.nextReputation].repToGet , true)
     if (profileData.petname){
@@ -2065,7 +2311,14 @@ function profileBuilder(message, profileData){
     embed.addField('Items :shopping_bags:', profileData.userItems, true)
     .addField('Achievements :military_medal: ', profileData.achievementString, true)
     .addField('RPG stats :fleur_de_lis:  ', "Points : " + profileData.rpgLevel + " | " + profileData.rpgPoints + "/" + profileData.rpgPointsNextLevel + "\nChallenge: " + profileData.currentRpgChallenge + "\nRating: 1500 ", true)
-    message.channel.send({embed});
+    message.channel.send({embed})
+    .then(function(res){
+        console.log(res)
+    })
+    .catch(function(err){
+        console.log(err)
+        message.channel.send("Unable to display profile embed, Enable embeds in this channel to display profiles!")
+    })
 }
 
 function shopBuilder(message, shopData, long){
@@ -2130,8 +2383,15 @@ function shopBuilder(message, shopData, long){
             }
         }
         embed.addField('Your current tacos', shopData.userTacos + " :taco:", false)   
-        embed.addField('Descriptions', "-shop long to see descriptions", false)   
-        message.channel.send({embed});        
+        embed.addField('Descriptions', "-shop long to see descriptions and how to buy from the shop", false)   
+        message.channel.send({embed})
+        .then(function(res){
+            console.log(res)
+        })
+        .catch(function(err){
+            console.log(err)
+            message.channel.send("Unable to display shop embed, Enable embeds in this channel for future shop announcements!")
+        })     
     }
     else {
         var welcomeMessage = "Hey " + message.author.username + "! Welcome to Bender's shop."
@@ -2229,7 +2489,14 @@ function shopBuilder(message, shopData, long){
         embed.addBlankField(false)
         .addField('Your current tacos', shopData.userTacos + " :taco:", false)
         .setTimestamp()
-        message.channel.send({embed});
+        message.channel.send({embed})
+        .then(function(res){
+            console.log(res)
+        })
+        .catch(function(err){
+            console.log(err)
+            message.channel.send("Unable to display shop embed, Enable embeds in this channel for future shop announcements!")
+        })
     }
 }
 
@@ -2331,7 +2598,14 @@ function shopItemDetailsBuilder(message){
     .addField('Belt ', SHOP_ITEM_COST + " :taco: \ngives chance at additional tacos when **cooking**\n💚52 🗡️5 ☄️5 👕43 🙌43 \nassist - heal yourself and your target\nfreeze - reduce target's armor by 20%", true)
     .addField('Socks ', SHOP_ITEM_COST + " :taco: \ngives chance at additional tacos when **thanking**\n💚24 🗡️30 ☄️0 👕25 🙌25 \nscold - reduce your targets spirit by 20%\nslash - deal physical damage to all enemies (60% of your physical damage)", true)
     .setTimestamp()
-    message.channel.send({embed});
+    message.channel.send({embed})
+    .then(function(res){
+        console.log(res)
+    })
+    .catch(function(err){
+        console.log(err)
+        message.channel.send("Unable to display shop item embed, Enable embeds in this channel for future shop item announcements!")
+    })
 }
 
 module.exports.buyShopItem = function(message, args){
@@ -2376,11 +2650,10 @@ module.exports.buyShopItem = function(message, args){
                     profileDB.updateUserTacos(discordUserId, SHOP_ITEM_COST * -1, function(updateLSErr, updateLSres){
                         if(updateLSErr){
                             console.log(updateLSErr);
-                        }
-                        else{
+                        }else{
                             var tacosFound = 0
                             shopItemEmbedBuilder(message, itemsToAddToInventory, tacosFound);
-                            message.channel.send(message.author + " successfully purchased `" + itemShortName.toLowerCase() + "`! \ndo -puton 1 " + itemShortName.toLowerCase() + " OR -puton 2 " + itemShortName.toLowerCase() + "  OR -puton 3 " + itemShortName.toLowerCase() + " \ndo -wearing to check your new item bonuses!")
+                            message.channel.send(message.author.username + " successfully purchased `" + itemShortName.toLowerCase() + "`! \n`do -puton 1 " + itemShortName.toLowerCase() + "` OR `-puton 2 " + itemShortName.toLowerCase() + "`  OR `-puton 3 " + itemShortName.toLowerCase() + "` \ndo `-wearing` to check your new item bonuses!")
                         }
                     })
                 }else{
@@ -2420,7 +2693,7 @@ module.exports.buyFlaskCommand = function(message){
                         }else{
                             console.log(flaskRes);
                             // create message that the user purchased a flask
-                            message.channel.send(message.author + " has purchased a flask! :alembic:")
+                            message.channel.send(message.author.username + " has purchased a flask! :alembic:")
                         }
                     })
                 }
@@ -2456,19 +2729,16 @@ module.exports.buyRecipeCommand = function(message){
                         addToUserInventory(discordUserId, artifactRecipeItem);
                         profileDB.updateUserTacos(discordUserId, ARTIFACT_RECIPE_COST * -1, function(updateLSErr, updateLSres){
                             if(updateLSErr){
-                                // console.log(updateLSErr);
-                            }
-                            else{
-                                message.channel.send(message.author + " successfully purchased an artifact recipe :rosette:!")
+                                console.log(updateLSErr);
+                            }else{
+                                message.channel.send(message.author.username + " successfully purchased an artifact recipe :rosette:!")
                             }
                         })
                     }
-                }
-                else{
+                }else{
                     message.channel.send("You cannot afford this item.")
                 }
-            }
-            else{
+            }else{
                 // unavailable
                 message.channel.send("You cannot afford this item.")
             }
@@ -2544,7 +2814,14 @@ function repShopBuilder(message, shopData){
     embed.addBlankField(false)
     .addField('Your current tacos', shopData.userTacos + " :taco:", false)
     .setTimestamp()
-    message.channel.send({embed});
+    message.channel.send({embed})
+    .then(function(res){
+        console.log(res)
+    })
+    .catch(function(err){
+        console.log(err)
+        message.channel.send("Unable to display reputation shop embed, Enable embeds in this channel for future reputation shop announcements!")
+    })
 }
 
 module.exports.repShopCommand = function(message){
@@ -2614,27 +2891,24 @@ module.exports.buyPastaCommand = function(message, pasta){
     profileDB.getUserProfileData( discordUserId, function(err, pastaRespond) {
         if(err){
             // user doesnt exist tell the user they should get some tacos
-            message.channel.send(message.author + " you can't afford pasta currently!");
+            message.channel.send(message.author.username + " you can't afford pasta currently!");
             agreeToTerms(message, discordUserId);
-        }
-        else{
+        }else{
             if ( adjustedTacosForUser(discordUserId, pastaRespond.data.tacos) >= PASTA_COST && pasta.length > 0 && pasta.length < 125){
                 // user can buy the pasta, insert the pasta message into the user's pasta column
                 profileDB.updateUserPasta( discordUserId, PASTA_COST * -1, pasta, function(err, pastaRespond) {
                     if(err){
-                        message.channel.send(message.author + " Could not purchase pasta!");
+                        message.channel.send(message.author.username + " Could not purchase pasta!");
                     }
                     else{
                         // user has updated their pasta
-                        message.channel.send(message.author + " You have purchased a new pasta :spaghetti:!");
+                        message.channel.send(message.author.username + " You have purchased a new pasta :spaghetti:!");
                     }
                 });
-            }
-            else if (adjustedTacosForUser(discordUserId, pastaRespond.data.tacos) >= PASTA_COST){
-                message.channel.send(message.author + " You do not have enough tacos to purchase a pasta!");
-            }
-            else if(pasta.length > 125){
-                message.channel.send(message.author + " The pasta is too long. Pasta must be less than 125 characters long");
+            }else if (adjustedTacosForUser(discordUserId, pastaRespond.data.tacos) >= PASTA_COST){
+                message.channel.send(message.author.username + " You do not have enough tacos to purchase a pasta!");
+            }else if(pasta.length > 125){
+                message.channel.send(message.author.username + " The pasta is too long. Pasta must be less than 125 characters long");
             }
 
         }
@@ -2674,21 +2948,67 @@ module.exports.helpCommand = function(message){
         },
         "fields": [
           {
-            "name": "Command List",
-            "value": "`-profile [user]        >` Display someone's profile!\n`-ach                   >` Display your achievements!\n`-standings             >` Display your local leaderboard!\n\n`-welcome [user]        >` Welcome a user and they get **50** tacos!\n`-thank [user]          >` Thank a user and they get **10** tacos!\n`-sorry [user]          >` Say sorry to a user and they get **10** tacos!\n\n`-shop (long)           >` Display the (detailed) shop!\n`-repshop               >` Display the Reputation shop!\n\n`-scavenge              >` Scavenge items using your pickaxe!\n`-prepare               >` Prepare tacos using your stands!\n`-cook                  >` Cook some tacos!\n\n`-give [user] [number]  >` Give a user a certain amount of your tacos!\n`-throw [user]          >` Throw **10** tacos at a user!\n`-pickup                >` Pick up tacos off the ground!\n\n`-slots [number]        >` Play slots and lose or win tacos!\n`-raffle                >` Enter the raffle, joining costs for **50** tacos!\n"
+            "name": "Common Commands List",
+            "value": "`-profile [user] >` Display someone's profile!\n`-shop (long) >` Display the (detailed) shop!\n`-daily >` Display the daily voting feature!\n`\n`-welcome [user] >` Welcome a user and they get **50** tacos!\n`-thank [user] >` Thank a user and they get **10** tacos!\n`-sorry [user] >` Say sorry to a user and they get **10** tacos!\n\n`-prepare >` Prepare tacos using your stands!\n`-cook >` Cook some tacos!\n\n`-give [user] [number] >` Give a user a certain amount of your tacos!\n`-throw [user] >` Throw **10** tacos at a user!\n`-slots [number] >` Play slots and lose or win tacos!\n\n"
+          },
+          {
+            "name": "Misc Commands List",
+            "value": "`-standings >` Display your local leaderboard!\n-`scavenge >` Scavenge items using your pickaxe!\n`-repshop >` Display the Reputation shop!\n`-raffle >` Enter the raffle, joining costs for **50** tacos!\n`-ach >` Display your achievements!\n`-tacos >` Display your tacos!\n`-xp >` Display your experience and level!`-stands >` Display your taco stands!\n`-toprpg >` Display the RPG leaderboards!\n`-toplist >` Display the experience and level leaderboards!\n-pickup >` Pick up tacos off the ground!\n"
           },
           {
             "name": "-fruits [user] [user] [user] ...",
-            "value": "Play a game of fruits by tagging up to 9 other people with this command!\nTake one or two fruits and attempt to force your opponents to take a bomb!\n`-hint                >` Bender tells you a hint!"
+            "value": "Play a game of fruits by tagging up to 9 other people with this command!\nTake one or two fruits and attempt to force your opponents to take a bomb!\n"
           },
           {
             "name": "Other Help Commands",
-            "value": "`-itemhelp              >` Display all commands related to items!\n`-rpghelp               >` Display all commands related to RPGs!"
+            "value": "`-itemhelp >` Display all commands related to items!\n`-rpghelp >` Display all commands related to RPGs!\n`-hint >` Bender tells you a hint!\n `-markethelp >` display full black market commands!\n`-patchnotes` > display the latest updates done to bender!"
           }
         ]
       };
       
-      message.channel.send({ embed });      
+      message.channel.send({ embed })
+      .then(function(res){
+        console.log(res)
+    })
+    .catch(function(err){
+        console.log(err)
+        message.channel.send("Unable to display help embed, Enable embeds in this channel for future help announcements!")
+    })     
+}
+
+module.exports.patchnotesCommand = function(message){
+    const embed = {
+        "description": "Bender is being consistently updated and the latest patchnotes are displayed here!",
+        "color": 11795163,
+        "author": {
+          "name": "Patch Notes",
+          "url": "http://benderdiscord.com/",
+          "icon_url": "https://cdn.discordapp.com/avatars/320703328730349578/af68d11f9ecf74bd3f9bf99cebcfe107.jpg"
+        },
+        "fields": [
+          {
+            "name": "July 9, 2019",
+            "value": "```-Fixed some rpg zones from not being accessible\n-Completing areas and zones will now grant rewards\n-The item requirements of building upgrades has been reduced by 33%, tacos requirements reduced by 20%\n-New command available -claim rare, -claim ancient, -claim [common], -claim [common] [amount], -claim [common] all, -claim letter [letter text] are now available, rares and ancients are randomly selected, commons can be selected by the user, letters can be obtained through claim rewards and will be thrown into the twisting nether.```"
+          },
+          {
+            "name": "July 9, 2019",
+            "value": "```-Experience in regular rpg for higher level zones has been increased\n-Master versions of some items have been introduced\n-Armaments for keystone items are now percentage based on their base stat on top of their original floors and ceiling ranges, slot bonuses are also added and reduced based on the slot by 6%, crit and luck remain at current rates\n-Enemy limit abilities will no longer consume regular group limit abilities\n-Debuffs that prevent buffs from being obtained will now properly work for enemies\n- Cook, Prepare, and RPG potions have had their reduction time improved```"
+          },
+          {
+            "name": "July 15, 2019",
+            "value": "```-RPG Queue command is here! You can now enter the rpg queue to join users in your rpg adventure from any server, use `-rpgqueue 2`, `-rpgqueue 3`, `-rpgqueue 4`, `-rpgqueue 5` to begin\n Use `-rpgleave` to leave the current queue you are in\nYou can only be in one queue at at time\n-RPG aliases can be used, you do not need to tag a user anymore and can instead use `p1`, `p2`, `p3`, `p4`, `p5`, to target them instead, their alias is listed next to their name in the RPG embed.\n-Inventory, Rares, Ancients, and Artifacts embeds now have paging\n-RPG areas have had their progress counts updated```"
+          }
+        ]
+      };
+      
+    message.channel.send({ embed })
+    .then(function(res){
+        console.log(res)
+    })
+    .catch(function(err){
+        console.log(err)
+        message.channel.send(JSON.stringify(err) )
+    })  
 }
 
 module.exports.itemhelpCommand = function(message){
@@ -2736,7 +3056,14 @@ module.exports.itemhelpCommand = function(message){
           }
         ]
       };
-      message.channel.send({ embed });
+      message.channel.send({ embed })
+      .then(function(res){
+        console.log(res)
+    })
+    .catch(function(err){
+        console.log(err)
+        message.channel.send("Unable to display item help embed, Enable embeds in this channel for future item help announcements!")
+    })
 }
 
 module.exports.rpghelpCommand = function(message){
@@ -2761,12 +3088,16 @@ module.exports.rpghelpCommand = function(message){
         },
         "fields": [
           {
-            "name": "Inventories",
-            "value": "`-rpgstats                       >` Display your abilities and rpg stats!\n`-rpgstart [1-4 user mentions]   >` Start an rpg with up to four other people!\n`-rpgchallege [1-10] [1-4 users] >` Start an rpg challenge with four other people!\n`-cast [ability] [target number/user]   >` Cast an ability on a target or user!\n**example**: -cast attack 1 (attacks enemy 1)\n-cast barrier @user (casts barrier on the user mentioned)\n-cast slash (deals damage to all enemies)"
+            "name": "General Commands",
+            "value": "`-rpgstats >` Display your abilities and rpg stats!\n`-map >` display your current area and zone as well as available areas you can travel to!\n`-travel [areaname]   >` travel to a new area in the current zone you are in!\n`-rpgstart [1-4 user mentions]   >` Start an rpg with up to four other people!\n`-rpgqueue [2-5] >` Enter the RPG queue for a group of size 2-5\n`-rpgleave >` Leave the RPG queue\n`-rpgchallenge [1-10] [1-4 users] >` Start an rpg challenge with four other people! Rpg challenges must be defeated in order\n`-cast [ability] [target number/user]   >` Cast an ability on a target or user!\n**example**: -cast attack 1 (attacks enemy 1)\n-cast barrier @user (casts barrier on the user mentioned)\n-cast slash (deals damage to all enemies - only if the ability is areawide)"
+          },
+          {
+            "name": "Info",
+            "value": "Bender RPG is a turn based game that will challenge you and your group to overcome different obstacles. \nRPG requires between 2-5 players, you may not solo. Enemies drop items and grant experience when successfully defeating the RPG. \nYou will start in the `Prarie` and be able to discover more areas which will have different enemies and unique items to discover. \nTravel to different areas and zones by using the `-travel` command. The leader (player that starts the rpg) dictates the RPG battle and more items will be obtained if more players are in the same area as the leader"
           },
           {
             "name": "Abilities",
-            "value": "You will get different abilities and stats depending on what items you are wearing.\nAll users must cast one ability per event turn."
+            "value": "You will get different abilities and stats depending on what items you are wearing.\nAll users must cast one ability per event turn. Enemies will always attack first, unless you have the passive ability `haste`"
           },
           {
             "name": "Stats",
@@ -2774,7 +3105,14 @@ module.exports.rpghelpCommand = function(message){
           }
         ]
       };
-      message.channel.send({ embed });
+      message.channel.send({ embed })
+      .then(function(res){
+        console.log(res)
+    })
+    .catch(function(err){
+        console.log(err)
+        message.channel.send("Unable to display rpg help embed, Enable embeds in this channel for future rpghelp announcements!")
+    })
 }
 
 function getProfileForAchievement(discordUserId, message, profileResponse){
@@ -2805,10 +3143,15 @@ module.exports.raresCommand = function(message, args, rarity){
     // get all items for the discord id
     var discordUserId = message.author.id;
     var includeDescriptions = false;
+    let page = 0
     if (args && args.length > 1){
         var long = args[1];
         if (long == "long"){
             includeDescriptions = true;
+        }else if (long == "page" ){
+            if (args && args.length > 2){
+                page = parseInt(args[2])
+            }
         }
     }
     profileDB.getUserItems(discordUserId, function(err, inventoryResponse){
@@ -2839,17 +3182,20 @@ module.exports.raresCommand = function(message, args, rarity){
                 }
             }
             if (rarity == "armament"){
-                armamentsEmbedBuilder(message, inventoryResponse.data, itemsMapById, includeDescriptions, rarity)
+                armamentsEmbedBuilder(message, inventoryResponse.data, itemsMapById, includeDescriptions, rarity, page)
             }else{
-                raresEmbedBuilder(message, itemsInInventoryCountMap, itemsMapById, includeDescriptions, rarity);
+                raresEmbedBuilder(message, itemsInInventoryCountMap, itemsMapById, includeDescriptions, rarity, page);
             }
         }
     })
 }
 
-function raresEmbedBuilder(message, itemsMap, allItems, long, rarity){
+function raresEmbedBuilder(message, itemsMap, allItems, long, rarity, pageParam){
     // create a field for each item and add the count
     const embed = new Discord.RichEmbed()
+    let pageRegular = pageParam || 1
+    let pageImproved = pageParam || 1
+    let pageRefined = pageParam || 1
     var inventoryStringsRegular = [];
     var inventoryStringsImproved = [];
     var inventoryStringsRefined = [];
@@ -2945,9 +3291,7 @@ function raresEmbedBuilder(message, itemsMap, allItems, long, rarity){
                         }else{
                             inventoryStringRefined = "**"+allItems[key].itemname + "** - " +  itemsMap[key] + " - " + allItems[key].itemslot + "\n" + inventoryStringRefined;                        
                         }
-
                     }
-
                 }
             }
         }
@@ -2962,58 +3306,93 @@ function raresEmbedBuilder(message, itemsMap, allItems, long, rarity){
     if (inventoryStringRefined.length > 0){
         inventoryStringsRefined.push(inventoryStringRefined);
     }
+    // for visual purposes
+    let largestPageNum = 1
+    if (inventoryStringsRegular.length > largestPageNum){
+        largestPageNum = inventoryStringsRegular.length
+    }
+    if (inventoryStringsImproved.length > largestPageNum){
+        largestPageNum = inventoryStringsImproved.length
+    }
+    if (inventoryStringsRefined.length > largestPageNum){
+        largestPageNum = inventoryStringsRefined.length
+    }
     if (!long){
         for (var invString = inventoryStringsRefined.length -1; invString >= 0; invString--){
-            var emoji = ""
-            if ( rarity == "rare"){
-                emoji = ":diamonds: "
-            }else if (rarity == "ancient"){
-                emoji = ":star:  "
-            }else if (rarity == "artifact"){
-                emoji = ":cyclone:  "
+            if (pageRefined > inventoryStringsRefined.length){
+                pageRefined = inventoryStringsRefined.length
             }
-            embed.addField(emoji + " Item Name  |  Count  |  Slot " + emoji, inventoryStringsRefined[invString], true)
+            if (invString == pageRefined - 1){
+                var emoji = ""
+                if ( rarity == "rare"){
+                    emoji = ":diamonds: "
+                }else if (rarity == "ancient"){
+                    emoji = ":star:  "
+                }else if (rarity == "artifact"){
+                    emoji = ":cyclone:  "
+                }
+                embed.addField(emoji + " Item Name  |  Count  |  Slot " + emoji, inventoryStringsRefined[invString], true)    
+            }
         }
         for (var invString = inventoryStringsImproved.length -1; invString >= 0; invString--){
-            var emoji = ""
-            if ( rarity == "rare"){
-                emoji = ":large_blue_diamond: "
-            }else if (rarity == "ancient"){
-                emoji = ":large_orange_diamond: "
-            }else if (rarity == "artifact"){
-                emoji = ":diamond_shape_with_a_dot_inside: "
+            if (pageImproved > inventoryStringsImproved.length){
+                pageImproved = inventoryStringsImproved.length
             }
-            embed.addField(emoji + " Item Name  |  Count  |  Slot " + emoji, inventoryStringsImproved[invString], true)
+            if (invString == pageImproved - 1){
+                var emoji = ""
+                if ( rarity == "rare"){
+                    emoji = ":large_blue_diamond: "
+                }else if (rarity == "ancient"){
+                    emoji = ":large_orange_diamond: "
+                }else if (rarity == "artifact"){
+                    emoji = ":diamond_shape_with_a_dot_inside: "
+                }
+                embed.addField(emoji + " Item Name  |  Count  |  Slot " + emoji, inventoryStringsImproved[invString], true)    
+            }
         }
         for (var invString = inventoryStringsRegular.length -1; invString >= 0; invString--){
-            var emoji = ""
-            if ( rarity == "rare"){
-                emoji = ":small_blue_diamond: "
-            }else if (rarity == "ancient"){
-                emoji = ":small_orange_diamond: "
-            }else if (rarity == "artifact"){
-                emoji = ":diamond_shape_with_a_dot_inside: "
+            if (pageRegular > inventoryStringsRegular.length){
+                pageRegular = inventoryStringsRegular.length
             }
-            embed.addField(emoji + " Item Name  |  Count  |  Slot " + emoji, inventoryStringsRegular[invString], true)
+            if (invString == pageRegular - 1){
+                var emoji = ""
+                if ( rarity == "rare"){
+                    emoji = ":small_blue_diamond: "
+                }else if (rarity == "ancient"){
+                    emoji = ":small_orange_diamond: "
+                }else if (rarity == "artifact"){
+                    emoji = ":diamond_shape_with_a_dot_inside: "
+                }
+                embed.addField(emoji + " Item Name  |  Count  |  Slot " + emoji, inventoryStringsRegular[invString], true)    
+            }
         }
+    }
+    if (pageParam > largestPageNum){
+        pageParam = largestPageNum
     }
     embed
     .setAuthor(message.author.username +"'s Inventory ")
-    .setDescription( ":left_luggage:" )
+    .setDescription("Page : " + (pageParam || 1) + " of " + largestPageNum + "\n:left_luggage:" )
     .setThumbnail(message.author.avatarURL)
     .setColor(0x06e8e8)
-    message.channel.send({embed});
+    message.channel.send({embed})
+    .then(function(res){
+        console.log(res)
+    })
+    .catch(function(err){
+        console.log(err)
+        message.channel.send("Unable to display inventory embed, Enable embeds in this channel for future inventory announcements!")
+    })
 }
 
 module.exports.itemDetailsCommand = function(message, args){
     var discordUserId = message.author.id;
     if (args && args.length >= 2){
-        var itemToWear = args[1]; // must be a valid itemname
+        var itemToWear = args[1].toLowerCase(); // must be a valid itemname
         profileDB.getUserItemsForInfo(discordUserId, function(err, inventoryResponse){
             if (err){
                 // console.log(err);
-            }
-            else{
+            }else{
                 // console.log(inventoryResponse.data);
                 // get all the data for each item
                 var itemsInInventoryCountMap = {}
@@ -3029,9 +3408,9 @@ module.exports.itemDetailsCommand = function(message, args){
                         itemBeingTraded = true;
                     }
                     if (!itemsInInventoryCountMap[inventoryResponse.data[item].itemid] 
-                        && validItem 
-                        && !itemBeingAuctioned
-                        && !itemBeingTraded){
+                    && validItem 
+                    && !itemBeingAuctioned
+                    && !itemBeingTraded){
                         // item hasnt been added to be counted, add it as 1
                         itemsInInventoryCountMap[inventoryResponse.data[item].itemid] = 1;
                     }
@@ -3039,66 +3418,50 @@ module.exports.itemDetailsCommand = function(message, args){
                         itemsInInventoryCountMap[inventoryResponse.data[item].itemid] = itemsInInventoryCountMap[inventoryResponse.data[item].itemid] + 1
                     }
                 }
-
-                if (itemsMapbyShortName[itemToWear]){
-                    // check that i have the item
-                    var idOfItemChosen = itemsMapbyShortName[itemToWear].id
-                    if (itemsInInventoryCountMap[idOfItemChosen]){
-                        var itemToDisplay = itemsMapbyShortName[itemToWear]
-                        var rpgItemInfoString = rpgInfoStringBuilder(message, itemToDisplay)
-                        itemInfoEmbedBuilder(message, itemToDisplay, rpgItemInfoString)    
-                    }else{
-                        message.channel.send("you do not own that item or item does not exist")
+                let itemsInMarketByShortName = {}
+                for (var i in marketItems){
+                    if (!itemsInMarketByShortName[marketItems[i].itemshortname]){
+                        itemsInMarketByShortName[marketItems[i].itemshortname] = itemsMapbyShortName[marketItems[i].itemshortname]
                     }
+                }
+
+                
+                // check that i have the item
+                var idOfItemChosen = itemsMapbyShortName[itemToWear] ? itemsMapbyShortName[itemToWear].id : undefined
+                if (itemsInInventoryCountMap[idOfItemChosen]){
+                    itemInfoBuilder(message, discordUserId, idOfItemChosen, itemToWear)
+                }else if (marketItems[itemToWear]){
+                    // item id
+                    var itemInMarketShortName = marketItems[itemToWear].itemshortname
+                    idOfItemChosen = itemsMapbyShortName[itemInMarketShortName].id
+                    itemInfoBuilder(message, discordUserId, idOfItemChosen, itemInMarketShortName)
+                }else if(itemsInMarketByShortName[itemToWear]){
+                    // item short name in market
+                    idOfItemChosen = itemsMapbyShortName[itemToWear].id
+                    itemInfoBuilder(message, discordUserId, idOfItemChosen, itemToWear)
                 }else{
                     message.channel.send("you do not own that item or item does not exist")
                 }
+                
             }
         })
     }
 }
 
-// build the string for rpgstats and abilities
-function rpgInfoStringBuilder(message, item){
-    if (item.hpplus || item.attackdmgplus || item.magicdmgplus || item.armorplus || item.spiritplus){
-        var hp = item.hpplus || 0
-        var attackdmg = item.attackdmgplus || 0
-        var magicdmg = item.magicdmgplus || 0
-        var armor = item.armorplus || 0 
-        var spirit = item.spiritplus || 0
-
-        var rpgItemInfoString = " 💚 " + hp + " 🗡️ " + attackdmg + " ☄️ " + magicdmg + " 🛡️ " + armor + " 🙌 " + spirit + "\n"
-        rpgItemInfoString = rpgItemInfoString + "**Abilities:**\n"
-        var rpgAbilities = rpglib.rpgAbilities
-        if (item.ability1){
-            var abilityName = rpgAbilities[item.ability1].name
-            var abilityDescription = rpgAbilities[item.ability1].description
-            rpgItemInfoString = rpgItemInfoString + "**" + abilityName + "** - " + abilityDescription + "\n"
+function itemInfoBuilder (message, discordUserId, idOfItemChosen, itemToWear){
+    profileDB.getUserArmamentForItem(discordUserId, idOfItemChosen, function(err, armamentRes){
+        if (err){
+            console.log(err)
+        }else{
+            let armamentForItem = armamentRes.data.length > 0 ? armamentRes.data[0] : null;
+            var itemToDisplay = itemsMapbyShortName[itemToWear]
+            var rpgItemInfoString = rpg.rpgInfoStringBuilder(itemToDisplay)
+            itemInfoEmbedBuilder(message, itemToDisplay, rpgItemInfoString, armamentForItem)        
         }
-        if (item.ability2){
-            var abilityName = rpgAbilities[item.ability2].name
-            var abilityDescription = rpgAbilities[item.ability2].description
-            rpgItemInfoString = rpgItemInfoString + "**" + abilityName + "** - " + abilityDescription + "\n"
-        }
-        if (item.specialability){
-            var abilityName = rpgAbilities[item.specialability].name
-            var abilityDescription = rpgAbilities[item.specialability].description
-            rpgItemInfoString = rpgItemInfoString + "**" + abilityName + "** - " + abilityDescription + "\n"
-        }
-        if (item.passiveability){
-            var abilityName = rpgAbilities[item.passiveability].name
-            var abilityDescription = rpgAbilities[item.passiveability].description
-            rpgItemInfoString = rpgItemInfoString + "**" + abilityName + "** - " + abilityDescription + "\n"
-        }
-        return rpgItemInfoString
-    }else{
-        return ""
-    }
-    
-
+    })
 }
 
-function itemInfoEmbedBuilder(message, item, rpgItemInfoString){
+function itemInfoEmbedBuilder(message, item, rpgItemInfoString, armamentForItem){
     const embed = new Discord.RichEmbed()
     console.log(item)
     embed
@@ -3115,18 +3478,49 @@ function itemInfoEmbedBuilder(message, item, rpgItemInfoString){
     if (item.itemimage){
         embed.setThumbnail(item.itemimage)
     }
+    if (armamentForItem){
+        var hpplus = armamentForItem.hpplus
+        var adplus = armamentForItem.adplus
+        var mdplus = armamentForItem.mdplus
+        var armorplus = armamentForItem.armorplus
+        var spiritplus = armamentForItem.spiritplus
+        var critplus = armamentForItem.critplus
+        var luckplus = armamentForItem.luckplus
+    
+        var armamentDescription = "**Armament Stats:**\n " + " 💚 " + hpplus + " 🗡️ "  + adplus + " ☄️ " + mdplus + " 🛡️ " + armorplus + " 🙌 " + spiritplus + " 💥 " + critplus + " 🌟 " + luckplus 
+    
+        embed.addField("Current Armament", armamentDescription, false )
+    }
     // .setAuthor(message.author.username +"'s Inventory ")
     // .setDescription( ":left_luggage: \n-rares | -rares long to view your rare items\n-ancients | -ancients long to view your ancient items\n-artifacts | -artifacts long to view your artifacts\n-amulets to view your amulets " )
     // TODO: create an image? .setThumbnail(message.author.avatarURL)
-    message.channel.send({embed});
+    message.channel.send({embed})
+    .then(function(res){
+        console.log(res)
+    })
+    .catch(function(err){
+        console.log(err)
+        message.channel.send("Unable to display item info embed, Enable embeds in this channel for future item info announcements!")
+    })
 }
 
-module.exports.inventoryCommand = function(message){
+module.exports.inventoryCommand = function(message, args){
     // get all items for the discord id
     var discordUserId = message.author.id;
+    let page = 0
+    if (args && args.length > 1){
+        var long = args[1];
+        if (long == "long"){
+            includeDescriptions = true;
+        }else if (long == "page" ){
+            if (args && args.length > 2){
+                page = parseInt(args[2])
+            }
+        }
+    }
     profileDB.getUserItems(discordUserId, function(err, inventoryResponse){
         if (err){
-            // console.log(err);
+            console.log(err);
         }else{
             // console.log(inventoryResponse.data);
             var itemsInInventoryCountMap = {};
@@ -3152,34 +3546,82 @@ module.exports.inventoryCommand = function(message){
                     itemsInInventoryCountMap[inventoryResponse.data[item].itemid] = itemsInInventoryCountMap[inventoryResponse.data[item].itemid] + 1
                 }
             }
-            inventoryEmbedBuilder(message, itemsInInventoryCountMap, itemsMapById);
+            inventoryEmbedBuilder(message, itemsInInventoryCountMap, itemsMapById, page);
         }
     })
 }
 
-function inventoryEmbedBuilder(message, itemsMap, allItems){
+function inventoryEmbedBuilder(message, itemsMap, allItems, pageParam){
     // create a field for each item and add the count
     const embed = new Discord.RichEmbed()
+    let page = pageParam || 1
     var inventoryString = "";
+    var inventoryStringsRegular = [];
+    let emojiMap = {
+        common: "◾",
+        uncommon: "◻️",
+        potion: "⚗️",
+        bake: "🍰"
+    }
+    
     for (var key in itemsMap) {
         if (itemsMap.hasOwnProperty(key)) {
             // 
             if (allItems[key] && (allItems[key].itemraritycategory == "common" 
-                || allItems[key].itemraritycategory == "uncommon"
-                || allItems[key].itemraritycategory == "uncommon+"
-                && !allItems[key].essencerarity)){
-                // console.log(key + " " + allItems[key].itemname)
-                inventoryString = "**"+allItems[key].itemname + "** - " +  itemsMap[key] + " - " + allItems[key].itemslot +"\n" + inventoryString;
+            || allItems[key].itemraritycategory == "uncommon"
+            || allItems[key].itemraritycategory == "uncommon+"
+            && !allItems[key].essencerarity 
+            && !allItems[key].crystalrarity ) ) {
+                let emoji = ""
+                if ( (allItems[key].itemraritycategory == "uncommon+"
+                || allItems[key].itemraritycategory == "uncommon")
+                && !allItems[key].shoppotion
+                && allItems[key].amuletsource != "rpgbuff"){
+                    emoji = emojiMap["uncommon"]
+                }else if (allItems[key].itemraritycategory == "common"){
+                    emoji = emojiMap["common"]
+                }else if (allItems[key].shoppotion){
+                    emoji = emojiMap["potion"]
+                }else if (allItems[key].amuletsource == "rpgbuff"){
+                    emoji = emojiMap["bake"]
+                }
+
+                if (inventoryString.length > 900){
+                    inventoryStringsRegular.push(inventoryString);
+                    inventoryString = "";
+                    inventoryString = emoji + "**"+allItems[key].itemname + "** - " +  itemsMap[key] + " - " + allItems[key].itemslot +"\n" + inventoryString;
+                }else{
+                    // console.log(key + " " + allItems[key].itemname)
+                    inventoryString = emoji + "**"+allItems[key].itemname + "** - " +  itemsMap[key] + " - " + allItems[key].itemslot +"\n" + inventoryString;
+                }
             }
         }
     }
+    // push the leftover
+    if (inventoryString.length > 0){
+        inventoryStringsRegular.push(inventoryString);
+    }
+    if (page > inventoryStringsRegular.length){
+        page = inventoryStringsRegular.length
+    }
+    embed.setDescription(":left_luggage: \n-rares | -rares long to view your rare items\n-seeds | seeds long to view your seeds\n-ancients | -ancients long to view your ancient items\n-artifacts | -artifacts long to view your artifacts\n-amulets to view your amulets \nPage : " + (page) + " of " + inventoryStringsRegular.length + "\n use `-inv page [pagenum]` to get other pages" )
+    for (var invString = inventoryStringsRegular.length -1; invString >= 0; invString--){
+        if (invString == page - 1){
+            embed.addField("Item Name  |  Count  |  Slot", inventoryStringsRegular[invString], true)
+        }
+    }
     embed
-    .addField("Item Name  |  Count  |  Slot", inventoryString, true)
     .setAuthor(message.author.username +"'s Inventory ")
-    .setDescription( ":left_luggage: \n-rares | -rares long to view your rare items\n-seeds | seeds long to view your seeds\n-ancients | -ancients long to view your ancient items\n-artifacts | -artifacts long to view your artifacts\n-amulets to view your amulets " )
     .setThumbnail(message.author.avatarURL)
     .setColor(0x06e8e8)
-    message.channel.send({embed});
+    message.channel.send({embed})
+    .then(function(res){
+        console.log(res)
+    })
+    .catch(function(err){
+        console.log(err)
+        message.channel.send("Unable to display inventory embed, Enable embeds in this channel for future inventory announcements!")
+    })
 }
 
 module.exports.getItemsByRarity = function(rarityToReturn){
@@ -3230,7 +3672,8 @@ module.exports.scavangeCommand = function (message){
             else if (getUserResponse.data.pickaxe && getUserResponse.data.pickaxe != "none"){
                 // get all the possible items from items DB - Bad implementation but idgaf
                 var userLevel = getUserResponse.data.level;
-                wearStats.getUserWearingStats(message, discordUserId, {userLevel: userLevel}, allItems, function(wearErr, wearRes){
+                let allItemsForWearing = exports.getAllItems()
+                wearStats.getUserWearingStats(message, discordUserId, {userLevel: userLevel}, allItemsForWearing, function(wearErr, wearRes){
                     if (wearErr){
                         // console.log(wearErr);
                         exports.setCommandLock("scavenge", discordUserId, false)
@@ -3243,7 +3686,7 @@ module.exports.scavangeCommand = function (message){
                         oneHourAgo = new Date(oneHourAgo.setHours(oneHourAgo.getHours() - SCAVENGE_COOLDOWN_HOURS));
                         oneHourAgo = new Date(oneHourAgo.setSeconds(oneHourAgo.getSeconds() + secondsToRemove));
     
-                        if ( oneHourAgo > getUserResponse.data.lastscavangetime ){
+                        if (oneHourAgo > getUserResponse.data.lastscavangetime ){
                             var allScavengeableItems = exports.getAllItems()
                             var ARTIFACT_MIN_ROLL = 9995;
                             var ANCIENT_MAX_ROLL = 9995
@@ -3438,7 +3881,7 @@ module.exports.scavangeCommand = function (message){
                             ///////// CALCULATE THE EXTRA TACOS HERE 
                             var extraTacosFromItems = wearStats.calculateExtraTacos(wearRes, "scavenge"); // 0 or extra
                             if (extraTacosFromItems > 0){
-                                message.channel.send(message.author + " received `" + extraTacosFromItems + "` for scavenging! :taco:" + " received `" + extraTacosFromItems + "` extra tacos" );
+                                message.channel.send(message.author.username + " received `" + extraTacosFromItems + "` for scavenging! :taco:" + " received `" + extraTacosFromItems + "` extra tacos" );
                             }
                             // early adopter ids to get tacos
                             var earlyAdopterIds = config.earlyAdopterIds
@@ -3452,7 +3895,7 @@ module.exports.scavangeCommand = function (message){
                                     }
                                 })
                             }
-
+                            createTimeOutForCommandAfterUse("scavenge", now, secondsToRemove, SCAVENGE_COOLDOWN_HOURS, discordUserId, getUserResponse.data)
                             profileDB.updateUserTacos(discordUserId, tacosFound + extraTacosFromItems, function(updateLSErr, updateLSres){
                                 if(updateLSErr){
                                     // console.log(updateLSErr);
@@ -3493,20 +3936,18 @@ module.exports.scavangeCommand = function (message){
                                     })
                                 }
                             })
-                        }
-                        else{
+                        }else{
                             exports.setCommandLock("scavenge", discordUserId, false)
                             now = new Date(now.setSeconds(now.getSeconds() + secondsToRemove));
                             var numberOfHours = getDateDifference(getUserResponse.data.lastscavangetime, now, 1);
-                            message.channel.send(message.author + " You have scavenged too recently! Please wait `" + numberOfHours +"` ");
+                            message.channel.send(message.author.username + " You have scavenged too recently! Please wait `" + numberOfHours +"` ");
                         }
                     }
                 })
                 
-            }
-            else{
+            }else{
                 exports.setCommandLock("scavenge", discordUserId, false)
-                message.channel.send(message.author + " You need a pickaxe! buy one from the shop, do `-shop` OR `-shop long` to see what you can buy");
+                message.channel.send(message.author.username + " You need a pickaxe! buy one from the shop, do `-shop` OR `-shop long` to see what you can buy");
             }
         })
     }
@@ -3532,7 +3973,14 @@ function scavengeEmbedBuilder(message, itemsScavenged, tacosFound){
     .addField("[" + message.author.username +"'s Scavenge] :pick: Items found: ", itemsMessage, true)
     .setThumbnail(message.author.avatarURL)
     .setColor(0xbfa5ff)
-    message.channel.send({embed});
+    message.channel.send({embed})
+    .then(function(res){
+        console.log(res)
+    })
+    .catch(function(err){
+        console.log(err)
+        message.channel.send("Unable to display scavenge embed, Enable embeds in this channel for future scavenge announcements!")
+    })
 }
 
 function shopItemEmbedBuilder(message, itemsScavenged, tacosFound){
@@ -3551,7 +3999,14 @@ function shopItemEmbedBuilder(message, itemsScavenged, tacosFound){
     .addField("Items purchased: ", itemsMessage, true)
     .setThumbnail(message.author.avatarURL)
     .setColor(0xbfa5ff)
-    message.channel.send({embed});
+    message.channel.send({embed})
+    .then(function(res){
+        console.log(res)
+    })
+    .catch(function(err){
+        console.log(err)
+        message.channel.send("Unable to display shop item embed, Enable embeds in this channel for future shop item announcements!")
+    })
 }
 
 function addToUserInventory(discordUserId, items){
@@ -3643,13 +4098,13 @@ module.exports.slotsCommand = function(message, tacosBet){
                     
                 }
                 else{
-                    message.channel.send(message.author + " You don't have enough tacos!");
+                    message.channel.send(message.author.username + " You don't have enough tacos!");
                 }
             }
         })
     }
     else{
-        message.channel.send(message.author + " You must bet more than 19 tacos when using slots!");
+        message.channel.send(message.author.username + " You must bet more than 19 tacos when using slots!");
     }
 }
 
@@ -3742,7 +4197,14 @@ function slotsEmbedBuilder(emojisRolled, tacosWon, message, extraTacosFromItems)
     if (extraTacosFromItems > 0){
         embed.addField('Extra tacos from Items!', extraTacosFromItems + " :taco: tacos won" , true)
     }
-    message.channel.send({embed});
+    message.channel.send({embed})
+    .then(function(res){
+        console.log(res)
+    })
+    .catch(function(err){
+        console.log(err)
+        message.channel.send("Unable to display slots embed, Enable embeds in this channel for future slots announcements!")
+    })
 }
 
 module.exports.miniGameCommand = function(message) {
@@ -3785,16 +4247,16 @@ module.exports.miniGameCommand = function(message) {
             var amuletsAvailable = []
             for (var item in allItemsForMiniGame){
                 if(allItemsForMiniGame[item].itemraritycategory == "rare"
-                && allItemsForMiniGame[item].findinfruits){
+                && allItemsForMiniGame[item].findinfruits == true){
                     raresAvailable.push(allItemsForMiniGame[item]);
                 }
                 else if(allItemsForMiniGame[item].itemraritycategory == "ancient"
-                && allItemsForMiniGame[item].findinfruits){
+                && allItemsForMiniGame[item].findinfruits == true){
                     ancientsAvailable.push(allItemsForMiniGame[item]);
                 }
                 else if(allItemsForMiniGame[item].itemraritycategory == "amulet"
                 && allItemsForMiniGame[item].amuletsource == "scavenge"
-                && allItemsForMiniGame[item].findinfruits){
+                && allItemsForMiniGame[item].findinfruits == true){
                     amuletsAvailable.push(allItemsForMiniGame[item]);
                 }
             }
@@ -3803,7 +4265,7 @@ module.exports.miniGameCommand = function(message) {
             for (var user in team){
                 usersMinigames[team[user].id] = currentGame;
             }
-            message.channel.send(message.author + " has started a game of fruits :strawberry: type -ready to start!")
+            message.channel.send(message.author.username + " has started a game of fruits :strawberry: type -ready to start!")
         }else{
             message.channel.send("there must be more than 3 players in the game! OR your someone is already in a game")
         }
@@ -3839,6 +4301,9 @@ function miniGameEmbedBuilder(message, data){
             currentGameLastMessage.delete()
             .then(function(res){
                 currentGame.setLastMessage(sentMessage);
+            })
+            .catch(function(err){
+                console.log(err)
             })
         }else{
             currentGame.setLastMessage(sentMessage);
@@ -4335,7 +4800,7 @@ module.exports.pickupCommand = function (message){
                             getProfileForAchievement(discordUserId, message) // FIX THIS SHIT
                         }
                     })
-                    message.channel.send(message.author + " picked up `10` tacos from the ground :taco: but one was poisoned.. :nauseated_face: you ate `10` tacos to cure your sickness.");
+                    message.channel.send(message.author.username + " picked up `10` tacos from the ground :taco: but one was poisoned.. :nauseated_face: you ate `10` tacos to cure your sickness.");
                 }
             })
         }
@@ -4358,7 +4823,7 @@ module.exports.pickupCommand = function (message){
                             getProfileForAchievement(discordUserId, message) // FIX THSI SHIT
                         }
                     })
-                    message.channel.send(message.author + " picked up `10` tacos from the ground :taco:");
+                    message.channel.send(message.author.username + " picked up `10` tacos from the ground :taco:");
                 }
             })
         }
@@ -4436,7 +4901,7 @@ module.exports.buypetCommand = function(message, args){
                                                     }
                                                     else{
                                                         // anounce the user has a new pet!
-                                                        message.channel.send(" Congratulations! " + message.author + " has a new " + pet + " called: `" + petName + "` \n" + PETS_AVAILABLE[pet].emoji + " " + PETS_AVAILABLE[pet].speak + "\n use -fetch while your pet is not tired!");
+                                                        message.channel.send(" Congratulations! " + message.author.username + " has a new " + pet + " called: `" + petName + "` \n" + PETS_AVAILABLE[pet].emoji + " " + PETS_AVAILABLE[pet].speak + "\n use `-fetch` while your pet is not tired!");
                                                     }
                                                 })
                                             }
@@ -4457,7 +4922,7 @@ module.exports.buypetCommand = function(message, args){
                                                             message.channel.send(" error, check bender now");
                                                         }
                                                         else{
-                                                            message.channel.send(" Congratulations! " + message.author + " has a new " + pet + " called: `" + petName + "` \n" + PETS_AVAILABLE[pet].emoji + " " + PETS_AVAILABLE[pet].speak + "\n use -fetch " + petName +" while your pet is not tired!");
+                                                            message.channel.send(" Congratulations! " + message.author.username + " has a new " + pet + " called: `" + petName + "` \n" + PETS_AVAILABLE[pet].emoji + " " + PETS_AVAILABLE[pet].speak + "\n use `-fetch " + petName +"` while your pet is not tired!");
                                                         }
                                                     })
                                                 }
@@ -4493,6 +4958,14 @@ module.exports.buypetCommand = function(message, args){
     else{
         message.channel.send(" You must pick a pet and give a name to your pet try:\n `-buypet [kind of pet] [pet name]` ");
     }
+}
+
+function additionalEventsForCommand(message, eventParams){
+    // delegate to other modules
+    var allItemsForBuildingEvent = exports.getAllItems()
+    eventParams.allItems = allItemsForBuildingEvent
+    stable.eventsForCommand(message, eventParams)
+    //TODO: temple, GH
 }
 
 module.exports.fetchCommand = function(message, args){
@@ -4562,16 +5035,18 @@ module.exports.fetchCommand = function(message, args){
                                         // fetch whatever and then set lastfetchtime to now
                                         var fetchTacos = PETS_AVAILABLE[userPet].fetch;
                                         ///////// CALCULATE THE EXTRA TACOS HERE 
-                                        var extraTacosFromItems = wearStats.calculateExtraTacos(wearRes, "fetch"); // 0 or extra
+                                        // instead do fetch * ( slot stable * 50 )
+                                        var extraTacosFromItems = (fetchTacos * ( stableSlot * stableSlot) * 10) + Math.floor( wearStats.calculateExtraTacos(wearRes, "fetch") / (7 - stableSlot) ); // 0 or extra
                                         profileDB.updateUserTacosStableFetch(discordUserId, fetchTacos + extraTacosFromItems, stableSlot, function(err, updateResponse) {
                                             if (err){
                                                 // console.log(err);
                                                 exports.setCommandLock("fetch", discordUserId, false)
-                                            }
-                                            else{
+                                            }else{
                                                 exports.setCommandLock("fetch", discordUserId, false)
                                                 var experienceFromItems = wearStats.calculateExtraExperienceGained(wearRes, "fetch", null);                                                                             
                                                 experience.gainExperience(message, message.author, (( (EXPERIENCE_GAINS.perFetchCd * PETS_AVAILABLE[userPet].fetch) / 10) + experienceFromItems) , fetchResponse);
+                                                eventParams = { command: "fetch", userData: fetchResponse, discordUserId: discordUserId, fetchCD: userData.fetchCD, userPetName: userPetName, emoji: PETS_AVAILABLE[userPet].emoji  }
+                                                additionalEventsForCommand(message, eventParams)
                                                 // user's pet fetched some tacos
                                                 if (extraTacosFromItems > 0){
                                                     message.channel.send("**" + userPetName + "** fetched:` " + fetchTacos + "` tacos :taco: \n" + PETS_AVAILABLE[userPet].emoji + " " + PETS_AVAILABLE[userPet].speak + " you received `" + extraTacosFromItems + "` extra tacos");                                                
@@ -4585,7 +5060,7 @@ module.exports.fetchCommand = function(message, args){
                                         exports.setCommandLock("fetch", discordUserId, false)
                                         now = new Date(now.setSeconds(now.getSeconds() + secondsToRemove));
                                         var numberOfHours = getDateDifference(lastFetchTime, now, PETS_AVAILABLE[userPet].cooldown);
-                                        message.channel.send(message.author + " **" + userPetName + "** needs to rest and cannot fetch currently! Please wait `" + numberOfHours + "` ");
+                                        message.channel.send("**" + userPetName + "** needs to rest and cannot fetch currently! Please wait `" + numberOfHours + "` ");
                                     }
                                 }else{
                                     exports.setCommandLock("fetch", discordUserId, false)
@@ -4640,11 +5115,14 @@ module.exports.fetchCommand = function(message, args){
                                             if (err){
                                                 // console.log(err);
                                                 exports.setCommandLock("fetch", discordUserId, false)
-                                            }
-                                            else{
+                                            }else{
                                                 exports.setCommandLock("fetch", discordUserId, false)
                                                 var experienceFromItems = wearStats.calculateExtraExperienceGained(wearRes, "fetch", null);                                                                             
                                                 experience.gainExperience(message, message.author, (( (EXPERIENCE_GAINS.perFetchCd * PETS_AVAILABLE[userPet].fetch) / 10) + experienceFromItems) , fetchResponse);
+                                                // TODO: create events that are processed by other modules: ie - temple, greenhouse, temple 
+                                                eventParams = { command: "fetch", userData: fetchResponse, fetchCD: userData.fetchCD, discordUserId: discordUserId, userPetName: userPetName, emoji: PETS_AVAILABLE[userPet].emoji  }
+                                                additionalEventsForCommand(message, eventParams)
+                                                createTimeOutForCommandAfterUse("fetch", now, secondsToRemove, PETS_AVAILABLE[userPet].cooldown, discordUserId, fetchResponse.data)
                                                 // user's pet fetched some tacos
                                                 if (extraTacosFromItems > 0){
                                                     /* SEASONAL
@@ -4675,7 +5153,7 @@ module.exports.fetchCommand = function(message, args){
                                         exports.setCommandLock("fetch", discordUserId, false)
                                         now = new Date(now.setSeconds(now.getSeconds() + secondsToRemove));
                                         var numberOfHours = getDateDifference(fetchResponse.data.lastfetchtime, now, PETS_AVAILABLE[userPet].cooldown);
-                                        message.channel.send(message.author + " **" + userPetName + "** needs to rest and cannot fetch currently! Please wait `" + numberOfHours + "` ");
+                                        message.channel.send("**" + userPetName + "** needs to rest and cannot fetch currently! Please wait `" + numberOfHours + "` ");
                                     }
                                 }
                                 else{
@@ -4777,13 +5255,13 @@ module.exports.useCommand = function(message, args){
                             useItem.setItemsLock(discordUserId, false)
                         }else{
                             if (useRes.length && useRes.length > 0 && useRes[0].itemname){
-                                message.channel.send(message.author + " has polished a **" + useRes[0].itemname + "** -" + "`" + useRes[0].itemdescription + ", " + useRes[0].itemslot + ", " + useRes[0].itemstatistics + "`");
+                                message.channel.send(message.author.username + " has polished a **" + useRes[0].itemname + "** -" + "`" + useRes[0].itemdescription + ", " + useRes[0].itemslot + ", " + useRes[0].itemstatistics + "`");
                             }
                             else if (useRes == 50){
-                                message.channel.send(message.author + " polished something that Bender really likes, Bender gave you `50` tacos :taco:");
+                                message.channel.send(message.author.username + " polished something that Bender really likes, Bender gave you `50` tacos :taco:");
                             }
                             else if (useRes == 20){
-                                message.channel.send(message.author + " polished something that Bender likes, Bender gave you `20` tacos :taco:");
+                                message.channel.send(message.author.username + " polished something that Bender likes, Bender gave you `20` tacos :taco:");
                             }
                             var timeout = setTimeout (function(){ 
                                 experience.gainExperience(message, message.author, EXPERIENCE_GAINS.useCommonItemFive);
@@ -4802,7 +5280,7 @@ module.exports.useCommand = function(message, args){
                 }
                 else{
                     useItem.setItemsLock(discordUserId, false)
-                    message.channel.send(message.author + " you need at least `10` rocks to polish something shiny");
+                    message.channel.send(message.author.username + " you need at least `10` rocks to polish something shiny");
                 }
             }
         })
@@ -4867,7 +5345,7 @@ module.exports.useCommand = function(message, args){
                                 // console.log(throwRes);
                                 useItem.setItemsLock(discordUserId, false)
                                 if (throwRes == "success"){
-                                    message.channel.send( message.author + " threw a rock at " + mentionedUserName + ", they became dizzy and dropped `10` tacos :taco:");
+                                    message.channel.send( message.author.username + " threw a rock at " + mentionedUserName + ", they became dizzy and dropped `10` tacos :taco:");
                                     // if they drop a taco someone else can pick it up
                                     var poisonedTacoRoll = Math.floor(Math.random() * 100) + 1;
                                     var poisonedTaco = false;
@@ -4877,10 +5355,10 @@ module.exports.useCommand = function(message, args){
                                     QueueOfTacosDropped.push({ droppedBy: mentionedId, cannotPickUp: discordUserId, poisoned: poisonedTaco })
                                 }
                                 else if (throwRes == "protection"){
-                                    message.channel.send(message.author + " threw a rock at " + mentionedUserName + " but one of their fences protected them!");
+                                    message.channel.send(message.author.username + " threw a rock at " + mentionedUserName + " but one of their fences protected them!");
                                 }
                                 else{
-                                    message.channel.send(message.author + " threw a rock at " + mentionedUserName);
+                                    message.channel.send(message.author.username + " threw a rock at " + mentionedUserName);
                                 }
                                 var timeout = setTimeout (function(){ 
                                     experience.gainExperience(message, message.author, EXPERIENCE_GAINS.useCommonItem);
@@ -4971,13 +5449,13 @@ module.exports.useCommand = function(message, args){
                             var timeout = setTimeout (function(){ 
                                 experience.gainExperience(message, message.author, EXPERIENCE_GAINS.useCommonItemFive);
                             }, 1000);
-                            message.channel.send(message.author + " has built a fence, counts as `3` protection points");
+                            message.channel.send(message.author.username + " has built a fence, counts as `3` protection points");
                         }
                     });
                 }
                 else{
                     useItem.setItemsLock(discordUserId, false)
-                    message.channel.send(message.author + " you need at least `5` pieces of wood to build a fence");
+                    message.channel.send(message.author.username + " you need at least `5` pieces of wood to build a fence");
                 }
             }
         })
@@ -5044,13 +5522,13 @@ module.exports.useCommand = function(message, args){
                         }else{
                             // console.log(useRes[0]);
                             if (useRes.length && useRes.length > 0 && useRes[0].itemname){
-                                message.channel.send(message.author + " has tailored a **" + useRes[0].itemname + "** -" + "`" + useRes[0].itemdescription + ", " + useRes[0].itemslot + ", " + useRes[0].itemstatistics + "`");
+                                message.channel.send(message.author.username + " has tailored a **" + useRes[0].itemname + "** -" + "`" + useRes[0].itemdescription + ", " + useRes[0].itemslot + ", " + useRes[0].itemstatistics + "`");
                             }
                             else if (useRes == 50){
-                                message.channel.send(message.author + " tailored something that Bender really likes, Bender gave you `50` tacos :taco:");
+                                message.channel.send(message.author.username + " tailored something that Bender really likes, Bender gave you `50` tacos :taco:");
                             }
                             else if (useRes == 20){
-                                message.channel.send(message.author + " tailored something that Bender likes, Bender gave you `20` tacos :taco:");
+                                message.channel.send(message.author.username + " tailored something that Bender likes, Bender gave you `20` tacos :taco:");
                             }
                             var timeout = setTimeout (function(){ 
                                 experience.gainExperience(message, message.author, EXPERIENCE_GAINS.useCommonItemFive);
@@ -5071,7 +5549,7 @@ module.exports.useCommand = function(message, args){
                 }
                 else{
                     useItem.setItemsLock(discordUserId, false)
-                    message.channel.send(message.author + " you need at least `5` terry cloths to tailor some clothes");
+                    message.channel.send(message.author.username + " you need at least `5` terry cloths to tailor some clothes");
                 }
             }
         })
@@ -5147,20 +5625,20 @@ module.exports.useCommand = function(message, args){
                                 experience.gainExperience(message, message.author, EXPERIENCE_GAINS.useCommonItem * cansToUse);
                             }, 200);
                             
-                            message.channel.send(message.author + " recycled a soda can, you have gained `" + cansToUse + "` reputation with Bender.\n`" + message.author.username + "'s Current reputation " + useRes.repNumber + ", Status: " + useRes.repStatus + "`")
+                            message.channel.send(message.author.username + " recycled a soda can, you have gained `" + cansToUse + "` reputation with Bender.\n`" + message.author.username + "'s Current reputation " + useRes.repNumber + ", Status: " + useRes.repStatus + "`")
                         }
                     })
                 }
                 else if (sodaCansToUse.length < cansToUse && sodaCansToUse.length == 0){
                     useItem.setItemsLock(discordUserId, false)
-                    message.channel.send(message.author + " you do not have any soda cans to recycle..")
+                    message.channel.send(message.author.username + " you do not have any soda cans to recycle..")
                 }
                 else if (sodaCansToUse.length < cansToUse){
                     useItem.setItemsLock(discordUserId, false)
-                    message.channel.send(message.author + " you do not have that many soda cans to recycle..")
+                    message.channel.send(message.author.username + " you do not have that many soda cans to recycle..")
                 }else{
                     useItem.setItemsLock(discordUserId, false)
-                    message.channel.send(message.author + " invalid number of cans to use")
+                    message.channel.send(message.author.username + " invalid number of cans to use")
 
                 }
             }
@@ -5249,20 +5727,20 @@ module.exports.useCommand = function(message, args){
                                 })
                             }, 1000);
                             
-                            message.channel.send(message.author + " soiled their crops, Bender planted some seeds. current soiled crops `" + useRes + "` \n")
+                            message.channel.send(message.author.username + " soiled their crops, Bender planted some seeds. current soiled crops `" + useRes + "` \n")
                         }
                     })
                 }
                 else if (soilToUse.length < soilsCountToUse && soilToUse.length == 0){
                     useItem.setItemsLock(discordUserId, false)
-                    message.channel.send(message.author + " you do not have any soil to use..")
+                    message.channel.send(message.author.username + " you do not have any soil to use..")
                 }
                 else if (soilToUse.length < soilsCountToUse){
                     useItem.setItemsLock(discordUserId, false)
-                    message.channel.send(message.author + " you do not have that many soil to use..")
+                    message.channel.send(message.author.username + " you do not have that many soil to use..")
                 }else{
                     useItem.setItemsLock(discordUserId, false)
-                    message.channel.send(message.author + " invalid number of soils to use")
+                    message.channel.send(message.author.username + " invalid number of soils to use")
                 }
             }
         })
@@ -5339,7 +5817,7 @@ module.exports.disassembleCommand = function(message, args){
     if (args && args.length > 1 && !useItem.getItemsLock(discordUserId)){
         var myItemShortName =  args[1];
 
-        profileDB.getUserProfileData(discordUserId, function(profileErr, profileRes){
+        profileDB.getTempleData(discordUserId, function(profileErr, profileRes){
             if (profileErr){
                 console.log(profileErr)
             }else{
@@ -5382,7 +5860,8 @@ module.exports.disassembleCommand = function(message, args){
                             // have items to disassemble
                             if (itemsBeingedDisassembled.length > 0){
                                 var itemProfile = itemsMapById[ itemsBeingedDisassembled[0].itemid ]
-                                disassembleItem.performDisassemble(message, discordUserId, itemsBeingedDisassembled[0], itemProfile, function(useError, daRes){
+                                let templelevel = profileRes.data.templelevel
+                                disassembleItem.performDisassemble(message, discordUserId, itemsBeingedDisassembled[0], itemProfile, templelevel, function(useError, daRes){
                                     if (useError){
                                         useItem.setItemsLock(discordUserId, false)
                                         console.log(useError);
@@ -5456,35 +5935,61 @@ module.exports.createArmament = function(message, args){
                             // get the requirements for the armament to create
                             var itemsInInventoryCountMap = {}
                             var itemToCreateArmament = itemsMapbyShortName[myItemShortName]
+                            var haveItemToCreateArmamentFor = false
+                            var isLevel40Item = false
                             var armamentTemplateItem;
                             // find the armament template to obtain based on the rarity of the itemToCreateArmament
-                            if (itemToCreateArmament){
-                                for (var i in allItems){
-                                    if (allItems[i].armamentcategory && allItems[i].armamentcategory == itemToCreateArmament.itemraritycategory){
-                                        armamentTemplateItem = allItems[i]
+                            if (itemToCreateArmament && !itemToCreateArmament.isseed && itemToCreateArmament.itemraritycategory != "amulet"){
+                                itemToCreateArmament = JSON.parse(JSON.stringify(itemToCreateArmament))
+                                if (itemToCreateArmament.itemlevelrequirement >= 40){
+                                    isLevel40Item = true
+                                }
+                                let itemsForArmament = exports.getAllItems()
+                                for (var i in itemsForArmament){
+                                    if (itemsForArmament[i].armamentcategory && itemsForArmament[i].armamentcategory == itemToCreateArmament.itemraritycategory){
+                                        armamentTemplateItem = itemsForArmament[i]
                                     }
                                 }
                                 // if we have an item that meets the requirements then use that item to create the armament
                                 var itemBeingUsedForArmament = []
+                                var itemBeingUsedForArmament40 = []
                                 for (var item in inventoryResponse.data){
                                     var validItem = useItem.itemValidate(inventoryResponse.data[item]);
                                     var auctionedItem = false;
                                     var ItemInQuestion = inventoryResponse.data[item]
                 
-                                    if (itemsInAuction[inventoryResponse.data[item].id]){
+                                    if (itemsInAuction[itemToCreateArmament.id]){
                                         auctionedItem = true;
                                     }
                                     var itemBeingTraded = false;
-                                    if (activeTradeItems[inventoryResponse.data[item].id]){
+                                    if (activeTradeItems[itemToCreateArmament.id]){
                                         itemBeingTraded = true;
                                     }
-                                    if (!itemsInInventoryCountMap[inventoryResponse.data[item].itemid] 
+                                    if (ItemInQuestion.itemid == itemToCreateArmament.id
+                                    && validItem && !auctionedItem && !itemBeingTraded){
+                                        // item hasnt been added to be counted, add it as 1
+                                        haveItemToCreateArmamentFor = true;
+                                    }
+                                }
+                                for (var item in inventoryResponse.data){
+                                    var validItem = useItem.itemValidate(inventoryResponse.data[item]);
+                                    var auctionedItem = false;
+                                    var ItemInQuestion = inventoryResponse.data[item]
+                
+                                    if (itemsInAuction[ItemInQuestion.id]){
+                                        auctionedItem = true;
+                                    }
+                                    var itemBeingTraded = false;
+                                    if (activeTradeItems[ItemInQuestion.id]){
+                                        itemBeingTraded = true;
+                                    }
+                                    if (!itemsInInventoryCountMap[ItemInQuestion.itemid] 
                                         && validItem && !auctionedItem && !itemBeingTraded){
                                         // item hasnt been added to be counted, add it as 1
-                                        itemsInInventoryCountMap[inventoryResponse.data[item].itemid] = 1;
+                                        itemsInInventoryCountMap[ItemInQuestion.itemid] = 1;
                 
                                         // check if the current item meets the criteria of armamentReqs
-                                        var armamentCheck = disassembleItem.checkRequirements( itemsMapById[ ItemInQuestion.itemid ], itemToCreateArmament)
+                                        var armamentCheck = disassembleItem.checkRequirements( itemsMapById[ ItemInQuestion.itemid ], itemToCreateArmament, 1)
                                         // console.log(ItemInQuestion);
                                         if (armamentCheck){
                                             itemBeingUsedForArmament.push(ItemInQuestion);
@@ -5492,7 +5997,32 @@ module.exports.createArmament = function(message, args){
                                         }
                                     }
                                 }
-                                if (itemBeingUsedForArmament.length > 0 ){
+                                if (isLevel40Item){
+                                    for (var item in inventoryResponse.data){
+                                        var validItem = useItem.itemValidate(inventoryResponse.data[item]);
+                                        var auctionedItem = false;
+                                        var ItemInQuestion = inventoryResponse.data[item]
+                    
+                                        if (itemsInAuction[ItemInQuestion.id]){
+                                            auctionedItem = true;
+                                        }
+                                        var itemBeingTraded = false;
+                                        if (activeTradeItems[ItemInQuestion.id]){
+                                            itemBeingTraded = true;
+                                        }
+                                        if (validItem && !auctionedItem && !itemBeingTraded){
+                                            // check if the current item meets the criteria of armamentReqs
+                                            var armamentCheckFor40 = disassembleItem.checkRequirements( itemsMapById[ ItemInQuestion.itemid ], itemToCreateArmament, 40)
+                                            if (armamentCheckFor40){
+                                                itemBeingUsedForArmament40.push(ItemInQuestion);
+                                                break;
+                                            }
+                                        }
+                                    }
+                                }
+                                if (itemBeingUsedForArmament.length > 0 
+                                && haveItemToCreateArmamentFor
+                                && (!isLevel40Item || itemBeingUsedForArmament40.length > 0) ){
                                     console.log(itemBeingUsedForArmament)
                                     // the armaments in itemstable is just armament, improvedarmament, refinedarmament, masterarmament
                                     // in inventory table we define what item the armament is for, armamentforitemid -> actual item in itemstable
@@ -5518,16 +6048,35 @@ module.exports.createArmament = function(message, args){
                                                 useItem.setItemsLock(discordUserId, false)
                                                 console.log(err)
                                             }else{
-                                                useItem.setItemsLock(discordUserId, false)
-                                                // add the armament to inventory - armaments are "armament" rarity
-                                                addToUserInventory(discordUserId, [ armamentTemplateItem ]);
-                                                createArmamentEmbedBuilder(message, armamentTemplateItem)
+                                                if (isLevel40Item){
+                                                    profileDB.updateItemStatus(itemBeingUsedForArmament40[0].id, "used", function(err, res){
+                                                        if (err){
+                                                            useItem.setItemsLock(discordUserId, false)
+                                                            console.log(err)
+                                                        }else{
+                                                            useItem.setItemsLock(discordUserId, false)
+                                                            // add the armament to inventory - armaments are "armament" rarity
+                                                            addToUserInventory(discordUserId, [ armamentTemplateItem ]);
+                                                            createArmamentEmbedBuilder(message, armamentTemplateItem)
+                                                        }
+                                                    })
+                                                }else{
+                                                    useItem.setItemsLock(discordUserId, false)
+                                                    // add the armament to inventory - armaments are "armament" rarity
+                                                    addToUserInventory(discordUserId, [ armamentTemplateItem ]);
+                                                    createArmamentEmbedBuilder(message, armamentTemplateItem)
+    
+                                                }
                                             }
                                         })
                                     }else{
                                         message.channel.send("no armament template for this item")
                                         useItem.setItemsLock(discordUserId, false)
                                     }
+                                }else if (!haveItemToCreateArmamentFor){
+                                    useItem.setItemsLock(discordUserId, false)
+                                    message.channel.send("invalid item name")
+
                                 }else{
                                     useItem.setItemsLock(discordUserId, false)
                                     message.channel.send("missing requirements to create armament for this item")
@@ -5568,10 +6117,12 @@ function createArmamentEmbedBuilder(message, armamentTemplateItem){
     message.channel.send({embed});
 }
 
-function armamentsEmbedBuilder(message, userItems, itemsMapById, long, rarity){
+function armamentsEmbedBuilder(message, userItems, itemsMapById, long, rarity, pageParam){
     // display available armaments
     const embed = new Discord.RichEmbed()
+    let page = pageParam || 1
     var fieldCount = 0
+    var totalLength = 0;
     var inventoryStringRegular = "";
     var inventoryStringsRegular = [];
     var mapOfArmaments = {}
@@ -5591,10 +6142,11 @@ function armamentsEmbedBuilder(message, userItems, itemsMapById, long, rarity){
                     fieldCount++
                 }else{
                     if (inventoryStringRegular.length > 900){
+                        totalLength = totalLength + inventoryStringRegular.length
                         inventoryStringsRegular.push(inventoryStringRegular);
                         inventoryStringRegular = "";
                         inventoryStringRegular = "**" + itemOfArmament.itemname + "** - " +  statsFromArmament + "\n" + inventoryStringRegular;                        
-                    }else{
+                    }else {
                         inventoryStringRegular = "**" + itemOfArmament.itemname + "** - " +  statsFromArmament + "\n" + inventoryStringRegular;                        
                     }
                 }
@@ -5607,12 +6159,18 @@ function armamentsEmbedBuilder(message, userItems, itemsMapById, long, rarity){
         inventoryStringsRegular.push(inventoryStringRegular);
     }
     if (!long){
+        if (page > inventoryStringsRegular.length){
+            page = inventoryStringsRegular.length
+        }
+        embed.setDescription("Page : " + (page) + " of " + inventoryStringsRegular.length + "\n use `-armaments page [pagenum]` to get other pages" )
         for (var invString = inventoryStringsRegular.length -1; invString >= 0; invString--){
-            var emoji = ""
-            if ( rarity == "armament"){
-                emoji = ":gear:"
+            if (invString == page - 1){
+                var emoji = ""
+                if ( rarity == "armament"){
+                    emoji = ":gear:"
+                }
+                embed.addField(emoji + " Item Name  |  STATS " + emoji, "||" + inventoryStringsRegular[invString] + "||", true)    
             }
-            embed.addField(emoji + " Item Name  |  STATS " + emoji, inventoryStringsRegular[invString], true)
         }
     }
 
@@ -5684,12 +6242,16 @@ function greenHouseEmbedBuilder(message, greenHouseData, itemsMapById, long){
     var weather = ":sunny:"
     var shears = ":scissors:"
     var harvestTimeRemaining = "1 hour" // GET the harvest time, should be every 24 hours
-
+    let greenhousedescription = 'Greenhouse Level: ' + greenHouseData.greenhouseLevel
+    if (greenHouseData.greenhouseLevel >=1 
+    && greenHouseData.greenhouseLevel <= 3){
+        greenhousedescription = greenhousedescription + "\nFind seeds to plant on your empty plots\nuse `-harvest` command to harvest your plots"
+    } 
     const embed = new Discord.RichEmbed()
     .setColor(0x87CEFA)
     .setTitle(greenHouseData.name + "'s Green House :house_with_garden:")
     .setThumbnail(message.author.avatarURL)
-    .setDescription('Greenhouse Level: ' + greenHouseData.greenhouseLevel)
+    .setDescription(greenhousedescription)
     .setColor(0x87CEFA)
     if (long){
         if (greenHouseData.allMyLevelsInfo && greenHouseData.allMyLevelsInfo.length > 0 ){
@@ -5782,11 +6344,16 @@ module.exports.feedCommand = function(message, args){
 }
 
 function stableEmbedBuilder(message, stableData, long){
+    // display command to buy stable pets in description
+    let stableDescription = 'Stable Level: ' + stableData.stableLevel
+    if (stableData.stableLevel >= 2){
+        stableDescription = stableDescription + "\nuse `-buypet [type of pet] [petname] stable [stable slot]`\nexample: `-buypet dog donut stable 1`"
+    }
     const embed = new Discord.RichEmbed()
     .setColor(0x87CEFA)
     .setTitle(stableData.name + "'s Stables")
     .setThumbnail(message.author.avatarURL)
-    .setDescription('Stable Level: ' + stableData.stableLevel)
+    .setDescription(stableDescription)
     .setColor(0x87CEFA)
     if (long){
         if (stableData.allMyLevelsInfo && stableData.allMyLevelsInfo.length > 0 ){
@@ -5913,7 +6480,7 @@ function templeEmbedBuilder(message, templeData, long){
     .setColor(0x87CEFA)
     .setTitle(templeData.name + "'s Temple 🕍")
     .setThumbnail(message.author.avatarURL)
-    .setDescription('Temple Level: ' + templeData.templeLevel)
+    .setDescription('Temple Level: ' + templeData.templeLevel + " \n-`mytemple` to display your temple perks\n-`disassemble [itemid]` to disassemble an item (requires a hacksaw)\n-`craft [itemid]` to craft an item from your list of craft recipes\n`-createarmament [itemid]` to create an armament for that item (requires an essence/shard/crystal)")
     .setColor(0x87CEFA)
 
     if (long){
@@ -5947,9 +6514,10 @@ function gemStringBuilder(templeData){
     for (var key in itemsMap) {
         if (itemsMap.hasOwnProperty(key)) {
             // 
-            if (itemsMapById[key].itemraritycategory == "uncommon+" && itemsMapById[key].essencerarity){
+            if (itemsMapById[key].itemraritycategory == "uncommon+" && ( itemsMapById[key].essencerarity || itemsMapById[key].crystalrarity )){
                 var rarityToCraftFor = disassembleItem.getRarityOfItemGemCanCreateArmamentFor(itemsMapById[key])
-                inventoryString = "**"+itemsMapById[key].itemname + "** - " +  itemsMap[key] + " - " + rarityToCraftFor +"\n" + inventoryString;
+                let emoji = disassembleItem.getEmojiBasedOnRarityToCraftFor(itemsMapById[key])
+                inventoryString = emoji + " **"+itemsMapById[key].itemname + "** - " +  itemsMap[key] + " - " + rarityToCraftFor +"\n" + inventoryString;
             }
         }
     }
@@ -6015,31 +6583,48 @@ module.exports.bakeCommand = function(message, args){
             else{
                 var userFruitsCount = baking.obtainFruitsCountObject( fruitData.data )
                 // pass the full inventory to bakeItem
-                baking.bakeItem(discordUserId, itemToBake, itemsMapById, userFruitsCount, function(error, res){
-                    if (error){
-                        if (error == "doesn't exist"){
-                            message.channel.send("Item doesnt exist")
-                        }else if (error == "not available today"){
-                            message.channel.send("You can't bake that item today")
-                        }else if (error == "failed"){
-                            message.channel.send("Do not have the ingredients")
-                        }
-                        console.log(error)
+                profileDB.getGreenHouseData(discordUserId, function(ghErr, ghRes){
+                    if (ghErr){
+                        console.log(ghErr)
                     }else{
-                        var itemBaked = res[0].itemname
-                        message.channel.send(message.author + " has created a `" + itemBaked + "`!")
+                        let userData = ghRes.data
+                        baking.bakeItem(discordUserId, itemToBake, itemsMapById, userFruitsCount, userData, function(error, res){
+                            if (error){
+                                if (error == "doesn't exist"){
+                                    message.channel.send("Item doesnt exist")
+                                }else if (error == "not available today"){
+                                    message.channel.send("You can't bake that item today")
+                                }else if (error == "failed"){
+                                    message.channel.send("Do not have the ingredients")
+                                }
+                                console.log(error)
+                            }else{
+                                var itemBaked = res[0].itemname
+                                message.channel.send(message.author.username + " has created a `" + itemBaked + "`!")
+                            }
+                        })
                     }
                 })
+                
             }
         })
     }else{
-        todaysRecipesEmbedBuilder(message)
+        // Get the user's greenhouse level, 
+        // lvl 4 = regular, lvl 8 = higher, lvl 10 = super cakes
+        profileDB.getGreenHouseData(discordUserId, function(ghErr, ghRes){
+            if (ghErr){
+                console.log(ghErr)
+            }else{
+                let userData = ghRes.data
+                todaysRecipesEmbedBuilder(message, userData)
+            }
+        })
     }
 }
 
-function todaysRecipesEmbedBuilder(message){
+function todaysRecipesEmbedBuilder(message, userData){
     var today = new Date()
-    var recipesAvailable = baking.getRecipesForToday(today)
+    var recipesAvailable = baking.getRecipesForToday(today, userData)
     var recipesAvailableObjects = baking.recipesForTodayObjectBuilder(recipesAvailable)
     const embed = new Discord.RichEmbed()
     .setColor(0x87CEFA)
@@ -6205,7 +6790,7 @@ function plantOnPlotOfLand(message, discordUserId, plotOfLand, greenHouseData, p
                     console.log(plotErr)
                 }else{
                     console.log(plotRes)
-                    message.channel.send(message.author + " has planted a `" + greenHouseData.plantName + "` !")
+                    message.channel.send(message.author.username + " has planted a `" + greenHouseData.plantName + "` !")
                 }
             })
         }
@@ -6264,8 +6849,13 @@ module.exports.harvestCommand = function(message, args){
                         var threeDaysAgo = new Date();
                         ///////// CALCULATE THE MINUTES REDUCED HERE 
                         var secondsToRemove = wearStats.calculateSecondsReduced(wearRes, "harvest");
-
-                        threeDaysAgo = new Date(threeDaysAgo.setHours(threeDaysAgo.getHours() - HARVEST_COOLDOWN_HOURS ));
+                        let userCooldown = HARVEST_COOLDOWN_HOURS;
+                        if (greenHouseData.greenhouseLevel >= 11){
+                            userCooldown = 2;
+                        }else if (greenHouseData.greenhouseLevel >= 9){
+                            userCooldown = 3;
+                        }
+                        threeDaysAgo = new Date(threeDaysAgo.setHours(threeDaysAgo.getHours() - userCooldown ));
                         threeDaysAgo = new Date(threeDaysAgo.setSeconds(threeDaysAgo.getSeconds() + secondsToRemove));
 
                         if ( threeDaysAgo > greenHouseData.lastharvest ){
@@ -6309,18 +6899,19 @@ module.exports.harvestCommand = function(message, args){
                                             }else{
                                                 console.log(plotRes)
                                                 harvestEmbedBuilder(message, fruitsColumnsWithCount)
+                                                createTimeOutForCommandAfterUse("harvest", now, secondsToRemove, userCooldown, discordUserId, profileData.data)
                                             }
                                         })
                                     }
                                 })
                             }else{
-                                message.channel.send(message.author + " You have no crops to harvest!")
+                                message.channel.send(message.author.username + " You have no crops to harvest!")
                             }
                             
                         }else{
                             now = new Date(now.setSeconds(now.getSeconds() + secondsToRemove));
-                            var numberOfHours = getDateDifference(greenHouseData.lastharvest, now, HARVEST_COOLDOWN_HOURS);
-                            message.channel.send(message.author + " You are tired! Please wait `" + numberOfHours + "` ");
+                            var numberOfHours = getDateDifference(greenHouseData.lastharvest, now, userCooldown);
+                            message.channel.send(message.author.username + " You are tired! Please wait `" + numberOfHours + "` ");
                         }
                     }
                 })
@@ -6356,7 +6947,21 @@ function harvestEmbedBuilder(message, fruitsColumnsWithCount){
 function harvestPlotsOfLand(greenHouseData, itemsMapById){
     // return an object with all the plants harvested, and the count harvested
     //// when reaching 10, 20 timesharvested update it to -1
+    const mapOfHarvestMultiplier = {
+        5 : 2,
+        8 : 3,
+        10: 5
+    }
     var fruitsObject = {}
+    let myHarvestMultiplier = 1;
+    let currentMapKey = 0;
+    for (var m in mapOfHarvestMultiplier){
+        if (greenHouseData.greenhouseLevel >= m
+        && m > currentMapKey){
+            currentMapKey = m
+            myHarvestMultiplier = mapOfHarvestMultiplier[m]
+        }
+    }
     for (var i in greenHouseData.plots){
         if (greenHouseData.harvestCounts[i] >= 0){
             // plots[i] has an emoji in items table
@@ -6365,9 +6970,9 @@ function harvestPlotsOfLand(greenHouseData, itemsMapById){
             if (plotId){
                 var plotShortName = itemsMapById[plotId].itemshortname
                 if (!fruitsObject[plotShortName]){
-                    fruitsObject[plotShortName] = 1
+                    fruitsObject[plotShortName] = 1 * myHarvestMultiplier
                 }else{
-                    fruitsObject[plotShortName] = fruitsObject[plotShortName] + 1
+                    fruitsObject[plotShortName] = fruitsObject[plotShortName] + ( 1 * myHarvestMultiplier )
                 }
             }
         }
@@ -6430,68 +7035,76 @@ function craftItem(message, discordUserId, recipeRequirements, recipeData, myIte
     }
     var itemsToUse = []
     var itemToCreate;
-    profileDB.getUserItems(discordUserId, function(err, inventoryResponse){
-        if (err){
-            // console.log(err);
-            agreeToTerms(message, discordUserId);
-            useItem.setItemsLock(discordUserId, false)
-        }else{
-            // must have the materials required to upgrade the building
-            var itemsInInventoryCountMap = {}
-            
-            for (var item in inventoryResponse.data){
-                var ItemInQuestion = inventoryResponse.data[item];
-                var validItem = useItem.itemValidate(ItemInQuestion);
-                var itemBeingAuctioned = false;
-                if (itemsInAuction[ItemInQuestion.id]){
-                    itemBeingAuctioned = true;
-                }
-                var itemBeingTraded = false;
-                if (activeTradeItems[inventoryResponse.data[item].id]){
-                    itemBeingTraded = true;
-                }
-                if (!itemsInInventoryCountMap[inventoryResponse.data[item].itemid] 
+    ///// lock crafting, then release lock
+    if (!useItem.getItemsLock(discordUserId)){
+        useItem.setItemsLock(discordUserId, true)
+        profileDB.getUserItems(discordUserId, function(err, inventoryResponse){
+            if (err){
+                // console.log(err);
+                agreeToTerms(message, discordUserId);
+                useItem.setItemsLock(discordUserId, false)
+            }else{
+                // must have the materials required to upgrade the building
+                var itemsInInventoryCountMap = {}
+                
+                for (var item in inventoryResponse.data){
+                    var ItemInQuestion = inventoryResponse.data[item];
+                    var validItem = useItem.itemValidate(ItemInQuestion);
+                    var itemBeingAuctioned = false;
+                    if (itemsInAuction[ItemInQuestion.id]){
+                        itemBeingAuctioned = true;
+                    }
+                    var itemBeingTraded = false;
+                    if (activeTradeItems[inventoryResponse.data[item].id]){
+                        itemBeingTraded = true;
+                    }
+                    if (!itemsInInventoryCountMap[inventoryResponse.data[item].itemid] 
                     && validItem 
                     && !itemBeingAuctioned
                     && !itemBeingTraded){
-                    // item hasnt been added to be counted, add it as 1
-                    itemsInInventoryCountMap[inventoryResponse.data[item].itemid] = 1;
-                    if (itemsToCheckMap[ItemInQuestion.itemid] 
+                        // item hasnt been added to be counted, add it as 1
+                        itemsInInventoryCountMap[inventoryResponse.data[item].itemid] = 1;
+                        if (itemsToCheckMap[ItemInQuestion.itemid] 
                         && itemsInInventoryCountMap[ItemInQuestion.itemid] <= itemsToCheckMap[ItemInQuestion.itemid]){
                             itemsToUse.push(ItemInQuestion)
+                        }
+                    }
+                    else if (validItem && !itemBeingAuctioned && !itemBeingTraded){
+                        itemsInInventoryCountMap[inventoryResponse.data[item].itemid] = itemsInInventoryCountMap[inventoryResponse.data[item].itemid] + 1
+                        if (itemsToCheckMap[ItemInQuestion.itemid] 
+                            && itemsInInventoryCountMap[ItemInQuestion.itemid] <= itemsToCheckMap[ItemInQuestion.itemid]){
+                                itemsToUse.push(ItemInQuestion)
+                        }
                     }
                 }
-                else if (validItem && !itemBeingAuctioned && !itemBeingTraded){
-                    itemsInInventoryCountMap[inventoryResponse.data[item].itemid] = itemsInInventoryCountMap[inventoryResponse.data[item].itemid] + 1
-                    if (itemsToCheckMap[ItemInQuestion.itemid] 
-                        && itemsInInventoryCountMap[ItemInQuestion.itemid] <= itemsToCheckMap[ItemInQuestion.itemid]){
-                            itemsToUse.push(ItemInQuestion)
-                    }
+    
+                // CHECK here if requirements are met
+                itemToCreate = itemsMapbyShortName[myItemShortName]
+                itemToCreate.itemAmount = 1
+                var params = {
+                    userLevel : recipeData.level, // my level
+                    reputationLevel: REPUTATIONS[recipeData.repstatus.toLowerCase()].level, // my rep
+                    tacos: recipeData.tacos, // my tacos
+                    inventoryCountMap: itemsInInventoryCountMap,
+                    itemsToUse: itemsToUse,  // items to use for craft
+                    recipeRequirements: recipeRequirements,
+                    itemToCreate: [ itemToCreate ]
+                }
+    
+                var requirementsMet = crafting.checkRequirements(params)
+    
+                if (requirementsMet){
+                    crafting.craftRecipe(message, params, function(err, res){
+                        useItem.setItemsLock(discordUserId, false)
+                    })
+                }else{
+                    message.channel.send("requirements not met")
+                    useItem.setItemsLock(discordUserId, false)
                 }
             }
-
-            // CHECK here if requirements are met
-            itemToCreate = itemsMapbyShortName[myItemShortName]
-            itemToCreate.itemAmount = 1
-            var params = {
-                userLevel : recipeData.level, // my level
-                reputationLevel: REPUTATIONS[recipeData.repstatus.toLowerCase()].level, // my rep
-                tacos: recipeData.tacos, // my tacos
-                inventoryCountMap: itemsInInventoryCountMap,
-                itemsToUse: itemsToUse,  // items to use for craft
-                recipeRequirements: recipeRequirements,
-                itemToCreate: [ itemToCreate ]
-            }
-
-            var requirementsMet = crafting.checkRequirements(params)
-
-            if (requirementsMet){
-                crafting.craftRecipe(message, params)
-            }else{
-                message.channel.send("requirements not met")
-            }
-        }
-    })
+        })
+    }
+    
 }
 
 
@@ -6531,7 +7144,7 @@ module.exports.upgradeCommand = function(message, args){
                         }else{
                             now = new Date(now.setSeconds(now.getSeconds()));
                             var numberOfHours = getDateDifference(profileRes.data.laststableupgrade, now, stableLevelUpgradeTime);
-                            message.channel.send(message.author + " You have recently upgraded your Stable! Please wait `" + numberOfHours +"` ");
+                            message.channel.send(message.author.username + " You have recently upgraded your Stable! Please wait `" + numberOfHours +"` ");
                         }
                     }else{
                         message.channel.send("You do not own a Stable")
@@ -6555,7 +7168,7 @@ module.exports.upgradeCommand = function(message, args){
                         }else{
                             now = new Date(now.setSeconds(now.getSeconds()));
                             var numberOfHours = getDateDifference(profileRes.data.lastgreenhouseupgrade, now, greenHouseLevelUpgradeTime);
-                            message.channel.send(message.author + " You have recently upgraded your Greenhouse! Please wait `" + numberOfHours +"` ");
+                            message.channel.send(message.author.username + " You have recently upgraded your Greenhouse! Please wait `" + numberOfHours +"` ");
                         }
                     }else{
                         message.channel.send("You do not own a Greenhouse")
@@ -6579,7 +7192,7 @@ module.exports.upgradeCommand = function(message, args){
                         }else{
                             now = new Date(now.setSeconds(now.getSeconds()));
                             var numberOfHours = getDateDifference(profileRes.data.lasttempleupgrade, now, templeLevelUpgradeTime);
-                            message.channel.send(message.author + " You have recently upgraded your Temple! Please wait `" + numberOfHours +"` ");
+                            message.channel.send(message.author.username + " You have recently upgraded your Temple! Please wait `" + numberOfHours +"` ");
                         }
                     }else{
                         message.channel.send("You do not own a Temple")
@@ -7603,7 +8216,7 @@ module.exports.wearingCommand = function(message, args){
                         })
                     }
                     else{
-                        message.channel.send(message.author + " you are not wearing any items. if you are new, check the shop for cheap starter items!")
+                        message.channel.send(message.author.username + " you are not wearing any items. if you are new, check the shop for cheap starter items!")
                     }
                 }
             })
@@ -7657,24 +8270,30 @@ module.exports.putonCommand = function(message, args, retry){
     var discordUserId = message.author.id;
     if (args && args.length >= 3 && !retry){
         var slot = args[1]; // must be a number between 1 and 7
-        var itemToWear = args[2]; // must be a valid itemname
+        var itemToWear = args[2].toLowerCase(); // must be a valid itemname
         // get the user's wear information, then get their item information, 
         // check user doesnt have the same slot category in 1 and 3, if so then valid command, update slot 2 with all the info for sundress
         profileDB.getUserWearInfo(discordUserId, function(getWearErr, getWearRes){
             if (getWearErr){
-                // console.log(getWearErr);
+                console.log(getWearErr);
                 // user isn't wearing any items
-                profileDB.createUserWearInfo(discordUserId, false, function(error, res){
+                var data = {
+                    discordId : discordUserId,
+                    slot1replacing: false,
+                    slot2replacing: false,
+                    slot3replacing: false,
+                    slot4replacing: false
+                }
+                profileDB.createUserWearInfo(discordUserId, function(error, res){
                     if (error){
-                        // console.log(error);
+                        console.log(error);
                     }else{
-                        // console.log(res);
+                        console.log(res);
                     }
                 })
             }else{
                 // console.log("wear res " + JSON.stringify(getWearRes, null, 2));
-                var userLevel = getWearRes.data[0].level;
-                if (getWearRes.data.length == 0){
+                if (getWearRes.data.length == 0 || getWearRes.data[0].slot1replacing == null){
                     // create the user
                     var data = {
                         discordId : discordUserId,
@@ -7685,15 +8304,17 @@ module.exports.putonCommand = function(message, args, retry){
                     }
                     profileDB.createUserWearInfo(data, function(error, res){
                         if (error){
-                            // console.log(error);
+                            console.log(error);
                         }else{
-                            // console.log(res);
+                            console.log(res);
                             // call the same function again now that the user exists
                             exports.putonCommand(message, args, false)
                         }
                     })
                 }else{
                     // get the user's items
+                    var userLevel = getWearRes.data[0].level
+                    var userRPGLevel = getWearRes.data[0].rpglevel    
                     var greenHouseLevel = getWearRes.data[0].greenhouselevel;
                     var stableLevel = getWearRes.data[0].stablelevel;
                     var templeLevel = getWearRes.data[0].templelevel;
@@ -7750,15 +8371,17 @@ module.exports.putonCommand = function(message, args, retry){
                                     itemBeingTraded = true;
                                 }
                                 if (!itemsInInventoryCountMap[inventoryResponse.data[item].itemid] 
-                                    && validItem
-                                    && !itemBeingAuctioned 
-                                    && !itemBeingTraded){
+                                && validItem
+                                && !itemBeingAuctioned 
+                                && !itemBeingTraded
+                                && itemsMapbyShortName[itemToWear] && itemsMapbyShortName[itemToWear].itemraritycategory != "amulet"){
                                     // item hasnt been added to be counted, add it as 1
                                     itemsInInventoryCountMap[inventoryResponse.data[item].itemid] = 1;
                                     userItemsById[inventoryResponse.data[item].itemid] = [];
                                     userItemsById[inventoryResponse.data[item].itemid].push(inventoryResponse.data[item]);
                                 }
-                                else if (validItem && !itemBeingAuctioned && !itemBeingTraded){
+                                else if (validItem && !itemBeingAuctioned && !itemBeingTraded
+                                && ( itemsMapbyShortName[itemToWear] && itemsMapbyShortName[itemToWear].itemraritycategory != "amulet" )){
                                     itemsInInventoryCountMap[inventoryResponse.data[item].itemid] = itemsInInventoryCountMap[inventoryResponse.data[item].itemid] + 1;
                                     userItemsById[inventoryResponse.data[item].itemid].push(inventoryResponse.data[item]);
                                 }
@@ -7767,6 +8390,8 @@ module.exports.putonCommand = function(message, args, retry){
                             if (itemsMapbyShortName[itemToWear]){
                                 // get all the data needed for equiping  for the item
                                 var itemslot = itemsMapbyShortName[itemToWear].itemslot;
+                                var itemLevelRequirement = itemsMapbyShortName[itemToWear].itemlevelrequirement || 0;
+                                var itemLevelRequirementRPG = itemsMapbyShortName[itemToWear].rpglevelrequirement || 0;
                                 // id of the item in the item db
                                 var itemid = itemsMapbyShortName[itemToWear].id;
                                 var itemstats = {
@@ -7780,18 +8405,16 @@ module.exports.putonCommand = function(message, args, retry){
                                 }
                                 // id if the specific item the user will wear (pick the first item)
                                 var itemuserid;
-                                var itemLevelRequirement = 0;
                                 var itemObtainDate;
                                 for (var item in userItemsById[itemid]){
                                     if (userItemsById[itemid][item].status != "wearing"){
                                         itemuserid = userItemsById[itemid][item].id;
-                                        itemLevelRequirement = userItemsById[itemid][item].itemlevelrequirement || 0;
                                         itemObtainDate = userItemsById[itemid][item].itemobtaindate;
                                         break;
                                     }
                                 }
                                 // validate the user owns that item and make sure item is above user level
-                                if (itemuserid && userLevel >= itemLevelRequirement){
+                                if (itemuserid && (userLevel >= itemLevelRequirement) && (userRPGLevel >= itemLevelRequirementRPG) ){
                                     
                                     var validateSlotToWear;
                                     var arrayOfSlots = []
@@ -7861,26 +8484,30 @@ module.exports.putonCommand = function(message, args, retry){
                                                     if (updateRockStatusErr){
                                                         console.log(updateRockStatusErr);
                                                     }else{
-                                                        message.channel.send(message.author + " you are now wearing **" + itemsMapbyShortName[itemToWear].itemname + "**")
+                                                        message.channel.send(message.author.username + " you are now wearing **" + itemsMapbyShortName[itemToWear].itemname + "**")
                                                     }
                                                 })
                                             }
                                         })
                                     }else{
                                         if (templeLevel < 6 && slot == 5){
-                                            message.channel.send(message.author + " invalid slot!")
+                                            message.channel.send(message.author.username + " invalid slot!")
                                         }
                                         else if (stableLevel < 11 && slot == 6){
-                                            message.channel.send(message.author + " invalid slot!")
+                                            message.channel.send(message.author.username + " invalid slot!")
                                         }
                                         else if (greenHouseLevel < 12 && slot == 7){
-                                            message.channel.send(message.author + " invalid slot!") 
+                                            message.channel.send(message.author.username + " invalid slot!") 
                                         }else{
-                                            message.channel.send(message.author + " invalid slot!")
+                                            message.channel.send(message.author.username + " invalid slot!")
                                         }
                                     }
                                 }else{
-                                    message.channel.send(message.author + " invalid item!")
+                                    if (itemuserid && (userLevel < itemLevelRequirement || userRPGLevel < itemLevelRequirementRPG)){
+                                        message.channel.send(message.author.username + " requires level `" + itemLevelRequirement + "` and rpg level `" + itemLevelRequirementRPG + "`")
+                                    }else{
+                                        message.channel.send(message.author.username + " invalid item!")
+                                    }
                                 }
                             }
                         }
@@ -7889,7 +8516,7 @@ module.exports.putonCommand = function(message, args, retry){
             }
         })
     }else{
-        message.channel.send(message.author + " do -puton [1-4] [itemname] \n example: -puton 2 loincloth OR -puton 2 loinclothimproved \n Slot 4 is only for artifact+ items or higher");
+        message.channel.send(message.author.username + " do -puton [1-4] [itemname] \n example: -puton 2 loincloth OR -puton 2 loinclothimproved \n Slot 4 is only for artifact+ items or higher");
     }
 }
 
@@ -7916,8 +8543,7 @@ module.exports.takeoffCommand = function(message, args){
     profileDB.getUserWearInfo(discordUserId, function(takeoffError, takeoffRes){
         if (takeoffError){
             console.log(takeoffError);
-        }
-        else{
+        }else{
             // console.log(takeoffRes);
             // item id of item to be set status to null in userinventory
             var itemId;
@@ -7956,8 +8582,7 @@ module.exports.takeoffCommand = function(message, args){
                 profileDB.updateItemStatus(itemId, null, function(updateErr, updateRes){
                     if (updateErr){
                         console.log(updateErr);
-                    }
-                    else{
+                    }else{
                         //user wearing slot to null
                         profileDB.takeOffWear(discordUserId, slot, function(err, res){
                             if (err){
@@ -7969,8 +8594,7 @@ module.exports.takeoffCommand = function(message, args){
                         })
                     }
                 })
-            }
-            else if (!itemId && itemslot){
+            }else if (!itemId && itemslot){
                 // have an item lingering, just take off everything
                 //user wearing slot to null
                 profileDB.takeOffWear(discordUserId, slot, function(err, res){
@@ -7991,8 +8615,7 @@ module.exports.initializeItemsMaps = function(c, cb){
     profileDB.getItemData(function(error, allItemsResponse){
         if (error){
             console.log(error);
-        }
-        else{
+        }else{
             allItems = allItemsResponse.data
             for (var index in allItemsResponse.data){
                 itemsMapById[allItemsResponse.data[index].id] = allItemsResponse.data[index];
@@ -8044,6 +8667,141 @@ module.exports.initializeItemsMaps = function(c, cb){
                     })
                 })
             })
+        }
+    })
+}
+
+module.exports.initializeReminders = function(){
+    profileDB.getRemindersForUsers(function(error, remindersRes){
+        if (error){
+            console.log(error)
+        }else{
+            var users = remindersRes.data
+            for (var u in users){
+                let discordUserId = users[u].discordid
+                commandTimersMapHandleUser(discordUserId)
+                if (users[u].scavengetoggle){
+                    // user wants to be reminded of scavenge
+                    
+                    let nextReminder = users[u].scavengenextreminder // should be a date
+                    let now = new Date()
+                    var milisecondsUntilNext = getMilisFromDates(nextReminder, now, 0)
+                    let channelId = users[u].scavengetogglechannel
+                    // create reminder of miliseconds nextReminder - now
+                    commandTimersUpdateChannelForCommand(discordUserId, "scavenge", channelId)
+                    if (milisecondsUntilNext > 1){
+                        setTimeOutForToggleCommand("scavenge", milisecondsUntilNext, discordUserId)
+                    }else{
+                        handleCommandTimerAvailable("scavenge", channelId, discordUserId)
+                    }
+                }
+                if (users[u].thanktoggle){
+                    // user wants to be reminded of scavenge
+                    
+                    let nextReminder = users[u].thanknextreminder // should be a date
+                    let now = new Date()
+                    var milisecondsUntilNext = getMilisFromDates(nextReminder, now, 0)
+                    let channelId = users[u].thanktogglechannel
+                    // create reminder of miliseconds nextReminder - now
+                    commandTimersUpdateChannelForCommand(discordUserId, "thank", channelId)
+                    if (milisecondsUntilNext > 1){
+                        setTimeOutForToggleCommand("thank", milisecondsUntilNext, discordUserId)
+                    }else{
+                        handleCommandTimerAvailable("thank", channelId, discordUserId)
+                    }
+                }
+                if (users[u].sorrytoggle){
+                    // user wants to be reminded of scavenge
+                    
+                    let nextReminder = users[u].sorrynextreminder // should be a date
+                    let now = new Date()
+                    var milisecondsUntilNext = getMilisFromDates(nextReminder, now, 0)
+                    let channelId = users[u].sorrytogglechannel
+                    // create reminder of miliseconds nextReminder - now
+                    commandTimersUpdateChannelForCommand(discordUserId, "sorry", channelId)
+                    if (milisecondsUntilNext > 1){
+                        setTimeOutForToggleCommand("sorry", milisecondsUntilNext, discordUserId)
+                    }else{
+                        handleCommandTimerAvailable("sorry", channelId, discordUserId)
+                    }
+                }
+                if (users[u].fetchtoggle){
+                    // user wants to be reminded of scavenge
+                    
+                    let nextReminder = users[u].fetchnextreminder // should be a date
+                    let now = new Date()
+                    var milisecondsUntilNext = getMilisFromDates(nextReminder, now, 0)
+                    let channelId = users[u].fetchtogglechannel
+                    // create reminder of miliseconds nextReminder - now
+                    commandTimersUpdateChannelForCommand(discordUserId, "fetch", channelId)
+                    if (milisecondsUntilNext > 1){
+                        setTimeOutForToggleCommand("fetch", milisecondsUntilNext, discordUserId)
+                    }else{
+                        handleCommandTimerAvailable("fetch", channelId, discordUserId)
+                    }
+                }
+                if (users[u].cooktoggle){
+                    // user wants to be reminded of scavenge
+                    
+                    let nextReminder = users[u].cooknextreminder // should be a date
+                    let now = new Date()
+                    var milisecondsUntilNext = getMilisFromDates(nextReminder, now, 0)
+                    let channelId = users[u].cooktogglechannel
+                    // create reminder of miliseconds nextReminder - now
+                    commandTimersUpdateChannelForCommand(discordUserId, "cook", channelId)
+                    if (milisecondsUntilNext > 1){
+                        setTimeOutForToggleCommand("cook", milisecondsUntilNext, discordUserId)
+                    }else{
+                        handleCommandTimerAvailable("cook", channelId, discordUserId)
+                    }
+                }
+                if (users[u].preparetoggle){
+                    // user wants to be reminded of scavenge
+                    
+                    let nextReminder = users[u].preparenextreminder // should be a date
+                    let now = new Date()
+                    var milisecondsUntilNext = getMilisFromDates(nextReminder, now, 0)
+                    let channelId = users[u].preparetogglechannel
+                    // create reminder of miliseconds nextReminder - now
+                    commandTimersUpdateChannelForCommand(discordUserId, "prepare", channelId)
+                    if (milisecondsUntilNext > 1){
+                        setTimeOutForToggleCommand("prepare", milisecondsUntilNext, discordUserId)
+                    }else{
+                        handleCommandTimerAvailable("prepare", channelId, discordUserId)
+                    }
+                }
+                if (users[u].harvesttoggle){
+                    // user wants to be reminded of scavenge
+                    
+                    let nextReminder = users[u].harvestnextreminder // should be a date
+                    let now = new Date()
+                    var milisecondsUntilNext = getMilisFromDates(nextReminder, now, 0)
+                    let channelId = users[u].harvesttogglechannel
+                    // create reminder of miliseconds nextReminder - now
+                    commandTimersUpdateChannelForCommand(discordUserId, "harvest", channelId)
+                    if (milisecondsUntilNext > 1){
+                        setTimeOutForToggleCommand("harvest", milisecondsUntilNext, discordUserId)
+                    }else{
+                        handleCommandTimerAvailable("harvest", channelId, discordUserId)
+                    }
+                }
+                if (users[u].dailytoggle){
+                    // user wants to be reminded of scavenge
+                    
+                    let nextReminder = users[u].dailynextreminder // should be a date
+                    let now = new Date()
+                    var milisecondsUntilNext = getMilisFromDates(nextReminder, now, 0)
+                    let channelId = users[u].dailytogglechannel
+                    // create reminder of miliseconds nextReminder - now
+                    commandTimersUpdateChannelForCommand(discordUserId, "daily", channelId)
+                    if (milisecondsUntilNext > 1){
+                        setTimeOutForToggleCommand("daily", milisecondsUntilNext, discordUserId)
+                    }else{
+                        handleCommandTimerAvailable("daily", channelId, discordUserId)
+                    }
+                }
+            }
+            console.log("Reminders Initialized")
         }
     })
 }
@@ -8104,7 +8862,7 @@ function getEmojiBasedOnRarityCategory(itemDetails){
         emoji = ":cyclone: "
     }
     else if (itemDetails.itemraritycategory === "artifact" 
-        || itemDetails.itemraritycategory === "artifact+"){
+    || itemDetails.itemraritycategory === "artifact+"){
         emoji = ":diamond_shape_with_a_dot_inside: "
     }
     else if (itemDetails.itemraritycategory === "ancient"){
@@ -8153,7 +8911,7 @@ function setTimeOutForIndividualItem(individualItem, milisecondsUntilEnd){
         // someone has bid on the item - announce, and change item to belong to them
         handleMarketItemAuctionEnded(individualItem)
 
-    }, milisecondsUntilEnd) // replace this with milisecondsuntilend
+    }, milisecondsUntilEnd) // replace this with milisecondsUntilEnd
 
     marketItems[individualItem.id].auctionTimeout = itemAuctionTimeout
 }
@@ -8174,17 +8932,14 @@ function handleMarketItemAuctionEnded(individualItem){
                 var initialTacoTax = 0;
                 if (tacosWon > 50){
                     initialTacoTax = Math.floor(tacosWon * 0.1);
-                }
-                else if (tacosWon >= 5 && tacosWon <= 50){
+                }else if (tacosWon >= 5 && tacosWon <= 50){
                     initialTacoTax = Math.floor(tacosWon * 0.1);
                 }
                 tacosWon = tacosWon - initialTacoTax
                 transferItemsAndTacos(winner.id, seller.id, itemsArray, tacosPaid, tacosWon, function(transferErr, transferRes){
                     if (transferErr){
                         console.log(transferErr)
-                    }
-                    else{
-                        
+                    }else{
                         try{
                             if (marketItems[individualItem.id].lastHighestbidderchannel){
                                 // send a message to the winners channel that they won the auction    
@@ -8195,6 +8950,14 @@ function handleMarketItemAuctionEnded(individualItem){
                             removeItemFromMarket(individualItem)
                         }catch(ex){
                             console.log(ex)
+                            var data = {
+                                command: "marketerror",
+                                guildId: 1,
+                                discordId: 1,
+                                username: "error",
+                                message: "3 " + JSON.stringify(ex) + " " + JSON.stringify(individualItem)
+                            }
+                            profileDB.createUserActivity(data)
                         }
                     }
                 })
@@ -8212,9 +8975,17 @@ function handleMarketItemAuctionEnded(individualItem){
                         try{
                             client.channels.get(marketItems[individualItem.id].creatorchannel).send(seller + " :x: - Your " + marketItems[individualItem.id].name + " did not sell in the marketplace")
                             removeItemFromMarket(individualItem)
-                        }catch(error){
+                        }catch(ex){
                             // unable to send to channel
-                            console.log(error)
+                            var data = {
+                                command: "marketerror",
+                                guildId: 1,
+                                discordId: 1,
+                                username: "error",
+                                message: "4 " + JSON.stringify(ex) + " " + JSON.stringify(individualItem)
+                            }
+                            profileDB.createUserActivity(data)
+                            console.log(ex)
                         }
                     }
                 })
@@ -8234,7 +9005,7 @@ function handleMarketItemAuctionEnded(individualItem){
             guildId: 1,
             discordId: 1,
             username: "error",
-            message: JSON.stringify(individualItem)
+            message: " no individualItem.id" + JSON.stringify(individualItem)
         }
         profileDB.createUserActivity(data)
     }
@@ -8382,8 +9153,7 @@ function marketBuilder(message, marketData, long){
     var filteredMarketItems = {}
     if (marketData.marketParams.itemshortname){
         filteredMarketItems = filterMarketItemsByShortName(marketData.marketParams.itemshortname)
-    }
-    else if (marketData.marketParams.rarityCategory){
+    }else if (marketData.marketParams.rarityCategory){
         filteredMarketItems = filterMarketItemsByRarity(marketData.marketParams.rarityCategory)
     }else{
         filteredMarketItems = marketItems
@@ -8444,7 +9214,14 @@ function marketBuilder(message, marketData, long){
         .addField("Market Items :shinto_shrine:", marketItemsByPage[page] , false)
         .addField('Your current tacos', marketData.userTacos + " :taco:", true)
         .setTimestamp()
-        message.channel.send({embed});
+        message.channel.send({embed})
+        .then(function(res){
+            console.log(res)
+        })
+        .catch(function(err){
+            console.log(err)
+            message.channel.send("Unable to display market embed, Enable embeds in this channel for future market announcements!")
+        })
     }else{
         const embed = new Discord.RichEmbed()
         .setColor(0x000000)
@@ -8452,7 +9229,14 @@ function marketBuilder(message, marketData, long){
         .addField("Market Items :shinto_shrine:", marketItemsByPage[page] , false)
         .addField('Your current tacos', marketData.userTacos + " :taco:", true)
         .setTimestamp()
-        message.channel.send({embed});
+        message.channel.send({embed})
+        .then(function(res){
+            console.log(res)
+        })
+        .catch(function(err){
+            console.log(err)
+            message.channel.send("Unable to display market embed, Enable embeds in this channel for future market announcements!")
+        })
     }
 }
 
@@ -8464,11 +9248,18 @@ module.exports.marketHelpCommand = function(message){
         "fields": [
           {
             "name": "Market",
-            "value": "`-mkauction [itemname] bid [bid] buyout [buyout] time [short/medium/long]                       >` Create an auction in the market!\n**example**: -mkauction sundress bid 500 buyout 2000 time medium\n**NOTE**:   bid, buyout, and time parameters are optional\n`-mkbid [id] tacos [bid]   >` Bid on an item in the market!\n**example**: -mkbid 74832 tacos 500\n`-market rares,\n -market ancients,\n -market artifacts,\n -market commons,\n -market uncommons >` Display market items based on rarity!\n`-market [item short name]   >` Display market items based on their name id!\n**example**: -market sundress\n`-market page [page number]                       >` Display a different page of the Market!"
+            "value": "`-mkauction [itemname] bid [bid] buyout [buyout] time [short/medium/long]                       >` Create an auction in the market!\n**example**: -mkauction sundress bid 500 buyout 2000 time medium\n**NOTE**:   bid, buyout, and time parameters are optional\n`-mkbid [id] tacos [bid]   >` Bid on an item in the market!\n**example**: -mkbid 74832 tacos 500\n`-mkcancel [marketid]   >` Cancel an auction in the market (only if nobody has bid on the auction)\n`-market rares,\n -market ancients,\n -market artifacts,\n -market commons,\n -market uncommons >` Display market items based on rarity!\n`-market [item short name]   >` Display market items based on their name id!\n**example**: -market sundress\n`-market page [page number]                       >` Display a different page of the Market!"
           }
         ]
       };
-      message.channel.send({ embed });
+      message.channel.send({ embed })
+      .then(function(res){
+        console.log(res)
+    })
+    .catch(function(err){
+        console.log(err)
+        message.channel.send("Unable to display market help embed, Enable embeds in this channel for future market help announcements!")
+    })
 }
 
 function extractItemName(args){
@@ -8497,7 +9288,6 @@ function extractStartBid(args){
             startBid = 10000000
         }
         return startBid
-
     }
 }
 
@@ -8593,8 +9383,7 @@ module.exports.marketAuctionCommand = function(message, args){
             profileDB.getUserItems(discordUserId, function(err, inventoryResponse){
                 if (err){
                     console.log(err);
-                }
-                else{
+                }else{
                     // get all the data for each item
                     var itemsInInventoryCountMap = {};
                     var ItemsBeingedAuctioned = []
@@ -8613,15 +9402,14 @@ module.exports.marketAuctionCommand = function(message, args){
                             itemBeingTraded = true;
                         }
                         if (!itemsInInventoryCountMap[inventoryResponse.data[item].itemid] 
-                            && validItem && notWearing && !auctionedItem && !itemBeingTraded){
+                        && validItem && notWearing && !auctionedItem && !itemBeingTraded){
                             // item hasnt been added to be counted, add it as 1
                             itemsInInventoryCountMap[inventoryResponse.data[item].itemid] = 1;
                             
                             // console.log(ItemInQuestion);
                             if (itemsMapbyShortName[myItemShortName] 
-                                && ItemsBeingedAuctioned.length < itemCount
-                                && itemsMapById[ItemInQuestion.itemid].itemshortname === myItemShortName){
-                                // console.log("IN HERE");
+                            && ItemsBeingedAuctioned.length < itemCount
+                            && itemsMapById[ItemInQuestion.itemid].itemshortname === myItemShortName){
                                 ItemsBeingedAuctioned.push(ItemInQuestion.id);
                                 individualItem.push(ItemInQuestion)
                             }
@@ -8629,17 +9417,17 @@ module.exports.marketAuctionCommand = function(message, args){
                         else if (validItem && notWearing && !auctionedItem && !itemBeingTraded){
                             itemsInInventoryCountMap[inventoryResponse.data[item].itemid] = itemsInInventoryCountMap[inventoryResponse.data[item].itemid] + 1;
                             if (itemsMapbyShortName[myItemShortName] 
-                                && ItemsBeingedAuctioned.length < itemCount
-                                && itemsMapById[ItemInQuestion.itemid].itemshortname === myItemShortName){
-                                // console.log("IN HERE");
+                            && ItemsBeingedAuctioned.length < itemCount
+                            && itemsMapById[ItemInQuestion.itemid].itemshortname === myItemShortName){
                                 ItemsBeingedAuctioned.push(ItemInQuestion.id);
                                 individualItem.push(ItemInQuestion)
                             }
                         }
                     }
                     if (itemsMapbyShortName[myItemShortName] 
-                        && itemsMapbyShortName[myItemShortName].itemraritycategory != "myth"
-                        && itemsMapbyShortName[myItemShortName].itemraritycategory != "artifact+"){
+                    && itemsMapbyShortName[myItemShortName].itemraritycategory != "myth"
+                    && itemsMapbyShortName[myItemShortName].itemraritycategory != "artifact+"
+                    && itemsMapbyShortName[myItemShortName].itemraritycategory != "amulet"){
                         var idOfMyItem = itemsMapbyShortName[myItemShortName].id;
                         var itemNameInMarket = itemsMapbyShortName[myItemShortName].itemname
                         // console.log(idOfMyItem);
@@ -8694,17 +9482,15 @@ module.exports.marketAuctionCommand = function(message, args){
                                     }else{
                                         marketItemsUserCount[discordUserId] = marketItemsUserCount[discordUserId] + 1
                                     }
-                                    message.channel.send(message.author + ", your auction for **" + marketItems[individualItem.id].name +  "** was successfully created!")
+                                    message.channel.send(message.author.username + ", your auction for **" + marketItems[individualItem.id].name +  "** was successfully created!")
                                     handleAuctionItem(individualItem)
                                 }
                             })
+                        }else{
+                            message.channel.send(message.author.username + " example: `-mkauction [item] bid [minimum bid] buyout [maximum bid] time [short/medium/long]`")  
                         }
-                        else{
-                            message.channel.send(message.author + " example: `-mkauction [item] bid [minimum bid] buyout [maximum bid] time [short/medium/long]`")  
-                        }
-                    }
-                    else{
-                        message.channel.send(message.author + " invalid item! example: `-mkauction [item] bid [minimum bid] buyout [maximum bid] time [short/medium/long]`")  
+                    }else{
+                        message.channel.send(message.author.username + " invalid item! example: `-mkauction [item] bid [minimum bid] buyout [maximum bid] time [short/medium/long]`")  
                     }
                 }
             })
@@ -8712,7 +9498,7 @@ module.exports.marketAuctionCommand = function(message, args){
 
     }else{
         if (!auctionPost.valid){
-            message.channel.send("Your auction is not valid try: -mkauction [itemname] to start off with a simple auction!")
+            message.channel.send("Your auction is not valid try: `-mkauction [itemnameid]` to start off with a simple auction!")
 
         }else{
             message.channel.send("You have reached the maximum allowed auctions in the market!")
@@ -8727,19 +9513,16 @@ module.exports.auctionCommand = function(message, args){
     // arguments are 1 = item short name, item number
     if (!activeAuctions[discordUserIdString]){
         // dont have an active auction yet
-
         if ( args && args.length > 1){
             var myItemShortName = args[1].toLowerCase();
             var itemCount = 1;
             if (args.length > 2){
                 itemCount = args[2];
             }
-            
             profileDB.getUserItems(discordUserId, function(err, inventoryResponse){
                 if (err){
                     // console.log(err);
-                }
-                else{
+                }else{
                     // get all the data for each item
                     var itemsInInventoryCountMap = {};
                     var IdsOfItemsBeingedAuctioned = []
@@ -8757,36 +9540,34 @@ module.exports.auctionCommand = function(message, args){
                             itemBeingTraded = true;
                         }
                         if (!itemsInInventoryCountMap[inventoryResponse.data[item].itemid] 
-                            && validItem && notWearing && !auctionedItem && !itemBeingTraded){
+                        && validItem && notWearing && !auctionedItem && !itemBeingTraded){
                             // item hasnt been added to be counted, add it as 1
                             itemsInInventoryCountMap[inventoryResponse.data[item].itemid] = 1;
                             
                             // console.log(ItemInQuestion);
                             if (itemsMapbyShortName[myItemShortName] 
-                                && IdsOfItemsBeingedAuctioned.length < itemCount
-                                && itemsMapById[ItemInQuestion.itemid].itemshortname === myItemShortName){
-                                // console.log("IN HERE");
+                            && IdsOfItemsBeingedAuctioned.length < itemCount
+                            && itemsMapById[ItemInQuestion.itemid].itemshortname === myItemShortName){
                                 IdsOfItemsBeingedAuctioned.push(ItemInQuestion.id);
                             }
-                        }
-                        else if (validItem && notWearing && !auctionedItem && !itemBeingTraded){
+                        }else if (validItem && notWearing && !auctionedItem && !itemBeingTraded){
                             itemsInInventoryCountMap[inventoryResponse.data[item].itemid] = itemsInInventoryCountMap[inventoryResponse.data[item].itemid] + 1;
                             if (itemsMapbyShortName[myItemShortName] 
-                                && IdsOfItemsBeingedAuctioned.length < itemCount
-                                && itemsMapById[ItemInQuestion.itemid].itemshortname === myItemShortName){
-                                // console.log("IN HERE");
+                            && IdsOfItemsBeingedAuctioned.length < itemCount
+                            && itemsMapById[ItemInQuestion.itemid].itemshortname === myItemShortName){
                                 IdsOfItemsBeingedAuctioned.push(ItemInQuestion.id);
                             }
                         }
                     }
                     if (itemsMapbyShortName[myItemShortName] 
-                        && itemsMapbyShortName[myItemShortName].itemraritycategory != "myth"
-                        && itemsMapbyShortName[myItemShortName].itemraritycategory != "artifact+"){
+                    && itemsMapbyShortName[myItemShortName].itemraritycategory != "myth"
+                    && itemsMapbyShortName[myItemShortName].itemraritycategory != "artifact+"
+                    && itemsMapbyShortName[myItemShortName].itemraritycategory != "amulet"){
                         var idOfMyItem = itemsMapbyShortName[myItemShortName].id;
                         var itemNameInAuction = itemsMapbyShortName[myItemShortName].itemname
                         // console.log(idOfMyItem);
-                        if (itemsInInventoryCountMap[idOfMyItem] && 
-                            itemsInInventoryCountMap[idOfMyItem] >= itemCount){
+                        if (itemsInInventoryCountMap[idOfMyItem] 
+                        && itemsInInventoryCountMap[idOfMyItem] >= itemCount){
                             // if so, then I can create an auction just fine
                             // create an auction
                             var userAuction = {
@@ -8822,8 +9603,7 @@ module.exports.auctionCommand = function(message, args){
                                         delete itemsInAuction[idToDelete];
                                     }
                                     delete activeAuctions[discordUserIdString];
-                                }
-                                else if (activeAuctions[discordUserIdString]){
+                                }else if (activeAuctions[discordUserIdString]){
                                     // somebody bought the auction, transfer the items and adjust tacos
                                     var winner = activeAuctions[discordUserIdString].highestBidder;
                                     var auctionCreator = discordUserId;
@@ -8835,8 +9615,7 @@ module.exports.auctionCommand = function(message, args){
                                     var initialTacoTax = 0;
                                     if (tacosWon > 50){
                                         initialTacoTax = Math.floor(tacosWon * 0.1);
-                                    }
-                                    else if (tacosWon >= 5 && tacosWon <= 50){
+                                    }else if (tacosWon >= 5 && tacosWon <= 50){
                                         initialTacoTax = Math.floor(tacosWon * 0.1);
                                     }
                                     message.channel.send(":loudspeaker: " + activeAuctions[discordUserIdString].highestBidderUserObj + " has won the auction of **" + activeAuctions[discordUserIdString].itemName + "** for `" + activeAuctions[discordUserIdString].tacoBid + "` :taco: tacos! " + "Bender kept `" + initialTacoTax + "` for tax purposes.") 
@@ -8862,29 +9641,24 @@ module.exports.auctionCommand = function(message, args){
                                 }
                                 
                             }, 360000);
-                            message.channel.send(message.author + " has created an auction for **" + itemNameInAuction +"** x`" + itemCount + "` !")  
+                            message.channel.send(message.author.username + " has created an auction for **" + itemNameInAuction +"** x`" + itemCount + "` !")  
+                            // console.log("items in auction " + JSON.stringify(itemsInAuction, null, 2));
+                        }else{
+                            message.channel.send(message.author.username + " can't create that auction! example use: -auction loincloth OR example use: -auction polyester")  
                             // console.log("items in auction " + JSON.stringify(itemsInAuction, null, 2));
                         }
-                        else{
-                            message.channel.send(message.author + " can't create that auction! example use: -auction loincloth OR example use: -auction polyester")  
-                            // console.log("items in auction " + JSON.stringify(itemsInAuction, null, 2));
-                        }
-                    }
-                    else{
-                        message.channel.send(message.author + " invalid item! example use: -auction loincloth OR example use: -auction polyester")  
+                    }else{
+                        message.channel.send(message.author.username + " invalid item! example use: -auction loincloth OR example use: -auction polyester")  
                         // console.log("items in auction " + JSON.stringify(itemsInAuction, null, 2));
                     }
                     // check if myItem exists in items, check if otherItem exists in items, if not then turn the string
                 }
             })
-        }
-        else{
-            // message use case
+        }else{
             message.channel.send("example use: -auction loincloth OR -auction polyester")
         }
-    }
-    else{
-        message.channel.send(message.author + " You already have an active auction! Please wait until it ends to create a new one!")
+    }else{
+        message.channel.send(message.author.username + " You already have an active auction! Please wait until it ends to create a new one!")
     }
 }
 
@@ -8904,8 +9678,7 @@ function transferItemsAndTacos(winner, auctionCreator, itemsArray, tacosPaid, ta
                         profileDB.bulkUpdateItemOwner(itemsArray, winner, function(transferErr, transferRes){
                             if (transferErr){
                                 cb('fail');
-                            }
-                            else{
+                            }else{
                                 cb(null, transferRes);
                             }
                         })
@@ -8913,8 +9686,7 @@ function transferItemsAndTacos(winner, auctionCreator, itemsArray, tacosPaid, ta
                         profileDB.updateMarketItemSold(itemsArray, winner, function(transferErr, transferRes){
                             if (transferErr){
                                 cb('fail');
-                            }
-                            else{
+                            }else{
                                 cb(null, transferRes);
                             }
                         })
@@ -8979,7 +9751,7 @@ module.exports.marketBidCommand = function(message, args){
                                 }
                                 // cannot use these tacos
                                 tacosInUseAuction[discordUserId] = tacosInUseAuction[discordUserId] + biddingTacos;
-                                message.channel.send(message.author + " is now the highest bidder on **" + auctionToBidOn.name + "**!")
+                                message.channel.send(message.author.username + " is now the highest bidder on **" + auctionToBidOn.name + "**!")
                                 if (biddingTacos >= auctionToBidOn.buyout){
                                     var individualItem = auctionToBidOn.item
                                     handleMarketItemAuctionEnded(individualItem)
@@ -8988,12 +9760,12 @@ module.exports.marketBidCommand = function(message, args){
                         })
                     }else{
                         if (!auctionToBidOn){
-                            message.channel.send(message.author + " that item is not available on the market"); 
+                            message.channel.send(message.author.username + " that item is not available on the market"); 
                         }else if (auctionToBidOn.seller == discordUserId){
-                            message.channel.send(message.author + " can't bid on your own items in the market"); 
+                            message.channel.send(message.author.username + " can't bid on your own items in the market"); 
                         }
                         else{
-                            message.channel.send(message.author + " your bid is lower than the current highest bid. Highest bid is `" + adjustedCurrentBid + "` tacos!")                            
+                            message.channel.send(message.author.username + " your bid is lower than the current highest bid. Highest bid is `" + adjustedCurrentBid + "` tacos!")                            
                         }
                     }
                 }else{
@@ -9003,7 +9775,7 @@ module.exports.marketBidCommand = function(message, args){
         })
     }else{
         // print example on how to bid on the market
-        message.channel.send(message.author + " example: `-mkbid [id] tacos [bid]` "  )
+        message.channel.send(message.author.username + " example: `-mkbid [id] tacos [bid]` "  )
     }
 }
 
@@ -9043,8 +9815,7 @@ module.exports.bidCommand = function(message, args){
             if (profileErr){
                 // console.log(profileErr);
                 agreeToTerms(message, discordUserId);
-            }
-            else{
+            }else{
                 var userTacosToBid = adjustedTacosForUser(discordUserId, profileRes.data.tacos)
                 if (userTacosToBid >= biddingTacos){
                     // can bid, get the auction that the mentioned user has available
@@ -9068,24 +9839,21 @@ module.exports.bidCommand = function(message, args){
                         }
                         // cannot use these tacos
                         tacosInUseAuction[discordUserId] = tacosInUseAuction[discordUserId] + biddingTacos;
-                        message.channel.send(message.author + " is now the highest bidder on **" + auctionToBidOn.itemName + "** x`" + itemCountBeingAuctioned + "` with `" + biddingTacos + "` tacos!")
+                        message.channel.send(message.author.username + " is now the highest bidder on **" + auctionToBidOn.itemName + "** x`" + itemCountBeingAuctioned + "` with `" + biddingTacos + "` tacos!")
                     }
                     else{
                         if (!auctionToBidOn){
-                            message.channel.send(message.author + " the user currently does not have an auction open"); 
-                        }
-                        else{
-                            message.channel.send(message.author + " your bid is lower than the current highest bid. Highest bid is `" + auctionToBidOn.tacoBid + "` tacos!")                            
+                            message.channel.send(message.author.username + " the user currently does not have an auction open"); 
+                        }else{
+                            message.channel.send(message.author.username + " your bid is lower than the current highest bid. Highest bid is `" + auctionToBidOn.tacoBid + "` tacos!")                            
                         }
                     }
-                }
-                else{
-                    message.channel.send(message.author + " you only have `" + userTacosToBid + "` tacos to bid!")
+                }else{
+                    message.channel.send(message.author.username + " you only have `" + userTacosToBid + "` tacos to bid!")
                 }
             }
         })
-    }
-    else{
+    }else{
         message.channel.send("example use: -bid @user 5")
     }
 }
@@ -9113,12 +9881,12 @@ module.exports.tradeCommand = function(message, args){
     }
     var discordUserIdString = "trading-" + discordUserId;
     if (args && args.length >= 3 
-        && mentionedUser 
-        && !activeTrades[mentionedIdString] 
-        && !hasOpenTrade[discordUserIdString] 
-        && !hasOpenTrade[mentionedIdString] 
-        && !userTradeLock[discordUserIdString]
-        && !userTradeLock[mentionedIdString]){
+    && mentionedUser 
+    && !activeTrades[mentionedIdString] 
+    && !hasOpenTrade[discordUserIdString] 
+    && !hasOpenTrade[mentionedIdString] 
+    && !userTradeLock[discordUserIdString]
+    && !userTradeLock[mentionedIdString]){
         //&& mentionedId != discordUserId){
         // lock trading between both users
         exports.setTradeLock(discordUserIdString, mentionedIdString, true)
@@ -9142,15 +9910,13 @@ module.exports.tradeCommand = function(message, args){
                     // console.log(getProfileErr);
                     exports.setTradeLock(discordUserIdString, mentionedIdString, false)
                     agreeToTerms(message, discordUserId);
-                }
-                else{
+                }else{
                     // get the user's item based on discordid and shortname and check that they have an item that they want to trade
                     profileDB.getUserItems(discordUserId, function(err, inventoryResponse){
                         if (err){
                             // console.log(err);
                             exports.setTradeLock(discordUserIdString, mentionedIdString, false)
-                        }
-                        else{
+                        }else{
                             // console.log(inventoryResponse.data);
                             // get all the data for each item
                             var itemsInInventoryCountMap = {};
@@ -9178,8 +9944,7 @@ module.exports.tradeCommand = function(message, args){
                                         && itemsMapById[ItemInQuestion.itemid].itemshortname === myItemShortName){
                                         IdsOfItemsBeingedTraded.push(ItemInQuestion.id);
                                     }
-                                }
-                                else if (validItem && notWearing && !auctionedItem && !itemBeingTraded){
+                                }else if (validItem && notWearing && !auctionedItem && !itemBeingTraded){
                                     itemsInInventoryCountMap[inventoryResponse.data[item].itemid] = itemsInInventoryCountMap[inventoryResponse.data[item].itemid] + 1
 
                                     if (itemsMapbyShortName[myItemShortName] 
@@ -9193,7 +9958,8 @@ module.exports.tradeCommand = function(message, args){
                             // check if myItem exists in items, check if otherItem exists in items, if not then turn the string
                             if (itemsMapbyShortName[myItemShortName] 
                                 && itemsMapbyShortName[myItemShortName].itemraritycategory != "myth"
-                                && itemsMapbyShortName[myItemShortName].itemraritycategory != "artifact+" ){
+                                && itemsMapbyShortName[myItemShortName].itemraritycategory != "artifact+"
+                                && itemsMapbyShortName[myItemShortName].itemraritycategory != "amulet" ){
                                 var idOfMyItem = itemsMapbyShortName[myItemShortName].id;
                                 var itemNameInTrade = itemsMapbyShortName[myItemShortName].itemname
                                 // console.log(idOfMyItem);
@@ -9201,85 +9967,120 @@ module.exports.tradeCommand = function(message, args){
                                     itemsInInventoryCountMap[idOfMyItem] >= itemCount){
                                     // the item exists in my inventory
                                     // create an active trade with the mentioned use, myItem = trading
-                                    var userTrade = {
-                                        item: myItemShortName,
-                                        fullItemName: itemNameInTrade,
-                                        itemid: itemsMapbyShortName[myItemShortName].itemid,
-                                        idsToTransfer: [],
-                                        tradeFrom: discordUserIdString,
-                                        tradingWith: mentionedUser.username,
-                                        itemRarity: itemsMapbyShortName[myItemShortName].itemraritycategory,
-                                        tacoAsk: tacoAsk
-                                    }
-                                    activeTrades[mentionedIdString] = userTrade;
-                                    hasOpenTrade[discordUserIdString] = mentionedIdString;
-                                    hasOpenTrade[mentionedIdString] = discordUserIdString;
-
-                                    for (var item in IdsOfItemsBeingedTraded){
-                                        activeTradeItems[IdsOfItemsBeingedTraded[item]] = true;
-                                        userTrade.idsToTransfer.push(IdsOfItemsBeingedTraded[item])
-                                    }
-
-                                    message.channel.send(message.author + " has offered " + mentionedUser + " **" + itemNameInTrade + "** x`" + IdsOfItemsBeingedTraded.length + "` to trade for `" +tacoAsk + "` tacos :taco:" )
-                                    // if the trade is of an uncommon, tax = 1, rare tax = 2, ancient tax = 3, artifact tax = 5
-
-                                    var tradeEnds = setTimeout (function(){ 
-                                        // trade has expired if still there cancel the trade
-                                        // cancel the trade
-                                        if (activeTrades[mentionedIdString]){
-                                            // trade is still active, just cancel it
-                                            var itemToTradeName = activeTrades[mentionedIdString].fullItemName;
-                                            var userTradingWith = activeTrades[mentionedIdString].tradingWith;
-                                            var tradeFrom = activeTrades[mentionedIdString].tradeFrom
-                                            for (var transferId in activeTrades[mentionedIdString].idsToTransfer){
-                                                // delete from itemsInAuction
-                                                var idToDelete = activeTrades[mentionedIdString].idsToTransfer[transferId];
-                                                if (idToDelete){
-                                                    delete activeTradeItems[idToDelete];
+                                    if (itemsMapbyShortName[myItemShortName].itemraritycategory == "uncommon+"
+                                    && itemsMapbyShortName[myItemShortName].shoppotion == true){
+                                        // check that the user trading with is less than 10 levels above
+                                        profileDB.getUserProfileData(mentionedId, function(err, tradingWithRes){
+                                            if (err){
+                                                console.log(err)
+                                                message.channel.send("User you are attempting to trade with has not yet agreed to terms for bender!")
+                                                exports.setTradeLock(discordUserIdString, mentionedIdString, false)
+                                            }else{
+                                                let tradingWithLevel = tradingWithRes.data.level
+                                                let myLevel = getProfileRes.data.level
+                                                if ( ( tradingWithLevel - 10 >  myLevel )){
+                                                    message.channel.send("Unable to trade potions with a player that is more than 10 levels above you ;)")
+                                                    exports.setTradeLock(discordUserIdString, mentionedIdString, false)
+                                                }else{
+                                                    // trade as normal
+                                                    createTradeWithUser(myItemShortName, itemNameInTrade, discordUserIdString, tacoAsk, mentionedIdString, IdsOfItemsBeingedTraded, mentionedUser, message)
                                                 }
                                             }
-                                            delete activeTrades[mentionedIdString];
-                                            if (hasOpenTrade[tradeFrom]){
-                                                delete hasOpenTrade[tradeFrom];
-                                            }
-                                            if (hasOpenTrade[mentionedIdString]){
-                                                delete hasOpenTrade[mentionedIdString]
-                                            }
-                                            message.channel.send(message.author + " your trade offer of **" + itemToTradeName + "** with **" + userTradingWith + "** has expired :x:" )
-                                        }
-                                    }, 60000)
-                                    activeTrades[mentionedIdString].tradeTimeout = tradeEnds
-                                    exports.setTradeLock(discordUserIdString, mentionedIdString, false)
-                                }
-                                else{
-                                    message.channel.send(message.author + " you cannot create that trade")
+                                        })
+                                    }else{
+                                        createTradeWithUser(myItemShortName, itemNameInTrade, discordUserIdString, tacoAsk, mentionedIdString, IdsOfItemsBeingedTraded, mentionedUser, message)
+                                    }
+                                }else{
+                                    message.channel.send(message.author.username + " you cannot create that trade")
                                     exports.setTradeLock(discordUserIdString, mentionedIdString, false)
                                 }
                             }else{
-                                message.channel.send(message.author + " invalid item!");
+                                message.channel.send(message.author.username + " invalid item!");
                                 exports.setTradeLock(discordUserIdString, mentionedIdString, false)
                             }
                         }
                     })
                 }
             })
-        }
-        else{
-            message.channel.send(message.author + " trade for more than 1 taco, cannot tax 1 taco :(")
+        }else{
+            message.channel.send(message.author.username + " trade for more than 1 taco, cannot tax 1 taco :(")
             exports.setTradeLock(discordUserIdString, mentionedIdString, false)
         }
-    }
-    else{
+    }else{
         if (activeTrades[mentionedIdString] || hasOpenTrade[mentionedIdString]){
             // can't trade with the user at this time
             message.channel.send("the user is currently trading with someone else");
         }else if (userTradeLock[mentionedIdString] || userTradeLock[discordUserIdString]){
-            message.channel.send(message.author + " try again. one of you was trading at the time")
+            message.channel.send(message.author.username + " try again. one of you was trading at the time")
         }else{
             //print usage
             message.channel.send("example use:\n-trade @user rock \n-trade @user rock 10 \n-trade @user rock 10 tacos 5");
         }
     }
+}
+
+function createTradeWithUser(myItemShortName, itemNameInTrade, discordUserIdString, tacoAsk, mentionedIdString, IdsOfItemsBeingedTraded, mentionedUser, message){
+    var userTrade = {
+        item: myItemShortName,
+        fullItemName: itemNameInTrade,
+        itemid: itemsMapbyShortName[myItemShortName].itemid,
+        idsToTransfer: [],
+        tradeFrom: discordUserIdString,
+        tradingWith: mentionedUser.username,
+        itemRarity: itemsMapbyShortName[myItemShortName].itemraritycategory,
+        tacoAsk: tacoAsk
+    }
+    activeTrades[mentionedIdString] = userTrade;
+    hasOpenTrade[discordUserIdString] = mentionedIdString;
+    hasOpenTrade[mentionedIdString] = discordUserIdString;
+
+    for (var item in IdsOfItemsBeingedTraded){
+        activeTradeItems[IdsOfItemsBeingedTraded[item]] = true;
+        userTrade.idsToTransfer.push(IdsOfItemsBeingedTraded[item])
+    }
+
+    message.channel.send(message.author.username + " has offered " + mentionedUser + " **" + itemNameInTrade + "** x`" + IdsOfItemsBeingedTraded.length + "` to trade for `" +tacoAsk + "` tacos :taco:" )
+    .then(function(res){
+        console.log(res)
+    })
+    .catch(function(err){
+        message.channel.send(JSON.stringify(err))
+    })
+    // if the trade is of an uncommon, tax = 1, rare tax = 2, ancient tax = 3, artifact tax = 5
+
+    var tradeEnds = setTimeout (function(){
+        // trade has expired if still there cancel the trade
+        // cancel the trade
+        if (activeTrades[mentionedIdString]){
+            // trade is still active, just cancel it
+            var itemToTradeName = activeTrades[mentionedIdString].fullItemName;
+            var userTradingWith = activeTrades[mentionedIdString].tradingWith;
+            var tradeFrom = activeTrades[mentionedIdString].tradeFrom
+            for (var transferId in activeTrades[mentionedIdString].idsToTransfer){
+                // delete from itemsInAuction
+                var idToDelete = activeTrades[mentionedIdString].idsToTransfer[transferId];
+                if (idToDelete){
+                    delete activeTradeItems[idToDelete];
+                }
+            }
+            delete activeTrades[mentionedIdString];
+            if (hasOpenTrade[tradeFrom]){
+                delete hasOpenTrade[tradeFrom];
+            }
+            if (hasOpenTrade[mentionedIdString]){
+                delete hasOpenTrade[mentionedIdString]
+            }
+            message.channel.send(message.author.username + " your trade offer of **" + itemToTradeName + "** with **" + userTradingWith + "** has expired :x:" )
+            .then(function(res){
+                console.log(res)
+            })
+            .catch(function(err){
+                message.channel.send(JSON.stringify(err))
+            })
+        }
+    }, 60000)
+    activeTrades[mentionedIdString].tradeTimeout = tradeEnds
+    exports.setTradeLock(discordUserIdString, mentionedIdString, false)
 }
 
 module.exports.acceptTradeCommand = function(message, args){
@@ -9294,8 +10095,7 @@ module.exports.acceptTradeCommand = function(message, args){
     profileDB.getUserProfileData(discordUserId, function(profileErr, profileRes){
         if (profileErr){
             // console.log(profileErr);
-        }
-        else{
+        }else{
             // there is an active trade with the user
             if (activeTrades[discordUserIdString] && hasOpenTrade[discordUserIdString]){
                 var mentionedId = hasOpenTrade[discordUserIdString].substr(8);
@@ -9313,7 +10113,7 @@ module.exports.acceptTradeCommand = function(message, args){
                 }
                 if (currentTacos - tacosToPay >= 0 && tacosToPay == tacosAgreedOn){
                     // accept the trade and transfer the item
-                    message.channel.send(":handshake:  " + message.author + " has accepted the trade of **" + activeTrades[discordUserIdString].fullItemName + "** ! " + " Bender kept `" + tacoTax + "` tacos for tax purposes.") 
+                    message.channel.send(":handshake:  " + message.author.username + " has accepted the trade of **" + activeTrades[discordUserIdString].fullItemName + "** ! " + " Bender kept `" + tacoTax + "` tacos for tax purposes.") 
                     transferItemsAndTacos(discordUserId, mentionedId, itemsArray, tacosToPay, tacosToPay-tacoTax, function(transErr, transRes){
                         if (transErr){
                             console.log(transErr);
@@ -9340,13 +10140,11 @@ module.exports.acceptTradeCommand = function(message, args){
                         clearTimeout(activeTrades[discordUserIdString].tradeTimeout)
                     }
                     delete activeTrades[discordUserIdString];
-                }
-                else{
+                }else{
                     message.channel.send("You can't afford that trade OR you need to do -accept #oftacos")
                 }
-            }
-            else{
-                message.channel.send(message.author + " You do not currently have open trades!")
+            }else{
+                message.channel.send(message.author.username + " You do not currently have open trades!")
             }
         }
     })
@@ -9373,9 +10171,8 @@ module.exports.cancelTradeCommand = function(message, args){
                 delete hasOpenTrade[discordUserIdString];
             }
             delete activeTrades[tradingWith];
-            message.channel.send(":x:  " + message.author + " Canceled a trade ") 
-        }
-        else{
+            message.channel.send(":x:  " + message.author.username + " Canceled a trade ") 
+        }else{
             if (activeTrades[discordUserIdString]){
                 for (var transferId in activeTrades[discordUserIdString].idsToTransfer){
                     // delete from itemsInAuction
@@ -9392,7 +10189,7 @@ module.exports.cancelTradeCommand = function(message, args){
                     clearTimeout(activeTrades[discordUserIdString].tradeTimeout)
                 }
                 delete activeTrades[discordUserIdString];
-                message.channel.send(":x:  " + message.author + " Canceled a trade ") 
+                message.channel.send(":x:  " + message.author.username + " Canceled a trade ") 
             }else{
                 message.channel.send("there is some fishy stuff going on and I am investigating....(for now i have cleared your trades)")
                 if (hasOpenTrade[discordUserIdString]){
@@ -9400,9 +10197,8 @@ module.exports.cancelTradeCommand = function(message, args){
                 }
             }
         }
-    }
-    else{
-        message.channel.send(message.author + " You do not currently have open trades !")
+    }else{
+        message.channel.send(message.author.username + " You do not currently have open trades !")
     }
 }
 
@@ -9418,24 +10214,21 @@ module.exports.agreeTermsCommand = function(message, args){
                     if(err){
                         // console.log(err);
                         message.channel.send("user already exists")
-                    }
-                    else{
-                        profileDB.updateUserTacosWelcome(discordUserId, 50, function(err, updateResponse) {
+                    }else{
+                        profileDB.updateUserTacosWelcome(discordUserId, 200, function(err, updateResponse) {
                             if (err){
                                 // console.log(err);
-                            }
-                            else{
+                            }else{
                                 Last_Five_Welcomes.push(discordUserId);
                                 if (Last_Five_Welcomes.length >= 5){
                                     Last_Five_Welcomes.shift();
                                 }
-                                message.channel.send("welcome aboard ! " + message.author + " your profile has been created. " + host + " will be your host!" );
+                                message.channel.send("welcome aboard ! " + message.author.username + " your profile has been created. " + host + " will be your host! here are some initial commands you can try```\n-cook\n-tacos\n-prepare\n-thanks @user\n-sorry @user\n-profile\n-shop long\n-inventory\n-buypickaxe\n-help\n-rpghelp\n-itemhelp\n-markethelp\n-map\n-rpgstats\n-rpgstart```Enjoy your stay!" );
                                 if (host.id){
                                     stats.statisticsManage(host.id, "welcomecount", 1, function(err, statSuccess){
                                         if (err){
                                             // console.log(err);
-                                        }
-                                        else{
+                                        }else{
                                             // check achievements??
                                             getProfileForAchievement(host.id, message)
                                         }
@@ -9446,23 +10239,44 @@ module.exports.agreeTermsCommand = function(message, args){
                         delete NeedsToAgree[discordUserId]
                     }
                 })
-            }
-            else{
+            }else{
                 // the user profile already exists, ignore this command
             }
         })
-    }
-    else{
-        message.channel.send("already accepted");
+    }else{
+        profileDB.getUserProfileData(discordUserId, function(error, data){
+            if (error){
+                // this is what we are expecting, from here we expect to create the user profile
+                var userData = initialUserProfile(discordUserId);
+                profileDB.createUserProfile(userData, function(err, createResponse){
+                    if(err){
+                        message.channel.send("user already exists! You do not need to agree anymore")
+                    }else{
+                        profileDB.updateUserTacosWelcome(discordUserId, 200, function(err, updateResponse) {
+                            if (err){
+                                // console.log(err);
+                            }else{
+                                Last_Five_Welcomes.push(discordUserId);
+                                if (Last_Five_Welcomes.length >= 5){
+                                    Last_Five_Welcomes.shift();
+                                }
+                                message.channel.send("welcome aboard ! " + message.author.username + " your profile has been created. \nhere are some initial commands you can try```\n-cook\n-tacos\n-prepare\n-thanks @user\n-sorry @user\n-profile\n-shop long\n-inventory\n-buypickaxe\n-help\n-rpghelp\n-itemhelp\n-markethelp\n-map\n-rpgstats\n-rpgstart```Enjoy your stay!" );
+                            }
+                        })
+                    }
+                })
+            }else{
+                message.channel.send("already accepted");
+            }
+        })
     }
 }
 
 module.exports.denyTermsCommand = function(message, args){
     var discordUserId = message.author.id
     if (NeedsToAgree[discordUserId] && NeedsToAgree[discordUserId].hasNotAgreed){
-        message.channel.send(message.author + " Your profile will not be created.")
-    }
-    else{
+        message.channel.send(message.author.username + " Your profile will not be created.")
+    }else{
         message.channel.send("already accepted contact an admin to have your data deleted");
     }
 }
@@ -9494,10 +10308,8 @@ module.exports.enterRaffleCommand = function(message, args){
     if (!activeRaffle.users[discordUserId]){
         profileDB.getUserProfileData(discordUserId, function(profileErr, profileRes){
             if (profileErr){
-                // console.log(profileErr);
-                // they need to agree to terms
-            }
-            else{
+                console.log(profileErr);
+            }else{
                 var userTacos = adjustedTacosForUser(discordUserId, profileRes.data.tacos)
                 if (userTacos >= RAFFLE_ENTRY_COST){
                     // add the user to the raffle
@@ -9505,31 +10317,27 @@ module.exports.enterRaffleCommand = function(message, args){
                     activeRaffle.entriesId.push(discordUserId);
                     var size = activeRaffle.entriesId.length
                     if (size <= RAFFLE_USER_SIZE){
-                        message.channel.send(":ticket: " + message.author + " you have entered the taco raffle!")
+                        message.channel.send(":ticket: " + message.author.username + " you have entered the taco raffle!")
                     }
                     if (size == RAFFLE_USER_SIZE){
                         // just got to 7, trigger the raffle event for someone to win
                         calculateRaffleWinner(message);
                         
-                    }
-                    else if (size >= RAFFLE_USER_SIZE + 1){
+                    }else if (size >= RAFFLE_USER_SIZE + 1){
                         activeRaffle = {
                             entriesId: [],
                             users: {}
                         }
-                        message.channel.send(message.author + " Try again, a raffle might have been in session ;(")
+                        message.channel.send(message.author.username + " Try again, a raffle might have been in session ;(")
                     }
-                }
-                else{
-                    message.channel.send(message.author + " You cannot afford the raffle!")
+                }else{
+                    message.channel.send(message.author.username + " You cannot afford the raffle!")
                 }
             }
         })
     }else{
         message.channel.send("You are already in the raffle!");
     }
-    
-    
 }
 
 function calculateRaffleWinner(message){
@@ -9552,8 +10360,7 @@ function calculateRaffleWinner(message){
     profileDB.updateUserTacos(raffleWinner, (RAFFLE_ENTRY_COST * (activeRaffle.entriesId.length - 2)), function(updateErr, updateRes){
         if (updateErr){
             // console.log(updateErr);
-        }
-        else{
+        }else{
             var copyOfEntries = []
             for (var i in activeRaffle.entriesId){
                 copyOfEntries.push(activeRaffle.entriesId[i])
@@ -9565,8 +10372,7 @@ function calculateRaffleWinner(message){
                     profileDB.updateUserTacos(copyOfEntries[entry], (RAFFLE_ENTRY_COST * -1), function(removeErr, removeRes){
                         if (removeErr){
                             // console.log(removeErr);
-                        }
-                        else{
+                        }else{
                             // console.log(removeRes);
                         }
                     })
@@ -9593,8 +10399,7 @@ module.exports.createTableCommand = function(message){
             if (err){
                 // console.log(err);
                 useItem.setItemsLock(discordUserId, false)
-            }
-            else{
+            }else{
                 // console.log(inventoryResponse.data);
                 // get all the data for each item
                 var itemsInInventoryCountMap = {};
@@ -9660,8 +10465,7 @@ module.exports.createTableCommand = function(message){
                         }
                     }
                     createParty(message, discordUserId, uncommonsToUse);
-                }
-                else{
+                }else{
                     useItem.setItemsLock(discordUserId, false)
                     message.channel.send("Missing ingredients for the Taco Party!!");
                 }
@@ -9681,8 +10485,7 @@ function createParty(message, discordUserId, uncommonsToUse){
         if (useError){
             useItem.setItemsLock(discordUserId, false)
             console.log(useError);
-        }
-        else{
+        }else{
             // console.log(useRes);
             if (useRes == "success"){
                 message.channel.send({embed})
@@ -9707,6 +10510,12 @@ function createParty(message, discordUserId, uncommonsToUse){
                                             if (collectorUser == userId && element.emoji.name != reaction.emoji.name){
                                                 // remove the reaction by the user
                                                 element.remove(userId)
+                                                .then(function(res){
+                                                    console.log(res)
+                                                })
+                                                .catch(function(err){
+                                                    console.log(err)
+                                                })
                                             }
                                         }
                                     })
@@ -9718,6 +10527,8 @@ function createParty(message, discordUserId, uncommonsToUse){
                         // party lasts 10 minutes - upon ending the reaction collector the party has ended
                         var ownerOfTable;
                         var ownerOfTableUsername;
+                        // to stop servers from removing emoji remove permissions
+                        let mapOfUsersReacted = {}
                         var idOfTable;
                         var reactionCount = 0;
                         collected.forEach(function(reactionEmoji){
@@ -9726,7 +10537,8 @@ function createParty(message, discordUserId, uncommonsToUse){
                             idOfTable = "table-" + reactionEmoji.message.id;
                             if (reactionEmoji._emoji.name == "🌮"){
                                 reactionEmoji.users.forEach(function(user){
-                                    if (!user.bot && ownerOfTable.id != user.id){
+                                    if (!user.bot && ownerOfTable.id != user.id && !mapOfUsersReacted[user.id]){
+                                        mapOfUsersReacted[user.id] = true
                                         tacoPartyReactRewards(message, user, "🌮", "taco")
                                         reactionCount++;
                                     }
@@ -9734,7 +10546,8 @@ function createParty(message, discordUserId, uncommonsToUse){
                             }
                             else if (reactionEmoji._emoji.name == "🍹"){
                                 reactionEmoji.users.forEach(function(user){
-                                    if (!user.bot && ownerOfTable.id != user.id){
+                                    if (!user.bot && ownerOfTable.id != user.id && !mapOfUsersReacted[user.id]){
+                                        mapOfUsersReacted[user.id] = true
                                         tacoPartyReactRewards(message, user, "🍹", "terrycloth")
                                         reactionCount++;
                                     }
@@ -9742,7 +10555,8 @@ function createParty(message, discordUserId, uncommonsToUse){
                             }
                             else if (reactionEmoji._emoji.name == "💃🏼"){
                                 reactionEmoji.users.forEach(function(user){
-                                    if (!user.bot && ownerOfTable.id != user.id){
+                                    if (!user.bot && ownerOfTable.id != user.id && !mapOfUsersReacted[user.id]){
+                                        mapOfUsersReacted[user.id] = true
                                         tacoPartyReactRewards(message, user, "💃🏼", "rock")
                                         reactionCount++;
                                     }
@@ -9750,7 +10564,7 @@ function createParty(message, discordUserId, uncommonsToUse){
                             }
                             
                         })
-                        if (ownerOfTable.id){
+                        if (ownerOfTable && ownerOfTable.id){
                             // give owner of table 1xp per reaction, 2 tacos per reaction 
                             var attendees = reactionCount;
                             if (reactionCount > 15){
@@ -9760,19 +10574,23 @@ function createParty(message, discordUserId, uncommonsToUse){
                                 if (getDataErr){
                                     // console.log(getDataErr);
                                     message.channel.send(err);
-                                }
-                                else{
+                                }else{
                                     // for gaining xp
                                     var userData = getDataRes;
                                     profileDB.updateUserTacos(ownerOfTable.id, reactionCount * 20, function(err, res){
                                         if (err){
                                             // console.log(err);
                                             message.channel.send(err);
-                                        }
-                                        else{
+                                        }else{
                                             // console.log(res);
                                             experience.gainExperience(message, ownerOfTable, reactionCount, userData);
                                             message.channel.send("The party for `" + ownerOfTableUsername + "` was a great success! There were `" + attendees + "` guests that showed up")
+                                            .then(function(res){
+                                                console.log(res)
+                                            })
+                                            .catch(function(err){
+                                                console.log(err)
+                                            })
                                             var achievements = getDataRes.data.achievements;
                                             var data = {}
                                             data.achievements = achievements;
@@ -9786,10 +10604,12 @@ function createParty(message, discordUserId, uncommonsToUse){
                                     })
                                 }
                             })
+                        }else{
+                            message.channel.send("there is no party owner")
                         }
                     })
                 }).catch(function(err) {
-                    message.channel.send(err);
+                    message.channel.send(JSON.stringify(err + " error"));
                 });
             }
         }
@@ -9857,6 +10677,39 @@ module.exports.rpgChallengeCommand = function(message, args){
     rpg.rpgInitialize(message, special);
 }
 
+// rules for queue
+// entering queue will drop you all other queues entered
+// can leave queue at any time, it will remove you from queue
+// skipping once event started puts a cooldown on entering queue
+// once you enter an rpg the queue will pop u, when in an rpg you cannot enter another queue
+// area is determined randomly based on user
+module.exports.rpgQueueLeaveCommand = function(message){
+    // remove the user from the queue entirely
+    rpg.removeUserFromQueue(message)
+}
+
+module.exports.rpgQueueJoinCommand = function(message, args){
+    // get the users profile
+
+    // enter the player into the queue for args 2-5
+    let discordUserId = message.author.id
+    if (args && args.length > 1){
+        var queueToEnter = parseInt( args[1] );
+        // only enter the queue if you have an rpg profile
+        profileDB.getUserRpgProfleData(discordUserId, function(err, res){
+            if (err){
+                console.log(err)
+                message.channel.send("You have not agreed to bender's terms yet, type -agree to begin!")
+            }else{
+                let userArea = res.data.currentarea
+                rpg.enterUserToQueue(message, queueToEnter, userArea );
+            }
+        })
+    }else{
+        message.channel.send("Invalid queue parameters, try `-rpgqueue 2`, `-rpgqueue 3`, `-rpgqueue 4`, `-rpgqueue 5`, to leave the queue type `-rpgleave`")
+    }
+}
+
 module.exports.rpgReadyCommand = function(message){
     if (usersMinigames[message.author.id]){
         var currentGame = usersMinigames[message.author.id];
@@ -9892,7 +10745,7 @@ module.exports.rpgReadyCommand = function(message){
                 
             }, 10000);
         }else{
-            message.channel.send(message.author + " is ready, waiting on players")
+            message.channel.send(message.author.username + " is ready, waiting on players")
         }
     }else{
         var amuletItemsById = {}
@@ -9924,9 +10777,9 @@ module.exports.rpgSkipCommand = function(message){
                     delete usersMinigames[usersToCleanUp[user]];
                 }
             }
-            message.channel.send(message.author + " has skipped! game will not start");            
+            message.channel.send(message.author.username + " has skipped! game will not start");            
         }else if (gameStatus == "in progress"){
-            message.channel.send(message.author + " game is in progress, you cannot skip!");                        
+            message.channel.send(message.author.username + " game is in progress, you cannot skip!");                        
         }
     }else{
         rpg.rpgSkip(message);
@@ -9939,12 +10792,19 @@ module.exports.castCommand = function(message, args){
 
 module.exports.rpgstatsCommand = function(message){
     var amuletItemsById = {}
-    for (var item in allItems){
-        if (allItems[item].itemraritycategory == "amulet"){
-            amuletItemsById[allItems[item].id] = allItems[item];
+    let allItemsForRpgStats = exports.getAllItems()
+    for (var item in allItemsForRpgStats){
+        if (allItemsForRpgStats[item].itemraritycategory == "amulet"){
+            amuletItemsById[allItemsForRpgStats[item].id] = allItemsForRpgStats[item];
         }
     }
-    rpg.showRpgStats(message, itemsMapById, amuletItemsById);
+    var buffItemsById = {}
+    for (var item in allItemsForRpgStats){
+        if (allItemsForRpgStats[item].itemraritycategory == "uncommon+" && allItemsForRpgStats[item].amuletsource == 'rpgbuff'){
+            buffItemsById[allItemsForRpgStats[item].id] = allItemsForRpgStats[item];
+        }
+    }
+    rpg.showRpgStats(message, itemsMapById, amuletItemsById, buffItemsById);
 }
 
 module.exports.mapCommand = function(message, args){
@@ -9973,3 +10833,356 @@ module.exports.travelCommand = function(message, args){
         message.channel.send("invalid use of travel command")
     }
 }
+
+module.exports.cdCommand = function(message){
+
+    var discordUserId = message.author.id
+    profileDB.getUserWearInfo(discordUserId, function(err, res){
+        if (err){
+            console.log(err)
+        }else{
+            var userLevel = res.data[0].level
+            var userPet = res.data[0].pet ? res.data[0].pet : undefined;
+            var HAS_SPRINTING_SHOES = res.data[0].sprintingshoes;
+            var userWearingData = {
+                userLevel : userLevel,
+                fetchCD: PETS_AVAILABLE[userPet].cooldown,
+                fetchCount: PETS_AVAILABLE[userPet].fetch,
+                hasSprintingShoes : HAS_SPRINTING_SHOES
+            }
+            wearStats.getUserWearingStats(message, discordUserId, userWearingData, allItems, function(wearErr, wearRes){
+                if (wearErr){
+                    console.log(wearErr)
+                }else{
+                    let commandsToList = [
+                        {
+                            command: "scavenge",
+                            lastCommandTime: res.data[0].lastscavangetime,
+                            commandTime: SCAVENGE_COOLDOWN_HOURS
+                        },
+                        {
+                            command: "cook",
+                            lastCommandTime: res.data[0].lastcooktime,
+                            commandTime: COOK_COOLDOWN_HOURS
+                        },
+                        {
+                            command: "thank",
+                            lastCommandTime: res.data[0].lastthanktime,
+                            commandTime: THANK_COOLDOWN_HOURS
+                        },
+                        {
+                            command: "sorry",
+                            lastCommandTime: res.data[0].lastsorrytime,
+                            commandTime: SORRY_COOLDOWN_HOURS
+                        },
+                        {
+                            command: "prepare",
+                            lastCommandTime: res.data[0].lastpreparetime,
+                            commandTime: PREPARE_COOLDOWN_HOURS
+                        },
+                        {
+                            command: "daily",
+                            lastCommandTime: res.data[0].lastdailytime,
+                            commandTime: DAILY_COOLDOWN_HOURS
+                        }
+                    ]
+                    if (res.data[0].greenhouselevel > 0){
+                        commandsToList.push({
+                            command: "harvest",
+                            lastCommandTime: res.data[0].lastharvest,
+                            commandTime: HARVEST_COOLDOWN_HOURS
+                        })
+                    }
+                    if (userPet){
+                        commandsToList.push({
+                            command: "fetch",
+                            lastCommandTime: res.data[0].lastfetchtime,
+                            commandTime: PETS_AVAILABLE[userPet].cooldown
+                        })
+                    }
+                    for (var command in commandsToList ){
+                        commandsToList[command].cdString = getCDString(wearRes, res, commandsToList[command])
+                    }
+                    cdEmbedBuilder(message, commandsToList)
+                }
+            })
+        }
+    })
+}
+
+function getCDString(wearRes, res, command){
+    let cdString = "**" + command.command + "** is available"
+    if (command.command == "harvest"){
+        command.commandTime = HARVEST_COOLDOWN_HOURS;
+        if (res.data[0].greenhouselevel >= 11){
+            command.commandTime = 2;
+        }else if (res.data[0].greenhouselevel >= 9){
+            command.commandTime = 3;
+        }
+    }
+    
+    var now = new Date();
+    var threeDaysAgo = new Date();
+    ///////// CALCULATE THE MINUTES REDUCED HERE 
+    var secondsToRemove = wearStats.calculateSecondsReduced(wearRes, command.command);
+    threeDaysAgo = new Date(threeDaysAgo.setHours(threeDaysAgo.getHours() - command.commandTime));
+    threeDaysAgo = new Date(threeDaysAgo.setSeconds(threeDaysAgo.getSeconds() + secondsToRemove));
+    if ( threeDaysAgo < command.lastCommandTime ){
+        now = new Date(now.setSeconds(now.getSeconds() + secondsToRemove));
+        var numberOfHours = getDateDifference(command.lastCommandTime, now, command.commandTime);
+        cdString = "**" +command.command + "** in " + numberOfHours    
+    }
+    return cdString
+}   
+
+function cdEmbedBuilder(message, cdParams){
+    let cdString = ""
+    for (var index in cdParams){
+        cdString = cdString + cdParams[index].cdString + "\n"
+    }
+    const embed = new Discord.RichEmbed()
+    .setColor(0x00AE86)
+    .addField(message.author.username + "'s Cooldowns", cdString, false)
+    embed.setThumbnail(message.author.avatarURL)
+    message.channel.send({embed});
+
+}
+
+module.exports.cdToggleCommand = function(message, args){
+    // toggle on or off your cooldown reminder
+    var discordUserId = message.author.id
+    var channelId = message.channel.id
+    if (args && args.length > 1){
+        var commandToToggle = args[1]
+        profileDB.getUserWearInfo(discordUserId, function(err, res){
+            if (err){
+                console.log(err)
+            }else{
+                var userProfile = res.data[0]
+                var userLevel = userProfile.level
+                var userPet = userProfile.pet ? userProfile.pet : undefined;
+                var HAS_SPRINTING_SHOES = userProfile.sprintingshoes;
+                
+                var userWearingData = {
+                    userLevel : userLevel,
+                    fetchCD: PETS_AVAILABLE[userPet].cooldown,
+                    fetchCount: PETS_AVAILABLE[userPet].fetch,
+                    hasSprintingShoes : HAS_SPRINTING_SHOES
+                }
+                wearStats.getUserWearingStats(message, discordUserId, userWearingData, allItems, function(wearErr, wearRes){
+                    if (wearErr){
+                        console.log(wearErr)
+                    }else{
+                        let currentCommandToggled = false
+                        let acceptedCommand = false
+                        let lastCommandTime;
+                        let commandCooldownHours;
+                        var secondsToRemove =  0
+                        if (commandToToggle == "scavenge" && userProfile.pickaxe != "none"){
+                            currentCommandToggled = userProfile.scavengetoggle
+                            acceptedCommand = true
+                            lastCommandTime = userProfile.lastscavangetime
+                            commandCooldownHours = SCAVENGE_COOLDOWN_HOURS
+                            secondsToRemove = wearStats.calculateSecondsReduced(wearRes, "scavenge");
+                        }
+                        if (commandToToggle == "thank"){
+                            currentCommandToggled = userProfile.thanktoggle
+                            acceptedCommand = true
+                            lastCommandTime = userProfile.lastthanktime
+                            commandCooldownHours = THANK_COOLDOWN_HOURS
+                            secondsToRemove = wearStats.calculateSecondsReduced(wearRes, "thank");
+                        }
+                        if (commandToToggle == "sorry"){
+                            currentCommandToggled = userProfile.sorrytoggle
+                            acceptedCommand = true
+                            lastCommandTime = userProfile.lastsorrytime
+                            commandCooldownHours = SORRY_COOLDOWN_HOURS
+                            secondsToRemove = wearStats.calculateSecondsReduced(wearRes, "sorry");
+                        }
+                        if (commandToToggle == "harvest" 
+                        && userProfile.greenhouselevel
+                        && userProfile.greenhouselevel > 0){
+                            currentCommandToggled = userProfile.harvesttoggle
+                            acceptedCommand = true
+                            lastCommandTime = userProfile.lastharvest
+                            commandCooldownHours = HARVEST_COOLDOWN_HOURS
+                            if (userProfile.greenhouselevel >= 11){
+                                commandCooldownHours = 2;
+                            }else if (userProfile.greenhouselevel >= 9){
+                                commandCooldownHours = 3;
+                            }
+                            secondsToRemove = wearStats.calculateSecondsReduced(wearRes, "harvest");
+                        }
+                        if (commandToToggle == "fetch" && userPet){
+                            currentCommandToggled = userProfile.fetchtoggle
+                            acceptedCommand = true
+                            lastCommandTime = userProfile.lastfetchtime
+                            commandCooldownHours = PETS_AVAILABLE[userPet].cooldown
+                            secondsToRemove = wearStats.calculateSecondsReduced(wearRes, "fetch");
+                        }
+                        if (commandToToggle == "cook"){
+                            currentCommandToggled = userProfile.cooktoggle
+                            acceptedCommand = true
+                            lastCommandTime = userProfile.lastcooktime
+                            commandCooldownHours = COOK_COOLDOWN_HOURS
+                            secondsToRemove = wearStats.calculateSecondsReduced(wearRes, "cook");
+                        }
+                        if (commandToToggle == "prepare"){
+                            currentCommandToggled = userProfile.preparetoggle
+                            acceptedCommand = true
+                            lastCommandTime = userProfile.lastpreparetime
+                            commandCooldownHours = PREPARE_COOLDOWN_HOURS
+                            secondsToRemove = wearStats.calculateSecondsReduced(wearRes, "prepare");
+                        }
+                        if (commandToToggle == "daily"){
+                            currentCommandToggled = userProfile.dailytoggle
+                            acceptedCommand = true
+                            lastCommandTime = userProfile.lastdailytime
+                            commandCooldownHours = DAILY_COOLDOWN_HOURS
+                            secondsToRemove = wearStats.calculateSecondsReduced(wearRes, "daily");
+                        }
+                        if (acceptedCommand){
+                            // add it to timers map
+                            // TODO: handle this in a separate function
+                            commandTimersUpdateChannelForCommand(discordUserId, commandToToggle, channelId)
+                            handleCommandTimerToggle(commandToToggle, discordUserId, currentCommandToggled, lastCommandTime, commandCooldownHours, secondsToRemove, message)                    
+                        }
+                    }
+                })
+                
+            }
+        })
+    }
+}
+
+function commandTimersMapHandleUser(discordUserId){
+    if (!commandTimersMap[discordUserId]){
+        commandTimersMap[discordUserId] = {}
+    }
+}
+
+function commandTimersHandleCommand(discordUserId, commandToToggle){
+    if (!commandTimersMap[discordUserId][commandToToggle]){
+        commandTimersMap[discordUserId][commandToToggle] = {}
+    }
+}
+
+function commandTimersUpdateChannelForCommand(discordUserId, commandToToggle, channelId){
+    // ensure user exists in map
+    commandTimersMapHandleUser(discordUserId)
+    commandTimersHandleCommand(discordUserId, commandToToggle)
+    commandTimersMap[discordUserId][commandToToggle].channel = channelId
+}
+
+function commandTimersClearTimeout(commandToToggle, discordUserId){
+    commandTimersMapHandleUser(discordUserId)
+    if (commandTimersMap[discordUserId][commandToToggle]){
+        clearTimeout( commandTimersMap[discordUserId][commandToToggle].readyTimeout )
+    }
+}
+
+function commandTimersAddTimeout(command, discordUserId, commandToggleTimeout){
+    // clear old timeout and then add the new timeout
+    if (commandTimersMap[discordUserId][command].readyTimeout){
+        commandTimersClearTimeout(command, discordUserId)
+    }
+    commandTimersMap[discordUserId][command].readyTimeout = commandToggleTimeout
+}
+
+function handleCommandTimerToggle(commandToToggle, discordUserId, currentCommandToggled, lastCommandTime, commandCooldownHours, secondsToRemove, message ){
+    var now = new Date()
+    // get miliseconds until command is available
+    if (currentCommandToggled == true){
+        // set to false, and remove from timers
+        commandTimersClearTimeout(commandToToggle, discordUserId)
+        // toggle on profile and set to toggle = false
+        profileDB.updateUserCommandToggle(discordUserId, commandToToggle, null, false, function(err, res){
+            if (err){
+                console.log(err)
+            }else{
+                console.log(res)
+                message.channel.send(message.author.username + "'s " + commandToToggle + " reminder turned off")
+            }
+        })
+    }else{
+        // get miliseconds until available
+        now = new Date(now.setSeconds(now.getSeconds() + secondsToRemove));
+        var milisecondsUntilNext = getMilisFromDates( lastCommandTime, now, commandCooldownHours)
+        let channelId = commandTimersMap[discordUserId][commandToToggle].channel
+        if (milisecondsUntilNext > 1){
+            setTimeOutForToggleCommand(commandToToggle, milisecondsUntilNext, discordUserId)
+            var numberOfHours = getDateDifference(lastCommandTime, now, 0);
+            message.channel.send(message.author.username + "'s " + commandToToggle + " reminder on - next reminder in `" + numberOfHours + "`")
+        }else{
+            handleCommandTimerAvailable(commandToToggle, channelId, discordUserId)
+        }
+        profileDB.updateUserCommandToggle(discordUserId, commandToToggle, channelId, true, function(err, res){
+            if (err){
+                console.log(err)
+            }else{
+                console.log(res)
+            }
+        })
+    }
+}
+
+function getMilisFromDates(beforeDate, now, hoursDifference){
+    if (beforeDate){
+        var afterDate = new Date(beforeDate.setHours(beforeDate.getHours() + hoursDifference));
+        var momentAfterDate = moment(afterDate);
+        var dateDiff = momentAfterDate.diff(now, 'milliseconds');
+        return dateDiff
+    }else{
+        return 0
+    }
+    
+}
+
+function setTimeOutForToggleCommand(command, milisecondsUntilNext, discordUserId ){
+
+    var commandToggleTimeout = setTimeout(function(){
+        // do things here
+        if (commandTimersMap[discordUserId] && commandTimersMap[discordUserId][command]){
+            console.log( command + " reminder" )
+        }
+        let channelId = commandTimersMap[discordUserId][command].channel
+        handleCommandTimerAvailable(command, channelId, discordUserId)
+
+    }, milisecondsUntilNext)
+    // clear old timeout and then add the new timeout
+    commandTimersAddTimeout(command, discordUserId, commandToggleTimeout)
+}
+
+function handleCommandTimerAvailable(command, channelId, discordUserId){
+    // the command is available for the user, announce it in the channel
+    var channel = client.channels.get(channelId);
+    var discordUser = client.users.get(discordUserId)
+    if (channel && discordUser){
+        channel.send(discordUser + " " + command + " reminder")
+    }
+}
+
+function createTimeOutForCommandAfterUse(command, now, secondsToRemove, commandCooldownHours, discordUserId, profileData){
+    // check if prepare is toggled
+    if (profileData[command + "toggle"]){
+        var nowCopy = new Date()
+        now = new Date(now.setSeconds(now.getSeconds() + secondsToRemove));
+        var milisecondsUntilNext = getMilisFromDates( nowCopy, now, commandCooldownHours)
+        setTimeOutForToggleCommand(command, milisecondsUntilNext, discordUserId )
+        // next reminder should be now + (commandCooldownHours in seconds - secondsToRemove)
+        var nextReminder = new Date(now.setSeconds(now.getSeconds() + (commandCooldownHours * 60 * 60) - secondsToRemove))
+        profileDB.updateCommandNextReminder(discordUserId, command, nextReminder, function(err,res){
+            if (err){
+                console.log(err)
+            }else{
+                var testDate = new Date()
+                console.log("now " + testDate)
+                console.log("next reminder " + nextReminder)
+            }
+        })
+    }
+}
+
+// on startup, load timeouts for each of the cooldowns if they are toggled on
+// keep a map of all the timeouts for each person and their cooldowns
+// toggle off should clear the timeout

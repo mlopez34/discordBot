@@ -1,6 +1,5 @@
 'use strict'
 var profileDB = require("./profileDB.js");
-const Discord = require("discord.js");
 
 // commands used for crafting items from the TEMPLE
 
@@ -137,11 +136,10 @@ function getItemRollChance(userLevel, categoryLevel, templeLevel){
     if (categoryLevel > userLevel){
         return chance
     }else{
-        if (templeLevel < 12 && categoryLevel >= 35){
+        if (templeLevel < 12 && categoryLevel >= 40){
             // chance of 35 > is 0
             return chance
-        }
-        else if (userLevel - 10 >= categoryLevel){
+        }else if (userLevel - 10 >= categoryLevel){
             chance = 100
         }else if (userLevel - 5 >= categoryLevel){
             chance = 50
@@ -204,18 +202,21 @@ module.exports.getRecipeRequirements = function(itemshortname){
     return availableRecipesByShortName[itemshortname]
 }
 
-module.exports.craftRecipe = function(message, params){
+module.exports.craftRecipe = function(message, params, callback){
     var discordUserId = message.author.id
     consumeTacos(discordUserId, params, function(error, res){
         if (error){
             console.log(error)
+            callback(error)
         }else{
             useItems(params, function(error, res){
                 if (error){
                     console.log(error)
+                    callback(error)
                 }else{
                     addToUserInventory(discordUserId, params.itemToCreate)
                     message.channel.send(message.author + " crafted **" + params.itemToCreate[0].itemname +"**")
+                    callback(null, "done")
                 }
             })
         }
@@ -367,7 +368,7 @@ var recipesToCraftMap = {
         45: []
     },
     amulets:{
-        templeLevelRequired: 12,
+        templeLevelRequired: 10,
         10: [],
         15: [],
         20: [],

@@ -1,7 +1,11 @@
 'use strict'
 var profileDB = require("./profileDB.js");
-const Discord = require("discord.js");
 
+const greenHouseBakingLevels = {
+    regular: 4,
+    improved: 8,
+    super: 10
+}
 // commands used for baking items from the fruits collected via greenhouse
 
 // can bake to:
@@ -29,11 +33,11 @@ const Discord = require("discord.js");
 // // 1,2,3 % of magic etc
 
 // recipes are listed here | recipes change every day of the month 
-module.exports.bakeItem = function(discordUserId, itemToBake, itemsMapById, userFruitsCount, cb){
+module.exports.bakeItem = function(discordUserId, itemToBake, itemsMapById, userFruitsCount, userData, cb){
     if (bakingRecipes[itemToBake]){
         // attempt to bake the item | check fruit requirements | check its the right day
         var today = new Date()
-        var todaysRecipes = exports.getRecipesForToday(today)
+        var todaysRecipes = exports.getRecipesForToday(today, userData)
         if (todaysRecipes.indexOf(itemToBake) > -1){
             var itemRequirements = bakingRecipes[itemToBake].itemRequirements
             var ableToBake = true;
@@ -89,7 +93,7 @@ function addToUserInventory(discordUserId, items){
     })
 }
 
-module.exports.getRecipesForToday = function(today){
+module.exports.getRecipesForToday = function(today, userData){
     // get day of the month then go through all recipes and grab all the available ones
     var todaysRecipes = []
     var dayOfTheMonth = today.getDate()
@@ -97,7 +101,10 @@ module.exports.getRecipesForToday = function(today){
         dayOfTheMonth = dayOfTheMonth - 15
     }
     for(var r in bakingRecipes){
-        if (bakingRecipes[r].dayavailable && bakingRecipes[r].dayavailable == dayOfTheMonth){
+        let difficulty =  greenHouseBakingLevels[bakingRecipes[r].recipeDifficulty] || 0
+        if (bakingRecipes[r].dayavailable 
+        && bakingRecipes[r].dayavailable == dayOfTheMonth
+        && userData.greenhouselevel >= difficulty){
             todaysRecipes.push(r)
         }
     }
@@ -162,6 +169,7 @@ function createRecipeObject(recipe, itemToCraftId){
         itemId: itemToCraftId,
         tacos: recipe.tacos ? recipe.tacos : 0,
         reputationlevel: recipe.reputationlevel ? recipe.reputationlevel : 1,
+        recipeDifficulty: recipe.recipedifficulty ? recipe.recipedifficulty : "regular",
         itemRequirements: []
     }
 
@@ -197,6 +205,14 @@ module.exports.initializeBakingRecipes = function(recipes, callback){
         }
     }
     callback()
+}
+
+module.exports.getListOfBakingShortNames = function(){
+    let arrayOfShortNames = []
+    for (var r in bakingRecipes){
+        arrayOfShortNames.push(bakingRecipes[r].itemshortname)
+    }
+    return arrayOfShortNames
 }
 
 const bakingRecipes = {}

@@ -1,4 +1,3 @@
-var config = require("./config.js");
 var profileDB = require("./profileDB.js");
 
 module.exports.statisticsManage = function(discordUserId, columnName, statisticCount, cb) { 

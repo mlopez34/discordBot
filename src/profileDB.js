@@ -158,6 +158,48 @@ module.exports.updateUserTacosEarly = function(userId, tacos, cb) {
     });
 }
 
+module.exports.updateUserBurritos = function(userId, burritos, cb){
+    var query = 'update ' + config.profileTable + ' set burritos=burritos+$1 where discordid=$2'
+    db.none(query, [ burritos, userId ])
+    .then(function () {
+    cb(null, {
+        status: 'success',
+        message: 'updated burritos'
+        });
+    })
+    .catch(function (err) {
+        cb(err);
+    });
+}
+
+module.exports.updateUserDaily = function(userId, burritosGained, tacosGained, streakReset, firstBurritos, cb) {
+    var query = ""
+    if (streakReset){
+        if (firstBurritos){
+            query = 'update ' + config.profileTable + ' set tacos=tacos+$1, burritos=$3, lastdailytime=$4, votestreak=0 where discordid=$2'
+        }else{
+            query = 'update ' + config.profileTable + ' set tacos=tacos+$1, burritos=burritos+$3, lastdailytime=$4, votestreak=0 where discordid=$2'
+        }
+    }else{
+        if (firstBurritos){
+            query = 'update ' + config.profileTable + ' set tacos=tacos+$1, burritos=$3, lastdailytime=$4, votestreak=1 where discordid=$2'
+        }else{
+            query = 'update ' + config.profileTable + ' set tacos=tacos+$1, burritos=burritos+$3, lastdailytime=$4, votestreak=votestreak+1 where discordid=$2'
+        }
+    }
+    var lastVote = new Date();
+    db.none(query, [tacosGained, userId, burritosGained, lastVote])
+    .then(function () {
+    cb(null, {
+        status: 'success',
+        message: 'added tacos'
+        });
+    })
+    .catch(function (err) {
+        cb(err);
+    });
+}
+
 module.exports.updateUserTacosPresent = function(userId, tacos, cb) {
     var query = 'update ' + config.profileTable + ' set tacos=tacos+$1, lastpresenttime=$3 where discordid=$2'
     var lastPresent = new Date();
@@ -599,6 +641,29 @@ module.exports.updateUserPasta = function( userId, pastaTacoCost, pasta, cb){
     });
 }
 
+module.exports.createLetter = function(userId, letter, username, cb){
+    let letterCreateTime = new Date()
+    let data = {
+        userId: userId,
+        letter: letter,
+        letterCreateTime: letterCreateTime,
+        creatorUsername: username
+    }
+    var query = 'insert into '+ config.lettersTable + '(discordid, letter, lettercreatetime, creatorusername)' +
+    'values(${userId}, ${letter}, ${letterCreateTime}, ${creatorUsername})'
+    db.none(query, data)
+    .then(function () {
+    cb(null, {
+        status: 'success',
+        message: 'added letter into the twisting nether'
+        });
+    })
+    .catch(function (err) {
+        // console.log(err);
+        cb(err);
+    });
+}
+
 // update protect
 module.exports.updateUserProtect = function(userId, protectNumber, protection , cb) {
     var query = '';
@@ -814,10 +879,9 @@ module.exports.rpgAreaIncreaseCompletion = function(userId, areatoincrease, curr
         .catch(function (err) {
             cb(err);
         });
-    }
-    else{
-        var query = 'update ' + config.userRpgProfileTable + ' set '+ areatoincrease + '=1 where discordid=$1'
-        db.none(query, [ userId])
+    }else{
+        var query = 'update ' + config.userRpgProfileTable + ' set '+ areatoincrease + '=$2 where discordid=$1'
+        db.none(query, [ userId, enemiesCount])
         .then(function () {
         cb(null, {
             status: 'success',
@@ -963,8 +1027,8 @@ module.exports.createRpgStatistics = function(rpgStatData, cb){
         rpgStatData.user5 = null
         rpgStatData.user5stats = null
     }
-    var query = 'insert into '+ config.rpgStatisticsTable + '(user1, user1stats, user2, user2stats, user3, user3stats, user4, user4stats, user5, user5stats, enemies, averagelevel, xp, rewards, success )' +
-        'values(${user1}, ${user1stats}, ${user2}, ${user2stats}, ${user3}, ${user3stats}, ${user4},  ${user4stats}, ${user5}, ${user5stats}, ${enemies}, ${averagelevel}, ${xp}, ${rewards}, ${success})'
+    var query = 'insert into '+ config.rpgStatisticsTable + '(user1, user1stats, user2, user2stats, user3, user3stats, user4, user4stats, user5, user5stats, enemies, averagelevel, xp, rewards, success, challenge, keystone )' +
+        'values(${user1}, ${user1stats}, ${user2}, ${user2stats}, ${user3}, ${user3stats}, ${user4},  ${user4stats}, ${user5}, ${user5stats}, ${enemies}, ${averagelevel}, ${xp}, ${rewards}, ${success}, ${challenge}, ${keystone})'
     db.none(query, rpgStatData)
     .then(function () {
         cb(null, {
@@ -1604,6 +1668,23 @@ module.exports.getUserItems = function(discordId, cb) {
     });
 }
 
+module.exports.getUserItemsForRpg = function(discordId, cb) {
+    var query = 'select id, itemid, armamentforitemid, hpplus, adplus, mdplus, armorplus, spiritplus, critplus, luckplus from ' + config.inventoryTable + ' where discordId = $1 AND status is null ORDER BY id DESC '
+    // console.log(query);
+    db.query(query, [discordId])
+      .then(function (data) {
+        cb(null, {
+            status: 'success',
+            data: data,
+            message: 'Retrieved All User Items'
+          });
+      })
+      .catch(function (err) {
+        // console.log(err);
+        cb(err);
+      });
+  }
+
 module.exports.getUserItemsForArmaments = function(discordId, cb) {
     var query = 'select * from ' + config.inventoryTable + ' where discordId = $1 AND (status is null OR status = \'wearing\') ORDER BY id DESC '
     // console.log(query);
@@ -1619,7 +1700,25 @@ module.exports.getUserItemsForArmaments = function(discordId, cb) {
         // console.log(err);
         cb(err);
       });
-  }
+}
+
+module.exports.getUserArmamentForItem = function(discordId, itemid, cb) {
+    var query = 'select * from ' + config.inventoryTable + ' where discordId = $1 AND armamentforitemid = $2 ORDER BY id DESC '
+    // console.log(query);
+    db.query(query, [discordId, itemid])
+      .then(function (data) {
+        cb(null, {
+            status: 'success',
+            data: data,
+            message: 'Retrieved All User Items'
+          });
+      })
+      .catch(function (err) {
+        // console.log(err);
+        cb(err);
+      });
+}
+
 // items for iteminfo
 module.exports.getUserItemsForInfo = function(discordId, cb) {
     var query = 'select * from ' + config.inventoryTable + ' where discordId = $1 AND (status is null OR status = \'wearing\' ) ORDER BY id DESC '
@@ -1636,7 +1735,7 @@ module.exports.getUserItemsForInfo = function(discordId, cb) {
         // console.log(err);
         cb(err);
       });
-  }
+}
 // get wear info
 module.exports.getUserWearInfo = function(discordId, cb){
     var query = 'select * from ' + config.profileTable + ',' + config.wearTable + ',' + config.templeTable + ',' + config.greenhouseTable + ',' + config.stablesTable + ' where ' + config.profileTable + '.discordId = $1 AND ' + config.wearTable + '.discordId = $1 AND ' + config.templeTable + '.discordId = $1 AND ' + config.greenhouseTable + '.discordId = $1 AND ' + config.stablesTable + '.discordId = $1'
@@ -1999,6 +2098,44 @@ module.exports.updateUserFruits = function(userId, fruit, fruitcount, cb) {
     })
     .catch(function (err) {
         cb(err);
+    });
+}
+
+module.exports.updateUserCommandToggle = function(userId, command, channelId, toggle, cb) {
+    var query = 'update ' + config.profileTable + ' set ' + command + 'toggle=$3, ' + command + 'togglechannel = $4 where discordid=$2'
+    db.none(query, [ command, userId, toggle, channelId ])
+    .then(function () {
+        cb(null, { status: 'success', message: 'added command toggle' });
+    })
+    .catch(function (err) {
+        cb(err);
+    });
+}
+
+module.exports.updateCommandNextReminder = function(userId, command, nextReminder, cb) {
+    var query = 'update ' + config.profileTable + ' set ' + command + 'nextreminder=$3 where discordid=$2'
+    db.none(query, [ command, userId, nextReminder ])
+    .then(function () {
+        cb(null, { status: 'success', message: 'updated command next reminder' });
+    })
+    .catch(function (err) {
+        cb(err);
+    });
+}
+
+module.exports.getRemindersForUsers = function(cb) {
+    var query = 'select * from ' + config.profileTable + ' where scavengetoggle = true OR thanktoggle = true OR sorrytoggle = true OR fetchtoggle = true OR harvesttoggle = true OR cooktoggle = true OR preparetoggle = true OR dailytoggle = true'
+    db.query(query, [ ])
+    .then(function (data) {
+    cb(null, {
+        status: 'success',
+        data: data,
+        message: 'Retrieved All users with reminders'
+        });
+    })
+    .catch(function (err) {
+    // console.log(err);
+    cb(err);
     });
 }
 

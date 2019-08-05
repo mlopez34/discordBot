@@ -730,7 +730,14 @@ function achievementEmbedBuilder(message, achievementName, achievementEarner){
     .setColor(0x00AE86)
     .setDescription(achievementsData[achievementName].description)
     .setThumbnail(achievementEarner.avatarURL)
-    message.channel.send({embed});
+    message.channel.send({embed})
+    .then(function(res){
+        console.log(res)
+    })
+    .catch(function(err){
+        console.log(err)
+        message.channel.send("Unable to send embeds - Enable embeds in this channel to display future achievements earned!")
+    })
 }
 
 module.exports.achievementStringBuilder = function(achievements, long){

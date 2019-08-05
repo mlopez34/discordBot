@@ -10,10 +10,11 @@
   "license": "ISC",
   "dependencies": {
     "bluebird": "^3.5.0",
+    "dblapi.js": "^2.3.0",
     "discord.js": "^11.3.0",
     "ffmpeg-binaries": "^3.2.2-3",
-    "lodash": "^4.17.4",
-    "moment": "^2.18.1",
+    "lodash": "^4.17.11",
+    "moment": "^2.24.0",
     "node-opus": "^0.2.7",
     "opusscript": "0.0.6",
     "pg-promise": "^5.9.7",

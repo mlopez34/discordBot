@@ -1,6 +1,5 @@
 'use strict'
 var profileDB = require("./profileDB.js");
-const Discord = require("discord.js");
 
 var upgradeLock = {}
 
@@ -204,6 +203,10 @@ module.exports.getLevelInfo = function(level){
     }else{
         return "-"
     }
+}
+
+module.exports.eventsForCommand = function(message, eventParams){
+    
 }
 
 const upgradeRequirements = {

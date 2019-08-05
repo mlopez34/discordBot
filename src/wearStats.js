@@ -2,6 +2,7 @@
 var profileDB = require("./profileDB.js")
 
 var THANK_BASE_SECONDS = 7200;
+var RPG_BASE_SECONDS = 3600;
 var SORRY_BASE_SECONDS = 21600;
 var SCAVENGE_BASE_SECONDS = 3600;
 var FETCH_BASE_SECONDS = 10800;
@@ -16,7 +17,7 @@ module.exports.getCommandTimesInSeconds = function() {
         fetch: FETCH_BASE_SECONDS,
         cook: COOK_BASE_SECONDS,
         prepare: PREPARE_BASE_SECONDS,
-        RPG: THANK_BASE_SECONDS
+        RPG: RPG_BASE_SECONDS
     }
 }
 
@@ -1034,10 +1035,10 @@ module.exports.calculateExtraExperienceGained = function(userItemStats, command,
 }
 
 module.exports.newExtraTacosFromCandle = function(extraTacos){
-    // 10% chance to get 50% more extra tacos - if user has holy candle
+    // 10% chance to get 100% more extra tacos - if user has holy candle
     var extraTacosRoll = Math.floor(Math.random() * 1000) + 1;
     if (extraTacosRoll > 900){
-        extraTacos = Math.floor(extraTacos * 1.5)
+        extraTacos = Math.floor(extraTacos * 2)
     }
     return extraTacos
 }
@@ -1210,139 +1211,161 @@ module.exports.getUserWearingStats = function(message, discordUserId, userData, 
             amuletItemsById[allItems[item].id] = allItems[item];
         }
     }
-    profileDB.getUserItems(discordUserId, function(err, inventoryResponse){
-        if (err){
-            console.log(err);
-            cb(err)
-        }else{
-            // get all the data for each item
-            var itemsInInventoryCountMap = {};
-            for (var item in inventoryResponse.data){
-                if (!itemsInInventoryCountMap[inventoryResponse.data[item].itemid] ){
-                    // item hasnt been added to be counted, add it as 1
-                    itemsInInventoryCountMap[inventoryResponse.data[item].itemid] = 1;
-                }else{
-                    itemsInInventoryCountMap[inventoryResponse.data[item].itemid] = itemsInInventoryCountMap[inventoryResponse.data[item].itemid] + 1
-                }
+    if (userData.inventoryResponse){
+        userWearingStatsPerform(message, discordUserId, userData, amuletItemsById, function(error, res){
+            if (error){
+                cb(error)
+            }else{
+                cb(null, res)
             }
-            // have items mapped by id and items in inventory
-            // check if i have any of all the possible amulet items
-            var userAmuletData = []
-            for (var amulet in amuletItemsById){
-                var idToCheck = amuletItemsById[amulet].id;
-                if (itemsInInventoryCountMap[idToCheck]){
-                    var amuletToAdd = amuletItemsById[amulet]
-                    amuletToAdd.count = itemsInInventoryCountMap[idToCheck]
-                    userAmuletData.push(amuletItemsById[amulet]);
-                }
-            }
-            profileDB.getUserWearInfo(discordUserId, function(getWearErr, getWearRes){
-                if (getWearErr){
-                    console.log(getWearErr);
-                    cb(getWearErr)
-                }
-                else{
-                    // console.log(getWearRes);
-                    // get the item info by calling items table
-                    if (getWearRes.data.length > 0){
-                        var slot1Id = getWearRes.data[0].slot1itemid;
-                        var slot2Id = getWearRes.data[0].slot2itemid;
-                        var slot3Id = getWearRes.data[0].slot3itemid;
-        
-                        var slot1activeDate = getWearRes.data[0].activate1date;
-                        var slot2activeDate = getWearRes.data[0].activate2date;
-                        var slot3activeDate = getWearRes.data[0].activate3date;
-                        var slot1active = false;
-                        var slot2active = false;
-                        var slot3active = false;
-                        var now = new Date();
-                        now.setMinutes(now.getMinutes() + 1);
-                        if (now > slot1activeDate){
-                            slot1active = true;
-                        }
-                        if (now > slot2activeDate){
-                            slot2active = true
-                        }
-                        if (now > slot3activeDate){
-                            slot3active = true
-                        }
-        
-                        // console.log(slot1Id);
-                        profileDB.getItemByIdsWear(slot1Id, slot2Id, slot3Id, function(error, itemResponse){
-                            if (error){
-                                console.log(error);
-                                cb(error)
-                            }
-                            else{
-                                // console.log(itemResponse);
-                                var slot1Item;
-                                var slot2Item;
-                                var slot3Item;
-                                for (var slotItem in itemResponse.data){
-                                    if (itemResponse.data[slotItem].id == slot1Id){
-                                        slot1Item = itemResponse.data[slotItem]
-                                    }
-                                    if (itemResponse.data[slotItem].id == slot2Id){
-                                        slot2Item = itemResponse.data[slotItem]
-                                    }
-                                    if (itemResponse.data[slotItem].id == slot3Id){
-                                        slot3Item = itemResponse.data[slotItem]
-                                    }
-                                }
-                                var userItemStats = exports.statsObjectBuilder(message, slot1Item, slot2Item, slot3Item, userData, slot1active, slot2active, slot3active, userAmuletData);
-                                cb(null, userItemStats);
-                            }
-                        })
+        })
+    }else{
+        profileDB.getUserItems(discordUserId, function(err, inventoryResponse){
+            if (err){
+                console.log(err);
+                cb(err)
+            }else{
+                userData.inventoryResponse = inventoryResponse
+                userWearingStatsPerform(message, discordUserId, userData, amuletItemsById, function(error, res){
+                    if (error){
+                        cb(error)
+                    }else{
+                        cb(null, res)
                     }
-                    else if (userAmuletData.length > 0){
-                        var userItemStats = exports.statsObjectBuilder(message, null, null, null, userData, null, null, null, userAmuletData);
-                        cb(null, userItemStats);
+                })
+            }
+        })
+    }
+    
+}
+
+function userWearingStatsPerform(message, discordUserId, userData, amuletItemsById, cb){
+    // get all the data for each item
+    let inventoryResponse = userData.inventoryResponse
+    var itemsInInventoryCountMap = {};
+    for (var item in inventoryResponse.data){
+        if (!itemsInInventoryCountMap[inventoryResponse.data[item].itemid] ){
+            // item hasnt been added to be counted, add it as 1
+            itemsInInventoryCountMap[inventoryResponse.data[item].itemid] = 1;
+        }else{
+            itemsInInventoryCountMap[inventoryResponse.data[item].itemid] = itemsInInventoryCountMap[inventoryResponse.data[item].itemid] + 1
+        }
+    }
+    // have items mapped by id and items in inventory
+    // check if i have any of all the possible amulet items
+    var userAmuletData = []
+    for (var amulet in amuletItemsById){
+        var idToCheck = amuletItemsById[amulet].id;
+        if (itemsInInventoryCountMap[idToCheck]){
+            var amuletToAdd = amuletItemsById[amulet]
+            amuletToAdd.count = itemsInInventoryCountMap[idToCheck]
+            userAmuletData.push(amuletItemsById[amulet]);
+        }
+    }
+    profileDB.getUserWearInfo(discordUserId, function(getWearErr, getWearRes){
+        if (getWearErr){
+            console.log(getWearErr);
+            cb(getWearErr)
+        }else{
+            // console.log(getWearRes);
+            // get the item info by calling items table
+            if (getWearRes.data.length > 0){
+                var slot1Id = getWearRes.data[0].slot1itemid;
+                var slot2Id = getWearRes.data[0].slot2itemid;
+                var slot3Id = getWearRes.data[0].slot3itemid;
+
+                var slot1activeDate = getWearRes.data[0].activate1date;
+                var slot2activeDate = getWearRes.data[0].activate2date;
+                var slot3activeDate = getWearRes.data[0].activate3date;
+                var slot1active = false;
+                var slot2active = false;
+                var slot3active = false;
+                var now = new Date();
+                now.setMinutes(now.getMinutes() + 1);
+                if (now > slot1activeDate){
+                    slot1active = true;
+                }
+                if (now > slot2activeDate){
+                    slot2active = true
+                }
+                if (now > slot3activeDate){
+                    slot3active = true
+                }
+
+                // console.log(slot1Id);
+                profileDB.getItemByIdsWear(slot1Id, slot2Id, slot3Id, function(error, itemResponse){
+                    if (error){
+                        console.log(error);
+                        cb(error)
                     }
                     else{
-                        var userItemStats = {};
-                        userItemStats.thankCommandCDRPercentage = 0;
-                        userItemStats.thankCommandExtraTacos = []
-                        userItemStats.thankCommandExperienceGain = 0
-                        userItemStats.thankCommandGuaranteedTacos = 0
-        
-                        userItemStats.sorryCommandCDRPercentage = 0;
-                        userItemStats.sorryCommandExtraTacos = []
-                        userItemStats.sorryCommandExperienceGain = 0
-                        userItemStats.sorryCommandGuaranteedTacos = 0
-                    
-                        userItemStats.cookCommandCDRPercentage = 0;
-                        userItemStats.cookCommandExtraTacos = []
-                        userItemStats.cookCommandExperienceGain = 0
-                        userItemStats.cookCommandGuaranteedTacos = 0
-                    
-                        userItemStats.prepareCommandCDRPercentage = 0;
-                        userItemStats.prepareCommandExtraTacos = []
-                        userItemStats.prepareCommandExperienceGain = 0
-                        userItemStats.prepareCommandGuaranteedTacos = 0
-                    
-                        userItemStats.fetchCommandCDRPercentage = 0;
-                        userItemStats.fetchCommandExtraTacos = []
-                        userItemStats.fetchCommandExperienceGain = 0
-                        userItemStats.fetchCommandGuaranteedTacos = 0
-                                
-                        userItemStats.scavengeCommandCDRPercentage = 0;
-                        userItemStats.scavengeCommandExtraTacos = []
-                        userItemStats.scavengeCommandExperienceGain = 0
-                        userItemStats.scavengeCommandGuaranteedTacos = 0
-
-                        // RPG
-                        userItemStats.rpgSuccessExtraTacos = []
-                        userItemStats.rpgSuccessExtraExperienceGain = 0
-                        userItemStats.rpgSuccessGuaranteedTacos = 0
-                        // SLOTS
-                        userItemStats.slotsWinExtraTacos = []
-                        userItemStats.slotsWinExperienceGain = 0
-                        userItemStats.slotsWinGuaranteedTacos = 0
-                    
+                        // console.log(itemResponse);
+                        var slot1Item;
+                        var slot2Item;
+                        var slot3Item;
+                        for (var slotItem in itemResponse.data){
+                            if (itemResponse.data[slotItem].id == slot1Id){
+                                slot1Item = itemResponse.data[slotItem]
+                            }
+                            if (itemResponse.data[slotItem].id == slot2Id){
+                                slot2Item = itemResponse.data[slotItem]
+                            }
+                            if (itemResponse.data[slotItem].id == slot3Id){
+                                slot3Item = itemResponse.data[slotItem]
+                            }
+                        }
+                        var userItemStats = exports.statsObjectBuilder(message, slot1Item, slot2Item, slot3Item, userData, slot1active, slot2active, slot3active, userAmuletData);
                         cb(null, userItemStats);
                     }
-                }
-            })
+                })
+            }
+            else if (userAmuletData.length > 0){
+                var userItemStats = exports.statsObjectBuilder(message, null, null, null, userData, null, null, null, userAmuletData);
+                cb(null, userItemStats);
+            }
+            else{
+                var userItemStats = {};
+                userItemStats.thankCommandCDRPercentage = 0;
+                userItemStats.thankCommandExtraTacos = []
+                userItemStats.thankCommandExperienceGain = 0
+                userItemStats.thankCommandGuaranteedTacos = 0
+
+                userItemStats.sorryCommandCDRPercentage = 0;
+                userItemStats.sorryCommandExtraTacos = []
+                userItemStats.sorryCommandExperienceGain = 0
+                userItemStats.sorryCommandGuaranteedTacos = 0
+            
+                userItemStats.cookCommandCDRPercentage = 0;
+                userItemStats.cookCommandExtraTacos = []
+                userItemStats.cookCommandExperienceGain = 0
+                userItemStats.cookCommandGuaranteedTacos = 0
+            
+                userItemStats.prepareCommandCDRPercentage = 0;
+                userItemStats.prepareCommandExtraTacos = []
+                userItemStats.prepareCommandExperienceGain = 0
+                userItemStats.prepareCommandGuaranteedTacos = 0
+            
+                userItemStats.fetchCommandCDRPercentage = 0;
+                userItemStats.fetchCommandExtraTacos = []
+                userItemStats.fetchCommandExperienceGain = 0
+                userItemStats.fetchCommandGuaranteedTacos = 0
+                        
+                userItemStats.scavengeCommandCDRPercentage = 0;
+                userItemStats.scavengeCommandExtraTacos = []
+                userItemStats.scavengeCommandExperienceGain = 0
+                userItemStats.scavengeCommandGuaranteedTacos = 0
+
+                // RPG
+                userItemStats.rpgSuccessExtraTacos = []
+                userItemStats.rpgSuccessExtraExperienceGain = 0
+                userItemStats.rpgSuccessGuaranteedTacos = 0
+                // SLOTS
+                userItemStats.slotsWinExtraTacos = []
+                userItemStats.slotsWinExperienceGain = 0
+                userItemStats.slotsWinGuaranteedTacos = 0
+            
+                cb(null, userItemStats);
+            }
         }
     })
 }
