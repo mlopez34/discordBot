@@ -8671,6 +8671,131 @@ module.exports.initializeItemsMaps = function(c, cb){
     })
 }
 
+function initializeUserReminders(user, fromCdCommand){
+    let discordUserId = user.discordid
+    commandTimersMapHandleUser(discordUserId)
+    if (user.scavengetoggle){
+        // user wants to be reminded of scavenge
+        
+        let nextReminder = user.scavengenextreminder // should be a date
+        let now = new Date()
+        var milisecondsUntilNext = getMilisFromDates(nextReminder, now, 0)
+        let channelId = user.scavengetogglechannel
+        // create reminder of miliseconds nextReminder - now
+        commandTimersUpdateChannelForCommand(discordUserId, "scavenge", channelId)
+        if (milisecondsUntilNext > 1){
+            setTimeOutForToggleCommand("scavenge", milisecondsUntilNext, discordUserId)
+        }else if(!fromCdCommand){
+            handleCommandTimerAvailable("scavenge", channelId, discordUserId)
+        }
+    }
+    if (user.thanktoggle){
+        // user wants to be reminded of scavenge
+        
+        let nextReminder = user.thanknextreminder // should be a date
+        let now = new Date()
+        var milisecondsUntilNext = getMilisFromDates(nextReminder, now, 0)
+        let channelId = user.thanktogglechannel
+        // create reminder of miliseconds nextReminder - now
+        commandTimersUpdateChannelForCommand(discordUserId, "thank", channelId)
+        if (milisecondsUntilNext > 1){
+            setTimeOutForToggleCommand("thank", milisecondsUntilNext, discordUserId)
+        }else if(!fromCdCommand){
+            handleCommandTimerAvailable("thank", channelId, discordUserId)
+        }
+    }
+    if (user.sorrytoggle){
+        // user wants to be reminded of scavenge
+        
+        let nextReminder = user.sorrynextreminder // should be a date
+        let now = new Date()
+        var milisecondsUntilNext = getMilisFromDates(nextReminder, now, 0)
+        let channelId = user.sorrytogglechannel
+        // create reminder of miliseconds nextReminder - now
+        commandTimersUpdateChannelForCommand(discordUserId, "sorry", channelId)
+        if (milisecondsUntilNext > 1){
+            setTimeOutForToggleCommand("sorry", milisecondsUntilNext, discordUserId)
+        }else if(!fromCdCommand){
+            handleCommandTimerAvailable("sorry", channelId, discordUserId)
+        }
+    }
+    if (user.fetchtoggle){
+        // user wants to be reminded of scavenge
+        
+        let nextReminder = user.fetchnextreminder // should be a date
+        let now = new Date()
+        var milisecondsUntilNext = getMilisFromDates(nextReminder, now, 0)
+        let channelId = user.fetchtogglechannel
+        // create reminder of miliseconds nextReminder - now
+        commandTimersUpdateChannelForCommand(discordUserId, "fetch", channelId)
+        if (milisecondsUntilNext > 1){
+            setTimeOutForToggleCommand("fetch", milisecondsUntilNext, discordUserId)
+        }else if(!fromCdCommand){
+            handleCommandTimerAvailable("fetch", channelId, discordUserId)
+        }
+    }
+    if (user.cooktoggle){
+        // user wants to be reminded of scavenge
+        
+        let nextReminder = user.cooknextreminder // should be a date
+        let now = new Date()
+        var milisecondsUntilNext = getMilisFromDates(nextReminder, now, 0)
+        let channelId = user.cooktogglechannel
+        // create reminder of miliseconds nextReminder - now
+        commandTimersUpdateChannelForCommand(discordUserId, "cook", channelId)
+        if (milisecondsUntilNext > 1){
+            setTimeOutForToggleCommand("cook", milisecondsUntilNext, discordUserId)
+        }else if(!fromCdCommand){
+            handleCommandTimerAvailable("cook", channelId, discordUserId)
+        }
+    }
+    if (user.preparetoggle){
+        // user wants to be reminded of scavenge
+        
+        let nextReminder = user.preparenextreminder // should be a date
+        let now = new Date()
+        var milisecondsUntilNext = getMilisFromDates(nextReminder, now, 0)
+        let channelId = user.preparetogglechannel
+        // create reminder of miliseconds nextReminder - now
+        commandTimersUpdateChannelForCommand(discordUserId, "prepare", channelId)
+        if (milisecondsUntilNext > 1){
+            setTimeOutForToggleCommand("prepare", milisecondsUntilNext, discordUserId)
+        }else if(!fromCdCommand){
+            handleCommandTimerAvailable("prepare", channelId, discordUserId)
+        }
+    }
+    if (user.harvesttoggle){
+        // user wants to be reminded of scavenge
+        
+        let nextReminder = user.harvestnextreminder // should be a date
+        let now = new Date()
+        var milisecondsUntilNext = getMilisFromDates(nextReminder, now, 0)
+        let channelId = user.harvesttogglechannel
+        // create reminder of miliseconds nextReminder - now
+        commandTimersUpdateChannelForCommand(discordUserId, "harvest", channelId)
+        if (milisecondsUntilNext > 1){
+            setTimeOutForToggleCommand("harvest", milisecondsUntilNext, discordUserId)
+        }else if(!fromCdCommand){
+            handleCommandTimerAvailable("harvest", channelId, discordUserId)
+        }
+    }
+    if (user.dailytoggle){
+        // user wants to be reminded of scavenge
+        
+        let nextReminder = user.dailynextreminder // should be a date
+        let now = new Date()
+        var milisecondsUntilNext = getMilisFromDates(nextReminder, now, 0)
+        let channelId = user.dailytogglechannel
+        // create reminder of miliseconds nextReminder - now
+        commandTimersUpdateChannelForCommand(discordUserId, "daily", channelId)
+        if (milisecondsUntilNext > 1){
+            setTimeOutForToggleCommand("daily", milisecondsUntilNext, discordUserId)
+        }else if(!fromCdCommand){
+            handleCommandTimerAvailable("daily", channelId, discordUserId)
+        }
+    }
+}
+
 module.exports.initializeReminders = function(){
     profileDB.getRemindersForUsers(function(error, remindersRes){
         if (error){
@@ -8678,128 +8803,7 @@ module.exports.initializeReminders = function(){
         }else{
             var users = remindersRes.data
             for (var u in users){
-                let discordUserId = users[u].discordid
-                commandTimersMapHandleUser(discordUserId)
-                if (users[u].scavengetoggle){
-                    // user wants to be reminded of scavenge
-                    
-                    let nextReminder = users[u].scavengenextreminder // should be a date
-                    let now = new Date()
-                    var milisecondsUntilNext = getMilisFromDates(nextReminder, now, 0)
-                    let channelId = users[u].scavengetogglechannel
-                    // create reminder of miliseconds nextReminder - now
-                    commandTimersUpdateChannelForCommand(discordUserId, "scavenge", channelId)
-                    if (milisecondsUntilNext > 1){
-                        setTimeOutForToggleCommand("scavenge", milisecondsUntilNext, discordUserId)
-                    }else{
-                        handleCommandTimerAvailable("scavenge", channelId, discordUserId)
-                    }
-                }
-                if (users[u].thanktoggle){
-                    // user wants to be reminded of scavenge
-                    
-                    let nextReminder = users[u].thanknextreminder // should be a date
-                    let now = new Date()
-                    var milisecondsUntilNext = getMilisFromDates(nextReminder, now, 0)
-                    let channelId = users[u].thanktogglechannel
-                    // create reminder of miliseconds nextReminder - now
-                    commandTimersUpdateChannelForCommand(discordUserId, "thank", channelId)
-                    if (milisecondsUntilNext > 1){
-                        setTimeOutForToggleCommand("thank", milisecondsUntilNext, discordUserId)
-                    }else{
-                        handleCommandTimerAvailable("thank", channelId, discordUserId)
-                    }
-                }
-                if (users[u].sorrytoggle){
-                    // user wants to be reminded of scavenge
-                    
-                    let nextReminder = users[u].sorrynextreminder // should be a date
-                    let now = new Date()
-                    var milisecondsUntilNext = getMilisFromDates(nextReminder, now, 0)
-                    let channelId = users[u].sorrytogglechannel
-                    // create reminder of miliseconds nextReminder - now
-                    commandTimersUpdateChannelForCommand(discordUserId, "sorry", channelId)
-                    if (milisecondsUntilNext > 1){
-                        setTimeOutForToggleCommand("sorry", milisecondsUntilNext, discordUserId)
-                    }else{
-                        handleCommandTimerAvailable("sorry", channelId, discordUserId)
-                    }
-                }
-                if (users[u].fetchtoggle){
-                    // user wants to be reminded of scavenge
-                    
-                    let nextReminder = users[u].fetchnextreminder // should be a date
-                    let now = new Date()
-                    var milisecondsUntilNext = getMilisFromDates(nextReminder, now, 0)
-                    let channelId = users[u].fetchtogglechannel
-                    // create reminder of miliseconds nextReminder - now
-                    commandTimersUpdateChannelForCommand(discordUserId, "fetch", channelId)
-                    if (milisecondsUntilNext > 1){
-                        setTimeOutForToggleCommand("fetch", milisecondsUntilNext, discordUserId)
-                    }else{
-                        handleCommandTimerAvailable("fetch", channelId, discordUserId)
-                    }
-                }
-                if (users[u].cooktoggle){
-                    // user wants to be reminded of scavenge
-                    
-                    let nextReminder = users[u].cooknextreminder // should be a date
-                    let now = new Date()
-                    var milisecondsUntilNext = getMilisFromDates(nextReminder, now, 0)
-                    let channelId = users[u].cooktogglechannel
-                    // create reminder of miliseconds nextReminder - now
-                    commandTimersUpdateChannelForCommand(discordUserId, "cook", channelId)
-                    if (milisecondsUntilNext > 1){
-                        setTimeOutForToggleCommand("cook", milisecondsUntilNext, discordUserId)
-                    }else{
-                        handleCommandTimerAvailable("cook", channelId, discordUserId)
-                    }
-                }
-                if (users[u].preparetoggle){
-                    // user wants to be reminded of scavenge
-                    
-                    let nextReminder = users[u].preparenextreminder // should be a date
-                    let now = new Date()
-                    var milisecondsUntilNext = getMilisFromDates(nextReminder, now, 0)
-                    let channelId = users[u].preparetogglechannel
-                    // create reminder of miliseconds nextReminder - now
-                    commandTimersUpdateChannelForCommand(discordUserId, "prepare", channelId)
-                    if (milisecondsUntilNext > 1){
-                        setTimeOutForToggleCommand("prepare", milisecondsUntilNext, discordUserId)
-                    }else{
-                        handleCommandTimerAvailable("prepare", channelId, discordUserId)
-                    }
-                }
-                if (users[u].harvesttoggle){
-                    // user wants to be reminded of scavenge
-                    
-                    let nextReminder = users[u].harvestnextreminder // should be a date
-                    let now = new Date()
-                    var milisecondsUntilNext = getMilisFromDates(nextReminder, now, 0)
-                    let channelId = users[u].harvesttogglechannel
-                    // create reminder of miliseconds nextReminder - now
-                    commandTimersUpdateChannelForCommand(discordUserId, "harvest", channelId)
-                    if (milisecondsUntilNext > 1){
-                        setTimeOutForToggleCommand("harvest", milisecondsUntilNext, discordUserId)
-                    }else{
-                        handleCommandTimerAvailable("harvest", channelId, discordUserId)
-                    }
-                }
-                if (users[u].dailytoggle){
-                    // user wants to be reminded of scavenge
-                    
-                    let nextReminder = users[u].dailynextreminder // should be a date
-                    let now = new Date()
-                    var milisecondsUntilNext = getMilisFromDates(nextReminder, now, 0)
-                    let channelId = users[u].dailytogglechannel
-                    // create reminder of miliseconds nextReminder - now
-                    commandTimersUpdateChannelForCommand(discordUserId, "daily", channelId)
-                    if (milisecondsUntilNext > 1){
-                        setTimeOutForToggleCommand("daily", milisecondsUntilNext, discordUserId)
-                    }else{
-                        handleCommandTimerAvailable("daily", channelId, discordUserId)
-                    }
-                }
+                initializeUserReminders(users[u], false)
             }
             console.log("Reminders Initialized")
         }
@@ -10846,8 +10850,8 @@ module.exports.cdCommand = function(message){
             var HAS_SPRINTING_SHOES = res.data[0].sprintingshoes;
             var userWearingData = {
                 userLevel : userLevel,
-                fetchCD: PETS_AVAILABLE[userPet].cooldown,
-                fetchCount: PETS_AVAILABLE[userPet].fetch,
+                fetchCD: userPet ? PETS_AVAILABLE[userPet].cooldown : undefined,
+                fetchCount: userPet ? PETS_AVAILABLE[userPet].fetch : undefined,
                 hasSprintingShoes : HAS_SPRINTING_SHOES
             }
             wearStats.getUserWearingStats(message, discordUserId, userWearingData, allItems, function(wearErr, wearRes){
@@ -10903,6 +10907,8 @@ module.exports.cdCommand = function(message){
                     for (var command in commandsToList ){
                         commandsToList[command].cdString = getCDString(wearRes, res, commandsToList[command])
                     }
+                    // TODO: recreate timers based on current times?
+                    initializeUserReminders(res.data[0], true)
                     cdEmbedBuilder(message, commandsToList)
                 }
             })
