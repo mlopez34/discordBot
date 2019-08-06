@@ -1377,8 +1377,6 @@ module.exports.rpgReady = function(message, itemsAvailable, amuletItemsById, buf
                                                                 }
                                                                 for (var i = 0; i < specialEnemies.length; i++){
                                                                     enemyFound = JSON.parse(JSON.stringify( specialEnemies[i] ));
-                                                                    // TODO: SCALE BASED ON KEYSTONE HERE
-                                                                    // Possible to gain new abilities, new enemies, different stats
                                                                     enemies[enemyIdCount] = {
                                                                         id: enemyIdCount,
                                                                         name: enemyFound.name,
@@ -1441,7 +1439,20 @@ module.exports.rpgReady = function(message, itemsAvailable, amuletItemsById, buf
     
                                                                             }
                                                                             if (enemyFound.keystoneStats.endOfTurnEvents){
-                                                                                
+                                                                                for (var eventAtEndOfTurn in enemyFound.keystoneStats.endOfTurnEvents){
+                                                                                    var endOfTurnEventName =  enemyFound.keystoneStats.endOfTurnEvents[ eventAtEndOfTurn ]
+                                                                                    // check it is at the right keystone num
+                                                                                    if ( rpgAbilities[ endOfTurnEventName ] ){
+                                                                                        var eventToPush = JSON.parse(JSON.stringify( rpgAbilities[ endOfTurnEventName ] ));
+                                                                                        if (keystoneNum >= eventToPush.aboveKeystone){
+                                                                                            if ( eventToPush.belongsToEvent ){
+                                                                                                activeRPGEvents[rpgEvent].endOfTurnEvents.push( eventToPush );
+                                                                                            }else if ( eventToPush.belongsToMember ){
+                                                                                                enemies[enemyIdCount].endOfTurnEvents.push( eventToPush );
+                                                                                            }
+                                                                                        }
+                                                                                    }
+                                                                                }
                                                                             }
                                                                             if (enemyFound.keystoneStats.effectsOnDeath){
                                                                                 
@@ -4421,7 +4432,7 @@ function effectsOnTurnEnd(event){
 
                             // special case for hppercentage and the event has dmgaura, and currentHealthPercentageDamage - (last part of exploretomb)
                             if ( event.enemies[enemy].endOfTurnEvents[index].dmgaura
-                                && enemyHpInPercentage < event.enemies[enemy].endOfTurnEvents[index].hppercentage){
+                            && enemyHpInPercentage < event.enemies[enemy].endOfTurnEvents[index].hppercentage){
 
                                 if (event.enemies[enemy].endOfTurnEvents[index].currentHealthPercentageDamage){
                                     var percentageToDeal = event.enemies[enemy].endOfTurnEvents[index].currentHealthPercentageDamage
@@ -4494,6 +4505,13 @@ function effectsOnTurnEnd(event){
                                         }else{
                                             rpgAbility.areawidedmg.dmg = rpgAbility.areawidedmg.dmg + rpgAbility.areawidedmg.dmgPerTurn * event.turn
                                         }
+                                        if (event.area){
+                                            var zoneUserIsIn = getRpgZone(event.area)
+                                            let enemyAreaStatBuffs = rpgZones[zoneUserIsIn].enemyStatBuffs || {}
+                                            if (enemyAreaStatBuffs.echoIncreasePercentage){
+                                                rpgAbility.areawidedmg.dmg = Math.floor(rpgAbility.areawidedmg.dmg * enemyAreaStatBuffs.echoIncreasePercentage)
+                                            }
+                                        }
                                     }
                                     if (rpgAbility && rpgAbility.areawidedmg && (event.turn % rpgAbility.areawidedmg.hitsEveryNTurn  == 0)){
                                         // deal the damage to all the users
@@ -4513,10 +4531,36 @@ function effectsOnTurnEnd(event){
                                     }
                                 }
                             }
-
+                            else if (eotEvent.zombifyAll
+                            && enemyHpInPercentage < event.enemies[enemy].endOfTurnEvents[index].hppercentage){
+                                var validCast = true;
+                                if (validCast){
+                                    var abilityPicked = event.enemies[enemy].endOfTurnEvents[index].abilityId
+                                    var rpgAbility = rpgAbilities[abilityPicked] ? JSON.parse(JSON.stringify(rpgAbilities[abilityPicked])) : undefined; 
+                                    // go through each enemy, check if they are dead, create a zombie of them
+                                    // statswise they should have same HP, but 50% more dmg
+                                    let casterOfReanimate = event.enemies[enemy]
+                                    endOfTurnString = endOfTurnString +  casterOfReanimate.name + " reanimated the fallen enemies\n"
+                                    for (var e in event.enemies){
+                                        // do not reanimate self
+                                        if (checkHasDied(event.enemies[e])
+                                        && e != enemy){
+                                            // zombify this enemy
+                                            let enemyToReanimate = event.enemies[e]
+                                            endOfTurnString = endOfTurnString + reanimateEnemy(event, enemyToReanimate, rpgAbility);
+                                        }
+                                    }
+                                    if (event.enemies[enemy].endOfTurnEvents[index].oneTimeCast){
+                                        event.enemies[enemy].endOfTurnEvents[index].invalid = true;
+                                    }
+                                }
+                            }
                             if (eotEvent.eotMessage
-                                && enemyHpInPercentage < event.enemies[enemy].endOfTurnEvents[index].hppercentage){
+                            && enemyHpInPercentage < event.enemies[enemy].endOfTurnEvents[index].hppercentage){
                                 endOfTurnString = endOfTurnString + eotEvent.eotMessage + "\n"
+                                if (event.enemies[enemy].endOfTurnEvents[index].oneTimeCast){
+                                    event.enemies[enemy].endOfTurnEvents[index].invalid = true;
+                                }
                             }
                         }
 
@@ -4645,6 +4689,54 @@ function effectsOnTurnEnd(event){
                                 endOfTurnString = endOfTurnString + hasDied(event, event.membersInParty[targetToDealDmg]);
                             }
                         }
+                    }
+                }
+            }
+
+            if (event.endOfTurnEvents[index].deadCheck){
+                var enemiesToCheckIfKilled = event.endOfTurnEvents[index].deadCheck
+                var enemiesKilled = event.endOfTurnEvents[index].enemiesKilled
+                var checkOver = event.endOfTurnEvents[index].addBuffIfOverCount
+                let castAbility = false
+                let buffToCast = event.endOfTurnEvents[index].addBuffIfCheck
+                for (var e in enemiesToCheckIfKilled){
+                    let checkCount = 0
+                    for (var k in enemiesKilled){
+                        if (enemiesKilled[k] == enemiesToCheckIfKilled[e]){
+                            checkCount++
+                        }
+                    }
+                    if (checkCount > checkOver){
+                        // 
+                        castAbility = true
+                        // clear out the enemieskilled to not duplicate
+                        for (var k = enemiesKilled.length - 1; k >= 0; k--){
+                            if (enemiesKilled[k] == enemiesToCheckIfKilled[e]){
+                                enemiesKilled.splice(k, 1)
+                            }
+                        }
+                    }
+                }
+                if (castAbility){
+                    abilityPicked = buffToCast
+                    rpgAbility = rpgAbilities[abilityPicked] ? JSON.parse(JSON.stringify(rpgAbilities[abilityPicked])) : undefined; 
+                    var target = undefined
+                    var enemy = undefined
+                    for (var e in event.enemies){
+                        if (event.enemies[e].name == event.endOfTurnEvents[index].targetName){
+                            if (!checkIfDeadByObject(event.enemies[e])){
+                                target = e
+                                enemy = e
+                            }
+                        }
+                    }
+                    abilityToProcess = {
+                        user: enemy,
+                        ability: abilityPicked,
+                        target: target
+                    }
+                    if (abilityToProcess.target != undefined){
+                        endOfTurnString = endOfTurnString  + processAbility(abilityToProcess, event);    
                     }
                 }
             }
@@ -5549,7 +5641,12 @@ function effectsOnDeath(event, member){
                     // give the enemy + 30%/15% magic and attack
                     var enemy = bossesAlive[0].enemyNumber;
                     event.enemies[enemy].attackDmg = event.enemies[enemy].attackDmg + ( event.enemies[enemy].attackDmg * .3 );
-                    event.enemies[enemy].magicDmg = event.enemies[enemy].magicDmg + ( event.enemies[enemy].magicDmg * .15 );           
+                    event.enemies[enemy].magicDmg = event.enemies[enemy].magicDmg + ( event.enemies[enemy].magicDmg * .15 );
+                    // add an ability for keystone
+                    let unimaginablePower = JSON.parse( JSON.stringify( rpgAbilities["unimaginablePower"] ) );
+                    if (event.challenge.keystone >= unimaginablePower.aboveKeystone){
+                        event.enemies[enemy].endOfTurnEvents.push(unimaginablePower)
+                    }
                 }else if (bossesAlive.length == 2){
                     // give the enemy + 10%/5% magic and attack
                     var enemyOne = bossesAlive[0].enemyNumber;
@@ -5821,9 +5918,9 @@ function effectsOnDeath(event, member){
                 if (validCast){
                     // go through each enemy, check if they are dead, create a zombie of them
                     // statswise they should have same HP, but 50% more dmg
+                    let casterOfReanimate = event.enemies[idOfMember]
+                    onDeathString = onDeathString +  casterOfReanimate.name + " reanimated the fallen enemies\n"
                     for (var enemy in event.enemies){
-                        let casterOfReanimate = event.enemies[idOfMember]
-                        onDeathString = onDeathString =  casterOfReanimate + " reanimated the fallen enemies\n"
                         // do not reanimate self
                         if (checkHasDied(event.enemies[enemy])
                         && enemy != idOfMember){
@@ -5834,6 +5931,15 @@ function effectsOnDeath(event, member){
                     }
                     if (rpgAbility.oneTimeCast){
                         rpgAbility.invalid = true;
+                    }
+                }
+            }
+            else if (rpgAbility.addToEventKilledList){
+                // not an ability, just an add
+                let eotListName = rpgAbility.addToEventKilledList
+                for (var ev in event.endOfTurnEvents){
+                    if (event.endOfTurnEvents[ev].abilityId == eotListName){
+                        event.endOfTurnEvents[ev].enemiesKilled.push(member.name)
                     }
                 }
             }
@@ -8009,7 +8115,9 @@ function processAbility(abilityObject, event){
                             var alreadyHaveStatus = false;
                             for (var status in event.membersInParty[targetToAddStatus].statuses){
                                 if (event.membersInParty[targetToAddStatus].statuses[status]
-                                && event.membersInParty[targetToAddStatus].statuses[status].caster == abilityObject.user ){
+                                && event.membersInParty[targetToAddStatus].statuses[status].caster == abilityObject.user
+                                && event.membersInParty[targetToAddStatus].statuses[status].name == statusToAdd.name
+                                && !event.membersInParty[targetToAddStatus].statuses[status].ignoreUnique ){
                                     alreadyHaveStatus = true;
                                 }
                             }

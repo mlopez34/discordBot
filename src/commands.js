@@ -1603,7 +1603,7 @@ module.exports.cookCommand = function(message){
                 var extraTacosFromCasserole = 0;
                 var HAS_CASSEROLE = cookResponse.data.casserole;
                 if (HAS_CASSEROLE){
-                    extraTacosFromCasserole = cookResponse.data.level * 5;
+                    extraTacosFromCasserole = cookResponse.data.level * 10;
                 }
                 wearStats.getUserWearingStats(message, discordUserId, {userLevel: userLevel}, allItems, function(wearErr, wearRes){
                     if (wearErr){
@@ -2987,16 +2987,12 @@ module.exports.patchnotesCommand = function(message){
         },
         "fields": [
           {
-            "name": "July 9, 2019",
-            "value": "```-Fixed some rpg zones from not being accessible\n-Completing areas and zones will now grant rewards\n-The item requirements of building upgrades has been reduced by 33%, tacos requirements reduced by 20%\n-New command available -claim rare, -claim ancient, -claim [common], -claim [common] [amount], -claim [common] all, -claim letter [letter text] are now available, rares and ancients are randomly selected, commons can be selected by the user, letters can be obtained through claim rewards and will be thrown into the twisting nether.```"
-          },
-          {
-            "name": "July 9, 2019",
-            "value": "```-Experience in regular rpg for higher level zones has been increased\n-Master versions of some items have been introduced\n-Armaments for keystone items are now percentage based on their base stat on top of their original floors and ceiling ranges, slot bonuses are also added and reduced based on the slot by 6%, crit and luck remain at current rates\n-Enemy limit abilities will no longer consume regular group limit abilities\n-Debuffs that prevent buffs from being obtained will now properly work for enemies\n- Cook, Prepare, and RPG potions have had their reduction time improved```"
-          },
-          {
             "name": "July 15, 2019",
             "value": "```-RPG Queue command is here! You can now enter the rpg queue to join users in your rpg adventure from any server, use `-rpgqueue 2`, `-rpgqueue 3`, `-rpgqueue 4`, `-rpgqueue 5` to begin\n Use `-rpgleave` to leave the current queue you are in\nYou can only be in one queue at at time\n-RPG aliases can be used, you do not need to tag a user anymore and can instead use `p1`, `p2`, `p3`, `p4`, `p5`, to target them instead, their alias is listed next to their name in the RPG embed.\n-Inventory, Rares, Ancients, and Artifacts embeds now have paging\n-RPG areas have had their progress counts updated```"
+          },
+          {
+            "name": "August 6, 2019",
+            "value": "```-Cooldown timers are here! you can now use the -cd command to view all your command times, you can also use -toggle command to turn reminders on or off for the specific command example: -toggle scavenge\n-RPG heals can now crit!, scaling on rpg for areas and keystones should be correctly applying\n-RPG startup improvements for faster ready\n-RPG log now looks cleaner\n-RPG queue gives double item rewards than regular rpg\n-iteminfo works for items in the market now even if you do not own the item use -iteminfo marketid or -iteminfo shortname\n-Casserole gives 10 tacos per level insetad of 5```"
           }
         ]
       };
@@ -11174,7 +11170,8 @@ function createTimeOutForCommandAfterUse(command, now, secondsToRemove, commandC
                 var testDate = new Date()
                 console.log("now " + testDate)
                 console.log("next reminder " + nextReminder)
-                message.channel.send(message.author.username + " Next Reminder : `" + nextReminder + "`")
+                // uncomment for logging
+                // message.channel.send(message.author.username + " Next Reminder : `" + nextReminder + "`")
             }
         })
     }

@@ -781,7 +781,8 @@ module.exports = {
                 endOfTurnEvents : [
                 ],
                 effectsOnDeath: [
-                    "entombTargets"
+                    "entombTargets",
+                    "addToEventKilledCheck"
                 ],
                 hpPerPartyMember: 0,
                 adPerPartyMember: 0,
@@ -808,7 +809,8 @@ module.exports = {
                 endOfTurnEvents : [
                 ],
                 effectsOnDeath: [
-                    "entombTargets"
+                    "entombTargets",
+                    "addToEventKilledCheck"
                 ],
                 hpPerPartyMember: 0,
                 adPerPartyMember: 0,
@@ -835,7 +837,8 @@ module.exports = {
                 endOfTurnEvents : [
                 ],
                 effectsOnDeath: [
-                    "entombTargets"
+                    "entombTargets",
+                    "addToEventKilledCheck"
                 ],
                 hpPerPartyMember: 0,
                 adPerPartyMember: 0,
@@ -862,7 +865,8 @@ module.exports = {
                 endOfTurnEvents : [
                 ],
                 effectsOnDeath: [
-                    "entombTargets"
+                    "entombTargets",
+                    "addToEventKilledCheck"
                 ],
                 hpPerPartyMember: 0,
                 adPerPartyMember: 0,
@@ -889,7 +893,8 @@ module.exports = {
                 endOfTurnEvents : [
                 ],
                 effectsOnDeath: [
-                    "entombTargets"
+                    "entombTargets",
+                    "addToEventKilledCheck"
                 ],
                 hpPerPartyMember: 0,
                 adPerPartyMember: 0,
@@ -914,7 +919,8 @@ module.exports = {
                     abilities: []
                 },
                 effectsOnDeath: [
-                    "entombTargets"
+                    "entombTargets",
+                    "addToEventKilledCheck"
                 ],
                 endOfTurnEvents : [
                 ],
@@ -926,6 +932,249 @@ module.exports = {
                 magicDmg: 0,
                 armor: 1200,
                 spirit: 1200,
+                difficulty: "summoned",
+                element: "normal"
+            },
+            reoriginator: {
+                name: "Reoriginator",
+                abilities: ["crush", "corrupt"],
+                buffs: [],
+                keystoneStats: {
+                    hp: [1200, 3500, 6200, 10000, 13000, 17500, 25000, 35000, 45000, 60000  ],
+                    attackDmg: [300, 500, 900, 1500, 2300, 3400, 4500, 5500, 6500, 7500],
+                    magicDmg: [300, 500, 900, 1500, 2300, 3400, 4500, 5500, 6500, 7500],
+                    abilities: []
+                },
+                effectsOnDeath: [
+
+                ],
+                endOfTurnEvents : [
+                    // debuff that lowers hp by 5%
+                    "ripfabric"
+                ],
+                hpPerPartyMember: 0,
+                adPerPartyMember: 0,
+                mdPerPartyMember: 0,
+                hp: 55000,
+                attackDmg: 2000,
+                magicDmg: 2000,
+                armor: 1500,
+                spirit: 1500,
+                difficulty: "summoned",
+                element: "normal"
+            },
+            whelpling: {
+                name: "Whelpling",
+                abilities: ["attack", "uppercut"],
+                buffs: [],
+                keystoneStats: {
+                    hp: [1200, 3500, 6200, 10000, 13000, 17500, 25000, 35000, 45000, 60000  ],
+                    attackDmg: [300, 500, 900, 1500, 2300, 3400, 4500, 5500, 6500, 7500],
+                    magicDmg: [300, 500, 900, 1500, 2300, 3400, 4500, 5500, 6500, 7500],
+                    abilities: []
+                },
+                effectsOnDeath: [
+                    "explode"
+                ],
+                hpPerPartyMember: 0,
+                adPerPartyMember: 0,
+                mdPerPartyMember: 0,
+                hp: 9300,
+                attackDmg: 1000,
+                magicDmg: 10000,
+                armor: 1300,
+                spirit: 1300,
+                difficulty: "summoned",
+                element: "normal"
+            },
+            amberDrake: {
+                name: "Amber Drake",
+                abilities: ["attack"],
+                buffs: [
+                    {
+                        name: "frenzy",
+                        emoji: "<:frenzy:479298214453968896>",
+                        onTurnEnd: {
+                            attackDmgPlus : 1000,
+                            magicDmgPlus : 1000,
+                            everyNTurns: 1,
+                            startTurn: 5
+                        }
+                    }
+                ],
+                keystoneStats: {
+                    frenzy: {
+                        attackDmgPlus : [120, 200, 300, 440, 590, 720, 900, 1100, 1300, 1500],
+                        magicDmgPlus : [120, 200, 300, 440, 590, 720, 900, 1100, 1300, 1500]
+                    },
+                    hp: [1200, 3500, 15000, 25000, 55000, 85000, 130000, 210000, 300000, 400000 ],
+                    attackDmg: [300, 500, 900, 1500, 2300, 3400, 4500, 5500, 6500, 7500],
+                    magicDmg: [300, 500, 900, 1500, 2300, 3400, 4500, 5500, 6500, 7500],
+                    abilities: []
+                },
+                endOfTurnEvents : [
+                    "summonPods"
+                    // reduce damage dealt and healing dealt by 75% if no buff
+                    // gain buff by killing a pod, 10 pods summoned, buff lasts 4 turns
+
+                    // debuff every 3 turns to 1 player, damage dealt to everyone
+                    // based on health missing, lasts 3 turns
+                ],
+                hpPerPartyMember: 0,
+                adPerPartyMember: 0,
+                mdPerPartyMember: 0,
+                hp: 58300,
+                attackDmg: 4500,
+                magicDmg: 4500,
+                armor: 2150,
+                spirit: 2150,
+                difficulty: "summoned-boss",
+                element: "normal"
+            },
+            fireGuardian: {
+                name: "Fire Guardian",
+                abilities: ["flameblast"],
+                buffs: [],
+                keystoneStats: {
+                    hp: [1200, 3500, 6200, 10000, 13000, 17500, 25000, 35000, 45000, 60000  ],
+                    attackDmg: [300, 500, 900, 1500, 2300, 3400, 4500, 5500, 6500, 7500],
+                    magicDmg: [300, 500, 900, 1500, 2300, 3400, 4500, 5500, 6500, 7500],
+                    abilities: []
+                },
+                endOfTurnEvents : [
+                    // lava blast for 5k every 2 turns
+                ],
+                hpPerPartyMember: 0,
+                adPerPartyMember: 0,
+                mdPerPartyMember: 0,
+                hp: 58300,
+                attackDmg: 4500,
+                magicDmg: 4500,
+                armor: 2150,
+                spirit: 2150,
+                difficulty: "summoned",
+                element: "normal"
+            },
+            stormGuardian: {
+                name: "Storm Guardian",
+                abilities: ["attack"], // chain lightning
+                buffs: [],
+                keystoneStats: {
+                    hp: [1200, 3500, 6200, 10000, 13000, 17500, 25000, 35000, 45000, 60000  ],
+                    attackDmg: [300, 500, 900, 1500, 2300, 3400, 4500, 5500, 6500, 7500],
+                    magicDmg: [300, 500, 900, 1500, 2300, 3400, 4500, 5500, 6500, 7500],
+                    abilities: []
+                },
+                endOfTurnEvents : [
+                    // status that reduces all damage done by 3% on target lasts 60 turns - cant bandaid
+                ],
+                hpPerPartyMember: 0,
+                adPerPartyMember: 0,
+                mdPerPartyMember: 0,
+                hp: 58300,
+                attackDmg: 4500,
+                magicDmg: 4500,
+                armor: 2150,
+                spirit: 2150,
+                difficulty: "summoned",
+                element: "normal"
+            },
+            earthGuardian: {
+                name: "Earth Guardian",
+                abilities: ["attack"],
+                buffs: [],
+                keystoneStats: {
+                    hp: [1200, 3500, 6200, 10000, 13000, 17500, 25000, 35000, 45000, 60000  ],
+                    attackDmg: [300, 500, 900, 1500, 2300, 3400, 4500, 5500, 6500, 7500],
+                    magicDmg: [300, 500, 900, 1500, 2300, 3400, 4500, 5500, 6500, 7500],
+                    abilities: []
+                },
+                endOfTurnEvents : [
+                    "fury", // increased damage done based on missing health (3% per 1%)
+                    // put up a status that reduces healing taken by 10% per stack lasts  - can bandaid
+                ],
+                hpPerPartyMember: 0,
+                adPerPartyMember: 0,
+                mdPerPartyMember: 0,
+                hp: 58300,
+                attackDmg: 4500,
+                magicDmg: 4500,
+                armor: 2150,
+                spirit: 2150,
+                difficulty: "summoned",
+                element: "normal"
+            },
+            amberPool: {
+                name: "Amber Pool",
+                abilities: [],
+                buffs: [],
+                keystoneStats: {
+                    hp: [1200, 3500, 6200, 10000, 13000, 17500, 25000, 35000, 45000, 60000  ],
+                    attackDmg: [300, 500, 900, 1500, 2300, 3400, 4500, 5500, 6500, 7500],
+                    magicDmg: [300, 500, 900, 1500, 2300, 3400, 4500, 5500, 6500, 7500],
+                    abilities: []
+                },
+                endOfTurnEvents : [
+                    // heals for 5k all enemies every turn
+                ],
+                // immune to aoe
+                hpPerPartyMember: 0,
+                adPerPartyMember: 0,
+                mdPerPartyMember: 0,
+                hp: 7500,
+                attackDmg: 1000,
+                magicDmg: 1000,
+                armor: 2150,
+                spirit: 2150,
+                difficulty: "summoned-boss",
+                element: "normal"
+            },
+            pod: {
+                name: "Pod",
+                abilities: [],
+                buffs: [],
+                keystoneStats: {
+                    hp: [1200, 3500, 6200, 10000, 13000, 17500, 25000, 35000, 45000, 60000  ],
+                    attackDmg: [300, 500, 900, 1500, 2300, 3400, 4500, 5500, 6500, 7500],
+                    magicDmg: [300, 500, 900, 1500, 2300, 3400, 4500, 5500, 6500, 7500],
+                    abilities: []
+                },
+                endOfTurnEvents : [
+                    // grants buff on death to caster - unable to get healing + dmg status
+                ],
+                hpPerPartyMember: 0,
+                adPerPartyMember: 0,
+                mdPerPartyMember: 0,
+                hp: 10,
+                attackDmg: 100,
+                magicDmg: 100,
+                armor: 500,
+                spirit: 500,
+                difficulty: "summoned",
+                element: "normal"
+            },
+            roots: {
+                name: "Roots",
+                abilities: ["slap"],
+                buffs: [],
+                keystoneStats: {
+                    hp: [700, 1500, 3200, 4000, 63000, 9500, 12000, 15000, 45000, 60000  ],
+                    attackDmg: [300, 500, 900, 1500, 2300, 3400, 4500, 5500, 6500, 7500],
+                    magicDmg: [300, 500, 900, 1500, 2300, 3400, 4500, 5500, 6500, 7500],
+                    abilities: []
+                },
+                // roots deal damage and focus a single player
+                endOfTurnEvents : [
+                    
+                ],
+                hpPerPartyMember: 0,
+                adPerPartyMember: 0,
+                mdPerPartyMember: 0,
+                hp: 2000,
+                attackDmg: 2000,
+                magicDmg: 2000,
+                armor: 500,
+                spirit: 500,
                 difficulty: "summoned",
                 element: "normal"
             },
@@ -5206,7 +5455,11 @@ module.exports = {
                             attackDmg: [1000, 1500, 2000, 2900, 4500, 4500, 5000, 5500, 6000, 6500 ],
                             magicDmg: [1000, 1500, 2000, 2900, 4500, 4500, 5000, 5500, 6000, 6500 ],
                             // reanimate the dead by bringing them back as zombies
-                            abilities: []
+                            abilities: [],
+                            endOfTurnEvents: [
+                                "reanimateAllMessage",
+                                "reanimateAll25"
+                            ]
                         },
                         abilityOrder: [
                             0, 0, [1, 2], 0, 0, [1, 2], 0, 0, [1, 2]
@@ -5310,7 +5563,10 @@ module.exports = {
                             hp: [11500, 15900, 24900, 41000, 67000, 105000, 125000, 155000, 205000, 300000  ],
                             attackDmg: [800, 1300, 1700, 2500, 3500, 5000, 6500, 8000, 9500, 11000],
                             magicDmg: [800, 1300, 1700, 2500, 3500, 5000, 6500, 8000, 9500, 11000],
-                            abilities: []
+                            abilities: [],
+                            endOfTurnEvents: [
+                                "aoeBombDictator"
+                            ]
                         },
                         abilityOrder: [
                             1, 0, 4, 2, 3, 5, 5, 0
@@ -5357,7 +5613,10 @@ module.exports = {
                             hp: [11500, 15900, 24900, 51000, 97000, 125000, 179000, 225000, 300000, 450000 ],
                             attackDmg: [800, 1300, 1700, 2500, 3500, 5000, 6500, 8000, 9500, 11000],
                             magicDmg: [800, 1300, 1700, 2500, 3500, 5000, 6500, 8000, 9500, 11000],
-                            abilities: []
+                            abilities: [],
+                            endOfTurnEvents: [
+                                "aoeBombMobLord"
+                            ]
                         },
                         abilityOrder: [
                             0, 1, 0, [2, 3], 4, 1, 1, 0, [2, 3], 4, 1, 1, 0, [2, 3], 4,
@@ -5505,7 +5764,6 @@ module.exports = {
                     },
                     {
                         name: "Evil Chef",
-                        // special ability deals single target dmg magic to a non focused target
                         abilities: [
                             "attack", "curse"
                         ],
@@ -5555,7 +5813,6 @@ module.exports = {
                     },
                     {
                         name: "Disobedient Host",
-                        // special ability summons minions - minions last 3 turns and explode after 3 turns
                         abilities: [
                             "attack", "rockthrow"
                         ],
@@ -5605,7 +5862,6 @@ module.exports = {
                     },
                     {
                         name: "Valet",
-                        // special ability deals area effect damage
                         abilities: [
                             "attack", "crush"
                         ],
@@ -5695,7 +5951,10 @@ module.exports = {
                             hp: [21500, 35900, 54900, 75000, 117000, 150000, 225000, 300000, 400000, 500000 ],
                             attackDmg: [1300, 2100, 3900, 6200, 8530, 11300, 13000, 15500, 20500, 29000 ],
                             magicDmg: [1300, 2100, 3900, 6200, 8530, 11300, 13000, 15500, 20500, 29000 ],
-                            abilities: []
+                            abilities: [],
+                            endOfTurnEvents: [
+                                "crystalKilledHandler"
+                            ]
                         },
                         abilityOrder: [
                             4, [0,1], [0,1],[0,1],[0,1], [0,1],[0,1],[0,1],[0,1],[0,1],[0,1],[0,1],
@@ -6142,7 +6401,12 @@ module.exports = {
                             hp: [331500, 500900, 1109900, 1910000, 2907000, 4200000, 5500000, 7200000, 9200000, 15500000, ],
                             attackDmg: [700, 1100, 1700, 3100, 3500, 4250, 5000, 6000, 7250, 8500 ],
                             magicDmg: [700, 1100, 2500, 3800, 4500, 5250, 6000, 7000, 8250, 9500 ],
-                            abilities: []
+                            abilities: [],
+                            endOfTurnEvents: [
+                                "summonReoriginator75",
+                                "summonReoriginator50",
+                                "summonReoriginator25",
+                            ]
                         },
                         abilityOrder: [
                             0, 1, 0, 1, 2, [0, 1, 3], 0, 1, 1
@@ -6820,23 +7084,36 @@ module.exports = {
                             magicDmg: [700, 1100, 1500, 2100, 2500],
                             abilities: []
                         },
+                        // stomp every 5 turns
                         abilityOrder: [
                             0, 1, 0, 0, 0, 1, 0, 0
                         ],
                         endOfTurnEvents : [
+                            // 2x
+                            "summonWhelps",
+                            "summonDrake",
+                            "summonDefenders",
+
+                            "summonAmberPool", // immune to aoe
+                            "summonRoots", // 2.2k HP
+                        ],
+                        summonsToRearrangeAndDuplicate: [
+                            "summonDefenders",
+                            "summonDrake",
+                            "summonWhelps",
                         ],
                         effectsOnDeath: [
                         ],
                         hp: 1982600,
-                        attackDmg: 238000,
-                        magicDmg: 257000,
+                        attackDmg: 200000,
+                        magicDmg: 200000,
                         armor: 2100,
                         spirit: 2100,
                         hpPerPartyMember: 0,
                         adPerPartyMember: 0,
                         mdPerPartyMember: 0,
                         difficulty: "boss",
-                        element: "normal"
+                        element: "dragon"
                     }
                 ]
             }

@@ -592,6 +592,29 @@ module.exports = {
                 multiplier: 1.6
             }
         },
+        ripfabric: {
+            name: "Rip Fabric",
+            abilityId: "ripfabric",
+            areawide: true,
+            belongsToMember: true,
+            processAbility: true,
+            everyNTurns: 1,
+            afterNTurns: 1,
+            currentTurn: 1,
+            additionalDescription: " is reducing the groups maximum HP by 10%",
+            status: {
+                name: "Rip Fabric",
+                abilityId: "ripfabric",
+                status: true,
+                areawide: true,
+                ignoreBandaid: true,
+                ignoreUnique: true,
+                emoji: "🔻",
+                turnsToExpire: 100,
+                affects: ["maxhp"],
+                multiplier: .9
+            }
+        },
         flameblast: {
             name: "Flame Blast",
             abilityId: "flameblast",
@@ -1166,6 +1189,62 @@ module.exports = {
                 dmgOnRemove: 100
             }
         },
+        aoeBombMobLord: {
+            name:"Bomb",
+            abilityId: "aoeBombMobLord",
+            type:"fire",
+            aboveKeystone: 6,
+            processAbility: true,
+            belongsToMember: true,
+            areawide: true,
+            everyNTurns: 10,
+            afterNTurns: 10,
+            currentTurn: 0,
+            dot: {
+                name: "Bomb",
+                type:"fire",
+                dmg: 1,
+                mdPercentage: 1,
+                areawide: true,
+                emoji: "<:bomb:479296552096235520>",
+                dmgOnDotApply: false,
+                turnsToExpire: 6,
+                dmgOnDotExpire: true,
+                dmgOnExpire: 550,
+                dmgOnDotRemove: true,
+                dmgOnRemoveAreaWide: true,
+                mdPercentageOnRemove: 0.25,
+                dmgOnRemove: 100
+            }
+        },
+        aoeBombDictator: {
+            name:"Bomb",
+            abilityId: "aoeBombDictator",
+            type:"fire",
+            aboveKeystone: 6,
+            processAbility: true,
+            belongsToMember: true,
+            areawide: true,
+            everyNTurns: 10,
+            afterNTurns: 15,
+            currentTurn: 0,
+            dot: {
+                name: "Bomb",
+                type:"fire",
+                dmg: 1,
+                mdPercentage: 1,
+                areawide: true,
+                emoji: "<:bomb:479296552096235520>",
+                dmgOnDotApply: false,
+                turnsToExpire: 6,
+                dmgOnDotExpire: true,
+                dmgOnExpire: 550,
+                dmgOnDotRemove: true,
+                dmgOnRemoveAreaWide: true,
+                mdPercentageOnRemove: 0.25,
+                dmgOnRemove: 100
+            }
+        },
         /*
         challenge 5
         */
@@ -1213,6 +1292,71 @@ module.exports = {
                 dmgOnRemoveAreaWide: false,
                 mdPercentageOnRemove: 1,
                 dmgOnExpire: 150
+            }
+        },
+        unimaginablePower: {
+            name: "Unimaginable Power",
+            abilityId: "unimaginablePower",
+            processAbility: true,
+            belongsToMember: true,
+            aboveKeystone: 6,
+            everyNTurns: 50,
+            afterNTurns: 1,
+            currentTurn: 0,
+            buff: {
+                buff: true,
+                name: "Unimaginable Power",
+                selfbuff: true,
+                additionalDescription: " is reflecting 20% damage back to all attackers",
+                abilityId: "unimaginablePower",
+                reflectPercentage: 0.2,
+                areaewideReflectPercentage: 0.20,
+                emoji: "🔈",
+                abType: "electric",
+                ignoreUnique: true,
+                turnsToExpire: 50
+            }
+        },
+        summonReoriginator75: {
+            name: "Summon Reoriginator",
+            abilityId: "summonReoriginator75",
+            aboveKeystone: 6,
+            belongsToMember: true,
+            hppercentage: 0.75,
+            oneTimeCast: true,
+            summon: {
+                enemy: "reoriginator",
+                attackDmg: 150,
+                magicDmg: 100,
+                hpPlus: 30
+            }
+        },
+        summonReoriginator50: {
+            name: "Summon Reoriginator",
+            abilityId: "summonReoriginator50",
+            aboveKeystone: 6,
+            belongsToMember: true,
+            hppercentage: 0.5,
+            oneTimeCast: true,
+            summon: {
+                enemy: "reoriginator",
+                attackDmg: 1000,
+                magicDmg: 1000,
+                hpPlus: 100000
+            }
+        },
+        summonReoriginator25: {
+            name: "Summon Reoriginator",
+            abilityId: "summonReoriginator25",
+            aboveKeystone: 6,
+            belongsToMember: true,
+            hppercentage: 0.25,
+            oneTimeCast: true,
+            summon: {
+                enemy: "reoriginator",
+                attackDmg: 1000,
+                magicDmg: 1000,
+                hpPlus: 400000
             }
         },
         // summon demon for ch 5
@@ -2579,6 +2723,30 @@ module.exports = {
             // hp and stats equal
             zombifyAll: true // summons zombies
         },
+        reanimateAll25: {
+            belongsToMember: true,
+            effectDone: false,
+            oneTimeCast: true,
+            hppercentage: 0.2,
+            aboveKeystone : 6,
+            name: "Reanimate",
+            abilityId: "reanimateAll",
+            admdMultiplier: 1.25,
+            // create zombies of all the enemies that are dead
+            // hp and stats equal
+            zombifyAll: true // summons zombies
+        },
+        reanimateAllMessage: {
+            aboveKeystone : 6,
+            belongsToMember: true,
+            effectDone: false,
+            oneTimeCast: true,
+            hppercentage: 0.35,
+            eotMessage: "The Roman Soldier prepares to reanimate his army",
+        },
+        // end of turn event that adds an end of turn event to the enemy every N turns
+
+
         /*
         special artifact stuff
         */
@@ -3290,6 +3458,52 @@ module.exports = {
             afterNTurns: 1,
             currentTurn: 0,
             eotMessage: "I will crush you.. in body and spirit"
+        },
+        /*
+        challenge 6
+        */
+        addToEventKilledCheck: {
+            aboveKeystone: 6,
+            belongsToMember: true,
+            onDeathEffect: true,
+            name: "addToEventKilledCheck",
+            abilityId: "addToEventKilledCheck",
+            addToEventKilledList: "crystalKilledHandler"
+        },
+        crystalKilledHandler: {
+            belongsToEvent: true,
+            aboveKeystone: 6,
+            everyNTurns: 1,
+            afterNTurns: 1,
+            currentTurn: 0,
+            name: "crystal handler",
+            abilityId: "crystalKilledHandler",
+            addBuffIfCheck : "provoked",
+            targetName : "A182-Type2",
+            addBuffIfOverCount : 1,
+            deadCheck: [
+                "Blue Energy Crystal",
+                "Yellow Energy Crystal",
+                "Black Energy Crystal",
+                "Red Energy Crystal",
+                "Green Energy Crystal",
+                "Purple Energy Crystal"
+            ],
+            enemiesKilled: []
+        },
+        provoked: {
+            name: "Provoked",
+            abilityId: "provoked",
+            buff: {
+                buff: true,
+                name: "Provoked",
+                abilityId: "provoked",
+                additionalDescription: " is provoked after 2 of the same Energy Crystals were destroyed",
+                emoji: "<:strength:479298214294716416>",
+                turnsToExpire: 45,
+                affects: ["attackDmg", "magicDmg"],
+                multiplier: 1.3
+            }
         },
         /*
         challenge 12
