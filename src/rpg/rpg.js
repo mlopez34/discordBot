@@ -3885,7 +3885,7 @@ function effectsOnTurnEnd(event){
                                 }
                                 /// ability is rampage or glare (switch focus target)
                                 if ( event.enemies[enemy].endOfTurnEvents[index].name == "Rampage"
-                                    || event.enemies[enemy].endOfTurnEvents[index].name == "Glare"){
+                                || event.enemies[enemy].endOfTurnEvents[index].name == "Glare"){
 
                                     var rpgAbility;
                                     if (event.enemies[enemy].endOfTurnEvents[index].name == "Rampage"){

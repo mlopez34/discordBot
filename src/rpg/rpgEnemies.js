@@ -3025,7 +3025,7 @@ module.exports = {
             },
             delinquent: {
                 name: "Delinquent",
-                abilities: ["drain" , "drain" , "smuggle", "smuggle", "corrupt", "currupt"],
+                abilities: ["drain" , "drain" , "smuggle", "smuggle", "corrupt", "corrupt"],
                 buffs: [
                     {
                         name: "frenzy",
@@ -3402,7 +3402,7 @@ module.exports = {
             kidnaper: {
                 name: "Kidnaper",
                 abilities: [
-                    "attack", "attack", "execute", "execute", "slash", "slash", "weaken"
+                    "attack", "attack", "hostage", "hostage", "slash", "slash", "weaken"
                 ],
                 buffs: [
                     {

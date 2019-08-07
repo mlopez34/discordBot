@@ -38,6 +38,13 @@ module.exports.createUserProfile = function(data, cb) {
             slot3replacing: false,
             slot4replacing: false
         }
+        exports.createUserStatistics(data.discordId, null, null, function(createError, statsSuccess){
+            if(createError){
+                console.log(createError);
+            }else{
+                console.log(statsSuccess)
+            }
+        })
         exports.createUserWearInfo(d, function(e, r){
             // create stable, greenhouse, temple 
             var s = {
