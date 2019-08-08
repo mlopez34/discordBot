@@ -6863,7 +6863,7 @@ function craftItem(message, discordUserId, recipeRequirements, recipeData, myIte
                 itemToCreate.itemAmount = 1
                 var params = {
                     userLevel : recipeData.level, // my level
-                    reputationLevel: REPUTATIONS[recipeData.repstatus.toLowerCase()].level, // my rep
+                    reputationLevel: recipeData.repstatus ? REPUTATIONS[recipeData.repstatus.toLowerCase()].level : 1, // my rep
                     tacos: recipeData.tacos, // my tacos
                     inventoryCountMap: itemsInInventoryCountMap,
                     itemsToUse: itemsToUse,  // items to use for craft
@@ -7040,7 +7040,7 @@ function upgradeBuilding(message, discordUserId, buildingName, upgradeRequiremen
                     // CHECK here if requirements are met
                     var params = {
                         userLevel : buildingData.level, // my level
-                        reputationLevel: REPUTATIONS[buildingData.repstatus.toLowerCase()].level, // my rep
+                        reputationLevel: buildingData.repstatus ? REPUTATIONS[buildingData.repstatus.toLowerCase()].level : 1, // my rep
                         tacos: buildingData.tacos, // my tacos 
                         fruitData: userFruitsCount, // my fruit data
                         inventoryCountMap: itemsInInventoryCountMap,
