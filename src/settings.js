@@ -61,7 +61,7 @@ function setGuildPrefix(guildId, prefix){
     }
 }
 
-module.exports.initializeServerSettings = function(){
+module.exports.initializeServerSettings = function(cb){
     //get all the server settings
     profileDB.getServerSettings(function(err, res){
         if (err){
@@ -73,6 +73,7 @@ module.exports.initializeServerSettings = function(){
             for (var g in guilds){
                 handleGuildSettings(guilds[g])
             }
+            cb(null, "done")
             console.log("Guild Settings Initialized")
         }
     })

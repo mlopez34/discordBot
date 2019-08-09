@@ -19,7 +19,7 @@ var TURN_OFF_MSG = config.turnOff;
 var TURN_ON_MSG = config.turnOn;
 
 var tacoTuesdayEnabled = false;
-var botEnabled = true;
+var botEnabled = false;
 var guildsRegistered = {}
 var messagesByUserCount = {}
 let TEST = config.test;
@@ -45,7 +45,9 @@ client.on('ready', function(err) {
     commands.initializeItemsMaps(client, function(err, res){
         commands.initializeMarketPlace()
         commands.initializeReminders()
-        settings.initializeServerSettings()
+        settings.initializeServerSettings(function(err, res){
+            botEnabled = true
+        })
         console.log(res)
     })
     //steal(channelName);
