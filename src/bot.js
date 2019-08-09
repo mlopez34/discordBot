@@ -111,8 +111,7 @@ function commandIs(str, msg, botMentioned){
         return msg.content.toLowerCase().includes(str);
     }
     if (( (str === "thank" || str === "sorry" || str === "welcome") && 
-    (msg.channel.guild.id == "576831363207135250"
-    || msg.channel.guild.id == "231378019292282880" ) )){
+    (msg.channel.guild.id == "231378019292282880" ) )){
         if (msg.content.toLowerCase().startsWith(guildPrefix)){
             return  msg.content.toLowerCase().startsWith(guildPrefix + str);
         }else{
