@@ -120,6 +120,7 @@ client.on("guildCreate", guild => {
 })
 
 function commandIs(str, msg, botMentioned){
+    console.log(msg)
     let guildPrefix = settings.getGuildPrefix(msg.channel.guild.id)
     if ( str === "settings" && botMentioned ){
         return msg.content.toLowerCase().includes(str);
