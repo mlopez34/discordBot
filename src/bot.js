@@ -111,7 +111,8 @@ function commandIs(str, msg, botMentioned){
         return msg.content.toLowerCase().includes(str);
     }
     if (( (str === "thank" || str === "sorry" || str === "welcome") && 
-    (msg.channel.guild.id == "231378019292282880" ) )){
+    (msg.channel.guild.id == "576831363207135250"
+    || msg.channel.guild.id == "231378019292282880" ) )){
         if (msg.content.toLowerCase().startsWith(guildPrefix)){
             return  msg.content.toLowerCase().startsWith(guildPrefix + str);
         }else{
@@ -165,7 +166,8 @@ client.on('message', function(message){
     // start at 0, add +1 to the count if the count is at 0, no wait, otherwise do timeout  500 * count
     // when the timeout goes off subtract -1
     if (message.channel && message.channel.guild 
-    && (message.channel.guild.id == "231378019292282880")){
+    && (message.channel.guild.id == "576831363207135250"
+    || message.channel.guild.id == "231378019292282880")){
         let guildId = message.channel.guild.id
         let channelId = message.channel.id
         if (botEnabled){
@@ -196,7 +198,10 @@ client.on('message', function(message){
                 if ( commandIs("settings", message, botMentioned)){
                     if (message.author.id == config.ownerId
                     || (message.member.hasPermission("ADMINISTRATOR"))){
+                        console.log("**** HERE")
                         settings.settingsCommand(message, args)
+                    }else{
+                        console.log("**** NOT HERE")
                     }
                 }
                 if( commandIs("thank", message ) && settings.canBotRespondToCommandInChannel("regular", guildId, channelId)){
