@@ -176,7 +176,8 @@ function initializeGuildSettings(guild){
 
 // can i speak here?
 module.exports.canBotRespondToCommandInChannel = function(typeOfCommand, guildId, channelId){
-    if (mapOfGuilds[guildId].mutedChannels.indexOf(channelId) > -1){
+    if (mapOfGuilds[guildId].mutedChannels 
+    && mapOfGuilds[guildId].mutedChannels.indexOf(channelId) > -1){
         // bot is muted here completely
         return false
     }else{
@@ -184,12 +185,15 @@ module.exports.canBotRespondToCommandInChannel = function(typeOfCommand, guildId
             return true
         }
         if (typeOfCommand == "rpg"){
-            if (mapOfGuilds[guildId].enabledChannels.length > 0){
+            if (mapOfGuilds[guildId].enabledChannels 
+            && mapOfGuilds[guildId].enabledChannels.length > 0){
                 // server has specified only certain channels to work for bender
-                if (mapOfGuilds[guildId].enabledChannels.indexOf(channelId) > -1){
+                if (mapOfGuilds[guildId].enabledChannels 
+                && mapOfGuilds[guildId].enabledChannels.indexOf(channelId) > -1){
                     // this is one of those channels - but can i speak rpg here?
-                    if ( mapOfGuilds[guildId].rpgdisabledChannels.indexOf(channelId) == -1
-                    || mapOfGuilds[guildId].rpgonlyChannels.indexOf(channelId) > -1 ){
+                    if ( mapOfGuilds[guildId].rpgdisabledChannels
+                    && (mapOfGuilds[guildId].rpgdisabledChannels.indexOf(channelId) == -1
+                    || mapOfGuilds[guildId].rpgonlyChannels.indexOf(channelId) > -1) ){
                         // can speak rpg here
                         return true
                     }else{
@@ -204,10 +208,13 @@ module.exports.canBotRespondToCommandInChannel = function(typeOfCommand, guildId
                 return true
             }
         }else if (typeOfCommand == "regular"){
-            if (mapOfGuilds[guildId].enabledChannels.length > 0){
+            if (mapOfGuilds[guildId].enabledChannels 
+            && mapOfGuilds[guildId].enabledChannels.length > 0){
                 // server has specified only certain channels to work for bender
-                if (mapOfGuilds[guildId].enabledChannels.indexOf(channelId) > -1){
-                    if ( mapOfGuilds[guildId].rpgonlyChannels.indexOf(channelId) > -1 ){
+                if (mapOfGuilds[guildId].enabledChannels 
+                && mapOfGuilds[guildId].enabledChannels.indexOf(channelId) > -1){
+                    if ( mapOfGuilds[guildId].rpgonlyChannels 
+                    && mapOfGuilds[guildId].rpgonlyChannels.indexOf(channelId) > -1 ){
                         // rpg only channel, ignore regular
                         return false
                     }else{
