@@ -274,11 +274,11 @@ module.exports.settingsCommand = function(message, args){
     }
 }
 
-module.exports.createGuildProfile = function(guildidd, cb){
+module.exports.createGuildProfile = function(guildid, cb){
     // add to database
     // add to memory
     let guild = {
-        guildidd: guildidd
+        guildid: guildid
     }
     profileDB.createGuildSettingsProfile(guild, function(gE, gD){
         if (gE){
