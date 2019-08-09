@@ -69,13 +69,31 @@ module.exports.createUserProfile = function(data, cb) {
                         }
                         exports.createRpgProfile(r, function(e, r){
                             var f = {
-                                discordId: data.discordId
+                                discordId: data.discordId,
+                                tulips: 0,
+                                roses: 0,
+                                evergreens: 0,
+                                cacti: 0,
+                                palms: 0,
+                                blossoms: 0,
+                                apples: 0,
+                                sunflowers: 0,
+                                hibiscuses: 0,
+                                bananas: 0,
+                                pears: 0,
+                                tangerines: 0,
+                                eggplants: 0
                             }
                             exports.createFruitsProfile(f, function(e, r){
-                                cb(null, {
-                                    status: 'success',
-                                    message: 'Inserted one user'
-                                });
+                                if (e){
+                                    console.log(e)
+                                    cb(e)
+                                }else{
+                                    cb(null, {
+                                        status: 'success',
+                                        message: 'Inserted one user'
+                                    });
+                                }
                             })
                         })
                     })
@@ -2064,8 +2082,8 @@ module.exports.createRpgProfile = function(data, cb){
 
 // create fruits profile
 module.exports.createFruitsProfile = function(data, cb){
-    var query = 'insert into '+ config.userFruitTable + '(discordId)' +
-    'values(${discordId})'
+    var query = 'insert into '+ config.userFruitTable + '(discordId, tulips, roses, evergreens, cacti, palms, blossoms, apples, sunflowers, hibiscuses, bananas, pears, tangerines, eggplants)' +
+    'values(${discordId}, ${tulips}, ${roses}, ${evergreens}, ${cacti}, ${palms}, ${blossoms}, ${apples}, ${sunflowers}, ${hibiscuses}, ${bananas}, ${pears}, ${tangerines}, ${eggplants})'
     // console.log(query);
     db.none(query, data)
     .then(function () {
