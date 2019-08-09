@@ -164,7 +164,8 @@ client.on('message', function(message){
     if (message.channel && message.channel.guild 
     && (message.channel.guild.id == "576831363207135250"
     || message.channel.guild.id == "231378019292282880")){
-    
+        let guildId = message.channel.guild.id
+        let channelId = message.channel.id
         if (botEnabled){
             // console.log(message.author.id); // id of the user that created the message
             var args = message.content.split(/[ ]+/);
