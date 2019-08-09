@@ -49,15 +49,15 @@ module.exports.getGuildPrefix = function(guildId){
     }
 }
 
-function setGuildPrefix(guildId, prefix){
-    if (!mapOfGuilds[guildId]){
+function setGuildPrefix(guildid, prefix){
+    if (!mapOfGuilds[guildid]){
         let guild = {
-            guildId: guildId,
+            guildid: guildid,
             prefix: prefix
         }
         initializeGuildSettings(guild)
     }else{
-        mapOfGuilds[guildId].prefix = prefix
+        mapOfGuilds[guildid].prefix = prefix
     }
 }
 
