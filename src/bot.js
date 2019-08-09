@@ -126,7 +126,7 @@ client.on('message', function(message){
     //// console.log(message);
     let botMentioned =  message.mentions.members.first() ? message.mentions.members.first().id == config.botId : false
     try{
-        if (message.channel && message.channel.guild && message.channel.guild.id && !guildsRegistered[message.channel.guild.id]){
+        if (message.channel && message.channel.guild && message.channel.guild.id){
             if (settings.getServerSettings(message.channel.guild.id) == undefined){
                 settings.createGuildProfile(message.channel.guild.id, function(err,res){
                     if (err){
@@ -136,6 +136,8 @@ client.on('message', function(message){
                     }
                 })
             }
+        }
+        if (message.channel && message.channel.guild && message.channel.guild.id && !guildsRegistered[message.channel.guild.id]){
             
             profileDB.getGuildData(message.channel.guild.id, function(gErr, gData){
                 if (gErr){
