@@ -78,9 +78,14 @@ client.on("guildCreate", guild => {
                         value: 'Tacos are my main form of currency'
                     },
                     {
+                        name: ':level_slider: Settings',
+                        value: 'My prefix is customizable! The default prefix is `-` but you can change it via `-settings setprefix [your prefix]`.\nUse the `-settings mute` or `-settings unmute` to mute or unmute me in the channel.\nYou can also use `-settings enable` or `-settings disable` to make channels bender specific.\nNOTE: once i am enabled in a specific channel, that is the only channel I will respond to commands on, but you can enable as many channels as you want on the server.\nUse `-settings rpgenable` or `-settings rpgdisable` to enable or disable rpgcommands in the channel.\nYou can also use `-settings rpgonly` to ONLY allow rpg commands in the specified channel'
+                    },
+                    {
                         name: ':exclamation: Warning',
                         value: 'Most of my commands are highly interactive so I advise you only allow me to send messages in specific bot channels'
                     }
+                    
                 ],
     
                 footer: {

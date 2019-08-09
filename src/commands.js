@@ -2817,11 +2817,15 @@ module.exports.helpCommand = function(message){
         "fields": [
           {
             "name": "Common Commands List",
-            "value": "`-profile [user] >` Display someone's profile!\n`-shop (long) >` Display the (detailed) shop!\n`-daily >` Display the daily voting feature!\n`\n`-welcome [user] >` Welcome a user and they get **50** tacos!\n`-thank [user] >` Thank a user and they get **10** tacos!\n`-sorry [user] >` Say sorry to a user and they get **10** tacos!\n\n`-prepare >` Prepare tacos using your stands!\n`-cook >` Cook some tacos!\n\n`-give [user] [number] >` Give a user a certain amount of your tacos!\n`-throw [user] >` Throw **10** tacos at a user!\n`-slots [number] >` Play slots and lose or win tacos!\n\n"
+            "value": "`-profile [user] >` Display someone's profile!\n`-shop (long) >` Display the (detailed) shop!\n`-daily >` Display the daily voting feature!\n\n`-welcome [user] >` Welcome a user and they get **50** tacos!\n`-thank [user] >` Thank a user and they get **10** tacos!\n`-sorry [user] >` Say sorry to a user and they get **10** tacos!\n\n`-prepare >` Prepare tacos using your stands!\n`-cook >` Cook some tacos!\n\n`-give [user] [number] >` Give a user a certain amount of your tacos!\n`-throw [user] >` Throw **10** tacos at a user!\n`-slots [number] >` Play slots and lose or win tacos!\n\n"
+          },
+          {
+            "name": "Settings Commands List",
+            "value": "`-settings mute >` Mute Bender in the channel!\n`-settings unmute >` Unmute Bender in the channel!\n`-settings enable >` Make the channel Bender specific!\n`-settings disable >` Disable the channel from being Bender specific!\n`-settings rpgdisable >` Disable RPG commands in the channel!\n`-settings rpgenable >` Renable RPG commands in the channel!\n`-settings rpgonly >` Only allow RPG commands in the channel!\n`-settings setprefix [prefix] >` Set the server prefix!\n`-settings resetprefix >` Reset the server's prefix to default!"
           },
           {
             "name": "Misc Commands List",
-            "value": "`-standings >` Display your local leaderboard!\n-`scavenge >` Scavenge items using your pickaxe!\n`-repshop >` Display the Reputation shop!\n`-raffle >` Enter the raffle, joining costs for **50** tacos!\n`-ach >` Display your achievements!\n`-tacos >` Display your tacos!\n`-xp >` Display your experience and level!`-stands >` Display your taco stands!\n`-toprpg >` Display the RPG leaderboards!\n`-toplist >` Display the experience and level leaderboards!\n-pickup >` Pick up tacos off the ground!\n"
+            "value": "`-standings >` Display your local leaderboard!\n`-scavenge >` Scavenge items using your pickaxe!\n`-repshop >` Display the Reputation shop!\n`-raffle >` Enter the raffle, joining costs for **50** tacos!\n`-ach >` Display your achievements!\n`-tacos >` Display your tacos!\n`-xp >` Display your experience and level!`-stands >` Display your taco stands!\n`-toprpg >` Display the RPG leaderboards!\n`-toplist >` Display the experience and level leaderboards!\n-pickup >` Pick up tacos off the ground!\n"
           },
           {
             "name": "-fruits [user] [user] [user] ...",
