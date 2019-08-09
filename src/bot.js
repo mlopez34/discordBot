@@ -198,13 +198,8 @@ client.on('message', function(message){
                 if ( commandIs("settings", message, botMentioned)){
                     if (message.author.id == config.ownerId
                     || (message.member.hasPermission("ADMINISTRATOR"))){
-                        console.log("**** HERE")
                         settings.settingsCommand(message, args)
-                    }else{
-                        console.log("**** NOT HERE")
                     }
-                }else{
-                    console.log(" **ASDFDSFS " + botMentioned)
                 }
                 if( commandIs("thank", message ) && settings.canBotRespondToCommandInChannel("regular", guildId, channelId)){
                     try{
