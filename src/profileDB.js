@@ -1083,7 +1083,7 @@ module.exports.createGuildSettingsProfile = function(data, cb) {
     var createDate = new Date();
     data.createdate = createDate
     var query = 'insert into '+ config.serverSettingsTable + '(guildid, createdate)' +
-        'values(${guildId}, ${createdate})'
+        'values(${guildidd}, ${createdate})'
     db.none(query, data)
     .then(function () {
     cb(null, {

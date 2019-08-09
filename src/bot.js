@@ -58,7 +58,11 @@ client.on("error", (e) => console.error(e));
 client.on("guildCreate", guild => {
     let defaultChannel = "";
     settings.createGuildProfile(guild.id, function(gE, gD){
-        console.log("created guild settings")
+        if (gE){
+            console.log(gE)
+        }else{
+            console.log("created guild settings")
+        }
     })
     guild.channels.forEach((channel) => {
     if(channel.type == "text" && defaultChannel == "") {
