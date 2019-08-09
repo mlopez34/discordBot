@@ -40,22 +40,6 @@ client.on('ready', function(err) {
         // console.log(err);
     } 
     console.log("in guilds: " + client.guilds.size)
-    client.guilds.forEach(function(item){
-        profileDB.getGuildSettings(item.id, function(err, res){
-            if (err){
-                //create
-                settings.createGuildProfile(item.id, function(err, res){
-                    if(err){
-                        console.log(err)
-                    }else{
-                        console.log("added " + item.id)
-                    }
-                })
-            }else{
-                // do nothing
-            }
-        })
-    })
     console.log('The bot is online'); 
     // initialize market
     commands.initializeItemsMaps(client, function(err, res){
