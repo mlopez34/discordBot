@@ -40,6 +40,22 @@ client.on('ready', function(err) {
         // console.log(err);
     } 
     console.log("in guilds: " + client.guilds.size)
+    client.guilds.forEach(function(item){
+        profileDB.getGuildSettings(item.id, function(err, res){
+            if (err){
+                //create
+                settings.createGuildProfile(item.id, function(err, res){
+                    if(err){
+                        console.log(err)
+                    }else{
+                        console.log("added " + item.id)
+                    }
+                })
+            }else{
+                // do nothing
+            }
+        })
+    })
     console.log('The bot is online'); 
     // initialize market
     commands.initializeItemsMaps(client, function(err, res){
@@ -126,17 +142,6 @@ client.on('message', function(message){
     //// console.log(message);
     let botMentioned =  message.mentions.members.first() ? message.mentions.members.first().id == config.botId : false
     try{
-        if (message.channel && message.channel.guild && message.channel.guild.id){
-            if (settings.getServerSettings(message.channel.guild.id) == undefined){
-                settings.createGuildProfile(message.channel.guild.id, function(err,res){
-                    if (err){
-                        console.log(err)
-                    }else{
-                        console.log(res)
-                    }
-                })
-            }
-        }
         if (message.channel && message.channel.guild && message.channel.guild.id && !guildsRegistered[message.channel.guild.id]){
             
             profileDB.getGuildData(message.channel.guild.id, function(gErr, gData){
