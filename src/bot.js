@@ -203,6 +203,8 @@ client.on('message', function(message){
                     }else{
                         console.log("**** NOT HERE")
                     }
+                }else{
+                    console.log(" **ASDFDSFS " + botMentioned)
                 }
                 if( commandIs("thank", message ) && settings.canBotRespondToCommandInChannel("regular", guildId, channelId)){
                     try{
