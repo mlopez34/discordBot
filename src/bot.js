@@ -127,6 +127,16 @@ client.on('message', function(message){
     let botMentioned =  message.mentions.members.first() ? message.mentions.members.first().id == config.botId : false
     try{
         if (message.channel && message.channel.guild && message.channel.guild.id && !guildsRegistered[message.channel.guild.id]){
+            if (settings.getServerSettings(message.channel.guild.id) == undefined){
+                settings.createGuildProfile(message.channel.guild.id, function(err,res){
+                    if (err){
+                        console.log(err)
+                    }else{
+                        console.log(res)
+                    }
+                })
+            }
+            
             profileDB.getGuildData(message.channel.guild.id, function(gErr, gData){
                 if (gErr){
                     // create guild
@@ -137,6 +147,7 @@ client.on('message', function(message){
                         console.log("created guild in db")
                         guildsRegistered[message.channel.guild.id] = true
                     })
+                    
                 }else{
                     guildsRegistered[message.channel.guild.id] = true
                     console.log("guild in db")
