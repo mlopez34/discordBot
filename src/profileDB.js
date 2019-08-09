@@ -952,6 +952,148 @@ module.exports.getToplistUsers = function(cb) {
     });
 }
 
+module.exports.getServerSettings = function(cb) {
+    var query = 'select * from ' + config.serverSettingsTable + ' LIMIT 50000'
+    db.query(query)
+    .then(function (data) {
+    cb(null, {
+        status: 'success',
+        data: data,
+        message: 'Retrieved server settings'
+        });
+    })
+    .catch(function (err) {
+        console.log(err);
+        cb(err);
+    });
+}
+
+module.exports.getGuildSettings = function(guildId, cb) {
+    var query = 'select * from ' + config.serverSettingsTable + ' where guildid=$1'
+    db.one(query, [guildId])
+    .then(function (data) {
+    cb(null, {
+        status: 'success',
+        data: data,
+        message: 'Retrieved guild settings'
+        });
+    })
+    .catch(function (err) {
+        console.log(err);
+        cb(err);
+    });
+}
+
+module.exports.muteChannelInGuild = function(guildId, channelId, mute, cb){
+    var query;
+    if (mute){
+        query = 'update ' + config.serverSettingsTable + ' set mutedchannels = mutedchannels || $1::bigint where guildid=$2'
+    }else{
+        var query = 'update ' + config.serverSettingsTable + ' set mutedchannels = array_remove(mutedchannels, $1) where guildid=$2'
+    }
+    db.none(query, [ channelId, guildId ])
+    .then(function () {
+    cb(null, {
+        status: 'success',
+        message: 'added statistic'
+        });
+    })
+    .catch(function (err) {
+        cb(err);
+    });
+}
+
+module.exports.enableChannelInGuild = function(guildId, channelId, enable, cb){
+
+    var query;
+    if (enable){
+        query = 'update ' + config.serverSettingsTable + ' set enabledchannels = enabledchannels || $1::bigint where guildid=$2'
+    }else{
+        var query = 'update ' + config.serverSettingsTable + ' set enabledchannels = array_remove(enabledchannels, $1) where guildid=$2'
+    }
+    db.none(query, [ channelId, guildId ])
+    .then(function () {
+    cb(null, {
+        status: 'success',
+        message: 'added statistic'
+        });
+    })
+    .catch(function (err) {
+        cb(err);
+    });
+}
+
+module.exports.rpgDisableChannelInGuild = function(guildId, channelId, disable, cb){
+
+    var query;
+    if (disable){
+        query = 'update ' + config.serverSettingsTable + ' set rpgdisabledchannels = rpgdisabledchannels || $1::bigint where guildid=$2'
+    }else{
+        var query = 'update ' + config.serverSettingsTable + ' set rpgdisabledchannels = array_remove(rpgdisabledchannels, $1) where guildid=$2'
+    }
+    db.none(query, [ channelId, guildId ])
+    .then(function () {
+    cb(null, {
+        status: 'success',
+        message: 'added statistic'
+        });
+    })
+    .catch(function (err) {
+        cb(err);
+    });
+}
+
+module.exports.rpgOnlyChannelInGuild = function(guildId, channelId, rpgonly, cb){
+
+    var query;
+    if (rpgonly){
+        query = 'update ' + config.serverSettingsTable + ' set rpgonlychannels = rpgonlychannels || $1::bigint where guildid=$2'
+    }else{
+        var query = 'update ' + config.serverSettingsTable + ' set rpgonlychannels = array_remove(rpgdisabledchannels, $1) where guildid=$2'
+    }
+    db.none(query, [ channelId, guildId ])
+    .then(function () {
+    cb(null, {
+        status: 'success',
+        message: 'added statistic'
+        });
+    })
+    .catch(function (err) {
+        cb(err);
+    });
+}
+
+module.exports.setGuildPrefix = function(guildId, prefix, cb){
+
+    var query = 'update ' + config.serverSettingsTable + ' set prefix = $1 where guildid=$2'
+
+    db.none(query, [ prefix, guildId ])
+    .then(function () {
+    cb(null, {
+        status: 'success',
+        message: 'added statistic'
+        });
+    })
+    .catch(function (err) {
+        cb(err);
+    });
+}
+
+module.exports.createGuildSettingsProfile = function(data, cb) {
+    var query = 'insert into '+ config.serverSettingsTable + '(guildid)' +
+        'values(${guildId})'
+    db.none(query, data)
+    .then(function () {
+    cb(null, {
+        status: 'success',
+        message: 'Inserted one guild'
+        });
+    })
+    .catch(function (err) {
+        cb(err);
+    });
+}
+
 module.exports.getRpgTopList = function(cb) {
 var query = 'select *  from ' + config.profileTable + ' where rpgpoints is not null ORDER BY currentchallenge DESC NULLS LAST, rpgpoints DESC NULLS LAST LIMIT 1000'
 db.query(query)

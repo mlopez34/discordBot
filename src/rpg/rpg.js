@@ -672,7 +672,7 @@ module.exports.setreadyLock = function(activeRPGEvent, discordUserId, set){
     }
 }
 
-module.exports.getreadyLock = function(activeRPGEvent, discordUserId){
+module.exports.getreadyLock = function(activeRPGEvent){
     if (readyLock[activeRPGEvent]){
         let locked = false
         for (var member in readyLock[activeRPGEvent]){
@@ -745,7 +745,7 @@ module.exports.enterUserToQueue = function(message, queueToEnter, userArea){
                         groupOfMessagesSent.push(sentMessage)
                     })
                     .catch(function(error){
-
+                        channelToAnnounceIn.send("error " + error)
                     })
                     usersInRPGEvents["rpg-"+userId] = { id: message.channel.id, ready: false }; // basing off of last message sent id
                     teamInQueueByDiscordIds.push(authorToPing)
@@ -805,9 +805,9 @@ module.exports.rpgReady = function(message, itemsAvailable, amuletItemsById, buf
                 var currentPlayerKeystone = userData.data[challengeId] || 0;
                 var keystonePicked = (activeRPGEvents[ "rpg-" +  rpgEventId ] && activeRPGEvents[ "rpg-" +  rpgEventId ].challenge) ? activeRPGEvents[ "rpg-" + rpgEventId ].challenge.keystone : false;
                 if ((currentPlayerChallenge + 1) >= (parseInt( challengePicked ) )
-                    && (currentPlayerKeystone) >= (parseInt( keystonePicked ) ) 
-                    && (parseInt( challengePicked ) ) > 0 
-                    && (parseInt( challengePicked ) ) <= CURRENT_CHALLENGES_AVAILABLE ){
+                && (currentPlayerKeystone) >= (parseInt( keystonePicked ) ) 
+                && (parseInt( challengePicked ) ) > 0 
+                && (parseInt( challengePicked ) ) <= CURRENT_CHALLENGES_AVAILABLE ){
                     activeRPGEvents[ "rpg-" +  rpgEventId ].challenge.valid = true;
                 }
                 var myRpgArea = userData.data.currentarea
@@ -2097,6 +2097,7 @@ module.exports.rpgReady = function(message, itemsAvailable, amuletItemsById, buf
                                                                 })
                                                                 .catch(function(err){
                                                                     console.log(err)
+                                                                    exports.setreadyLock(rpgEventId, discordUserId, false)
                                                                     message.channel.send("Unable to display RPG embed, Enable embeds in this channel to begin RPG events!")
                                                                 })
                                                             }

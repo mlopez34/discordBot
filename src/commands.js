@@ -15,6 +15,7 @@ var disassembleItem = require("./disassemble.js")
 var experience = require("./experience.js")
 var wearStats = require("./wearStats.js")
 var quest = require("./quest.js")
+var settings = require("./settings.js")
 // game files
 /*
 var game = require("./card_game/miniGame.js");
@@ -1927,7 +1928,7 @@ function tacoEmbedBuilder(message, profileData){
     const embed = new Discord.RichEmbed()
     .setColor(0x00AE86)
     .addField( profileData.userName +"'s Tacos" + ' :taco:', profileData.userTacos, true)
-    .setFooter('use ' + config.commandString + 'give @user to give a user some tacos!')
+    .setFooter('use ' + settings.getGuildPrefix(message.channel.guild.id) + 'give @user to give a user some tacos!')
     message.channel.send({embed});
 }
 
@@ -2273,11 +2274,11 @@ function shopBuilder(message, shopData, long){
         var tacoStandDescription = "Taco stands can be used to produce tacos based on the number of stands you have. \nYou can produce " + BASE_TACO_PREPARE + " per taco stand. \nThe cost of each additional stand will be higher - city tax bro. "
         var treeCost = BASE_TACO_COST + (shopData.userTacoCost * 250) + " :taco:"
         var pickaxeDescription = "The pickaxe can be used to scavenge. You never know what you will find in these lands ";
-        var pastaDescription = "Add a quote to your profile, to purchase do: " +config.commandString + "buypasta [your pasta message]."
-        var greenHouseDescription = "The Greenhouse can be used to grow crops by planting seeds and for baking, to purchase do: " +config.commandString + "buygreenhouse "
-        var templeDescription = "The Temple can be used to gain special bonuses and crafting recipes, to purchase do: " +config.commandString + "buytemple "
-        var hacksawDescription = "The Hacksaw can be used to disassemble items and create armaments for items which improve the item, to purchase do: " +config.commandString + "buyhacksaw "
-        var stableDescription = "The Stable can be used to buy more pets " +config.commandString + "buystable "
+        var pastaDescription = "Add a quote to your profile, to purchase do: " + settings.getGuildPrefix(message.channel.guild.id) + "buypasta [your pasta message]."
+        var greenHouseDescription = "The Greenhouse can be used to grow crops by planting seeds and for baking, to purchase do: " + settings.getGuildPrefix(message.channel.guild.id) + "buygreenhouse "
+        var templeDescription = "The Temple can be used to gain special bonuses and crafting recipes, to purchase do: " + settings.getGuildPrefix(message.channel.guild.id) + "buytemple "
+        var hacksawDescription = "The Hacksaw can be used to disassemble items and create armaments for items which improve the item, to purchase do: " + settings.getGuildPrefix(message.channel.guild.id) + "buyhacksaw "
+        var stableDescription = "The Stable can be used to buy more pets " + settings.getGuildPrefix(message.channel.guild.id) + "buystable "
 
         var pickaxeCost = PICKAXE_COST +" :taco:";
         const embed = new Discord.RichEmbed()
@@ -2287,12 +2288,12 @@ function shopBuilder(message, shopData, long){
         .setDescription("Bender accepts Tacos as currency since he's a hungry guy :shrug:. Have a look around!")
         .addField('Taco Stands :bus:', tacoStandDescription, true)
         .addField('Cost', treeCost, true)
-        .addField('Command', config.commandString+ "buystand", true)
+        .addField('Command', settings.getGuildPrefix(message.channel.guild.id)+ "buystand", true)
         if(shopData.pickaxe == "none"){
             embed.addBlankField(false)
             .addField('Pickaxe :pick:', pickaxeDescription, true)
             .addField('Cost', pickaxeCost, true)
-            .addField('Command', config.commandString + "buypickaxe", true)
+            .addField('Command', settings.getGuildPrefix(message.channel.guild.id) + "buypickaxe", true)
         }
         else if (shopData.pickaxe == "basic"){
             // improved pickaxe
@@ -2301,7 +2302,7 @@ function shopBuilder(message, shopData, long){
             embed.addBlankField(false)
             .addField('Improved Pickaxe :small_blue_diamond::pick:', pickaxeDescription, true)
             .addField('Cost', pickaxeCost, true)
-            .addField('Command', config.commandString + "buypickaxe", true)
+            .addField('Command', settings.getGuildPrefix(message.channel.guild.id) + "buypickaxe", true)
         }
         else if (shopData.pickaxe == "improved"){
             // improved pickaxe
@@ -2310,7 +2311,7 @@ function shopBuilder(message, shopData, long){
             embed.addBlankField(false)
             .addField('Master Pickaxe :diamond_shape_with_a_dot_inside::pick:', pickaxeDescription, true)
             .addField('Cost', pickaxeCost, true)
-            .addField('Command', config.commandString + "buypickaxe", true)
+            .addField('Command', settings.getGuildPrefix(message.channel.guild.id) + "buypickaxe", true)
         }
         else if (shopData.pickaxe == "master"){
             // improved pickaxe
@@ -2319,7 +2320,7 @@ function shopBuilder(message, shopData, long){
             embed.addBlankField(false)
             .addField('Ethereal Pickaxe :cyclone::pick:', pickaxeDescription, true)
             .addField('Cost', pickaxeCost, true)
-            .addField('Command', config.commandString + "buypickaxe", true)
+            .addField('Command', settings.getGuildPrefix(message.channel.guild.id) + "buypickaxe", true)
         }
         else if (shopData.pickaxe == "ethereal"){
             // improved pickaxe
@@ -2328,7 +2329,7 @@ function shopBuilder(message, shopData, long){
             embed.addBlankField(false)
             .addField("Zeus' Trident :sparkles::pick:", pickaxeDescription, true)
             .addField('Cost', pickaxeCost, true)
-            .addField('Command', config.commandString + "buypickaxe", true)
+            .addField('Command', settings.getGuildPrefix(message.channel.guild.id) + "buypickaxe", true)
         }
 
         if (!shopData.greenhouse){
@@ -2347,10 +2348,10 @@ function shopBuilder(message, shopData, long){
         embed.addBlankField(false)
         .addField('Pasta :spaghetti:', pastaDescription, true)
         .addField('Cost', PASTA_COST + " :taco:", true)
-        .addField('Command', config.commandString + "buyPasta", true)
+        .addField('Command', settings.getGuildPrefix(message.channel.guild.id) + "buyPasta", true)
         
         embed.addField('Wearable Items', "Knife/Socks: " + SHOP_ITEM_COST + " :taco: gives chance at additional tacos when thanking\nShorts/Skirt: " + SHOP_ITEM_COST + ":taco: gives chance at additional tacos when sorrying\nT-shirt/Belt: " + SHOP_ITEM_COST + ":taco: gives chance at additional tacos when cooking\ndo `-buyitem details` for more info on these items\n****Each of these items can be combined into improved versions (requires 5 of the same item to combine | use command `-combine [itemname]`) ", true)
-        .addField('Command', config.commandString + "buyitem [itemname] \n**example**: -buyitem knife", true)
+        .addField('Command', settings.getGuildPrefix(message.channel.guild.id) + "buyitem [itemname] \n**example**: -buyitem knife", true)
 
         // allow for pet to be purchased
         if (shopData.repstatus && (REPUTATIONS[shopData.repstatus.toLowerCase()]) ){
@@ -2652,7 +2653,7 @@ function repShopBuilder(message, shopData){
         .addField('Pet (Liked Reputation or Better Only)', ":dog2:", true)
         .addField('Description', petDescription, true)
         .addField('Cost', petCost, true)
-        .addField('Command', config.commandString + "buypet [kind of pet] [pet name]", true)
+        .addField('Command', settings.getGuildPrefix(message.channel.guild.id) + "buypet [kind of pet] [pet name]", true)
     }
     if (shopData.repstatus && (REPUTATIONS[shopData.repstatus.toLowerCase()]) ){
         var userRepLevel = REPUTATIONS[shopData.repstatus.toLowerCase()].level;
@@ -2664,7 +2665,7 @@ function repShopBuilder(message, shopData){
             .addField('Artifact Recipe (Respected Reputation or Better Only)', ":rosette:", true)
             .addField('Description', recipeDescription, true)
             .addField('Cost', ARTIFACT_RECIPE_COST + " :taco:", true)
-            .addField('Command', config.commandString + "buyrecipe", true)
+            .addField('Command', settings.getGuildPrefix(message.channel.guild.id) + "buyrecipe", true)
         }
     }
     if (shopData.repstatus && (REPUTATIONS[shopData.repstatus.toLowerCase()]) ){
@@ -2677,7 +2678,7 @@ function repShopBuilder(message, shopData){
             .addField('Flask (Admired Reputation or Better Only)', ":alembic:", true)
             .addField('Description', flaskDescription, true)
             .addField('Cost', flaskCostForUser + " :taco:", true)
-            .addField('Command', config.commandString + "buyflask", true)
+            .addField('Command', settings.getGuildPrefix(message.channel.guild.id) + "buyflask", true)
         }
     }
     embed.addBlankField(false)
@@ -6417,7 +6418,7 @@ function todaysRecipesEmbedBuilder(message, userData){
     for (var r in recipesAvailableObjects){
         embed.addField(recipesAvailableObjects[r].recipeName, recipesAvailableObjects[r].recipeRequirementsString, false)
         embed.addField("Recipe Info", itemsMapById[ recipesAvailableObjects[r].itemId ].itemstatistics, false)
-        embed.addField("Command To Bake", config.commandString + "bake " + recipesAvailableObjects[r].itemshortname, false)
+        embed.addField("Command To Bake", settings.getGuildPrefix(message.channel.guild.id) + "bake " + recipesAvailableObjects[r].itemshortname, false)
     }
     message.channel.send({embed});
 }
