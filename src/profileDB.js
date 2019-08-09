@@ -1080,8 +1080,10 @@ module.exports.setGuildPrefix = function(guildId, prefix, cb){
 }
 
 module.exports.createGuildSettingsProfile = function(data, cb) {
-    var query = 'insert into '+ config.serverSettingsTable + '(guildid)' +
-        'values(${guildId})'
+    var createDate = new Date();
+    data.createdate = createDate
+    var query = 'insert into '+ config.serverSettingsTable + '(guildid, createdate)' +
+        'values(${guildId}, ${createdate})'
     db.none(query, data)
     .then(function () {
     cb(null, {
