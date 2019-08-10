@@ -8615,11 +8615,11 @@ function processAbility(abilityObject, event){
                             ignoreBandaid.push(event.membersInParty[targetToRemoveFrom].statuses[status]);
                         }
                         if (event.membersInParty[targetToRemoveFrom].statuses[status].dot
-                            && event.membersInParty[targetToRemoveFrom].statuses[status].dot.ignoreBandaid){
+                        && event.membersInParty[targetToRemoveFrom].statuses[status].dot.ignoreBandaid){
                             ignoreBandaid.push(event.membersInParty[targetToRemoveFrom].statuses[status]);
                         }
                         if ((event.membersInParty[targetToRemoveFrom].statuses[status].dot
-                            && event.membersInParty[targetToRemoveFrom].statuses[status].dot.areaWideBuffOnRemove)){
+                        && event.membersInParty[targetToRemoveFrom].statuses[status].dot.areaWideBuffOnRemove)){
                             // process ability 
                             var dotBeingRemoved = event.membersInParty[targetToRemoveFrom].statuses[status].dot
                             var abilityIdOfBuff = event.membersInParty[targetToRemoveFrom].statuses[status].dot.areaWideBuffOnRemove
@@ -8628,7 +8628,7 @@ function processAbility(abilityObject, event){
                                 abilityToString = abilityToString + processBurningAdrenaline( event, dotBeingRemoved, abilityIdOfBuff  )
                             }
                         }if (event.membersInParty[targetToRemoveFrom].statuses[status].dot
-                            && event.membersInParty[targetToRemoveFrom].statuses[status].dot.onRemoveSelectNewTarget){
+                        && event.membersInParty[targetToRemoveFrom].statuses[status].dot.onRemoveSelectNewTarget){
                             var newTarget = getRandomLivingPlayer(event, targetToRemoveFrom)
                             if (newTarget){
                                 var statusToTransfer = event.membersInParty[targetToRemoveFrom].statuses[status]
@@ -8636,8 +8636,8 @@ function processAbility(abilityObject, event){
                             }
                         }
                         else if (event.membersInParty[targetToRemoveFrom].statuses[status].dot
-                            && event.membersInParty[targetToRemoveFrom].statuses[status].dot.onBandaidCasterGainsBuff
-                            && !checkedStrength){
+                        && event.membersInParty[targetToRemoveFrom].statuses[status].dot.onBandaidCasterGainsBuff
+                        && !checkedStrength){
                             // get the caster of the dot and give them the buff to gain
                             var dotBeingRemoved = event.membersInParty[targetToRemoveFrom].statuses[status].dot
                             var abilityIdOfBuff = event.membersInParty[targetToRemoveFrom].statuses[status].dot.onBandaidCasterGainsBuff
@@ -8650,9 +8650,9 @@ function processAbility(abilityObject, event){
                             }
                         }
                         else if ((event.membersInParty[targetToRemoveFrom].statuses[status].dot
-                            && event.membersInParty[targetToRemoveFrom].statuses[status].dot.dmgOnDotRemove)
-                            || (event.membersInParty[targetToRemoveFrom].statuses[status].dmgOnStatusRemove)){
-                            // deal the dmg on dot remove to everyone
+                        && event.membersInParty[targetToRemoveFrom].statuses[status].dot.dmgOnDotRemove)
+                        || (event.membersInParty[targetToRemoveFrom].statuses[status].dmgOnStatusRemove)){
+                            // deal the dmg on dot remove
 
                             var nameOfEndOfTurnAbility = "";
 
@@ -8686,20 +8686,27 @@ function processAbility(abilityObject, event){
                             var damageToDeal = calculateDamageDealt(event, abilityCaster, abilityObject.target, abilityObject.ability)
                             var critStrike = damageToDeal.critical ? ">" : ""
                             if (abilityObject.ability.areawide){
-                                abilityToString = abilityToString + critStrike + "The group suffered " + damageToDeal.dmg + " damage - " + nameOfEndOfTurnAbility +"\n"                                
+                                abilityToString = abilityToString + critStrike + "The group suffered " + damageToDeal.dmg + " damage - " + nameOfEndOfTurnAbility +"\n" 
+                                for (var targetToDealDmg in event.membersInParty){
+                                    if (!checkIfDeadByObject(event.membersInParty[targetToDealDmg])){
+                                        var abType = abilityObject.ability.type
+                                        damageToDealToPlayer = dealDamageTo(event.membersInParty[targetToDealDmg], damageToDeal.dmg, event, abType)
+                                        if ( checkHasDied(event.membersInParty[targetToDealDmg])){
+                                            abilityToString = abilityToString + hasDied(event, event.membersInParty[targetToDealDmg]);
+                                        }
+                                    }
+                                }                               
                             }else{
-                                abilityToString = abilityToString + critStrike + event.membersInParty[targetToRemoveFrom].name + " took " + damageToDeal.dmg + " damage - " + nameOfEndOfTurnAbility +"\n"                                
-                            }
-                            for (var targetToDealDmg in event.membersInParty){
-                                var targetToDealDmgName = event.membersInParty[targetToDealDmg].name
-                                if (!checkIfDeadByObject(event.membersInParty[targetToDealDmg])){
+                                abilityToString = abilityToString + critStrike + event.membersInParty[targetToRemoveFrom].name + " took " + damageToDeal.dmg + " damage - " + nameOfEndOfTurnAbility +"\n"   
+                                if (!checkIfDeadByObject(event.membersInParty[targetToRemoveFrom])){
                                     var abType = abilityObject.ability.type
-                                    damageToDealToPlayer = dealDamageTo(event.membersInParty[targetToDealDmg], damageToDeal.dmg, event, abType)
-                                    if ( checkHasDied(event.membersInParty[targetToDealDmg])){
-                                        abilityToString = abilityToString + hasDied(event, event.membersInParty[targetToDealDmg]);
+                                    damageToDealToPlayer = dealDamageTo(event.membersInParty[targetToRemoveFrom], damageToDeal.dmg, event, abType)
+                                    if ( checkHasDied(event.membersInParty[targetToRemoveFrom])){
+                                        abilityToString = abilityToString + hasDied(event, event.membersInParty[targetToRemoveFrom]);
                                     }
                                 }
                             }
+                            
                         }
                         
                     }
