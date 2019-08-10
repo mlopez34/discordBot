@@ -589,19 +589,19 @@ client.on('message', function(message){
                     commands.rpgstatsCommand(message);
                 }
                 if (commandIs("timetravel", message) && settings.canBotRespondToCommandInChannel("regular", guildId, channelId)){
-                    commands.timeTravelCommand(message, args, channelName);
+                    commands.timeTravelCommand(message, args);
                 }
                 else if (commandIs("propose", message) && settings.canBotRespondToCommandInChannel("regular", guildId, channelId)){
-                    commands.proposeCommand(message, channelName);
+                    commands.proposeCommand(message);
                 }
                 else if (commandIs("wedding", message) && settings.canBotRespondToCommandInChannel("regular", guildId, channelId)){
-                    commands.weddingCommand(message, channelName);
+                    commands.weddingCommand(message);
                 }
                 else if (commandIs("explore", message) && settings.canBotRespondToCommandInChannel("regular", guildId, channelId)){
-                    commands.exploreTombCommand(message, channelName);
+                    commands.exploreTombCommand(message);
                 }
                 else if (commandIs("ritual", message) && settings.canBotRespondToCommandInChannel("regular", guildId, channelId)){
-                    commands.ritualCommand(message, channelName);
+                    commands.ritualCommand(message);
                 }
             }
             else if (message.channel.type == "text" 
@@ -610,7 +610,7 @@ client.on('message', function(message){
                 // artifact abilities
                 try{
                     if (commandIs("timetravel", message)){
-                        commands.timeTravelCommand(message, args, channelName);
+                        commands.timeTravelCommand(message, args);
                     }
                     else if (commandIs("rpgqueue", message)){
                         if (message.channel.type == "text" && !message.author.bot){
@@ -1284,27 +1284,27 @@ client.on('message', function(message){
                     profileDB.createUserActivity(data)
                 }
                 if (commandIs("timetravel", message) && settings.canBotRespondToCommandInChannel("regular", guildId, channelId)){
-                    commands.timeTravelCommand(message, args, channelName);
+                    commands.timeTravelCommand(message, args);
                     data.command = "timetravel"
                     profileDB.createUserActivity(data)
                 }
                 else if (commandIs("propose", message) && settings.canBotRespondToCommandInChannel("regular", guildId, channelId)){
-                    commands.proposeCommand(message, channelName);
+                    commands.proposeCommand(message);
                     data.command = "propose"
                     profileDB.createUserActivity(data)
                 }
                 else if (commandIs("wedding", message) && settings.canBotRespondToCommandInChannel("regular", guildId, channelId)){
-                    commands.weddingCommand(message, channelName);
+                    commands.weddingCommand(message);
                     data.command = "wedding"
                     profileDB.createUserActivity(data)
                 }
                 else if (commandIs("explore", message) && settings.canBotRespondToCommandInChannel("regular", guildId, channelId)){
-                    commands.exploreTombCommand(message, channelName);
+                    commands.exploreTombCommand(message);
                     data.command = "explore"
                     profileDB.createUserActivity(data)
                 }
                 else if (commandIs("ritual", message) && settings.canBotRespondToCommandInChannel("regular", guildId, channelId)){
-                    commands.ritualCommand(message, channelName);
+                    commands.ritualCommand(message);
                     data.command = "ritual"
                     profileDB.createUserActivity(data)
                 }
