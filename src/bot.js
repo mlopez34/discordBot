@@ -130,7 +130,7 @@ function commandIs(str, msg, botMentioned){
 client.on('message', function(message){
     // log the guild that this message came from into guildactivity table
     //// console.log(message);
-    let botMentioned =  message.mentions.members.first() ? message.mentions.members.first().id == config.botId : false
+    let botMentioned =  message.mentions && message.mentions.members && message.mentions.members.first() ? message.mentions.members.first().id == config.botId : false
     try{
         if (message.channel && message.channel.guild && message.channel.guild.id && !guildsRegistered[message.channel.guild.id]){
             
