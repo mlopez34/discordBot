@@ -3592,7 +3592,7 @@ function calculateRewards(event, memberInRpgEvent, allItems, numberOfMembers, fi
         }
         var challengeDifficulty = enemiesToEncounter.challenge[challengeNum].difficulty ? enemiesToEncounter.challenge[challengeNum].difficulty : 1
         var extraXP =  memberInRpgEvent.extraXp
-        rewardsForPlayer.extraTacos = rewardsForPlayer.extraTacos + (memberInRpgEvent.extraTacosForUser * Math.ceil(challengeDifficulty/10))
+        rewardsForPlayer.extraTacos = rewardsForPlayer.extraTacos + (memberInRpgEvent.extraTacosForUser )
         rewardsForPlayer.xp = rewardsForPlayer.xp + challengeXpPts + extraXP;
         rewardsForPlayer.rpgPoints = rewardsForPlayer.rpgPoints + challengePts * challengeDifficulty
         
