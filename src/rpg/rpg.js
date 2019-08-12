@@ -759,7 +759,7 @@ module.exports.enterUserToQueue = function(message, queueToEnter, userArea){
                 activeRPGEvents["rpg-" + message.channel.id].endOfTurnEvents = [];
                 activeRPGEvents["rpg-" + message.channel.id].area = userToUseAreaId
                 activeRPGEvents["rpg-" + message.channel.id].usersInArea = []
-                activeRPGEvents["rpg-" + message.channel.id].queueEvent = true;                
+                activeRPGEvents["rpg-" + message.channel.id].queueEvent = true;
             }else{
                 message.channel.send("You have entered the queue for an rpg event of `" + queueToEnter + "` players!")
             }
@@ -2042,7 +2042,11 @@ module.exports.rpgReady = function(message, itemsAvailable, amuletItemsById, buf
                                                                 // filter to only unique channels to send
                                                                 let groupOfUniqueChannels = filterForUniqueChannels(groupOfMessagesSent)
                                                                 let newGroupOfMessagesSent = []
+                                                                console.log("GROUP OF MESSAGES")
+                                                                console.log(groupOfMessagesSent)
+                                                                console.log(groupOfMessagesSent.length)
                                                                 if (groupOfMessagesSent){
+                                                                    console.log("IN GROUP OF MESSAGES SENT")
                                                                     groupOfUniqueChannels.forEach(function(uniqueChannel){
                                                                         uniqueChannel.channel.send({embed})
                                                                         .then(function(sentMessage){
@@ -2064,7 +2068,9 @@ module.exports.rpgReady = function(message, itemsAvailable, amuletItemsById, buf
                                                                         })
                                                                     })
                                                                     // sent the messages
+                                                                    console.log("OUTSIDE GROUP OF MESSAGES DELETE")
                                                                     for (var m in groupOfMessagesSent){
+                                                                        console.log("IN GROUP OF MESSAGES DELETE")
                                                                         groupOfMessagesSent[m].delete()
                                                                         .then(function(res){
                                                                             console.log(res)
@@ -2101,8 +2107,7 @@ module.exports.rpgReady = function(message, itemsAvailable, amuletItemsById, buf
                                                                     message.channel.send("Unable to display RPG embed, Enable embeds in this channel to begin RPG events!")
                                                                 })
                                                             }
-                                                        }
-                                                        else{
+                                                        }else{
                                                             exports.setreadyLock(rpgEventId, discordUserId, false)
                                                             message.channel.send("cannot start this challenge")
                                                         }
