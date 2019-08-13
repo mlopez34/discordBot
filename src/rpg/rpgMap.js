@@ -2946,6 +2946,10 @@ module.exports = {
                             enemyDifficulty: "boss"
                         },
                         {
+                            enemyId: "tarzan",
+                            enemyDifficulty: "medium"
+                        },
+                        {
                             enemyId: "kidnaper",
                             enemyDifficulty: "boss"
                         },
