@@ -177,6 +177,15 @@ function initializeGuildSettings(guild){
 
 // can i speak here?
 module.exports.canBotRespondToCommandInChannel = function(typeOfCommand, guildId, channelId){
+    if (!mapOfGuilds[guildId]){
+        exports.createGuildProfile(guildId, function(gE, gD){
+            if (gE){
+                console.log(gE)
+            }else{
+                console.log("*************** created guild settings")
+            }
+        })
+    }
     if (mapOfGuilds[guildId].mutedChannels 
     && mapOfGuilds[guildId].mutedChannels.indexOf(channelId) > -1){
         // bot is muted here completely
