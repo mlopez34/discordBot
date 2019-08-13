@@ -2943,11 +2943,11 @@ module.exports = {
                     enemies: [
                         {
                             enemyId: "kidnaper",
-                            enemyDifficulty: "hard"
+                            enemyDifficulty: "boss"
                         },
                         {
                             enemyId: "kidnaper",
-                            enemyDifficulty: "hard"
+                            enemyDifficulty: "boss"
                         },
                         {
                             enemyId: "trex",
@@ -2955,7 +2955,7 @@ module.exports = {
                         },
                         {
                             enemyId: "tarzan",
-                            enemyDifficulty: "hard"
+                            enemyDifficulty: "medium"
                         },
                         {
                             enemyId: "mountainlion",
