@@ -3597,6 +3597,9 @@ function calculateRewards(event, memberInRpgEvent, allItems, numberOfMembers, fi
             challengePts = challengePts * ( 6 + challengeNum + keystone )
             challengeXpPts = challengeXpPts * ( 6 + challengeNum + keystone )
         }
+        if (keystone > 0){
+            challengeXpPts = challengeXpPts + ( enemiesToEncounter.challenge[challengeNum].xppoints * keystone )
+        }
         var challengeDifficulty = enemiesToEncounter.challenge[challengeNum].difficulty ? enemiesToEncounter.challenge[challengeNum].difficulty : 1
         var extraXP =  memberInRpgEvent.extraXp
         rewardsForPlayer.extraTacos = rewardsForPlayer.extraTacos + (memberInRpgEvent.extraTacosForUser )
@@ -3719,6 +3722,7 @@ function calculateRewards(event, memberInRpgEvent, allItems, numberOfMembers, fi
                     }
                 }
             }
+            rewardsForPlayer.extraTacos = rewardsForPlayer.extraTacos + memberInRpgEvent.extraTacosForUser
         }
     }
     if (event.special && event.special.xp){
@@ -3731,9 +3735,8 @@ function calculateRewards(event, memberInRpgEvent, allItems, numberOfMembers, fi
     // calculate finds based on luck and diff of enemies
     rewardsForPlayer.xp = Math.floor(rewardsForPlayer.xp + additionalExperience + numberOfMembers)
     rewardsForPlayer.rpgPoints = Math.floor(rewardsForPlayer.rpgPoints + additionalRpgPoints + numberOfMembers);
-    rewardsForPlayer.extraTacos = rewardsForPlayer.extraTacos + memberInRpgEvent.extraTacosForUser
     rewardsForPlayer.items = itemsObtainedArray
-    return rewardsForPlayer;
+    return rewardsForPlayer
 }
 
 function effectsOnTurnEnd(event){

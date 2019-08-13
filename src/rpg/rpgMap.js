@@ -2920,9 +2920,9 @@ module.exports = {
                     ]
                 },
                 tomblioutpost: {
-                    areaString : " ",
+                    areaString : ":no_entry_sign:",
                     name: "Tombli Outpost",
-                    enemiesToDefeat: 218,
+                    enemiesToDefeat: 68,
                     onCompleteAreasUnlocked: [
                         "verdongorge"
                     ],
@@ -2940,6 +2940,28 @@ module.exports = {
                     areaString : " ",
                     name: "Verdon Gorge",
                     enemiesToDefeat: 150,
+                    enemies: [
+                        {
+                            enemyId: "kidnaper",
+                            enemyDifficulty: "hard"
+                        },
+                        {
+                            enemyId: "kidnaper",
+                            enemyDifficulty: "hard"
+                        },
+                        {
+                            enemyId: "trex",
+                            enemyDifficulty: "boss"
+                        },
+                        {
+                            enemyId: "tarzan",
+                            enemyDifficulty: "hard"
+                        },
+                        {
+                            enemyId: "mountainlion",
+                            enemyDifficulty: "hard"
+                        },
+                    ],
                     onCompleteAreasUnlocked: [
 
                     ],
