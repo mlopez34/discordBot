@@ -4,7 +4,7 @@
 // setprefix [prefix]
 // mention prefixreset, resets to -
 
-// mute - no responses at all (overries below)
+// mute - no responses at all (overrides below)
 // unmute - responds to any command in the channel 
 
 // enable - responds to ONLY these channels listed (overrides below) - if this array is empty then all channels work
@@ -19,18 +19,6 @@
 // servers default are - all channels can use bender and rpg (unmute, rpgenable)
 // when rpgdisable then the channel cannot use rpg commands
 // when rpgonly the channel can only use rpg commands
-
-
-////// TODO: create profileDB queries for all gets and updates
-/// add settings commands to bot.js, add a mention command as well
-/// test initializes
-/// test for new servers
-/// test for individual settings
-/// test with combination of settings
-/// test different prefixes
-/// change config.commandstring in all files to be the server's command string
-
-
 
 var profileDB = require("./profileDB.js");
 var config = require("./config.js");

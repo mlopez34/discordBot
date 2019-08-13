@@ -111,20 +111,24 @@ client.on("guildCreate", guild => {
 
 function commandIs(str, msg, botMentioned){
     console.log("msg content " + msg.content)
-    let guildPrefix = settings.getGuildPrefix(msg.channel.guild.id)
-    if ( str === "settings" && botMentioned ){
-        return msg.content.toLowerCase().includes(str);
-    }
-    if (( (str === "thank" || str === "sorry" || str === "welcome") && 
-    (msg.channel.guild.id == "576831363207135250"
-    || msg.channel.guild.id == "231378019292282880" ) )){
-        if (msg.content.toLowerCase().startsWith(guildPrefix)){
-            return  msg.content.toLowerCase().startsWith(guildPrefix + str);
+    if (msg.channel && msg.channel.guild){
+        let guildPrefix = settings.getGuildPrefix(msg.channel.guild.id)
+        if ( str === "settings" && botMentioned ){
+            return msg.content.toLowerCase().includes(str);
+        }
+        if (( (str === "thank" || str === "sorry" || str === "welcome") && 
+        (msg.channel.guild.id == "576831363207135250"
+        || msg.channel.guild.id == "231378019292282880" ) )){
+            if (msg.content.toLowerCase().startsWith(guildPrefix)){
+                return  msg.content.toLowerCase().startsWith(guildPrefix + str);
+            }else{
+                return  msg.content.toLowerCase().startsWith(str);
+            }
         }else{
-            return  msg.content.toLowerCase().startsWith(str);
+            return msg.content.toLowerCase().startsWith(guildPrefix + str);
         }
     }else{
-        return msg.content.toLowerCase().startsWith(guildPrefix + str);
+        return false
     }
 }
 
