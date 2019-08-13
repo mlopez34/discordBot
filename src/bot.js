@@ -172,9 +172,9 @@ client.on('message', function(message){
     if (message.channel && message.channel.guild 
     && (message.channel.guild.id == "576831363207135250"
     || message.channel.guild.id == "231378019292282880")){
-        let guildId = message.channel.guild.id
-        let channelId = message.channel.id
-        if (botEnabled){
+        let guildId = message.channel && message.channel.guild ? message.channel.guild.id : undefined
+        let channelId = message.channel ? message.channel.id : undefined
+        if (botEnabled && guildId && channelId){
             // console.log(message.author.id); // id of the user that created the message
             var args = message.content.split(/[ ]+/);
              console.log(args);
@@ -683,10 +683,10 @@ client.on('message', function(message){
             }
         }
     }else{
-        let guildId = message.channel.guild.id
-        let channelId = message.channel.id
+        let guildId = message.channel && message.channel.guild ? message.channelguild.id : undefined
+        let channelId = message.channel ? message.channel.id : undefined
 
-        if (botEnabled){
+        if (botEnabled && guildId && channelId){
             // console.log(message.author.id); // id of the user that created the message
             var args = message.content.split(/[ ]+/);
             console.log(args);
