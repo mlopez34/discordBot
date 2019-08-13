@@ -683,7 +683,7 @@ client.on('message', function(message){
             }
         }
     }else{
-        let guildId = message.channel && message.channel.guild ? message.channelguild.id : undefined
+        let guildId = message.channel && message.channel.guild ? message.channel.guild.id : undefined
         let channelId = message.channel ? message.channel.id : undefined
 
         if (botEnabled && guildId && channelId){
