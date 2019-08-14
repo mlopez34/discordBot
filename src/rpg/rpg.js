@@ -3607,7 +3607,7 @@ function calculateRewards(event, memberInRpgEvent, allItems, numberOfMembers, fi
             challengeXpPts = challengeXpPts * ( 6 + challengeNum + keystone )
         }
         if (keystone > 0){
-            challengeXpPts = challengeXpPts + ( enemiesToEncounter.challenge[challengeNum].xppoints * keystone )
+            challengeXpPts = challengeXpPts + ( ( enemiesToEncounter.challenge[challengeNum].xppoints * keystone ) / 2.5 )
         }
         var challengeDifficulty = enemiesToEncounter.challenge[challengeNum].difficulty ? enemiesToEncounter.challenge[challengeNum].difficulty : 1
         var extraXP =  memberInRpgEvent.extraXp
