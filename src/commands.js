@@ -768,7 +768,7 @@ function calculateResetScavengeCD(message, discordUserId, userProfile){
             if (err){
                 console.log(err)
             }else{
-                message.channel.send(message.author.username + " You are able to scavange again!")
+                message.channel.send(message.author.username + " You are able to scavenge again!")
             }
         })
     }
@@ -2859,12 +2859,12 @@ module.exports.patchnotesCommand = function(message){
         },
         "fields": [
           {
-            "name": "July 15, 2019",
-            "value": "```-RPG Queue command is here! You can now enter the rpg queue to join users in your rpg adventure from any server, use `-rpgqueue 2`, `-rpgqueue 3`, `-rpgqueue 4`, `-rpgqueue 5` to begin\n Use `-rpgleave` to leave the current queue you are in\nYou can only be in one queue at at time\n-RPG aliases can be used, you do not need to tag a user anymore and can instead use `p1`, `p2`, `p3`, `p4`, `p5`, to target them instead, their alias is listed next to their name in the RPG embed.\n-Inventory, Rares, Ancients, and Artifacts embeds now have paging\n-RPG areas have had their progress counts updated```"
-          },
-          {
             "name": "August 6, 2019",
             "value": "```-Cooldown timers are here! you can now use the -cd command to view all your command times, you can also use -toggle command to turn reminders on or off for the specific command example: -toggle scavenge\n-RPG heals can now crit!, scaling on rpg for areas and keystones should be correctly applying\n-RPG startup improvements for faster ready\n-RPG log now looks cleaner\n-RPG queue gives double item rewards than regular rpg\n-iteminfo works for items in the market now even if you do not own the item use -iteminfo marketid or -iteminfo shortname\n-Casserole gives 10 tacos per level insetad of 5```"
+          },
+          {
+            "name": "August 13, 2019",
+            "value": "```-Settings for individual servers are here!\n-You can set the server prefix using -settings setprefix [prefix]\n-Mute and Unmute bender from specific channels using -settings mute, and -settings unmute in the channel\n-Enable only specific channels for bender by using -settings enable\n-Enable or disable RPG commands in specific channels using -settings rpgenable or -settings rpgdisable\n-Only allow RPG commands in a specific channel using -settings rpgonly in the channel\n-For more info check the -help command\n-RPG Queue redesigned, the queue will begin shortly after there are enough players in the queue instead of immediately per queue size, you only need to use -rpgqueue to enter\n-```"
           }
         ]
       };
@@ -2957,7 +2957,7 @@ module.exports.rpghelpCommand = function(message){
         "fields": [
           {
             "name": "General Commands",
-            "value": "`-rpgstats >` Display your abilities and rpg stats!\n`-map >` display your current area and zone as well as available areas you can travel to!\n`-travel [areaname]   >` travel to a new area in the current zone you are in!\n`-rpgstart [1-4 user mentions]   >` Start an rpg with up to four other people!\n`-rpgqueue [2-5] >` Enter the RPG queue for a group of size 2-5\n`-rpgleave >` Leave the RPG queue\n`-rpgchallenge [1-10] [1-4 users] >` Start an rpg challenge with four other people! Rpg challenges must be defeated in order\n`-cast [ability] [target number/user]   >` Cast an ability on a target or user!\n**example**: -cast attack 1 (attacks enemy 1)\n-cast barrier @user (casts barrier on the user mentioned)\n-cast slash (deals damage to all enemies - only if the ability is areawide)"
+            "value": "`-rpgstats >` Display your abilities and rpg stats!\n`-map >` display your current area and zone as well as available areas you can travel to!\n`-travel [areaname]   >` travel to a new area in the current zone you are in!\n`-rpgstart [1-4 user mentions]   >` Start an rpg with up to four other people!\n`-rpgqueue >` Enter the RPG queue\n`-rpgleave >` Leave the RPG queue\n`-rpgchallenge [1-10] [1-4 users] >` Start an rpg challenge with four other people! Rpg challenges must be defeated in order\n`-cast [ability] [target number/user]   >` Cast an ability on a target or user!\n**example**: -cast attack 1 (attacks enemy 1)\n-cast barrier @user (casts barrier on the user mentioned)\n-cast slash (deals damage to all enemies - only if the ability is areawide)"
           },
           {
             "name": "Info",

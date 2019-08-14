@@ -3506,7 +3506,7 @@ function calculateRewards(event, memberInRpgEvent, allItems, numberOfMembers, fi
     if (event.challenge){
         var rarityRoll = undefined
         var challengeNum = event.challenge.challenge
-        var keystone = event.challenge.keystone
+        var keystone = event.challenge.keystone || 0
 
         var rareKeystoneItems = []
         var ancientsKeystoneItems = []
@@ -3611,7 +3611,7 @@ function calculateRewards(event, memberInRpgEvent, allItems, numberOfMembers, fi
         }
         var challengeDifficulty = enemiesToEncounter.challenge[challengeNum].difficulty ? enemiesToEncounter.challenge[challengeNum].difficulty : 1
         var extraXP =  memberInRpgEvent.extraXp
-        rewardsForPlayer.extraTacos = rewardsForPlayer.extraTacos + (memberInRpgEvent.extraTacosForUser )
+        rewardsForPlayer.extraTacos = rewardsForPlayer.extraTacos + (memberInRpgEvent.extraTacosForUser * ((challengeDifficulty / 10) + keystone) )
         rewardsForPlayer.xp = rewardsForPlayer.xp + challengeXpPts + extraXP;
         rewardsForPlayer.rpgPoints = rewardsForPlayer.rpgPoints + challengePts * challengeDifficulty
         
