@@ -1680,7 +1680,7 @@ module.exports.rpgReady = function(message, itemsAvailable, amuletItemsById, buf
                                                                     // FIRST check if the area has predefined enemies, if it doesnt then go for the zone enemies
                                                                     if (rpgZones[zoneUserIsIn].areas[areaToCheck].enemies){
                                                                         let areaEnemies = rpgZones[zoneUserIsIn].areas[areaToCheck].enemies
-
+                                                                        let uniqueEOTevents = []
                                                                         for (var en in areaEnemies){
                                                                             // create the enemy
                                                                             var enemyFound;
@@ -1780,7 +1780,7 @@ module.exports.rpgReady = function(message, itemsAvailable, amuletItemsById, buf
                                                                                 var endOfTurnEventName =  enemyFound.endOfTurnEvents[ eventAtEndOfTurn ]
                                                                                 if (rpgAbilities[ endOfTurnEventName ]){
                                                                                     var eventToPush = JSON.parse(JSON.stringify( rpgAbilities[ endOfTurnEventName ] ));
-                                                                                    if ( eventToPush.belongsToEvent ){
+                                                                                    if ( eventToPush.belongsToEvent && uniqueEOTevents.indexOf(endOfTurnEventName) == -1){
                                                                                         activeRPGEvents[rpgEvent].endOfTurnEvents.push( eventToPush );
                                                                                     }else if ( eventToPush.belongsToMember ){
                                                                                         enemies[enemyIdCount].endOfTurnEvents.push( eventToPush );
@@ -1792,6 +1792,7 @@ module.exports.rpgReady = function(message, itemsAvailable, amuletItemsById, buf
                                                                             enemyIdCount++;
                                                                         }
                                                                     }else{
+                                                                        let uniqueEOTevents = []
                                                                         for (var i = 1; i <= enemyCount; i++){
                                                                             // roll for enemy rarity, then roll for the actual enemy
                                                                             var rollForRarity;
@@ -1969,8 +1970,10 @@ module.exports.rpgReady = function(message, itemsAvailable, amuletItemsById, buf
                                                                                 var endOfTurnEventName =  enemyFound.endOfTurnEvents[ eventAtEndOfTurn ]
                                                                                 if (rpgAbilities[ endOfTurnEventName ]){
                                                                                     var eventToPush = JSON.parse(JSON.stringify( rpgAbilities[ endOfTurnEventName ] ));
-                                                                                    if ( eventToPush.belongsToEvent ){
+                                                                                    if ( eventToPush.belongsToEvent && uniqueEOTevents.indexOf(endOfTurnEventName) == -1 ){
+                                                                                        // check that the event is unique
                                                                                         activeRPGEvents[rpgEvent].endOfTurnEvents.push( eventToPush );
+                                                                                        uniqueEOTevents.push(endOfTurnEventName)
                                                                                     }else if ( eventToPush.belongsToMember ){
                                                                                         enemies[enemyIdCount].endOfTurnEvents.push( eventToPush );
                                                                                     }
