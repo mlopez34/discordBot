@@ -1699,6 +1699,7 @@ module.exports.rpgReady = function(message, itemsAvailable, amuletItemsById, buf
 
                                                                             enemies[enemyIdCount] = {
                                                                                 id: enemyIdCount,
+                                                                                enemyIdName: enemyFound.enemyIdName,
                                                                                 emoji: enemyFound.emoji,
                                                                                 name: enemyFound.name,
                                                                                 hp: Math.floor( hpAreaBuff * ( enemyFound.hp + (21 * averageLevelInParty) + (enemyFound.hpPerPartyMember * enemyCount)) ) , 
@@ -1890,6 +1891,7 @@ module.exports.rpgReady = function(message, itemsAvailable, amuletItemsById, buf
 
                                                                             enemies[enemyIdCount] = {
                                                                                 id: enemyIdCount,
+                                                                                enemyIdName: enemyFound.enemyIdName,
                                                                                 name: enemyFound.name,
                                                                                 emoji: enemyFound.emoji,
                                                                                 hp: Math.floor( hpAreaBuff * ( enemyFound.hp + (21 * averageLevelInParty) + (enemyFound.hpPerPartyMember * enemyCount)) ) , 
@@ -3637,6 +3639,13 @@ function calculateRewards(event, memberInRpgEvent, allItems, numberOfMembers, fi
                     }else if (allItems[item].itemraritycategory == "rare"
                     && ( (event.area && allItems[item].findinzone == zoneAreaIsIn)
                     || (event.area &&allItems[item].findinarea == event.area)) ){
+                        rareRpgMapItems.push(allItems[item]);
+                    }else if (allItems[item].itemraritycategory == "rare"
+                    && ( event.area && allItems[item].dropsfromenemy == event.enemies[enemy].enemyIdName ) ){
+                        rareRpgMapItems.push(allItems[item]);
+                        rareRpgMapItems.push(allItems[item]);
+                        rareRpgMapItems.push(allItems[item]);
+                        rareRpgMapItems.push(allItems[item]);
                         rareRpgMapItems.push(allItems[item]);
                     }
                 }

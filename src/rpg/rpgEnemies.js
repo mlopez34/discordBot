@@ -1502,6 +1502,7 @@ module.exports = {
         },
         easy : {
             rabbidwolf: {
+                enemyIdName : "rabbidwolf",
                 name: "Rabbid Wolf",
                 abilities: ["attack", "attack", "poison", "poison", "tacowall"],
                 buffs: [],
@@ -1523,6 +1524,7 @@ module.exports = {
                 element: "normal"
             },
             hungryboar: {
+                enemyIdName : "hungryboar",
                 name: "Hungry Boar",
                 //emoji: "<:wendigo:598743668664565789>",
                 abilities: ["bite", "bite", "slash", "slash", "shield"],
@@ -1545,6 +1547,7 @@ module.exports = {
                 element: "normal"
             },
             bull: {
+                enemyIdName : "bull",
                 name: "Bull",
                 abilities: ["ram", "ram", "assist", "assist", "empower"],
                 buffs: [],
@@ -1566,6 +1569,7 @@ module.exports = {
                 element: "normal"
             },
             cheetah: {
+                enemyIdName : "cheetah",
                 name: "Cheetah",
                 abilities: ["claw", "claw", "claw", "claw", "protect"],
                 buffs: [],
@@ -1587,6 +1591,7 @@ module.exports = {
                 element: "normal"
             },
             hyena: {
+                enemyIdName : "hyena",
                 name: "Hyena",
                 //emoji: "<:wendigo:598743668664565789>",
                 abilities: ["ferociousBite", "ferociousBite", "iceshards", "iceshards", "barrier"],
@@ -1615,6 +1620,7 @@ module.exports = {
                 element: "normal"
             },
             addict: {
+                enemyIdName : "addict",
                 name: "Addict",
                 abilities: ["inject", "inject", "orchatasip", "inject", "bandaid"],
                 buffs: [],
@@ -1636,6 +1642,7 @@ module.exports = {
                 element: "normal"
             },
             angrydwarf: {
+                enemyIdName : "angrydwarf",
                 name: "Angry Dwarf",
                 abilities: ["bite", "bite", "poke", "poke", "poke"],
                 buffs: [],
@@ -1657,6 +1664,7 @@ module.exports = {
                 element: "normal"
             },
             extremist: {
+                enemyIdName : "extremist",
                 name: "Extremist",
                 abilities: ["attack", "attack", "hostage", "hostage", "bomb"],
                 buffs: [],
@@ -1681,6 +1689,7 @@ module.exports = {
                 element: "normal"
             },
             thug: {
+                enemyIdName : "thug",
                 name: "Thug",
                 abilities: ["attack", "attack", "punch", "punch", "bandaid"],
                 buffs: [],
@@ -1702,6 +1711,7 @@ module.exports = {
                 element: "normal"
             },
             tacosmuggler: {
+                enemyIdName : "tacosmuggler",
                 name: "Taco Smuggler",
                 abilities: ["clap", "clap", "curse", "curse", "clap"],
                 buffs: [],
@@ -1726,6 +1736,7 @@ module.exports = {
                 element: "normal"
             },
             seedthief: {
+                enemyIdName : "seedthief",
                 name: "Seed Thief",
                 abilities: ["attack", "attack", "tacoheal", "tacoheal", "poke"],
                 buffs: [],
@@ -1747,6 +1758,7 @@ module.exports = {
                 element: "normal"
             },
             badchef: {
+                enemyIdName : "badchef",
                 name: "Bad Chef",
                 abilities: ["attack", "attack", "poison", "poison", "barrier"],
                 buffs: [],
@@ -1771,6 +1783,7 @@ module.exports = {
                 element: "normal"
             },
             vagabond: {
+                enemyIdName : "vagabond",
                 name: "Vagabond",
                 abilities: ["attack", "attack", "flameblast", "flameblast", "cripple"],
                 buffs: [],
@@ -1796,6 +1809,7 @@ module.exports = {
                 element: "normal"
             },
             coyote: {
+                enemyIdName : "coyote",
                 name: "Coyote",
                 abilities: ["attack", "attack", "claw", "claw", "cripple"],
                 buffs: [],
@@ -1820,6 +1834,7 @@ module.exports = {
                 element: "normal"
             },
             angrymobmember: {
+                enemyIdName : "angrymobmember",
                 name: "Angry Mob Member",
                 abilities: ["attack", "attack", "poison", "iceshards", "iceshards", "cripple"],
                 buffs: [],
@@ -1841,6 +1856,7 @@ module.exports = {
                 element: "normal"
             },
             tacodealer: {
+                enemyIdName : "tacodealer",
                 name: "Taco Dealer",
                 abilities: ["attack", "attack", "drain", "drain", "freeze"],
                 buffs: [],
@@ -1862,6 +1878,7 @@ module.exports = {
                 element: "normal"
             },
             burritohustler: {
+                enemyIdName : "burritohustler",
                 name: "Burrito Hustler",
                 abilities: ["attack", "attack", "slap", "slap", "weaken"],
                 buffs: [],
@@ -1883,6 +1900,7 @@ module.exports = {
                 element: "normal"
             },
             ruffian: {
+                enemyIdName : "ruffian",
                 name: "Ruffian",
                 abilities: ["attack", "attack", "tackle", "tackle", "weaken"],
                 buffs: [],
@@ -1906,6 +1924,7 @@ module.exports = {
         },
         medium: {
             tacobandit: {
+                enemyIdName : "tacobandit",
                 name: "Taco Bandit",
                 //emoji: "<:wendigo:598743668664565789>",
                 abilities: ["attack", "attack", "enemyshock", "enemyshock", "orchatasip"],
@@ -1931,6 +1950,7 @@ module.exports = {
                 element: "normal"
             },
             tacothief: {
+                enemyIdName : "tacothief",
                 name: "Taco Thief",
                 abilities: ["attack", "attack", "flameblast", "flameblast", "orchatasip"],
                 buffs: [],
@@ -1955,6 +1975,7 @@ module.exports = {
                 element: "normal"
             },
             slotsgambler: {
+                enemyIdName : "slotsgambler",
                 name: "Slots Gambler",
                 abilities: ["attack", "attack", "elixir", "elixir", "orchatasip"],
                 buffs: [],
@@ -1979,6 +2000,7 @@ module.exports = {
                 element: "normal"
             },
             fruitscounter: {
+                enemyIdName : "fruitscounter",
                 name: "Fruits Counter",
                 abilities: ["attack", "attack", "uppercut", "uppercut", "weaken"],
                 buffs: [],
@@ -2003,6 +2025,7 @@ module.exports = {
                 element: "normal"
             },
             disassembler: {
+                enemyIdName : "disassembler",
                 name: "Disassembler",
                 abilities: ["clap", "clap", "scam", "scam", "weaken"],
                 buffs: [],
@@ -2027,6 +2050,7 @@ module.exports = {
                 element: "normal"
             },
             nigerianprince: {
+                enemyIdName : "nigerianprince",
                 name: "Nigerian Prince",
                 abilities: ["scam", "scam", "scam", "elixir", "cripple"],
                 buffs: [],
@@ -2051,6 +2075,7 @@ module.exports = {
                 element: "normal"
             },
             troglodyte: {
+                enemyIdName : "troglodyte",
                 name: "Troglodyte",
                 abilities: ["punch", "punch", "claw", "claw", "scold"],
                 buffs: [],
@@ -2075,6 +2100,7 @@ module.exports = {
                 element: "normal"
             },
             ignoramus: {
+                enemyIdName : "ignoramus",
                 name: "Ignoramus",
                 abilities: ["scare", "scare", "punch", "punch", "freeze"],
                 buffs: [],
@@ -2099,6 +2125,7 @@ module.exports = {
                 element: "normal"
             },
             dullard: {
+                enemyIdName : "dullard",
                 name: "Dullard",
                 abilities: ["ram", "ram", "claw", "claw", "protect"],
                 buffs: [],
@@ -2123,6 +2150,7 @@ module.exports = {
                 element: "normal"
             },
             dolt: {
+                enemyIdName : "dolt",
                 name: "Dolt",
                 abilities: ["attack", "attack", "slash", "slash", "cripple"],
                 buffs: [],
@@ -2147,6 +2175,7 @@ module.exports = {
                 element: "normal"
             },
             auctionsniper: {
+                enemyIdName : "auctionsniper",
                 name: "Auction Sniper",
                 abilities: ["scam", "scam", "bandaid", "empower", "freeze"],
                 buffs: [],
@@ -2171,6 +2200,7 @@ module.exports = {
                 element: "normal"
             },
             marketflipper: {
+                enemyIdName : "marketflipper",
                 name: "Market Flipper",
                 abilities: ["scam", "scam", "iceshards", "iceshards", "scold"],
                 buffs: [],
@@ -2195,6 +2225,7 @@ module.exports = {
                 element: "normal"
             },
             bear: {
+                enemyIdName : "bear",
                 name: "Bear",
                 //emoji: "<:wendigo:598752209475207178>",
                 abilities: ["ferociousBite", "ferociousBite", "ferociousBite", "ferociousBite", "shield"],
@@ -2220,6 +2251,7 @@ module.exports = {
                 element: "normal"
             },
             polarbear: {
+                enemyIdName : "polarbear",
                 name: "Polar Bear",
                 abilities: ["ferociousBite", "ferociousBite", "ferociousBite", "iceshards", "shield"],
                 buffs: [],
@@ -2244,6 +2276,7 @@ module.exports = {
                 element: "normal"
             },
             philistine: {
+                enemyIdName : "philistine",
                 name: "Philistine",
                 abilities: ["clap", "clap", "clap", "smuggle", "poke"],
                 buffs: [],
@@ -2268,6 +2301,7 @@ module.exports = {
                 element: "normal"
             },
             suicidebomber: {
+                enemyIdName : "suicidebomber",
                 name: "Suicidebomber",
                 abilities: ["attack", "cripple", "cripple", "weaken", "bomb"],
                 buffs: [],
@@ -2295,6 +2329,7 @@ module.exports = {
                 element: "normal"
             },
             witch: {
+                enemyIdName : "witch",
                 name: "Witch",
                 abilities: ["curse", "curse", "guac", "guac", "scold"],
                 buffs: [],
@@ -2319,6 +2354,7 @@ module.exports = {
                 element: "normal"
             },
             tarzan: {
+                enemyIdName : "tarzan",
                 name: "Tarzan",
                 abilities: ["claw", "claw", "hostage", "hostage", "elixir"],
                 buffs: [],
@@ -2343,6 +2379,7 @@ module.exports = {
                 element: "normal"
             },
             evilclown: {
+                enemyIdName : "evilclown",
                 name: "Evil Clown",
                 abilities: ["scare", "scare", "corrupt", "corrupt", "hostage"],
                 buffs: [],
@@ -2367,6 +2404,7 @@ module.exports = {
                 element: "normal"
             },
             charlatan: {
+                enemyIdName : "charlatan",
                 name: "Charlatan",
                 abilities: ["attack", "attack", "claw", "claw", "weaken"],
                 buffs: [],
@@ -2391,6 +2429,7 @@ module.exports = {
                 element: "normal"
             },
             tweener: {
+                enemyIdName : "tweener",
                 name: "Tweener",
                 abilities: ["smuggle", "smuggle", "inject", "inject", "claw"],
                 buffs: [],
@@ -2417,6 +2456,7 @@ module.exports = {
         },
         hard: {
             silverback: {
+                enemyIdName : "silverback",
                 name: "Silverback",
                 abilities: ["ferociousBite", "claw", "slash", "slash", "cripple"],
                 buffs: [
@@ -2452,6 +2492,7 @@ module.exports = {
                 element: "normal"
             },
             footballplayer: {
+                enemyIdName : "footballplayer",
                 name: "Football Player",
                 abilities: ["attack", "attack", "slash", "slash", "rockthrow", "empower"],
                 buffs: [
@@ -2487,6 +2528,7 @@ module.exports = {
                 element: "normal"
             },
             samuraiwarrior: {
+                enemyIdName : "samuraiwarrior",
                 name: "Samurai Warrior",
                 abilities: ["attack", "attack", "iceshards", "iceshards", "drain", "drain", "bandaid"],
                 buffs: [
@@ -2522,6 +2564,7 @@ module.exports = {
                 element: "normal"
             },
             warewolf: {
+                enemyIdName : "warewolf",
                 name: "Werewolf",
                 abilities: ["attack", "attack", "ferociousBite", "ferociousBite", "uppercut"],
                 buffs: [
@@ -2557,6 +2600,7 @@ module.exports = {
                 element: "normal"
             },
             prawn: {
+                enemyIdName : "prawn",
                 name: "Prawn",
                 abilities: ["attack", "attack", "ferociousBite", "ferociousBite", "uppercut"],
                 buffs: [
@@ -2593,6 +2637,7 @@ module.exports = {
                 element: "normal"
             },
             funnypolitician: {
+                enemyIdName : "funnypolitician",
                 name: "Funny Politician",
                 abilities: ["attack" , "attack" , "curse", "poison", "enemyshoot", "enemyshoot","freeze"],
                 buffs: [
@@ -2628,6 +2673,7 @@ module.exports = {
                 element: "normal"
             },
             voodoowitch: {
+                enemyIdName : "voodoowitch",
                 name: "Voodoo Witch",
                 abilities: ["attack" , "attack" , "curse", "curse", "poison", "poison", "freeze"],
                 buffs: [
@@ -2669,6 +2715,7 @@ module.exports = {
                 element: "normal"
             },
             sniper: {
+                enemyIdName : "sniper",
                 name: "Sniper",
                 abilities: ["attack"  , "punch", "enemyshoot", "enemyshoot", "enemyshoot","freeze"],
                 buffs: [
@@ -2704,6 +2751,7 @@ module.exports = {
                 element: "normal"
             },
             gascollector: {
+                enemyIdName : "gascollector",
                 name: "Gas Collector",
                 abilities: ["attack" , "attack" , "poison", "poison", "inject", "inject","freeze"],
                 buffs: [
@@ -2739,6 +2787,7 @@ module.exports = {
                 element: "normal"
             },
             capo: {
+                enemyIdName : "capo",
                 name: "Capo",
                 abilities: ["punch" , "punch" , "hostage", "hostage", "decapitate", "tacoheal", "weaken"],
                 buffs: [
@@ -2777,6 +2826,7 @@ module.exports = {
                 element: "normal"
             },
             zeta: {
+                enemyIdName : "zeta",
                 name: "Zeta",
                 abilities: ["attack"  , "punch", "decapitate", "decapitate","weaken"],
                 buffs: [
@@ -2812,6 +2862,7 @@ module.exports = {
                 element: "normal"
             },
             racketeer: {
+                enemyIdName : "racketeer",
                 name: "Racketeer",
                 abilities: ["scare" , "scare" , "shoot", "shoot", "bomb", "bomb","freeze"],
                 buffs: [
@@ -2847,6 +2898,7 @@ module.exports = {
                 element: "normal"
             },
             tacopirate: {
+                enemyIdName : "tacopirate",
                 name: "Taco Pirate",
                 abilities: ["claw" , "claw" , "hostage", "hostage","empower"],
                 buffs: [
@@ -2882,6 +2934,7 @@ module.exports = {
                 element: "normal"
             },
             walrus: {
+                enemyIdName : "walrus",
                 name: "Walrus",
                 abilities: ["ferociousBite" , "ferociousBite" , "iceshards", "iceshards","freeze"],
                 buffs: [
@@ -2917,6 +2970,7 @@ module.exports = {
                 element: "normal"
             },
             wendigo: {
+                enemyIdName : "wendigo",
                 name: "Wendigo",
                 emoji: "<:wendigo:598743668664565789>",
                 abilities: ["ferociousBite" , "ferociousBite" , "iceshards", "iceshards", "freeze"],
@@ -2953,6 +3007,7 @@ module.exports = {
                 element: "normal"
             },
             iconoclast: {
+                enemyIdName : "iconoclast",
                 name: "Iconoclast",
                 abilities: ["slap" , "slap" , "scam", "slash", "slash", "cripple"],
                 buffs: [
@@ -2989,6 +3044,7 @@ module.exports = {
                 element: "normal"
             },
             mountainlion: {
+                enemyIdName : "mountainlion",
                 name: "Mountain Lion",
                 abilities: ["ferociousBite" , "ferociousBite" , "ferociousBite", "slash", "slash", "cripple"],
                 buffs: [
@@ -3024,6 +3080,7 @@ module.exports = {
                 element: "normal"
             },
             delinquent: {
+                enemyIdName : "delinquent",
                 name: "Delinquent",
                 abilities: ["drain" , "drain" , "smuggle", "smuggle", "corrupt", "corrupt"],
                 buffs: [
@@ -3059,6 +3116,7 @@ module.exports = {
                 element: "normal"
             },
             distributor: {
+                enemyIdName : "distributor",
                 name: "Distributor",
                 abilities: ["punch" , "punch" , "curse", "poison", "poison", "inject", "shield"],
                 buffs: [
@@ -3094,6 +3152,7 @@ module.exports = {
                 element: "normal"
             },
             ogre: {
+                enemyIdName : "ogre",
                 name: "Ogre",
                 abilities: ["punch" , "punch" , "curse", "poison", "poison", "inject", "shield"],
                 buffs: [
@@ -3131,6 +3190,7 @@ module.exports = {
         },
         boss: {
             vampire: {
+                enemyIdName : "vampire",
                 name: "Vampire",
                 abilities: [
                    "attack", "attack", "rockthrow", "rockthrow", "enemyshock", "enemyshock", "tacowall"
@@ -3169,6 +3229,7 @@ module.exports = {
                 element: "normal"
             },
             viking: {
+                enemyIdName : "viking",
                 name: "Viking",
                 abilities: [
                    "attack", "attack", "tackle", "tackle", "tackle", "slash", "slash", "slash","empower"
@@ -3207,6 +3268,7 @@ module.exports = {
                 element: "normal"
             },
             escapedrobot: {
+                enemyIdName : "escapedrobot",
                 name: "Escaped Robot",
                 abilities: [
                     "attack", "attack", "drain", "drain", "iceshards", "iceshards", "shield"
@@ -3245,6 +3307,7 @@ module.exports = {
                 element: "normal"
             },
             desperado: {
+                enemyIdName : "desperado",
                 name: "Desperado",
                 abilities: [
                     "attack", "attack", "enemyshoot", "enemyshoot", "slash", "slash", "cripple"
@@ -3283,6 +3346,7 @@ module.exports = {
                 element: "normal"
             },
             sicario: {
+                enemyIdName : "sicario",
                 name: "Sicario",
                 abilities: [
                     "attack", "punch", "decapitate", "decapitate", "slash", "tacoheal", "tacoheal"
@@ -3321,6 +3385,7 @@ module.exports = {
                 element: "normal"
             },
             trex: {
+                enemyIdName : "trex",
                 name: "T-Rex",
                 abilities: [
                     "claw", "claw", "ferociousBite", "slash", "slash", "ferociousBite", "cripple"
@@ -3359,6 +3424,7 @@ module.exports = {
                 element: "normal"
             },
             executioner: {
+                enemyIdName : "executioner",
                 name: "Executioner",
                 abilities: [
                     "attack", "attack", "execute", "execute", "tacoheal", "tacoheal", "cripple"
@@ -3400,6 +3466,7 @@ module.exports = {
                 element: "normal"
             },
             kidnaper: {
+                enemyIdName : "kidnaper",
                 name: "Kidnaper",
                 abilities: [
                     "attack", "attack", "hostage", "hostage", "slash", "slash", "weaken"
@@ -3438,6 +3505,7 @@ module.exports = {
                 element: "normal"
             },
             yakuza: {
+                enemyIdName : "yakuza",
                 name: "Yakuza",
                 abilities: [
                     "attack", "attack", "execute", "execute", "slash", "slash", "weaken"
@@ -3479,6 +3547,7 @@ module.exports = {
                 element: "normal"
             },
             beheader: {
+                enemyIdName : "beheader",
                 name: "Beheader",
                 abilities: [
                     "attack", "attack", "decapitate", "decapitate", "slash", "slash", "cripple"
@@ -3517,6 +3586,7 @@ module.exports = {
                 element: "normal"
             },
             goliath: {
+                enemyIdName : "goliath",
                 name: "Goliath",
                 abilities: [
                     "ram", "ram", "clap", "clap", "iceshards", "iceshards", "cripple"
@@ -3555,6 +3625,7 @@ module.exports = {
                 element: "normal"
             },
             cyclops: {
+                enemyIdName : "cyclops",
                 name: "Cyclops",
                 abilities: [
                     "corrupt", "corrupt", "laserBeam", "laserBeam", "laserBeam", "laserBeam", "shell"
@@ -3593,6 +3664,7 @@ module.exports = {
                 element: "normal"
             },
             bigfoot: {
+                enemyIdName : "bigfoot",
                 name: "Big Foot",
                 abilities: [
                     "attack", "attack", "iceshards", "iceshards", "slash", "slash", "cripple"
@@ -3631,6 +3703,7 @@ module.exports = {
                 element: "normal"
             },
             cateoblepas: {
+                enemyIdName : "cateoblepas",
                 name: "Catoblepas",
                 abilities: [
                     "attack", "attack", "iceshards", "iceshards", "slash", "slash", "cripple"
@@ -3669,6 +3742,7 @@ module.exports = {
                 element: "normal"
             },
             gargantua: {
+                enemyIdName : "gargantua",
                 name: "Big Foot",
                 abilities: [
                     "attack", "attack", "iceshards", "iceshards", "slash", "slash", "cripple"
@@ -3707,6 +3781,7 @@ module.exports = {
                 element: "normal"
             },
             ogremagi: {
+                enemyIdName : "ogremagi",
                 name: "Ogre Magi",
                 abilities: [
                     "attack", "attack", "iceshards", "iceshards", "slash", "slash", "cripple"
