@@ -3733,8 +3733,8 @@ function calculateRewards(event, memberInRpgEvent, allItems, numberOfMembers, fi
                     }
                 }
             }
-            rewardsForPlayer.extraTacos = rewardsForPlayer.extraTacos + memberInRpgEvent.extraTacosForUser
         }
+        rewardsForPlayer.extraTacos = rewardsForPlayer.extraTacos + memberInRpgEvent.extraTacosForUser
     }
     if (event.special && event.special.xp){
         // get the special points, they should be in event.special.
