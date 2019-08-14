@@ -1782,6 +1782,7 @@ module.exports.rpgReady = function(message, itemsAvailable, amuletItemsById, buf
                                                                                     var eventToPush = JSON.parse(JSON.stringify( rpgAbilities[ endOfTurnEventName ] ));
                                                                                     if ( eventToPush.belongsToEvent && uniqueEOTevents.indexOf(endOfTurnEventName) == -1){
                                                                                         activeRPGEvents[rpgEvent].endOfTurnEvents.push( eventToPush );
+                                                                                        uniqueEOTevents.push(endOfTurnEventName)
                                                                                     }else if ( eventToPush.belongsToMember ){
                                                                                         enemies[enemyIdCount].endOfTurnEvents.push( eventToPush );
                                                                                     }
