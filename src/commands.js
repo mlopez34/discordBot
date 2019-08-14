@@ -10335,21 +10335,20 @@ module.exports.rpgQueueJoinCommand = function(message, args){
 
     // enter the player into the queue for args 2-5
     let discordUserId = message.author.id
-    if (args && args.length > 1){
-        var queueToEnter = parseInt( args[1] );
-        // only enter the queue if you have an rpg profile
-        profileDB.getUserRpgProfleData(discordUserId, function(err, res){
-            if (err){
-                console.log(err)
-                message.channel.send("You must `-agree` to create a profile first!")
-            }else{
-                let userArea = res.data.currentarea
-                rpg.enterUserToQueue(message, queueToEnter, userArea );
-            }
-        })
-    }else{
-        message.channel.send("Invalid queue parameters, try `-rpgqueue 2`, `-rpgqueue 3`, `-rpgqueue 4`, `-rpgqueue 5`, to leave the queue type `-rpgleave`")
-    }
+    // only enter the queue if you have an rpg profile
+    profileDB.getUserRpgProfleData(discordUserId, function(err, res){
+        if (err){
+            console.log(err)
+            message.channel.send("You must `-agree` to create a profile first!")
+        }else{
+            let userArea = res.data.currentarea
+            rpg.enterUserToQueue(message, userArea );
+        }
+    })
+}
+
+module.exports.initializeRPGQueue = function(){
+    rpg.initializeRPGQueue()
 }
 
 module.exports.rpgReadyCommand = function(message){

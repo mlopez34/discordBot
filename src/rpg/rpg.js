@@ -15,12 +15,8 @@ var RPG_COOLDOWN_HOURS = 1
 var activeRPGEvents = {};
 var activeRPGItemIds = {};
 var usersInRPGEvents = {};
-var rpgQueuesByUsers = {
-    2: [],
-    3: [],
-    4: [],
-    5: []
-}
+var rpgQueuesByUsers = []
+var serverQueue;
 var TEAM_MAX_LENGTH = 5;
 var CURRENT_CHALLENGES_AVAILABLE = 13
 var CHALLENGE_TO_TEST = 13
@@ -109,11 +105,9 @@ module.exports.rpgInitialize = function(message, special){
 
 function checkIfUserInQueue(discordUserId){
     let isInQueue = false
-    for(var queue in rpgQueuesByUsers){
-        for(var i in rpgQueuesByUsers[queue]){
-            if (rpgQueuesByUsers[queue][i].discordUserId == discordUserId){
-                return true
-            }
+    for(var i in rpgQueuesByUsers){
+        if (rpgQueuesByUsers[i].discordUserId == discordUserId){
+            return true
         }
     }
 
@@ -121,11 +115,9 @@ function checkIfUserInQueue(discordUserId){
 }
 
 function removeUserFromQueue(discordUserId){
-    for(var queue in rpgQueuesByUsers){
-        for(var i in rpgQueuesByUsers[queue]){
-            if (rpgQueuesByUsers[queue][i].discordUserId == discordUserId){
-                rpgQueuesByUsers[queue].splice(i, 1)
-            }
+    for(var i in rpgQueuesByUsers){
+        if (rpgQueuesByUsers[i].discordUserId == discordUserId){
+            rpgQueuesByUsers.splice(i, 1)
         }
     }
 }
@@ -708,35 +700,26 @@ module.exports.removeUserFromQueue = function(message){
     message.channel.send("You have been removed from the RPG queue")
 }
 
-module.exports.enterUserToQueue = function(message, queueToEnter, userArea){
-    // user can enter the queue at any time, then they will be notified that their rpg is ready
-    // only allow 2-5
-    let discordUserId = message.author.id
-    if (rpgQueuesByUsers[queueToEnter]){
-        // check the user is not already in an rpg
-        var ableToJoinQueue = true
-        if (usersInRPGEvents["rpg-"+discordUserId]){
-            ableToJoinQueue = false;
-        }
-        if (checkIfUserInQueue(discordUserId)){
-            ableToJoinQueue = false
-        }
-        if (ableToJoinQueue){
-            rpgQueuesByUsers[queueToEnter].push({
-                discordUserId: discordUserId,
-                author: message.author,
-                userArea: userArea,
-                channelToAnnounceIn: message.channel
-            })
-            // check if the queue is full and there is enough to start
-            if (rpgQueuesByUsers[queueToEnter].length >= queueToEnter){
+module.exports.initializeRPGQueue = function(){
+    serverQueue = setInterval(function(){ 
+        if (rpgQueuesByUsers.length > 1){
+            while(rpgQueuesByUsers.length > 1){
+                rpgQueuesByUsers = _.shuffle(rpgQueuesByUsers)
+                let queueSize = rpgQueuesByUsers.length
                 let teamInQueueByDiscordIds = []
                 let areasForUsers = []
                 let groupOfMessagesSent = []
-                for (var i = 0; i < queueToEnter; i++){
-                    let userObjectToEnterRPG = rpgQueuesByUsers[queueToEnter].shift()
+                if (queueSize > 5){
+                    queueSize = 5
+                }
+                let rpgEventId = undefined;
+                for (var i = 0; i < queueSize; i++){
+                    let userObjectToEnterRPG = rpgQueuesByUsers.shift()
                     // announce in the users channel that their rpg is ready
                     let channelToAnnounceIn = userObjectToEnterRPG.channelToAnnounceIn
+                    if (rpgEventId == undefined){
+                        rpgEventId = userObjectToEnterRPG.uniqueMessageId
+                    }
                     let authorToPing = userObjectToEnterRPG.author
                     let userId = userObjectToEnterRPG.discordUserId
                     let userarea = userObjectToEnterRPG.userArea
@@ -747,28 +730,54 @@ module.exports.enterUserToQueue = function(message, queueToEnter, userArea){
                     .catch(function(error){
                         channelToAnnounceIn.send("error " + error)
                     })
-                    usersInRPGEvents["rpg-"+userId] = { id: message.channel.id, ready: false }; // basing off of last message sent id
+                    usersInRPGEvents["rpg-"+userId] = { id: rpgEventId, ready: false }; // basing off of a unique message Id
                     teamInQueueByDiscordIds.push(authorToPing)
                     areasForUsers.push(userarea)
                 }
                 let userToUseAreaIndex = Math.floor(Math.random() * areasForUsers.length);
                 let userToUseAreaId = areasForUsers[userToUseAreaIndex]
-                activeRPGEvents["rpg-" + message.channel.id] = { members: teamInQueueByDiscordIds };
-                activeRPGEvents["rpg-" + message.channel.id].status = "waiting";
-                activeRPGEvents["rpg-" + message.channel.id].groupOfMessagesSent = groupOfMessagesSent;
-                activeRPGEvents["rpg-" + message.channel.id].endOfTurnEvents = [];
-                activeRPGEvents["rpg-" + message.channel.id].area = userToUseAreaId
-                activeRPGEvents["rpg-" + message.channel.id].usersInArea = []
-                activeRPGEvents["rpg-" + message.channel.id].queueEvent = true;
-            }else{
-                message.channel.send("You have entered the queue for an rpg event of `" + queueToEnter + "` players!")
+                activeRPGEvents["rpg-" + rpgEventId] = { members: teamInQueueByDiscordIds };
+                activeRPGEvents["rpg-" + rpgEventId].status = "waiting";
+                activeRPGEvents["rpg-" + rpgEventId].groupOfMessagesSent = groupOfMessagesSent;
+                activeRPGEvents["rpg-" + rpgEventId].endOfTurnEvents = [];
+                activeRPGEvents["rpg-" + rpgEventId].area = userToUseAreaId
+                activeRPGEvents["rpg-" + rpgEventId].usersInArea = []
+                activeRPGEvents["rpg-" + rpgEventId].queueEvent = true;
             }
         }else{
-            message.channel.send("You cannot join the queue at this time, you may be in queue or in an rpg event already, type `-rpgleave` to be removed from the queue, or `-rpgskip` to skip the event ")
+            console.log(rpgQueuesByUsers.length)
         }
-    }else{
-        message.channel.send("Invalid queue parameters, try `-rpgqueue 2`, `-rpgqueue 3`, `-rpgqueue 4`, `-rpgqueue 5`")
+        
+    }, 65000);
+}
+
+module.exports.enterUserToQueue = function(message, userArea){
+    // user can enter the queue at any time, then they will be notified that their rpg is ready
+    // only allow 2-5
+    let discordUserId = message.author.id
+    // check the user is not already in an rpg
+    var ableToJoinQueue = true
+    if (usersInRPGEvents["rpg-"+discordUserId]){
+        ableToJoinQueue = false;
     }
+    if (checkIfUserInQueue(discordUserId)){
+        ableToJoinQueue = false
+    }
+    if (ableToJoinQueue){
+        rpgQueuesByUsers.push({
+            discordUserId: discordUserId,
+            author: message.author,
+            userArea: userArea,
+            channelToAnnounceIn: message.channel,
+            uniqueMessageId: message.id
+        })
+        // check if the queue is full and there is enough to start
+        message.channel.send("You have entered the queue for an rpg event there are currently `" + rpgQueuesByUsers.length + "` users in the queue, your event will begin as soon as there are enough users!")
+        
+    }else{
+        message.channel.send("You cannot join the queue at this time, you may be in queue or in an rpg event already, type `-rpgleave` to be removed from the queue, or `-rpgskip` to skip the event ")
+    }
+    
 }
 
 module.exports.rpgReady = function(message, itemsAvailable, amuletItemsById, buffItemsById, allItems){
@@ -3702,23 +3711,25 @@ function calculateRewards(event, memberInRpgEvent, allItems, numberOfMembers, fi
                     }
                 }
                 if (event.queueEvent){
-                    if(rarityRoll > ANCIENT_MIN_ROLL ){
-                        var itemRoll = Math.floor(Math.random() * ancientItems.length);
-                        console.log(ancientItems[itemRoll]);
-                        itemsObtainedArray.push(ancientItems[itemRoll])
-                    }else if(rarityRoll > RARE_MIN_ROLL && rarityRoll <= RARE_MAX_ROLL){
-                        var itemRoll = Math.floor(Math.random() * rareItems.length);
-                        console.log(rareItems[itemRoll]);
-                        itemsObtainedArray.push(rareItems[itemRoll]);
-                    }else if (rarityRoll > UNCOMMON_MIN_ROLL && rarityRoll <= UNCOMMON_MAX_ROLL){
-                        var itemRoll = Math.floor(Math.random() * uncommonItems.length);
-                        console.log(uncommonItems[itemRoll]);
-                        itemsObtainedArray.push( uncommonItems[itemRoll] );
-                    }else {
-                        var itemRoll = Math.floor(Math.random() * commonItems.length);
-                        console.log(commonItems[itemRoll]);
-                        commonItems[itemRoll].itemAmount = COMMON_ITEMS_TO_OBTAIN
-                        itemsObtainedArray.push( commonItems[itemRoll] );
+                    for (var n = 0; n < 2; n++){
+                        if(rarityRoll > ANCIENT_MIN_ROLL ){
+                            var itemRoll = Math.floor(Math.random() * ancientItems.length);
+                            console.log(ancientItems[itemRoll]);
+                            itemsObtainedArray.push(ancientItems[itemRoll])
+                        }else if(rarityRoll > RARE_MIN_ROLL && rarityRoll <= RARE_MAX_ROLL){
+                            var itemRoll = Math.floor(Math.random() * rareItems.length);
+                            console.log(rareItems[itemRoll]);
+                            itemsObtainedArray.push(rareItems[itemRoll]);
+                        }else if (rarityRoll > UNCOMMON_MIN_ROLL && rarityRoll <= UNCOMMON_MAX_ROLL){
+                            var itemRoll = Math.floor(Math.random() * uncommonItems.length);
+                            console.log(uncommonItems[itemRoll]);
+                            itemsObtainedArray.push( uncommonItems[itemRoll] );
+                        }else {
+                            var itemRoll = Math.floor(Math.random() * commonItems.length);
+                            console.log(commonItems[itemRoll]);
+                            commonItems[itemRoll].itemAmount = COMMON_ITEMS_TO_OBTAIN
+                            itemsObtainedArray.push( commonItems[itemRoll] );
+                        }
                     }
                 }
             }

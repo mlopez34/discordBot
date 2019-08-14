@@ -45,6 +45,7 @@ client.on('ready', function(err) {
     commands.initializeItemsMaps(client, function(err, res){
         commands.initializeMarketPlace()
         commands.initializeReminders()
+        commands.initializeRPGQueue()
         settings.initializeServerSettings(function(err, res){
             botEnabled = true
         })
