@@ -3677,13 +3677,13 @@ function calculateRewards(event, memberInRpgEvent, allItems, numberOfMembers, fi
                     additionalExperience = additionalExperience + (1 * rpgZoneDifficulty)
                     additionalRpgPoints = additionalRpgPoints + (1 * rpgZoneDifficulty)
                     // common items
-                    rarityRoll = Math.floor(Math.random() * COMMON_MAX_ROLL) + 1;
+                    rarityRoll = Math.floor(Math.random() * 3975) + 6000;
                 }
                 else if (enemyDifficulty == "medium"){
                     additionalExperience = additionalExperience + (2 * rpgZoneDifficulty)
                     additionalRpgPoints = additionalRpgPoints + (2 * rpgZoneDifficulty)
                     // common ? uncommon
-                    rarityRoll = Math.floor(Math.random() * UNCOMMON_MAX_ROLL) + 1;
+                    rarityRoll = Math.floor(Math.random() * 3975) + 6000;
                 }
                 else if (enemyDifficulty == "hard"){
                     additionalExperience = additionalExperience + (9 * rpgZoneDifficulty)
