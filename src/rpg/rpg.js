@@ -385,6 +385,7 @@ module.exports.showRpgStats = function(message, itemsAvailable, amuletItemsById,
                                 var magicDmgPlus = itemsAvailable[slotItemId].magicdmgplus ? itemsAvailable[slotItemId].magicdmgplus : 0;
                                 var armorPlus = itemsAvailable[slotItemId].armorplus ? itemsAvailable[slotItemId].armorplus : 0;
                                 var spiritPlus = itemsAvailable[slotItemId].spiritplus ? itemsAvailable[slotItemId].spiritplus : 0;
+                                var critPlus = itemsAvailable[slotItemId].critplus ? itemsAvailable[slotItemId].critplus : 0;
                                 var luckPlus = itemsAvailable[slotItemId].luckplus ? itemsAvailable[slotItemId].luckplus : 0;
                                 // check for an amulet for this item
                                 if (userArmamentForItemId[slotItemId]){
@@ -394,6 +395,7 @@ module.exports.showRpgStats = function(message, itemsAvailable, amuletItemsById,
                                     magicDmgPlus = magicDmgPlus + userArmamentForItemId[slotItemId].mdplus;
                                     armorPlus = armorPlus + userArmamentForItemId[slotItemId].armorplus;
                                     spiritPlus = spiritPlus + userArmamentForItemId[slotItemId].spiritplus;
+                                    critPlus = critPlus + userArmamentForItemId[slotItemId].critplus;
                                     luckPlus = luckPlus + userArmamentForItemId[slotItemId].luckplus;
                                 }
 
@@ -402,6 +404,7 @@ module.exports.showRpgStats = function(message, itemsAvailable, amuletItemsById,
                                 statisticsFromItemsAndLevel.magicDmgPlus = statisticsFromItemsAndLevel.magicDmgPlus + magicDmgPlus;
                                 statisticsFromItemsAndLevel.armorPlus = statisticsFromItemsAndLevel.armorPlus + armorPlus;
                                 statisticsFromItemsAndLevel.spiritPlus = statisticsFromItemsAndLevel.spiritPlus + spiritPlus;
+                                statisticsFromItemsAndLevel.critPlus = statisticsFromItemsAndLevel.critPlus + critPlus;
                                 statisticsFromItemsAndLevel.luckPlus = statisticsFromItemsAndLevel.luckPlus + luckPlus;
 
                                 singleItemString = singleItemString + "**Stats**: ";
@@ -410,6 +413,8 @@ module.exports.showRpgStats = function(message, itemsAvailable, amuletItemsById,
                                 singleItemString = singleItemString + " :comet: " + magicDmgPlus;
                                 singleItemString = singleItemString + " :shield: " + armorPlus;
                                 singleItemString = singleItemString + " 🙌 " + spiritPlus;
+                                singleItemString = singleItemString + " 💥 " + critPlus;
+                                singleItemString = singleItemString + " 🌟 " + luckPlus;
 
                                 // add to map
                                 singleItemsStrings[itemsAvailable[slotItemId].itemname] = singleItemString;
@@ -422,6 +427,7 @@ module.exports.showRpgStats = function(message, itemsAvailable, amuletItemsById,
                             var amuletMagicDmgPlus = 0;
                             var amuletSpiritPlus = 0;
                             var amuletArmorPlus = 0;
+                            var amuletCritPlus = 0;
                             var amuletLuckPlus = 0;
                             for (var i in userAmuletData){
                                 singleItemString = singleItemString + "\n"
@@ -431,12 +437,14 @@ module.exports.showRpgStats = function(message, itemsAvailable, amuletItemsById,
                                 var magicDmgPlus = itemsAvailable[userAmuletData[i].id].magicdmgplus ? itemsAvailable[userAmuletData[i].id].magicdmgplus * userAmuletData[i].count : 0;
                                 var armorPlus = itemsAvailable[userAmuletData[i].id].armorplus ? itemsAvailable[userAmuletData[i].id].armorplus * userAmuletData[i].count : 0;
                                 var spiritPlus = itemsAvailable[userAmuletData[i].id].spiritplus ? itemsAvailable[userAmuletData[i].id].spiritplus * userAmuletData[i].count : 0;
+                                var critPlus = itemsAvailable[userAmuletData[i].id].critplus ? itemsAvailable[userAmuletData[i].id].critplus * userAmuletData[i].count : 0;
                                 var luckPlus = itemsAvailable[userAmuletData[i].id].luckplus ? itemsAvailable[userAmuletData[i].id].luckplus * userAmuletData[i].count : 0;
                                 amuletHpPlus = amuletHpPlus + hpPlus;
                                 amuletAttackDmgPlus = amuletAttackDmgPlus + attackDmgPlus
                                 amuletMagicDmgPlus = amuletMagicDmgPlus + magicDmgPlus;
                                 amuletSpiritPlus = amuletSpiritPlus + spiritPlus;
                                 amuletArmorPlus = amuletArmorPlus + armorPlus;
+                                amuletCritPlus = amuletCritPlus + critPlus;
                                 amuletLuckPlus = amuletLuckPlus + luckPlus;
 
                                 statisticsFromItemsAndLevel.hpPlus = statisticsFromItemsAndLevel.hpPlus + hpPlus;
@@ -444,6 +452,7 @@ module.exports.showRpgStats = function(message, itemsAvailable, amuletItemsById,
                                 statisticsFromItemsAndLevel.magicDmgPlus = statisticsFromItemsAndLevel.magicDmgPlus + magicDmgPlus;
                                 statisticsFromItemsAndLevel.armorPlus = statisticsFromItemsAndLevel.armorPlus + armorPlus;
                                 statisticsFromItemsAndLevel.spiritPlus = statisticsFromItemsAndLevel.spiritPlus + spiritPlus;
+                                statisticsFromItemsAndLevel.critPlus = statisticsFromItemsAndLevel.critPlus + critPlus
                                 statisticsFromItemsAndLevel.luckPlus = statisticsFromItemsAndLevel.luckPlus + luckPlus;
 
                             }
@@ -454,6 +463,8 @@ module.exports.showRpgStats = function(message, itemsAvailable, amuletItemsById,
                             amuletString = amuletString + " :comet: " + amuletMagicDmgPlus;
                             amuletString = amuletString + " :shield: " + amuletArmorPlus;
                             amuletString = amuletString + " 🙌 " + amuletSpiritPlus;
+                            amuletString = amuletString + " 🙌 " + amuletCritPlus;
+                            amuletString = amuletString + " 🌟 " + amuletLuckPlus;
                             if (userAmuletData.length > 0){
                                 singleItemsStrings['Amulets'] = amuletString
                             }
@@ -463,7 +474,8 @@ module.exports.showRpgStats = function(message, itemsAvailable, amuletItemsById,
                             statisticsFromItemsAndLevel.magicDmgPlus = statisticsFromItemsAndLevel.magicDmgPlus + userStats.level
                             statisticsFromItemsAndLevel.armorPlus = statisticsFromItemsAndLevel.armorPlus + userStats.level
                             statisticsFromItemsAndLevel.spiritPlus = statisticsFromItemsAndLevel.spiritPlus + userStats.level
-                            statisticsFromItemsAndLevel.luckPlus = statisticsFromItemsAndLevel.luckPlus + userStats.level
+                            // statisticsFromItemsAndLevel.critPlus = statisticsFromItemsAndLevel.critPlus
+                            // statisticsFromItemsAndLevel.luckPlus = statisticsFromItemsAndLevel.luckPlus
                             
                             let usingBakeEmoji = ""
                             for (var i in userTemporaryBuffData){
@@ -509,6 +521,7 @@ module.exports.showRpgStats = function(message, itemsAvailable, amuletItemsById,
                             var partyMemberMagicDmgPlus =  0
                             var partyMemberArmorPlus =  0
                             var partyMemberSpiritPlus = 0
+                            var partyMemberCritPlus = 0
                             var partyMemberLuckPlus = 0
                             if (partyMemberStats && partyMemberStats.plusStats){
                                 partyMemberHpPlus = partyMemberStats.plusStats.hpPlus ? partyMemberStats.plusStats.hpPlus : 0
@@ -516,6 +529,7 @@ module.exports.showRpgStats = function(message, itemsAvailable, amuletItemsById,
                                 partyMemberMagicDmgPlus = partyMemberStats.plusStats.magicDmgPlus ? partyMemberStats.plusStats.magicDmgPlus : 0
                                 partyMemberArmorPlus = partyMemberStats.plusStats.armorPlus ? partyMemberStats.plusStats.armorPlus : 0
                                 partyMemberSpiritPlus = partyMemberStats.plusStats.spiritPlus ? partyMemberStats.plusStats.spiritPlus : 0
+                                partyMemberCritPlus = partyMemberStats.plusStats.critPlus ? partyMemberStats.plusStats.critPlus : 0
                                 partyMemberLuckPlus = partyMemberStats.plusStats.luckPlus ? partyMemberStats.plusStats.luckPlus: 0
                             }
                             var playerName = message.author.username.length <= 35 ? message.author.username : "default"
@@ -529,7 +543,8 @@ module.exports.showRpgStats = function(message, itemsAvailable, amuletItemsById,
                                 magicDmg:  10 + (2 * partyMemberStats.level) + (7 * partyMemberStats.rpglevel ) + partyMemberMagicDmgPlus,
                                 armor: 5 + Math.floor((partyMemberStats.level * partyMemberStats.level) / 2) + Math.floor((partyMemberStats.rpglevel * partyMemberStats.rpglevel) / 2 ) + partyMemberArmorPlus,
                                 spirit: 5 + Math.floor((partyMemberStats.level * partyMemberStats.level) / 2)+ Math.floor((partyMemberStats.rpglevel * partyMemberStats.rpglevel) / 2 ) + partyMemberSpiritPlus,
-                                luck: 1 + partyMemberLuckPlus,
+                                criticalChance: partyMemberCritPlus,
+                                luck: partyMemberLuckPlus,
                                 abilitiesMap : {},
                                 abilities: ["attack"],
                                 passiveAbilities: [],
@@ -600,7 +615,7 @@ module.exports.showRpgStats = function(message, itemsAvailable, amuletItemsById,
                             //.setThumbnail("https://media.giphy.com/media/mIZ9rPeMKefm0/giphy.gif")
                             .setColor(0xF2E93E)
                             
-                            var playerString = userStatsStringBuilder(myStats, message.author.username, false, 1);
+                            var playerString = userStatsStringBuilder(myStats, message.author.username, false, null);
                             playerString = playerString + "\nTime remaining: " + rpgTimeLeft;
                             var userAreaId =  userData.data.currentarea 
                             var zoneUserIsIn = getRpgZone(userAreaId)
@@ -9263,6 +9278,10 @@ function userStatsStringBuilder(userStats, name, isEnemy, currentTurn){
         userString = userString + " 🙌 " + (userStats.spirit + userStats.statBuffs.spirit)
         userString = userString + " 🗡 " + (userStats.attackDmg + userStats.statBuffs.attackDmg)
         userString = userString + " :comet: " + (userStats.magicDmg + userStats.statBuffs.magicDmg)
+        if (currentTurn == null){
+            userString = userString + " 💥 " + (userStats.criticalChance).toFixed(2) + "%"
+            userString = userString + " 🌟 " + (userStats.luck)    
+        }
         userString = userString + " " + ( userStats.bakeEmoji || "") + "\n"
     }
     if (userStats.element){
@@ -10006,8 +10025,10 @@ module.exports.rpgInfoStringBuilder = function(item){
         var magicdmg = item.magicdmgplus || 0
         var armor = item.armorplus || 0 
         var spirit = item.spiritplus || 0
+        var crit = item.critplus || 0
+        var luck = item.luckplus || 0
 
-        var rpgItemInfoString = " 💚 " + hp + " 🗡️ " + attackdmg + " ☄️ " + magicdmg + " 🛡️ " + armor + " 🙌 " + spirit + "\n"
+        var rpgItemInfoString = " 💚 " + hp + " 🗡️ " + attackdmg + " ☄️ " + magicdmg + " 🛡️ " + armor + " 🙌 " + spirit + " 💥 " + crit + " 🌟 " + luck +  "\n"
         rpgItemInfoString = rpgItemInfoString + "**Abilities:**\n"
         if (item.ability1){
             var abilityName = rpgAbilities[item.ability1].name
