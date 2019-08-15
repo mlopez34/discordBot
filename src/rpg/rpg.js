@@ -615,7 +615,7 @@ module.exports.showRpgStats = function(message, itemsAvailable, amuletItemsById,
                             //.setThumbnail("https://media.giphy.com/media/mIZ9rPeMKefm0/giphy.gif")
                             .setColor(0xF2E93E)
                             
-                            var playerString = userStatsStringBuilder(myStats, message.author.username, false, null);
+                            var playerString = userStatsStringBuilder(myStats, message.author.username, false, 0);
                             playerString = playerString + "\nTime remaining: " + rpgTimeLeft;
                             var userAreaId =  userData.data.currentarea 
                             var zoneUserIsIn = getRpgZone(userAreaId)
@@ -2048,7 +2048,7 @@ module.exports.rpgReady = function(message, itemsAvailable, amuletItemsById, buf
                                                                 for (var member in activeRPGEvents[rpgEvent].members){
                                                                     var memberInRpgEvent = activeRPGEvents[rpgEvent].members[member];
                                                                     var memberInParty = activeRPGEvents[rpgEvent].membersInParty["rpg-" + memberInRpgEvent.id]
-                                                                    var playerString = userStatsStringBuilder(memberInParty, memberInRpgEvent.username, false, 1);
+                                                                    var playerString = userStatsStringBuilder(memberInParty, memberInRpgEvent.username, false, 0);
                                                                     var playerAlias = memberInParty.alias
                                                                     var playerUsername = memberInRpgEvent.username.length <= 35 ? memberInRpgEvent.username : "default"
                                                                     embed.addField( playerUsername + " (" + playerAlias + ")", playerString )
@@ -9278,7 +9278,7 @@ function userStatsStringBuilder(userStats, name, isEnemy, currentTurn){
         userString = userString + " 🙌 " + (userStats.spirit + userStats.statBuffs.spirit)
         userString = userString + " 🗡 " + (userStats.attackDmg + userStats.statBuffs.attackDmg)
         userString = userString + " :comet: " + (userStats.magicDmg + userStats.statBuffs.magicDmg)
-        if (currentTurn == null){
+        if (currentTurn == 0){
             userString = userString + " 💥 " + (userStats.criticalChance).toFixed(2) + "%"
             userString = userString + " 🌟 " + (userStats.luck)    
         }
