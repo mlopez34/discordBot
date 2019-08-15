@@ -2786,6 +2786,42 @@ module.exports = {
                 difficulty: "hard",
                 element: "normal"
             },
+            bonewarrior: {
+                enemyIdName : "bonewarrior",
+                name: "Bone Warrior",
+                abilities: ["clap", "clap", "iceshards", "iceshards", "cripple"],
+                buffs: [
+                    {
+                        name: "frenzy",
+                        emoji: "<:frenzy:479298214453968896>",
+                        onTurnEnd: {
+                            attackDmgPlus : 360,
+                            magicDmgPlus : 360,
+                            everyNTurns: 2,
+                            startTurn: 2
+                        }
+                    }
+                ],
+                effectsOnDeath: [
+                    "empowerDeath"
+                ],
+                keystoneStats: {
+                    hp: [1200, 3500, 6200, 10000, 15000 ],
+                    attackDmg: [300, 500, 900, 1500, 2300],
+                    magicDmg: [300, 500, 900, 1500, 2300],
+                    abilities: []
+                },
+                hpPerPartyMember: 950,
+                adPerPartyMember: 21,
+                mdPerPartyMember: 21,
+                hp: 2750,
+                attackDmg: 1200,
+                magicDmg: 1200,
+                armor: 1650,
+                spirit: 1650,
+                difficulty: "hard",
+                element: "normal"
+            },
             capo: {
                 enemyIdName : "capo",
                 name: "Capo",
@@ -3596,8 +3632,8 @@ module.exports = {
                         name: "frenzy",
                         emoji: "<:frenzy:479298214453968896>",
                         onTurnEnd: {
-                            attackDmgPlus : 85,
-                            magicDmgPlus : 85,
+                            attackDmgPlus : 185,
+                            magicDmgPlus : 185,
                             everyNTurns: 2,
                             startTurn: 2
                         }
@@ -3614,13 +3650,13 @@ module.exports = {
                     "focus"
                 ],
                 hpPerPartyMember: 1222,
-                hp: 950,
+                hp: 1950,
                 adPerPartyMember: 29,
                 mdPerPartyMember: 29,
-                attackDmg: 240,
-                magicDmg: 190,
-                armor: 1600,
-                spirit: 1600,
+                attackDmg: 1340,
+                magicDmg: 1390,
+                armor: 2600,
+                spirit: 2600,
                 difficulty: "boss",
                 element: "normal"
             },

@@ -3471,7 +3471,427 @@ module.exports = {
 
         },
         pikecreek: {
+            zoneAvatar: "https://i.imgur.com/XPvtg86.jpg",
+            zoneString : "It will be cold... very cold.",
+            startingArea: "lakeborogia",
+            name: "Pike Creek",
+            zoneDifficulty: 4,
+            intendedLevelString: "35-38",
+            enemyStatBuffs: {
+                hpPlusPercentage: 2.8,
+                adPlusPercentage: 3.9,
+                mdPlusPercentage: 3.9,
+                armorPlusPercentage: 2.2,
+                spiritPlusPercentage: 2.2,
+                frenzyAdIncreasePercentage: 2.5,
+                echoIncreasePercentage: 2.5
+            },
+            enemies: {
+                easy: [
+                    "coyote", "coyote", "coyote", "coyote", 
+                    "cheetah", "cheetah", "cheetah", 
+                    "hungryboar"
+                ],
+                medium: [
+                    "auctionsniper", "auctionsniper", "auctionsniper",
+                    "philistine",
+                    "marketflipper",
+                ],
+                hard: [
+                    "warewolf", "warewolf", "warewolf",
+                    "zeta", "zeta", "zeta",
+                    "tacopirate"
+                ],
+                boss: [
+                    "sicario", "sicario", "sicario", 
+                    "goliath"
+                ]
+            },
+            areas: {
+                lakeborogia: {
+                    areaString : " ",
+                    name: "Lake Borogia",
+                    enemiesToDefeat: 77,
+                    onCompleteAreasUnlocked: [
+                        "borromeocastle",
+                        "florence"
+                    ],
+                    shopItemsAvailable: [
 
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                },
+                //
+                borromeocastle: {
+                    areaString : " ",
+                    name: "Borromeo Castle",
+                    enemiesToDefeat: 101,
+                    onCompleteAreasUnlocked: [
+                        "hogevelumepark",
+                        "promos",
+                        "surkesh"
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                },
+                // 5 man
+                colosseum: {
+                    areaString : " ",
+                    name: "Colosseum",
+                    enemiesToDefeat: 70,
+                    enemies: [
+                        {
+                            enemyId: "goliath",
+                            enemyDifficulty: "boss"
+                        },
+                        {
+                            enemyId: "tacopirate",
+                            enemyDifficulty: "hard"
+                        },
+                        {
+                            enemyId: "goliath",
+                            enemyDifficulty: "boss"
+                        },
+                        {
+                            enemyId: "tacopirate",
+                            enemyDifficulty: "hard"
+                        },
+                        {
+                            enemyId: "goliath",
+                            enemyDifficulty: "boss"
+                        },
+                    ],
+                    onCompleteAreasUnlocked: [
+                        "tristram"
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                },
+                //
+                florence: {
+                    areaString : " ",
+                    name: "Florence",
+                    enemiesToDefeat: 119,
+                    onCompleteAreasUnlocked: [
+                        "maktarresort"
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                },
+                //
+                hogevelumepark: {
+                    areaString : " ",
+                    name: "Hoge Velume park",
+                    enemiesToDefeat: 14,
+                    onCompleteAreasUnlocked: [
+                        "skeletonlake",
+                        "hooverdam",
+                        "napilibay"
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                },
+                //
+                hooverdam: {
+                    areaString : " ",
+                    name: "Hoover Dam",
+                    enemiesToDefeat: 130,
+                    onCompleteAreasUnlocked: [
+                        "pantheonbridge"
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                },
+                //
+                maktarresort: {
+                    areaString : " ",
+                    name: "Maktar Resort",
+                    enemiesToDefeat: 104,
+                    onCompleteAreasUnlocked: [
+                        "colosseum"
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                },
+                //
+                napilibay: {
+                    areaString : " ",
+                    name: "Napili Bay",
+                    enemiesToDefeat: 86,
+                    onCompleteAreasUnlocked: [
+                        "searlesfang"
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                },
+                //
+                pantheonbridge: {
+                    areaString : " ",
+                    name: "Pantheon Bridge",
+                    enemiesToDefeat: 93,
+                    onCompleteAreasUnlocked: [
+                        "skeletonlake"
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                },
+                //
+                promos: {
+                    areaString : " ",
+                    name: "Promos",
+                    enemiesToDefeat: 79,
+                    onCompleteAreasUnlocked: [
+                        "skeletonlake"
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                },
+                //
+                rubyrange: {
+                    areaString : " ",
+                    name: "Ruby Range",
+                    enemiesToDefeat: 189,
+                    onCompleteAreasUnlocked: [
+                        "voeld"
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                },
+                //
+                searlesfang: {
+                    areaString : " ",
+                    name: "Searle's Fang",
+                    enemiesToDefeat: 116,
+                    onCompleteAreasUnlocked: [
+                        "skeletonlake"
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                },
+                //
+                seljalandsfoss: {
+                    areaString : " ",
+                    name: "Seljalandsfoss",
+                    enemiesToDefeat: 42,
+                    onCompleteAreasUnlocked: [
+                        "rubyrange"
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                },
+                // 4 man
+                skeletonlake: {
+                    areaString : "Something felt completely off about this lake..",
+                    name: "Skeleton Lake",
+                    enemiesToDefeat: 94,
+                    enemies: [
+                        {
+                            enemyId: "bonewarrior",
+                            enemyDifficulty: "hard"
+                        },
+                        {
+                            enemyId: "bonewarrior",
+                            enemyDifficulty: "hard"
+                        },
+                        {
+                            enemyId: "bonewarrior",
+                            enemyDifficulty: "hard"
+                        },
+                        {
+                            enemyId: "bonewarrior",
+                            enemyDifficulty: "hard"
+                        }
+                    ],
+                    onCompleteAreasUnlocked: [
+
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                },
+                //
+                surkesh: {
+                    areaString : " ",
+                    name: "Sur'Kesh",
+                    enemiesToDefeat: 120,
+                    onCompleteAreasUnlocked: [
+
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                },
+                //
+                tristram: {
+                    areaString : " ",
+                    name: "Tristram",
+                    enemiesToDefeat: 120,
+                    onCompleteAreasUnlocked: [
+                        "seljalandsfoss"
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                },
+                // 7 man
+                voeld: {
+                    areaString : " ",
+                    name: "Voeld",
+                    enemiesToDefeat: 7,
+                    enemies: [
+                        {
+                            enemyId: "goliath",
+                            enemyDifficulty: "boss"
+                        },
+                        {
+                            enemyId: "hungryboar",
+                            enemyDifficulty: "easy"
+                        },
+                        {
+                            enemyId: "sicario",
+                            enemyDifficulty: "boss"
+                        },
+                        {
+                            enemyId: "philistine",
+                            enemyDifficulty: "medium"
+                        },
+                        {
+                            enemyId: "sicario",
+                            enemyDifficulty: "boss"
+                        },
+                        {
+                            enemyId: "hungryboar",
+                            enemyDifficulty: "easy"
+                        },
+                        {
+                            enemyId: "goliath",
+                            enemyDifficulty: "boss"
+                        }
+                    ],
+                    onCompleteAreasUnlocked: [
+
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                },
+            },
+            onCompleteZonesUnlocked: [
+                "mounteverest",
+            ]
         },
         sahara: {
 
@@ -3993,6 +4413,24 @@ Hoover Dam
         tanahlot: "johannesburg",
         themisarena: "johannesburg",
         waileabeach: "johannesburg",
+
+        borromeocastle: "pikecreek",
+        colosseum: "pikecreek",
+        florence: "pikecreek",
+        hogevelumepark: "pikecreek",
+        hooverdam: "pikecreek",
+        lakeborogia: "pikecreek", //
+        maktarresort: "pikecreek",
+        napilibay: "pikecreek",
+        pantheonbridge: "pikecreek",
+        promos: "pikecreek",
+        rubyrange: "pikecreek",
+        searlesfang: "pikecreek",
+        seljalandsfoss: "pikecreek",
+        skeletonlake: "pikecreek",
+        surkesh: "pikecreek",
+        tristram: "pikecreek",
+        voeld: "pikecreek",
 
     },
 }
