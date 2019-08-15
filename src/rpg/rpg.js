@@ -3628,6 +3628,7 @@ function calculateRewards(event, memberInRpgEvent, allItems, numberOfMembers, fi
             if (event.area){
                 let rareRpgMapItems = []
                 let ancientRpgMapItems = []
+                let craftingItems = []
                 // number of rolls based on the number of people in the area
                 let zoneAreaIsIn = getRpgZone(event.area)
                 rpgZoneDifficulty = rpgZones[zoneAreaIsIn].zoneDifficulty
@@ -3642,11 +3643,7 @@ function calculateRewards(event, memberInRpgEvent, allItems, numberOfMembers, fi
                         rareRpgMapItems.push(allItems[item]);
                     }else if (allItems[item].itemraritycategory == "rare"
                     && ( event.area && allItems[item].dropsfromenemy == event.enemies[enemy].enemyIdName ) ){
-                        rareRpgMapItems.push(allItems[item]);
-                        rareRpgMapItems.push(allItems[item]);
-                        rareRpgMapItems.push(allItems[item]);
-                        rareRpgMapItems.push(allItems[item]);
-                        rareRpgMapItems.push(allItems[item]);
+                        craftingItems.push(allItems[item]);
                     }
                 }
                 // add the newly added items to the list of items to possibly obtain
@@ -3655,6 +3652,16 @@ function calculateRewards(event, memberInRpgEvent, allItems, numberOfMembers, fi
                 }
                 for (var p in ancientRpgMapItems){
                     ancientItems.push(ancientRpgMapItems[p])
+                }
+                // roll for crafting items
+                if (craftingItems.length > 0){
+                    let craftingRoll = Math.floor(Math.random() * 1000 )
+                    let craftingRollHasToBeOver = 930
+                    if (craftingRoll > craftingRollHasToBeOver){
+                        var itemRoll = Math.floor(Math.random() * craftingItems.length);
+                        let itemObtained = craftingItems[itemRoll]
+                        itemsObtainedArray.push( itemObtained )
+                    }
                 }
                 let thresholdMap = {
                     2: 500,
@@ -3673,76 +3680,31 @@ function calculateRewards(event, memberInRpgEvent, allItems, numberOfMembers, fi
             if (getThisRoll){
                 var rarityRoll = undefined;
                 var enemyDifficulty =  event.enemies[enemy].difficulty
-                if (enemyDifficulty == "easy"){
-                    additionalExperience = additionalExperience + (1 * rpgZoneDifficulty)
-                    additionalRpgPoints = additionalRpgPoints + (1 * rpgZoneDifficulty)
-                    // common items
-                    rarityRoll = Math.floor(Math.random() * 3975) + 6000;
+                additionalExperience = additionalExperience + getAdditionalExperienceByDiffuclty(enemyDifficulty, rpgZoneDifficulty)
+                additionalRpgPoints = additionalRpgPoints + getAdditionalRPGPtsByDifficulty(enemyDifficulty, rpgZoneDifficulty)
+                rarityRoll = getRarityRollByDifficulty(enemyDifficulty, COMMON_MAX_ROLL, UNCOMMON_MAX_ROLL)
+                let rollParams = {
+                    ANCIENT_MIN_ROLL: ANCIENT_MIN_ROLL,
+                    ancientItems: ancientItems,
+                    RARE_MIN_ROLL: RARE_MIN_ROLL,
+                    RARE_MAX_ROLL: RARE_MAX_ROLL,
+                    rareItems: rareItems,
+                    UNCOMMON_MIN_ROLL: UNCOMMON_MIN_ROLL,
+                    UNCOMMON_MAX_ROLL: UNCOMMON_MAX_ROLL,
+                    uncommonItems: uncommonItems,
+                    commonItems: commonItems,
+                    COMMON_ITEMS_TO_OBTAIN: COMMON_ITEMS_TO_OBTAIN
                 }
-                else if (enemyDifficulty == "medium"){
-                    additionalExperience = additionalExperience + (2 * rpgZoneDifficulty)
-                    additionalRpgPoints = additionalRpgPoints + (2 * rpgZoneDifficulty)
-                    // common ? uncommon
-                    rarityRoll = Math.floor(Math.random() * 3975) + 6000;
-                }
-                else if (enemyDifficulty == "hard"){
-                    additionalExperience = additionalExperience + (9 * rpgZoneDifficulty)
-                    additionalRpgPoints = additionalRpgPoints + (9 * rpgZoneDifficulty)
-                    // common + uncommon maybe rare
-                    rarityRoll = Math.floor(Math.random() * 3975) + 6000;
-                }
-                else if (enemyDifficulty == "boss"){
-                    additionalExperience = additionalExperience + (19 * rpgZoneDifficulty)
-                    additionalRpgPoints = additionalRpgPoints + (19 * rpgZoneDifficulty)
-                    // common + uncommon maybe rare maybe ancient
-                    rarityRoll = Math.floor(Math.random() * 2000) + 8000;
-                }else if (enemyDifficulty == "special"){
-                    additionalExperience = additionalExperience + (19 * rpgZoneDifficulty)
-                    additionalRpgPoints = additionalRpgPoints + (19 * rpgZoneDifficulty)
-                    // common + uncommon maybe rare maybe ancient
-                    rarityRoll = Math.floor(Math.random() * 2000) + 8000;
-                }
-                // push the item to items
                 if (rarityRoll){
-                    if(rarityRoll > ANCIENT_MIN_ROLL ){
-                        var itemRoll = Math.floor(Math.random() * ancientItems.length);
-                        console.log(ancientItems[itemRoll]);
-                        itemsObtainedArray.push(ancientItems[itemRoll])
-                    }else if(rarityRoll > RARE_MIN_ROLL && rarityRoll <= RARE_MAX_ROLL){
-                        var itemRoll = Math.floor(Math.random() * rareItems.length);
-                        console.log(rareItems[itemRoll]);
-                        itemsObtainedArray.push(rareItems[itemRoll]);
-                    }else if (rarityRoll > UNCOMMON_MIN_ROLL && rarityRoll <= UNCOMMON_MAX_ROLL){
-                        var itemRoll = Math.floor(Math.random() * uncommonItems.length);
-                        console.log(uncommonItems[itemRoll]);
-                        itemsObtainedArray.push( uncommonItems[itemRoll] );
-                    }else {
-                        var itemRoll = Math.floor(Math.random() * commonItems.length);
-                        console.log(commonItems[itemRoll]);
-                        commonItems[itemRoll].itemAmount = COMMON_ITEMS_TO_OBTAIN
-                        itemsObtainedArray.push( commonItems[itemRoll] );
-                    }
+                    let itemObtained = rollForItemByRarity(rarityRoll, rollParams )
+                    itemsObtainedArray.push( itemObtained )
                 }
                 if (event.queueEvent){
                     for (var n = 0; n < 2; n++){
-                        if(rarityRoll > ANCIENT_MIN_ROLL ){
-                            var itemRoll = Math.floor(Math.random() * ancientItems.length);
-                            console.log(ancientItems[itemRoll]);
-                            itemsObtainedArray.push(ancientItems[itemRoll])
-                        }else if(rarityRoll > RARE_MIN_ROLL && rarityRoll <= RARE_MAX_ROLL){
-                            var itemRoll = Math.floor(Math.random() * rareItems.length);
-                            console.log(rareItems[itemRoll]);
-                            itemsObtainedArray.push(rareItems[itemRoll]);
-                        }else if (rarityRoll > UNCOMMON_MIN_ROLL && rarityRoll <= UNCOMMON_MAX_ROLL){
-                            var itemRoll = Math.floor(Math.random() * uncommonItems.length);
-                            console.log(uncommonItems[itemRoll]);
-                            itemsObtainedArray.push( uncommonItems[itemRoll] );
-                        }else {
-                            var itemRoll = Math.floor(Math.random() * commonItems.length);
-                            console.log(commonItems[itemRoll]);
-                            commonItems[itemRoll].itemAmount = COMMON_ITEMS_TO_OBTAIN
-                            itemsObtainedArray.push( commonItems[itemRoll] );
-                        }
+                        // create rarity roll function
+                        rarityRoll = getRarityRollByDifficulty(enemyDifficulty, COMMON_MAX_ROLL, UNCOMMON_MAX_ROLL)
+                        let itemObtained = rollForItemByRarity(rarityRoll, rollParams )
+                        itemsObtainedArray.push( itemObtained )
                     }
                 }
             }
@@ -3761,6 +3723,71 @@ function calculateRewards(event, memberInRpgEvent, allItems, numberOfMembers, fi
     rewardsForPlayer.rpgPoints = Math.floor(rewardsForPlayer.rpgPoints + additionalRpgPoints + numberOfMembers);
     rewardsForPlayer.items = itemsObtainedArray
     return rewardsForPlayer
+}
+
+function getAdditionalRPGPtsByDifficulty(enemyDifficulty, rpgZoneDifficulty){
+    if (enemyDifficulty == "easy"){
+        return (1 * rpgZoneDifficulty)
+    }else if (enemyDifficulty == "medium"){
+        return (2 * rpgZoneDifficulty)
+    }else if (enemyDifficulty == "hard"){
+        return (9 * rpgZoneDifficulty)
+    }else if (enemyDifficulty == "boss"){
+        return (19 * rpgZoneDifficulty)
+    }else if (enemyDifficulty == "special"){
+        return (19 * rpgZoneDifficulty)
+    }else{
+        return (1 * rpgZoneDifficulty)
+    }
+}
+
+function getAdditionalExperienceByDiffuclty(enemyDifficulty, rpgZoneDifficulty){
+    if (enemyDifficulty == "easy"){
+        return (1 * rpgZoneDifficulty)
+    }else if (enemyDifficulty == "medium"){
+        return (2 * rpgZoneDifficulty)
+    }else if (enemyDifficulty == "hard"){
+        return (9 * rpgZoneDifficulty)
+    }else if (enemyDifficulty == "boss"){
+        return + (19 * rpgZoneDifficulty)
+    }else if (enemyDifficulty == "special"){
+        return (19 * rpgZoneDifficulty)
+    }else{
+        return (1 * rpgZoneDifficulty)
+    }
+}
+
+function getRarityRollByDifficulty(enemyDifficulty, COMMON_MAX_ROLL, UNCOMMON_MAX_ROLL ){
+    if (enemyDifficulty == "easy"){
+        return Math.floor(Math.random() * COMMON_MAX_ROLL) + 1;
+    }else if (enemyDifficulty == "medium"){
+        return Math.floor(Math.random() * UNCOMMON_MAX_ROLL) + 1;;
+    }else if (enemyDifficulty == "hard"){
+        return Math.floor(Math.random() * 3975) + 6000;
+    }else if (enemyDifficulty == "boss"){
+        return Math.floor(Math.random() * 2000) + 8000;
+    }else if (enemyDifficulty == "special"){
+        return Math.floor(Math.random() * 2000) + 8000;
+    }else{
+        return Math.floor(Math.random() * 3975) + 6000;
+    }
+}
+
+function rollForItemByRarity(rarityRoll, rollParams ){
+    if(rarityRoll > rollParams.ANCIENT_MIN_ROLL ){
+        var itemRoll = Math.floor(Math.random() * rollParams.ancientItems.length);
+        return rollParams.ancientItems[itemRoll]
+    }else if(rarityRoll > rollParams.RARE_MIN_ROLL && rarityRoll <= rollParams.RARE_MAX_ROLL){
+        var itemRoll = Math.floor(Math.random() * rollParams.rareItems.length);
+        return rollParams.rareItems[itemRoll]
+    }else if (rarityRoll > rollParams.UNCOMMON_MIN_ROLL && rarityRoll <= rollParams.UNCOMMON_MAX_ROLL){
+        var itemRoll = Math.floor(Math.random() * rollParams.uncommonItems.length);
+        return rollParams.uncommonItems[itemRoll]
+    }else {
+        var itemRoll = Math.floor(Math.random() * rollParams.commonItems.length);
+        rollParams.commonItems[itemRoll].itemAmount = rollParams.COMMON_ITEMS_TO_OBTAIN
+        return rollParams.commonItems[itemRoll]
+    }
 }
 
 function effectsOnTurnEnd(event){

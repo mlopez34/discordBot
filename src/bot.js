@@ -111,7 +111,6 @@ client.on("guildCreate", guild => {
 })
 
 function commandIs(str, msg, botMentioned){
-    console.log("msg content " + msg.content)
     if (msg.channel && msg.channel.guild){
         let guildPrefix = settings.getGuildPrefix(msg.channel.guild.id)
         if ( str === "settings" && botMentioned ){

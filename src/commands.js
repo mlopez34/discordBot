@@ -95,7 +95,8 @@ var commandLock = {
     prepare: {},
     cook: {},
     fetch: {},
-    scavenge: {}
+    scavenge: {},
+    plant: {}
 }
 
 
@@ -3254,56 +3255,81 @@ module.exports.itemDetailsCommand = function(message, args){
     var discordUserId = message.author.id;
     if (args && args.length >= 2){
         var itemToWear = args[1].toLowerCase(); // must be a valid itemname
-        profileDB.getUserItemsForInfo(discordUserId, function(err, inventoryResponse){
-            if (err){
-                console.log(err);
+        profileDB.getTempleData(discordUserId, function(templeErr, templeRes){
+            if (templeErr){
+                console.log(templeErr)
+                message.channel.send("You must `-agree` to create a profile first!")
             }else{
-                // get all the data for each item
-                var itemsInInventoryCountMap = {}
-                for (var item in inventoryResponse.data){
-                    var ItemInQuestion = inventoryResponse.data[item];
-                    var validItem = useItem.itemValidate(ItemInQuestion);
-                    var itemBeingAuctioned = false;
-                    if (itemsInAuction[ItemInQuestion.id]){
-                        itemBeingAuctioned = true;
+                profileDB.getUserItemsForInfo(discordUserId, function(err, inventoryResponse){
+                    if (err){
+                        console.log(err);
+                    }else{
+                        // get all the data for each item
+                        var itemsInInventoryCountMap = {}
+                        for (var item in inventoryResponse.data){
+                            var ItemInQuestion = inventoryResponse.data[item];
+                            var validItem = useItem.itemValidate(ItemInQuestion);
+                            var itemBeingAuctioned = false;
+                            if (itemsInAuction[ItemInQuestion.id]){
+                                itemBeingAuctioned = true;
+                            }
+                            var itemBeingTraded = false;
+                            if (activeTradeItems[inventoryResponse.data[item].id]){
+                                itemBeingTraded = true;
+                            }
+                            if (!itemsInInventoryCountMap[inventoryResponse.data[item].itemid] 
+                            && validItem 
+                            && !itemBeingAuctioned
+                            && !itemBeingTraded){
+                                // item hasnt been added to be counted, add it as 1
+                                itemsInInventoryCountMap[inventoryResponse.data[item].itemid] = 1;
+                            }
+                            else if (validItem && !itemBeingAuctioned && !itemBeingTraded){
+                                itemsInInventoryCountMap[inventoryResponse.data[item].itemid] = itemsInInventoryCountMap[inventoryResponse.data[item].itemid] + 1
+                            }
+                        }
+                        let itemsInMarketByShortName = {}
+                        for (var i in marketItems){
+                            if (!itemsInMarketByShortName[marketItems[i].itemshortname]){
+                                itemsInMarketByShortName[marketItems[i].itemshortname] = itemsMapbyShortName[marketItems[i].itemshortname]
+                            }
+                        }
+                        // check that i have the item
+                        var idOfItemChosen = itemsMapbyShortName[itemToWear] ? itemsMapbyShortName[itemToWear].id : undefined
+                        if (itemsInInventoryCountMap[idOfItemChosen]){
+                            itemInfoBuilder(message, discordUserId, idOfItemChosen, itemToWear)
+                        }else if (marketItems[itemToWear]){
+                            // item id
+                            var itemInMarketShortName = marketItems[itemToWear].itemshortname
+                            idOfItemChosen = itemsMapbyShortName[itemInMarketShortName].id
+                            itemInfoBuilder(message, discordUserId, idOfItemChosen, itemInMarketShortName)
+                        }else if(itemsInMarketByShortName[itemToWear]){
+                            // item short name in market
+                            idOfItemChosen = itemsMapbyShortName[itemToWear].id
+                            itemInfoBuilder(message, discordUserId, idOfItemChosen, itemToWear)
+                        }else if (itemsMapbyShortName[itemToWear] 
+                        && templeRes.data.templecraft1id == idOfItemChosen
+                        && itemsMapById[templeRes.data.templecraft1id]){
+                            // item is one of my recipes
+                            idOfItemChosen = templeRes.data.templecraft1id
+                            itemInfoBuilder(message, discordUserId, idOfItemChosen, itemToWear)
+                        }else if (itemsMapbyShortName[itemToWear]
+                        && templeRes.data.templecraft2id == idOfItemChosen
+                        && itemsMapById[templeRes.data.templecraft2id]){
+                            // item is one of my recipes
+                            idOfItemChosen = templeRes.data.templecraft2id
+                            itemInfoBuilder(message, discordUserId, idOfItemChosen, itemToWear)
+                        }else if (itemsMapbyShortName[itemToWear] 
+                        && templeRes.data.templecraft3id == idOfItemChosen
+                        && itemsMapById[templeRes.data.templecraft3id]){
+                            // item is one of my recipes
+                            idOfItemChosen = templeRes.data.templecraft3id
+                            itemInfoBuilder(message, discordUserId, idOfItemChosen, itemToWear)
+                        }else{
+                            message.channel.send("you do not own that item or item does not exist")
+                        }
                     }
-                    var itemBeingTraded = false;
-                    if (activeTradeItems[inventoryResponse.data[item].id]){
-                        itemBeingTraded = true;
-                    }
-                    if (!itemsInInventoryCountMap[inventoryResponse.data[item].itemid] 
-                    && validItem 
-                    && !itemBeingAuctioned
-                    && !itemBeingTraded){
-                        // item hasnt been added to be counted, add it as 1
-                        itemsInInventoryCountMap[inventoryResponse.data[item].itemid] = 1;
-                    }
-                    else if (validItem && !itemBeingAuctioned && !itemBeingTraded){
-                        itemsInInventoryCountMap[inventoryResponse.data[item].itemid] = itemsInInventoryCountMap[inventoryResponse.data[item].itemid] + 1
-                    }
-                }
-                let itemsInMarketByShortName = {}
-                for (var i in marketItems){
-                    if (!itemsInMarketByShortName[marketItems[i].itemshortname]){
-                        itemsInMarketByShortName[marketItems[i].itemshortname] = itemsMapbyShortName[marketItems[i].itemshortname]
-                    }
-                }
-                // check that i have the item
-                var idOfItemChosen = itemsMapbyShortName[itemToWear] ? itemsMapbyShortName[itemToWear].id : undefined
-                if (itemsInInventoryCountMap[idOfItemChosen]){
-                    itemInfoBuilder(message, discordUserId, idOfItemChosen, itemToWear)
-                }else if (marketItems[itemToWear]){
-                    // item id
-                    var itemInMarketShortName = marketItems[itemToWear].itemshortname
-                    idOfItemChosen = itemsMapbyShortName[itemInMarketShortName].id
-                    itemInfoBuilder(message, discordUserId, idOfItemChosen, itemInMarketShortName)
-                }else if(itemsInMarketByShortName[itemToWear]){
-                    // item short name in market
-                    idOfItemChosen = itemsMapbyShortName[itemToWear].id
-                    itemInfoBuilder(message, discordUserId, idOfItemChosen, itemToWear)
-                }else{
-                    message.channel.send("you do not own that item or item does not exist")
-                }
+                })
             }
         })
     }
@@ -6462,14 +6488,15 @@ module.exports.plantCommand = function(message, args){
     // arguments will be, seednameid, greenhouse slot
     // -plant bambooseed 5
     // plant a bamboo seed in slot 5 of your greenhouse
-    if (args && args.length > 2 ){
+    if (args && args.length > 2 && !commandLock["plant"][discordUserId]){
         var myItemShortName =  args[1];
         var plotOfLand = Math.floor( args[2] );  // in an array this will always be -1 of index
-
+        exports.setCommandLock("plant", discordUserId, true)
         profileDB.getUserItems(discordUserId, function(err, inventoryResponse){
             if (err){
                 console.log(err);
                 message.channel.send("You must `-agree` to create a profile first!")
+                exports.setCommandLock("plant", discordUserId, false)
             }else{
                 var itemsInInventoryCountMap = {};
                 var plantBeingPlanted = []
@@ -6504,6 +6531,7 @@ module.exports.plantCommand = function(message, args){
                     profileDB.getGreenHouseData(discordUserId, function(ghError, ghRes){
                         if (ghError){
                             console.log(ghError)
+                            exports.setCommandLock("plant", discordUserId, false)
                             message.channel.send("You must `-agree` to create a profile first!")
                         }else{
                             if (ghRes.data.greenhouselevel > 0 && ghRes.data.greenhouse){
@@ -6535,15 +6563,18 @@ module.exports.plantCommand = function(message, args){
                                     plantOnPlotOfLand(message, discordUserId, plotOfLand, greenHouseData, plantBeingPlanted[0])
                                 }else{
                                     message.channel.send("Invalid plot of land, try planting in a slot that is available to you")
+                                    exports.setCommandLock("plant", discordUserId, false)
                                 }
                                 // if available, plant the seed in the plot of land, insert itemid, plantid, and set total harv = 0    
                             }else{
                                 message.channel.send("You do not own a Greenhouse")
+                                exports.setCommandLock("plant", discordUserId, false)
                             }
                         }
                     })
                 }else{
                     message.channel.send("missing plant seed")
+                    exports.setCommandLock("plant", discordUserId, false)
                 }
             }
         })
@@ -6571,14 +6602,17 @@ function plantOnPlotOfLand(message, discordUserId, plotOfLand, greenHouseData, p
 
     profileDB.updateItemStatus(plantBeingPlanted.id, "used", function(err, res){
         if (err){
+            exports.setCommandLock("plant", discordUserId, false)
             console.log(err)
         }else{
             profileDB.updatePlotInfo(discordUserId, updateInfoObject, function(plotErr, plotRes){
                 if (plotErr){
+                    exports.setCommandLock("plant", discordUserId, false)
                     console.log(plotErr)
                 }else{
                     console.log(plotRes)
                     message.channel.send(message.author.username + " has planted a `" + greenHouseData.plantName + "` !")
+                    exports.setCommandLock("plant", discordUserId, false)
                 }
             })
         }
