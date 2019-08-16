@@ -3569,8 +3569,8 @@ module.exports = {
                             enemyDifficulty: "hard"
                         },
                         {
-                            enemyId: "goliath",
-                            enemyDifficulty: "boss"
+                            enemyId: "zeta",
+                            enemyDifficulty: "hard"
                         },
                     ],
                     onCompleteAreasUnlocked: [
