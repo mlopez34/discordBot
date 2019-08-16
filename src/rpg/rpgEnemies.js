@@ -2789,7 +2789,7 @@ module.exports = {
             bonewarrior: {
                 enemyIdName : "bonewarrior",
                 name: "Bone Warrior",
-                abilities: ["clap", "clap", "iceshards", "iceshards", "cripple"],
+                abilities: ["skeletalSwing", "skeletalSwing", "iceshards", "iceshards", "cripple"],
                 buffs: [
                     {
                         name: "frenzy",
@@ -2815,8 +2815,8 @@ module.exports = {
                 adPerPartyMember: 21,
                 mdPerPartyMember: 21,
                 hp: 2750,
-                attackDmg: 1200,
-                magicDmg: 1200,
+                attackDmg: 900,
+                magicDmg: 900,
                 armor: 1650,
                 spirit: 1650,
                 difficulty: "hard",

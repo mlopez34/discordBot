@@ -15,6 +15,7 @@ var disassembleItem = require("./disassemble.js")
 var experience = require("./experience.js")
 var wearStats = require("./wearStats.js")
 var quest = require("./quest.js")
+var reputation = require("./reputation.js")
 var settings = require("./settings.js")
 // game files
 /*
@@ -6355,7 +6356,7 @@ function templeVisualBuilder(templeData){
             var itemname = itemsMapById[itemid].itemname
             var itemReq = itemReq + itemname + " x" + itemcount + "\n"
         }
-        templeVisual = templeVisual + "**" + recipe1.recipeName + " Requirements**: \ntacos: " + recipe1.tacos + "\nreputation: " + recipe1.reputationlevel + "\nItems:\n" + itemReq
+        templeVisual = templeVisual + "**" + recipe1.recipeName + " Requirements**: \n*Tacos:* " + recipe1.tacos + "\n*Reputation:* " + reputation.getReputationBasedOnLevel(recipe1.reputationlevel) + "\n*Items:*\n" + itemReq
     }
     if (recipe2){
         var itemReq = ""
@@ -6365,7 +6366,7 @@ function templeVisualBuilder(templeData){
             var itemname = itemsMapById[itemid].itemname
             var itemReq = itemReq + itemname + " x" + itemcount + "\n"
         }
-        templeVisual = templeVisual + "**" + recipe2.recipeName + "**: \nrequirements:\n tacos: " + recipe2.tacos + "\nreputation: " + recipe2.reputationlevel + "\nItems:\n" + itemReq
+        templeVisual = templeVisual + "**" + recipe2.recipeName + " Requirements:** \n*Tacos:* " + recipe2.tacos + "\n*Reputation:* " + reputation.getReputationBasedOnLevel(recipe2.reputationlevel) + "\n*Items:*\n" + itemReq
 
     }
     if (recipe3){
@@ -6376,7 +6377,7 @@ function templeVisualBuilder(templeData){
             var itemname = itemsMapById[itemid].itemname
             var itemReq = itemReq + itemname + " x" + itemcount + "\n"
         }
-        templeVisual = templeVisual + "**" + recipe3.recipeName + "**: \nrequirements:\n tacos: " + recipe3.tacos + "\nreputation: " + recipe3.reputationlevel + "\nItems:\n" + itemReq
+        templeVisual = templeVisual + "**" + recipe3.recipeName + " Requirements:** \n*Tacos:* " + recipe3.tacos + "\n*Reputation:* " + reputation.getReputationBasedOnLevel(recipe3.reputationlevel) + "\n*Items:*\n" + itemReq
 
     }
     return templeVisual

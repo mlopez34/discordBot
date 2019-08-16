@@ -1,5 +1,6 @@
 'use strict'
 var profileDB = require("./profileDB.js");
+var reputation = require("./reputation.js")
 const Discord = require("discord.js");
 
 var upgradeLock = {}
@@ -143,7 +144,7 @@ module.exports.getUpgradeRequirementsForLevel = function(level, itemsMapById){
             var itemname = itemsMapById[itemid].itemname
             var itemReq = itemReq + itemname + " x" + itemcount + "\n"
         }
-        requirementString = requirementString + "tacos: " + upgradeReqs.tacos + "\nreputation: " + upgradeReqs.reputationlevel + "\nItems:\n" + itemReq
+        requirementString = requirementString + "*Tacos:* " + upgradeReqs.tacos + "\n*Reputation:* " + reputation.getReputationBasedOnLevel( upgradeReqs.reputationlevel ) + "\n*Items:*\n" + itemReq
     }
     return requirementString
 }

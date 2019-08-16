@@ -44,6 +44,15 @@ module.exports.gainReputation = function (message, discordUserId, reputationNumb
     // 
 }
 
+module.exports.getReputationBasedOnLevel = function(reputationLevel){
+    for (var rep in REPUTATIONS){
+        if (REPUTATIONS[rep].level == reputationLevel){
+            return REPUTATIONS[rep].display
+        }
+    }
+    return "Liked"
+}
+
 // check if user has obtained a new reputation status
 function reachedNewRepStatus(message, getProfileRes, discordId, reputationGained, cb){
     // query for user's current reputation number

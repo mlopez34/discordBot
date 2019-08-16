@@ -2,7 +2,7 @@ module.exports = {
     // TODO:
     // cannister shot chance to deal 1 to 7 shots
     // mindflaylike ability 90%, 120%, 150%
-    // deal 157% damage, consume 20% of spirit / armor for the turn
+    // deal 160% damage, consume 50% of spirit / armor for the turn
     // 
     // lightwell ability - 5 random heals
 
@@ -220,6 +220,25 @@ module.exports = {
             dmg: 50,
             adPercentage: 1.2,
             type: "physical"
+        },
+        skeletalSwing: {
+            name: "Skeletal Swing",
+            abilityId: "skeletalSwing",
+            dmg: 50,
+            adPercentage: 1.2,
+            type: "physical",
+            dot: {
+                name: "Reap",
+                type:"physical",
+                dmg: 1000,
+                untargettable: true,
+                adPercentage: 1,
+                emoji: "<:shatter:479347500751388687>",
+                ignoreUnique: true,
+                turnsToExpire: 15,
+                dmgOnDotExpire: false,
+                dmgOnExpire: 0
+            }
         },
         scam : {
             name: "Scam",

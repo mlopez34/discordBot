@@ -1,5 +1,6 @@
 'use strict'
 var profileDB = require("./profileDB.js");
+var reputation = require("./reputation.js")
 const PETS_FETCH_SEEDS_LEVEL = 8;
 
 var upgradeLock = {}
@@ -142,7 +143,7 @@ module.exports.getUpgradeRequirementsForLevel = function(level, itemsMapById){
             var itemname = itemsMapById[itemid].itemname
             var itemReq = itemReq + itemname + " x" + itemcount + "\n"
         }
-        requirementString = requirementString + "tacos: " + upgradeReqs.tacos + "\nreputation: " + upgradeReqs.reputationlevel + "\nItems:\n" + itemReq
+        requirementString = requirementString + "*Tacos:* " + upgradeReqs.tacos + "\n*Reputation:* " + reputation.getReputationBasedOnLevel( upgradeReqs.reputationlevel ) + "\n*Items:*\n" + itemReq
     }
     return requirementString
 }

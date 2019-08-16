@@ -1,5 +1,6 @@
 'use strict'
 var profileDB = require("./profileDB.js");
+var reputation = require("./reputation.js")
 
 const greenHouseBakingLevels = {
     regular: 4,
@@ -128,9 +129,9 @@ module.exports.recipesForTodayObjectBuilder = function(recipesAvailable){
 
 module.exports.buildRecipeRequirementString = function(recipename){
     var recipeString = ""
-    recipeString = recipeString + "Tacos: " + bakingRecipes[recipename].tacos + "\n"
-    recipeString = recipeString + "Reputation: " + bakingRecipes[recipename].reputationlevel + "\n"
-    recipeString = recipeString + "Items: \n"
+    recipeString = recipeString + "*Tacos:* " + bakingRecipes[recipename].tacos + "\n"
+    recipeString = recipeString + "*Reputation:* " + reputation.getReputationBasedOnLevel( bakingRecipes[recipename].reputationlevel ) + "\n"
+    recipeString = recipeString + "*Items:* \n"
     for (var i in bakingRecipes[recipename].itemRequirements){
         var itemId = bakingRecipes[recipename].itemRequirements[i].itemId
         var itemCount = bakingRecipes[recipename].itemRequirements[i].itemCount
