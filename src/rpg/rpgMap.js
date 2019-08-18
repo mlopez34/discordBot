@@ -3550,7 +3550,7 @@ module.exports = {
                 colosseum: {
                     areaString : " ",
                     name: "Colosseum",
-                    enemiesToDefeat: 70,
+                    enemiesToDefeat: 45,
                     enemies: [
                         {
                             enemyId: "goliath",
@@ -3772,7 +3772,7 @@ module.exports = {
                 skeletonlake: {
                     areaString : "Something felt completely off about this lake..",
                     name: "Skeleton Lake",
-                    enemiesToDefeat: 94,
+                    enemiesToDefeat: 68,
                     enemies: [
                         {
                             enemyId: "bonewarrior",
