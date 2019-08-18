@@ -3650,13 +3650,13 @@ module.exports = {
                     "focus"
                 ],
                 hpPerPartyMember: 1222,
-                hp: 1950,
+                hp: 1650,
                 adPerPartyMember: 29,
                 mdPerPartyMember: 29,
-                attackDmg: 940,
-                magicDmg: 990,
-                armor: 2200,
-                spirit: 2200,
+                attackDmg: 740,
+                magicDmg: 790,
+                armor: 1900,
+                spirit: 1900,
                 difficulty: "boss",
                 element: "normal"
             },
