@@ -2241,7 +2241,8 @@ module.exports.displayMap = function(message, zoneToCheck){
                 var zonePicked = rpgZones[ zoneToCheck ].name
                 var currentAreaName = rpgZones[ getRpgZone( userData.data.currentarea ) ].areas[userData.data.currentarea].name
                 var zoneAvatar = rpgZones[ zoneToCheck ].zoneAvatar
-                mapEmbedBuilder(message, listOfAreasInZone, zonesAvailableForUserMap, currentZoneName, currentAreaName, zoneAvatar, zonePicked)    
+                var zoneLevelIntendedString = rpgZones[ zoneToCheck ].intendedLevelString
+                mapEmbedBuilder(message, listOfAreasInZone, zonesAvailableForUserMap, currentZoneName, currentAreaName, zoneAvatar, zonePicked, zoneLevelIntendedString)    
             }else{
                 let usercurrentarea = userData.data.currentarea
                 zoneToCheck = getRpgZone(usercurrentarea)
@@ -2251,7 +2252,8 @@ module.exports.displayMap = function(message, zoneToCheck){
                 var currentZoneName = rpgZones[ getRpgZone( usercurrentarea ) ].name
                 var currentAreaName = rpgZones[ getRpgZone( usercurrentarea ) ].areas[usercurrentarea].name
                 var zoneAvatar = rpgZones[ getRpgZone( usercurrentarea ) ].zoneAvatar
-                mapEmbedBuilder(message, listOfAreasInZone, zonesAvailableForUserMap, currentZoneName, currentAreaName, zoneAvatar, currentZoneName)
+                var zoneLevelIntendedString = rpgZones[ getRpgZone( usercurrentarea ) ].intendedLevelString
+                mapEmbedBuilder(message, listOfAreasInZone, zonesAvailableForUserMap, currentZoneName, currentAreaName, zoneAvatar, currentZoneName, zoneLevelIntendedString)
             }
         }
     })
@@ -2299,7 +2301,7 @@ function keystonesEmbedBuilder(message, keystonesString, userData){
     })
 }
 
-function mapEmbedBuilder(message, listOfAreasInZone, zonesAvailableForUserMap, currentZoneName, currentAreaName, zoneAvatar, zonePicked){
+function mapEmbedBuilder(message, listOfAreasInZone, zonesAvailableForUserMap, currentZoneName, currentAreaName, zoneAvatar, zonePicked, zoneLevelIntendedString){
     var zonesAvailableString = ""
     var areasInZoneString = ""
     for (var z in zonesAvailableForUserMap){
@@ -2320,7 +2322,7 @@ function mapEmbedBuilder(message, listOfAreasInZone, zonesAvailableForUserMap, c
 
     const embed = new Discord.RichEmbed()
     .setAuthor(message.author.username + " Map")
-    .setDescription(":map: travel to different areas via:\n-travel [areaname] OR -travel [zonename]\nBegin an RPG event via:\n-rpgstart @user @user (up to 5 users)\nYou are currently in " + currentZoneName + " - " + currentAreaName)
+    .setDescription(":map: travel to different areas via:\n-travel [areaname] OR -travel [zonename]\nBegin an RPG event via:\n-rpgstart @user @user (up to 5 users)\nYou are currently in " + currentZoneName + " - " + currentAreaName + " (" + zoneLevelIntendedString + ")")
     .addField("Zones available", zonesAvailableString, true)
     .addField("Areas available in " + zonePicked, areasInZoneString, true)
     .setColor(0xbfa5ff)
