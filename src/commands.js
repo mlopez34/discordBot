@@ -4877,7 +4877,7 @@ module.exports.fetchCommand = function(message, args){
                                     ///////// CALCULATE THE MINUTES REDUCED HERE 
                                     cooldownDate = new Date(cooldownDate.setSeconds(cooldownDate.getSeconds() + secondsToRemove));
 
-                                    if (!lastFetchTime || ( cooldownDate > lastFetchTime )){
+                                    if ( !lastFetchTime || ( cooldownDate > lastFetchTime )){
                                         // fetch whatever and then set lastfetchtime to now
                                         var fetchTacos = PETS_AVAILABLE[userPet].fetch;
                                         ///////// CALCULATE THE EXTRA TACOS HERE 
@@ -4890,7 +4890,7 @@ module.exports.fetchCommand = function(message, args){
                                                 exports.setCommandLock("fetch", discordUserId, false)
                                                 var experienceFromItems = wearStats.calculateExtraExperienceGained(wearRes, "fetch", null);                                                                             
                                                 experience.gainExperience(message, message.author, (( (EXPERIENCE_GAINS.perFetchCd * PETS_AVAILABLE[userPet].fetch) / 10) + experienceFromItems) , fetchResponse);
-                                                eventParams = { command: "fetch", userData: fetchResponse, discordUserId: discordUserId, fetchCD: userData.fetchCD, userPetName: userPetName, emoji: PETS_AVAILABLE[userPet].emoji  }
+                                                eventParams = { command: "fetch", userData: fetchResponse, discordUserId: discordUserId, fetchCD: userData.fetchCD, userPetName: userPetName, emoji: PETS_AVAILABLE[userPet].emoji, stableRes: fetchResponse }
                                                 additionalEventsForCommand(message, eventParams)
                                                 // user's pet fetched some tacos
                                                 if (extraTacosFromItems > 0){
@@ -4963,7 +4963,7 @@ module.exports.fetchCommand = function(message, args){
                                                 var experienceFromItems = wearStats.calculateExtraExperienceGained(wearRes, "fetch", null);                                                                             
                                                 experience.gainExperience(message, message.author, (( (EXPERIENCE_GAINS.perFetchCd * PETS_AVAILABLE[userPet].fetch) / 10) + experienceFromItems) , fetchResponse);
                                                 // TODO: create events that are processed by other modules: ie - temple, greenhouse, temple 
-                                                eventParams = { command: "fetch", userData: fetchResponse, fetchCD: userData.fetchCD, discordUserId: discordUserId, userPetName: userPetName, emoji: PETS_AVAILABLE[userPet].emoji  }
+                                                eventParams = { command: "fetch", userData: fetchResponse, fetchCD: userData.fetchCD, discordUserId: discordUserId, userPetName: userPetName, emoji: PETS_AVAILABLE[userPet].emoji, stableRes: fetchResponse  }
                                                 additionalEventsForCommand(message, eventParams)
                                                 createTimeOutForCommandAfterUse("fetch", now, secondsToRemove, PETS_AVAILABLE[userPet].cooldown, discordUserId, fetchResponse.data, message)
                                                 // user's pet fetched some tacos

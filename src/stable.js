@@ -1,7 +1,11 @@
 'use strict'
 var profileDB = require("./profileDB.js");
 var reputation = require("./reputation.js")
+var rpgMap = require("./rpg/rpgMap");
+var areaToZoneMap = rpgMap.areaToZoneMap
 const PETS_FETCH_SEEDS_LEVEL = 8;
+const PETS_FETCH_RARE_MATS_LEVEL = 4;
+const PETS_FETCH_ANCIENT_MATS_LEVEL = 10;
 
 var upgradeLock = {}
 
@@ -259,21 +263,80 @@ function filterForSeeds(allItems){
     return seedItems
 }
 
+function filterForAreaMatsAncient(allItems, userArea, userZone){
+    let matAncientsFromArea = []
+    for (var i in allItems){
+        if (userZone && (allItems[i].findinarea == userArea || allItems[i].findinzone == userZone )
+        && allItems[i].itemstatistics == "consumable for ancient item"){
+            matAncientsFromArea.push(allItems[i])
+        }
+    }
+    return matAncientsFromArea
+}
+
+function filterForAreaMatsRare(allItems, userArea, userZone){
+    let matRaresFromArea = []
+    for (var i in allItems){
+        if (userZone && (allItems[i].findinarea == userArea || allItems[i].findinzone == userZone )
+        && allItems[i].itemstatistics == "consumable for rare item"){
+            matRaresFromArea.push(allItems[i])
+        }
+    }
+    return matRaresFromArea
+}
+
 function petFetchSeeds(message, eventParams){
     if (eventParams.discordUserId){
-        profileDB.getStableData(eventParams.discordUserId, function(err, stableRes){
+        if (eventParams.stableRes && eventParams.stableRes.data.stablelevel >= PETS_FETCH_SEEDS_LEVEL){
+            // how to calculate chance to get seeds? pet cooldown 
+            let itemsObtainedArray = []
+            let getSeedRoll = Math.floor(Math.random() * 100) + 1;
+            if (getSeedRoll <= eventParams.fetchCD){
+                // higher CD higher chance user gets a random seed
+                let seedItems = filterForSeeds(eventParams.allItems)
+                let seedRoll = Math.floor(Math.random() * seedItems.length )
+                itemsObtainedArray.push(seedItems[seedRoll])
+                addToUserInventory(eventParams.discordUserId, itemsObtainedArray);
+                obtainedItemEmbedBuilder(message, itemsObtainedArray, eventParams)
+            }
+        }
+    }
+}
+
+function getRpgZone(areaname){
+    return areaToZoneMap[areaname]
+}
+
+function petFetchItemBasedOnArea(message, eventParams){
+    // get commons and uncommons here only, never rares or above
+    // TODO: implement this
+    if (eventParams.discordUserId){
+        profileDB.getUserRpgProfleData(eventParams.discordUserId, function(err, rpgRes){
             if (err){
                 console.log(err)
             }else{
-                if (stableRes.data.stablelevel >= PETS_FETCH_SEEDS_LEVEL){
-                    // how to calculate chance to get seeds? pet cooldown 
+                if (eventParams.stableRes && eventParams.stableRes.data.stablelevel >= PETS_FETCH_ANCIENT_MATS_LEVEL){
                     let itemsObtainedArray = []
-                    let getSeedRoll = Math.floor(Math.random() * 100) + 1;
-                    if (getSeedRoll <= eventParams.fetchCD){
-                        // higher CD higher chance user gets a random seed
-                        let seedItems = filterForSeeds(eventParams.allItems)
-                        let seedRoll = Math.floor(Math.random() * seedItems.length )
-                        itemsObtainedArray.push(seedItems[seedRoll])
+                    let getMatRoll = Math.floor(Math.random() * 150) + 1;
+                    if (getMatRoll <= eventParams.fetchCD){
+                        // higher CD higher chance user gets a random ancient mat
+                        let matItems = filterForAreaMatsAncient(eventParams.allItems, rpgRes.data.currentArea, getRpgZone(rpgRes.data.currentArea))
+                        let matRoll = Math.floor(Math.random() * matItems.length )
+                        itemsObtainedArray.push(matItems[matRoll])
+                        
+                        addToUserInventory(eventParams.discordUserId, itemsObtainedArray);
+                        obtainedItemEmbedBuilder(message, itemsObtainedArray, eventParams)
+                    }
+                }
+                if (eventParams.stableRes && eventParams.stableRes.data.stablelevel >= PETS_FETCH_RARE_MATS_LEVEL){
+                    let itemsObtainedArray = []
+                    let getMatRoll = Math.floor(Math.random() * 75) + 1;
+                    if (getMatRoll <= eventParams.fetchCD){
+                        // higher CD higher chance user gets a random ancient mat
+                        let matItems = filterForAreaMatsRare(eventParams.allItems, rpgRes.data.currentarea, getRpgZone(rpgRes.data.currentarea))
+                        let matRoll = Math.floor(Math.random() * matItems.length )
+                        itemsObtainedArray.push(matItems[matRoll])
+
                         addToUserInventory(eventParams.discordUserId, itemsObtainedArray);
                         obtainedItemEmbedBuilder(message, itemsObtainedArray, eventParams)
                     }
@@ -281,11 +344,6 @@ function petFetchSeeds(message, eventParams){
             }
         })
     }
-}
-
-function petFetchItemBasedOnArea(message, eventParams){
-    // get commons and uncommons here only, never rares or above
-    // TODO: implement this
 }
 
 function obtainedItemEmbedBuilder(message, itemobtained, eventParams){
