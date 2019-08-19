@@ -3855,8 +3855,8 @@ module.exports = {
                             enemyDifficulty: "easy"
                         },
                         {
-                            enemyId: "sicario",
-                            enemyDifficulty: "boss"
+                            enemyId: "tacopirate",
+                            enemyDifficulty: "hard"
                         },
                         {
                             enemyId: "philistine",
