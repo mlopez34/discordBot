@@ -19,8 +19,7 @@ module.exports.gainExperience = function (message, discordUser, experienceNumber
                 gainExperienceHandler(message, discordUser, experienceNumber, profileResponse, isRpgExperience, customChannel)
             }
         })
-    }
-    else{
+    }else{
         gainExperienceHandler(message, discordUser, experienceNumber, userProfileData, isRpgExperience, customChannel)
     }
 }
@@ -358,6 +357,56 @@ function extraLevelRewards(message, discordUser, userLeveledUpTo, allItems, cust
         }
         ancientItemsRolls = 1
         ancientItemsToGetAmount = 8
+        artifactItemsRolls = 1
+        amuletItemsRolls = 1
+        greaterAmuletItemsRolls = 1
+    }else if (userLeveledUpTo == 44 ){
+
+        for (var item in allItems){
+            if(allItems[item].itemraritycategory == "ancient"
+            && allItems[item].fromscavenge == true){
+                ancientItems.push(allItems[item]);
+            }
+            else if(allItems[item].itemraritycategory == "artifact+" && allItems[item].amuletsource == "levelup44"){
+                artifactItems.push(allItems[item]);
+            }
+            else if(allItems[item].itemraritycategory == "amulet" && allItems[item].amuletsource == "levelup35"){
+                lesserAmuletItems.push(allItems[item]);
+            }
+            else if(allItems[item].itemraritycategory == "amulet" && allItems[item].amuletsource == "levelup37"){
+                amuletItems.push(allItems[item]);
+            }
+            else if(allItems[item].itemraritycategory == "amulet" && allItems[item].amuletsource == "levelup44"){
+                greaterAmuletItems.push(allItems[item]);
+            }
+        }
+        ancientItemsRolls = 1
+        ancientItemsToGetAmount = 12
+        artifactItemsRolls = 1
+        amuletItemsRolls = 1
+        greaterAmuletItemsRolls = 1
+    }else if (userLeveledUpTo == 45 ){
+
+        for (var item in allItems){
+            if(allItems[item].itemraritycategory == "ancient"
+            && allItems[item].fromscavenge == true){
+                ancientItems.push(allItems[item]);
+            }
+            else if(allItems[item].itemraritycategory == "artifact+" && allItems[item].amuletsource == "levelup45"){
+                artifactItems.push(allItems[item]);
+            }
+            else if(allItems[item].itemraritycategory == "amulet" && allItems[item].amuletsource == "levelup35"){
+                lesserAmuletItems.push(allItems[item]);
+            }
+            else if(allItems[item].itemraritycategory == "amulet" && allItems[item].amuletsource == "levelup37"){
+                amuletItems.push(allItems[item]);
+            }
+            else if(allItems[item].itemraritycategory == "amulet" && allItems[item].amuletsource == "levelup45"){
+                greaterAmuletItems.push(allItems[item]);
+            }
+        }
+        ancientItemsRolls = 1
+        ancientItemsToGetAmount = 16
         artifactItemsRolls = 1
         amuletItemsRolls = 1
         greaterAmuletItemsRolls = 1
