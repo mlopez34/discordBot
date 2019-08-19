@@ -2742,7 +2742,7 @@ function repShopBuilder(message, shopData){
             .addField('Ethereum (Sanctified Reputation or Better Only)', ":globe_with_meridians:", true)
             .addField('Description', recipeDescription, true)
             .addField('Cost', ETHEREUM_COST + " :taco:", true)
-            .addField('Command', settings.getGuildPrefix(message.channel.guild.id) + "buyrecipe", true)
+            .addField('Command', settings.getGuildPrefix(message.channel.guild.id) + "buyethereum", true)
         }
     }
     embed.addBlankField(false)

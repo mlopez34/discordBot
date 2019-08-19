@@ -285,6 +285,9 @@ client.on('message', function(message){
                 else if(commandIs("buyflask", message) && settings.canBotRespondToCommandInChannel("regular", guildId, channelId)){
                     commands.buyFlaskCommand(message);
                 }
+                else if(commandIs("buyethereum", message) && settings.canBotRespondToCommandInChannel("regular", guildId, channelId)){
+                    commands.buyEthereumCommand(message);
+                }
                 else if(commandIs("createpotion", message) && settings.canBotRespondToCommandInChannel("regular", guildId, channelId)){
                     commands.createPotionCommand(message);
                 }
@@ -834,6 +837,11 @@ client.on('message', function(message){
                 else if(commandIs("buyflask", message) && settings.canBotRespondToCommandInChannel("regular", guildId, channelId)){
                     commands.buyFlaskCommand(message);
                     data.command = "buyflask"
+                    profileDB.createUserActivity(data)
+                }
+                else if(commandIs("buyethereum", message) && settings.canBotRespondToCommandInChannel("regular", guildId, channelId)){
+                    commands.buyEthereumCommand(message);
+                    data.command = "buyethereum"
                     profileDB.createUserActivity(data)
                 }
                 else if(commandIs("createpotion", message) && settings.canBotRespondToCommandInChannel("regular", guildId, channelId)){
