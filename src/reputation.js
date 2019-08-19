@@ -67,13 +67,21 @@ function reachedNewRepStatus(message, getProfileRes, discordId, reputationGained
         updateReputationStatus(message, discordId, "Liked");
         cb(null, {repNumber: reputationNumber + reputationGained, repStatus: "Liked" })
     }
+    else if(reputationNumber + reputationGained >= REPUTATIONS.worshipped.repToGet 
+        && reputationStatus.toLowerCase() != "worshipped"){
+        // reched sanctified
+        updateReputationStatus(message, discordId, "Worshipped");
+        cb(null, {repNumber: reputationNumber + reputationGained, repStatus: "Worshipped" })
+    }
     else if(reputationNumber + reputationGained >= REPUTATIONS.sanctified.repToGet 
+        && reputationNumber + reputationGained < REPUTATIONS.worshipped.repToGet
         && reputationStatus.toLowerCase() != "sanctified"){
         // reched sanctified
         updateReputationStatus(message, discordId, "Sanctified");
         cb(null, {repNumber: reputationNumber + reputationGained, repStatus: "Sanctified" })
     }
     else if(reputationNumber + reputationGained >= REPUTATIONS.glorified.repToGet 
+        && reputationNumber + reputationGained < REPUTATIONS.sanctified.repToGet
         && reputationStatus.toLowerCase() != "glorified"){
         // reched glorified
         updateReputationStatus(message, discordId, "Glorified");
@@ -304,7 +312,7 @@ function reputationEmbedBuilder(message, repstatus, rewards){
         embed.addField( "Rewards: " , ":candle: Holy Candle - on thank 20% chance to reset scavenge cooldown, 10% chance to critically gain 50% of your tacos gained while thanking", true)
     }
     if (rewards === "lavoratory access card"){
-        embed.addField( "Rewards: " , ":flower_playing_cards: Laboratory Card - present this card to Bender to be able to shop transformium from his shop", true)
+        embed.addField( "Rewards: " , ":flower_playing_cards: Laboratory Card - present this card to Bender to be able to shop ethereum from his shop", true)
     }
     if (rewards === "pandoras box"){
         embed.addField( "Rewards: " , ":crystal_ball: Pandora's Box - present this box to Bender to be able to shop ethereum from his shop", true)

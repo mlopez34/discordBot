@@ -59,8 +59,10 @@ var RAFFLE_ENTRY_COST = 50;
 var RAFFLE_USER_SIZE = 7
 // make recipe be available at lvl 2 reputation
 var ARTIFACT_RECIPE_COST = 35000;
+var ETHEREUM_COST = 125000;
 var FLASK_COST = 500;
 var ARTIFACT_RECIPE_ID = 69;
+var ETHEREUM_ID = 200;
 var TRANSFORMIUM_ID = 155;
 var ETHEREUM_ID = 200;
 var TACO_PARTY_TIME_TO_LIVE = 300000
@@ -145,6 +147,9 @@ var REWARDS = {
     },
     Flask : {
         repLevel : 4
+    },
+    Ethereum: {
+        repLevel : 6
     }
 }
 
@@ -1712,7 +1717,10 @@ module.exports.profileCommand = function(message){
                     profileData.nextReputation = "sanctified"
                 }
                 else if (profileData.reputationStatus.toLowerCase() == "sanctified"){
-                    profileData.nextReputation = "sanctified"
+                    profileData.nextReputation = "worshipped"
+                }
+                else if (profileData.reputationStatus.toLowerCase() == "worshipped"){
+                    profileData.nextReputation = "worshipped"
                 }
                 profileData.achievementString = achiev.achievementStringBuilder(profileResponse.data.achievements, false);
                 if (profileResponse.data.pickaxe == "basic"){
@@ -1803,7 +1811,10 @@ module.exports.profileCommand = function(message){
                     profileData.nextReputation = "sanctified"
                 }
                 else if (profileData.reputationStatus.toLowerCase() == "sanctified"){
-                    profileData.nextReputation = "sanctified"
+                    profileData.nextReputation = "worshipped"
+                }
+                else if (profileData.reputationStatus.toLowerCase() == "worshipped"){
+                    profileData.nextReputation = "worshipped"
                 }
                 profileData.achievementString = achiev.achievementStringBuilder(profileResponse.data.achievements, false);
                 if (profileResponse.data.pickaxe == "basic"){
@@ -2576,6 +2587,44 @@ module.exports.buyFlaskCommand = function(message){
     })
 }
 
+module.exports.buyEthereumCommand = function(message){
+    var discordUserId = message.author.id;
+
+    profileDB.getUserProfileData( discordUserId, function(err, buyRecipeResponse) {
+        if(err){
+            message.channel.send("You must `-agree` to create a profile first!")
+        }else{
+            var userReputation = buyRecipeResponse.data.repstatus;
+            var userRepLevel = REPUTATIONS[userReputation.toLowerCase()] ? REPUTATIONS[userReputation.toLowerCase()].level : 1;
+            if (userRepLevel >= REWARDS["Ethereum"].repLevel){
+                if (adjustedTacosForUser(discordUserId, buyRecipeResponse.data.tacos) >= ETHEREUM_COST){
+                    var ethereumItem = [];
+                    for (var item in allItems){
+                        if (allItems[item].id == ETHEREUM_ID){
+                            ethereumItem.push(allItems[item])
+                        }
+                    }
+                    if (ethereumItem && ethereumItem.length > 0){
+                        addToUserInventory(discordUserId, ethereumItem);
+                        profileDB.updateUserTacos(discordUserId, ETHEREUM_COST * -1, function(updateLSErr, updateLSres){
+                            if(updateLSErr){
+                                console.log(updateLSErr);
+                            }else{
+                                message.channel.send(message.author.username + " successfully purchased Ethereum :globe_with_meridians:!")
+                            }
+                        })
+                    }
+                }else{
+                    message.channel.send("You cannot afford this item.")
+                }
+            }else{
+                // unavailable
+                message.channel.send("You cannot afford this item.")
+            }
+        }
+    })
+}
+
 module.exports.buyRecipeCommand = function(message){
     var discordUserId = message.author.id;
 
@@ -2683,6 +2732,19 @@ function repShopBuilder(message, shopData){
             .addField('Command', settings.getGuildPrefix(message.channel.guild.id) + "buyflask", true)
         }
     }
+    if (shopData.repstatus && (REPUTATIONS[shopData.repstatus.toLowerCase()]) ){
+        var userRepLevel = REPUTATIONS[shopData.repstatus.toLowerCase()].level;
+        if (userRepLevel >= REWARDS["Ethereum"].repLevel){
+            var recipeDescription = "Required to combine refined ancient items into master ancient items"
+
+            embed.addBlankField(true)
+            .addBlankField(false)
+            .addField('Ethereum (Sanctified Reputation or Better Only)', ":globe_with_meridians:", true)
+            .addField('Description', recipeDescription, true)
+            .addField('Cost', ETHEREUM_COST + " :taco:", true)
+            .addField('Command', settings.getGuildPrefix(message.channel.guild.id) + "buyrecipe", true)
+        }
+    }
     embed.addBlankField(false)
     .addField('Your current tacos', shopData.userTacos + " :taco:", false)
     .setTimestamp()
@@ -2700,6 +2762,7 @@ module.exports.repShopCommand = function(message){
     var discordUserId = message.author.id;
     profileDB.getUserProfileData( discordUserId, function(err, shopResponse) {
         if(err){
+            console.log(err)
             // user doesnt exist tell the user they should get some tacos
             message.channel.send("You must `-agree` to create a profile first!")
         }else{
