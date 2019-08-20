@@ -3659,7 +3659,8 @@ function calculateRewards(event, memberInRpgEvent, allItems, numberOfMembers, fi
                     || (event.area &&allItems[item].findinarea == event.area)) ){
                         rareRpgMapItems.push(allItems[item]);
                     }else if (allItems[item].itemraritycategory == "rare"
-                    && ( event.area && allItems[item].dropsfromenemy == event.enemies[enemy].enemyIdName ) ){
+                    && ( event.area && allItems[item].dropsfromenemy 
+                    && allItems[item].dropsfromenemy == event.enemies[enemy].enemyIdName ) ){
                         craftingItems.push(allItems[item]);
                     }
                 }

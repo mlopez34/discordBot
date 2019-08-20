@@ -14,21 +14,18 @@ module.exports.gainReputation = function (message, discordUserId, reputationNumb
         profileDB.getUserProfileData(discordUserId, function(getProfileErr, getProfileRes){
             if (getProfileErr){
                 // console.log(getProfileErr);
-            }
-            else{
+            }else{
                 var currentReputation = getProfileRes.data.reputation;
                 profileDB.addUserReputation(discordUserId, reputationNumber, currentReputation, function(repError, repRes){
                     if (repError){
                         // console.log(repError)
                         cb(repError);
-                    }
-                    else{
+                    }else{
                         // console.log(repRes);
                         reachedNewRepStatus(message, getProfileRes, discordUserId, reputationNumber, function(statusErr, statusRes){
                             if (statusErr){
                                 cb(statusErr);
-                            }
-                            else{
+                            }else{
                                 // console.log(statusRes);
                                 cb(null, statusRes);
                             }
@@ -116,20 +113,17 @@ function updateReputationStatus(message, discordId, repstatus){
     profileDB.updateUserReputation(discordId, repstatus, function(err, res){
         if (err){
             // console.log(err);
-        }      
-        else{
+        }else{
             // console.log(res);
             if (repstatus){
                 updateUserRewards(message, discordId, repstatus, function(updateErr, updateRes){
                     if (updateErr){
                         // console.log(updateErr);
-                    }
-                    else{
+                    }else{
                         reputationEmbedBuilder(message, repstatus, updateRes);
                     }
                 })
-            }
-            else{
+            }else{
                 reputationEmbedBuilder(message, repstatus, "none");
             }
         }
@@ -210,8 +204,7 @@ function updateUserRewards(message, discordId, repstatus, cb){
             profileDB.obtainCasserole(discordId, function(error, res){
                 if (error){
                     console.log(error);
-                }
-                else{
+                }else{
                     cb(null, "casserole");
                 }
             })
@@ -223,8 +216,7 @@ function updateUserRewards(message, discordId, repstatus, cb){
             profileDB.obtainSprintingShoes(discordId, function(error, res){
                 if (error){
                     console.log(error);
-                }
-                else{
+                }else{
                     cb(null, "sprinting shoes");
                 }
             })
@@ -238,8 +230,7 @@ function updateUserRewards(message, discordId, repstatus, cb){
             profileDB.obtainHolyCandle(discordId, function(error, res){
                 if (error){
                     console.log(error);
-                }
-                else{
+                }else{
                     cb(null, "holy candle");
                 }
             })
@@ -295,8 +286,7 @@ function reputationEmbedBuilder(message, repstatus, rewards){
     // Image by Ellen from SCD
     if (repstatus.toLowerCase() == "liked" || repstatus.toLowerCase() == "admired"){
         embed.setThumbnail("http://i.imgur.com/KyQCBq9.jpg")
-    }
-    else{
+    }else{
         embed.setThumbnail("http://i.imgur.com/nrhHBK5.jpg")
     }
     embed
