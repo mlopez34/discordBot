@@ -2658,7 +2658,33 @@ module.exports = {
                 morainelake: {
                     areaString : " ",
                     name: "Moraine Lake",
-                    enemiesToDefeat: 187,
+                    enemiesToDefeat: 100,
+                    enemies: [
+                        {
+                            enemyId: "polarbear",
+                            enemyDifficulty: "medium"
+                        },
+                        {
+                            enemyId: "wendigo",
+                            enemyDifficulty: "hard"
+                        },
+                        {
+                            enemyId: "bigfoot",
+                            enemyDifficulty: "boss"
+                        },
+                        {
+                            enemyId: "wendigo",
+                            enemyDifficulty: "hard"
+                        },
+                        {
+                            enemyId: "wendigo",
+                            enemyDifficulty: "hard"
+                        },
+                        {
+                            enemyId: "polarbear",
+                            enemyDifficulty: "medium"
+                        },
+                    ],
                     onCompleteAreasUnlocked: [
 
                     ],
@@ -3465,7 +3491,406 @@ module.exports = {
 
         },
         mounteverest: {
+            zoneAvatar: "https://i.imgur.com/E30HtDi.jpg",
+            zoneString : "It will be even colder...",
+            startingArea: "greyhavens",
+            name: "Mount Everest",
+            zoneDifficulty: 4,
+            intendedLevelString: "39-41",
+            enemyStatBuffs: {
+                hpPlusPercentage: 3.2,
+                adPlusPercentage: 4.5,
+                mdPlusPercentage: 4.5,
+                armorPlusPercentage: 2.5,
+                spiritPlusPercentage: 2.5,
+                frenzyAdIncreasePercentage: 3,
+                echoIncreasePercentage: 2.8
+            },
+            enemies: {
+                easy: [
+                    "graywolf", "graywolf", "graywolf", "graywolf", 
+                    "snowleopard", "snowleopard", "snowleopard", 
+                    "ruffian"
+                ],
+                medium: [
+                    "polarbear", "polarbear", "polarbear",
+                    "charlatan", "charlatan", "charlatan",
+                    "disassembler",
+                ],
+                hard: [
+                    "walrus", "walrus", "walrus",
+                    "ogre", "ogre", "ogre",
+                    "iconoclast"
+                ],
+                boss: [
+                    "bigfoot", "bigfoot",
+                    "ogremagi"
+                ]
+            },
+            areas: {
+                greyhavens: {
+                    areaString : "At the base of the mountain you find three items; a crumpled piece of paper, a camera, and three hacksaws",
+                    name: "Grey Havens",
+                    enemiesToDefeat: 304,
+                    onCompleteAreasUnlocked: [
+                        "parnassus",
+                        "iguazufalls",
+                        "lakekhiluk"
+                    ],
+                    shopItemsAvailable: [
 
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                },
+                // 1
+                iguazufalls: {
+                    areaString : "The note reads the following: 'Day 74 - running out of canned beans, jimmy seems to be holding up well even after the bite, we only have one flare left which we'll need to start a fire tomorrow'",
+                    name: "Iguazu Falls",
+                    enemiesToDefeat: 101,
+                    onCompleteAreasUnlocked: [
+                        "minastirith"
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                },
+                // 1
+                lakekhiluk: {
+                    areaString : "The hacksaw you found seems to have red and black stains on it",
+                    name: "Lake Khiluk",
+                    enemiesToDefeat: 107,
+                    onCompleteAreasUnlocked: [
+                        "naypyidaw"
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                },
+                // 2
+                minastirith: {
+                    areaString : "The camera batteries seem to be missing.",
+                    name: "Minas Tirith",
+                    enemiesToDefeat: 14,
+                    onCompleteAreasUnlocked: [
+                        "spatiugolplateau"
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                },
+                // 2
+                naypyidaw: {
+                    areaString : "The camera roll is in mint condition.",
+                    name: "Naypyidaw",
+                    enemiesToDefeat: 270,
+                    onCompleteAreasUnlocked: [
+                        "sassi"
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                },
+                //1 -  3 man
+                parnassus: {
+                    areaString : " ",
+                    name: "Parnassus",
+                    enemiesToDefeat: 74,
+                    enemies: [
+                        {
+                            enemyId: "bigfoot",
+                            enemyDifficulty: "boss"
+                        },
+                        {
+                            enemyId: "ogre",
+                            enemyDifficulty: "hard"
+                        },
+                        {
+                            enemyId: "walrus",
+                            enemyDifficulty: "hard"
+                        }
+                    ],
+                    onCompleteAreasUnlocked: [
+                        "rivendell"
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                },
+                // 2
+                rivendell: {
+                    areaString : " ",
+                    name: "Rivendell",
+                    enemiesToDefeat: 143,
+                    onCompleteAreasUnlocked: [
+                        "tablemountain"
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                },
+                // 3
+                sassi: {
+                    areaString : " ",
+                    name: "Sassi",
+                    enemiesToDefeat: 170,
+                    onCompleteAreasUnlocked: [
+                        "taviana"
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                },
+                //5 - 4 man
+                seaofstars: {
+                    areaString : " ",
+                    name: "Sea of Stars",
+                    enemiesToDefeat: 86,
+                    enemies: [
+                        {
+                            enemyId: "bigfoot",
+                            enemyDifficulty: "boss"
+                        },
+                        {
+                            enemyId: "ogre",
+                            enemyDifficulty: "hard"
+                        },
+                        {
+                            enemyId: "ogre",
+                            enemyDifficulty: "hard"
+                        },
+                        {
+                            enemyId: "iconoclast",
+                            enemyDifficulty: "hard"
+                        }
+                    ],
+                    onCompleteAreasUnlocked: [
+                        "walruscove"
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                },
+                // 3
+                spatiugolplateau: {
+                    areaString : " ",
+                    name: "Spatiu Gol Plateau",
+                    enemiesToDefeat: 79,
+                    onCompleteAreasUnlocked: [
+                        "towerofvirgon"
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                },
+                // 3
+                tablemountain: {
+                    areaString : " ",
+                    name: "Table Mountain",
+                    enemiesToDefeat: 189,
+                    onCompleteAreasUnlocked: [
+                        "walruscove"
+                    ],
+                    shopItemsAvailable: [
+                        
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                },
+                // 4
+                taviana: {
+                    areaString : " ",
+                    name: "Taviana",
+                    enemiesToDefeat: 116,
+                    onCompleteAreasUnlocked: [
+                        "seaofstars"
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                },
+                // 4
+                towerofvirgon: {
+                    areaString : " ",
+                    name: "Tower of Virgon",
+                    enemiesToDefeat: 120,
+                    onCompleteAreasUnlocked: [
+                        "walruscove"
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                },
+                //4 - 5 man
+                walruscove: {
+                    areaString : " ",
+                    name: "Walrus Cove",
+                    enemiesToDefeat: 65,
+                    enemies: [
+                        {
+                            enemyId: "walrus",
+                            enemyDifficulty: "hard"
+                        },
+                        {
+                            enemyId: "ogremagi",
+                            enemyDifficulty: "boss"
+                        },
+                        {
+                            enemyId: "walrus",
+                            enemyDifficulty: "hard"
+                        },
+                        {
+                            enemyId: "walrus",
+                            enemyDifficulty: "hard"
+                        },
+                        {
+                            enemyId: "walrus",
+                            enemyDifficulty: "hard"
+                        }
+                    ],
+                    onCompleteAreasUnlocked: [
+                        "zolarforest"
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                },
+                // 8 man
+                zolarforest: {
+                    areaString : " ",
+                    name: "Zolar Forest",
+                    enemiesToDefeat: 8,
+                    enemies: [
+                        {
+                            enemyId: "disassembler",
+                            enemyDifficulty: "medium"
+                        },
+                        {
+                            enemyId: "iconoclast",
+                            enemyDifficulty: "hard"
+                        },
+                        {
+                            enemyId: "iconoclast",
+                            enemyDifficulty: "hard"
+                        },
+                        {
+                            enemyId: "ogremagi",
+                            enemyDifficulty: "boss"
+                        },
+                        {
+                            enemyId: "bigfoot",
+                            enemyDifficulty: "boss"
+                        },
+                        {
+                            enemyId: "ogre",
+                            enemyDifficulty: "hard"
+                        },
+                        {
+                            enemyId: "walrus",
+                            enemyDifficulty: "hard"
+                        },
+                        {
+                            enemyId: "polarbear",
+                            enemyDifficulty: "medium"
+                        }
+                    ],
+                    onCompleteAreasUnlocked: [
+
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                },
+            },
+            onCompleteZonesUnlocked: [
+                "elbert",
+            ]
         },
         aconcagua: {
 
@@ -4431,6 +4856,22 @@ Hoover Dam
         surkesh: "pikecreek",
         tristram: "pikecreek",
         voeld: "pikecreek",
+
+        greyhavens: "mounteverest",
+        iguazufalls: "mounteverest",
+        lakekhiluk: "mounteverest",
+        minastirith: "mounteverest",
+        naypyidaw: "mounteverest",
+        parnassus: "mounteverest", 
+        rivendell: "mounteverest",
+        sassi: "mounteverest",
+        seaofstars: "mounteverest",
+        spatiugolplateau: "mounteverest",
+        tablemountain: "mounteverest",
+        taviana: "mounteverest",
+        towerofvirgon: "mounteverest",
+        walruscove: "mounteverest",
+        zolarforest: "mounteverest",
 
     },
 }

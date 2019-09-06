@@ -739,6 +739,45 @@ module.exports = {
             areawide: true,
             targets: "enemy"
         },
+        frostBreath: {
+            name: "Frost Breath",
+            abilityId: "frostBreath",
+            dmg: 45,
+            description: "Deal 45 damage + 60% of your magic damage to all enemies",
+            mdPercentage: 0.6,
+            type: "ice",
+            areawide: true,
+            targets: "enemy",
+            status: {
+                areawide: true,
+                name: "Frozen",
+                emoji: "<:freeze:479294904946655254>",
+                affects: ["armor"],
+                multiplier: 0.7
+            }
+        },
+        blizzard: {
+            name: "Blizzard",
+            abilityId: "blizzard",
+            dmg: 45,
+            description: "Deal 45 damage + 60% of your magic damage to all enemies",
+            mdPercentage: 0.6,
+            type: "ice",
+            areawide: true,
+            targets: "enemy",
+            dot: {
+                name: "Frostbite",
+                type:"ice",
+                dmg: 65,
+                areawide: true,
+                mdPercentage: 1,
+                emoji: ":cloud_snow:",
+                dmgOnDotApply: false,
+                turnsToExpire: 6,
+                dmgOnDotExpire: false,
+                dmgOnExpire: 0
+            }
+        },
         slash: {
             name: "Slash",
             abilityId: "slash",
@@ -1670,6 +1709,58 @@ module.exports = {
                     "torturedRobot",
                     "torturedRobot",
                     "torturedRobot"
+                ]
+            }
+        },
+        summonRuffians: {
+            name: "summonRuffians",
+            belongsToMember: true,
+            onDeathEffect: true,
+            summon: {
+                enemies: [
+                    "ruffian",
+                    "ruffian",
+                    "ruffian",
+                    "ruffian",
+                    "ruffian",
+                    "ruffian"
+                ]
+            }
+        },
+        summonLeopardPack: {
+            name: "summonLeopardPack",
+            belongsToMember: true,
+            onDeathEffect: true,
+            summon: {
+                enemies: [
+                    "snowleopard",
+                    "snowleopard",
+                    "snowleopard",
+                    "snowleopard",
+                    "snowleopard"
+                ]
+            }
+        },
+        summon3polarbears: {
+            name: "summon3polarbears",
+            belongsToMember: true,
+            onDeathEffect: true,
+            summon: {
+                enemies: [
+                    "polarbear",
+                    "polarbear",
+                    "polarbear"
+                ]
+            }
+        },
+        summonOgres: {
+            name: "summonOgres",
+            belongsToMember: true,
+            onDeathEffect: true,
+            summon: {
+                enemies: [
+                    "ogre",
+                    "ogre"
                 ]
             }
         },

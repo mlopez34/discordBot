@@ -1,6 +1,152 @@
 module.exports = {
     enemiesToEncounter: {
         summoned: {
+            snowleopard: {
+                enemyIdName : "snowleopard",
+                name: "Snow Leopard",
+                abilities: ["claw", "claw", "bite", "bite", "freeze"],
+                buffs: [],
+                keystoneStats: {
+                    hp: [1200, 3500, 6200, 10000, 15000 ],
+                    attackDmg: [300, 500, 900, 1500, 2300],
+                    magicDmg: [300, 500, 900, 1500, 2300],
+                    abilities: []
+                },
+                effectsOnDeath: [
+                    "starve"
+                ],
+                hpPerPartyMember: 60,
+                adPerPartyMember: 7,
+                mdPerPartyMember: 7,
+                hp: 480,
+                attackDmg: 120,
+                magicDmg: 120,
+                armor: 300,
+                spirit: 300,
+                difficulty: "summoned",
+                element: "normal"
+            },
+            ruffian: {
+                enemyIdName : "ruffian",
+                name: "Ruffian",
+                abilities: ["attack", "attack", "tackle", "tackle", "weaken"],
+                buffs: [],
+                keystoneStats: {
+                    hp: [1200, 3500, 6200, 10000, 15000 ],
+                    attackDmg: [300, 500, 900, 1500, 2300],
+                    magicDmg: [300, 500, 900, 1500, 2300],
+                    abilities: []
+                },
+                hpPerPartyMember: 170,
+                adPerPartyMember: 9,
+                mdPerPartyMember: 9,
+                hp: 230,
+                attackDmg: 60,
+                magicDmg: 79,
+                armor: 290,
+                spirit: 400,
+                difficulty: "summoned",
+                element: "normal"
+            },
+            wendigo: {
+                enemyIdName : "wendigo",
+                name: "Wendigo",
+                emoji: "<:wendigo:598743668664565789>",
+                abilities: ["ferociousBite" , "ferociousBite" , "iceshards", "iceshards", "freeze"],
+                buffs: [
+                    {
+                        name: "frenzy",
+                        emoji: "<:frenzy:479298214453968896>",
+                        onTurnEnd: {
+                            attackDmgPlus : 60,
+                            magicDmgPlus : 60,
+                            everyNTurns: 2,
+                            startTurn: 2
+                        }
+                    }
+                ],
+                keystoneStats: {
+                    hp: [1200, 3500, 6200, 10000, 15000 ],
+                    attackDmg: [300, 500, 900, 1500, 2300],
+                    magicDmg: [300, 500, 900, 1500, 2300],
+                    abilities: []
+                },
+                effectsOnDeath: [
+                    "empower"
+                ],
+                hpPerPartyMember: 1090,
+                adPerPartyMember: 21,
+                mdPerPartyMember: 21,
+                hp: 650,
+                attackDmg: 125,
+                magicDmg: 170,
+                armor: 600,
+                spirit: 900,
+                difficulty: "summoned-boss",
+                element: "normal"
+            },
+            polarbear: {
+                enemyIdName : "polarbear",
+                name: "Polar Bear",
+                abilities: ["ferociousBite", "ferociousBite", "ferociousBite", "iceshards", "shield"],
+                buffs: [],
+                keystoneStats: {
+                    hp: [1200, 3500, 6200, 10000, 15000 ],
+                    attackDmg: [300, 500, 900, 1500, 2300],
+                    magicDmg: [300, 500, 900, 1500, 2300],
+                    abilities: []
+                },
+                effectsOnDeath: [
+                    "empowerDeath"
+                ],
+                hpPerPartyMember: 190,
+                adPerPartyMember: 14,
+                mdPerPartyMember: 14,
+                hp: 640,
+                attackDmg: 90,
+                magicDmg: 90,
+                armor: 350,
+                spirit: 550,
+                difficulty: "medium",
+                element: "normal"
+            },
+            ogre: {
+                enemyIdName : "ogre",
+                name: "Ogre",
+                emoji: "<:wendigo:619605350106136607>",
+                abilities: ["punch" , "punch" , "frostBreath", "inject" , "inject", "tacowall"],
+                buffs: [
+                    {
+                        name: "frenzy",
+                        emoji: "<:frenzy:479298214453968896>",
+                        onTurnEnd: {
+                            attackDmgPlus : 100,
+                            magicDmgPlus : 100,
+                            everyNTurns: 2,
+                            startTurn: 2
+                        }
+                    }
+                ],
+                keystoneStats: {
+                    hp: [1200, 3500, 6200, 10000, 15000 ],
+                    attackDmg: [300, 500, 900, 1500, 2300],
+                    magicDmg: [300, 500, 900, 1500, 2300],
+                    abilities: []
+                },
+                effectsOnDeath: [
+                    "summonRuffians"
+                ],
+                hpPerPartyMember: 890,
+                adPerPartyMember: 21,
+                mdPerPartyMember: 21,
+                hp: 650,
+                attackDmg: 225,
+                magicDmg: 270,
+                armor: 600,
+                spirit: 900,
+                difficulty: "summoned-boss",
+                element: "normal"
+            },
             torturedRobot: {
                 name: "Tortured Robot",
                 abilities: ["attack"],
@@ -126,8 +272,8 @@ module.exports = {
                         magicDmgPlus : [755, 990, 1240, 1430, 1750, 2000, 2400, 2800, 3200, 3600]
                     },
                     hp: [22500, 36900, 60900, 99000, 159000, 195000, 235000, 299000, 395000, 529000  ],
-                    attackDmg: [700, 1100, 1500, 2100, 2900, 3500, 4500, 5500, 6500, 7500 ],
-                    magicDmg: [700, 1100, 1500, 2100, 2900, 3500, 4500, 5500, 6500, 7500 ],
+                    attackDmg: [700, 1100, 1500, 2100, 2900, 4500, 5800, 6500, 7500, 8500 ],
+                    magicDmg: [700, 1100, 1500, 2100, 2900, 4500, 5800, 6500, 7500, 8500 ],
                     abilities: []
                 },
                 abilityOrder: [
@@ -438,8 +584,8 @@ module.exports = {
                         magicDmgPlus : [3100, 4100, 5100, 6100, 7100, 8500, 10000, 12000, 14000, 16000]
                     },
                     hp: [ 19500, 25900, 39900, 51000, 77000, 95000, 130000, 179000, 230000, 289000 ],
-                    attackDmg: [750, 1600, 2700, 4400, 5800, 7400, 9050, 10750, 12900, 15800],
-                    magicDmg: [700, 1500, 2500, 4100, 5500, 7100, 8650, 10250, 12500, 15000],
+                    attackDmg: [750, 1600, 4700, 6400, 9800, 11400, 13050, 15750, 20900, 30800],
+                    magicDmg: [700, 1500, 4300, 6100, 9500, 10100, 12650, 14250, 20500, 30000],
                     abilities: []
                 },
                 abilityOrder: [
@@ -503,8 +649,9 @@ module.exports = {
                         magicDmgPlus : [3100, 4100, 5100, 6100, 7100, 8500, 10000, 12000, 14000, 16000]
                     },
                     hp: [ 21500, 29900, 45900, 60000, 95000, 111000, 145000, 197000, 250000, 319000],
-                    attackDmg: [600, 1400, 2500, 4100, 5500, 7100, 8650, 10250, 12500, 15000],
-                    magicDmg: [750, 1700, 2800, 4400, 5600, 7300, 9150, 10650, 12500, 15700],
+                    attackDmg: [750, 1600, 4700, 6200, 9100, 10400, 12050, 14750, 19900, 29800],
+                    magicDmg: [800, 1900, 4900, 6900, 9900, 11100, 13650, 15250, 21500, 31000],
+
                     abilities: []
                 },
                 abilityOrder: [
@@ -569,8 +716,9 @@ module.exports = {
                         magicDmgPlus : [3100, 4100, 5100, 6100, 7100, 8500, 10000, 12000, 14000, 16000 ]
                     },
                     hp: [ 24500, 34900, 51900, 69000, 104000, 119000, 157000, 209000, 265000, 325000 ],
-                    attackDmg: [700, 1500, 2500, 4100, 5500, 7100, 8650, 10250, 12500, 15000],
-                    magicDmg: [800, 1700, 2800, 4500, 5900, 7400, 9350, 10950, 13200, 16100],
+                    attackDmg: [850, 1800, 4700, 6500, 9500, 11400, 13050, 15750, 20900, 30800],
+                    magicDmg: [900, 2000, 4900, 7200, 9900, 11800, 14650, 16250, 21800, 32000],
+
                     abilities: []
                 },
                 abilityOrder: [
@@ -1518,6 +1666,56 @@ module.exports = {
                 hp: 380,
                 attackDmg: 90,
                 magicDmg: 90,
+                armor: 300,
+                spirit: 300,
+                difficulty: "easy",
+                element: "normal"
+            },
+            graywolf: {
+                enemyIdName : "graywolf",
+                name: "Gray Wolf",
+                abilities: ["claw", "claw", "bite", "bite", "freeze"],
+                buffs: [],
+                keystoneStats: {
+                    hp: [1200, 3500, 6200, 10000, 15000 ],
+                    attackDmg: [300, 500, 900, 1500, 2300],
+                    magicDmg: [300, 500, 900, 1500, 2300],
+                    abilities: []
+                },
+                effectsOnDeath: [
+                    "summonLeopardPack"
+                ],
+                hpPerPartyMember: 60,
+                adPerPartyMember: 7,
+                mdPerPartyMember: 7,
+                hp: 480,
+                attackDmg: 1100,
+                magicDmg: 110,
+                armor: 300,
+                spirit: 300,
+                difficulty: "easy",
+                element: "normal"
+            },
+            snowleopard: {
+                enemyIdName : "snowleopard",
+                name: "Snow Leopard",
+                abilities: ["claw", "claw", "bite", "bite", "freeze"],
+                buffs: [],
+                keystoneStats: {
+                    hp: [1200, 3500, 6200, 10000, 15000 ],
+                    attackDmg: [300, 500, 900, 1500, 2300],
+                    magicDmg: [300, 500, 900, 1500, 2300],
+                    abilities: []
+                },
+                effectsOnDeath: [
+                    "starve"
+                ],
+                hpPerPartyMember: 60,
+                adPerPartyMember: 7,
+                mdPerPartyMember: 7,
+                hp: 480,
+                attackDmg: 120,
+                magicDmg: 120,
                 armor: 300,
                 spirit: 300,
                 difficulty: "easy",
@@ -3045,7 +3243,7 @@ module.exports = {
             iconoclast: {
                 enemyIdName : "iconoclast",
                 name: "Iconoclast",
-                abilities: ["slap" , "slap" , "scam", "slash", "slash", "cripple"],
+                abilities: ["slap" , "slap" , "scam", "blizzard", "blizzard", "cripple"],
                 buffs: [
                     {
                         name: "frenzy",
@@ -3066,7 +3264,8 @@ module.exports = {
                 },
                 // summon normal enemies
                 effectsOnDeath: [
-                    "explode"
+                    "summon3polarbears",
+                    "decayDeath"
                 ],
                 hpPerPartyMember: 1090,
                 adPerPartyMember: 21,
@@ -3190,14 +3389,15 @@ module.exports = {
             ogre: {
                 enemyIdName : "ogre",
                 name: "Ogre",
-                abilities: ["punch" , "punch" , "curse", "poison", "poison", "inject", "shield"],
+                emoji: "<:wendigo:619605350106136607>",
+                abilities: ["punch" , "punch" , "frostBreath", "inject" , "inject", "tacowall"],
                 buffs: [
                     {
                         name: "frenzy",
                         emoji: "<:frenzy:479298214453968896>",
                         onTurnEnd: {
-                            attackDmgPlus : 60,
-                            magicDmgPlus : 60,
+                            attackDmgPlus : 100,
+                            magicDmgPlus : 100,
                             everyNTurns: 2,
                             startTurn: 2
                         }
@@ -3210,14 +3410,14 @@ module.exports = {
                     abilities: []
                 },
                 effectsOnDeath: [
-                    "empower"
+                    "summonRuffians"
                 ],
-                hpPerPartyMember: 1090,
+                hpPerPartyMember: 890,
                 adPerPartyMember: 21,
                 mdPerPartyMember: 21,
                 hp: 650,
-                attackDmg: 125,
-                magicDmg: 170,
+                attackDmg: 225,
+                magicDmg: 270,
                 armor: 600,
                 spirit: 900,
                 difficulty: "hard",
@@ -3820,15 +4020,15 @@ module.exports = {
                 enemyIdName : "ogremagi",
                 name: "Ogre Magi",
                 abilities: [
-                    "attack", "attack", "iceshards", "iceshards", "slash", "slash", "cripple"
+                    "bite", "bite", "bite", "blizzard", "blizzard", "elixir", "empower"
                 ],
                 buffs: [
                     {
                         name: "frenzy",
                         emoji: "<:frenzy:479298214453968896>",
                         onTurnEnd: {
-                            attackDmgPlus : 85,
-                            magicDmgPlus : 85,
+                            attackDmgPlus : 195,
+                            magicDmgPlus : 195,
                             everyNTurns: 2,
                             startTurn: 2
                         }
@@ -3840,18 +4040,21 @@ module.exports = {
                     magicDmg: [300, 500, 900, 1500, 2300],
                     abilities: []
                 },
+                effectsOnDeath: [
+                    "summonOgres"
+                ],
                 endOfTurnEvents : [
                     "echo",
                     "focus"
                 ],
                 hpPerPartyMember: 1222,
-                hp: 950,
+                hp: 1950,
                 adPerPartyMember: 29,
                 mdPerPartyMember: 29,
-                attackDmg: 240,
-                magicDmg: 190,
-                armor: 1600,
-                spirit: 1600,
+                attackDmg: 740,
+                magicDmg: 840,
+                armor: 1900,
+                spirit: 1900,
                 difficulty: "boss",
                 element: "normal"
             },
