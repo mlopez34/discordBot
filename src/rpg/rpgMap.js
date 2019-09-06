@@ -3205,6 +3205,36 @@ module.exports = {
                     areaString : " ",
                     name: "Pearl Harbour",
                     enemiesToDefeat: 44,
+                    enemies: [
+                        {
+                            enemyId: "yakuza",
+                            enemyDifficulty: "boss"
+                        },
+                        {
+                            enemyId: "zeta",
+                            enemyDifficulty: "hard"
+                        },
+                        {
+                            enemyId: "suicidebomber",
+                            enemyDifficulty: "medium"
+                        },
+                        {
+                            enemyId: "suicidebomber",
+                            enemyDifficulty: "medium"
+                        },
+                        {
+                            enemyId: "suicidebomber",
+                            enemyDifficulty: "medium"
+                        },
+                        {
+                            enemyId: "suicidebomber",
+                            enemyDifficulty: "medium"
+                        },
+                        {
+                            enemyId: "suicidebomber",
+                            enemyDifficulty: "medium"
+                        }
+                    ],
                     onCompleteAreasUnlocked: [
                         "tsukijfishmarket"
                     ],
@@ -3257,7 +3287,7 @@ module.exports = {
                     name: "Tsukij fish market",
                     enemiesToDefeat: 189,
                     onCompleteAreasUnlocked: [
-
+                        "pearlharbour"
                     ],
                     shopItemsAvailable: [
 
