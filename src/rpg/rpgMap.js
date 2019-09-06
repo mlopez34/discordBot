@@ -4792,7 +4792,7 @@ Hoover Dam
         campsbay: "patagonia",
         cobbspoint: "patagonia",
         edurnaroch: "patagonia",
-        giantscauseway: "giantscauseway",
+        giantscauseway: "patagonia",
         grandteton: "patagonia",
         hangingpillar: "patagonia",
         hoolefarisland: "patagonia",
