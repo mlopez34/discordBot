@@ -5250,14 +5250,20 @@ function summonEnemy(event, enemy, index, enemyFound, summonRpgAbility){
 
     // check that an enemy already exists with that name
     var areaToCheck = event.area
-    var zoneUserIsIn = getRpgZone(areaToCheck)
-    let enemyAreaStatBuffs = rpgZones[zoneUserIsIn].enemyStatBuffs || {}
-    let hpAreaBuff = enemyAreaStatBuffs.hpPlusPercentage || 1
-    let adAreaBuff = enemyAreaStatBuffs.adPlusPercentage || 1
-    let mdAreaBuff = enemyAreaStatBuffs.mdPlusPercentage || 1
-    let armorAreaBuff = enemyAreaStatBuffs.armorPlusPercentage || 1
-    let spiritAreaBuff = enemyAreaStatBuffs.spiritPlusPercentage || 1
-
+    let hpAreaBuff = 1
+    let adAreaBuff = 1
+    let mdAreaBuff = 1
+    let armorAreaBuff = 1
+    let spiritAreaBuff = 1    
+    if (areaToCheck){
+        var zoneUserIsIn = getRpgZone(areaToCheck)
+        let enemyAreaStatBuffs = rpgZones[zoneUserIsIn].enemyStatBuffs || {}
+        hpAreaBuff = enemyAreaStatBuffs.hpPlusPercentage || 1
+        adAreaBuff = enemyAreaStatBuffs.adPlusPercentage || 1
+        mdAreaBuff = enemyAreaStatBuffs.mdPlusPercentage || 1
+        armorAreaBuff = enemyAreaStatBuffs.armorPlusPercentage || 1
+        spiritAreaBuff = enemyAreaStatBuffs.spiritPlusPercentage || 1    
+    }
 
     var enemyWithNameExists = false
     for (var e in event.enemies){
