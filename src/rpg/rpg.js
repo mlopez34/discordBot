@@ -5249,6 +5249,16 @@ function summonEnemy(event, enemy, index, enemyFound, summonRpgAbility){
     // summoning plus ad, md, armor, spirit
 
     // check that an enemy already exists with that name
+    var areaToCheck = event.area
+    var zoneUserIsIn = getRpgZone(areaToCheck)
+    let enemyAreaStatBuffs = rpgZones[zoneUserIsIn].enemyStatBuffs || {}
+    let hpAreaBuff = enemyAreaStatBuffs.hpPlusPercentage || 1
+    let adAreaBuff = enemyAreaStatBuffs.adPlusPercentage || 1
+    let mdAreaBuff = enemyAreaStatBuffs.mdPlusPercentage || 1
+    let armorAreaBuff = enemyAreaStatBuffs.armorPlusPercentage || 1
+    let spiritAreaBuff = enemyAreaStatBuffs.spiritPlusPercentage || 1
+
+
     var enemyWithNameExists = false
     for (var e in event.enemies){
         if (event.enemies[e].name == enemyFound.name){
@@ -5272,11 +5282,11 @@ function summonEnemy(event, enemy, index, enemyFound, summonRpgAbility){
         var enemySummoned = {
             id: enemyIdCount,
             name: enemyFound.name,
-            hp: enemyFound.hp + (21 * averageLevelInParty) + (enemyFound.hpPerPartyMember * enemyCount) + summoningHpPlus, 
-            attackDmg: enemyFound.attackDmg + (enemyFound.adPerPartyMember * enemyCount) + summoningAdPlus, 
-            magicDmg: enemyFound.magicDmg + (enemyFound.mdPerPartyMember * enemyCount) + summoningMdPlus,
-            armor: enemyFound.armor,
-            spirit: enemyFound.spirit,
+            hp: Math.floor( hpAreaBuff * (enemyFound.hp + (21 * averageLevelInParty) + (enemyFound.hpPerPartyMember * enemyCount) + summoningHpPlus ) ), 
+            attackDmg: Math.floor( adAreaBuff * ( enemyFound.attackDmg + (enemyFound.adPerPartyMember * enemyCount) + summoningAdPlus ) ), 
+            magicDmg: Math.floor( mdAreaBuff * ( enemyFound.magicDmg + (enemyFound.mdPerPartyMember * enemyCount) + summoningMdPlus ) ),
+            armor: Math.floor( armorAreaBuff * ( enemyFound.armor ) ),
+            spirit: Math.floor( spiritAreaBuff * ( enemyFound.spirit ) ),
             statuses: [],
             endOfTurnEvents: [],
             statBuffs: {
@@ -5305,6 +5315,15 @@ function summonEnemy(event, enemy, index, enemyFound, summonRpgAbility){
             effectsOnDeath: enemyFound.effectsOnDeath,
             abilitiesMap : {},
             element: enemyFound.element
+        }
+
+        if (enemyAreaStatBuffs.frenzyAdIncreasePercentage){
+            for (var b in enemySummoned.buffs){
+                if (enemySummoned.buffs[b].name == "frenzy"){
+                    enemySummoned.buffs[b].onTurnEnd.attackDmgPlus = Math.floor( enemySummoned.buffs[b].onTurnEnd.attackDmgPlus * enemyAreaStatBuffs.frenzyAdIncreasePercentage)
+                    enemySummoned.buffs[b].onTurnEnd.magicDmgPlus = Math.floor( enemySummoned.buffs[b].onTurnEnd.magicDmgPlus * enemyAreaStatBuffs.frenzyAdIncreasePercentage)
+                }
+            }
         }
         
         if (enemyFound.abilityOrder){

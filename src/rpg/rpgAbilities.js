@@ -1702,6 +1702,7 @@ module.exports = {
         summonTorturedRobotsDeath: {
             name: "summonTorturedRobots",
             belongsToMember: true,
+            oneTimeCast: true,
             onDeathEffect: true,
             summon: {
                 enemies: [
@@ -1715,6 +1716,7 @@ module.exports = {
         summonRuffians: {
             name: "summonRuffians",
             belongsToMember: true,
+            oneTimeCast: true,
             onDeathEffect: true,
             summon: {
                 enemies: [
@@ -1730,6 +1732,7 @@ module.exports = {
         summonLeopardPack: {
             name: "summonLeopardPack",
             belongsToMember: true,
+            oneTimeCast: true,
             onDeathEffect: true,
             summon: {
                 enemies: [
@@ -1744,6 +1747,7 @@ module.exports = {
         summon3polarbears: {
             name: "summon3polarbears",
             belongsToMember: true,
+            oneTimeCast: true,
             onDeathEffect: true,
             summon: {
                 enemies: [
@@ -1756,6 +1760,7 @@ module.exports = {
         summonOgres: {
             name: "summonOgres",
             belongsToMember: true,
+            oneTimeCast: true,
             onDeathEffect: true,
             summon: {
                 enemies: [
