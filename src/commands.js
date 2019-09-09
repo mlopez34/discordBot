@@ -10596,11 +10596,6 @@ module.exports.cdCommand = function(message){
                 }else{
                     let commandsToList = [
                         {
-                            command: "scavenge",
-                            lastCommandTime: res.data[0].lastscavangetime,
-                            commandTime: SCAVENGE_COOLDOWN_HOURS
-                        },
-                        {
                             command: "cook",
                             lastCommandTime: res.data[0].lastcooktime,
                             commandTime: COOK_COOLDOWN_HOURS
@@ -10626,7 +10621,15 @@ module.exports.cdCommand = function(message){
                             commandTime: DAILY_COOLDOWN_HOURS
                         }
                     ]
-                    if (res.data[0].greenhouselevel > 0){
+                    if (res.data[0].pickaxe != "none"){
+
+                        commandsToList.push({
+                            command: "scavenge",
+                            lastCommandTime: res.data[0].lastscavangetime,
+                            commandTime: SCAVENGE_COOLDOWN_HOURS
+                        })
+                    }
+                    if (res.data[0].greenhouse && res.data[0].greenhouselevel > 0){
                         commandsToList.push({
                             command: "harvest",
                             lastCommandTime: res.data[0].lastharvest,
@@ -10715,8 +10718,8 @@ module.exports.cdToggleCommand = function(message, args){
                 
                 var userWearingData = {
                     userLevel : userLevel,
-                    fetchCD: PETS_AVAILABLE[userPet].cooldown,
-                    fetchCount: PETS_AVAILABLE[userPet].fetch,
+                    fetchCD: userPet ? PETS_AVAILABLE[userPet].cooldown : undefined,
+                    fetchCount: userPet ? PETS_AVAILABLE[userPet].fetch : undefined,
                     hasSprintingShoes : HAS_SPRINTING_SHOES
                 }
                 wearStats.getUserWearingStats(message, discordUserId, userWearingData, allItems, function(wearErr, wearRes){
@@ -10750,6 +10753,7 @@ module.exports.cdToggleCommand = function(message, args){
                             secondsToRemove = wearStats.calculateSecondsReduced(wearRes, "sorry");
                         }
                         if (commandToToggle == "harvest" 
+                        && userProfile.greenhouse
                         && userProfile.greenhouselevel
                         && userProfile.greenhouselevel > 0){
                             currentCommandToggled = userProfile.harvesttoggle
