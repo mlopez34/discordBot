@@ -3719,7 +3719,7 @@ module.exports = {
                 },
                 //5 - 4 man
                 seaofstars: {
-                    areaString : " ",
+                    areaString : "Under a pile of ruble you find another backpack, this one has extra batteries on it. They fit right in to the camera, which lets you go through the camera roll. The first few pictures are nothing out of the ordinary, just two regular men posing. The 8th and 9th picture is completely black, but you can tell the flash was used to light up the place. The 10th picture has 3 men sitting in a triangle looking at each other.",
                     name: "Sea of Stars",
                     enemiesToDefeat: 86,
                     enemies: [
@@ -3827,7 +3827,7 @@ module.exports = {
                 },
                 //4 - 5 man
                 walruscove: {
-                    areaString : " ",
+                    areaString : "On a snow mound at the end of the cave is another backpack. This backpack contains a book a pen, and an unopened can of soup. Most of the pages are fuzzy, but the cover clearly reads 'Japanese Alpine Club reconnaissance expedition'. You can make out the following from the last page - 'Its been 113 Days since the Avalanche, Help is not coming since they assume us dead. Jimmy seems calm but Nima and I know something is wrong, since he does not sleep. His bite is getting worse. ",
                     name: "Walrus Cove",
                     enemiesToDefeat: 65,
                     enemies: [
@@ -3867,7 +3867,7 @@ module.exports = {
                 },
                 // 8 man
                 zolarforest: {
-                    areaString : " ",
+                    areaString : "You only found three backpacks, the journal only specifies of two others besides the writer. \nThe camera is decades old without self timer.",
                     name: "Zolar Forest",
                     enemiesToDefeat: 8,
                     enemies: [
