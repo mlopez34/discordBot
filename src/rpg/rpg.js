@@ -5254,10 +5254,11 @@ function summonEnemy(event, enemy, index, enemyFound, summonRpgAbility){
     let adAreaBuff = 1
     let mdAreaBuff = 1
     let armorAreaBuff = 1
-    let spiritAreaBuff = 1    
+    let spiritAreaBuff = 1  
+    let enemyAreaStatBuffs;  
     if (areaToCheck){
         var zoneUserIsIn = getRpgZone(areaToCheck)
-        let enemyAreaStatBuffs = rpgZones[zoneUserIsIn].enemyStatBuffs || {}
+        enemyAreaStatBuffs = rpgZones[zoneUserIsIn].enemyStatBuffs || {}
         hpAreaBuff = enemyAreaStatBuffs.hpPlusPercentage || 1
         adAreaBuff = enemyAreaStatBuffs.adPlusPercentage || 1
         mdAreaBuff = enemyAreaStatBuffs.mdPlusPercentage || 1
@@ -5323,7 +5324,7 @@ function summonEnemy(event, enemy, index, enemyFound, summonRpgAbility){
             element: enemyFound.element
         }
 
-        if (enemyAreaStatBuffs.frenzyAdIncreasePercentage){
+        if (enemyAreaStatBuffs && enemyAreaStatBuffs.frenzyAdIncreasePercentage){
             for (var b in enemySummoned.buffs){
                 if (enemySummoned.buffs[b].name == "frenzy"){
                     enemySummoned.buffs[b].onTurnEnd.attackDmgPlus = Math.floor( enemySummoned.buffs[b].onTurnEnd.attackDmgPlus * enemyAreaStatBuffs.frenzyAdIncreasePercentage)

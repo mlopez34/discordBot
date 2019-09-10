@@ -15,9 +15,9 @@ module.exports = {
                 effectsOnDeath: [
                     "starve"
                 ],
-                hpPerPartyMember: 60,
-                adPerPartyMember: 7,
-                mdPerPartyMember: 7,
+                hpPerPartyMember: 0,
+                adPerPartyMember: 0,
+                mdPerPartyMember: 0,
                 hp: 480,
                 attackDmg: 120,
                 magicDmg: 120,
@@ -37,9 +37,9 @@ module.exports = {
                     magicDmg: [300, 500, 900, 1500, 2300],
                     abilities: []
                 },
-                hpPerPartyMember: 170,
-                adPerPartyMember: 9,
-                mdPerPartyMember: 9,
+                hpPerPartyMember: 0,
+                adPerPartyMember: 0,
+                mdPerPartyMember: 0,
                 hp: 230,
                 attackDmg: 60,
                 magicDmg: 79,
@@ -99,9 +99,9 @@ module.exports = {
                 effectsOnDeath: [
                     "empowerDeath"
                 ],
-                hpPerPartyMember: 190,
-                adPerPartyMember: 14,
-                mdPerPartyMember: 14,
+                hpPerPartyMember: 0,
+                adPerPartyMember: 0,
+                mdPerPartyMember: 0,
                 hp: 640,
                 attackDmg: 90,
                 magicDmg: 90,
