@@ -2213,8 +2213,8 @@ module.exports = {
                     ]
                 },
                 devilssea: {
-                    areaString : " ",
-                    name: "Abandon all hope those who enter here",
+                    areaString : "Abandon all hope those who enter here",
+                    name: "Devils Sea",
                     enemiesToDefeat: 204,
                     enemies: [
                         {
@@ -3876,8 +3876,8 @@ module.exports = {
                             enemyDifficulty: "medium"
                         },
                         {
-                            enemyId: "iconoclast",
-                            enemyDifficulty: "hard"
+                            enemyId: "disassembler",
+                            enemyDifficulty: "medium"
                         },
                         {
                             enemyId: "iconoclast",
@@ -3896,8 +3896,8 @@ module.exports = {
                             enemyDifficulty: "hard"
                         },
                         {
-                            enemyId: "walrus",
-                            enemyDifficulty: "hard"
+                            enemyId: "polarbear",
+                            enemyDifficulty: "medium"
                         },
                         {
                             enemyId: "polarbear",
