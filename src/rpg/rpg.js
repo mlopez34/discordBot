@@ -8226,6 +8226,12 @@ function processAbility(abilityObject, event){
                                 && !event.membersInParty[targetToAddStatus].statuses[status].ignoreUnique ){
                                     alreadyHaveStatus = true;
                                 }
+
+                                // add the status here
+                                if (event.membersInParty[targetToAddStatus].statuses[status].name == statusToAdd.name
+                                && !event.membersInParty[targetToAddStatus].statuses[status].ignoreUnique){
+                                    alreadyHaveStatus = true;
+                                }
                             }
                             if (!alreadyHaveStatus){
                                 delete statusToAdd.areawide 
