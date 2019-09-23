@@ -139,8 +139,8 @@ module.exports.createGuildProfile = function(data, cb) {
 }
 
 module.exports.createUserActivity = function(data) {
-    var query = 'insert into '+ config.userActivityTable + '(guildId, discordid, username, command, message)' +
-        'values(${guildId}, ${discordId}, ${username}, ${command}, ${message})'
+    var query = 'insert into '+ config.userActivityTable + '(guildId, discordid, username, command, message, heapmemory)' +
+        'values(${guildId}, ${discordId}, ${username}, ${command}, ${message}, ${heapmemory})'
     db.none(query, data)
     .then(function () {
     console.log( {
@@ -1838,7 +1838,8 @@ module.exports.getUserItems = function(discordId, cb) {
 }
 
 module.exports.getUserItemsForRpg = function(discordId, cb) {
-    var query = 'select id, itemid, armamentforitemid, hpplus, adplus, mdplus, armorplus, spiritplus, critplus, luckplus from ' + config.inventoryTable + ' where discordId = $1 AND status is null ORDER BY id DESC '
+    // 'AND itemid > 12' was added since commons and uncommons arent needed for this call
+    var query = 'select id, itemid, armamentforitemid, hpplus, adplus, mdplus, armorplus, spiritplus, critplus, luckplus from ' + config.inventoryTable + ' where discordId = $1 AND status is null AND itemid > 12 ORDER BY id DESC '
     // console.log(query);
     db.query(query, [discordId])
       .then(function (data) {

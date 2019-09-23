@@ -169,7 +169,8 @@ client.on('message', function(message){
         guildId: guildId,
         discordId: message.author.id,
         username: message.author.username,
-        message: message.content
+        message: message.content,
+        heapmemory: process.memoryUsage().heapUsed
     }
     // every message being inserted should add 1 to the user
     // start at 0, add +1 to the count if the count is at 0, no wait, otherwise do timeout  500 * count
