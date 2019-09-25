@@ -1190,6 +1190,11 @@ client.on('message', function(message){
                     data.command = "cd"
                     profileDB.createUserActivity(data)
                 }
+                else if (commandIs("writeheap", message) && settings.canBotRespondToCommandInChannel("regular", guildId, channelId)){
+                    commands.writeheapCommand()
+                    data.command = "writeheap"
+                    profileDB.createUserActivity(data)
+                }
                 else if (commandIs("toggle", message) && settings.canBotRespondToCommandInChannel("regular", guildId, channelId)){
                     commands.cdToggleCommand(message, args)
                     data.command = "toggle"

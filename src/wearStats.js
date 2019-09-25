@@ -585,10 +585,10 @@ module.exports.statsObjectBuilder = function(message, slot1Data, slot2Data, slot
     userItemStats.thankCommandExperienceGain = thankCommandExperienceGain;
     userItemStats.thankCommandGuaranteedTacos = thankCommandGuaranteedTacos;
 
-    // console.log(thankCommandCDRPercentage)
-    // console.log(thankCommandExtraTacos)
-    // console.log(thankCommandExperienceGain);
-    // console.log(thankCommandGuaranteedTacos);
+    // // console.log(thankCommandCDRPercentage)
+    // // console.log(thankCommandExtraTacos)
+    // // console.log(thankCommandExperienceGain);
+    // // console.log(thankCommandGuaranteedTacos);
 
     var sorryCommandCDRPercentage = getPercentage(sorryCommandCDR);
     var sorryCommandExperienceGain = getTotal(sorryCommandExperience);
@@ -599,10 +599,10 @@ module.exports.statsObjectBuilder = function(message, slot1Data, slot2Data, slot
     userItemStats.sorryCommandExperienceGain = sorryCommandExperienceGain;
     userItemStats.sorryCommandGuaranteedTacos = sorryCommandGuaranteedTacos;
 
-    // console.log(sorryCommandCDRPercentage)
-    // console.log(sorryCommandExtraTacos)
-    // console.log(sorryCommandExperienceGain);
-    // console.log(sorryCommandGuaranteedTacos);
+    // // console.log(sorryCommandCDRPercentage)
+    // // console.log(sorryCommandExtraTacos)
+    // // console.log(sorryCommandExperienceGain);
+    // // console.log(sorryCommandGuaranteedTacos);
 
     var cookCommandCDRPercentage = getPercentage(cookCommandCDR);
     var cookCommandExperienceGain = getTotal(cookCommandExperience);
@@ -613,10 +613,10 @@ module.exports.statsObjectBuilder = function(message, slot1Data, slot2Data, slot
     userItemStats.cookCommandExperienceGain = cookCommandExperienceGain;
     userItemStats.cookCommandGuaranteedTacos = cookCommandGuaranteedTacos;
 
-    // console.log(cookCommandCDRPercentage)
-    // console.log(cookCommandExtraTacos)
-    // console.log(cookCommandExtraTacosChancePercentage)
-    // console.log(cookCommandExperienceGain);
+    // // console.log(cookCommandCDRPercentage)
+    // // console.log(cookCommandExtraTacos)
+    // // console.log(cookCommandExtraTacosChancePercentage)
+    // // console.log(cookCommandExperienceGain);
     
     var prepareCommandCDRPercentage = getPercentage(prepareCommandCDR);
     var prepareCommandExperienceGain = getTotal(prepareCommandExperience);
@@ -627,10 +627,10 @@ module.exports.statsObjectBuilder = function(message, slot1Data, slot2Data, slot
     userItemStats.prepareCommandExperienceGain = prepareCommandExperienceGain;
     userItemStats.prepareCommandGuaranteedTacos = prepareCommandGuaranteedTacos;
 
-    // console.log(prepareCommandCDRPercentage)
-    // console.log(prepareCommandExtraTacos)
-    // console.log(prepareCommandExtraTacosChancePercentage)
-    // console.log(prepareCommandExperienceGain);
+    // // console.log(prepareCommandCDRPercentage)
+    // // console.log(prepareCommandExtraTacos)
+    // // console.log(prepareCommandExtraTacosChancePercentage)
+    // // console.log(prepareCommandExperienceGain);
 
     var fetchCommandCDRPercentage = getPercentage(fetchCommandCDR);
     var fetchCommandExperienceGain = getTotal(fetchCommandExperience);
@@ -646,12 +646,12 @@ module.exports.statsObjectBuilder = function(message, slot1Data, slot2Data, slot
     userItemStats.fetchCommandTacosTimesCDChancePercentage = fetchCommandTacosTimesCDChancePercentage
     userItemStats.fetchCommandTacosTimesCDHours = fetchCommandTacosTimesCDHours;
 
-    // console.log(fetchCommandCDRPercentage)
-    // console.log(fetchCommandExtraTacos)
-    // console.log(fetchCommandExtraTacosChancePercentage);
-    // console.log(fetchCommandExperienceGain);
-    // console.log(fetchCommandTacosTimesCDChancePercentage);
-    // console.log(fetchCommandTacosTimesCDHours);
+    // // console.log(fetchCommandCDRPercentage)
+    // // console.log(fetchCommandExtraTacos)
+    // // console.log(fetchCommandExtraTacosChancePercentage);
+    // // console.log(fetchCommandExperienceGain);
+    // // console.log(fetchCommandTacosTimesCDChancePercentage);
+    // // console.log(fetchCommandTacosTimesCDHours);
 
     var scavengeCommandCDRPercentage = getPercentage(scavengeCommandCDR);
     var scavengeCommandExperienceGain = getTotal(scavengeCommandExperience);
@@ -663,11 +663,11 @@ module.exports.statsObjectBuilder = function(message, slot1Data, slot2Data, slot
     userItemStats.scavengeCommandGuaranteedTacos = scavengeCommandGuaranteedTacos;
 
 
-    // console.log(scavengeCommandCDRPercentage)
-    // console.log(scavengeCommandExtraTacos)
-    // console.log(scavengeCommandExtraTacosChancePercentage)
-    // console.log(scavengeCommandExperienceGain);
-    // console.log("user item stats ! " + JSON.stringify(userItemStats, null, 2));
+    // // console.log(scavengeCommandCDRPercentage)
+    // // console.log(scavengeCommandExtraTacos)
+    // // console.log(scavengeCommandExtraTacosChancePercentage)
+    // // console.log(scavengeCommandExperienceGain);
+    // // console.log("user item stats ! " + JSON.stringify(userItemStats, null, 2));
 
     //////// RPG
 
@@ -687,7 +687,7 @@ module.exports.statsObjectBuilder = function(message, slot1Data, slot2Data, slot
     userItemStats.slotsWinExperienceGain = slotsWinExperienceGain;
     userItemStats.slotsWinGuaranteedTacos = slotsGuaranteedTacos;
 
-    console.log(userItemStats)
+    // console.log(userItemStats)
     return userItemStats;
 }
 module.exports.amuletsStringBuilder = function(userAmuletData){
@@ -879,7 +879,7 @@ module.exports.statsStringBuilder = function(message, userItemStats){
     statsString = statsString + rpgSuccessString;
     statsString = statsString + slotsWinString
 
-    // console.log(statsString);
+    // // console.log(statsString);
     return statsString;
 }
 
@@ -1222,7 +1222,7 @@ module.exports.getUserWearingStats = function(message, discordUserId, userData, 
     }else{
         profileDB.getUserItems(discordUserId, function(err, inventoryResponse){
             if (err){
-                console.log(err);
+                // console.log(err);
                 cb(err)
             }else{
                 userData.inventoryResponse = inventoryResponse
@@ -1264,10 +1264,10 @@ function userWearingStatsPerform(message, discordUserId, userData, amuletItemsBy
     }
     profileDB.getUserWearInfo(discordUserId, function(getWearErr, getWearRes){
         if (getWearErr){
-            console.log(getWearErr);
+            // console.log(getWearErr);
             cb(getWearErr)
         }else{
-            // console.log(getWearRes);
+            // // console.log(getWearRes);
             // get the item info by calling items table
             if (getWearRes.data.length > 0){
                 var slot1Id = getWearRes.data[0].slot1itemid;
@@ -1292,14 +1292,14 @@ function userWearingStatsPerform(message, discordUserId, userData, amuletItemsBy
                     slot3active = true
                 }
 
-                // console.log(slot1Id);
+                // // console.log(slot1Id);
                 profileDB.getItemByIdsWear(slot1Id, slot2Id, slot3Id, function(error, itemResponse){
                     if (error){
-                        console.log(error);
+                        // console.log(error);
                         cb(error)
                     }
                     else{
-                        // console.log(itemResponse);
+                        // // console.log(itemResponse);
                         var slot1Item;
                         var slot2Item;
                         var slot3Item;

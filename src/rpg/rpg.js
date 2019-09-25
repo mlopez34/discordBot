@@ -94,7 +94,7 @@ module.exports.rpgInitialize = function(message, special){
             }
         })
         .catch(function(err){
-            console.log(err)
+            // console.log(err)
             message.channel.send("Unable to display RPG initialize embed, Enable embeds in this channel to begin an RPG event!")
         })
     }
@@ -146,7 +146,7 @@ module.exports.rpgSkip = function(message){
                 .then(function(sentMessage){
                 })
                 .catch(function(err){
-                    console.log(err)
+                    // console.log(err)
                 })
             }
 
@@ -188,16 +188,16 @@ module.exports.showRpgStats = function(message, itemsAvailable, amuletItemsById,
     
     profileDB.getUserRpgProfleData(discordUserId, function(err, userData){
         if (err){
-            console.log(err);
+            // console.log(err);
             message.channel.send("You do not have a profile yet! type -agree to agree to Bender's terms ");
         }else{
             var userStats = userData.data;
             // get amulets data
             profileDB.getUserItems(discordUserId, function(err, inventoryResponse){
                 if (err){
-                    console.log(err);
+                    // console.log(err);
                 }else{
-                    // console.log(inventoryResponse.data);
+                    // // console.log(inventoryResponse.data);
                     // get all the data for each item
                     var itemsInInventoryCountMap = {};
                     var userArmamentForItemId = {}
@@ -244,7 +244,7 @@ module.exports.showRpgStats = function(message, itemsAvailable, amuletItemsById,
 
                     profileDB.getUserWearInfo(discordUserId, function(wearErr, wearData){
                         if (wearErr){
-                            console.log(wearErr);
+                            // console.log(wearErr);
                             message.channel.send(" something went wrong in [wearing] - someone doesn't have a wearing profile! get some items from the shop");
                         }else{
                             // get the wearing data
@@ -632,10 +632,10 @@ module.exports.showRpgStats = function(message, itemsAvailable, amuletItemsById,
                             }
                             message.channel.send({embed})
                             .then(function(res){
-                                console.log(res)
+                                // console.log(res)
                             })
                             .catch(function(err){
-                                console.log(err)
+                                // console.log(err)
                                 message.channel.send("Unable to display rpg stats embed, Enable embeds in this channel for RPG stats announcements!")
                             })
                         }
@@ -760,7 +760,7 @@ module.exports.initializeRPGQueue = function(){
                 activeRPGEvents["rpg-" + rpgEventId].queueEvent = true;
             }
         }else{
-            console.log(rpgQueuesByUsers.length)
+            // console.log(rpgQueuesByUsers.length)
         }
         
     }, 65000);
@@ -799,7 +799,7 @@ module.exports.rpgReady = function(message, itemsAvailable, amuletItemsById, buf
     // create an embed saying that b is about to happen, for users MAX of 5 users and they must all say -ready to start costs 5 tacos per person
     var discordUserId = message.author.id;
     var idOfUserInEvent = usersInRPGEvents["rpg-" + discordUserId] ? usersInRPGEvents["rpg-" + discordUserId].id : undefined;
-    if ( usersInRPGEvents["rpg-" + discordUserId] 
+    if ( usersInRPGEvents["rpg-" + discordUserId]
     && usersInRPGEvents["rpg-" + discordUserId].ready != true
     && !exports.getReadyLockUser(idOfUserInEvent, discordUserId) ){
         // message.channel.send( message.author + " is ready");
@@ -816,7 +816,7 @@ module.exports.rpgReady = function(message, itemsAvailable, amuletItemsById, buf
             exports.setreadyLock(rpgEventId, discordUserId, true)
             profileDB.getUserRpgProfleData(discordUserId, function(err, userData){
                 if (err){
-                    console.log(err);
+                    // console.log(err);
                     exports.setreadyLock(rpgEventId, discordUserId, false)
                     message.channel.send("You must agree to Bender's terms by typing -agree before rpging!");
                 }else{
@@ -864,15 +864,15 @@ module.exports.rpgReady = function(message, itemsAvailable, amuletItemsById, buf
                         // get the user profile data
                         var userStats = userData.data;
                         var start = new Date().getTime()
-                        console.log("START " + start)
+                        // console.log("START " + start)
                         profileDB.getUserItemsForRpg(discordUserId, function(err, inventoryResponse){
                             if (err){
                                 exports.setreadyLock(rpgEventId, discordUserId, false)
-                                console.log(err);
+                                // console.log(err);
                             }else{
                                 var done = new Date().getTime()
-                                console.log("DONE " + done)
-                                console.log("millis " + ( done - start))
+                                // console.log("DONE " + done)
+                                // console.log("millis " + ( done - start))
                                 // get all the data for each item
                                 var itemsInInventoryCountMap = {};
                                 var userArmamentForItemId = {}
@@ -917,7 +917,7 @@ module.exports.rpgReady = function(message, itemsAvailable, amuletItemsById, buf
 
                                 profileDB.getUserWearInfo(discordUserId, function(wearErr, wearData){
                                     if (wearErr){
-                                        console.log(wearErr);
+                                        // console.log(wearErr);
                                         exports.setreadyLock(rpgEventId, discordUserId, false)
                                         message.channel.send(wearErr + " something went wrong [wearing] - someone doesn't have a wearing profile");
                                     }else{
@@ -925,7 +925,7 @@ module.exports.rpgReady = function(message, itemsAvailable, amuletItemsById, buf
                                         wearStats.getUserWearingStats(message, discordUserId, { userLevel: userLevel, inventoryResponse: inventoryResponse }, allItems, function(wearErr, wearRes){
                                             if (wearErr){
                                                 exports.setreadyLock(rpgEventId, discordUserId, false)
-                                                console.log(wearErr)
+                                                // console.log(wearErr)
                                             }else{
                                                 // get the wearing data
                                                 var wearingStats = wearData.data[0];
@@ -1062,7 +1062,7 @@ module.exports.rpgReady = function(message, itemsAvailable, amuletItemsById, buf
                                                     if (activeRPGEvents[ "rpg-" +  rpgEventId ].challenge 
                                                     && activeRPGEvents[ "rpg-" +  rpgEventId ].challenge.keystone == 0
                                                     && (currentPlayerChallenge + 1) == activeRPGEvents[ "rpg-" +  rpgEventId ].challenge.challenge){
-                                                        console.log("in challenge without keystone")
+                                                        // console.log("in challenge without keystone")
                                                         var slotItemId = items[i].itemid
                                                         if (itemsAvailable[slotItemId].rpglevelrequirement >= 40){
                                                             validItem = false
@@ -1240,9 +1240,9 @@ module.exports.rpgReady = function(message, itemsAvailable, amuletItemsById, buf
                                                                             if (challengePicked < CHALLENGE_TO_TEST && partyMembersetRPGcooldown ){
                                                                                 profileDB.updateLastRpgTime(partyMember.id, function(updateLSErr, updateLSres){
                                                                                     if(updateLSErr){
-                                                                                        console.log(updateLSErr);
+                                                                                        // console.log(updateLSErr);
                                                                                     }else{
-                                                                                        console.log(updateLSres)
+                                                                                        // console.log(updateLSres)
                                                                                     }
                                                                                 })
                                                                             }
@@ -1285,8 +1285,8 @@ module.exports.rpgReady = function(message, itemsAvailable, amuletItemsById, buf
                                                                             abilities: abilities
                                                                         };
                                                                     }
-                                                                    console.log("STATISTICS FROM ITEMS N LEVEL" ) 
-                                                                    console.log(JSON.stringify(statisticsFromItemsAndLevel, null, 2))
+                                                                    // console.log("STATISTICS FROM ITEMS N LEVEL" ) 
+                                                                    // console.log(JSON.stringify(statisticsFromItemsAndLevel, null, 2))
                                                                     var partyMemberHpPlus =  0
                                                                     var partyMemberAttackDmgPlus =  0
                                                                     var partyMemberMagicDmgPlus =  0
@@ -2090,7 +2090,7 @@ module.exports.rpgReady = function(message, itemsAvailable, amuletItemsById, buf
                                                                                 }
                                                                             })
                                                                             .catch(function(err){
-                                                                                console.log(err)
+                                                                                // console.log(err)
                                                                                 exports.setreadyLock(rpgEventId, discordUserId, false)
                                                                                 newGroupOfMessagesSent.push(uniqueChannel)
                                                                                 if (newGroupOfMessagesSent.length == groupOfUniqueChannels.length){
@@ -2103,10 +2103,10 @@ module.exports.rpgReady = function(message, itemsAvailable, amuletItemsById, buf
                                                                         for (var m in groupOfMessagesSent){
                                                                             groupOfMessagesSent[m].delete()
                                                                             .then(function(res){
-                                                                                console.log(res)
+                                                                                // console.log(res)
                                                                             })
                                                                             .catch(function(err){
-                                                                                console.log(err)
+                                                                                // console.log(err)
                                                                             })
                                                                         }
                                                                     }else{
@@ -2125,14 +2125,14 @@ module.exports.rpgReady = function(message, itemsAvailable, amuletItemsById, buf
                                                                             })
                                                                             .catch(function(err){
                                                                                 exports.setreadyLock(rpgEventId, discordUserId, false)
-                                                                                console.log(err);
+                                                                                // console.log(err);
                                                                             })
                                                                         }else{
                                                                             exports.setreadyLock(rpgEventId, discordUserId, false)
                                                                         }
                                                                     })
                                                                     .catch(function(err){
-                                                                        console.log(err)
+                                                                        // console.log(err)
                                                                         exports.setreadyLock(rpgEventId, discordUserId, false)
                                                                         message.channel.send("Unable to display RPG embed, Enable embeds in this channel to begin RPG events!")
                                                                     })
@@ -2224,7 +2224,7 @@ module.exports.displayMap = function(message, zoneToCheck){
     var discordUserId = message.author.id
     profileDB.getUserRpgProfleData(discordUserId, function(err, userData){
         if (err){
-            console.log(err)
+            // console.log(err)
         }else{
             if (!zoneToCheck){
                 let usercurrentarea = userData.data.currentarea
@@ -2263,7 +2263,7 @@ module.exports.displayKeystones = function(message){
     var discordUserId = message.author.id
     profileDB.getUserRpgProfleData(discordUserId, function(err, userData){
         if (err){
-            console.log(err)
+            // console.log(err)
         }else{
             var keystonesString = keystonesStringBuilder(userData)
             if (keystonesString.length > 0){
@@ -2293,10 +2293,10 @@ function keystonesEmbedBuilder(message, keystonesString, userData){
     .setColor(0xbfa5ff)
     message.channel.send({embed})
     .then(function(res){
-        console.log(res)
+        // console.log(res)
     })
     .catch(function(err){
-        console.log(err)
+        // console.log(err)
         message.channel.send("Unable to display keystones embed, Enable embeds in this channel for keystones embeds!")
     })
 }
@@ -2331,10 +2331,10 @@ function mapEmbedBuilder(message, listOfAreasInZone, zonesAvailableForUserMap, c
     }
     message.channel.send({embed})
     .then(function(res){
-        console.log(res)
+        // console.log(res)
     })
     .catch(function(err){
-        console.log(err)
+        // console.log(err)
         message.channel.send("Unable to display map embed, Enable embeds in this channel to display MAP embeds!")
     })
 }
@@ -2434,7 +2434,7 @@ module.exports.travelToNewArea = function(message, placeName){
     var discordUserId = message.author.id
     profileDB.getUserRpgProfleData(discordUserId, function(err, userData){
         if (err){
-            console.log(err)
+            // console.log(err)
         }else{
             // figure out if the user specified an area, or a zone
             var zonesAvailable = getZonesAvailableForUser(userData.data)
@@ -2445,7 +2445,7 @@ module.exports.travelToNewArea = function(message, placeName){
                 if (zonesAvailable[placeName]){
                     profileDB.updateUserRpgArea(discordUserId, startingArea, false, function(error, res){
                         if (error){
-                            console.log(error)
+                            // console.log(error)
                         }else{
                             let areaName = rpgZones[placeName].areas[startingArea].name
                             message.channel.send("You are now in `" + areaName + "` !")
@@ -2470,7 +2470,7 @@ module.exports.travelToNewArea = function(message, placeName){
                         if (areasAvailable[area]){
                             profileDB.updateUserRpgArea(discordUserId, area, true, function(error, res){
                                 if (error){
-                                    console.log(error)
+                                    // console.log(error)
                                 }else{
                                     let areaName = rpgZones[rpgZoneToTravel].areas[area].name
                                     message.channel.send("You are now in `" + areaName + "` !")
@@ -2633,7 +2633,7 @@ module.exports.useRpgAbility = function(message, args){
                                 try{
                                     processRpgTurn(message, activeRPGEvents["rpg-"+idOfEventUserIsIn]);
                                 }catch(err){
-                                    console.log(err);
+                                    // console.log(err);
                                 }
                             }
                         }else{
@@ -2938,7 +2938,7 @@ function turnFinishedEmbedBuilder(message, event, turnString, passiveEffectsStri
                 }
             })
             .catch(function(err){
-                console.log(err)
+                // console.log(err)
                 newGroupOfMessagesSent.push(groupOfUniqueChannels[m])
                 if (newGroupOfMessagesSent.length == groupOfUniqueChannels.length){
                     event.groupOfMessagesSent = newGroupOfMessagesSent
@@ -2950,10 +2950,10 @@ function turnFinishedEmbedBuilder(message, event, turnString, passiveEffectsStri
         for (var m in groupOfMessagesSent){
             groupOfMessagesSent[m].delete()
             .then(function(res){
-                console.log(res)
+                // console.log(res)
             })
             .catch(function(err){
-                console.log(err)
+                // console.log(err)
             })
         }
     }else{
@@ -2966,12 +2966,12 @@ function turnFinishedEmbedBuilder(message, event, turnString, passiveEffectsStri
                     event.lastEmbedMessage = sentMessage
                 })
                 .catch(function(err){
-                    console.log(err);
+                    // console.log(err);
                 })
             }
         })
         .catch(function(err){
-            console.log(err)
+            // console.log(err)
             message.channel.send(JSON.stringify(err))
         })
     }
@@ -3046,7 +3046,7 @@ function eventEndedEmbedBuilder(message, event, partySuccess){
 
                 profileDB.getUserProfileData(event.leader.id, function(profileErr, profileRes){
                     if (profileErr){
-                        console.log("FAILURE SOMETHING WENT WRONG")
+                        // console.log("FAILURE SOMETHING WENT WRONG")
                     }else{
                         var achievData = { achievements: profileRes.data.achievements, rpgDefeated: event.special.questName }
                         achiev.checkForAchievements(event.leader.id, achievData, message)
@@ -3057,9 +3057,9 @@ function eventEndedEmbedBuilder(message, event, partySuccess){
             
             profileDB.updateQuestlineStage(event.leader.id, event.special.questData.questname, event.special.questData.stage + 1, function(error, updateRes){
                 if (error){
-                    console.log(error);
+                    // console.log(error);
                 }else{
-                    console.log("advanced special rpg ");
+                    // console.log("advanced special rpg ");
                 }
             })
         }
@@ -3130,9 +3130,9 @@ function eventEndedEmbedBuilder(message, event, partySuccess){
     var rpgStatData = createRpgStatData(rewardStringForStatistics, event, partySuccess)
     profileDB.createRpgStatistics(rpgStatData, function(statErr, statRes){
         if (statErr){
-            console.log(statErr)
+            // console.log(statErr)
         }else{
-            console.log(statRes)
+            // console.log(statRes)
         }
     })
     let isQueueEvent = event.queueEvent
@@ -3150,7 +3150,7 @@ function eventEndedEmbedBuilder(message, event, partySuccess){
                 }
             })
             .catch(function(err){
-                console.log(err)
+                // console.log(err)
                 newGroupOfMessagesSent.push(groupOfUniqueChannels[m])
                 if (newGroupOfMessagesSent.length == groupOfUniqueChannels.length){
                     event.groupOfMessagesSent = newGroupOfMessagesSent
@@ -3161,10 +3161,10 @@ function eventEndedEmbedBuilder(message, event, partySuccess){
     }else{
         message.channel.send({embed})
         .then(function(res){
-            console.log(res)
+            // console.log(res)
         })
         .catch(function(err){
-            console.log(err)
+            // console.log(err)
             message.channel.send("Unable to display event end embed, Enable embeds in this channel for future event end announcements!")
         })
     }
@@ -3178,7 +3178,7 @@ function increaseCompletionForUser(eventUser, rpgareaId, message, enemiesCount, 
     var enemiesToDefeatArea = getEnemiesToDefeatForArea(rpgareaId)
     profileDB.rpgAreaIncreaseCompletion(discordUserId, rpgareaId, currentareacompletion, enemiesCount, function(err, res){
         if (err){
-            console.log(err)
+            // console.log(err)
         }else{
             var areaCompletionForUser = currentareacompletion + enemiesCount
             var areaCompletedCheck = 0 
@@ -3233,9 +3233,9 @@ function increaseCompletionForUser(eventUser, rpgareaId, message, enemiesCount, 
                 newZoneEmbedBuilder( eventUser.username, zoneUserIsIn, message, ancientWon, customChannel )
                 profileDB.setZoneComplete(discordUserId, zoneUserIsIn, function(err, res){
                     if (err){
-                        console.log(err)
+                        // console.log(err)
                     }else{
-                        console.log(res)
+                        // console.log(res)
                     }
                 })
             }
@@ -3277,19 +3277,19 @@ function newAreaEmbedBuilder(username, areaId, message, itemWon, customChannel){
     if (customChannel){
         customChannel.send({embed})
         .then(function(res){
-            console.log(res)
+            // console.log(res)
         })
         .catch(function(err){
-            console.log(err)
+            // console.log(err)
             message.channel.send("Unable to display new area embed, Enable embeds in this channel for future area unlock announcements!")
         })
     }else{
         message.channel.send({embed})
         .then(function(res){
-            console.log(res)
+            // console.log(res)
         })
         .catch(function(err){
-            console.log(err)
+            // console.log(err)
             message.channel.send("Unable to display new area embed, Enable embeds in this channel for future area unlock announcements!")
         })
     }
@@ -3310,19 +3310,19 @@ function newZoneEmbedBuilder(username, zoneId, message, itemWon, customChannel){
     if (customChannel){
         customChannel.send({embed})
         .then(function(res){
-            console.log(res)
+            // console.log(res)
         })
         .catch(function(err){
-            console.log(err)
+            // console.log(err)
             message.channel.send("Unable to display new zone embed, Enable embeds in this channel for future zone unlock announcements!")
         })
     }else{
         message.channel.send({embed})
         .then(function(res){
-            console.log(res)
+            // console.log(res)
         })
         .catch(function(err){
-            console.log(err)
+            // console.log(err)
             message.channel.send("Unable to display new zone embed, Enable embeds in this channel for future zone unlock announcements!")
         })
     }
@@ -3406,9 +3406,9 @@ function updateUserRewards(message, memberInParty, rewards, memberLastChannel){
         // add the tacos to the user
         profileDB.updateUserTacos(memberInParty.id, rewards.extraTacos, function(err, tacosRes){
             if (err){
-                console.log(err)
+                // console.log(err)
             }else{
-                console.log(tacosRes)
+                // console.log(tacosRes)
             }
         })
     }
@@ -3417,9 +3417,9 @@ function updateUserRewards(message, memberInParty, rewards, memberLastChannel){
 function addToUserInventory(discordUserId, items){
     profileDB.addNewItemToUser(discordUserId, items, function(itemError, itemAddResponse){
         if (itemError){
-            console.log(itemError);
+            // console.log(itemError);
         }else{
-            console.log(itemAddResponse);
+            // console.log(itemAddResponse);
         }
     })
 }
@@ -3457,10 +3457,10 @@ function artifactEmbedBuilder(message, artifactItems, user){
     .setColor(0xbfa5ff)
     message.channel.send({embed})
     .then(function(res){
-        console.log(res)
+        // console.log(res)
     })
     .catch(function(err){
-        console.log(err)
+        // console.log(err)
         message.channel.send("Unable to display artifact reward, Enable embeds in this channel for future artifact reward announcements!")
     })
 }
@@ -3606,12 +3606,12 @@ function calculateRewards(event, memberInRpgEvent, allItems, numberOfMembers, fi
                 }
                 else if (rarityRoll > UNCOMMON_MIN_ROLL && rarityRoll <= UNCOMMON_MAX_ROLL){
                     var itemRoll = Math.floor(Math.random() * uncommonItems.length);
-                    console.log(uncommonItems[itemRoll]);
+                    // console.log(uncommonItems[itemRoll]);
                     itemsObtainedArray.push( uncommonItems[itemRoll] );
                 }
                 else {
                     var itemRoll = Math.floor(Math.random() * commonItems.length);
-                    console.log(commonItems[itemRoll]);
+                    // console.log(commonItems[itemRoll]);
                     commonItems[itemRoll].itemAmount = COMMON_ITEMS_TO_OBTAIN
                     itemsObtainedArray.push( commonItems[itemRoll] );
                 }
@@ -3844,8 +3844,8 @@ function effectsOnTurnEnd(event){
                         for (var b in event.enemies[enemy].buffs){
                             if (event.enemies[enemy].buffs[b].abilityId == event.enemies[enemy].endOfTurnEvents[index].invalidIfBuff
                                 && !event.enemies[enemy].buffs[b].invalid ){
-                                console.log("invalid " + event.enemies[enemy].buffs[b].abilityId )
-                                console.log("enemy to cast this " + event.enemies[enemy].name)
+                                // console.log("invalid " + event.enemies[enemy].buffs[b].abilityId )
+                                // console.log("enemy to cast this " + event.enemies[enemy].name)
                                 validEOT = false;
                                 continue
                             }
@@ -3855,7 +3855,7 @@ function effectsOnTurnEnd(event){
                         // event is areawide 
                         if ( event.enemies[enemy].endOfTurnEvents[index].areawide ){
                             // TODO: create the areawide event tied to the enemy
-                            console.log("in here")
+                            // console.log("in here")
                             if (event.enemies[enemy].endOfTurnEvents[index].processAbility){
 
                             }
@@ -3991,7 +3991,7 @@ function effectsOnTurnEnd(event){
                                                 var idOfMemberBeingChecked = "rpg-" + event.members[member].id;
                                                 for (var statusToCheck in event.membersInParty[idOfMemberBeingChecked].statuses){
                                                     if (rpgAbility && rpgAbility.ignoreFocus){
-                                                        console.log("ignoring focus for ability")
+                                                        // console.log("ignoring focus for ability")
                                                         // IGNORE FOCUS EFFECT - check if the person being targetted by the ability is being focused by the caster
                                                         if (rpgAbility.targetToApplyOn == "random"){
                                                             // ignore anything focus related randomize the target by just going with whatever was used for target
@@ -4021,7 +4021,7 @@ function effectsOnTurnEnd(event){
                                             if (!targetFocusedMember){
                                                 target = "rpg-"+targetMember;
                                                 validTarget = true;
-                                                console.log("stuck count" + stuckCount)
+                                                // console.log("stuck count" + stuckCount)
                                             }
                                         }
                                         stuckCount++;
@@ -4123,7 +4123,7 @@ function effectsOnTurnEnd(event){
                                                     var idOfMemberBeingChecked = "rpg-" + event.members[member].id;
                                                     for (var statusToCheck in event.membersInParty[idOfMemberBeingChecked].statuses){
                                                         if (rpgAbility && rpgAbility.ignoreFocus){
-                                                            console.log("ignoring focus for ability")
+                                                            // console.log("ignoring focus for ability")
                                                             // IGNORE FOCUS EFFECT - check if the person being targetted by the ability is being focused by the caster
                                                             if (rpgAbility.targetToApplyOn == "random"){
                                                                 // ignore anything focus related randomize the target by just going with whatever was used for target
@@ -4162,13 +4162,13 @@ function effectsOnTurnEnd(event){
                                                             target = undefined;
                                                         }
                                                     }
-                                                    console.log(stuckCount)
+                                                    // console.log(stuckCount)
 
                                                 }else{
                                                     if (!targetFocusedMember){
                                                         target = "rpg-"+targetMember;
                                                         validTarget = true;
-                                                        console.log("stuck count" + stuckCount)
+                                                        // console.log("stuck count" + stuckCount)
                                                     }
                                                 }
                                                 
@@ -4444,7 +4444,7 @@ function effectsOnTurnEnd(event){
                                                     var idOfMemberBeingChecked = "rpg-" + event.members[member].id;
                                                     for (var statusToCheck in event.membersInParty[idOfMemberBeingChecked].statuses){
                                                         if (rpgAbility && rpgAbility.ignoreFocus){
-                                                            console.log("ignoring focus for ability")
+                                                            // console.log("ignoring focus for ability")
                                                             // IGNORE FOCUS EFFECT - check if the person being targetted by the ability is being focused by the caster
                                                             if ( (targetMember == event.members[member].id) 
                                                                 &&  event.membersInParty[idOfMemberBeingChecked].statuses[statusToCheck].name == "Focus"
@@ -4479,13 +4479,13 @@ function effectsOnTurnEnd(event){
                                                             target = undefined;
                                                         }
                                                     }
-                                                    console.log(stuckCount)
+                                                    // console.log(stuckCount)
     
                                                 }else{
                                                     if (!targetFocusedMember){
                                                         target = "rpg-"+targetMember;
                                                         validTarget = true;
-                                                        console.log("stuck count" + stuckCount)
+                                                        // console.log("stuck count" + stuckCount)
                                                     }
                                                 }
                                                 
@@ -5114,7 +5114,7 @@ function effectsOnTurnEnd(event){
                                             var idOfMemberBeingChecked = "rpg-" + event.members[member].id;
                                             for (var statusToCheck in event.membersInParty[idOfMemberBeingChecked].statuses){
                                                 if (rpgAbility && rpgAbility.ignoreFocus){
-                                                    console.log("ignoring focus for ability")
+                                                    // console.log("ignoring focus for ability")
                                                     // IGNORE FOCUS EFFECT - check if the person being targetted by the ability is being focused by the caster
                                                     if ( (targetMember == event.members[member].id) 
                                                         &&  event.membersInParty[idOfMemberBeingChecked].statuses[statusToCheck].name == "Focus"
@@ -5149,13 +5149,13 @@ function effectsOnTurnEnd(event){
                                                     target = undefined;
                                                 }
                                             }
-                                            console.log(stuckCount)
+                                            // console.log(stuckCount)
 
                                         }else{
                                             if (!targetFocusedMember){
                                                 target = "rpg-"+targetMember;
                                                 validTarget = true;
-                                                console.log("stuck count" + stuckCount)
+                                                // console.log("stuck count" + stuckCount)
                                             }
                                         }
                                         
@@ -5495,7 +5495,7 @@ function effectsOnDeath(event, member){
                                     var idOfMemberBeingChecked = "rpg-" + event.members[member].id;
                                     for (var statusToCheck in event.membersInParty[idOfMemberBeingChecked].statuses){
                                         if (rpgAbility && rpgAbility.ignoreFocus){
-                                            console.log("ignoring focus for ability")
+                                            // console.log("ignoring focus for ability")
                                             // IGNORE FOCUS EFFECT - check if the person being targetted by the ability is being focused by the caster
                                             if ( (targetMember == event.members[member].id) 
                                                 &&  event.membersInParty[idOfMemberBeingChecked].statuses[statusToCheck].name == "Focus"
@@ -5530,13 +5530,13 @@ function effectsOnDeath(event, member){
                                             target = undefined;
                                         }
                                     }
-                                    console.log(stuckCount)
+                                    // console.log(stuckCount)
 
                                 }else{
                                     if (!targetFocusedMember){
                                         target = "rpg-"+targetMember;
                                         validTarget = true;
-                                        console.log("stuck count" + stuckCount)
+                                        // console.log("stuck count" + stuckCount)
                                     }
                                 }
                                 
@@ -5579,7 +5579,7 @@ function effectsOnDeath(event, member){
                                     var idOfMemberBeingChecked = "rpg-" + event.members[member].id;
                                     for (var statusToCheck in event.membersInParty[idOfMemberBeingChecked].statuses){
                                         if (rpgAbility && rpgAbility.ignoreFocus){
-                                            console.log("ignoring focus for ability")
+                                            // console.log("ignoring focus for ability")
                                             // IGNORE FOCUS EFFECT - check if the person being targetted by the ability is being focused by the caster
                                             if ( (targetMember == event.members[member].id) 
                                                 &&  event.membersInParty[idOfMemberBeingChecked].statuses[statusToCheck].name == "Focus"
@@ -5614,12 +5614,12 @@ function effectsOnDeath(event, member){
                                             target = undefined;
                                         }
                                     }
-                                    console.log(stuckCount)
+                                    // console.log(stuckCount)
                                 }else{
                                     if (!targetFocusedMember){
                                         target = "rpg-"+targetMember;
                                         validTarget = true;
-                                        console.log("stuck count" + stuckCount)
+                                        // console.log("stuck count" + stuckCount)
                                     }
                                 }
                             }
@@ -5898,7 +5898,7 @@ function effectsOnDeath(event, member){
                                         var idOfMemberBeingChecked = "rpg-" + event.members[member].id;
                                         for (var statusToCheck in event.membersInParty[idOfMemberBeingChecked].statuses){
                                             if (rpgAbility && rpgAbility.ignoreFocus){
-                                                console.log("ignoring focus for ability")
+                                                // console.log("ignoring focus for ability")
                                                 // IGNORE FOCUS EFFECT - check if the person being targetted by the ability is being focused by the caster
                                                 if ( (targetMember == event.members[member].id) 
                                                     &&  event.membersInParty[idOfMemberBeingChecked].statuses[statusToCheck].name == "Focus"
@@ -5933,13 +5933,13 @@ function effectsOnDeath(event, member){
                                                 target = undefined;
                                             }
                                         }
-                                        console.log(stuckCount)
+                                        // console.log(stuckCount)
 
                                     }else{
                                         if (!targetFocusedMember){
                                             target = "rpg-"+targetMember;
                                             validTarget = true;
-                                            console.log("stuck count" + stuckCount)
+                                            // console.log("stuck count" + stuckCount)
                                         }
                                     }
                                     
@@ -6483,7 +6483,7 @@ function checkRadioactive(event, member){
             }
         }
         catch(error){
-            console.log(error);
+            // console.log(error);
         }
     }
     if (hasRadioactive){
@@ -6604,7 +6604,7 @@ function checkIfDamageTakenGiveBuff(event, target, caster){
                             return memberToGiveBuff.name + " was affected with " + buffToGive.name + "\n"
                         }
                     }else{
-                        console.log("have buff already")
+                        // console.log("have buff already")
                         return ""
                     }
                 }                
@@ -9850,7 +9850,7 @@ function enemiesUseAbilities(event){
     }
 
     for (var enemy in event.enemies){
-        console.log(event.enemies[enemy]);
+        // console.log(event.enemies[enemy]);
         // check that the enemy is not dead first 
         if (!checkIfDeadByObject(event.enemies[enemy])
         && event.enemies[enemy].globalStatuses.ableToAttack){
