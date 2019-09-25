@@ -1588,6 +1588,7 @@ module.exports.throwCommand = function(message){
     var userMentioned;
     var mentionedId;
     var mentionedUser;
+    var mentionedDiscriminator;
     // // console.log(users);
     users.forEach(function(user){
         // // console.log(user.id);
