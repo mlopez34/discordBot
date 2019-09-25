@@ -4907,7 +4907,7 @@ module.exports.fetchCommand = function(message, args){
             profileDB.getStableData(discordUserId, function(fetchError, fetchResponse){
                 if (fetchError){
                     exports.setCommandLock("fetch", discordUserId, false)
-                    // console.log(fetchError)
+                    console.log(fetchError)
                     message.channel.send("You must `-agree` to create a profile first!")
                 }else{
                     var userPet;
@@ -4949,6 +4949,7 @@ module.exports.fetchCommand = function(message, args){
                         }
                         wearStats.getUserWearingStats(message, discordUserId, userData, allItems, function(wearErr, wearRes){
                             if (wearErr){
+                                console.log(wearErr)
                                 exports.setCommandLock("fetch", discordUserId, false)
                             }else{
                                 var now = new Date();
@@ -4968,12 +4969,13 @@ module.exports.fetchCommand = function(message, args){
                                         var extraTacosFromItems = (fetchTacos * ( stableSlot * stableSlot) * 10) + Math.floor( wearStats.calculateExtraTacos(wearRes, "fetch") / (7 - stableSlot) ); // 0 or extra
                                         profileDB.updateUserTacosStableFetch(discordUserId, fetchTacos + extraTacosFromItems, stableSlot, function(err, updateResponse) {
                                             if (err){
+                                                console.log(err)
                                                 exports.setCommandLock("fetch", discordUserId, false)
                                             }else{
                                                 exports.setCommandLock("fetch", discordUserId, false)
                                                 var experienceFromItems = wearStats.calculateExtraExperienceGained(wearRes, "fetch", null);                                                                             
                                                 experience.gainExperience(message, message.author, (( (EXPERIENCE_GAINS.perFetchCd * PETS_AVAILABLE[userPet].fetch) / 10) + experienceFromItems) , fetchResponse);
-                                                eventParams = { command: "fetch", userData: fetchResponse, discordUserId: discordUserId, fetchCD: userData.fetchCD, userPetName: userPetName, emoji: PETS_AVAILABLE[userPet].emoji, stableRes: fetchResponse }
+                                                let eventParams = { command: "fetch", userData: fetchResponse, discordUserId: discordUserId, fetchCD: userData.fetchCD, userPetName: userPetName, emoji: PETS_AVAILABLE[userPet].emoji, stableRes: fetchResponse }
                                                 additionalEventsForCommand(message, eventParams)
                                                 // user's pet fetched some tacos
                                                 if (extraTacosFromItems > 0){
@@ -5006,6 +5008,7 @@ module.exports.fetchCommand = function(message, args){
             // the pet has gone to fetch, get taco amount = their fetch
             profileDB.getUserProfileData(discordUserId, function(fetchError, fetchResponse){
                 if (fetchError){
+                    console.log(fetchError)
                     exports.setCommandLock("fetch", discordUserId, false)
                     message.channel.send("You must `-agree` to create a profile first!")
                 }else{
@@ -5020,6 +5023,7 @@ module.exports.fetchCommand = function(message, args){
                         }
                         wearStats.getUserWearingStats(message, discordUserId, userData, allItems, function(wearErr, wearRes){
                             if (wearErr){
+                                console.log(wearErr)
                                 exports.setCommandLock("fetch", discordUserId, false)
                             }else{
                                 var now = new Date();
@@ -5040,13 +5044,14 @@ module.exports.fetchCommand = function(message, args){
 
                                         profileDB.updateUserTacosFetch(discordUserId, fetchTacos + extraTacosFromItems, function(err, updateResponse) {
                                             if (err){
+                                                console.log(err)
                                                 exports.setCommandLock("fetch", discordUserId, false)
                                             }else{
                                                 exports.setCommandLock("fetch", discordUserId, false)
                                                 var experienceFromItems = wearStats.calculateExtraExperienceGained(wearRes, "fetch", null);                                                                             
                                                 experience.gainExperience(message, message.author, (( (EXPERIENCE_GAINS.perFetchCd * PETS_AVAILABLE[userPet].fetch) / 10) + experienceFromItems) , fetchResponse);
                                                 // TODO: create events that are processed by other modules: ie - temple, greenhouse, temple 
-                                                eventParams = { command: "fetch", userData: fetchResponse, fetchCD: userData.fetchCD, discordUserId: discordUserId, userPetName: userPetName, emoji: PETS_AVAILABLE[userPet].emoji, stableRes: fetchResponse  }
+                                                let eventParams = { command: "fetch", userData: fetchResponse, fetchCD: userData.fetchCD, discordUserId: discordUserId, userPetName: userPetName, emoji: PETS_AVAILABLE[userPet].emoji, stableRes: fetchResponse  }
                                                 additionalEventsForCommand(message, eventParams)
                                                 createTimeOutForCommandAfterUse("fetch", now, secondsToRemove, PETS_AVAILABLE[userPet].cooldown, discordUserId, fetchResponse.data, message)
                                                 // user's pet fetched some tacos
