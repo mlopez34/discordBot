@@ -971,7 +971,7 @@ module.exports.prepareCommand = function (message){
                                 var tacosToPrepare = BASE_TACO_PREPARE * userTacoStands;
                                 var soiledCrops = prepareResponse.data.soiledcrops;
                                 var soiledToTaco = 0;
-                                for (i = 0; i < soiledCrops; i++) {
+                                for (var i = 0; i < soiledCrops; i++) {
                                     var soilRoll = Math.floor(Math.random() * 100) + 1;
                                     if ( soilRoll > 50 ){
                                         soiledToTaco = soiledToTaco + 10;
