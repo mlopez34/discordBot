@@ -863,14 +863,12 @@ module.exports.rpgReady = function(message, itemsAvailable, amuletItemsById, buf
                     || challengePicked >= CHALLENGE_TO_TEST){
                         // get the user profile data
                         var userStats = userData.data;
-                        var start = new Date().getTime()
                         // console.log("START " + start)
                         profileDB.getUserItemsForRpg(discordUserId, function(err, inventoryResponse){
                             if (err){
                                 exports.setreadyLock(rpgEventId, discordUserId, false)
                                 // console.log(err);
                             }else{
-                                var done = new Date().getTime()
                                 // console.log("DONE " + done)
                                 // console.log("millis " + ( done - start))
                                 // get all the data for each item
