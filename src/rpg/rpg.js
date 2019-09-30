@@ -29,9 +29,9 @@ var rpgZones = rpgMap.rpgZones
 
 module.exports.rpgInitialize = function(message, special){
     // create an embed saying that b is about to happen, for users MAX of 5 users and they must all say -ready to start costs 5 tacos per person
-    var discordUserId = message.author.id;
-    var users  = message.mentions.users
-    var team = [];
+    let discordUserId = message.author.id;
+    let users  = message.mentions.users
+    let team = [];
     team.push(message.author);
 
     users.forEach(function(user){
@@ -40,8 +40,8 @@ module.exports.rpgInitialize = function(message, special){
         }
     })
     // check to see all the team members are available and not already in an event
-    var validTeam = true;
-    for (var member in team){
+    let validTeam = true;
+    for (let member in team){
         if (usersInRPGEvents["rpg-"+team[member].id]){
             validTeam = false;
         }
@@ -58,7 +58,7 @@ module.exports.rpgInitialize = function(message, special){
     if (team.length >= 2 && team.length <= TEAM_MAX_LENGTH && validTeam){
         // send an embed that the users are needed for the RPG event to say -ready or -notready
         // if the user says -ready, they get added to activeRPGEvents that they were invited to
-        const embed = new Discord.RichEmbed()
+        let embed = new Discord.RichEmbed()
         .setAuthor("RPG Event initiated by " + message.author.username + "!" )
         .setThumbnail("https://media.giphy.com/media/mIZ9rPeMKefm0/giphy.gif")
         .setColor(0xF2E93E)
@@ -2819,13 +2819,13 @@ function processRpgTurn(message, event){
 }
 
 function cleanupEventEnded(event){
-    var idOfEventToDelete = "";
+    let idOfEventToDelete = "";
     for (var member in event.membersInParty){
-        var idToRemove = event.membersInParty[member].id
+        let idToRemove = event.membersInParty[member].id
 
         // free up the items the user is using
-        for (var item in usersInRPGEvents["rpg-" + idToRemove].memberStats.itemsBeingWornUserIds){
-            var itemInQuestion = usersInRPGEvents["rpg-" + idToRemove].memberStats.itemsBeingWornUserIds[item];
+        for (let item in usersInRPGEvents["rpg-" + idToRemove].memberStats.itemsBeingWornUserIds){
+            let itemInQuestion = usersInRPGEvents["rpg-" + idToRemove].memberStats.itemsBeingWornUserIds[item];
             if (activeRPGItemIds[itemInQuestion]){
                 delete activeRPGItemIds[itemInQuestion]
             }
@@ -2844,40 +2844,40 @@ function cleanupEventEnded(event){
 
 function turnFinishedEmbedBuilder(message, event, turnString, passiveEffectsString, endOfTurnString){
     // create a string of all the events that happened
-    var descriptionString = passiveEffectsString + turnString + endOfTurnString
+    let descriptionString = passiveEffectsString + turnString + endOfTurnString
     if (descriptionString.length > 1950){
         descriptionString = descriptionString.substring(0, 1950)
     }
-    const embed = new Discord.RichEmbed()
+    let embed = new Discord.RichEmbed()
     .setAuthor("Taco RPG Event | Turn: " + event.turn)
     .setColor(0xF2E93E)
     .setDescription( descriptionString )
     // party members
     //var groupString = "";
-    var enemiesString = "";
+    let enemiesString = "";
     if (event.special && event.special.avatar){
         embed.setThumbnail(event.special.avatar);
     }else if (event.challenge){
-        var challengeNum = event.challenge.challenge
-        var keystoneNum = event.challenge.keystone
+        let challengeNum = event.challenge.challenge
+        let keystoneNum = event.challenge.keystone
         if (keystoneNum >= 5){
-            var avatarURL = getThumbnailFromChallenge(challengeNum)
+            let avatarURL = getThumbnailFromChallenge(challengeNum)
             embed.setThumbnail(avatarURL);
         }
     }else if (event.zoneAvatar){
         embed.setThumbnail(event.zoneAvatar);
     }
 
-    for (var member in event.members){
-        var memberInRpgEvent = event.members[member];
-        var memberInParty = event.membersInParty["rpg-" + memberInRpgEvent.id]
-        var playerString = userStatsStringBuilder(memberInParty, memberInRpgEvent.username, false, event.turn);
-        var playerUsername = memberInRpgEvent.username.length <= 35 ? memberInRpgEvent.username : "default"
-        var playerAlias = memberInParty.alias
+    for (let member in event.members){
+        let memberInRpgEvent = event.members[member];
+        let memberInParty = event.membersInParty["rpg-" + memberInRpgEvent.id]
+        let playerString = userStatsStringBuilder(memberInParty, memberInRpgEvent.username, false, event.turn);
+        let playerUsername = memberInRpgEvent.username.length <= 35 ? memberInRpgEvent.username : "default"
+        let playerAlias = memberInParty.alias
         embed.addField( playerUsername + " (" + playerAlias + ")", playerString )
     }
     // show limit availables
-    var limitsReadyString = "";
+    let limitsReadyString = "";
     if (event.limitOffensiveReady){
         limitsReadyString = limitsReadyString + ":crossed_swords: ";
     }
@@ -2888,31 +2888,31 @@ function turnFinishedEmbedBuilder(message, event, turnString, passiveEffectsStri
         embed.addField("Limit", limitsReadyString)
     }
     // enemies
-    for (var enemy in event.enemies){
+    for (let enemy in event.enemies){
         if (enemiesString.length > 700){
             embed.addField( "Enemy", enemiesString )
             enemiesString = "";
             if (event.enemies[enemy].difficulty == "summoned" || event.enemies[enemy].difficulty == "summoned-boss"){
                 if (event.enemies[enemy].hp > 0){
-                    var enemyInRpgEvent = event.enemies[enemy];
-                    var enemyName = event.enemies[enemy].name;
+                    let enemyInRpgEvent = event.enemies[enemy];
+                    let enemyName = event.enemies[enemy].name;
                     enemiesString = enemiesString + "\n" + userStatsStringBuilder(enemyInRpgEvent, enemyName, true, event.turn);        
                 }
             }else{
-                var enemyInRpgEvent = event.enemies[enemy];
-                var enemyName = event.enemies[enemy].name;
+                let enemyInRpgEvent = event.enemies[enemy];
+                let enemyName = event.enemies[enemy].name;
                 enemiesString = enemiesString + "\n" + userStatsStringBuilder(enemyInRpgEvent, enemyName, true, event.turn);  
             }
         }else{
             if (event.enemies[enemy].difficulty == "summoned" || event.enemies[enemy].difficulty == "summoned-boss"){
                 if (event.enemies[enemy].hp > 0){
-                    var enemyInRpgEvent = event.enemies[enemy];
-                    var enemyName = event.enemies[enemy].name;
+                    let enemyInRpgEvent = event.enemies[enemy];
+                    let enemyName = event.enemies[enemy].name;
                     enemiesString = enemiesString + "\n" + userStatsStringBuilder(enemyInRpgEvent, enemyName, true, event.turn);        
                 }
             }else{
-                var enemyInRpgEvent = event.enemies[enemy];
-                var enemyName = event.enemies[enemy].name;
+                let enemyInRpgEvent = event.enemies[enemy];
+                let enemyName = event.enemies[enemy].name;
                 enemiesString = enemiesString + "\n" + userStatsStringBuilder(enemyInRpgEvent, enemyName, true, event.turn);  
             }
         }
@@ -2927,7 +2927,7 @@ function turnFinishedEmbedBuilder(message, event, turnString, passiveEffectsStri
         // filter to only unique channels to send
         let groupOfUniqueChannels = filterForUniqueChannels(groupOfMessagesSent)
         let newGroupOfMessagesSent = []
-        for (var m in groupOfUniqueChannels){
+        for (let m in groupOfUniqueChannels){
             groupOfUniqueChannels[m].channel.send({embed})
             .then(function(sentMessage){
                 newGroupOfMessagesSent.push(sentMessage)
@@ -2945,7 +2945,7 @@ function turnFinishedEmbedBuilder(message, event, turnString, passiveEffectsStri
             })
         }
         // sent the messages
-        for (var m in groupOfMessagesSent){
+        for (let m in groupOfMessagesSent){
             groupOfMessagesSent[m].delete()
             .then(function(res){
                 // console.log(res)
@@ -2957,7 +2957,7 @@ function turnFinishedEmbedBuilder(message, event, turnString, passiveEffectsStri
     }else{
         message.channel.send({embed})
         .then(function (sentMessage) {
-            var lastMessage = event.lastEmbedMessage
+            let lastMessage = event.lastEmbedMessage
             if (lastMessage){
                 lastMessage.delete()
                 .then(function(res){

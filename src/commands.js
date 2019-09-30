@@ -2226,41 +2226,41 @@ function shopBuilder(message, shopData, long){
         .setColor(0x87CEFA)
         .addField('Taco Stands', treeCost, true)        
         if(shopData.pickaxe == "none"){
-            var pickaxeCost = PICKAXE_COST +" :taco:";
+            let pickaxeCost = PICKAXE_COST +" :taco:";
             embed.addField('Pickaxe', pickaxeCost, true)
         }
         else if (shopData.pickaxe == "basic"){
             // improved pickaxe
-            pickaxeCost = IMPROVED_PICKAXE_COST + " :taco:";
+            let pickaxeCost = IMPROVED_PICKAXE_COST + " :taco:";
             embed.addField('Improved Pickaxe', pickaxeCost, true)
         }
         else if (shopData.pickaxe == "improved"){
             // improved pickaxe
-            pickaxeCost = MASTER_PICKAXE_COST + " :taco:";
+            let pickaxeCost = MASTER_PICKAXE_COST + " :taco:";
             embed.addField('Master Pickaxe', pickaxeCost, true)
         }
         else if (shopData.pickaxe == "master"){
-            pickaxeCost = ETHEREAL_PICKAXE_COST + " :taco:";
+            let pickaxeCost = ETHEREAL_PICKAXE_COST + " :taco:";
             embed.addField('Ethereal Pickaxe', pickaxeCost, true)
         }
         else if (shopData.pickaxe == "ethereal"){
-            pickaxeCost = ZEUS_TRIDENT_COST + " :taco:";
+            let pickaxeCost = ZEUS_TRIDENT_COST + " :taco:";
             embed.addField("Zeus' Trident", pickaxeCost, true)
         }
         if (!shopData.greenhouse){
-            greenHouseCost = GREENHOUSE_COST + " :taco:";
+            let greenHouseCost = GREENHOUSE_COST + " :taco:";
             embed.addField("Greenhouse", greenHouseCost, true)
         }
         if (!shopData.temple){
-            templecost = TEMPLE_COST + " :taco:";
+            let templecost = TEMPLE_COST + " :taco:";
             embed.addField("Temple", templecost, true)
         }
         if (shopData.temple && !shopData.hacksaw){
-            hacksawCost = HACKSAW_COST + " :taco:";
+            let hacksawCost = HACKSAW_COST + " :taco:";
             embed.addField("Hacksaw", hacksawCost, true)
         }
         if (!shopData.stable){
-            stablecost = STABLE_COST + " :taco:";
+            let stablecost = STABLE_COST + " :taco:";
             embed.addField("Stable", stablecost, true)
         }
         embed.addField('Pasta', PASTA_COST + " :taco:", true)
@@ -2408,6 +2408,7 @@ module.exports.shopCommand = function(message, args){
     }
     profileDB.getUserProfileData( discordUserId, function(err, shopResponse) {
         if(err){
+            console.log(err)
             message.channel.send("You must `-agree` to create a profile first!")
         }else{
             // if user has enough tacos to purchase the tree, add 1 tree, subtract x tacos
