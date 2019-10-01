@@ -3243,7 +3243,7 @@ module.exports = {
             iconoclast: {
                 enemyIdName : "iconoclast",
                 name: "Iconoclast",
-                abilities: ["slap" , "slap" , "scam", "blizzard", "blizzard", "cripple"],
+                abilities: ["slap" , "slap" , "scam", "scam", "blizzard", "cripple"],
                 buffs: [
                     {
                         name: "frenzy",
