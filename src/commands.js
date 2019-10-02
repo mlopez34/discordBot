@@ -1940,6 +1940,7 @@ module.exports.tacosCommand = function(message){
             var profileData = {}
             profileData.userName = message.author.username;
             profileData.userTacos = adjustedTacosForUser(discordUserId, profileResponse.data.tacos)
+            profileData.userBurritos = profileResponse.data.burritos
             tacoEmbedBuilder(message, profileData);
         }
     })
@@ -1949,7 +1950,8 @@ function tacoEmbedBuilder(message, profileData){
     const embed = new Discord.RichEmbed()
     .setColor(0x00AE86)
     .addField( profileData.userName +"'s Tacos" + ' :taco:', profileData.userTacos, true)
-    .setFooter('use ' + settings.getGuildPrefix(message.channel.guild.id) + 'give @user to give a user some tacos!')
+    .addField( profileData.userName +"'s Burritos" + ' :burrito:', profileData.userBurritos, true)
+    .setFooter('use ' + settings.getGuildPrefix(message.channel.guild.id) + 'give @user to give a user some tacos! You cannot trade burritos.')
     message.channel.send({embed});
 }
 
@@ -3468,6 +3470,7 @@ module.exports.inventoryCommand = function(message, args){
     // get all items for the discord id
     var discordUserId = message.author.id;
     let page = 0
+    var includeDescriptions = false
     if (args && args.length > 1){
         var long = args[1];
         if (long == "long"){
