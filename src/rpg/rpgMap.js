@@ -2502,7 +2502,7 @@ module.exports = {
                     name: "Cobb's Point",
                     enemiesToDefeat: 95,
                     onCompleteAreasUnlocked: [
-                        "dunwall"
+                        "dunewall"
                     ],
                     shopItemsAvailable: [
 
@@ -2514,9 +2514,9 @@ module.exports = {
 
                     ]
                 },
-                dunwall: {
+                dunewall: {
                     areaString : " ",
-                    name: "Dunwall",
+                    name: "Dunewall",
                     enemiesToDefeat: 77,
                     onCompleteAreasUnlocked: [
                         "edurnaroch"
@@ -3525,7 +3525,7 @@ module.exports = {
             zoneString : "It will be even colder...",
             startingArea: "greyhavens",
             name: "Mount Everest",
-            zoneDifficulty: 4,
+            zoneDifficulty: 5,
             intendedLevelString: "39-41",
             enemyStatBuffs: {
                 hpPlusPercentage: 3.2,
@@ -4349,16 +4349,971 @@ module.exports = {
             ]
         },
         sahara: {
+            zoneAvatar: "https://i.imgur.com/eYBcNsk.png",
+            zoneString : "Find the lost expedition",
+            startingArea: "hadaracdesert",
+            name: "Sahara",
+            zoneDifficulty: 4,
+            intendedLevelString: "36-40",
+            enemyStatBuffs: {
+                hpPlusPercentage: 2.8,
+                adPlusPercentage: 3.9,
+                mdPlusPercentage: 3.9,
+                armorPlusPercentage: 1,
+                spiritPlusPercentage: 1,
+                frenzyAdIncreasePercentage: 2.5,
+                echoIncreasePercentage: 2.5
+            },
+            enemies: {
+                easy: [
+                    "hyena", "hyena", "hyena", "hyena", 
+                    "burritohustler", "burritohustler", "burritohustler", 
+                    "ruffian"
+                ],
+                medium: [
+                    "rattlesnake", "rattlesnake", "rattlesnake",
+                    "scorpion", "scorpion", "scorpion",
+                    "tacobandit",
+                ],
+                hard: [
+                    "mountainlion", "mountainlion", "mountainlion",
+                    "giantearthworm", "giantearthworm", "giantearthworm",
+                    "sniper"
+                ],
+                boss: [
+                    "sultan", "sultan", "sultan",
+                    "scorpionking"
+                ]
+            },
+            areas: {
+                hadaracdesert: {
+                    areaString : "",
+                    name: "Hadarac Desert",
+                    enemiesToDefeat: 75,
+                    onCompleteAreasUnlocked: [
+                        "aleppo"
+                    ],
+                    shopItemsAvailable: [
 
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                },
+                aleppo: {
+                    areaString : " ",
+                    name: "Aleppo",
+                    enemiesToDefeat: 101,
+                    onCompleteAreasUnlocked: [
+                        "borabora"
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                },
+                borabora: {
+                    areaString : " ",
+                    name: "Bora Bora",
+                    enemiesToDefeat: 107,
+                    onCompleteAreasUnlocked: [
+                        "burjkhalifa"
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                },
+                burjkhalifa: {
+                    areaString : " ",
+                    name: "Burj Khalifa",
+                    enemiesToDefeat: 84,
+                    onCompleteAreasUnlocked: [
+                        "karakumdesert"
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                },
+                karakumdesert: {
+                    areaString : " ",
+                    name: "Karakum Desert",
+                    enemiesToDefeat: 170,
+                    onCompleteAreasUnlocked: [
+                        "louvre"
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                },
+                louvre: {
+                    areaString : " ",
+                    name: "Louvre",
+                    enemiesToDefeat: 274,
+                    onCompleteAreasUnlocked: [
+                        "mirmine"
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                },
+                mirmine: {
+                    areaString : " ",
+                    name: "Mir Mine",
+                    enemiesToDefeat: 143,
+                    onCompleteAreasUnlocked: [
+                        "nambia"
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                },
+                nambia: {
+                    areaString : " ",
+                    name: "Nambia",
+                    enemiesToDefeat: 170,
+                    onCompleteAreasUnlocked: [
+                        "pustiudesert"
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                },
+                // 5 man
+                nileriver: {
+                    areaString : " ",
+                    name: "Nile River",
+                    enemiesToDefeat: 60,
+                    enemies: [
+                        {
+                            enemyId: "scorpionking",
+                            enemyDifficulty: "boss"
+                        },
+                        {
+                            enemyId: "giantearthworm",
+                            enemyDifficulty: "hard"
+                        },
+                        {
+                            enemyId: "giantearthworm",
+                            enemyDifficulty: "hard"
+                        },
+                        {
+                            enemyId: "mountainlion",
+                            enemyDifficulty: "hard"
+                        },
+                        {
+                            enemyId: "scorpion",
+                            enemyDifficulty: "medium"
+                        }
+                    ],
+                    onCompleteAreasUnlocked: [
+                        "tianzimountains"
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                },
+                
+                pustiudesert: {
+                    areaString : " ",
+                    name: "Pustiu Desert",
+                    enemiesToDefeat: 79,
+                    onCompleteAreasUnlocked: [
+                        "tajmalah"
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                },
+                tajmalah: {
+                    areaString : " ",
+                    name: "Taj Malah",
+                    enemiesToDefeat: 39,
+                    enemies: [
+                        {
+                            enemyId: "sultan",
+                            enemyDifficulty: "hard"
+                        },
+                        {
+                            enemyId: "mountainlion",
+                            enemyDifficulty: "hard"
+                        },
+                        {
+                            enemyId: "mountainlion",
+                            enemyDifficulty: "hard"
+                        }
+                    ],
+                    onCompleteAreasUnlocked: [
+                        "nileriver"
+                    ],
+                    shopItemsAvailable: [
+                        
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                },
+                tianzimountains: {
+                    areaString : " ",
+                    name: "Tianzi Mountains",
+                    enemiesToDefeat: 116,
+                    onCompleteAreasUnlocked: [
+                        "tombofmarxo"
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                },
+                tombofmarxo: {
+                    areaString : " ",
+                    name: "Tomb of Marxo",
+                    enemiesToDefeat: 120,
+                    onCompleteAreasUnlocked: [
+
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                }
+            },
+            onCompleteZonesUnlocked: [
+                "mounteverest",
+            ]
         },
         newyork: {
 
         },
         chicago: {
+            zoneAvatar: "https://i.imgur.com/M7BIKy6.jpg",
+            zoneString : "The rest of the Crips are not happy you took out one of them. The enemy of your enemy is your friend, travel to NYC and find an ally.",
+            startingArea: "edgewater",
+            name: "Chicago",
+            zoneDifficulty: 6,
+            intendedLevelString: "42-43",
+            enemyStatBuffs: {
+                hpPlusPercentage: 3.4,
+                adPlusPercentage: 4.7,
+                mdPlusPercentage: 4.7,
+                armorPlusPercentage: 1,
+                spiritPlusPercentage: 1,
+                frenzyAdIncreasePercentage: 3.2,
+                echoIncreasePercentage: 2.9
+            },
+            enemies: {
+                easy: [
+                    "thug", "thug", "thug", "thug", 
+                    "vagabond", "vagabond", "vagabond", 
+                    "addict"
+                ],
+                medium: [
+                    "dullard", "dullard", "dullard",
+                    "dolt", "dolt", "dolt",
+                    "tweener",
+                ],
+                hard: [
+                    "delinquent", "delinquent", "delinquent",
+                    "racketeer", "racketeer", "racketeer",
+                    "tacolord"
+                ],
+                boss: [
+                    "kidnaper", "kidnaper", "kidnaper", "kidnaper", "kidnaper",
+                    "crip"
+                ]
+            },
+            areas: {
+                edgewater: {
+                    areaString : " ",
+                    name: "Edgewater",
+                    enemiesToDefeat: 99,
+                    onCompleteAreasUnlocked: [
+                        "logan"
+                    ],
+                    shopItemsAvailable: [
 
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                },
+                logan: {
+                    areaString : " ",
+                    name: "Logan",
+                    enemiesToDefeat: 130,
+                    onCompleteAreasUnlocked: [
+                        "roscoe"
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                },
+                roscoe: {
+                    areaString : " ",
+                    name: "Roscoe",
+                    enemiesToDefeat: 125,
+                    onCompleteAreasUnlocked: [
+                        "ravenswood"
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                },
+                ravenswood: {
+                    areaString : " ",
+                    name: "Ravenswood",
+                    enemiesToDefeat: 141,
+                    onCompleteAreasUnlocked: [
+                        "avondale"
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                },
+                avondale: {
+                    areaString : " ",
+                    name: "Avondale",
+                    enemiesToDefeat: 88,
+                    onCompleteAreasUnlocked: [
+                        "humboldt"
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                },
+                humboldt: {
+                    areaString : " ",
+                    name: "Humboldt",
+                    enemiesToDefeat: 150,
+                    enemies: [
+                        "goldcoast"
+                    ],
+                    onCompleteAreasUnlocked: [
+
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                },
+                goldcoast: {
+                    areaString : " ",
+                    name: "Gold Coast",
+                    enemiesToDefeat: 123,
+                    onCompleteAreasUnlocked: [
+                        "burnside"
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                },
+                burnside: {
+                    areaString : " ",
+                    name: "Burnside",
+                    enemiesToDefeat: 75,
+                    onCompleteAreasUnlocked: [
+                        "pullman"
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                },
+                pullman: {
+                    areaString : " ",
+                    name: "Pullman",
+                    enemiesToDefeat: 86,
+                    onCompleteAreasUnlocked: [
+                        "riverdale"
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                },
+                riverdale: {
+                    areaString : " ",
+                    name: "Riverdale",
+                    enemiesToDefeat: 79,
+                    onCompleteAreasUnlocked: [
+                        "pilsen"
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                },
+                pilsen: {
+                    areaString : " ",
+                    name: "Pilsen",
+                    enemiesToDefeat: 169,
+                    onCompleteAreasUnlocked: [
+                        "lawndale",
+                        "englewood"
+                    ],
+                    shopItemsAvailable: [
+                        
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                },
+                lawndale: {
+                    areaString : " ",
+                    name: "Lawndale",
+                    enemiesToDefeat: 40,
+                    enemies: [
+                        {
+                            enemyId: "kidnaper",
+                            enemyDifficulty: "boss"
+                        },
+                        {
+                            enemyId: "dullard",
+                            enemyDifficulty: "medium"
+                        }
+                    ],
+                    onCompleteAreasUnlocked: [
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                },
+                englewood: {
+                    areaString : " ",
+                    name: "Englewood",
+                    enemiesToDefeat: 80,
+                    enemies: [
+                        {
+                            enemyId: "crip",
+                            enemyDifficulty: "boss"
+                        },
+                        {
+                            enemyId: "kidnaper",
+                            enemyDifficulty: "boss"
+                        },
+                        {
+                            enemyId: "dullard",
+                            enemyDifficulty: "medium"
+                        },
+                        {
+                            enemyId: "tacolord",
+                            enemyDifficulty: "hard"
+                        },
+                        {
+                            enemyId: "delinquent",
+                            enemyDifficulty: "hard"
+                        },
+                        {
+                            enemyId: "racketeer",
+                            enemyDifficulty: "hard"
+                        },
+                        {
+                            enemyId: "tweener",
+                            enemyDifficulty: "medium"
+                        },
+                        {
+                            enemyId: "dolt",
+                            enemyDifficulty: "medium"
+                        }
+                    ],
+                    onCompleteAreasUnlocked: [
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                }
+            },
+            onCompleteZonesUnlocked: [
+                "newyork",
+            ]
         },
         elbert: {
+            zoneAvatar: "https://i.imgur.com/DFZFStq.jpg",
+            zoneString : "You have assembled all the required materials for the journey to Emerald Eve in the cosmos",
+            startingArea: "blackrockmountain",
+            name: "Elbert",
+            zoneDifficulty: 6,
+            intendedLevelString: "42-43",
+            enemyStatBuffs: {
+                hpPlusPercentage: 3.4,
+                adPlusPercentage: 4.7,
+                mdPlusPercentage: 4.7,
+                armorPlusPercentage: 1,
+                spiritPlusPercentage: 1,
+                frenzyAdIncreasePercentage: 3.2,
+                echoIncreasePercentage: 2.9
+            },
+            enemies: {
+                easy: [
+                    "graywolf", "graywolf", "graywolf", "graywolf", 
+                    "snowleopard", "snowleopard", "snowleopard", 
+                    "ruffian"
+                ],
+                medium: [
+                    "polarbear", "polarbear", "polarbear",
+                    "charlatan", "charlatan", "charlatan",
+                    "disassembler",
+                ],
+                hard: [
+                    "mammoth", "mammoth", "mammoth",
+                    "ogre", "ogre", "ogre",
+                    "frostdragon"
+                ],
+                boss: [
+                    "ogremagi", "ogremagi", "ogremagi", "ogremagi", "ogremagi",
+                    "shiva"
+                ]
+            },
+            areas: {
+                blackrockmountain: {
+                    areaString : " ",
+                    name: "Blackrock Mountain",
+                    enemiesToDefeat: 104,
+                    onCompleteAreasUnlocked: [
+                        "breganhold",
+                        "ciesislands"
+                    ],
+                    shopItemsAvailable: [
 
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                },
+                // 1
+                breganhold: {
+                    areaString : " ",
+                    name: "Bregan Hold",
+                    enemiesToDefeat: 101,
+                    onCompleteAreasUnlocked: [
+                        "distillerydistrict",
+                        "eldorlake"
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                },
+                // 1
+                ciesislands: {
+                    areaString : " ",
+                    name: "Cies Islands",
+                    enemiesToDefeat: 107,
+                    onCompleteAreasUnlocked: [
+                        "hangsondoong",
+                        "goldenglobe"
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                },
+                // 2
+                distillerydistrict: {
+                    areaString : " ",
+                    name: "Distillery District",
+                    enemiesToDefeat: 143,
+                    onCompleteAreasUnlocked: [
+                        "inversionhouse"
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                },
+                // 2
+                eldorlake: {
+                    areaString : " ",
+                    name: "Eldor Lake",
+                    enemiesToDefeat: 100,
+                    onCompleteAreasUnlocked: [
+                        "lijangtower"
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                },
+                // end
+                gatesofhera: {
+                    areaString : " ",
+                    name: "Gates of Hera",
+                    enemiesToDefeat: 50,
+                    enemies: [
+                        {
+                            enemyId: "shiva",
+                            enemyDifficulty: "boss"
+                        },
+                        {
+                            enemyId: "ogremagi",
+                            enemyDifficulty: "hard"
+                        },
+                        {
+                            enemyId: "frostdragon",
+                            enemyDifficulty: "hard"
+                        },
+                        {
+                            enemyId: "ogre",
+                            enemyDifficulty: "hard"
+                        },
+                        {
+                            enemyId: "mammoth",
+                            enemyDifficulty: "hard"
+                        },
+                        {
+                            enemyId: "frostdragon",
+                            enemyDifficulty: "hard"
+                        },
+                        {
+                            enemyId: "mammoth",
+                            enemyDifficulty: "hard"
+                        },
+                        {
+                            enemyId: "mammoth",
+                            enemyDifficulty: "hard"
+                        }
+                    ],
+                    onCompleteAreasUnlocked: [
+
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                },
+                // 
+                goldenglobe: {
+                    areaString : " ",
+                    name: "Golden Globe",
+                    enemiesToDefeat: 123,
+                    onCompleteAreasUnlocked: [
+                        "magiccastle"
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                },
+                // 2
+                hangsondoong: {
+                    areaString : " ",
+                    name: "Hang Son Doong",
+                    enemiesToDefeat: 104,
+                    onCompleteAreasUnlocked: [
+
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                },
+                // 3
+                inversionhouse: {
+                    areaString : " ",
+                    name: "Inversion House",
+                    enemiesToDefeat: 86,
+                    enemies: [
+
+                    ],
+                    onCompleteAreasUnlocked: [
+                        "keukenhofgardens"
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                },
+                // 4
+                keukenhofgardens: {
+                    areaString : " ",
+                    name: "Keukenhof Gardens",
+                    enemiesToDefeat: 79,
+                    onCompleteAreasUnlocked: [
+                        "koryazglacier"
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                },
+                // 5
+                koryazglacier: {
+                    areaString : " ",
+                    name: "Kor Yaz Glacier",
+                    enemiesToDefeat: 189,
+                    onCompleteAreasUnlocked: [
+                    ],
+                    shopItemsAvailable: [
+                        
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                },
+                // 3
+                lijangtower: {
+                    areaString : " ",
+                    name: "Lijang Tower",
+                    enemiesToDefeat: 116,
+                    onCompleteAreasUnlocked: [
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                },
+                magiccastle: {
+                    areaString : " ",
+                    name: "Magic Castle",
+                    enemiesToDefeat: 120,
+                    onCompleteAreasUnlocked: [
+                        "monumentvalley"
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                },
+                monumentvalley: {
+                    areaString : " ",
+                    name: "Monument Valley",
+                    enemiesToDefeat: 65,
+                    enemies: [
+                        {
+                            enemyId: "walrus",
+                            enemyDifficulty: "hard"
+                        },
+                        {
+                            enemyId: "ogremagi",
+                            enemyDifficulty: "boss"
+                        },
+                        {
+                            enemyId: "walrus",
+                            enemyDifficulty: "hard"
+                        },
+                        {
+                            enemyId: "walrus",
+                            enemyDifficulty: "hard"
+                        },
+                        {
+                            enemyId: "walrus",
+                            enemyDifficulty: "hard"
+                        }
+                    ],
+                    onCompleteAreasUnlocked: [
+                        "gatesofhera"
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                }
+            },
+            onCompleteZonesUnlocked: [
+                "emeraldeve",
+            ]
         },
         panama: {
 
@@ -4821,6 +5776,7 @@ Hoover Dam
         bozkovdolomite: "patagonia",
         campsbay: "patagonia",
         cobbspoint: "patagonia",
+        dunewall: "patagonia",
         edurnaroch: "patagonia",
         giantscauseway: "patagonia",
         grandteton: "patagonia",
@@ -4902,6 +5858,49 @@ Hoover Dam
         towerofvirgon: "mounteverest",
         walruscove: "mounteverest",
         zolarforest: "mounteverest",
+
+        hadaracdesert: "sahara",
+        aleppo: "sahara",
+        borabora: "sahara",
+        burjkhalifa: "sahara",
+        karakumdesert: "sahara",
+        louvre: "sahara", 
+        mirmine: "sahara",
+        nambia: "sahara",
+        nileriver: "sahara",
+        pustiudesert: "sahara",
+        tajmalah: "sahara",
+        tianzimountains: "sahara",
+        tombofmarxo: "sahara",
+
+        blackrockmountain: "elbert",
+        breganhold: "elbert",
+        ciesislands: "elbert",
+        distillerydistrict: "elbert",
+        eldorlake: "elbert",
+        gatesofhera: "elbert", 
+        goldenglobe: "elbert",
+        hangsondoong: "elbert",
+        inversionhouse: "elbert",
+        keukenhofgardens: "elbert",
+        koryazglacier: "elbert",
+        lijangtower: "elbert",
+        magiccastle: "elbert",
+        monumentvalley: "elbert",
+
+        edgewater: "chicago",
+        logan: "chicago",
+        roscoe: "chicago",
+        ravenswood: "chicago",
+        avondale: "chicago",
+        humboldt: "chicago", 
+        goldcoast: "chicago",
+        burnside: "chicago",
+        pullman: "chicago",
+        riverdale: "chicago",
+        pilsen: "chicago",
+        lawndale: "chicago",
+        englewood: "chicago"
 
     },
 }

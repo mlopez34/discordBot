@@ -2651,6 +2651,56 @@ module.exports = {
                 difficulty: "medium",
                 element: "normal"
             },
+            rattlesnake: {
+                enemyIdName : "rattlesnake",
+                name: "Rattlesnake",
+                abilities: ["bite", "bite", "inject", "inject", "poke"],
+                buffs: [],
+                keystoneStats: {
+                    hp: [1200, 3500, 6200, 10000, 15000 ],
+                    attackDmg: [300, 500, 900, 1500, 2300],
+                    magicDmg: [300, 500, 900, 1500, 2300],
+                    abilities: []
+                },
+                effectsOnDeath: [
+                    "burst"
+                ],
+                hpPerPartyMember: 290,
+                adPerPartyMember: 18,
+                mdPerPartyMember: 18,
+                hp: 640,
+                attackDmg: 90,
+                magicDmg: 90,
+                armor: 350,
+                spirit: 550,
+                difficulty: "medium",
+                element: "normal"
+            },
+            scorpion: {
+                enemyIdName : "scorpion",
+                name: "Scorpion",
+                abilities: ["sting", "sting", "inject", "inject", "poison"],
+                buffs: [],
+                keystoneStats: {
+                    hp: [1200, 3500, 6200, 10000, 15000 ],
+                    attackDmg: [300, 500, 900, 1500, 2300],
+                    magicDmg: [300, 500, 900, 1500, 2300],
+                    abilities: []
+                },
+                effectsOnDeath: [
+                    "burst"
+                ],
+                hpPerPartyMember: 290,
+                adPerPartyMember: 18,
+                mdPerPartyMember: 18,
+                hp: 640,
+                attackDmg: 90,
+                magicDmg: 90,
+                armor: 350,
+                spirit: 550,
+                difficulty: "medium",
+                element: "normal"
+            },
         },
         hard: {
             silverback: {
@@ -3386,6 +3436,42 @@ module.exports = {
                 difficulty: "hard",
                 element: "normal"
             },
+            giantearthworm: {
+                enemyIdName : "giantearthworm",
+                name: "Giant Earthworm",
+                abilities: ["clap" , "clap" , "smash", "smash", "slash", "slash", "cripple"],
+                buffs: [
+                    {
+                        name: "frenzy",
+                        emoji: "<:frenzy:479298214453968896>",
+                        onTurnEnd: {
+                            attackDmgPlus : 90,
+                            magicDmgPlus : 90,
+                            everyNTurns: 2,
+                            startTurn: 2
+                        }
+                    }
+                ],
+                keystoneStats: {
+                    hp: [1200, 3500, 6200, 10000, 15000 ],
+                    attackDmg: [300, 500, 900, 1500, 2300],
+                    magicDmg: [300, 500, 900, 1500, 2300],
+                    abilities: []
+                },
+                effectsOnDeath: [
+                    "decayDeath"
+                ],
+                hpPerPartyMember: 590,
+                adPerPartyMember: 21,
+                mdPerPartyMember: 21,
+                hp: 650,
+                attackDmg: 125,
+                magicDmg: 170,
+                armor: 600,
+                spirit: 900,
+                difficulty: "hard",
+                element: "normal"
+            },
             ogre: {
                 enemyIdName : "ogre",
                 name: "Ogre",
@@ -3411,6 +3497,114 @@ module.exports = {
                 },
                 effectsOnDeath: [
                     "summonRuffians"
+                ],
+                hpPerPartyMember: 890,
+                adPerPartyMember: 21,
+                mdPerPartyMember: 21,
+                hp: 650,
+                attackDmg: 225,
+                magicDmg: 270,
+                armor: 600,
+                spirit: 900,
+                difficulty: "hard",
+                element: "normal"
+            },
+            tacolord: {
+                enemyIdName : "tacolord",
+                name: "Taco Lord",
+                abilities: ["punch" , "punch" , "slash", "slash" , "slap", "sanctuary"],
+                buffs: [
+                    {
+                        name: "frenzy",
+                        emoji: "<:frenzy:479298214453968896>",
+                        onTurnEnd: {
+                            attackDmgPlus : 100,
+                            magicDmgPlus : 100,
+                            everyNTurns: 2,
+                            startTurn: 2
+                        }
+                    }
+                ],
+                keystoneStats: {
+                    hp: [1200, 3500, 6200, 10000, 15000 ],
+                    attackDmg: [300, 500, 900, 1500, 2300],
+                    magicDmg: [300, 500, 900, 1500, 2300],
+                    abilities: []
+                },
+                effectsOnDeath: [
+                    "summonRuffians"
+                ],
+                hpPerPartyMember: 890,
+                adPerPartyMember: 21,
+                mdPerPartyMember: 21,
+                hp: 650,
+                attackDmg: 225,
+                magicDmg: 270,
+                armor: 600,
+                spirit: 900,
+                difficulty: "hard",
+                element: "normal"
+            },
+            frostdragon: {
+                enemyIdName : "frostdragon",
+                name: "Frost Dragon",
+                abilities: ["bite" , "bite" , "frostBreath", "ferociousBite" , "ferociousBite", "tacowall"],
+                buffs: [
+                    {
+                        name: "frenzy",
+                        emoji: "<:frenzy:479298214453968896>",
+                        onTurnEnd: {
+                            attackDmgPlus : 100,
+                            magicDmgPlus : 100,
+                            everyNTurns: 2,
+                            startTurn: 2
+                        }
+                    }
+                ],
+                keystoneStats: {
+                    hp: [1200, 3500, 6200, 10000, 15000 ],
+                    attackDmg: [300, 500, 900, 1500, 2300],
+                    magicDmg: [300, 500, 900, 1500, 2300],
+                    abilities: []
+                },
+                effectsOnDeath: [
+                    "summonRuffians"
+                ],
+                hpPerPartyMember: 890,
+                adPerPartyMember: 21,
+                mdPerPartyMember: 21,
+                hp: 650,
+                attackDmg: 225,
+                magicDmg: 270,
+                armor: 600,
+                spirit: 900,
+                difficulty: "hard",
+                element: "normal"
+            },
+            mammoth: {
+                enemyIdName : "mammoth",
+                name: "Mammoth",
+                abilities: ["bite" , "bite" , "slash", "slash" , "ram", "tacowall"],
+                buffs: [
+                    {
+                        name: "frenzy",
+                        emoji: "<:frenzy:479298214453968896>",
+                        onTurnEnd: {
+                            attackDmgPlus : 100,
+                            magicDmgPlus : 100,
+                            everyNTurns: 2,
+                            startTurn: 2
+                        }
+                    }
+                ],
+                keystoneStats: {
+                    hp: [1200, 3500, 6200, 10000, 15000 ],
+                    attackDmg: [300, 500, 900, 1500, 2300],
+                    magicDmg: [300, 500, 900, 1500, 2300],
+                    abilities: []
+                },
+                effectsOnDeath: [
+
                 ],
                 hpPerPartyMember: 890,
                 adPerPartyMember: 21,
@@ -3782,11 +3976,176 @@ module.exports = {
                 difficulty: "boss",
                 element: "normal"
             },
+            sultan: {
+                enemyIdName : "sultan",
+                name: "Sultan",
+                abilities: [
+                    "attack", "attack", "execute", "slap", "slap", "weaken"
+                ],
+                buffs: [
+                    {
+                        name: "frenzy",
+                        emoji: "<:frenzy:479298214453968896>",
+                        onTurnEnd: {
+                            attackDmgPlus : 95,
+                            magicDmgPlus : 95,
+                            everyNTurns: 2,
+                            startTurn: 2
+                        }
+                    }
+                ],
+                keystoneStats: {
+                    hp: [1200, 3500, 6200, 10000, 15000 ],
+                    attackDmg: [300, 500, 900, 1500, 2300],
+                    magicDmg: [300, 500, 900, 1500, 2300],
+                    abilities: []
+                },
+                endOfTurnEvents : [
+                    "echo",
+                    "focus"
+                ],
+                effectsOnDeath: [
+                    "reanimateAll"
+                ],
+                hpPerPartyMember: 1222,
+                hp: 1750,
+                adPerPartyMember: 29,
+                mdPerPartyMember: 29,
+                attackDmg: 640,
+                magicDmg: 690,
+                armor: 1800,
+                spirit: 1800,
+                difficulty: "boss",
+                element: "normal"
+            },
+            scorpionking: {
+                enemyIdName : "scorpionking",
+                name: "Scorpion King",
+                abilities: [
+                    "sting", "sting", "venom", "venom", "slash", "crush", "empower", "empower"
+                ],
+                buffs: [
+                    {
+                        name: "frenzy",
+                        emoji: "<:frenzy:479298214453968896>",
+                        onTurnEnd: {
+                            attackDmgPlus : 195,
+                            magicDmgPlus : 195,
+                            everyNTurns: 2,
+                            startTurn: 2
+                        }
+                    }
+                ],
+                keystoneStats: {
+                    hp: [1200, 3500, 6200, 10000, 15000 ],
+                    attackDmg: [300, 500, 900, 1500, 2300],
+                    magicDmg: [300, 500, 900, 1500, 2300],
+                    abilities: []
+                },
+                endOfTurnEvents : [
+                    "echo",
+                    "focus"
+                ],
+                effectsOnDeath: [
+                    "reanimateAll"
+                ],
+                hpPerPartyMember: 1122,
+                hp: 1750,
+                adPerPartyMember: 29,
+                mdPerPartyMember: 29,
+                attackDmg: 640,
+                magicDmg: 690,
+                armor: 1800,
+                spirit: 1800,
+                difficulty: "boss",
+                element: "normal"
+            },
+            shiva: {
+                enemyIdName : "shiva",
+                name: "Shiva",
+                abilities: [
+                    "crush", "crush", "slap", "slap", "frostBreath", "frostBreath", "empower"
+                ],
+                buffs: [
+                    {
+                        name: "frenzy",
+                        emoji: "<:frenzy:479298214453968896>",
+                        onTurnEnd: {
+                            attackDmgPlus : 195,
+                            magicDmgPlus : 195,
+                            everyNTurns: 2,
+                            startTurn: 2
+                        }
+                    }
+                ],
+                keystoneStats: {
+                    hp: [1200, 3500, 6200, 10000, 15000 ],
+                    attackDmg: [300, 500, 900, 1500, 2300],
+                    magicDmg: [300, 500, 900, 1500, 2300],
+                    abilities: []
+                },
+                endOfTurnEvents : [
+                    "echo",
+                    "focus"
+                ],
+                effectsOnDeath: [
+                    "reanimateAll"
+                ],
+                hpPerPartyMember: 1122,
+                hp: 1750,
+                adPerPartyMember: 29,
+                mdPerPartyMember: 29,
+                attackDmg: 640,
+                magicDmg: 690,
+                armor: 1800,
+                spirit: 1800,
+                difficulty: "boss",
+                element: "normal"
+            },
             beheader: {
                 enemyIdName : "beheader",
                 name: "Beheader",
                 abilities: [
                     "attack", "attack", "decapitate", "decapitate", "slash", "slash", "cripple"
+                ],
+                buffs: [
+                    {
+                        name: "frenzy",
+                        emoji: "<:frenzy:479298214453968896>",
+                        onTurnEnd: {
+                            attackDmgPlus : 85,
+                            magicDmgPlus : 85,
+                            everyNTurns: 2,
+                            startTurn: 2
+                        }
+                    }
+                ],
+                keystoneStats: {
+                    hp: [1200, 3500, 6200, 10000, 15000 ],
+                    attackDmg: [300, 500, 900, 1500, 2300],
+                    magicDmg: [300, 500, 900, 1500, 2300],
+                    abilities: []
+                },
+                endOfTurnEvents : [
+                    "echo",
+                    "focus"
+                ],
+                hpPerPartyMember: 1222,
+                hp: 950,
+                adPerPartyMember: 29,
+                mdPerPartyMember: 29,
+                attackDmg: 240,
+                magicDmg: 190,
+                armor: 1600,
+                spirit: 1600,
+                difficulty: "boss",
+                element: "normal"
+            },
+            crip: {
+                enemyIdName : "crip",
+                name: "Crip",
+                abilities: [
+                    "punch", "punch", "shoot", "shoot", "slash", "slash", "cripple"
                 ],
                 buffs: [
                     {

@@ -381,11 +381,11 @@ module.exports.trickOrTreatCommand = function(message){
                     trickOrTreatMap["tot-" + discordUserId] = {
                         tot: "trick"
                     };
-                    profileDB.updateUserTacosTrickOrTreat(discordUserId, -50, function(updateerr, updateResponse) {
+                    profileDB.updateUserTacosTrickOrTreat(discordUserId, -100, function(updateerr, updateResponse) {
                         if (updateerr){
                             // // console.log(updateerr);
                         }else{
-                            message.channel.send("You have been tricked! 👻 Bender took 50 tacos from your candy bag");
+                            message.channel.send("You have been tricked! 👻 Bender took 100 tacos from your candy bag");
                         }
                     })
                 }else if (trickOrTreat == 1){
@@ -394,11 +394,11 @@ module.exports.trickOrTreatCommand = function(message){
                         tot: "treat"
                     };
                     
-                    profileDB.updateUserTacosTrickOrTreat(discordUserId, 100, function(updateerr, updateResponse) {
+                    profileDB.updateUserTacosTrickOrTreat(discordUserId, 200, function(updateerr, updateResponse) {
                         if (updateerr){
                             // // console.log(updateerr);
                         }else{
-                            message.channel.send("You have been treated! 🎃 Bender put 100 tacos in your candy bag");
+                            message.channel.send("You have been treated! 🎃 Bender put 200 tacos in your candy bag");
                         }
                     })
                 }
@@ -1552,8 +1552,10 @@ module.exports.cookCommand = function(message){
                                     }
                                     else if (HAS_CASSEROLE){
                                         message.channel.send(message.author.username + " Cooked `" + cookRoll + "` tacos! you now have `" + ( adjustedTacosForUser(discordUserId, cookResponse.data.tacos) + cookRoll) + "` tacos :taco:" + "! received `" + extraTacosFromCasserole + "` extra tacos :taco: from your casserole" );
+                                        message.channel.send("Hollow's end is here :jack_o_lantern: time to go `-trickortreat`ing")
                                     }else{
                                         message.channel.send(message.author.username + " Cooked `" + cookRoll + "` tacos! you now have `" + ( adjustedTacosForUser(discordUserId, cookResponse.data.tacos) + cookRoll) + "` tacos :taco:" );
+                                        message.channel.send("Hollow's end is here :jack_o_lantern: time to go `-trickortreat`ing")
                                     }
                                     var data = {}
                                     data.achievements = achievements;

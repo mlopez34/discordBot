@@ -207,6 +207,13 @@ module.exports = {
             adPercentage: 1,
             type: "physical"
         },
+        sting : {
+            name: "Sting",
+            abilityId: "sting",
+            dmg: 100,
+            adPercentage: 1,
+            type: "physical"
+        },
         ram : {
             name: "Ram",
             abilityId: "ram",
@@ -754,6 +761,23 @@ module.exports = {
                 emoji: "<:freeze:479294904946655254>",
                 affects: ["armor"],
                 multiplier: 0.7
+            }
+        },
+        venom: {
+            name: "Venom",
+            abilityId: "venom",
+            dmg: 45,
+            description: "Deal 45 damage + 50% of your magic damage to all enemies",
+            mdPercentage: 0.5,
+            type: "poison",
+            areawide: true,
+            targets: "enemy",
+            status: {
+                areawide: true,
+                name: "Crushed",
+                emoji: "<:radioactive:479294904946655254>",
+                affects: ["armor"],
+                multiplier: 0.5
             }
         },
         blizzard: {

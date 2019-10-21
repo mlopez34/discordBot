@@ -219,9 +219,9 @@ client.on('message', function(message){
                     }
                 }
                 
-                // else if (commandIs("trickortreat", message)){
-                //     commands.trickOrTreatCommand(message);
-                // }
+                else if (commandIs("trickortreat", message)){
+                    commands.trickOrTreatCommand(message);
+                }
                 //SEASONAL
                 else if (commandIs("present", message) && settings.canBotRespondToCommandInChannel("regular", guildId, channelId)){
                     //messagesByUserTimeout(commands.openPresentCommand, message)
@@ -737,9 +737,11 @@ client.on('message', function(message){
                     }
                 }
                 
-                // else if (commandIs("trickortreat", message)){
-                //     commands.trickOrTreatCommand(message);
-                // }
+                else if (commandIs("trickortreat", message)){
+                    commands.trickOrTreatCommand(message);
+                    data.command = "trickortreat"
+                    profileDB.createUserActivity(data)
+                }
                 // SEASONAL
                 else if (commandIs("present", message) && settings.canBotRespondToCommandInChannel("regular", guildId, channelId)){
                     //messagesByUserTimeout(commands.openPresentCommand, message)
