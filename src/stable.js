@@ -320,12 +320,14 @@ function petFetchItemBasedOnArea(message, eventParams){
                     let getMatRoll = Math.floor(Math.random() * 150) + 1;
                     if (getMatRoll <= eventParams.fetchCD){
                         // higher CD higher chance user gets a random ancient mat
-                        let matItems = filterForAreaMatsAncient(eventParams.allItems, rpgRes.data.currentArea, getRpgZone(rpgRes.data.currentArea))
-                        let matRoll = Math.floor(Math.random() * matItems.length )
-                        itemsObtainedArray.push(matItems[matRoll])
-                        
-                        addToUserInventory(eventParams.discordUserId, itemsObtainedArray);
-                        obtainedItemEmbedBuilder(message, itemsObtainedArray, eventParams)
+                        let matItems = filterForAreaMatsAncient(eventParams.allItems, rpgRes.data.currentarea, getRpgZone(rpgRes.data.currentarea))
+                        if (matItems.length > 0){
+                            let matRoll = Math.floor(Math.random() * matItems.length )
+                            itemsObtainedArray.push(matItems[matRoll])
+                            
+                            addToUserInventory(eventParams.discordUserId, itemsObtainedArray);
+                            obtainedItemEmbedBuilder(message, itemsObtainedArray, eventParams)    
+                        }
                     }
                 }
                 if (eventParams.stableRes && eventParams.stableRes.data.stablelevel >= PETS_FETCH_RARE_MATS_LEVEL){
@@ -334,11 +336,13 @@ function petFetchItemBasedOnArea(message, eventParams){
                     if (getMatRoll <= eventParams.fetchCD){
                         // higher CD higher chance user gets a random ancient mat
                         let matItems = filterForAreaMatsRare(eventParams.allItems, rpgRes.data.currentarea, getRpgZone(rpgRes.data.currentarea))
-                        let matRoll = Math.floor(Math.random() * matItems.length )
-                        itemsObtainedArray.push(matItems[matRoll])
-
-                        addToUserInventory(eventParams.discordUserId, itemsObtainedArray);
-                        obtainedItemEmbedBuilder(message, itemsObtainedArray, eventParams)
+                        if (matItems.length > 0){
+                            let matRoll = Math.floor(Math.random() * matItems.length )
+                            itemsObtainedArray.push(matItems[matRoll])
+    
+                            addToUserInventory(eventParams.discordUserId, itemsObtainedArray);
+                            obtainedItemEmbedBuilder(message, itemsObtainedArray, eventParams)    
+                        }
                     }
                 }
             }
