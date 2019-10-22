@@ -2940,12 +2940,12 @@ module.exports.patchnotesCommand = function(message){
         },
         "fields": [
           {
-            "name": "August 6, 2019",
-            "value": "```-Cooldown timers are here! you can now use the -cd command to view all your command times, you can also use -toggle command to turn reminders on or off for the specific command example: -toggle scavenge\n-RPG heals can now crit!, scaling on rpg for areas and keystones should be correctly applying\n-RPG startup improvements for faster ready\n-RPG log now looks cleaner\n-RPG queue gives double item rewards than regular rpg\n-iteminfo works for items in the market now even if you do not own the item use -iteminfo marketid or -iteminfo shortname\n-Casserole gives 10 tacos per level insetad of 5```"
-          },
-          {
             "name": "August 13, 2019",
             "value": "```-Settings for individual servers are here!\n-You can set the server prefix using -settings setprefix [prefix]\n-Mute and Unmute bender from specific channels using -settings mute, and -settings unmute in the channel\n-Enable only specific channels for bender by using -settings enable\n-Enable or disable RPG commands in specific channels using -settings rpgenable or -settings rpgdisable\n-Only allow RPG commands in a specific channel using -settings rpgonly in the channel\n-For more info check the -help command\n-RPG Queue redesigned, the queue will begin shortly after there are enough players in the queue instead of immediately per queue size, you only need to use -rpgqueue to enter\n-Items with taco gains from RPG have been redesigned to account for lower RPG cooldown and smaller gap between levels than previously\n-Defeating higher keystone challenges will grant higher experience points\n```"
+          },
+          {
+            "name": "October 22, 2019",
+            "value": "```-Burritos are now displayed in -tacos command\n-You can no longer obtain recipes via thanking another user, you can now obtain recipes by thanking bender, odds to obtain a new recipe have been increased by 400%.\n-Recipes obtained via temple have been adjusted, you can now find a recipe for a rarity category from a pool of random 30, after each category is collected you can will still obtain a recipe from the final combined pool.\n-New zones added!```"
           }
         ]
       };
