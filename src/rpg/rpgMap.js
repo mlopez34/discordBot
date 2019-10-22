@@ -5186,9 +5186,6 @@ module.exports = {
                     areaString : " ",
                     name: "Inversion House",
                     enemiesToDefeat: 86,
-                    enemies: [
-
-                    ],
                     onCompleteAreasUnlocked: [
                         "keukenhofgardens"
                     ],

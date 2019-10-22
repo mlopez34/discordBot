@@ -781,8 +781,8 @@ module.exports = {
             }
         },
         vandalize: {
-            name: "Venom",
-            abilityId: "venom",
+            name: "Vandalize",
+            abilityId: "vandalize",
             dmg: 45,
             description: "Deal 45 damage + 50% of your physical damage to all enemies",
             adPercentage: 0.5,
