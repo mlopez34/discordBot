@@ -4160,8 +4160,6 @@ module.exports = {
                     "totemOfDoom80",
                     "totemOfDoom80",
                     "totemOfDoom80",
-                    "totemOfDoom80",
-                    "totemOfDoom60",
                     "totemOfDoom60",
                     "totemOfDoom60",
                     "totemOfDoom60",
@@ -4176,8 +4174,6 @@ module.exports = {
                     "totemOfDoom40",
                     "totemOfDoom40",
                     "totemOfDoom40",
-                    "totemOfDoom40",
-                    "totemOfDoom20",
                     "totemOfDoom20",
                     "totemOfDoom20",
                     "totemOfDoom20",
@@ -4252,8 +4248,8 @@ module.exports = {
                         name: "frenzy",
                         emoji: "<:frenzy:479298214453968896>",
                         onTurnEnd: {
-                            attackDmgPlus : 85,
-                            magicDmgPlus : 85,
+                            attackDmgPlus : 200,
+                            magicDmgPlus : 200,
                             everyNTurns: 2,
                             startTurn: 2
                         }
@@ -4267,14 +4263,18 @@ module.exports = {
                 },
                 endOfTurnEvents : [
                     "echo",
-                    "focus"
+                    "focus",
+                    "decay"
                 ],
-                hpPerPartyMember: 1222,
-                hp: 950,
+                effectsOnDeath: [
+                    "decayDeath"
+                ],
+                hpPerPartyMember: 1322,
+                hp: 1550,
                 adPerPartyMember: 29,
                 mdPerPartyMember: 29,
-                attackDmg: 240,
-                magicDmg: 190,
+                attackDmg: 740,
+                magicDmg: 790,
                 armor: 1600,
                 spirit: 1600,
                 difficulty: "boss",

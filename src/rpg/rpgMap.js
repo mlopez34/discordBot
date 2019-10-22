@@ -4713,7 +4713,8 @@ module.exports = {
                     name: "Logan",
                     enemiesToDefeat: 130,
                     onCompleteAreasUnlocked: [
-                        "roscoe"
+                        "roscoe",
+                        "ravenswood"
                     ],
                     shopItemsAvailable: [
 
@@ -4728,7 +4729,29 @@ module.exports = {
                 roscoe: {
                     areaString : " ",
                     name: "Roscoe",
-                    enemiesToDefeat: 125,
+                    enemiesToDefeat: 52,
+                    enemies: [
+                        {
+                            enemyId: "kidnaper",
+                            enemyDifficulty: "boss"
+                        },
+                        {
+                            enemyId: "dullard",
+                            enemyDifficulty: "medium"
+                        },
+                        {
+                            enemyId: "tacolord",
+                            enemyDifficulty: "hard"
+                        },
+                        {
+                            enemyId: "delinquent",
+                            enemyDifficulty: "hard"
+                        },
+                        {
+                            enemyId: "dullard",
+                            enemyDifficulty: "medium"
+                        }
+                    ],
                     onCompleteAreasUnlocked: [
                         "ravenswood"
                     ],
@@ -4968,6 +4991,10 @@ module.exports = {
                         {
                             enemyId: "dolt",
                             enemyDifficulty: "medium"
+                        },
+                        {
+                            enemyId: "crip",
+                            enemyDifficulty: "boss"
                         }
                     ],
                     onCompleteAreasUnlocked: [
