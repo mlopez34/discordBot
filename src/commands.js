@@ -729,7 +729,9 @@ module.exports.thankCommand = function(message){
                                                 discordUserId: discordUserId,
                                                 templeLevel: thankResponse.data.templelevel
                                             }
-                                            crafting.rollForRecipes(message, recipeParams)
+                                            if (mentionedUser.bot){
+                                                crafting.rollForRecipes(message, recipeParams)
+                                            }
                                             var experienceFromItems = wearStats.calculateExtraExperienceGained(wearRes, "thank", null);
                                             ///// For Artifact or Missions
                                             var dataForMission = {}
@@ -847,8 +849,9 @@ module.exports.sorryCommand = function(message){
                                                 discordUserId: discordUserId,
                                                 templeLevel: sorryResponse.data.templelevel
                                             }
-                                            crafting.rollForRecipes(message, recipeParams)
-                                            
+                                            if (mentionedUser.bot){
+                                                crafting.rollForRecipes(message, recipeParams)
+                                            }
                                             var experienceFromItems = wearRes.sorryCommandExperienceGain ? wearRes.sorryCommandExperienceGain : 0;
                                             experience.gainExperience(message, message.author,  (EXPERIENCE_GAINS.sorry + experienceFromItems) , sorryResponse);
                                             stats.statisticsManage(discordUserId, "sorrycount", 1, function(staterr, statSuccess){

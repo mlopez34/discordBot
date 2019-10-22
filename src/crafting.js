@@ -1,6 +1,6 @@
 'use strict'
 var profileDB = require("./profileDB.js");
-
+var _ = require("lodash");
 // commands used for crafting items from the TEMPLE
 
 // requirements for certain items are listed here
@@ -23,7 +23,7 @@ module.exports.rollForRecipes = function(message, params){
     // userlevel, userzone, templelevel
     var rollForNewRecipe = Math.floor(Math.random() * 1000) + 1;
 
-    if (rollForNewRecipe > 900){
+    if (rollForNewRecipe > 500){
         var possibleRecipesToRollFrom = buildPossibleRecipesArray(params)
 
         // roll for recipes - number of recipes depends on the templeLevel
@@ -79,6 +79,7 @@ module.exports.rollForRecipes = function(message, params){
 function buildPossibleRecipesArray(params){
     var possibleRecipesToRollFrom = []
     for (var r in recipesToCraftMap){
+        let recipesByRarity = []
         let rarityLevel = recipesToCraftMap[r]
         if (params.templeLevel >= rarityLevel.templeLevelRequired ){
             for (var i in rarityLevel){
@@ -88,12 +89,22 @@ function buildPossibleRecipesArray(params){
                         var includeItem = rollForItemInRecipeBasedCategory(levelRange[item], params.userLevel, i, rarityLevel, params.templeLevel)
         
                         if (includeItem){
-                            possibleRecipesToRollFrom.push(levelRange[item])
+                            recipesByRarity.push(levelRange[item])
                         }else{
                             // TODO: what to do if we dont include that item?
                         }
                     }
                 }
+            }
+        }
+        // shuffle
+        recipesByRarity = _.shuffle(recipesByRarity);
+        let recipeByRarityCount = 0
+        for (let recip in recipesByRarity){
+            // only insert the first 30 from the rarity
+            if (recipeByRarityCount < 30){
+                possibleRecipesToRollFrom.push(recipesByRarity[recip])
+                recipeByRarityCount++
             }
         }
     }

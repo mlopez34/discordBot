@@ -4145,7 +4145,7 @@ module.exports = {
                 enemyIdName : "crip",
                 name: "Crip",
                 abilities: [
-                    "punch", "punch", "shoot", "shoot", "slash", "slash", "cripple"
+                    "punch", "punch", "shoot", "shoot", "vandalize", "vandalize", "cripple"
                 ],
                 buffs: [
                     {

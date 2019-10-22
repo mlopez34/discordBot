@@ -780,6 +780,23 @@ module.exports = {
                 multiplier: 0.5
             }
         },
+        vandalize: {
+            name: "Venom",
+            abilityId: "venom",
+            dmg: 45,
+            description: "Deal 45 damage + 50% of your physical damage to all enemies",
+            adPercentage: 0.5,
+            type: "physical",
+            areawide: true,
+            targets: "enemy",
+            status: {
+                areawide: true,
+                name: "Scold",
+                emoji: "<:scold:479294904611110924>",
+                affects: ["spirit"],
+                multiplier: 0.7
+            }
+        },
         blizzard: {
             name: "Blizzard",
             abilityId: "blizzard",
