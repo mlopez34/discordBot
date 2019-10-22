@@ -4764,7 +4764,8 @@ module.exports = {
                     name: "Avondale",
                     enemiesToDefeat: 88,
                     onCompleteAreasUnlocked: [
-                        "humboldt"
+                        "humboldt",
+                        "goldcoast"
                     ],
                     shopItemsAvailable: [
 
@@ -4779,12 +4780,35 @@ module.exports = {
                 humboldt: {
                     areaString : " ",
                     name: "Humboldt",
-                    enemiesToDefeat: 150,
+                    enemiesToDefeat: 100,
                     enemies: [
-                        "goldcoast"
+                        {
+                            enemyId: "kidnaper",
+                            enemyDifficulty: "boss"
+                        },
+                        {
+                            enemyId: "dullard",
+                            enemyDifficulty: "medium"
+                        },
+                        {
+                            enemyId: "tacolord",
+                            enemyDifficulty: "hard"
+                        },
+                        {
+                            enemyId: "delinquent",
+                            enemyDifficulty: "hard"
+                        },
+                        {
+                            enemyId: "racketeer",
+                            enemyDifficulty: "hard"
+                        },
+                        {
+                            enemyId: "kidnaper",
+                            enemyDifficulty: "boss"
+                        }
                     ],
                     onCompleteAreasUnlocked: [
-
+                        "goldcoast"
                     ],
                     shopItemsAvailable: [
 
@@ -5100,37 +5124,17 @@ module.exports = {
                     enemiesToDefeat: 50,
                     enemies: [
                         {
-                            enemyId: "shiva",
+                            enemyId: "ogre",
+                            enemyDifficulty: "hard"
+                        },
+                        {
+                            enemyId: "avatarofhera",
                             enemyDifficulty: "boss"
-                        },
-                        {
-                            enemyId: "ogremagi",
-                            enemyDifficulty: "hard"
-                        },
-                        {
-                            enemyId: "frostdragon",
-                            enemyDifficulty: "hard"
                         },
                         {
                             enemyId: "ogre",
                             enemyDifficulty: "hard"
                         },
-                        {
-                            enemyId: "mammoth",
-                            enemyDifficulty: "hard"
-                        },
-                        {
-                            enemyId: "frostdragon",
-                            enemyDifficulty: "hard"
-                        },
-                        {
-                            enemyId: "mammoth",
-                            enemyDifficulty: "hard"
-                        },
-                        {
-                            enemyId: "mammoth",
-                            enemyDifficulty: "hard"
-                        }
                     ],
                     onCompleteAreasUnlocked: [
 
@@ -5255,6 +5259,40 @@ module.exports = {
                     areaString : " ",
                     name: "Magic Castle",
                     enemiesToDefeat: 120,
+                    enemies: [
+                        {
+                            enemyId: "shiva",
+                            enemyDifficulty: "boss"
+                        },
+                        {
+                            enemyId: "ogremagi",
+                            enemyDifficulty: "boss"
+                        },
+                        {
+                            enemyId: "frostdragon",
+                            enemyDifficulty: "hard"
+                        },
+                        {
+                            enemyId: "ogre",
+                            enemyDifficulty: "hard"
+                        },
+                        {
+                            enemyId: "mammoth",
+                            enemyDifficulty: "hard"
+                        },
+                        {
+                            enemyId: "frostdragon",
+                            enemyDifficulty: "hard"
+                        },
+                        {
+                            enemyId: "mammoth",
+                            enemyDifficulty: "hard"
+                        },
+                        {
+                            enemyId: "mammoth",
+                            enemyDifficulty: "hard"
+                        }
+                    ],
                     onCompleteAreasUnlocked: [
                         "monumentvalley"
                     ],

@@ -1256,6 +1256,7 @@ module.exports = {
                 name: "Decay",
                 type:"shadow",
                 dmg: 65,
+                ignoreUnique: true,
                 areawide: true,
                 mdPercentage: 1,
                 emoji: "<:decay:479296558748270601>",
@@ -2555,6 +2556,22 @@ module.exports = {
                 ]
             }
         },
+        summonImps: {
+            name: "summonImps",
+            belongsToMember: true,
+            everyNTurns: 5,
+            afterNTurns: 4,
+            currentTurn: 0,
+            summon: {
+                enemies: [
+                    "imp",
+                    "imp",
+                    "imp",
+                    "imp",
+                    "imp"
+                ]
+            }
+        },
         absorbFiends: {
             abilityId: "absorbFiends",
             belongsToMember: true,
@@ -2563,6 +2580,15 @@ module.exports = {
             afterNTurns: 7,
             currentTurn: 0,
             special: "absorb fiends" 
+        },
+        absorbImps: {
+            abilityId: "absorbImps",
+            belongsToMember: true,
+            processAbility: true,
+            everyNTurns: 5,
+            afterNTurns: 7,
+            currentTurn: 0,
+            special: "absorb imps" 
         },
 
         /*

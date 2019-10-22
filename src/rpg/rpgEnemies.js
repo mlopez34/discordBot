@@ -392,6 +392,29 @@ module.exports = {
                 difficulty: "summoned",
                 element: "normal"
             },
+            imp: {
+                name: "Imp",
+                abilities: ["attack"],
+                buffs: [],
+                hpPerPartyMember: 0,
+                adPerPartyMember: 0,
+                mdPerPartyMember: 0,
+                hp: 3250,
+                effectsOnDeath: [
+                ],
+                keystoneStats: {
+                    hp: [1200, 3500, 5200, 8000, 12000, 16400, 21000, 26000, 34000, 42000 ],
+                    attackDmg: [300, 500, 900, 1500, 2000, 2600, 3400, 4400, 5500, 6500],
+                    magicDmg: [300, 500, 900, 1500, 2000, 2600, 3400, 5400, 5500, 6500],
+                    abilities: []
+                },
+                attackDmg: 630,
+                magicDmg: 660,
+                armor: 1000,
+                spirit: 1000,
+                difficulty: "summoned",
+                element: "normal"
+            },
             smokeScreen: {
                 name: "Smoke Screen",
                 abilities: ["attack", "igniteLava"],
@@ -4093,6 +4116,83 @@ module.exports = {
                 ],
                 hpPerPartyMember: 1122,
                 hp: 1750,
+                adPerPartyMember: 29,
+                mdPerPartyMember: 29,
+                attackDmg: 640,
+                magicDmg: 690,
+                armor: 1800,
+                spirit: 1800,
+                difficulty: "boss",
+                element: "normal"
+            },
+            avatarofhera: {
+                enemyIdName : "avatarofhera",
+                name: "Avatar of Hera",
+                emoji: "<:hera:636311364322721832>",
+                abilities: [
+                    "crush", "crush", "decayDeath", "decayDeath", "shock", "whirlwind", "empower"
+                ],
+                buffs: [
+                    {
+                        name: "frenzy",
+                        emoji: "<:frenzy:479298214453968896>",
+                        onTurnEnd: {
+                            attackDmgPlus : 255,
+                            magicDmgPlus : 255,
+                            everyNTurns: 2,
+                            startTurn: 2
+                        }
+                    }
+                ],
+                keystoneStats: {
+                    hp: [1200, 3500, 6200, 10000, 15000 ],
+                    attackDmg: [300, 500, 900, 1500, 2300],
+                    magicDmg: [300, 500, 900, 1500, 2300],
+                    abilities: []
+                },
+                endOfTurnEvents : [
+                    "echo",
+                    "focus",
+                    "totemOfDoom80",
+                    "totemOfDoom80",
+                    "totemOfDoom80",
+                    "totemOfDoom80",
+                    "totemOfDoom80",
+                    "totemOfDoom80",
+                    "totemOfDoom80",
+                    "totemOfDoom80",
+                    "totemOfDoom60",
+                    "totemOfDoom60",
+                    "totemOfDoom60",
+                    "totemOfDoom60",
+                    "totemOfDoom60",
+                    "totemOfDoom60",
+                    "totemOfDoom60",
+                    "totemOfDoom60",
+                    "totemOfDoom40",
+                    "totemOfDoom40",
+                    "totemOfDoom40",
+                    "totemOfDoom40",
+                    "totemOfDoom40",
+                    "totemOfDoom40",
+                    "totemOfDoom40",
+                    "totemOfDoom40",
+                    "totemOfDoom20",
+                    "totemOfDoom20",
+                    "totemOfDoom20",
+                    "totemOfDoom20",
+                    "totemOfDoom20",
+                    "totemOfDoom20",
+                    "totemOfDoom20",
+                    "totemOfDoom20",
+                    "summonImps",
+                    "absorbImps"
+                ],
+                effectsOnDeath: [
+                    
+                ],
+                hpPerPartyMember: 1252,
+                hp: 2750,
                 adPerPartyMember: 29,
                 mdPerPartyMember: 29,
                 attackDmg: 640,

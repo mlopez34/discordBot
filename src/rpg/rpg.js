@@ -8575,12 +8575,12 @@ function processAbility(abilityObject, event){
             }
             
         }
-        if (rpgAbility.special == "absorb fiends"){
+        if (rpgAbility.special == "absorb fiends" || rpgAbility.special == "absorb imps"){
             // get the hp of all the fiends and drain it and kill the fiends
             var totalHpToDrain = 0
             for (var enemy in event.enemies){
                 var nameOfCaster = event.enemies[abilityCaster].name;
-                if (event.enemies[enemy].name == "Fiend"
+                if ( (event.enemies[enemy].name == "Fiend" || event.enemies[enemy].name == "Imp" )
                 && !checkIfDeadByObject(event.enemies[enemy])){
                     totalHpToDrain = totalHpToDrain + event.enemies[enemy].hp
                     hasDied(event, event.enemies[enemy])
@@ -8592,7 +8592,11 @@ function processAbility(abilityObject, event){
             if (event.enemies[abilityCaster].hp > event.enemies[abilityCaster].maxhp){
                 event.enemies[abilityCaster].hp = event.enemies[abilityCaster].maxhp
             }
-            abilityToString = abilityToString + nameOfCaster + " absorbed Fiends and drained " + totalHpToDrain + " Health \n"
+            if (rpgAbility.special == "absorb fiends"){
+                abilityToString = abilityToString + nameOfCaster + " absorbed Fiends and drained " + totalHpToDrain + " Health \n"
+            }else if (rpgAbility.special == "absorb imps"){
+                abilityToString = abilityToString + nameOfCaster + " absorbed Imps and drained " + totalHpToDrain + " Health \n"
+            }
         }
         if (rpgAbility.special == "selfdamage"){
             // deal self damage to the user
