@@ -800,7 +800,7 @@ module.exports.sorryCommand = function(message){
     users.forEach(function(user){
         // // console.log(user.id);
         mentionedId = user.id;
-        mentionedUser = user.username
+        mentionedUser = user
     })
 
     if ( message.mentions.users.size > 0 && discordUserId != mentionedId && !commandLock["sorry"][discordUserId]){
@@ -834,7 +834,7 @@ module.exports.sorryCommand = function(message){
                             }
                             profileDB.updateUserTacos(mentionedId, tacosSorried, function(updateerr, updateResponse) {
                                 if (updateerr){
-                                    message.channel.send(mentionedUser + " must `-agree` to create a profile first!")
+                                    message.channel.send(mentionedUser.username + " must `-agree` to create a profile first!")
                                 }else{
                                     profileDB.updateUserTacosSorry(discordUserId, extraTacosFromItems, function(updateerr, updateResponse) {
                                         if (updateerr){
@@ -868,9 +868,9 @@ module.exports.sorryCommand = function(message){
                                     })
                                     // send message that the user has 1 more taco
                                     if (extraTacosFromItems > 0){
-                                        message.channel.send(message.author.username + " apologized to " + mentionedUser + ", they received `" + tacosSorried + "` tacos! :taco:" + " " + " received `" + extraTacosFromItems + "` extra tacos");
+                                        message.channel.send(message.author.username + " apologized to " + mentionedUser.username + ", they received `" + tacosSorried + "` tacos! :taco:" + " " + " received `" + extraTacosFromItems + "` extra tacos");
                                     }else{
-                                        message.channel.send(message.author.username + " apologized to " + mentionedUser + ", they received `" + tacosSorried + "` tacos! :taco:");
+                                        message.channel.send(message.author.username + " apologized to " + mentionedUser.username + ", they received `" + tacosSorried + "` tacos! :taco:");
                                     }
                                 }
                             })
