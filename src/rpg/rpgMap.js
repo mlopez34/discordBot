@@ -4587,7 +4587,7 @@ module.exports = {
                     enemies: [
                         {
                             enemyId: "sultan",
-                            enemyDifficulty: "hard"
+                            enemyDifficulty: "boss"
                         },
                         {
                             enemyId: "mountainlion",
@@ -5288,24 +5288,24 @@ module.exports = {
                     enemiesToDefeat: 120,
                     enemies: [
                         {
-                            enemyId: "shiva",
-                            enemyDifficulty: "boss"
+                            enemyId: "polarbear",
+                            enemyDifficulty: "medium"
+                        },
+                        {
+                            enemyId: "mammoth",
+                            enemyDifficulty: "hard"
+                        },
+                        {
+                            enemyId: "frostdragon",
+                            enemyDifficulty: "hard"
                         },
                         {
                             enemyId: "ogremagi",
                             enemyDifficulty: "boss"
                         },
                         {
-                            enemyId: "frostdragon",
-                            enemyDifficulty: "hard"
-                        },
-                        {
-                            enemyId: "ogre",
-                            enemyDifficulty: "hard"
-                        },
-                        {
-                            enemyId: "mammoth",
-                            enemyDifficulty: "hard"
+                            enemyId: "shiva",
+                            enemyDifficulty: "boss"
                         },
                         {
                             enemyId: "frostdragon",
@@ -5316,8 +5316,8 @@ module.exports = {
                             enemyDifficulty: "hard"
                         },
                         {
-                            enemyId: "mammoth",
-                            enemyDifficulty: "hard"
+                            enemyId: "polarbear",
+                            enemyDifficulty: "medium"
                         }
                     ],
                     onCompleteAreasUnlocked: [

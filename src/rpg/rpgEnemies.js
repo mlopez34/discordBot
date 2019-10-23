@@ -88,7 +88,7 @@ module.exports = {
             polarbear: {
                 enemyIdName : "polarbear",
                 name: "Polar Bear",
-                abilities: ["ferociousBite", "ferociousBite", "ferociousBite", "iceshards", "shield"],
+                abilities: ["attack", "ferociousBite", "ferociousBite", "iceshards", "shield"],
                 buffs: [],
                 keystoneStats: {
                     hp: [1200, 3500, 6200, 10000, 15000 ],
@@ -3571,6 +3571,7 @@ module.exports = {
             frostdragon: {
                 enemyIdName : "frostdragon",
                 name: "Frost Dragon",
+                emoji: "<:frostdragon:636594850296496180>",
                 abilities: ["bite" , "bite" , "frostBreath", "ferociousBite" , "ferociousBite", "tacowall"],
                 buffs: [
                     {
@@ -4086,8 +4087,21 @@ module.exports = {
             shiva: {
                 enemyIdName : "shiva",
                 name: "Shiva",
+                emoji: "<:shiva:636593574644809728>",
                 abilities: [
-                    "crush", "crush", "slap", "slap", "frostBreath", "frostBreath", "empower"
+                    "freeze", "crush", "crush", "slap", "slap", "frostBreath", "frostBreath", "empower"
+                ],
+                abilityOrder: [
+                    0, 
+                    [ 1, 2, 3, 4, 5, 6, 7 ],
+                    [ 1, 2, 3, 4, 5, 6, 7 ],
+                    [ 1, 2, 3, 4, 5, 6, 7 ],
+                    [ 1, 2, 3, 4, 5, 6, 7 ],
+                    [ 1, 2, 3, 4, 5, 6, 7 ],
+                    [ 1, 2, 3, 4, 5, 6, 7 ],
+                    [ 1, 2, 3, 4, 5, 6, 7 ],
+                    [ 1, 2, 3, 4, 5, 6, 7 ],
+                    [ 1, 2, 3, 4, 5, 6, 7 ],
                 ],
                 buffs: [
                     {
