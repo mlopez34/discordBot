@@ -95,6 +95,7 @@ module.exports.rpgInitialize = function(message, special){
         })
         .catch(function(err){
             // console.log(err)
+            message.channel.send("error : " + JSON.stringify(err))
             message.channel.send("Unable to display RPG initialize embed, Enable embeds in this channel to begin an RPG event!")
         })
     }

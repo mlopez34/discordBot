@@ -5411,369 +5411,308 @@ module.exports = {
         panama: {
 
         },
-
+        // fix path, fix enemies, add zone enemy abilities
         emeraldeve: {
             zoneAvatar: "https://i.imgur.com/9vF8gXa.jpg",
             zoneString : "You've found the emerald prysm, upon touching it you are teleported into another dimension",
-            startingArea: "",
+            startingArea: "redbeach",
             name: "Emerald Eve",
             zoneDifficulty: 7,
             intendedLevelString: "44-45",
             enemyStatBuffs: {
-                hpPlusPercentage: 3.4,
-                adPlusPercentage: 4.7,
-                mdPlusPercentage: 4.7,
+                hpPlusPercentage: 3.6,
+                adPlusPercentage: 4.9,
+                mdPlusPercentage: 4.9,
                 armorPlusPercentage: 1,
                 spiritPlusPercentage: 1,
-                frenzyAdIncreasePercentage: 3.2,
-                echoIncreasePercentage: 2.9
+                frenzyAdIncreasePercentage: 3.4,
+                echoIncreasePercentage: 3
             },
-            // enemies: {
-            //     easy: [
-            //         "tacodealer", "tacodealer", "tacodealer", "tacodealer", 
-            //         "ruffian", "ruffian", "ruffian", 
-            //         "seedthief"
-            //     ],
-            //     medium: [
-            //         "disassembler", "disassembler", "disassembler",
-            //         "troglodyte", "troglodyte", "troglodyte",
-            //         "charlatan",
-            //     ],
-            //     hard: [
-            //         "mammoth", "mammoth", "mammoth",
-            //         "ogre", "ogre", "ogre",
-            //         "frostdragon"
-            //     ],
-            //     boss: [
-            //         "ogremagi", "ogremagi", "ogremagi", "ogremagi", "ogremagi",
-            //         "shiva"
-            //     ]
-            // },
-            // areas: {
-            //     blackrockmountain: {
-            //         areaString : " ",
-            //         name: "Blackrock Mountain",
-            //         enemiesToDefeat: 104,
-            //         onCompleteAreasUnlocked: [
-            //             "breganhold",
-            //             "ciesislands"
-            //         ],
-            //         shopItemsAvailable: [
+            enemies: {
+                easy: [
+                    "vermin", "vermin", "vermin", "vermin",
+                    "squid", "squid", "squid",
+                    "angrydwarf"
+                ],
+                medium: [
+                    "maggot", "maggot", "maggot", "maggot",
+                    "scorpion", "scorpion", "scorpion", "scorpion",
+                    "egg"
+                ],
+                hard: [
+                    "skymaggot", "skymaggot", "skymaggot",
+                    "ogre", "ogre", "ogre",
+                    "emeralddragon",
+                ],
+                boss: [
+                    "elderemeralddragon",
+                    "cyclops", "cyclops", "cyclops", "cyclops"
+                ]
+            },
+            areas: {
+                redbeach: {
+                    areaString : " ",
+                    name: "Red Beach",
+                    enemiesToDefeat: 154,
+                    onCompleteAreasUnlocked: [
 
-            //         ],
-            //         scavengeItemsAvailable: [
+                    ],
+                    shopItemsAvailable: [
 
-            //         ],
-            //         rpgDropsAvailable: [
+                    ],
+                    scavengeItemsAvailable: [
 
-            //         ]
-            //     },
-            //     // 1
-            //     breganhold: {
-            //         areaString : " ",
-            //         name: "Bregan Hold",
-            //         enemiesToDefeat: 101,
-            //         onCompleteAreasUnlocked: [
-            //             "distillerydistrict",
-            //             "eldorlake"
-            //         ],
-            //         shopItemsAvailable: [
+                    ],
+                    rpgDropsAvailable: [
 
-            //         ],
-            //         scavengeItemsAvailable: [
+                    ]
+                },
+                cragsoftelnaeir: {
+                    areaString : " ",
+                    name: "Crags of Tel'naeir",
+                    enemiesToDefeat: 141,
+                    onCompleteAreasUnlocked: [
+                    ],
+                    shopItemsAvailable: [
 
-            //         ],
-            //         rpgDropsAvailable: [
+                    ],
+                    scavengeItemsAvailable: [
 
-            //         ]
-            //     },
-            //     // 1
-            //     ciesislands: {
-            //         areaString : " ",
-            //         name: "Cies Islands",
-            //         enemiesToDefeat: 107,
-            //         onCompleteAreasUnlocked: [
-            //             "hangsondoong",
-            //             "goldenglobe"
-            //         ],
-            //         shopItemsAvailable: [
+                    ],
+                    rpgDropsAvailable: [
 
-            //         ],
-            //         scavengeItemsAvailable: [
+                    ]
+                },
+                dufellsnangoroth: {
+                    areaString : " ",
+                    name: "Du Fells Nangoröth",
+                    enemiesToDefeat: 107,
+                    onCompleteAreasUnlocked: [
+                    ],
+                    shopItemsAvailable: [
 
-            //         ],
-            //         rpgDropsAvailable: [
+                    ],
+                    scavengeItemsAvailable: [
 
-            //         ]
-            //     },
-            //     // 2
-            //     distillerydistrict: {
-            //         areaString : " ",
-            //         name: "Distillery District",
-            //         enemiesToDefeat: 143,
-            //         onCompleteAreasUnlocked: [
-            //             "inversionhouse"
-            //         ],
-            //         shopItemsAvailable: [
+                    ],
+                    rpgDropsAvailable: [
 
-            //         ],
-            //         scavengeItemsAvailable: [
+                    ]
+                },
+                marietaisland: {
+                    areaString : " ",
+                    name: "Marieta Island",
+                    enemiesToDefeat: 143,
+                    onCompleteAreasUnlocked: [
+                    ],
+                    shopItemsAvailable: [
 
-            //         ],
-            //         rpgDropsAvailable: [
+                    ],
+                    scavengeItemsAvailable: [
 
-            //         ]
-            //     },
-            //     // 2
-            //     eldorlake: {
-            //         areaString : " ",
-            //         name: "Eldor Lake",
-            //         enemiesToDefeat: 100,
-            //         onCompleteAreasUnlocked: [
-            //             "lijangtower"
-            //         ],
-            //         shopItemsAvailable: [
+                    ],
+                    rpgDropsAvailable: [
 
-            //         ],
-            //         scavengeItemsAvailable: [
+                    ]
+                },
+                leonalake: {
+                    areaString : " ",
+                    name: "Leona Lake",
+                    enemiesToDefeat: 150,
+                    onCompleteAreasUnlocked: [
+                    ],
+                    shopItemsAvailable: [
 
-            //         ],
-            //         rpgDropsAvailable: [
+                    ],
+                    scavengeItemsAvailable: [
 
-            //         ]
-            //     },
-            //     // end
-            //     gatesofhera: {
-            //         areaString : " ",
-            //         name: "Gates of Hera",
-            //         enemiesToDefeat: 50,
-            //         enemies: [
-            //             {
-            //                 enemyId: "ogre",
-            //                 enemyDifficulty: "hard"
-            //             },
-            //             {
-            //                 enemyId: "avatarofhera",
-            //                 enemyDifficulty: "boss"
-            //             },
-            //             {
-            //                 enemyId: "ogre",
-            //                 enemyDifficulty: "hard"
-            //             },
-            //         ],
-            //         onCompleteAreasUnlocked: [
+                    ],
+                    rpgDropsAvailable: [
 
-            //         ],
-            //         shopItemsAvailable: [
+                    ]
+                },
+                grandprismaticspring: {
+                    areaString : " ",
+                    name: "Grand Prismatic Spring",
+                    enemiesToDefeat: 50,
+                    enemies: [
+                        {
+                            enemyId: "ogre",
+                            enemyDifficulty: "hard"
+                        },
+                        {
+                            enemyId: "avatarofhera",
+                            enemyDifficulty: "boss"
+                        },
+                        {
+                            enemyId: "ogre",
+                            enemyDifficulty: "hard"
+                        },
+                    ],
+                    onCompleteAreasUnlocked: [
 
-            //         ],
-            //         scavengeItemsAvailable: [
+                    ],
+                    shopItemsAvailable: [
 
-            //         ],
-            //         rpgDropsAvailable: [
+                    ],
+                    scavengeItemsAvailable: [
 
-            //         ]
-            //     },
-            //     // 
-            //     goldenglobe: {
-            //         areaString : " ",
-            //         name: "Golden Globe",
-            //         enemiesToDefeat: 123,
-            //         onCompleteAreasUnlocked: [
-            //             "magiccastle"
-            //         ],
-            //         shopItemsAvailable: [
+                    ],
+                    rpgDropsAvailable: [
 
-            //         ],
-            //         scavengeItemsAvailable: [
+                    ]
+                },
+                capricaspaceport: {
+                    areaString : " ",
+                    name: "Caprica Spaceport",
+                    enemiesToDefeat: 123,
+                    onCompleteAreasUnlocked: [
+                    ],
+                    shopItemsAvailable: [
 
-            //         ],
-            //         rpgDropsAvailable: [
+                    ],
+                    scavengeItemsAvailable: [
 
-            //         ]
-            //     },
-            //     // 2
-            //     hangsondoong: {
-            //         areaString : " ",
-            //         name: "Hang Son Doong",
-            //         enemiesToDefeat: 104,
-            //         onCompleteAreasUnlocked: [
+                    ],
+                    rpgDropsAvailable: [
 
-            //         ],
-            //         shopItemsAvailable: [
+                    ]
+                },
+                magnetichill: {
+                    areaString : " ",
+                    name: "Magnetic Hill",
+                    enemiesToDefeat: 104,
+                    onCompleteAreasUnlocked: [
 
-            //         ],
-            //         scavengeItemsAvailable: [
+                    ],
+                    shopItemsAvailable: [
 
-            //         ],
-            //         rpgDropsAvailable: [
+                    ],
+                    scavengeItemsAvailable: [
 
-            //         ]
-            //     },
-            //     // 3
-            //     inversionhouse: {
-            //         areaString : " ",
-            //         name: "Inversion House",
-            //         enemiesToDefeat: 86,
-            //         onCompleteAreasUnlocked: [
-            //             "keukenhofgardens"
-            //         ],
-            //         shopItemsAvailable: [
+                    ],
+                    rpgDropsAvailable: [
 
-            //         ],
-            //         scavengeItemsAvailable: [
+                    ]
+                },
+                neverland: {
+                    areaString : " ",
+                    name: "Neverland",
+                    enemiesToDefeat: 86,
+                    onCompleteAreasUnlocked: [
+                    ],
+                    shopItemsAvailable: [
 
-            //         ],
-            //         rpgDropsAvailable: [
+                    ],
+                    scavengeItemsAvailable: [
 
-            //         ]
-            //     },
-            //     // 4
-            //     keukenhofgardens: {
-            //         areaString : " ",
-            //         name: "Keukenhof Gardens",
-            //         enemiesToDefeat: 79,
-            //         onCompleteAreasUnlocked: [
-            //             "koryazglacier"
-            //         ],
-            //         shopItemsAvailable: [
+                    ],
+                    rpgDropsAvailable: [
 
-            //         ],
-            //         scavengeItemsAvailable: [
+                    ]
+                },
+                theburningplains: {
+                    areaString : " ",
+                    name: "The Burning Plains",
+                    enemiesToDefeat: 79,
+                    onCompleteAreasUnlocked: [
+                    ],
+                    shopItemsAvailable: [
 
-            //         ],
-            //         rpgDropsAvailable: [
+                    ],
+                    scavengeItemsAvailable: [
 
-            //         ]
-            //     },
-            //     // 5
-            //     koryazglacier: {
-            //         areaString : " ",
-            //         name: "Kor Yaz Glacier",
-            //         enemiesToDefeat: 189,
-            //         onCompleteAreasUnlocked: [
-            //         ],
-            //         shopItemsAvailable: [
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                },
+                mountrinjani: {
+                    areaString : " ",
+                    name: "Mount Rinjani",
+                    enemiesToDefeat: 189,
+                    onCompleteAreasUnlocked: [
+                    ],
+                    shopItemsAvailable: [
                         
-            //         ],
-            //         scavengeItemsAvailable: [
+                    ],
+                    scavengeItemsAvailable: [
 
-            //         ],
-            //         rpgDropsAvailable: [
+                    ],
+                    rpgDropsAvailable: [
 
-            //         ]
-            //     },
-            //     // 3
-            //     lijangtower: {
-            //         areaString : " ",
-            //         name: "Lijang Tower",
-            //         enemiesToDefeat: 116,
-            //         onCompleteAreasUnlocked: [
-            //         ],
-            //         shopItemsAvailable: [
+                    ]
+                },
+                petruspallace: {
+                    areaString : " ",
+                    name: "Petrus Pallace",
+                    enemiesToDefeat: 116,
+                    onCompleteAreasUnlocked: [
+                    ],
+                    shopItemsAvailable: [
 
-            //         ],
-            //         scavengeItemsAvailable: [
+                    ],
+                    scavengeItemsAvailable: [
 
-            //         ],
-            //         rpgDropsAvailable: [
+                    ],
+                    rpgDropsAvailable: [
 
-            //         ]
-            //     },
-            //     magiccastle: {
-            //         areaString : " ",
-            //         name: "Magic Castle",
-            //         enemiesToDefeat: 120,
-            //         enemies: [
-            //             {
-            //                 enemyId: "polarbear",
-            //                 enemyDifficulty: "medium"
-            //             },
-            //             {
-            //                 enemyId: "mammoth",
-            //                 enemyDifficulty: "hard"
-            //             },
-            //             {
-            //                 enemyId: "frostdragon",
-            //                 enemyDifficulty: "hard"
-            //             },
-            //             {
-            //                 enemyId: "ogremagi",
-            //                 enemyDifficulty: "boss"
-            //             },
-            //             {
-            //                 enemyId: "shiva",
-            //                 enemyDifficulty: "boss"
-            //             },
-            //             {
-            //                 enemyId: "frostdragon",
-            //                 enemyDifficulty: "hard"
-            //             },
-            //             {
-            //                 enemyId: "mammoth",
-            //                 enemyDifficulty: "hard"
-            //             },
-            //             {
-            //                 enemyId: "polarbear",
-            //                 enemyDifficulty: "medium"
-            //             }
-            //         ],
-            //         onCompleteAreasUnlocked: [
-            //             "monumentvalley"
-            //         ],
-            //         shopItemsAvailable: [
+                    ]
+                },
+                zion: {
+                    areaString : " ",
+                    name: "Zion",
+                    enemiesToDefeat: 120,
+                    enemies: [
+                        {
+                            enemyId: "polarbear",
+                            enemyDifficulty: "medium"
+                        },
+                        {
+                            enemyId: "mammoth",
+                            enemyDifficulty: "hard"
+                        },
+                        {
+                            enemyId: "frostdragon",
+                            enemyDifficulty: "hard"
+                        },
+                        {
+                            enemyId: "ogremagi",
+                            enemyDifficulty: "boss"
+                        },
+                        {
+                            enemyId: "shiva",
+                            enemyDifficulty: "boss"
+                        },
+                        {
+                            enemyId: "frostdragon",
+                            enemyDifficulty: "hard"
+                        },
+                        {
+                            enemyId: "mammoth",
+                            enemyDifficulty: "hard"
+                        },
+                        {
+                            enemyId: "polarbear",
+                            enemyDifficulty: "medium"
+                        }
+                    ],
+                    onCompleteAreasUnlocked: [
+                    ],
+                    shopItemsAvailable: [
 
-            //         ],
-            //         scavengeItemsAvailable: [
+                    ],
+                    scavengeItemsAvailable: [
 
-            //         ],
-            //         rpgDropsAvailable: [
+                    ],
+                    rpgDropsAvailable: [
 
-            //         ]
-            //     },
-            //     monumentvalley: {
-            //         areaString : " ",
-            //         name: "Monument Valley",
-            //         enemiesToDefeat: 65,
-            //         enemies: [
-            //             {
-            //                 enemyId: "walrus",
-            //                 enemyDifficulty: "hard"
-            //             },
-            //             {
-            //                 enemyId: "ogremagi",
-            //                 enemyDifficulty: "boss"
-            //             },
-            //             {
-            //                 enemyId: "walrus",
-            //                 enemyDifficulty: "hard"
-            //             },
-            //             {
-            //                 enemyId: "walrus",
-            //                 enemyDifficulty: "hard"
-            //             },
-            //             {
-            //                 enemyId: "walrus",
-            //                 enemyDifficulty: "hard"
-            //             }
-            //         ],
-            //         onCompleteAreasUnlocked: [
-            //             "gatesofhera"
-            //         ],
-            //         shopItemsAvailable: [
-
-            //         ],
-            //         scavengeItemsAvailable: [
-
-            //         ],
-            //         rpgDropsAvailable: [
-
-            //         ]
-            //     }
-            // },
-            // onCompleteZonesUnlocked: [
-            //     "gabrielshorn",
-            // ]
+                    ]
+                }
+            },
+            onCompleteZonesUnlocked: [
+                "gabrielshorn",
+            ]
         },
         gabrielshorn: {
 
@@ -6353,7 +6292,21 @@ Hoover Dam
         riverdale: "chicago",
         pilsen: "chicago",
         lawndale: "chicago",
-        englewood: "chicago"
+        englewood: "chicago",
+
+        redbeach: "emeraldeve",
+        cragsoftelnaeir: "emeraldeve",
+        dufellsnangoroth: "emeraldeve",
+        marietaisland: "emeraldeve",
+        leonalake: "emeraldeve",
+        grandprismaticspring: "emeraldeve", 
+        capricaspaceport: "emeraldeve",
+        magnetichill: "emeraldeve",
+        neverland: "emeraldeve",
+        theburningplains: "emeraldeve",
+        mountrinjani: "emeraldeve",
+        petruspallace: "emeraldeve",
+        zion: "emeraldeve"
 
     },
 }

@@ -2141,6 +2141,50 @@ module.exports = {
                 spirit: 400,
                 difficulty: "easy",
                 element: "normal"
+            },
+            squid: {
+                enemyIdName : "squid",
+                name: "Squid",
+                abilities: ["attack", "attack", "tackle", "tackle", "weaken"],
+                buffs: [],
+                keystoneStats: {
+                    hp: [1200, 3500, 6200, 10000, 15000 ],
+                    attackDmg: [300, 500, 900, 1500, 2300],
+                    magicDmg: [300, 500, 900, 1500, 2300],
+                    abilities: []
+                },
+                hpPerPartyMember: 270,
+                adPerPartyMember: 9,
+                mdPerPartyMember: 9,
+                hp: 330,
+                attackDmg: 160,
+                magicDmg: 179,
+                armor: 290,
+                spirit: 400,
+                difficulty: "easy",
+                element: "normal"
+            },
+            vermin: {
+                enemyIdName : "vermin",
+                name: "Vermin",
+                abilities: ["attack", "attack", "tackle", "tackle", "weaken"],
+                buffs: [],
+                keystoneStats: {
+                    hp: [1200, 3500, 6200, 10000, 15000 ],
+                    attackDmg: [300, 500, 900, 1500, 2300],
+                    magicDmg: [300, 500, 900, 1500, 2300],
+                    abilities: []
+                },
+                hpPerPartyMember: 270,
+                adPerPartyMember: 9,
+                mdPerPartyMember: 9,
+                hp: 330,
+                attackDmg: 160,
+                magicDmg: 179,
+                armor: 290,
+                spirit: 400,
+                difficulty: "easy",
+                element: "normal"
             }
         },
         medium: {
@@ -2717,10 +2761,62 @@ module.exports = {
                 adPerPartyMember: 18,
                 mdPerPartyMember: 18,
                 hp: 640,
+                attackDmg: 190,
+                magicDmg: 190,
+                armor: 350,
+                spirit: 550,
+                difficulty: "medium",
+                element: "normal"
+            },
+            maggot: {
+                enemyIdName : "maggot",
+                name: "Maggot",
+                abilities: ["sting", "sting", "inject", "inject", "poison"],
+                buffs: [],
+                keystoneStats: {
+                    hp: [1200, 3500, 6200, 10000, 15000 ],
+                    attackDmg: [300, 500, 900, 1500, 2300],
+                    magicDmg: [300, 500, 900, 1500, 2300],
+                    abilities: []
+                },
+                effectsOnDeath: [
+                    "burst"
+                ],
+                hpPerPartyMember: 490,
+                adPerPartyMember: 18,
+                mdPerPartyMember: 18,
+                hp: 640,
                 attackDmg: 90,
                 magicDmg: 90,
                 armor: 350,
                 spirit: 550,
+                difficulty: "medium",
+                element: "normal"
+            },
+            egg: {
+                enemyIdName : "egg",
+                name: "Egg",
+                abilities: ["sting", "sting", "inject", "inject", "poison"],
+                buffs: [],
+                keystoneStats: {
+                    hp: [1200, 3500, 6200, 10000, 15000 ],
+                    attackDmg: [300, 500, 900, 1500, 2300],
+                    magicDmg: [300, 500, 900, 1500, 2300],
+                    abilities: []
+                },
+                effectsOnDeath: [
+                    "burst",
+                    "burst",
+                    "burst"
+                ],
+                hpPerPartyMember: 890,
+                adPerPartyMember: 18,
+                mdPerPartyMember: 18,
+                hp: 640,
+                attackDmg: 90,
+                magicDmg: 90,
+                armor: 950,
+                spirit: 950,
                 difficulty: "medium",
                 element: "normal"
             },
@@ -3605,6 +3701,78 @@ module.exports = {
                 difficulty: "hard",
                 element: "normal"
             },
+            skymaggot: {
+                enemyIdName : "skymaggot",
+                name: "Sky Maggot",
+                abilities: ["bite" , "bite" , "venom", "venom" , "ferociousBite", "tacowall"],
+                buffs: [
+                    {
+                        name: "frenzy",
+                        emoji: "<:frenzy:479298214453968896>",
+                        onTurnEnd: {
+                            attackDmgPlus : 100,
+                            magicDmgPlus : 100,
+                            everyNTurns: 2,
+                            startTurn: 2
+                        }
+                    }
+                ],
+                keystoneStats: {
+                    hp: [1200, 3500, 6200, 10000, 15000 ],
+                    attackDmg: [300, 500, 900, 1500, 2300],
+                    magicDmg: [300, 500, 900, 1500, 2300],
+                    abilities: []
+                },
+                effectsOnDeath: [
+                    "summonRuffians"
+                ],
+                hpPerPartyMember: 990,
+                adPerPartyMember: 21,
+                mdPerPartyMember: 21,
+                hp: 850,
+                attackDmg: 325,
+                magicDmg: 370,
+                armor: 600,
+                spirit: 900,
+                difficulty: "hard",
+                element: "normal"
+            },
+            emeralddragon: {
+                enemyIdName : "emeralddragon",
+                name: "Emerald Dragon",
+                abilities: ["bite" , "bite" , "venom", "venom" , "ferociousBite", "tacowall"],
+                buffs: [
+                    {
+                        name: "frenzy",
+                        emoji: "<:frenzy:479298214453968896>",
+                        onTurnEnd: {
+                            attackDmgPlus : 100,
+                            magicDmgPlus : 100,
+                            everyNTurns: 2,
+                            startTurn: 2
+                        }
+                    }
+                ],
+                keystoneStats: {
+                    hp: [1200, 3500, 6200, 10000, 15000 ],
+                    attackDmg: [300, 500, 900, 1500, 2300],
+                    magicDmg: [300, 500, 900, 1500, 2300],
+                    abilities: []
+                },
+                effectsOnDeath: [
+                    "summonRuffians"
+                ],
+                hpPerPartyMember: 990,
+                adPerPartyMember: 21,
+                mdPerPartyMember: 21,
+                hp: 850,
+                attackDmg: 325,
+                magicDmg: 370,
+                armor: 600,
+                spirit: 900,
+                difficulty: "hard",
+                element: "normal"
+            },
             mammoth: {
                 enemyIdName : "mammoth",
                 name: "Mammoth",
@@ -4084,6 +4252,48 @@ module.exports = {
                 difficulty: "boss",
                 element: "normal"
             },
+            elderemeralddragon: {
+                enemyIdName : "elderemeralddragon",
+                name: "Elder Emerald Dragon",
+                abilities: [
+                    "freeze", "crush", "crush", "slap", "slap", "frostBreath", "frostBreath", "empower"
+                ],
+                buffs: [
+                    {
+                        name: "frenzy",
+                        emoji: "<:frenzy:479298214453968896>",
+                        onTurnEnd: {
+                            attackDmgPlus : 235,
+                            magicDmgPlus : 235,
+                            everyNTurns: 2,
+                            startTurn: 2
+                        }
+                    }
+                ],
+                keystoneStats: {
+                    hp: [1200, 3500, 6200, 10000, 15000 ],
+                    attackDmg: [300, 500, 900, 1500, 2300],
+                    magicDmg: [300, 500, 900, 1500, 2300],
+                    abilities: []
+                },
+                endOfTurnEvents : [
+                    "echo",
+                    "focus"
+                ],
+                effectsOnDeath: [
+                    "reanimateAll"
+                ],
+                hpPerPartyMember: 1322,
+                hp: 1950,
+                adPerPartyMember: 29,
+                mdPerPartyMember: 29,
+                attackDmg: 640,
+                magicDmg: 690,
+                armor: 1800,
+                spirit: 1800,
+                difficulty: "boss",
+                element: "normal"
+            },
             shiva: {
                 enemyIdName : "shiva",
                 name: "Shiva",
@@ -4344,8 +4554,8 @@ module.exports = {
                         name: "frenzy",
                         emoji: "<:frenzy:479298214453968896>",
                         onTurnEnd: {
-                            attackDmgPlus : 85,
-                            magicDmgPlus : 85,
+                            attackDmgPlus : 185,
+                            magicDmgPlus : 185,
                             everyNTurns: 2,
                             startTurn: 2
                         }
@@ -4361,12 +4571,12 @@ module.exports = {
                     "echo",
                     "focus"
                 ],
-                hpPerPartyMember: 1222,
-                hp: 950,
+                hpPerPartyMember: 1422,
+                hp: 1250,
                 adPerPartyMember: 29,
                 mdPerPartyMember: 29,
-                attackDmg: 240,
-                magicDmg: 190,
+                attackDmg: 440,
+                magicDmg: 590,
                 armor: 1600,
                 spirit: 1600,
                 difficulty: "boss",
