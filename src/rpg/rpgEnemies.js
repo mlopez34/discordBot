@@ -4367,16 +4367,16 @@ module.exports = {
                 name: "Avatar of Hera",
                 emoji: "<:hera:636311364322721832>",
                 abilities: [
-                    "crush", "crush", "decayDeath", "decayDeath", "shock", "whirlwind", "empower"
+                    "crush", "crush", "decayDeath", "decayDeath", "shock", "shock", "whirlwind", "shell"
                 ],
                 buffs: [
                     {
                         name: "frenzy",
                         emoji: "<:frenzy:479298214453968896>",
                         onTurnEnd: {
-                            attackDmgPlus : 255,
-                            magicDmgPlus : 255,
-                            everyNTurns: 2,
+                            attackDmgPlus : 455,
+                            magicDmgPlus : 455,
+                            everyNTurns: 3,
                             startTurn: 2
                         }
                     }
@@ -4422,14 +4422,14 @@ module.exports = {
                     "absorbImps"
                 ],
                 effectsOnDeath: [
-                    
+                    "empowerDeath"
                 ],
-                hpPerPartyMember: 1252,
-                hp: 2750,
-                adPerPartyMember: 29,
-                mdPerPartyMember: 29,
-                attackDmg: 640,
-                magicDmg: 690,
+                hpPerPartyMember: 1652,
+                hp: 2550,
+                adPerPartyMember: 50,
+                mdPerPartyMember: 50,
+                attackDmg: 1040,
+                magicDmg: 1090,
                 armor: 1800,
                 spirit: 1800,
                 difficulty: "boss",

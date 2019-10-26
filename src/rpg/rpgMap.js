@@ -5541,7 +5541,15 @@ module.exports = {
                             enemyDifficulty: "hard"
                         },
                         {
+                            enemyId: "shiva",
+                            enemyDifficulty: "boss"
+                        },
+                        {
                             enemyId: "avatarofhera",
+                            enemyDifficulty: "boss"
+                        },
+                        {
+                            enemyId: "shiva",
                             enemyDifficulty: "boss"
                         },
                         {
