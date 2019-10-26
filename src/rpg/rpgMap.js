@@ -5316,7 +5316,7 @@ module.exports = {
                 magiccastle: {
                     areaString : " ",
                     name: "Magic Castle",
-                    enemiesToDefeat: 60,
+                    enemiesToDefeat: 80,
                     enemies: [
                         {
                             enemyId: "polarbear",
@@ -5345,6 +5345,10 @@ module.exports = {
                         {
                             enemyId: "mammoth",
                             enemyDifficulty: "hard"
+                        },
+                        {
+                            enemyId: "snowleopard",
+                            enemyDifficulty: "easy"
                         }
                     ],
                     onCompleteAreasUnlocked: [
