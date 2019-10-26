@@ -72,6 +72,7 @@ const GREENHOUSE_COST = 10000
 const TEMPLE_COST = 15000
 const HACKSAW_COST = 5000
 const STABLE_COST = 25000
+const DAILY_CLAIM_PET_COST = 200
 
 
 var activeAuctions = {};
@@ -348,6 +349,33 @@ var PETS_AVAILABLE = {
         cooldown: 12,
         uniquereward: true,
         rewardType: "top1challenge"
+    },
+
+    /// burrito pets
+    
+    squirtle: {
+        speak: "SQUIRTLE",
+        emoji: "<:squirtle:637735757435371521>",
+        fetch: 10,
+        cooldown: 3,
+        dailyreward: true,
+        rewardType: "dailyclaim"
+    },
+    charmander: {
+        speak: "CHAR",
+        emoji: "<:charmander:637735721037463577>",
+        fetch: 10,
+        cooldown: 3,
+        dailyreward: true,
+        rewardType: "dailyclaim"
+    },
+    bulbasaur: {
+        speak: "BULBA",
+        emoji: "<:bulbasaur:637735893112717342>",
+        fetch: 10,
+        cooldown: 3,
+        dailyreward: true,
+        rewardType: "dailyclaim"
     }
 }
 
@@ -1374,6 +1402,12 @@ module.exports.claimCommand = function(message, args){
                             exports.setCommandLock("claim", discordUserId, false)        
                         }
                     })
+                }
+                else if (args && args.length > 0 
+                && args[1] == "pet" 
+                && userBurritos >= DAILY_CLAIM_PET_COST){
+                    // add a random ancient
+                    message.channel.send("Check the reputation shop to view the available pets!")
                 }
                 else if(args && args.length > 0
                 && userBurritos >= 1){
@@ -2710,6 +2744,10 @@ function repShopBuilder(message, shopData){
                     if (shopData.top1challenge && PETS_AVAILABLE[key].rewardType == "top1challenge"){
                         petsToPurchase = petsToPurchase + key +  ", "
                     }
+                }else if (PETS_AVAILABLE[key].dailyreward){
+                    if (shopData.dailyclaimpet && PETS_AVAILABLE[key].rewardType == "dailyclaim"){
+                        petsToPurchase = petsToPurchase + key +  ", "
+                    }
                 }
             }
         }
@@ -2798,6 +2836,7 @@ module.exports.repShopCommand = function(message){
             shopData.top1rpg = shopResponse.data.legacytop1rpgpoints
             shopData.top1xp = shopResponse.data.legacytop1experience
             shopData.top1challenge = shopResponse.data.legacytop1challenge
+            shopData.dailyclaimpet = shopResponse.data.burritos >= DAILY_CLAIM_PET_COST
             repShopBuilder(message, shopData);
         }
     })
@@ -4823,11 +4862,13 @@ module.exports.buypetCommand = function(message, args){
                         if (userReputation && (REPUTATIONS[userReputation.toLowerCase()]) ){
                             var achievements = buyPetResponse.data.achievements;
                             var userTacos = adjustedTacosForUser(discordUserId, buyPetResponse.data.tacos)
+                            var userBurritos = buyPetResponse.data.burritos
                             if (userTacos >= PET_COST){
                                 if ( (PETS_AVAILABLE[pet] != undefined && userRepLevel && userRepLevel >= PETS_AVAILABLE[pet].repLevel)
-                                || ( PETS_AVAILABLE[pet].uniquereward && PETS_AVAILABLE[pet].rewardType == "top1rpg" && buyPetResponse.data.legacytop1rpgpoints )
-                                || ( PETS_AVAILABLE[pet].uniquereward && PETS_AVAILABLE[pet].rewardType == "top1xp" && buyPetResponse.data.legacytop1experience )
-                                || ( PETS_AVAILABLE[pet].uniquereward && PETS_AVAILABLE[pet].rewardType == "top1challenge" && buyPetResponse.data.legacytop1challenge ) ){
+                                || ( PETS_AVAILABLE[pet] && PETS_AVAILABLE[pet].uniquereward && PETS_AVAILABLE[pet].rewardType == "top1rpg" && buyPetResponse.data.legacytop1rpgpoints )
+                                || ( PETS_AVAILABLE[pet] && PETS_AVAILABLE[pet].uniquereward && PETS_AVAILABLE[pet].rewardType == "top1xp" && buyPetResponse.data.legacytop1experience )
+                                || ( PETS_AVAILABLE[pet] && PETS_AVAILABLE[pet].uniquereward && PETS_AVAILABLE[pet].rewardType == "top1challenge" && buyPetResponse.data.legacytop1challenge )
+                                || ( PETS_AVAILABLE[pet] && PETS_AVAILABLE[pet].dailyreward && PETS_AVAILABLE[pet].rewardType == "dailyclaim" && userBurritos >= DAILY_CLAIM_PET_COST ) ){
                                     // can afford the pet update user pet, take away tacos.
                                     var threedaysAgo = new Date();
                                     if (!buyPetResponse.data.pet){
@@ -4841,13 +4882,23 @@ module.exports.buypetCommand = function(message, args){
                                                 // console.log(petError);
                                             }else{
                                                 // take away tacos from user
-                                                profileDB.updateUserTacos(discordUserId, (PET_COST * -1), function(updateErr, updateRes){
-                                                    if (updateErr){
-                                                        message.channel.send(" error, check bender now");
-                                                    }else{
-                                                        message.channel.send(" Congratulations! " + message.author.username + " has a new " + pet + " called: `" + petName + "` \n" + PETS_AVAILABLE[pet].emoji + " " + PETS_AVAILABLE[pet].speak + "\n use `-fetch` while your pet is not tired!");
-                                                    }
-                                                })
+                                                if (PETS_AVAILABLE[pet].dailyreward && PETS_AVAILABLE[pet].rewardType == "dailyclaim"){
+                                                    profileDB.updateUserBurritos(discordUserId, (DAILY_CLAIM_PET_COST * -1), function(updateErr, updateRes){
+                                                        if (updateErr){
+                                                            message.channel.send(" error, check bender now");
+                                                        }else{
+                                                            message.channel.send(" Congratulations! " + message.author.username + " has a new " + pet + " called: `" + petName + "` \n" + PETS_AVAILABLE[pet].emoji + " " + PETS_AVAILABLE[pet].speak + "\n use `-fetch` while your pet is not tired!");
+                                                        }
+                                                    })
+                                                }else{
+                                                    profileDB.updateUserTacos(discordUserId, (PET_COST * -1), function(updateErr, updateRes){
+                                                        if (updateErr){
+                                                            message.channel.send(" error, check bender now");
+                                                        }else{
+                                                            message.channel.send(" Congratulations! " + message.author.username + " has a new " + pet + " called: `" + petName + "` \n" + PETS_AVAILABLE[pet].emoji + " " + PETS_AVAILABLE[pet].speak + "\n use `-fetch` while your pet is not tired!");
+                                                        }
+                                                    })
+                                                }
                                             }
                                         })
                                     }else{
@@ -4860,13 +4911,23 @@ module.exports.buypetCommand = function(message, args){
                                                     // console.log(petError);
                                                 }else{
                                                     // take away tacos from user
-                                                    profileDB.updateUserTacos(discordUserId, (PET_COST * -1), function(updateErr, updateRes){
-                                                        if (updateErr){
-                                                            message.channel.send(" error, check bender now");
-                                                        }else{
-                                                            message.channel.send(" Congratulations! " + message.author.username + " has a new " + pet + " called: `" + petName + "` \n" + PETS_AVAILABLE[pet].emoji + " " + PETS_AVAILABLE[pet].speak + "\n use `-fetch " + petName +"` while your pet is not tired!");
-                                                        }
-                                                    })
+                                                    if (PETS_AVAILABLE[pet].dailyreward && PETS_AVAILABLE[pet].rewardType == "dailyclaim"){
+                                                        profileDB.updateUserBurritos(discordUserId, (DAILY_CLAIM_PET_COST * -1), function(updateErr, updateRes){
+                                                            if (updateErr){
+                                                                message.channel.send(" error, check bender now");
+                                                            }else{
+                                                                message.channel.send(" Congratulations! " + message.author.username + " has a new " + pet + " called: `" + petName + "` \n" + PETS_AVAILABLE[pet].emoji + " " + PETS_AVAILABLE[pet].speak + "\n use `-fetch " + petName +"` while your pet is not tired!");
+                                                            }
+                                                        })
+                                                    }else{
+                                                        profileDB.updateUserTacos(discordUserId, (PET_COST * -1), function(updateErr, updateRes){
+                                                            if (updateErr){
+                                                                message.channel.send(" error, check bender now");
+                                                            }else{
+                                                                message.channel.send(" Congratulations! " + message.author.username + " has a new " + pet + " called: `" + petName + "` \n" + PETS_AVAILABLE[pet].emoji + " " + PETS_AVAILABLE[pet].speak + "\n use `-fetch " + petName +"` while your pet is not tired!");
+                                                            }
+                                                        })
+                                                    }
                                                 }
                                             })
                                         }else{
