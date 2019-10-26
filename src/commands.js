@@ -2594,7 +2594,7 @@ module.exports.buyFlaskCommand = function(message){
                         }else{
                             // console.log(flaskRes);
                             // create message that the user purchased a flask
-                            message.channel.send(message.author.username + " has purchased a flask! :alembic:")
+                            message.channel.send(message.author.username + " has purchased a flask! :alembic: to create a potion use `-createpotion`")
                         }
                     })
                 }
@@ -2668,7 +2668,7 @@ module.exports.buyRecipeCommand = function(message){
                             if(updateLSErr){
                                 // console.log(updateLSErr);
                             }else{
-                                message.channel.send(message.author.username + " successfully purchased an artifact recipe :rosette:!")
+                                message.channel.send(message.author.username + " successfully purchased an artifact recipe :rosette:! to use it, combine with artifact items")
                             }
                         })
                     }

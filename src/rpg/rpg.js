@@ -54,8 +54,14 @@ module.exports.rpgInitialize = function(message, special){
             validTeam = false;
         }
     }
+    // stop initialization of multiple rpgs to avoid items being stuck
+    // lock members from initialize
+    
 
-    if (team.length >= 2 && team.length <= TEAM_MAX_LENGTH && validTeam){
+    if (team.length >= 2 && team.length <= TEAM_MAX_LENGTH && validTeam && !exports.isTeamLocked(team)){
+        team.forEach(function(member){
+            exports.setInitializeLock(member.id, true)
+        })
         // send an embed that the users are needed for the RPG event to say -ready or -notready
         // if the user says -ready, they get added to activeRPGEvents that they were invited to
         let embed = new Discord.RichEmbed()
@@ -72,8 +78,9 @@ module.exports.rpgInitialize = function(message, special){
             team.forEach(function(member){
                 usersInRPGEvents["rpg-" + member.id] = { id: sentMessage.id, ready: false };
                 membersOfParty.push(member);
+                exports.setInitializeLock(member.id, false)
             })
-            
+            // unlock team members from initialize 
             activeRPGEvents["rpg-" + sentMessage.id] = { members: membersOfParty };
             activeRPGEvents["rpg-" + sentMessage.id].status = "waiting";
             activeRPGEvents["rpg-" + sentMessage.id].lastEmbedMessage = sentMessage;
@@ -95,7 +102,7 @@ module.exports.rpgInitialize = function(message, special){
         })
         .catch(function(err){
             // console.log(err)
-            message.channel.send("error : " + JSON.stringify(err))
+            message.channel.send("error : Please report this to support server! " + JSON.stringify(err))
             message.channel.send("Unable to display RPG initialize embed, Enable embeds in this channel to begin an RPG event!")
         })
     }
@@ -667,6 +674,40 @@ module.exports.pvpReady = function(message, itemsAvailable, amuletItemsById){
     // recreate PVP functions for validateTarget, usePVPability, processPVPturn, calculateDamageReduced, checkRpgEventEnd
     // processAbility, processPVPTurn
     // add if pvp statement to turnfinishedEmbedBuilder, 
+}
+
+var initializeLock = {}
+
+module.exports.setInitializeLock = function( discordUserId, set){
+    if (initializeLock[discordUserId]){
+        initializeLock[discordUserId] = set
+    }else{
+        initializeLock[discordUserId] = {}
+        initializeLock[discordUserId] = set
+    }
+}
+
+module.exports.isTeamLocked = function(members){
+    let teamLocked = false
+    members.forEach(function(member){
+        let memberIsLocked = exports.getinitializeLock(member.id)
+        if (memberIsLocked == true){
+            teamLocked = true
+        }
+    })
+    return teamLocked
+}
+
+module.exports.getinitializeLock = function(discordUserId){
+    if (initializeLock[discordUserId]){
+        let locked = false
+        if (initializeLock[discordUserId] == true){
+            locked = true
+        }
+        return locked
+    }else{
+        return false
+    }
 }
 
 var readyLock = {}
@@ -4254,146 +4295,11 @@ function effectsOnTurnEnd(event){
                             && enemyHpInPercentage < event.enemies[enemy].endOfTurnEvents[index].hppercentage){
                                 var averageLevelInParty = event.averageLevelInParty;
                                 var nameOfSummon = event.enemies[enemy].endOfTurnEvents[index].summon.enemy;
+                                var enemyBeingSummoned = event.enemies[enemy].endOfTurnEvents[index].summon
                                 // TODO: get the + ad and + MD
                                 var enemyFound = JSON.parse(JSON.stringify(  enemiesToEncounter.summoned[nameOfSummon]));
 
-                                var enemyWithNameExists = false
-                                for (var e in event.enemies){
-                                    if (event.enemies[e].name == enemyFound.name){
-                                        enemyWithNameExists = true
-                                        break
-                                    }
-                                }
-                                var ableToSummon = true;
-                                if (enemyFound.uniqueEnemy == true && enemyWithNameExists){
-                                    ableToSummon = false
-                                }
-                                if (ableToSummon){
-                                    var enemyIdCount = event.enemiesCount + 1;
-                                    var enemyCount = event.enemiesCount;
-                                    var enemySummoned = {
-                                        id: enemyIdCount,
-                                        name: enemyFound.name,
-                                        hp: enemyFound.hp + (21 * averageLevelInParty) + (enemyFound.hpPerPartyMember * enemyCount), 
-                                        attackDmg: enemyFound.attackDmg + (10 * averageLevelInParty) + (enemyFound.adPerPartyMember * enemyCount), 
-                                        magicDmg: enemyFound.magicDmg + (10 * averageLevelInParty) + (enemyFound.mdPerPartyMember * enemyCount),
-                                        armor: enemyFound.armor + (averageLevelInParty * averageLevelInParty),
-                                        spirit: enemyFound.spirit + ( averageLevelInParty * averageLevelInParty),
-                                        statuses: [],
-                                        endOfTurnEvents: [],
-                                        statBuffs: {
-                                            hp: 0,
-                                            attackDmg: 0,
-                                            magicDmg: 0,
-                                            armor: 0,
-                                            spirit: 0,
-                                            maxhp: 0
-                                        },
-                                        buffs: enemyFound.buffs,
-                                        globalStatuses: {
-                                            ableToAttack: true,
-                                            abletotakedamage: true,
-                                            abletobehealed: true,
-                                            endofturnenable: true,
-                                            damageDealtPercentage: 1,
-                                            damageTakenPercentage: 1,
-                                            magicDamageTakenPercentage: 1,
-                                            physicalDamageTakenPercentage: 1,
-                                            healingDonePercentage: 1,
-                                            healingTakenPercentage: 1
-                                        }, 
-                                        difficulty: enemyFound.difficulty,
-                                        abilities: enemyFound.abilities,
-                                        effectsOnDeath: enemyFound.effectsOnDeath,
-                                        abilitiesMap : {},
-                                        element: enemyFound.element
-                                    }
-                                    if (enemyFound.abilityOrder){
-                                        enemySummoned.abilityOrder = enemyFound.abilityOrder
-                                        // align the ability order to the turn the enemy was summoned
-                                        for (var c = 0; c < currentTurn; c++){
-                                            enemySummoned.abilityOrder.unshift(enemySummoned.abilityOrder.pop())
-                                        }
-                                    }
-                                    for( var ability in enemySummoned.abilities){
-                                        var abilityName = enemySummoned.abilities[ability]
-                                        if (rpgAbilities[abilityName] && rpgAbilities[abilityName].passive){
-                                            // add it as a buff and a passive ability
-                                            var passiveAbilityBuff = JSON.parse(JSON.stringify( rpgAbilities[abilityName].buff ));
-                                            enemySummoned.buffs.push(passiveAbilityBuff);
-                                            enemySummoned.passiveAbilities.push(passiveAbilityBuff);
-                                            enemySummoned.abilitiesMap[passiveAbilityBuff.name] = passiveAbilityBuff;
-                                            if (rpgAbilities[rpgAbilities[abilityName]].status){
-                                                var passiveAbilityStatus = JSON.parse(JSON.stringify( rpgAbilities[rpgAbilities[abilityName]].status ));
-                                                enemySummoned.statuses.push(passiveAbilityStatus);
-                                                enemySummoned.passiveAbilities.push(passiveAbilityStatus);
-                                                enemySummoned.abilitiesMap[passiveAbilityStatus.name] = passiveAbilityStatus;    
-                                            }
-                                        }
-                                        else if (rpgAbilities[abilityName]){
-                                            var playerAbility = JSON.parse(JSON.stringify( abilityName ));
-                                            var playerAbilityObject = JSON.parse(JSON.stringify( rpgAbilities[ abilityName ] ));
-                                            enemySummoned.abilitiesMap[playerAbility] = playerAbilityObject;       
-                                        }
-                                        else{
-                                            message.channel.send("enemy has an ability that doesnt exist!")
-                                        }
-                                    }
-                                    for (var eventAtEndOfTurn in enemyFound.endOfTurnEvents){
-                                        var endOfTurnEventName =  enemyFound.endOfTurnEvents[ eventAtEndOfTurn ]
-                                        if (rpgAbilities[ endOfTurnEventName ]){
-                                            var eventToPush = JSON.parse(JSON.stringify( rpgAbilities[ endOfTurnEventName ] ));
-                                            if ( eventToPush.belongsToEvent ){
-                                                event.endOfTurnEvents.push( eventToPush );
-                                            }else if ( eventToPush.belongsToMember ){
-                                                enemySummoned.endOfTurnEvents.push( eventToPush );
-                                            }
-                                        }
-                                    }
-                                    var keystoneNum = event.challenge ? event.challenge.keystone : 0
-                                    if (keystoneNum > 0){
-                                        // add stats to enemies TODO: add it to summoned enemies
-                                        var keystoneStatsArrayIndex = keystoneNum - 1
-                                        if (enemyFound.keystoneStats){
-                                            enemySummoned.hp = enemySummoned.hp  + enemyFound.keystoneStats.hp[keystoneStatsArrayIndex]
-                                            enemySummoned.attackDmg = enemySummoned.attackDmg + enemyFound.keystoneStats.attackDmg[keystoneStatsArrayIndex]
-                                            enemySummoned.magicDmg = enemySummoned.magicDmg + enemyFound.keystoneStats.magicDmg[keystoneStatsArrayIndex]
-                                            if (enemyFound.keystoneStats.frenzy){
-                                                for (var b in enemySummoned.buffs){
-                                                    if (enemySummoned.buffs[b].name == "frenzy"){
-                                                        enemySummoned.buffs[b].onTurnEnd.attackDmgPlus = enemyFound.keystoneStats.frenzy.attackDmgPlus[keystoneStatsArrayIndex]
-                                                        enemySummoned.buffs[b].onTurnEnd.magicDmgPlus = enemyFound.keystoneStats.frenzy.magicDmgPlus[keystoneStatsArrayIndex]
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                    enemySummoned.maxhp = enemySummoned.hp;
-                                    enemyIdCount++;
-                                    // add the enemy to the list
-                                    event.enemiesCount++;
-                                    event.enemies[enemySummoned.id] = enemySummoned;
-                                    if (enemyFound.baseHpOn){
-                                        // set the HP to the hp of the 
-                                        var hpAccumulated = 0
-                                        for (var n in enemyFound.baseHpOn){
-                                            for (var e in event.enemies){
-                                                if (event.enemies[e].name == enemyFound.baseHpOn[n]){
-                                                    var hpOfEnemy = event.enemies[e].hp
-                                                    hpAccumulated = hpAccumulated + hpOfEnemy
-                                                }
-                                            }
-                                        }
-                                        hpAccumulated = hpAccumulated * enemyFound.baseHpOnMultiplier
-                                        enemySummoned.hp = hpAccumulated
-                                    }
-                                    // make the event invalid so it doesnt happen anymore or else it would happen every turn afterwards
-                                    event.enemies[enemy].endOfTurnEvents[index].invalid = true;
-                                    endOfTurnString = endOfTurnString + enemySummoned.name + " was summoned\n"
-                                }else{
-                                    endOfTurnString = endOfTurnString + ""
-                                }
-                                
+                                endOfTurnString = endOfTurnString + summonEnemy(event, enemy, index, enemyFound, enemyBeingSummoned, true)
                             }
                             // EOT event is a regular ability to process
                             if (event.enemies[enemy].endOfTurnEvents[index].processAbility
@@ -5244,7 +5150,7 @@ function reanimateEnemy(event, enemy, reanimateRpgAbility){
     }
 }
 
-function summonEnemy(event, enemy, index, enemyFound, summonRpgAbility){
+function summonEnemy(event, enemy, index, enemyFound, summonRpgAbility, castOnce){
     // summoning plus ad, md, armor, spirit
 
     // check that an enemy already exists with that name
@@ -5389,6 +5295,33 @@ function summonEnemy(event, enemy, index, enemyFound, summonRpgAbility){
                         }
                     }
                 }
+
+                // replace the lists instead of adding onto them
+                if (enemyFound.keystoneStats.abilities){
+
+                }
+                if (enemyFound.keystoneStats.abilityOrder){
+
+                }
+                if (enemyFound.keystoneStats.endOfTurnEvents){
+                    for (var eventAtEndOfTurn in enemyFound.keystoneStats.endOfTurnEvents){
+                        var endOfTurnEventName =  enemyFound.keystoneStats.endOfTurnEvents[ eventAtEndOfTurn ]
+                        // check it is at the right keystone num
+                        if ( rpgAbilities[ endOfTurnEventName ] ){
+                            var eventToPush = JSON.parse(JSON.stringify( rpgAbilities[ endOfTurnEventName ] ));
+                            if (keystoneNum >= eventToPush.aboveKeystone){
+                                if ( eventToPush.belongsToEvent ){
+                                    activeRPGEvents[rpgEvent].endOfTurnEvents.push( eventToPush );
+                                }else if ( eventToPush.belongsToMember ){
+                                    enemySummoned.endOfTurnEvents.push( eventToPush );
+                                }
+                            }
+                        }
+                    }
+                }
+                if (enemyFound.keystoneStats.effectsOnDeath){
+                    
+                }
             }
         }
         enemySummoned.immuneToAoe = enemyFound.immuneToAoe
@@ -5414,6 +5347,9 @@ function summonEnemy(event, enemy, index, enemyFound, summonRpgAbility){
     
         // make the event invalid so it doesnt happen anymore
         // or else it would happen every turn afterwards
+        if (castOnce){
+            event.enemies[enemy].endOfTurnEvents[index].invalid = true;
+        }
         var summonString = enemySummoned.name + " has been summoned\n" 
         return summonString;
     }else{

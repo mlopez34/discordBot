@@ -1297,7 +1297,7 @@ module.exports = {
             processAbility: true,
             belongsToMember: true,
             areawide: true,
-            everyNTurns: 10,
+            everyNTurns: 15,
             afterNTurns: 10,
             currentTurn: 0,
             dot: {
@@ -1325,7 +1325,7 @@ module.exports = {
             processAbility: true,
             belongsToMember: true,
             areawide: true,
-            everyNTurns: 10,
+            everyNTurns: 15,
             afterNTurns: 15,
             currentTurn: 0,
             dot: {
@@ -2754,6 +2754,32 @@ module.exports = {
                 dmgOnExpire: 0
             }
         },
+        sap: {
+            name:"Sap",
+            abilityId: "sap",
+            type:"physical",
+            aboveKeystone: 6,
+            processAbility: true,
+            belongsToMember: true,
+            everyNTurns: 2,
+            ignoreUnique: true,
+            afterNTurns: 1,
+            currentTurn: 0,
+            dot: {
+                name: "Sap",
+                abilityId: "sap",
+                type:"physical",
+                dmg: 100,
+                adPercentage: 3,
+                areawide: true,
+                emoji: ":red_circle:",
+                dmgOnDotApply: false,
+                ignoreUnique: true,
+                turnsToExpire: 25,
+                dmgOnDotExpire: false,
+                dmgOnExpire: 0
+            }
+        },
         hexNormie: {
             name:"Hex",
             abilityId: "hexNormie",
@@ -2910,7 +2936,7 @@ module.exports = {
             effectDone: false,
             oneTimeCast: true,
             hppercentage: 0.2,
-            aboveKeystone : 6,
+            aboveKeystone: 6,
             name: "Reanimate",
             abilityId: "reanimateAll",
             admdMultiplier: 1.25,
@@ -2919,7 +2945,7 @@ module.exports = {
             zombifyAll: true // summons zombies
         },
         reanimateAllMessage: {
-            aboveKeystone : 6,
+            aboveKeystone: 6,
             belongsToMember: true,
             effectDone: false,
             oneTimeCast: true,
@@ -3390,6 +3416,62 @@ module.exports = {
             everyNTurns: 6,
             ignoreFocus: true,
             afterNTurns: 5,
+            currentTurn: 0,
+            status: {
+                status: true,
+                abilityId: "arrowVolley",
+                name: "Arrow Volley",
+                type:"physical",
+                dmg: 100,
+                untargettable: true,
+                adPercentage: 1,
+                emoji: "🏹",
+                dmgOnDotApply: false,
+                turnsToExpire: 1,
+                dmgOnStatusExpire: true,
+                adPercentageOnRemove: .9,
+                dmgOnExpire: 600
+            }
+        },
+
+        secondarrowVolley: {
+            name:"Arrow Volley",
+            abilityId: "secondarrowVolley",
+            type:"physical",
+            aboveKeystone: 6,
+            processAbility: true,
+            belongsToMember: true,
+            everyNTurns: 6,
+            ignoreFocus: true,
+            afterNTurns: 6,
+            currentTurn: 0,
+            status: {
+                status: true,
+                abilityId: "arrowVolley",
+                name: "Arrow Volley",
+                type:"physical",
+                dmg: 100,
+                untargettable: true,
+                adPercentage: 1,
+                emoji: "🏹",
+                dmgOnDotApply: false,
+                turnsToExpire: 1,
+                dmgOnStatusExpire: true,
+                adPercentageOnRemove: .9,
+                dmgOnExpire: 600
+            }
+        },
+
+        thirdarrowVolley: {
+            name:"Arrow Volley",
+            abilityId: "thirdarrowVolley",
+            type:"physical",
+            aboveKeystone: 6,
+            processAbility: true,
+            belongsToMember: true,
+            everyNTurns: 6,
+            ignoreFocus: true,
+            afterNTurns: 7,
             currentTurn: 0,
             status: {
                 status: true,

@@ -880,7 +880,7 @@ module.exports = {
                 armorPlusPercentage: 1,
                 spiritPlusPercentage: 1,
                 frenzyAdIncreasePercentage: 1.5,
-                echoIncreasePercentage: 1.5
+                echoIncreasePercentage: 1.4
             },
             enemies: {
                 easy: [
@@ -1155,7 +1155,7 @@ module.exports = {
                 armorPlusPercentage: 1,
                 spiritPlusPercentage: 1,
                 frenzyAdIncreasePercentage: 1.5,
-                echoIncreasePercentage: 1.5
+                echoIncreasePercentage: 1.4
             },
             enemies: {
                 easy: [
@@ -1501,7 +1501,7 @@ module.exports = {
                 armorPlusPercentage: 1,
                 spiritPlusPercentage: 1,
                 frenzyAdIncreasePercentage: 1.5,
-                echoIncreasePercentage: 1.5
+                echoIncreasePercentage: 1.4
             },
             enemies: {
                 easy: [
@@ -1776,7 +1776,7 @@ module.exports = {
                 armorPlusPercentage: 1,
                 spiritPlusPercentage: 1,
                 frenzyAdIncreasePercentage: 1.8,
-                echoIncreasePercentage: 1.8
+                echoIncreasePercentage: 1.4
             },
             enemies: {
                 easy: [
@@ -2079,7 +2079,7 @@ module.exports = {
                 armorPlusPercentage: 1,
                 spiritPlusPercentage: 1,
                 frenzyAdIncreasePercentage: 2.2,
-                echoIncreasePercentage: 2.2
+                echoIncreasePercentage: 1.8
             },
             enemies: {
                 easy: [
@@ -2422,7 +2422,7 @@ module.exports = {
                 armorPlusPercentage: 1,
                 spiritPlusPercentage: 1,
                 frenzyAdIncreasePercentage: 2.2,
-                echoIncreasePercentage: 2.2
+                echoIncreasePercentage: 1.8
             },
             enemies: {
                 easy: [
@@ -2717,7 +2717,7 @@ module.exports = {
                 armorPlusPercentage: 1,
                 spiritPlusPercentage: 1,
                 frenzyAdIncreasePercentage: 2.2,
-                echoIncreasePercentage: 2.2
+                echoIncreasePercentage: 1.8
             },
             enemies: {
                 easy: [
@@ -3024,7 +3024,7 @@ module.exports = {
                 armorPlusPercentage: 1,
                 spiritPlusPercentage: 1,
                 frenzyAdIncreasePercentage: 2.5,
-                echoIncreasePercentage: 2.5
+                echoIncreasePercentage: 2.1
             },
             enemies: {
                 easy: [
@@ -3318,7 +3318,7 @@ module.exports = {
                 armorPlusPercentage: 1,
                 spiritPlusPercentage: 1,
                 frenzyAdIncreasePercentage: 2.8,
-                echoIncreasePercentage: 2.8
+                echoIncreasePercentage: 2.4
             },
             enemies: {
                 easy: [
@@ -3534,7 +3534,7 @@ module.exports = {
                 armorPlusPercentage: 1,
                 spiritPlusPercentage: 1,
                 frenzyAdIncreasePercentage: 3,
-                echoIncreasePercentage: 2.8
+                echoIncreasePercentage: 2.4
             },
             enemies: {
                 easy: [
@@ -3939,7 +3939,7 @@ module.exports = {
                 armorPlusPercentage: 2.2,
                 spiritPlusPercentage: 2.2,
                 frenzyAdIncreasePercentage: 2.5,
-                echoIncreasePercentage: 2.5
+                echoIncreasePercentage: 2.1
             },
             enemies: {
                 easy: [
@@ -4362,7 +4362,7 @@ module.exports = {
                 armorPlusPercentage: 1,
                 spiritPlusPercentage: 1,
                 frenzyAdIncreasePercentage: 2.5,
-                echoIncreasePercentage: 2.5
+                echoIncreasePercentage: 2.1
             },
             enemies: {
                 easy: [
@@ -4667,7 +4667,7 @@ module.exports = {
                 armorPlusPercentage: 1,
                 spiritPlusPercentage: 1,
                 frenzyAdIncreasePercentage: 3.2,
-                echoIncreasePercentage: 2.9
+                echoIncreasePercentage: 2.5
             },
             enemies: {
                 easy: [
@@ -5059,7 +5059,7 @@ module.exports = {
                 armorPlusPercentage: 1,
                 spiritPlusPercentage: 1,
                 frenzyAdIncreasePercentage: 3.2,
-                echoIncreasePercentage: 2.9
+                echoIncreasePercentage: 2.5
             },
             enemies: {
                 easy: [
@@ -5316,7 +5316,7 @@ module.exports = {
                 magiccastle: {
                     areaString : " ",
                     name: "Magic Castle",
-                    enemiesToDefeat: 120,
+                    enemiesToDefeat: 60,
                     enemies: [
                         {
                             enemyId: "polarbear",
@@ -5345,10 +5345,6 @@ module.exports = {
                         {
                             enemyId: "mammoth",
                             enemyDifficulty: "hard"
-                        },
-                        {
-                            enemyId: "polarbear",
-                            enemyDifficulty: "medium"
                         }
                     ],
                     onCompleteAreasUnlocked: [
@@ -5426,7 +5422,7 @@ module.exports = {
                 armorPlusPercentage: 1,
                 spiritPlusPercentage: 1,
                 frenzyAdIncreasePercentage: 3.4,
-                echoIncreasePercentage: 3
+                echoIncreasePercentage: 2.8
             },
             enemies: {
                 easy: [
