@@ -4424,7 +4424,7 @@ module.exports = {
                 effectsOnDeath: [
                     "empowerDeath"
                 ],
-                hpPerPartyMember: 1652,
+                hpPerPartyMember: 2952,
                 hp: 2550,
                 adPerPartyMember: 50,
                 mdPerPartyMember: 50,
