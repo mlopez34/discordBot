@@ -1,7 +1,7 @@
 'use strict'
 var profileDB = require("./profileDB.js")
 
-var THANK_BASE_SECONDS = 7200;
+var THANK_BASE_SECONDS = 3600; // 7200
 var RPG_BASE_SECONDS = 3600;
 var SORRY_BASE_SECONDS = 21600;
 var SCAVENGE_BASE_SECONDS = 3600;
@@ -1222,7 +1222,7 @@ module.exports.getUserWearingStats = function(message, discordUserId, userData, 
     }else{
         profileDB.getUserItems(discordUserId, function(err, inventoryResponse){
             if (err){
-                // console.log(err);
+                console.log(err);
                 cb(err)
             }else{
                 userData.inventoryResponse = inventoryResponse
