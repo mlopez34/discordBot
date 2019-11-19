@@ -49,7 +49,7 @@ var SODA_CAN_ITEM_ID = 1;
 var SOIL_ITEM_ID = 2;
 var PET_COST = 750;
 var QueueOfTacosDropped = [];
-var THANK_COOLDOWN_HOURS = 2;
+var THANK_COOLDOWN_HOURS = 1;
 var SORRY_COOLDOWN_HOURS = 6;
 var COOK_COOLDOWN_HOURS = 24;
 var PREPARE_COOLDOWN_HOURS = 48;
@@ -735,7 +735,7 @@ module.exports.thankCommand = function(message){
                                 calculateResetScavengeCD(message, discordUserId, thankResponse.data)
                             }
                             // add tacos to user's profile if they got extra tacos
-                            var tacosThanked = 10
+                            var tacosThanked = 100 // 10
                             if (thankResponse.data.templelevel && thankResponse.data.templelevel > 1){
                                 tacosThanked = tacosThanked + ( userLevel * thankResponse.data.templelevel )
                             }
@@ -779,9 +779,9 @@ module.exports.thankCommand = function(message){
                                     })
                                     // send message that the user has 1 more taco
                                     if (extraTacosFromItems > 0){
-                                        message.channel.send(message.author.username + " thanked " + mentionedUser.username + ", they received `" + tacosThanked + "` tacos! :taco:" + " you received `" + extraTacosFromItems + "` extra tacos");
+                                        message.channel.send(message.author.username + " thanked " + mentionedUser.username + ", they received `" + tacosThanked + "` tacos! :taco: :turkey:" + " you received `" + extraTacosFromItems + "` extra tacos");
                                     }else{
-                                        message.channel.send(message.author.username + " thanked " + mentionedUser.username + ", they received `" + tacosThanked + "` tacos! :taco: ");
+                                        message.channel.send(message.author.username + " thanked " + mentionedUser.username + ", they received `" + tacosThanked + "` tacos! :taco: :turkey: ");
                                     }
                                 }
                             })
