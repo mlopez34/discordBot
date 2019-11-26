@@ -634,6 +634,7 @@ module.exports = {
                     "shrink"
                 ],
                 effectsOnDeath: [
+                    "summonPorthosDeath",
                     "transferDartagnanAbilities",
                     "transferAthosAbilities"
                 ],
@@ -700,6 +701,7 @@ module.exports = {
                 // shadow shield every 6 turns
                 effectsOnDeath: [
                     // clear apparitions
+                    "summonAramisDeath",
                     "transferDartagnanAbilities",
                     "transferAthosAbilities",
                     "transferPortosAbilities"
@@ -7779,6 +7781,7 @@ module.exports = {
                             "elementalOrderPrepare"
                         ],
                         effectsOnDeath: [
+                            "summonAthosDeath",
                             "transferDartagnanAbilities",
                         ],
                         hp: 54600,

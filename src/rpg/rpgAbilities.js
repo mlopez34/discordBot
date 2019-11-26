@@ -3135,6 +3135,19 @@ module.exports = {
                 hpPlus: 0
             }
         },
+        summonAthosDeath: {
+            name: "Summon Athos",
+            abilityId: "summonAthosDeath",
+            belongsToMember: true,
+            onDeathEffect: true,
+            effectDone: false,
+            summon: {
+                enemy: "athos",
+                attackDmg: 240,
+                magicDmg: 250,
+                hpPlus: 0
+            }
+        },
         summonPorthos: {
             name: "Summon Porthos",
             abilityId: "summonPorthos",
@@ -3148,12 +3161,38 @@ module.exports = {
                 hpPlus: 0
             }
         },
+        summonPorthosDeath: {
+            name: "Summon Porthos",
+            abilityId: "summonPorthosDeath",
+            belongsToMember: true,
+            onDeathEffect: true,
+            effectDone: false,
+            summon: {
+                enemy: "porthos",
+                attackDmg: 240,
+                magicDmg: 250,
+                hpPlus: 0
+            }
+        },
         summonAramis: {
             name: "Summon Aramis",
             abilityId: "summonAramis",
             belongsToMember: true,
             effectDone: false,
             hppercentage: 0.3,
+            summon: {
+                enemy: "aramis",
+                attackDmg: 240,
+                magicDmg: 250,
+                hpPlus: 0
+            }
+        },
+        summonAramisDeath: {
+            name: "Summon Aramis",
+            abilityId: "summonAramisDeath",
+            belongsToMember: true,
+            effectDone: false,
+            onDeathEffect: true,
             summon: {
                 enemy: "aramis",
                 attackDmg: 240,
