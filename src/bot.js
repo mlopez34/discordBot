@@ -224,7 +224,7 @@ client.on('message', function(message){
                 // }
                 //SEASONAL
                 else if (commandIs("present", message) && settings.canBotRespondToCommandInChannel("regular", guildId, channelId)){
-                    //messagesByUserTimeout(commands.openPresentCommand, message)
+                    commands.openPresentCommand(message)
                 }
                 
                 else if( commandIs("sorry", message ) && settings.canBotRespondToCommandInChannel("regular", guildId, channelId)){
@@ -744,7 +744,9 @@ client.on('message', function(message){
                 // }
                 // SEASONAL
                 else if (commandIs("present", message) && settings.canBotRespondToCommandInChannel("regular", guildId, channelId)){
-                    //messagesByUserTimeout(commands.openPresentCommand, message)
+                    commands.openPresentCommand(message)
+                    data.command = "present"
+                    profileDB.createUserActivity(data)
                 }
                 
                 else if( commandIs("sorry", message ) && settings.canBotRespondToCommandInChannel("regular", guildId, channelId)){

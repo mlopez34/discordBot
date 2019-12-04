@@ -2405,9 +2405,6 @@ module.exports = {
                 "tokyo",
             ]
         },
-
-        //// NOT DONE TODO: FINISH THESE AND CONNECT
-
         patagonia: {
             zoneAvatar: "https://i.imgur.com/X7tvrJp.png",
             zoneString : "Freezing to death should be the least of your worries",

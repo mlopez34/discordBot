@@ -309,7 +309,6 @@ function getRpgZone(areaname){
 
 function petFetchItemBasedOnArea(message, eventParams){
     // get commons and uncommons here only, never rares or above
-    // TODO: implement this
     if (eventParams.discordUserId){
         profileDB.getUserRpgProfleData(eventParams.discordUserId, function(err, rpgRes){
             if (err){

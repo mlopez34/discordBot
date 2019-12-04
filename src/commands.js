@@ -49,7 +49,7 @@ var SODA_CAN_ITEM_ID = 1;
 var SOIL_ITEM_ID = 2;
 var PET_COST = 750;
 var QueueOfTacosDropped = [];
-var THANK_COOLDOWN_HOURS = 1;
+var THANK_COOLDOWN_HOURS = 2;
 var SORRY_COOLDOWN_HOURS = 6;
 var COOK_COOLDOWN_HOURS = 24;
 var PREPARE_COOLDOWN_HOURS = 48;
@@ -471,10 +471,12 @@ module.exports.openPresentCommand = function(message){
                         && allItems[item].fromscavenge == true){
                             uncommonItems.push(allItems[item]);
                         }else if(allItems[item].itemraritycategory == "rare"
-                        && allItems[item].fromscavenge == true){
+                        && (allItems[item].fromscavenge == true
+                        || allItems[item].fromevent == "winterveil" ) ){
                             rareItems.push(allItems[item]);
                         }else if(allItems[item].itemraritycategory == "ancient"
-                        && allItems[item].fromscavenge == true){
+                        && ( allItems[item].fromscavenge == true 
+                        || allItems[item].fromevent == "winterveil" ) ){
                             ancientItems.push(allItems[item]);
                         }
                     }
@@ -735,7 +737,7 @@ module.exports.thankCommand = function(message){
                                 calculateResetScavengeCD(message, discordUserId, thankResponse.data)
                             }
                             // add tacos to user's profile if they got extra tacos
-                            var tacosThanked = 100 // 10
+                            var tacosThanked = 10
                             if (thankResponse.data.templelevel && thankResponse.data.templelevel > 1){
                                 tacosThanked = tacosThanked + ( userLevel * thankResponse.data.templelevel )
                             }
@@ -779,9 +781,9 @@ module.exports.thankCommand = function(message){
                                     })
                                     // send message that the user has 1 more taco
                                     if (extraTacosFromItems > 0){
-                                        message.channel.send(message.author.username + " thanked " + mentionedUser.username + ", they received `" + tacosThanked + "` tacos! :taco: :turkey:" + " you received `" + extraTacosFromItems + "` extra tacos");
+                                        message.channel.send(message.author.username + " thanked " + mentionedUser.username + ", they received `" + tacosThanked + "` tacos! :taco: " + " you received `" + extraTacosFromItems + "` extra tacos");
                                     }else{
-                                        message.channel.send(message.author.username + " thanked " + mentionedUser.username + ", they received `" + tacosThanked + "` tacos! :taco: :turkey: ");
+                                        message.channel.send(message.author.username + " thanked " + mentionedUser.username + ", they received `" + tacosThanked + "` tacos! :taco: ");
                                     }
                                 }
                             })
@@ -1589,10 +1591,10 @@ module.exports.cookCommand = function(message){
                                     }
                                     else if (HAS_CASSEROLE){
                                         message.channel.send(message.author.username + " Cooked `" + cookRoll + "` tacos! you now have `" + ( adjustedTacosForUser(discordUserId, cookResponse.data.tacos) + cookRoll) + "` tacos :taco:" + "! received `" + extraTacosFromCasserole + "` extra tacos :taco: from your casserole" );
-                                        message.channel.send("Hollow's end is here :jack_o_lantern: time to go `-trickortreat`ing")
+                                        message.channel.send("Winter Fest is here 🎄 time to get your `-present`s")
                                     }else{
                                         message.channel.send(message.author.username + " Cooked `" + cookRoll + "` tacos! you now have `" + ( adjustedTacosForUser(discordUserId, cookResponse.data.tacos) + cookRoll) + "` tacos :taco:" );
-                                        message.channel.send("Hollow's end is here :jack_o_lantern: time to go `-trickortreat`ing")
+                                        message.channel.send("Winter Fest is here 🎄 time to get your `-present`s")
                                     }
                                     var data = {}
                                     data.achievements = achievements;
@@ -5120,7 +5122,6 @@ module.exports.fetchCommand = function(message, args){
                                                 exports.setCommandLock("fetch", discordUserId, false)
                                                 var experienceFromItems = wearStats.calculateExtraExperienceGained(wearRes, "fetch", null);                                                                             
                                                 experience.gainExperience(message, message.author, (( (EXPERIENCE_GAINS.perFetchCd * PETS_AVAILABLE[userPet].fetch) / 10) + experienceFromItems) , fetchResponse);
-                                                // TODO: create events that are processed by other modules: ie - temple, greenhouse, temple 
                                                 let eventParams = { command: "fetch", userData: fetchResponse, fetchCD: userData.fetchCD, discordUserId: discordUserId, userPetName: userPetName, emoji: PETS_AVAILABLE[userPet].emoji, stableRes: fetchResponse  }
                                                 additionalEventsForCommand(message, eventParams)
                                                 createTimeOutForCommandAfterUse("fetch", now, secondsToRemove, PETS_AVAILABLE[userPet].cooldown, discordUserId, fetchResponse.data, message)
@@ -10741,7 +10742,6 @@ module.exports.cdCommand = function(message){
                     for (var command in commandsToList ){
                         commandsToList[command].cdString = getCDString(wearRes, res, commandsToList[command])
                     }
-                    // TODO: recreate timers based on current times?
                     initializeUserReminders(res.data[0], true)
                     cdEmbedBuilder(message, commandsToList)
                 }
@@ -10892,7 +10892,6 @@ module.exports.cdToggleCommand = function(message, args){
                         }
                         if (acceptedCommand){
                             // add it to timers map
-                            // TODO: handle this in a separate function
                             commandTimersUpdateChannelForCommand(discordUserId, commandToToggle, channelId)
                             handleCommandTimerToggle(commandToToggle, discordUserId, currentCommandToggled, lastCommandTime, commandCooldownHours, secondsToRemove, message)                    
                         }
