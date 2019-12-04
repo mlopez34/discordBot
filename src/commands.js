@@ -448,7 +448,7 @@ module.exports.openPresentCommand = function(message){
     var roll = Math.floor(Math.random() * 100) + 1;
     profileDB.getUserProfileData( discordUserId, function(error, getUserResponse) {
         if(error){
-            // console.log(error);
+            console.log(error);
         }else{
             // get all the possible items from items DB - Bad implementation but idgaf
             var userLevel = getUserResponse.data.level;
@@ -462,30 +462,30 @@ module.exports.openPresentCommand = function(message){
             if ( !getUserResponse.data.lastpresenttime || (oneDayAgo > getUserResponse.data.lastpresenttime) ){
                 if (roll >= 50){
                     // roll an item
+                    var allScavengeableItems = exports.getAllItems()
                     var itemsObtainedArray = [];
                     var uncommonItems = [];
                     var rareItems = [];
                     var ancientItems = [];                        
-                    for (var item in allItems){
-                        if(allItems[item].itemraritycategory == "uncommon"
-                        && allItems[item].fromscavenge == true){
-                            uncommonItems.push(allItems[item]);
-                        }else if(allItems[item].itemraritycategory == "rare"
-                        && (allItems[item].fromscavenge == true
-                        || allItems[item].fromevent == "winterveil" ) ){
-                            rareItems.push(allItems[item]);
-                        }else if(allItems[item].itemraritycategory == "ancient"
-                        && ( allItems[item].fromscavenge == true 
-                        || allItems[item].fromevent == "winterveil" ) ){
-                            ancientItems.push(allItems[item]);
+                    for (var item in allScavengeableItems){
+                        if(allScavengeableItems[item].itemraritycategory == "uncommon"){
+                            uncommonItems.push(allScavengeableItems[item]);
+                        }else if(allScavengeableItems[item].itemraritycategory == "rare"
+                        && (allScavengeableItems[item].fromscavenge == true
+                        || allScavengeableItems[item].fromevent == "winterveil" ) ){
+                            rareItems.push(allScavengeableItems[item]);
+                        }else if(allScavengeableItems[item].itemraritycategory == "ancient"
+                        && ( allScavengeableItems[item].fromscavenge == true 
+                        || allScavengeableItems[item].fromevent == "winterveil" ) ){
+                            ancientItems.push(allScavengeableItems[item]);
                         }
                     }
                     var rarityRoll = Math.floor(Math.random() * 10000) + 1;
 
                     var ANCIENT_MAX_ROLL = 10000
-                    var ANCIENT_MIN_ROLL = 9920;
-                    var RARE_MAX_ROLL = 9920;
-                    var RARE_MIN_ROLL = 9700;
+                    var ANCIENT_MIN_ROLL = 9820;
+                    var RARE_MAX_ROLL = 9820;
+                    var RARE_MIN_ROLL = 9500;
                             
                     if(rarityRoll > ANCIENT_MIN_ROLL && rarityRoll <= ANCIENT_MAX_ROLL){
                         var itemRoll = Math.floor(Math.random() * ancientItems.length);
