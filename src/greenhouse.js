@@ -145,6 +145,8 @@ module.exports.getUpgradeRequirementsForLevel = function(level, itemsMapById){
             var itemReq = itemReq + itemname + " x" + itemcount + "\n"
         }
         requirementString = requirementString + "*Tacos:* " + upgradeReqs.tacos + "\n*Reputation:* " + reputation.getReputationBasedOnLevel( upgradeReqs.reputationlevel ) + "\n*Items:*\n" + itemReq
+    }else{
+        requirementString = "N/A"
     }
     return requirementString
 }
