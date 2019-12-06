@@ -4858,12 +4858,12 @@ module.exports.buypetCommand = function(message, args){
             else{
                 profileDB.getStableData( discordUserId, function(err, buyPetResponse) {
                     if(err){
-                        // console.log(err);
+                        console.log(err);
                         message.channel.send("You must `-agree` to create a profile first!")
                     }else{
                         var userReputation = buyPetResponse.data.repstatus;
-                        var userRepLevel = REPUTATIONS[userReputation.toLowerCase()] ? REPUTATIONS[userReputation.toLowerCase()].level : 1;
                         if (userReputation && (REPUTATIONS[userReputation.toLowerCase()]) ){
+                            var userRepLevel = REPUTATIONS[userReputation.toLowerCase()] ? REPUTATIONS[userReputation.toLowerCase()].level : 1;
                             var achievements = buyPetResponse.data.achievements;
                             var userTacos = adjustedTacosForUser(discordUserId, buyPetResponse.data.tacos)
                             var userBurritos = buyPetResponse.data.burritos

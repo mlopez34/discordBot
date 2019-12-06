@@ -3107,7 +3107,6 @@ function eventEndedEmbedBuilder(message, event, partySuccess){
 
     else if (event.area && event.usersInArea && partySuccess){
         // give completion to everyone in the area
-        // TODO: send in correct channels
         for (var u in event.usersInArea){
             var discordUserId = event.usersInArea[u].userid
             let customChannel = event.memberLastChannel[discordUserId]
@@ -3235,7 +3234,7 @@ function increaseCompletionForUser(eventUser, rpgareaId, message, enemiesCount, 
                         listOfRares.push(itemsForClaim[index]);
                     }
                     if (itemsForClaim[index].itemraritycategory == "rare"
-                    && itemsForClaim[index].findinzone == zoneUserIsIn){
+                    && itemFoundInZone(itemsForClaim[index], zoneUserIsIn)){
                         listOfRares.push(itemsForClaim[index]);
                     }
                 }
@@ -3262,7 +3261,7 @@ function increaseCompletionForUser(eventUser, rpgareaId, message, enemiesCount, 
                         listOfAncients.push(itemsForZoneComplete[index]);
                     }
                     if (itemsForZoneComplete[index].itemraritycategory == "ancient"
-                    && itemsForZoneComplete[index].findinzone == zoneUserIsIn){
+                    && itemFoundInZone(itemsForZoneComplete[index], zoneUserIsIn) ){
                         listOfAncients.push(itemsForZoneComplete[index]);
                     }
                 }
@@ -3505,6 +3504,26 @@ function artifactEmbedBuilder(message, artifactItems, user){
     })
 }
 
+function itemFoundInArea(item, eventArea){
+    let foundinarea = false
+    for (var a in item.findinareaarray){
+        if (eventArea && item.findinareaarray[a] == eventArea){
+            foundinarea = true
+        }
+    }
+    return foundinarea
+}
+
+function itemFoundInZone(item, eventZone){
+    let foundinzone = false
+    for (var z in item.findinzonearray){
+        if (eventZone && item.findinzonearray[z] == eventZone){
+            foundinzone = true
+        }
+    }
+    return foundinzone
+}
+
 function calculateRewards(event, memberInRpgEvent, allItems, numberOfMembers, firstKill){
     var rewardsForPlayer =  {
         xp: 1,
@@ -3517,10 +3536,10 @@ function calculateRewards(event, memberInRpgEvent, allItems, numberOfMembers, fi
     var additionalRpgPoints = 0;
 
     var ANCIENT_MAX_ROLL = 9995
-    var ANCIENT_MIN_ROLL = 9975;
-    var RARE_MAX_ROLL = 9975;
-    var RARE_MIN_ROLL = 9800;
-    var UNCOMMON_MAX_ROLL = 9800;
+    var ANCIENT_MIN_ROLL = 9930;
+    var RARE_MAX_ROLL = 9930;
+    var RARE_MIN_ROLL = 9730;
+    var UNCOMMON_MAX_ROLL = 9730;
     var UNCOMMON_MIN_ROLL = 8000;
     var COMMON_MAX_ROLL = 8000;
     var COMMON_ITEMS_TO_OBTAIN = 1;
@@ -3540,26 +3559,26 @@ function calculateRewards(event, memberInRpgEvent, allItems, numberOfMembers, fi
         }
         else if(allItems[item].itemraritycategory == "rare"
         && (allItems[item].fromscavenge == true
-        || (event.area && allItems[item].findinarea == event.area)
-        || (event.zone && allItems[item].findinzone == event.zone) ) ){
+        || (itemFoundInArea(allItems[item], event.area))
+        || (itemFoundInZone(allItems[item], getRpgZone(event.area)) ) ) ){
             rareItems.push(allItems[item]);
         }
         else if(allItems[item].itemraritycategory == "ancient"
         && ( allItems[item].fromscavenge == true
-        || (event.area && allItems[item].findinarea == event.area)
-        || (event.zone && allItems[item].findinzone == event.zone) ) ){
+        || (itemFoundInArea(allItems[item], event.area))
+        || (itemFoundInZone(allItems[item], getRpgZone(event.area)) ) ) ){
             ancientItems.push(allItems[item]);
         }
         else if (allItems[item].itemraritycategory == "amulet"
         && ( allItems[item].amuletsource == "rpgchallenge"
-        || (getRpgZone(event.area) && allItems[item].findinarea == event.area )
-        || (getRpgZone(event.area) && allItems[item].findinzone == getRpgZone(event.area)) ) ){
+        || (itemFoundInArea(allItems[item], event.area) )
+        || (itemFoundInZone(allItems[item], getRpgZone(event.area)) ) ) ){
             ancientItems.push(allItems[item]);
         }
         else if(allItems[item].itemraritycategory == "artifact"
         && (allItems[item].fromscavenge == true
-        || (event.area && allItems[item].findinarea == event.area)
-        || (event.zone && allItems[item].findinzone == getRpgZone(event.area)) ) ){
+        || (itemFoundInArea(allItems[item], event.area))
+        || (itemFoundInZone(allItems[item], getRpgZone(event.area)) ) ) ){
             artifactItems.push(allItems[item]);
         }
     }
@@ -3599,11 +3618,11 @@ function calculateRewards(event, memberInRpgEvent, allItems, numberOfMembers, fi
             }
         }
 
-        // TODO: calculate keystone only and challenge only rewards
-        // ie - roman soldier drops roman gloves
         var numberOfRolls = enemiesToEncounter.challenge[challengeNum].lootcount || 3
         if (firstKill){
             numberOfRolls = numberOfRolls * 3
+        }else{
+            numberOfRolls = numberOfRolls + keystone
         }
         var gotKeystoneAncient = false;
         var gotKeystoneRare = false;
@@ -3674,7 +3693,7 @@ function calculateRewards(event, memberInRpgEvent, allItems, numberOfMembers, fi
         }
         var challengeDifficulty = enemiesToEncounter.challenge[challengeNum].difficulty ? enemiesToEncounter.challenge[challengeNum].difficulty : 1
         var extraXP =  memberInRpgEvent.extraXp
-        rewardsForPlayer.extraTacos = rewardsForPlayer.extraTacos + Math.floor(memberInRpgEvent.extraTacosForUser * ((challengeDifficulty / 10) + keystone) )
+        rewardsForPlayer.extraTacos = rewardsForPlayer.extraTacos + memberInRpgEvent.extraTacosForUser
         rewardsForPlayer.xp = rewardsForPlayer.xp + challengeXpPts + extraXP;
         rewardsForPlayer.rpgPoints = rewardsForPlayer.rpgPoints + challengePts * challengeDifficulty
         
@@ -3683,33 +3702,16 @@ function calculateRewards(event, memberInRpgEvent, allItems, numberOfMembers, fi
             let getThisRoll = true;
             let rpgZoneDifficulty = 1
             if (event.area){
-                let rareRpgMapItems = []
-                let ancientRpgMapItems = []
                 let craftingItems = []
                 // number of rolls based on the number of people in the area
                 let zoneAreaIsIn = getRpgZone(event.area)
                 rpgZoneDifficulty = rpgZones[zoneAreaIsIn].zoneDifficulty
                 for (var item in allItems){
-                    if (allItems[item].itemraritycategory == "ancient"
-                    && ( (event.area && allItems[item].findinzone == zoneAreaIsIn )
-                    || (event.area && allItems[item].findinarea == event.area) ) ){
-                        ancientRpgMapItems.push(allItems[item]);
-                    }else if (allItems[item].itemraritycategory == "rare"
-                    && ( (event.area && allItems[item].findinzone == zoneAreaIsIn)
-                    || (event.area &&allItems[item].findinarea == event.area)) ){
-                        rareRpgMapItems.push(allItems[item]);
-                    }else if (allItems[item].itemraritycategory == "rare"
+                    if (allItems[item].itemraritycategory == "rare"
                     && ( event.area && allItems[item].dropsfromenemy 
                     && allItems[item].dropsfromenemy == event.enemies[enemy].enemyIdName ) ){
                         craftingItems.push(allItems[item]);
                     }
-                }
-                // add the newly added items to the list of items to possibly obtain
-                for (var p in rareRpgMapItems){
-                    rareItems.push(rareRpgMapItems[p])
-                }
-                for (var p in ancientRpgMapItems){
-                    ancientItems.push(ancientRpgMapItems[p])
                 }
                 // roll for crafting items
                 if (craftingItems.length > 0){
@@ -8601,6 +8603,9 @@ function processAbility(abilityObject, event){
                 // get a random target to deal damage
                 for (var i = 0; i < rpgAbility.special.randomTargets; i ++){
                     var targetToDealDmg = getRandomLivingEnemy(event)
+                    if (abilityCaster <= 1000){
+                        targetToDealDmg = getRandomLivingPlayer(event)
+                    }
                     var damageToDeal = rpgAbility.special.dmg;
                     damageToDeal = calculateDamageDealt( event, abilityCaster, targetToDealDmg, rpgAbility.special )
                     var critStrike = damageToDeal.critical ? ">" : ""
@@ -8632,13 +8637,18 @@ function processAbility(abilityObject, event){
         if (rpgAbility.special && rpgAbility.special.additionalTargets){
             if (rpgAbility.special.heal){
                 if (rpgAbility.special.prioritizeLowestHp){
-                    var targetsToHeal = getPrioritizedTargets(event, rpgAbility.special.additionalTargets)
+                    var targetsToHeal = getPrioritizedTargets(event, rpgAbility.special.additionalTargets, abilityCaster, abilityObject.target, rpgAbility.special.ignoreInitialTarget )
                     for (var i = 0; i < targetsToHeal.length; i ++){
                         // targetsToHeal is an array, mdPercentages should use i as well, heal the targets one by one
                         rpgAbility.special.mdPercentage = rpgAbility.special.mdPercentages[i]
                         var hpToHeal = calculateHealingDone(event, abilityCaster, targetsToHeal[i].targetId, rpgAbility.special);
                         var critStrike = hpToHeal.critical ? ">" : ""
-                        var targetToHealName = event.membersInParty[targetsToHeal[i].targetId].name;
+                        var targetToHealName;
+                        if (abilityCaster > 1000){
+                            targetToHealName = event.membersInParty[targetsToHeal[i].targetId].name;
+                        }else{
+                            targetToHealName = event.enemies[targetsToHeal[i].targetId].name;
+                        }
                         if (!checkIfDeadByObject(event.membersInParty[targetsToHeal[i].targetId])){
                             healTarget( event.membersInParty[targetsToHeal[i].targetId], hpToHeal.heal)
                             // gain stack of radioactive
@@ -9719,19 +9729,32 @@ function getRandomLivingEnemy(event){
     return randomEnemy
 }
 
-function getPrioritizedTargets(event, numberOfTargets){
+function getPrioritizedTargets(event, numberOfTargets, abilityCaster, initialTarget, ignoreInitialTarget){
     // caster should be prioritized first
     var prioritizedTargets = [];
     // check event members, check their hp, order them in an array by hp, return the lowest numberOfTargets
-    for (var m in event.membersInParty){
-        if (!checkIfDeadByObject(event.membersInParty[m])){
-            prioritizedTargets.push({
-                targetId: m,
-                target: event.membersInParty[m],
-                hp: event.membersInParty[m].hp
-            })
+    if (abilityCaster > 1000){
+        for (var m in event.membersInParty){
+            if (!checkIfDeadByObject(event.membersInParty[m])){
+                prioritizedTargets.push({
+                    targetId: m,
+                    target: event.membersInParty[m],
+                    hp: event.membersInParty[m].hp
+                })
+            }
+        }
+    }else{
+        for (var m in event.enemies){
+            if (!checkIfDeadByObject(event.enemies[m])){
+                prioritizedTargets.push({
+                    targetId: m,
+                    target: event.enemies[m],
+                    hp: event.enemies[m].hp
+                })
+            }
         }
     }
+    
     /////////////// for testing
     /*
     prioritizedTargets.push({
@@ -9766,8 +9789,13 @@ function getPrioritizedTargets(event, numberOfTargets){
     var finalPrioritizedTargets = []
     for (var p in prioritizedTargets){
         if (numberOfTargets > 0){
-            finalPrioritizedTargets.push(prioritizedTargets[p])
-            numberOfTargets--;
+            if (ignoreInitialTarget 
+            && initialTarget == prioritizedTargets[p].targetId){
+                // do not include the target
+            }else{
+                finalPrioritizedTargets.push(prioritizedTargets[p])
+                numberOfTargets--;
+            }
         }else{
             break;
         }
