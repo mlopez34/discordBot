@@ -5195,7 +5195,7 @@ module.exports.useCommand = function(message, args){
     if (args && args.length > 1 && args[1].toLowerCase() == "rock" && !mentionedUser && !useItem.getItemsLock(discordUserId)){
         // create a rare item (chance) if not then receive tacos
         useItem.setItemsLock(discordUserId, true)
-        profileDB.getUserItems(discordUserId, function(error, inventoryResponse){
+        profileDB.getUserItemsByShortname(discordUserId, "rock", 10, function(error, inventoryResponse){
             if (error){
                 useItem.setItemsLock(discordUserId, false)
                 message.channel.send("You must `-agree` to create a profile first!")
@@ -5383,7 +5383,7 @@ module.exports.useCommand = function(message, args){
     else if(args && args.length > 1 && !useItem.getItemsLock(discordUserId) && (args[1].toLowerCase() == "pieceofwood" || args[1].toLowerCase() == "wood")){
         // use pieces of wood - protect against rocks being thrown at you (uses 6 pieces, protects against 3)
         useItem.setItemsLock(discordUserId, true)
-        profileDB.getUserItems(discordUserId, function(error, inventoryResponse){
+        profileDB.getUserItemsByShortname(discordUserId, "pieceofwood", 10, function(error, inventoryResponse){
             if (error){
                 // // console.log(error);
                 useItem.setItemsLock(discordUserId, false)
@@ -5454,7 +5454,7 @@ module.exports.useCommand = function(message, args){
     else if (args && args.length > 1 && !useItem.getItemsLock(discordUserId) && (args[1].toLowerCase() == "terrycloth" || args[1].toLowerCase() == "terry")){
         // create a rare item (chance) if not then receive tacos
         useItem.setItemsLock(discordUserId, true)
-        profileDB.getUserItems(discordUserId, function(error, inventoryResponse){
+        profileDB.getUserItemsByShortname(discordUserId, "terrycloth", 10, function(error, inventoryResponse){
             if (error){
                 useItem.setItemsLock(discordUserId, false)
                 message.channel.send("You must `-agree` to create a profile first!")
@@ -5554,7 +5554,7 @@ module.exports.useCommand = function(message, args){
             cansToUse = 999999
         }
         useItem.setItemsLock(discordUserId, true)
-        profileDB.getUserItems(discordUserId, function(error, inventoryResponse){
+        profileDB.getUserItemsByShortname(discordUserId, "soda", cansToUse, function(error, inventoryResponse){
             if (error){
                 useItem.setItemsLock(discordUserId, false)
                 message.channel.send("You must `-agree` to create a profile first!")
@@ -5645,7 +5645,7 @@ module.exports.useCommand = function(message, args){
             soilsCountToUse = 999999
         }
         useItem.setItemsLock(discordUserId, true)
-        profileDB.getUserItems(discordUserId, function(error, inventoryResponse){
+        profileDB.getUserItemsByShortname(discordUserId, "soil", soilsCountToUse, function(error, inventoryResponse){
             if (error){
                 useItem.setItemsLock(discordUserId, false)
                 message.channel.send("You must `-agree` to create a profile first!")
@@ -5737,7 +5737,7 @@ module.exports.useCommand = function(message, args){
         var itemShortName = (args.length >= 2) ? args[1] : undefined;
         if (!useItem.getItemsLock(discordUserId)){
             useItem.setItemsLock(discordUserId, true)
-            profileDB.getUserItemsByShortname(discordUserId, itemShortName,  function(error, inventoryResponse){
+            profileDB.getUserItemsByShortname(discordUserId, itemShortName, 10,  function(error, inventoryResponse){
                 if (error){
                     useItem.setItemsLock(discordUserId, false)
                     message.channel.send("You must `-agree` to create a profile first!")
@@ -6655,7 +6655,7 @@ module.exports.plantCommand = function(message, args){
         var myItemShortName =  args[1];
         var plotOfLand = Math.floor( args[2] );  // in an array this will always be -1 of index
         exports.setCommandLock("plant", discordUserId, true)
-        profileDB.getUserItemsByShortname(discordUserId, myItemShortName, function(err, inventoryResponse){
+        profileDB.getUserItemsByShortname(discordUserId, myItemShortName, 10, function(err, inventoryResponse){
             if (err){
                 // console.log(err);
                 message.channel.send("You must `-agree` to create a profile first!")

@@ -1862,16 +1862,17 @@ module.exports.getUserItemsByRarity = function(discordId, rarity, cb) {
   }
 
 // get user's inventory by RARITY
-module.exports.getUserItemsByShortname = function(discordId, shortname, cb) {
+module.exports.getUserItemsByShortname = function(discordId, shortname, limit, cb) {
     var query = 'SELECT userinventorytable.* ' +
     'FROM ' + config.inventoryTable + ' AS userinventorytable ' +
     'INNER JOIN ' + config.itemsTable + ' AS itemstable ' +
     'ON userinventorytable.itemid = itemstable.id ' +
     'WHERE userinventorytable.discordId = $1 AND userinventorytable.status is null AND itemstable.itemshortname = $2'
-    'ORDER BY userinventorytable.id DESC'
+    'ORDER BY userinventorytable.id DESC' +
+    'LIMIT $3' 
     
     // console.log(query);
-    db.query(query, [discordId, shortname])
+    db.query(query, [discordId, shortname, limit])
       .then(function (data) {
         cb(null, {
             status: 'success',
