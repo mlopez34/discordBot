@@ -266,9 +266,18 @@ function filterForSeeds(allItems){
 function filterForAreaMatsAncient(allItems, userArea, userZone){
     let matAncientsFromArea = []
     for (var i in allItems){
-        if (userZone && (allItems[i].findinarea == userArea || allItems[i].findinzone == userZone )
-        && allItems[i].itemstatistics == "consumable for ancient item"){
-            matAncientsFromArea.push(allItems[i])
+        for (var z in allItems[i].findinareaarray){
+            if (userArea && (userArea == allItems[i].findinareaarray[z])
+            && allItems[i].itemstatistics == "consumable for ancient item"){
+                matAncientsFromArea.push(allItems[i])
+            }
+        }
+
+        for (var z in allItems[i].findinzonearray){
+            if (userZone && (userZone == allItems[i].findinzonearray[z])
+            && allItems[i].itemstatistics == "consumable for ancient item"){
+                matAncientsFromArea.push(allItems[i])
+            }
         }
     }
     return matAncientsFromArea
@@ -277,9 +286,18 @@ function filterForAreaMatsAncient(allItems, userArea, userZone){
 function filterForAreaMatsRare(allItems, userArea, userZone){
     let matRaresFromArea = []
     for (var i in allItems){
-        if (userZone && (allItems[i].findinarea == userArea || allItems[i].findinzone == userZone )
-        && allItems[i].itemstatistics == "consumable for rare item"){
-            matRaresFromArea.push(allItems[i])
+        for (var z in allItems[i].findinareaarray){
+            if (userArea && (userArea == allItems[i].findinareaarray[z])
+            && allItems[i].itemstatistics == "consumable for rare item"){
+                matRaresFromArea.push(allItems[i])
+            }
+        }
+
+        for (var z in allItems[i].findinzonearray){
+            if (userZone && (userZone == allItems[i].findinzonearray[z])
+            && allItems[i].itemstatistics == "consumable for rare item"){
+                matRaresFromArea.push(allItems[i])
+            }
         }
     }
     return matRaresFromArea

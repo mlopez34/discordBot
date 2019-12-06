@@ -6164,8 +6164,8 @@ module.exports.greenHouseCommand = function(message, long){
     // get user profile and greenhouse info
     profileDB.getGreenHouseData(discordUserId, function(ghErr, ghRes){
         if (ghErr){
-            // console.log(ghErr)
-            message.channel.send("You must `-agree` to create a profile first!")
+            console.log(ghErr)
+            message.channel.send("You must `-agree` to create a profile first! " + ghErr)
         }else{
             if (ghRes.data.greenhouselevel > 0 && ghRes.data.greenhouse){
                 profileDB.getFruitData(discordUserId, function(err, fruitData){
@@ -6281,8 +6281,8 @@ module.exports.stableCommand = function(message, long){
     // get user profile and stable info
     profileDB.getStableData(discordUserId, function(stErr, stRes){
         if (stErr){
-            // console.log(stErr)
-            message.channel.send("You must `-agree` to create a profile first!")
+            console.log(stErr)
+            message.channel.send("You must `-agree` to create a profile first! " + stErr)
         }else{
             if (stRes.data.stablelevel > 0 && stRes.data.stable){
                 var stableData = {
@@ -6389,8 +6389,8 @@ module.exports.templeCommand = function(message, long){
     var discordUserId = message.author.id;
     profileDB.getTempleData(discordUserId, function(templeErr, templeRes){
         if (templeErr){
-            // console.log(templeErr)
-            message.channel.send("You must `-agree` to create a profile first!")
+            console.log(templeErr)
+            message.channel.send("You must `-agree` to create a profile first! " + templeErr)
         }else{
             profileDB.getUserItemsByRarity(discordUserId, "uncommon+", function(err, inventoryResponse){
                 if (err){
