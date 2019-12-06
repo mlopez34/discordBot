@@ -1839,7 +1839,7 @@ module.exports.getUserItems = function(discordId, cb) {
 
 // get user's inventory by RARITY
 module.exports.getUserItemsByRarity = function(discordId, rarity, cb) {
-    var query = 'SELECT * ' +
+    var query = 'SELECT userinventorytable.* ' +
     'FROM ' + config.inventoryTable + ' AS userinventorytable ' +
     'INNER JOIN ' + config.itemsTable + ' AS itemstable ' +
     'ON userinventorytable.itemid = itemstable.id ' +
@@ -1863,7 +1863,7 @@ module.exports.getUserItemsByRarity = function(discordId, rarity, cb) {
 
 // get user's inventory by RARITY
 module.exports.getUserItemsByShortname = function(discordId, shortname, cb) {
-    var query = 'SELECT * ' +
+    var query = 'SELECT userinventorytable.* ' +
     'FROM ' + config.inventoryTable + ' AS userinventorytable ' +
     'INNER JOIN ' + config.itemsTable + ' AS itemstable ' +
     'ON userinventorytable.itemid = itemstable.id ' +
