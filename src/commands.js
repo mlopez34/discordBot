@@ -101,7 +101,8 @@ var commandLock = {
     cook: {},
     fetch: {},
     scavenge: {},
-    plant: {}
+    plant: {},
+    harvest: {}
 }
 
 
@@ -483,9 +484,9 @@ module.exports.openPresentCommand = function(message){
                     var rarityRoll = Math.floor(Math.random() * 10000) + 1;
 
                     var ANCIENT_MAX_ROLL = 10000
-                    var ANCIENT_MIN_ROLL = 9820;
-                    var RARE_MAX_ROLL = 9820;
-                    var RARE_MIN_ROLL = 9500;
+                    var ANCIENT_MIN_ROLL = 9620;
+                    var RARE_MAX_ROLL = 9620;
+                    var RARE_MIN_ROLL = 9000;
                             
                     if(rarityRoll > ANCIENT_MIN_ROLL && rarityRoll <= ANCIENT_MAX_ROLL){
                         var itemRoll = Math.floor(Math.random() * ancientItems.length);
@@ -719,6 +720,7 @@ module.exports.thankCommand = function(message){
                 }
                 wearStats.getUserWearingStats(message, discordUserId, userWearingData, allItems, function(wearErr, wearRes){
                     if (wearErr){
+                        console.log(wearErr)
                         exports.setCommandLock("thank", discordUserId, false)
                     }else{
                         // // // console.log(wearRes);
@@ -5735,7 +5737,7 @@ module.exports.useCommand = function(message, args){
         var itemShortName = (args.length >= 2) ? args[1] : undefined;
         if (!useItem.getItemsLock(discordUserId)){
             useItem.setItemsLock(discordUserId, true)
-            profileDB.getUserItems(discordUserId, function(error, inventoryResponse){
+            profileDB.getUserItemsByShortname(discordUserId, itemShortName,  function(error, inventoryResponse){
                 if (error){
                     useItem.setItemsLock(discordUserId, false)
                     message.channel.send("You must `-agree` to create a profile first!")
@@ -5764,7 +5766,8 @@ module.exports.useCommand = function(message, args){
                     }
                     var commandTimes = wearStats.getCommandTimesInSeconds()
                     var userWearingData = {
-                        userLevel: 1 /// Doesnt matter since all we care about is command CDRs and they are NOT affected by level otherwise we would have to do a call to get userprofile and thats UGH
+                        userLevel: 1, /// Doesnt matter since all we care about is command CDRs and they are NOT affected by level otherwise we would have to do a call to get userprofile and thats UGH
+                        inventoryResponse: inventoryResponse
                     }
                     wearStats.getUserWearingStats(message, discordUserId, userWearingData, allItems, function(wearErr, wearRes){
                         if (wearErr){
@@ -6389,7 +6392,7 @@ module.exports.templeCommand = function(message, long){
             // console.log(templeErr)
             message.channel.send("You must `-agree` to create a profile first!")
         }else{
-            profileDB.getUserItems(discordUserId, function(err, inventoryResponse){
+            profileDB.getUserItemsByRarity(discordUserId, "uncommon+", function(err, inventoryResponse){
                 if (err){
                     // console.log(err);
                     message.channel.send("You must `-agree` to create a profile first!")
@@ -6652,7 +6655,7 @@ module.exports.plantCommand = function(message, args){
         var myItemShortName =  args[1];
         var plotOfLand = Math.floor( args[2] );  // in an array this will always be -1 of index
         exports.setCommandLock("plant", discordUserId, true)
-        profileDB.getUserItems(discordUserId, function(err, inventoryResponse){
+        profileDB.getUserItemsByShortname(discordUserId, myItemShortName, function(err, inventoryResponse){
             if (err){
                 // console.log(err);
                 message.channel.send("You must `-agree` to create a profile first!")
@@ -6680,7 +6683,8 @@ module.exports.plantCommand = function(message, args){
 
                         // // console.log(ItemInQuestion);
                         if (itemsMapbyShortName[myItemShortName] 
-                        && itemsMapById[ItemInQuestion.itemid].itemshortname === myItemShortName){
+                        && itemsMapById[ItemInQuestion.itemid].itemshortname === myItemShortName
+                        && itemsMapById[ItemInQuestion.itemid].isseed == true){
                             plantBeingPlanted.push(ItemInQuestion);
                         }
                     }
@@ -6798,110 +6802,122 @@ var itemHarvested = {
 module.exports.harvestCommand = function(message, args){
     var discordUserId = message.author.id;
     // harvest your greenhouse plots of land
-    profileDB.getGreenHouseData(discordUserId, function(err, profileData) {
-        if(err){
-            // console.log(err)
-        }else{
-            if (profileData.data.greenhouselevel > 0 && profileData.data.greenhouse){
-                var userLevel = profileData.data.level
-                var greenHouseData = {
-                    plots: profileData.data.plotsoflandplantid,
-                    greenhouseLevel: profileData.data.greenhouselevel,
-                    harvestCounts: profileData.data.timesharvested,
-                    plotsItemIds: profileData.data.plotsoflanditemid,
-                    lastharvest: profileData.data.lastharvest,
-                    timesharvested: profileData.data.timesharvested,
-                    name: message.author.username
-                }
-                if (!greenHouseData.plotsItemIds){
-                    greenHouseData.plotsItemIds = [null, null, null, null, null, null, null, null, null]
-                }
-                if (!greenHouseData.plots){
-                    greenHouseData.plots = [null, null, null, null, null, null, null, null, null]
-                }
-                if (!greenHouseData.timesharvested){
-                    greenHouseData.timesharvested = [0, 0, 0, 0, 0, 0, 0, 0, 0]
-                }
-                greenHouseData = reconfigureGreenHouse(greenHouseData)
-                wearStats.getUserWearingStats(message, discordUserId, {userLevel: userLevel}, allItems, function(wearErr, wearRes){
-                    if (wearErr){
-                        // console.log(wearErr)
-                    }else{
-                        var now = new Date();
-                        var threeDaysAgo = new Date();
-                        ///////// CALCULATE THE MINUTES REDUCED HERE 
-                        var secondsToRemove = wearStats.calculateSecondsReduced(wearRes, "harvest");
-                        let userCooldown = HARVEST_COOLDOWN_HOURS;
-                        if (greenHouseData.greenhouseLevel >= 11){
-                            userCooldown = 2;
-                        }else if (greenHouseData.greenhouseLevel >= 9){
-                            userCooldown = 3;
-                        }
-                        threeDaysAgo = new Date(threeDaysAgo.setHours(threeDaysAgo.getHours() - userCooldown ));
-                        threeDaysAgo = new Date(threeDaysAgo.setSeconds(threeDaysAgo.getSeconds() + secondsToRemove));
-
-                        if ( threeDaysAgo > greenHouseData.lastharvest ){
-                            var fruitsHarvested = harvestPlotsOfLand(greenHouseData, itemsMapById)
-                            var fruitsHarvestedCount = 0
-                            // harvest your plots of land
-                            var fruitsColumnsWithCount = {}
-                            for (var f in fruitsHarvested){
-                                fruitsHarvestedCount++
-                                if ( itemHarvested[f] ){
-                                    var actualFruitColumnId = itemHarvested[f]
-                                    fruitsColumnsWithCount[actualFruitColumnId] = fruitsHarvested[f]
-                                }
-                            }
-                            var newHarvestCounts = []
-                            for (var h in greenHouseData.harvestCounts){
-                                var currentCount = greenHouseData.harvestCounts[h]
-                                if (greenHouseData.greenhouseLevel >= 6 && currentCount >= 20){
-                                    newHarvestCounts.push(-1)
-                                }else if (greenHouseData.greenhouseLevel < 6 && currentCount >= 10){
-                                    newHarvestCounts.push(-1)
-                                }else{
-                                    if (currentCount > -1){
-                                        newHarvestCounts.push(currentCount + 1)
-                                    }else{
-                                        newHarvestCounts.push(currentCount)
-                                    }
-                                }
-                            }
-                            // go through all the plants in your garden, harvest them, and then add them to your fruits profile
-                            if (fruitsHarvestedCount > 0){
-                                profileDB.bulkupdateUserFruits(discordUserId, fruitsColumnsWithCount, true, function(err, bulkRes){
-                                    if (err){
-                                        // console.log(err)
-                                    }else{
-                                        // console.log(bulkRes)
-                                        var now = new Date();
-                                        profileDB.updatePlotInfo(discordUserId, { lastharvest: now, timesharvested: newHarvestCounts }, function(plotErr, plotRes){
-                                            if (plotErr){
-                                                // console.log(plotErr)
-                                            }else{
-                                                // console.log(plotRes)
-                                                harvestEmbedBuilder(message, fruitsColumnsWithCount)
-                                                createTimeOutForCommandAfterUse("harvest", now, secondsToRemove, userCooldown, discordUserId, profileData.data, message)
-                                            }
-                                        })
-                                    }
-                                })
-                            }else{
-                                message.channel.send(message.author.username + " You have no crops to harvest!")
-                            }
-                            
-                        }else{
-                            now = new Date(now.setSeconds(now.getSeconds() + secondsToRemove));
-                            var numberOfHours = getDateDifference(greenHouseData.lastharvest, now, userCooldown);
-                            message.channel.send(message.author.username + " You are tired! Please wait `" + numberOfHours + "` ");
-                        }
-                    }
-                })
+    if (!commandLock["harvest"][discordUserId]){
+        exports.setCommandLock("harvest", discordUserId, true)
+        profileDB.getGreenHouseData(discordUserId, function(err, profileData) {
+            if(err){
+                // console.log(err)
+                exports.setCommandLock("harvest", discordUserId, false)
             }else{
-                message.channel.send("You do not own a Greenhouse")
+                if (profileData.data.greenhouselevel > 0 && profileData.data.greenhouse){
+                    var userLevel = profileData.data.level
+                    var greenHouseData = {
+                        plots: profileData.data.plotsoflandplantid,
+                        greenhouseLevel: profileData.data.greenhouselevel,
+                        harvestCounts: profileData.data.timesharvested,
+                        plotsItemIds: profileData.data.plotsoflanditemid,
+                        lastharvest: profileData.data.lastharvest,
+                        timesharvested: profileData.data.timesharvested,
+                        name: message.author.username
+                    }
+                    if (!greenHouseData.plotsItemIds){
+                        greenHouseData.plotsItemIds = [null, null, null, null, null, null, null, null, null]
+                    }
+                    if (!greenHouseData.plots){
+                        greenHouseData.plots = [null, null, null, null, null, null, null, null, null]
+                    }
+                    if (!greenHouseData.timesharvested){
+                        greenHouseData.timesharvested = [0, 0, 0, 0, 0, 0, 0, 0, 0]
+                    }
+                    greenHouseData = reconfigureGreenHouse(greenHouseData)
+                    wearStats.getUserWearingStats(message, discordUserId, {userLevel: userLevel}, allItems, function(wearErr, wearRes){
+                        if (wearErr){
+                            // console.log(wearErr)
+                            exports.setCommandLock("harvest", discordUserId, false)
+                        }else{
+                            var now = new Date();
+                            var threeDaysAgo = new Date();
+                            ///////// CALCULATE THE MINUTES REDUCED HERE 
+                            var secondsToRemove = wearStats.calculateSecondsReduced(wearRes, "harvest");
+                            let userCooldown = HARVEST_COOLDOWN_HOURS;
+                            if (greenHouseData.greenhouseLevel >= 11){
+                                userCooldown = 2;
+                            }else if (greenHouseData.greenhouseLevel >= 9){
+                                userCooldown = 3;
+                            }
+                            threeDaysAgo = new Date(threeDaysAgo.setHours(threeDaysAgo.getHours() - userCooldown ));
+                            threeDaysAgo = new Date(threeDaysAgo.setSeconds(threeDaysAgo.getSeconds() + secondsToRemove));
+
+                            if ( threeDaysAgo > greenHouseData.lastharvest ){
+                                var fruitsHarvested = harvestPlotsOfLand(greenHouseData, itemsMapById)
+                                var fruitsHarvestedCount = 0
+                                // harvest your plots of land
+                                var fruitsColumnsWithCount = {}
+                                for (var f in fruitsHarvested){
+                                    fruitsHarvestedCount++
+                                    if ( itemHarvested[f] ){
+                                        var actualFruitColumnId = itemHarvested[f]
+                                        fruitsColumnsWithCount[actualFruitColumnId] = fruitsHarvested[f]
+                                    }
+                                }
+                                var newHarvestCounts = []
+                                for (var h in greenHouseData.harvestCounts){
+                                    var currentCount = greenHouseData.harvestCounts[h]
+                                    if (greenHouseData.greenhouseLevel >= 6 && currentCount >= 20){
+                                        newHarvestCounts.push(-1)
+                                    }else if (greenHouseData.greenhouseLevel < 6 && currentCount >= 10){
+                                        newHarvestCounts.push(-1)
+                                    }else{
+                                        if (currentCount > -1){
+                                            newHarvestCounts.push(currentCount + 1)
+                                        }else{
+                                            newHarvestCounts.push(currentCount)
+                                        }
+                                    }
+                                }
+                                // go through all the plants in your garden, harvest them, and then add them to your fruits profile
+                                if (fruitsHarvestedCount > 0){
+                                    profileDB.bulkupdateUserFruits(discordUserId, fruitsColumnsWithCount, true, function(err, bulkRes){
+                                        if (err){
+                                            // console.log(err)
+                                            exports.setCommandLock("harvest", discordUserId, false)
+                                        }else{
+                                            // console.log(bulkRes)
+                                            var now = new Date();
+                                            profileDB.updatePlotInfo(discordUserId, { lastharvest: now, timesharvested: newHarvestCounts }, function(plotErr, plotRes){
+                                                if (plotErr){
+                                                    // console.log(plotErr)
+                                                    exports.setCommandLock("harvest", discordUserId, false)
+                                                }else{
+                                                    // console.log(plotRes)
+                                                    harvestEmbedBuilder(message, fruitsColumnsWithCount)
+                                                    createTimeOutForCommandAfterUse("harvest", now, secondsToRemove, userCooldown, discordUserId, profileData.data, message)
+                                                    exports.setCommandLock("harvest", discordUserId, false)
+                                                }
+                                            })
+                                        }
+                                    })
+                                }else{
+                                    message.channel.send(message.author.username + " You have no crops to harvest!")
+                                    exports.setCommandLock("harvest", discordUserId, false)
+                                }
+                                
+                            }else{
+                                now = new Date(now.setSeconds(now.getSeconds() + secondsToRemove));
+                                var numberOfHours = getDateDifference(greenHouseData.lastharvest, now, userCooldown);
+                                message.channel.send(message.author.username + " You are tired! Please wait `" + numberOfHours + "` ");
+                                exports.setCommandLock("harvest", discordUserId, false)
+                            }
+                        }
+                    })
+                }else{
+                    message.channel.send("You do not own a Greenhouse")
+                    exports.setCommandLock("harvest", discordUserId, false)
+                }
             }
-        }
-    })
+        })
+    }
+    
 }
 
 function harvestStringBuilder(fruitsColumnsWithCount){

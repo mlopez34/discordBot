@@ -67,6 +67,7 @@ module.exports = {
                 name: "Nourish",
                 abilityId: "nourish",
                 prioritizeLowestHp: true,
+                ignoreInitialTarget: true,
                 heal: 50,
                 additionalTargets: 3,
                 mdPercentage: 0,

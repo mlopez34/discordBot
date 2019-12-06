@@ -1220,7 +1220,7 @@ module.exports.getUserWearingStats = function(message, discordUserId, userData, 
             }
         })
     }else{
-        profileDB.getUserItems(discordUserId, function(err, inventoryResponse){
+        profileDB.getUserItemsByRarity(discordUserId, 'amulet', function(err, inventoryResponse){
             if (err){
                 console.log(err);
                 cb(err)

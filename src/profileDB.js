@@ -1837,6 +1837,54 @@ module.exports.getUserItems = function(discordId, cb) {
     });
 }
 
+// get user's inventory by RARITY
+module.exports.getUserItemsByRarity = function(discordId, rarity, cb) {
+    var query = 'SELECT * ' +
+    'FROM ' + config.inventoryTable + ' AS userinventorytable ' +
+    'INNER JOIN ' + config.itemsTable + ' AS itemstable ' +
+    'ON userinventorytable.itemid = itemstable.id ' +
+    'WHERE userinventorytable.discordId = $1 AND userinventorytable.status is null AND itemstable.itemraritycategory = $2'
+    'ORDER BY userinventorytable.id DESC'
+    
+    // console.log(query);
+    db.query(query, [discordId, rarity])
+      .then(function (data) {
+        cb(null, {
+            status: 'success',
+            data: data,
+            message: 'Retrieved All User Items'
+          });
+      })
+      .catch(function (err) {
+        // console.log(err);
+        cb(err);
+      });
+  }
+
+// get user's inventory by RARITY
+module.exports.getUserItemsByShortname = function(discordId, shortname, cb) {
+    var query = 'SELECT * ' +
+    'FROM ' + config.inventoryTable + ' AS userinventorytable ' +
+    'INNER JOIN ' + config.itemsTable + ' AS itemstable ' +
+    'ON userinventorytable.itemid = itemstable.id ' +
+    'WHERE userinventorytable.discordId = $1 AND userinventorytable.status is null AND itemstable.itemshortname = $2'
+    'ORDER BY userinventorytable.id DESC'
+    
+    // console.log(query);
+    db.query(query, [discordId, shortname])
+      .then(function (data) {
+        cb(null, {
+            status: 'success',
+            data: data,
+            message: 'Retrieved All User Items'
+          });
+      })
+      .catch(function (err) {
+        // console.log(err);
+        cb(err);
+      });
+  }
+
 module.exports.getUserItemsForRpg = function(discordId, cb) {
     // 'AND itemid > 12' was added since commons and uncommons arent needed for this call
     var query = 'select id, itemid, armamentforitemid, hpplus, adplus, mdplus, armorplus, spiritplus, critplus, luckplus from ' + config.inventoryTable + ' where discordId = $1 AND status is null AND itemid > 12 ORDER BY id DESC '
@@ -2117,7 +2165,12 @@ module.exports.getUserRpgProfleData = function(discordId, cb){
 }
 
 module.exports.getStableData = function(discordId, cb){
-    var query = 'select * from ' + config.stablesTable + ',' + config.profileTable + ' where ' + config.stablesTable + '.discordId = $1 AND ' + config.profileTable + '.discordId = $1'
+    var query = 'SELECT * ' +
+    'FROM ' + config.profileTable + ' AS stabletable ' +
+    'INNER JOIN ' + config.stablesTable + ' AS profiletable ' +
+    'ON stabletable.discordid = profiletable.discordid ' + 
+    'WHERE profiletable.discordid = $1'
+
     console.log(query)
     db.one(query, [discordId])
       .then(function (data) {
