@@ -460,7 +460,7 @@ module.exports.openPresentCommand = function(message){
             // added the CDR
             oneDayAgo = new Date( oneDayAgo.setMinutes( oneDayAgo.getMinutes() ));
 
-            if ( !getUserResponse.data.lastpresenttime || (oneDayAgo > getUserResponse.data.lastpresenttime) ){
+            if (!getUserResponse.data.lastpresenttime || (oneDayAgo > getUserResponse.data.lastpresenttime) ){
                 if (roll >= 50){
                     // roll an item
                     var allScavengeableItems = exports.getAllItems()
@@ -484,9 +484,9 @@ module.exports.openPresentCommand = function(message){
                     var rarityRoll = Math.floor(Math.random() * 10000) + 1;
 
                     var ANCIENT_MAX_ROLL = 10000
-                    var ANCIENT_MIN_ROLL = 9620;
-                    var RARE_MAX_ROLL = 9620;
-                    var RARE_MIN_ROLL = 9000;
+                    var ANCIENT_MIN_ROLL = 9420;
+                    var RARE_MAX_ROLL = 9420;
+                    var RARE_MIN_ROLL = 6000;
                             
                     if(rarityRoll > ANCIENT_MIN_ROLL && rarityRoll <= ANCIENT_MAX_ROLL){
                         var itemRoll = Math.floor(Math.random() * ancientItems.length);
@@ -500,27 +500,20 @@ module.exports.openPresentCommand = function(message){
                     }
 
                     addToUserInventory(discordUserId, itemsObtainedArray);
-
-                    profileDB.updateUserTacosPresent(discordUserId, tacosFound, function(updateerr, updateResponse) {
-                        if (updateerr){
-                            // console.log(updateerr);
-                        }else{
-                            var itemsMessage = ""
-                            for (var item in itemsObtainedArray){
-                                itemsMessage = itemsMessage + "[**" + itemsObtainedArray[item].itemraritycategory +"**] " + "**"  + itemsObtainedArray[item].itemname + "** - " + itemsObtainedArray[item].itemdescription + ", " +
-                                itemsObtainedArray[item].itemslot + ", " +itemsObtainedArray[item].itemstatistics + " \n";
-                            }
-                        
-                            const embed = new Discord.RichEmbed()
-                            .addField(message.author.username + "'s present contained :gift: :christmas_tree:", itemsMessage, true)
-                            .setThumbnail(message.author.avatarURL)
-                            .setColor(0xbfa5ff)
-                            message.channel.send({embed});
-                        }
-                    })
+                    var itemsMessage = ""
+                    for (var item in itemsObtainedArray){
+                        itemsMessage = itemsMessage + "[**" + itemsObtainedArray[item].itemraritycategory +"**] " + "**"  + itemsObtainedArray[item].itemname + "** - " + itemsObtainedArray[item].itemdescription + ", " +
+                        itemsObtainedArray[item].itemslot + ", " +itemsObtainedArray[item].itemstatistics + " \n";
+                    }
+                
+                    const embed = new Discord.RichEmbed()
+                    .addField(message.author.username + "'s present contained :gift: :christmas_tree:", itemsMessage, true)
+                    .setThumbnail(message.author.avatarURL)
+                    .setColor(0xbfa5ff)
+                    message.channel.send({embed});
                 }else if (roll < 50){
                     // give the user tacos           
-                    tacosFound = 250;
+                    tacosFound = 1500;
                     profileDB.updateUserTacosPresent(discordUserId, tacosFound, function(updateerr, updateResponse) {
                         if (updateerr){
                             // console.log(updateerr);
@@ -2983,12 +2976,12 @@ module.exports.patchnotesCommand = function(message){
         },
         "fields": [
           {
-            "name": "August 13, 2019",
-            "value": "```-Settings for individual servers are here!\n-You can set the server prefix using -settings setprefix [prefix]\n-Mute and Unmute bender from specific channels using -settings mute, and -settings unmute in the channel\n-Enable only specific channels for bender by using -settings enable\n-Enable or disable RPG commands in specific channels using -settings rpgenable or -settings rpgdisable\n-Only allow RPG commands in a specific channel using -settings rpgonly in the channel\n-For more info check the -help command\n-RPG Queue redesigned, the queue will begin shortly after there are enough players in the queue instead of immediately per queue size, you only need to use -rpgqueue to enter\n-Items with taco gains from RPG have been redesigned to account for lower RPG cooldown and smaller gap between levels than previously\n-Defeating higher keystone challenges will grant higher experience points\n```"
-          },
-          {
             "name": "October 22, 2019",
             "value": "```-Burritos are now displayed in -tacos command\n-You can no longer obtain recipes via thanking another user, you can now obtain recipes by thanking bender, odds to obtain a new recipe have been increased by 400%.\n-Recipes obtained via temple have been adjusted, you can now find a recipe for a rarity category from a pool of random 30, after each category is collected you can will still obtain a recipe from the final combined pool.\n-New zones added!```"
+          },
+          {
+            "name": "December 9, 2019",
+            "value": "```-Performance improvements for commands (-plant, -harvest, -fetch, -use, -temple)\n-Stable, Greenhouse, and Temple level 12 will now display correctly on user's profile\n-chances to obtain an ancient item, as well as rare items have increased in RPG!, when defeating a keystone challenge you will get 1 piece of loot per keystone number\n-Tacos from RPG items will no longer have a multiplier based on challenge difficulty\n-Amulets view can now be paged! try using -amulets page [pagenum]\n-Crit damage has been introduced! luck from items is translated into crit damage in RPG. base crit damage is +50% and each additional % will increase per 10 points of luck\n-Many internal changes have arrived during this patch for the introduction of new features that are imminent. If you find a bug please report it :)```"
           }
         ]
       };
