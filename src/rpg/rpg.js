@@ -6140,8 +6140,10 @@ function processStrength(event, target, dotBeingRemoved, abilityIdOfBuff){
     var Shadow_Shield = "Shadow Shield"
     var SHATTER = "Shatter"
     var FEVER = "feverChallenge"
+    var RUPTURE = "rupture"
     var addedBreak = false
     var addedShatter = false
+    var addedRupture = false
     for (var s in target.statuses){
         if ( Shadow_Shield == target.statuses[s].name){
             // get the caster of this debuff
@@ -6186,6 +6188,30 @@ function processStrength(event, target, dotBeingRemoved, abilityIdOfBuff){
                 event.enemies[caster].buffs.push(buffToAdd.buff)
             }
             strengthString = strengthString + event.enemies[caster].name + " Gains " + buffToAdd.name + "\n"
+        }
+        if ( target.statuses[s].dot && 
+            RUPTURE == target.statuses[s].dot.abilityId && !addedRupture){
+            // get the target of this debuff
+            let caster;
+            if (target.statuses[s].dot.targetToApplyOn){
+                for (var e in event.enemies){
+                    if (target.statuses[s].dot.targetToApplyOn == event.enemies[e].name ){
+                        caster = e
+                        break;
+                    }
+                }
+            }else{
+                caster = target.statuses[s].dot.caster
+            }
+            var buffToAdd = JSON.parse( JSON.stringify( rpgAbilities[target.statuses[s].dot.abilityTriggerOnDeath] ))
+            buffToAdd.buff.expireOnTurn = event.turn + buffToAdd.buff.turnsToExpire
+            if (caster < 1000){
+                event.enemies[caster].buffs.push(buffToAdd.buff)
+            }
+            if (event.enemies[caster]){
+                addedRupture = true
+                strengthString = strengthString + event.enemies[caster].name + " Gains " + buffToAdd.name + "\n"
+            }
         }
     }
     return strengthString
@@ -6650,13 +6676,17 @@ function hasDied(event, member, killerId){
                         deathString = deathString + " The enemies have healed for " + rpgAbility.heal + "\n"
                     }
                     if (rpgAbility.abilityId == "strengthFever" 
-                    || rpgAbility.abilityId == "strength"){
-                        // heal all enemies
+                    || rpgAbility.abilityId == "strength"
+                    || rpgAbility.abilityId == "strengthRupture"){
                         var strengthString = processStrength( event, member  )
                         if (strengthString.length > 5){
                             checkedStrength = true
                         }
                         deathString = deathString + strengthString
+                        if (rpgAbility.abilityId == "strengthRupture"){
+                            // only want to cause this to happen once per death
+                            break;
+                        }
                     }
                 }
                 if (member.statuses[status].dot
@@ -7675,7 +7705,7 @@ function healTarget(target, healingDoneObject){
             if (target && target.globalStatuses.healingTakenPercentage){
                 targetHealingTakenPercentage = target.globalStatuses.healingTakenPercentage
             }
-            target.hp = target.hp + ( healingDoneObject.heal * targetHealingTakenPercentage )
+            target.hp = target.hp + Math.floor( healingDoneObject.heal * targetHealingTakenPercentage )
         }else{
             target.hp = target.hp + healingDoneObject.heal
         }

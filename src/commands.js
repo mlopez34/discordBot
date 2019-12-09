@@ -496,13 +496,15 @@ module.exports.openPresentCommand = function(message){
                         itemsObtainedArray.push(rareItems[itemRoll]);
                     }else {
                         var itemRoll = Math.floor(Math.random() * uncommonItems.length);
+                        uncommonItems[itemRoll].itemAmount = 10
                         itemsObtainedArray.push( uncommonItems[itemRoll] );
                     }
 
                     addToUserInventory(discordUserId, itemsObtainedArray);
                     var itemsMessage = ""
                     for (var item in itemsObtainedArray){
-                        itemsMessage = itemsMessage + "[**" + itemsObtainedArray[item].itemraritycategory +"**] " + "**"  + itemsObtainedArray[item].itemname + "** - " + itemsObtainedArray[item].itemdescription + ", " +
+                        var itemAmount = itemsObtainedArray[item].itemAmount ? itemsObtainedArray[item].itemAmount : 1;
+                        itemsMessage = itemsMessage + "**" +itemAmount + "**x " + "[**" + itemsObtainedArray[item].itemraritycategory +"**] " + "**"  + itemsObtainedArray[item].itemname + "** - " + itemsObtainedArray[item].itemdescription + ", " +
                         itemsObtainedArray[item].itemslot + ", " +itemsObtainedArray[item].itemstatistics + " \n";
                     }
                 

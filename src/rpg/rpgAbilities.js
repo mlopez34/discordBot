@@ -2433,6 +2433,20 @@ module.exports = {
             }
         },
 
+        strengthRupture: {
+            name: "Strength",
+            abilityId: "strengthRupture",
+            buff: {
+                buff: true,
+                name: "Strength",
+                abilityId: "strengthRupture",
+                emoji: "<:strength:479298214294716416>",
+                turnsToExpire: 50,
+                affects: ["attackDmg", "magicDmg"],
+                multiplier: 1.5
+            }
+        },
+
         // summon Lava and Sky elemental summoned upon entomb / 20% HP
         summonLavaElemental: {
             name: "Summon Lava Elemental",
@@ -4502,10 +4516,13 @@ module.exports = {
             type: "earth",
             dot: {
                 name: "Rupture",
+                abilityId: "rupture",
                 type: "earth",
                 dmg: 3000,
                 mdPercentage: 1,
                 emoji: ":o2:",
+                abilityTriggerOnDeath: "strengthRupture",
+                targetToApplyOn: "Amber Dragon",
                 ignoreUnique: true,
                 dmgOnDotApply: false,
                 turnsToExpire: 1
