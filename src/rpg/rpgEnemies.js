@@ -1151,7 +1151,7 @@ module.exports = {
             },
             whelpling: {
                 name: "Whelpling",
-                abilities: ["attack", "uppercut"],
+                abilities: ["poke", "bite", "flameblast"],
                 buffs: [],
                 keystoneStats: {
                     hp: [1200, 3500, 6200, 10000, 13000, 17500, 25000, 35000, 45000, 60000  ],
@@ -1160,14 +1160,16 @@ module.exports = {
                     abilities: []
                 },
                 effectsOnDeath: [
-                    "explode"
+                    // puts dot that deals 900 damage 
+                    "rupture",
+                    "reducedHealingWhelp"
                 ],
                 hpPerPartyMember: 0,
                 adPerPartyMember: 0,
                 mdPerPartyMember: 0,
-                hp: 9300,
-                attackDmg: 1000,
-                magicDmg: 10000,
+                hp: 10300,
+                attackDmg: 1800,
+                magicDmg: 1800,
                 armor: 1300,
                 spirit: 1300,
                 difficulty: "summoned",
@@ -1175,7 +1177,7 @@ module.exports = {
             },
             amberDrake: {
                 name: "Amber Drake",
-                abilities: ["attack"],
+                abilities: ["poke", "impale", "slash", "flameblast"],
                 buffs: [
                     {
                         name: "frenzy",
@@ -1183,8 +1185,8 @@ module.exports = {
                         onTurnEnd: {
                             attackDmgPlus : 1000,
                             magicDmgPlus : 1000,
-                            everyNTurns: 1,
-                            startTurn: 5
+                            everyNTurns: 2,
+                            startTurn: 1
                         }
                     }
                 ],
@@ -1199,19 +1201,22 @@ module.exports = {
                     abilities: []
                 },
                 endOfTurnEvents : [
-                    "summonPods"
-                    // reduce damage dealt and healing dealt by 75% if no buff
-                    // gain buff by killing a pod, 10 pods summoned, buff lasts 4 turns
-
-                    // debuff every 3 turns to 1 player, damage dealt to everyone
-                    // based on health missing, lasts 3 turns
+                    "focus",
+                    "erupt"
+                ],
+                effectsOnDeath: [
+                    "reducedHealingDrake"
+                ],
+                abilityOrder: [
+                    0, [1,2,3], [1,2,3], [1,2,3], [1,2,3], [1,2,3], 
+                    [1,2,3], [1,2,3], [1,2,3], [1,2,3], [1,2,3],
                 ],
                 hpPerPartyMember: 0,
                 adPerPartyMember: 0,
                 mdPerPartyMember: 0,
-                hp: 58300,
-                attackDmg: 4500,
-                magicDmg: 4500,
+                hp: 48300,
+                attackDmg: 4900,
+                magicDmg: 4900,
                 armor: 2150,
                 spirit: 2150,
                 difficulty: "summoned-boss",
@@ -1219,7 +1224,7 @@ module.exports = {
             },
             fireGuardian: {
                 name: "Fire Guardian",
-                abilities: ["flameblast"],
+                abilities: ["flameblast", "crush"],
                 buffs: [],
                 keystoneStats: {
                     hp: [1200, 3500, 6200, 10000, 13000, 17500, 25000, 35000, 45000, 60000  ],
@@ -1228,14 +1233,17 @@ module.exports = {
                     abilities: []
                 },
                 endOfTurnEvents : [
-                    // lava blast for 5k every 2 turns
+                    "lavaBlast",
+                ],
+                effectsOnDeath: [
+                    "reducedHealingGuardian"
                 ],
                 hpPerPartyMember: 0,
                 adPerPartyMember: 0,
                 mdPerPartyMember: 0,
-                hp: 58300,
-                attackDmg: 4500,
-                magicDmg: 4500,
+                hp: 19300,
+                attackDmg: 3000,
+                magicDmg: 3000,
                 armor: 2150,
                 spirit: 2150,
                 difficulty: "summoned",
@@ -1243,7 +1251,7 @@ module.exports = {
             },
             stormGuardian: {
                 name: "Storm Guardian",
-                abilities: ["attack"], // chain lightning
+                abilities: ["impale", "tackle"], // chain lightning
                 buffs: [],
                 keystoneStats: {
                     hp: [1200, 3500, 6200, 10000, 13000, 17500, 25000, 35000, 45000, 60000  ],
@@ -1253,13 +1261,17 @@ module.exports = {
                 },
                 endOfTurnEvents : [
                     // status that reduces all damage done by 3% on target lasts 60 turns - cant bandaid
+                    "frighten"
+                ],
+                effectsOnDeath: [
+                    "reducedHealingGuardian"
                 ],
                 hpPerPartyMember: 0,
                 adPerPartyMember: 0,
                 mdPerPartyMember: 0,
-                hp: 58300,
-                attackDmg: 4500,
-                magicDmg: 4500,
+                hp: 19300,
+                attackDmg: 3000,
+                magicDmg: 3000,
                 armor: 2150,
                 spirit: 2150,
                 difficulty: "summoned",
@@ -1267,7 +1279,7 @@ module.exports = {
             },
             earthGuardian: {
                 name: "Earth Guardian",
-                abilities: ["attack"],
+                abilities: ["smash", "smash", "uppercut", "whirlwind"],
                 buffs: [],
                 keystoneStats: {
                     hp: [1200, 3500, 6200, 10000, 13000, 17500, 25000, 35000, 45000, 60000  ],
@@ -1276,15 +1288,19 @@ module.exports = {
                     abilities: []
                 },
                 endOfTurnEvents : [
-                    "fury", // increased damage done based on missing health (3% per 1%)
-                    // put up a status that reduces healing taken by 10% per stack lasts  - can bandaid
+                    "focus",
+                    "fury3", // increased damage done based on missing health (3% per 1%)
+                    "fade", // put up a status that reduces healing taken by 10% per stack  - can bandaid
+                ],
+                effectsOnDeath: [
+                    "reducedHealingGuardian"
                 ],
                 hpPerPartyMember: 0,
                 adPerPartyMember: 0,
                 mdPerPartyMember: 0,
-                hp: 58300,
-                attackDmg: 4500,
-                magicDmg: 4500,
+                hp: 19300,
+                attackDmg: 3000,
+                magicDmg: 3000,
                 armor: 2150,
                 spirit: 2150,
                 difficulty: "summoned",
@@ -1292,6 +1308,8 @@ module.exports = {
             },
             amberPool: {
                 name: "Amber Pool",
+                immuneToAoe: true,
+                passive: true,
                 abilities: [],
                 buffs: [],
                 keystoneStats: {
@@ -1302,8 +1320,8 @@ module.exports = {
                 },
                 endOfTurnEvents : [
                     // heals for 5k all enemies every turn
+                    "bloom"
                 ],
-                // immune to aoe
                 hpPerPartyMember: 0,
                 adPerPartyMember: 0,
                 mdPerPartyMember: 0,
@@ -1313,30 +1331,6 @@ module.exports = {
                 armor: 2150,
                 spirit: 2150,
                 difficulty: "summoned-boss",
-                element: "normal"
-            },
-            pod: {
-                name: "Pod",
-                abilities: [],
-                buffs: [],
-                keystoneStats: {
-                    hp: [1200, 3500, 6200, 10000, 13000, 17500, 25000, 35000, 45000, 60000  ],
-                    attackDmg: [300, 500, 900, 1500, 2300, 3400, 4500, 5500, 6500, 7500],
-                    magicDmg: [300, 500, 900, 1500, 2300, 3400, 4500, 5500, 6500, 7500],
-                    abilities: []
-                },
-                endOfTurnEvents : [
-                    // grants buff on death to caster - unable to get healing + dmg status
-                ],
-                hpPerPartyMember: 0,
-                adPerPartyMember: 0,
-                mdPerPartyMember: 0,
-                hp: 10,
-                attackDmg: 100,
-                magicDmg: 100,
-                armor: 500,
-                spirit: 500,
-                difficulty: "summoned",
                 element: "normal"
             },
             roots: {
@@ -1351,7 +1345,7 @@ module.exports = {
                 },
                 // roots deal damage and focus a single player
                 endOfTurnEvents : [
-                    
+                    "rampageRoots"
                 ],
                 hpPerPartyMember: 0,
                 adPerPartyMember: 0,
@@ -7832,7 +7826,7 @@ module.exports = {
                         ],
                         keystoneStats: {
                             frenzy: {
-                                attackDmgPlus : [6100, 12100, 241000, 38000, 52000, 77000, 100000, 125000, 155000, 170000],
+                                attackDmgPlus : [6100, 12100, 24100, 38000, 52000, 77000, 100000, 125000, 155000, 170000],
                                 magicDmgPlus : [6100, 12100, 24000, 38000, 52000, 77000, 100000, 125000, 155000, 170000]
                             },
                             hp: [ 11500, 19900, 29900, 41000, 67000, 96000, 139000, 200000, 295000, 450000 ],
@@ -7885,7 +7879,7 @@ module.exports = {
                         ],
                         keystoneStats: {
                             frenzy: {
-                                attackDmgPlus : [6100, 12100, 241000, 38000, 52000, 77000, 100000, 125000, 155000, 170000],
+                                attackDmgPlus : [6100, 12100, 24100, 38000, 52000, 77000, 100000, 125000, 155000, 170000],
                                 magicDmgPlus : [6100, 12100, 24000, 38000, 52000, 77000, 100000, 125000, 155000, 170000]
                             },
                             hp: [ 11500, 19900, 29900, 41000, 67000, 96000, 139000, 200000, 295000, 450000 ],
@@ -7942,7 +7936,7 @@ module.exports = {
                         ],
                         keystoneStats: {
                             frenzy: {
-                                attackDmgPlus : [6100, 12100, 241000, 38000, 52000, 77000, 100000, 125000, 155000, 170000],
+                                attackDmgPlus : [6100, 12100, 24100, 38000, 52000, 77000, 100000, 125000, 155000, 170000],
                                 magicDmgPlus : [6100, 12100, 24000, 38000, 52000, 77000, 100000, 125000, 155000, 170000]
                             },
                             hp: [ 11500, 19900, 29900, 41000, 67000, 96000, 139000, 200000, 295000, 450000 ],
@@ -7997,7 +7991,7 @@ module.exports = {
                         ],
                         keystoneStats: {
                             frenzy: {
-                                attackDmgPlus : [6100, 12100, 241000, 38000, 52000, 77000, 100000, 125000, 155000, 170000],
+                                attackDmgPlus : [6100, 12100, 24100, 38000, 52000, 77000, 100000, 125000, 155000, 170000],
                                 magicDmgPlus : [6100, 12100, 24000, 38000, 52000, 77000, 100000, 125000, 155000, 170000]
                             },
                             hp: [ 11500, 19900, 29900, 41000, 67000, 96000, 139000, 200000, 295000, 450000 ],
@@ -8057,12 +8051,12 @@ module.exports = {
             
             13: {
                 challengeId: "dragon",
-                keystoneUnlockName: "Emperor Keystone",
-                avatar: "https://i.imgur.com/21C2UbS.jpg",
+                keystoneUnlockName: "Amber Keystone",
+                avatar: "https://i.imgur.com/0Rh5C7q.jpg",
                 timed: true,
                 description: "",
                 timedPerTurn: 360000,
-                points: 12001,
+                points: 18422,
                 keystonePoints: [250, 1100, 1830, 3530, 4030, 4800, 10000, 17000, 25000, 35000],
                 xppoints: 5120,
                 lootcount: 15,
@@ -8070,10 +8064,13 @@ module.exports = {
                 enemies: [
                     {
                         name: "Amber Dragon",
+                        emoji: "<:amberdragon:653115463881981952>",
                         xp: 30,
                         abilities: [
-                            "slash",
-                            "uppercut"
+                            "poke",
+                            "flameblast",
+                            "crush",
+                            "fireBreath",
                         ],
                         buffs: [
                             {
@@ -8082,33 +8079,34 @@ module.exports = {
                                 onTurnEnd: {
                                     attackDmgPlus : 6100,
                                     magicDmgPlus : 6100,
-                                    everyNTurns: 10,
-                                    startTurn: 60
+                                    everyNTurns: 5,
+                                    startTurn: 39
                                 }
                             }
                         ],
                         keystoneStats: {
                             frenzy: {
-                                attackDmgPlus : [3100, 4100, 5100, 6100, 7100],
-                                magicDmgPlus : [3100, 4100, 5100, 6100, 7100]
+                                attackDmgPlus : [4100, 6000, 10000, 14000, 19000, 25000, 32000, 40000, 50000, 63000   ],
+                                magicDmgPlus : [4100, 6000, 10000, 14000, 19000, 25000, 32000, 40000, 50000, 63000  ]
                             },
-                            hp: [ 19500, 25900, 39900, 51000, 77000 ],
-                            attackDmg: [700, 1100, 1500, 2100, 2500],
-                            magicDmg: [700, 1100, 1500, 2100, 2500],
+                            hp: [31500, 40900, 59900, 81000, 137000, 195000, 275000, 350000, 475000, 600000 ],
+                            attackDmg: [1400, 2200, 3000, 4200, 5000, 6400, 8000, 10000, 12000, 14000],
+                            magicDmg: [1400, 2200, 3000, 4200, 5000, 6400, 8000, 10000, 12000, 14000],
                             abilities: []
                         },
-                        // stomp every 5 turns
                         abilityOrder: [
-                            0, 1, 0, 0, 0, 1, 0, 0
+                            3, 1, 2, 2, 3, 0, 1, 2, 2, 3
                         ],
                         endOfTurnEvents : [
-                            // 2x
+                            "focus",
                             "summonWhelps",
                             "summonDrake",
                             "summonDefenders",
 
-                            "summonAmberPool", // immune to aoe
-                            "summonRoots", // 2.2k HP
+                            "summonAmberPool",
+                            "summonRoots",
+                            // heal self for 100k - each stak of status reduces healing by 16%
+                            "regenerate"
                         ],
                         summonsToRearrangeAndDuplicate: [
                             "summonDefenders",
@@ -8117,9 +8115,9 @@ module.exports = {
                         ],
                         effectsOnDeath: [
                         ],
-                        hp: 1982600,
-                        attackDmg: 200000,
-                        magicDmg: 200000,
+                        hp: 10072600,
+                        attackDmg: 108500,
+                        magicDmg: 108500,
                         armor: 2100,
                         spirit: 2100,
                         hpPerPartyMember: 0,

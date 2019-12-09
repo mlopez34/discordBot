@@ -3,11 +3,214 @@ module.exports = {
     // cannister shot chance to deal 1 to 7 shots
     // mindflaylike ability 90%, 120%, 150%
     // deal 160% damage, consume 50% of spirit / armor for the turn
-    // 
     // lightwell ability - 5 random heals
 
     
     rpgAbilities: {
+        concentrate: {
+            abilityId: "concentrate",
+            name: "Concentrate",
+            description: "Cast on self - consume all crit strike chance for 10 turns, deal 40% more damage for 3 turns",
+            buff: {
+                selfbuff: true,
+                buff: true,
+                name: "Concentrate",
+                abilityId: "concentrate",
+                affectsGlobal: ["damageDealtPercentage"],
+                multiplier: 1.4,
+                turnsToExpire: 3,
+                emoji: ":woman_in_lotus_position:"
+            },
+            status: {
+                status: true,
+                ignoreBandaid: true,
+                selfDebuff: true,
+                name: "Consumed",
+                abilityId: "consumed",
+                affects: ["criticalChance"],
+                multiplier: 0,
+                turnsToExpire: 3,
+                emoji: ""
+            }
+        },
+        adapt: {
+            // consume all crit strike chance for 10 turns, heal for 30% more for 3 turns
+            abilityId: "adapt",
+            name: "Adapt",
+            description: "Cast on self - consume all crit strike chance for 10 turns, heal for 40% more for 3 turns",
+            buff: {
+                selfbuff: true,
+                buff: true,
+                name: "Adapt",
+                abilityId: "adapt",
+                affectsGlobal: ["healingDonePercentage"],
+                multiplier: 1.4,
+                turnsToExpire: 3,
+                emoji: ":man_in_lotus_position:"
+            },
+            status: {
+                status: true,
+                ignoreBandaid: true,
+                selfDebuff: true,
+                name: "Consumed",
+                abilityId: "consumed",
+                affects: ["criticalChance"],
+                multiplier: 0,
+                turnsToExpire: 3,
+                emoji: ""
+            }
+        },
+        surge: {
+            // after landing a successful damaging critical strike you can use this ability
+            name: "Surge",
+            abilityId: "surge",
+            description: "Heal the group for 20 + 35% of your current magical power. After landing a successful critical strike with any ability - surge becomes surge 2 for the next turn. Surge 2: Heal the group for 75 + 92% of your current magical damage",
+            heal: 20,
+            mdPercentage: 0.35,
+            castAbilityAfterCriticalStrike: "surge2",
+            areawide: true,
+            targets: "friendly"
+        },
+        surge2: {
+            name: "Surge 2",
+            abilityId: "surge2",
+            description: "Heal the group for 75 + 92% of your current magical damage",
+            heal: 75,
+            mdPercentage: 0.92,
+            areawide: true,
+            targets: "friendly"
+        },
+        pulverize: {
+            name: "Pulverize",
+            abilityId: "pulverize",
+            dmg: 40,
+            adPercentage: 1.1,
+            description: "Deal 40 damage + 110% of your physical damage. After landing a successful critical strike with any ability - pulverize becomes pulverize 2 for the next turn. Pulverize 2: Deal 170 damage + 167% of your physical damage",
+            castAbilityAfterCriticalStrike: "pulverize2", 
+            type: "physical",
+        },
+        pulverize2: {
+            name: "Pulverize 2",
+            abilityId: "pulverize2",
+            dmg: 170,
+            adPercentage: 1.67,
+            description: "Deal 170 damage + 167% of your physical damage",
+            type: "physical",
+        },
+        tidalwave:{
+            name: "Tidal Wave",
+            abilityId: "tidalwave",
+            dmg: 40,
+            mdPercentage: 1.1,
+            description: "Deal 40 damage + 110% of your magical damage. After landing a successful critical strike with any ability - tidal wave becomes tidal wave 2 for the next turn. Tidal Wave 2: Deal 150 damage + 167% of your magical damage",
+            castAbilityAfterCriticalStrike: "tidalwave2",
+            type: "water",
+        },
+        tidalwave2:{
+            name: "Tidal Wave 2",
+            abilityId: "tidalwave2",
+            dmg: 170,
+            mdPercentage: 1.67,
+            description: "Deal 170 damage + 167% of your magical damage",
+            type: "water",
+        },
+        finalfortune:{
+            abilityId: "finalfortune",
+            name: "Final Fortune",
+            limitOffensive: true,
+            description: "Limit ability - The group gains haste + 60% damage + 30 % damage reduction permanently, and last rites (2 turn duration, death is certain when last rites ends, cannot be bandaided)",
+            buff: {
+                buff: true,
+                areawide: true,
+                hasted: true,
+                name: "Final Fortune",
+                abilityId: "finalfortune",
+                affectsGlobal: ["damageTakenPercentage"],
+                multiplier: 0.6,
+                emoji: ":fortune_cookie:"
+            },
+            status: {
+                status: true,
+                areawide: true,
+                selfDebuff: true,
+                name: "Last Rites",
+                abilityId: "lastrites",
+                ignoreBandaid: true,
+                deathOnStatusExpire: true,
+                emoji : ":coffin:",
+                affectsGlobal: ["damageDealtPercentage"],
+                turnsToExpire: 2,
+                multiplier: 1.6
+            }
+        },
+        cleanse:{
+            abilityId: "cleanse",
+            name: "Cleanse",
+            limitDefensive: true,
+            areawide: true,
+            description: "Limit ability - Heal the group for 50 + 0% of your current magical damage and remove all basic statuses",
+            heal: 50,
+            mdPercentage: 0.4,
+            targets: "friendly",
+            special: "remove status"
+        },
+        invigorate: {
+            name: "Invigorate",
+            abilityId: "invigorate",
+            limitDefensive: true,
+            description: "Limit ability - Increase the group's armor by 100% and spirit by 100% for 5 turns",
+            buff: {
+                buff: true,
+                areawide: true,
+                name: "Invigorate",
+                abilityId: "invigorate",
+                emoji : ":stars:",
+                turnsToExpire: 5,
+                affects: ["armor", "spirit"],
+                multiplier: 2
+            }
+        },
+        restore: {
+            name: "Restore",
+            abilityId: "restore",
+            description: "Upon taking any damage, heal yourself for 50 + 15% of magical damage - lasts 3 turns",
+            buff: {
+                buff: true,
+                name: "Restore",
+                abilityId: "restore",
+                emoji : ":purple_heart:",
+                turnsToExpire: 3,
+                healWhenDamageTaken: 50,
+                mdPercentage: .15
+            }
+        }, 
+        backup: {
+            name: "Backup",
+            abilityId: "backup",
+            description: "Upon taking any damage, heal yourself for 50 + 15% of physical damage - 10 charges",
+            buff: {
+                buff: true,
+                name: "Backup",
+                abilityId: "backup",
+                emoji : ":blue_heart:",
+                charges: 10,
+                maxcharges: 10,
+                healWhenDamageTaken: 50,
+                adPercentage: .15
+            }
+        },
+        canistershot: {
+            // cannister shot - shoot between 1 and 7 bullets, 4 bullets should be the same as a regular -cast shoot 6 charges
+            name: "Canister Shot",
+            abilityId: "canistershot",
+            description: "Deal 32 damage + 36% of your attack damage between 1 and 7 shots, 6 charges",
+            dmg: 32,
+            charges: 6,
+            maxcharges: 6,
+            adPercentage: 0.36,
+            randomNumberOfCasts: 7, 
+            type: "physical"
+        },
         attack : {
             name: "Attack",
             abilityId: "attack",
@@ -747,6 +950,27 @@ module.exports = {
             areawide: true,
             targets: "enemy"
         },
+        fireBreath: {
+            name: "Fire Breath",
+            abilityId: "fireBreath",
+            dmg: 100,
+            description: "Deal 100 damage + 100% of your magic damage to all enemies",
+            mdPercentage: 1,
+            type: "ice",
+            areawide: true,
+            targets: "enemy",
+            dot: {
+                name: "Burning",
+                dmg: 50,
+                mdPercentage: 1,
+                type: "fire",
+                emoji: "🔥",
+                damageOnDotApply: false,
+                turnsToExpire: 5,
+                damageOnDotExpire: false,
+                damageOnExpire: 0
+            }
+        },
         frostBreath: {
             name: "Frost Breath",
             abilityId: "frostBreath",
@@ -893,11 +1117,11 @@ module.exports = {
             name: "Plasma Beam",
             abilityId: "plasmabeam",
             areawide: true,
-            description: "Deal 75 damage + 87% of your attack damage to all enemies, 6 charges",
+            description: "Deal 75 damage + 87% of your attack damage to all enemies, 5 charges",
             dmg: 75,
-            charges: 6,
-            maxcharges: 6,
-            adPercentage: .90,
+            charges: 4,
+            maxcharges: 4,
+            adPercentage: .87,
             type: "physical"
         },
         cannistershot: {
@@ -1102,6 +1326,7 @@ module.exports = {
             buff: {
                 buff: true,
                 name: "Haste",
+                hasted: true,
                 emoji: "<:haste:479293276424241163>"
             }
         },
@@ -1863,7 +2088,7 @@ module.exports = {
             name: "summonAmberPool",
             belongsToMember: true,
             everyNTurns: 5,
-            afterNTurns: 5,
+            afterNTurns: 4,
             currentTurn: 0,
             summon: {
                 enemy: "amberPool",
@@ -1873,34 +2098,13 @@ module.exports = {
             name: "summonRoots",
             belongsToMember: true,
             everyNTurns: 6,
-            afterNTurns: 4,
-            currentTurn: 0,
-            summon: {
-                enemies: [
-                    "roots",
-                    "roots",
-                    "roots",
-                ]
-            }
-        },
-        summonPods: {
-            name: "summonPods",
-            belongsToMember: true,
-            everyNTurns: 10,
             afterNTurns: 5,
             currentTurn: 0,
             summon: {
                 enemies: [
-                    "pod",
-                    "pod",
-                    "pod",
-                    "pod",
-                    "pod",
-                    "pod",
-                    "pod",
-                    "pod",
-                    "pod",
-                    "pod",
+                    "roots",
+                    "roots",
+                    "roots",
                 ]
             }
         },
@@ -2386,6 +2590,26 @@ module.exports = {
                 affects: ["attackDmg", "magicDmg"],
                 turnsToExpire: 300,
                 multiplierBasedOnLostHp: .01
+            }
+        },
+
+        fury3 : {
+            name : "Fury",
+            belongsToMember: true,
+            processAbility: true,
+            abilityId: "fury3",
+            everyNTurns: 100,
+            afterNTurns: 1,
+            currentTurn: 1,
+            buff: {
+                selfbuff: true,
+                buff: true,
+                name: "Fury",
+                additionalDescription: " is gaining damage based on lost health",
+                emoji : "<:fury:479349359281176577>",
+                affects: ["attackDmg", "magicDmg"],
+                turnsToExpire: 300,
+                multiplierBasedOnLostHp: .03
             }
         },
 
@@ -4184,6 +4408,213 @@ module.exports = {
             onDeathEffect: true,
             belongsToMember: true,
             deathMessage: "Your fate is sealed"
+        },
+
+        regenerate: {
+            name: "Regenerate",
+            abilityId: "regenerate",
+            processAbility: true,
+            belongsToMember: true,
+            heal: 100000,
+            mdPercentage: 1,
+            everyNTurns: 1,
+            afterNTurns: 1,
+            currentTurn: 1,
+            listOfPossibleTarget: [
+                "Amber Dragon",
+            ]
+        },
+        bloom: {
+            name: "Bloom",
+            abilityId: "bloom",
+            processAbility: true,
+            belongsToMember: true,
+            areawide: true,
+            heal: 10000,
+            mdPercentage: 1,
+            everyNTurns: 1,
+            afterNTurns: 1,
+            currentTurn: 1,
+        },
+
+        lavaBlast: {
+            abilityId: "lavaBlast",
+            belongsToMember: true,
+            processAbility: true,
+            ignoreFocus: true,
+            name: "Lava Blast",
+            dmg: 5000,
+            mdPercentage: 1,
+            type: "fire",
+            everyNTurns: 2,
+            afterNTurns: 1,
+            currentTurn: 0,
+        },
+
+        fade: {
+            abilityId: "fade",
+            belongsToMember: true,
+            processAbility: true,
+            name: "Fade",
+            everyNTurns: 1,
+            afterNTurns: 1,
+            currentTurn: 1,
+            status: {
+                status: true,
+                ignoreUnique: true,
+                name: "Fade",
+                abilityId: "fade",
+                affectsGlobal: ["healingTakenPercentage"],
+                multiplier: 0.9,
+                turnsToExpire: 30,
+                emoji: ":ghost:"
+            }
+        },
+
+        frighten: {
+            abilityId: "frighten",
+            belongsToMember: true,
+            processAbility: true,
+            name: "Frighten",
+            everyNTurns: 1,
+            afterNTurns: 1,
+            currentTurn: 1,
+            status: {
+                status: true,
+                ignoreBandaid: true,
+                ignoreUnique: true,
+                name: "Frighten",
+                abilityId: "frighten",
+                affectsGlobal: ["damageDealtPercentage"],
+                multiplier: 0.97,
+                turnsToExpire: 30,
+                emoji: ":scream:"
+            }
+        },
+        // whelpling explosion on death
+        rupture: {
+            name: "Rupture",
+            abilityId: "rupture",
+            onDeathEffect: true,
+            processAbility: true,
+            belongsToMember: true,
+            castOnKiller: true,
+            type: "earth",
+            dot: {
+                name: "Rupture",
+                type: "earth",
+                dmg: 3000,
+                mdPercentage: 1,
+                emoji: ":o2:",
+                ignoreUnique: true,
+                dmgOnDotApply: false,
+                turnsToExpire: 1
+            }
+        },
+
+        erupt: {
+            name: "Erupt",
+            abilityId: "erupt",
+            processAbility: true,
+            belongsToMember: true,
+            ignoreFocus: true,
+            type: "physical",
+            everyNTurns: 2,
+            afterNTurns: 1,
+            currentTurn: 0,
+            dot: {
+                name: "Erupt",
+                type: "physical",
+                dmg: 900,
+                adPercentage: 1,
+                emoji: ":volcano:",
+                dealDamageToGroupBasedOnHealthMissing: true,
+                ignoreUnique: true,
+                dmgOnDotApply: false,
+                turnsToExpire: 3
+            }
+        },
+
+        reducedHealingWhelp: {
+            onDeathEffect: true,
+            processAbility: true,
+            belongsToMember: true,
+            listOfPossibleTarget: ["Amber Dragon"],
+            name:"Reduced Healing",
+            abilityId: "reducedHealingWhelp",
+            status: {
+                status: true,
+                name: "Reduced Healing",
+                ignoreUnique: true,
+                abilityId: "reducedHealingWhelp",
+                emoji: "",
+                additionalDescription: " healing is reduced by 2%",
+                affectsGlobal: ["healingDonePercentage"],
+                turnsToExpire: 2000,
+                multiplier: 0.98
+            }
+        },
+
+        reducedHealingGuardian: {
+            onDeathEffect: true,
+            processAbility: true,
+            belongsToMember: true,
+            listOfPossibleTarget: ["Amber Dragon"],
+            name:"Reduced Healing",
+            abilityId: "reducedHealingGuardian",
+            status: {
+                status: true,
+                name: "Reduced Healing",
+                ignoreUnique: true,
+                abilityId: "reducedHealingGuardian",
+                emoji: "",
+                additionalDescription: " healing is reduced by 5%",
+                affectsGlobal: ["healingDonePercentage"],
+                turnsToExpire: 2000,
+                multiplier: 0.95
+            }
+        },
+
+        reducedHealingDrake: {
+            onDeathEffect: true,
+            processAbility: true,
+            belongsToMember: true,
+            listOfPossibleTarget: ["Amber Dragon"],
+            name:"Reduced Healing",
+            abilityId: "reducedHealingDrake",
+            status: {
+                status: true,
+                name: "Reduced Healing",
+                ignoreUnique: true,
+                abilityId: "reducedHealingDrake",
+                emoji: "",
+                additionalDescription: " healing is reduced by 15%",
+                affectsGlobal: ["healingDonePercentage"],
+                turnsToExpire: 2000,
+                multiplier: 0.85
+            }
+        },
+
+        rampageRoots: {
+            name: "Rampage",
+            abilityId: "rampageRoots",
+            belongsToMember: true,
+            processAbility: true,
+            ignoreFocus: true,
+            ignoreBandaid: true,
+            everyNTurns: 40,
+            afterNTurns: 1,
+            currentTurn: 1,
+            status: {
+                focusedBy: "",
+                abilityId: "rampageRoots",
+                status: true,
+                ignoreFocus: true,
+                ignoreBandaid: true,
+                name: "Rampage",
+                turnsToExpire: 40,
+                emoji: "<:rampage:479348722782830603>",
+            }
         },
 
         /*

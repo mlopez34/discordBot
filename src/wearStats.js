@@ -690,15 +690,33 @@ module.exports.statsObjectBuilder = function(message, slot1Data, slot2Data, slot
     // console.log(userItemStats)
     return userItemStats;
 }
-module.exports.amuletsStringBuilder = function(userAmuletData){
+module.exports.amuletsStringBuilder = function(userAmuletData, page){
     // name the amulets
+    let amuletStrings = []
     var amuletString = "";
     for (var i = userAmuletData.length - 1; i >= 0; i--){
         if (amuletString.length < 970){
             amuletString = amuletString + userAmuletData[i].emoji + " " + userAmuletData[i].itemname +" x" + userAmuletData[i].count + "\n"
+        }else{
+            amuletStrings.push(amuletString)
+            amuletString = userAmuletData[i].emoji + " " + userAmuletData[i].itemname +" x" + userAmuletData[i].count + "\n"
         }
     }
-    return amuletString;
+    if (amuletString.length > 0){
+        amuletStrings.push(amuletString)
+    }
+    let largestPageNum = 0
+    if (amuletStrings.length > largestPageNum){
+        largestPageNum = amuletStrings.length
+    }
+    if (page > largestPageNum){
+        page = largestPageNum
+    }
+    return {
+        amuletString: amuletStrings[page - 1],
+        page: page,
+        totalPages: amuletStrings.length
+    }
 }
 
 module.exports.statsStringBuilder = function(message, userItemStats){

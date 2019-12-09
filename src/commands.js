@@ -8022,6 +8022,13 @@ function combineEmbedBuilder(message, itemToCreateByName, ItemDetails, itemRarit
 
 module.exports.amuletsWearingCommand = function(message, args){
     var discordUserId = message.author.id;
+    let page = 1
+    if (args && args.length > 2){
+        let long = args[1];
+        if (long == "page"){
+            page = parseInt(args[2])
+        }
+    }
     profileDB.getUserProfileData(discordUserId, function (profileErr, profileRes){
         if (profileErr){
             // console.log(profileErr);
@@ -8076,8 +8083,8 @@ module.exports.amuletsWearingCommand = function(message, args){
                     var userItemStats = wearStats.statsObjectBuilder(message, null, null, null, userData, true, true, true, userAmuletData);
                     var statsString = wearStats.statsStringBuilder(message, userItemStats);
 
-                    var amuletsString = wearStats.amuletsStringBuilder(userAmuletData);
-                    amuletsEmbedBuilder(message, amuletsString, statsString);
+                    var amuletsStringObj = wearStats.amuletsStringBuilder(userAmuletData, page);
+                    amuletsEmbedBuilder(message, amuletsStringObj, statsString);
                 }
             })
         }
@@ -8218,12 +8225,13 @@ function wearingEmbedBuilder(message, profileData, statsString, activeSlots){
     message.channel.send({embed});
 }
 
-function amuletsEmbedBuilder(message, amuletsString, statsString){
+function amuletsEmbedBuilder(message, amuletsStringObj, statsString, page){
     const embed = new Discord.RichEmbed()
     .setThumbnail(message.author.avatarURL)
+    .setDescription("Page " + amuletsStringObj.page + " of " + amuletsStringObj.totalPages)
     .setColor(0x00AE86)
-    if (amuletsString && amuletsString.length > 0){
-        embed.addField(message.author.username + "'s Amulets", amuletsString, false)
+    if (amuletsStringObj.amuletString && amuletsStringObj.amuletString.length > 0){
+        embed.addField(message.author.username + "'s Amulets", amuletsStringObj.amuletString, false)
     }
     if (statsString && statsString.length > 0){
         embed.addField('Stats Summary', statsString, false)
