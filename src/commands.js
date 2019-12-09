@@ -3315,7 +3315,7 @@ function raresEmbedBuilder(message, itemsMap, allItems, long, rarity, pageParam)
                 }else if (rarity == "artifact"){
                     emoji = ":cyclone:  "
                 }
-                embed.addField(emoji + " Item Name  |  Count  |  Slot " + emoji, inventoryStringsRefined[invString], true)    
+                embed.addField(emoji + " Item Name  |  Count  |  Slot " + emoji, inventoryStringsRefined[invString], false)    
             }
         }
         for (var invString = inventoryStringsImproved.length -1; invString >= 0; invString--){
@@ -3331,7 +3331,7 @@ function raresEmbedBuilder(message, itemsMap, allItems, long, rarity, pageParam)
                 }else if (rarity == "artifact"){
                     emoji = ":diamond_shape_with_a_dot_inside: "
                 }
-                embed.addField(emoji + " Item Name  |  Count  |  Slot " + emoji, inventoryStringsImproved[invString], true)    
+                embed.addField(emoji + " Item Name  |  Count  |  Slot " + emoji, inventoryStringsImproved[invString], false)    
             }
         }
         for (var invString = inventoryStringsRegular.length -1; invString >= 0; invString--){
@@ -3347,7 +3347,7 @@ function raresEmbedBuilder(message, itemsMap, allItems, long, rarity, pageParam)
                 }else if (rarity == "artifact"){
                     emoji = ":diamond_shape_with_a_dot_inside: "
                 }
-                embed.addField(emoji + " Item Name  |  Count  |  Slot " + emoji, inventoryStringsRegular[invString], true)    
+                embed.addField(emoji + " Item Name  |  Count  |  Slot " + emoji, inventoryStringsRegular[invString], false)    
             }
         }
     }
