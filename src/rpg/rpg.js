@@ -3523,7 +3523,7 @@ function calculateRewards(event, memberInRpgEvent, allItems, numberOfMembers, fi
     var ANCIENT_MIN_ROLL = 9940;
     var RARE_MAX_ROLL = 9940;
     var RARE_MIN_ROLL = 9780;
-    var UNCOMMON_MAX_ROLL = 9730;
+    var UNCOMMON_MAX_ROLL = 9780;
     var UNCOMMON_MIN_ROLL = 8000;
     var COMMON_MAX_ROLL = 8000;
     var COMMON_ITEMS_TO_OBTAIN = 1;
