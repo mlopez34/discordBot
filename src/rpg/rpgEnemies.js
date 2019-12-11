@@ -21,9 +21,9 @@ module.exports = {
                     "burst",
                     "burst"
                 ],
-                hpPerPartyMember: 890,
-                adPerPartyMember: 18,
-                mdPerPartyMember: 18,
+                hpPerPartyMember: 0,
+                adPerPartyMember: 0,
+                mdPerPartyMember: 0,
                 hp: 840,
                 attackDmg: 90,
                 magicDmg: 90,
@@ -61,9 +61,9 @@ module.exports = {
                     "summonMaggots",
                     "reanimateAll30"
                 ],
-                hpPerPartyMember: 990,
-                adPerPartyMember: 21,
-                mdPerPartyMember: 21,
+                hpPerPartyMember: 0,
+                adPerPartyMember: 0,
+                mdPerPartyMember: 0,
                 hp: 850,
                 attackDmg: 325,
                 magicDmg: 370,
@@ -86,9 +86,9 @@ module.exports = {
                 effectsOnDeath: [
                     "burst"
                 ],
-                hpPerPartyMember: 490,
-                adPerPartyMember: 18,
-                mdPerPartyMember: 18,
+                hpPerPartyMember: 0,
+                adPerPartyMember: 0,
+                mdPerPartyMember: 0,
                 hp: 640,
                 attackDmg: 100,
                 magicDmg: 100,
