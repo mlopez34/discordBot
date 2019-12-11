@@ -8544,7 +8544,6 @@ module.exports = {
 
                             "summonAmberPool",
                             "summonRoots",
-                            // heal self for 100k - each stak of status reduces healing by 16%
                             "regenerate"
                         ],
                         summonsToRearrangeAndDuplicate: [

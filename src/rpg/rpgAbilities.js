@@ -2060,7 +2060,7 @@ module.exports = {
             currentTurn: 0,
             summon: {
                 enemies: [
-                    "egg",
+                    "egg"
                 ]
             }
         },
