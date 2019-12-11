@@ -4659,8 +4659,7 @@ module.exports = {
                 endOfTurnEvents : [
                     "echo",
                     "focus",
-                    "fade",
-                    ""
+                    "fade"
                 ],
                 effectsOnDeath: [
                     "invigorateDeath"
@@ -4987,6 +4986,12 @@ module.exports = {
                         }
                     }
                 ],
+                abilityOrder: [
+                    6, [0, 1, 2, 3, 4, 5], [0, 1, 2, 3, 4, 5], [0, 1, 2, 3, 4, 5], [0, 1, 2, 3, 4, 5, 6], 
+                    [0, 1, 2, 3, 4, 5], [0, 1, 2, 3, 4, 5], [0, 1, 2, 3, 4, 5], [0, 1, 2, 3, 4, 5, 6], 
+                    [0, 1, 2, 3, 4, 5], [0, 1, 2, 3, 4, 5], [0, 1, 2, 3, 4, 5], [0, 1, 2, 3, 4, 5, 6], 
+                    [0, 1, 2, 3, 4, 5], [0, 1, 2, 3, 4, 5], [0, 1, 2, 3, 4, 5], [0, 1, 2, 3, 4, 5], 
+                ],
                 keystoneStats: {
                     hp: [1200, 3500, 6200, 10000, 15000 ],
                     attackDmg: [300, 500, 900, 1500, 2300],
@@ -5002,43 +5007,46 @@ module.exports = {
                 hp: 1950,
                 adPerPartyMember: 29,
                 mdPerPartyMember: 29,
-                attackDmg: 1640,
-                magicDmg: 1590,
+                attackDmg: 1340,
+                magicDmg: 1290,
                 armor: 1600,
                 spirit: 1600,
                 difficulty: "boss",
                 element: "normal"
             },
             medusa: {
-                enemyIdName : "avatarofhera",
-                name: "Avatar of Hera",
-                emoji: "<:hera:636311364322721832>",
+                enemyIdName : "medusa",
+                name: "Medusa",
+                emoji: "<:medusa:654429203269419018>",
                 abilities: [
-                    "crush", "crush", "decayDeath", "decayDeath", "shock", "shock", "whirlwind", "shell"
+                    "crush", "crush", "poison", "poison", "shadowBurst", "shadowBurst", "meteor", "shell"
                 ],
                 buffs: [
                     {
                         name: "frenzy",
                         emoji: "<:frenzy:479298214453968896>",
                         onTurnEnd: {
-                            attackDmgPlus : 255,
-                            magicDmgPlus : 255,
+                            attackDmgPlus : 455,
+                            magicDmgPlus : 455,
                             everyNTurns: 3,
                             startTurn: 2
                         }
                     }
                 ],
-                keystoneStats: {
-                    hp: [1200, 3500, 6200, 10000, 15000 ],
-                    attackDmg: [300, 500, 900, 1500, 2300],
-                    magicDmg: [300, 500, 900, 1500, 2300],
-                    abilities: []
-                },
+                abilityOrder: [
+                7,  [0, 1, 2, 3, 4, 5 ], 6, [0, 1, 2, 3, 4, 5, 7], [0, 1, 2, 3, 4, 5 ], [0, 1, 2, 3, 4, 5 ],
+                    6, [0, 1, 2, 3, 4, 5, 7], [0, 1, 2, 3, 4, 5 ], [0, 1, 2, 3, 4, 5 ],
+                    6, [0, 1, 2, 3, 4, 5, 7], [0, 1, 2, 3, 4, 5 ], [0, 1, 2, 3, 4, 5 ],
+                    6, [0, 1, 2, 3, 4, 5, 7], [0, 1, 2, 3, 4, 5 ], [0, 1, 2, 3, 4, 5 ],
+                    6, [0, 1, 2, 3, 4, 5, 7], [0, 1, 2, 3, 4, 5 ], [0, 1, 2, 3, 4, 5 ]
+                ],
                 endOfTurnEvents : [
                     "echo",
                     "focus",
-                    // summon maggots every 4 turns
-                    "petrify", // every 25% petrify the group
+                    "petrify80", // every 20% petrify the group -75% healing for 2 turns
+                    "petrify60",
+                    "petrify40",
+                    "petrify20",
                     "stare1", // 1, 2, 3, 4, 5 -> take damage like arrows cast every 8 turns
                     "stare2",
                     "stare3",
@@ -5048,10 +5056,9 @@ module.exports = {
                     // damage for 
                 ],
                 effectsOnDeath: [
-                    "empowerDeath"
                 ],
-                hpPerPartyMember: 2952,
-                hp: 2550,
+                hpPerPartyMember: 3952,
+                hp: 8550,
                 adPerPartyMember: 50,
                 mdPerPartyMember: 50,
                 attackDmg: 1040,
@@ -8912,14 +8919,7 @@ module.exports = {
                         xp: 30,
                         abilities: ["slash", "iceshards"],
                         buffs: [
-                            {
-                                name: "Impenetrable",
-                                emoji : "",
-                                buff: true,
-                                affectsGlobal: ["damageTakenPercentage"],
-                                turnsToExpire: 1000,
-                                multiplier: 0.0000000001
-                            },
+                            
                             {
                                 name: "frenzy",
                                 emoji: "<:frenzy:479298214453968896>",
@@ -8942,6 +8942,7 @@ module.exports = {
                             abilities: []
                         },
                         endOfTurnEvents : [
+
                         ],
                         effectsOnDeath: [
                         ],

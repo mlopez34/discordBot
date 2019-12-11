@@ -6455,33 +6455,21 @@ module.exports = {
                 },
                 // 5 BOSS
                 petruspallace: {
-                    areaString : "The creatures guarding the palace have retreated",
+                    areaString : "The creatures guarding the palace have retreated, you touch the wall ",
                     name: "Petrus Pallace",
-                    enemiesToDefeat: 275,
+                    enemiesToDefeat: 1,
                     enemies: [
                         {
-                            enemyId: "skymaggot",
-                            enemyDifficulty: "medium"
+                            enemyId: "skyMaggot",
+                            enemyDifficulty: "hard"
                         },
                         {
-                            enemyId: "maggot",
-                            enemyDifficulty: "medium"
-                        },
-                        {
-                            enemyId: "squid",
-                            enemyDifficulty: "easy"
-                        },
-                        {
-                            enemyId: "vermin",
-                            enemyDifficulty: "easy"
-                        },
-                        {
-                            enemyId: "cyclops",
+                            enemyId: "medusa",
                             enemyDifficulty: "boss"
                         },
                         {
-                            enemyId: "cyclops",
-                            enemyDifficulty: "boss"
+                            enemyId: "skyMaggot",
+                            enemyDifficulty: "hard"
                         }
                     ],
                     onCompleteAreasUnlocked: [
@@ -6501,7 +6489,7 @@ module.exports = {
                 zion: {
                     areaString : "You have freed the remaining members of the crew, the captain walks over to you and hands you the emerald prysm",
                     name: "Zion",
-                    enemiesToDefeat: 235,
+                    enemiesToDefeat: 1,
                     enemies: [
                         {
                             enemyId: "egg",
@@ -6516,20 +6504,16 @@ module.exports = {
                             enemyDifficulty: "boss"
                         },
                         {
-                            enemyId: "emeralddragon",
-                            enemyDifficulty: "hard"
-                        },
-                        {
-                            enemyId: "skymaggot",
-                            enemyDifficulty: "hard"
-                        },
-                        {
-                            enemyId: "egg",
-                            enemyDifficulty: "medium"
+                            enemyId: "medusa",
+                            enemyDifficulty: "boss"
                         },
                         {
                             enemyId: "cyclops",
                             enemyDifficulty: "boss"
+                        },
+                        {
+                            enemyId: "skyMaggot",
+                            enemyDifficulty: "hard"
                         },
                         {
                             enemyId: "egg",

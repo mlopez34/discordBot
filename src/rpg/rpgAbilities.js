@@ -4340,6 +4340,127 @@ module.exports = {
                 dmgOnExpire: 150
             }
         },
+
+        stare1: {
+            abilityId: "stare1",
+            belongsToMember: true,
+            processAbility: true,
+            ignoreFocus: true,
+            name: "Stare",
+            everyNTurns: 8,
+            afterNTurns: 1,
+            currentTurn: 0,
+            status: {
+                status: true,
+                abilityId: "stare",
+                untargettable: true,
+                name: "Stare",
+                emoji: ":one:",
+                mdPercentage: 1,
+                turnsToExpire: 1,
+                dmgOnStatusExpire: true,
+                dmgOnStatusRemove: true,
+                dmgOnRemove: 150,
+                mdPercentageOnRemove: 1,
+                dmgOnExpire: 150
+            }
+        },
+        stare2: {
+            abilityId: "stare2",
+            belongsToMember: true,
+            processAbility: true,
+            ignoreFocus: true,
+            name: "Stare",
+            everyNTurns: 8,
+            afterNTurns: 1,
+            currentTurn: 0,
+            status: {
+                status: true,
+                abilityId: "stare",
+                untargettable: true,
+                name: "Stare",
+                emoji: ":two:",
+                mdPercentage: 1,
+                turnsToExpire: 1,
+                dmgOnStatusExpire: true,
+                dmgOnStatusRemove: true,
+                dmgOnRemove: 150,
+                mdPercentageOnRemove: 1,
+                dmgOnExpire: 150
+            }
+        },
+        stare3: {
+            abilityId: "stare3",
+            belongsToMember: true,
+            processAbility: true,
+            ignoreFocus: true,
+            name: "Stare",
+            everyNTurns: 8,
+            afterNTurns: 1,
+            currentTurn: 0,
+            status: {
+                status: true,
+                abilityId: "stare",
+                untargettable: true,
+                name: "Stare",
+                emoji: ":three:",
+                mdPercentage: 1,
+                turnsToExpire: 3,
+                dmgOnStatusExpire: true,
+                dmgOnStatusRemove: true,
+                dmgOnRemove: 150,
+                mdPercentageOnRemove: 1,
+                dmgOnExpire: 150
+            }
+        },
+        stare4: {
+            abilityId: "stare4",
+            belongsToMember: true,
+            processAbility: true,
+            ignoreFocus: true,
+            name: "Stare",
+            everyNTurns: 8,
+            afterNTurns: 1,
+            currentTurn: 0,
+            status: {
+                status: true,
+                abilityId: "stare",
+                untargettable: true,
+                name: "Stare",
+                emoji: ":four:",
+                mdPercentage: 1,
+                turnsToExpire: 4,
+                dmgOnStatusExpire: true,
+                dmgOnStatusRemove: true,
+                dmgOnRemove: 150,
+                mdPercentageOnRemove: 1,
+                dmgOnExpire: 150
+            }
+        },
+        stare5: {
+            abilityId: "stare5",
+            belongsToMember: true,
+            processAbility: true,
+            ignoreFocus: true,
+            name: "Stare",
+            everyNTurns: 8,
+            afterNTurns: 1,
+            currentTurn: 0,
+            status: {
+                status: true,
+                abilityId: "stare",
+                untargettable: true,
+                name: "Stare",
+                emoji: ":five:",
+                mdPercentage: 1,
+                turnsToExpire: 5,
+                dmgOnStatusExpire: true,
+                dmgOnStatusRemove: true,
+                dmgOnRemove: 150,
+                mdPercentageOnRemove: 1,
+                dmgOnExpire: 150
+            }
+        },
         // 50% buff to damage - MUST have darkness
         mightyweapon : {
             name : "Mighty Weapon",
@@ -4568,6 +4689,86 @@ module.exports = {
                 multiplier: 0.9,
                 turnsToExpire: 30,
                 emoji: ":ghost:"
+            }
+        },
+
+        petrify80: {
+            abilityId: "petrify80",
+            belongsToMember: true,
+            processAbility: true,
+            oneTimeCast: true,
+            name: "Petrify",
+            hppercentage: 0.80,
+            status: {
+                status: true,
+                areawide: true,
+                ignoreUnique: true,
+                name: "Petrify",
+                abilityId: "petrify80",
+                affectsGlobal: ["healingTakenPercentage"],
+                multiplier: 0.25,
+                turnsToExpire: 2,
+                emoji: ":statue_of_liberty:"
+            }
+        },
+
+        petrify60: {
+            abilityId: "petrify60",
+            belongsToMember: true,
+            processAbility: true,
+            oneTimeCast: true,
+            name: "Petrify",
+            hppercentage: 0.60,
+            status: {
+                status: true,
+                areawide: true,
+                ignoreUnique: true,
+                name: "Petrify",
+                abilityId: "petrify60",
+                affectsGlobal: ["healingTakenPercentage"],
+                multiplier: 0.25,
+                turnsToExpire: 2,
+                emoji: ":statue_of_liberty:"
+            }
+        },
+
+        petrify40: {
+            abilityId: "petrify40",
+            belongsToMember: true,
+            processAbility: true,
+            oneTimeCast: true,
+            name: "Petrify",
+            hppercentage: 0.40,
+            status: {
+                status: true,
+                areawide: true,
+                ignoreUnique: true,
+                name: "Petrify",
+                abilityId: "petrify40",
+                affectsGlobal: ["healingTakenPercentage"],
+                multiplier: 0.25,
+                turnsToExpire: 2,
+                emoji: ":statue_of_liberty:"
+            }
+        },
+
+        petrify20: {
+            abilityId: "petrify20",
+            belongsToMember: true,
+            processAbility: true,
+            oneTimeCast: true,
+            name: "Petrify",
+            hppercentage: 0.20,
+            status: {
+                status: true,
+                areawide: true,
+                ignoreUnique: true,
+                name: "Petrify",
+                abilityId: "petrify20",
+                affectsGlobal: ["healingTakenPercentage"],
+                multiplier: 0.25,
+                turnsToExpire: 2,
+                emoji: ":statue_of_liberty:"
             }
         },
 
