@@ -2055,8 +2055,8 @@ module.exports = {
             name: "summonEgg",
             abilityId: "summonEgg",
             belongsToMember: true,
-            everyNTurns: 1,
-            afterNTurns: 2,
+            everyNTurns: 3,
+            afterNTurns: 3,
             currentTurn: 0,
             summon: {
                 enemies: [
@@ -2068,8 +2068,8 @@ module.exports = {
             name: "summonMaggots",
             abilityId: "summonMaggots",
             belongsToMember: true,
-            everyNTurns: 2,
-            afterNTurns: 2,
+            everyNTurns: 3,
+            afterNTurns: 3,
             currentTurn: 0,
             summon: {
                 enemies: [
@@ -2084,7 +2084,7 @@ module.exports = {
             name: "summonSkyMaggots",
             abilityId: "summonSkyMaggots",
             belongsToMember: true,
-            everyNTurns: 2,
+            everyNTurns: 3,
             afterNTurns: 3,
             currentTurn: 0,
             summon: {
