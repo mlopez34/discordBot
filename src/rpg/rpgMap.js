@@ -6356,7 +6356,7 @@ module.exports = {
                 magnetichill: {
                     areaString : " ",
                     name: "Magnetic Hill",
-                    enemiesToDefeat: 104,
+                    enemiesToDefeat: 174,
                     onCompleteAreasUnlocked: [
                         "petruspallace"
                     ],
@@ -6392,12 +6392,8 @@ module.exports = {
                 theburningplains: {
                     areaString : "They've laid eggs all over this place to build an army, but an army for what?",
                     name: "The Burning Plains",
-                    enemiesToDefeat: 79,
+                    enemiesToDefeat: 179,
                     enemies: [
-                        {
-                            enemyId: "egg",
-                            enemyDifficulty: "medium"
-                        },
                         {
                             enemyId: "egg",
                             enemyDifficulty: "medium"
@@ -6413,10 +6409,6 @@ module.exports = {
                         {
                             enemyId: "emeralddragon",
                             enemyDifficulty: "hard"
-                        },
-                        {
-                            enemyId: "egg",
-                            enemyDifficulty: "medium"
                         },
                         {
                             enemyId: "egg",
@@ -6465,7 +6457,7 @@ module.exports = {
                 petruspallace: {
                     areaString : "The creatures guarding the palace have retreated",
                     name: "Petrus Pallace",
-                    enemiesToDefeat: 75,
+                    enemiesToDefeat: 275,
                     enemies: [
                         {
                             enemyId: "skymaggot",
@@ -6509,7 +6501,7 @@ module.exports = {
                 zion: {
                     areaString : "You have freed the remaining members of the crew, the captain walks over to you and hands you the emerald prysm",
                     name: "Zion",
-                    enemiesToDefeat: 35,
+                    enemiesToDefeat: 235,
                     enemies: [
                         {
                             enemyId: "egg",

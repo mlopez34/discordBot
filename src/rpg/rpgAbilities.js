@@ -2089,7 +2089,6 @@ module.exports = {
             currentTurn: 0,
             summon: {
                 enemies: [
-                    "skymaggot",
                     "skymaggot"
                 ]
             }
