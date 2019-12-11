@@ -3511,9 +3511,10 @@ module.exports = {
                 },
             },
             onCompleteZonesUnlocked: [
-                "chicago", // ->london -> new york
+                "chicago",
             ]
         },
+        // after NYC via shop - flight ticket
         london: {
 
         },
@@ -3919,6 +3920,7 @@ module.exports = {
                 "elbert",
             ]
         },
+        // S Z A Expl in matamoros 
         aconcagua: {
 
         },
@@ -4648,7 +4650,671 @@ module.exports = {
             ]
         },
         newyork: {
+            zoneAvatar: "https://i.imgur.com/OqcosMC.jpg",
+            zoneString : "The Bloods have agreed to the deal, you find their death row comrade in panama and they will provide the protection you need on your next campaign",
+            startingArea: "newark",
+            name: "New york",
+            zoneDifficulty: 6,
+            intendedLevelString: "43-44",
+            enemyStatBuffs: {
+                hpPlusPercentage: 3.5,
+                adPlusPercentage: 4.7,
+                mdPlusPercentage: 4.7,
+                armorPlusPercentage: 1,
+                spiritPlusPercentage: 1,
+                frenzyAdIncreasePercentage: 3.3,
+                echoIncreasePercentage: 2.6
+            },
+            enemies: {
+                easy: [
+                    "thug", "thug", "thug", "thug", 
+                    "tacosmuggler", "tacosmuggler", "tacosmuggler", "tacosmuggler",
+                    "addict"
+                ],
+                medium: [
+                    "tweener", "tweener", "tweener",
+                    "vagabond", "vagabond", "vagabond",
+                    "angrymobmember"
+                ],
+                hard: [
+                    "funnypolitician", "funnypolitician", "funnypolitician",
+                    "delinquent", "delinquent", "delinquent",
+                    "consigliere"
+                ],
+                boss: [
+                    "kingpin", "kingpin", "kingpin", "kingpin", "kingpin",
+                    "blood"
+                ]
+            },
+            areas: {
+                newark: {
+                    areaString : " ",
+                    name: "Newark",
+                    enemiesToDefeat: 9,
+                    enemies: [
+                        {
+                            enemyId: "tweener",
+                            enemyDifficulty: "medium"
+                        },
+                        {
+                            enemyId: "funnypolitician",
+                            enemyDifficulty: "hard"
+                        },
+                        {
+                            enemyId: "tweener",
+                            enemyDifficulty: "medium"
+                        },
+                    ],
+                    onCompleteAreasUnlocked: [
+                        "longisland"
+                    ],
+                    shopItemsAvailable: [
 
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                },
+                longisland: {
+                    areaString : " ",
+                    name: "Long Island",
+                    enemiesToDefeat: 89,
+                    onCompleteAreasUnlocked: [
+                        "hamptons"
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                },
+                hamptons: {
+                    areaString : " ",
+                    name: "Hamptons",
+                    enemiesToDefeat: 119,
+                    onCompleteAreasUnlocked: [
+                        "soho"
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                },
+                soho: {
+                    areaString : " ",
+                    name: "Soho",
+                    enemiesToDefeat: 145,
+                    enemies: [
+                    ],
+                    onCompleteAreasUnlocked: [
+                        "jamaica"
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                },
+                // BOSS
+                jamaica: {
+                    areaString : " ",
+                    name: "Jamaica",
+                    enemiesToDefeat: 110,
+                    enemies: [
+                        {
+                            enemyId: "tweener",
+                            enemyDifficulty: "medium"
+                        },
+                        {
+                            enemyId: "delinquent",
+                            enemyDifficulty: "hard"
+                        },
+                        {
+                            enemyId: "funnypolitician",
+                            enemyDifficulty: "hard"
+                        },
+                        {
+                            enemyId: "delinquent",
+                            enemyDifficulty: "hard"
+                        },
+                        {
+                            enemyId: "angrymobmember",
+                            enemyDifficulty: "medium"
+                        },
+                        
+                        // 
+                        {
+                            enemyId: "tweener",
+                            enemyDifficulty: "medium"
+                        },
+                        {
+                            enemyId: "delinquent",
+                            enemyDifficulty: "hard"
+                        },
+                        {
+                            enemyId: "funnypolitician",
+                            enemyDifficulty: "hard"
+                        },
+                        {
+                            enemyId: "delinquent",
+                            enemyDifficulty: "hard"
+                        },
+                        {
+                            enemyId: "angrymobmember",
+                            enemyDifficulty: "medium"
+                        },
+                    ],
+                    onCompleteAreasUnlocked: [
+                        "midtown"
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                },
+                midtown: {
+                    areaString : " ",
+                    name: "Midtown",
+                    enemiesToDefeat: 185,
+                    enemies: [
+                        
+                    ],
+                    onCompleteAreasUnlocked: [
+                        "flatiron"
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                },
+                flatiron: {
+                    areaString : " ",
+                    name: "Flatiron",
+                    enemiesToDefeat: 75,
+                    enemies: [
+                        
+                    ],
+                    onCompleteAreasUnlocked: [
+                        "flatbush"
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                },
+                flatbush: {
+                    areaString : " ",
+                    name: "Flatbush",
+                    enemiesToDefeat: 57,
+                    enemies: [
+                        
+                    ],
+                    onCompleteAreasUnlocked: [
+                        "kipsbay"
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                },
+                kipsbay: {
+                    areaString : " ",
+                    name: "Kips Bay",
+                    enemiesToDefeat: 100,
+                    enemies: [
+                        
+                    ],
+                    onCompleteAreasUnlocked: [
+                        "centralpark"
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                },
+                // BOSS
+                centralpark: {
+                    areaString : " ",
+                    name: "Central Park",
+                    enemiesToDefeat: 69,
+                    enemies: [
+                        {
+                            enemyId: "tweener",
+                            enemyDifficulty: "medium"
+                        },
+                        {
+                            enemyId: "delinquent",
+                            enemyDifficulty: "hard"
+                        },
+                        {
+                            enemyId: "funnypolitician",
+                            enemyDifficulty: "hard"
+                        },
+                        {
+                            enemyId: "delinquent",
+                            enemyDifficulty: "hard"
+                        },
+                        {
+                            enemyId: "angrymobmember",
+                            enemyDifficulty: "medium"
+                        },
+                        //
+
+                        {
+                            enemyId: "tweener",
+                            enemyDifficulty: "medium"
+                        },
+                        {
+                            enemyId: "delinquent",
+                            enemyDifficulty: "hard"
+                        },
+                        {
+                            enemyId: "funnypolitician",
+                            enemyDifficulty: "hard"
+                        },
+                        {
+                            enemyId: "delinquent",
+                            enemyDifficulty: "hard"
+                        },
+                        {
+                            enemyId: "angrymobmember",
+                            enemyDifficulty: "medium"
+                        },
+                    ],
+                    onCompleteAreasUnlocked: [
+                        "queens"
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                },
+                // BOSS
+                queens: {
+                    areaString : " ",
+                    name: "Queens",
+                    enemiesToDefeat: 130,
+                    enemies: [
+                        {
+                            enemyId: "tweener",
+                            enemyDifficulty: "medium"
+                        },
+                        {
+                            enemyId: "delinquent",
+                            enemyDifficulty: "hard"
+                        },
+                        {
+                            enemyId: "funnypolitician",
+                            enemyDifficulty: "hard"
+                        },
+                        {
+                            enemyId: "delinquent",
+                            enemyDifficulty: "hard"
+                        },
+                        {
+                            enemyId: "angrymobmember",
+                            enemyDifficulty: "medium"
+                        },
+
+                        // 
+
+                        {
+                            enemyId: "tweener",
+                            enemyDifficulty: "medium"
+                        },
+                        {
+                            enemyId: "delinquent",
+                            enemyDifficulty: "hard"
+                        },
+                        {
+                            enemyId: "funnypolitician",
+                            enemyDifficulty: "hard"
+                        },
+                        {
+                            enemyId: "delinquent",
+                            enemyDifficulty: "hard"
+                        },
+                        {
+                            enemyId: "angrymobmember",
+                            enemyDifficulty: "medium"
+                        }
+                    ],
+                    onCompleteAreasUnlocked: [
+                        "thebronx"
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                },
+                // BOSS
+                thebronx: {
+                    areaString : " ",
+                    name: "The Bronx",
+                    enemiesToDefeat: 150,
+                    enemies: [
+                        {
+                            enemyId: "tweener",
+                            enemyDifficulty: "medium"
+                        },
+                        {
+                            enemyId: "delinquent",
+                            enemyDifficulty: "hard"
+                        },
+                        {
+                            enemyId: "funnypolitician",
+                            enemyDifficulty: "hard"
+                        },
+                        {
+                            enemyId: "delinquent",
+                            enemyDifficulty: "hard"
+                        },
+                        {
+                            enemyId: "angrymobmember",
+                            enemyDifficulty: "medium"
+                        },
+
+                        // 
+
+                        {
+                            enemyId: "tweener",
+                            enemyDifficulty: "medium"
+                        },
+                        {
+                            enemyId: "delinquent",
+                            enemyDifficulty: "hard"
+                        },
+                        {
+                            enemyId: "funnypolitician",
+                            enemyDifficulty: "hard"
+                        },
+                        {
+                            enemyId: "delinquent",
+                            enemyDifficulty: "hard"
+                        },
+                        {
+                            enemyId: "angrymobmember",
+                            enemyDifficulty: "medium"
+                        }
+                    ],
+                    onCompleteAreasUnlocked: [
+                        "brooklyn"
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                },
+                // BOSS
+                brooklyn: {
+                    areaString : " ",
+                    name: "Brooklyn",
+                    enemiesToDefeat: 170,
+                    enemies: [
+                        {
+                            enemyId: "tweener",
+                            enemyDifficulty: "medium"
+                        },
+                        {
+                            enemyId: "delinquent",
+                            enemyDifficulty: "hard"
+                        },
+                        {
+                            enemyId: "funnypolitician",
+                            enemyDifficulty: "hard"
+                        },
+                        {
+                            enemyId: "delinquent",
+                            enemyDifficulty: "hard"
+                        },
+                        {
+                            enemyId: "angrymobmember",
+                            enemyDifficulty: "medium"
+                        },
+
+                        // 
+
+                        {
+                            enemyId: "tweener",
+                            enemyDifficulty: "medium"
+                        },
+                        {
+                            enemyId: "delinquent",
+                            enemyDifficulty: "hard"
+                        },
+                        {
+                            enemyId: "funnypolitician",
+                            enemyDifficulty: "hard"
+                        },
+                        {
+                            enemyId: "delinquent",
+                            enemyDifficulty: "hard"
+                        },
+                        {
+                            enemyId: "angrymobmember",
+                            enemyDifficulty: "medium"
+                        }
+                    ],
+                    onCompleteAreasUnlocked: [
+                        "harlem"
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                },
+                // BOSS
+                harlem: {
+                    areaString : " ",
+                    name: "Harlem",
+                    enemiesToDefeat: 180,
+                    enemies: [
+                        {
+                            enemyId: "tweener",
+                            enemyDifficulty: "medium"
+                        },
+                        {
+                            enemyId: "delinquent",
+                            enemyDifficulty: "hard"
+                        },
+                        {
+                            enemyId: "funnypolitician",
+                            enemyDifficulty: "hard"
+                        },
+                        {
+                            enemyId: "delinquent",
+                            enemyDifficulty: "hard"
+                        },
+                        {
+                            enemyId: "angrymobmember",
+                            enemyDifficulty: "medium"
+                        },
+
+                        // 
+
+                        {
+                            enemyId: "tweener",
+                            enemyDifficulty: "medium"
+                        },
+                        {
+                            enemyId: "delinquent",
+                            enemyDifficulty: "hard"
+                        },
+                        {
+                            enemyId: "funnypolitician",
+                            enemyDifficulty: "hard"
+                        },
+                        {
+                            enemyId: "delinquent",
+                            enemyDifficulty: "hard"
+                        },
+                        {
+                            enemyId: "angrymobmember",
+                            enemyDifficulty: "medium"
+                        }
+                    ],
+                    onCompleteAreasUnlocked: [
+                        "lowermanhattan"
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                },
+                // BOSS
+                lowermanhattan: {
+                    areaString : " ",
+                    name: "Lower Manhattan",
+                    enemiesToDefeat: 190,
+                    enemies: [
+                        {
+                            enemyId: "tweener",
+                            enemyDifficulty: "medium"
+                        },
+                        {
+                            enemyId: "delinquent",
+                            enemyDifficulty: "hard"
+                        },
+                        {
+                            enemyId: "funnypolitician",
+                            enemyDifficulty: "hard"
+                        },
+                        {
+                            enemyId: "delinquent",
+                            enemyDifficulty: "hard"
+                        },
+                        {
+                            enemyId: "angrymobmember",
+                            enemyDifficulty: "medium"
+                        },
+
+                        // 
+
+                        {
+                            enemyId: "tweener",
+                            enemyDifficulty: "medium"
+                        },
+                        {
+                            enemyId: "delinquent",
+                            enemyDifficulty: "hard"
+                        },
+                        {
+                            enemyId: "funnypolitician",
+                            enemyDifficulty: "hard"
+                        },
+                        {
+                            enemyId: "delinquent",
+                            enemyDifficulty: "hard"
+                        },
+                        {
+                            enemyId: "angrymobmember",
+                            enemyDifficulty: "medium"
+                        }
+                    ],
+                    onCompleteAreasUnlocked: [
+                        "uppermanhattan"
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                },
+                // BOSS
+                uppermanhattan: {
+                    areaString : " ",
+                    name: "Upper Manhattan",
+                    enemiesToDefeat: 200,
+                    enemies: [
+                        
+                    ],
+                    onCompleteAreasUnlocked: [
+
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                },
+            },
+            onCompleteZonesUnlocked: [
+                "panama"
+            ]
         },
         chicago: {
             zoneAvatar: "https://i.imgur.com/M7BIKy6.jpg",
@@ -5405,10 +6071,90 @@ module.exports = {
                 "emeraldeve",
             ]
         },
+        // after NYC
         panama: {
+            zoneAvatar: "https://i.imgur.com/7q1T0dP.jpg",
+            zoneString : " ",
+            startingArea: "cafedelmar",
+            name: "Panama",
+            zoneDifficulty: 7,
+            intendedLevelString: "44-45",
+            enemyStatBuffs: {
+                hpPlusPercentage: 3.8,
+                adPlusPercentage: 5,
+                mdPlusPercentage: 5,
+                armorPlusPercentage: 1,
+                spiritPlusPercentage: 1,
+                frenzyAdIncreasePercentage: 3.5,
+                echoIncreasePercentage: 2.8
+            },
+            enemies: {
+                easy: [
+                    "addict", "addict", "addict", "addict", 
+                    "burritohustler", "burritohustler", "burritohustler", "burritohustler",
+                    "thug"
+                ],
+                medium: [
+                    "haywire", "haywire", "haywire",
+                    "guard", "guard", "guard",
+                    "operative"
+                ],
+                hard: [
+                    "consigliere", "consigliere", "consigliere",
+                    "delinquent", "delinquent", "delinquent",
+                    "prisoner"
+                ],
+                boss: [
+                    "militar", "militar", "militar", "militar",
+                    "lechero"
+                ]
+            },
+            areas: {
+                cafedelmar: {
+                    areaString : " ",
+                    name: "Cafe del mar",
+                    enemiesToDefeat: 878,
+                    enemies: [ 
 
+                    ],
+                    onCompleteAreasUnlocked: [
+                        
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                },
+                cafedelmar2: {
+                    areaString : " ",
+                    name: "Cafe del mar 2",
+                    enemiesToDefeat: 900,
+                    enemies: [ 
+                        
+                    ],
+                    onCompleteAreasUnlocked: [
+                        
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                },
+            },
+            onCompleteZonesUnlocked: [
+                "neoseoul"
+            ]
         },
-        // fix path, fix enemies, add zone enemy abilities
         emeraldeve: {
             zoneAvatar: "https://i.imgur.com/9vF8gXa.jpg",
             zoneString : "You've found the emerald prysm, upon touching it you are teleported into another dimension",
@@ -5448,11 +6194,11 @@ module.exports = {
             },
             areas: {
                 redbeach: {
-                    areaString : " ",
+                    areaString : "You've arrived at the emerald eve as instructed by the hermit in elbert, he somehow forgot to tell you this place is filled with unearthly insects",
                     name: "Red Beach",
                     enemiesToDefeat: 154,
                     onCompleteAreasUnlocked: [
-
+                        "cragsoftelnaeir"
                     ],
                     shopItemsAvailable: [
 
@@ -5464,11 +6210,14 @@ module.exports = {
 
                     ]
                 },
+                // 1
                 cragsoftelnaeir: {
-                    areaString : " ",
+                    areaString : "You've established an outpost at the Crags. Recover some maggot bones from Leona lake, and sky maggot blood to glue the bones together so you can reinforce the outpost's wall",
                     name: "Crags of Tel'naeir",
                     enemiesToDefeat: 141,
                     onCompleteAreasUnlocked: [
+                        "marietaisland",
+                        "leonalake"
                     ],
                     shopItemsAvailable: [
 
@@ -5480,11 +6229,13 @@ module.exports = {
 
                     ]
                 },
+                // 3
                 dufellsnangoroth: {
-                    areaString : " ",
+                    areaString : "You feel weak and exhausted, your eyes have turned red and have lost your appetite. The small relic one of the squids was carrying points in the direction the steep hill is located",
                     name: "Du Fells Nangoröth",
                     enemiesToDefeat: 107,
                     onCompleteAreasUnlocked: [
+                        "magnetichill"
                     ],
                     shopItemsAvailable: [
 
@@ -5496,11 +6247,27 @@ module.exports = {
 
                     ]
                 },
+                // 2 BOSS
                 marietaisland: {
-                    areaString : " ",
+                    areaString : "You've collected the sky maggot blood but before you can store it in the flask it was absorbed by your skin",
                     name: "Marieta Island",
-                    enemiesToDefeat: 143,
+                    enemiesToDefeat: 45,
+                    enemies: [
+                        {
+                            enemyId: "skymaggot",
+                            enemyDifficulty: "hard"
+                        },
+                        {
+                            enemyId: "vermin",
+                            enemyDifficulty: "easy"
+                        },
+                        {
+                            enemyId: "skymaggot",
+                            enemyDifficulty: "hard"
+                        },
+                    ],
                     onCompleteAreasUnlocked: [
+                        "dufellsnangoroth"
                     ],
                     shopItemsAvailable: [
 
@@ -5512,11 +6279,14 @@ module.exports = {
 
                     ]
                 },
+                // 2
                 leonalake: {
-                    areaString : " ",
+                    areaString : "The bones you've collected seem unbreakable, before you can put them in your backpack they burrow themselves into the ground..",
                     name: "Leona Lake",
                     enemiesToDefeat: 150,
                     onCompleteAreasUnlocked: [
+                        "grandprismaticspring",
+                        "capricaspaceport"
                     ],
                     shopItemsAvailable: [
 
@@ -5528,8 +6298,9 @@ module.exports = {
 
                     ]
                 },
+                // 3 BOSS
                 grandprismaticspring: {
-                    areaString : " ",
+                    areaString : "It is almost as if the dragons are guarding something",
                     name: "Grand Prismatic Spring",
                     enemiesToDefeat: 50,
                     enemies: [
@@ -5538,24 +6309,20 @@ module.exports = {
                             enemyDifficulty: "hard"
                         },
                         {
-                            enemyId: "shiva",
-                            enemyDifficulty: "boss"
-                        },
-                        {
-                            enemyId: "avatarofhera",
-                            enemyDifficulty: "boss"
-                        },
-                        {
-                            enemyId: "shiva",
-                            enemyDifficulty: "boss"
-                        },
-                        {
-                            enemyId: "ogre",
+                            enemyId: "skymaggot",
                             enemyDifficulty: "hard"
                         },
+                        {
+                            enemyId: "egg",
+                            enemyDifficulty: "medium"
+                        },
+                        {
+                            enemyId: "emeralddragon",
+                            enemyDifficulty: "hard"
+                        }
                     ],
                     onCompleteAreasUnlocked: [
-
+                        "neverland"
                     ],
                     shopItemsAvailable: [
 
@@ -5567,11 +6334,13 @@ module.exports = {
 
                     ]
                 },
+                // 3
                 capricaspaceport: {
-                    areaString : " ",
+                    areaString : "The spaceport is desolate and filled with eggs, it looks as if the crew has been gone for a very long time, the mainframe reads the following: 'we've departed to the last city remaining in search of the emerald prysm, there is not enough fuel left to return back home`",
                     name: "Caprica Spaceport",
                     enemiesToDefeat: 123,
                     onCompleteAreasUnlocked: [
+                        "theburningplains"
                     ],
                     shopItemsAvailable: [
 
@@ -5583,12 +6352,13 @@ module.exports = {
 
                     ]
                 },
+                // 4
                 magnetichill: {
                     areaString : " ",
                     name: "Magnetic Hill",
                     enemiesToDefeat: 104,
                     onCompleteAreasUnlocked: [
-
+                        "petruspallace"
                     ],
                     shopItemsAvailable: [
 
@@ -5600,11 +6370,13 @@ module.exports = {
 
                     ]
                 },
+                // 4
                 neverland: {
                     areaString : " ",
                     name: "Neverland",
                     enemiesToDefeat: 86,
                     onCompleteAreasUnlocked: [
+                        "petruspallace"
                     ],
                     shopItemsAvailable: [
 
@@ -5616,11 +6388,51 @@ module.exports = {
 
                     ]
                 },
+                // 4 BOSS
                 theburningplains: {
-                    areaString : " ",
+                    areaString : "They've laid eggs all over this place to build an army, but an army for what?",
                     name: "The Burning Plains",
                     enemiesToDefeat: 79,
+                    enemies: [
+                        {
+                            enemyId: "egg",
+                            enemyDifficulty: "medium"
+                        },
+                        {
+                            enemyId: "egg",
+                            enemyDifficulty: "medium"
+                        },
+                        {
+                            enemyId: "egg",
+                            enemyDifficulty: "medium"
+                        },
+                        {
+                            enemyId: "egg",
+                            enemyDifficulty: "medium"
+                        },
+                        {
+                            enemyId: "emeralddragon",
+                            enemyDifficulty: "hard"
+                        },
+                        {
+                            enemyId: "egg",
+                            enemyDifficulty: "medium"
+                        },
+                        {
+                            enemyId: "egg",
+                            enemyDifficulty: "medium"
+                        },
+                        {
+                            enemyId: "egg",
+                            enemyDifficulty: "medium"
+                        },
+                        {
+                            enemyId: "egg",
+                            enemyDifficulty: "medium"
+                        }
+                    ],
                     onCompleteAreasUnlocked: [
+                        "mountrinjani"
                     ],
                     shopItemsAvailable: [
 
@@ -5632,6 +6444,7 @@ module.exports = {
 
                     ]
                 },
+                // 5
                 mountrinjani: {
                     areaString : " ",
                     name: "Mount Rinjani",
@@ -5648,11 +6461,39 @@ module.exports = {
 
                     ]
                 },
+                // 5 BOSS
                 petruspallace: {
-                    areaString : " ",
+                    areaString : "The creatures guarding the palace have retreated",
                     name: "Petrus Pallace",
-                    enemiesToDefeat: 116,
+                    enemiesToDefeat: 75,
+                    enemies: [
+                        {
+                            enemyId: "skymaggot",
+                            enemyDifficulty: "medium"
+                        },
+                        {
+                            enemyId: "maggot",
+                            enemyDifficulty: "medium"
+                        },
+                        {
+                            enemyId: "squid",
+                            enemyDifficulty: "easy"
+                        },
+                        {
+                            enemyId: "vermin",
+                            enemyDifficulty: "easy"
+                        },
+                        {
+                            enemyId: "cyclops",
+                            enemyDifficulty: "boss"
+                        },
+                        {
+                            enemyId: "cyclops",
+                            enemyDifficulty: "boss"
+                        }
+                    ],
                     onCompleteAreasUnlocked: [
+                        "zion"
                     ],
                     shopItemsAvailable: [
 
@@ -5664,41 +6505,42 @@ module.exports = {
 
                     ]
                 },
+                // final BOSS
                 zion: {
-                    areaString : " ",
+                    areaString : "You have freed the remaining members of the crew, the captain walks over to you and hands you the emerald prysm",
                     name: "Zion",
-                    enemiesToDefeat: 120,
+                    enemiesToDefeat: 35,
                     enemies: [
                         {
-                            enemyId: "polarbear",
+                            enemyId: "egg",
                             enemyDifficulty: "medium"
                         },
                         {
-                            enemyId: "mammoth",
+                            enemyId: "emeralddragon",
                             enemyDifficulty: "hard"
                         },
                         {
-                            enemyId: "frostdragon",
-                            enemyDifficulty: "hard"
-                        },
-                        {
-                            enemyId: "ogremagi",
+                            enemyId: "elderemeralddragon",
                             enemyDifficulty: "boss"
                         },
                         {
-                            enemyId: "shiva",
+                            enemyId: "emeralddragon",
+                            enemyDifficulty: "hard"
+                        },
+                        {
+                            enemyId: "skymaggot",
+                            enemyDifficulty: "hard"
+                        },
+                        {
+                            enemyId: "egg",
+                            enemyDifficulty: "medium"
+                        },
+                        {
+                            enemyId: "cyclops",
                             enemyDifficulty: "boss"
                         },
                         {
-                            enemyId: "frostdragon",
-                            enemyDifficulty: "hard"
-                        },
-                        {
-                            enemyId: "mammoth",
-                            enemyDifficulty: "hard"
-                        },
-                        {
-                            enemyId: "polarbear",
+                            enemyId: "egg",
                             enemyDifficulty: "medium"
                         }
                     ],
@@ -5719,9 +6561,91 @@ module.exports = {
                 "gabrielshorn",
             ]
         },
+        // after emeraldeve
         gabrielshorn: {
+            zoneAvatar: "https://i.imgur.com/7q1T0dP.jpg",
+            zoneString : " ",
+            startingArea: "necropolis",
+            name: "Gabriel's Horn",
+            zoneDifficulty: 8,
+            intendedLevelString: "45-46",
+            enemyStatBuffs: {
+                hpPlusPercentage: 4,
+                adPlusPercentage: 5.2,
+                mdPlusPercentage: 5.2,
+                armorPlusPercentage: 1,
+                spiritPlusPercentage: 1,
+                frenzyAdIncreasePercentage: 3.7,
+                echoIncreasePercentage: 2.9
+            },
+            enemies: {
+                easy: [
+                    "addict", "addict", "addict", "addict", 
+                    "burritohustler", "burritohustler", "burritohustler", "burritohustler",
+                    "thug"
+                ],
+                medium: [
+                    "haywire", "haywire", "haywire",
+                    "guard", "guard", "guard",
+                    "operative"
+                ],
+                hard: [
+                    "chimaera", "chimaera", "chimaera",
+                    "hydra", "hydra", "hydra",
+                ],
+                boss: [
+                    "gargantua", "gargantua", "gargantua", "gargantua",
+                    "cerberus"
+                ]
+            },
+            areas: {
+                necropolis: {
+                    areaString : " ",
+                    name: "Necropolis",
+                    enemiesToDefeat: 878,
+                    enemies: [ 
+
+                    ],
+                    onCompleteAreasUnlocked: [
+                        
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                },
+                necropolis2: {
+                    areaString : " ",
+                    name: "Necropolis2",
+                    enemiesToDefeat: 878,
+                    enemies: [ 
+
+                    ],
+                    onCompleteAreasUnlocked: [
+                        
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                }
+            },
+            onCompleteZonesUnlocked: [
+                "neoseoul"
+            ]
 
         },
+        // after gabriel
         monsargaeus: {
 
         },
@@ -5758,12 +6682,12 @@ module.exports = {
         - Gibraltar
         - Tokyo, 
         - Johanesburg - district 10, 
-        - London - essex, bridge, 
-        - mountains Everest - walrus cove, crystaline cave, igloo town, 
+        - London - essex
+        - mountains Everest  
         - Aconcagua, 
         - Elbert
-        -moon Mons Argaeus, 
-        -Mare Crisium, 
+        - moon Mons Argaeus, 
+        - Mare Crisium, 
         - Vallis Snellius  
 
 
@@ -6311,7 +7235,26 @@ Hoover Dam
         theburningplains: "emeraldeve",
         mountrinjani: "emeraldeve",
         petruspallace: "emeraldeve",
-        zion: "emeraldeve"
+        zion: "emeraldeve",
+        
+        newark: "newyork",
+        longisland: "newyork",
+        hamptons: "newyork",
+        soho: "newyork",
+        jamaica: "newyork",
+        midtown: "newyork",
+        flatiron: "newyork",
+        flatbush: "newyork",
+        kipsbay: "newyork",
+        centralpark: "newyork",
+        queens: "newyork",
+        thebronx: "newyork",
+        brooklyn: "newyork", 
+        harlem: "newyork",
+        lowermanhattan: "newyork",
+        uppermanhattan: "newyork",
 
+        cafedelmar: "panama",
+        necropolis: "gabrielshorn"
     },
 }

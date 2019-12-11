@@ -2978,12 +2978,12 @@ module.exports.patchnotesCommand = function(message){
         },
         "fields": [
           {
-            "name": "October 22, 2019",
-            "value": "```-Burritos are now displayed in -tacos command\n-You can no longer obtain recipes via thanking another user, you can now obtain recipes by thanking bender, odds to obtain a new recipe have been increased by 400%.\n-Recipes obtained via temple have been adjusted, you can now find a recipe for a rarity category from a pool of random 30, after each category is collected you can will still obtain a recipe from the final combined pool.\n-New zones added!```"
-          },
-          {
             "name": "December 9, 2019",
             "value": "```-Performance improvements for commands (-plant, -harvest, -fetch, -use, -temple)\n-Stable, Greenhouse, and Temple level 12 will now display correctly on user's profile\n-chances to obtain an ancient item, as well as rare items have increased in RPG!, when defeating a keystone challenge you will get 1 piece of loot per keystone number\n-Tacos from RPG items will no longer have a multiplier based on challenge difficulty\n-Amulets view can now be paged! try using -amulets page [pagenum]\n-Crit damage has been introduced! luck from items is translated into crit damage in RPG. base crit damage is +50% and each additional % will increase per 10 points of luck\n-Many internal changes have arrived during this patch for the introduction of new features that are imminent. If you find a bug please report it :)```"
+          },
+          {
+            "name": "December 10, 2019",
+            "value": "```-RPG map gates have been removed, you should be able to access some zones not previously accessible.\n-Challenge gates have been removed\n-New abilities have been introduced! list of new abilities: concentrate, adapt, surge, pulverize, tidalwave, finalfortune (Limit), cleanse (Limit), invigorate (Limit), restore, backup, canistershot.\nThese abilities have been added to a few items which previously had poor list of abilities, more items will be updated throughout the next week to have a higher pool of items with these abilities.\n-Odds for rolls in RPG have been adjusted slightly```"
           }
         ]
       };
