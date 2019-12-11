@@ -2654,11 +2654,11 @@ module.exports.useRpgAbility = function(message, args){
                                 }
                             }
                             if (membersAlive == activeRPGEvents["rpg-"+idOfEventUserIsIn].memberTurnAbilities.length){
-                                //try{
+                                try{
                                     processRpgTurn(message, activeRPGEvents["rpg-"+idOfEventUserIsIn]);
-                                // }catch(err){
-                                //     console.log(err);
-                                // }
+                                }catch(err){
+                                    console.log(err);
+                                }
                             }
                         }else{
                             message.channel.send("invalid ability or already used ability");
@@ -2747,7 +2747,7 @@ function validateTarget(target, abilityToUse, event, caster){
 }
 
 function processRpgTurn(message, event){
-    //try{
+    try{
         var order = [];
         recalculateStatBuffs(event)
         var passiveEffectsString = processPassiveEffects(event);
@@ -2839,9 +2839,9 @@ function processRpgTurn(message, event){
                 message.channel.send("exception : " + exception)
             }
         }
-    // }catch(ex){
-    //    message.channel.send("turn processing exception : " + ex)
-    // }
+    }catch(ex){
+       message.channel.send("turn processing exception : " + ex)
+    }
 }
 
 function cleanupEventEnded(event){

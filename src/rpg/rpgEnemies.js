@@ -1,6 +1,37 @@
 module.exports = {
     enemiesToEncounter: {
         summoned: {
+            egg: {
+                enemyIdName : "egg",
+                name: "Egg",
+                passive: true,
+                abilities: [],
+                buffs: [],
+                keystoneStats: {
+                    hp: [1200, 3500, 6200, 10000, 15000 ],
+                    attackDmg: [300, 500, 900, 1500, 2300],
+                    magicDmg: [300, 500, 900, 1500, 2300],
+                    abilities: []
+                },
+                endOfTurnEvents: [
+                    "summonSkyMaggots"
+                ],
+                effectsOnDeath: [
+                    "burst",
+                    "burst",
+                    "burst"
+                ],
+                hpPerPartyMember: 890,
+                adPerPartyMember: 18,
+                mdPerPartyMember: 18,
+                hp: 840,
+                attackDmg: 90,
+                magicDmg: 90,
+                armor: 1950,
+                spirit: 1950,
+                difficulty: "summoned",
+                element: "normal"
+            },
             skymaggot: {
                 enemyIdName : "skymaggot",
                 name: "Sky Maggot",
