@@ -7744,7 +7744,7 @@ function calculateHealingDone(event, caster, target, rpgAbility){
         }
     }else{
         return {
-            heal: Math.floor(baseHealing * casterHealingDonePercentage) * targetHealingTakenPercentage,
+            heal: Math.floor((baseHealing * casterHealingDonePercentage) * targetHealingTakenPercentage ),
             critical: false,
             target: target
         }
@@ -8001,7 +8001,7 @@ function processAbility(abilityObject, event){
                     && !event.enemies[targetToDealDmg].immuneToAoe){
                         // target is not dead, damage them
                         var abType = rpgAbility.type
-                        damageToDealToPlayer = dealDamageTo( event.enemies[targetToDealDmg], damageToDeal.dmg, event, abType)
+                        let damageToDealToPlayer = dealDamageTo( event.enemies[targetToDealDmg], damageToDeal.dmg, event, abType)
                         abilityToString = abilityToString + processReflectEffects(event, targetToDealDmg, damageToDealToPlayer, abilityCaster, "areawide")
                         abilityToString = abilityToString + triggerBufFromDamage(event, event.enemies[targetToDealDmg] )
                         if (checkHasDied( event.enemies[targetToDealDmg])){
@@ -8017,7 +8017,7 @@ function processAbility(abilityObject, event){
                     var targetToDealDmgName = event.membersInParty[targetToDealDmg].name
                     if (!checkIfDeadByObject(event.membersInParty[targetToDealDmg])){
                         var abType = rpgAbility.type
-                        damageToDealToPlayer = dealDamageTo( event.membersInParty[targetToDealDmg] , damageToDeal.dmg, event, abType)
+                        let damageToDealToPlayer = dealDamageTo( event.membersInParty[targetToDealDmg] , damageToDeal.dmg, event, abType)
                         abilityToString = abilityToString + processReflectEffects(event, targetToDealDmg, damageToDealToPlayer, abilityCaster, "areawide")
                         abilityToString = abilityToString + triggerBufFromDamage(event, event.membersInParty[targetToDealDmg] )
                         if (checkHasDied(event.membersInParty[targetToDealDmg])){
@@ -8030,6 +8030,7 @@ function processAbility(abilityObject, event){
             var targetToDealDmg = abilityObject.target;
             // dealing damage to enemies
             if (event.enemies[targetToDealDmg]){
+                let extraLine = true
                 let numberOfAttacks = 1
                 if (rpgAbility.randomNumberOfCasts){
                     numberOfAttacks = Math.ceil(Math.random() * rpgAbility.randomNumberOfCasts)
@@ -8037,7 +8038,7 @@ function processAbility(abilityObject, event){
                 for(let noa = 0; noa < numberOfAttacks; noa++){
                     var targetToDealDmgName = event.enemies[targetToDealDmg].name
                     var abType = rpgAbility.type
-                    damageToDealToPlayer = dealDamageTo(event.enemies[targetToDealDmg], damageToDeal.dmg, event, abType)
+                    let damageToDealToPlayer = dealDamageTo(event.enemies[targetToDealDmg], damageToDeal.dmg, event, abType)
                     if (noa == 0){
                         abilityToString = abilityToString + critStrike + targetToDealDmgName + " took " + damageToDealToPlayer + " damage - " + rpgAbility.name
                     }else{
@@ -8049,11 +8050,16 @@ function processAbility(abilityObject, event){
                     abilityToString = abilityToString + processReflectEffects(event, targetToDealDmg, damageToDealToPlayer, abilityCaster, "dmg")
                     abilityToString = abilityToString + triggerBufFromDamage(event, event.enemies[targetToDealDmg] )
                     if ( checkHasDied(event.enemies[targetToDealDmg])){
+                        abilityToString = abilityToString + "\n"
                         abilityToString = abilityToString + hasDied(event, event.enemies[targetToDealDmg], abilityCaster);
+                        extraLine = false
                     }
                 }
-                abilityToString = abilityToString + "\n"
+                if (extraLine){
+                    abilityToString = abilityToString + "\n"
+                }
             }else if (event.membersInParty[targetToDealDmg]){
+                let extraLine = true
                 let numberOfAttacks = 1
                 if (rpgAbility.randomNumberOfCasts){
                     numberOfAttacks = Math.ceil(Math.random() * rpgAbility.randomNumberOfCasts)
@@ -8062,7 +8068,7 @@ function processAbility(abilityObject, event){
                     // dealing damage to members of party (friendly fire or enemy attacking)
                     var targetToDealDmgName = event.membersInParty[targetToDealDmg].name;
                     var abType = rpgAbility.type
-                    damageToDealToPlayer = dealDamageTo( event.membersInParty[targetToDealDmg], damageToDeal.dmg, event, abType )
+                    let damageToDealToPlayer = dealDamageTo( event.membersInParty[targetToDealDmg], damageToDeal.dmg, event, abType )
                     if (noa == 0){
                         abilityToString = abilityToString + critStrike + targetToDealDmgName + " took " + damageToDealToPlayer + " damage - " + rpgAbility.name
                     }else{
@@ -8073,10 +8079,14 @@ function processAbility(abilityObject, event){
                     abilityToString = abilityToString + processReflectEffects(event, targetToDealDmg, damageToDealToPlayer, abilityCaster, "dmg")
                     abilityToString = abilityToString + triggerBufFromDamage(event, event.membersInParty[targetToDealDmg] )
                     if (checkHasDied(event.membersInParty[targetToDealDmg])){
+                        abilityToString = abilityToString + "\n"
                         abilityToString = abilityToString + hasDied(event, event.membersInParty[targetToDealDmg]);
+                        extraLine = false
                     }
                 }
-                abilityToString = abilityToString + "\n"
+                if (extraLine){
+                    abilityToString = abilityToString + "\n"
+                }
             }
         }
     }

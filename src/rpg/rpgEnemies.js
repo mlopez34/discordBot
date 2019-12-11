@@ -24,7 +24,11 @@ module.exports = {
                     abilities: []
                 },
                 effectsOnDeath: [
-                    "summonMaggots"
+                    "physicalBarrier"
+                ],
+                effectsOnDeath: [
+                    "summonMaggots",
+                    "reanimateAll30"
                 ],
                 hpPerPartyMember: 990,
                 adPerPartyMember: 21,
@@ -3054,7 +3058,7 @@ module.exports = {
                     abilities: []
                 },
                 endOfTurnEvents: [
-
+                    "summonSkyMaggots"
                 ],
                 effectsOnDeath: [
                     "burst",
@@ -3998,8 +4002,8 @@ module.exports = {
                         name: "frenzy",
                         emoji: "<:frenzy:479298214453968896>",
                         onTurnEnd: {
-                            attackDmgPlus : 100,
-                            magicDmgPlus : 100,
+                            attackDmgPlus : 200,
+                            magicDmgPlus : 200,
                             everyNTurns: 2,
                             startTurn: 2
                         }
@@ -4012,16 +4016,20 @@ module.exports = {
                     abilities: []
                 },
                 effectsOnDeath: [
-                    "summonRuffians"
+                    "physicalBarrier"
+                ],
+                effectsOnDeath: [
+                    "summonMaggots",
+                    "reanimateAll30"
                 ],
                 hpPerPartyMember: 990,
-                adPerPartyMember: 21,
-                mdPerPartyMember: 21,
-                hp: 850,
-                attackDmg: 325,
-                magicDmg: 370,
-                armor: 600,
-                spirit: 900,
+                adPerPartyMember: 30,
+                mdPerPartyMember: 30,
+                hp: 1450,
+                attackDmg: 525,
+                magicDmg: 570,
+                armor: 1300,
+                spirit: 1300,
                 difficulty: "hard",
                 element: "normal"
             },
@@ -4034,8 +4042,8 @@ module.exports = {
                         name: "frenzy",
                         emoji: "<:frenzy:479298214453968896>",
                         onTurnEnd: {
-                            attackDmgPlus : 100,
-                            magicDmgPlus : 100,
+                            attackDmgPlus : 230,
+                            magicDmgPlus : 230,
                             everyNTurns: 2,
                             startTurn: 2
                         }
@@ -4048,19 +4056,20 @@ module.exports = {
                     abilities: []
                 },
                 endOfTurnEvents:[
-                    "summonEgg"
+                    "summonEgg",
+                    "fade"
                 ],
                 effectsOnDeath: [
-
+                    "elementalBarrier"
                 ],
-                hpPerPartyMember: 990,
+                hpPerPartyMember: 1390,
                 adPerPartyMember: 21,
                 mdPerPartyMember: 21,
-                hp: 850,
-                attackDmg: 325,
-                magicDmg: 370,
-                armor: 600,
-                spirit: 900,
+                hp: 1750,
+                attackDmg: 625,
+                magicDmg: 670,
+                armor: 1300,
+                spirit: 1300,
                 difficulty: "hard",
                 element: "normal"
             },
@@ -4590,19 +4599,25 @@ module.exports = {
                 enemyIdName : "elderemeralddragon",
                 name: "Elder Emerald Dragon",
                 abilities: [
-                    "freeze", "crush", "crush", "slap", "slap", "frostBreath", "frostBreath", "empower"
+                    "freeze", "crush", "crush", "slap", "slap", "fireBreath", "fireBreath", "empower"
                 ],
                 buffs: [
                     {
                         name: "frenzy",
                         emoji: "<:frenzy:479298214453968896>",
                         onTurnEnd: {
-                            attackDmgPlus : 235,
-                            magicDmgPlus : 235,
+                            attackDmgPlus : 375,
+                            magicDmgPlus : 375,
                             everyNTurns: 2,
                             startTurn: 2
                         }
                     }
+                ],
+                abilityOrder: [
+                    0, [1, 2, 3, 4, 5, 6, 7], [1, 2, 3, 4, 5, 6, 7], [1, 2, 3, 4, 5, 6, 7], [1, 2, 3, 4, 5, 6, 7]
+                    [1, 2, 3, 4, 5, 6, 7], [1, 2, 3, 4, 5, 6, 7], [1, 2, 3, 4, 5, 6, 7], [1, 2, 3, 4, 5, 6, 7],
+                    [1, 2, 3, 4, 5, 6, 7], [1, 2, 3, 4, 5, 6, 7], [1, 2, 3, 4, 5, 6, 7], [1, 2, 3, 4, 5, 6, 7],
+                    [1, 2, 3, 4, 5, 6, 7], [1, 2, 3, 4, 5, 6, 7], [1, 2, 3, 4, 5, 6, 7], [1, 2, 3, 4, 5, 6, 7]
                 ],
                 keystoneStats: {
                     hp: [1200, 3500, 6200, 10000, 15000 ],
@@ -4612,7 +4627,9 @@ module.exports = {
                 },
                 endOfTurnEvents : [
                     "echo",
-                    "focus"
+                    "focus",
+                    "fade",
+                    ""
                 ],
                 effectsOnDeath: [
                     "invigorateDeath"
@@ -4621,8 +4638,8 @@ module.exports = {
                 hp: 1950,
                 adPerPartyMember: 29,
                 mdPerPartyMember: 29,
-                attackDmg: 640,
-                magicDmg: 690,
+                attackDmg: 1740,
+                magicDmg: 1790,
                 armor: 1800,
                 spirit: 1800,
                 difficulty: "boss",
@@ -4932,8 +4949,8 @@ module.exports = {
                         name: "frenzy",
                         emoji: "<:frenzy:479298214453968896>",
                         onTurnEnd: {
-                            attackDmgPlus : 185,
-                            magicDmgPlus : 185,
+                            attackDmgPlus : 285,
+                            magicDmgPlus : 285,
                             everyNTurns: 2,
                             startTurn: 2
                         }
@@ -4947,16 +4964,69 @@ module.exports = {
                 },
                 endOfTurnEvents : [
                     "echo",
-                    "focus"
+                    "focus",
+                    "decimate"
                 ],
-                hpPerPartyMember: 1422,
-                hp: 1250,
+                hpPerPartyMember: 1922,
+                hp: 1950,
                 adPerPartyMember: 29,
                 mdPerPartyMember: 29,
-                attackDmg: 640,
-                magicDmg: 590,
+                attackDmg: 1640,
+                magicDmg: 1590,
                 armor: 1600,
                 spirit: 1600,
+                difficulty: "boss",
+                element: "normal"
+            },
+            medusa: {
+                enemyIdName : "avatarofhera",
+                name: "Avatar of Hera",
+                emoji: "<:hera:636311364322721832>",
+                abilities: [
+                    "crush", "crush", "decayDeath", "decayDeath", "shock", "shock", "whirlwind", "shell"
+                ],
+                buffs: [
+                    {
+                        name: "frenzy",
+                        emoji: "<:frenzy:479298214453968896>",
+                        onTurnEnd: {
+                            attackDmgPlus : 255,
+                            magicDmgPlus : 255,
+                            everyNTurns: 3,
+                            startTurn: 2
+                        }
+                    }
+                ],
+                keystoneStats: {
+                    hp: [1200, 3500, 6200, 10000, 15000 ],
+                    attackDmg: [300, 500, 900, 1500, 2300],
+                    magicDmg: [300, 500, 900, 1500, 2300],
+                    abilities: []
+                },
+                endOfTurnEvents : [
+                    "echo",
+                    "focus",
+                    // summon maggots every 4 turns
+                    "petrify", // every 25% petrify the group
+                    "stare1", // 1, 2, 3, 4, 5 -> take damage like arrows cast every 8 turns
+                    "stare2",
+                    "stare3",
+                    "stare4",
+                    "stare5"
+                    
+                    // damage for 
+                ],
+                effectsOnDeath: [
+                    "empowerDeath"
+                ],
+                hpPerPartyMember: 2952,
+                hp: 2550,
+                adPerPartyMember: 50,
+                mdPerPartyMember: 50,
+                attackDmg: 1040,
+                magicDmg: 1090,
+                armor: 1800,
+                spirit: 1800,
                 difficulty: "boss",
                 element: "normal"
             },
@@ -8423,7 +8493,7 @@ module.exports = {
                 keystoneUnlockName: "Amber Keystone",
                 avatar: "https://i.imgur.com/0Rh5C7q.jpg",
                 timed: true,
-                description: "**Amber Invasion**  \n**Regenerate** - The Amber Dragon heals themselves for 100,000 every turn\n**Amber Pool** - Immune to area wide damage. heals all enemies for 10,000 with bloom at the end of every turn\n**Roots** - Immune to area wide damage. Upon being summoned the roots will rampage on a player until killed\n**Amber Drake** - Casts Erupt - Damage over time ability, upon taking damage the player will also deal damage to the rest of the group based on their missing health.\n**Whelpling** - Will cast rupture on the player that has dealt the killing blow - Rupture will deal 3,000 damage over 1 turn. **Elemental Guardians** - Storm guardian will cast frighten on a player which reduces their damage dealt by 3% per stack (cannot be bandaided), Earth Guardian will cast fade on a player which will reduce their healing taken by 10% per stack, Fire guardian will cast Lava Blast on a player which deals 5,000 damage.\n Upon guardians, drakes, and whelplings death the boss will gain permanent reduced healing based on the enemy.",
+                description: "**Amber Invasion**  \n**Regenerate** - The Amber Dragon heals themselves for 100,000 every turn\n**Amber Pool** - Immune to area wide damage. heals all enemies for 10,000 with bloom at the end of every turn\n**Roots** - Immune to area wide damage. Upon being summoned the roots will rampage on a player until killed\n**Amber Drake** - Casts Erupt - Damage over time ability, upon taking damage the player will also deal damage to the rest of the group based on their missing health.\n**Whelpling** - Will cast rupture on the player that has dealt the killing blow - Rupture will deal 3,000 damage over 1 turn.\n**Elemental Guardians** - Storm guardian will cast frighten on a player which reduces their damage dealt by 3% per stack (cannot be bandaided), Earth Guardian will cast fade on a player which will reduce their healing taken by 10% per stack, Fire guardian will cast Lava Blast on a player which deals 5,000 damage.\n Upon guardians, drakes, and whelplings death the boss will gain permanent reduced healing based on the enemy.",
                 timedPerTurn: 360000,
                 points: 18422,
                 keystonePoints: [250, 1100, 1830, 3530, 4030, 4800, 10000, 17000, 25000, 35000],

@@ -29,7 +29,7 @@ module.exports = {
                 name: "Consumed",
                 abilityId: "consumed",
                 affects: ["criticalChance"],
-                multiplier: 0,
+                multiplier: 0.00000000001,
                 turnsToExpire: 3,
                 emoji: ""
             }
@@ -56,7 +56,7 @@ module.exports = {
                 name: "Consumed",
                 abilityId: "consumed",
                 affects: ["criticalChance"],
-                multiplier: 0,
+                multiplier: 0.0000000001,
                 turnsToExpire: 3,
                 emoji: ""
             }
@@ -1121,7 +1121,7 @@ module.exports = {
             name: "Plasma Beam",
             abilityId: "plasmabeam",
             areawide: true,
-            description: "Deal 75 damage + 87% of your attack damage to all enemies, 5 charges",
+            description: "Deal 75 damage + 87% of your attack damage to all enemies, 4 charges",
             dmg: 75,
             charges: 4,
             maxcharges: 4,
@@ -1689,6 +1689,16 @@ module.exports = {
                 hpPlus: 400000
             }
         },
+        decimate: {
+            belongsToMember: true,
+            name: "Decimate 50%",
+            abilityId: "decimate",
+            dmgaura: true,
+            oneTimeCast: true,
+            hppercentage: .5,
+            currentHealthPercentageDamage: 0.5,
+            type: "physical"
+        },
         // summon demon for ch 5
         summonDemon: {
             name: "Summon Demon",
@@ -2046,7 +2056,7 @@ module.exports = {
             abilityId: "summonEgg",
             belongsToMember: true,
             everyNTurns: 1,
-            afterNTurns: 4,
+            afterNTurns: 2,
             currentTurn: 0,
             summon: {
                 enemies: [
@@ -2058,8 +2068,9 @@ module.exports = {
             name: "summonMaggots",
             abilityId: "summonMaggots",
             belongsToMember: true,
-            oneTimeCast: true,
-            onDeathEffect: true,
+            everyNTurns: 2,
+            afterNTurns: 2,
+            currentTurn: 0,
             summon: {
                 enemies: [
                     "maggot",
@@ -2070,7 +2081,7 @@ module.exports = {
             }
         },
         summonSkyMaggots: {
-            name: "summonOgres",
+            name: "summonSkyMaggots",
             abilityId: "summonSkyMaggots",
             belongsToMember: true,
             everyNTurns: 2,
@@ -3242,8 +3253,20 @@ module.exports = {
             hppercentage: 0.2,
             aboveKeystone: 6,
             name: "Reanimate",
-            abilityId: "reanimateAll",
+            abilityId: "reanimateAll25",
             admdMultiplier: 1.25,
+            // create zombies of all the enemies that are dead
+            // hp and stats equal
+            zombifyAll: true // summons zombies
+        },
+        reanimateAll30: {
+            belongsToMember: true,
+            effectDone: false,
+            oneTimeCast: true,
+            hppercentage: 0.3,
+            name: "Reanimate",
+            abilityId: "reanimateAll30",
+            admdMultiplier: 1.5,
             // create zombies of all the enemies that are dead
             // hp and stats equal
             zombifyAll: true // summons zombies
