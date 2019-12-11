@@ -120,7 +120,7 @@ module.exports = {
             name: "Final Fortune",
             limitOffensive: true,
             areawide: true,
-            description: "Limit ability - The group gains haste + 60% damage + 30 % damage reduction permanently, and last rites (2 turn duration, death is certain when last rites ends, cannot be bandaided)",
+            description: "Limit ability - The group gains haste + 75% damage + 95 % damage reduction permanently, and last rites (2 turn duration, death is certain when last rites ends, cannot be bandaided)",
             buff: {
                 buff: true,
                 areawide: true,
@@ -128,7 +128,7 @@ module.exports = {
                 name: "Final Fortune",
                 abilityId: "finalfortune",
                 affectsGlobal: ["damageTakenPercentage"],
-                multiplier: 0.6,
+                multiplier: 0.05,
                 emoji: ":fortune_cookie:"
             },
             status: {
@@ -141,8 +141,8 @@ module.exports = {
                 deathOnStatusExpire: true,
                 emoji : ":coffin:",
                 affectsGlobal: ["damageDealtPercentage"],
-                turnsToExpire: 2,
-                multiplier: 1.6
+                turnsToExpire: 3,
+                multiplier: 1.75
             }
         },
         cleanse:{
@@ -161,14 +161,14 @@ module.exports = {
             abilityId: "invigorate",
             limitDefensive: true,
             areawide: true,
-            description: "Limit ability - Increase the group's armor by 100% and spirit by 100% for 5 turns",
+            description: "Limit ability - Increase the group's armor by 100% and spirit by 100% for 3 turns",
             buff: {
                 buff: true,
                 areawide: true,
                 name: "Invigorate",
                 abilityId: "invigorate",
                 emoji : ":stars:",
-                turnsToExpire: 5,
+                turnsToExpire: 3,
                 affects: ["armor", "spirit"],
                 multiplier: 2
             }
@@ -206,7 +206,7 @@ module.exports = {
             // cannister shot - shoot between 1 and 7 bullets, 4 bullets should be the same as a regular -cast shoot 6 charges
             name: "Canister Shot",
             abilityId: "canistershot",
-            description: "Deal 40 damage + 40% of your attack damage between 1 and 7 shots, 6 charges",
+            description: "Deal 40 damage + 40% of your attack damage. shoots between 1 and 7 shots , 6 charges",
             dmg: 40,
             charges: 6,
             maxcharges: 6,
