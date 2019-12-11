@@ -964,6 +964,7 @@ module.exports = {
             targets: "enemy",
             dot: {
                 name: "Burning",
+                areawide: true,
                 dmg: 50,
                 mdPercentage: 1,
                 type: "fire",
