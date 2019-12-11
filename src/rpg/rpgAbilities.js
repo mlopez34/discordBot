@@ -2076,7 +2076,6 @@ module.exports = {
                     "maggot",
                     "maggot",
                     "maggot",
-                    "maggot"
                 ]
             }
         },

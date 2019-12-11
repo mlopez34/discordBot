@@ -3063,7 +3063,7 @@ module.exports = {
                     abilities: []
                 },
                 effectsOnDeath:[
-                    "rupture"
+
                 ],
                 hpPerPartyMember: 490,
                 adPerPartyMember: 18,
