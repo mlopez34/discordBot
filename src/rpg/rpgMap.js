@@ -4756,8 +4756,6 @@ module.exports = {
                     areaString : " ",
                     name: "Soho",
                     enemiesToDefeat: 145,
-                    enemies: [
-                    ],
                     onCompleteAreasUnlocked: [
                         "jamaica"
                     ],
@@ -4816,9 +4814,6 @@ module.exports = {
                     areaString : " ",
                     name: "Midtown",
                     enemiesToDefeat: 185,
-                    enemies: [
-                        
-                    ],
                     onCompleteAreasUnlocked: [
                         "flatiron"
                     ],
@@ -4836,9 +4831,6 @@ module.exports = {
                     areaString : " ",
                     name: "Flatiron",
                     enemiesToDefeat: 75,
-                    enemies: [
-                        
-                    ],
                     onCompleteAreasUnlocked: [
                         "flatbush"
                     ],
@@ -4856,9 +4848,6 @@ module.exports = {
                     areaString : " ",
                     name: "Flatbush",
                     enemiesToDefeat: 57,
-                    enemies: [
-                        
-                    ],
                     onCompleteAreasUnlocked: [
                         "kipsbay"
                     ],
@@ -4876,9 +4865,6 @@ module.exports = {
                     areaString : " ",
                     name: "Kips Bay",
                     enemiesToDefeat: 100,
-                    enemies: [
-                        
-                    ],
                     onCompleteAreasUnlocked: [
                         "centralpark"
                     ],
