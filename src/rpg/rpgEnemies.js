@@ -58,8 +58,7 @@ module.exports = {
                     "physicalBarrier"
                 ],
                 effectsOnDeath: [
-                    "summonMaggots",
-                    "reanimateAll30"
+                    "summonMaggots"
                 ],
                 hpPerPartyMember: 0,
                 adPerPartyMember: 0,
@@ -84,7 +83,6 @@ module.exports = {
                     abilities: []
                 },
                 effectsOnDeath: [
-                    "burst"
                 ],
                 hpPerPartyMember: 0,
                 adPerPartyMember: 0,
