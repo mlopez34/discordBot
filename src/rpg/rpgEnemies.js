@@ -65,8 +65,8 @@ module.exports = {
                 adPerPartyMember: 0,
                 mdPerPartyMember: 0,
                 hp: 850,
-                attackDmg: 325,
-                magicDmg: 370,
+                attackDmg: 425,
+                magicDmg: 470,
                 armor: 1100,
                 spirit: 1100,
                 difficulty: "summoned",
@@ -981,6 +981,47 @@ module.exports = {
                 magicDmg: 860,
                 armor: 1300,
                 spirit: 1300,
+                difficulty: "summoned",
+                element: "normal"
+            },
+
+            fanatic: {
+                name: "Fanatic",
+                abilities: ["punch"],
+                buffs: [],
+                hpPerPartyMember: 0,
+                adPerPartyMember: 0,
+                mdPerPartyMember: 0,
+                hp: 850,
+                attackDmg: 325,
+                magicDmg: 370,
+                abilityOrder: [
+                    0, 0, 0, 0
+                ],
+                endOfTurnEvents: [
+                    "worshipDogfather"
+                ],
+                armor: 1300,
+                spirit: 1300,
+                difficulty: "summoned",
+                element: "normal"
+            },
+
+            informant: {
+                name: "Informant",
+                abilities: ["attack"],
+                buffs: [],
+                effectsOnDeath: [
+                    "physicalBarrier97"
+                ],
+                hpPerPartyMember: 0,
+                adPerPartyMember: 0,
+                mdPerPartyMember: 0,
+                hp: 100,
+                attackDmg: 0,
+                magicDmg: 0,
+                armor: 900,
+                spirit: 900,
                 difficulty: "summoned",
                 element: "normal"
             },
@@ -3835,8 +3876,44 @@ module.exports = {
                 adPerPartyMember: 21,
                 mdPerPartyMember: 21,
                 hp: 650,
-                attackDmg: 195,
-                magicDmg: 190,
+                attackDmg: 395,
+                magicDmg: 390,
+                armor: 1100,
+                spirit: 1100,
+                difficulty: "hard",
+                element: "normal"
+            },
+            prisoner: {
+                enemyIdName : "prisoner",
+                name: "Prisoner",
+                abilities: ["punch" , "punch" , "smuggle", "smuggle", "surge", "elixir"],
+                buffs: [
+                    {
+                        name: "frenzy",
+                        emoji: "<:frenzy:479298214453968896>",
+                        onTurnEnd: {
+                            attackDmgPlus : 60,
+                            magicDmgPlus : 60,
+                            everyNTurns: 2,
+                            startTurn: 2
+                        }
+                    }
+                ],
+                keystoneStats: {
+                    hp: [1200, 3500, 6200, 10000, 15000 ],
+                    attackDmg: [300, 500, 900, 1500, 2300],
+                    magicDmg: [300, 500, 900, 1500, 2300],
+                    abilities: []
+                },
+                effectsOnDeath: [
+                    "summonThugs"
+                ],
+                hpPerPartyMember: 1090,
+                adPerPartyMember: 21,
+                mdPerPartyMember: 21,
+                hp: 650,
+                attackDmg: 395,
+                magicDmg: 390,
                 armor: 1100,
                 spirit: 1100,
                 difficulty: "hard",
@@ -4033,8 +4110,8 @@ module.exports = {
                         name: "frenzy",
                         emoji: "<:frenzy:479298214453968896>",
                         onTurnEnd: {
-                            attackDmgPlus : 200,
-                            magicDmgPlus : 200,
+                            attackDmgPlus : 100,
+                            magicDmgPlus : 100,
                             everyNTurns: 2,
                             startTurn: 2
                         }
@@ -4050,15 +4127,14 @@ module.exports = {
                     "physicalBarrier"
                 ],
                 effectsOnDeath: [
-                    "summonMaggots",
-                    "reanimateAll30"
+                    "summonMaggots"
                 ],
                 hpPerPartyMember: 990,
                 adPerPartyMember: 30,
                 mdPerPartyMember: 30,
                 hp: 1450,
-                attackDmg: 525,
-                magicDmg: 570,
+                attackDmg: 425,
+                magicDmg: 470,
                 armor: 1300,
                 spirit: 1300,
                 difficulty: "hard",
@@ -4073,8 +4149,8 @@ module.exports = {
                         name: "frenzy",
                         emoji: "<:frenzy:479298214453968896>",
                         onTurnEnd: {
-                            attackDmgPlus : 230,
-                            magicDmgPlus : 230,
+                            attackDmgPlus : 140,
+                            magicDmgPlus : 140,
                             everyNTurns: 2,
                             startTurn: 2
                         }
@@ -4097,8 +4173,8 @@ module.exports = {
                 adPerPartyMember: 21,
                 mdPerPartyMember: 21,
                 hp: 1750,
-                attackDmg: 625,
-                magicDmg: 670,
+                attackDmg: 325,
+                magicDmg: 370,
                 armor: 1300,
                 spirit: 1300,
                 difficulty: "hard",
@@ -4637,8 +4713,8 @@ module.exports = {
                         name: "frenzy",
                         emoji: "<:frenzy:479298214453968896>",
                         onTurnEnd: {
-                            attackDmgPlus : 375,
-                            magicDmgPlus : 375,
+                            attackDmgPlus : 275,
+                            magicDmgPlus : 275,
                             everyNTurns: 2,
                             startTurn: 2
                         }
@@ -4668,10 +4744,10 @@ module.exports = {
                 hp: 1950,
                 adPerPartyMember: 29,
                 mdPerPartyMember: 29,
-                attackDmg: 1740,
-                magicDmg: 1790,
-                armor: 1800,
-                spirit: 1800,
+                attackDmg: 940,
+                magicDmg: 990,
+                armor: 1500,
+                spirit: 1500,
                 difficulty: "boss",
                 element: "normal"
             },
@@ -5007,10 +5083,57 @@ module.exports = {
                 hp: 1950,
                 adPerPartyMember: 29,
                 mdPerPartyMember: 29,
-                attackDmg: 1340,
-                magicDmg: 1290,
+                attackDmg: 840,
+                magicDmg: 890,
                 armor: 1600,
                 spirit: 1600,
+                difficulty: "boss",
+                element: "normal"
+            },
+            dogfather: {
+                enemyIdName : "dogfather",
+                name: "Dog Father",
+                emoji: "<:gfather:654477252754407447>",
+                abilities: [
+                    "shoot", "canistershot", "shootout", "vestup", "cripple"
+                ],
+                buffs: [
+                    {
+                        name: "frenzy",
+                        emoji: "<:frenzy:479298214453968896>",
+                        onTurnEnd: {
+                            attackDmgPlus : 455,
+                            magicDmgPlus : 455,
+                            everyNTurns: 3,
+                            startTurn: 2
+                        }
+                    }
+                ],
+                abilityOrder: [
+                    4, [0, 1], [0, 1], [0, 1], [0, 1], [0, 1], 3, 2,
+                    [4, 0, 1], [0, 1], [0, 1], [0, 1], [0, 1], 3, 2,
+                    [4, 0, 1], [0, 1], [0, 1], [0, 1], 3, 2,
+                    [4, 0, 1], [0, 1], [0, 1], 3, 2,
+                    [4, 0, 1], [0, 1], 3, 2,
+                    [4, 0, 1], 3, 2, 3, 2, 3, 2, 3, 2, 3, 2, 3, 2, 3
+                ],
+                endOfTurnEvents : [
+                    "summonInformant80", // every 20% summon informants that will do bulletproof vest on death
+                    "summonInformant60",
+                    "summonInformant40",
+                    "summonInformant20",                   
+                    "summonFanatic"
+                ],
+                effectsOnDeath: [
+                ],
+                hpPerPartyMember: 3952,
+                hp: 8550,
+                adPerPartyMember: 50,
+                mdPerPartyMember: 50,
+                attackDmg: 1040,
+                magicDmg: 1090,
+                armor: 1800,
+                spirit: 1800,
                 difficulty: "boss",
                 element: "normal"
             },

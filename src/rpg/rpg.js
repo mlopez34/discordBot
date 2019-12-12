@@ -4196,7 +4196,7 @@ function effectsOnTurnEnd(event){
                                                             target = undefined;
                                                         }
                                                     }
-                                                    // console.log(stuckCount)
+                                                    console.log(stuckCount)
 
                                                 }else{
                                                     if (!targetFocusedMember){
@@ -8203,6 +8203,9 @@ function processAbility(abilityObject, event){
                     }
                 }
                 abilityToString = abilityToString + "The group was affected with " + statusToAdd.name + "\n"
+                if (statusToAdd.additionalDescription){
+                    abilityToString = abilityToString + statusToAdd.additionalDescription + "\n"
+                } 
             }else{
                 // if caster is party of membersInParty then target = all the enemies
                 for (var targetToAddStatus in event.enemies){

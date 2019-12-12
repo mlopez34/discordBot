@@ -322,6 +322,22 @@ module.exports = {
             }
         },
 
+        vestup : {
+            name : "Vest Up",
+            abilityId: "vestup",
+            description: "Reduce all damage taken by 95% for 2 turns",
+            buff: {
+                selfbuff: true,
+                buff: true,
+                name: "Vest Up",
+                additionalDescription: " is preparing for a shootout",
+                emoji : "<:shell:479293276462252042>",
+                affectsGlobal: ["damageTakenPercentage"],
+                turnsToExpire: 2,
+                multiplier: 0.95
+            }
+        },
+
         cocoon : {
             name : "Cocoon",
             abilityId: "cocoon",
@@ -1076,6 +1092,15 @@ module.exports = {
             dmg: 305,
             mdPercentage: 0.6,
             type: "shadow",
+            areawide: true,
+            targets: "enemy"
+        },
+        shootout: {
+            name: "Shootout",
+            abilityId: "shootout",
+            dmg: 100000,
+            adPercentage: 1,
+            type: "physical",
             areawide: true,
             targets: "enemy"
         },
@@ -2008,6 +2033,20 @@ module.exports = {
                     "ruffian",
                     "ruffian",
                     "ruffian"
+                ]
+            }
+        },
+        summonThugs: {
+            name: "summonThugs",
+            belongsToMember: true,
+            oneTimeCast: true,
+            onDeathEffect: true,
+            summon: {
+                enemies: [
+                    "thug",
+                    "thug",
+                    "thug",
+                    "thug"
                 ]
             }
         },
@@ -3678,7 +3717,6 @@ module.exports = {
             onDeathEffect: true,
             areawide: true,
             processAbility: true,
-            targetToApplyOn: "random",
             name:"Elemental Barrier",
             abilityId: "elementalBarrier",
             buff: {
@@ -3689,7 +3727,7 @@ module.exports = {
                 name: "Elemental Barrier",
                 abilityId: "elementalBarrier",
                 emoji: "🔶",
-                additionalDescription: " is reducing magical damage taken by 50%",
+                additionalDescription: "The group is reducing magical damage taken by 50%",
                 affectsGlobal: ["magicDamageTakenPercentage"],
                 turnsToExpire: 2,
                 multiplier: 0.5
@@ -3700,7 +3738,6 @@ module.exports = {
             onDeathEffect: true,
             processAbility: true,
             areawide: true,
-            targetToApplyOn: "random",
             name:"Physical Barrier",
             abilityId: "physicalBarrier",
             buff: {
@@ -3711,10 +3748,30 @@ module.exports = {
                 buffPartyMembers: true,
                 abilityId: "physicalBarrier",
                 emoji: "🔷",
-                additionalDescription: " is reducing magical damage taken by 50%",
+                additionalDescription: "The group is reducing magical damage taken by 50%",
                 affectsGlobal: ["physicalDamageTakenPercentage"],
                 turnsToExpire: 2,
                 multiplier: 0.5
+            }
+        },
+        physicalBarrier97: {
+            onDeathEffect: true,
+            processAbility: true,
+            areawide: true,
+            name:"Physical Barrier",
+            abilityId: "physicalBarrier97",
+            buff: {
+                buff: true,
+                name: "Physical Barrier",
+                areawide: true,
+                ignoreUnique: true,
+                buffPartyMembers: true,
+                abilityId: "physicalBarrier97",
+                emoji: "🔷",
+                additionalDescription: "The group is reducing magical damage taken by 97%",
+                affectsGlobal: ["physicalDamageTakenPercentage"],
+                turnsToExpire: 2,
+                multiplier: 0.03
             }
         },
         pillarAOEmagic: {
@@ -4287,6 +4344,22 @@ module.exports = {
             ]
         },
 
+        worshipDogfather: {
+            name: "Worship",
+            abilityId: "worship",
+            processAbility: true,
+            belongsToMember: true,
+            targetLowestPercent: true,
+            healMaxHpPercentage: 0.1,
+            heal: 1,
+            everyNTurns: 2,
+            afterNTurns: 1,
+            currentTurn: 0,
+            listOfPossibleTarget: [
+                "Dog Father",
+            ]
+        },
+
         // HIGH MELEE - 6 turn dot hits high
         wound: {
             name: "Wound",
@@ -4583,6 +4656,69 @@ module.exports = {
             currentTurn: 0,
             summon: {
                 enemy: "worshipper",
+                attackDmg: 500,
+                magicDmg: 500,
+                hpPlus: 100
+            }
+        },
+
+        summonFanatic: {
+            name: "Summon Fanatic",
+            abilityId: "summonFanatic",
+            belongsToMember: true,
+            everyNTurns: 6,
+            afterNTurns: 2,
+            currentTurn: 0,
+            summon: {
+                enemy: "fanatic",
+                attackDmg: 500,
+                magicDmg: 500,
+                hpPlus: 100
+            }
+        },
+        summonInformant80: {
+            name: "Summon Informant",
+            abilityId: "summonInformant",
+            belongsToMember: true,
+            hppercentage: 0.8,
+            summon: {
+                enemy: "informant",
+                attackDmg: 500,
+                magicDmg: 500,
+                hpPlus: 100
+            }
+        },
+        summonInformant60: {
+            name: "Summon Informant",
+            abilityId: "summonInformant",
+            belongsToMember: true,
+            hppercentage: 0.6,
+            summon: {
+                enemy: "informant",
+                attackDmg: 500,
+                magicDmg: 500,
+                hpPlus: 100
+            }
+        },
+        summonInformant40: {
+            name: "Summon Informant",
+            abilityId: "summonInformant",
+            belongsToMember: true,
+            hppercentage: 0.4,
+            summon: {
+                enemy: "informant",
+                attackDmg: 500,
+                magicDmg: 500,
+                hpPlus: 100
+            }
+        },
+        summonInformant20: {
+            name: "Summon Informant",
+            abilityId: "summonInformant",
+            belongsToMember: true,
+            hppercentage: 0.2,
+            summon: {
+                enemy: "informant",
                 attackDmg: 500,
                 magicDmg: 500,
                 hpPlus: 100

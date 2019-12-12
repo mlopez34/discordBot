@@ -4673,7 +4673,7 @@ module.exports = {
                 ],
                 medium: [
                     "tweener", "tweener", "tweener",
-                    "vagabond", "vagabond", "vagabond",
+                    "charlatan", "charlatan", "charlatan",
                     "angrymobmember"
                 ],
                 hard: [
@@ -4798,27 +4798,6 @@ module.exports = {
                             enemyDifficulty: "medium"
                         },
                         
-                        // 
-                        {
-                            enemyId: "tweener",
-                            enemyDifficulty: "medium"
-                        },
-                        {
-                            enemyId: "delinquent",
-                            enemyDifficulty: "hard"
-                        },
-                        {
-                            enemyId: "funnypolitician",
-                            enemyDifficulty: "hard"
-                        },
-                        {
-                            enemyId: "delinquent",
-                            enemyDifficulty: "hard"
-                        },
-                        {
-                            enemyId: "angrymobmember",
-                            enemyDifficulty: "medium"
-                        },
                     ],
                     onCompleteAreasUnlocked: [
                         "midtown"
@@ -4924,37 +4903,15 @@ module.exports = {
                             enemyDifficulty: "medium"
                         },
                         {
-                            enemyId: "delinquent",
-                            enemyDifficulty: "hard"
-                        },
-                        {
                             enemyId: "funnypolitician",
                             enemyDifficulty: "hard"
                         },
                         {
-                            enemyId: "delinquent",
-                            enemyDifficulty: "hard"
-                        },
-                        {
-                            enemyId: "angrymobmember",
-                            enemyDifficulty: "medium"
-                        },
-                        //
-
-                        {
-                            enemyId: "tweener",
-                            enemyDifficulty: "medium"
-                        },
-                        {
-                            enemyId: "delinquent",
-                            enemyDifficulty: "hard"
+                            enemyId: "kingpin",
+                            enemyDifficulty: "boss"
                         },
                         {
                             enemyId: "funnypolitician",
-                            enemyDifficulty: "hard"
-                        },
-                        {
-                            enemyId: "delinquent",
                             enemyDifficulty: "hard"
                         },
                         {
@@ -4990,7 +4947,7 @@ module.exports = {
                             enemyDifficulty: "hard"
                         },
                         {
-                            enemyId: "funnypolitician",
+                            enemyId: "kingpin",
                             enemyDifficulty: "hard"
                         },
                         {
@@ -5015,14 +4972,6 @@ module.exports = {
                         {
                             enemyId: "funnypolitician",
                             enemyDifficulty: "hard"
-                        },
-                        {
-                            enemyId: "delinquent",
-                            enemyDifficulty: "hard"
-                        },
-                        {
-                            enemyId: "angrymobmember",
-                            enemyDifficulty: "medium"
                         }
                     ],
                     onCompleteAreasUnlocked: [
@@ -5049,15 +4998,15 @@ module.exports = {
                             enemyDifficulty: "medium"
                         },
                         {
-                            enemyId: "delinquent",
-                            enemyDifficulty: "hard"
+                            enemyId: "kingpin",
+                            enemyDifficulty: "boss"
                         },
                         {
                             enemyId: "funnypolitician",
                             enemyDifficulty: "hard"
                         },
                         {
-                            enemyId: "delinquent",
+                            enemyId: "consigliere",
                             enemyDifficulty: "hard"
                         },
                         {
@@ -5075,18 +5024,6 @@ module.exports = {
                             enemyId: "delinquent",
                             enemyDifficulty: "hard"
                         },
-                        {
-                            enemyId: "funnypolitician",
-                            enemyDifficulty: "hard"
-                        },
-                        {
-                            enemyId: "delinquent",
-                            enemyDifficulty: "hard"
-                        },
-                        {
-                            enemyId: "angrymobmember",
-                            enemyDifficulty: "medium"
-                        }
                     ],
                     onCompleteAreasUnlocked: [
                         "brooklyn"
@@ -5112,44 +5049,21 @@ module.exports = {
                             enemyDifficulty: "medium"
                         },
                         {
-                            enemyId: "delinquent",
+                            enemyId: "consigliere",
                             enemyDifficulty: "hard"
                         },
                         {
-                            enemyId: "funnypolitician",
-                            enemyDifficulty: "hard"
+                            enemyId: "kingpin",
+                            enemyDifficulty: "boss"
                         },
                         {
-                            enemyId: "delinquent",
-                            enemyDifficulty: "hard"
-                        },
-                        {
-                            enemyId: "angrymobmember",
-                            enemyDifficulty: "medium"
-                        },
-
-                        // 
-
-                        {
-                            enemyId: "tweener",
-                            enemyDifficulty: "medium"
-                        },
-                        {
-                            enemyId: "delinquent",
-                            enemyDifficulty: "hard"
-                        },
-                        {
-                            enemyId: "funnypolitician",
-                            enemyDifficulty: "hard"
-                        },
-                        {
-                            enemyId: "delinquent",
+                            enemyId: "consigliere",
                             enemyDifficulty: "hard"
                         },
                         {
                             enemyId: "angrymobmember",
                             enemyDifficulty: "medium"
-                        }
+                        },
                     ],
                     onCompleteAreasUnlocked: [
                         "harlem"
@@ -5171,43 +5085,20 @@ module.exports = {
                     enemiesToDefeat: 180,
                     enemies: [
                         {
-                            enemyId: "tweener",
+                            enemyId: "angrymobmember",
                             enemyDifficulty: "medium"
-                        },
-                        {
-                            enemyId: "delinquent",
-                            enemyDifficulty: "hard"
-                        },
-                        {
-                            enemyId: "funnypolitician",
-                            enemyDifficulty: "hard"
-                        },
-                        {
-                            enemyId: "delinquent",
-                            enemyDifficulty: "hard"
                         },
                         {
                             enemyId: "angrymobmember",
                             enemyDifficulty: "medium"
                         },
-
-                        // 
-
                         {
-                            enemyId: "tweener",
+                            enemyId: "dogfather",
+                            enemyDifficulty: "boss"
+                        },
+                        {
+                            enemyId: "angrymobmember",
                             enemyDifficulty: "medium"
-                        },
-                        {
-                            enemyId: "delinquent",
-                            enemyDifficulty: "hard"
-                        },
-                        {
-                            enemyId: "funnypolitician",
-                            enemyDifficulty: "hard"
-                        },
-                        {
-                            enemyId: "delinquent",
-                            enemyDifficulty: "hard"
                         },
                         {
                             enemyId: "angrymobmember",
@@ -5234,24 +5125,8 @@ module.exports = {
                     enemiesToDefeat: 190,
                     enemies: [
                         {
-                            enemyId: "tweener",
-                            enemyDifficulty: "medium"
-                        },
-                        {
-                            enemyId: "delinquent",
-                            enemyDifficulty: "hard"
-                        },
-                        {
-                            enemyId: "funnypolitician",
-                            enemyDifficulty: "hard"
-                        },
-                        {
-                            enemyId: "delinquent",
-                            enemyDifficulty: "hard"
-                        },
-                        {
-                            enemyId: "angrymobmember",
-                            enemyDifficulty: "medium"
+                            enemyId: "blood",
+                            enemyDifficulty: "boss"
                         },
 
                         // 
@@ -5296,7 +5171,33 @@ module.exports = {
                     name: "Upper Manhattan",
                     enemiesToDefeat: 200,
                     enemies: [
-                        
+                        {
+                            enemyId: "blood",
+                            enemyDifficulty: "boss"
+                        },
+
+                        // 
+
+                        {
+                            enemyId: "tweener",
+                            enemyDifficulty: "medium"
+                        },
+                        {
+                            enemyId: "delinquent",
+                            enemyDifficulty: "hard"
+                        },
+                        {
+                            enemyId: "funnypolitician",
+                            enemyDifficulty: "hard"
+                        },
+                        {
+                            enemyId: "delinquent",
+                            enemyDifficulty: "hard"
+                        },
+                        {
+                            enemyId: "angrymobmember",
+                            enemyDifficulty: "medium"
+                        }
                     ],
                     onCompleteAreasUnlocked: [
 
@@ -6460,7 +6361,7 @@ module.exports = {
                     enemiesToDefeat: 1,
                     enemies: [
                         {
-                            enemyId: "skyMaggot",
+                            enemyId: "skymaggot",
                             enemyDifficulty: "hard"
                         },
                         {
@@ -6468,7 +6369,7 @@ module.exports = {
                             enemyDifficulty: "boss"
                         },
                         {
-                            enemyId: "skyMaggot",
+                            enemyId: "skymaggot",
                             enemyDifficulty: "hard"
                         }
                     ],
@@ -6485,7 +6386,6 @@ module.exports = {
 
                     ]
                 },
-                // final BOSS
                 zion: {
                     areaString : "You have freed the remaining members of the crew, the captain walks over to you and hands you the emerald prysm",
                     name: "Zion",
@@ -6512,7 +6412,7 @@ module.exports = {
                             enemyDifficulty: "boss"
                         },
                         {
-                            enemyId: "skyMaggot",
+                            enemyId: "skymaggot",
                             enemyDifficulty: "hard"
                         },
                         {
