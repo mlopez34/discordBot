@@ -4674,7 +4674,7 @@ module.exports = {
                 medium: [
                     "tweener", "tweener", "tweener",
                     "charlatan", "charlatan", "charlatan",
-                    "angrymobmember"
+                    "philistine"
                 ],
                 hard: [
                     "funnypolitician", "funnypolitician", "funnypolitician",
@@ -4792,7 +4792,7 @@ module.exports = {
                             enemyDifficulty: "hard"
                         },
                         {
-                            enemyId: "angrymobmember",
+                            enemyId: "philistine",
                             enemyDifficulty: "medium"
                         },
                         
@@ -4901,7 +4901,7 @@ module.exports = {
                             enemyDifficulty: "hard"
                         },
                         {
-                            enemyId: "angrymobmember",
+                            enemyId: "philistine",
                             enemyDifficulty: "medium"
                         },
                     ],
@@ -4941,7 +4941,7 @@ module.exports = {
                             enemyDifficulty: "hard"
                         },
                         {
-                            enemyId: "angrymobmember",
+                            enemyId: "philistine",
                             enemyDifficulty: "medium"
                         },
 
@@ -4996,7 +4996,7 @@ module.exports = {
                             enemyDifficulty: "hard"
                         },
                         {
-                            enemyId: "angrymobmember",
+                            enemyId: "philistine",
                             enemyDifficulty: "medium"
                         },
 
@@ -5047,7 +5047,7 @@ module.exports = {
                             enemyDifficulty: "hard"
                         },
                         {
-                            enemyId: "angrymobmember",
+                            enemyId: "philistine",
                             enemyDifficulty: "medium"
                         },
                     ],
@@ -5071,11 +5071,11 @@ module.exports = {
                     enemiesToDefeat: 180,
                     enemies: [
                         {
-                            enemyId: "angrymobmember",
+                            enemyId: "philistine",
                             enemyDifficulty: "medium"
                         },
                         {
-                            enemyId: "angrymobmember",
+                            enemyId: "philistine",
                             enemyDifficulty: "medium"
                         },
                         {
@@ -5083,11 +5083,11 @@ module.exports = {
                             enemyDifficulty: "boss"
                         },
                         {
-                            enemyId: "angrymobmember",
+                            enemyId: "philistine",
                             enemyDifficulty: "medium"
                         },
                         {
-                            enemyId: "angrymobmember",
+                            enemyId: "philistine",
                             enemyDifficulty: "medium"
                         }
                     ],
@@ -5134,7 +5134,7 @@ module.exports = {
                             enemyDifficulty: "hard"
                         },
                         {
-                            enemyId: "angrymobmember",
+                            enemyId: "philistine",
                             enemyDifficulty: "medium"
                         }
                     ],
@@ -5181,7 +5181,7 @@ module.exports = {
                             enemyDifficulty: "hard"
                         },
                         {
-                            enemyId: "angrymobmember",
+                            enemyId: "philistine",
                             enemyDifficulty: "medium"
                         }
                     ],
