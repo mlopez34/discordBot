@@ -8350,7 +8350,9 @@ function processAbility(abilityObject, event){
                             var alreadyHaveStatus = false;
                             for (var status in event.membersInParty[targetToAddStatus].statuses){
                                 if (event.membersInParty[targetToAddStatus].statuses[status]
-                                && event.membersInParty[targetToAddStatus].statuses[status].caster == abilityObject.user ){
+                                && event.membersInParty[targetToAddStatus].statuses[status].caster == abilityObject.user
+                                && event.membersInParty[targetToAddStatus].statuses[status].name == statusToAdd.name
+                                && !event.membersInParty[targetToAddStatus].statuses[status].ignoreUnique ){
                                     alreadyHaveStatus = true;
                                 }
                             }

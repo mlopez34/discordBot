@@ -127,6 +127,7 @@ module.exports = {
                 hasted: true,
                 name: "Final Fortune",
                 abilityId: "finalfortune",
+                turnsToExpire: 3,
                 affectsGlobal: ["damageTakenPercentage"],
                 multiplier: 0.05,
                 emoji: ":fortune_cookie:"
