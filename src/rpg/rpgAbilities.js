@@ -4948,6 +4948,7 @@ module.exports = {
                 abilityTriggerOnDeath: "strengthRupture",
                 targetToApplyOn: "Amber Dragon",
                 ignoreUnique: true,
+                ignoreBandaid: true,
                 dmgOnDotApply: false,
                 turnsToExpire: 1
             }
@@ -4967,6 +4968,7 @@ module.exports = {
                 name: "Erupt",
                 type: "physical",
                 dmg: 900,
+                ignoreBandaid: true,
                 adPercentage: 1,
                 emoji: ":volcano:",
                 dealDamageToGroupBasedOnHealthMissing: true,
