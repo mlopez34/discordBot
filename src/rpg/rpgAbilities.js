@@ -2151,6 +2151,19 @@ module.exports = {
                 multiplier: 2
             }
         },
+        summonParasites: {
+            name: "summonParasites",
+            belongsToMember: true,
+            everyNTurns: 4,
+            afterNTurns: 4,
+            currentTurn: 0,
+            summon: {
+                enemies: [
+                    "parasiticMaggot",
+                    "parasiticMaggot"
+                ]
+            }
+        },
         summonWhelps: {
             name: "summonWhelps",
             belongsToMember: true,
@@ -3621,6 +3634,28 @@ module.exports = {
             type: "physical"
         },
 
+        overpower66: {
+            belongsToMember: true,
+            oneTimeCast: true,
+            name: "Overpower",
+            abilityId: "overpower66",
+            dmgaura: true,
+            hppercentage: .66,
+            currentHealthPercentageDamage: 0.66,
+            type: "physical"
+        },
+
+        overpower33: {
+            belongsToMember: true,
+            oneTimeCast: true,
+            name: "Overpower",
+            abilityId: "overpower33",
+            dmgaura: true,
+            hppercentage: .33,
+            currentHealthPercentageDamage: 0.33,
+            type: "physical"
+        },
+
         // summon 4 elemental pillars at the start of the fight turn 2
         // same as summons of 4 on challenge 6
         // DONE radiate aoe at 50% - aoe is 250 dmg
@@ -4995,6 +5030,26 @@ module.exports = {
                 affectsGlobal: ["healingDonePercentage"],
                 turnsToExpire: 2000,
                 multiplier: 0.98
+            }
+        },
+
+        increasedDamageParasite: {
+            onDeathEffect: true,
+            processAbility: true,
+            belongsToMember: true,
+            listOfPossibleTarget: ["Clover"],
+            name: "Rip",
+            abilityId: "increasedDamageParasite",
+            status: {
+                status: true, 
+                name: "Rip", 
+                ignoreUnique: true,
+                abilityId: "increasedDamageParasite",
+                emoji: "",
+                additionalDescription: " damage taken is increased by 30%",
+                affectsGlobal: ["damageTakenPercentage"],
+                turnsToExpire: 2000,
+                multiplier: 1.3
             }
         },
 

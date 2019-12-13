@@ -4885,25 +4885,9 @@ module.exports = {
                     enemiesToDefeat: 69,
                     enemies: [
                         {
-                            enemyId: "tweener",
-                            enemyDifficulty: "medium"
-                        },
-                        {
-                            enemyId: "funnypolitician",
-                            enemyDifficulty: "hard"
-                        },
-                        {
-                            enemyId: "kingpin",
+                            enemyId: "clover",
                             enemyDifficulty: "boss"
-                        },
-                        {
-                            enemyId: "funnypolitician",
-                            enemyDifficulty: "hard"
-                        },
-                        {
-                            enemyId: "philistine",
-                            enemyDifficulty: "medium"
-                        },
+                        }
                     ],
                     onCompleteAreasUnlocked: [
                         "queens"

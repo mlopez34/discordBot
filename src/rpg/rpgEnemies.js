@@ -1484,6 +1484,25 @@ module.exports = {
                 difficulty: "summoned",
                 element: "normal"
             },
+            parasiticMaggot: {
+                name: "Parasitic Maggot",
+                abilities: ["bite"],
+                buffs: [],
+                effectsOnDeath: [
+                    "rupture",
+                    "increasedDamageParasite"
+                ],
+                hpPerPartyMember: 0,
+                adPerPartyMember: 0,
+                mdPerPartyMember: 0,
+                hp: 3300,
+                attackDmg: 500,
+                magicDmg: 500,
+                armor: 1300,
+                spirit: 1300,
+                difficulty: "summoned",
+                element: "normal"
+            },
             amberDrake: {
                 name: "Amber Drake",
                 abilities: ["poke", "impale", "slash", "flameblast"],
@@ -5116,6 +5135,8 @@ module.exports = {
                     [4, 0, 1], 3, 2, 3, 2, 3, 2, 3, 2, 3, 2, 3, 2, 3
                 ],
                 endOfTurnEvents : [
+                    "focus",
+                    "echo",
                     "summonInformant80", // every 20% summon informants that will do bulletproof vest on death
                     "summonInformant60",
                     "summonInformant40",
@@ -5126,6 +5147,52 @@ module.exports = {
                 ],
                 hpPerPartyMember: 3952,
                 hp: 8550,
+                adPerPartyMember: 50,
+                mdPerPartyMember: 50,
+                attackDmg: 1040,
+                magicDmg: 1090,
+                armor: 1800,
+                spirit: 1800,
+                difficulty: "boss",
+                element: "normal"
+            },
+            clover: {
+                enemyIdName : "clover",
+                name: "Clover",
+                emoji: ":cricket:",
+                abilities: [
+                    "poke", "ferociousBite", "quake", "impale", "poison", "decayDeath"
+                ],
+                buffs: [
+                    {
+                        name: "frenzy",
+                        emoji: "<:frenzy:479298214453968896>",
+                        onTurnEnd: {
+                            attackDmgPlus : 555,
+                            magicDmgPlus : 555,
+                            everyNTurns: 5,
+                            startTurn: 5
+                        }
+                    }
+                ],
+                abilityOrder: [
+                    0, [1, 3, 4, 5], [1, 3, 4 ], [1, 3, 4 ], [1, 3, 4 ], 2,
+                    [1, 3, 4, 5], [1, 3, 4 ], [1, 3, 4 ], [1, 3, 4 ], [1, 3, 4 ], 2,
+                    [1, 3, 4, 5], [1, 3, 4 ], [1, 3, 4 ], [1, 3, 4 ], [1, 3, 4 ], 2,
+                    [1, 3, 4, 5], [1, 3, 4 ], [1, 3, 4 ], [1, 3, 4 ], [1, 3, 4 ], 2,
+                    [1, 3, 4, 5], [1, 3, 4 ], [1, 3, 4 ], [1, 3, 4 ], [1, 3, 4 ], 2,
+                ],
+                endOfTurnEvents : [
+                    "focus",
+                    "echo",
+                    "summonParasites",
+                    "overpower66",
+                    "overpower33"
+                ],
+                effectsOnDeath: [
+                ],
+                hpPerPartyMember: 50952,
+                hp: 108550,
                 adPerPartyMember: 50,
                 mdPerPartyMember: 50,
                 attackDmg: 1040,
