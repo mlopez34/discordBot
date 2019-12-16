@@ -1114,6 +1114,15 @@ module.exports = {
             areawide: true,
             targets: "enemy"
         },
+        neutronBlast: {
+            name: "Neutron Blast",
+            abilityId: "neutronBlast",
+            dmg: 305,
+            mdPercentage: 0.4,
+            type: "electric",
+            areawide: true,
+            targets: "enemy"
+        },
         quake: {
             name: "Quake",
             abilityId: "quake",
@@ -4478,7 +4487,6 @@ module.exports = {
             abilityId: "stare2",
             belongsToMember: true,
             processAbility: true,
-            ignoreFocus: true,
             name: "Stare",
             everyNTurns: 8,
             afterNTurns: 1,
@@ -4490,7 +4498,7 @@ module.exports = {
                 name: "Stare",
                 emoji: ":two:",
                 mdPercentage: 1,
-                turnsToExpire: 1,
+                turnsToExpire: 2,
                 dmgOnStatusExpire: true,
                 dmgOnStatusRemove: true,
                 dmgOnRemove: 150,
@@ -5166,11 +5174,36 @@ module.exports = {
                 abilityId: "frenzy",
                 emoji: "<:frenzy:479298214453968896>",
                 onTurnEnd: {
-                    attackDmgPlus : 500,
-                    magicDmgPlus : 500,
+                    attackDmgPlus : 400,
+                    magicDmgPlus : 400,
                     everyNTurns: 2,
                     startTurn: 2
                 }
+            }
+        },
+        growingZap: {
+            processAbility: true,
+            belongsToMember: true,
+            ignoreFocus: true,
+            everyNTurns: 4,
+            afterNTurns: 3,
+            currentTurn: 0,
+            targetToApplyOn: "random",
+            name: "Growing Zap",
+            abilityId: "growingZap",
+            type: "electric",
+            dot: {
+                name: "Growing Zap",
+                abilityId: "growingZap",
+                type:"electric",
+                dmg: 2000,
+                ignoreBandaid: true,
+                untargettable: true,
+                mdPercentage: 1,
+                dmgIncreasePerTick: 1500,
+                emoji: "<:radiation:479298213774491649>",
+                dmgOnDotApply: false,
+                turnsToExpire: 6,
             }
         },
 

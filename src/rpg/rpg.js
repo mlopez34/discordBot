@@ -8038,6 +8038,7 @@ function processAbility(abilityObject, event){
                 for(let noa = 0; noa < numberOfAttacks; noa++){
                     var targetToDealDmgName = event.enemies[targetToDealDmg].name
                     var abType = rpgAbility.type
+                    damageToDeal = calculateDamageDealt(event, abilityCaster, abilityObject.target, rpgAbility)
                     let damageToDealToPlayer = dealDamageTo(event.enemies[targetToDealDmg], damageToDeal.dmg, event, abType)
                     if (noa == 0){
                         abilityToString = abilityToString + critStrike + targetToDealDmgName + " took " + damageToDealToPlayer + " damage - " + rpgAbility.name
@@ -8068,6 +8069,7 @@ function processAbility(abilityObject, event){
                     // dealing damage to members of party (friendly fire or enemy attacking)
                     var targetToDealDmgName = event.membersInParty[targetToDealDmg].name;
                     var abType = rpgAbility.type
+                    damageToDeal = calculateDamageDealt(event, abilityCaster, abilityObject.target, rpgAbility)
                     let damageToDealToPlayer = dealDamageTo( event.membersInParty[targetToDealDmg], damageToDeal.dmg, event, abType )
                     if (noa == 0){
                         abilityToString = abilityToString + critStrike + targetToDealDmgName + " took " + damageToDealToPlayer + " damage - " + rpgAbility.name

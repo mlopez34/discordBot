@@ -1061,14 +1061,22 @@ module.exports = {
             },
             deusex: {
                 name: "Deus Ex",
-                emoji: "",
+                emoji: "<:deusex:656005426818580490>",
                 xp: 30,
                 abilities: [
                     "poke",
                     "smash",
-                    "destructionBeam",
+                    "neutronBlast",
                     "corrupt",
-                    "empower",
+                    "empower"
+                ],
+                // dot at end if the enemy doesnt spawn at end of turn
+                abilityOrder: [
+                    1, 3, 4, 
+                    3, [0, 1], [2, 3], [2, 3], [0, 1], [2, 3], [2, 3], [2, 3], [0, 1], [2, 3], 4,
+                    3, [0, 1], [2, 3], [2, 3], [0, 1], [2, 3], [2, 3], [2, 3], [0, 1], [2, 3], 4,
+                    3, [0, 1], [2, 3], [2, 3], [0, 1], [2, 3], [2, 3], [2, 3], [0, 1], [2, 3], 4,
+                    3, [0, 1], [2, 3], [2, 3], [0, 1], [2, 3], [2, 3], [2, 3], [0, 1], [2, 3], 4, 0
                 ],
                 buffs: [
                     {
@@ -1078,8 +1086,8 @@ module.exports = {
                         onTurnEnd: {
                             attackDmgPlus : 2500,
                             magicDmgPlus : 2500,
-                            everyNTurns: 5,
-                            startTurn: 5
+                            everyNTurns: 6,
+                            startTurn: 6
                         }
                     }
                 ],
@@ -1093,20 +1101,18 @@ module.exports = {
                     magicDmg: [2400, 4200, 6500, 9000, 13000, 18000, 26000, 34000, 45000, 55000],
                     abilities: []
                 },
-                abilityOrder: [
-                    0, 1, 2, 3, 4
-                ],
                 endOfTurnEvents : [
                     "focus",
-                    "turretFrenzy"
+                    "turretFrenzy",
+                    "growingZap"
                 ],
                 effectsOnDeath: [
                     "entombAll20",
                     "killAllEntomb"
                 ],
                 hp: 275000,
-                attackDmg: 8500,
-                magicDmg: 8500,
+                attackDmg: 9500,
+                magicDmg: 9500,
                 armor: 2100,
                 spirit: 2100,
                 hpPerPartyMember: 0,
@@ -1143,7 +1149,7 @@ module.exports = {
                 hpPerPartyMember: 0,
                 adPerPartyMember: 0,
                 mdPerPartyMember: 0,
-                hp: 54800,
+                hp: 47800,
                 endOfTurnEvents: [
                     "focus",
                     "wrap",
@@ -1152,11 +1158,11 @@ module.exports = {
                 effectsOnDeath: [
                     "infiltrate"
                 ],
-                attackDmg: 2830,
-                magicDmg: 2860,
+                attackDmg: 5830,
+                magicDmg: 5860,
                 armor: 1300,
                 spirit: 1300,
-                difficulty: "summoned",
+                difficulty: "summoned-boss",
                 element: "normal"
             },
             heatseeker: {
@@ -1179,9 +1185,9 @@ module.exports = {
                 endOfTurnEvents: [
 
                 ],
-                hp: 22900,
-                attackDmg: 2130,
-                magicDmg: 2160,
+                hp: 15900,
+                attackDmg: 2530,
+                magicDmg: 2560,
                 armor: 1300,
                 spirit: 1300,
                 difficulty: "summoned",
@@ -1189,7 +1195,7 @@ module.exports = {
             },
             skitter: {
                 name: "Skitter",
-                abilities: ["punch", "shoot"],
+                abilities: ["punch", "enemyshoot"],
                 buffs: [],
                 keystoneStats: {
                     hp: [4200, 7500, 11200, 20000, 25000, 35400, 40000, 57000, 79000, 101000 ],
@@ -1200,19 +1206,19 @@ module.exports = {
                 hpPerPartyMember: 0,
                 adPerPartyMember: 0,
                 mdPerPartyMember: 0,
-                hp: 10800,
+                hp: 7800,
                 endOfTurnEvents: [ ],
                 attackDmg: 1430,
                 magicDmg: 1460,
-                armor: 1300,
-                spirit: 1300,
+                armor: 1100,
+                spirit: 1100,
                 difficulty: "summoned",
                 element: "normal"
             },
             turret: {
                 name: "Turret",
                 emoji: "<:turret:654068901759680512>",
-                abilities: ["canistershot", "canistershot", "canistershot", "canistershot", "plasmaBeam" ],
+                abilities: ["canistershot", "canistershot", "enemyshoot", "enemyshoot", "plasmabeam" ],
                 buffs: [],
                 keystoneStats: {
                     hp: [100000, 200000, 300000, 500000, 700000, 900000, 1300000, 2000000, 2900000, 4000000 ],
@@ -1496,8 +1502,8 @@ module.exports = {
                 adPerPartyMember: 0,
                 mdPerPartyMember: 0,
                 hp: 3300,
-                attackDmg: 500,
-                magicDmg: 500,
+                attackDmg: 300,
+                magicDmg: 300,
                 armor: 1300,
                 spirit: 1300,
                 difficulty: "summoned",
@@ -8807,7 +8813,7 @@ module.exports = {
                 keystoneUnlockName: "Mechanical Keystone",
                 avatar: "https://i.imgur.com/w1pjjuI.jpg",
                 timed: true,
-                description: "**Deus Ex** \n**Conduit** - immune to damage. Will initialize Detonation sequence, after 25 turns detonation will deal exterminate to the group.\n**Sentinel Pod** - Immune to aoe, Upon death summons a Sentinel\n**Sentinel** - casts wrap on a player which deals damage over 1 turn. Upon death the sentinel will *Infiltrate* a conduit and destroy it.\n**Heatseeker / Skitter / Turret ** - will deal damage to the group.",
+                description: "**Deus Ex** \n**Conduit** - immune to damage. Will initialize Detonation sequence, after 25 turns detonation will deal exterminate to the group.\n**Sentinel Pod** - Immune to aoe, Upon death summons a Sentinel\n**Sentinel** - casts wrap on a player which deals damage over 1 turn. Upon death the sentinel will *Infiltrate* a conduit and destroy it.\n**Heatseeker / Skitter / Turret ** - will deal damage to the group.\n**Growing Zap** - increasing magic damage over time, 6 turns duration.\n**Empower Turrets** - gives the current living turrets frenzy.",
                 timedPerTurn: 360000,
                 points: 24422,
                 keystonePoints: [250, 1100, 1830, 3530, 4030, 4800, 10000, 17000, 25000, 35000],
