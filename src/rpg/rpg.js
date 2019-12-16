@@ -4412,105 +4412,127 @@ function effectsOnTurnEnd(event){
                             // special case for hppercentage and the event has dmgaura, and currentHealthPercentageDamage - (last part of exploretomb)
                             if ( event.enemies[enemy].endOfTurnEvents[index].dmgaura
                             && enemyHpInPercentage < event.enemies[enemy].endOfTurnEvents[index].hppercentage){
-
-                                if (event.enemies[enemy].endOfTurnEvents[index].currentHealthPercentageDamage){
-                                    var percentageToDeal = event.enemies[enemy].endOfTurnEvents[index].currentHealthPercentageDamage
-                                    var ability = event.enemies[enemy].endOfTurnEvents[index].abilityId;
-                                    var nameOfEndOfTurnAbility = event.enemies[enemy].endOfTurnEvents[index].name;
-                                    // check that the event should be done this turn
-                                    var rpgAbility = rpgAbilities[ability] ? JSON.parse(JSON.stringify(rpgAbilities[ability])) : undefined;                
-                                    var damageToDeal = 1;
-                                    
-                                    var abilityObject = {
-                                        user: 0, // aura
-                                        ability: event.enemies[enemy].endOfTurnEvents[index].name
-                                    }
-                                    var abilityCaster = abilityObject.user;
-                                    var rpgAbility = rpgAbilities[ability] ? JSON.parse(JSON.stringify(rpgAbilities[ability])) : undefined;
-                                    endOfTurnString = endOfTurnString + event.enemies[enemy].name + " has dealt " + (percentageToDeal * 100).toFixed() + "% of the group's current health - " + nameOfEndOfTurnAbility +"\n"
-                                    if (rpgAbility && (event.turn % rpgAbility.everyNTurns == 0) ){
-                                        // deal damage depending on target's current health areawide
-                                        var damageDrained = 0;
-                                        for (var targetToDealDmg in event.membersInParty){
-                                            var targetCurrentHp = event.membersInParty[targetToDealDmg].hp + event.membersInParty[targetToDealDmg].statBuffs.maxhp
-                                            damageToDeal = Math.floor( targetCurrentHp * (1 - percentageToDeal) )
-                                            if (rpgAbility.minimumDamageToDeal && damageToDeal.dmg < rpgAbility.minimumDamageToDeal){
-                                                damageToDeal = Math.floor( rpgAbility.minimumDamageToDeal )
-                                            }
-                                            if (!checkIfDeadByObject(event.membersInParty[targetToDealDmg])
-                                            && !event.membersInParty[targetToDealDmg].immuneToAoe){
-                                                var abType = "physical"
-                                                damageToDealToPlayer = dealDamageTo( event.membersInParty[targetToDealDmg] , damageToDeal, event, abType)
-                                                endOfTurnString = endOfTurnString + triggerBufFromDamage(event, event.membersInParty[targetToDealDmg] )
-                                                //// CHECK if damage should be drained
-                                                if (event.enemies[enemy].endOfTurnEvents[index].drainDamage){
-                                                    // check if keystone and multiply  the .drainDamage by .33
-                                                    let keystoneBaseHealAddition = (event.challenge && event.challenge.keystone ? event.challenge.keystone : 0)
-                                                    let keystoneExtraDrainDamage = .333 * keystoneBaseHealAddition
-                                                    let drainDamageEOT = event.enemies[enemy].endOfTurnEvents[index].drainDamage 
-                                                    drainDamageEOT = drainDamageEOT + (drainDamageEOT * keystoneExtraDrainDamage )
-                                                    let damageDrainedFromPlayer = Math.floor( damageToDeal * drainDamageEOT )
-                                                    damageDrained = damageDrained + damageDrainedFromPlayer
-                                                    healTarget( event.enemies[enemy], { heal: damageDrainedFromPlayer })
-                                                    if (event.enemies[enemy].hp > event.enemies[enemy].maxhp){
-                                                        event.enemies[enemy].hp = event.enemies[enemy].maxhp
+                                var validCast = true;
+                                if (validCast){
+                                    if (event.enemies[enemy].endOfTurnEvents[index].currentHealthPercentageDamage){
+                                        var percentageToDeal = event.enemies[enemy].endOfTurnEvents[index].currentHealthPercentageDamage
+                                        var ability = event.enemies[enemy].endOfTurnEvents[index].abilityId;
+                                        var nameOfEndOfTurnAbility = event.enemies[enemy].endOfTurnEvents[index].name;
+                                        // check that the event should be done this turn
+                                        var rpgAbility = rpgAbilities[ability] ? JSON.parse(JSON.stringify(rpgAbilities[ability])) : undefined;                
+                                        var damageToDeal = 1;
+                                        
+                                        var abilityObject = {
+                                            user: 0, // aura
+                                            ability: event.enemies[enemy].endOfTurnEvents[index].name
+                                        }
+                                        var abilityCaster = abilityObject.user;
+                                        var rpgAbility = rpgAbilities[ability] ? JSON.parse(JSON.stringify(rpgAbilities[ability])) : undefined;
+                                        endOfTurnString = endOfTurnString + event.enemies[enemy].name + " has dealt " + (percentageToDeal * 100).toFixed() + "% of the group's current health - " + nameOfEndOfTurnAbility +"\n"
+                                        if (rpgAbility && (event.turn % rpgAbility.everyNTurns == 0) ){
+                                            // deal damage depending on target's current health areawide
+                                            var damageDrained = 0;
+                                            for (var targetToDealDmg in event.membersInParty){
+                                                var targetCurrentHp = event.membersInParty[targetToDealDmg].hp + event.membersInParty[targetToDealDmg].statBuffs.maxhp
+                                                damageToDeal = Math.floor( targetCurrentHp * (1 - percentageToDeal) )
+                                                if (rpgAbility.minimumDamageToDeal && damageToDeal.dmg < rpgAbility.minimumDamageToDeal){
+                                                    damageToDeal = Math.floor( rpgAbility.minimumDamageToDeal )
+                                                }
+                                                if (!checkIfDeadByObject(event.membersInParty[targetToDealDmg])
+                                                && !event.membersInParty[targetToDealDmg].immuneToAoe){
+                                                    var abType = "physical"
+                                                    damageToDealToPlayer = dealDamageTo( event.membersInParty[targetToDealDmg] , damageToDeal, event, abType)
+                                                    endOfTurnString = endOfTurnString + triggerBufFromDamage(event, event.membersInParty[targetToDealDmg] )
+                                                    //// CHECK if damage should be drained
+                                                    if (event.enemies[enemy].endOfTurnEvents[index].drainDamage){
+                                                        // check if keystone and multiply  the .drainDamage by .33
+                                                        let keystoneBaseHealAddition = (event.challenge && event.challenge.keystone ? event.challenge.keystone : 0)
+                                                        let keystoneExtraDrainDamage = .333 * keystoneBaseHealAddition
+                                                        let drainDamageEOT = event.enemies[enemy].endOfTurnEvents[index].drainDamage 
+                                                        drainDamageEOT = drainDamageEOT + (drainDamageEOT * keystoneExtraDrainDamage )
+                                                        let damageDrainedFromPlayer = Math.floor( damageToDeal * drainDamageEOT )
+                                                        damageDrained = damageDrained + damageDrainedFromPlayer
+                                                        healTarget( event.enemies[enemy], { heal: damageDrainedFromPlayer })
+                                                        if (event.enemies[enemy].hp > event.enemies[enemy].maxhp){
+                                                            event.enemies[enemy].hp = event.enemies[enemy].maxhp
+                                                        }
+                                                    }
+    
+                                                    if ( checkHasDied(event.membersInParty[targetToDealDmg])){
+                                                        endOfTurnString = endOfTurnString + hasDied(event, event.membersInParty[targetToDealDmg]);
                                                     }
                                                 }
-
-                                                if ( checkHasDied(event.membersInParty[targetToDealDmg])){
-                                                    endOfTurnString = endOfTurnString + hasDied(event, event.membersInParty[targetToDealDmg]);
+                                            }
+                                            if (damageDrained > 0){
+                                                endOfTurnString = endOfTurnString + event.enemies[enemy].name + " was healed for " + damageDrained + " - " + nameOfEndOfTurnAbility + "\n"
+                                            }
+                                        }
+                                        else{
+                                            ////// TODO: This code is the same as above, make a function out of this instead
+                                            for (var targetToDealDmg in event.membersInParty){
+                                                var targetCurrentHp = event.membersInParty[targetToDealDmg].hp + event.membersInParty[targetToDealDmg].statBuffs.maxhp
+                                                damageToDeal = Math.floor( targetCurrentHp * (1 - percentageToDeal) )
+                                                if (rpgAbility.minimumDamageToDeal && damageToDeal.dmg < rpgAbility.minimumDamageToDeal){
+                                                    damageToDeal = Math.floor( rpgAbility.minimumDamageToDeal )
+                                                }
+                                                if (!checkIfDeadByObject(event.membersInParty[targetToDealDmg])
+                                                && !event.membersInParty[targetToDealDmg].immuneToAoe){
+                                                    var abType = "physical"
+                                                    damageToDealToPlayer = dealDamageTo( event.membersInParty[targetToDealDmg] , damageToDeal, event, abType)
+                                                    endOfTurnString = endOfTurnString + triggerBufFromDamage(event, event.membersInParty[targetToDealDmg] )
                                                 }
                                             }
                                         }
-                                        if (damageDrained > 0){
-                                            endOfTurnString = endOfTurnString + event.enemies[enemy].name + " was healed for " + damageDrained + " - " + nameOfEndOfTurnAbility + "\n"
+                                        if (event.enemies[enemy].endOfTurnEvents[index].oneTimeCast){
+                                            event.enemies[enemy].endOfTurnEvents[index].invalid = true;
                                         }
-                                    }
-                                }else{
-                                    var ability = event.enemies[enemy].endOfTurnEvents[index].abilityId;
-                                    var nameOfEndOfTurnAbility = event.enemies[enemy].endOfTurnEvents[index].name;
-                                    // check that the event should be done this turn
-                                    var rpgAbility = rpgAbilities[ability] ? JSON.parse(JSON.stringify(rpgAbilities[ability])) : undefined;                
-                                    var damageToDeal = 1;
-                                    
-                                    var abilityObject = {
-                                        user: 0, // aura
-                                        ability: ability
-                                    }
-                                    var abilityCaster = abilityObject.user;
-                                    var rpgAbility = rpgAbilities[ability] ? JSON.parse(JSON.stringify(rpgAbilities[ability])) : undefined;
-                                    if (rpgAbility && rpgAbility.areawidedmg && rpgAbility.areawidedmg.dmgPerTurn){
-                                        if (rpgAbility.rpgAbilityStartTurn){
-                                            rpgAbility.areawidedmg.dmg = rpgAbility.areawidedmg.dmg + (rpgAbility.areawidedmg.dmgPerTurn * (event.turn - rpgAbilityStartTurn))
-                                        }else{
-                                            rpgAbility.areawidedmg.dmg = rpgAbility.areawidedmg.dmg + rpgAbility.areawidedmg.dmgPerTurn * event.turn
+                                    }else{
+                                        var ability = event.enemies[enemy].endOfTurnEvents[index].abilityId;
+                                        var nameOfEndOfTurnAbility = event.enemies[enemy].endOfTurnEvents[index].name;
+                                        // check that the event should be done this turn
+                                        var rpgAbility = rpgAbilities[ability] ? JSON.parse(JSON.stringify(rpgAbilities[ability])) : undefined;                
+                                        var damageToDeal = 1;
+                                        
+                                        var abilityObject = {
+                                            user: 0, // aura
+                                            ability: ability
                                         }
-                                        if (event.area){
-                                            var zoneUserIsIn = getRpgZone(event.area)
-                                            let enemyAreaStatBuffs = rpgZones[zoneUserIsIn].enemyStatBuffs || {}
-                                            if (enemyAreaStatBuffs.echoIncreasePercentage){
-                                                rpgAbility.areawidedmg.dmg = Math.floor(rpgAbility.areawidedmg.dmg * enemyAreaStatBuffs.echoIncreasePercentage)
+                                        var abilityCaster = abilityObject.user;
+                                        var rpgAbility = rpgAbilities[ability] ? JSON.parse(JSON.stringify(rpgAbilities[ability])) : undefined;
+                                        if (rpgAbility && rpgAbility.areawidedmg && rpgAbility.areawidedmg.dmgPerTurn){
+                                            if (rpgAbility.rpgAbilityStartTurn){
+                                                rpgAbility.areawidedmg.dmg = rpgAbility.areawidedmg.dmg + (rpgAbility.areawidedmg.dmgPerTurn * (event.turn - rpgAbilityStartTurn))
+                                            }else{
+                                                rpgAbility.areawidedmg.dmg = rpgAbility.areawidedmg.dmg + rpgAbility.areawidedmg.dmgPerTurn * event.turn
+                                            }
+                                            if (event.area){
+                                                var zoneUserIsIn = getRpgZone(event.area)
+                                                let enemyAreaStatBuffs = rpgZones[zoneUserIsIn].enemyStatBuffs || {}
+                                                if (enemyAreaStatBuffs.echoIncreasePercentage){
+                                                    rpgAbility.areawidedmg.dmg = Math.floor(rpgAbility.areawidedmg.dmg * enemyAreaStatBuffs.echoIncreasePercentage)
+                                                }
                                             }
                                         }
-                                    }
-                                    if (rpgAbility && rpgAbility.areawidedmg && (event.turn % rpgAbility.areawidedmg.hitsEveryNTurn  == 0)){
-                                        // deal the damage to all the users
-                                        damageToDeal = calculateDamageDealt(event, abilityCaster, abilityObject.target, rpgAbility.areawidedmg)
-                                        var critStrike = damageToDeal.critical ? ">" : ""
-                                        endOfTurnString = endOfTurnString + critStrike + "The group suffered " + damageToDeal.dmg + " damage - " + nameOfEndOfTurnAbility +"\n"
-                                        for (var targetToDealDmg in event.membersInParty){
-                                            if (!checkIfDeadByObject(event.membersInParty[targetToDealDmg])
-                                            && !event.membersInParty[targetToDealDmg].immuneToAoe){
-                                                var abType = rpgAbility.areawidedmg.type
-                                                damageToDealToPlayer = dealDamageTo(event.membersInParty[targetToDealDmg], damageToDeal.dmg, event, abType)
-                                                endOfTurnString = endOfTurnString + triggerBufFromDamage(event, event.membersInParty[targetToDealDmg] )
-                                                if (checkHasDied(event.membersInParty[targetToDealDmg])){
-                                                    endOfTurnString = endOfTurnString + hasDied(event, event.membersInParty[targetToDealDmg]);
+                                        if (rpgAbility && rpgAbility.areawidedmg && (event.turn % rpgAbility.areawidedmg.hitsEveryNTurn  == 0)){
+                                            // deal the damage to all the users
+                                            damageToDeal = calculateDamageDealt(event, abilityCaster, abilityObject.target, rpgAbility.areawidedmg)
+                                            var critStrike = damageToDeal.critical ? ">" : ""
+                                            endOfTurnString = endOfTurnString + critStrike + "The group suffered " + damageToDeal.dmg + " damage - " + nameOfEndOfTurnAbility +"\n"
+                                            for (var targetToDealDmg in event.membersInParty){
+                                                if (!checkIfDeadByObject(event.membersInParty[targetToDealDmg])
+                                                && !event.membersInParty[targetToDealDmg].immuneToAoe){
+                                                    var abType = rpgAbility.areawidedmg.type
+                                                    damageToDealToPlayer = dealDamageTo(event.membersInParty[targetToDealDmg], damageToDeal.dmg, event, abType)
+                                                    endOfTurnString = endOfTurnString + triggerBufFromDamage(event, event.membersInParty[targetToDealDmg] )
+                                                    if (checkHasDied(event.membersInParty[targetToDealDmg])){
+                                                        endOfTurnString = endOfTurnString + hasDied(event, event.membersInParty[targetToDealDmg]);
+                                                    }
                                                 }
                                             }
                                         }
                                     }
                                 }
+                                
                             }
                             else if (eotEvent.zombifyAll
                             && enemyHpInPercentage < event.enemies[enemy].endOfTurnEvents[index].hppercentage){
