@@ -5029,7 +5029,7 @@ module.exports = {
                 additionalDescription: " healing is reduced by 2%",
                 affectsGlobal: ["healingDonePercentage"],
                 turnsToExpire: 2000,
-                multiplier: 0.98
+                additive: 0.02
             }
         },
 
@@ -5069,7 +5069,7 @@ module.exports = {
                 additionalDescription: " healing is reduced by 5%",
                 affectsGlobal: ["healingDonePercentage"],
                 turnsToExpire: 2000,
-                multiplier: 0.95
+                additive: 0.05
             }
         },
 
@@ -5086,10 +5086,10 @@ module.exports = {
                 ignoreUnique: true,
                 abilityId: "reducedHealingDrake",
                 emoji: "",
-                additionalDescription: " healing is reduced by 15%",
+                additionalDescription: " healing is reduced by 16%",
                 affectsGlobal: ["healingDonePercentage"],
                 turnsToExpire: 2000,
-                multiplier: 0.85
+                additive: 0.16
             }
         },
 

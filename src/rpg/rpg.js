@@ -9942,12 +9942,25 @@ function recalculateStatBuffs(event){
             var globalStatToAffectArray = buffToProcess.affectsGlobal;
             for (var index in globalStatToAffectArray){
                 var globalStatToAffect = globalStatToAffectArray[index]
+                if (buffToProcess.additive && !buffToProcess.aura){
+                    var currentGlobalStat = userToProcess.globalStatuses[globalStatToAffect];
+                    
+                    if (currentGlobalStat){
+                        userToProcess.globalStatuses[globalStatToAffect] =  currentGlobalStat - buffToProcess.additive;
+                    }
+                    if (currentGlobalStat < 0){
+                        currentGlobalStat = 0
+                    }
+                }
                 if (buffToProcess.multiplier && !buffToProcess.aura){
                     // do a multiplier of the user's current stat
                     var currentGlobalStat = userToProcess.globalStatuses[globalStatToAffect];
                     
                     if (currentGlobalStat){
                         userToProcess.globalStatuses[globalStatToAffect] = (buffToProcess.multiplier * currentGlobalStat);
+                    }
+                    if (currentGlobalStat < 0){
+                        currentGlobalStat = 0
                     }
                 }
             }
@@ -10007,12 +10020,25 @@ function recalculateStatBuffs(event){
             var globalStatToAffectArray = statusToProcess.affectsGlobal;
             for (var index in globalStatToAffectArray){
                 var globalStatToAffect = globalStatToAffectArray[index]
+                if (statusToProcess.additive && !statusToProcess.aura){
+                    var currentGlobalStat = userToProcess.globalStatuses[globalStatToAffect];
+                    
+                    if (currentGlobalStat){
+                        userToProcess.globalStatuses[globalStatToAffect] =  currentGlobalStat - statusToProcess.additive;
+                    }
+                    if (currentGlobalStat < 0){
+                        currentGlobalStat = 0
+                    }
+                }
                 if (statusToProcess.multiplier && !statusToProcess.aura){
                     // do a multiplier of the user's current stat
                     var currentGlobalStat = userToProcess.globalStatuses[globalStatToAffect];
                     
                     if (currentGlobalStat){
                         userToProcess.globalStatuses[globalStatToAffect] = (statusToProcess.multiplier * currentGlobalStat);
+                    }
+                    if (currentGlobalStat < 0){
+                        currentGlobalStat = 0
                     }
                 }
             }
@@ -10086,12 +10112,25 @@ function recalculateStatBuffs(event){
             var globalStatToAffectArray = buffToProcess.affectsGlobal;
             for (var index in globalStatToAffectArray){
                 var globalStatToAffect = globalStatToAffectArray[index]
+                if (buffToProcess.additive && !buffToProcess.aura){
+                    var currentGlobalStat = userToProcess.globalStatuses[globalStatToAffect];
+                    
+                    if (currentGlobalStat){
+                        userToProcess.globalStatuses[globalStatToAffect] =  currentGlobalStat - buffToProcess.additive;
+                    }
+                    if (userToProcess.globalStatuses[globalStatToAffect] < 0){
+                        userToProcess.globalStatuses[globalStatToAffect] = 0
+                    }
+                }
                 if (buffToProcess.multiplier && !buffToProcess.aura){
                     // do a multiplier of the user's current stat
                     var currentGlobalStat = userToProcess.globalStatuses[globalStatToAffect];
                     
                     if (currentGlobalStat){
                         userToProcess.globalStatuses[globalStatToAffect] = (buffToProcess.multiplier * currentGlobalStat);
+                    }
+                    if (userToProcess.globalStatuses[globalStatToAffect] < 0){
+                        userToProcess.globalStatuses[globalStatToAffect] = 0
                     }
                 }
             }
@@ -10160,12 +10199,25 @@ function recalculateStatBuffs(event){
             var globalStatToAffectArray = statusToProcess.affectsGlobal;
             for (var index in globalStatToAffectArray){
                 var globalStatToAffect = globalStatToAffectArray[index]
+                if (statusToProcess.additive && !statusToProcess.aura){
+                    var currentGlobalStat = userToProcess.globalStatuses[globalStatToAffect];
+                    
+                    if (currentGlobalStat){
+                        userToProcess.globalStatuses[globalStatToAffect] =  currentGlobalStat - statusToProcess.additive;
+                    }
+                    if (userToProcess.globalStatuses[globalStatToAffect] < 0){
+                        userToProcess.globalStatuses[globalStatToAffect] = 0
+                    }
+                }
                 if (statusToProcess.multiplier && !statusToProcess.aura){
                     // do a multiplier of the user's current stat
                     var currentGlobalStat = userToProcess.globalStatuses[globalStatToAffect];
                     
                     if (currentGlobalStat){
                         userToProcess.globalStatuses[globalStatToAffect] = (statusToProcess.multiplier * currentGlobalStat);
+                    }
+                    if (userToProcess.globalStatuses[globalStatToAffect] < 0){
+                        userToProcess.globalStatuses[globalStatToAffect] = 0
                     }
                 }
             }
