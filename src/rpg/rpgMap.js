@@ -4918,7 +4918,7 @@ module.exports = {
                         },
                         {
                             enemyId: "kingpin",
-                            enemyDifficulty: "hard"
+                            enemyDifficulty: "boss"
                         },
                         {
                             enemyId: "delinquent",
@@ -5052,27 +5052,11 @@ module.exports = {
                 harlem: {
                     areaString : " ",
                     name: "Harlem",
-                    enemiesToDefeat: 180,
+                    enemiesToDefeat: 25,
                     enemies: [
-                        {
-                            enemyId: "philistine",
-                            enemyDifficulty: "medium"
-                        },
-                        {
-                            enemyId: "philistine",
-                            enemyDifficulty: "medium"
-                        },
                         {
                             enemyId: "dogfather",
                             enemyDifficulty: "boss"
-                        },
-                        {
-                            enemyId: "philistine",
-                            enemyDifficulty: "medium"
-                        },
-                        {
-                            enemyId: "philistine",
-                            enemyDifficulty: "medium"
                         }
                     ],
                     onCompleteAreasUnlocked: [
@@ -5139,35 +5123,36 @@ module.exports = {
                 uppermanhattan: {
                     areaString : " ",
                     name: "Upper Manhattan",
-                    enemiesToDefeat: 200,
+                    enemiesToDefeat: 101,
                     enemies: [
                         {
                             enemyId: "blood",
                             enemyDifficulty: "boss"
                         },
-
-                        // 
-
                         {
-                            enemyId: "tweener",
+                            enemyId: "philistine",
                             enemyDifficulty: "medium"
-                        },
-                        {
-                            enemyId: "delinquent",
-                            enemyDifficulty: "hard"
-                        },
-                        {
-                            enemyId: "funnypolitician",
-                            enemyDifficulty: "hard"
-                        },
-                        {
-                            enemyId: "delinquent",
-                            enemyDifficulty: "hard"
                         },
                         {
                             enemyId: "philistine",
                             enemyDifficulty: "medium"
-                        }
+                        },
+                        {
+                            enemyId: "dogfather",
+                            enemyDifficulty: "boss"
+                        },
+                        {
+                            enemyId: "philistine",
+                            enemyDifficulty: "medium"
+                        },
+                        {
+                            enemyId: "philistine",
+                            enemyDifficulty: "medium"
+                        },
+                        {
+                            enemyId: "kingpin",
+                            enemyDifficulty: "boss"
+                        },
                     ],
                     onCompleteAreasUnlocked: [
 
