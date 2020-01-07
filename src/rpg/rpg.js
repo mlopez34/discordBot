@@ -16,6 +16,7 @@ var activeRPGEvents = {};
 var activeRPGItemIds = {};
 var usersInRPGEvents = {};
 var rpgQueuesByUsers = []
+var serverQueue;
 var TEAM_MAX_LENGTH = 5;
 var CURRENT_CHALLENGES_AVAILABLE = 15
 var CHALLENGE_TO_TEST = 13
@@ -7866,7 +7867,7 @@ function triggerBufFromDamage(event, target){
                     target.hp = target.maxhp
                 }
                 if (target.buffs[index].maxcharges){
-                    target.buffs[index].charges = target.buffs[index].charges--
+                    target.buffs[index].charges = target.buffs[index].charges - 1
                     if (target.buffs[index].charges <= 0){
                         target.buffs.splice(index, 1);
                         continue;
