@@ -1223,12 +1223,13 @@ module.exports = {
         pulseshot: {
             name: "Pulse Shot",
             abilityId: "pulseshot",
-            limitOffensive: true,
-            description: "Limit ability - Deal 480 damage + 200% of your attack damage",
-            dmg: 480,
-            adPercentage: 2,
-            type: "physical"
-            
+            areawide: true,
+            description: "Deal 75 damage + 87% of your magic damage to all enemies, 4 charges",
+            dmg: 75,
+            charges: 4,
+            maxcharges: 4,
+            mdPercentage: .87,
+            type: "ice"
         },
         execute: {
             name: "Execute",

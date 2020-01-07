@@ -16,7 +16,6 @@ var activeRPGEvents = {};
 var activeRPGItemIds = {};
 var usersInRPGEvents = {};
 var rpgQueuesByUsers = []
-var serverQueue;
 var TEAM_MAX_LENGTH = 5;
 var CURRENT_CHALLENGES_AVAILABLE = 15
 var CHALLENGE_TO_TEST = 13
@@ -3620,7 +3619,7 @@ function calculateRewards(event, memberInRpgEvent, allItems, numberOfMembers, fi
                         if (keystone >= getKeystoneLootRoll && ancientsKeystoneItems.length > 0){
                             var itemRoll = Math.floor(Math.random() * ancientsKeystoneItems.length);
                             itemsObtainedArray.push(ancientsKeystoneItems[itemRoll])  
-                            gotKeystoneAncient = true;      
+                            gotKeystoneAncient = true;
                         }else{
                             var itemRoll = Math.floor(Math.random() * ancientItems.length);
                             itemsObtainedArray.push(ancientItems[itemRoll])        
@@ -8958,7 +8957,7 @@ function processAbility(abilityObject, event){
                 if (abilityCaster > 1000){
                     // cleanse the group
                     for (var member in event.membersInParty){
-                        abilityObject.target = event.membersInParty[member].id
+                        abilityObject.target = "rpg-"+event.membersInParty[member].id
                         abilityToString = abilityToString + removeStatusByAbility(event, abilityObject, rpgAbility )
                     }
                 }else{
@@ -8970,232 +8969,6 @@ function processAbility(abilityObject, event){
                 }
             }else{
                 abilityToString = abilityToString + removeStatusByAbility(event, abilityObject, rpgAbility )
-            }
-            var targetToRemoveFrom = abilityObject.target
-            if (event.membersInParty[targetToRemoveFrom]){
-                if (!checkIfDeadByObject(event.membersInParty[targetToRemoveFrom])
-                && event.membersInParty[targetToRemoveFrom].statuses.length > 0){
-                    var ignoreBandaid = []
-                    var checkedStrength = false
-                    for (var status in event.membersInParty[targetToRemoveFrom].statuses){
-                        if (event.membersInParty[targetToRemoveFrom].statuses[status].ignoreBandaid){
-                            ignoreBandaid.push(event.membersInParty[targetToRemoveFrom].statuses[status]);
-                        }
-                        if (event.membersInParty[targetToRemoveFrom].statuses[status].dot
-                        && event.membersInParty[targetToRemoveFrom].statuses[status].dot.ignoreBandaid){
-                            ignoreBandaid.push(event.membersInParty[targetToRemoveFrom].statuses[status]);
-                        }
-                        if ((event.membersInParty[targetToRemoveFrom].statuses[status].dot
-                        && event.membersInParty[targetToRemoveFrom].statuses[status].dot.areaWideBuffOnRemove)){
-                            // process ability 
-                            var dotBeingRemoved = event.membersInParty[targetToRemoveFrom].statuses[status].dot
-                            var abilityIdOfBuff = event.membersInParty[targetToRemoveFrom].statuses[status].dot.areaWideBuffOnRemove
-                            
-                            if (abilityIdOfBuff == "burningAdrenaline"){
-                                abilityToString = abilityToString + processBurningAdrenaline( event, dotBeingRemoved, abilityIdOfBuff  )
-                            }
-                        }if (event.membersInParty[targetToRemoveFrom].statuses[status].dot
-                        && event.membersInParty[targetToRemoveFrom].statuses[status].dot.onRemoveSelectNewTarget){
-                            var newTarget = getRandomLivingPlayer(event, targetToRemoveFrom)
-                            if (newTarget){
-                                var statusToTransfer = event.membersInParty[targetToRemoveFrom].statuses[status]
-                                abilityToString = abilityToString + transferStatusToNewTarget(newTarget, statusToTransfer, event)
-                            }
-                        }
-                        else if (event.membersInParty[targetToRemoveFrom].statuses[status].dot
-                        && event.membersInParty[targetToRemoveFrom].statuses[status].dot.onBandaidCasterGainsBuff
-                        && !checkedStrength){
-                            // get the caster of the dot and give them the buff to gain
-                            var dotBeingRemoved = event.membersInParty[targetToRemoveFrom].statuses[status].dot
-                            var abilityIdOfBuff = event.membersInParty[targetToRemoveFrom].statuses[status].dot.onBandaidCasterGainsBuff
-                            if (abilityIdOfBuff == "strength" ){
-                                var strengthString = processStrength( event, event.membersInParty[targetToRemoveFrom], dotBeingRemoved, abilityIdOfBuff  )
-                                if (strengthString.length > 5){
-                                    checkedStrength = true
-                                }
-                                abilityToString = abilityToString + strengthString
-                            }
-                        }
-                        else if ((event.membersInParty[targetToRemoveFrom].statuses[status].dot
-                        && event.membersInParty[targetToRemoveFrom].statuses[status].dot.dmgOnDotRemove)
-                        || (event.membersInParty[targetToRemoveFrom].statuses[status].dmgOnStatusRemove)){
-                            // deal the dmg on dot remove
-
-                            var nameOfEndOfTurnAbility = "";
-
-                            if (event.membersInParty[targetToRemoveFrom].statuses[status].dot){
-                                nameOfEndOfTurnAbility = event.membersInParty[targetToRemoveFrom].statuses[status].dot.name;
-                            }else{
-                                nameOfEndOfTurnAbility = event.membersInParty[targetToRemoveFrom].statuses[status].name;
-                            }
-                            var damageToDeal = 1;
-                            var abilityObject = { }
-
-                            if (event.membersInParty[targetToRemoveFrom].statuses[status].dot){
-                                abilityObject = {
-                                    ability: event.membersInParty[targetToRemoveFrom].statuses[status].dot
-                                }
-                            }else{
-                                abilityObject = {
-                                    ability: event.membersInParty[targetToRemoveFrom].statuses[status],
-                                    target: targetToRemoveFrom
-                                }
-                            }
-
-                            event.membersInParty[targetToRemoveFrom].statuses.splice(status, 1);
-
-                            abilityObject.ability.dmg = abilityObject.ability.dmgOnRemove
-                            abilityObject.ability.mdPercentage = abilityObject.ability.mdPercentageOnRemove;
-                            abilityObject.ability.areawide = abilityObject.ability.dmgOnRemoveAreaWide;
-                            var abilityCaster = abilityObject.ability.caster;
-                            delete abilityObject.ability.turnsToExpire
-
-                            var damageToDeal = calculateDamageDealt(event, abilityCaster, abilityObject.target, abilityObject.ability)
-                            var critStrike = damageToDeal.critical ? ">" : ""
-                            if (abilityObject.ability.areawide){
-                                abilityToString = abilityToString + critStrike + "The group suffered " + damageToDeal.dmg + " damage - " + nameOfEndOfTurnAbility +"\n" 
-                                for (var targetToDealDmg in event.membersInParty){
-                                    if (!checkIfDeadByObject(event.membersInParty[targetToDealDmg])){
-                                        var abType = abilityObject.ability.type
-                                        damageToDealToPlayer = dealDamageTo(event.membersInParty[targetToDealDmg], damageToDeal.dmg, event, abType)
-                                        abilityToString = abilityToString + triggerBufFromDamage(event, event.membersInParty[targetToDealDmg] )
-                                        if ( checkHasDied(event.membersInParty[targetToDealDmg])){
-                                            abilityToString = abilityToString + hasDied(event, event.membersInParty[targetToDealDmg]);
-                                        }
-                                    }
-                                }                               
-                            }else{
-                                abilityToString = abilityToString + critStrike + event.membersInParty[targetToRemoveFrom].name + " took " + damageToDeal.dmg + " damage - " + nameOfEndOfTurnAbility +"\n"   
-                                if (!checkIfDeadByObject(event.membersInParty[targetToRemoveFrom])){
-                                    var abType = abilityObject.ability.type
-                                    damageToDealToPlayer = dealDamageTo(event.membersInParty[targetToRemoveFrom], damageToDeal.dmg, event, abType)
-                                    abilityToString = abilityToString + triggerBufFromDamage(event, event.membersInParty[targetToRemoveFrom] )
-                                    if ( checkHasDied(event.membersInParty[targetToRemoveFrom])){
-                                        abilityToString = abilityToString + hasDied(event, event.membersInParty[targetToRemoveFrom]);
-                                    }
-                                }
-                            }
-                            
-                        }
-                        
-                    }
-                    
-                    event.membersInParty[targetToRemoveFrom].statuses = []
-                    for (var i in ignoreBandaid){
-                        event.membersInParty[targetToRemoveFrom].statuses.push(ignoreBandaid[i])
-                    }
-                    abilityToString = abilityToString + event.membersInParty[targetToRemoveFrom].name + " was cured with " + rpgAbility.name + "\n"                
-                }
-            }
-            else if (event.enemies[targetToRemoveFrom]){
-                if (!checkIfDeadByObject(event.enemies[targetToRemoveFrom])
-                && event.enemies[targetToRemoveFrom].statuses.length > 0){
-                    var ignoreBandaid = []
-                    var checkedStrength = false
-                    for (var status in event.enemies[targetToRemoveFrom].statuses){
-                        if (event.enemies[targetToRemoveFrom].statuses[status].ignoreBandaid){
-                            ignoreBandaid.push(event.enemies[targetToRemoveFrom].statuses[status]);
-                        }
-                        if (event.enemies[targetToRemoveFrom].statuses[status].dot
-                        && event.enemies[targetToRemoveFrom].statuses[status].dot.ignoreBandaid){
-                            ignoreBandaid.push(event.enemies[targetToRemoveFrom].statuses[status]);
-                        }
-                        if ((event.enemies[targetToRemoveFrom].statuses[status].dot
-                        && event.enemies[targetToRemoveFrom].statuses[status].dot.areaWideBuffOnRemove)){
-                            // process ability 
-                            var dotBeingRemoved = event.enemies[targetToRemoveFrom].statuses[status].dot
-                            var abilityIdOfBuff = event.enemies[targetToRemoveFrom].statuses[status].dot.areaWideBuffOnRemove
-                            
-                            if (abilityIdOfBuff == "burningAdrenaline"){
-                                abilityToString = abilityToString + processBurningAdrenaline( event, dotBeingRemoved, abilityIdOfBuff  )
-                            }
-                        }else if (event.enemies[targetToRemoveFrom].statuses[status].dot
-                        && event.enemies[targetToRemoveFrom].statuses[status].dot.onBandaidCasterGainsBuff
-                        && !checkedStrength){
-                            // get the caster of the dot and give them the buff to gain
-                            var dotBeingRemoved = event.enemies[targetToRemoveFrom].statuses[status].dot
-                            var abilityIdOfBuff = event.enemies[targetToRemoveFrom].statuses[status].dot.onBandaidCasterGainsBuff
-                            if (abilityIdOfBuff == "strength" ){
-                                var strengthString = processStrength( event, event.enemies[targetToRemoveFrom], dotBeingRemoved, abilityIdOfBuff  )
-                                if (strengthString.length > 5){
-                                    checkedStrength = true
-                                }
-                                abilityToString = abilityToString + strengthString
-                            }
-                        }else if (event.enemies[targetToRemoveFrom].statuses[status].status
-                        && event.enemies[targetToRemoveFrom].statuses[status].onBandaidCasterGainsBuff
-                        && !checkedStrength){
-                            // get the caster of the dot and give them the buff to gain
-                            var dotBeingRemoved = event.enemies[targetToRemoveFrom].statuses[status]
-                            var abilityIdOfBuff = event.enemies[targetToRemoveFrom].statuses[status].onBandaidCasterGainsBuff
-                            if (abilityIdOfBuff == "headache"){
-                                var strengthString = processStrength( event, event.enemies[targetToRemoveFrom], dotBeingRemoved, abilityIdOfBuff  )
-                                if (strengthString.length > 5){
-                                    checkedStrength = true
-                                }
-                                abilityToString = abilityToString + strengthString
-                            }
-                        }
-                        else if ((event.enemies[targetToRemoveFrom].statuses[status].dot
-                        && event.enemies[targetToRemoveFrom].statuses[status].dot.dmgOnDotRemove)
-                        || (event.enemies[targetToRemoveFrom].statuses[status].dmgOnStatusRemove)){
-                            // deal the dmg on dot remove to everyone
-
-                            var nameOfEndOfTurnAbility = "";
-
-                            if (event.enemies[targetToRemoveFrom].statuses[status].dot){
-                                nameOfEndOfTurnAbility = event.enemies[targetToRemoveFrom].statuses[status].dot.name;
-                            }else{
-                                nameOfEndOfTurnAbility = event.enemies[targetToRemoveFrom].statuses[status].name;
-                            }
-                            var damageToDeal = 1;
-                            var abilityObject = { }
-
-                            if (event.enemies[targetToRemoveFrom].statuses[status].dot){
-                                abilityObject = {
-                                    ability: event.enemies[targetToRemoveFrom].statuses[status].dot
-                                }
-                            }else{
-                                abilityObject = {
-                                    ability: event.enemies[targetToRemoveFrom].statuses[status],
-                                    target: targetToRemoveFrom
-                                }
-                            }
-
-                            event.enemies[targetToRemoveFrom].statuses.splice(status, 1);
-
-                            abilityObject.ability.dmg = abilityObject.ability.dmgOnRemove
-                            abilityObject.ability.mdPercentage = abilityObject.ability.mdPercentageOnRemove;
-                            abilityObject.ability.areawide = abilityObject.ability.dmgOnRemoveAreaWide;
-                            var abilityCaster = abilityObject.ability.caster;
-                            delete abilityObject.ability.turnsToExpire
-
-                            var damageToDeal = calculateDamageDealt(event, abilityCaster, abilityObject.target, abilityObject.ability)
-                            var critStrike = damageToDeal.critical ? ">" : ""
-                            if (abilityObject.ability.areawide){
-                                abilityToString = abilityToString + critStrike + "The group suffered " + damageToDeal.dmg + " damage - " + nameOfEndOfTurnAbility +"\n"                                
-                            }else{
-                                abilityToString = abilityToString + critStrike + event.enemies[targetToRemoveFrom].name + " took " + damageToDeal.dmg + " damage - " + nameOfEndOfTurnAbility +"\n"                                
-                            }
-                            for (var targetToDealDmg in event.enemies){
-                                var targetToDealDmgName = event.enemies[targetToDealDmg].name
-                                if (!checkIfDeadByObject(event.enemies[targetToDealDmg])){
-                                    var abType = abilityObject.ability.type
-                                    damageToDealToPlayer = dealDamageTo(event.enemies[targetToDealDmg], damageToDeal.dmg, event, abType)
-                                    abilityToString = abilityToString + triggerBufFromDamage(event, event.enemies[targetToDealDmg] )
-                                    if ( checkHasDied(event.enemies[targetToDealDmg])){
-                                        abilityToString = abilityToString + hasDied(event, event.enemies[targetToDealDmg]);
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    event.enemies[targetToRemoveFrom].statuses = []
-                    for (var i in ignoreBandaid){
-                        event.enemies[targetToRemoveFrom].statuses.push(ignoreBandaid[i])
-                    }
-                    abilityToString = abilityToString + event.enemies[targetToRemoveFrom].name + " was cured - " + rpgAbility.name + "\n"                
-                }
             }
         }else if (ability == "revive" || ability == "replenish"){
             // remove dead from statuses and give 40% of max hp

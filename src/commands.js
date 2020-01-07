@@ -1588,10 +1588,10 @@ module.exports.cookCommand = function(message){
                                     }
                                     else if (HAS_CASSEROLE){
                                         message.channel.send(message.author.username + " Cooked `" + cookRoll + "` tacos! you now have `" + ( adjustedTacosForUser(discordUserId, cookResponse.data.tacos) + cookRoll) + "` tacos :taco:" + "! received `" + extraTacosFromCasserole + "` extra tacos :taco: from your casserole" );
-                                        message.channel.send("Winter Fest is here 🎄 time to get your `-present`s")
+                                        //message.channel.send("Winter Fest is here 🎄 time to get your `-present`s")
                                     }else{
                                         message.channel.send(message.author.username + " Cooked `" + cookRoll + "` tacos! you now have `" + ( adjustedTacosForUser(discordUserId, cookResponse.data.tacos) + cookRoll) + "` tacos :taco:" );
-                                        message.channel.send("Winter Fest is here 🎄 time to get your `-present`s")
+                                        //message.channel.send("Winter Fest is here 🎄 time to get your `-present`s")
                                     }
                                     var data = {}
                                     data.achievements = achievements;
