@@ -873,10 +873,12 @@ module.exports.rpgReady = function(message, itemsAvailable, amuletItemsById, buf
                     var keystonePicked = (activeRPGEvents[ "rpg-" +  rpgEventId ] && activeRPGEvents[ "rpg-" +  rpgEventId ].challenge) ? activeRPGEvents[ "rpg-" + rpgEventId ].challenge.keystone : false;
                     if ((currentPlayerChallenge + 1) >= (parseInt( challengePicked ) )
                     && (currentPlayerKeystone) >= (parseInt( keystonePicked ) ) 
-                    && (userData.data.level >= KEYSTONE_UNLOCK_LEVEL ) 
                     && (parseInt( challengePicked ) ) > 0 
                     && (parseInt( challengePicked ) ) <= CURRENT_CHALLENGES_AVAILABLE ){
                         activeRPGEvents[ "rpg-" +  rpgEventId ].challenge.valid = true;
+                    }
+                    if ((userData.data.level < KEYSTONE_UNLOCK_LEVEL ) ){
+                        activeRPGEvents[ "rpg-" +  rpgEventId ].challenge.playerTooLowLevel = true;
                     }
                     var myRpgArea = userData.data.currentarea
                     
@@ -1255,7 +1257,8 @@ module.exports.rpgReady = function(message, itemsAvailable, amuletItemsById, buf
                                                         if (teamIsReady){
                                                             var validEvent = true;
                                                             if (activeRPGEvents[rpgEvent].challenge 
-                                                            && !activeRPGEvents[rpgEvent].challenge.valid){
+                                                            && !activeRPGEvents[rpgEvent].challenge.valid
+                                                            && activeRPGEvents[rpgEvent].challenge.playerTooLowLevel){
                                                                 // the event is a challenge and it is valid
                                                                 validEvent = false;
                                                             }

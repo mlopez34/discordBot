@@ -4227,6 +4227,7 @@ module.exports = {
             abilityId: "provoked",
             buff: {
                 buff: true,
+                ignoreUnique: true,
                 name: "Provoked",
                 abilityId: "provoked",
                 additionalDescription: " is provoked after 2 of the same Energy Crystals were destroyed",
