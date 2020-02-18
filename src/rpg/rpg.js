@@ -3594,11 +3594,17 @@ function calculateRewards(event, memberInRpgEvent, allItems, numberOfMembers, fi
             if (allItems[item].itemraritycategory == "ancient"
             && allItems[item].findinchallenge == challengeNum
             && allItems[item].findinkeystone <= keystone){
-                ancientsKeystoneItems.push(allItems[item]);
+                let startAt = allItems[item].findinkeystone
+                for (let l = startAt; l <= keystone; l++){
+                    ancientsKeystoneItems.push(allItems[item]);
+                }
             }else if (allItems[item].itemraritycategory == "rare"
             && allItems[item].findinchallenge == challengeNum
             && allItems[item].findinkeystone <= keystone){
-                rareKeystoneItems.push(allItems[item]);
+                let startAt = allItems[item].findinkeystone
+                for (let l = startAt; l <= keystone; l++){
+                    rareKeystoneItems.push(allItems[item]);
+                }
             }
         }
 

@@ -120,7 +120,7 @@ module.exports = {
             name: "Final Fortune",
             limitOffensive: true,
             areawide: true,
-            description: "Limit ability - The group gains haste + 75% damage + 95 % damage reduction permanently, and last rites (2 turn duration, death is certain when last rites ends, cannot be bandaided)",
+            description: "Limit ability - The group gains haste + 75% damage + 35 % damage reduction permanently, and last rites (2 turn duration, death is certain when last rites ends, cannot be bandaided)",
             buff: {
                 buff: true,
                 areawide: true,
@@ -129,7 +129,7 @@ module.exports = {
                 abilityId: "finalfortune",
                 turnsToExpire: 3,
                 affectsGlobal: ["damageTakenPercentage"],
-                multiplier: 0.05,
+                multiplier: 0.65,
                 emoji: ":fortune_cookie:"
             },
             status: {
@@ -177,7 +177,7 @@ module.exports = {
         restore: {
             name: "Restore",
             abilityId: "restore",
-            description: "Upon taking any damage, heal yourself for 50 + 20% of magical damage - lasts 3 turns",
+            description: "Upon taking any damage, heal your target for 50 + 20% of magical damage - lasts 3 turns",
             buff: {
                 buff: true,
                 name: "Restore",
@@ -185,13 +185,13 @@ module.exports = {
                 emoji : ":purple_heart:",
                 turnsToExpire: 3,
                 healWhenDamageTaken: 50,
-                mdPercentage: .20
+                mdPercentage: .60
             }
         }, 
         backup: {
             name: "Backup",
             abilityId: "backup",
-            description: "Upon taking any damage, heal yourself for 50 + 10% of physical damage - 10 charges",
+            description: "Upon taking any damage, heal your target for 50 + 10% of physical damage - 10 charges",
             buff: {
                 buff: true,
                 name: "Backup",
@@ -200,7 +200,7 @@ module.exports = {
                 charges: 10,
                 maxcharges: 10,
                 healWhenDamageTaken: 50,
-                adPercentage: .10
+                adPercentage: .30
             }
         },
         canistershot: {
