@@ -873,6 +873,7 @@ module.exports.rpgReady = function(message, itemsAvailable, amuletItemsById, buf
                     var keystonePicked = (activeRPGEvents[ "rpg-" +  rpgEventId ] && activeRPGEvents[ "rpg-" +  rpgEventId ].challenge) ? activeRPGEvents[ "rpg-" + rpgEventId ].challenge.keystone : false;
                     if ((currentPlayerChallenge + 1) >= (parseInt( challengePicked ) )
                     && (currentPlayerKeystone) >= (parseInt( keystonePicked ) ) 
+                    && (userData.data.level >= KEYSTONE_UNLOCK_LEVEL ) 
                     && (parseInt( challengePicked ) ) > 0 
                     && (parseInt( challengePicked ) ) <= CURRENT_CHALLENGES_AVAILABLE ){
                         activeRPGEvents[ "rpg-" +  rpgEventId ].challenge.valid = true;
