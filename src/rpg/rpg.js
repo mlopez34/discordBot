@@ -6894,8 +6894,9 @@ function processPassiveEffects(event){
                         if (event.membersInParty[member].statuses[index].dot.dealDamageToGroupBasedOnHealthMissing){
                             // deal areawide damage
                             let healthMissing = calculateMissingHealth(event.membersInParty[member]) 
+                            let healthMissingMultiplier = event.membersInParty[member].statuses[index].dot.dealDamageToGroupBasedOnHealthMissing
                             var abilityCastName = event.membersInParty[member].statuses[index].dot.name
-                            var damageToDeal = healthMissing;
+                            var damageToDeal = Math.floor(healthMissing * healthMissingMultiplier);
                             let dotHolder = member
                             passiveEffectsString = passiveEffectsString + "The group suffered " + damageToDeal + " damage - " + abilityCastName +"\n"
                             for (var targetToDealDmg in event.membersInParty){

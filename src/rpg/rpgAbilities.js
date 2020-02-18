@@ -5016,6 +5016,7 @@ module.exports = {
                 adPercentage: 1,
                 emoji: ":volcano:",
                 dealDamageToGroupBasedOnHealthMissing: true,
+                dealDamageToGroupBasedOnHealthMissingPercentage: 0.67,
                 dmgOnDotApply: false,
                 turnsToExpire: 3
             }
