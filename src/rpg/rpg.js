@@ -1257,8 +1257,8 @@ module.exports.rpgReady = function(message, itemsAvailable, amuletItemsById, buf
                                                         if (teamIsReady){
                                                             var validEvent = true;
                                                             if (activeRPGEvents[rpgEvent].challenge 
-                                                            && !activeRPGEvents[rpgEvent].challenge.valid
-                                                            && activeRPGEvents[rpgEvent].challenge.playerTooLowLevel){
+                                                            && (!activeRPGEvents[rpgEvent].challenge.valid
+                                                            || activeRPGEvents[rpgEvent].challenge.playerTooLowLevel)) {
                                                                 // the event is a challenge and it is valid
                                                                 validEvent = false;
                                                             }
