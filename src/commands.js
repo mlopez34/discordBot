@@ -2604,7 +2604,7 @@ module.exports.buyShopItem = function(message, args){
 }
 
 
-
+// TODO: buy multiple at once
 module.exports.buyFlaskCommand = function(message){
     var discordUserId = message.author.id;
 
@@ -7320,285 +7320,374 @@ module.exports.combineCommand = function(message, args){
         var itemCount = 1
         // get all the items available
         useItem.setItemsLock(discordUserId, true)
-        profileDB.getUserItems(discordUserId, function(err, inventoryResponse){
-            if (err){
-                useItem.setItemsLock(discordUserId, false)
-                message.channel.send("You must `-agree` to create a profile first!")
-            }else{
-                // get all the data for each item
-                var itemsInInventoryCountMap = {};
-                var itemsBeingedCombined = []
-                for (var item in inventoryResponse.data){
-                    var validItem = useItem.itemValidate(inventoryResponse.data[item]);
-                    var notWearing = useItem.itemNotWearing(inventoryResponse.data[item])
-                    var auctionedItem = false;
-                    var ItemInQuestion = inventoryResponse.data[item]
+        let rarityOfItemBeingCombined = itemsMapbyShortName[myItemShortName] ? itemsMapbyShortName[myItemShortName].itemraritycategory : false
+        if (rarityOfItemBeingCombined 
+        && (rarityOfItemBeingCombined == "uncommon+"
+        || rarityOfItemBeingCombined == "rare"
+        || rarityOfItemBeingCombined == "ancient"
+        || rarityOfItemBeingCombined == "rare+"
+        || rarityOfItemBeingCombined == "rare++"
+        || rarityOfItemBeingCombined == "ancient+"
+        || rarityOfItemBeingCombined == "ancient++")){
+            
+            // if it is a rare or ancient, grab all same named items
+            profileDB.getUserItemsByShortname(discordUserId, myItemShortName, 10,  function(err, inventoryResponse){
+                if (err){
+                    useItem.setItemsLock(discordUserId, false)
+                    message.channel.send("You must `-agree` to create a profile first!")
+                }else{
+                    // get all the data for each item
+                    var itemsInInventoryCountMap = {};
+                    var itemsBeingedCombined = []
+                    for (var item in inventoryResponse.data){
+                        var validItem = useItem.itemValidate(inventoryResponse.data[item]);
+                        var notWearing = useItem.itemNotWearing(inventoryResponse.data[item])
+                        var auctionedItem = false;
+                        var ItemInQuestion = inventoryResponse.data[item]
 
-                    if (itemsInAuction[inventoryResponse.data[item].id]){
-                        auctionedItem = true;
-                    }
-                    var itemBeingTraded = false;
-                    if (activeTradeItems[inventoryResponse.data[item].id]){
-                        itemBeingTraded = true;
-                    }
-                    if (!itemsInInventoryCountMap[inventoryResponse.data[item].itemid] 
-                        && validItem && notWearing && !auctionedItem && !itemBeingTraded){
-                        // item hasnt been added to be counted, add it as 1
-                        itemsInInventoryCountMap[inventoryResponse.data[item].itemid] = 1;
-                        if (itemsMapbyShortName[myItemShortName] 
+                        if (itemsInAuction[inventoryResponse.data[item].id]){
+                            auctionedItem = true;
+                        }
+                        var itemBeingTraded = false;
+                        if (activeTradeItems[inventoryResponse.data[item].id]){
+                            itemBeingTraded = true;
+                        }
+                        if (!itemsInInventoryCountMap[inventoryResponse.data[item].itemid] 
+                            && validItem && notWearing && !auctionedItem && !itemBeingTraded){
+                            // item hasnt been added to be counted, add it as 1
+                            itemsInInventoryCountMap[inventoryResponse.data[item].itemid] = 1;
+                            if (itemsMapbyShortName[myItemShortName] 
+                                && itemsMapById[ItemInQuestion.itemid]
+                                && itemsMapById[ItemInQuestion.itemid].itemshortname === myItemShortName ){
+                                var rarityOfItem = itemsMapbyShortName[myItemShortName].itemraritycategory
+                                if (rarityOfItem == "uncommon+"){
+                                    itemCount = 5
+                                }
+                                else if (rarityOfItem == "rare"){
+                                    itemCount = 5
+                                }else if (rarityOfItem == "ancient"){
+                                    itemCount = 4
+                                }
+                                else if (rarityOfItem == "rare+"){
+                                    itemCount = 5
+                                }
+                                else if (rarityOfItem == "rare++"){
+                                    itemCount = 5
+                                }
+                                else if (rarityOfItem == "ancient+"){
+                                    itemCount = 4
+                                }
+                                else if (rarityOfItem == "ancient++"){
+                                    itemCount = 4
+                                }
+                                else if (rarityOfItem == "artifact"){
+                                    itemCount = 1
+                                }
+                            }
+                            // // console.log(ItemInQuestion);
+                            if (itemsMapbyShortName[myItemShortName] 
+                            && itemsBeingedCombined.length < itemCount
                             && itemsMapById[ItemInQuestion.itemid]
-                            && itemsMapById[ItemInQuestion.itemid].itemshortname === myItemShortName ){
-                            var rarityOfItem = itemsMapbyShortName[myItemShortName].itemraritycategory
-                            if (rarityOfItem == "uncommon+"){
-                                itemCount = 5
-                            }
-                            else if (rarityOfItem == "rare"){
-                                itemCount = 5
-                            }else if (rarityOfItem == "ancient"){
-                                itemCount = 4
-                            }
-                            else if (rarityOfItem == "rare+"){
-                                itemCount = 5
-                            }
-                            else if (rarityOfItem == "rare++"){
-                                itemCount = 5
-                            }
-                            else if (rarityOfItem == "ancient+"){
-                                itemCount = 4
-                            }
-                            else if (rarityOfItem == "ancient++"){
-                                itemCount = 4
-                            }
-                            else if (rarityOfItem == "artifact"){
-                                itemCount = 1
+                            && itemsMapById[ItemInQuestion.itemid].itemshortname === myItemShortName){
+                                itemsBeingedCombined.push(ItemInQuestion);
                             }
                         }
-                        // // console.log(ItemInQuestion);
-                        if (itemsMapbyShortName[myItemShortName] 
-                        && itemsBeingedCombined.length < itemCount
-                        && itemsMapById[ItemInQuestion.itemid]
-                        && itemsMapById[ItemInQuestion.itemid].itemshortname === myItemShortName){
-                            itemsBeingedCombined.push(ItemInQuestion);
+                        else if (validItem && notWearing && !auctionedItem && !itemBeingTraded){
+                            itemsInInventoryCountMap[inventoryResponse.data[item].itemid] = itemsInInventoryCountMap[inventoryResponse.data[item].itemid] + 1;
+                            if (itemsMapbyShortName[myItemShortName] 
+                            && itemsBeingedCombined.length < itemCount
+                            && itemsMapById[ItemInQuestion.itemid]
+                            && itemsMapById[ItemInQuestion.itemid].itemshortname === myItemShortName){
+                                itemsBeingedCombined.push(ItemInQuestion);
+                            }
                         }
                     }
-                    else if (validItem && notWearing && !auctionedItem && !itemBeingTraded){
-                        itemsInInventoryCountMap[inventoryResponse.data[item].itemid] = itemsInInventoryCountMap[inventoryResponse.data[item].itemid] + 1;
-                        if (itemsMapbyShortName[myItemShortName] 
-                        && itemsBeingedCombined.length < itemCount
-                        && itemsMapById[ItemInQuestion.itemid]
-                        && itemsMapById[ItemInQuestion.itemid].itemshortname === myItemShortName){
-                            itemsBeingedCombined.push(ItemInQuestion);
-                        }
-                    }
-                }
-                var combineToId = itemsMapbyShortName[myItemShortName] ? itemsMapbyShortName[myItemShortName].combinetoid : undefined;
-                if (combineToId){
-                    // item short name is valid
-                    if (itemsMapbyShortName[myItemShortName]){
-                        var idOfMyItem = itemsMapbyShortName[myItemShortName].id;
+                    var combineToId = itemsMapbyShortName[myItemShortName] ? itemsMapbyShortName[myItemShortName].combinetoid : undefined;
+                    if (combineToId){
+                        // item short name is valid
+                        if (itemsMapbyShortName[myItemShortName]){
+                            var idOfMyItem = itemsMapbyShortName[myItemShortName].id;
 
-                        var rarityOfMyItem = itemsMapbyShortName[myItemShortName].itemraritycategory
-                        //////////////////// TODO: do not allow user to combine if they are on stage # of the artifact quest
-                        if ( (rarityOfMyItem && rarityOfMyItem == "artifact") || (rarityOfMyItem == "artifact+" && itemsMapbyShortName[myItemShortName].questname)){
-                            // take the ids of the other 2 artifacts + artifact recipe and push them onto itemsBeingCombined array
-                            
-                            var artifactId = ARTIFACT_RECIPE_ID
-                            var recipeAdded = false;
-                            var firstArtifact = itemsMapbyShortName[myItemShortName] ? itemsMapbyShortName[myItemShortName].firstartifact : undefined; 
-                            var firstArtifactAdded = false;
-                            var secondArtifact = itemsMapbyShortName[myItemShortName] ? itemsMapbyShortName[myItemShortName].secondartifact : undefined; 
-                            var secondArtifactAdded = false;
-
-                            // Check that the user has an artifact recipe, and the other two artifacts in their inventory
-                            if (itemsInInventoryCountMap[artifactId] >= 1
-                            && itemsInInventoryCountMap[firstArtifact] >= 1
-                            && itemsInInventoryCountMap[secondArtifact] >= 1){
-                                for (var item in inventoryResponse.data){
-                                    var validItem = useItem.itemValidate(inventoryResponse.data[item]);
-                                    var notWearing = useItem.itemNotWearing(inventoryResponse.data[item])
-                                    var auctionedItem = false;
-                                    var ItemInQuestion = inventoryResponse.data[item]
-
-                                    if ( itemsMapById[ItemInQuestion.itemid] && itemsMapById[ItemInQuestion.itemid].id === artifactId && !recipeAdded){
-                                        itemsBeingedCombined.push(ItemInQuestion);
-                                        recipeAdded = true;
+                            var rarityOfMyItem = itemsMapbyShortName[myItemShortName].itemraritycategory
+                            if (rarityOfMyItem && rarityOfMyItem == "rare++"
+                            && itemsInInventoryCountMap[idOfMyItem] 
+                            && itemsInInventoryCountMap[idOfMyItem] >= itemCount){
+                                // use transformium
+                                var transId = TRANSFORMIUM_ID
+                                var transAdded = false;
+                                if (itemsInInventoryCountMap[transId] >= 1){
+                                    for (var item in inventoryResponse.data){
+                                        var ItemInQuestion = inventoryResponse.data[item]
+                                        if ( itemsMapById[ItemInQuestion.itemid] && itemsMapById[ItemInQuestion.itemid].id === transId && !transAdded){
+                                            itemsBeingedCombined.push(ItemInQuestion);
+                                            transAdded = true;
+                                        }
                                     }
-                                    else if (itemsMapById[ItemInQuestion.itemid] && itemsMapById[ItemInQuestion.itemid].id === firstArtifact && !firstArtifactAdded){
-                                        itemsBeingedCombined.push(ItemInQuestion);
-                                        firstArtifactAdded = true;
-                                    }
-                                    else if (itemsMapById[ItemInQuestion.itemid] && itemsMapById[ItemInQuestion.itemid].id === secondArtifact && !secondArtifactAdded){
-                                        itemsBeingedCombined.push(ItemInQuestion);
-                                        secondArtifactAdded = true
-                                    }
-                                }
-                                // added all required items - set the artifacts to 'questing'
-
-                                var itemToCreate = itemsMapById[combineToId];  // maybe create the item and keep it inactive?
-                                var itemToCreateById = itemsMapById[combineToId].id;
-                                var itemToCreateByName = itemsMapById[combineToId].itemname
-                                // enable user to be in quest stage 1 of the quest series (user profile)
-                                var questName = itemsMapbyShortName[myItemShortName] ? itemsMapbyShortName[myItemShortName].questname : undefined;
-                                // var questName = "ring" // get from item.questname
-
-                                if (questName && recipeAdded && firstArtifactAdded && secondArtifactAdded ){
-                                    profileDB.userStartQuest(discordUserId, questName, function(createErr, createRes){
-                                        if (createErr){
-                                            useItem.setItemsLock(discordUserId, false)
-                                            message.channel.send("error: " + createErr)
-                                        }else{
-                                            // // console.log(createRes);                                        
-                                            profileDB.bulkUpdateItemStatus(itemsBeingedCombined, "questing", function(combineErr, combineRes){
-                                                if (combineErr){
-                                                    // console.log(combineErr);
-                                                    useItem.setItemsLock(discordUserId, false)
-                                                }else{
-                                                    // // console.log(combineRes);
-                                                    // embed showing the questline has begun
-                                                    profileDB.getUserProfileData(discordUserId, function(profileErr, profileRes){
-                                                        if (profileErr){
-                                                            // console.log(profileErr)
-                                                            useItem.setItemsLock(discordUserId, false)
-                                                            message.channel.send("something wrong in getting user profile")
-                                                        }else{
-                                                            useItem.setItemsLock(discordUserId, false)
-                                                            var data = { achievements: profileRes.data.achievements, itemraritycombined: "artifact"}
-                                                            achiev.checkForAchievements(discordUserId, data, message)
-                                                        }
-                                                    })
-                                                    var questData = {
-                                                        stage: "start"
+                                    var itemToCreate = itemsMapById[combineToId];  // maybe create the item and keep it inactive?
+                                    var itemToCreateById = itemsMapById[combineToId].id;
+                                    var itemToCreateByName = itemsMapById[combineToId].itemname
+                                    // use the transformium
+                                    if (transAdded){
+                                        profileDB.addNewItemToUser(discordUserId, [itemToCreate], function(createErr, createRes){
+                                            if (createErr){
+                                                useItem.setItemsLock(discordUserId, false)
+                                            }
+                                            else{
+                                                profileDB.bulkUpdateItemStatus(itemsBeingedCombined, "used", function(combineErr, combineRes){
+                                                    if (combineErr){
+                                                        useItem.setItemsLock(discordUserId, false)
+                                                    }else{
+                                                        useItem.setItemsLock(discordUserId, false)
+                                                        combineEmbedBuilder(message, itemToCreateByName, itemToCreate, rarityOfItem);
                                                     }
-                                                    var questString = quest.questStringBuilder(questName, questData)
-                                                    quest.questStartEmbedBuilder(message, questName, questString);
-                                                }
-                                            })
-                                        }
-                                    })
+                                                })
+                                            }
+                                        })        
+                                    }else{
+                                        useItem.setItemsLock(discordUserId, false)
+                                    }
                                 }else{
                                     useItem.setItemsLock(discordUserId, false)
-                                    message.channel.send("You do not have all the items required to combine")
                                 }
-                            }else{
-                                useItem.setItemsLock(discordUserId, false)
                             }
-                    
-                        }else if (rarityOfMyItem && rarityOfMyItem == "rare++"
-                        && itemsInInventoryCountMap[idOfMyItem] 
-                        && itemsInInventoryCountMap[idOfMyItem] >= itemCount){
-                            // use transformium
-                            var transId = TRANSFORMIUM_ID
-                            var transAdded = false;
-                            if (itemsInInventoryCountMap[transId] >= 1){
-                                for (var item in inventoryResponse.data){
-                                    var ItemInQuestion = inventoryResponse.data[item]
-                                    if ( itemsMapById[ItemInQuestion.itemid] && itemsMapById[ItemInQuestion.itemid].id === transId && !transAdded){
-                                        itemsBeingedCombined.push(ItemInQuestion);
-                                        transAdded = true;
+                            else if (rarityOfMyItem && rarityOfMyItem == "ancient++"
+                            && itemsInInventoryCountMap[idOfMyItem] 
+                            && itemsInInventoryCountMap[idOfMyItem] >= itemCount){
+                                // use ethereum
+                                var ethereumId = ETHEREUM_ID
+                                var transAdded = false;
+                                if (itemsInInventoryCountMap[ethereumId] >= 1){
+                                    for (var item in inventoryResponse.data){
+                                        var ItemInQuestion = inventoryResponse.data[item]
+                                        if ( itemsMapById[ItemInQuestion.itemid] && itemsMapById[ItemInQuestion.itemid].id === ethereumId && !transAdded){
+                                            itemsBeingedCombined.push(ItemInQuestion);
+                                            transAdded = true;
+                                        }
                                     }
+                                    var itemToCreate = itemsMapById[combineToId];  // maybe create the item and keep it inactive?
+                                    var itemToCreateById = itemsMapById[combineToId].id;
+                                    var itemToCreateByName = itemsMapById[combineToId].itemname
+                                    // use the ethereum
+                                    if (transAdded){
+                                        profileDB.addNewItemToUser(discordUserId, [itemToCreate], function(createErr, createRes){
+                                            if (createErr){
+                                                useItem.setItemsLock(discordUserId, false)
+                                            }else{
+                                                profileDB.bulkUpdateItemStatus(itemsBeingedCombined, "used", function(combineErr, combineRes){
+                                                    if (combineErr){
+                                                        useItem.setItemsLock(discordUserId, false)
+                                                    }else{
+                                                        useItem.setItemsLock(discordUserId, false)
+                                                        combineEmbedBuilder(message, itemToCreateByName, itemToCreate, rarityOfItem);
+                                                    }
+                                                })
+                                            }
+                                        })        
+                                    }else{
+                                        useItem.setItemsLock(discordUserId, false)
+                                    }
+                                }else{
+                                    useItem.setItemsLock(discordUserId, false)
                                 }
-                                var itemToCreate = itemsMapById[combineToId];  // maybe create the item and keep it inactive?
+                            }
+                            else if (itemsInInventoryCountMap[idOfMyItem] && 
+                                itemsInInventoryCountMap[idOfMyItem] >= itemCount){
+                                // combine all the items into a next level item
+                                var itemToCreate = itemsMapById[combineToId];
                                 var itemToCreateById = itemsMapById[combineToId].id;
                                 var itemToCreateByName = itemsMapById[combineToId].itemname
-                                // use the transformium
-                                if (transAdded){
-                                    profileDB.addNewItemToUser(discordUserId, [itemToCreate], function(createErr, createRes){
-                                        if (createErr){
-                                            useItem.setItemsLock(discordUserId, false)
-                                        }
-                                        else{
-                                            profileDB.bulkUpdateItemStatus(itemsBeingedCombined, "used", function(combineErr, combineRes){
-                                                if (combineErr){
-                                                    useItem.setItemsLock(discordUserId, false)
-                                                }else{
-                                                    useItem.setItemsLock(discordUserId, false)
-                                                    combineEmbedBuilder(message, itemToCreateByName, itemToCreate, rarityOfItem);
-                                                }
-                                            })
-                                        }
-                                    })        
-                                }else{
-                                    useItem.setItemsLock(discordUserId, false)
-                                }
-                            }else{
-                                useItem.setItemsLock(discordUserId, false)
-                            }
-                        }
-                        else if (rarityOfMyItem && rarityOfMyItem == "ancient++"
-                        && itemsInInventoryCountMap[idOfMyItem] 
-                        && itemsInInventoryCountMap[idOfMyItem] >= itemCount){
-                            // use ethereum
-                            var ethereumId = ETHEREUM_ID
-                            var transAdded = false;
-                            if (itemsInInventoryCountMap[ethereumId] >= 1){
-                                for (var item in inventoryResponse.data){
-                                    var ItemInQuestion = inventoryResponse.data[item]
-                                    if ( itemsMapById[ItemInQuestion.itemid] && itemsMapById[ItemInQuestion.itemid].id === ethereumId && !transAdded){
-                                        itemsBeingedCombined.push(ItemInQuestion);
-                                        transAdded = true;
+                                
+                                //create an item of that kind for the user and set all the other items to 'used'
+                                profileDB.addNewItemToUser(discordUserId, [itemToCreate], function(createErr, createRes){
+                                    if (createErr){
+                                        useItem.setItemsLock(discordUserId, false)
+                                    }else{
+                                        profileDB.bulkUpdateItemStatus(itemsBeingedCombined, "used", function(combineErr, combineRes){
+                                            if (combineErr){
+                                                useItem.setItemsLock(discordUserId, false)
+                                            }else{
+                                                useItem.setItemsLock(discordUserId, false)
+                                                combineEmbedBuilder(message, itemToCreateByName, itemToCreate, rarityOfItem);
+                                            }
+                                        })
                                     }
-                                }
-                                var itemToCreate = itemsMapById[combineToId];  // maybe create the item and keep it inactive?
-                                var itemToCreateById = itemsMapById[combineToId].id;
-                                var itemToCreateByName = itemsMapById[combineToId].itemname
-                                // use the ethereum
-                                if (transAdded){
-                                    profileDB.addNewItemToUser(discordUserId, [itemToCreate], function(createErr, createRes){
-                                        if (createErr){
-                                            useItem.setItemsLock(discordUserId, false)
-                                        }else{
-                                            profileDB.bulkUpdateItemStatus(itemsBeingedCombined, "used", function(combineErr, combineRes){
-                                                if (combineErr){
-                                                    useItem.setItemsLock(discordUserId, false)
-                                                }else{
-                                                    useItem.setItemsLock(discordUserId, false)
-                                                    combineEmbedBuilder(message, itemToCreateByName, itemToCreate, rarityOfItem);
-                                                }
-                                            })
-                                        }
-                                    })        
-                                }else{
-                                    useItem.setItemsLock(discordUserId, false)
-                                }
+                                })
                             }else{
                                 useItem.setItemsLock(discordUserId, false)
+                                message.channel.send("unable to combine.. you need " + itemCount);
                             }
-                        }
-                        else if (itemsInInventoryCountMap[idOfMyItem] && 
-                            itemsInInventoryCountMap[idOfMyItem] >= itemCount){
-                            // combine all the items into a next level item
-                            var itemToCreate = itemsMapById[combineToId];
-                            var itemToCreateById = itemsMapById[combineToId].id;
-                            var itemToCreateByName = itemsMapById[combineToId].itemname
-                            
-                            //create an item of that kind for the user and set all the other items to 'used'
-                            profileDB.addNewItemToUser(discordUserId, [itemToCreate], function(createErr, createRes){
-                                if (createErr){
-                                    useItem.setItemsLock(discordUserId, false)
-                                }else{
-                                    profileDB.bulkUpdateItemStatus(itemsBeingedCombined, "used", function(combineErr, combineRes){
-                                        if (combineErr){
-                                            useItem.setItemsLock(discordUserId, false)
-                                        }else{
-                                            useItem.setItemsLock(discordUserId, false)
-                                            combineEmbedBuilder(message, itemToCreateByName, itemToCreate, rarityOfItem);
-                                        }
-                                    })
-                                }
-                            })
                         }else{
                             useItem.setItemsLock(discordUserId, false)
-                            message.channel.send("unable to combine.. you need " + itemCount);
                         }
                     }else{
                         useItem.setItemsLock(discordUserId, false)
+                        message.channel.send("cannot combine that item");
                     }
-                }else{
-                    useItem.setItemsLock(discordUserId, false)
-                    message.channel.send("cannot combine that item");
+
                 }
-            }
-        })
+            })
+            // if it is an artifact grab all artifact items
+        }else if (rarityOfItemBeingCombined 
+        && rarityOfItemBeingCombined == "artifact"){
+            profileDB.getUserItemsByRarity(discordUserId, "artifact", function(err, inventoryResponse){
+                if (err){
+                    useItem.setItemsLock(discordUserId, false)
+                    message.channel.send("You must `-agree` to create a profile first!")
+                }else{
+                    // get all the data for each item
+                    var itemsInInventoryCountMap = {};
+                    var itemsBeingedCombined = []
+                    for (var item in inventoryResponse.data){
+                        var validItem = useItem.itemValidate(inventoryResponse.data[item]);
+                        var notWearing = useItem.itemNotWearing(inventoryResponse.data[item])
+                        var auctionedItem = false;
+                        var ItemInQuestion = inventoryResponse.data[item]
+
+                        if (itemsInAuction[inventoryResponse.data[item].id]){
+                            auctionedItem = true;
+                        }
+                        var itemBeingTraded = false;
+                        if (activeTradeItems[inventoryResponse.data[item].id]){
+                            itemBeingTraded = true;
+                        }
+                        if (!itemsInInventoryCountMap[inventoryResponse.data[item].itemid] 
+                            && validItem && notWearing && !auctionedItem && !itemBeingTraded){
+                            // item hasnt been added to be counted, add it as 1
+                            itemsInInventoryCountMap[inventoryResponse.data[item].itemid] = 1;
+                            if (itemsMapbyShortName[myItemShortName] 
+                                && itemsMapById[ItemInQuestion.itemid]
+                                && itemsMapById[ItemInQuestion.itemid].itemshortname === myItemShortName ){
+                                itemCount = 1
+                            }
+                            // // console.log(ItemInQuestion);
+                            if (itemsMapbyShortName[myItemShortName] 
+                            && itemsBeingedCombined.length < itemCount
+                            && itemsMapById[ItemInQuestion.itemid]
+                            && itemsMapById[ItemInQuestion.itemid].itemshortname === myItemShortName){
+                                itemsBeingedCombined.push(ItemInQuestion);
+                            }
+                        }
+                        else if (validItem && notWearing && !auctionedItem && !itemBeingTraded){
+                            itemsInInventoryCountMap[inventoryResponse.data[item].itemid] = itemsInInventoryCountMap[inventoryResponse.data[item].itemid] + 1;
+                            if (itemsMapbyShortName[myItemShortName] 
+                            && itemsBeingedCombined.length < itemCount
+                            && itemsMapById[ItemInQuestion.itemid]
+                            && itemsMapById[ItemInQuestion.itemid].itemshortname === myItemShortName){
+                                itemsBeingedCombined.push(ItemInQuestion);
+                            }
+                        }
+                    }
+                    var combineToId = itemsMapbyShortName[myItemShortName] ? itemsMapbyShortName[myItemShortName].combinetoid : undefined;
+                    if (combineToId){
+                        // item short name is valid
+                        if (itemsMapbyShortName[myItemShortName]){
+                            var idOfMyItem = itemsMapbyShortName[myItemShortName].id;
+
+                            var rarityOfMyItem = itemsMapbyShortName[myItemShortName].itemraritycategory
+                            //////////////////// TODO: do not allow user to combine if they are on stage # of the artifact quest
+                            if ( (rarityOfMyItem && rarityOfMyItem == "artifact") 
+                            || (rarityOfMyItem == "artifact+" 
+                            && itemsMapbyShortName[myItemShortName].questname)){
+                                // take the ids of the other 2 artifacts + artifact recipe and push them onto itemsBeingCombined array
+                                
+                                var artifactId = ARTIFACT_RECIPE_ID
+                                var recipeAdded = false;
+                                var firstArtifact = itemsMapbyShortName[myItemShortName] ? itemsMapbyShortName[myItemShortName].firstartifact : undefined; 
+                                var firstArtifactAdded = false;
+                                var secondArtifact = itemsMapbyShortName[myItemShortName] ? itemsMapbyShortName[myItemShortName].secondartifact : undefined; 
+                                var secondArtifactAdded = false;
+
+                                // Check that the user has an artifact recipe, and the other two artifacts in their inventory
+                                if (itemsInInventoryCountMap[artifactId] >= 1
+                                && itemsInInventoryCountMap[firstArtifact] >= 1
+                                && itemsInInventoryCountMap[secondArtifact] >= 1){
+                                    for (var item in inventoryResponse.data){
+                                        var validItem = useItem.itemValidate(inventoryResponse.data[item]);
+                                        var notWearing = useItem.itemNotWearing(inventoryResponse.data[item])
+                                        var auctionedItem = false;
+                                        var ItemInQuestion = inventoryResponse.data[item]
+
+                                        if ( itemsMapById[ItemInQuestion.itemid] && itemsMapById[ItemInQuestion.itemid].id === artifactId && !recipeAdded){
+                                            itemsBeingedCombined.push(ItemInQuestion);
+                                            recipeAdded = true;
+                                        }
+                                        else if (itemsMapById[ItemInQuestion.itemid] && itemsMapById[ItemInQuestion.itemid].id === firstArtifact && !firstArtifactAdded){
+                                            itemsBeingedCombined.push(ItemInQuestion);
+                                            firstArtifactAdded = true;
+                                        }
+                                        else if (itemsMapById[ItemInQuestion.itemid] && itemsMapById[ItemInQuestion.itemid].id === secondArtifact && !secondArtifactAdded){
+                                            itemsBeingedCombined.push(ItemInQuestion);
+                                            secondArtifactAdded = true
+                                        }
+                                    }
+                                    // added all required items - set the artifacts to 'questing'
+
+                                    var itemToCreate = itemsMapById[combineToId];  // maybe create the item and keep it inactive?
+                                    var itemToCreateById = itemsMapById[combineToId].id;
+                                    var itemToCreateByName = itemsMapById[combineToId].itemname
+                                    // enable user to be in quest stage 1 of the quest series (user profile)
+                                    var questName = itemsMapbyShortName[myItemShortName] ? itemsMapbyShortName[myItemShortName].questname : undefined;
+                                    // var questName = "ring" // get from item.questname
+
+                                    if (questName && recipeAdded && firstArtifactAdded && secondArtifactAdded ){
+                                        profileDB.userStartQuest(discordUserId, questName, function(createErr, createRes){
+                                            if (createErr){
+                                                useItem.setItemsLock(discordUserId, false)
+                                                message.channel.send("error: " + createErr)
+                                            }else{
+                                                // // console.log(createRes);                                        
+                                                profileDB.bulkUpdateItemStatus(itemsBeingedCombined, "questing", function(combineErr, combineRes){
+                                                    if (combineErr){
+                                                        // console.log(combineErr);
+                                                        useItem.setItemsLock(discordUserId, false)
+                                                    }else{
+                                                        // // console.log(combineRes);
+                                                        // embed showing the questline has begun
+                                                        profileDB.getUserProfileData(discordUserId, function(profileErr, profileRes){
+                                                            if (profileErr){
+                                                                // console.log(profileErr)
+                                                                useItem.setItemsLock(discordUserId, false)
+                                                                message.channel.send("something wrong in getting user profile")
+                                                            }else{
+                                                                useItem.setItemsLock(discordUserId, false)
+                                                                var data = { achievements: profileRes.data.achievements, itemraritycombined: "artifact"}
+                                                                achiev.checkForAchievements(discordUserId, data, message)
+                                                            }
+                                                        })
+                                                        var questData = {
+                                                            stage: "start"
+                                                        }
+                                                        var questString = quest.questStringBuilder(questName, questData)
+                                                        quest.questStartEmbedBuilder(message, questName, questString);
+                                                    }
+                                                })
+                                            }
+                                        })
+                                    }else{
+                                        useItem.setItemsLock(discordUserId, false)
+                                        message.channel.send("You do not have all the items required to combine")
+                                    }
+                                }else{
+                                    useItem.setItemsLock(discordUserId, false)
+                                }
+                        
+                            }else{
+                                useItem.setItemsLock(discordUserId, false)
+                                message.channel.send("unable to combine.. you need " + itemCount);
+                            }
+                        }else{
+                            useItem.setItemsLock(discordUserId, false)
+                        }
+                    }else{
+                        useItem.setItemsLock(discordUserId, false)
+                        message.channel.send("cannot combine that item");
+                    }
+                }
+            })
+        }else{
+            useItem.setItemsLock(discordUserId, false)
+            message.channel.send("example use: -combine loincloth OR -combine polyester");
+        }
     }else{
         message.channel.send("example use: -combine loincloth OR -combine polyester");
     }

@@ -1846,6 +1846,15 @@ module.exports.getUserItemsByRarity = function(discordId, rarity, cb) {
     'WHERE userinventorytable.discordId = $1 AND userinventorytable.status is null AND itemstable.itemraritycategory = $2'
     'ORDER BY userinventorytable.id DESC'
     
+    if (rarity == "artifact"){
+        // include artifact recipe
+        query = 'SELECT userinventorytable.* ' +
+        'FROM ' + config.inventoryTable + ' AS userinventorytable ' +
+        'INNER JOIN ' + config.itemsTable + ' AS itemstable ' +
+        'ON userinventorytable.itemid = itemstable.id ' +
+        'WHERE userinventorytable.discordId = $1 AND userinventorytable.status is null AND ( itemstable.itemraritycategory = $2 OR itemstable.itemraritycategory = \'artifact+\')'
+        'ORDER BY userinventorytable.id DESC'
+    }
     // console.log(query);
     db.query(query, [discordId, rarity])
       .then(function (data) {
@@ -1856,7 +1865,7 @@ module.exports.getUserItemsByRarity = function(discordId, rarity, cb) {
           });
       })
       .catch(function (err) {
-        // console.log(err);
+        console.log(err);
         cb(err);
       });
   }

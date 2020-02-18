@@ -974,9 +974,9 @@ module.exports = {
             name: "Fire Breath",
             abilityId: "fireBreath",
             dmg: 100,
-            description: "Deal 100 damage + 100% of your magic damage to all enemies",
-            mdPercentage: 1,
-            type: "ice",
+            description: "Deal 100 damage + 75% of your magic damage to all enemies and apply burning",
+            mdPercentage: .75,
+            type: "fire",
             areawide: true,
             targets: "enemy",
             dot: {
@@ -1023,7 +1023,7 @@ module.exports = {
                 name: "Crushed",
                 emoji: "<:radioactive:479294904946655254>",
                 affects: ["armor"],
-                multiplier: 0.5
+                multiplier: 0.7
             }
         },
         vandalize: {
@@ -1563,7 +1563,7 @@ module.exports = {
             processAbility: true,
             belongsToMember: true,
             areawide: true,
-            everyNTurns: 15,
+            everyNTurns: 17,
             afterNTurns: 10,
             currentTurn: 0,
             dot: {
@@ -1591,8 +1591,8 @@ module.exports = {
             processAbility: true,
             belongsToMember: true,
             areawide: true,
-            everyNTurns: 15,
-            afterNTurns: 15,
+            everyNTurns: 17,
+            afterNTurns: 17,
             currentTurn: 0,
             dot: {
                 name: "Bomb",

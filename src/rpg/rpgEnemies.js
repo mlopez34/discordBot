@@ -4769,8 +4769,8 @@ module.exports = {
                 mdPerPartyMember: 29,
                 attackDmg: 940,
                 magicDmg: 990,
-                armor: 1500,
-                spirit: 1500,
+                armor: 1300,
+                spirit: 1300,
                 difficulty: "boss",
                 element: "normal"
             },
@@ -7125,13 +7125,12 @@ module.exports = {
                         ],
                         keystoneStats: {
                             frenzy: {
-                                attackDmgPlus : [150, 220, 350, 640, 990, 1400],
-                                magicDmgPlus : [150, 220, 350, 640, 990, 1400]
+                                attackDmgPlus : [150, 220, 350, 640, 990, 1400, 2100, 2837, 3955, 5202   ],
+                                magicDmgPlus : [150, 220, 350, 640, 990, 1400, 2100, 2837, 3955, 5202  ]
                             },
-                            hp: [9500, 19900, 34900, 51000, 137000, 230000, 250000, 289000, 341000, 381000 ],
-                            attackDmg: [1000, 1500, 2000, 2900, 4500, 4500, 5000, 5500, 6000, 6500 ],
-                            magicDmg: [1000, 1500, 2000, 2900, 4500, 4500, 5000, 5500, 6000, 6500 ],
-                            // reanimate the dead by bringing them back as zombies
+                            hp: [9500, 19900, 34900, 51000, 137000, 230000, 250000, 289000, 341000, 441000 ],
+                            attackDmg: [1000, 1500, 2000, 2900, 4500, 4500, 5000, 5500, 6300, 8500 ],
+                            magicDmg: [1000, 1500, 2000, 2900, 4500, 4500, 5000, 5500, 6300, 8500 ],
                             abilities: [],
                             endOfTurnEvents: [
                                 "reanimateAllMessage",
