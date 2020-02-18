@@ -877,7 +877,8 @@ module.exports.rpgReady = function(message, itemsAvailable, amuletItemsById, buf
                     && (parseInt( challengePicked ) ) <= CURRENT_CHALLENGES_AVAILABLE ){
                         activeRPGEvents[ "rpg-" +  rpgEventId ].challenge.valid = true;
                     }
-                    if ((userData.data.level < KEYSTONE_UNLOCK_LEVEL ) ){
+                    if (( keystonePicked 
+                    && userData.data.level < KEYSTONE_UNLOCK_LEVEL ) ){
                         activeRPGEvents[ "rpg-" +  rpgEventId ].challenge.playerTooLowLevel = true;
                     }
                     var myRpgArea = userData.data.currentarea
