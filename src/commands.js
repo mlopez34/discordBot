@@ -65,7 +65,6 @@ var FLASK_COST = 500;
 var ARTIFACT_RECIPE_ID = 69;
 var ETHEREUM_ID = 200;
 var TRANSFORMIUM_ID = 155;
-var ETHEREUM_ID = 200;
 var TACO_PARTY_TIME_TO_LIVE = 300000
 var SHOP_ITEM_COST = 125
 const GREENHOUSE_COST = 10000
@@ -7331,7 +7330,7 @@ module.exports.combineCommand = function(message, args){
         || rarityOfItemBeingCombined == "ancient++")){
             
             // if it is a rare or ancient, grab all same named items
-            profileDB.getUserItemsByShortname(discordUserId, myItemShortName, 10,  function(err, inventoryResponse){
+            profileDB.getUserItemsByShortnameForCombine(discordUserId, myItemShortName, 10,  function(err, inventoryResponse){
                 if (err){
                     useItem.setItemsLock(discordUserId, false)
                     message.channel.send("You must `-agree` to create a profile first!")

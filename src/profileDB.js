@@ -1895,6 +1895,30 @@ module.exports.getUserItemsByShortname = function(discordId, shortname, limit, c
       });
   }
 
+  module.exports.getUserItemsByShortnameForCombine = function(discordId, shortname, limit, cb) {
+    var query = 'SELECT userinventorytable.* ' +
+    'FROM ' + config.inventoryTable + ' AS userinventorytable ' +
+    'INNER JOIN ' + config.itemsTable + ' AS itemstable ' +
+    'ON userinventorytable.itemid = itemstable.id ' +
+    'WHERE userinventorytable.discordId = $1 AND userinventorytable.status is null AND (itemstable.itemshortname = $2 OR itemstable.itemraritycategory = \'artifact+\')'
+    'ORDER BY userinventorytable.id DESC' +
+    'LIMIT $3' 
+    
+    // console.log(query);
+    db.query(query, [discordId, shortname, limit])
+      .then(function (data) {
+        cb(null, {
+            status: 'success',
+            data: data,
+            message: 'Retrieved All User Items'
+          });
+      })
+      .catch(function (err) {
+        // console.log(err);
+        cb(err);
+      });
+  }
+
 module.exports.getUserItemsForRpg = function(discordId, cb) {
     // 'AND itemid > 12' was added since commons and uncommons arent needed for this call
     var query = 'select id, itemid, armamentforitemid, hpplus, adplus, mdplus, armorplus, spiritplus, critplus, luckplus from ' + config.inventoryTable + ' where discordId = $1 AND status is null AND itemid > 12 ORDER BY id DESC '
