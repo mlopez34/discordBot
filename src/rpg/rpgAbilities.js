@@ -2224,7 +2224,7 @@ module.exports = {
         summonAmberPool: {
             name: "summonAmberPool",
             belongsToMember: true,
-            everyNTurns: 5,
+            everyNTurns: 7,
             afterNTurns: 4,
             currentTurn: 0,
             summon: {

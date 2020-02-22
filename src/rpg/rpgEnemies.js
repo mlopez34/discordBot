@@ -1469,9 +1469,9 @@ module.exports = {
                 abilities: ["poke", "bite", "flameblast"],
                 buffs: [],
                 keystoneStats: {
-                    hp: [1200, 3500, 6200, 10000, 13000, 17500, 25000, 35000, 45000, 60000  ],
-                    attackDmg: [300, 500, 900, 1500, 2300, 3400, 4500, 5500, 6500, 7500],
-                    magicDmg: [300, 500, 900, 1500, 2300, 3400, 4500, 5500, 6500, 7500],
+                    hp: [1200, 3500, 8200, 14000, 25000, 37500, 55000, 65000, 85000, 90000  ],
+                    attackDmg: [300, 900, 1900, 3500, 4300, 5400, 6500, 7500, 9500, 12500],
+                    magicDmg: [300, 900, 1900, 3500, 4300, 5400, 6500, 7500, 9500, 12500],
                     abilities: []
                 },
                 effectsOnDeath: [
@@ -1549,7 +1549,7 @@ module.exports = {
                 hpPerPartyMember: 0,
                 adPerPartyMember: 0,
                 mdPerPartyMember: 0,
-                hp: 48300,
+                hp: 39300,
                 attackDmg: 4900,
                 magicDmg: 4900,
                 armor: 1800,
@@ -1576,7 +1576,7 @@ module.exports = {
                 hpPerPartyMember: 0,
                 adPerPartyMember: 0,
                 mdPerPartyMember: 0,
-                hp: 19300,
+                hp: 17300,
                 attackDmg: 3000,
                 magicDmg: 3000,
                 armor: 1700,
@@ -1604,7 +1604,7 @@ module.exports = {
                 hpPerPartyMember: 0,
                 adPerPartyMember: 0,
                 mdPerPartyMember: 0,
-                hp: 19300,
+                hp: 17300,
                 attackDmg: 3000,
                 magicDmg: 3000,
                 armor: 1700,
@@ -1633,7 +1633,7 @@ module.exports = {
                 hpPerPartyMember: 0,
                 adPerPartyMember: 0,
                 mdPerPartyMember: 0,
-                hp: 19300,
+                hp: 17300,
                 attackDmg: 3000,
                 magicDmg: 3000,
                 armor: 1700,
@@ -1648,7 +1648,7 @@ module.exports = {
                 abilities: [],
                 buffs: [],
                 keystoneStats: {
-                    hp: [1500, 2500, 4500, 6000, 8500, 11500, 14000, 18000, 24000, 30000  ],
+                    hp: [1500, 2500, 3700, 5000, 7500, 9500, 12000, 15000, 20000, 27000  ],
                     attackDmg: [300, 500, 900, 1500, 2300, 6400, 9500, 10500, 14500, 25500],
                     magicDmg: [300, 500, 900, 1500, 2300, 6400, 9500, 10500, 14500, 25500],
                     abilities: []
