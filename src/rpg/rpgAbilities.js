@@ -416,6 +416,28 @@ module.exports = {
             }
         },
 
+        enchant: {
+            name: "Enchant",
+            abilityId: "enchant",
+            maxcooldown: 4,
+            cooldown: 0,
+            description: "Paralyze a player or easy, medium, summoned difficulty enemy for 3 turns, 4 turn cooldown, invalid if damage is taken",
+            difficultiesAllowed: [
+                "easy",
+                "medium",
+                "summoned"
+            ],
+            status: {
+                status: true,
+                abilityId: "paralyze",
+                name: "Paralyze",
+                emoji: "<:paralyze:479294904900517888>",
+                turnsToExpire: 3,
+                setAbleToAttack: false,
+                invalidOnDamage: true
+            }
+        },
+
         // new abilities end
         claw : {
             name: "Claw",

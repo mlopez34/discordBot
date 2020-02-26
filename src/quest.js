@@ -70,7 +70,7 @@ module.exports.questStartEmbedBuilder = function(message, questName, questString
         const embed = new Discord.RichEmbed()
         .setAuthor(message.author.username + " has begun an artifact quest.")
         .addField("Use your map to travel to different points of interests and decypher the assets", questString, true)
-        .setDescription(":spy:  :imp:  :spy: \n" +message.author.username + " gathers the assets but is unable to put them together.. opening the Tombstone file only reveals coordinates pointing to Panama City as a point of interest" )
+        .setDescription(":detective:  :imp:  :detective: \n" +message.author.username + " gathers the assets but is unable to put them together.. opening the Tombstone file only reveals coordinates pointing to Panama City as a point of interest" )
         .addField("New command granted", "-decypher [@user] [@user] [@user] [@user]")
         .setThumbnail(message.author.avatarURL)
         .setColor(0xFF7A1C)

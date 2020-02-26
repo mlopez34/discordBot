@@ -1021,7 +1021,7 @@ module.exports.rollForArmamentStats = function(itemToCreateArmament){
     
         if (itemSlot == "weapon"
         || itemSlot == "finger"
-        || itemSlot == "necklace"){
+        || itemSlot == "neck"){
             statMap.adplus.floor = statMap.adplus.floor + (itemadplus * 0.06 )
             statMap.adplus.ceiling = statMap.adplus.ceiling + ( itemadplus * 0.06 )
     

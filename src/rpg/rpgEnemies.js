@@ -1659,7 +1659,7 @@ module.exports = {
                 hpPerPartyMember: 0,
                 adPerPartyMember: 0,
                 mdPerPartyMember: 0,
-                hp: 7000,
+                hp: 6800,
                 attackDmg: 1000,
                 magicDmg: 1000,
                 armor: 900,
