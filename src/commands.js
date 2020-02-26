@@ -6388,59 +6388,86 @@ module.exports.templeCommand = function(message, long){
         }else{
             profileDB.getUserItemsByRarity(discordUserId, "uncommon+", function(err, inventoryResponse){
                 if (err){
-                    // console.log(err);
                     message.channel.send("You must `-agree` to create a profile first!")
                 }else{
-                    if (templeRes.data.templelevel > 0 && templeRes.data.temple){
-                        var itemsInInventoryCountMap = {};
-                        for (var item in inventoryResponse.data){
-                            var ItemInQuestion = inventoryResponse.data[item];
-                            var validItem = useItem.itemValidate(ItemInQuestion);
-                            var itemBeingAuctioned = false;
-                            if (itemsInAuction[ItemInQuestion.id]){
-                                itemBeingAuctioned = true;
-                            }
-                            var itemBeingTraded = false;
-                            if (activeTradeItems[inventoryResponse.data[item].id]){
-                                itemBeingTraded = true;
-                            }
-                            if (!itemsInInventoryCountMap[inventoryResponse.data[item].itemid] 
-                            && validItem 
-                            && !itemBeingAuctioned
-                            && !itemBeingTraded){
-                                // item hasnt been added to be counted, add it as 1
-                                itemsInInventoryCountMap[inventoryResponse.data[item].itemid] = 1;
-                            }
-                            else if (validItem && !itemBeingAuctioned && !itemBeingTraded){
-                                itemsInInventoryCountMap[inventoryResponse.data[item].itemid] = itemsInInventoryCountMap[inventoryResponse.data[item].itemid] + 1
+                    profileDB.getUserItemsByRarity(discordUserId, "amulet", function(err, amuletResponse){
+                        if (err){
+                            message.channel.send("You must `-agree` to create a profile first!")
+                        }else{
+                            if (templeRes.data.templelevel > 0 && templeRes.data.temple){
+                                var itemsInInventoryCountMap = {};
+                                for (var item in inventoryResponse.data){
+                                    var ItemInQuestion = inventoryResponse.data[item];
+                                    var validItem = useItem.itemValidate(ItemInQuestion);
+                                    var itemBeingAuctioned = false;
+                                    if (itemsInAuction[ItemInQuestion.id]){
+                                        itemBeingAuctioned = true;
+                                    }
+                                    var itemBeingTraded = false;
+                                    if (activeTradeItems[inventoryResponse.data[item].id]){
+                                        itemBeingTraded = true;
+                                    }
+                                    if (!itemsInInventoryCountMap[inventoryResponse.data[item].itemid] 
+                                    && validItem 
+                                    && !itemBeingAuctioned
+                                    && !itemBeingTraded){
+                                        // item hasnt been added to be counted, add it as 1
+                                        itemsInInventoryCountMap[inventoryResponse.data[item].itemid] = 1;
+                                    }
+                                    else if (validItem && !itemBeingAuctioned && !itemBeingTraded){
+                                        itemsInInventoryCountMap[inventoryResponse.data[item].itemid] = itemsInInventoryCountMap[inventoryResponse.data[item].itemid] + 1
+                                    }
+                                }
+                                for (var item in amuletResponse.data){
+                                    var ItemInQuestion = amuletResponse.data[item];
+                                    var validItem = useItem.itemValidate(ItemInQuestion);
+                                    var itemBeingAuctioned = false;
+                                    if (itemsInAuction[ItemInQuestion.id]){
+                                        itemBeingAuctioned = true;
+                                    }
+                                    var itemBeingTraded = false;
+                                    if (activeTradeItems[amuletResponse.data[item].id]){
+                                        itemBeingTraded = true;
+                                    }
+                                    if (!itemsInInventoryCountMap[amuletResponse.data[item].itemid] 
+                                    && validItem 
+                                    && !itemBeingAuctioned
+                                    && !itemBeingTraded){
+                                        // item hasnt been added to be counted, add it as 1
+                                        itemsInInventoryCountMap[amuletResponse.data[item].itemid] = 1;
+                                    }
+                                    else if (validItem && !itemBeingAuctioned && !itemBeingTraded){
+                                        itemsInInventoryCountMap[amuletResponse.data[item].itemid] = itemsInInventoryCountMap[amuletResponse.data[item].itemid] + 1
+                                    }
+                                }
+                                var templeData = { 
+                                    name: message.author.username,
+                                    templeLevel : templeRes.data.templelevel,
+                                    templecraft1id: templeRes.data.templecraft1id,
+                                    templecraft2id: templeRes.data.templecraft2id,
+                                    templecraft3id : templeRes.data.templecraft3id,
+                                    templecraft1name: templeRes.data.templecraft1name,
+                                    templecraft2name: templeRes.data.templecraft2name,
+                                    templecraft3name: templeRes.data.templecraft3name,
+                                    lasttemplecraft: templeRes.data.lasttemplecraft,
+                                    inventoryItems: itemsInInventoryCountMap,
+                                    currenttemplecraftslot: templeRes.data.currenttemplecraftslot
+                                }
+                                templeData.currentlevelinfo = temple.getLevelInfo(templeData.templeLevel)
+                                templeData.nextlevelinfo = temple.getLevelInfo(templeData.templeLevel + 1)   
+                                if (long){
+                                    // get all levels up to current one
+                                    templeData.allMyLevelsInfo = ""
+                                    for (var l = 1; l <= templeData.templeLevel; l++){
+                                        templeData.allMyLevelsInfo = templeData.allMyLevelsInfo + temple.getLevelInfo( l ) + "\n"
+                                    }
+                                }     
+                                templeEmbedBuilder(message, templeData, long)
+                            }else{
+                                message.channel.send("You do not own a Temple")
                             }
                         }
-                        var templeData = { 
-                            name: message.author.username,
-                            templeLevel : templeRes.data.templelevel,
-                            templecraft1id: templeRes.data.templecraft1id,
-                            templecraft2id: templeRes.data.templecraft2id,
-                            templecraft3id : templeRes.data.templecraft3id,
-                            templecraft1name: templeRes.data.templecraft1name,
-                            templecraft2name: templeRes.data.templecraft2name,
-                            templecraft3name: templeRes.data.templecraft3name,
-                            lasttemplecraft: templeRes.data.lasttemplecraft,
-                            inventoryItems: itemsInInventoryCountMap,
-                            currenttemplecraftslot: templeRes.data.currenttemplecraftslot
-                        }
-                        templeData.currentlevelinfo = temple.getLevelInfo(templeData.templeLevel)
-                        templeData.nextlevelinfo = temple.getLevelInfo(templeData.templeLevel + 1)   
-                        if (long){
-                            // get all levels up to current one
-                            templeData.allMyLevelsInfo = ""
-                            for (var l = 1; l <= templeData.templeLevel; l++){
-                                templeData.allMyLevelsInfo = templeData.allMyLevelsInfo + temple.getLevelInfo( l ) + "\n"
-                            }
-                        }     
-                        templeEmbedBuilder(message, templeData, long)
-                    }else{
-                        message.channel.send("You do not own a Temple")
-                    }
+                    })
                 }
             })
         }
@@ -6501,9 +6528,9 @@ function templeVisualBuilder(templeData){
     // make it look like ..
     // recipes active | dust collected
     var templeVisual = ""
-    var recipe1 = crafting.getRecipeRequirements(templeData.templecraft1name)
-    var recipe2 = crafting.getRecipeRequirements(templeData.templecraft2name)
-    var recipe3 = crafting.getRecipeRequirements(templeData.templecraft3name)
+    var recipe1 = crafting.getRecipeRequirements(templeData.templecraft1name, templeData.inventoryItems)
+    var recipe2 = crafting.getRecipeRequirements(templeData.templecraft2name, templeData.inventoryItems)
+    var recipe3 = crafting.getRecipeRequirements(templeData.templecraft3name, templeData.inventoryItems)
     if (recipe1){
         var itemReq = ""
         for (var i in recipe1.itemRequirements){
@@ -6999,11 +7026,41 @@ module.exports.craftCommand = function(message, args){
 
                     if (availableRecipes.indexOf(myItemShortName) > -1){
                         // have the recipe from command
-                        var recipeData = craftRes.data
-                        var recipeRequirements = crafting.getRecipeRequirements(myItemShortName)
-                        if (recipeRequirements){
-                            craftItem(message, discordUserId, recipeRequirements, recipeData, myItemShortName)
-                        }
+                        profileDB.getUserItemsByRarity(discordUserId, "amulet", function(err, amuletResponse){
+                            if (err){
+                                message.channel.send("You must `-agree` to create a profile first!")
+                            }else{
+                                var recipeData = craftRes.data
+                                var itemsInInventoryCountMap = {};
+                                for (var item in amuletResponse.data){
+                                    var ItemInQuestion = amuletResponse.data[item];
+                                    var validItem = useItem.itemValidate(ItemInQuestion);
+                                    var itemBeingAuctioned = false;
+                                    if (itemsInAuction[ItemInQuestion.id]){
+                                        itemBeingAuctioned = true;
+                                    }
+                                    var itemBeingTraded = false;
+                                    if (activeTradeItems[amuletResponse.data[item].id]){
+                                        itemBeingTraded = true;
+                                    }
+                                    if (!itemsInInventoryCountMap[amuletResponse.data[item].itemid] 
+                                    && validItem 
+                                    && !itemBeingAuctioned
+                                    && !itemBeingTraded){
+                                        // item hasnt been added to be counted, add it as 1
+                                        itemsInInventoryCountMap[amuletResponse.data[item].itemid] = 1;
+                                    }
+                                    else if (validItem && !itemBeingAuctioned && !itemBeingTraded){
+                                        itemsInInventoryCountMap[amuletResponse.data[item].itemid] = itemsInInventoryCountMap[amuletResponse.data[item].itemid] + 1
+                                    }
+                                }
+                                var recipeRequirements = crafting.getRecipeRequirements(myItemShortName, itemsInInventoryCountMap)
+                                if (recipeRequirements){
+                                    craftItem(message, discordUserId, recipeRequirements, recipeData, myItemShortName)
+                                }
+                            }
+                        })
+                        
                     }else{
                         message.channel.send("you cannot craft that item")
                     }

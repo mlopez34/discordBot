@@ -209,8 +209,23 @@ function setRecipesOnTemple(message, params, recipesObj){
     })
 }
 
-module.exports.getRecipeRequirements = function(itemshortname){
-    return availableRecipesByShortName[itemshortname]
+module.exports.getRecipeRequirements = function(itemshortname, inventoryItems){
+    if (availableRecipesByShortName[itemshortname].rarityLevel == "amulet"){
+        // up the requirements to tacos, itemid1, itemid2, itemid3
+        let amuletItemId = availableRecipesByShortName[itemshortname].itemId
+        let numberOfCurrentAmulets = inventoryItems[amuletItemId]
+        let amuletTempRequirements = JSON.parse(JSON.stringify(availableRecipesByShortName[itemshortname]))
+        for (var am = 1; am <= numberOfCurrentAmulets; am++){
+            console.log(am)
+            amuletTempRequirements.tacos = amuletTempRequirements.tacos +  Math.ceil(amuletTempRequirements.tacos * .3)
+            for (let i in amuletTempRequirements.itemRequirements){
+                amuletTempRequirements.itemRequirements[i].itemCount = amuletTempRequirements.itemRequirements[i].itemCount + Math.ceil(amuletTempRequirements.itemRequirements[i].itemCount * .13)
+            }
+        }
+        return amuletTempRequirements
+    }else{
+        return availableRecipesByShortName[itemshortname]
+    }
 }
 
 module.exports.craftRecipe = function(message, params, callback){
@@ -264,12 +279,13 @@ function addToUserInventory(discordUserId, items){
     })
 }
 
-function createRecipeObject(recipe, itemToCraftId){
+function createRecipeObject(recipe, itemToCraftId, rarityLevel){
 
     var individualRecipe = {
         recipeName: recipe.recipename,
         itemshortname: recipe.recipeshortname,
         itemId: itemToCraftId,
+        rarityLevel: rarityLevel,
         tacos: recipe.tacos ? recipe.tacos : 0,
         reputationlevel: recipe.reputationlevel ? recipe.reputationlevel : 1,
         itemRequirements: []
@@ -331,7 +347,7 @@ module.exports.initializeCraftingRecipes = function(recipes, itemsMapById, callb
             var itemToCraft = itemsMapById[itemToCraftId]
             var raritylevel = itemToCraft.itemraritycategory
 
-            var recipeConverted = createRecipeObject(recipe, itemToCraftId )
+            var recipeConverted = createRecipeObject(recipe, itemToCraftId, raritylevel )
             availableRecipesByShortName[recipe.recipeshortname] = recipeConverted
             if (raritylevel == "rare" || raritylevel == "rare+" ){
                 if (recipesToCraftMap.rares[recipeCraftingLevel]){
