@@ -210,7 +210,7 @@ function setRecipesOnTemple(message, params, recipesObj){
 }
 
 module.exports.getRecipeRequirements = function(itemshortname, inventoryItems){
-    if (availableRecipesByShortName[itemshortname].rarityLevel == "amulet"){
+    if (availableRecipesByShortName[itemshortname] && availableRecipesByShortName[itemshortname].rarityLevel == "amulet"){
         // up the requirements to tacos, itemid1, itemid2, itemid3
         let amuletItemId = availableRecipesByShortName[itemshortname].itemId
         let numberOfCurrentAmulets = inventoryItems[amuletItemId] || 0
