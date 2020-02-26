@@ -6392,7 +6392,7 @@ module.exports.templeCommand = function(message, long){
                 }else{
                     profileDB.getUserItemsByRarity(discordUserId, "amulet", function(err, amuletResponse){
                         if (err){
-                            message.channel.send("You must `-agree` to create a profile first!")
+                            message.channel.send("You must `-agree` to create a profile first!" + err)
                         }else{
                             if (templeRes.data.templelevel > 0 && templeRes.data.temple){
                                 var itemsInInventoryCountMap = {};
