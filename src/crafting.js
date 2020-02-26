@@ -213,7 +213,7 @@ module.exports.getRecipeRequirements = function(itemshortname, inventoryItems){
     if (availableRecipesByShortName[itemshortname].rarityLevel == "amulet"){
         // up the requirements to tacos, itemid1, itemid2, itemid3
         let amuletItemId = availableRecipesByShortName[itemshortname].itemId
-        let numberOfCurrentAmulets = inventoryItems[amuletItemId]
+        let numberOfCurrentAmulets = inventoryItems[amuletItemId] || 0
         let amuletTempRequirements = JSON.parse(JSON.stringify(availableRecipesByShortName[itemshortname]))
         for (var am = 1; am <= numberOfCurrentAmulets; am++){
             console.log(am)
