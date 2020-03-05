@@ -8724,7 +8724,7 @@ module.exports = {
                 keystoneUnlockName: "Amber Keystone",
                 avatar: "https://i.imgur.com/0Rh5C7q.jpg",
                 timed: true,
-                description: "**Amber Invasion**  \n**Regenerate** - The Amber Dragon heals themselves for 100,000 every turn\n**Amber Pool** - Immune to area wide damage. heals all enemies for 10,000 with bloom at the end of every turn\n**Roots** - Immune to area wide damage. Upon being summoned the roots will rampage on a player until killed\n**Amber Drake** - Casts Erupt - Damage over time ability, upon taking damage the player will also deal damage to the rest of the group based on 67% of their missing health.\n**Whelpling** - Will cast rupture on the player that has dealt the killing blow - Rupture will deal 3,000 damage over 1 turn.\n**Elemental Guardians** - Storm guardian will cast frighten on a player which reduces their damage dealt by 3% per stack (cannot be bandaided), Earth Guardian will cast fade on a player which will reduce their healing taken by 10% per stack, Fire guardian will cast Lava Blast on a player which deals 5,000 damage.\n Upon guardians, drakes, and whelplings death the boss will gain permanent reduced healing based on the enemy.",
+                description: "**Amber Invasion**  \n**Regenerate** - The Amber Dragon heals themselves for 100,000 every turn\n**Incinerate** - Increases damage done and damage taken by 25%\n**Amber Pool** - Immune to area wide damage. heals all enemies for 10,000 with bloom at the end of every turn\n**Roots** - Immune to area wide damage. Upon being summoned the roots will rampage on a player until killed\n**Amber Drake** - Casts Erupt - Damage over time ability, upon taking damage the player will also deal damage to the rest of the group based on 67% of their missing health.\n**Whelpling** - Will cast rupture on the player that has dealt the killing blow - Rupture will deal 3,000 damage over 1 turn.\n**Elemental Guardians** - Storm guardian will cast frighten on a player which reduces their damage dealt by 3% per stack (cannot be bandaided), Earth Guardian will cast fade on a player which will reduce their healing taken by 10% per stack, Fire guardian will cast Lava Blast on a player which deals 5,000 damage.\n Upon guardians, drakes, and whelplings death the boss will gain permanent reduced healing based on the enemy.",
                 timedPerTurn: 360000,
                 points: 18422,
                 keystonePoints: [250, 1100, 1830, 3530, 4030, 4800, 10000, 17000, 25000, 35000],
@@ -8747,19 +8747,19 @@ module.exports = {
                                 name: "frenzy",
                                 emoji: "<:overmind:479298213904646147>",
                                 onTurnEnd: {
-                                    attackDmgPlus : 6100,
-                                    magicDmgPlus : 6100,
+                                    attackDmgPlus : 1100,
+                                    magicDmgPlus : 1100,
                                     everyNTurns: 5,
-                                    startTurn: 39
+                                    startTurn: 63
                                 }
                             }
                         ],
                         keystoneStats: {
                             frenzy: {
-                                attackDmgPlus : [4100, 6000, 10000, 14000, 19000, 25000, 32000, 40000, 50000, 63000   ],
-                                magicDmgPlus : [4100, 6000, 10000, 14000, 19000, 25000, 32000, 40000, 50000, 63000  ]
+                                attackDmgPlus : [2100, 3000, 4000, 5500, 6800, 9000, 11500, 14000, 17000, 20000   ],
+                                magicDmgPlus : [2100, 3000, 4000, 5500, 68000, 9000, 11500, 14000, 17000, 20000  ]
                             },
-                            hp: [31500, 40900, 59900, 81000, 137000, 195000, 275000, 350000, 475000, 600000 ],
+                            hp: [41500, 70900, 129900, 151000, 257000, 325000, 395000, 450000, 675000, 900000 ],
                             attackDmg: [1400, 2200, 3000, 4200, 5000, 6400, 8000, 10000, 12000, 14000],
                             magicDmg: [1400, 2200, 3000, 4200, 5000, 6400, 8000, 10000, 12000, 14000],
                             abilities: []
@@ -8775,6 +8775,7 @@ module.exports = {
 
                             "summonAmberPool",
                             "summonRoots",
+                            "incinerate",
                             "regenerate"
                         ],
                         summonsToRearrangeAndDuplicate: [
@@ -8784,7 +8785,7 @@ module.exports = {
                         ],
                         effectsOnDeath: [
                         ],
-                        hp: 72600,
+                        hp: 108600,
                         attackDmg: 8500,
                         magicDmg: 8500,
                         armor: 2100,

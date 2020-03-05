@@ -355,6 +355,31 @@ module.exports = {
             }
         },
 
+        incinerate : {
+            name : "Incinerate",
+            abilityId: "incinerate",
+            belongsToMember: true,
+            processAbility: true,
+            areawide: true,
+            everyNTurns: 4,
+            afterNTurns: 44,
+            currentTurn: 0,
+            additionalDescription: " is increasing all damage taken and all damage done to the group by 25%",
+            description: "increases all damage taken and all damage done by 25% for 20 turns",
+            status: {
+                status: true,
+                ignoreUnique: true,
+                ignoreBandaid: true,
+                areawide: true,
+                name: "Incinerate",
+                abilityId: "incinerate",
+                emoji : "📛",
+                affectsGlobal: ["damageTakenPercentage", "damageDealtPercentage"],
+                turnsToExpire: 30,
+                multiplier: 1.25
+            }
+        },
+
         overload : {
             name : "Overload",
             abilityId: "overload",
@@ -5121,7 +5146,7 @@ module.exports = {
                 additionalDescription: " healing is reduced by 16%",
                 affectsGlobal: ["healingDonePercentage"],
                 turnsToExpire: 2000,
-                additive: 0.16
+                additive: 0.165
             }
         },
 
