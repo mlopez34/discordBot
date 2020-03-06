@@ -1068,15 +1068,15 @@ module.exports = {
                     "smash",
                     "neutronBlast",
                     "corrupt",
-                    "empower"
+                    "decompose"
                 ],
-                // dot at end if the enemy doesnt spawn at end of turn
+                // dot at end when the enemy doesnt spawn at end of turn ( like in this case )
                 abilityOrder: [
                     1, 3, 4, 
-                    3, [0, 1], [2, 3], [2, 3], [0, 1], [2, 3], [2, 3], [2, 3], [0, 1], [2, 3], 4,
-                    3, [0, 1], [2, 3], [2, 3], [0, 1], [2, 3], [2, 3], [2, 3], [0, 1], [2, 3], 4,
-                    3, [0, 1], [2, 3], [2, 3], [0, 1], [2, 3], [2, 3], [2, 3], [0, 1], [2, 3], 4,
-                    3, [0, 1], [2, 3], [2, 3], [0, 1], [2, 3], [2, 3], [2, 3], [0, 1], [2, 3], 4, 0
+                    3, [0, 1], [2, 3], [2, 3], [0, 1], [2, 3], [2, 3], 4, [0, 1], [2, 3], 2,
+                    3, [0, 1], [2, 3], [2, 3], 4, [2, 3], [2, 3], [2, 3], [0, 1], [2, 3], 2,
+                    3, 4, [2, 3], [2, 3], [0, 1], [2, 3], [2, 3], [2, 3], [0, 1], 4, 2,
+                    3, [0, 1], [2, 3], [2, 3], [0, 1], [2, 3], 4, [2, 3], [0, 1], [2, 3], 2, 0
                 ],
                 buffs: [
                     {
@@ -1084,8 +1084,8 @@ module.exports = {
                         emoji: "<:overmind:479298213904646147>",
                         abilityId: "frenzy",
                         onTurnEnd: {
-                            attackDmgPlus : 2500,
-                            magicDmgPlus : 2500,
+                            attackDmgPlus : 2350,
+                            magicDmgPlus : 2350,
                             everyNTurns: 6,
                             startTurn: 6
                         }
@@ -1110,8 +1110,8 @@ module.exports = {
                     "entombAll20",
                     "killAllEntomb"
                 ],
-                hp: 275000,
-                attackDmg: 9500,
+                hp: 241294,
+                attackDmg: 14000,
                 magicDmg: 9500,
                 armor: 2100,
                 spirit: 2100,
@@ -1149,7 +1149,7 @@ module.exports = {
                 hpPerPartyMember: 0,
                 adPerPartyMember: 0,
                 mdPerPartyMember: 0,
-                hp: 47800,
+                hp: 46200,
                 endOfTurnEvents: [
                     "focus",
                     "wrap",
@@ -1158,8 +1158,8 @@ module.exports = {
                 effectsOnDeath: [
                     "infiltrate"
                 ],
-                attackDmg: 5830,
-                magicDmg: 5860,
+                attackDmg: 9830,
+                magicDmg: 9860,
                 armor: 1300,
                 spirit: 1300,
                 difficulty: "summoned-boss",
@@ -1185,7 +1185,7 @@ module.exports = {
                 endOfTurnEvents: [
 
                 ],
-                hp: 15900,
+                hp: 14300,
                 attackDmg: 2530,
                 magicDmg: 2560,
                 armor: 1300,
@@ -1206,7 +1206,7 @@ module.exports = {
                 hpPerPartyMember: 0,
                 adPerPartyMember: 0,
                 mdPerPartyMember: 0,
-                hp: 7800,
+                hp: 5200,
                 endOfTurnEvents: [ ],
                 attackDmg: 1430,
                 magicDmg: 1460,
@@ -1218,7 +1218,7 @@ module.exports = {
             turret: {
                 name: "Turret",
                 emoji: "<:turret:654068901759680512>",
-                abilities: ["canistershot", "canistershot", "enemyshoot", "enemyshoot", "plasmabeam" ],
+                abilities: ["canistershot", "enemyshoot", "enemyshoot", "plasmabeam" ],
                 buffs: [],
                 keystoneStats: {
                     hp: [100000, 200000, 300000, 500000, 700000, 900000, 1300000, 2000000, 2900000, 4000000 ],
@@ -1233,8 +1233,8 @@ module.exports = {
                 endOfTurnEvents: [
                     
                 ],
-                attackDmg: 1830,
-                magicDmg: 1860,
+                attackDmg: 1330,
+                magicDmg: 1360,
                 armor: 1300,
                 spirit: 1300,
                 difficulty: "summoned",
@@ -8747,8 +8747,8 @@ module.exports = {
                                 name: "frenzy",
                                 emoji: "<:overmind:479298213904646147>",
                                 onTurnEnd: {
-                                    attackDmgPlus : 1100,
-                                    magicDmgPlus : 1100,
+                                    attackDmgPlus : 4100,
+                                    magicDmgPlus : 4100,
                                     everyNTurns: 5,
                                     startTurn: 63
                                 }
@@ -8756,8 +8756,8 @@ module.exports = {
                         ],
                         keystoneStats: {
                             frenzy: {
-                                attackDmgPlus : [2100, 3000, 4000, 5500, 6800, 9000, 11500, 14000, 17000, 20000   ],
-                                magicDmgPlus : [2100, 3000, 4000, 5500, 68000, 9000, 11500, 14000, 17000, 20000  ]
+                                attackDmgPlus : [4100, 5400, 7000, 5500, 6800, 9000, 11500, 14000, 17000, 20000   ],
+                                magicDmgPlus : [4100, 5400, 7000, 5500, 68000, 9000, 11500, 14000, 17000, 20000  ]
                             },
                             hp: [41500, 70900, 129900, 151000, 257000, 325000, 395000, 450000, 675000, 900000 ],
                             attackDmg: [1400, 2200, 3000, 4200, 5000, 6400, 8000, 10000, 12000, 14000],

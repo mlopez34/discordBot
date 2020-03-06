@@ -588,6 +588,13 @@ module.exports = {
             adPercentage: 1.35,
             type: "physical"
         },
+        decompose : {
+            name: "Decompose",
+            abilityId: "decompose",
+            dmg: 50,
+            adPercentage: 1.55,
+            type: "physical"
+        },
         ferociousBite : {
             name: "Ferocious Bite",
             abilityId: "ferociousBite",
@@ -2609,7 +2616,23 @@ module.exports = {
             buff: {
                 buff: true,
                 name: "Strength",
+                ignoreUnique: true,
                 abilityId: "strengthFever",
+                emoji: "<:strength:479298214294716416>",
+                turnsToExpire: 50,
+                affects: ["attackDmg", "magicDmg"],
+                multiplier: 1.33
+            }
+        },
+
+        strengthZap: {
+            name: "Strength",
+            abilityId: "strengthZap",
+            buff: {
+                buff: true,
+                ignoreUnique: true,
+                name: "Strength",
+                abilityId: "strengthZap",
                 emoji: "<:strength:479298214294716416>",
                 turnsToExpire: 50,
                 affects: ["attackDmg", "magicDmg"],
@@ -2622,6 +2645,7 @@ module.exports = {
             abilityId: "strengthRupture",
             buff: {
                 buff: true,
+                ignoreUnique: true,
                 name: "Strength",
                 abilityId: "strengthRupture",
                 emoji: "<:strength:479298214294716416>",
@@ -5223,10 +5247,10 @@ module.exports = {
                 abilityId: "frenzy",
                 emoji: "<:frenzy:479298214453968896>",
                 onTurnEnd: {
-                    attackDmgPlus : 400,
-                    magicDmgPlus : 400,
-                    everyNTurns: 2,
-                    startTurn: 2
+                    attackDmgPlus : 280,
+                    magicDmgPlus : 280,
+                    everyNTurns: 4,
+                    startTurn: 4
                 }
             }
         },
@@ -5234,7 +5258,7 @@ module.exports = {
             processAbility: true,
             belongsToMember: true,
             ignoreFocus: true,
-            everyNTurns: 4,
+            everyNTurns: 6,
             afterNTurns: 3,
             currentTurn: 0,
             targetToApplyOn: "random",
@@ -5249,9 +5273,10 @@ module.exports = {
                 ignoreBandaid: true,
                 untargettable: true,
                 mdPercentage: 1,
-                dmgIncreasePerTick: 1500,
-                emoji: "<:radiation:479298213774491649>",
+                dmgIncreasePerTick: 2800,
+                emoji: "⚪",
                 dmgOnDotApply: false,
+                abilityTriggerOnDeath: "strengthZap",
                 turnsToExpire: 6,
             }
         },
@@ -5276,9 +5301,9 @@ module.exports = {
             processAbility: true,
             belongsToMember: true,
             ignoreFocus: true,
-            everyNTurns: 2,
+            everyNTurns: 3,
             ignoreFocus: true,
-            afterNTurns: 2,
+            afterNTurns: 1,
             currentTurn: 0,
             status: {
                 status: true,
@@ -5321,7 +5346,6 @@ module.exports = {
             currentTurn: 0,
             summon: {
                 enemies: [
-                    "turret",
                     "turret",
                     "turret",
                     "turret"

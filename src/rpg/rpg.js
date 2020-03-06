@@ -1615,6 +1615,7 @@ module.exports.rpgReady = function(message, itemsAvailable, amuletItemsById, buf
                                                                         }
         
                                                                         enemies[enemyIdCount].maxhp = enemies[enemyIdCount].hp;
+                                                                        enemies[enemyIdCount].immuneToAoe = enemyFound.immuneToAoe;
                                                                         enemyIdCount++;
                                                                     }
                                                                 }
@@ -1711,6 +1712,7 @@ module.exports.rpgReady = function(message, itemsAvailable, amuletItemsById, buf
                                                                         }
         
                                                                         enemies[enemyIdCount].maxhp = enemies[enemyIdCount].hp;
+                                                                        enemies[enemyIdCount].immuneToAoe = enemyFound.immuneToAoe
                                                                         enemyIdCount++;
                                                                     }
                                                                     activeRPGEvents[rpgEvent].special.xp = specialXp
@@ -1835,6 +1837,7 @@ module.exports.rpgReady = function(message, itemsAvailable, amuletItemsById, buf
                                                                             }
             
                                                                             enemies[enemyIdCount].maxhp = enemies[enemyIdCount].hp;
+                                                                            enemies[enemyIdCount].immuneToAoe = enemyFound.immuneToAoe
                                                                             enemyIdCount++;
                                                                         }
                                                                     }else{
@@ -2028,6 +2031,7 @@ module.exports.rpgReady = function(message, itemsAvailable, amuletItemsById, buf
                                                                             }
             
                                                                             enemies[enemyIdCount].maxhp = enemies[enemyIdCount].hp;
+                                                                            enemies[enemyIdCount].immuneToAoe = enemyFound.immuneToAoe
                                                                             enemyIdCount++;
                                                                         }
                                                                     }
@@ -6220,6 +6224,7 @@ function processStrength(event, target, dotBeingRemoved, abilityIdOfBuff){
     var Shadow_Shield = "Shadow Shield"
     var SHATTER = "Shatter"
     var FEVER = "feverChallenge"
+    var ZAP = "growingZap"
     var RUPTURE = "rupture"
     var addedBreak = false
     var addedShatter = false
@@ -6270,7 +6275,8 @@ function processStrength(event, target, dotBeingRemoved, abilityIdOfBuff){
             strengthString = strengthString + event.enemies[caster].name + " Gains " + buffToAdd.name + "\n"
         }
         if ( target.statuses[s].dot && 
-            RUPTURE == target.statuses[s].dot.abilityId && !addedRupture){
+        ( ( RUPTURE == target.statuses[s].dot.abilityId && !addedRupture )
+        || ZAP == target.statuses[s].dot.abilityId ) ){
             // get the target of this debuff
             let caster;
             if (target.statuses[s].dot.targetToApplyOn){
@@ -6757,7 +6763,8 @@ function hasDied(event, member, killerId){
                     }
                     if (rpgAbility.abilityId == "strengthFever" 
                     || rpgAbility.abilityId == "strength"
-                    || rpgAbility.abilityId == "strengthRupture"){
+                    || rpgAbility.abilityId == "strengthRupture"
+                    || rpgAbility.abilityId == "strengthZap"){
                         var strengthString = processStrength( event, member  )
                         if (strengthString.length > 5){
                             checkedStrength = true
@@ -8254,6 +8261,10 @@ function processAbility(abilityObject, event){
                             && event.enemies[targetToAddStatus].buffs[status].name == statusToAdd.name
                             && !event.enemies[targetToAddStatus].buffs[status].ignoreUnique ){
                                 alreadyHaveStatus = true;
+                            }
+                            if ( statusToAdd.abilityId == "frenzy" 
+                            && event.enemies[targetToAddStatus].buffs[status].abilityId == "frenzy"){
+                                alreadyHaveStatus = true
                             }
                         }
                         for (var status in event.enemies[targetToAddStatus].statuses){
