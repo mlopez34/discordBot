@@ -1099,7 +1099,7 @@ module.exports.rpgReady = function(message, itemsAvailable, amuletItemsById, buf
                                                     let validItem = true;
                                                     if (activeRPGEvents[ "rpg-" +  rpgEventId ].challenge 
                                                     && activeRPGEvents[ "rpg-" +  rpgEventId ].challenge.keystone == 0
-                                                    && (currentPlayerChallenge + 1) >= activeRPGEvents[ "rpg-" +  rpgEventId ].challenge.challenge ){
+                                                    && (currentPlayerChallenge + 1) <= activeRPGEvents[ "rpg-" +  rpgEventId ].challenge.challenge ){
                                                         // console.log("in challenge without keystone")
                                                         var slotItemId = items[i].itemid
                                                         if (itemsAvailable[slotItemId].rpglevelrequirement >= 40){
