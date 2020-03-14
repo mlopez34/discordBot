@@ -19,7 +19,7 @@ var rpgQueuesByUsers = []
 var serverQueue;
 var TEAM_MAX_LENGTH = 5;
 var CURRENT_CHALLENGES_AVAILABLE = 15
-var CHALLENGE_TO_TEST = 13
+var CHALLENGE_TO_TEST = 14
 var KEYSTONE_UNLOCK_LEVEL = 35
 var RPG_TEMPLE_LEVEL_PET = 5
 var rpgAbilities = rpgAbilities.rpgAbilities;

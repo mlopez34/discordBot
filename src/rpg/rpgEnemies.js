@@ -8747,10 +8747,10 @@ module.exports = {
                                 name: "frenzy",
                                 emoji: "<:overmind:479298213904646147>",
                                 onTurnEnd: {
-                                    attackDmgPlus : 4100,
-                                    magicDmgPlus : 4100,
+                                    attackDmgPlus : 3100,
+                                    magicDmgPlus : 3100,
                                     everyNTurns: 5,
-                                    startTurn: 63
+                                    startTurn: 60
                                 }
                             }
                         ],
