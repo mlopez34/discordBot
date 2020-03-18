@@ -1172,7 +1172,7 @@ module.exports = {
             name: "Neutron Blast",
             abilityId: "neutronBlast",
             dmg: 305,
-            mdPercentage: 0.4,
+            mdPercentage: 0.65,
             type: "electric",
             areawide: true,
             targets: "enemy"
