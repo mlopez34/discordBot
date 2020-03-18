@@ -1172,7 +1172,7 @@ module.exports = {
             name: "Neutron Blast",
             abilityId: "neutronBlast",
             dmg: 305,
-            mdPercentage: 0.65,
+            mdPercentage: 0.55,
             type: "electric",
             areawide: true,
             targets: "enemy"
@@ -5269,7 +5269,7 @@ module.exports = {
                 name: "Growing Zap",
                 abilityId: "growingZap",
                 type:"electric",
-                dmg: 2400,
+                dmg: 2300,
                 ignoreBandaid: true,
                 untargettable: true,
                 mdPercentage: 1,
