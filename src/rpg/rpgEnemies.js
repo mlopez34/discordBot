@@ -1110,7 +1110,7 @@ module.exports = {
                     "entombAll20",
                     "killAllEntomb"
                 ],
-                hp: 241294,
+                hp: 247294,
                 attackDmg: 14000,
                 magicDmg: 9500,
                 armor: 2100,
@@ -1149,7 +1149,7 @@ module.exports = {
                 hpPerPartyMember: 0,
                 adPerPartyMember: 0,
                 mdPerPartyMember: 0,
-                hp: 46200,
+                hp: 49200,
                 endOfTurnEvents: [
                     "focus",
                     "wrap",
@@ -1158,8 +1158,8 @@ module.exports = {
                 effectsOnDeath: [
                     "infiltrate"
                 ],
-                attackDmg: 9830,
-                magicDmg: 9860,
+                attackDmg: 11830,
+                magicDmg: 11860,
                 armor: 1300,
                 spirit: 1300,
                 difficulty: "summoned-boss",
