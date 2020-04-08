@@ -5269,7 +5269,7 @@ module.exports = {
                 name: "Growing Zap",
                 abilityId: "growingZap",
                 type:"electric",
-                dmg: 2300,
+                dmg: 2000,
                 ignoreBandaid: true,
                 untargettable: true,
                 mdPercentage: 1,

@@ -17,7 +17,7 @@ var wearStats = require("./wearStats.js")
 var quest = require("./quest.js")
 var reputation = require("./reputation.js")
 var settings = require("./settings.js")
-const heapdump = require('heapdump');
+//const heapdump = require('heapdump');
 // game files
 /*
 var game = require("./card_game/miniGame.js");
@@ -811,9 +811,9 @@ function calculateResetScavengeCD(message, discordUserId, userProfile){
 }
 
 module.exports.writeheapCommand = function(){
-    heapdump.writeSnapshot((err, filename) => {
-        console.log('Heap dump written to', filename)
-    });
+    // heapdump.writeSnapshot((err, filename) => {
+    //     console.log('Heap dump written to', filename)
+    // });
 }
 
 module.exports.sorryCommand = function(message){

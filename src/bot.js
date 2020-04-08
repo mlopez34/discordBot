@@ -37,7 +37,7 @@ if (!TEST){
 
 client.on('ready', function(err) {
     if (err){
-        // console.log(err);
+        console.log(err);
     } 
     console.log("in guilds: " + client.guilds.size)
     console.log('The bot is online'); 
