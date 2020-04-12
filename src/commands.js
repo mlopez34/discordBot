@@ -9054,7 +9054,7 @@ function setTimeOutForIndividualItem(individualItem, milisecondsUntilEnd){
         sendMarketLog(individualItem.id + " Handling item ended via timeout " + marketItems[individualItem.id].name)
         handleMarketItemAuctionEnded(individualItem)
         
-    }, 20000) //  milisecondsUntilEnd) // replace this with milisecondsUntilEnd
+    }, milisecondsUntilEnd) // replace this with milisecondsUntilEnd
 
     marketItems[individualItem.id].auctionTimeout = itemAuctionTimeout
 }
