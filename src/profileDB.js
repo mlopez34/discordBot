@@ -139,8 +139,8 @@ module.exports.createGuildProfile = function(data, cb) {
 }
 
 module.exports.createUserActivity = function(data) {
-    var query = 'insert into '+ config.userActivityTable + '(guildId, discordid, username, command, message, heapmemory)' +
-        'values(${guildId}, ${discordId}, ${username}, ${command}, ${message}, ${heapmemory})'
+    var query = 'insert into '+ config.userActivityTable + '(guildId, discordid, username, command, message)' +
+        'values(${guildId}, ${discordId}, ${username}, ${command}, ${message})'
     db.none(query, data)
     .then(function () {
     console.log( {

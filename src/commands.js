@@ -30,7 +30,7 @@ var miniboard = require("./minigame/board.js");
 var miniplayer = require("./minigame/player.js");
 
 var moment = require("moment");
-
+let TEST = config.test;
 var BASE_TACO_COST = 500;
 var BASE_TACO_PREPARE = 100;
 var PICKAXE_COST = 250;
@@ -9034,17 +9034,27 @@ function handleAuctionItem(individualItem){
     }
 }
 
+function sendMarketLog(logString){
+    if (!TEST){
+        client.channels.get("698707922032656415").send(logString)
+    }else{
+        client.channels.get("698714515742654474").send(logString)
+    }
+}
+
 function setTimeOutForIndividualItem(individualItem, milisecondsUntilEnd){
     // auction has not ended, just reinitialize
     let itemAuctionTimeout = setTimeout(function(){
         // do things here
         if (individualItem && marketItems[individualItem.id]){
             // console.log(marketItems[individualItem.id].name + " " + individualItem.id + " has ended" )
+            sendMarketLog(individualItem.id + " item timeout ended on its own - " + marketItems[individualItem.id].name)
         }
         // someone has bid on the item - announce, and change item to belong to them
+        sendMarketLog(individualItem.id + " Handling item ended via timeout " + marketItems[individualItem.id].name)
         handleMarketItemAuctionEnded(individualItem)
-
-    }, milisecondsUntilEnd) // replace this with milisecondsUntilEnd
+        
+    }, 20000) //  milisecondsUntilEnd) // replace this with milisecondsUntilEnd
 
     marketItems[individualItem.id].auctionTimeout = itemAuctionTimeout
 }
@@ -9055,7 +9065,6 @@ function handleMarketItemAuctionEnded(individualItem){
         if (marketItems[individualItem.id] && marketItems[individualItem.id].currentbiduserid){
             // switch the item's owner + give them the tacos they earned, take away the tacos from the user
             if (marketItems[individualItem.id].creatorchannel){
-                // send a message to the channel the user created the auction initially to announce their auction ended
                 var winner = client.users.get(marketItems[individualItem.id].currentbiduserid)
                 var seller = client.users.get(marketItems[individualItem.id].seller)
                 var itemsArray = [ individualItem.id ];
@@ -9071,8 +9080,9 @@ function handleMarketItemAuctionEnded(individualItem){
                 tacosWon = tacosWon - initialTacoTax
                 transferItemsAndTacos(winner.id, seller.id, itemsArray, tacosPaid, tacosWon, function(transferErr, transferRes){
                     if (transferErr){
-                        // console.log(transferErr)
+                        console.log(transferErr)
                     }else{
+                        sendMarketLog(individualItem.id + " " + winner.id + " paid: " + tacosPaid + " " + seller.id + " gained: " + tacosWon)
                         try{
                             if (marketItems[individualItem.id].lastHighestbidderchannel){
                                 // send a message to the winners channel that they won the auction    
@@ -9103,9 +9113,10 @@ function handleMarketItemAuctionEnded(individualItem){
                 var itemId = individualItem.id;
                 itemDidNotSell(itemId, function(noSellErr, noSellRes){
                     if (noSellErr){
-                        // console.log(noSellErr)
+                        console.log(noSellErr)
                     }else{
                         try{
+                            sendMarketLog(individualItem.id + " item did not sell - " + seller.username + " " + marketItems[individualItem.id].name)
                             client.channels.get(marketItems[individualItem.id].creatorchannel).send(seller + " :x: - Your " + marketItems[individualItem.id].name + " did not sell in the marketplace")
                             removeItemFromMarket(individualItem)
                         }catch(ex){
@@ -9133,6 +9144,7 @@ function handleMarketItemAuctionEnded(individualItem){
             }
         }
     }else{
+        
         var data = {
             command: "marketerror",
             guildId: 1,
@@ -9140,6 +9152,7 @@ function handleMarketItemAuctionEnded(individualItem){
             username: "error",
             message: " no individualItem.id" + JSON.stringify(individualItem)
         }
+        sendMarketLog(" market item has no id (this should never happen) " + JSON.stringify(individualItem))
         profileDB.createUserActivity(data)
     }
 }
@@ -9150,12 +9163,19 @@ function removeItemFromMarket(individualItem){
     }else if (marketItemsUserCount[individualItem.discordid] < 0){
         marketItemsUserCount[individualItem.discordid] = 0
     }else{
+        sendMarketLog(individualItem.id + " attempting to lower number of auctions for user: " +  " previous: " + marketItemsUserCount[individualItem.discordid] )
         marketItemsUserCount[individualItem.discordid] = marketItemsUserCount[individualItem.discordid] - 1
+        sendMarketLog(individualItem.id + " attempting to lower number of auctions for user: " +  " now: " + marketItemsUserCount[individualItem.discordid])
     }
     if (marketItems[individualItem.id]){
         if (marketItems[individualItem.id].auctionTimeout){
+            // timeout should be active
+            sendMarketLog(individualItem.id + " timeout json " + (marketItems[individualItem.id].auctionTimeout._onTimeout ? "timeout TRUE" : "timeout FALSE"))
             clearTimeout(marketItems[individualItem.id].auctionTimeout)
+            /// MARKET ITEM SHOULD NO LONGER HAVE TIMEOUT
+            sendMarketLog(individualItem.id + " timeout json " + (marketItems[individualItem.id].auctionTimeout._onTimeout ? "timeout TRUE" : "timeout FALSE"))
         }
+        sendMarketLog(individualItem.id + " removed item: " + marketItems[individualItem.id].name)
         delete marketItems[individualItem.id]
     }
 }
@@ -9505,17 +9525,20 @@ module.exports.marketAuctionCommand = function(message, args){
     var discordUserId = message.author.id;
     // only allow the user to put up 10 auctions
     var auctionPost = marketAuctionPostCommand(args)
-    if (auctionPost.valid && (marketItemsUserCount[discordUserId] == undefined || marketItemsUserCount[discordUserId] <= 10)){
+    if (auctionPost.valid 
+    && !useItem.getItemsLock(discordUserId)
+    && (marketItemsUserCount[discordUserId] == undefined || marketItemsUserCount[discordUserId] <= 10)){
         if ( args && args.length > 1){
             var myItemShortName = auctionPost.myItemShortName;
             var itemCount = 1;
             var startBid = auctionPost.startBid
             var buyout = auctionPost.buyout
             var timeToEnd = auctionPost.timeToEnd
-
+            useItem.setItemsLock(discordUserId, true)
             profileDB.getUserItems(discordUserId, function(err, inventoryResponse){
                 if (err){
-                    // console.log(err);
+                    console.log(err);
+                    useItem.setItemsLock(discordUserId, false)
                 }else{
                     // get all the data for each item
                     var itemsInInventoryCountMap = {};
@@ -9608,7 +9631,8 @@ module.exports.marketAuctionCommand = function(message, args){
                             // POST item to database
                             profileDB.postItemToMarket(individualItem, function(postErr, postRes){
                                 if (postErr){
-                                    // console.log(postErr)
+                                    console.log(postErr)
+                                    useItem.setItemsLock(discordUserId, false)
                                 }else{
                                     if ( marketItemsUserCount[discordUserId] == undefined){
                                         marketItemsUserCount[discordUserId] = 1
@@ -9616,13 +9640,17 @@ module.exports.marketAuctionCommand = function(message, args){
                                         marketItemsUserCount[discordUserId] = marketItemsUserCount[discordUserId] + 1
                                     }
                                     message.channel.send(message.author.username + ", your auction for **" + marketItems[individualItem.id].name +  "** was successfully created!")
+                                    sendMarketLog(individualItem.id + " " + message.author.username + ", your auction for **" + marketItems[individualItem.id].name +  "** was successfully created!")
                                     handleAuctionItem(individualItem)
+                                    useItem.setItemsLock(discordUserId, false)
                                 }
                             })
                         }else{
+                            useItem.setItemsLock(discordUserId, false)
                             message.channel.send(message.author.username + " example: `-mkauction [item] bid [minimum bid] buyout [maximum bid] time [short/medium/long]`")  
                         }
                     }else{
+                        useItem.setItemsLock(discordUserId, false)
                         message.channel.send(message.author.username + " invalid item! example: `-mkauction [item] bid [minimum bid] buyout [maximum bid] time [short/medium/long]`")  
                     }
                 }
