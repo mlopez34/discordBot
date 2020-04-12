@@ -139,8 +139,8 @@ module.exports.createGuildProfile = function(data, cb) {
 }
 
 module.exports.createUserActivity = function(data) {
-    var query = 'insert into '+ config.userActivityTable + '(guildId, discordid, username, command, message, heapmemory)' +
-        'values(${guildId}, ${discordId}, ${username}, ${command}, ${message}, ${heapmemory})'
+    var query = 'insert into '+ config.userActivityTable + '(guildId, discordid, username, command, message)' +
+        'values(${guildId}, ${discordId}, ${username}, ${command}, ${message})'
     db.none(query, data)
     .then(function () {
     console.log( {
@@ -344,6 +344,21 @@ module.exports.updateUserTacosTrickOrTreat = function(userId, tacos, cb) {
     cb(null, {
         status: 'success',
         message: 'added tacos'
+        });
+    })
+    .catch(function (err) {
+        cb(err);
+    });
+}
+
+module.exports.updateMarriedToId = function(userId, marriedToId, cb) {
+    var query = 'update ' + config.profileTable + ' set marriedtoid=$1, lastmarriage=$3 where discordid=$2'
+    var lastmarriage = new Date();
+    db.none(query, [marriedToId, userId, lastmarriage])
+    .then(function () {
+    cb(null, {
+        status: 'success',
+        message: 'udpated marriage'
         });
     })
     .catch(function (err) {

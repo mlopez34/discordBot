@@ -30,7 +30,7 @@ var miniboard = require("./minigame/board.js");
 var miniplayer = require("./minigame/player.js");
 
 var moment = require("moment");
-
+let TEST = config.test;
 var BASE_TACO_COST = 500;
 var BASE_TACO_PREPARE = 100;
 var PICKAXE_COST = 250;
@@ -1578,7 +1578,7 @@ module.exports.cookCommand = function(message){
                                 if (err){
                                     exports.setCommandLock("cook", discordUserId, false)
                                 }else{
-                                    // send message that the user has 1 more taco
+                                    // TODO: check the user has marriedToId, if they do, add tacos to marriedtoid at 1% per week married - cap 5%
                                     exports.setCommandLock("cook", discordUserId, false)
                                     if (extraTacosFromItems > 0 && HAS_CASSEROLE){
                                         message.channel.send(message.author.username + " Cooked `" + cookRoll + "` tacos! you now have `" + ( adjustedTacosForUser(discordUserId, cookResponse.data.tacos) + cookRoll) + "` tacos :taco:" + "! received `" + extraTacosFromCasserole + "` extra tacos :taco: from your casserole " + " and received `" + extraTacosFromItems + "` extra tacos from items" );
@@ -7000,12 +7000,10 @@ function harvestPlotsOfLand(greenHouseData, itemsMapById){
 }
 
 module.exports.craftCommand = function(message, args){
-    // TEMPLE COMMAND
     var discordUserId = message.author.id;
     // create an item based on itemnameid
     if (args && args.length > 1 ){
         var myItemShortName =  args[1];
-
         // craft the item if you have the materials required, and are able to craft it
         profileDB.getTempleData(discordUserId, function(err, craftRes){
             if (err){
@@ -7788,8 +7786,46 @@ function missionCheckCommand(message, discordUserId, command, commandDoneToId, d
     })
 }
 
+module.exports.divorceCommand = function(message){
+    var discordUserId = message.author.id;
+    var users  = message.mentions.users;
+    var mentionedId;
+    var mentionedUser;
+    users.forEach(function(user){
+        mentionedId = user.id;
+        mentionedUser = user
+    })
+
+    // null the marriedtoid prop
+    profileDB.getUserProfileData(discordUserId, function(profileErr, profileData){
+        if (profileErr){
+            // console.log (profileErr);
+        }else{
+            let isMarriedToSomeone = profileData.data.marriedtoid
+            if (!isMarriedToSomeone){
+                message.channel.send("You are not currently married!")
+            }else{
+                profileDB.updateMarriedToId(discordUserId, null, function(err, res){
+                    if (err){
+                        console.log(err)
+                    }else{
+                        message.channel.send("You have filed for a divorce")
+                    }
+                })
+
+                profileDB.updateMarriedToId(isMarriedToSomeone, null, function(err, res){
+                    if (err){
+                        console.log(err)
+                    }else{
+                        // Tag based on id
+                    }
+                })
+            }
+        }
+    })
+}
+
 module.exports.proposeCommand = function(message, channel){
-    // travel to the specified date in args
     var discordUserId = message.author.id;
     var users  = message.mentions.users;
     var mentionedId;
@@ -7816,6 +7852,22 @@ module.exports.proposeCommand = function(message, channel){
                 if (stage >= 2 && stage <= 5){
                     // create a mission in quest for the user with proposedTo and the data depending on what stage they are on
                     quest.proposedTo(message, discordUserId, stage, mentionedUser)
+                }
+                else if (stage == 6){
+                    let isMarriedToSomeone = profileData.data.marriedtoid
+                    if (isMarriedToSomeone){
+                        message.channel.send("You are currently married, you cannot marry someone else unless you divorce!")
+                    }else{
+                        /// no need for accept or decline - the other person can divorce at anytime
+                        /// CD 1 day
+                        profileDB.updateMarriedToId(discordUserId, mentionedId, function(err, res){
+                            if (err){
+                                console.log(err)
+                            }else{
+                                message.channel.send(message.author + " has proposed to " + mentionedUser)
+                            }
+                        })
+                    }
                 }
             }
         })
@@ -8033,10 +8085,7 @@ module.exports.timeTravelCommand = function(message, args, channel){
         }
     }
     var allItemsForTimetravel = exports.getAllItems()
-    // TODO: Travel to specific time and RPG there OR ...(Do something else not sure what yet, scavenge maybe?) if the user has a timemachine equiped and is in end stage
     if (args.length > 1 && args[1] >= 1210 && args[1] <= 1215 && team.length <= 5){
-        // travel back in time to the year... 
-
         // check that author is on stage 1 of timetravel 
         profileDB.getUserProfileData(discordUserId, function(profileErr, profileData){
             if (profileErr){
@@ -8125,8 +8174,12 @@ module.exports.timeTravelCommand = function(message, args, channel){
                         year: args[1]
                     }
                     quest.questHandler(message, discordUserId, "timetravel", stage, team, questData, channel, allItemsForTimetravel)
-                }else{
-                    message.channel.send("traveled to the year " + args[1])
+                }else if (stage == 7){
+                    if (config.TIME_TRAVEL_DATES_ACCEPTED[args[1]]){
+                        // TODO: event
+                    }else{
+                        message.channel.send("traveled to the year " + args[1])
+                    }
                 }
             }
         })
@@ -8981,17 +9034,27 @@ function handleAuctionItem(individualItem){
     }
 }
 
+function sendMarketLog(logString){
+    if (!TEST){
+        client.channels.get("698707922032656415").send(logString)
+    }else{
+        client.channels.get("698714515742654474").send(logString)
+    }
+}
+
 function setTimeOutForIndividualItem(individualItem, milisecondsUntilEnd){
     // auction has not ended, just reinitialize
     let itemAuctionTimeout = setTimeout(function(){
         // do things here
         if (individualItem && marketItems[individualItem.id]){
             // console.log(marketItems[individualItem.id].name + " " + individualItem.id + " has ended" )
+            sendMarketLog(individualItem.id + " item timeout ended on its own - " + marketItems[individualItem.id].name)
         }
         // someone has bid on the item - announce, and change item to belong to them
+        sendMarketLog(individualItem.id + " Handling item ended via timeout " + marketItems[individualItem.id].name)
         handleMarketItemAuctionEnded(individualItem)
-
-    }, milisecondsUntilEnd) // replace this with milisecondsUntilEnd
+        
+    }, 20000) //  milisecondsUntilEnd) // replace this with milisecondsUntilEnd
 
     marketItems[individualItem.id].auctionTimeout = itemAuctionTimeout
 }
@@ -9002,7 +9065,6 @@ function handleMarketItemAuctionEnded(individualItem){
         if (marketItems[individualItem.id] && marketItems[individualItem.id].currentbiduserid){
             // switch the item's owner + give them the tacos they earned, take away the tacos from the user
             if (marketItems[individualItem.id].creatorchannel){
-                // send a message to the channel the user created the auction initially to announce their auction ended
                 var winner = client.users.get(marketItems[individualItem.id].currentbiduserid)
                 var seller = client.users.get(marketItems[individualItem.id].seller)
                 var itemsArray = [ individualItem.id ];
@@ -9018,8 +9080,9 @@ function handleMarketItemAuctionEnded(individualItem){
                 tacosWon = tacosWon - initialTacoTax
                 transferItemsAndTacos(winner.id, seller.id, itemsArray, tacosPaid, tacosWon, function(transferErr, transferRes){
                     if (transferErr){
-                        // console.log(transferErr)
+                        console.log(transferErr)
                     }else{
+                        sendMarketLog(individualItem.id + " " + winner.id + " paid: " + tacosPaid + " " + seller.id + " gained: " + tacosWon)
                         try{
                             if (marketItems[individualItem.id].lastHighestbidderchannel){
                                 // send a message to the winners channel that they won the auction    
@@ -9050,9 +9113,10 @@ function handleMarketItemAuctionEnded(individualItem){
                 var itemId = individualItem.id;
                 itemDidNotSell(itemId, function(noSellErr, noSellRes){
                     if (noSellErr){
-                        // console.log(noSellErr)
+                        console.log(noSellErr)
                     }else{
                         try{
+                            sendMarketLog(individualItem.id + " item did not sell - " + seller.username + " " + marketItems[individualItem.id].name)
                             client.channels.get(marketItems[individualItem.id].creatorchannel).send(seller + " :x: - Your " + marketItems[individualItem.id].name + " did not sell in the marketplace")
                             removeItemFromMarket(individualItem)
                         }catch(ex){
@@ -9080,6 +9144,7 @@ function handleMarketItemAuctionEnded(individualItem){
             }
         }
     }else{
+        
         var data = {
             command: "marketerror",
             guildId: 1,
@@ -9087,6 +9152,7 @@ function handleMarketItemAuctionEnded(individualItem){
             username: "error",
             message: " no individualItem.id" + JSON.stringify(individualItem)
         }
+        sendMarketLog(" market item has no id (this should never happen) " + JSON.stringify(individualItem))
         profileDB.createUserActivity(data)
     }
 }
@@ -9097,12 +9163,19 @@ function removeItemFromMarket(individualItem){
     }else if (marketItemsUserCount[individualItem.discordid] < 0){
         marketItemsUserCount[individualItem.discordid] = 0
     }else{
+        sendMarketLog(individualItem.id + " attempting to lower number of auctions for user: " +  " previous: " + marketItemsUserCount[individualItem.discordid] )
         marketItemsUserCount[individualItem.discordid] = marketItemsUserCount[individualItem.discordid] - 1
+        sendMarketLog(individualItem.id + " attempting to lower number of auctions for user: " +  " now: " + marketItemsUserCount[individualItem.discordid])
     }
     if (marketItems[individualItem.id]){
         if (marketItems[individualItem.id].auctionTimeout){
+            // timeout should be active
+            sendMarketLog(individualItem.id + " timeout json " + (marketItems[individualItem.id].auctionTimeout._onTimeout ? "timeout TRUE" : "timeout FALSE"))
             clearTimeout(marketItems[individualItem.id].auctionTimeout)
+            /// MARKET ITEM SHOULD NO LONGER HAVE TIMEOUT
+            sendMarketLog(individualItem.id + " timeout json " + (marketItems[individualItem.id].auctionTimeout._onTimeout ? "timeout TRUE" : "timeout FALSE"))
         }
+        sendMarketLog(individualItem.id + " removed item: " + marketItems[individualItem.id].name)
         delete marketItems[individualItem.id]
     }
 }
@@ -9452,17 +9525,20 @@ module.exports.marketAuctionCommand = function(message, args){
     var discordUserId = message.author.id;
     // only allow the user to put up 10 auctions
     var auctionPost = marketAuctionPostCommand(args)
-    if (auctionPost.valid && (marketItemsUserCount[discordUserId] == undefined || marketItemsUserCount[discordUserId] <= 10)){
+    if (auctionPost.valid 
+    && !useItem.getItemsLock(discordUserId)
+    && (marketItemsUserCount[discordUserId] == undefined || marketItemsUserCount[discordUserId] <= 10)){
         if ( args && args.length > 1){
             var myItemShortName = auctionPost.myItemShortName;
             var itemCount = 1;
             var startBid = auctionPost.startBid
             var buyout = auctionPost.buyout
             var timeToEnd = auctionPost.timeToEnd
-
+            useItem.setItemsLock(discordUserId, true)
             profileDB.getUserItems(discordUserId, function(err, inventoryResponse){
                 if (err){
-                    // console.log(err);
+                    console.log(err);
+                    useItem.setItemsLock(discordUserId, false)
                 }else{
                     // get all the data for each item
                     var itemsInInventoryCountMap = {};
@@ -9555,7 +9631,8 @@ module.exports.marketAuctionCommand = function(message, args){
                             // POST item to database
                             profileDB.postItemToMarket(individualItem, function(postErr, postRes){
                                 if (postErr){
-                                    // console.log(postErr)
+                                    console.log(postErr)
+                                    useItem.setItemsLock(discordUserId, false)
                                 }else{
                                     if ( marketItemsUserCount[discordUserId] == undefined){
                                         marketItemsUserCount[discordUserId] = 1
@@ -9563,13 +9640,17 @@ module.exports.marketAuctionCommand = function(message, args){
                                         marketItemsUserCount[discordUserId] = marketItemsUserCount[discordUserId] + 1
                                     }
                                     message.channel.send(message.author.username + ", your auction for **" + marketItems[individualItem.id].name +  "** was successfully created!")
+                                    sendMarketLog(individualItem.id + " " + message.author.username + ", your auction for **" + marketItems[individualItem.id].name +  "** was successfully created!")
                                     handleAuctionItem(individualItem)
+                                    useItem.setItemsLock(discordUserId, false)
                                 }
                             })
                         }else{
+                            useItem.setItemsLock(discordUserId, false)
                             message.channel.send(message.author.username + " example: `-mkauction [item] bid [minimum bid] buyout [maximum bid] time [short/medium/long]`")  
                         }
                     }else{
+                        useItem.setItemsLock(discordUserId, false)
                         message.channel.send(message.author.username + " invalid item! example: `-mkauction [item] bid [minimum bid] buyout [maximum bid] time [short/medium/long]`")  
                     }
                 }
