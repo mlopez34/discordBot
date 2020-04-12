@@ -61,9 +61,11 @@ var RAFFLE_USER_SIZE = 7
 // make recipe be available at lvl 2 reputation
 var ARTIFACT_RECIPE_COST = 35000;
 var ETHEREUM_COST = 125000;
+var ELEMENTIUM_COST = 2775000;
 var FLASK_COST = 500;
 var ARTIFACT_RECIPE_ID = 69;
 var ETHEREUM_ID = 200;
+var ELEMENTIUM_ID = 200;
 var TRANSFORMIUM_ID = 155;
 var TACO_PARTY_TIME_TO_LIVE = 300000
 var SHOP_ITEM_COST = 125
@@ -152,6 +154,9 @@ var REWARDS = {
     },
     Ethereum: {
         repLevel : 6
+    },
+    Elementium: {
+        repLevel: 7
     }
 }
 
@@ -2795,6 +2800,19 @@ function repShopBuilder(message, shopData){
             .addField('Description', recipeDescription, true)
             .addField('Cost', ETHEREUM_COST + " :taco:", true)
             .addField('Command', settings.getGuildPrefix(message.channel.guild.id) + "buyethereum", true)
+        }
+    }
+    if (shopData.repstatus && (REPUTATIONS[shopData.repstatus.toLowerCase()]) ){
+        var userRepLevel = REPUTATIONS[shopData.repstatus.toLowerCase()].level;
+        if (userRepLevel >= REWARDS["Elementium"].repLevel){
+            var recipeDescription = "Required to combine refined myth items into master myth items"
+
+            embed.addBlankField(true)
+            .addBlankField(false)
+            .addField('Elementium (Worshipped Reputation or Better Only)', ":crystal_ball:", true)
+            .addField('Description', recipeDescription, true)
+            .addField('Cost', ELEMENTIUM_COST + " :taco:", true)
+            .addField('Command', settings.getGuildPrefix(message.channel.guild.id) + "buyelementium", true)
         }
     }
     embed.addBlankField(false)

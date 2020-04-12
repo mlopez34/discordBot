@@ -411,6 +411,7 @@ module.exports = {
                 buffs: [
                     {
                         name: "frenzy",
+                        unableToGainBuff: "entombAll20",
                         emoji: "<:overmind:479298213904646147>",
                         onTurnEnd: {
                             attackDmgPlus : 200,

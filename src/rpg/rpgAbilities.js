@@ -31,7 +31,7 @@ module.exports = {
                 affects: ["criticalChance"],
                 multiplier: 0.00000000001,
                 turnsToExpire: 3,
-                emoji: ""
+                emoji: "x"
             }
         },
         adapt: {
@@ -58,7 +58,7 @@ module.exports = {
                 affects: ["criticalChance"],
                 multiplier: 0.0000000001,
                 turnsToExpire: 3,
-                emoji: ""
+                emoji: "x"
             }
         },
         surge: {
@@ -160,18 +160,29 @@ module.exports = {
         invigorate: {
             name: "Invigorate",
             abilityId: "invigorate",
-            limitDefensive: true,
             areawide: true,
-            description: "Limit ability - Increase the group's armor by 100% and spirit by 100% for 3 turns",
+            cooldown: 0,
+            maxcooldown: 4,
+            description: "Increase the group's armor by 100% and spirit by 100% for 2 turns - 5 turn cooldown, applies Tired",
             buff: {
                 buff: true,
                 areawide: true,
                 name: "Invigorate",
                 abilityId: "invigorate",
                 emoji : ":stars:",
-                turnsToExpire: 3,
+                turnsToExpire: 2,
                 affects: ["armor", "spirit"],
                 multiplier: 2
+            },
+            status: {
+                name: "Tired",
+                status: true,
+                areawide: true,
+                ignoreBandaid: true,
+                selfDebuff: true,
+                emoji: "😫",
+                buffToStop: "invigorate",
+                turnsToExpire: 10,
             }
         },
         restore: {
@@ -632,15 +643,15 @@ module.exports = {
             areawide: true,
             cooldown: 0,
             maxcooldown: 5,
-            description: "Heal the group over time for 100 + 80% of your magical damage over 5 turns 5 turn cooldown",
+            description: "Heal the group over time for 100 + 55% of your magical damage over 4 turns 5 turn cooldown",
             hot: {
                 name: "Sanctuary",
                 heal: 100,
                 emoji: ":ocean:",
                 areawide: true,
-                mdPercentage: .80,
+                mdPercentage: .55,
                 healingOnHotApply: false,
-                turnsToExpire: 5,
+                turnsToExpire: 4,
                 healingOnDotExpire: false,
                 healingOnExpire: 0
 

@@ -218,9 +218,6 @@ module.exports.getRecipeRequirements = function(itemshortname, inventoryItems){
         for (var am = 1; am <= numberOfCurrentAmulets; am++){
             console.log(am)
             amuletTempRequirements.tacos = amuletTempRequirements.tacos +  Math.ceil(amuletTempRequirements.tacos * .3)
-            for (let i in amuletTempRequirements.itemRequirements){
-                amuletTempRequirements.itemRequirements[i].itemCount = amuletTempRequirements.itemRequirements[i].itemCount + Math.ceil(amuletTempRequirements.itemRequirements[i].itemCount * .13)
-            }
         }
         return amuletTempRequirements
     }else{

@@ -981,6 +981,7 @@ module.exports.rpgReady = function(message, itemsAvailable, amuletItemsById, buf
                                                     luckPlus: 0,
                                                     critPlus: 0,
                                                     statuses: [],
+                                                    abilityBuffs: [],
                                                     buffs: []
                                                 }
                                                 
@@ -1172,7 +1173,38 @@ module.exports.rpgReady = function(message, itemsAvailable, amuletItemsById, buf
                                                     statisticsFromItemsAndLevel.armorPlus = statisticsFromItemsAndLevel.armorPlus + armorPlus;
                                                     statisticsFromItemsAndLevel.spiritPlus = statisticsFromItemsAndLevel.spiritPlus + spiritPlus;
                                                     statisticsFromItemsAndLevel.luckPlus = statisticsFromItemsAndLevel.luckPlus + luckPlus;
+                                                    /*
+                                                    GA - 
+                                                    ability - stat - stat value - stat value by - special - stat value - stat value by
+                                                    Assist - adPercentage - .2 - additive - special - adPercentage - .2
+                                                    
 
+
+
+                                                    */
+                                                   if (itemsAvailable[userAmuletData[i].id].abilityToBuff){
+                                                        let abilityBuff = {
+                                                            // TESTING:
+                                                            // ability: "curse",
+                                                            // stat: undefined, // adpercentage, mdpercentage, maxcooldown, maxcharges
+                                                            // statValue: undefined, // .2, -.2
+                                                            // statValueBy: undefined, // additive - multiplicative
+                                                            // subAbility: "dot", // special, dot, hot, buff, status
+                                                            // subAbilityStat: "mdPercentage", // adpercentage, mdpercentage, maxcooldown, maxcharges
+                                                            // subAbilityValue: .314, // .2, -.2
+                                                            // subAbilityValueBy: "additive", // additive - multiplicative
+
+                                                            ability: itemsAvailable[userAmuletData[i].id].abilitybuff, // curse, guac, assist
+                                                            stat: itemsAvailable[userAmuletData[i].id].abilitybuffstat, // adpercentage, mdpercentage, maxcooldown, maxcharges
+                                                            statValue: itemsAvailable[userAmuletData[i].id].abilitbuffstatvalue, // .2, -.2
+                                                            statValueBy: itemsAvailable[userAmuletData[i].id].abilitybuffstatvalueby, // additive - multiplicative
+                                                            subAbility: itemsAvailable[userAmuletData[i].id].abilitybuffsub, // special, dot, hot, buff, status
+                                                            subAbilityStat: itemsAvailable[userAmuletData[i].id].abilitybuffsubstat, // adpercentage, mdpercentage, maxcooldown, maxcharges
+                                                            subAbilityValue: itemsAvailable[userAmuletData[i].id].abilitybuffsubvalue, // .2, -.2
+                                                            subAbilityValueBy: itemsAvailable[userAmuletData[i].id].abilitybuffsubvalueby, // additive - multiplicative
+                                                        }
+                                                        statisticsFromItemsAndLevel.abilityBuffs.push(abilityBuff)
+                                                   }
                                                 }
 
                                                 // added stats from level
@@ -1383,7 +1415,7 @@ module.exports.rpgReady = function(message, itemsAvailable, amuletItemsById, buf
                                                                     membersInParty["rpg-" + partyMember.id].armor = membersInParty["rpg-" + partyMember.id].armor + Math.floor( membersInParty["rpg-" + partyMember.id].armor * partyMemberStats.plusStats.armorPlusPercentage || 0)
                                                                     membersInParty["rpg-" + partyMember.id].criticalChance = membersInParty["rpg-" + partyMember.id].criticalChance + Math.floor( membersInParty["rpg-" + partyMember.id].criticalChance * partyMemberStats.plusStats.critPlusPercentage || 0)
                                                                     membersInParty["rpg-" + partyMember.id].luck = membersInParty["rpg-" + partyMember.id].luck + Math.floor( membersInParty["rpg-" + partyMember.id].luck * partyMemberStats.plusStats.luckPlusPercentage || 0)
-
+                                                                    membersInParty["rpg-" + partyMember.id].abilityBuffs =  partyMemberStats.plusStats.abilityBuffs
                                                                     membersInParty["rpg-" + partyMember.id].criticalChance = calculateCritChance( membersInParty["rpg-" + partyMember.id].criticalChance )
                                                                     membersInParty["rpg-" + partyMember.id].luck = calculateLuckPlus( membersInParty["rpg-" + partyMember.id].luck )
                                                                     membersInParty["rpg-" + partyMember.id].maxhp = membersInParty["rpg-" + partyMember.id].hp;
@@ -7907,6 +7939,33 @@ function checkCasterCritLastTurn(event, abilityCaster, currentTurn){
     }
 }
 
+function processAbilityBuff(abilityBuff, rpgAbility){
+    // **********avoid max cooldown abilities
+    if (abilityBuff.stat){
+        if (abilityBuff.statValueBy == "additive"){
+            rpgAbility[abilityBuff.stat] = rpgAbility[abilityBuff.stat] + abilityBuff.statValue
+
+        }else if (abilityBuff.statValueBy == "multiplicative"){
+            rpgAbility[abilityBuff.stat] = rpgAbility[abilityBuff.stat] * abilityBuff.statValue
+        }
+    }
+
+    if (abilityBuff.subAbility){
+        if (abilityBuff.subAbilityValueBy == "additive"){
+            if ( rpgAbility[abilityBuff.subAbility] ){
+                rpgAbility[abilityBuff.subAbility][abilityBuff.subAbilityStat] = rpgAbility[abilityBuff.subAbility][abilityBuff.subAbilityStat] + abilityBuff.subAbilityValue
+            }
+        }else if (abilityBuff.subAbilityValueBy == "multiplicative"){
+            if ( rpgAbility[abilityBuff.subAbility] ){
+                rpgAbility[abilityBuff.subAbility][abilityBuff.subAbilityStat] = rpgAbility[abilityBuff.subAbility][abilityBuff.subAbilityStat] * abilityBuff.subAbilityValue
+            }
+        }
+    }
+
+
+    return rpgAbility
+}
+
 function processAbility(abilityObject, event){
     // process the ability individually
     // get the type of ability first
@@ -7917,10 +7976,25 @@ function processAbility(abilityObject, event){
     // will return this
     var abilityToString = "";
     var rpgAbility = rpgAbilities[ability] ? JSON.parse(JSON.stringify(rpgAbilities[ability])) : undefined;
-    
+
     var currentTurn = event.turn;
     // check that the user of the ability is still alive
     var abilityCaster = abilityObject.user;
+
+    // add the ability buff after parse / stringify | it won't persist otherwise
+    if (abilityCaster > 1000){
+        // caster is player
+        let memberInQuestion = event.membersInParty["rpg-"+abilityCaster]
+        if (memberInQuestion.abilitiesMap[rpgAbility.abilityId]){
+            // caster has ability
+            memberInQuestion.abilityBuffs.forEach(function(ab){
+                if (rpgAbility.abilityId == ab.ability){
+                    processAbilityBuff( ab, rpgAbility)
+                }
+            })
+        }
+    }
+
     if (rpgAbility.castAbilityAfterCriticalStrike
     && checkCasterCritLastTurn(event, abilityCaster, currentTurn)){
         rpgAbility = rpgAbilities[rpgAbility.castAbilityAfterCriticalStrike]
@@ -7933,13 +8007,13 @@ function processAbility(abilityObject, event){
     if (rpgAbility.maxcooldown){
         if (abilityCaster > 1000){
             // caster is a member
-            var memberInQuestion = event.membersInParty["rpg-"+abilityCaster]
+            let memberInQuestion = event.membersInParty["rpg-"+abilityCaster]
             if (memberInQuestion.abilitiesMap[rpgAbility.abilityId]){
                 memberInQuestion.abilitiesMap[rpgAbility.abilityId].cooldown = memberInQuestion.abilitiesMap[rpgAbility.abilityId].maxcooldown;                
             }
         }else{
             // caster is an enemy
-            var enemyInQuestion = event.enemies[abilityCaster]
+            let enemyInQuestion = event.enemies[abilityCaster]
             if (enemyInQuestion.abilitiesMap[rpgAbility.abilityId].cooldown){
                 enemyInQuestion.abilitiesMap[rpgAbility.abilityId].cooldown = enemyInQuestion.abilitiesMap[rpgAbility.abilityId].maxcooldown;                
             }
@@ -8262,6 +8336,9 @@ function processAbility(abilityObject, event){
                             && !event.enemies[targetToAddStatus].buffs[status].ignoreUnique ){
                                 alreadyHaveStatus = true;
                             }
+                            if (event.enemies[targetToAddStatus].buffs[status].unableToGainBuff == statusToAdd.abilityId){
+                                alreadyHaveStatus = true
+                            }
                             if ( statusToAdd.abilityId == "frenzy" 
                             && event.enemies[targetToAddStatus].buffs[status].abilityId == "frenzy"){
                                 alreadyHaveStatus = true
@@ -8391,7 +8468,7 @@ function processAbility(abilityObject, event){
             if (abilityCaster > 1000){
                 // if caster is party of membersInParty then target = all the enemies
                 if (statusToAdd.selfDebuff){
-                    var caster = event.membersInParty["rpg-"+abilityCaster] ? event.membersInParty["rpg-"+abilityCaster].name : undefined;
+                    let caster = event.membersInParty["rpg-"+abilityCaster] ? event.membersInParty["rpg-"+abilityCaster].name : undefined;
                     for (var targetToAddStatus in event.membersInParty){
                         if (!checkIfDeadByObject(event.membersInParty[targetToAddStatus])){
                             var alreadyHaveStatus = false;
@@ -8493,6 +8570,11 @@ function processAbility(abilityObject, event){
                 }
             }
         }else{
+            if (statusToAdd.selfDebuff){
+                /// single target self cast debuff
+                var caster = abilityCaster > 1000 ? ("rpg-"+abilityCaster) : abilityCaster;
+                targetToAddStatus = caster
+            }
             if (event.membersInParty[targetToAddStatus]){
                 var targetToAddStatusName = event.membersInParty[targetToAddStatus].name;
                 if (!checkIfDeadByObject(event.membersInParty[targetToAddStatus])){
@@ -8552,6 +8634,7 @@ function processAbility(abilityObject, event){
                     }
                 }
             }
+            
         }
     }
 
@@ -8671,6 +8754,7 @@ function processAbility(abilityObject, event){
                         for (var buff in event.membersInParty[targetToAddHot].buffs){
                             if (event.membersInParty[targetToAddHot].buffs[buff].hot
                             && event.membersInParty[targetToAddHot].buffs[buff].hot.caster == abilityObject.user
+                            && event.membersInParty[targetToAddHot].buffs[buff].hot.name == hotToAdd.hot.name
                             && !event.membersInParty[targetToAddHot].buffs[buff].hot.ignoreUnique ){
                                 alreadyHaveStatus = true;
                             }

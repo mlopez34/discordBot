@@ -280,6 +280,9 @@ function reputationEmbedBuilder(message, repstatus, rewards){
     else if(repstatus.toLowerCase() == "sanctified"){
         repEmoji = ":statue_of_liberty:"
     }
+    else if(repstatus.toLowerCase() == "worshipped"){
+        repEmoji = ":statue_of_liberty:"
+    }
     
     const embed = new Discord.RichEmbed()
     .setColor(0xED962D)
