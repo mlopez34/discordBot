@@ -603,6 +603,9 @@ client.on('message', function(message){
                 else if (commandIs("propose", message) && settings.canBotRespondToCommandInChannel("regular", guildId, channelId)){
                     commands.proposeCommand(message);
                 }
+                else if (commandIs("divorce", message) && settings.canBotRespondToCommandInChannel("regular", guildId, channelId)){
+                    commands.divorceCommand(message);
+                }
                 else if (commandIs("wedding", message) && settings.canBotRespondToCommandInChannel("regular", guildId, channelId)){
                     commands.weddingCommand(message);
                 }
@@ -1314,6 +1317,11 @@ client.on('message', function(message){
                 else if (commandIs("propose", message) && settings.canBotRespondToCommandInChannel("regular", guildId, channelId)){
                     commands.proposeCommand(message);
                     data.command = "propose"
+                    profileDB.createUserActivity(data)
+                }
+                else if (commandIs("divorce", message) && settings.canBotRespondToCommandInChannel("regular", guildId, channelId)){
+                    commands.divorceCommand(message);
+                    data.command = "divorce"
                     profileDB.createUserActivity(data)
                 }
                 else if (commandIs("wedding", message) && settings.canBotRespondToCommandInChannel("regular", guildId, channelId)){

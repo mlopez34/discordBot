@@ -351,6 +351,21 @@ module.exports.updateUserTacosTrickOrTreat = function(userId, tacos, cb) {
     });
 }
 
+module.exports.updateMarriedToId = function(userId, marriedToId, cb) {
+    var query = 'update ' + config.profileTable + ' set marriedtoid=$1, lastmarriage=$3 where discordid=$2'
+    var lastmarriage = new Date();
+    db.none(query, [marriedToId, userId, lastmarriage])
+    .then(function () {
+    cb(null, {
+        status: 'success',
+        message: 'udpated marriage'
+        });
+    })
+    .catch(function (err) {
+        cb(err);
+    });
+}
+
 module.exports.obtainCasserole = function(userId, cb) {
     var query = 'update ' + config.profileTable + ' set casserole=true where discordid=$1'
     db.none(query, [userId])

@@ -1578,7 +1578,7 @@ module.exports.cookCommand = function(message){
                                 if (err){
                                     exports.setCommandLock("cook", discordUserId, false)
                                 }else{
-                                    // send message that the user has 1 more taco
+                                    // TODO: check the user has marriedToId, if they do, add tacos to marriedtoid at 1% per week married - cap 5%
                                     exports.setCommandLock("cook", discordUserId, false)
                                     if (extraTacosFromItems > 0 && HAS_CASSEROLE){
                                         message.channel.send(message.author.username + " Cooked `" + cookRoll + "` tacos! you now have `" + ( adjustedTacosForUser(discordUserId, cookResponse.data.tacos) + cookRoll) + "` tacos :taco:" + "! received `" + extraTacosFromCasserole + "` extra tacos :taco: from your casserole " + " and received `" + extraTacosFromItems + "` extra tacos from items" );
@@ -7000,12 +7000,10 @@ function harvestPlotsOfLand(greenHouseData, itemsMapById){
 }
 
 module.exports.craftCommand = function(message, args){
-    // TEMPLE COMMAND
     var discordUserId = message.author.id;
     // create an item based on itemnameid
     if (args && args.length > 1 ){
         var myItemShortName =  args[1];
-
         // craft the item if you have the materials required, and are able to craft it
         profileDB.getTempleData(discordUserId, function(err, craftRes){
             if (err){
@@ -7788,8 +7786,46 @@ function missionCheckCommand(message, discordUserId, command, commandDoneToId, d
     })
 }
 
+module.exports.divorceCommand = function(message){
+    var discordUserId = message.author.id;
+    var users  = message.mentions.users;
+    var mentionedId;
+    var mentionedUser;
+    users.forEach(function(user){
+        mentionedId = user.id;
+        mentionedUser = user
+    })
+
+    // null the marriedtoid prop
+    profileDB.getUserProfileData(discordUserId, function(profileErr, profileData){
+        if (profileErr){
+            // console.log (profileErr);
+        }else{
+            let isMarriedToSomeone = profileData.data.marriedtoid
+            if (!isMarriedToSomeone){
+                message.channel.send("You are not currently married!")
+            }else{
+                profileDB.updateMarriedToId(discordUserId, null, function(err, res){
+                    if (err){
+                        console.log(err)
+                    }else{
+                        message.channel.send("You have filed for a divorce")
+                    }
+                })
+
+                profileDB.updateMarriedToId(isMarriedToSomeone, null, function(err, res){
+                    if (err){
+                        console.log(err)
+                    }else{
+                        // Tag based on id
+                    }
+                })
+            }
+        }
+    })
+}
+
 module.exports.proposeCommand = function(message, channel){
-    // travel to the specified date in args
     var discordUserId = message.author.id;
     var users  = message.mentions.users;
     var mentionedId;
@@ -7816,6 +7852,22 @@ module.exports.proposeCommand = function(message, channel){
                 if (stage >= 2 && stage <= 5){
                     // create a mission in quest for the user with proposedTo and the data depending on what stage they are on
                     quest.proposedTo(message, discordUserId, stage, mentionedUser)
+                }
+                else if (stage == 6){
+                    let isMarriedToSomeone = profileData.data.marriedtoid
+                    if (isMarriedToSomeone){
+                        message.channel.send("You are currently married, you cannot marry someone else unless you divorce!")
+                    }else{
+                        /// no need for accept or decline - the other person can divorce at anytime
+                        /// CD 1 day
+                        profileDB.updateMarriedToId(discordUserId, mentionedId, function(err, res){
+                            if (err){
+                                console.log(err)
+                            }else{
+                                message.channel.send(message.author + " has proposed to " + mentionedUser)
+                            }
+                        })
+                    }
                 }
             }
         })
@@ -8033,10 +8085,7 @@ module.exports.timeTravelCommand = function(message, args, channel){
         }
     }
     var allItemsForTimetravel = exports.getAllItems()
-    // TODO: Travel to specific time and RPG there OR ...(Do something else not sure what yet, scavenge maybe?) if the user has a timemachine equiped and is in end stage
     if (args.length > 1 && args[1] >= 1210 && args[1] <= 1215 && team.length <= 5){
-        // travel back in time to the year... 
-
         // check that author is on stage 1 of timetravel 
         profileDB.getUserProfileData(discordUserId, function(profileErr, profileData){
             if (profileErr){
@@ -8125,8 +8174,12 @@ module.exports.timeTravelCommand = function(message, args, channel){
                         year: args[1]
                     }
                     quest.questHandler(message, discordUserId, "timetravel", stage, team, questData, channel, allItemsForTimetravel)
-                }else{
-                    message.channel.send("traveled to the year " + args[1])
+                }else if (stage == 7){
+                    if (config.TIME_TRAVEL_DATES_ACCEPTED[args[1]]){
+                        // TODO: event
+                    }else{
+                        message.channel.send("traveled to the year " + args[1])
+                    }
                 }
             }
         })
