@@ -9039,7 +9039,7 @@ function handleAuctionItem(individualItem){
 
 function sendMarketLog(logString){
     if (!TEST){
-        client.channels.get("698707922032656415").send(logString)
+        // client.channels.get("698707922032656415").send(logString)
     }else{
         client.channels.get("698714515742654474").send(logString)
     }
