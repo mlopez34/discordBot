@@ -42,15 +42,17 @@ client.on('ready', function(err) {
     console.log("in guilds: " + client.guilds.size)
     console.log('The bot is online'); 
     // initialize market
-    commands.initializeItemsMaps(client, function(err, res){
-        commands.initializeMarketPlace()
-        commands.initializeReminders()
-        commands.initializeRPGQueue()
-        settings.initializeServerSettings(function(err, res){
-            botEnabled = true
+    if (!botEnabled){
+        commands.initializeItemsMaps(client, function(err, res){
+            commands.initializeMarketPlace()
+            commands.initializeReminders()
+            commands.initializeRPGQueue()
+            settings.initializeServerSettings(function(err, res){
+                botEnabled = true
+            })
+            console.log(res)
         })
-        console.log(res)
-    })
+    }
     //steal(channelName);
 });
 
