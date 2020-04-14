@@ -8696,29 +8696,6 @@ module.exports = {
                     }
                 ]
             },
-            // 1 main boss with low HP (50k hp) but extremely high healing, heals for 500 * ( number of stacks * 10 ) every turn
-            // doesnt hit too hard, ~2-2.5k per hit on tank
-            // aoe every 5 turns for 2k
-            // 6 sets of groups, 3 different kind of groups
-            // each set lasts 6 turns
-            // first 2 turns are free so 38 turns total
-            // each set killed adds a debuff on the boss that reducing healing 
-            // first set :
-            // 3 enemies, 1 of them does HUGE aoe every 3 turns (5k aoe) 13k HP
-            // second enemy does fury, lower hp more it hits 17K HP
-            // third enemy does chain lightning on random players, like nourish 10k HP
-            // second set:
-            // 1 big enemy (HUGE HP) 60k HP
-            // end of turn will put a -75% damage dealt, and healing done debuff
-            // small non hitting enemies will appear, must kill one to gain buff to stop debuff
-            // buff lasts 4 turns
-            // enemy puts a dot on players every 2 turns that deals damage to the group equal to their missing health (last 3 turns)
-            // third set:
-            // group of exploding lashers, deal low amount of damage, but will detonate for 800
-            // 2 full sets of each randimized, but in same order
-            // boss summons a tree that heals all enemies at end of turn for 10k HP = 9000
-            // boss summons 3 roots that will deal small amounts of damage to players HP = 1500, immune to aoe
-            // 
             
             13: {
                 challengeId: "dragon",
@@ -8799,16 +8776,6 @@ module.exports = {
                     }
                 ]
             },
-            // 4 turrets dealing minor damage throughout encounter (die when deus ex appears)
-            // 3 conduits immune to damage unless you have a buff
-            // 3 types of spawns
-            // how to summon sentinels? kill a 1 hp pod that has summon upon death
-            // 3 sentinels - when killed give the buff to be able to attack a conduit (kill in 6 turns)
-            // continuous sets of 2 heatseekers every 3 turns they will explode (kill in 3 turns)
-            // continuous sets of little adds (2 per) hit with melee damage (kill in 2 turns)
-            // when all 3 conduits have been killed deus ex summons + 2 enforcers (enforcers easy to kill - 2 turns each max)
-            // after 6 turns 4 pulse turrets appear - frenzy every 3 turns for + 1000 - focus
-            // 1-8-15-21-25-45
             14: {
                 challengeId: "machina",
                 keystoneUnlockName: "Mechanical Keystone",
@@ -9095,6 +9062,7 @@ module.exports = {
                     },
                 ],
             },
+            // alignment at 16 AND 15-5 AND x-10
             15: {  
                 challengeId: "catoblepas",
                 keystoneUnlockName: "Mythological Keystone",

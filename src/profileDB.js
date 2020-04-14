@@ -704,7 +704,7 @@ module.exports.createLetter = function(userId, letter, username, cb){
     });
 }
 
-// update protect
+// update protect **DEPRECATED**
 module.exports.updateUserProtect = function(userId, protectNumber, protection , cb) {
     var query = '';
     if (protection == null ){;
@@ -726,6 +726,28 @@ module.exports.updateUserProtect = function(userId, protectNumber, protection , 
         cb(err);
     });
 }
+// update user wood tossed
+module.exports.updateUserWoodTossed = function(userId, woodtossed, protection , cb) {
+    var query = '';
+    if (protection == null ){;
+        query = 'update ' + config.profileTable + ' set woodtossed=$1 where discordid=$2'
+    }
+    else{
+        query = 'update ' + config.profileTable + ' set woodtossed=woodtossed+$1 where discordid=$2'
+    }
+    db.none(query, [woodtossed, userId])
+    .then(function () {
+    cb(null, {
+        status: 'success',
+        message: 'updated wood'
+        });
+    })
+    .catch(function (err) {
+        // console.log(err);
+        cb(err);
+    });
+}
+
 // update pet
 module.exports.updateUserPet = function(userId, pet, petName, threedaysAgo, cb) {
     var query = 'update ' + config.profileTable + ' set pet=$1, petname=$3, lastfetchtime=$4 where discordid=$2'

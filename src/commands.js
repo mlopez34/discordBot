@@ -1006,12 +1006,20 @@ module.exports.prepareCommand = function (message){
                                 var soiledCrops = prepareResponse.data.soiledcrops;
                                 var soiledToTaco = 0;
                                 for (var i = 0; i < soiledCrops; i++) {
-                                    var soilRoll = Math.floor(Math.random() * 100) + 1;
-                                    if ( soilRoll > 50 ){
+                                    var soilRoll = Math.floor(Math.random() * 1000) + 1;
+                                    if ( soilRoll > 500 ){
                                         soiledToTaco = soiledToTaco + 10;
                                     }
                                 }
-            
+                                var seedChanceRoll = Math.floor(Math.random() * 1000) + 1;
+                                if ( seedChanceRoll > ( 990 - soiledCrops) ){
+                                    createCustomParty(message, discordUserId, {
+                                        source: "prepare", 
+                                        emoji : "🌱",
+                                        titleString : "Prepare party created by " + message.author.username + "!! " + 'Look for seeds!', 
+                                        descriptionString: ":EZ: \n You will receive it at the end of the party (5 minutes)"
+                                    })
+                                }
                                 ///////// CALCULATE THE EXTRA TACOS HERE 
                                 var extraTacosFromItems = wearStats.calculateExtraTacos(wearRes, "prepare"); // 0 or extra
     
@@ -1038,7 +1046,6 @@ module.exports.prepareCommand = function (message){
                                                 }
                                                 // check if prepare is toggled
                                                 createTimeOutForCommandAfterUse("prepare", now, secondsToRemove, PREPARE_COOLDOWN_HOURS, discordUserId, prepareResponse.data, message)
-                                                //// message.channel.send("New Feature Introduced!\nYou can now enter the RPG queue!\nUse commands `-rpgqueue [2-5]` to enter an rpg queue of group size 2-5.\n`-rpgleave` to leave the queue. Read `-patchnotes` for more info")
                                                 var experienceFromItems = wearStats.calculateExtraExperienceGained(wearRes, "prepare", null)
                                                 experience.gainExperience(message, message.author, (EXPERIENCE_GAINS.prepare + (EXPERIENCE_GAINS.preparePerStand * userTacoStands) + experienceFromItems) , prepareResponse);
                                                 stats.statisticsManage(discordUserId, "maxextratacos", soiledToTaco, function(staterr, statSuccess){
@@ -1565,6 +1572,7 @@ module.exports.cookCommand = function(message){
                 }
                 wearStats.getUserWearingStats(message, discordUserId, {userLevel: userLevel}, allItems, function(wearErr, wearRes){
                     if (wearErr){
+                        console.log(wearErr)
                         exports.setCommandLock("cook", discordUserId, false)
                     }else{
                         // check six hours ago
@@ -1577,9 +1585,27 @@ module.exports.cookCommand = function(message){
                         threeDaysAgo = new Date(threeDaysAgo.setSeconds(threeDaysAgo.getSeconds() + secondsToRemove));
     
                         if ( threeDaysAgo > cookResponse.data.lastcooktime ){
+                            var woodTossed = cookResponse.data.woodtossed || 0;
+                            var tossedToTaco = 0;
+                            for (var i = 0; i < woodTossed; i++) {
+                                var woodRoll = Math.floor(Math.random() * 1000) + 1;
+                                if ( woodRoll > 250 ){
+                                    tossedToTaco = tossedToTaco + 50;
+                                }
+                            }
+
+                            var tableChanceRoll = Math.floor(Math.random() * 1000) + 1;
+                            if ( tableChanceRoll > ( 990 - woodTossed) ){
+                                createCustomParty(message, discordUserId, {
+                                    source: "cook", 
+                                    emoji : "🌯",
+                                    titleString : "Cooking party created by " + message.author.username + "!! " + 'Eat some burritos',
+                                    descriptionString: ":EZ: \n You will receive it at the end of the party (5 minutes)"
+                                })
+                            }
                             ///////// CALCULATE THE EXTRA TACOS HERE 
                             var extraTacosFromItems = wearStats.calculateExtraTacos(wearRes, "cook"); // 0 or extra
-                            profileDB.updateUserTacosCook(discordUserId, cookRoll + extraTacosFromItems + extraTacosFromCasserole , function(err, updateResponse) {
+                            profileDB.updateUserTacosCook(discordUserId, cookRoll + tossedToTaco + extraTacosFromItems + extraTacosFromCasserole , function(err, updateResponse) {
                                 if (err){
                                     exports.setCommandLock("cook", discordUserId, false)
                                 }else{
@@ -1982,7 +2008,7 @@ module.exports.tacosCommand = function(message){
             var profileData = {}
             profileData.userName = message.author.username;
             profileData.userTacos = adjustedTacosForUser(discordUserId, profileResponse.data.tacos)
-            profileData.userBurritos = profileResponse.data.burritos
+            profileData.userBurritos = profileResponse.data.burritos || 0
             tacoEmbedBuilder(message, profileData);
         }
     })
@@ -5268,18 +5294,16 @@ module.exports.useCommand = function(message, args){
                             else if (useRes == 20){
                                 message.channel.send(message.author.username + " polished something that Bender likes, Bender gave you `20` tacos :taco:");
                             }
-                            var timeout = setTimeout (function(){ 
-                                experience.gainExperience(message, message.author, EXPERIENCE_GAINS.useCommonItemFive);
-                                stats.statisticsManage(discordUserId, "polishcount", 1, function(staterr, statSuccess){
-                                    if (staterr){
-                                        // // console.log(staterr);
-                                    }
-                                    else{
-                                        // check achievements??
-                                        getProfileForAchievement(discordUserId, message) 
-                                    }
-                                })
-                            }, 1000);
+                            experience.gainExperience(message, message.author, EXPERIENCE_GAINS.useCommonItemFive);
+                            stats.statisticsManage(discordUserId, "polishcount", 1, function(staterr, statSuccess){
+                                if (staterr){
+                                    // // console.log(staterr);
+                                }
+                                else{
+                                    // check achievements??
+                                    getProfileForAchievement(discordUserId, message) 
+                                }
+                            })
                         }
                     });
                 }
@@ -5437,28 +5461,26 @@ module.exports.useCommand = function(message, args){
                     }
                 }
 
-                // // console.log(itemsInInventoryCountMap);
-                // // console.log(piecesOfWoodToUse.length);
-                // 
                 if (piecesOfWoodToUse.length == 5){
                     // able to use those 5 pieces
                     useItem.usePieceOfWood(message, discordUserId, piecesOfWoodToUse, function(useError, useRes){
                         if (useError){
-                            // couldnt update the user protect
-                            // // console.log(useError);
                             useItem.setItemsLock(discordUserId, false)
-                        }
-                        else{
-                            // // console.log(useRes);
-                            var timeout = setTimeout (function(){ 
-                                experience.gainExperience(message, message.author, EXPERIENCE_GAINS.useCommonItemFive);
-                            }, 1000);
-                            message.channel.send(message.author.username + " has built a fence, counts as `3` protection points");
+                        }else{
+                            experience.gainExperience(message, message.author, EXPERIENCE_GAINS.useCommonItemFive);
+                            stats.statisticsManage(discordUserId, "woodcount", piecesOfWoodToUse.length, function(staterr, statSuccess){
+                                if (staterr){
+                                    console.log(staterr);
+                                }else{
+                                    getProfileForAchievement(discordUserId, message)
+                                }
+                            })
+                            message.channel.send(message.author.username + " has tossed wood into the furnace for their next meal `" + useRes + "` \n");
                         }
                     });
                 }else{
                     useItem.setItemsLock(discordUserId, false)
-                    message.channel.send(message.author.username + " you need at least `5` pieces of wood to build a fence");
+                    message.channel.send(message.author.username + " you need at least `5` pieces of wood to toss into the furnace");
                 }
             }
         })
@@ -5532,19 +5554,17 @@ module.exports.useCommand = function(message, args){
                             else if (useRes == 20){
                                 message.channel.send(message.author.username + " tailored something that Bender likes, Bender gave you `20` tacos :taco:");
                             }
-                            var timeout = setTimeout (function(){ 
-                                experience.gainExperience(message, message.author, EXPERIENCE_GAINS.useCommonItemFive);
-                                stats.statisticsManage(discordUserId, "tailorcount", 1, function(staterr, statSuccess){
-                                    if (staterr){
-                                        // // console.log(staterr);
-                                    }
-                                    else{
-                                        // check achievements??
-                                        // // console.log(statSuccess);
-                                        getProfileForAchievement(discordUserId, message) 
-                                    }
-                                })
-                            }, 1000);
+                            experience.gainExperience(message, message.author, EXPERIENCE_GAINS.useCommonItemFive);
+                            stats.statisticsManage(discordUserId, "tailorcount", 1, function(staterr, statSuccess){
+                                if (staterr){
+                                    // console.log(staterr);
+                                }
+                                else{
+                                    // check achievements??
+                                    // // console.log(statSuccess);
+                                    getProfileForAchievement(discordUserId, message) 
+                                }
+                            })
                             
                         }
                     });
@@ -5621,10 +5641,7 @@ module.exports.useCommand = function(message, args){
                         }
                         else{
                             // // console.log(useRes);
-                            var timeout = setTimeout (function(){ 
-                                experience.gainExperience(message, message.author, EXPERIENCE_GAINS.useCommonItem * cansToUse);
-                            }, 200);
-                            
+                            experience.gainExperience(message, message.author, EXPERIENCE_GAINS.useCommonItem * cansToUse);
                             message.channel.send(message.author.username + " recycled a soda can, you have gained `" + cansToUse + "` reputation with Bender.\n`" + message.author.username + "'s Current reputation " + useRes.repNumber + ", Status: " + useRes.repStatus + "`")
                         }
                     })
@@ -5709,19 +5726,15 @@ module.exports.useCommand = function(message, args){
                             // // console.log(useError);
                             useItem.setItemsLock(discordUserId, false)
                             message.channel.send(useError);
-                        }
-                        else{
-                            // // console.log(useRes);
-                            var timeout = setTimeout (function(){ 
-                                experience.gainExperience( message, message.author, EXPERIENCE_GAINS.useCommonItem * soilsCountToUse );
-                                stats.statisticsManage(discordUserId, "soilcount", soilsCountToUse, function(staterr, statSuccess){
-                                    if (staterr){
-                                        // console.log(staterr);
-                                    }else{
-                                        getProfileForAchievement(discordUserId, message)
-                                    }
-                                })
-                            }, 1000);
+                        }else{
+                            experience.gainExperience( message, message.author, EXPERIENCE_GAINS.useCommonItem * soilsCountToUse );
+                            stats.statisticsManage(discordUserId, "soilcount", soilsCountToUse, function(staterr, statSuccess){
+                                if (staterr){
+                                    // console.log(staterr);
+                                }else{
+                                    getProfileForAchievement(discordUserId, message)
+                                }
+                            })
                             message.channel.send(message.author.username + " soiled their crops, Bender planted some seeds. current soiled crops `" + useRes + "` \n")
                         }
                     })
@@ -10577,6 +10590,109 @@ module.exports.createTableCommand = function(message){
     }
 }
 
+function createCustomParty(message, discordUserId, params){
+    let titleString = params.titleString
+    let descriptionString = params.descriptionString
+    const embed = new Discord.RichEmbed()
+    .setThumbnail("https://i.imgur.com/dI1PWNo.png")
+    .setColor(0xF2E93E)
+    .addField(titleString, descriptionString)
+    message.channel.send({embed})
+    .then(function (sentMessage) {
+        activeTables["table-"+sentMessage.id] = { id: discordUserId, username: message.author.username };
+        sentMessage.react(params.emoji)
+        var tacoParty = new Discord.ReactionCollector(sentMessage, function(){ return true; } , { time: 15000, max: 1000, maxEmojis: 100, maxUsers: 100 } );
+        tacoParty.on('collect', function(element, collector){
+            element.users.forEach(function(user){
+                if (!user.bot){
+                    var userId = user.id;
+                    collector.collected.forEach(function(reaction){
+                        // // console.log(reaction);
+                        reaction.users.forEach(function(collectorUser){
+                            if (!collectorUser.bot){
+                                var collectorUser = collectorUser.id;
+                                if (collectorUser == userId && element.emoji.name != reaction.emoji.name){
+                                    // remove the reaction by the user
+                                    element.remove(userId)
+                                    .then(function(res){
+                                        // console.log(res)
+                                    })
+                                    .catch(function(err){
+                                        // console.log(err)
+                                    })
+                                }
+                            }
+                        })
+                    })
+
+                }
+            })
+        })
+        tacoParty.on('end', function(collected, reason){
+            var ownerOfTable;
+            var ownerOfTableUsername;
+            let mapOfUsersReacted = {}
+            var idOfTable;
+            var reactionCount = 0;
+            collected.forEach(function(reactionEmoji){
+                ownerOfTable = activeTables["table-" + reactionEmoji.message.id]; // discord id of owner
+                ownerOfTableUsername = activeTables["table-" + reactionEmoji.message.id].username;
+                idOfTable = "table-" + reactionEmoji.message.id;
+                if (reactionEmoji._emoji.name == "🌯"){
+                    reactionEmoji.users.forEach(function(user){
+                        if (!user.bot && !mapOfUsersReacted[user.id]){
+                            mapOfUsersReacted[user.id] = true
+                            tacoPartyReactRewards(message, user, "🌮", "burrito", params.source)
+                            reactionCount++;
+                        }
+                    })
+                }
+                else if (reactionEmoji._emoji.name == "🌱"){
+                    reactionEmoji.users.forEach(function(user){
+                        if (!user.bot && !mapOfUsersReacted[user.id]){
+                            mapOfUsersReacted[user.id] = true
+                            tacoPartyReactRewards(message, user, "🌮", "seed", params.source)
+                            reactionCount++;
+                        }
+                    })
+                }
+            })
+            if (ownerOfTable && ownerOfTable.id){
+                var attendees = reactionCount;
+                if (reactionCount > 15){
+                    reactionCount = 15;
+                }
+                profileDB.getUserProfileData(ownerOfTable.id, function(getDataErr, getDataRes){
+                    if (getDataErr){
+                        message.channel.send(err);
+                    }else{
+                        var userData = getDataRes;
+                        message.channel.send("The party for `" + ownerOfTableUsername + "` was a great success! There were `" + attendees + "` guests that showed up")
+                        .then(function(res){
+                            // console.log(res)
+                        })
+                        .catch(function(err){
+                            // console.log(err)
+                        })
+                        var achievements = getDataRes.data.achievements;
+                        var data = {}
+                        data.achievements = achievements;
+                        data.attendees = attendees;
+                        achiev.checkForAchievements(ownerOfTable.id, data, message);
+                        // delete the party from the list
+                        if (activeTables[idOfTable]){
+                            delete activeTables[idOfTable];
+                        }
+                    }
+                })
+            }
+        })
+
+    }).catch(function(err) {
+        message.channel.send(JSON.stringify(err + " error"));
+    });
+}
+
 function createParty(message, discordUserId, uncommonsToUse){
     
     const embed = new Discord.RichEmbed()
@@ -10642,7 +10758,7 @@ function createParty(message, discordUserId, uncommonsToUse){
                                 reactionEmoji.users.forEach(function(user){
                                     if (!user.bot && ownerOfTable.id != user.id && !mapOfUsersReacted[user.id]){
                                         mapOfUsersReacted[user.id] = true
-                                        tacoPartyReactRewards(message, user, "🌮", "taco")
+                                        tacoPartyReactRewards(message, user, "🌮", "taco", "party")
                                         reactionCount++;
                                     }
                                 })
@@ -10651,7 +10767,7 @@ function createParty(message, discordUserId, uncommonsToUse){
                                 reactionEmoji.users.forEach(function(user){
                                     if (!user.bot && ownerOfTable.id != user.id && !mapOfUsersReacted[user.id]){
                                         mapOfUsersReacted[user.id] = true
-                                        tacoPartyReactRewards(message, user, "🍹", "terrycloth")
+                                        tacoPartyReactRewards(message, user, "🍹", "terrycloth", "party")
                                         reactionCount++;
                                     }
                                 })
@@ -10660,7 +10776,7 @@ function createParty(message, discordUserId, uncommonsToUse){
                                 reactionEmoji.users.forEach(function(user){
                                     if (!user.bot && ownerOfTable.id != user.id && !mapOfUsersReacted[user.id]){
                                         mapOfUsersReacted[user.id] = true
-                                        tacoPartyReactRewards(message, user, "💃🏼", "rock")
+                                        tacoPartyReactRewards(message, user, "💃🏼", "rock", "party")
                                         reactionCount++;
                                     }
                                 })
@@ -10719,23 +10835,43 @@ function createParty(message, discordUserId, uncommonsToUse){
     })
 }
 
-function tacoPartyReactRewards(message, user, emoji, reward){
+function tacoPartyReactRewards(message, user, emoji, reward, source){
     // each of these ids will receive 1 taco, 1 xp, or 1 rock
     var giveRewardTo = user.id;
     var giveRewardToUsername = user.username
     var allPartyItems = exports.getAllItems()
     // // console.log(user.id);
-    if (reward === "taco"){
+    if (reward === "taco" && source == "party"){
         profileDB.updateUserTacos(giveRewardTo, 40, function(err, res){
             if (err){
-                // // console.log(err);
                 message.channel.send(err);
             }else{
-                // // console.log(res);
+                // console.log(res);
             }
         })
     }
-    else if (reward === "terrycloth" || reward === "rock"){
+    if (reward === "burrito" && source == "cook"){
+        profileDB.updateUserBurritos(giveRewardTo, 5, function(err, res){
+            if (err){
+                message.channel.send(err);
+            }else{
+                // console.log(res);
+            }
+        })
+    }
+    if (reward === "seed" && source == "prepare"){
+        let allReactionItems = exports.getAllItems()
+        let seedItemsArray = []
+        for (let i in allReactionItems ){
+            if (allReactionItems[i].isseed == true){
+                seedItemsArray.push(allReactionItems[i])
+            }
+        }
+        var randomSeedRoll = Math.floor(Math.random() * seedItemsArray.length);
+        var itemsObtainedArray = [];
+        itemsObtainedArray.push( seedItemsArray[randomSeedRoll] );
+        addToUserInventory(giveRewardTo, itemsObtainedArray);
+    }else if (source == "party" && (reward === "terrycloth" || reward === "rock")){
         var itemsObtainedArray = [];
         if (reward === "terrycloth"){
             // ID of terry cloth
@@ -10841,7 +10977,6 @@ module.exports.rpgReadyCommand = function(message){
 
             var timeout = setTimeout (function(){ 
                 // get the next player's to make move
-                
                 var currentTurn = currentGame.getCurrentTurn();
                 if (currentTurn == turnToTakeRandomFruits){
                     var randomAmount = Math.floor(Math.random() * 2) + 1;

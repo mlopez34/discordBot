@@ -16,6 +16,7 @@ var percentageToReduceForCommand = {
     prepare: .03,
     RPG: 1
 }
+let WOOD_TO_TOSS_PER_USE = 3
 
 module.exports.setItemsLock = function(discordUserId, set){
     usingItemsLock[discordUserId] = set
@@ -199,39 +200,26 @@ module.exports.useRock = function(message, mentionedUserId, rockToUse, tacosInUs
 }
 
 module.exports.usePieceOfWood = function(message, discordUserId, piecesOfWoodToUse, cb){
-    // update inventory
     if (piecesOfWoodToUse.length == 5 ){
         profileDB.getUserProfileData(discordUserId, function(getProfileErr, getProfileRes){
             if (getProfileErr){
-                // console.log(getProfileErr);
                 exports.setItemsLock(message.author.id, false)
-            }
-            else{
-                var protection = getProfileRes.data.protect;
-                // console.log("protection " + protection);
-                if (protection == null){
-                    // console.log("protection is null!")
-                }
-                // update protect for the user
-                profileDB.updateUserProtect(discordUserId, 3, protection, function(updateerr, updateResponse) {
+            }else{
+                var currentWoodTossed = getProfileRes.data.woodtossed;
+                profileDB.updateUserWoodTossed(discordUserId, WOOD_TO_TOSS_PER_USE, currentWoodTossed, function(updateerr, updateResponse) {
                     if (updateerr){
-                        // console.log(updateerr);
                         exports.setItemsLock(message.author.id, false)
                         cb(updateerr);
-                    }
-                    else{
-                        // console.log(updateResponse);
-                        // update user inventory
+                    }else{
                         profileDB.bulkUpdateItemStatus(piecesOfWoodToUse, "used", function(updateBulkErr, updateBulkRes){
                             if (updateBulkErr){
-                                // console.log(updateBulkErr);
                                 exports.setItemsLock(message.author.id, false)
                                 cb(updateBulkErr);
                             }
                             else{
-                                // console.log(updateBulkRes);
                                 exports.setItemsLock(message.author.id, false)
-                                cb(null, "success")
+                                var woodTosed = currentWoodTossed ? currentWoodTossed + WOOD_TO_TOSS_PER_USE : WOOD_TO_TOSS_PER_USE;
+                                cb(null, woodTosed)
                             }
                         })
                     }
@@ -334,22 +322,15 @@ module.exports.useSodaCan = function(message, discordUserId, sodaCansToUse, cb){
     var REP_GAIN_PER_CAN = 1;
     reputation.gainReputation(message, discordUserId, (REP_GAIN_PER_CAN * sodaCansToUse.length) , function(error, response){
         if (error){
-            // console.log(error);
             exports.setItemsLock(discordUserId, false)
             cb(error);
         }
         else{
-            // gained rep successfully
-            // console.log(response);
-            // use the item
             profileDB.bulkUpdateItemStatus( sodaCansToUse, "used", function(updateSodaCanStatusErr, updateSodaCanStatusRes ){
                 if (updateSodaCanStatusErr){
-                    // console.log(updateSodaCanStatusErr);
                     exports.setItemsLock(discordUserId, false)
                     cb(updateSodaCanStatusErr);
-                }
-                else{
-                    // console.log(updateSodaCanStatusRes);
+                }else{
                     exports.setItemsLock(discordUserId, false)
                     cb(null, response);
                 }
@@ -359,41 +340,26 @@ module.exports.useSodaCan = function(message, discordUserId, sodaCansToUse, cb){
 }
 
 module.exports.useSoil = function(message, discordUserId, soilToUse, cb){
-    // use soil, update the user's soiledcrops by +1, update user's inventory as used
     if (discordUserId && soilToUse){
         profileDB.getUserProfileData(discordUserId, function(getProfileErr, getProfileRes){
             if (getProfileErr){
-                // console.log(getProfileErr);
                 exports.setItemsLock(discordUserId, false)
                 cb(getProfileErr);
-            }
-            else{
+            }else{
                 var currentCropsSoiled = getProfileRes.data.soiledcrops;
                 var soiledCrops = soilToUse.length;
                 profileDB.updateUserSoiledCrops(discordUserId, soiledCrops, currentCropsSoiled, function(error, response){
                     if (error){
-                        // console.log(error);
                         exports.setItemsLock(discordUserId, false)
                         cb(error);
-                    }
-                    else{
-                        // console.log(response);
-                        // use the item
+                    }else{
                         profileDB.bulkUpdateItemStatus(soilToUse, "used", function(updateSodaCanStatusErr, updateSodaCanStatusRes){
                             if (updateSodaCanStatusErr){
-                                // console.log(updateSodaCanStatusErr);
                                 exports.setItemsLock(discordUserId, false)
                                 cb(updateSodaCanStatusErr);
-                            }
-                            else{
-                                // console.log(updateSodaCanStatusRes);
+                            }else{
                                 exports.setItemsLock(discordUserId, false)
-                                var cropsCount;
-                                if (currentCropsSoiled){
-                                    cropsCount = currentCropsSoiled + soiledCrops;
-                                }else{
-                                    cropsCount = soiledCrops;
-                                }
+                                var cropsCount = currentCropsSoiled ? currentCropsSoiled + soiledCrops : soiledCrops;
                                 cb(null, cropsCount)
                             }
                         })
