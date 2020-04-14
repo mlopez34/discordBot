@@ -9087,7 +9087,9 @@ function handleMarketItemAuctionEnded(individualItem){
                 var seller = client.users.get(marketItems[individualItem.id].seller)
                 var itemsArray = [ individualItem.id ];
                 var tacosPaid = marketItems[individualItem.id].currentbid;
+                sendMarketLog(winner.id + " Local tacos being held before: " + tacosInUseAuction[winner.id] + " " + marketItems[individualItem.id].name)
                 tacosInUseAuction[winner.id] = tacosInUseAuction[winner.id] - tacosPaid;
+                sendMarketLog(winner.id + " Local tacos being held after: " + tacosInUseAuction[winner.id] + " " + marketItems[individualItem.id].name)
                 var tacosWon = marketItems[individualItem.id].currentbid;
                 var initialTacoTax = 0;
                 if (tacosWon > 50){
@@ -9891,7 +9893,7 @@ module.exports.marketBidCommand = function(message, args){
                 if (userTacosToBid >= biddingTacos){
                     var auctionToBidOn = marketItems[idOfItemToBid] ? marketItems[idOfItemToBid] : 0;
                     // your bid has to be higher than current bid + 5% of current bid
-                    var adjustedCurrentBid = Math.floor( auctionToBidOn.currentbid + (auctionToBidOn.currentbid * .03) )
+                    let adjustedCurrentBid = Math.floor( auctionToBidOn.currentbid + (auctionToBidOn.currentbid * .03) )
                     if (adjustedCurrentBid >= auctionToBidOn.buyout || adjustedCurrentBid == 0){
                         adjustedCurrentBid = auctionToBidOn.buyout
                     }
@@ -9900,12 +9902,16 @@ module.exports.marketBidCommand = function(message, args){
                     }
                     if (biddingTacos > 0 && auctionToBidOn && biddingTacos >= adjustedCurrentBid && auctionToBidOn.seller != discordUserId){
 
-                        var lastHighestBidder = auctionToBidOn.currentbiduserid;
+                        let lastHighestBidder = auctionToBidOn.currentbiduserid;
                         if (lastHighestBidder){
+                            /// log tacosInUseAuction for last highest bidder before
+                            sendMarketLog(lastHighestBidder + " Local tacos being held before: " + tacosInUseAuction[lastHighestBidder] + " " + auctionToBidOn.name)
                             tacosInUseAuction[lastHighestBidder] = tacosInUseAuction[lastHighestBidder] - auctionToBidOn.currentbid
+                            sendMarketLog(lastHighestBidder + " Local tacos being held after: " + tacosInUseAuction[lastHighestBidder] + " " + auctionToBidOn.name)
+                            /// log tacos in use auction for last highest bidder after
                             // tell the user they have been outbid
                             try{
-                                var outBidUser = client.users.get(lastHighestBidder)
+                                let outBidUser = client.users.get(lastHighestBidder)
                                 client.channels.get(auctionToBidOn.lastHighestbidderchannel).send(outBidUser + " You were outbid on **" + auctionToBidOn.name + "** in the marketplace")
                             }catch(ex){
                                 // console.log(ex)
@@ -9926,7 +9932,9 @@ module.exports.marketBidCommand = function(message, args){
                                     tacosInUseAuction[discordUserId] = 0;
                                 }
                                 // cannot use these tacos
+                                sendMarketLog(discordUserId + " Local tacos being held before: " + tacosInUseAuction[discordUserId] + " " + auctionToBidOn.name)
                                 tacosInUseAuction[discordUserId] = tacosInUseAuction[discordUserId] + biddingTacos;
+                                sendMarketLog(discordUserId + " Local tacos being held after: " + tacosInUseAuction[discordUserId] + " " + auctionToBidOn.name)
                                 message.channel.send(message.author.username + " is now the highest bidder on **" + auctionToBidOn.name + "**!")
                                 if (biddingTacos >= auctionToBidOn.buyout){
                                     var individualItem = auctionToBidOn.item
