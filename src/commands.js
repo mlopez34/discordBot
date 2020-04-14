@@ -8982,6 +8982,7 @@ module.exports.initializeMarketPlace = function(){
                 }else{
                     marketItemsUserCount[individualItem.discordid] = marketItemsUserCount[individualItem.discordid] + 1
                 }
+                sendMarketLog(individualItem.id + " Attempting to enter item into market after restart" + marketItems[individualItem.id].name)
                 handleAuctionItem(individualItem)
             }
             // console.log("Market Initialized")
@@ -9057,6 +9058,7 @@ function setTimeOutForIndividualItem(individualItem, milisecondsUntilEnd){
     }, milisecondsUntilEnd) // replace this with milisecondsUntilEnd
 
     marketItems[individualItem.id].auctionTimeout = itemAuctionTimeout
+    sendMarketLog(individualItem.id + " entered into the market - " + marketItems[individualItem.id].name + " timeout initialized")
 }
 
 function handleMarketItemAuctionEnded(individualItem){
@@ -9179,6 +9181,8 @@ function removeItemFromMarket(individualItem){
         }
         sendMarketLog(individualItem.id + " removed item: " + marketItems[individualItem.id].name)
         delete marketItems[individualItem.id]
+    }else{
+        sendMarketLog(individualItem.id + " not found in market. could not remove *********")
     }
 }
 
