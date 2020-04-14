@@ -8945,6 +8945,7 @@ module.exports.initializeMarketPlace = function(){
             // console.log(error)
         }else{
             // console.log(marketRes)
+            sendMarketLog("*******************MARKET BEING INITIALIZED")
             let items = marketRes.data
             for (var i in items){
                 let individualItem = items[i]
