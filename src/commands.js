@@ -8951,40 +8951,41 @@ module.exports.initializeMarketPlace = function(){
                 let individualItem = items[i]
                 let itemDetails = itemsMapById[individualItem.itemid]
                 let emoji = getEmojiBasedOnRarityCategory(itemDetails);
-
-                marketItems[individualItem.id] = {
-                    emoji: emoji,
-                    name: itemDetails.itemname,
-                    auctionenddate: individualItem.auctionenddate,
-                    currentbid: individualItem.currentbid,
-                    buyout: individualItem.buyout,
-                    seller: individualItem.discordid,
-                    currentbiduserid: individualItem.currentbiduserid,
-                    creatorchannel: individualItem.auctioncreatorchannel,
-                    lastHighestbidderchannel: individualItem.lastbidchannel,
-                    item: individualItem,
-                    itemraritycategory: itemDetails.itemraritycategory,
-                    itemshortname: itemDetails.itemshortname,
-                    itemId: individualItem.id
-                }
-                if (marketItems[individualItem.id].currentbid == null){
-                    marketItems[individualItem.id].currentbid = marketItems[individualItem.id].buyout
-                }
-                // take away the highest bidder's tacos immediately
-                if (individualItem.currentbiduserid){
-                    if (!tacosInUseAuction[individualItem.currentbiduserid]){
-                        tacosInUseAuction[individualItem.currentbiduserid] = 0;
+                if (!marketItems[individualItem.id]){
+                    marketItems[individualItem.id] = {
+                        emoji: emoji,
+                        name: itemDetails.itemname,
+                        auctionenddate: individualItem.auctionenddate,
+                        currentbid: individualItem.currentbid,
+                        buyout: individualItem.buyout,
+                        seller: individualItem.discordid,
+                        currentbiduserid: individualItem.currentbiduserid,
+                        creatorchannel: individualItem.auctioncreatorchannel,
+                        lastHighestbidderchannel: individualItem.lastbidchannel,
+                        item: individualItem,
+                        itemraritycategory: itemDetails.itemraritycategory,
+                        itemshortname: itemDetails.itemshortname,
+                        itemId: individualItem.id
                     }
-                    tacosInUseAuction[individualItem.currentbiduserid] = tacosInUseAuction[individualItem.currentbiduserid] + individualItem.currentbid
+                    if (marketItems[individualItem.id].currentbid == null){
+                        marketItems[individualItem.id].currentbid = marketItems[individualItem.id].buyout
+                    }
+                    // take away the highest bidder's tacos immediately
+                    if (individualItem.currentbiduserid){
+                        if (!tacosInUseAuction[individualItem.currentbiduserid]){
+                            tacosInUseAuction[individualItem.currentbiduserid] = 0;
+                        }
+                        tacosInUseAuction[individualItem.currentbiduserid] = tacosInUseAuction[individualItem.currentbiduserid] + individualItem.currentbid
+                    }
+    
+                    if ( marketItemsUserCount[individualItem.discordid] == undefined){
+                        marketItemsUserCount[individualItem.discordid] = 1
+                    }else{
+                        marketItemsUserCount[individualItem.discordid] = marketItemsUserCount[individualItem.discordid] + 1
+                    }
+                    sendMarketLog(individualItem.id + " Attempting to enter item into market after restart" + marketItems[individualItem.id].name)
+                    handleAuctionItem(individualItem)    
                 }
-
-                if ( marketItemsUserCount[individualItem.discordid] == undefined){
-                    marketItemsUserCount[individualItem.discordid] = 1
-                }else{
-                    marketItemsUserCount[individualItem.discordid] = marketItemsUserCount[individualItem.discordid] + 1
-                }
-                sendMarketLog(individualItem.id + " Attempting to enter item into market after restart" + marketItems[individualItem.id].name)
-                handleAuctionItem(individualItem)
             }
             // console.log("Market Initialized")
         }
@@ -9614,44 +9615,49 @@ module.exports.marketAuctionCommand = function(message, args){
                                 hoursToAdd = 24
                             }
                             auctionenddate = new Date( auctionenddate.setHours(auctionenddate.getHours() + hoursToAdd) )
-
-                            marketItems[individualItem.id] = {
-                                emoji: emoji,
-                                name: itemNameInMarket,
-                                auctionenddate: auctionenddate,
-                                currentbid: startBid,
-                                buyout: buyout,
-                                seller: discordUserId,
-                                currentbiduserid: null,
-                                creatorchannel: message.channel.id,
-                                lastHighestbidderchannel: null,
-                                item: individualItem,
-                                itemraritycategory: rarityCategory,
-                                itemshortname: itemshortname,
-                                itemId: individualItem.id
-                            }
-                            individualItem.auctionenddate = auctionenddate
-                            individualItem.currentbid = startBid
-                            individualItem.buyout = buyout
-                            individualItem.creatorchannel = message.channel.id
-                            individualItem.seller = discordUserId
-                            // POST item to database
-                            profileDB.postItemToMarket(individualItem, function(postErr, postRes){
-                                if (postErr){
-                                    console.log(postErr)
-                                    useItem.setItemsLock(discordUserId, false)
-                                }else{
-                                    if ( marketItemsUserCount[discordUserId] == undefined){
-                                        marketItemsUserCount[discordUserId] = 1
-                                    }else{
-                                        marketItemsUserCount[discordUserId] = marketItemsUserCount[discordUserId] + 1
-                                    }
-                                    message.channel.send(message.author.username + ", your auction for **" + marketItems[individualItem.id].name +  "** was successfully created!")
-                                    sendMarketLog(individualItem.id + " " + message.author.username + ", your auction for **" + marketItems[individualItem.id].name +  "** was successfully created!")
-                                    handleAuctionItem(individualItem)
-                                    useItem.setItemsLock(discordUserId, false)
+                            if (!marketItems[individualItem.id]){
+                                marketItems[individualItem.id] = {
+                                    emoji: emoji,
+                                    name: itemNameInMarket,
+                                    auctionenddate: auctionenddate,
+                                    currentbid: startBid,
+                                    buyout: buyout,
+                                    seller: discordUserId,
+                                    currentbiduserid: null,
+                                    creatorchannel: message.channel.id,
+                                    lastHighestbidderchannel: null,
+                                    item: individualItem,
+                                    itemraritycategory: rarityCategory,
+                                    itemshortname: itemshortname,
+                                    itemId: individualItem.id
                                 }
-                            })
+                                individualItem.auctionenddate = auctionenddate
+                                individualItem.currentbid = startBid
+                                individualItem.buyout = buyout
+                                individualItem.creatorchannel = message.channel.id
+                                individualItem.seller = discordUserId
+                                // POST item to database
+                                profileDB.postItemToMarket(individualItem, function(postErr, postRes){
+                                    if (postErr){
+                                        console.log(postErr)
+                                        useItem.setItemsLock(discordUserId, false)
+                                    }else{
+                                        if ( marketItemsUserCount[discordUserId] == undefined){
+                                            marketItemsUserCount[discordUserId] = 1
+                                        }else{
+                                            marketItemsUserCount[discordUserId] = marketItemsUserCount[discordUserId] + 1
+                                        }
+                                        message.channel.send(message.author.username + ", your auction for **" + marketItems[individualItem.id].name +  "** was successfully created!")
+                                        sendMarketLog(individualItem.id + " " + message.author.username + ", your auction for **" + marketItems[individualItem.id].name +  "** was successfully created!")
+                                        handleAuctionItem(individualItem)
+                                        useItem.setItemsLock(discordUserId, false)
+                                    }
+                                })
+                            }else{
+                                useItem.setItemsLock(discordUserId, false)
+                                message.channel.send(message.author.username + " Error: item already exists in the database")
+                            }
+                            
                         }else{
                             useItem.setItemsLock(discordUserId, false)
                             message.channel.send(message.author.username + " example: `-mkauction [item] bid [minimum bid] buyout [maximum bid] time [short/medium/long]`")  
