@@ -76,6 +76,16 @@ module.exports.questStartEmbedBuilder = function(message, questName, questString
         .setColor(0xFF7A1C)
         message.channel.send({embed});
     }
+    else if(questName == "reclaim"){
+        const embed = new Discord.RichEmbed()
+        .setAuthor(message.author.username + " has begun an artifact quest.")
+        .addField("Use your map to travel to different points of interests and decypher the assets", questString, true)
+        .setDescription(":detective:  :imp:  :detective: \n" +message.author.username + " gathers the assets but is unable to put them together.. opening the Tombstone file only reveals coordinates pointing to Panama City as a point of interest" )
+        .addField("New command granted", "-decypher [@user] [@user] [@user] [@user]")
+        .setThumbnail(message.author.avatarURL)
+        .setColor(0xFF7A1C)
+        message.channel.send({embed});
+    }
 }
 
 module.exports.questStringBuilder = function(questname, questData){
@@ -350,8 +360,6 @@ module.exports.questStringBuilder = function(questname, questData){
         if ( questData.stage == "start"){
             return "Travel to Panama City with 4 other companions";
         }
-        // TODO: CHANGE THESE
-        // proposed
         else if (questData.stage == 1){
             if (questData && questData.storyStep == 1){
                 return questData.message.author.username + ", you must show your love the hard way..."
@@ -361,7 +369,6 @@ module.exports.questStringBuilder = function(questname, questData){
                 return questData.message.author.username + ", you must show your love the hard way, give your soulmate 10,000 tacos ❤️❤️❤️ "
             }
         }
-        // gave 20,000 tacos
         else if (questData.stage == 2){
             if (questData && questData.storyStep == 1){
                 return questData.message.author.username + ", thank your soulmate for being themselves"
@@ -371,7 +378,6 @@ module.exports.questStringBuilder = function(questname, questData){
                 return questData.message.author.username + ", thank your soulmate for being themselves  ❤️❤️❤️❤️❤️"
             }
         }
-        // thanked soulmate
         else if (questData.stage == 3){
             if (questData && questData.storyStep == 1){
                 return questData.message.author.username + ", it is wedding day, time to celebrate! -wedding @user 🥂 "
@@ -381,7 +387,6 @@ module.exports.questStringBuilder = function(questname, questData){
                 return questData.message.author.username + ", it is wedding day, time to celebrate! -wedding @user 🥂"
             }
         }
-        // wedding
         else if (questData.stage == 4){
             if (questData && questData.storyStep == 1){
                 return questData.message.author.username + ", everyone gets to collect presents at the wedding 🥂 "
@@ -391,7 +396,62 @@ module.exports.questStringBuilder = function(questname, questData){
                 return questData.message.author.username + ", everyone gets to collect presents at the wedding 🥂"
             }
         }
-        // defeat evil exes
+        else if (questData.stage == 5){
+            if (questData && questData.storyStep == 1){
+                return questData.message.author.username + ", there is a loud crashing sound outside."
+            }
+            else if (questData && questData.storyStep == 2){
+                return questData.message.author.username + ", there is a loud crashing sound outside... It is your soulmate's exes "                
+            }
+            else if (questData && questData.storyStep == 3){
+                return questData.message.author.username + ", there is a loud crashing sound outside... It is your soulmate's exes. You must defeat your soulmate's seven evil exes"                
+            }
+        }else{
+            return "Profess your love to your soulmate";
+        }
+    }
+    if (questname == "reclaim"){
+        // combined
+        if ( questData.stage == "start"){
+            return "Travel to Panama City with 4 other companions";
+        }
+        // TODO: CHANGE THESE
+        else if (questData.stage == 1){
+            if (questData && questData.storyStep == 1){
+                return questData.message.author.username + ", you must show your love the hard way..."
+            }else if (questData && questData.storyStep == 2){
+                return questData.message.author.username + ", you must show your love the hard way, give your soulmate 10,000 tacos"
+            }else if (questData && questData.storyStep == 3){
+                return questData.message.author.username + ", you must show your love the hard way, give your soulmate 10,000 tacos ❤️❤️❤️ "
+            }
+        }
+        else if (questData.stage == 2){
+            if (questData && questData.storyStep == 1){
+                return questData.message.author.username + ", thank your soulmate for being themselves"
+            }else if (questData && questData.storyStep == 2){
+                return questData.message.author.username + ", thank your soulmate for being themselves  ❤️❤️❤️"
+            }else if (questData && questData.storyStep == 3){
+                return questData.message.author.username + ", thank your soulmate for being themselves  ❤️❤️❤️❤️❤️"
+            }
+        }
+        else if (questData.stage == 3){
+            if (questData && questData.storyStep == 1){
+                return questData.message.author.username + ", it is wedding day, time to celebrate! -wedding @user 🥂 "
+            }else if (questData && questData.storyStep == 2){
+                return questData.message.author.username + ", it is wedding day, time to celebrate! -wedding @user 🥂"
+            }else if (questData && questData.storyStep == 3){
+                return questData.message.author.username + ", it is wedding day, time to celebrate! -wedding @user 🥂"
+            }
+        }
+        else if (questData.stage == 4){
+            if (questData && questData.storyStep == 1){
+                return questData.message.author.username + ", everyone gets to collect presents at the wedding 🥂 "
+            }else if (questData && questData.storyStep == 2){
+                return questData.message.author.username + ", everyone gets to collect presents at the wedding 🥂"
+            }else if (questData && questData.storyStep == 3){
+                return questData.message.author.username + ", everyone gets to collect presents at the wedding 🥂"
+            }
+        }
         else if (questData.stage == 5){
             if (questData && questData.storyStep == 1){
                 return questData.message.author.username + ", there is a loud crashing sound outside."
@@ -432,6 +492,14 @@ module.exports.questHandler = function(message, discordUserId, questline, stageI
         handleDemonicArtifact(message, discordUserId, stageInQuest, team, channel, allItems)
     }
     else if (questline == "ring"){
+        // handle evilexes
+        handleRingArtifact(message, discordUserId, stageInQuest, team, dataUsedInQuest, channel, allItems)
+    }
+    else if (questline == "escape"){
+        // handle evilexes
+        handleRingArtifact(message, discordUserId, stageInQuest, team, dataUsedInQuest, channel, allItems)
+    }
+    else if (questline == "reclaim"){
         // handle evilexes
         handleRingArtifact(message, discordUserId, stageInQuest, team, dataUsedInQuest, channel, allItems)
     }
@@ -562,6 +630,90 @@ function handleRingArtifact(message, discordUserId, stage, team, questData, chan
     -stage 3 = * (mission)thank and sorry them
     -stage 4 = (embed)react to the embed with hearts
     -stage 5 = * (rpg)defeat the 7 evil exes
+    */
+    if (stage == 1){
+        // propose to a member
+        var proposedTo = questData.proposedTo;
+        handleRingArtifactStageOne(message, discordUserId, stage, team, proposedTo, channel)
+    }
+    else if (stage == 2){
+        // give member 20000 tacos
+        var giveAmount = questData.giveAmount
+        var giveTo = questData.commandTo
+        handleRingArtifactStageTwo(message, discordUserId, stage, team, giveAmount, giveTo, channel)
+    }
+    else if (stage == 3){
+        // sorry and thank the user
+        var command = questData.command
+        var commandTo = questData.commandTo
+        handleRingArtifactStageThree(message, discordUserId, stage, team, command, commandTo, channel)
+    }
+    else if (stage == 4){
+        // react to embed with hearts
+        if (activeMissions["quest-" + discordUserId] && activeMissions["quest-" + discordUserId].proposedTo && activeMissions["quest-" + discordUserId].wedding){
+            var marriedTo = questData.marriedTo
+            activeMissions["quest-" + discordUserId].wedding = false // to prevent multiple weddings spam
+            handleRingArtifactStageFour(message, discordUserId, stage, team, marriedTo, channel, allItems)
+        }
+    }
+    else if (stage == 5){
+        // rpg - defeat the 7 evil exes
+        var marriedTo = questData.marriedTo
+        handleRingArtifactStageFive(message, discordUserId, stage, team, channel)
+    }
+}
+
+function handleDecypherArtifact(message, discordUserId, stage, team, questData, channel, allItems){
+    /*
+    decypher:
+    -stage 1 = * in panama city do decypher - birds of the northern hemisphere
+    -stage 2 = * ambushed by an operative (defeat operative)
+    -stage 3 = * travel to sona and rescue whistler
+    -stage 4 = * defeat lechero while keeping whistler alive
+    -stage 5 = * blueprints have revealed the location of scylla - doors open doors close puzzle ()
+    -stage 6 = * defeat the general - last phase is 1,2,3,4,5,6 floors
+    */
+    if (stage == 1){
+        // propose to a member
+        var proposedTo = questData.proposedTo;
+        handleRingArtifactStageOne(message, discordUserId, stage, team, proposedTo, channel)
+    }
+    else if (stage == 2){
+        // give member 20000 tacos
+        var giveAmount = questData.giveAmount
+        var giveTo = questData.commandTo
+        handleRingArtifactStageTwo(message, discordUserId, stage, team, giveAmount, giveTo, channel)
+    }
+    else if (stage == 3){
+        // sorry and thank the user
+        var command = questData.command
+        var commandTo = questData.commandTo
+        handleRingArtifactStageThree(message, discordUserId, stage, team, command, commandTo, channel)
+    }
+    else if (stage == 4){
+        // react to embed with hearts
+        if (activeMissions["quest-" + discordUserId] && activeMissions["quest-" + discordUserId].proposedTo && activeMissions["quest-" + discordUserId].wedding){
+            var marriedTo = questData.marriedTo
+            activeMissions["quest-" + discordUserId].wedding = false // to prevent multiple weddings spam
+            handleRingArtifactStageFour(message, discordUserId, stage, team, marriedTo, channel, allItems)
+        }
+    }
+    else if (stage == 5){
+        // rpg - defeat the 7 evil exes
+        var marriedTo = questData.marriedTo
+        handleRingArtifactStageFive(message, discordUserId, stage, team, channel)
+    }
+}
+
+function handleReclaimArtifact(message, discordUserId, stage, team, questData, channel, allItems){
+    /*
+    reclaim
+    -stage 1 = 
+    -stage 2 = * ambushed by an operative (defeat operative)
+    -stage 3 = * travel to sona and rescue whistler
+    -stage 4 = * defeat lechero while keeping whistler alive
+    -stage 5 = * blueprints have revealed the location of scylla - doors open doors close puzzle
+    -stage 6 = * defeat the general - last phase is 1,2,3,4,5,6 floors
     */
     if (stage == 1){
         // propose to a member
