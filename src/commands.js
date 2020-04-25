@@ -816,6 +816,33 @@ module.exports.writeheapCommand = function(){
     // });
 }
 
+module.exports.effortCommand = function(message){
+    // heapdump.writeSnapshot((err, filename) => {
+    //     console.log('Heap dump written to', filename)
+    // });
+    let discordUserId = message.author.id
+    /// grab the effort data from 1 database
+    // effort should be, number of commands used:
+    // thanks: 20000, sorry: 31000, cook: 8000
+    
+    // turnins: wood: 15000, soil: 9000, tortilla: 3000, wedding cake: 8, rose seed: 290, cookie: 500
+    // rare turnins: loincloth: 150, lvl 9 beast item: 25, craftable rare: 100
+    // ancient turnins: improved trojan: 10, wizard: 50, refined crafted ancient: 5
+    // ancient reaction quest items: credit card: 100, some other items from artifacts: 100
+
+    // keystone items turnedin: challenge 1 K6: 5, challenge 4 K2: 10, animal ancient ch1-3
+    // essences from disassembling: essence, shard, crystal, fire, spirit
+    // an enemy is among us - travel to the woods to find out what is going on
+    // turn in stuff - at woods, mt everest, emerald dream, gabriel's horn 
+    // when turnins are done you can purchase an item if you are in the turn in areas
+    // purchasing the item allows you to complete an artifact quest? (reclaim)
+    // reclaim can only be completed in gabriels horn 
+    // this means everyone can complete this artifact quest, by purchasing, but it is a group effort
+    // to unlock these items.
+    // when completed there is a 24 hour event, everyone becomes infected if they do something**
+    // after the 24 hours those who completed the artifact quest after the first one gain an achievement
+}
+
 module.exports.sorryCommand = function(message){
     // say sorry to somebody every 6 hours
     var discordUserId = message.author.id;
