@@ -3188,6 +3188,81 @@ module.exports = {
                 difficulty: "medium",
                 element: "normal"
             },
+            haywire: {
+                enemyIdName : "haywire",
+                name: "Haywire",
+                abilities: ["sting", "sting", "inject", "inject", "poison"],
+                buffs: [],
+                keystoneStats: {
+                    hp: [1200, 3500, 6200, 10000, 15000 ],
+                    attackDmg: [300, 500, 900, 1500, 2300],
+                    magicDmg: [300, 500, 900, 1500, 2300],
+                    abilities: []
+                },
+                effectsOnDeath:[
+
+                ],
+                hpPerPartyMember: 490,
+                adPerPartyMember: 18,
+                mdPerPartyMember: 18,
+                hp: 640,
+                attackDmg: 90,
+                magicDmg: 90,
+                armor: 350,
+                spirit: 550,
+                difficulty: "medium",
+                element: "normal"
+            },
+            guard: {
+                enemyIdName : "guard",
+                name: "Guard",
+                abilities: ["sting", "sting", "inject", "inject", "poison"],
+                buffs: [],
+                keystoneStats: {
+                    hp: [1200, 3500, 6200, 10000, 15000 ],
+                    attackDmg: [300, 500, 900, 1500, 2300],
+                    magicDmg: [300, 500, 900, 1500, 2300],
+                    abilities: []
+                },
+                effectsOnDeath:[
+
+                ],
+                hpPerPartyMember: 490,
+                adPerPartyMember: 18,
+                mdPerPartyMember: 18,
+                hp: 640,
+                attackDmg: 90,
+                magicDmg: 90,
+                armor: 350,
+                spirit: 550,
+                difficulty: "medium",
+                element: "normal"
+            },
+            operative: {
+                enemyIdName : "operative",
+                name: "Operative",
+                abilities: ["sting", "sting", "inject", "inject", "poison"],
+                buffs: [],
+                keystoneStats: {
+                    hp: [1200, 3500, 6200, 10000, 15000 ],
+                    attackDmg: [300, 500, 900, 1500, 2300],
+                    magicDmg: [300, 500, 900, 1500, 2300],
+                    abilities: []
+                },
+                effectsOnDeath:[
+
+                ],
+                hpPerPartyMember: 490,
+                adPerPartyMember: 18,
+                mdPerPartyMember: 18,
+                hp: 640,
+                attackDmg: 90,
+                magicDmg: 90,
+                armor: 350,
+                spirit: 550,
+                difficulty: "medium",
+                element: "normal"
+            },
             egg: {
                 enemyIdName : "egg",
                 name: "Egg",
@@ -4284,6 +4359,86 @@ module.exports = {
                 magicDmg: 370,
                 armor: 600,
                 spirit: 900,
+                difficulty: "hard",
+                element: "normal"
+            },
+            chimaera: {
+                enemyIdName : "chimaera",
+                name: "Chimaera",
+                abilities: ["bite" , "bite" , "venom", "venom" , "ferociousBite", "invigorate"],
+                buffs: [
+                    {
+                        name: "frenzy",
+                        emoji: "<:frenzy:479298214453968896>",
+                        onTurnEnd: {
+                            attackDmgPlus : 140,
+                            magicDmgPlus : 140,
+                            everyNTurns: 2,
+                            startTurn: 2
+                        }
+                    }
+                ],
+                keystoneStats: {
+                    hp: [1200, 3500, 6200, 10000, 15000 ],
+                    attackDmg: [300, 500, 900, 1500, 2300],
+                    magicDmg: [300, 500, 900, 1500, 2300],
+                    abilities: []
+                },
+                endOfTurnEvents:[
+                    "summonEgg",
+                    "fade"
+                ],
+                effectsOnDeath: [
+                    "elementalBarrier"
+                ],
+                hpPerPartyMember: 1390,
+                adPerPartyMember: 21,
+                mdPerPartyMember: 21,
+                hp: 1750,
+                attackDmg: 325,
+                magicDmg: 370,
+                armor: 1300,
+                spirit: 1300,
+                difficulty: "hard",
+                element: "normal"
+            },
+            hydra: {
+                enemyIdName : "hydra",
+                name: "Hydra",
+                abilities: ["bite" , "bite" , "venom", "venom" , "ferociousBite", "invigorate"],
+                buffs: [
+                    {
+                        name: "frenzy",
+                        emoji: "<:frenzy:479298214453968896>",
+                        onTurnEnd: {
+                            attackDmgPlus : 140,
+                            magicDmgPlus : 140,
+                            everyNTurns: 2,
+                            startTurn: 2
+                        }
+                    }
+                ],
+                keystoneStats: {
+                    hp: [1200, 3500, 6200, 10000, 15000 ],
+                    attackDmg: [300, 500, 900, 1500, 2300],
+                    magicDmg: [300, 500, 900, 1500, 2300],
+                    abilities: []
+                },
+                endOfTurnEvents:[
+                    "summonEgg",
+                    "fade"
+                ],
+                effectsOnDeath: [
+                    "elementalBarrier"
+                ],
+                hpPerPartyMember: 1390,
+                adPerPartyMember: 21,
+                mdPerPartyMember: 21,
+                hp: 1750,
+                attackDmg: 325,
+                magicDmg: 370,
+                armor: 1300,
+                spirit: 1300,
                 difficulty: "hard",
                 element: "normal"
             },
@@ -5430,6 +5585,84 @@ module.exports = {
             cerberus: {
                 enemyIdName : "cerberus",
                 name: "Cerberus",
+                abilities: [
+                    "attack", "attack", "iceshards", "iceshards", "slash", "slash", "cripple"
+                ],
+                buffs: [
+                    {
+                        name: "frenzy",
+                        emoji: "<:frenzy:479298214453968896>",
+                        onTurnEnd: {
+                            attackDmgPlus : 385,
+                            magicDmgPlus : 385,
+                            everyNTurns: 2,
+                            startTurn: 2
+                        }
+                    }
+                ],
+                keystoneStats: {
+                    hp: [1200, 3500, 6200, 10000, 15000 ],
+                    attackDmg: [300, 500, 900, 1500, 2300],
+                    magicDmg: [300, 500, 900, 1500, 2300],
+                    abilities: []
+                },
+                endOfTurnEvents : [
+                    "echo",
+                    "focus"
+                ],
+                hpPerPartyMember: 1222,
+                hp: 1950,
+                adPerPartyMember: 29,
+                mdPerPartyMember: 29,
+                attackDmg: 1240,
+                magicDmg: 1190,
+                armor: 1600,
+                spirit: 1600,
+                difficulty: "boss",
+                element: "normal"
+            },
+            militar: {
+                enemyIdName : "militar",
+                name: "Militar",
+                abilities: [
+                    "attack", "attack", "iceshards", "iceshards", "slash", "slash", "cripple"
+                ],
+                buffs: [
+                    {
+                        name: "frenzy",
+                        emoji: "<:frenzy:479298214453968896>",
+                        onTurnEnd: {
+                            attackDmgPlus : 385,
+                            magicDmgPlus : 385,
+                            everyNTurns: 2,
+                            startTurn: 2
+                        }
+                    }
+                ],
+                keystoneStats: {
+                    hp: [1200, 3500, 6200, 10000, 15000 ],
+                    attackDmg: [300, 500, 900, 1500, 2300],
+                    magicDmg: [300, 500, 900, 1500, 2300],
+                    abilities: []
+                },
+                endOfTurnEvents : [
+                    "echo",
+                    "focus"
+                ],
+                hpPerPartyMember: 1222,
+                hp: 1950,
+                adPerPartyMember: 29,
+                mdPerPartyMember: 29,
+                attackDmg: 1240,
+                magicDmg: 1190,
+                armor: 1600,
+                spirit: 1600,
+                difficulty: "boss",
+                element: "normal"
+            },
+            lechero: {
+                enemyIdName : "lechero",
+                name: "Lechero",
                 abilities: [
                     "attack", "attack", "iceshards", "iceshards", "slash", "slash", "cripple"
                 ],

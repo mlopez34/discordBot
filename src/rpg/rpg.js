@@ -3103,7 +3103,7 @@ function eventEndedEmbedBuilder(message, event, partySuccess){
                             console.log("FAILURE SOMETHING WENT WRONG")
                         }else{
                             var achievData = { achievements: profileRes.data.achievements, keystoneNumDefeated: keystonenumber }
-                            achiev.checkForAchievements(event.leader.id, achievData, message)
+                            achiev.checkForAchievements(memberInParty.id, achievData, message)
                         }
                     })
                 })
