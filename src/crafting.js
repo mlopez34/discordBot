@@ -1,6 +1,7 @@
 'use strict'
 var profileDB = require("./profileDB.js");
 var _ = require("lodash");
+var achiev = require("./achievements.js");
 // commands used for crafting items from the TEMPLE
 
 // requirements for certain items are listed here
