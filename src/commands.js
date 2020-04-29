@@ -594,7 +594,7 @@ module.exports.collectRewardsCommand = function(message){
             message.channel.send(error)
         }else{
             
-            if (true || !userData.data.collectedrewards){
+            if (!userData.data.collectedrewards){
                 var achievements = userData.data.achievements
                 var rareItems = [];
                 var itemsObtainedArray = [];
@@ -728,6 +728,8 @@ module.exports.collectRewardsCommand = function(message){
                             rewardsEmbedBuilder(message, rewardsString, itemsStrings)
                         }
                     })
+                }else{
+                    message.channel.send(rewardsString + " " + itemsStrings)
                 }
             }
         }
