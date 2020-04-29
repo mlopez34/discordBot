@@ -2,12 +2,219 @@ module.exports = {
     // TODO:
     // cannister shot chance to deal 1 to 7 shots
     // mindflaylike ability 90%, 120%, 150%
-    // deal 157% damage, consume 20% of spirit / armor for the turn
-    // 
+    // deal 160% damage, consume 50% of spirit / armor for the turn
     // lightwell ability - 5 random heals
 
+    // concentrate, adapt, surge, pulverize, tidalwave, finalfortune, cleanse, invigorate, restore, backup, canistershot
     
     rpgAbilities: {
+        concentrate: {
+            abilityId: "concentrate",
+            name: "Concentrate",
+            description: "Cast on self - consume all crit strike chance for 10 turns, deal 40% more damage for 3 turns",
+            buff: {
+                selfbuff: true,
+                buff: true,
+                name: "Concentrate",
+                abilityId: "concentrate",
+                affectsGlobal: ["damageDealtPercentage"],
+                multiplier: 1.4,
+                turnsToExpire: 3,
+                emoji: ":woman_in_lotus_position:"
+            },
+            status: {
+                status: true,
+                ignoreBandaid: true,
+                selfDebuff: true,
+                name: "Consumed",
+                abilityId: "consumed",
+                affects: ["criticalChance"],
+                multiplier: 0.00000000001,
+                turnsToExpire: 3,
+                emoji: ""
+            }
+        },
+        adapt: {
+            // consume all crit strike chance for 10 turns, heal for 30% more for 3 turns
+            abilityId: "adapt",
+            name: "Adapt",
+            description: "Cast on self - consume all crit strike chance for 10 turns, heal for 40% more for 3 turns",
+            buff: {
+                selfbuff: true,
+                buff: true,
+                name: "Adapt",
+                abilityId: "adapt",
+                affectsGlobal: ["healingDonePercentage"],
+                multiplier: 1.4,
+                turnsToExpire: 3,
+                emoji: ":man_in_lotus_position:"
+            },
+            status: {
+                status: true,
+                ignoreBandaid: true,
+                selfDebuff: true,
+                name: "Consumed",
+                abilityId: "consumed",
+                affects: ["criticalChance"],
+                multiplier: 0.0000000001,
+                turnsToExpire: 3,
+                emoji: ""
+            }
+        },
+        surge: {
+            // after landing a successful damaging critical strike you can use this ability
+            name: "Surge",
+            abilityId: "surge",
+            description: "Heal the group for 20 + 35% of your current magical power. After landing a successful critical strike with any ability - surge becomes surge 2 for the next turn. Surge 2: Heal the group for 75 + 92% of your current magical damage",
+            heal: 20,
+            mdPercentage: 0.35,
+            castAbilityAfterCriticalStrike: "surge2",
+            areawide: true,
+            targets: "friendly"
+        },
+        surge2: {
+            name: "Surge 2",
+            abilityId: "surge2",
+            description: "Heal the group for 75 + 92% of your current magical damage",
+            heal: 75,
+            mdPercentage: 0.92,
+            areawide: true,
+            targets: "friendly"
+        },
+        pulverize: {
+            name: "Pulverize",
+            abilityId: "pulverize",
+            dmg: 40,
+            adPercentage: 1.1,
+            description: "Deal 40 damage + 110% of your physical damage. After landing a successful critical strike with any ability - pulverize becomes pulverize 2 for the next turn. Pulverize 2: Deal 170 damage + 167% of your physical damage",
+            castAbilityAfterCriticalStrike: "pulverize2", 
+            type: "physical",
+        },
+        pulverize2: {
+            name: "Pulverize 2",
+            abilityId: "pulverize2",
+            dmg: 170,
+            adPercentage: 1.67,
+            description: "Deal 170 damage + 167% of your physical damage",
+            type: "physical",
+        },
+        tidalwave:{
+            name: "Tidal Wave",
+            abilityId: "tidalwave",
+            dmg: 40,
+            mdPercentage: 1.1,
+            description: "Deal 40 damage + 110% of your magical damage. After landing a successful critical strike with any ability - tidal wave becomes tidal wave 2 for the next turn. Tidal Wave 2: Deal 150 damage + 167% of your magical damage",
+            castAbilityAfterCriticalStrike: "tidalwave2",
+            type: "water",
+        },
+        tidalwave2:{
+            name: "Tidal Wave 2",
+            abilityId: "tidalwave2",
+            dmg: 170,
+            mdPercentage: 1.67,
+            description: "Deal 170 damage + 167% of your magical damage",
+            type: "water",
+        },
+        finalfortune:{
+            abilityId: "finalfortune",
+            name: "Final Fortune",
+            limitOffensive: true,
+            areawide: true,
+            description: "Limit ability - The group gains haste + 75% damage + 35 % damage reduction permanently, and last rites (2 turn duration, death is certain when last rites ends, cannot be bandaided)",
+            buff: {
+                buff: true,
+                areawide: true,
+                hasted: true,
+                name: "Final Fortune",
+                abilityId: "finalfortune",
+                turnsToExpire: 3,
+                affectsGlobal: ["damageTakenPercentage"],
+                multiplier: 0.65,
+                emoji: ":fortune_cookie:"
+            },
+            status: {
+                status: true,
+                areawide: true,
+                selfDebuff: true,
+                name: "Last Rites",
+                abilityId: "lastrites",
+                ignoreBandaid: true,
+                deathOnStatusExpire: true,
+                emoji : ":coffin:",
+                affectsGlobal: ["damageDealtPercentage"],
+                turnsToExpire: 3,
+                multiplier: 1.75
+            }
+        },
+        cleanse:{
+            abilityId: "cleanse",
+            name: "Cleanse",
+            limitDefensive: true,
+            areawide: true,
+            description: "Limit ability - Heal the group for 50 + 0% of your current magical damage and remove all basic statuses",
+            heal: 50,
+            mdPercentage: 0.4,
+            targets: "friendly",
+            special: "remove status"
+        },
+        invigorate: {
+            name: "Invigorate",
+            abilityId: "invigorate",
+            limitDefensive: true,
+            areawide: true,
+            description: "Limit ability - Increase the group's armor by 100% and spirit by 100% for 3 turns",
+            buff: {
+                buff: true,
+                areawide: true,
+                name: "Invigorate",
+                abilityId: "invigorate",
+                emoji : ":stars:",
+                turnsToExpire: 3,
+                affects: ["armor", "spirit"],
+                multiplier: 2
+            }
+        },
+        restore: {
+            name: "Restore",
+            abilityId: "restore",
+            description: "Upon taking any damage, heal your target for 50 + 20% of magical damage - lasts 3 turns",
+            buff: {
+                buff: true,
+                name: "Restore",
+                abilityId: "restore",
+                emoji : ":purple_heart:",
+                turnsToExpire: 3,
+                healWhenDamageTaken: 50,
+                mdPercentage: .60
+            }
+        }, 
+        backup: {
+            name: "Backup",
+            abilityId: "backup",
+            description: "Upon taking any damage, heal your target for 50 + 10% of physical damage - 10 charges",
+            buff: {
+                buff: true,
+                name: "Backup",
+                abilityId: "backup",
+                emoji : ":blue_heart:",
+                charges: 10,
+                maxcharges: 10,
+                healWhenDamageTaken: 50,
+                adPercentage: .30
+            }
+        },
+        canistershot: {
+            // cannister shot - shoot between 1 and 7 bullets, 4 bullets should be the same as a regular -cast shoot 6 charges
+            name: "Canister Shot",
+            abilityId: "canistershot",
+            description: "Deal 40 damage + 40% of your attack damage. shoots between 1 and 7 shots , 6 charges",
+            dmg: 40,
+            charges: 6,
+            maxcharges: 6,
+            adPercentage: 0.4,
+            randomNumberOfCasts: 7, 
+            type: "physical"
+        },
         attack : {
             name: "Attack",
             abilityId: "attack",
@@ -67,6 +274,7 @@ module.exports = {
                 name: "Nourish",
                 abilityId: "nourish",
                 prioritizeLowestHp: true,
+                ignoreInitialTarget: true,
                 heal: 50,
                 additionalTargets: 3,
                 mdPercentage: 0,
@@ -115,6 +323,22 @@ module.exports = {
             }
         },
 
+        vestup : {
+            name : "Vest Up",
+            abilityId: "vestup",
+            description: "Reduce all damage taken by 95% for 2 turns",
+            buff: {
+                selfbuff: true,
+                buff: true,
+                name: "Vest Up",
+                additionalDescription: " is preparing for a shootout",
+                emoji : "<:shell:479293276462252042>",
+                affectsGlobal: ["damageTakenPercentage"],
+                turnsToExpire: 2,
+                multiplier: 0.95
+            }
+        },
+
         cocoon : {
             name : "Cocoon",
             abilityId: "cocoon",
@@ -128,6 +352,31 @@ module.exports = {
                 affectsGlobal: ["damageTakenPercentage", "damageDealtPercentage"],
                 turnsToExpire: 2,
                 multiplier: 0.8
+            }
+        },
+
+        incinerate : {
+            name : "Incinerate",
+            abilityId: "incinerate",
+            belongsToMember: true,
+            processAbility: true,
+            areawide: true,
+            everyNTurns: 4,
+            afterNTurns: 44,
+            currentTurn: 0,
+            additionalDescription: " is increasing all damage taken and all damage done to the group by 25%",
+            description: "increases all damage taken and all damage done by 25% for 20 turns",
+            status: {
+                status: true,
+                ignoreUnique: true,
+                ignoreBandaid: true,
+                areawide: true,
+                name: "Incinerate",
+                abilityId: "incinerate",
+                emoji : "📛",
+                affectsGlobal: ["damageTakenPercentage", "damageDealtPercentage"],
+                turnsToExpire: 30,
+                multiplier: 1.25
             }
         },
 
@@ -192,6 +441,28 @@ module.exports = {
             }
         },
 
+        enchant: {
+            name: "Enchant",
+            abilityId: "enchant",
+            maxcooldown: 4,
+            cooldown: 0,
+            description: "Paralyze a player or easy, medium, summoned difficulty enemy for 3 turns, 4 turn cooldown, invalid if damage is taken",
+            difficultiesAllowed: [
+                "easy",
+                "medium",
+                "summoned"
+            ],
+            status: {
+                status: true,
+                abilityId: "paralyze",
+                name: "Paralyze",
+                emoji: "<:paralyze:479294904900517888>",
+                turnsToExpire: 3,
+                setAbleToAttack: false,
+                invalidOnDamage: true
+            }
+        },
+
         // new abilities end
         claw : {
             name: "Claw",
@@ -204,6 +475,13 @@ module.exports = {
             name: "Bite",
             abilityId: "bite",
             dmg: 50,
+            adPercentage: 1,
+            type: "physical"
+        },
+        sting : {
+            name: "Sting",
+            abilityId: "sting",
+            dmg: 100,
             adPercentage: 1,
             type: "physical"
         },
@@ -220,6 +498,25 @@ module.exports = {
             dmg: 50,
             adPercentage: 1.2,
             type: "physical"
+        },
+        skeletalSwing: {
+            name: "Skeletal Swing",
+            abilityId: "skeletalSwing",
+            dmg: 50,
+            adPercentage: 1.1,
+            type: "physical",
+            dot: {
+                name: "Reap",
+                type:"physical",
+                dmg: 500,
+                untargettable: true,
+                adPercentage: 1,
+                emoji: "<:shatter:479347500751388687>",
+                ignoreUnique: true,
+                turnsToExpire: 15,
+                dmgOnDotExpire: false,
+                dmgOnExpire: 0
+            }
         },
         scam : {
             name: "Scam",
@@ -289,6 +586,13 @@ module.exports = {
             abilityId: "crush",
             dmg: 50,
             adPercentage: 1.35,
+            type: "physical"
+        },
+        decompose : {
+            name: "Decompose",
+            abilityId: "decompose",
+            dmg: 50,
+            adPercentage: 1.55,
             type: "physical"
         },
         ferociousBite : {
@@ -592,6 +896,29 @@ module.exports = {
                 multiplier: 1.6
             }
         },
+        ripfabric: {
+            name: "Rip Fabric",
+            abilityId: "ripfabric",
+            areawide: true,
+            belongsToMember: true,
+            processAbility: true,
+            everyNTurns: 1,
+            afterNTurns: 1,
+            currentTurn: 1,
+            additionalDescription: " is reducing the groups maximum HP by 10%",
+            status: {
+                name: "Rip Fabric",
+                abilityId: "ripfabric",
+                status: true,
+                areawide: true,
+                ignoreBandaid: true,
+                ignoreUnique: true,
+                emoji: "🔻",
+                turnsToExpire: 100,
+                affects: ["maxhp"],
+                multiplier: .9
+            }
+        },
         flameblast: {
             name: "Flame Blast",
             abilityId: "flameblast",
@@ -697,6 +1024,101 @@ module.exports = {
             areawide: true,
             targets: "enemy"
         },
+        fireBreath: {
+            name: "Fire Breath",
+            abilityId: "fireBreath",
+            dmg: 100,
+            description: "Deal 100 damage + 75% of your magic damage to all enemies and apply burning",
+            mdPercentage: .75,
+            type: "fire",
+            areawide: true,
+            targets: "enemy",
+            dot: {
+                name: "Burning",
+                areawide: true,
+                dmg: 50,
+                mdPercentage: 1,
+                type: "fire",
+                emoji: "🔥",
+                damageOnDotApply: false,
+                turnsToExpire: 5,
+                damageOnDotExpire: false,
+                damageOnExpire: 0
+            }
+        },
+        frostBreath: {
+            name: "Frost Breath",
+            abilityId: "frostBreath",
+            dmg: 45,
+            description: "Deal 45 damage + 50% of your magic damage to all enemies",
+            mdPercentage: 0.5,
+            type: "ice",
+            areawide: true,
+            targets: "enemy",
+            status: {
+                areawide: true,
+                name: "Frozen",
+                emoji: "<:freeze:479294904946655254>",
+                affects: ["armor"],
+                multiplier: 0.7
+            }
+        },
+        venom: {
+            name: "Venom",
+            abilityId: "venom",
+            dmg: 45,
+            description: "Deal 45 damage + 50% of your magic damage to all enemies",
+            mdPercentage: 0.5,
+            type: "poison",
+            areawide: true,
+            targets: "enemy",
+            status: {
+                areawide: true,
+                name: "Crushed",
+                emoji: "<:radioactive:479294904946655254>",
+                affects: ["armor"],
+                multiplier: 0.7
+            }
+        },
+        vandalize: {
+            name: "Vandalize",
+            abilityId: "vandalize",
+            dmg: 45,
+            description: "Deal 45 damage + 50% of your physical damage to all enemies",
+            adPercentage: 0.5,
+            type: "physical",
+            areawide: true,
+            targets: "enemy",
+            status: {
+                areawide: true,
+                name: "Scold",
+                emoji: "<:scold:479294904611110924>",
+                affects: ["spirit"],
+                multiplier: 0.7
+            }
+        },
+        blizzard: {
+            name: "Blizzard",
+            abilityId: "blizzard",
+            dmg: 45,
+            description: "Deal 45 damage + 50% of your magic damage to all enemies",
+            mdPercentage: 0.5,
+            type: "ice",
+            areawide: true,
+            targets: "enemy",
+            dot: {
+                name: "Frostbite",
+                type:"ice",
+                dmg: 65,
+                areawide: true,
+                mdPercentage: 1,
+                emoji: ":cloud_snow:",
+                dmgOnDotApply: false,
+                turnsToExpire: 6,
+                dmgOnDotExpire: false,
+                dmgOnExpire: 0
+            }
+        },
         slash: {
             name: "Slash",
             abilityId: "slash",
@@ -728,12 +1150,30 @@ module.exports = {
             areawide: true,
             targets: "enemy"
         },
+        shootout: {
+            name: "Shootout",
+            abilityId: "shootout",
+            dmg: 100000,
+            adPercentage: 1,
+            type: "physical",
+            areawide: true,
+            targets: "enemy"
+        },
         destructionBeam: {
             name: "Destructive Beam",
             abilityId: "destructionBeam",
             dmg: 305,
             adPercentage: 0.4,
             type: "physical",
+            areawide: true,
+            targets: "enemy"
+        },
+        neutronBlast: {
+            name: "Neutron Blast",
+            abilityId: "neutronBlast",
+            dmg: 305,
+            mdPercentage: 0.55,
+            type: "electric",
             areawide: true,
             targets: "enemy"
         },
@@ -770,11 +1210,11 @@ module.exports = {
             name: "Plasma Beam",
             abilityId: "plasmabeam",
             areawide: true,
-            description: "Deal 75 damage + 87% of your attack damage to all enemies, 6 charges",
+            description: "Deal 75 damage + 87% of your attack damage to all enemies, 4 charges",
             dmg: 75,
-            charges: 6,
-            maxcharges: 6,
-            adPercentage: .90,
+            charges: 4,
+            maxcharges: 4,
+            adPercentage: .87,
             type: "physical"
         },
         cannistershot: {
@@ -837,12 +1277,13 @@ module.exports = {
         pulseshot: {
             name: "Pulse Shot",
             abilityId: "pulseshot",
-            limitOffensive: true,
-            description: "Limit ability - Deal 480 damage + 200% of your attack damage",
-            dmg: 480,
-            adPercentage: 2,
-            type: "physical"
-            
+            areawide: true,
+            description: "Deal 75 damage + 87% of your magic damage to all enemies, 4 charges",
+            dmg: 75,
+            charges: 4,
+            maxcharges: 4,
+            mdPercentage: .87,
+            type: "ice"
         },
         execute: {
             name: "Execute",
@@ -979,6 +1420,7 @@ module.exports = {
             buff: {
                 buff: true,
                 name: "Haste",
+                hasted: true,
                 emoji: "<:haste:479293276424241163>"
             }
         },
@@ -1134,6 +1576,7 @@ module.exports = {
                 name: "Decay",
                 type:"shadow",
                 dmg: 65,
+                ignoreUnique: true,
                 areawide: true,
                 mdPercentage: 1,
                 emoji: "<:decay:479296558748270601>",
@@ -1155,6 +1598,62 @@ module.exports = {
                 type:"fire",
                 dmg: 1,
                 mdPercentage: 1,
+                emoji: "<:bomb:479296552096235520>",
+                dmgOnDotApply: false,
+                turnsToExpire: 6,
+                dmgOnDotExpire: true,
+                dmgOnExpire: 550,
+                dmgOnDotRemove: true,
+                dmgOnRemoveAreaWide: true,
+                mdPercentageOnRemove: 0.25,
+                dmgOnRemove: 100
+            }
+        },
+        aoeBombMobLord: {
+            name:"Bomb",
+            abilityId: "aoeBombMobLord",
+            type:"fire",
+            aboveKeystone: 6,
+            processAbility: true,
+            belongsToMember: true,
+            areawide: true,
+            everyNTurns: 17,
+            afterNTurns: 10,
+            currentTurn: 0,
+            dot: {
+                name: "Bomb",
+                type:"fire",
+                dmg: 1,
+                mdPercentage: 1,
+                areawide: true,
+                emoji: "<:bomb:479296552096235520>",
+                dmgOnDotApply: false,
+                turnsToExpire: 6,
+                dmgOnDotExpire: true,
+                dmgOnExpire: 550,
+                dmgOnDotRemove: true,
+                dmgOnRemoveAreaWide: true,
+                mdPercentageOnRemove: 0.25,
+                dmgOnRemove: 100
+            }
+        },
+        aoeBombDictator: {
+            name:"Bomb",
+            abilityId: "aoeBombDictator",
+            type:"fire",
+            aboveKeystone: 6,
+            processAbility: true,
+            belongsToMember: true,
+            areawide: true,
+            everyNTurns: 17,
+            afterNTurns: 17,
+            currentTurn: 0,
+            dot: {
+                name: "Bomb",
+                type:"fire",
+                dmg: 1,
+                mdPercentage: 1,
+                areawide: true,
                 emoji: "<:bomb:479296552096235520>",
                 dmgOnDotApply: false,
                 turnsToExpire: 6,
@@ -1214,6 +1713,81 @@ module.exports = {
                 mdPercentageOnRemove: 1,
                 dmgOnExpire: 150
             }
+        },
+        unimaginablePower: {
+            name: "Unimaginable Power",
+            abilityId: "unimaginablePower",
+            processAbility: true,
+            belongsToMember: true,
+            aboveKeystone: 6,
+            everyNTurns: 50,
+            afterNTurns: 1,
+            currentTurn: 0,
+            buff: {
+                buff: true,
+                name: "Unimaginable Power",
+                selfbuff: true,
+                additionalDescription: " is reflecting 20% damage back to all attackers",
+                abilityId: "unimaginablePower",
+                reflectPercentage: 0.2,
+                areaewideReflectPercentage: 0.20,
+                emoji: "🔈",
+                abType: "electric",
+                ignoreUnique: true,
+                turnsToExpire: 50
+            }
+        },
+        summonReoriginator75: {
+            name: "Summon Reoriginator",
+            abilityId: "summonReoriginator75",
+            aboveKeystone: 6,
+            belongsToMember: true,
+            hppercentage: 0.75,
+            oneTimeCast: true,
+            summon: {
+                enemy: "reoriginator",
+                attackDmg: 150,
+                magicDmg: 100,
+                hpPlus: 30
+            }
+        },
+        summonReoriginator50: {
+            name: "Summon Reoriginator",
+            abilityId: "summonReoriginator50",
+            aboveKeystone: 6,
+            belongsToMember: true,
+            hppercentage: 0.5,
+            oneTimeCast: true,
+            summon: {
+                enemy: "reoriginator",
+                attackDmg: 1000,
+                magicDmg: 1000,
+                hpPlus: 100000
+            }
+        },
+        summonReoriginator25: {
+            name: "Summon Reoriginator",
+            abilityId: "summonReoriginator25",
+            aboveKeystone: 6,
+            belongsToMember: true,
+            hppercentage: 0.25,
+            oneTimeCast: true,
+            summon: {
+                enemy: "reoriginator",
+                attackDmg: 1000,
+                magicDmg: 1000,
+                hpPlus: 400000
+            }
+        },
+        decimate: {
+            belongsToMember: true,
+            name: "Decimate 50%",
+            abilityId: "decimate",
+            dmgaura: true,
+            oneTimeCast: true,
+            hppercentage: .5,
+            currentHealthPercentageDamage: 0.5,
+            type: "physical"
         },
         // summon demon for ch 5
         summonDemon: {
@@ -1500,6 +2074,7 @@ module.exports = {
         summonTorturedRobotsDeath: {
             name: "summonTorturedRobots",
             belongsToMember: true,
+            oneTimeCast: true,
             onDeathEffect: true,
             summon: {
                 enemies: [
@@ -1507,6 +2082,149 @@ module.exports = {
                     "torturedRobot",
                     "torturedRobot",
                     "torturedRobot"
+                ]
+            }
+        },
+        summonRuffians: {
+            name: "summonRuffians",
+            belongsToMember: true,
+            oneTimeCast: true,
+            onDeathEffect: true,
+            summon: {
+                enemies: [
+                    "ruffian",
+                    "ruffian",
+                    "ruffian",
+                    "ruffian",
+                    "ruffian",
+                    "ruffian"
+                ]
+            }
+        },
+        summonThugs: {
+            name: "summonThugs",
+            belongsToMember: true,
+            oneTimeCast: true,
+            onDeathEffect: true,
+            summon: {
+                enemies: [
+                    "thug",
+                    "thug",
+                    "thug",
+                    "thug"
+                ]
+            }
+        },
+        summonLeopardPack: {
+            name: "summonLeopardPack",
+            belongsToMember: true,
+            oneTimeCast: true,
+            onDeathEffect: true,
+            summon: {
+                enemies: [
+                    "snowleopard",
+                    "snowleopard",
+                    "snowleopard",
+                    "snowleopard",
+                    "snowleopard"
+                ]
+            }
+        },
+        summon3polarbears: {
+            name: "summon3polarbears",
+            belongsToMember: true,
+            oneTimeCast: true,
+            onDeathEffect: true,
+            summon: {
+                enemies: [
+                    "polarbear",
+                    "polarbear",
+                    "polarbear"
+                ]
+            }
+        },
+        summonOgres: {
+            name: "summonOgres",
+            belongsToMember: true,
+            oneTimeCast: true,
+            onDeathEffect: true,
+            summon: {
+                enemies: [
+                    "ogre",
+                    "ogre"
+                ]
+            }
+        },
+        summonEgg: {
+            name: "summonEgg",
+            abilityId: "summonEgg",
+            belongsToMember: true,
+            everyNTurns: 3,
+            afterNTurns: 3,
+            currentTurn: 0,
+            summon: {
+                enemies: [
+                    "egg"
+                ]
+            }
+        },
+        summonMaggots: {
+            name: "summonMaggots",
+            abilityId: "summonMaggots",
+            belongsToMember: true,
+            everyNTurns: 3,
+            afterNTurns: 3,
+            currentTurn: 0,
+            summon: {
+                enemies: [
+                    "maggot",
+                    "maggot",
+                    "maggot",
+                ]
+            }
+        },
+        summonSkyMaggots: {
+            name: "summonSkyMaggots",
+            abilityId: "summonSkyMaggots",
+            belongsToMember: true,
+            everyNTurns: 3,
+            afterNTurns: 3,
+            currentTurn: 0,
+            summon: {
+                enemies: [
+                    "skymaggot"
+                ]
+            }
+        },
+        invigorateDeath: {
+            belongsToMember: true,
+            processAbility: true,
+            oneTimeCast: true,
+            onDeathEffect: true,
+            effectDone: false,
+            name: "Invigorate",
+            abilityId: "invigorate",
+            buff: {
+                buff: true,
+                areawide: true,
+                name: "Invigorate",
+                abilityId: "invigorate",
+                emoji : ":stars:",
+                turnsToExpire: 5,
+                affects: ["armor", "spirit"],
+                multiplier: 2
+            }
+        },
+        summonParasites: {
+            name: "summonParasites",
+            belongsToMember: true,
+            everyNTurns: 4,
+            afterNTurns: 4,
+            currentTurn: 0,
+            summon: {
+                enemies: [
+                    "parasiticMaggot",
+                    "parasiticMaggot"
                 ]
             }
         },
@@ -1560,8 +2278,8 @@ module.exports = {
         summonAmberPool: {
             name: "summonAmberPool",
             belongsToMember: true,
-            everyNTurns: 5,
-            afterNTurns: 5,
+            everyNTurns: 7,
+            afterNTurns: 4,
             currentTurn: 0,
             summon: {
                 enemy: "amberPool",
@@ -1571,34 +2289,13 @@ module.exports = {
             name: "summonRoots",
             belongsToMember: true,
             everyNTurns: 6,
-            afterNTurns: 4,
-            currentTurn: 0,
-            summon: {
-                enemies: [
-                    "roots",
-                    "roots",
-                    "roots",
-                ]
-            }
-        },
-        summonPods: {
-            name: "summonPods",
-            belongsToMember: true,
-            everyNTurns: 10,
             afterNTurns: 5,
             currentTurn: 0,
             summon: {
                 enemies: [
-                    "pod",
-                    "pod",
-                    "pod",
-                    "pod",
-                    "pod",
-                    "pod",
-                    "pod",
-                    "pod",
-                    "pod",
-                    "pod",
+                    "roots",
+                    "roots",
+                    "roots",
                 ]
             }
         },
@@ -1919,11 +2616,42 @@ module.exports = {
             buff: {
                 buff: true,
                 name: "Strength",
+                ignoreUnique: true,
                 abilityId: "strengthFever",
                 emoji: "<:strength:479298214294716416>",
                 turnsToExpire: 50,
                 affects: ["attackDmg", "magicDmg"],
                 multiplier: 1.33
+            }
+        },
+
+        strengthZap: {
+            name: "Strength",
+            abilityId: "strengthZap",
+            buff: {
+                buff: true,
+                ignoreUnique: true,
+                name: "Strength",
+                abilityId: "strengthZap",
+                emoji: "<:strength:479298214294716416>",
+                turnsToExpire: 50,
+                affects: ["attackDmg", "magicDmg"],
+                multiplier: 1.33
+            }
+        },
+
+        strengthRupture: {
+            name: "Strength",
+            abilityId: "strengthRupture",
+            buff: {
+                buff: true,
+                ignoreUnique: true,
+                name: "Strength",
+                abilityId: "strengthRupture",
+                emoji: "<:strength:479298214294716416>",
+                turnsToExpire: 50,
+                affects: ["attackDmg", "magicDmg"],
+                multiplier: 1.5
             }
         },
 
@@ -2084,6 +2812,26 @@ module.exports = {
                 affects: ["attackDmg", "magicDmg"],
                 turnsToExpire: 300,
                 multiplierBasedOnLostHp: .01
+            }
+        },
+
+        fury3 : {
+            name : "Fury",
+            belongsToMember: true,
+            processAbility: true,
+            abilityId: "fury3",
+            everyNTurns: 100,
+            afterNTurns: 1,
+            currentTurn: 1,
+            buff: {
+                selfbuff: true,
+                buff: true,
+                name: "Fury",
+                additionalDescription: " is gaining damage based on lost health",
+                emoji : "<:fury:479349359281176577>",
+                affects: ["attackDmg", "magicDmg"],
+                turnsToExpire: 300,
+                multiplierBasedOnLostHp: .03
             }
         },
 
@@ -2255,6 +3003,22 @@ module.exports = {
                 ]
             }
         },
+        summonImps: {
+            name: "summonImps",
+            belongsToMember: true,
+            everyNTurns: 5,
+            afterNTurns: 4,
+            currentTurn: 0,
+            summon: {
+                enemies: [
+                    "imp",
+                    "imp",
+                    "imp",
+                    "imp",
+                    "imp"
+                ]
+            }
+        },
         absorbFiends: {
             abilityId: "absorbFiends",
             belongsToMember: true,
@@ -2263,6 +3027,15 @@ module.exports = {
             afterNTurns: 7,
             currentTurn: 0,
             special: "absorb fiends" 
+        },
+        absorbImps: {
+            abilityId: "absorbImps",
+            belongsToMember: true,
+            processAbility: true,
+            everyNTurns: 5,
+            afterNTurns: 7,
+            currentTurn: 0,
+            special: "absorb imps" 
         },
 
         /*
@@ -2428,6 +3201,32 @@ module.exports = {
                 dmgOnExpire: 0
             }
         },
+        sap: {
+            name:"Sap",
+            abilityId: "sap",
+            type:"physical",
+            aboveKeystone: 6,
+            processAbility: true,
+            belongsToMember: true,
+            everyNTurns: 2,
+            ignoreUnique: true,
+            afterNTurns: 1,
+            currentTurn: 0,
+            dot: {
+                name: "Sap",
+                abilityId: "sap",
+                type:"physical",
+                dmg: 100,
+                adPercentage: 3,
+                areawide: true,
+                emoji: ":red_circle:",
+                dmgOnDotApply: false,
+                ignoreUnique: true,
+                turnsToExpire: 25,
+                dmgOnDotExpire: false,
+                dmgOnExpire: 0
+            }
+        },
         hexNormie: {
             name:"Hex",
             abilityId: "hexNormie",
@@ -2579,6 +3378,42 @@ module.exports = {
             // hp and stats equal
             zombifyAll: true // summons zombies
         },
+        reanimateAll25: {
+            belongsToMember: true,
+            effectDone: false,
+            oneTimeCast: true,
+            hppercentage: 0.2,
+            aboveKeystone: 6,
+            name: "Reanimate",
+            abilityId: "reanimateAll25",
+            admdMultiplier: 1.25,
+            // create zombies of all the enemies that are dead
+            // hp and stats equal
+            zombifyAll: true // summons zombies
+        },
+        reanimateAll30: {
+            belongsToMember: true,
+            effectDone: false,
+            oneTimeCast: true,
+            hppercentage: 0.3,
+            name: "Reanimate",
+            abilityId: "reanimateAll30",
+            admdMultiplier: 1.5,
+            // create zombies of all the enemies that are dead
+            // hp and stats equal
+            zombifyAll: true // summons zombies
+        },
+        reanimateAllMessage: {
+            aboveKeystone: 6,
+            belongsToMember: true,
+            effectDone: false,
+            oneTimeCast: true,
+            hppercentage: 0.35,
+            eotMessage: "The Roman Soldier prepares to reanimate his army",
+        },
+        // end of turn event that adds an end of turn event to the enemy every N turns
+
+
         /*
         special artifact stuff
         */
@@ -2759,6 +3594,19 @@ module.exports = {
                 hpPlus: 0
             }
         },
+        summonAthosDeath: {
+            name: "Summon Athos",
+            abilityId: "summonAthosDeath",
+            belongsToMember: true,
+            onDeathEffect: true,
+            effectDone: false,
+            summon: {
+                enemy: "athos",
+                attackDmg: 240,
+                magicDmg: 250,
+                hpPlus: 0
+            }
+        },
         summonPorthos: {
             name: "Summon Porthos",
             abilityId: "summonPorthos",
@@ -2772,12 +3620,38 @@ module.exports = {
                 hpPlus: 0
             }
         },
+        summonPorthosDeath: {
+            name: "Summon Porthos",
+            abilityId: "summonPorthosDeath",
+            belongsToMember: true,
+            onDeathEffect: true,
+            effectDone: false,
+            summon: {
+                enemy: "porthos",
+                attackDmg: 240,
+                magicDmg: 250,
+                hpPlus: 0
+            }
+        },
         summonAramis: {
             name: "Summon Aramis",
             abilityId: "summonAramis",
             belongsToMember: true,
             effectDone: false,
             hppercentage: 0.3,
+            summon: {
+                enemy: "aramis",
+                attackDmg: 240,
+                magicDmg: 250,
+                hpPlus: 0
+            }
+        },
+        summonAramisDeath: {
+            name: "Summon Aramis",
+            abilityId: "summonAramisDeath",
+            belongsToMember: true,
+            effectDone: false,
+            onDeathEffect: true,
             summon: {
                 enemy: "aramis",
                 attackDmg: 240,
@@ -2838,6 +3712,28 @@ module.exports = {
             everyNTurns: 1,
             currentTurn: 0,
             afterNTurns: 1,
+            type: "physical"
+        },
+
+        overpower66: {
+            belongsToMember: true,
+            oneTimeCast: true,
+            name: "Overpower",
+            abilityId: "overpower66",
+            dmgaura: true,
+            hppercentage: .66,
+            currentHealthPercentageDamage: 0.66,
+            type: "physical"
+        },
+
+        overpower33: {
+            belongsToMember: true,
+            oneTimeCast: true,
+            name: "Overpower",
+            abilityId: "overpower33",
+            dmgaura: true,
+            hppercentage: .33,
+            currentHealthPercentageDamage: 0.33,
             type: "physical"
         },
 
@@ -2938,7 +3834,6 @@ module.exports = {
             onDeathEffect: true,
             areawide: true,
             processAbility: true,
-            targetToApplyOn: "random",
             name:"Elemental Barrier",
             abilityId: "elementalBarrier",
             buff: {
@@ -2949,7 +3844,7 @@ module.exports = {
                 name: "Elemental Barrier",
                 abilityId: "elementalBarrier",
                 emoji: "🔶",
-                additionalDescription: " is reducing magical damage taken by 50%",
+                additionalDescription: "The group is reducing magical damage taken by 50%",
                 affectsGlobal: ["magicDamageTakenPercentage"],
                 turnsToExpire: 2,
                 multiplier: 0.5
@@ -2960,7 +3855,6 @@ module.exports = {
             onDeathEffect: true,
             processAbility: true,
             areawide: true,
-            targetToApplyOn: "random",
             name:"Physical Barrier",
             abilityId: "physicalBarrier",
             buff: {
@@ -2971,21 +3865,41 @@ module.exports = {
                 buffPartyMembers: true,
                 abilityId: "physicalBarrier",
                 emoji: "🔷",
-                additionalDescription: " is reducing magical damage taken by 50%",
+                additionalDescription: "The group is reducing magical damage taken by 50%",
                 affectsGlobal: ["physicalDamageTakenPercentage"],
                 turnsToExpire: 2,
                 multiplier: 0.5
             }
         },
+        physicalBarrier97: {
+            onDeathEffect: true,
+            processAbility: true,
+            areawide: true,
+            name:"Physical Barrier",
+            abilityId: "physicalBarrier97",
+            buff: {
+                buff: true,
+                name: "Physical Barrier",
+                areawide: true,
+                ignoreUnique: true,
+                buffPartyMembers: true,
+                abilityId: "physicalBarrier97",
+                emoji: "🔷",
+                additionalDescription: "The group is reducing magical damage taken by 97%",
+                affectsGlobal: ["physicalDamageTakenPercentage"],
+                turnsToExpire: 2,
+                multiplier: 0.03
+            }
+        },
         pillarAOEmagic: {
-            hppercentage: 0.50,
+            hppercentage: 0.25,
             belongsToMember: true,
             dmgaura: true,
-            name: "Pillar Radiation",
+            name: "Radiation",
             abilityId: "pillarAOEmagic",
             areawidedmg: {
                 endOfTurnAura: true,
-                dmgPerTurn: 1,
+                dmgPerTurn: 22,
                 hitsEveryNTurn: 1,
                 name: "Pillar Radiation",
                 dmg: 680,
@@ -2998,7 +3912,7 @@ module.exports = {
             belongsToMember: true,
             hppercentage: 0.25,
             dmgaura: true,
-            name: "Pillar Radiation",
+            name: "Radiation",
             abilityId: "pillarAOE",
             areawidedmg: {
                 endOfTurnAura: true,
@@ -3040,6 +3954,62 @@ module.exports = {
             everyNTurns: 6,
             ignoreFocus: true,
             afterNTurns: 5,
+            currentTurn: 0,
+            status: {
+                status: true,
+                abilityId: "arrowVolley",
+                name: "Arrow Volley",
+                type:"physical",
+                dmg: 100,
+                untargettable: true,
+                adPercentage: 1,
+                emoji: "🏹",
+                dmgOnDotApply: false,
+                turnsToExpire: 1,
+                dmgOnStatusExpire: true,
+                adPercentageOnRemove: .9,
+                dmgOnExpire: 600
+            }
+        },
+
+        secondarrowVolley: {
+            name:"Arrow Volley",
+            abilityId: "secondarrowVolley",
+            type:"physical",
+            aboveKeystone: 6,
+            processAbility: true,
+            belongsToMember: true,
+            everyNTurns: 6,
+            ignoreFocus: true,
+            afterNTurns: 6,
+            currentTurn: 0,
+            status: {
+                status: true,
+                abilityId: "arrowVolley",
+                name: "Arrow Volley",
+                type:"physical",
+                dmg: 100,
+                untargettable: true,
+                adPercentage: 1,
+                emoji: "🏹",
+                dmgOnDotApply: false,
+                turnsToExpire: 1,
+                dmgOnStatusExpire: true,
+                adPercentageOnRemove: .9,
+                dmgOnExpire: 600
+            }
+        },
+
+        thirdarrowVolley: {
+            name:"Arrow Volley",
+            abilityId: "thirdarrowVolley",
+            type:"physical",
+            aboveKeystone: 6,
+            processAbility: true,
+            belongsToMember: true,
+            everyNTurns: 6,
+            ignoreFocus: true,
+            afterNTurns: 7,
             currentTurn: 0,
             status: {
                 status: true,
@@ -3292,6 +4262,53 @@ module.exports = {
             eotMessage: "I will crush you.. in body and spirit"
         },
         /*
+        challenge 6
+        */
+        addToEventKilledCheck: {
+            aboveKeystone: 6,
+            belongsToMember: true,
+            onDeathEffect: true,
+            name: "addToEventKilledCheck",
+            abilityId: "addToEventKilledCheck",
+            addToEventKilledList: "crystalKilledHandler"
+        },
+        crystalKilledHandler: {
+            belongsToEvent: true,
+            aboveKeystone: 6,
+            everyNTurns: 1,
+            afterNTurns: 1,
+            currentTurn: 0,
+            name: "crystal handler",
+            abilityId: "crystalKilledHandler",
+            addBuffIfCheck : "provoked",
+            targetName : "A182-Type2",
+            addBuffIfOverCount : 1,
+            deadCheck: [
+                "Blue Energy Crystal",
+                "Yellow Energy Crystal",
+                "Black Energy Crystal",
+                "Red Energy Crystal",
+                "Green Energy Crystal",
+                "Purple Energy Crystal"
+            ],
+            enemiesKilled: []
+        },
+        provoked: {
+            name: "Provoked",
+            abilityId: "provoked",
+            buff: {
+                buff: true,
+                ignoreUnique: true,
+                name: "Provoked",
+                abilityId: "provoked",
+                additionalDescription: " is provoked after 2 of the same Energy Crystals were destroyed",
+                emoji: "<:strength:479298214294716416>",
+                turnsToExpire: 45,
+                affects: ["attackDmg", "magicDmg"],
+                multiplier: 1.3
+            }
+        },
+        /*
         challenge 12
         */
         darknessHandler: {
@@ -3445,6 +4462,22 @@ module.exports = {
             ]
         },
 
+        worshipDogfather: {
+            name: "Worship",
+            abilityId: "worship",
+            processAbility: true,
+            belongsToMember: true,
+            targetLowestPercent: true,
+            healMaxHpPercentage: 0.1,
+            heal: 1,
+            everyNTurns: 2,
+            afterNTurns: 1,
+            currentTurn: 0,
+            listOfPossibleTarget: [
+                "Dog Father",
+            ]
+        },
+
         // HIGH MELEE - 6 turn dot hits high
         wound: {
             name: "Wound",
@@ -3494,6 +4527,126 @@ module.exports = {
                 dmgOnStatusRemove: true,
                 dmgOnRemove: 150,
                 dmgOnRemoveAreaWide: false,
+                mdPercentageOnRemove: 1,
+                dmgOnExpire: 150
+            }
+        },
+
+        stare1: {
+            abilityId: "stare1",
+            belongsToMember: true,
+            processAbility: true,
+            ignoreFocus: true,
+            name: "Stare",
+            everyNTurns: 8,
+            afterNTurns: 1,
+            currentTurn: 0,
+            status: {
+                status: true,
+                abilityId: "stare",
+                untargettable: true,
+                name: "Stare",
+                emoji: ":one:",
+                mdPercentage: 1,
+                turnsToExpire: 1,
+                dmgOnStatusExpire: true,
+                dmgOnStatusRemove: true,
+                dmgOnRemove: 150,
+                mdPercentageOnRemove: 1,
+                dmgOnExpire: 150
+            }
+        },
+        stare2: {
+            abilityId: "stare2",
+            belongsToMember: true,
+            processAbility: true,
+            name: "Stare",
+            everyNTurns: 8,
+            afterNTurns: 1,
+            currentTurn: 0,
+            status: {
+                status: true,
+                abilityId: "stare",
+                untargettable: true,
+                name: "Stare",
+                emoji: ":two:",
+                mdPercentage: 1,
+                turnsToExpire: 2,
+                dmgOnStatusExpire: true,
+                dmgOnStatusRemove: true,
+                dmgOnRemove: 150,
+                mdPercentageOnRemove: 1,
+                dmgOnExpire: 150
+            }
+        },
+        stare3: {
+            abilityId: "stare3",
+            belongsToMember: true,
+            processAbility: true,
+            ignoreFocus: true,
+            name: "Stare",
+            everyNTurns: 8,
+            afterNTurns: 1,
+            currentTurn: 0,
+            status: {
+                status: true,
+                abilityId: "stare",
+                untargettable: true,
+                name: "Stare",
+                emoji: ":three:",
+                mdPercentage: 1,
+                turnsToExpire: 3,
+                dmgOnStatusExpire: true,
+                dmgOnStatusRemove: true,
+                dmgOnRemove: 150,
+                mdPercentageOnRemove: 1,
+                dmgOnExpire: 150
+            }
+        },
+        stare4: {
+            abilityId: "stare4",
+            belongsToMember: true,
+            processAbility: true,
+            ignoreFocus: true,
+            name: "Stare",
+            everyNTurns: 8,
+            afterNTurns: 1,
+            currentTurn: 0,
+            status: {
+                status: true,
+                abilityId: "stare",
+                untargettable: true,
+                name: "Stare",
+                emoji: ":four:",
+                mdPercentage: 1,
+                turnsToExpire: 4,
+                dmgOnStatusExpire: true,
+                dmgOnStatusRemove: true,
+                dmgOnRemove: 150,
+                mdPercentageOnRemove: 1,
+                dmgOnExpire: 150
+            }
+        },
+        stare5: {
+            abilityId: "stare5",
+            belongsToMember: true,
+            processAbility: true,
+            ignoreFocus: true,
+            name: "Stare",
+            everyNTurns: 8,
+            afterNTurns: 1,
+            currentTurn: 0,
+            status: {
+                status: true,
+                abilityId: "stare",
+                untargettable: true,
+                name: "Stare",
+                emoji: ":five:",
+                mdPercentage: 1,
+                turnsToExpire: 5,
+                dmgOnStatusExpire: true,
+                dmgOnStatusRemove: true,
+                dmgOnRemove: 150,
                 mdPercentageOnRemove: 1,
                 dmgOnExpire: 150
             }
@@ -3625,6 +4778,69 @@ module.exports = {
                 hpPlus: 100
             }
         },
+
+        summonFanatic: {
+            name: "Summon Fanatic",
+            abilityId: "summonFanatic",
+            belongsToMember: true,
+            everyNTurns: 6,
+            afterNTurns: 2,
+            currentTurn: 0,
+            summon: {
+                enemy: "fanatic",
+                attackDmg: 500,
+                magicDmg: 500,
+                hpPlus: 100
+            }
+        },
+        summonInformant80: {
+            name: "Summon Informant",
+            abilityId: "summonInformant",
+            belongsToMember: true,
+            hppercentage: 0.8,
+            summon: {
+                enemy: "informant",
+                attackDmg: 500,
+                magicDmg: 500,
+                hpPlus: 100
+            }
+        },
+        summonInformant60: {
+            name: "Summon Informant",
+            abilityId: "summonInformant",
+            belongsToMember: true,
+            hppercentage: 0.6,
+            summon: {
+                enemy: "informant",
+                attackDmg: 500,
+                magicDmg: 500,
+                hpPlus: 100
+            }
+        },
+        summonInformant40: {
+            name: "Summon Informant",
+            abilityId: "summonInformant",
+            belongsToMember: true,
+            hppercentage: 0.4,
+            summon: {
+                enemy: "informant",
+                attackDmg: 500,
+                magicDmg: 500,
+                hpPlus: 100
+            }
+        },
+        summonInformant20: {
+            name: "Summon Informant",
+            abilityId: "summonInformant",
+            belongsToMember: true,
+            hppercentage: 0.2,
+            summon: {
+                enemy: "informant",
+                attackDmg: 500,
+                magicDmg: 500,
+                hpPlus: 100
+            }
+        },
         // MUST HAVE darkness
         // deal aoe damage increasing every turn that they are alive
         summonCursedGuardian: {
@@ -3666,6 +4882,519 @@ module.exports = {
             onDeathEffect: true,
             belongsToMember: true,
             deathMessage: "Your fate is sealed"
+        },
+
+        regenerate: {
+            name: "Regenerate",
+            abilityId: "regenerate",
+            processAbility: true,
+            belongsToMember: true,
+            heal: 100000,
+            mdPercentage: 1,
+            everyNTurns: 1,
+            afterNTurns: 1,
+            currentTurn: 1,
+            listOfPossibleTarget: [
+                "Amber Dragon",
+            ]
+        },
+        bloom: {
+            name: "Bloom",
+            abilityId: "bloom",
+            processAbility: true,
+            belongsToMember: true,
+            areawide: true,
+            heal: 10000,
+            mdPercentage: 1,
+            everyNTurns: 1,
+            afterNTurns: 1,
+            currentTurn: 1,
+        },
+
+        lavaBlast: {
+            abilityId: "lavaBlast",
+            belongsToMember: true,
+            processAbility: true,
+            ignoreFocus: true,
+            name: "Lava Blast",
+            dmg: 5000,
+            mdPercentage: 1,
+            type: "fire",
+            everyNTurns: 2,
+            afterNTurns: 1,
+            currentTurn: 0,
+        },
+
+        fade: {
+            abilityId: "fade",
+            belongsToMember: true,
+            processAbility: true,
+            name: "Fade",
+            everyNTurns: 1,
+            afterNTurns: 1,
+            currentTurn: 1,
+            status: {
+                status: true,
+                ignoreUnique: true,
+                name: "Fade",
+                abilityId: "fade",
+                affectsGlobal: ["healingTakenPercentage"],
+                multiplier: 0.9,
+                turnsToExpire: 30,
+                emoji: ":ghost:"
+            }
+        },
+
+        petrify80: {
+            abilityId: "petrify80",
+            belongsToMember: true,
+            processAbility: true,
+            oneTimeCast: true,
+            name: "Petrify",
+            hppercentage: 0.80,
+            status: {
+                status: true,
+                areawide: true,
+                ignoreUnique: true,
+                name: "Petrify",
+                abilityId: "petrify80",
+                affectsGlobal: ["healingTakenPercentage"],
+                multiplier: 0.25,
+                turnsToExpire: 2,
+                emoji: ":statue_of_liberty:"
+            }
+        },
+
+        petrify60: {
+            abilityId: "petrify60",
+            belongsToMember: true,
+            processAbility: true,
+            oneTimeCast: true,
+            name: "Petrify",
+            hppercentage: 0.60,
+            status: {
+                status: true,
+                areawide: true,
+                ignoreUnique: true,
+                name: "Petrify",
+                abilityId: "petrify60",
+                affectsGlobal: ["healingTakenPercentage"],
+                multiplier: 0.25,
+                turnsToExpire: 2,
+                emoji: ":statue_of_liberty:"
+            }
+        },
+
+        petrify40: {
+            abilityId: "petrify40",
+            belongsToMember: true,
+            processAbility: true,
+            oneTimeCast: true,
+            name: "Petrify",
+            hppercentage: 0.40,
+            status: {
+                status: true,
+                areawide: true,
+                ignoreUnique: true,
+                name: "Petrify",
+                abilityId: "petrify40",
+                affectsGlobal: ["healingTakenPercentage"],
+                multiplier: 0.25,
+                turnsToExpire: 2,
+                emoji: ":statue_of_liberty:"
+            }
+        },
+
+        petrify20: {
+            abilityId: "petrify20",
+            belongsToMember: true,
+            processAbility: true,
+            oneTimeCast: true,
+            name: "Petrify",
+            hppercentage: 0.20,
+            status: {
+                status: true,
+                areawide: true,
+                ignoreUnique: true,
+                name: "Petrify",
+                abilityId: "petrify20",
+                affectsGlobal: ["healingTakenPercentage"],
+                multiplier: 0.25,
+                turnsToExpire: 2,
+                emoji: ":statue_of_liberty:"
+            }
+        },
+
+        frighten: {
+            abilityId: "frighten",
+            belongsToMember: true,
+            processAbility: true,
+            name: "Frighten",
+            everyNTurns: 1,
+            afterNTurns: 1,
+            currentTurn: 1,
+            status: {
+                status: true,
+                ignoreBandaid: true,
+                ignoreUnique: true,
+                name: "Frighten",
+                abilityId: "frighten",
+                affectsGlobal: ["damageDealtPercentage"],
+                multiplier: 0.97,
+                turnsToExpire: 30,
+                emoji: ":scream:"
+            }
+        },
+        // whelpling explosion on death
+        rupture: {
+            name: "Rupture",
+            abilityId: "rupture",
+            onDeathEffect: true,
+            processAbility: true,
+            belongsToMember: true,
+            castOnKiller: true,
+            type: "earth",
+            dot: {
+                name: "Rupture",
+                abilityId: "rupture",
+                type: "earth",
+                dmg: 3000,
+                mdPercentage: 1,
+                emoji: ":o2:",
+                abilityTriggerOnDeath: "strengthRupture",
+                targetToApplyOn: "Amber Dragon",
+                ignoreUnique: true,
+                ignoreBandaid: true,
+                dmgOnDotApply: false,
+                turnsToExpire: 1
+            }
+        },
+
+        erupt: {
+            name: "Erupt",
+            abilityId: "erupt",
+            processAbility: true,
+            belongsToMember: true,
+            ignoreFocus: true,
+            type: "physical",
+            everyNTurns: 2,
+            afterNTurns: 1,
+            currentTurn: 0,
+            dot: {
+                name: "Erupt",
+                type: "physical",
+                dmg: 900,
+                ignoreBandaid: true,
+                adPercentage: 1,
+                emoji: ":volcano:",
+                dealDamageToGroupBasedOnHealthMissing: true,
+                dealDamageToGroupBasedOnHealthMissingPercentage: 0.67,
+                dmgOnDotApply: false,
+                turnsToExpire: 3
+            }
+        },
+
+        reducedHealingWhelp: {
+            onDeathEffect: true,
+            processAbility: true,
+            belongsToMember: true,
+            listOfPossibleTarget: ["Amber Dragon"],
+            name:"Reduced Healing",
+            abilityId: "reducedHealingWhelp",
+            status: {
+                status: true,
+                name: "Reduced Healing",
+                ignoreUnique: true,
+                abilityId: "reducedHealingWhelp",
+                emoji: "",
+                additionalDescription: " healing is reduced by 2%",
+                affectsGlobal: ["healingDonePercentage"],
+                turnsToExpire: 2000,
+                additive: 0.02
+            }
+        },
+
+        increasedDamageParasite: {
+            onDeathEffect: true,
+            processAbility: true,
+            belongsToMember: true,
+            listOfPossibleTarget: ["Clover"],
+            name: "Rip",
+            abilityId: "increasedDamageParasite",
+            status: {
+                status: true, 
+                name: "Rip", 
+                ignoreUnique: true,
+                abilityId: "increasedDamageParasite",
+                emoji: "",
+                additionalDescription: " damage taken is increased by 30%",
+                affectsGlobal: ["damageTakenPercentage"],
+                turnsToExpire: 2000,
+                multiplier: 1.3
+            }
+        },
+
+        reducedHealingGuardian: {
+            onDeathEffect: true,
+            processAbility: true,
+            belongsToMember: true,
+            listOfPossibleTarget: ["Amber Dragon"],
+            name:"Reduced Healing",
+            abilityId: "reducedHealingGuardian",
+            status: {
+                status: true,
+                name: "Reduced Healing",
+                ignoreUnique: true,
+                abilityId: "reducedHealingGuardian",
+                emoji: "",
+                additionalDescription: " healing is reduced by 5%",
+                affectsGlobal: ["healingDonePercentage"],
+                turnsToExpire: 2000,
+                additive: 0.05
+            }
+        },
+
+        reducedHealingDrake: {
+            onDeathEffect: true,
+            processAbility: true,
+            belongsToMember: true,
+            listOfPossibleTarget: ["Amber Dragon"],
+            name:"Reduced Healing",
+            abilityId: "reducedHealingDrake",
+            status: {
+                status: true,
+                name: "Reduced Healing",
+                ignoreUnique: true,
+                abilityId: "reducedHealingDrake",
+                emoji: "",
+                additionalDescription: " healing is reduced by 16%",
+                affectsGlobal: ["healingDonePercentage"],
+                turnsToExpire: 2000,
+                additive: 0.165
+            }
+        },
+
+        rampageRoots: {
+            name: "Rampage",
+            abilityId: "rampageRoots",
+            belongsToMember: true,
+            processAbility: true,
+            ignoreFocus: true,
+            ignoreBandaid: true,
+            everyNTurns: 40,
+            afterNTurns: 1,
+            currentTurn: 1,
+            status: {
+                focusedBy: "",
+                abilityId: "rampageRoots",
+                status: true,
+                ignoreFocus: true,
+                ignoreBandaid: true,
+                name: "Rampage",
+                turnsToExpire: 40,
+                emoji: "<:rampage:479348722782830603>",
+            }
+        },
+        infiltrate: {
+            name: "Infiltrate",
+            abilityId: "infiltrate",
+            oneTimeCast: true,
+            onDeathEffect: true,
+            belongsToMember: true,
+            processAbility: true,
+            listOfPossibleTarget: ["Conduit"],
+            status: {
+                status: true,
+                name: "Infiltrate",
+                abilityId: "infiltrate",
+                ignoreBandaid: true,
+                deathOnStatusExpire: true,
+                emoji : ":coffin:",
+                turnsToExpire: 1,
+            }
+        },
+        summonDeusEx: {
+            belongsToMember: true,
+            oneTimeCast: true,
+            onDeathEffect: true,
+            name: "Summon Deus Ex",
+            abilityId: "summonDeusEx",
+            summonDeadCheck: [
+                "Conduit",
+            ],
+            summonDeadCheckCount: 3,
+            summon: {
+                enemy: "deusex",
+                attackDmg: 200,
+                magicDmg: 200,
+                hpPlus: 100
+            }
+        },
+
+        turretFrenzy: {
+            name: "Turret Frenzy",
+            abilityId: "turretFrenzy",
+            processAbility: true,
+            belongsToMember: true,
+            oneTimeCast: true,
+            everyNTurns: 40,
+            afterNTurns: 1,
+            currentTurn: 0,
+            buff: {
+                buff: true,
+                areawide: true,
+                name: "frenzy",
+                abilityId: "frenzy",
+                emoji: "<:frenzy:479298214453968896>",
+                onTurnEnd: {
+                    attackDmgPlus : 280,
+                    magicDmgPlus : 280,
+                    everyNTurns: 4,
+                    startTurn: 4
+                }
+            }
+        },
+        growingZap: {
+            processAbility: true,
+            belongsToMember: true,
+            ignoreFocus: true,
+            everyNTurns: 6,
+            afterNTurns: 3,
+            currentTurn: 0,
+            targetToApplyOn: "random",
+            name: "Growing Zap",
+            abilityId: "growingZap",
+            type: "electric",
+            dot: {
+                name: "Growing Zap",
+                abilityId: "growingZap",
+                type:"electric",
+                dmg: 2000,
+                ignoreBandaid: true,
+                untargettable: true,
+                mdPercentage: 1,
+                dmgIncreasePerTick: 2800,
+                emoji: "⚪",
+                dmgOnDotApply: false,
+                abilityTriggerOnDeath: "strengthZap",
+                turnsToExpire: 6,
+            }
+        },
+
+        summonSentinel: {
+            name: "Summon Sentinel",
+            abilityId: "summonSentinel",
+            belongsToMember: true,
+            onDeathEffect: true,
+            summon: {
+                enemy: "sentinel",
+                attackDmg: 200,
+                magicDmg: 200,
+                hpPlus: 100
+            }
+        },
+
+        wrap: {
+            name:"Wrap",
+            abilityId: "wrap",
+            type:"physical",
+            processAbility: true,
+            belongsToMember: true,
+            ignoreFocus: true,
+            everyNTurns: 3,
+            ignoreFocus: true,
+            afterNTurns: 1,
+            currentTurn: 0,
+            status: {
+                status: true,
+                abilityId: "wrap",
+                name: "Wrap",
+                type:"physical",
+                dmg: 100,
+                untargettable: true,
+                adPercentage: 1,
+                emoji: ":yarn:",
+                dmgOnDotApply: false,
+                turnsToExpire: 1,
+                dmgOnStatusExpire: true,
+                adPercentageOnRemove: .9,
+                dmgOnExpire: 600
+            }
+        },
+
+        summonHeatseekers: {
+            name: "Summon Heatseekers",
+            abilityId: "summonHeatseekers",
+            belongsToEvent: true,
+            everyNTurns: 6,
+            afterNTurns: 2,
+            currentTurn: 0,
+            summon: {
+                enemies: [
+                    "heatseeker",
+                    "heatseeker"
+                ]
+            }
+        },
+
+        summonTurrets: {
+            name: "Summon Turrets",
+            abilityId: "summonTurrets",
+            belongsToEvent: true,
+            everyNTurns: 100,
+            afterNTurns: 1,
+            currentTurn: 0,
+            summon: {
+                enemies: [
+                    "turret",
+                    "turret",
+                    "turret"
+                ]
+            }
+        },
+
+        summonSkitters: {
+            name: "Summon Skitters",
+            abilityId: "summonSkitters",
+            belongsToEvent: true,
+            everyNTurns: 4,
+            afterNTurns: 1,
+            currentTurn: 0,
+            summon: {
+                enemies: [
+                    "skitter",
+                    "skitter"
+                ]
+            }
+        },
+
+        detonationSequence : {
+            name: "Detonation Sequence",
+            processAbility: true,
+            belongsToMember: true,
+            everyNTurns: 1,
+            afterNTurns: 25,
+            currentTurn: 0,
+            abilityId: "detonationSequence",
+            type: "magical",
+            areawide: true,
+            areawidedmg: {
+                areawide: true,
+                name: "Detonation Sequence",
+                abilityId: "detonationSequence",
+                dmg: 5000000,
+                mdPercentage: 1,
+                type: "magical"
+            }
+        },
+
+        detonationSequenceBegin: {
+            abilityId: "detonationSequenceBegin",
+            belongsToMember: true,
+            everyNTurns: 2000,
+            afterNTurns: 1,
+            currentTurn: 1,
+            eotMessage: "Detonation sequence initialized. T minus 25 turns "
         },
 
         /*

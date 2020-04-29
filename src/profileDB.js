@@ -38,6 +38,13 @@ module.exports.createUserProfile = function(data, cb) {
             slot3replacing: false,
             slot4replacing: false
         }
+        exports.createUserStatistics(data.discordId, null, null, function(createError, statsSuccess){
+            if(createError){
+                console.log(createError);
+            }else{
+                console.log(statsSuccess)
+            }
+        })
         exports.createUserWearInfo(d, function(e, r){
             // create stable, greenhouse, temple 
             var s = {
@@ -62,13 +69,31 @@ module.exports.createUserProfile = function(data, cb) {
                         }
                         exports.createRpgProfile(r, function(e, r){
                             var f = {
-                                discordId: data.discordId
+                                discordId: data.discordId,
+                                tulips: 0,
+                                roses: 0,
+                                evergreens: 0,
+                                cacti: 0,
+                                palms: 0,
+                                blossoms: 0,
+                                apples: 0,
+                                sunflowers: 0,
+                                hibiscuses: 0,
+                                bananas: 0,
+                                pears: 0,
+                                tangerines: 0,
+                                eggplants: 0
                             }
                             exports.createFruitsProfile(f, function(e, r){
-                                cb(null, {
-                                    status: 'success',
-                                    message: 'Inserted one user'
-                                });
+                                if (e){
+                                    console.log(e)
+                                    cb(e)
+                                }else{
+                                    cb(null, {
+                                        status: 'success',
+                                        message: 'Inserted one user'
+                                    });
+                                }
                             })
                         })
                     })
@@ -319,6 +344,21 @@ module.exports.updateUserTacosTrickOrTreat = function(userId, tacos, cb) {
     cb(null, {
         status: 'success',
         message: 'added tacos'
+        });
+    })
+    .catch(function (err) {
+        cb(err);
+    });
+}
+
+module.exports.updateMarriedToId = function(userId, marriedToId, cb) {
+    var query = 'update ' + config.profileTable + ' set marriedtoid=$1, lastmarriage=$3 where discordid=$2'
+    var lastmarriage = new Date();
+    db.none(query, [marriedToId, userId, lastmarriage])
+    .then(function () {
+    cb(null, {
+        status: 'success',
+        message: 'udpated marriage'
         });
     })
     .catch(function (err) {
@@ -941,6 +981,150 @@ module.exports.getToplistUsers = function(cb) {
     })
     .catch(function (err) {
         console.log(err);
+        cb(err);
+    });
+}
+
+module.exports.getServerSettings = function(cb) {
+    var query = 'select * from ' + config.serverSettingsTable + ' LIMIT 50000'
+    db.query(query)
+    .then(function (data) {
+    cb(null, {
+        status: 'success',
+        data: data,
+        message: 'Retrieved server settings'
+        });
+    })
+    .catch(function (err) {
+        console.log(err);
+        cb(err);
+    });
+}
+
+module.exports.getGuildSettings = function(guildId, cb) {
+    var query = 'select * from ' + config.serverSettingsTable + ' where guildid=$1'
+    db.one(query, [guildId])
+    .then(function (data) {
+    cb(null, {
+        status: 'success',
+        data: data,
+        message: 'Retrieved guild settings'
+        });
+    })
+    .catch(function (err) {
+        console.log(err);
+        cb(err);
+    });
+}
+
+module.exports.muteChannelInGuild = function(guildId, channelId, mute, cb){
+    var query;
+    if (mute){
+        query = 'update ' + config.serverSettingsTable + ' set mutedchannels = mutedchannels || $1::bigint where guildid=$2'
+    }else{
+        var query = 'update ' + config.serverSettingsTable + ' set mutedchannels = array_remove(mutedchannels, $1) where guildid=$2'
+    }
+    db.none(query, [ channelId, guildId ])
+    .then(function () {
+    cb(null, {
+        status: 'success',
+        message: 'added statistic'
+        });
+    })
+    .catch(function (err) {
+        cb(err);
+    });
+}
+
+module.exports.enableChannelInGuild = function(guildId, channelId, enable, cb){
+
+    var query;
+    if (enable){
+        query = 'update ' + config.serverSettingsTable + ' set enabledchannels = enabledchannels || $1::bigint where guildid=$2'
+    }else{
+        var query = 'update ' + config.serverSettingsTable + ' set enabledchannels = array_remove(enabledchannels, $1) where guildid=$2'
+    }
+    db.none(query, [ channelId, guildId ])
+    .then(function () {
+    cb(null, {
+        status: 'success',
+        message: 'added statistic'
+        });
+    })
+    .catch(function (err) {
+        cb(err);
+    });
+}
+
+module.exports.rpgDisableChannelInGuild = function(guildId, channelId, disable, cb){
+
+    var query;
+    if (disable){
+        query = 'update ' + config.serverSettingsTable + ' set rpgdisabledchannels = rpgdisabledchannels || $1::bigint where guildid=$2'
+    }else{
+        var query = 'update ' + config.serverSettingsTable + ' set rpgdisabledchannels = array_remove(rpgdisabledchannels, $1) where guildid=$2'
+    }
+    db.none(query, [ channelId, guildId ])
+    .then(function () {
+    cb(null, {
+        status: 'success',
+        message: 'added statistic'
+        });
+    })
+    .catch(function (err) {
+        cb(err);
+    });
+}
+
+module.exports.rpgOnlyChannelInGuild = function(guildId, channelId, rpgonly, cb){
+
+    var query;
+    if (rpgonly){
+        query = 'update ' + config.serverSettingsTable + ' set rpgonlychannels = rpgonlychannels || $1::bigint where guildid=$2'
+    }else{
+        var query = 'update ' + config.serverSettingsTable + ' set rpgonlychannels = array_remove(rpgdisabledchannels, $1) where guildid=$2'
+    }
+    db.none(query, [ channelId, guildId ])
+    .then(function () {
+    cb(null, {
+        status: 'success',
+        message: 'added statistic'
+        });
+    })
+    .catch(function (err) {
+        cb(err);
+    });
+}
+
+module.exports.setGuildPrefix = function(guildId, prefix, cb){
+
+    var query = 'update ' + config.serverSettingsTable + ' set prefix = $1 where guildid=$2'
+
+    db.none(query, [ prefix, guildId ])
+    .then(function () {
+    cb(null, {
+        status: 'success',
+        message: 'added statistic'
+        });
+    })
+    .catch(function (err) {
+        cb(err);
+    });
+}
+
+module.exports.createGuildSettingsProfile = function(data, cb) {
+    var createDate = new Date();
+    data.createdate = createDate
+    var query = 'insert into '+ config.serverSettingsTable + '(guildid, createdate)' +
+        'values(${guildid}, ${createdate})'
+    db.none(query, data)
+    .then(function () {
+    cb(null, {
+        status: 'success',
+        message: 'Inserted one guild'
+        });
+    })
+    .catch(function (err) {
         cb(err);
     });
 }
@@ -1579,7 +1763,7 @@ module.exports.updateMarketItemSold = function(item, newOwner, cb){
 
 // get market items
 module.exports.getMarketItems = function(cb) {
-    var query = 'select * from ' + config.inventoryTable + ' where status = $1 ORDER BY auctionenddate desc LIMIT 100'
+    var query = 'select * from ' + config.inventoryTable + ' where status = $1 ORDER BY auctionenddate desc LIMIT 1000'
     // console.log(query);
     db.query(query, [ "market" ])
     .then(function (data) {
@@ -1668,8 +1852,91 @@ module.exports.getUserItems = function(discordId, cb) {
     });
 }
 
+// get user's inventory by RARITY
+module.exports.getUserItemsByRarity = function(discordId, rarity, cb) {
+    var query = 'SELECT userinventorytable.* ' +
+    'FROM ' + config.inventoryTable + ' AS userinventorytable ' +
+    'INNER JOIN ' + config.itemsTable + ' AS itemstable ' +
+    'ON userinventorytable.itemid = itemstable.id ' +
+    'WHERE userinventorytable.discordId = $1 AND userinventorytable.status is null AND itemstable.itemraritycategory = $2'
+    'ORDER BY userinventorytable.id DESC'
+    
+    if (rarity == "artifact"){
+        // include artifact recipe
+        query = 'SELECT userinventorytable.* ' +
+        'FROM ' + config.inventoryTable + ' AS userinventorytable ' +
+        'INNER JOIN ' + config.itemsTable + ' AS itemstable ' +
+        'ON userinventorytable.itemid = itemstable.id ' +
+        'WHERE userinventorytable.discordId = $1 AND userinventorytable.status is null AND ( itemstable.itemraritycategory = $2 OR itemstable.itemraritycategory = \'artifact+\')'
+        'ORDER BY userinventorytable.id DESC'
+    }
+    // console.log(query);
+    db.query(query, [discordId, rarity])
+      .then(function (data) {
+        cb(null, {
+            status: 'success',
+            data: data,
+            message: 'Retrieved All User Items'
+          });
+      })
+      .catch(function (err) {
+        console.log(err);
+        cb(err);
+      });
+  }
+
+// get user's inventory by RARITY
+module.exports.getUserItemsByShortname = function(discordId, shortname, limit, cb) {
+    var query = 'SELECT userinventorytable.* ' +
+    'FROM ' + config.inventoryTable + ' AS userinventorytable ' +
+    'INNER JOIN ' + config.itemsTable + ' AS itemstable ' +
+    'ON userinventorytable.itemid = itemstable.id ' +
+    'WHERE userinventorytable.discordId = $1 AND userinventorytable.status is null AND itemstable.itemshortname = $2'
+    'ORDER BY userinventorytable.id DESC' +
+    'LIMIT $3' 
+    
+    // console.log(query);
+    db.query(query, [discordId, shortname, limit])
+      .then(function (data) {
+        cb(null, {
+            status: 'success',
+            data: data,
+            message: 'Retrieved All User Items'
+          });
+      })
+      .catch(function (err) {
+        // console.log(err);
+        cb(err);
+      });
+  }
+
+  module.exports.getUserItemsByShortnameForCombine = function(discordId, shortname, limit, cb) {
+    var query = 'SELECT userinventorytable.* ' +
+    'FROM ' + config.inventoryTable + ' AS userinventorytable ' +
+    'INNER JOIN ' + config.itemsTable + ' AS itemstable ' +
+    'ON userinventorytable.itemid = itemstable.id ' +
+    'WHERE userinventorytable.discordId = $1 AND userinventorytable.status is null AND (itemstable.itemshortname = $2 OR itemstable.itemraritycategory = \'artifact+\')'
+    'ORDER BY userinventorytable.id DESC' +
+    'LIMIT $3' 
+    
+    // console.log(query);
+    db.query(query, [discordId, shortname, limit])
+      .then(function (data) {
+        cb(null, {
+            status: 'success',
+            data: data,
+            message: 'Retrieved All User Items'
+          });
+      })
+      .catch(function (err) {
+        // console.log(err);
+        cb(err);
+      });
+  }
+
 module.exports.getUserItemsForRpg = function(discordId, cb) {
-    var query = 'select id, itemid, armamentforitemid, hpplus, adplus, mdplus, armorplus, spiritplus, critplus, luckplus from ' + config.inventoryTable + ' where discordId = $1 AND status is null ORDER BY id DESC '
+    // 'AND itemid > 12' was added since commons and uncommons arent needed for this call
+    var query = 'select id, itemid, armamentforitemid, hpplus, adplus, mdplus, armorplus, spiritplus, critplus, luckplus from ' + config.inventoryTable + ' where discordId = $1 AND status is null AND itemid > 12 ORDER BY id DESC '
     // console.log(query);
     db.query(query, [discordId])
       .then(function (data) {
@@ -1913,8 +2180,8 @@ module.exports.createRpgProfile = function(data, cb){
 
 // create fruits profile
 module.exports.createFruitsProfile = function(data, cb){
-    var query = 'insert into '+ config.userFruitTable + '(discordId)' +
-    'values(${discordId})'
+    var query = 'insert into '+ config.userFruitTable + '(discordId, tulips, roses, evergreens, cacti, palms, blossoms, apples, sunflowers, hibiscuses, bananas, pears, tangerines, eggplants)' +
+    'values(${discordId}, ${tulips}, ${roses}, ${evergreens}, ${cacti}, ${palms}, ${blossoms}, ${apples}, ${sunflowers}, ${hibiscuses}, ${bananas}, ${pears}, ${tangerines}, ${eggplants})'
     // console.log(query);
     db.none(query, data)
     .then(function () {
@@ -1947,7 +2214,12 @@ module.exports.getUserRpgProfleData = function(discordId, cb){
 }
 
 module.exports.getStableData = function(discordId, cb){
-    var query = 'select * from ' + config.stablesTable + ',' + config.profileTable + ' where ' + config.stablesTable + '.discordId = $1 AND ' + config.profileTable + '.discordId = $1'
+    var query = 'SELECT * ' +
+    'FROM ' + config.profileTable + ' AS stabletable ' +
+    'INNER JOIN ' + config.stablesTable + ' AS profiletable ' +
+    'ON stabletable.discordid = profiletable.discordid ' + 
+    'WHERE profiletable.discordid = $1'
+
     console.log(query)
     db.one(query, [discordId])
       .then(function (data) {

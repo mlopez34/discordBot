@@ -1,6 +1,246 @@
 module.exports = {
     enemiesToEncounter: {
         summoned: {
+            egg: {
+                enemyIdName : "egg",
+                name: "Egg",
+                passive: true,
+                abilities: [],
+                buffs: [],
+                keystoneStats: {
+                    hp: [1200, 3500, 6200, 10000, 15000 ],
+                    attackDmg: [300, 500, 900, 1500, 2300],
+                    magicDmg: [300, 500, 900, 1500, 2300],
+                    abilities: []
+                },
+                endOfTurnEvents: [
+                    "summonSkyMaggots"
+                ],
+                effectsOnDeath: [
+                    "burst",
+                    "burst",
+                    "burst"
+                ],
+                hpPerPartyMember: 0,
+                adPerPartyMember: 0,
+                mdPerPartyMember: 0,
+                hp: 840,
+                attackDmg: 90,
+                magicDmg: 90,
+                armor: 1950,
+                spirit: 1950,
+                difficulty: "summoned",
+                element: "normal"
+            },
+            skymaggot: {
+                enemyIdName : "skymaggot",
+                name: "Sky Maggot",
+                abilities: ["bite" , "bite" , "venom", "venom" , "ferociousBite", "tacowall"],
+                buffs: [
+                    {
+                        name: "frenzy",
+                        emoji: "<:frenzy:479298214453968896>",
+                        onTurnEnd: {
+                            attackDmgPlus : 100,
+                            magicDmgPlus : 100,
+                            everyNTurns: 2,
+                            startTurn: 2
+                        }
+                    }
+                ],
+                keystoneStats: {
+                    hp: [1200, 3500, 6200, 10000, 15000 ],
+                    attackDmg: [300, 500, 900, 1500, 2300],
+                    magicDmg: [300, 500, 900, 1500, 2300],
+                    abilities: []
+                },
+                effectsOnDeath: [
+                    "physicalBarrier"
+                ],
+                effectsOnDeath: [
+                    "summonMaggots"
+                ],
+                hpPerPartyMember: 0,
+                adPerPartyMember: 0,
+                mdPerPartyMember: 0,
+                hp: 850,
+                attackDmg: 425,
+                magicDmg: 470,
+                armor: 1100,
+                spirit: 1100,
+                difficulty: "summoned",
+                element: "normal"
+            },
+            maggot: {
+                enemyIdName : "maggot",
+                name: "Maggot",
+                abilities: ["sting", "sting", "inject", "inject", "poison"],
+                buffs: [],
+                keystoneStats: {
+                    hp: [1200, 3500, 6200, 10000, 15000 ],
+                    attackDmg: [300, 500, 900, 1500, 2300],
+                    magicDmg: [300, 500, 900, 1500, 2300],
+                    abilities: []
+                },
+                effectsOnDeath: [
+                ],
+                hpPerPartyMember: 0,
+                adPerPartyMember: 0,
+                mdPerPartyMember: 0,
+                hp: 640,
+                attackDmg: 100,
+                magicDmg: 100,
+                armor: 550,
+                spirit: 550,
+                difficulty: "summoned",
+                element: "normal"
+            },
+            snowleopard: {
+                enemyIdName : "snowleopard",
+                name: "Snow Leopard",
+                abilities: ["claw", "claw", "bite", "bite", "freeze"],
+                buffs: [],
+                keystoneStats: {
+                    hp: [1200, 3500, 6200, 10000, 15000 ],
+                    attackDmg: [300, 500, 900, 1500, 2300],
+                    magicDmg: [300, 500, 900, 1500, 2300],
+                    abilities: []
+                },
+                effectsOnDeath: [
+                    "starve"
+                ],
+                hpPerPartyMember: 0,
+                adPerPartyMember: 0,
+                mdPerPartyMember: 0,
+                hp: 480,
+                attackDmg: 120,
+                magicDmg: 120,
+                armor: 300,
+                spirit: 300,
+                difficulty: "summoned",
+                element: "normal"
+            },
+            ruffian: {
+                enemyIdName : "ruffian",
+                name: "Ruffian",
+                abilities: ["attack", "attack", "tackle", "tackle", "weaken"],
+                buffs: [],
+                keystoneStats: {
+                    hp: [1200, 3500, 6200, 10000, 15000 ],
+                    attackDmg: [300, 500, 900, 1500, 2300],
+                    magicDmg: [300, 500, 900, 1500, 2300],
+                    abilities: []
+                },
+                hpPerPartyMember: 0,
+                adPerPartyMember: 0,
+                mdPerPartyMember: 0,
+                hp: 230,
+                attackDmg: 60,
+                magicDmg: 79,
+                armor: 290,
+                spirit: 400,
+                difficulty: "summoned",
+                element: "normal"
+            },
+            wendigo: {
+                enemyIdName : "wendigo",
+                name: "Wendigo",
+                emoji: "<:wendigo:598743668664565789>",
+                abilities: ["ferociousBite" , "ferociousBite" , "iceshards", "iceshards", "freeze"],
+                buffs: [
+                    {
+                        name: "frenzy",
+                        emoji: "<:frenzy:479298214453968896>",
+                        onTurnEnd: {
+                            attackDmgPlus : 60,
+                            magicDmgPlus : 60,
+                            everyNTurns: 2,
+                            startTurn: 2
+                        }
+                    }
+                ],
+                keystoneStats: {
+                    hp: [1200, 3500, 6200, 10000, 15000 ],
+                    attackDmg: [300, 500, 900, 1500, 2300],
+                    magicDmg: [300, 500, 900, 1500, 2300],
+                    abilities: []
+                },
+                effectsOnDeath: [
+                    "empower"
+                ],
+                hpPerPartyMember: 1090,
+                adPerPartyMember: 21,
+                mdPerPartyMember: 21,
+                hp: 650,
+                attackDmg: 125,
+                magicDmg: 170,
+                armor: 600,
+                spirit: 900,
+                difficulty: "summoned-boss",
+                element: "normal"
+            },
+            polarbear: {
+                enemyIdName : "polarbear",
+                name: "Polar Bear",
+                abilities: ["attack", "ferociousBite", "ferociousBite", "iceshards", "shield"],
+                buffs: [],
+                keystoneStats: {
+                    hp: [1200, 3500, 6200, 10000, 15000 ],
+                    attackDmg: [300, 500, 900, 1500, 2300],
+                    magicDmg: [300, 500, 900, 1500, 2300],
+                    abilities: []
+                },
+                effectsOnDeath: [
+                    "empowerDeath"
+                ],
+                hpPerPartyMember: 0,
+                adPerPartyMember: 0,
+                mdPerPartyMember: 0,
+                hp: 640,
+                attackDmg: 90,
+                magicDmg: 90,
+                armor: 350,
+                spirit: 550,
+                difficulty: "medium",
+                element: "normal"
+            },
+            ogre: {
+                enemyIdName : "ogre",
+                name: "Ogre",
+                emoji: "<:wendigo:619605350106136607>",
+                abilities: ["punch" , "punch" , "frostBreath", "inject" , "inject", "tacowall"],
+                buffs: [
+                    {
+                        name: "frenzy",
+                        emoji: "<:frenzy:479298214453968896>",
+                        onTurnEnd: {
+                            attackDmgPlus : 100,
+                            magicDmgPlus : 100,
+                            everyNTurns: 2,
+                            startTurn: 2
+                        }
+                    }
+                ],
+                keystoneStats: {
+                    hp: [1200, 3500, 6200, 10000, 15000 ],
+                    attackDmg: [300, 500, 900, 1500, 2300],
+                    magicDmg: [300, 500, 900, 1500, 2300],
+                    abilities: []
+                },
+                effectsOnDeath: [
+                    "summonRuffians"
+                ],
+                hpPerPartyMember: 890,
+                adPerPartyMember: 21,
+                mdPerPartyMember: 21,
+                hp: 650,
+                attackDmg: 225,
+                magicDmg: 270,
+                armor: 600,
+                spirit: 900,
+                difficulty: "summoned-boss",
+                element: "normal"
+            },
             torturedRobot: {
                 name: "Tortured Robot",
                 abilities: ["attack"],
@@ -53,12 +293,12 @@ module.exports = {
                 ],
                 keystoneStats: {
                     frenzy: {
-                        attackDmgPlus : [755, 990, 1240, 1430, 1750, 2000, 2400, 2800, 3200, 3600 ],
-                        magicDmgPlus : [755, 990, 1240, 1430, 1750, 2000, 2400, 2800, 3200, 3600]
+                        attackDmgPlus : [755, 990, 1240, 1430, 1750, 2000, 2900, 2800, 5200, 8600 ],
+                        magicDmgPlus : [755, 990, 1240, 1430, 1750, 2000, 2900, 2800, 5200, 8600]
                     },
                     hp: [9500, 22900, 30900, 42000, 65000, 85000, 115000, 149000, 185000, 229000 ],
-                    attackDmg: [700, 1100, 1500, 2400, 3500, 4500, 5500, 6500, 7500, 8500 ],
-                    magicDmg: [700, 1100, 1500, 2400, 3500, 4500, 5500, 6500, 7500, 8500 ],
+                    attackDmg: [700, 1100, 1500, 2400, 2900, 5500, 8500, 12500, 17500, 23500 ],
+                    magicDmg: [700, 1100, 1500, 2400, 2900, 5500, 8500, 12500, 17500, 23500 ],
                     abilities: []
                 },
                 abilityOrder: [
@@ -122,12 +362,12 @@ module.exports = {
                 ],
                 keystoneStats: {
                     frenzy: {
-                        attackDmgPlus : [755, 990, 1240, 1430, 1750, 2000, 2400, 2800, 3200, 3600],
-                        magicDmgPlus : [755, 990, 1240, 1430, 1750, 2000, 2400, 2800, 3200, 3600]
+                        attackDmgPlus : [755, 990, 1240, 1430, 1750, 2000, 2900, 2800, 5200, 8600],
+                        magicDmgPlus : [755, 990, 1240, 1430, 1750, 2000, 2900, 2800, 5200, 8600]
                     },
                     hp: [22500, 36900, 60900, 99000, 159000, 195000, 235000, 299000, 395000, 529000  ],
-                    attackDmg: [700, 1100, 1500, 2100, 2900, 3500, 4500, 5500, 6500, 7500 ],
-                    magicDmg: [700, 1100, 1500, 2100, 2900, 3500, 4500, 5500, 6500, 7500 ],
+                    attackDmg: [700, 1100, 1500, 2100, 2900, 5500, 8500, 12500, 17500, 23500 ],
+                    magicDmg: [700, 1100, 1500, 2100, 2900, 5500, 8500, 12500, 17500, 23500 ],
                     abilities: []
                 },
                 abilityOrder: [
@@ -186,9 +426,13 @@ module.exports = {
                         magicDmgPlus : [850, 1000, 1250, 1400, 1600, 1800, 2000, 2250, 2500, 2750 ]
                     },
                     hp: [10500, 15900, 21900, 27000, 37000, 37000, 37000, 37000, 37000, 37000 ],
-                    attackDmg: [700, 1100, 1400, 1700, 2100, 2900, 3500, 4500, 5500, 6500 ],
-                    magicDmg: [700, 1100, 1400, 1700, 2100, 2900, 3500, 4500, 5500, 6500 ],
-                    abilities: []
+                    attackDmg: [700, 1100, 1400, 1700, 2100, 2900, 3500, 4500, 6500, 8500 ],
+                    magicDmg: [700, 1100, 1400, 1700, 2100, 2900, 3500, 4500, 6500, 8500 ],
+                    abilities: [],
+                    endOfTurnEvents : [
+                        "burst",
+                        "burst"
+                    ],
                 },
                 abilityOrder: [
                     1, 0, 2, 0, 0, 2, 0, 3
@@ -232,6 +476,29 @@ module.exports = {
                 hp: 3250,
                 effectsOnDeath: [
                     "explode"
+                ],
+                keystoneStats: {
+                    hp: [1200, 3500, 5200, 8000, 12000, 16400, 21000, 26000, 34000, 42000 ],
+                    attackDmg: [300, 500, 900, 1500, 2000, 2600, 3400, 5400, 6500, 8500],
+                    magicDmg: [300, 500, 900, 1500, 2000, 2600, 3400, 5400, 6500, 8500],
+                    abilities: []
+                },
+                attackDmg: 630,
+                magicDmg: 660,
+                armor: 1000,
+                spirit: 1000,
+                difficulty: "summoned",
+                element: "normal"
+            },
+            imp: {
+                name: "Imp",
+                abilities: ["attack"],
+                buffs: [],
+                hpPerPartyMember: 0,
+                adPerPartyMember: 0,
+                mdPerPartyMember: 0,
+                hp: 3250,
+                effectsOnDeath: [
                 ],
                 keystoneStats: {
                     hp: [1200, 3500, 5200, 8000, 12000, 16400, 21000, 26000, 34000, 42000 ],
@@ -438,9 +705,15 @@ module.exports = {
                         magicDmgPlus : [3100, 4100, 5100, 6100, 7100, 8500, 10000, 12000, 14000, 16000]
                     },
                     hp: [ 19500, 25900, 39900, 51000, 77000, 95000, 130000, 179000, 230000, 289000 ],
-                    attackDmg: [750, 1600, 2700, 4400, 5800, 7400, 9050, 10750, 12900, 15800],
-                    magicDmg: [700, 1500, 2500, 4100, 5500, 7100, 8650, 10250, 12500, 15000],
-                    abilities: []
+                    attackDmg: [750, 1600, 4700, 6400, 9800, 11400, 13050, 15750, 20900, 30800],
+                    magicDmg: [700, 1500, 4300, 6100, 9500, 10100, 12650, 14250, 20500, 30000],
+                    abilities: [],
+                    endOfTurnEvents: [
+                        "secondarrowVolley",
+                        "secondarrowVolley",
+                        "thirdarrowVolley",
+                        "thirdarrowVolley",
+                    ]
                 },
                 abilityOrder: [
                     1, 0, 2, 0, 0, 0, 2, 3
@@ -455,6 +728,7 @@ module.exports = {
                     "shrink"
                 ],
                 effectsOnDeath: [
+                    "summonPorthosDeath",
                     "transferDartagnanAbilities",
                     "transferAthosAbilities"
                 ],
@@ -503,8 +777,9 @@ module.exports = {
                         magicDmgPlus : [3100, 4100, 5100, 6100, 7100, 8500, 10000, 12000, 14000, 16000]
                     },
                     hp: [ 21500, 29900, 45900, 60000, 95000, 111000, 145000, 197000, 250000, 319000],
-                    attackDmg: [600, 1400, 2500, 4100, 5500, 7100, 8650, 10250, 12500, 15000],
-                    magicDmg: [750, 1700, 2800, 4400, 5600, 7300, 9150, 10650, 12500, 15700],
+                    attackDmg: [750, 1600, 4700, 6200, 9100, 13400, 16050, 20750, 25900, 31800],
+                    magicDmg: [800, 1900, 4900, 6900, 9900, 14100, 17650, 23250, 28500, 35000],
+
                     abilities: []
                 },
                 abilityOrder: [
@@ -520,6 +795,7 @@ module.exports = {
                 // shadow shield every 6 turns
                 effectsOnDeath: [
                     // clear apparitions
+                    "summonAramisDeath",
                     "transferDartagnanAbilities",
                     "transferAthosAbilities",
                     "transferPortosAbilities"
@@ -569,9 +845,13 @@ module.exports = {
                         magicDmgPlus : [3100, 4100, 5100, 6100, 7100, 8500, 10000, 12000, 14000, 16000 ]
                     },
                     hp: [ 24500, 34900, 51900, 69000, 104000, 119000, 157000, 209000, 265000, 325000 ],
-                    attackDmg: [700, 1500, 2500, 4100, 5500, 7100, 8650, 10250, 12500, 15000],
-                    magicDmg: [800, 1700, 2800, 4500, 5900, 7400, 9350, 10950, 13200, 16100],
-                    abilities: []
+                    attackDmg: [850, 1800, 4700, 6500, 9500, 11400, 13050, 15750, 20900, 30800],
+                    magicDmg: [900, 2000, 4900, 7200, 9900, 11800, 14650, 16250, 21800, 32000],
+
+                    abilities: [],
+                    endOfTurnEvents : [
+                        "sap",
+                    ],
                 },
                 abilityOrder: [
                     4, 1, 2, 0, 0, 0, 1, 2, 3
@@ -604,8 +884,8 @@ module.exports = {
                 buffs: [],
                 keystoneStats: {
                     hp: [1200, 3500, 5200, 8000, 12000, 16400, 21000, 26000, 34000, 42000 ],
-                    attackDmg: [300, 500, 900, 1400, 2000, 2600, 3400, 4400, 5500, 6500],
-                    magicDmg: [300, 500, 900, 1400, 2000, 2600, 3400, 4400, 5500, 6500],
+                    attackDmg: [300, 500, 900, 1400, 2000, 2600, 3700, 5400, 6500, 8500],
+                    magicDmg: [300, 500, 900, 1400, 2000, 2600, 3700, 5400, 6500, 8500],
                     abilities: []
                 },
                 hpPerPartyMember: 0,
@@ -631,8 +911,8 @@ module.exports = {
                 buffs: [],
                 keystoneStats: {
                     hp: [1200, 3500, 5200, 8000, 12000, 16400, 21000, 26000, 34000, 42000 ],
-                    attackDmg: [300, 500, 900, 1400, 2000, 2600, 3400, 4400, 5500, 6500],
-                    magicDmg: [300, 500, 900, 1400, 2000, 2600, 3400, 4400, 5500, 6500],
+                    attackDmg: [300, 500, 900, 1400, 2000, 2600, 3700, 5400, 6500, 8500],
+                    magicDmg: [300, 500, 900, 1400, 2000, 2600, 3700, 5400, 6500, 8500],
                     abilities: []
                 },
                 hpPerPartyMember: 0,
@@ -656,8 +936,8 @@ module.exports = {
                 buffs: [],
                 keystoneStats: {
                     hp: [1200, 3500, 5200, 8000, 12000, 16400, 21000, 26000, 34000, 42000 ],
-                    attackDmg: [300, 500, 900, 1400, 2000, 2600, 3400, 4400, 5500, 6500],
-                    magicDmg: [300, 500, 900, 1400, 2000, 2600, 3400, 4400, 5500, 6500],
+                    attackDmg: [300, 500, 900, 1400, 2000, 2600, 3700, 5400, 6500, 8500],
+                    magicDmg: [300, 500, 900, 1400, 2000, 2600, 3700, 5400, 6500, 8500],
                     abilities: []
                 },
                 hpPerPartyMember: 0,
@@ -680,9 +960,9 @@ module.exports = {
                 abilities: ["attack"],
                 buffs: [],
                 keystoneStats: {
-                    hp: [1200, 3500, 5200, 8000, 12000, 16400, 21000, 26000, 34000, 42000 ],
-                    attackDmg: [300, 500, 900, 1400, 2000, 2600, 3400, 4400, 5500, 6500],
-                    magicDmg: [300, 500, 900, 1400, 2000, 2600, 3400, 4400, 5500, 6500],
+                    hp: [1200, 3500, 5200, 8000, 12000, 18400, 27000, 36000, 48000, 62000 ],
+                    attackDmg: [300, 500, 900, 1400, 2000, 2600, 3700, 5400, 6500, 8500],
+                    magicDmg: [300, 500, 900, 1400, 2000, 2600, 3700, 5400, 6500, 8500],
                     abilities: []
                 },
                 hpPerPartyMember: 0,
@@ -703,6 +983,47 @@ module.exports = {
                 element: "normal"
             },
 
+            fanatic: {
+                name: "Fanatic",
+                abilities: ["punch"],
+                buffs: [],
+                hpPerPartyMember: 0,
+                adPerPartyMember: 0,
+                mdPerPartyMember: 0,
+                hp: 850,
+                attackDmg: 325,
+                magicDmg: 370,
+                abilityOrder: [
+                    0, 0, 0, 0
+                ],
+                endOfTurnEvents: [
+                    "worshipDogfather"
+                ],
+                armor: 1300,
+                spirit: 1300,
+                difficulty: "summoned",
+                element: "normal"
+            },
+
+            informant: {
+                name: "Informant",
+                abilities: ["attack"],
+                buffs: [],
+                effectsOnDeath: [
+                    "physicalBarrier97"
+                ],
+                hpPerPartyMember: 0,
+                adPerPartyMember: 0,
+                mdPerPartyMember: 0,
+                hp: 100,
+                attackDmg: 0,
+                magicDmg: 0,
+                armor: 900,
+                spirit: 900,
+                difficulty: "summoned",
+                element: "normal"
+            },
+
             cursedGuardian: {
                 name: "Cursed Guardian",
                 abilities: ["iceshards"],
@@ -719,9 +1040,9 @@ module.exports = {
                     }
                 ],
                 keystoneStats: {
-                    hp: [1200, 3500, 5200, 8000, 12000, 16400, 21000, 26000, 34000, 42000 ],
-                    attackDmg: [300, 500, 900, 1400, 2000, 2600, 3400, 4400, 5500, 6500],
-                    magicDmg: [300, 500, 900, 1400, 2000, 2600, 3400, 4400, 5500, 6500],
+                    hp: [1200, 3500, 5200, 8000, 12000, 18400, 27000, 36000, 48000, 62000 ],
+                    attackDmg: [300, 500, 900, 1400, 2000, 2600, 3700, 5400, 6500, 8500],
+                    magicDmg: [300, 500, 900, 1400, 2000, 2600, 3700, 5400, 6500, 8500],
                     abilities: []
                 },
                 hpPerPartyMember: 0,
@@ -738,7 +1059,187 @@ module.exports = {
                 difficulty: "summoned",
                 element: "normal"
             },
+            deusex: {
+                name: "Deus Ex",
+                emoji: "<:deusex:656005426818580490>",
+                xp: 30,
+                abilities: [
+                    "poke",
+                    "smash",
+                    "neutronBlast",
+                    "corrupt",
+                    "decompose"
+                ],
+                // dot at end when the enemy doesnt spawn at end of turn ( like in this case )
+                abilityOrder: [
+                    1, 3, 4, 
+                    3, [0, 1], [2, 3], [2, 3], 1, [2, 3], [2, 3], 4, [0, 1], [2, 3], 2,
+                    3, 1, [2, 3], [2, 3], 4, [2, 3], 3, [2, 3], [0, 1], [2, 3], [2,3],
+                    3, 4, [2, 3], [2, 3], [0, 1], [2, 3], [2, 3], 3, [0, 1], 4, 2,
+                    3, 1, [2, 3], [2, 3], [0, 1], [2, 3], 4, [2, 3], 1, [2, 3], 2, 0
+                ],
+                buffs: [
+                    {
+                        name: "frenzy",
+                        emoji: "<:overmind:479298213904646147>",
+                        abilityId: "frenzy",
+                        onTurnEnd: {
+                            attackDmgPlus : 2350,
+                            magicDmgPlus : 2350,
+                            everyNTurns: 6,
+                            startTurn: 6
+                        }
+                    }
+                ],
+                keystoneStats: {
+                    frenzy: {
+                        attackDmgPlus : [4100, 6000, 10000, 14000, 19000, 25000, 32000, 40000, 50000, 63000   ],
+                        magicDmgPlus : [4100, 6000, 10000, 14000, 19000, 25000, 32000, 40000, 50000, 63000  ]
+                    },
+                    hp: [40500, 65900, 90900, 130000, 177000, 245000, 395000, 557000, 775000, 950000 ],
+                    attackDmg: [2400, 4200, 6500, 9000, 13000, 18000, 26000, 34000, 45000, 55000],
+                    magicDmg: [2400, 4200, 6500, 9000, 13000, 18000, 26000, 34000, 45000, 55000],
+                    abilities: []
+                },
+                endOfTurnEvents : [
+                    "focus",
+                    "turretFrenzy",
+                    "growingZap"
+                ],
+                effectsOnDeath: [
+                    "entombAll20",
+                    "killAllEntomb"
+                ],
+                hp: 247294,
+                attackDmg: 14000,
+                magicDmg: 9500,
+                armor: 2100,
+                spirit: 2100,
+                hpPerPartyMember: 0,
+                adPerPartyMember: 0,
+                mdPerPartyMember: 0,
+                difficulty: "boss",
+                element: "machine"
+            },
+            sentinel: {
+                name: "Sentinel",
+                abilities: ["crush", "plasmabeam"],
+                buffs: [
+                    {
+                        name: "frenzy",
+                        emoji: "<:frenzy:479298214453968896>",
+                        onTurnEnd: {
+                            attackDmgPlus : 400,
+                            magicDmgPlus : 400,
+                            everyNTurns: 1,
+                            startTurn: 1
+                        }
+                    }
+                ],
+                keystoneStats: {
+                    frenzy: {
+                        attackDmgPlus : [600, 750, 900, 1200, 2000, 3000, 4000, 7000, 9000, 13000   ],
+                        magicDmgPlus : [600, 750, 900, 1200, 2000, 3000, 4000, 7000, 9000, 13000  ]
+                    },
+                    hp: [10000, 15000, 24000, 31000, 50000, 74000, 100000, 130000, 170000, 200000 ],
+                    attackDmg: [800, 1400, 1800, 2700, 3500, 5000, 7000, 8500, 10000, 15000],
+                    magicDmg: [800, 1400, 1800, 2700, 3500, 5000, 7000, 8500, 10000, 15000],
+                    abilities: []
+                },
+                hpPerPartyMember: 0,
+                adPerPartyMember: 0,
+                mdPerPartyMember: 0,
+                hp: 49200,
+                endOfTurnEvents: [
+                    "focus",
+                    "wrap",
+                    "wrap"
+                ],
+                effectsOnDeath: [
+                    "infiltrate"
+                ],
+                attackDmg: 11830,
+                magicDmg: 11860,
+                armor: 1300,
+                spirit: 1300,
+                difficulty: "summoned-boss",
+                element: "normal"
+            },
+            heatseeker: {
+                name: "Heatseeker",
+                emoji: "<:heatseeker:654072156556099585>",
+                abilities: ["punch" , "execute"],
+                buffs: [],
+                keystoneStats: {
+                    hp: [4200, 7500, 11200, 20000, 25000, 35400, 40000, 57000, 79000, 101000 ],
+                    attackDmg: [400, 800, 1400, 2000, 3000, 3500, 4700, 6500, 8500, 15000],
+                    magicDmg: [400, 800, 1400, 2000, 3000, 3500, 4700, 6500, 8500, 15000],
+                    abilities: []
+                },
+                hpPerPartyMember: 0,
+                adPerPartyMember: 0,
+                mdPerPartyMember: 0,
+                abilityOrder: [
+                    0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
+                ],
+                endOfTurnEvents: [
 
+                ],
+                hp: 14300,
+                attackDmg: 2530,
+                magicDmg: 2560,
+                armor: 1300,
+                spirit: 1300,
+                difficulty: "summoned",
+                element: "normal"
+            },
+            skitter: {
+                name: "Skitter",
+                abilities: ["punch", "enemyshoot"],
+                buffs: [],
+                keystoneStats: {
+                    hp: [4200, 7500, 11200, 20000, 25000, 35400, 40000, 57000, 79000, 101000 ],
+                    attackDmg: [400, 800, 1400, 2000, 3000, 3500, 4700, 6500, 8500, 15000],
+                    magicDmg: [400, 800, 1400, 2000, 3000, 3500, 4700, 6500, 8500, 15000],
+                    abilities: []
+                },
+                hpPerPartyMember: 0,
+                adPerPartyMember: 0,
+                mdPerPartyMember: 0,
+                hp: 5200,
+                endOfTurnEvents: [ ],
+                attackDmg: 1430,
+                magicDmg: 1460,
+                armor: 1100,
+                spirit: 1100,
+                difficulty: "summoned",
+                element: "normal"
+            },
+            turret: {
+                name: "Turret",
+                emoji: "<:turret:654068901759680512>",
+                abilities: ["canistershot", "enemyshoot", "enemyshoot", "plasmabeam" ],
+                buffs: [],
+                keystoneStats: {
+                    hp: [100000, 200000, 300000, 500000, 700000, 900000, 1300000, 2000000, 2900000, 4000000 ],
+                    attackDmg: [500, 900, 1400, 2000, 3000, 3500, 4700, 6500, 8500, 15000],
+                    magicDmg: [500, 900, 1400, 2000, 3000, 3500, 4700, 6500, 8500, 15000],
+                    abilities: []
+                },
+                hpPerPartyMember: 0,
+                adPerPartyMember: 0,
+                mdPerPartyMember: 0,
+                hp: 450800,
+                endOfTurnEvents: [
+                    
+                ],
+                attackDmg: 1330,
+                magicDmg: 1360,
+                armor: 1300,
+                spirit: 1300,
+                difficulty: "summoned",
+                element: "normal"
+            },
             energyCore: {
                 name: "Energy Core",
                 passive: true,
@@ -781,7 +1282,8 @@ module.exports = {
                 endOfTurnEvents : [
                 ],
                 effectsOnDeath: [
-                    "entombTargets"
+                    "entombTargets",
+                    "addToEventKilledCheck"
                 ],
                 hpPerPartyMember: 0,
                 adPerPartyMember: 0,
@@ -808,7 +1310,8 @@ module.exports = {
                 endOfTurnEvents : [
                 ],
                 effectsOnDeath: [
-                    "entombTargets"
+                    "entombTargets",
+                    "addToEventKilledCheck"
                 ],
                 hpPerPartyMember: 0,
                 adPerPartyMember: 0,
@@ -835,7 +1338,8 @@ module.exports = {
                 endOfTurnEvents : [
                 ],
                 effectsOnDeath: [
-                    "entombTargets"
+                    "entombTargets",
+                    "addToEventKilledCheck"
                 ],
                 hpPerPartyMember: 0,
                 adPerPartyMember: 0,
@@ -862,7 +1366,8 @@ module.exports = {
                 endOfTurnEvents : [
                 ],
                 effectsOnDeath: [
-                    "entombTargets"
+                    "entombTargets",
+                    "addToEventKilledCheck"
                 ],
                 hpPerPartyMember: 0,
                 adPerPartyMember: 0,
@@ -889,7 +1394,8 @@ module.exports = {
                 endOfTurnEvents : [
                 ],
                 effectsOnDeath: [
-                    "entombTargets"
+                    "entombTargets",
+                    "addToEventKilledCheck"
                 ],
                 hpPerPartyMember: 0,
                 adPerPartyMember: 0,
@@ -914,7 +1420,8 @@ module.exports = {
                     abilities: []
                 },
                 effectsOnDeath: [
-                    "entombTargets"
+                    "entombTargets",
+                    "addToEventKilledCheck"
                 ],
                 endOfTurnEvents : [
                 ],
@@ -926,6 +1433,263 @@ module.exports = {
                 magicDmg: 0,
                 armor: 1200,
                 spirit: 1200,
+                difficulty: "summoned",
+                element: "normal"
+            },
+            reoriginator: {
+                name: "Reoriginator",
+                abilities: ["crush", "corrupt"],
+                buffs: [],
+                keystoneStats: {
+                    hp: [1200, 3500, 6200, 10000, 13000, 17500, 25000, 35000, 45000, 60000  ],
+                    attackDmg: [300, 500, 900, 1500, 2300, 3400, 4500, 5500, 6500, 7500],
+                    magicDmg: [300, 500, 900, 1500, 2300, 3400, 4500, 5500, 6500, 7500],
+                    abilities: []
+                },
+                effectsOnDeath: [
+
+                ],
+                endOfTurnEvents : [
+                    // debuff that lowers hp by 5%
+                    "ripfabric"
+                ],
+                hpPerPartyMember: 0,
+                adPerPartyMember: 0,
+                mdPerPartyMember: 0,
+                hp: 55000,
+                attackDmg: 2000,
+                magicDmg: 2000,
+                armor: 1500,
+                spirit: 1500,
+                difficulty: "summoned",
+                element: "normal"
+            },
+            whelpling: {
+                name: "Whelpling",
+                abilities: ["poke", "bite", "flameblast"],
+                buffs: [],
+                keystoneStats: {
+                    hp: [1200, 3500, 8200, 14000, 25000, 37500, 55000, 65000, 85000, 90000  ],
+                    attackDmg: [300, 900, 1900, 3500, 4300, 5400, 6500, 7500, 9500, 12500],
+                    magicDmg: [300, 900, 1900, 3500, 4300, 5400, 6500, 7500, 9500, 12500],
+                    abilities: []
+                },
+                effectsOnDeath: [
+                    // puts dot that deals 900 damage 
+                    "rupture",
+                    "reducedHealingWhelp"
+                ],
+                hpPerPartyMember: 0,
+                adPerPartyMember: 0,
+                mdPerPartyMember: 0,
+                hp: 10300,
+                attackDmg: 1800,
+                magicDmg: 1800,
+                armor: 1300,
+                spirit: 1300,
+                difficulty: "summoned",
+                element: "normal"
+            },
+            parasiticMaggot: {
+                name: "Parasitic Maggot",
+                abilities: ["bite"],
+                buffs: [],
+                effectsOnDeath: [
+                    "rupture",
+                    "increasedDamageParasite"
+                ],
+                hpPerPartyMember: 0,
+                adPerPartyMember: 0,
+                mdPerPartyMember: 0,
+                hp: 3300,
+                attackDmg: 300,
+                magicDmg: 300,
+                armor: 1300,
+                spirit: 1300,
+                difficulty: "summoned",
+                element: "normal"
+            },
+            amberDrake: {
+                name: "Amber Drake",
+                abilities: ["poke", "impale", "slash", "flameblast"],
+                buffs: [
+                    {
+                        name: "frenzy",
+                        emoji: "<:frenzy:479298214453968896>",
+                        onTurnEnd: {
+                            attackDmgPlus : 1000,
+                            magicDmgPlus : 1000,
+                            everyNTurns: 2,
+                            startTurn: 1
+                        }
+                    }
+                ],
+                keystoneStats: {
+                    frenzy: {
+                        attackDmgPlus : [300, 500, 790, 1000, 1500, 2500, 4000, 7000, 9000, 15000],
+                        magicDmgPlus : [300, 500, 790, 1000, 1500, 2500, 4000, 7000, 9000, 15000]
+                    },
+                    hp: [10200, 20500, 31000, 50000, 71000, 94000, 120000, 150000, 200000, 300000 ],
+                    attackDmg: [1000, 1500, 2400, 3400, 4900, 7000, 9500, 11000, 17000, 37000],
+                    magicDmg: [1000, 1500, 2400, 3400, 4900, 7000, 9500, 11000, 17000, 37000],
+                    abilities: []
+                },
+                endOfTurnEvents : [
+                    "focus",
+                    "erupt"
+                ],
+                effectsOnDeath: [
+                    "reducedHealingDrake"
+                ],
+                abilityOrder: [
+                    0, [1,2,3], [1,2,3], [1,2,3], [1,2,3], [1,2,3], 
+                    [1,2,3], [1,2,3], [1,2,3], [1,2,3], [1,2,3],
+                    [1,2,3], [1,2,3], [1,2,3], [1,2,3], [1,2,3]
+                ],
+                hpPerPartyMember: 0,
+                adPerPartyMember: 0,
+                mdPerPartyMember: 0,
+                hp: 39300,
+                attackDmg: 4900,
+                magicDmg: 4900,
+                armor: 1800,
+                spirit: 1800,
+                difficulty: "summoned-boss",
+                element: "normal"
+            },
+            fireGuardian: {
+                name: "Fire Guardian",
+                abilities: ["flameblast", "crush"],
+                buffs: [],
+                keystoneStats: {
+                    hp: [4000, 8900, 15400, 21000, 29000, 38000, 4700, 65000, 80000, 100000  ],
+                    attackDmg: [6000, 1100, 1800, 2400, 3500, 5300, 6900, 9000, 13000, 27000],
+                    magicDmg: [6000, 1100, 1800, 2400, 3500, 5300, 6900, 9000, 13000, 27000],
+                    abilities: []
+                },
+                endOfTurnEvents : [
+                    "lavaBlast",
+                ],
+                effectsOnDeath: [
+                    "reducedHealingGuardian"
+                ],
+                hpPerPartyMember: 0,
+                adPerPartyMember: 0,
+                mdPerPartyMember: 0,
+                hp: 17300,
+                attackDmg: 3000,
+                magicDmg: 3000,
+                armor: 1700,
+                spirit: 1700,
+                difficulty: "summoned",
+                element: "normal"
+            },
+            stormGuardian: {
+                name: "Storm Guardian",
+                abilities: ["impale", "tackle"], // chain lightning
+                buffs: [],
+                keystoneStats: {
+                    hp: [4000, 8900, 15400, 21000, 29000, 38000, 4700, 65000, 80000, 100000  ],
+                    attackDmg: [6000, 1100, 1800, 2400, 3500, 5300, 6900, 9000, 13000, 27000],
+                    magicDmg: [6000, 1100, 1800, 2400, 3500, 5300, 6900, 9000, 13000, 27000],
+                    abilities: []
+                },
+                endOfTurnEvents : [
+                    // status that reduces all damage done by 3% on target lasts 60 turns - cant bandaid
+                    "frighten"
+                ],
+                effectsOnDeath: [
+                    "reducedHealingGuardian"
+                ],
+                hpPerPartyMember: 0,
+                adPerPartyMember: 0,
+                mdPerPartyMember: 0,
+                hp: 17300,
+                attackDmg: 3000,
+                magicDmg: 3000,
+                armor: 1700,
+                spirit: 1700,
+                difficulty: "summoned",
+                element: "normal"
+            },
+            earthGuardian: {
+                name: "Earth Guardian",
+                abilities: ["smash", "smash", "uppercut", "whirlwind"],
+                buffs: [],
+                keystoneStats: {
+                    hp: [4000, 8900, 15400, 21000, 29000, 38000, 4700, 65000, 80000, 100000  ],
+                    attackDmg: [6000, 1100, 1800, 2400, 3500, 5300, 6900, 9000, 13000, 27000],
+                    magicDmg: [6000, 1100, 1800, 2400, 3500, 5300, 6900, 9000, 13000, 27000],
+                    abilities: []
+                },
+                endOfTurnEvents : [
+                    "focus",
+                    "fury3", // increased damage done based on missing health (3% per 1%)
+                    "fade", // put up a status that reduces healing taken by 10% per stack  - can bandaid
+                ],
+                effectsOnDeath: [
+                    "reducedHealingGuardian"
+                ],
+                hpPerPartyMember: 0,
+                adPerPartyMember: 0,
+                mdPerPartyMember: 0,
+                hp: 17300,
+                attackDmg: 3000,
+                magicDmg: 3000,
+                armor: 1700,
+                spirit: 1700,
+                difficulty: "summoned",
+                element: "normal"
+            },
+            amberPool: {
+                name: "Amber Pool",
+                immuneToAoe: true,
+                passive: true,
+                abilities: [],
+                buffs: [],
+                keystoneStats: {
+                    hp: [1500, 2500, 3700, 5000, 7500, 9500, 12000, 15000, 20000, 27000  ],
+                    attackDmg: [300, 500, 900, 1500, 2300, 6400, 9500, 10500, 14500, 25500],
+                    magicDmg: [300, 500, 900, 1500, 2300, 6400, 9500, 10500, 14500, 25500],
+                    abilities: []
+                },
+                endOfTurnEvents : [
+                    "bloom"
+                ],
+                hpPerPartyMember: 0,
+                adPerPartyMember: 0,
+                mdPerPartyMember: 0,
+                hp: 6800,
+                attackDmg: 1000,
+                magicDmg: 1000,
+                armor: 900,
+                spirit: 900,
+                difficulty: "summoned-boss",
+                element: "normal"
+            },
+            roots: {
+                name: "Roots",
+                immuneToAoe: true,
+                abilities: ["slap"],
+                buffs: [],
+                keystoneStats: {
+                    hp: [700, 1500, 3200, 4000, 6300, 9500, 12000, 15000, 25000, 40000  ],
+                    attackDmg: [300, 700, 1500, 2500, 3100, 3900, 5000, 6500, 7700, 9500 ],
+                    magicDmg: [300, 700, 1500, 2500, 3100, 3900, 5000, 6500, 7700, 9500 ],
+                    abilities: []
+                },
+                // roots deal damage and focus a single player
+                endOfTurnEvents : [
+                    "rampageRoots"
+                ],
+                hpPerPartyMember: 0,
+                adPerPartyMember: 0,
+                mdPerPartyMember: 0,
+                hp: 2000,
+                attackDmg: 2000,
+                magicDmg: 2000,
+                armor: 500,
+                spirit: 500,
                 difficulty: "summoned",
                 element: "normal"
             },
@@ -1253,6 +2017,7 @@ module.exports = {
         },
         easy : {
             rabbidwolf: {
+                enemyIdName : "rabbidwolf",
                 name: "Rabbid Wolf",
                 abilities: ["attack", "attack", "poison", "poison", "tacowall"],
                 buffs: [],
@@ -1273,7 +2038,58 @@ module.exports = {
                 difficulty: "easy",
                 element: "normal"
             },
+            graywolf: {
+                enemyIdName : "graywolf",
+                name: "Gray Wolf",
+                abilities: ["claw", "claw", "bite", "bite", "freeze"],
+                buffs: [],
+                keystoneStats: {
+                    hp: [1200, 3500, 6200, 10000, 15000 ],
+                    attackDmg: [300, 500, 900, 1500, 2300],
+                    magicDmg: [300, 500, 900, 1500, 2300],
+                    abilities: []
+                },
+                effectsOnDeath: [
+                    "summonLeopardPack"
+                ],
+                hpPerPartyMember: 60,
+                adPerPartyMember: 7,
+                mdPerPartyMember: 7,
+                hp: 480,
+                attackDmg: 110,
+                magicDmg: 110,
+                armor: 300,
+                spirit: 300,
+                difficulty: "easy",
+                element: "normal"
+            },
+            snowleopard: {
+                enemyIdName : "snowleopard",
+                name: "Snow Leopard",
+                abilities: ["claw", "claw", "bite", "bite", "freeze"],
+                buffs: [],
+                keystoneStats: {
+                    hp: [1200, 3500, 6200, 10000, 15000 ],
+                    attackDmg: [300, 500, 900, 1500, 2300],
+                    magicDmg: [300, 500, 900, 1500, 2300],
+                    abilities: []
+                },
+                effectsOnDeath: [
+                    "starve"
+                ],
+                hpPerPartyMember: 60,
+                adPerPartyMember: 7,
+                mdPerPartyMember: 7,
+                hp: 480,
+                attackDmg: 120,
+                magicDmg: 120,
+                armor: 300,
+                spirit: 300,
+                difficulty: "easy",
+                element: "normal"
+            },
             hungryboar: {
+                enemyIdName : "hungryboar",
                 name: "Hungry Boar",
                 //emoji: "<:wendigo:598743668664565789>",
                 abilities: ["bite", "bite", "slash", "slash", "shield"],
@@ -1296,6 +2112,7 @@ module.exports = {
                 element: "normal"
             },
             bull: {
+                enemyIdName : "bull",
                 name: "Bull",
                 abilities: ["ram", "ram", "assist", "assist", "empower"],
                 buffs: [],
@@ -1317,6 +2134,7 @@ module.exports = {
                 element: "normal"
             },
             cheetah: {
+                enemyIdName : "cheetah",
                 name: "Cheetah",
                 abilities: ["claw", "claw", "claw", "claw", "protect"],
                 buffs: [],
@@ -1338,6 +2156,7 @@ module.exports = {
                 element: "normal"
             },
             hyena: {
+                enemyIdName : "hyena",
                 name: "Hyena",
                 //emoji: "<:wendigo:598743668664565789>",
                 abilities: ["ferociousBite", "ferociousBite", "iceshards", "iceshards", "barrier"],
@@ -1366,6 +2185,7 @@ module.exports = {
                 element: "normal"
             },
             addict: {
+                enemyIdName : "addict",
                 name: "Addict",
                 abilities: ["inject", "inject", "orchatasip", "inject", "bandaid"],
                 buffs: [],
@@ -1387,6 +2207,7 @@ module.exports = {
                 element: "normal"
             },
             angrydwarf: {
+                enemyIdName : "angrydwarf",
                 name: "Angry Dwarf",
                 abilities: ["bite", "bite", "poke", "poke", "poke"],
                 buffs: [],
@@ -1408,6 +2229,7 @@ module.exports = {
                 element: "normal"
             },
             extremist: {
+                enemyIdName : "extremist",
                 name: "Extremist",
                 abilities: ["attack", "attack", "hostage", "hostage", "bomb"],
                 buffs: [],
@@ -1432,6 +2254,7 @@ module.exports = {
                 element: "normal"
             },
             thug: {
+                enemyIdName : "thug",
                 name: "Thug",
                 abilities: ["attack", "attack", "punch", "punch", "bandaid"],
                 buffs: [],
@@ -1453,6 +2276,7 @@ module.exports = {
                 element: "normal"
             },
             tacosmuggler: {
+                enemyIdName : "tacosmuggler",
                 name: "Taco Smuggler",
                 abilities: ["clap", "clap", "curse", "curse", "clap"],
                 buffs: [],
@@ -1477,6 +2301,7 @@ module.exports = {
                 element: "normal"
             },
             seedthief: {
+                enemyIdName : "seedthief",
                 name: "Seed Thief",
                 abilities: ["attack", "attack", "tacoheal", "tacoheal", "poke"],
                 buffs: [],
@@ -1498,6 +2323,7 @@ module.exports = {
                 element: "normal"
             },
             badchef: {
+                enemyIdName : "badchef",
                 name: "Bad Chef",
                 abilities: ["attack", "attack", "poison", "poison", "barrier"],
                 buffs: [],
@@ -1522,6 +2348,7 @@ module.exports = {
                 element: "normal"
             },
             vagabond: {
+                enemyIdName : "vagabond",
                 name: "Vagabond",
                 abilities: ["attack", "attack", "flameblast", "flameblast", "cripple"],
                 buffs: [],
@@ -1547,6 +2374,7 @@ module.exports = {
                 element: "normal"
             },
             coyote: {
+                enemyIdName : "coyote",
                 name: "Coyote",
                 abilities: ["attack", "attack", "claw", "claw", "cripple"],
                 buffs: [],
@@ -1571,6 +2399,7 @@ module.exports = {
                 element: "normal"
             },
             angrymobmember: {
+                enemyIdName : "angrymobmember",
                 name: "Angry Mob Member",
                 abilities: ["attack", "attack", "poison", "iceshards", "iceshards", "cripple"],
                 buffs: [],
@@ -1592,6 +2421,7 @@ module.exports = {
                 element: "normal"
             },
             tacodealer: {
+                enemyIdName : "tacodealer",
                 name: "Taco Dealer",
                 abilities: ["attack", "attack", "drain", "drain", "freeze"],
                 buffs: [],
@@ -1613,6 +2443,7 @@ module.exports = {
                 element: "normal"
             },
             burritohustler: {
+                enemyIdName : "burritohustler",
                 name: "Burrito Hustler",
                 abilities: ["attack", "attack", "slap", "slap", "weaken"],
                 buffs: [],
@@ -1634,6 +2465,7 @@ module.exports = {
                 element: "normal"
             },
             ruffian: {
+                enemyIdName : "ruffian",
                 name: "Ruffian",
                 abilities: ["attack", "attack", "tackle", "tackle", "weaken"],
                 buffs: [],
@@ -1653,10 +2485,58 @@ module.exports = {
                 spirit: 400,
                 difficulty: "easy",
                 element: "normal"
+            },
+            squid: {
+                enemyIdName : "squid",
+                name: "Squid",
+                abilities: ["attack", "attack", "tackle", "tackle", "weaken"],
+                buffs: [],
+                keystoneStats: {
+                    hp: [1200, 3500, 6200, 10000, 15000 ],
+                    attackDmg: [300, 500, 900, 1500, 2300],
+                    magicDmg: [300, 500, 900, 1500, 2300],
+                    abilities: []
+                },
+                effectsOnDeath:[
+                    "decayDeath"
+                ],
+                hpPerPartyMember: 270,
+                adPerPartyMember: 9,
+                mdPerPartyMember: 9,
+                hp: 330,
+                attackDmg: 160,
+                magicDmg: 179,
+                armor: 290,
+                spirit: 400,
+                difficulty: "easy",
+                element: "normal"
+            },
+            vermin: {
+                enemyIdName : "vermin",
+                name: "Vermin",
+                abilities: ["attack", "attack", "tackle", "tackle", "weaken"],
+                buffs: [],
+                keystoneStats: {
+                    hp: [1200, 3500, 6200, 10000, 15000 ],
+                    attackDmg: [300, 500, 900, 1500, 2300],
+                    magicDmg: [300, 500, 900, 1500, 2300],
+                    abilities: []
+                },
+                hpPerPartyMember: 270,
+                adPerPartyMember: 9,
+                mdPerPartyMember: 9,
+                hp: 330,
+                attackDmg: 160,
+                magicDmg: 179,
+                armor: 290,
+                spirit: 400,
+                difficulty: "easy",
+                element: "normal"
             }
         },
         medium: {
             tacobandit: {
+                enemyIdName : "tacobandit",
                 name: "Taco Bandit",
                 //emoji: "<:wendigo:598743668664565789>",
                 abilities: ["attack", "attack", "enemyshock", "enemyshock", "orchatasip"],
@@ -1682,6 +2562,7 @@ module.exports = {
                 element: "normal"
             },
             tacothief: {
+                enemyIdName : "tacothief",
                 name: "Taco Thief",
                 abilities: ["attack", "attack", "flameblast", "flameblast", "orchatasip"],
                 buffs: [],
@@ -1706,6 +2587,7 @@ module.exports = {
                 element: "normal"
             },
             slotsgambler: {
+                enemyIdName : "slotsgambler",
                 name: "Slots Gambler",
                 abilities: ["attack", "attack", "elixir", "elixir", "orchatasip"],
                 buffs: [],
@@ -1730,6 +2612,7 @@ module.exports = {
                 element: "normal"
             },
             fruitscounter: {
+                enemyIdName : "fruitscounter",
                 name: "Fruits Counter",
                 abilities: ["attack", "attack", "uppercut", "uppercut", "weaken"],
                 buffs: [],
@@ -1754,6 +2637,7 @@ module.exports = {
                 element: "normal"
             },
             disassembler: {
+                enemyIdName : "disassembler",
                 name: "Disassembler",
                 abilities: ["clap", "clap", "scam", "scam", "weaken"],
                 buffs: [],
@@ -1778,6 +2662,7 @@ module.exports = {
                 element: "normal"
             },
             nigerianprince: {
+                enemyIdName : "nigerianprince",
                 name: "Nigerian Prince",
                 abilities: ["scam", "scam", "scam", "elixir", "cripple"],
                 buffs: [],
@@ -1802,6 +2687,7 @@ module.exports = {
                 element: "normal"
             },
             troglodyte: {
+                enemyIdName : "troglodyte",
                 name: "Troglodyte",
                 abilities: ["punch", "punch", "claw", "claw", "scold"],
                 buffs: [],
@@ -1826,6 +2712,7 @@ module.exports = {
                 element: "normal"
             },
             ignoramus: {
+                enemyIdName : "ignoramus",
                 name: "Ignoramus",
                 abilities: ["scare", "scare", "punch", "punch", "freeze"],
                 buffs: [],
@@ -1850,6 +2737,7 @@ module.exports = {
                 element: "normal"
             },
             dullard: {
+                enemyIdName : "dullard",
                 name: "Dullard",
                 abilities: ["ram", "ram", "claw", "claw", "protect"],
                 buffs: [],
@@ -1874,6 +2762,7 @@ module.exports = {
                 element: "normal"
             },
             dolt: {
+                enemyIdName : "dolt",
                 name: "Dolt",
                 abilities: ["attack", "attack", "slash", "slash", "cripple"],
                 buffs: [],
@@ -1898,6 +2787,7 @@ module.exports = {
                 element: "normal"
             },
             auctionsniper: {
+                enemyIdName : "auctionsniper",
                 name: "Auction Sniper",
                 abilities: ["scam", "scam", "bandaid", "empower", "freeze"],
                 buffs: [],
@@ -1922,6 +2812,7 @@ module.exports = {
                 element: "normal"
             },
             marketflipper: {
+                enemyIdName : "marketflipper",
                 name: "Market Flipper",
                 abilities: ["scam", "scam", "iceshards", "iceshards", "scold"],
                 buffs: [],
@@ -1946,6 +2837,7 @@ module.exports = {
                 element: "normal"
             },
             bear: {
+                enemyIdName : "bear",
                 name: "Bear",
                 //emoji: "<:wendigo:598752209475207178>",
                 abilities: ["ferociousBite", "ferociousBite", "ferociousBite", "ferociousBite", "shield"],
@@ -1971,6 +2863,7 @@ module.exports = {
                 element: "normal"
             },
             polarbear: {
+                enemyIdName : "polarbear",
                 name: "Polar Bear",
                 abilities: ["ferociousBite", "ferociousBite", "ferociousBite", "iceshards", "shield"],
                 buffs: [],
@@ -1995,6 +2888,7 @@ module.exports = {
                 element: "normal"
             },
             philistine: {
+                enemyIdName : "philistine",
                 name: "Philistine",
                 abilities: ["clap", "clap", "clap", "smuggle", "poke"],
                 buffs: [],
@@ -2019,6 +2913,7 @@ module.exports = {
                 element: "normal"
             },
             suicidebomber: {
+                enemyIdName : "suicidebomber",
                 name: "Suicidebomber",
                 abilities: ["attack", "cripple", "cripple", "weaken", "bomb"],
                 buffs: [],
@@ -2046,6 +2941,7 @@ module.exports = {
                 element: "normal"
             },
             witch: {
+                enemyIdName : "witch",
                 name: "Witch",
                 abilities: ["curse", "curse", "guac", "guac", "scold"],
                 buffs: [],
@@ -2070,6 +2966,7 @@ module.exports = {
                 element: "normal"
             },
             tarzan: {
+                enemyIdName : "tarzan",
                 name: "Tarzan",
                 abilities: ["claw", "claw", "hostage", "hostage", "elixir"],
                 buffs: [],
@@ -2094,6 +2991,7 @@ module.exports = {
                 element: "normal"
             },
             evilclown: {
+                enemyIdName : "evilclown",
                 name: "Evil Clown",
                 abilities: ["scare", "scare", "corrupt", "corrupt", "hostage"],
                 buffs: [],
@@ -2118,6 +3016,7 @@ module.exports = {
                 element: "normal"
             },
             charlatan: {
+                enemyIdName : "charlatan",
                 name: "Charlatan",
                 abilities: ["attack", "attack", "claw", "claw", "weaken"],
                 buffs: [],
@@ -2142,6 +3041,7 @@ module.exports = {
                 element: "normal"
             },
             tweener: {
+                enemyIdName : "tweener",
                 name: "Tweener",
                 abilities: ["smuggle", "smuggle", "inject", "inject", "claw"],
                 buffs: [],
@@ -2165,9 +3065,116 @@ module.exports = {
                 difficulty: "medium",
                 element: "normal"
             },
+            rattlesnake: {
+                enemyIdName : "rattlesnake",
+                name: "Rattlesnake",
+                abilities: ["bite", "bite", "inject", "inject", "poke"],
+                buffs: [],
+                keystoneStats: {
+                    hp: [1200, 3500, 6200, 10000, 15000 ],
+                    attackDmg: [300, 500, 900, 1500, 2300],
+                    magicDmg: [300, 500, 900, 1500, 2300],
+                    abilities: []
+                },
+                effectsOnDeath: [
+                    "burst"
+                ],
+                hpPerPartyMember: 290,
+                adPerPartyMember: 18,
+                mdPerPartyMember: 18,
+                hp: 640,
+                attackDmg: 90,
+                magicDmg: 90,
+                armor: 350,
+                spirit: 550,
+                difficulty: "medium",
+                element: "normal"
+            },
+            scorpion: {
+                enemyIdName : "scorpion",
+                name: "Scorpion",
+                abilities: ["sting", "sting", "inject", "inject", "poison"],
+                buffs: [],
+                keystoneStats: {
+                    hp: [1200, 3500, 6200, 10000, 15000 ],
+                    attackDmg: [300, 500, 900, 1500, 2300],
+                    magicDmg: [300, 500, 900, 1500, 2300],
+                    abilities: []
+                },
+                effectsOnDeath: [
+                    "burst"
+                ],
+                hpPerPartyMember: 290,
+                adPerPartyMember: 18,
+                mdPerPartyMember: 18,
+                hp: 640,
+                attackDmg: 190,
+                magicDmg: 190,
+                armor: 350,
+                spirit: 550,
+                difficulty: "medium",
+                element: "normal"
+            },
+            maggot: {
+                enemyIdName : "maggot",
+                name: "Maggot",
+                abilities: ["sting", "sting", "inject", "inject", "poison"],
+                buffs: [],
+                keystoneStats: {
+                    hp: [1200, 3500, 6200, 10000, 15000 ],
+                    attackDmg: [300, 500, 900, 1500, 2300],
+                    magicDmg: [300, 500, 900, 1500, 2300],
+                    abilities: []
+                },
+                effectsOnDeath:[
+
+                ],
+                hpPerPartyMember: 490,
+                adPerPartyMember: 18,
+                mdPerPartyMember: 18,
+                hp: 640,
+                attackDmg: 90,
+                magicDmg: 90,
+                armor: 350,
+                spirit: 550,
+                difficulty: "medium",
+                element: "normal"
+            },
+            egg: {
+                enemyIdName : "egg",
+                name: "Egg",
+                passive: true,
+                abilities: [],
+                buffs: [],
+                keystoneStats: {
+                    hp: [1200, 3500, 6200, 10000, 15000 ],
+                    attackDmg: [300, 500, 900, 1500, 2300],
+                    magicDmg: [300, 500, 900, 1500, 2300],
+                    abilities: []
+                },
+                endOfTurnEvents: [
+                    "summonSkyMaggots"
+                ],
+                effectsOnDeath: [
+                    "burst",
+                    "burst",
+                    "burst"
+                ],
+                hpPerPartyMember: 890,
+                adPerPartyMember: 18,
+                mdPerPartyMember: 18,
+                hp: 840,
+                attackDmg: 90,
+                magicDmg: 90,
+                armor: 1950,
+                spirit: 1950,
+                difficulty: "medium",
+                element: "normal"
+            },
         },
         hard: {
             silverback: {
+                enemyIdName : "silverback",
                 name: "Silverback",
                 abilities: ["ferociousBite", "claw", "slash", "slash", "cripple"],
                 buffs: [
@@ -2203,6 +3210,7 @@ module.exports = {
                 element: "normal"
             },
             footballplayer: {
+                enemyIdName : "footballplayer",
                 name: "Football Player",
                 abilities: ["attack", "attack", "slash", "slash", "rockthrow", "empower"],
                 buffs: [
@@ -2238,6 +3246,7 @@ module.exports = {
                 element: "normal"
             },
             samuraiwarrior: {
+                enemyIdName : "samuraiwarrior",
                 name: "Samurai Warrior",
                 abilities: ["attack", "attack", "iceshards", "iceshards", "drain", "drain", "bandaid"],
                 buffs: [
@@ -2273,6 +3282,7 @@ module.exports = {
                 element: "normal"
             },
             warewolf: {
+                enemyIdName : "warewolf",
                 name: "Werewolf",
                 abilities: ["attack", "attack", "ferociousBite", "ferociousBite", "uppercut"],
                 buffs: [
@@ -2308,6 +3318,7 @@ module.exports = {
                 element: "normal"
             },
             prawn: {
+                enemyIdName : "prawn",
                 name: "Prawn",
                 abilities: ["attack", "attack", "ferociousBite", "ferociousBite", "uppercut"],
                 buffs: [
@@ -2344,6 +3355,7 @@ module.exports = {
                 element: "normal"
             },
             funnypolitician: {
+                enemyIdName : "funnypolitician",
                 name: "Funny Politician",
                 abilities: ["attack" , "attack" , "curse", "poison", "enemyshoot", "enemyshoot","freeze"],
                 buffs: [
@@ -2379,6 +3391,7 @@ module.exports = {
                 element: "normal"
             },
             voodoowitch: {
+                enemyIdName : "voodoowitch",
                 name: "Voodoo Witch",
                 abilities: ["attack" , "attack" , "curse", "curse", "poison", "poison", "freeze"],
                 buffs: [
@@ -2420,6 +3433,7 @@ module.exports = {
                 element: "normal"
             },
             sniper: {
+                enemyIdName : "sniper",
                 name: "Sniper",
                 abilities: ["attack"  , "punch", "enemyshoot", "enemyshoot", "enemyshoot","freeze"],
                 buffs: [
@@ -2455,6 +3469,7 @@ module.exports = {
                 element: "normal"
             },
             gascollector: {
+                enemyIdName : "gascollector",
                 name: "Gas Collector",
                 abilities: ["attack" , "attack" , "poison", "poison", "inject", "inject","freeze"],
                 buffs: [
@@ -2489,7 +3504,44 @@ module.exports = {
                 difficulty: "hard",
                 element: "normal"
             },
+            bonewarrior: {
+                enemyIdName : "bonewarrior",
+                name: "Bone Warrior",
+                abilities: ["skeletalSwing", "skeletalSwing", "iceshards", "iceshards", "cripple"],
+                buffs: [
+                    {
+                        name: "frenzy",
+                        emoji: "<:frenzy:479298214453968896>",
+                        onTurnEnd: {
+                            attackDmgPlus : 130,
+                            magicDmgPlus : 130,
+                            everyNTurns: 2,
+                            startTurn: 2
+                        }
+                    }
+                ],
+                effectsOnDeath: [
+                    "empowerDeath"
+                ],
+                keystoneStats: {
+                    hp: [1200, 3500, 6200, 10000, 15000 ],
+                    attackDmg: [300, 500, 900, 1500, 2300],
+                    magicDmg: [300, 500, 900, 1500, 2300],
+                    abilities: []
+                },
+                hpPerPartyMember: 950,
+                adPerPartyMember: 21,
+                mdPerPartyMember: 21,
+                hp: 1250,
+                attackDmg: 350,
+                magicDmg: 350,
+                armor: 700,
+                spirit: 1100,
+                difficulty: "hard",
+                element: "normal"
+            },
             capo: {
+                enemyIdName : "capo",
                 name: "Capo",
                 abilities: ["punch" , "punch" , "hostage", "hostage", "decapitate", "tacoheal", "weaken"],
                 buffs: [
@@ -2528,6 +3580,7 @@ module.exports = {
                 element: "normal"
             },
             zeta: {
+                enemyIdName : "zeta",
                 name: "Zeta",
                 abilities: ["attack"  , "punch", "decapitate", "decapitate","weaken"],
                 buffs: [
@@ -2563,6 +3616,7 @@ module.exports = {
                 element: "normal"
             },
             racketeer: {
+                enemyIdName : "racketeer",
                 name: "Racketeer",
                 abilities: ["scare" , "scare" , "shoot", "shoot", "bomb", "bomb","freeze"],
                 buffs: [
@@ -2598,6 +3652,7 @@ module.exports = {
                 element: "normal"
             },
             tacopirate: {
+                enemyIdName : "tacopirate",
                 name: "Taco Pirate",
                 abilities: ["claw" , "claw" , "hostage", "hostage","empower"],
                 buffs: [
@@ -2633,6 +3688,7 @@ module.exports = {
                 element: "normal"
             },
             walrus: {
+                enemyIdName : "walrus",
                 name: "Walrus",
                 abilities: ["ferociousBite" , "ferociousBite" , "iceshards", "iceshards","freeze"],
                 buffs: [
@@ -2668,6 +3724,7 @@ module.exports = {
                 element: "normal"
             },
             wendigo: {
+                enemyIdName : "wendigo",
                 name: "Wendigo",
                 emoji: "<:wendigo:598743668664565789>",
                 abilities: ["ferociousBite" , "ferociousBite" , "iceshards", "iceshards", "freeze"],
@@ -2704,8 +3761,9 @@ module.exports = {
                 element: "normal"
             },
             iconoclast: {
+                enemyIdName : "iconoclast",
                 name: "Iconoclast",
-                abilities: ["slap" , "slap" , "scam", "slash", "slash", "cripple"],
+                abilities: ["slap" , "slap" , "scam", "scam", "blizzard", "cripple"],
                 buffs: [
                     {
                         name: "frenzy",
@@ -2726,7 +3784,8 @@ module.exports = {
                 },
                 // summon normal enemies
                 effectsOnDeath: [
-                    "explode"
+                    "summon3polarbears",
+                    "decayDeath"
                 ],
                 hpPerPartyMember: 1090,
                 adPerPartyMember: 21,
@@ -2740,6 +3799,7 @@ module.exports = {
                 element: "normal"
             },
             mountainlion: {
+                enemyIdName : "mountainlion",
                 name: "Mountain Lion",
                 abilities: ["ferociousBite" , "ferociousBite" , "ferociousBite", "slash", "slash", "cripple"],
                 buffs: [
@@ -2775,8 +3835,9 @@ module.exports = {
                 element: "normal"
             },
             delinquent: {
+                enemyIdName : "delinquent",
                 name: "Delinquent",
-                abilities: ["drain" , "drain" , "smuggle", "smuggle", "corrupt", "currupt"],
+                abilities: ["drain" , "drain" , "smuggle", "smuggle", "corrupt", "corrupt"],
                 buffs: [
                     {
                         name: "frenzy",
@@ -2809,7 +3870,80 @@ module.exports = {
                 difficulty: "hard",
                 element: "normal"
             },
+            consigliere: {
+                enemyIdName : "consigliere",
+                name: "Consigliere",
+                abilities: ["drain" , "drain" , "smuggle", "smuggle", "corrupt", "corrupt"],
+                buffs: [
+                    {
+                        name: "frenzy",
+                        emoji: "<:frenzy:479298214453968896>",
+                        onTurnEnd: {
+                            attackDmgPlus : 60,
+                            magicDmgPlus : 60,
+                            everyNTurns: 2,
+                            startTurn: 2
+                        }
+                    }
+                ],
+                keystoneStats: {
+                    hp: [1200, 3500, 6200, 10000, 15000 ],
+                    attackDmg: [300, 500, 900, 1500, 2300],
+                    magicDmg: [300, 500, 900, 1500, 2300],
+                    abilities: []
+                },
+                effectsOnDeath: [
+                    "explode"
+                ],
+                hpPerPartyMember: 1090,
+                adPerPartyMember: 21,
+                mdPerPartyMember: 21,
+                hp: 650,
+                attackDmg: 395,
+                magicDmg: 390,
+                armor: 1100,
+                spirit: 1100,
+                difficulty: "hard",
+                element: "normal"
+            },
+            prisoner: {
+                enemyIdName : "prisoner",
+                name: "Prisoner",
+                abilities: ["punch" , "punch" , "smuggle", "smuggle", "surge", "elixir"],
+                buffs: [
+                    {
+                        name: "frenzy",
+                        emoji: "<:frenzy:479298214453968896>",
+                        onTurnEnd: {
+                            attackDmgPlus : 60,
+                            magicDmgPlus : 60,
+                            everyNTurns: 2,
+                            startTurn: 2
+                        }
+                    }
+                ],
+                keystoneStats: {
+                    hp: [1200, 3500, 6200, 10000, 15000 ],
+                    attackDmg: [300, 500, 900, 1500, 2300],
+                    magicDmg: [300, 500, 900, 1500, 2300],
+                    abilities: []
+                },
+                effectsOnDeath: [
+                    "summonThugs"
+                ],
+                hpPerPartyMember: 1090,
+                adPerPartyMember: 21,
+                mdPerPartyMember: 21,
+                hp: 650,
+                attackDmg: 395,
+                magicDmg: 390,
+                armor: 1100,
+                spirit: 1100,
+                difficulty: "hard",
+                element: "normal"
+            },
             distributor: {
+                enemyIdName : "distributor",
                 name: "Distributor",
                 abilities: ["punch" , "punch" , "curse", "poison", "poison", "inject", "shield"],
                 buffs: [
@@ -2844,16 +3978,17 @@ module.exports = {
                 difficulty: "hard",
                 element: "normal"
             },
-            ogre: {
-                name: "Ogre",
-                abilities: ["punch" , "punch" , "curse", "poison", "poison", "inject", "shield"],
+            giantearthworm: {
+                enemyIdName : "giantearthworm",
+                name: "Giant Earthworm",
+                abilities: ["clap" , "clap" , "smash", "smash", "slash", "slash", "cripple"],
                 buffs: [
                     {
                         name: "frenzy",
                         emoji: "<:frenzy:479298214453968896>",
                         onTurnEnd: {
-                            attackDmgPlus : 60,
-                            magicDmgPlus : 60,
+                            attackDmgPlus : 90,
+                            magicDmgPlus : 90,
                             everyNTurns: 2,
                             startTurn: 2
                         }
@@ -2866,9 +4001,9 @@ module.exports = {
                     abilities: []
                 },
                 effectsOnDeath: [
-                    "empower"
+                    "decayDeath"
                 ],
-                hpPerPartyMember: 1090,
+                hpPerPartyMember: 590,
                 adPerPartyMember: 21,
                 mdPerPartyMember: 21,
                 hp: 650,
@@ -2879,9 +4014,235 @@ module.exports = {
                 difficulty: "hard",
                 element: "normal"
             },
+            ogre: {
+                enemyIdName : "ogre",
+                name: "Ogre",
+                emoji: "<:wendigo:619605350106136607>",
+                abilities: ["punch" , "punch" , "frostBreath", "inject" , "inject", "tacowall"],
+                buffs: [
+                    {
+                        name: "frenzy",
+                        emoji: "<:frenzy:479298214453968896>",
+                        onTurnEnd: {
+                            attackDmgPlus : 100,
+                            magicDmgPlus : 100,
+                            everyNTurns: 2,
+                            startTurn: 2
+                        }
+                    }
+                ],
+                keystoneStats: {
+                    hp: [1200, 3500, 6200, 10000, 15000 ],
+                    attackDmg: [300, 500, 900, 1500, 2300],
+                    magicDmg: [300, 500, 900, 1500, 2300],
+                    abilities: []
+                },
+                effectsOnDeath: [
+                    "summonRuffians"
+                ],
+                hpPerPartyMember: 890,
+                adPerPartyMember: 21,
+                mdPerPartyMember: 21,
+                hp: 650,
+                attackDmg: 225,
+                magicDmg: 270,
+                armor: 600,
+                spirit: 900,
+                difficulty: "hard",
+                element: "normal"
+            },
+            tacolord: {
+                enemyIdName : "tacolord",
+                name: "Taco Lord",
+                abilities: ["punch" , "punch" , "slash", "slash" , "slap", "sanctuary"],
+                buffs: [
+                    {
+                        name: "frenzy",
+                        emoji: "<:frenzy:479298214453968896>",
+                        onTurnEnd: {
+                            attackDmgPlus : 100,
+                            magicDmgPlus : 100,
+                            everyNTurns: 2,
+                            startTurn: 2
+                        }
+                    }
+                ],
+                keystoneStats: {
+                    hp: [1200, 3500, 6200, 10000, 15000 ],
+                    attackDmg: [300, 500, 900, 1500, 2300],
+                    magicDmg: [300, 500, 900, 1500, 2300],
+                    abilities: []
+                },
+                effectsOnDeath: [
+                    "summonRuffians"
+                ],
+                hpPerPartyMember: 890,
+                adPerPartyMember: 21,
+                mdPerPartyMember: 21,
+                hp: 650,
+                attackDmg: 225,
+                magicDmg: 270,
+                armor: 600,
+                spirit: 900,
+                difficulty: "hard",
+                element: "normal"
+            },
+            frostdragon: {
+                enemyIdName : "frostdragon",
+                name: "Frost Dragon",
+                emoji: "<:frostdragon:636594850296496180>",
+                abilities: ["bite" , "bite" , "frostBreath", "ferociousBite" , "ferociousBite", "tacowall"],
+                buffs: [
+                    {
+                        name: "frenzy",
+                        emoji: "<:frenzy:479298214453968896>",
+                        onTurnEnd: {
+                            attackDmgPlus : 100,
+                            magicDmgPlus : 100,
+                            everyNTurns: 2,
+                            startTurn: 2
+                        }
+                    }
+                ],
+                keystoneStats: {
+                    hp: [1200, 3500, 6200, 10000, 15000 ],
+                    attackDmg: [300, 500, 900, 1500, 2300],
+                    magicDmg: [300, 500, 900, 1500, 2300],
+                    abilities: []
+                },
+                effectsOnDeath: [
+                    "summonRuffians"
+                ],
+                hpPerPartyMember: 890,
+                adPerPartyMember: 21,
+                mdPerPartyMember: 21,
+                hp: 650,
+                attackDmg: 225,
+                magicDmg: 270,
+                armor: 600,
+                spirit: 900,
+                difficulty: "hard",
+                element: "normal"
+            },
+            skymaggot: {
+                enemyIdName : "skymaggot",
+                name: "Sky Maggot",
+                abilities: ["bite" , "bite" , "venom", "venom" , "ferociousBite", "tacowall"],
+                buffs: [
+                    {
+                        name: "frenzy",
+                        emoji: "<:frenzy:479298214453968896>",
+                        onTurnEnd: {
+                            attackDmgPlus : 100,
+                            magicDmgPlus : 100,
+                            everyNTurns: 2,
+                            startTurn: 2
+                        }
+                    }
+                ],
+                keystoneStats: {
+                    hp: [1200, 3500, 6200, 10000, 15000 ],
+                    attackDmg: [300, 500, 900, 1500, 2300],
+                    magicDmg: [300, 500, 900, 1500, 2300],
+                    abilities: []
+                },
+                effectsOnDeath: [
+                    "physicalBarrier"
+                ],
+                effectsOnDeath: [
+                    "summonMaggots"
+                ],
+                hpPerPartyMember: 990,
+                adPerPartyMember: 30,
+                mdPerPartyMember: 30,
+                hp: 1450,
+                attackDmg: 425,
+                magicDmg: 470,
+                armor: 1300,
+                spirit: 1300,
+                difficulty: "hard",
+                element: "normal"
+            },
+            emeralddragon: {
+                enemyIdName : "emeralddragon",
+                name: "Emerald Dragon",
+                abilities: ["bite" , "bite" , "venom", "venom" , "ferociousBite", "invigorate"],
+                buffs: [
+                    {
+                        name: "frenzy",
+                        emoji: "<:frenzy:479298214453968896>",
+                        onTurnEnd: {
+                            attackDmgPlus : 140,
+                            magicDmgPlus : 140,
+                            everyNTurns: 2,
+                            startTurn: 2
+                        }
+                    }
+                ],
+                keystoneStats: {
+                    hp: [1200, 3500, 6200, 10000, 15000 ],
+                    attackDmg: [300, 500, 900, 1500, 2300],
+                    magicDmg: [300, 500, 900, 1500, 2300],
+                    abilities: []
+                },
+                endOfTurnEvents:[
+                    "summonEgg",
+                    "fade"
+                ],
+                effectsOnDeath: [
+                    "elementalBarrier"
+                ],
+                hpPerPartyMember: 1390,
+                adPerPartyMember: 21,
+                mdPerPartyMember: 21,
+                hp: 1750,
+                attackDmg: 325,
+                magicDmg: 370,
+                armor: 1300,
+                spirit: 1300,
+                difficulty: "hard",
+                element: "normal"
+            },
+            mammoth: {
+                enemyIdName : "mammoth",
+                name: "Mammoth",
+                abilities: ["bite" , "bite" , "ram", "ram" , "ram", "tacowall"],
+                buffs: [
+                    {
+                        name: "frenzy",
+                        emoji: "<:frenzy:479298214453968896>",
+                        onTurnEnd: {
+                            attackDmgPlus : 100,
+                            magicDmgPlus : 100,
+                            everyNTurns: 2,
+                            startTurn: 2
+                        }
+                    }
+                ],
+                keystoneStats: {
+                    hp: [1200, 3500, 6200, 10000, 15000 ],
+                    attackDmg: [300, 500, 900, 1500, 2300],
+                    magicDmg: [300, 500, 900, 1500, 2300],
+                    abilities: []
+                },
+                effectsOnDeath: [
+
+                ],
+                hpPerPartyMember: 890,
+                adPerPartyMember: 21,
+                mdPerPartyMember: 21,
+                hp: 650,
+                attackDmg: 325,
+                magicDmg: 370,
+                armor: 600,
+                spirit: 900,
+                difficulty: "hard",
+                element: "normal"
+            },
         },
         boss: {
             vampire: {
+                enemyIdName : "vampire",
                 name: "Vampire",
                 abilities: [
                    "attack", "attack", "rockthrow", "rockthrow", "enemyshock", "enemyshock", "tacowall"
@@ -2920,6 +4281,7 @@ module.exports = {
                 element: "normal"
             },
             viking: {
+                enemyIdName : "viking",
                 name: "Viking",
                 abilities: [
                    "attack", "attack", "tackle", "tackle", "tackle", "slash", "slash", "slash","empower"
@@ -2958,6 +4320,7 @@ module.exports = {
                 element: "normal"
             },
             escapedrobot: {
+                enemyIdName : "escapedrobot",
                 name: "Escaped Robot",
                 abilities: [
                     "attack", "attack", "drain", "drain", "iceshards", "iceshards", "shield"
@@ -2996,6 +4359,7 @@ module.exports = {
                 element: "normal"
             },
             desperado: {
+                enemyIdName : "desperado",
                 name: "Desperado",
                 abilities: [
                     "attack", "attack", "enemyshoot", "enemyshoot", "slash", "slash", "cripple"
@@ -3034,6 +4398,7 @@ module.exports = {
                 element: "normal"
             },
             sicario: {
+                enemyIdName : "sicario",
                 name: "Sicario",
                 abilities: [
                     "attack", "punch", "decapitate", "decapitate", "slash", "tacoheal", "tacoheal"
@@ -3072,6 +4437,7 @@ module.exports = {
                 element: "normal"
             },
             trex: {
+                enemyIdName : "trex",
                 name: "T-Rex",
                 abilities: [
                     "claw", "claw", "ferociousBite", "slash", "slash", "ferociousBite", "cripple"
@@ -3110,6 +4476,7 @@ module.exports = {
                 element: "normal"
             },
             executioner: {
+                enemyIdName : "executioner",
                 name: "Executioner",
                 abilities: [
                     "attack", "attack", "execute", "execute", "tacoheal", "tacoheal", "cripple"
@@ -3150,10 +4517,54 @@ module.exports = {
                 difficulty: "boss",
                 element: "normal"
             },
+            kingpin: {
+                enemyIdName : "kingpin",
+                name: "Kingpin",
+                abilities: [
+                    "shoot", "shoot", "canistershot", "canistershot", "slash", "slash", "weaken"
+                ],
+                buffs: [
+                    {
+                        name: "frenzy",
+                        emoji: "<:frenzy:479298214453968896>",
+                        onTurnEnd: {
+                            attackDmgPlus : 195,
+                            magicDmgPlus : 195,
+                            everyNTurns: 2,
+                            startTurn: 2
+                        }
+                    }
+                ],
+                keystoneStats: {
+                    hp: [1200, 3500, 6200, 10000, 15000 ],
+                    attackDmg: [300, 500, 900, 1500, 2300],
+                    magicDmg: [300, 500, 900, 1500, 2300],
+                    abilities: []
+                },
+                endOfTurnEvents : [
+                    "echo",
+                    "focus",
+                    "reflectShield"
+                ],
+                effectsOnDeath: [
+                    "starve"
+                ],
+                hpPerPartyMember: 1222,
+                hp: 1850,
+                adPerPartyMember: 29,
+                mdPerPartyMember: 29,
+                attackDmg: 700,
+                magicDmg: 600,
+                armor: 1600,
+                spirit: 1600,
+                difficulty: "boss",
+                element: "normal"
+            },
             kidnaper: {
+                enemyIdName : "kidnaper",
                 name: "Kidnaper",
                 abilities: [
-                    "attack", "attack", "execute", "execute", "slash", "slash", "weaken"
+                    "attack", "attack", "hostage", "hostage", "slash", "slash", "weaken"
                 ],
                 buffs: [
                     {
@@ -3189,6 +4600,7 @@ module.exports = {
                 element: "normal"
             },
             yakuza: {
+                enemyIdName : "yakuza",
                 name: "Yakuza",
                 abilities: [
                     "attack", "attack", "execute", "execute", "slash", "slash", "weaken"
@@ -3219,17 +4631,279 @@ module.exports = {
                     "reanimateAll"
                 ],
                 hpPerPartyMember: 1222,
-                hp: 950,
+                hp: 1750,
                 adPerPartyMember: 29,
                 mdPerPartyMember: 29,
-                attackDmg: 240,
-                magicDmg: 190,
-                armor: 1600,
-                spirit: 1600,
+                attackDmg: 640,
+                magicDmg: 690,
+                armor: 1800,
+                spirit: 1800,
+                difficulty: "boss",
+                element: "normal"
+            },
+            sultan: {
+                enemyIdName : "sultan",
+                name: "Sultan",
+                abilities: [
+                    "attack", "attack", "execute", "slap", "slap", "weaken"
+                ],
+                buffs: [
+                    {
+                        name: "frenzy",
+                        emoji: "<:frenzy:479298214453968896>",
+                        onTurnEnd: {
+                            attackDmgPlus : 95,
+                            magicDmgPlus : 95,
+                            everyNTurns: 2,
+                            startTurn: 2
+                        }
+                    }
+                ],
+                keystoneStats: {
+                    hp: [1200, 3500, 6200, 10000, 15000 ],
+                    attackDmg: [300, 500, 900, 1500, 2300],
+                    magicDmg: [300, 500, 900, 1500, 2300],
+                    abilities: []
+                },
+                endOfTurnEvents : [
+                    "echo",
+                    "focus"
+                ],
+                effectsOnDeath: [
+                    "reanimateAll"
+                ],
+                hpPerPartyMember: 1222,
+                hp: 1750,
+                adPerPartyMember: 29,
+                mdPerPartyMember: 29,
+                attackDmg: 640,
+                magicDmg: 690,
+                armor: 1800,
+                spirit: 1800,
+                difficulty: "boss",
+                element: "normal"
+            },
+            scorpionking: {
+                enemyIdName : "scorpionking",
+                name: "Scorpion King",
+                abilities: [
+                    "sting", "sting", "venom", "venom", "slash", "crush", "empower", "empower"
+                ],
+                buffs: [
+                    {
+                        name: "frenzy",
+                        emoji: "<:frenzy:479298214453968896>",
+                        onTurnEnd: {
+                            attackDmgPlus : 195,
+                            magicDmgPlus : 195,
+                            everyNTurns: 2,
+                            startTurn: 2
+                        }
+                    }
+                ],
+                keystoneStats: {
+                    hp: [1200, 3500, 6200, 10000, 15000 ],
+                    attackDmg: [300, 500, 900, 1500, 2300],
+                    magicDmg: [300, 500, 900, 1500, 2300],
+                    abilities: []
+                },
+                endOfTurnEvents : [
+                    "echo",
+                    "focus"
+                ],
+                effectsOnDeath: [
+                    "reanimateAll"
+                ],
+                hpPerPartyMember: 1122,
+                hp: 1750,
+                adPerPartyMember: 29,
+                mdPerPartyMember: 29,
+                attackDmg: 640,
+                magicDmg: 690,
+                armor: 1800,
+                spirit: 1800,
+                difficulty: "boss",
+                element: "normal"
+            },
+            elderemeralddragon: {
+                enemyIdName : "elderemeralddragon",
+                name: "Elder Emerald Dragon",
+                abilities: [
+                    "freeze", "crush", "crush", "slap", "slap", "fireBreath", "fireBreath", "empower"
+                ],
+                buffs: [
+                    {
+                        name: "frenzy",
+                        emoji: "<:frenzy:479298214453968896>",
+                        onTurnEnd: {
+                            attackDmgPlus : 275,
+                            magicDmgPlus : 275,
+                            everyNTurns: 2,
+                            startTurn: 2
+                        }
+                    }
+                ],
+                abilityOrder: [
+                    0, [1, 2, 3, 4, 5, 6, 7], [1, 2, 3, 4, 5, 6, 7], [1, 2, 3, 4, 5, 6, 7], [1, 2, 3, 4, 5, 6, 7]
+                    [1, 2, 3, 4, 5, 6, 7], [1, 2, 3, 4, 5, 6, 7], [1, 2, 3, 4, 5, 6, 7], [1, 2, 3, 4, 5, 6, 7],
+                    [1, 2, 3, 4, 5, 6, 7], [1, 2, 3, 4, 5, 6, 7], [1, 2, 3, 4, 5, 6, 7], [1, 2, 3, 4, 5, 6, 7],
+                    [1, 2, 3, 4, 5, 6, 7], [1, 2, 3, 4, 5, 6, 7], [1, 2, 3, 4, 5, 6, 7], [1, 2, 3, 4, 5, 6, 7]
+                ],
+                keystoneStats: {
+                    hp: [1200, 3500, 6200, 10000, 15000 ],
+                    attackDmg: [300, 500, 900, 1500, 2300],
+                    magicDmg: [300, 500, 900, 1500, 2300],
+                    abilities: []
+                },
+                endOfTurnEvents : [
+                    "echo",
+                    "focus",
+                    "fade"
+                ],
+                effectsOnDeath: [
+                    "invigorateDeath"
+                ],
+                hpPerPartyMember: 1322,
+                hp: 1950,
+                adPerPartyMember: 29,
+                mdPerPartyMember: 29,
+                attackDmg: 940,
+                magicDmg: 990,
+                armor: 1300,
+                spirit: 1300,
+                difficulty: "boss",
+                element: "normal"
+            },
+            shiva: {
+                enemyIdName : "shiva",
+                name: "Shiva",
+                emoji: "<:shiva:636593574644809728>",
+                abilities: [
+                    "freeze", "crush", "crush", "slap", "slap", "frostBreath", "frostBreath", "empower"
+                ],
+                abilityOrder: [
+                    0, 
+                    [ 1, 2, 3, 4, 5, 6, 7 ],
+                    [ 1, 2, 3, 4, 5, 6, 7 ],
+                    [ 1, 2, 3, 4, 5, 6, 7 ],
+                    [ 1, 2, 3, 4, 5, 6, 7 ],
+                    [ 1, 2, 3, 4, 5, 6, 7 ],
+                    [ 1, 2, 3, 4, 5, 6, 7 ],
+                    [ 1, 2, 3, 4, 5, 6, 7 ],
+                    [ 1, 2, 3, 4, 5, 6, 7 ],
+                    [ 1, 2, 3, 4, 5, 6, 7 ],
+                ],
+                buffs: [
+                    {
+                        name: "frenzy",
+                        emoji: "<:frenzy:479298214453968896>",
+                        onTurnEnd: {
+                            attackDmgPlus : 195,
+                            magicDmgPlus : 195,
+                            everyNTurns: 2,
+                            startTurn: 2
+                        }
+                    }
+                ],
+                keystoneStats: {
+                    hp: [1200, 3500, 6200, 10000, 15000 ],
+                    attackDmg: [300, 500, 900, 1500, 2300],
+                    magicDmg: [300, 500, 900, 1500, 2300],
+                    abilities: []
+                },
+                endOfTurnEvents : [
+                    "echo",
+                    "focus"
+                ],
+                effectsOnDeath: [
+                    "reanimateAll"
+                ],
+                hpPerPartyMember: 1122,
+                hp: 1750,
+                adPerPartyMember: 29,
+                mdPerPartyMember: 29,
+                attackDmg: 640,
+                magicDmg: 690,
+                armor: 1800,
+                spirit: 1800,
+                difficulty: "boss",
+                element: "normal"
+            },
+            avatarofhera: {
+                enemyIdName : "avatarofhera",
+                name: "Avatar of Hera",
+                emoji: "<:hera:636311364322721832>",
+                abilities: [
+                    "crush", "crush", "decayDeath", "decayDeath", "shock", "shock", "whirlwind", "shell"
+                ],
+                buffs: [
+                    {
+                        name: "frenzy",
+                        emoji: "<:frenzy:479298214453968896>",
+                        onTurnEnd: {
+                            attackDmgPlus : 455,
+                            magicDmgPlus : 455,
+                            everyNTurns: 3,
+                            startTurn: 2
+                        }
+                    }
+                ],
+                keystoneStats: {
+                    hp: [1200, 3500, 6200, 10000, 15000 ],
+                    attackDmg: [300, 500, 900, 1500, 2300],
+                    magicDmg: [300, 500, 900, 1500, 2300],
+                    abilities: []
+                },
+                endOfTurnEvents : [
+                    "echo",
+                    "focus",
+                    "totemOfDoom80",
+                    "totemOfDoom80",
+                    "totemOfDoom80",
+                    "totemOfDoom80",
+                    "totemOfDoom80",
+                    "totemOfDoom80",
+                    "totemOfDoom80",
+                    "totemOfDoom60",
+                    "totemOfDoom60",
+                    "totemOfDoom60",
+                    "totemOfDoom60",
+                    "totemOfDoom60",
+                    "totemOfDoom60",
+                    "totemOfDoom60",
+                    "totemOfDoom40",
+                    "totemOfDoom40",
+                    "totemOfDoom40",
+                    "totemOfDoom40",
+                    "totemOfDoom40",
+                    "totemOfDoom40",
+                    "totemOfDoom40",
+                    "totemOfDoom20",
+                    "totemOfDoom20",
+                    "totemOfDoom20",
+                    "totemOfDoom20",
+                    "totemOfDoom20",
+                    "totemOfDoom20",
+                    "totemOfDoom20",
+                    "summonImps",
+                    "absorbImps"
+                ],
+                effectsOnDeath: [
+                    "empowerDeath"
+                ],
+                hpPerPartyMember: 2952,
+                hp: 2550,
+                adPerPartyMember: 50,
+                mdPerPartyMember: 50,
+                attackDmg: 1040,
+                magicDmg: 1090,
+                armor: 1800,
+                spirit: 1800,
                 difficulty: "boss",
                 element: "normal"
             },
             beheader: {
+                enemyIdName : "beheader",
                 name: "Beheader",
                 abilities: [
                     "attack", "attack", "decapitate", "decapitate", "slash", "slash", "cripple"
@@ -3267,7 +4941,95 @@ module.exports = {
                 difficulty: "boss",
                 element: "normal"
             },
+            crip: {
+                enemyIdName : "crip",
+                name: "Crip",
+                abilities: [
+                    "punch", "punch", "shoot", "shoot", "vandalize", "vandalize", "cripple"
+                ],
+                buffs: [
+                    {
+                        name: "frenzy",
+                        emoji: "<:frenzy:479298214453968896>",
+                        onTurnEnd: {
+                            attackDmgPlus : 200,
+                            magicDmgPlus : 200,
+                            everyNTurns: 2,
+                            startTurn: 2
+                        }
+                    }
+                ],
+                keystoneStats: {
+                    hp: [1200, 3500, 6200, 10000, 15000 ],
+                    attackDmg: [300, 500, 900, 1500, 2300],
+                    magicDmg: [300, 500, 900, 1500, 2300],
+                    abilities: []
+                },
+                endOfTurnEvents : [
+                    "echo",
+                    "focus",
+                    "decay"
+                ],
+                effectsOnDeath: [
+                    "decayDeath"
+                ],
+                hpPerPartyMember: 1322,
+                hp: 1550,
+                adPerPartyMember: 29,
+                mdPerPartyMember: 29,
+                attackDmg: 740,
+                magicDmg: 790,
+                armor: 1600,
+                spirit: 1600,
+                difficulty: "boss",
+                element: "normal"
+            },
+            blood: {
+                enemyIdName : "blood",
+                name: "Blood",
+                abilities: [
+                    "punch", "punch", "canistershot", "canistershot", "vandalize", "vandalize", "invigorate"
+                ],
+                buffs: [
+                    {
+                        name: "frenzy",
+                        emoji: "<:frenzy:479298214453968896>",
+                        onTurnEnd: {
+                            attackDmgPlus : 200,
+                            magicDmgPlus : 200,
+                            everyNTurns: 2,
+                            startTurn: 2
+                        }
+                    }
+                ],
+                keystoneStats: {
+                    hp: [1200, 3500, 6200, 10000, 15000 ],
+                    attackDmg: [300, 500, 900, 1500, 2300],
+                    magicDmg: [300, 500, 900, 1500, 2300],
+                    abilities: []
+                },
+                endOfTurnEvents : [
+                    "echo",
+                    "focus",
+                    "pillarAOE",
+                    "decay"
+                ],
+                effectsOnDeath: [
+                    "empowerDeath"
+                ],
+                hpPerPartyMember: 1322,
+                hp: 1550,
+                adPerPartyMember: 29,
+                mdPerPartyMember: 29,
+                attackDmg: 740,
+                magicDmg: 790,
+                armor: 1600,
+                spirit: 1600,
+                difficulty: "boss",
+                element: "normal"
+            },
             goliath: {
+                enemyIdName : "goliath",
                 name: "Goliath",
                 abilities: [
                     "ram", "ram", "clap", "clap", "iceshards", "iceshards", "cripple"
@@ -3277,8 +5039,8 @@ module.exports = {
                         name: "frenzy",
                         emoji: "<:frenzy:479298214453968896>",
                         onTurnEnd: {
-                            attackDmgPlus : 85,
-                            magicDmgPlus : 85,
+                            attackDmgPlus : 185,
+                            magicDmgPlus : 185,
                             everyNTurns: 2,
                             startTurn: 2
                         }
@@ -3295,17 +5057,18 @@ module.exports = {
                     "focus"
                 ],
                 hpPerPartyMember: 1222,
-                hp: 950,
+                hp: 1650,
                 adPerPartyMember: 29,
                 mdPerPartyMember: 29,
-                attackDmg: 240,
-                magicDmg: 190,
-                armor: 1600,
-                spirit: 1600,
+                attackDmg: 740,
+                magicDmg: 790,
+                armor: 1900,
+                spirit: 1900,
                 difficulty: "boss",
                 element: "normal"
             },
             cyclops: {
+                enemyIdName : "cyclops",
                 name: "Cyclops",
                 abilities: [
                     "corrupt", "corrupt", "laserBeam", "laserBeam", "laserBeam", "laserBeam", "shell"
@@ -3315,12 +5078,18 @@ module.exports = {
                         name: "frenzy",
                         emoji: "<:frenzy:479298214453968896>",
                         onTurnEnd: {
-                            attackDmgPlus : 85,
-                            magicDmgPlus : 85,
+                            attackDmgPlus : 285,
+                            magicDmgPlus : 285,
                             everyNTurns: 2,
                             startTurn: 2
                         }
                     }
+                ],
+                abilityOrder: [
+                    6, [0, 1, 2, 3, 4, 5], [0, 1, 2, 3, 4, 5], [0, 1, 2, 3, 4, 5], [0, 1, 2, 3, 4, 5, 6], 
+                    [0, 1, 2, 3, 4, 5], [0, 1, 2, 3, 4, 5], [0, 1, 2, 3, 4, 5], [0, 1, 2, 3, 4, 5, 6], 
+                    [0, 1, 2, 3, 4, 5], [0, 1, 2, 3, 4, 5], [0, 1, 2, 3, 4, 5], [0, 1, 2, 3, 4, 5, 6], 
+                    [0, 1, 2, 3, 4, 5], [0, 1, 2, 3, 4, 5], [0, 1, 2, 3, 4, 5], [0, 1, 2, 3, 4, 5], 
                 ],
                 keystoneStats: {
                     hp: [1200, 3500, 6200, 10000, 15000 ],
@@ -3330,20 +5099,171 @@ module.exports = {
                 },
                 endOfTurnEvents : [
                     "echo",
-                    "focus"
+                    "focus",
+                    "decimate"
                 ],
-                hpPerPartyMember: 1222,
-                hp: 950,
+                hpPerPartyMember: 1922,
+                hp: 1950,
                 adPerPartyMember: 29,
                 mdPerPartyMember: 29,
-                attackDmg: 240,
-                magicDmg: 190,
+                attackDmg: 840,
+                magicDmg: 890,
                 armor: 1600,
                 spirit: 1600,
                 difficulty: "boss",
                 element: "normal"
             },
+            dogfather: {
+                enemyIdName : "dogfather",
+                name: "Dog Father",
+                emoji: "<:gfather:654477252754407447>",
+                abilities: [
+                    "shoot", "canistershot", "shootout", "vestup", "cripple"
+                ],
+                buffs: [
+                    {
+                        name: "frenzy",
+                        emoji: "<:frenzy:479298214453968896>",
+                        onTurnEnd: {
+                            attackDmgPlus : 455,
+                            magicDmgPlus : 455,
+                            everyNTurns: 3,
+                            startTurn: 2
+                        }
+                    }
+                ],
+                abilityOrder: [
+                    4, [0, 1], [0, 1], [0, 1], [0, 1], [0, 1], 3, 2,
+                    [4, 0, 1], [0, 1], [0, 1], [0, 1], [0, 1], 3, 2,
+                    [4, 0, 1], [0, 1], [0, 1], [0, 1], 3, 2,
+                    [4, 0, 1], [0, 1], [0, 1], 3, 2,
+                    [4, 0, 1], [0, 1], 3, 2,
+                    [4, 0, 1], 3, 2, 3, 2, 3, 2, 3, 2, 3, 2, 3, 2, 3
+                ],
+                endOfTurnEvents : [
+                    "focus",
+                    "echo",
+                    "summonInformant80", // every 20% summon informants that will do bulletproof vest on death
+                    "summonInformant60",
+                    "summonInformant40",
+                    "summonInformant20",                   
+                    "summonFanatic"
+                ],
+                effectsOnDeath: [
+                ],
+                hpPerPartyMember: 3952,
+                hp: 8550,
+                adPerPartyMember: 50,
+                mdPerPartyMember: 50,
+                attackDmg: 1040,
+                magicDmg: 1090,
+                armor: 1800,
+                spirit: 1800,
+                difficulty: "boss",
+                element: "normal"
+            },
+            clover: {
+                enemyIdName : "clover",
+                name: "Clover",
+                emoji: ":cricket:",
+                abilities: [
+                    "poke", "ferociousBite", "quake", "impale", "poison", "decayDeath"
+                ],
+                buffs: [
+                    {
+                        name: "frenzy",
+                        emoji: "<:frenzy:479298214453968896>",
+                        onTurnEnd: {
+                            attackDmgPlus : 555,
+                            magicDmgPlus : 555,
+                            everyNTurns: 5,
+                            startTurn: 5
+                        }
+                    }
+                ],
+                abilityOrder: [
+                    0, [1, 3, 4, 5], [1, 3, 4 ], [1, 3, 4 ], [1, 3, 4 ], 2,
+                    [1, 3, 4, 5], [1, 3, 4 ], [1, 3, 4 ], [1, 3, 4 ], [1, 3, 4 ], 2,
+                    [1, 3, 4, 5], [1, 3, 4 ], [1, 3, 4 ], [1, 3, 4 ], [1, 3, 4 ], 2,
+                    [1, 3, 4, 5], [1, 3, 4 ], [1, 3, 4 ], [1, 3, 4 ], [1, 3, 4 ], 2,
+                    [1, 3, 4, 5], [1, 3, 4 ], [1, 3, 4 ], [1, 3, 4 ], [1, 3, 4 ], 2,
+                ],
+                endOfTurnEvents : [
+                    "focus",
+                    "echo",
+                    "summonParasites",
+                    "overpower66",
+                    "overpower33"
+                ],
+                effectsOnDeath: [
+                ],
+                hpPerPartyMember: 50952,
+                hp: 108550,
+                adPerPartyMember: 50,
+                mdPerPartyMember: 50,
+                attackDmg: 1040,
+                magicDmg: 1090,
+                armor: 1800,
+                spirit: 1800,
+                difficulty: "boss",
+                element: "normal"
+            },
+            medusa: {
+                enemyIdName : "medusa",
+                name: "Medusa",
+                emoji: "<:medusa:654429203269419018>",
+                abilities: [
+                    "crush", "crush", "poison", "poison", "shadowBurst", "shadowBurst", "meteor", "shell"
+                ],
+                buffs: [
+                    {
+                        name: "frenzy",
+                        emoji: "<:frenzy:479298214453968896>",
+                        onTurnEnd: {
+                            attackDmgPlus : 455,
+                            magicDmgPlus : 455,
+                            everyNTurns: 3,
+                            startTurn: 2
+                        }
+                    }
+                ],
+                abilityOrder: [
+                7,  [0, 1, 2, 3, 4, 5 ], 6, [0, 1, 2, 3, 4, 5, 7], [0, 1, 2, 3, 4, 5 ], [0, 1, 2, 3, 4, 5 ],
+                    6, [0, 1, 2, 3, 4, 5, 7], [0, 1, 2, 3, 4, 5 ], [0, 1, 2, 3, 4, 5 ],
+                    6, [0, 1, 2, 3, 4, 5, 7], [0, 1, 2, 3, 4, 5 ], [0, 1, 2, 3, 4, 5 ],
+                    6, [0, 1, 2, 3, 4, 5, 7], [0, 1, 2, 3, 4, 5 ], [0, 1, 2, 3, 4, 5 ],
+                    6, [0, 1, 2, 3, 4, 5, 7], [0, 1, 2, 3, 4, 5 ], [0, 1, 2, 3, 4, 5 ]
+                ],
+                endOfTurnEvents : [
+                    "echo",
+                    "focus",
+                    "petrify80", // every 20% petrify the group -75% healing for 2 turns
+                    "petrify60",
+                    "petrify40",
+                    "petrify20",
+                    "stare1", // 1, 2, 3, 4, 5 -> take damage like arrows cast every 8 turns
+                    "stare2",
+                    "stare3",
+                    "stare4",
+                    "stare5"
+                    
+                    // damage for 
+                ],
+                effectsOnDeath: [
+                ],
+                hpPerPartyMember: 3952,
+                hp: 8550,
+                adPerPartyMember: 50,
+                mdPerPartyMember: 50,
+                attackDmg: 1040,
+                magicDmg: 1090,
+                armor: 1800,
+                spirit: 1800,
+                difficulty: "boss",
+                element: "normal"
+            },
             bigfoot: {
+                enemyIdName : "bigfoot",
                 name: "Big Foot",
                 abilities: [
                     "attack", "attack", "iceshards", "iceshards", "slash", "slash", "cripple"
@@ -3381,7 +5301,8 @@ module.exports = {
                 difficulty: "boss",
                 element: "normal"
             },
-            cateoblepas: {
+            catoblepas: {
+                enemyIdName : "catoblepas",
                 name: "Catoblepas",
                 abilities: [
                     "attack", "attack", "iceshards", "iceshards", "slash", "slash", "cripple"
@@ -3420,6 +5341,7 @@ module.exports = {
                 element: "normal"
             },
             gargantua: {
+                enemyIdName : "gargantua",
                 name: "Big Foot",
                 abilities: [
                     "attack", "attack", "iceshards", "iceshards", "slash", "slash", "cripple"
@@ -3458,17 +5380,18 @@ module.exports = {
                 element: "normal"
             },
             ogremagi: {
+                enemyIdName : "ogremagi",
                 name: "Ogre Magi",
                 abilities: [
-                    "attack", "attack", "iceshards", "iceshards", "slash", "slash", "cripple"
+                    "bite", "bite", "bite", "blizzard", "blizzard", "elixir", "empower"
                 ],
                 buffs: [
                     {
                         name: "frenzy",
                         emoji: "<:frenzy:479298214453968896>",
                         onTurnEnd: {
-                            attackDmgPlus : 85,
-                            magicDmgPlus : 85,
+                            attackDmgPlus : 195,
+                            magicDmgPlus : 195,
                             everyNTurns: 2,
                             startTurn: 2
                         }
@@ -3480,18 +5403,21 @@ module.exports = {
                     magicDmg: [300, 500, 900, 1500, 2300],
                     abilities: []
                 },
+                effectsOnDeath: [
+                    "summonOgres"
+                ],
                 endOfTurnEvents : [
                     "echo",
                     "focus"
                 ],
                 hpPerPartyMember: 1222,
-                hp: 950,
+                hp: 1950,
                 adPerPartyMember: 29,
                 mdPerPartyMember: 29,
-                attackDmg: 240,
-                magicDmg: 190,
-                armor: 1600,
-                spirit: 1600,
+                attackDmg: 740,
+                magicDmg: 840,
+                armor: 1900,
+                spirit: 1900,
                 difficulty: "boss",
                 element: "normal"
             },
@@ -5199,14 +7125,17 @@ module.exports = {
                         ],
                         keystoneStats: {
                             frenzy: {
-                                attackDmgPlus : [150, 220, 350, 640, 990, 1400],
-                                magicDmgPlus : [150, 220, 350, 640, 990, 1400]
+                                attackDmgPlus : [150, 220, 350, 640, 990, 1400, 2100, 2837, 3955, 5202   ],
+                                magicDmgPlus : [150, 220, 350, 640, 990, 1400, 2100, 2837, 3955, 5202  ]
                             },
-                            hp: [9500, 19900, 34900, 51000, 137000, 230000, 250000, 289000, 341000, 381000 ],
-                            attackDmg: [1000, 1500, 2000, 2900, 4500, 4500, 5000, 5500, 6000, 6500 ],
-                            magicDmg: [1000, 1500, 2000, 2900, 4500, 4500, 5000, 5500, 6000, 6500 ],
-                            // reanimate the dead by bringing them back as zombies
-                            abilities: []
+                            hp: [9500, 19900, 34900, 51000, 137000, 230000, 250000, 289000, 341000, 441000 ],
+                            attackDmg: [1000, 1500, 2000, 2900, 4500, 4500, 5000, 5500, 6300, 8500 ],
+                            magicDmg: [1000, 1500, 2000, 2900, 4500, 4500, 5000, 5500, 6300, 8500 ],
+                            abilities: [],
+                            endOfTurnEvents: [
+                                "reanimateAllMessage",
+                                "reanimateAll25"
+                            ]
                         },
                         abilityOrder: [
                             0, 0, [1, 2], 0, 0, [1, 2], 0, 0, [1, 2]
@@ -5310,7 +7239,10 @@ module.exports = {
                             hp: [11500, 15900, 24900, 41000, 67000, 105000, 125000, 155000, 205000, 300000  ],
                             attackDmg: [800, 1300, 1700, 2500, 3500, 5000, 6500, 8000, 9500, 11000],
                             magicDmg: [800, 1300, 1700, 2500, 3500, 5000, 6500, 8000, 9500, 11000],
-                            abilities: []
+                            abilities: [],
+                            endOfTurnEvents: [
+                                "aoeBombDictator"
+                            ]
                         },
                         abilityOrder: [
                             1, 0, 4, 2, 3, 5, 5, 0
@@ -5357,7 +7289,10 @@ module.exports = {
                             hp: [11500, 15900, 24900, 51000, 97000, 125000, 179000, 225000, 300000, 450000 ],
                             attackDmg: [800, 1300, 1700, 2500, 3500, 5000, 6500, 8000, 9500, 11000],
                             magicDmg: [800, 1300, 1700, 2500, 3500, 5000, 6500, 8000, 9500, 11000],
-                            abilities: []
+                            abilities: [],
+                            endOfTurnEvents: [
+                                "aoeBombMobLord"
+                            ]
                         },
                         abilityOrder: [
                             0, 1, 0, [2, 3], 4, 1, 1, 0, [2, 3], 4, 1, 1, 0, [2, 3], 4,
@@ -5505,7 +7440,6 @@ module.exports = {
                     },
                     {
                         name: "Evil Chef",
-                        // special ability deals single target dmg magic to a non focused target
                         abilities: [
                             "attack", "curse"
                         ],
@@ -5555,7 +7489,6 @@ module.exports = {
                     },
                     {
                         name: "Disobedient Host",
-                        // special ability summons minions - minions last 3 turns and explode after 3 turns
                         abilities: [
                             "attack", "rockthrow"
                         ],
@@ -5605,7 +7538,6 @@ module.exports = {
                     },
                     {
                         name: "Valet",
-                        // special ability deals area effect damage
                         abilities: [
                             "attack", "crush"
                         ],
@@ -5695,7 +7627,10 @@ module.exports = {
                             hp: [21500, 35900, 54900, 75000, 117000, 150000, 225000, 300000, 400000, 500000 ],
                             attackDmg: [1300, 2100, 3900, 6200, 8530, 11300, 13000, 15500, 20500, 29000 ],
                             magicDmg: [1300, 2100, 3900, 6200, 8530, 11300, 13000, 15500, 20500, 29000 ],
-                            abilities: []
+                            abilities: [],
+                            endOfTurnEvents: [
+                                "crystalKilledHandler"
+                            ]
                         },
                         abilityOrder: [
                             4, [0,1], [0,1],[0,1],[0,1], [0,1],[0,1],[0,1],[0,1],[0,1],[0,1],[0,1],
@@ -6109,7 +8044,7 @@ module.exports = {
                 timed: true,
                 timedPerTurn: 180000,
                 points: 2901,
-                xppoints: 1500,
+                xppoints: 1100,
                 difficulty: 37,
                 keystonePoints: [300, 1300, 2030, 4030, 5030, 8000, 15000, 25000, 35000, 48000 ],
                 lootcount: 11,
@@ -6142,7 +8077,12 @@ module.exports = {
                             hp: [331500, 500900, 1109900, 1910000, 2907000, 4200000, 5500000, 7200000, 9200000, 15500000, ],
                             attackDmg: [700, 1100, 1700, 3100, 3500, 4250, 5000, 6000, 7250, 8500 ],
                             magicDmg: [700, 1100, 2500, 3800, 4500, 5250, 6000, 7000, 8250, 9500 ],
-                            abilities: []
+                            abilities: [],
+                            endOfTurnEvents: [
+                                "summonReoriginator75",
+                                "summonReoriginator50",
+                                "summonReoriginator25",
+                            ]
                         },
                         abilityOrder: [
                             0, 1, 0, 1, 2, [0, 1, 3], 0, 1, 1
@@ -6323,7 +8263,7 @@ module.exports = {
                 timed: true,
                 timedPerTurn: 180000,
                 points: 4901,
-                xppoints: 2140,
+                xppoints: 1410,
                 lootcount: 12,
                 difficulty: 55,
                 keystonePoints: [250, 1100, 1830, 3530, 4030, 7000, 13000, 22000, 30000, 42000 ],
@@ -6356,8 +8296,8 @@ module.exports = {
                                 magicDmgPlus : [755, 990, 1240, 1430, 1750, 2100, 2600, 3200, 3900, 4900 ]
                             },
                             hp: [13500, 20900, 29900, 41000, 57000, 75000, 109000, 137000, 165000, 200000 ],
-                            attackDmg: [700, 1100, 1500, 2500, 3500, 4500, 5500, 6500, 7500, 8500  ],
-                            magicDmg: [700, 1100, 1500, 2500, 3700, 4500, 5500, 6500, 7500, 8500 ],
+                            attackDmg: [700, 1100, 1500, 2500, 3500, 4500, 6500, 8500, 11500, 13500  ],
+                            magicDmg: [700, 1100, 1500, 2500, 3700, 4500, 6500, 8500, 11500, 13500 ],
                             abilities: []
                         },
                         abilityOrder: [
@@ -6414,8 +8354,8 @@ module.exports = {
                                 magicDmgPlus : [755, 990, 1240, 1430, 1750, 2100, 2600, 3200, 3900, 4900 ]
                             },
                             hp: [13500, 20900, 29900, 41000, 57000, 75000, 109000, 137000, 165000, 200000 ],
-                            attackDmg: [700, 1100, 1500, 2500, 3500, 4500, 5500, 6500, 7500, 8500  ],
-                            magicDmg: [700, 1100, 1500, 2500, 3700, 4500, 5500, 6500, 7500, 8500 ],
+                            attackDmg: [700, 1100, 1500, 2500, 3500, 4500, 6500, 8500, 11500, 13500  ],
+                            magicDmg: [700, 1100, 1500, 2500, 3700, 4500, 6500, 8500, 11500, 13500 ],
                             abilities: []
                         },
                         abilityOrder: [
@@ -6454,7 +8394,7 @@ module.exports = {
                 timed: true,
                 timedPerTurn: 360000,
                 points: 7001,
-                xppoints: 3573,
+                xppoints: 2173,
                 lootcount: 13,
                 difficulty: 70,
                 keystonePoints: [250, 1100, 1830, 3530, 4030, 6000, 11000, 19000, 28000, 40000 ],
@@ -6482,12 +8422,12 @@ module.exports = {
                         ],
                         keystoneStats: {
                             frenzy: {
-                                attackDmgPlus : [3100, 4100, 5100, 6100, 7100],
-                                magicDmgPlus : [3100, 4100, 5100, 6100, 7100]
+                                attackDmgPlus : [3100, 4100, 5100, 6100, 7100, 9400, 13000, 17000, 21500, 25000 ],
+                                magicDmgPlus : [3100, 4100, 5100, 6100, 7100, 9400, 13000, 17000, 21500, 25000]
                             },
-                            hp: [ 19500, 25900, 39900, 51000, 77000 ],
-                            attackDmg: [700, 1500, 2500, 4100, 5500],
-                            magicDmg: [700, 1500, 2500, 4100, 5500],
+                            hp: [ 19500, 25900, 39900, 51000, 77000, 95000, 130000, 179000, 230000, 289000 ],
+                            attackDmg: [700, 1500, 2500, 4100, 5500, 8400, 10050, 13750, 15900, 25800 ],
+                            magicDmg: [700, 1500, 2500, 4100, 5500, 8400, 10050, 13750, 15900, 25800 ],
                             abilities: []
                         },
                         abilityOrder: [
@@ -6505,6 +8445,7 @@ module.exports = {
                             "elementalOrderPrepare"
                         ],
                         effectsOnDeath: [
+                            "summonAthosDeath",
                             "transferDartagnanAbilities",
                         ],
                         hp: 54600,
@@ -6530,7 +8471,7 @@ module.exports = {
                 timedPerTurn: 360000,
                 points: 12001,
                 keystonePoints: [250, 1100, 1830, 3530, 4030, 5500, 10000, 17000, 25000, 35000 ],
-                xppoints: 5120,
+                xppoints: 2829,
                 lootcount: 14,
                 difficulty: 88,
                 enemies: [
@@ -6555,12 +8496,12 @@ module.exports = {
                         ],
                         keystoneStats: {
                             frenzy: {
-                                attackDmgPlus : [6100, 12100, 241000, 38000, 52000],
-                                magicDmgPlus : [6100, 12100, 24000, 38000, 52000]
+                                attackDmgPlus : [6100, 12100, 24100, 38000, 52000, 77000, 100000, 125000, 155000, 170000],
+                                magicDmgPlus : [6100, 12100, 24000, 38000, 52000, 77000, 100000, 125000, 155000, 170000]
                             },
-                            hp: [ 11500, 19900, 29900, 41000, 67000 ],
-                            attackDmg: [700, 1100, 1500, 2100, 2500, 2700, 3500, 4500, 5700, 7000],
-                            magicDmg: [700, 1100, 1500, 2100, 2500, 2700, 3500, 4500, 5700, 7000],
+                            hp: [ 11500, 19900, 29900, 41000, 67000, 96000, 139000, 200000, 295000, 450000 ],
+                            attackDmg: [700, 1100, 1500, 2100, 2500, 4500, 6500, 8500, 11700, 14000 ],
+                            magicDmg: [700, 1100, 1500, 2100, 2500, 4500, 6500, 8500, 11700, 14000 ],
                             abilities: []
                         },
                         abilityOrder: [
@@ -6608,12 +8549,12 @@ module.exports = {
                         ],
                         keystoneStats: {
                             frenzy: {
-                                attackDmgPlus : [6100, 12100, 241000, 38000, 52000],
-                                magicDmgPlus : [6100, 12100, 24000, 38000, 52000]
+                                attackDmgPlus : [6100, 12100, 24100, 38000, 52000, 77000, 100000, 125000, 155000, 170000],
+                                magicDmgPlus : [6100, 12100, 24000, 38000, 52000, 77000, 100000, 125000, 155000, 170000]
                             },
-                            hp: [ 11500, 19900, 29900, 41000, 67000 ],
-                            attackDmg: [700, 1100, 1500, 2100, 2500, 2700, 3500, 4500, 5700, 7000],
-                            magicDmg: [700, 1100, 1500, 2100, 2500, 2700, 3500, 4500, 5700, 7000],
+                            hp: [ 11500, 19900, 29900, 41000, 67000, 96000, 139000, 200000, 295000, 450000 ],
+                            attackDmg: [700, 1100, 1500, 2100, 2500, 4500, 6500, 8500, 11700, 14000],
+                            magicDmg: [700, 1100, 1500, 2100, 2500, 4500, 6500, 8500, 11700, 14000],
                             abilities: []
                         },
                         abilityOrder: [
@@ -6665,12 +8606,12 @@ module.exports = {
                         ],
                         keystoneStats: {
                             frenzy: {
-                                attackDmgPlus : [6100, 12100, 241000, 38000, 52000],
-                                magicDmgPlus : [6100, 12100, 24000, 38000, 52000]
+                                attackDmgPlus : [6100, 12100, 24100, 38000, 52000, 77000, 100000, 125000, 155000, 170000],
+                                magicDmgPlus : [6100, 12100, 24000, 38000, 52000, 77000, 100000, 125000, 155000, 170000]
                             },
-                            hp: [ 11500, 19900, 29900, 41000, 67000 ],
-                            attackDmg: [700, 1100, 1500, 2100, 2500, 2700, 3500, 4500, 5700, 7000],
-                            magicDmg: [700, 1100, 1500, 2100, 2500, 2700, 3500, 4500, 5700, 7000],
+                            hp: [ 11500, 19900, 29900, 41000, 67000, 96000, 139000, 200000, 295000, 450000 ],
+                            attackDmg: [700, 1100, 1500, 2100, 2500, 4500, 6500, 8500, 11700, 14000],
+                            magicDmg: [700, 1100, 1500, 2100, 2500, 4500, 6500, 8500, 11700, 14000],
                             abilities: []
                         },
                         // random magic dmg 
@@ -6720,12 +8661,12 @@ module.exports = {
                         ],
                         keystoneStats: {
                             frenzy: {
-                                attackDmgPlus : [6100, 12100, 241000, 38000, 52000],
-                                magicDmgPlus : [6100, 12100, 24000, 38000, 52000]
+                                attackDmgPlus : [6100, 12100, 24100, 38000, 52000, 77000, 100000, 125000, 155000, 170000],
+                                magicDmgPlus : [6100, 12100, 24000, 38000, 52000, 77000, 100000, 125000, 155000, 170000]
                             },
-                            hp: [ 11500, 19900, 29900, 41000, 67000 ],
-                            attackDmg: [700, 1100, 1500, 2100, 2500, 2700, 3500, 4500, 5700, 7000],
-                            magicDmg: [700, 1100, 1500, 2100, 2500, 2700, 3500, 4500, 5700, 7000],
+                            hp: [ 11500, 19900, 29900, 41000, 67000, 96000, 139000, 200000, 295000, 450000 ],
+                            attackDmg: [700, 1100, 1500, 2100, 2500, 4500, 6500, 8500, 11700, 14000],
+                            magicDmg: [700, 1100, 1500, 2100, 2500, 4500, 6500, 8500, 11700, 14000],
                             abilities: []
                         },
                         // no focus melee hit and aoe
@@ -6780,12 +8721,12 @@ module.exports = {
             
             13: {
                 challengeId: "dragon",
-                keystoneUnlockName: "Emperor Keystone",
-                avatar: "https://i.imgur.com/21C2UbS.jpg",
+                keystoneUnlockName: "Amber Keystone",
+                avatar: "https://i.imgur.com/0Rh5C7q.jpg",
                 timed: true,
-                description: "",
+                description: "**Amber Invasion**  \n**Regenerate** - The Amber Dragon heals themselves for 100,000 every turn\n**Incinerate** - Increases damage done and damage taken by 25%\n**Amber Pool** - Immune to area wide damage. heals all enemies for 10,000 with bloom at the end of every turn\n**Roots** - Immune to area wide damage. Upon being summoned the roots will rampage on a player until killed\n**Amber Drake** - Casts Erupt - Damage over time ability, upon taking damage the player will also deal damage to the rest of the group based on 67% of their missing health.\n**Whelpling** - Will cast rupture on the player that has dealt the killing blow - Rupture will deal 3,000 damage over 1 turn.\n**Elemental Guardians** - Storm guardian will cast frighten on a player which reduces their damage dealt by 3% per stack (cannot be bandaided), Earth Guardian will cast fade on a player which will reduce their healing taken by 10% per stack, Fire guardian will cast Lava Blast on a player which deals 5,000 damage.\n Upon guardians, drakes, and whelplings death the boss will gain permanent reduced healing based on the enemy.",
                 timedPerTurn: 360000,
-                points: 12001,
+                points: 18422,
                 keystonePoints: [250, 1100, 1830, 3530, 4030, 4800, 10000, 17000, 25000, 35000],
                 xppoints: 5120,
                 lootcount: 15,
@@ -6793,51 +8734,423 @@ module.exports = {
                 enemies: [
                     {
                         name: "Amber Dragon",
+                        emoji: "<:amberdragon:653115463881981952>",
                         xp: 30,
                         abilities: [
-                            "slash",
-                            "uppercut"
+                            "poke",
+                            "flameblast",
+                            "crush",
+                            "fireBreath",
                         ],
                         buffs: [
                             {
                                 name: "frenzy",
                                 emoji: "<:overmind:479298213904646147>",
                                 onTurnEnd: {
-                                    attackDmgPlus : 6100,
-                                    magicDmgPlus : 6100,
-                                    everyNTurns: 10,
+                                    attackDmgPlus : 3100,
+                                    magicDmgPlus : 3100,
+                                    everyNTurns: 5,
                                     startTurn: 60
                                 }
                             }
                         ],
                         keystoneStats: {
                             frenzy: {
-                                attackDmgPlus : [3100, 4100, 5100, 6100, 7100],
-                                magicDmgPlus : [3100, 4100, 5100, 6100, 7100]
+                                attackDmgPlus : [4100, 5400, 7000, 5500, 6800, 9000, 11500, 14000, 17000, 20000   ],
+                                magicDmgPlus : [4100, 5400, 7000, 5500, 68000, 9000, 11500, 14000, 17000, 20000  ]
                             },
-                            hp: [ 19500, 25900, 39900, 51000, 77000 ],
-                            attackDmg: [700, 1100, 1500, 2100, 2500],
-                            magicDmg: [700, 1100, 1500, 2100, 2500],
+                            hp: [41500, 70900, 129900, 151000, 257000, 325000, 395000, 450000, 675000, 900000 ],
+                            attackDmg: [1400, 2200, 3000, 4200, 5000, 6400, 8000, 10000, 12000, 14000],
+                            magicDmg: [1400, 2200, 3000, 4200, 5000, 6400, 8000, 10000, 12000, 14000],
                             abilities: []
                         },
                         abilityOrder: [
-                            0, 1, 0, 0, 0, 1, 0, 0
+                            0, 1, 2, 2, 3, 2, 0, 1, 2, 2, 3
                         ],
                         endOfTurnEvents : [
+                            "focus",
+                            "summonWhelps",
+                            "summonDrake",
+                            "summonDefenders",
+
+                            "summonAmberPool",
+                            "summonRoots",
+                            "incinerate",
+                            "regenerate"
+                        ],
+                        summonsToRearrangeAndDuplicate: [
+                            "summonDefenders",
+                            "summonDrake",
+                            "summonWhelps",
                         ],
                         effectsOnDeath: [
                         ],
-                        hp: 1982600,
-                        attackDmg: 238000,
-                        magicDmg: 257000,
+                        hp: 108600,
+                        attackDmg: 8500,
+                        magicDmg: 8500,
                         armor: 2100,
                         spirit: 2100,
                         hpPerPartyMember: 0,
                         adPerPartyMember: 0,
                         mdPerPartyMember: 0,
                         difficulty: "boss",
-                        element: "normal"
+                        element: "dragon"
                     }
+                ]
+            },
+            // 4 turrets dealing minor damage throughout encounter (die when deus ex appears)
+            // 3 conduits immune to damage unless you have a buff
+            // 3 types of spawns
+            // how to summon sentinels? kill a 1 hp pod that has summon upon death
+            // 3 sentinels - when killed give the buff to be able to attack a conduit (kill in 6 turns)
+            // continuous sets of 2 heatseekers every 3 turns they will explode (kill in 3 turns)
+            // continuous sets of little adds (2 per) hit with melee damage (kill in 2 turns)
+            // when all 3 conduits have been killed deus ex summons + 2 enforcers (enforcers easy to kill - 2 turns each max)
+            // after 6 turns 4 pulse turrets appear - frenzy every 3 turns for + 1000 - focus
+            // 1-8-15-21-25-45
+            14: {
+                challengeId: "machina",
+                keystoneUnlockName: "Mechanical Keystone",
+                avatar: "https://i.imgur.com/w1pjjuI.jpg",
+                timed: true,
+                description: "**Deus Ex** \n**Conduit** - immune to damage. Will initialize Detonation sequence, after 25 turns detonation will deal exterminate to the group.\n**Sentinel Pod** - Immune to aoe, Upon death summons a Sentinel\n**Sentinel** - casts wrap on a player which deals damage over 1 turn. Upon death the sentinel will *Infiltrate* a conduit and destroy it.\n**Heatseeker / Skitter / Turret ** - will deal damage to the group.\n**Growing Zap** - increasing magic damage over time, 6 turns duration.\n**Empower Turrets** - gives the current living turrets frenzy.",
+                timedPerTurn: 360000,
+                points: 24422,
+                keystonePoints: [250, 1100, 1830, 3530, 4030, 4800, 10000, 17000, 25000, 35000],
+                xppoints: 7420,
+                lootcount: 16,
+                difficulty: 121,
+                enemies: [
+                    {
+                        name: "Conduit",
+                        passive: true,
+                        immuneToAoe: true,
+                        emoji: "",
+                        xp: 30,
+                        abilities: [],
+                        buffs: [
+                            {
+                                name: "Impenetrable",
+                                emoji : "",
+                                buff: true,
+                                affectsGlobal: ["damageTakenPercentage"],
+                                turnsToExpire: 1000,
+                                multiplier: 0.0000000001
+                            },
+                            {
+                                name: "frenzy",
+                                emoji: "<:frenzy:479298214453968896>",
+                                onTurnEnd: {
+                                    attackDmgPlus : 6100,
+                                    magicDmgPlus : 6100,
+                                    everyNTurns: 40,
+                                    startTurn: 40
+                                }
+                            }
+                        ],
+                        keystoneStats: {
+                            frenzy: {
+                                attackDmgPlus : [0, 0, 0, 0, 0, 0, 0, 0, 0, 0   ],
+                                magicDmgPlus : [0, 0, 0, 0, 0, 0, 0, 0, 0, 0  ]
+                            },
+                            hp: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ],
+                            attackDmg: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                            magicDmg: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                            abilities: []
+                        },
+                        endOfTurnEvents : [
+                            "detonationSequence",
+                            "detonationSequenceBegin",
+                            "summonHeatseekers",
+                            "summonSkitters",
+                            "summonTurrets"
+                        ],
+                        effectsOnDeath: [
+                            // if all 3 conduits are dead summon - deus ex
+                            "summonDeusEx"
+                        ],
+                        hp: 1,
+                        attackDmg: 1,
+                        magicDmg: 1,
+                        armor: 1,
+                        spirit: 1,
+                        hpPerPartyMember: 0,
+                        adPerPartyMember: 0,
+                        mdPerPartyMember: 0,
+                        difficulty: "hard",
+                        element: "machine"
+                    },
+                    {
+                        name: "Conduit",
+                        passive: true,
+                        immuneToAoe: true,
+                        emoji: "",
+                        xp: 30,
+                        abilities: [],
+                        buffs: [
+                            {
+                                name: "Impenetrable",
+                                emoji : "",
+                                buff: true,
+                                affectsGlobal: ["damageTakenPercentage"],
+                                turnsToExpire: 1000,
+                                multiplier: 0.0000000001
+                            },
+                            {
+                                name: "frenzy",
+                                emoji: "<:frenzy:479298214453968896>",
+                                onTurnEnd: {
+                                    attackDmgPlus : 6100,
+                                    magicDmgPlus : 6100,
+                                    everyNTurns: 5,
+                                    startTurn: 39
+                                }
+                            }
+                        ],
+                        keystoneStats: {
+                            frenzy: {
+                                attackDmgPlus : [0, 0, 0, 0, 0, 0, 0, 0, 0, 0   ],
+                                magicDmgPlus : [0, 0, 0, 0, 0, 0, 0, 0, 0, 0  ]
+                            },
+                            hp: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ],
+                            attackDmg: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                            magicDmg: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                            abilities: []
+                        },
+                        endOfTurnEvents : [
+                            "detonationSequence",
+                            "detonationSequenceBegin",
+                        ],
+                        effectsOnDeath: [
+                            "summonDeusEx"
+                        ],
+                        hp: 1,
+                        attackDmg: 1,
+                        magicDmg: 1,
+                        armor: 1,
+                        spirit: 1,
+                        hpPerPartyMember: 0,
+                        adPerPartyMember: 0,
+                        mdPerPartyMember: 0,
+                        difficulty: "hard",
+                        element: "machine"
+                    },
+                    {
+                        name: "Conduit",
+                        passive: true,
+                        immuneToAoe: true,
+                        emoji: "",
+                        xp: 30,
+                        abilities: [],
+                        buffs: [
+                            {
+                                name: "Impenetrable",
+                                emoji : "",
+                                buff: true,
+                                affectsGlobal: ["damageTakenPercentage"],
+                                turnsToExpire: 1000,
+                                multiplier: 0.0000000001
+                            },
+                            {
+                                name: "frenzy",
+                                emoji: "<:frenzy:479298214453968896>",
+                                onTurnEnd: {
+                                    attackDmgPlus : 6100,
+                                    magicDmgPlus : 6100,
+                                    everyNTurns: 5,
+                                    startTurn: 39
+                                }
+                            }
+                        ],
+                        keystoneStats: {
+                            frenzy: {
+                                attackDmgPlus : [0, 0, 0, 0, 0, 0, 0, 0, 0, 0   ],
+                                magicDmgPlus : [0, 0, 0, 0, 0, 0, 0, 0, 0, 0  ]
+                            },
+                            hp: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ],
+                            attackDmg: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                            magicDmg: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                            abilities: []
+                        },
+                        endOfTurnEvents : [
+                            "detonationSequence",
+                            "detonationSequenceBegin",
+                        ],
+                        effectsOnDeath: [
+                            "summonDeusEx"
+                        ],
+                        hp: 1,
+                        attackDmg: 1,
+                        magicDmg: 1,
+                        armor: 1,
+                        spirit: 1,
+                        hpPerPartyMember: 0,
+                        adPerPartyMember: 0,
+                        mdPerPartyMember: 0,
+                        difficulty: "hard",
+                        element: "machine"
+                    },
+                    {
+                        name: "Sentinel Pod",
+                        passive: true,
+                        immuneToAoe: true,
+                        emoji: "",
+                        xp: 30,
+                        abilities: [],
+                        buffs: [],
+                        keystoneStats: {
+                            frenzy: {
+                                attackDmgPlus : [0, 0, 0, 0, 0, 0, 0, 0, 0, 0   ],
+                                magicDmgPlus : [0, 0, 0, 0, 0, 0, 0, 0, 0, 0  ]
+                            },
+                            hp: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ],
+                            attackDmg: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                            magicDmg: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                            abilities: []
+                        },
+                        endOfTurnEvents : [
+                        ],
+                        effectsOnDeath: [
+                            "summonSentinel"
+                        ],
+                        hp: 1,
+                        attackDmg: 1,
+                        magicDmg: 1,
+                        armor: 1,
+                        spirit: 1,
+                        hpPerPartyMember: 0,
+                        adPerPartyMember: 0,
+                        mdPerPartyMember: 0,
+                        difficulty: "medium",
+                        element: "machine"
+                    },
+                    {
+                        name: "Sentinel Pod",
+                        passive: true,
+                        immuneToAoe: true,
+                        emoji: "",
+                        xp: 30,
+                        abilities: [],
+                        buffs: [],
+                        keystoneStats: {
+                            frenzy: {
+                                attackDmgPlus : [0, 0, 0, 0, 0, 0, 0, 0, 0, 0   ],
+                                magicDmgPlus : [0, 0, 0, 0, 0, 0, 0, 0, 0, 0  ]
+                            },
+                            hp: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ],
+                            attackDmg: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                            magicDmg: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                            abilities: []
+                        },
+                        endOfTurnEvents : [
+                        ],
+                        effectsOnDeath: [
+                            "summonSentinel"
+                        ],
+                        hp: 1,
+                        attackDmg: 1,
+                        magicDmg: 1,
+                        armor: 1,
+                        spirit: 1,
+                        hpPerPartyMember: 0,
+                        adPerPartyMember: 0,
+                        mdPerPartyMember: 0,
+                        difficulty: "medium",
+                        element: "machine"
+                    },
+                    {
+                        name: "Sentinel Pod",
+                        passive: true,
+                        immuneToAoe: true,
+                        emoji: "",
+                        xp: 30,
+                        abilities: [],
+                        buffs: [],
+                        keystoneStats: {
+                            frenzy: {
+                                attackDmgPlus : [0, 0, 0, 0, 0, 0, 0, 0, 0, 0   ],
+                                magicDmgPlus : [0, 0, 0, 0, 0, 0, 0, 0, 0, 0  ]
+                            },
+                            hp: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ],
+                            attackDmg: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                            magicDmg: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                            abilities: []
+                        },
+                        endOfTurnEvents : [
+                        ],
+                        effectsOnDeath: [
+                            "summonSentinel"
+                        ],
+                        hp: 1,
+                        attackDmg: 1,
+                        magicDmg: 1,
+                        armor: 1,
+                        spirit: 1,
+                        hpPerPartyMember: 0,
+                        adPerPartyMember: 0,
+                        mdPerPartyMember: 0,
+                        difficulty: "medium",
+                        element: "machine"
+                    },
+                ],
+            },
+            15: {  
+                challengeId: "catoblepas",
+                keystoneUnlockName: "Mythological Keystone",
+                avatar: "https://i.imgur.com/iI6O3Mz.png",
+                timed: true,
+                description: "",
+                timedPerTurn: 360000,
+                points: 31422,
+                keystonePoints: [250, 1100, 1830, 3530, 4030, 4800, 10000, 17000, 25000, 35000],
+                xppoints: 9820,
+                lootcount: 17,
+                difficulty: 144,
+                enemies: [
+                    {
+                        name: "Catoblepas",
+                        emoji: "",
+                        xp: 30,
+                        abilities: ["slash", "iceshards"],
+                        buffs: [
+                            
+                            {
+                                name: "frenzy",
+                                emoji: "<:frenzy:479298214453968896>",
+                                onTurnEnd: {
+                                    attackDmgPlus : 6100,
+                                    magicDmgPlus : 6100,
+                                    everyNTurns: 40,
+                                    startTurn: 40
+                                }
+                            }
+                        ],
+                        keystoneStats: {
+                            frenzy: {
+                                attackDmgPlus : [0, 0, 0, 0, 0, 0, 0, 0, 0, 0   ],
+                                magicDmgPlus : [0, 0, 0, 0, 0, 0, 0, 0, 0, 0  ]
+                            },
+                            hp: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ],
+                            attackDmg: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                            magicDmg: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                            abilities: []
+                        },
+                        endOfTurnEvents : [
+
+                        ],
+                        effectsOnDeath: [
+                        ],
+                        hp: 1000000,
+                        attackDmg: 1000000,
+                        magicDmg: 1000000,
+                        armor: 10000,
+                        spirit: 10000,
+                        hpPerPartyMember: 0,
+                        adPerPartyMember: 0,
+                        mdPerPartyMember: 0,
+                        difficulty: "boss",
+                        element: "machine"
+                    },
                 ]
             }
         }

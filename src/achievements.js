@@ -329,11 +329,9 @@ module.exports.checkForAchievements = function(discordUserId, data, message, cal
                 profileDB.createUserStatistics(discordUserId, null, null, function(createError, statsSuccess){
                     if(createError){
                         console.log(createError);
-                    }
-                    else{
+                    }else{
                         exports.checkForAchievements(discordUserId, data, message, true, mentionedUser);
                     }
-
                 })
             }
             else{

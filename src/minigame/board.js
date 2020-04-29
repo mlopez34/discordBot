@@ -141,7 +141,6 @@ module.exports = class Board {
     makeMove(player, numberOfTakes){
         // player makes move, 1 or 2 number of takes only valid
         if (numberOfTakes && numberOfTakes > 0 && numberOfTakes <= 2){
-            //TODO: player makes the move
             var playerHasLost = false;
             for (var i = 1; i <= numberOfTakes; i++){
                 if (this.boardArray.length > 0){

@@ -576,8 +576,7 @@ module.exports.useUncommons = function(message, discordid, uncommons, cb){
                 exports.setItemsLock(discordid, false)
                 // console.log(updateBulkErr);
                 cb(updateBulkErr);
-            }
-            else{
+            }else{
                 exports.setItemsLock(discordid, false)
                 // console.log(updateBulkRes);
                 cb(null, "success")

@@ -14,21 +14,18 @@ module.exports.gainReputation = function (message, discordUserId, reputationNumb
         profileDB.getUserProfileData(discordUserId, function(getProfileErr, getProfileRes){
             if (getProfileErr){
                 // console.log(getProfileErr);
-            }
-            else{
+            }else{
                 var currentReputation = getProfileRes.data.reputation;
                 profileDB.addUserReputation(discordUserId, reputationNumber, currentReputation, function(repError, repRes){
                     if (repError){
                         // console.log(repError)
                         cb(repError);
-                    }
-                    else{
+                    }else{
                         // console.log(repRes);
                         reachedNewRepStatus(message, getProfileRes, discordUserId, reputationNumber, function(statusErr, statusRes){
                             if (statusErr){
                                 cb(statusErr);
-                            }
-                            else{
+                            }else{
                                 // console.log(statusRes);
                                 cb(null, statusRes);
                             }
@@ -42,6 +39,15 @@ module.exports.gainReputation = function (message, discordUserId, reputationNumb
         cb ("error")
     }
     // 
+}
+
+module.exports.getReputationBasedOnLevel = function(reputationLevel){
+    for (var rep in REPUTATIONS){
+        if (REPUTATIONS[rep].level == reputationLevel){
+            return REPUTATIONS[rep].display
+        }
+    }
+    return "Liked"
 }
 
 // check if user has obtained a new reputation status
@@ -58,13 +64,21 @@ function reachedNewRepStatus(message, getProfileRes, discordId, reputationGained
         updateReputationStatus(message, discordId, "Liked");
         cb(null, {repNumber: reputationNumber + reputationGained, repStatus: "Liked" })
     }
+    else if(reputationNumber + reputationGained >= REPUTATIONS.worshipped.repToGet 
+        && reputationStatus.toLowerCase() != "worshipped"){
+        // reched sanctified
+        updateReputationStatus(message, discordId, "Worshipped");
+        cb(null, {repNumber: reputationNumber + reputationGained, repStatus: "Worshipped" })
+    }
     else if(reputationNumber + reputationGained >= REPUTATIONS.sanctified.repToGet 
+        && reputationNumber + reputationGained < REPUTATIONS.worshipped.repToGet
         && reputationStatus.toLowerCase() != "sanctified"){
         // reched sanctified
         updateReputationStatus(message, discordId, "Sanctified");
         cb(null, {repNumber: reputationNumber + reputationGained, repStatus: "Sanctified" })
     }
     else if(reputationNumber + reputationGained >= REPUTATIONS.glorified.repToGet 
+        && reputationNumber + reputationGained < REPUTATIONS.sanctified.repToGet
         && reputationStatus.toLowerCase() != "glorified"){
         // reched glorified
         updateReputationStatus(message, discordId, "Glorified");
@@ -99,20 +113,17 @@ function updateReputationStatus(message, discordId, repstatus){
     profileDB.updateUserReputation(discordId, repstatus, function(err, res){
         if (err){
             // console.log(err);
-        }      
-        else{
+        }else{
             // console.log(res);
             if (repstatus){
                 updateUserRewards(message, discordId, repstatus, function(updateErr, updateRes){
                     if (updateErr){
                         // console.log(updateErr);
-                    }
-                    else{
+                    }else{
                         reputationEmbedBuilder(message, repstatus, updateRes);
                     }
                 })
-            }
-            else{
+            }else{
                 reputationEmbedBuilder(message, repstatus, "none");
             }
         }
@@ -193,8 +204,7 @@ function updateUserRewards(message, discordId, repstatus, cb){
             profileDB.obtainCasserole(discordId, function(error, res){
                 if (error){
                     console.log(error);
-                }
-                else{
+                }else{
                     cb(null, "casserole");
                 }
             })
@@ -206,8 +216,7 @@ function updateUserRewards(message, discordId, repstatus, cb){
             profileDB.obtainSprintingShoes(discordId, function(error, res){
                 if (error){
                     console.log(error);
-                }
-                else{
+                }else{
                     cb(null, "sprinting shoes");
                 }
             })
@@ -221,8 +230,7 @@ function updateUserRewards(message, discordId, repstatus, cb){
             profileDB.obtainHolyCandle(discordId, function(error, res){
                 if (error){
                     console.log(error);
-                }
-                else{
+                }else{
                     cb(null, "holy candle");
                 }
             })
@@ -278,8 +286,7 @@ function reputationEmbedBuilder(message, repstatus, rewards){
     // Image by Ellen from SCD
     if (repstatus.toLowerCase() == "liked" || repstatus.toLowerCase() == "admired"){
         embed.setThumbnail("http://i.imgur.com/KyQCBq9.jpg")
-    }
-    else{
+    }else{
         embed.setThumbnail("http://i.imgur.com/nrhHBK5.jpg")
     }
     embed
@@ -295,7 +302,7 @@ function reputationEmbedBuilder(message, repstatus, rewards){
         embed.addField( "Rewards: " , ":candle: Holy Candle - on thank 20% chance to reset scavenge cooldown, 10% chance to critically gain 50% of your tacos gained while thanking", true)
     }
     if (rewards === "lavoratory access card"){
-        embed.addField( "Rewards: " , ":flower_playing_cards: Laboratory Card - present this card to Bender to be able to shop transformium from his shop", true)
+        embed.addField( "Rewards: " , ":flower_playing_cards: Laboratory Card - present this card to Bender to be able to shop ethereum from his shop", true)
     }
     if (rewards === "pandoras box"){
         embed.addField( "Rewards: " , ":crystal_ball: Pandora's Box - present this box to Bender to be able to shop ethereum from his shop", true)
