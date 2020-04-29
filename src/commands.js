@@ -728,9 +728,81 @@ module.exports.collectRewardsCommand = function(message){
                             rewardsEmbedBuilder(message, rewardsString, itemsStrings)
                         }
                     })
+                    profileDB.collectedRewardsAgain(discordUserId, function(err, res){
+                        if (err){
+                            console.log(err)
+                        }else{
+                        }
+                    })
                 }else{
-                    message.channel.send(rewardsString + " " + itemsStrings)
+                    message.channel.send(rewardsString + " no rewards " + itemsStrings)
                 }
+            }else{
+                if (!userData.data.collectedrewardsagain){
+                    var achievements = userData.data.achievements
+                    var rareItems = [];
+                    var itemsObtainedArray = [];
+                    var allRewardsItems = exports.getAllItems()
+                    var allRewardsItemsById = exports.getItemsMapById()
+                    for (var item in allRewardsItems){
+                        if( ( allRewardsItems[item].itemraritycategory == "rare"
+                        || allRewardsItems[item].itemraritycategory == "rare+"
+                        || allRewardsItems[item].itemraritycategory == "rare++"
+                        || allRewardsItems[item].itemraritycategory == "ancient"
+                        || allRewardsItems[item].itemraritycategory == "ancient+")
+                        && !allRewardsItems[item].findinkeystone){
+                            rareItems.push(allRewardsItems[item]);
+                        }
+                    }
+                    
+                    var data = {}
+                    data.achievements = achievements;
+                    var rewardsString = ""
+                    // s1top10rpg
+                    if (userData.data.s1top1rpg == true){
+                        // unique pet - :owl:  DONE
+                        data.s1top1rpg = true
+                        rewardsString = rewardsString + "TOP RPG: Pet available on reputation shop - :kangaroo:\n"
+                        // give amulet - 
+                        itemsObtainedArray.push(allRewardsItemsById[360]);
+                        // ancient item - 
+                        itemsObtainedArray.push(allRewardsItemsById[3999]);
+                        // 15 random rares - DONE
+                        for (var i = 0; i < 15; i++){
+                            var itemRoll = Math.floor(Math.random() * rareItems.length);
+                            itemsObtainedArray.push(rareItems[itemRoll]);
+                        }
+                    }
+                    let itemsStrings = []
+                    var itemsString = ""
+                    if (itemsObtainedArray.length > 0){
+                        for (var item in itemsObtainedArray){
+                            if (itemsString.length <= 900){
+                                itemsString = itemsString + itemsObtainedArray[item].itemname + " \n";
+                            }else{
+                                itemsStrings.push(itemsString)
+                                itemsString = ""
+                                itemsString = itemsString + itemsObtainedArray[item].itemname + " \n";
+                            }
+                        }
+                    }
+                    if (itemsString.length > 0){
+                        itemsStrings.push(itemsString)
+                    }
+                    if (rewardsString.length > 0 || itemsString.length > 0){
+                        profileDB.collectedRewardsAgain(discordUserId, function(err, res){
+                            if (err){
+                                console.log(err)
+                            }else{
+                                addToUserInventory(discordUserId, itemsObtainedArray);
+                                rewardsEmbedBuilder(message, rewardsString, itemsStrings)
+                            }
+                        })
+                    }else{
+                        message.channel.send(rewardsString + " x " + itemsStrings)
+                    }
+                }
+                
             }
         }
     })

@@ -858,6 +858,20 @@ module.exports.collectedRewards = function(userId, cb){
     });
 }
 
+module.exports.collectedRewardsAgain = function(userId, cb){
+    var query = 'update ' + config.profileTable + ' set collectedrewardsagain=true where discordid=$1'
+    db.none(query, [userId])
+    .then(function () {
+    cb(null, {
+        status: 'success',
+        message: 'collected rewards'
+        });
+    })
+    .catch(function (err) {
+        cb(err);
+    });
+}
+
 module.exports.purchaseBuilding = function(userId, tacosSpent, building, cb){
     var query;
     if (building == "stable"){

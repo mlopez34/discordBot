@@ -1495,7 +1495,7 @@ module.exports = {
                 aura: true,
                 abilityId: "auraOfDespairDone",
                 affectsGlobal: ["damageDealtPercentage"],
-                multiplier: 100.3,
+                multiplier: 1.3,
                 name: "Aura of Despair Done",
                 emoji: ":ideograph_advantage:"
             }
