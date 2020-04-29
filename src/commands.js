@@ -8607,7 +8607,7 @@ module.exports.timeTravelCommand = function(message, args, channel){
                         exports.setCommandLock("timetravel", discordUserId, false)
                         message.channel.send("traveled to the year " + args[1])
                     }
-                }else if (stage == 5 || stage == 6){
+                }else if (stage == 5){
                     if (args.length > 1 && args[1] >= 3120 && args[1] <= 3130){
                         quest.questHandler(message, discordUserId, "timetravel", stage, team, questData, channel, allItemsForTimetravel)
                         exports.setCommandLock("timetravel", discordUserId, false)
