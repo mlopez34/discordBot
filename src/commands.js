@@ -605,7 +605,8 @@ module.exports.collectRewardsCommand = function(message){
                     || allRewardsItems[item].itemraritycategory == "rare+"
                     || allRewardsItems[item].itemraritycategory == "rare++"
                     || allRewardsItems[item].itemraritycategory == "ancient"
-                    || allRewardsItems[item].itemraritycategory == "ancient+") ){
+                    || allRewardsItems[item].itemraritycategory == "ancient+")
+                    && !allRewardsItems[item].findinkeystone ){
                         rareItems.push(allRewardsItems[item]);
                     }
                 }

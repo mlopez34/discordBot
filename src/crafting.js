@@ -215,10 +215,11 @@ module.exports.getRecipeRequirements = function(itemshortname, inventoryItems){
         // up the requirements to tacos, itemid1, itemid2, itemid3
         let amuletItemId = availableRecipesByShortName[itemshortname].itemId
         let numberOfCurrentAmulets = inventoryItems[amuletItemId] || 0
+        let amuletTacoRequirements = availableRecipesByShortName[itemshortname].tacos // 20
         let amuletTempRequirements = JSON.parse(JSON.stringify(availableRecipesByShortName[itemshortname]))
         for (var am = 1; am <= numberOfCurrentAmulets; am++){
             console.log(am)
-            amuletTempRequirements.tacos = amuletTempRequirements.tacos +  Math.ceil(amuletTempRequirements.tacos * .3)
+            amuletTempRequirements.tacos = amuletTempRequirements.tacos +  Math.ceil(amuletTacoRequirements * 1.3)
         }
         return amuletTempRequirements
     }else{
