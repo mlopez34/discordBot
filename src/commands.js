@@ -590,10 +590,11 @@ module.exports.collectRewardsCommand = function(message){
     var discordUserId = message.author.id
     profileDB.getUserProfileData(discordUserId, function(error, userData){
         if (error){
+            console.log(error)
             message.channel.send(error)
         }else{
             
-            if (!userData.data.collectedrewards){
+            if (true || !userData.data.collectedrewards){
                 var achievements = userData.data.achievements
                 var rareItems = [];
                 var itemsObtainedArray = [];
@@ -613,7 +614,7 @@ module.exports.collectRewardsCommand = function(message){
                 data.achievements = achievements;
                 var rewardsString = ""
                 // s1top10rpg
-                if (userData.data.s1top1rpg){
+                if (userData.data.s1top1rpg == true){
                     // unique pet - :owl:  DONE
                     data.s1top1rpg = true
                     rewardsString = rewardsString + "TOP RPG: Pet available on reputation shop - :kangaroo:\n"
@@ -628,7 +629,7 @@ module.exports.collectRewardsCommand = function(message){
                     }
                 }
                 // s1top10xp
-                if (userData.data.s1top1xp){
+                if (userData.data.s1top1xp == true){
                     data.s1top1xp = true
                     rewardsString = rewardsString + "TOP XP: Pet available on reputation shop - :sloth:\n"
                     itemsObtainedArray.push(allRewardsItemsById[197]);
@@ -639,7 +640,7 @@ module.exports.collectRewardsCommand = function(message){
                     }
                 }
                 // TOP VOTES s1topvotes
-                if (userData.data.s1topvotes){
+                if (userData.data.s1topvotes == true){
                     data.s1topvotes = true
                     rewardsString = rewardsString + "TOP VOTES: Pet available on reputation shop - :skunk:\n"
                     itemsObtainedArray.push(allRewardsItemsById[22]);
@@ -654,6 +655,9 @@ module.exports.collectRewardsCommand = function(message){
                 achiev.checkForAchievements(discordUserId, data, message);
                 // BUILDING achievements
                 profileDB.getGreenHouseData(discordUserId, function(error, ghData){
+                    if (error){
+                        console.log(error)
+                    }
                     let data = {}
                     data.achievements = ghData.data.achievements
                     data.building = "greenhouse"
@@ -662,6 +666,9 @@ module.exports.collectRewardsCommand = function(message){
                 })
 
                 profileDB.getStableData(discordUserId, function(error, stData){
+                    if (error){
+                        console.log(error)
+                    }
                     let data = {}
                     data.achievements = stData.data.achievements
                     data.building = "stable"
@@ -670,6 +677,9 @@ module.exports.collectRewardsCommand = function(message){
                 })
 
                 profileDB.getTempleData(discordUserId, function(error, tmData){
+                    if (error){
+                        console.log(error)
+                    }
                     let data = {}
                     data.achievements = tmData.data.achievements
                     data.building = "temple"
@@ -678,6 +688,9 @@ module.exports.collectRewardsCommand = function(message){
                 })
 
                 profileDB.getUserRpgProfleData(discordUserId, function(error, rpgData){
+                    if (error){
+                        console.log(error)
+                    }
                     let highestKeystone = 0;
                     let keystoneKeys = ["escapedrobot", "desperado", "romansoldier", "dictator", "cheftrio", "a182type2", "gatekeeper", "archvampire", "corruptedovermind", "anomaly", "aramis", "emperor", "dragon", "machina", "catoblepas"   ]
                     for (var k in keystoneKeys){
@@ -694,7 +707,7 @@ module.exports.collectRewardsCommand = function(message){
                 var itemsString = ""
                 if (itemsObtainedArray.length > 0){
                     for (var item in itemsObtainedArray){
-                        if (itemsString.length <= 950){
+                        if (itemsString.length <= 900){
                             itemsString = itemsString + itemsObtainedArray[item].itemname + " \n";
                         }else{
                             itemsStrings.push(itemsString)
@@ -722,20 +735,25 @@ module.exports.collectRewardsCommand = function(message){
 }
 
 function rewardsEmbedBuilder(message, rewardsString, itemsString){
-    const embed = new Discord.RichEmbed()
-    .setTitle(message.author.username )
-    .setColor(0x00AE86)
-    if (rewardsString.length > 0){
-        embed.addField("Rewards" , rewardsString, false)
-    }
-    for (var i in itemsString){
-        if (itemsString[i].length > 0){
-            embed.addField("Items" , itemsString[i], false)
+    try{
+        const embed = new Discord.RichEmbed()
+        .setTitle(message.author.username )
+        .setColor(0x00AE86)
+        if (rewardsString.length > 0){
+            embed.addField("Rewards" , rewardsString, false)
         }
-    }
+        for (var i in itemsString){
+            if (itemsString[i].length > 0){
+                embed.addField("Items" , itemsString[i], false)
+            }
+        }
+        
+        embed.setThumbnail(message.author.avatarURL)
+        message.channel.send({embed});
     
-    embed.setThumbnail(message.author.avatarURL)
-    message.channel.send({embed});
+    }catch(ex){
+        message.channel.send("error " + ex)
+    }
 }
 
 module.exports.setCommandLock = function(command, discordUserId, set){
