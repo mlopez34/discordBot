@@ -1,5 +1,6 @@
 'use strict'
 // takes care of gaining reputation with bender
+var achiev = require("./achievements.js");
 var profileDB = require("./profileDB.js");
 const Discord = require("discord.js");
 var config = require("./config.js")
@@ -34,8 +35,7 @@ module.exports.gainReputation = function (message, discordUserId, reputationNumb
                 })
             }
         })
-    }
-    else{
+    }else{
         cb ("error")
     }
     // 
@@ -58,44 +58,45 @@ function reachedNewRepStatus(message, getProfileRes, discordId, reputationGained
         reputationNumber = 0;
     }
     var reputationStatus = getProfileRes.data.repstatus;
+    let achievements = getProfileRes.data.achievements
     // check the current status, and then check the next status number, and check if user rep is greater than that
     if (!reputationStatus && reputationNumber + reputationGained >= REPUTATIONS.liked.repToGet){
         // reached liked
-        updateReputationStatus(message, discordId, "Liked");
+        updateReputationStatus(message, discordId, "Liked", achievements);
         cb(null, {repNumber: reputationNumber + reputationGained, repStatus: "Liked" })
     }
     else if(reputationNumber + reputationGained >= REPUTATIONS.worshipped.repToGet 
         && reputationStatus.toLowerCase() != "worshipped"){
         // reched sanctified
-        updateReputationStatus(message, discordId, "Worshipped");
+        updateReputationStatus(message, discordId, "Worshipped", achievements);
         cb(null, {repNumber: reputationNumber + reputationGained, repStatus: "Worshipped" })
     }
     else if(reputationNumber + reputationGained >= REPUTATIONS.sanctified.repToGet 
         && reputationNumber + reputationGained < REPUTATIONS.worshipped.repToGet
         && reputationStatus.toLowerCase() != "sanctified"){
         // reched sanctified
-        updateReputationStatus(message, discordId, "Sanctified");
+        updateReputationStatus(message, discordId, "Sanctified", achievements);
         cb(null, {repNumber: reputationNumber + reputationGained, repStatus: "Sanctified" })
     }
     else if(reputationNumber + reputationGained >= REPUTATIONS.glorified.repToGet 
         && reputationNumber + reputationGained < REPUTATIONS.sanctified.repToGet
         && reputationStatus.toLowerCase() != "glorified"){
         // reched glorified
-        updateReputationStatus(message, discordId, "Glorified");
+        updateReputationStatus(message, discordId, "Glorified", achievements);
         cb(null, {repNumber: reputationNumber + reputationGained, repStatus: "Glorified" })
     }
     else if(reputationNumber + reputationGained >= REPUTATIONS.admired.repToGet 
         && reputationNumber + reputationGained < REPUTATIONS.glorified.repToGet
         && reputationStatus.toLowerCase() != "admired" ){
         // reached admired
-        updateReputationStatus(message, discordId, "Admired");
+        updateReputationStatus(message, discordId, "Admired", achievements);
         cb(null, {repNumber: reputationNumber + reputationGained, repStatus: "Admired" })
     }
     else if (reputationNumber + reputationGained >= REPUTATIONS.respected.repToGet 
         && reputationNumber + reputationGained < REPUTATIONS.admired.repToGet
         && reputationStatus.toLowerCase() != "respected"){
         // reached respected
-        updateReputationStatus(message, discordId, "Respected");
+        updateReputationStatus(message, discordId, "Respected", achievements);
         cb(null, {repNumber: reputationNumber + reputationGained, repStatus: "Respected" })
     }
     else if (!reputationStatus){
@@ -109,14 +110,14 @@ function reachedNewRepStatus(message, getProfileRes, discordId, reputationGained
     }
 }
 
-function updateReputationStatus(message, discordId, repstatus){
+function updateReputationStatus(message, discordId, repstatus, achievements){
     profileDB.updateUserReputation(discordId, repstatus, function(err, res){
         if (err){
             // console.log(err);
         }else{
             // console.log(res);
             if (repstatus){
-                updateUserRewards(message, discordId, repstatus, function(updateErr, updateRes){
+                updateUserRewards(message, discordId, repstatus, achievements, function(updateErr, updateRes){
                     if (updateErr){
                         // console.log(updateErr);
                     }else{
@@ -193,13 +194,17 @@ function addToUserInventory(discordUserId, items){
 }
 
 // list of rewards to give the user
-function updateUserRewards(message, discordId, repstatus, cb){
+function updateUserRewards(message, discordId, repstatus, achievements, cb){
+    var data = {}
+    data.achievements = achievements;
+    data.reputation = repstatus.toLowerCase();
+    achiev.checkForAchievements(discordId, data, message);
+
     switch(repstatus.toLowerCase()){
         case "liked":
             cb(null, "none");
             break;
         case "respected":
-            // able to upgrade past level 3 on all buildings + able to improve artifacts
             // give the user a casserole on their profile
             profileDB.obtainCasserole(discordId, function(error, res){
                 if (error){
@@ -211,7 +216,6 @@ function updateUserRewards(message, discordId, repstatus, cb){
             break;
             
         case "admired":
-            // able to upgrade past level 6 on all buildings + able to improve artifacts
             // give user sprinting shoes on their profile
             profileDB.obtainSprintingShoes(discordId, function(error, res){
                 if (error){
@@ -222,11 +226,8 @@ function updateUserRewards(message, discordId, repstatus, cb){
             })
             break;
         case "glorified":
-            // able to upgrade past level 9 on all buildings + able to improve artifacts
             // special greater amulet             
             obtainReputationItem(message, "reputationglorified")
-            // something for thanks be able to critically earn from thanking - 10% chance to get 50% more tacos from thanks
-            // chance to reset scavenge cooldown
             profileDB.obtainHolyCandle(discordId, function(error, res){
                 if (error){
                     console.log(error);
@@ -236,7 +237,6 @@ function updateUserRewards(message, discordId, repstatus, cb){
             })
             break;
         case "sanctified":
-            // able to upgrade past level 12 on all buildings + able to master ancients
             obtainReputationItem(message, "reputationsanctified")
             profileDB.obtainLaboratoryAccessCard(discordId, function(error, res){
                 if (error){
@@ -247,7 +247,7 @@ function updateUserRewards(message, discordId, repstatus, cb){
             })
             break; 
         case "worshipped":
-        // 125k rep - be able to refine artifacts
+        // 125k rep - be able to master artifacts
             obtainReputationItem(message, "reputationworshipped")
             profileDB.obtainPandorasBox(discordId, function(error, res){
                 if (error){
@@ -308,7 +308,7 @@ function reputationEmbedBuilder(message, repstatus, rewards){
         embed.addField( "Rewards: " , ":flower_playing_cards: Laboratory Card - present this card to Bender to be able to shop ethereum from his shop", true)
     }
     if (rewards === "pandoras box"){
-        embed.addField( "Rewards: " , ":crystal_ball: Pandora's Box - present this box to Bender to be able to shop ethereum from his shop", true)
+        embed.addField( "Rewards: " , ":crystal_ball: Pandora's Box - present this box to Bender to be able to shop elementium from his shop", true)
     }
     message.channel.send({embed})
     .then(function(res){

@@ -58,7 +58,11 @@ module.exports.rpgInitialize = function(message, special){
     // lock members from initialize
     
 
-    if (team.length >= 2 && team.length <= TEAM_MAX_LENGTH && validTeam && !exports.isTeamLocked(team)){
+    if ( (team.length >= 2 
+    && team.length <= TEAM_MAX_LENGTH 
+    && validTeam 
+    && !exports.isTeamLocked(team) )
+    || special.allowSinglePlayer){
         team.forEach(function(member){
             exports.setInitializeLock(member.id, true)
         })
@@ -908,7 +912,7 @@ module.exports.rpgReady = function(message, itemsAvailable, amuletItemsById, buf
                         profileDB.getUserItemsForRpg(discordUserId, function(err, inventoryResponse){
                             if (err){
                                 exports.setreadyLock(rpgEventId, discordUserId, false)
-                                // console.log(err);
+                                console.log(err);
                             }else{
                                 // console.log("DONE " + done)
                                 // console.log("millis " + ( done - start))
@@ -956,15 +960,19 @@ module.exports.rpgReady = function(message, itemsAvailable, amuletItemsById, buf
 
                                 profileDB.getUserWearInfo(discordUserId, function(wearErr, wearData){
                                     if (wearErr){
-                                        // console.log(wearErr);
+                                        console.log(wearErr);
                                         exports.setreadyLock(rpgEventId, discordUserId, false)
                                         message.channel.send(wearErr + " something went wrong [wearing] - someone doesn't have a wearing profile");
                                     }else{
                                         var userLevel = userStats.level;
+                                        let cursedTimeCheck = new Date()
+                                        cursedTimeCheck = new Date(cursedTimeCheck.setHours(cursedTimeCheck.getHours() - 12 ))
+                                        let cursed = (userStats.ritualstring == "auraOfDespair") && ( cursedTimeCheck <= userStats.lastritualdate ) ? true : false    
+                                        
                                         wearStats.getUserWearingStats(message, discordUserId, { userLevel: userLevel, inventoryResponse: inventoryResponse }, allItems, function(wearErr, wearRes){
                                             if (wearErr){
                                                 exports.setreadyLock(rpgEventId, discordUserId, false)
-                                                // console.log(wearErr)
+                                                console.log(wearErr)
                                             }else{
                                                 // get the wearing data
                                                 var wearingStats = wearData.data[0];
@@ -984,7 +992,10 @@ module.exports.rpgReady = function(message, itemsAvailable, amuletItemsById, buf
                                                     abilityBuffs: [],
                                                     buffs: []
                                                 }
-                                                
+                                                if (cursed){
+                                                    abilities.push("auraOfDespairDone")
+                                                    abilities.push("auraOfDespairTaken")
+                                                }
                                                 if (wearingStats.slot1itemid){
                                                     // check that the itemid is not already being used
                                                     if (!activeRPGItemIds[wearingStats.slot1useritemid]){
@@ -3086,7 +3097,15 @@ function eventEndedEmbedBuilder(message, event, partySuccess){
             if ( (keystonenumber) == event.challenge.keystone && userLevel >= KEYSTONE_UNLOCK_LEVEL){
                 var challengeId = getKeystoneIdFromChallenge(event.challenge.challenge)
                 profileDB.updateCurrentChallengeKeystone( memberInParty.id, keystonenumber + 1, challengeId, function(err, res){
-                    
+                    // check for keystone achievs
+                    profileDB.getUserProfileData(memberInParty.id, function(profileErr, profileRes){
+                        if (profileErr){
+                            console.log("FAILURE SOMETHING WENT WRONG")
+                        }else{
+                            var achievData = { achievements: profileRes.data.achievements, keystoneNumDefeated: keystonenumber }
+                            achiev.checkForAchievements(event.leader.id, achievData, message)
+                        }
+                    })
                 })
                 if ( keystonenumber > 0 && (challengenumber + 1) >= event.challenge.challenge ){
                     usersFirstComplete.push(memberInParty.id)
@@ -3117,7 +3136,6 @@ function eventEndedEmbedBuilder(message, event, partySuccess){
                         achiev.checkForAchievements(event.leader.id, achievData, message)
                     }
                 })
-                
             }
             
             profileDB.updateQuestlineStage(event.leader.id, event.special.questData.questname, event.special.questData.stage + 1, function(error, updateRes){
@@ -3127,6 +3145,22 @@ function eventEndedEmbedBuilder(message, event, partySuccess){
                     // console.log("advanced special rpg ");
                 }
             })
+        }else if (event.special.reward.item){
+            var extraItem = event.special.reward.item
+            // add the artifact item
+            var rewardsArtifact = addArtifactItem(allItems, extraItem)
+            // event.leader.id
+            updateUserRewards(message, event.leader, rewardsArtifact);
+            regularRewardEmbedBuilder(message, rewardsArtifact.items, event.leader)
+
+            // profileDB.getUserProfileData(event.leader.id, function(profileErr, profileRes){
+            //     if (profileErr){
+            //         // console.log("FAILURE SOMETHING WENT WRONG")
+            //     }else{
+            //         var achievData = { achievements: profileRes.data.achievements, rpgDefeated: event.special.questName }
+            //         achiev.checkForAchievements(event.leader.id, achievData, message)
+            //     }
+            // })
         }
     }
 
@@ -3504,6 +3538,29 @@ function addArtifactItem( allItems, extraItem){
     }
     rewardsForPlayer.items = itemsObtainedArray
     return rewardsForPlayer
+}
+
+function regularRewardEmbedBuilder(message, items, user){
+    // create a quoted message of all the items
+    var itemsMessage = ""
+    for (var item in items){
+        var itemAmount = items[item].itemAmount ? items[item].itemAmount : 1;
+        itemsMessage = itemsMessage + "**" +itemAmount + "**x " + "[**" + items[item].itemraritycategory +"**] " + "**"  + items[item].itemname + "** - " +
+        items[item].itemslot + ", " + items[item].itemstatistics + " \n";
+    }
+
+    const embed = new Discord.RichEmbed()
+    .addField("[" + user.username +"] found: ", itemsMessage, true)
+    .setThumbnail(user.avatarURL)
+    .setColor(0xbfa5ff)
+    message.channel.send({embed})
+    .then(function(res){
+        console.log(res)
+    })
+    .catch(function(err){
+        // console.log(err)
+        message.channel.send("Unable to display artifact reward, Enable embeds in this channel for future artifact reward announcements!")
+    })
 }
 
 function artifactEmbedBuilder(message, artifactItems, user){
@@ -9801,6 +9858,20 @@ function processAuras(event){
                         userToBuff.statBuffs[statToAffect] = userToBuff.statBuffs[statToAffect] + (Math.floor((buffToProcess.multiplier * statToBuff) - statToBuff));
                     }else if (buffToProcess.additive){
                         userToBuff.statBuffs[statToAffect] = userToBuff.statBuffs[statToAffect] + (Math.floor(buffToProcess.additive));
+                    }
+                }
+            }
+            var globalStatToAffectArray = aurasInGroup[aura].affectsGlobal;
+            for (var stat in globalStatToAffectArray){
+                var statToAffect = globalStatToAffectArray[stat]
+                var statToBuff = userToBuff.globalStatuses[statToAffect];
+                // if user is not dead, buff the user with the stat
+                if (!checkIfDeadByObject(userToBuff)){
+                    var buffToProcess = aurasInGroup[aura]
+                    if (buffToProcess.multiplier){
+                        userToBuff.globalStatuses[statToAffect] = userToBuff.globalStatuses[statToAffect] + (Math.floor((buffToProcess.multiplier * statToBuff) - statToBuff));
+                    }else if (buffToProcess.additive){
+                        userToBuff.globalStatuses[statToAffect] = userToBuff.globalStatuses[statToAffect] + (Math.floor(buffToProcess.additive));
                     }
                 }
             }

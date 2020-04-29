@@ -4,161 +4,90 @@ const Discord = require("discord.js");
 
 var achievementsData = {
     // NEW
+    /// check harvestcount pass harvest count param
     "Farmer": {
-        emoji : ":boy::skin-tone-2:",
+        emoji : ":man_farmer:",
         score: 10,
         description: "Purchase a Greenhouse and harvest 20 times"
     },
-    "Jockey": {
-        emoji : ":boy::skin-tone-2:",
-        score: 10,
-        description: "Purchase a Stable and fetch 100 times"
-    },
-    "Blacksmith": {
-        emoji : ":boy::skin-tone-2:",
-        score: 10,
-        description: "Purchase a Temple and learn a recipe"
-    },
-    "Wrecker": {
-        emoji : ":boy::skin-tone-2:",
-        score: 10,
-        description: "Purchase a Hacksaw and disassemble 15 ancient items"
-    },
+    /// when reaching rep pass rep reached as data param
     "Loyalty Before Royalty": {
-        emoji : ":boy::skin-tone-2:",
+        emoji : ":place_of_worship:",
         score: 10,
-        description: "Reach sanctified reputation with Bender"
+        description: "Reach Worshipped reputation with Bender"
     },
-    "Better luck next time": {
-        emoji : ":boy::skin-tone-2:",
+    // rpg end pass challenge and keystone as data param
+    "Keystone 10": {
+        emoji : ":key:",
         score: 10,
-        description: "Create an armament that provides only negative rpg stats"
+        description: "Defeat keystone 10 of an rpg challenge"
     },
-    "Keystone 5": {
-        emoji : ":boy::skin-tone-2:",
-        score: 10,
-        description: "Defeat keystone 5 of an rpg challenge"
-    },
+    // baking wedding cake pass bake as data param
     "Wedding Season": {
-        emoji : ":boy::skin-tone-2:",
+        emoji : ":bride_with_veil:",
         score: 10,
         description: "Bake a wedding cake"
     },
+    // upgrade building pass building and level as data param
     "Carpenter": {
-        emoji : ":boy::skin-tone-2:",
+        emoji : ":construction_worker:",
         score: 10,
         description: "Upgrade your stable to level 10"
     },
+    // upgrade building pass building and level as data param
     "Blue Collar": {
-        emoji : ":boy::skin-tone-2:",
+        emoji : ":woman_factory_worker:",
         score: 10,
         description: "Upgrade your greenhouse to level 10"
     },
+    // upgrade building pass building and level as data param
     "Worshiper": {
-        emoji : ":boy::skin-tone-2:",
+        emoji : ":hindu_temple:",
         score: 10,
         description: "Upgrade your temple to level 10"
     },
-    "Liutenant": {
-        emoji : ":boy::skin-tone-2:",
-        score: 10,
-        description: "Earn the liutenant title"
-    },
-    "Liutenant2": {
-        emoji : ":boy::skin-tone-2:",
-        score: 10,
-        description: "top 1% Legacy"
-    },
-    "Liutenant3": {
-        emoji : ":boy::skin-tone-2:",
-        score: 10,
-        description: "top 10% Legacy"
-    },
+    // when fruits end pass fruitcount as data param
     "Fruitcake": {
-        emoji : ":boy::skin-tone-2:",
+        emoji : ":grapes:",
         score: 10,
         description: "Win 1000 Fruits games"
     },
-    "Zone1": {
-        emoji : ":boy::skin-tone-2:",
+    // s1topvotes = true
+    "S1 Top Votes": {
+        emoji : ":ballot_box:",
         score: 10,
-        description: "Complete Zone 1 of RPG"
+        description: "Become the highest voter for Bender Bot in season 1"
     },
-    "Zone2": {
-        emoji : ":boy::skin-tone-2:",
+    // s1top1rpg = true
+    "S1 Top 1% RPG" : {
+        emoji : ":military_medal:",
         score: 10,
-        description: "Complete Zone 2 of RPG"
+        description: "Achieve the top 1% rpg points during bender season 1"
     },
-    "Zone3": {
-        emoji : ":boy::skin-tone-2:",
+    // s1top1xp = true
+    "S1 Top 1% XP" : {
+        emoji : ":medal:",
         score: 10,
-        description: "Complete Zone 3 of RPG"
+        description: "Achieve the top 1% experience points during bender season 1"
     },
-    "Zone4": {
-        emoji : ":boy::skin-tone-2:",
+    // change this to be a zone
+    // "Zone1": {
+    //     emoji : ":boy::skin-tone-2:",
+    //     score: 10,
+    //     description: "Complete Zone 1 of RPG"
+    // },
+    // when crafting from temple pass crafted item as data param, check item.itemlevelrequirement
+    "The Blacksmith": {
+        emoji : ":hammer:",
         score: 10,
-        description: "Complete Zone 4 of RPG"
+        description: "Craft a level 40 requirement item"
     },
-    "Level 35 + item": {
-        emoji : ":boy::skin-tone-2:",
-        score: 10,
-        description: "Craft a level 35 + requirement item"
-    },
-    "Beluga Whale": {
-        emoji : ":boy::skin-tone-2:",
-        score: 10,
-        description: "Catch a beluga whale while fishing"
-    },
-    "Challenge 6": {
-        emoji : ":boy::skin-tone-2:",
-        score: 10,
-        description: "Defeat A182-Type2 Without killing any energy crystals"
-    },
-    "Challenge 5": {
-        emoji : ":boy::skin-tone-2:",
-        score: 10,
-        description: "Defeat Challenge 5 by killing Valet Last"
-    },
-    "Challenge 10": {
-        emoji : ":boy::skin-tone-2:",
-        score: 10,
-        description: "Defeat Challenge 10 without letting the Anomaly absorb any fiends"
-    },
-    "Challenge 11": {
-        emoji : ":boy::skin-tone-2:",
-        score: 10,
-        description: "Defeat Challenge 11 without killing any of the four pillar holders"
-    },
-    "Challenge 4": {
-        emoji : ":boy::skin-tone-2:",
-        score: 10,
-        description: "Defeat Challenge 4 by killing the Dictator and Mob Lord within 2 turns of each other"
-    },
-    "Challenge 1": {
-        emoji : ":boy::skin-tone-2:",
-        score: 10,
-        description: "Defeat Challenge 1 and kill the Escaped Robot first"
-    },
-    "Challenge 2": {
-        emoji : ":boy::skin-tone-2:",
-        score: 10,
-        description: "Defeat Challenge 2 and kill the Desperado first"
-    },
-    "Challenge 3": {
-        emoji : ":boy::skin-tone-2:",
-        score: 10,
-        description: "Defeat Challenge 3 and kill the Roman Soldier first"
-    },
-    "Challenge 7": {
-        emoji : ":boy::skin-tone-2:",
-        score: 10,
-        description: "Defeat Challenge 7 ..."
-    },
-    "Challenge 8": {
-        emoji : ":boy::skin-tone-2:",
-        score: 10,
-        description: "Defeat Challenge 8 ..."
-    },
+    // "Beluga Whale": {
+    //     emoji : ":boy::skin-tone-2:",
+    //     score: 10,
+    //     description: "Catch a beluga whale while fishing"
+    // },
+    
     ///
     "Legacy Top 1% RPG" : {
         emoji : ":first_place:",
@@ -263,7 +192,7 @@ var achievementsData = {
     "The Exalted" : {
         emoji: ":crown:",
         score: 20,
-        description: "Become Glorified by Bender"
+        description: "Become Sanctified by Bender"
     },
     "Devoted" : {
         emoji: ":scales:",
@@ -323,6 +252,8 @@ module.exports.checkForAchievements = function(discordUserId, data, message, cal
     // check for achievements by calling get on user statistics, or checking data
     // check for all the possible achievements
     if (!calledByError){
+        // TODO: get the user statistics ALONG with their profile
+        // TABLE JOIN
         profileDB.checkStatistics(discordUserId, function(err, statistics){
             if (err){
                 // cant find the user's statistics create the user's statistics and check for achievements
@@ -333,66 +264,55 @@ module.exports.checkForAchievements = function(discordUserId, data, message, cal
                         exports.checkForAchievements(discordUserId, data, message, true, mentionedUser);
                     }
                 })
-            }
-            else{
+            }else{
                 var achievementEarner = message.author;
-                // console.log(statistics);
                 // check for all possible achievments here (achievement logic goes here)
                 // console.log(data.achievements);
-                // statistics table achievements
+                if(statistics.data.harvestcount && 
+                statistics.data.harvestcount >= 30 && 
+                (data.achievements === null || data.achievements.indexOf("Farmer") == -1)){
+                    profileDB.updateAchievements(discordUserId, "{Farmer}", function(err, r){
+                        achievementEmbedBuilder(message, "Farmer", achievementEarner);
+                    })
+                }
+
+                if(statistics.data.fruitswon && 
+                    statistics.data.fruitswon >= 1000 && 
+                    (data.achievements === null || data.achievements.indexOf("Fruitcake") == -1)){
+                        profileDB.updateAchievements(discordUserId, "{Fruitcake}", function(err, r){
+                            achievementEmbedBuilder(message, "Fruitcake", achievementEarner);
+                        })
+                    }
+
                 if(statistics.data.thankcount && 
                 statistics.data.thankcount >= 25 && 
                 (data.achievements === null || data.achievements.indexOf("Nice guy") == -1)){
-
                     profileDB.updateAchievements(discordUserId, "{Nice guy}", function(err, r){
-                        if (err){
-                            // console.log(err);
-                        }
-                        {
-                            achievementEmbedBuilder(message, "Nice guy", achievementEarner);
-                        }
+                        achievementEmbedBuilder(message, "Nice guy", achievementEarner);
                     })
                 }
 
                 if(statistics.data.sorrycount && 
                 statistics.data.sorrycount >= 12 && 
                 (data.achievements === null || data.achievements.indexOf("Apologetic geek") == -1)){
-
                     profileDB.updateAchievements(discordUserId, "{Apologetic geek}", function(err, r){
-                        if (err){
-                            // console.log(err);
-                        }
-                        {
-                            achievementEmbedBuilder(message, "Apologetic geek", achievementEarner);
-                        }
+                        achievementEmbedBuilder(message, "Apologetic geek", achievementEarner);
                     })
                 }
 
                 if(statistics.data.welcomecount && 
                 statistics.data.welcomecount >= 5 && 
                 (data.achievements === null || data.achievements.indexOf("Host") == -1)){
-
                     profileDB.updateAchievements(discordUserId, "{Host}", function(err, r){
-                        if (err){
-                            // console.log(err);
-                        }
-                        {
-                            achievementEmbedBuilder(message, "Host", achievementEarner);
-                        }
+                        achievementEmbedBuilder(message, "Host", achievementEarner);
                     })
                 }
 
                 if(statistics.data.scavengecount && 
                 statistics.data.scavengecount >= 20 && 
                 (data.achievements === null || data.achievements.indexOf("Adventure girl") == -1)){
-
                     profileDB.updateAchievements(discordUserId, "{Adventure girl}", function(err, r){
-                        if (err){
-                            // console.log(err);
-                        }
-                        {
-                            achievementEmbedBuilder(message, "Adventure girl", achievementEarner);
-                        }
+                        achievementEmbedBuilder(message, "Adventure girl", achievementEarner);
                     })
                 }
 
@@ -401,56 +321,32 @@ module.exports.checkForAchievements = function(discordUserId, data, message, cal
                 (data.achievements === null || data.achievements.indexOf("Stripper") == -1)){
                     // the achievement earner is the MENTIONED USER
                     profileDB.updateAchievements(mentionedUser.id, "{Stripper}", function(err, r){
-                        if (err){
-                            // console.log(err);
-                        }
-                        {
-                            
-                            achievementEarner = mentionedUser
-                            achievementEmbedBuilder(message, "Stripper", achievementEarner);
-                        }
+                        achievementEarner = mentionedUser
+                        achievementEmbedBuilder(message, "Stripper", achievementEarner);
                     })
                 }
 
                 if(statistics.data.throwntocount && 
                 statistics.data.throwntocount >= 100 && 
                 (data.achievements === null || data.achievements.indexOf("Make it rain") == -1)){
-
                     profileDB.updateAchievements(discordUserId, "{Make it rain}", function(err, r){
-                        if (err){
-                            // console.log(err);
-                        }
-                        {
-                            achievementEmbedBuilder(message, "Make it rain", achievementEarner);
-                        }
+                        achievementEmbedBuilder(message, "Make it rain", achievementEarner);
                     })
                 }
 
                 if(statistics.data.rocksthrown && 
                 statistics.data.rocksthrown >= 2000 && 
                 (data.achievements === null || data.achievements.indexOf("Executioner") == -1)){
-
                     profileDB.updateAchievements(discordUserId, "{Executioner}", function(err, r){
-                        if (err){
-                            // console.log(err);
-                        }
-                        {
-                            achievementEmbedBuilder(message, "Executioner", achievementEarner);
-                        }
+                        achievementEmbedBuilder(message, "Executioner", achievementEarner);
                     })
                 }
-                // data achievements
+
                 if(data.givecount && 
                 data.givecount >= 1500 && 
                 (data.achievements === null || data.achievements.indexOf("Get a room") == -1)){
-
                     profileDB.updateAchievements(discordUserId, "{Get a room}", function(err, r){
-                        if (err){
-                            // console.log(err);
-                        }
-                        {
-                            achievementEmbedBuilder(message, "Get a room", achievementEarner);
-                        }
+                        achievementEmbedBuilder(message, "Get a room", achievementEarner);
                     })
                 }
                 
@@ -458,95 +354,62 @@ module.exports.checkForAchievements = function(discordUserId, data, message, cal
                 data.tacostands >= 15 &&
                 (data.achievements === null || data.achievements.indexOf("Fidel cashflow") == -1 )){
                     profileDB.updateAchievements(discordUserId, "{Fidel cashflow}", function(err, r){
-                        if (err){
-                            // console.log(err);
-                        }
-                        {
-                            achievementEmbedBuilder(message, "Fidel cashflow", achievementEarner);
-                        }
+                        achievementEmbedBuilder(message, "Fidel cashflow", achievementEarner);
                     })
                 }
 
                 if(data.tacos && 
                 data.tacos >= 1000000 && 
                 (data.achievements === null || data.achievements.indexOf("Hoarder") == -1)){
-
                     profileDB.updateAchievements(discordUserId, "{Hoarder}", function(err, r){
-                        if (err){
-                            // console.log(err);
-                        }
-                        {
-                            achievementEmbedBuilder(message, "Hoarder", achievementEarner);
-                        }
+                        achievementEmbedBuilder(message, "Hoarder", achievementEarner);
                     })
                 }
 
                 if(data.cookcount && 
                 data.cookcount >= 70 && 
                 (data.achievements === null || data.achievements.indexOf("Hand work") == -1)){
-
                     profileDB.updateAchievements(discordUserId, "{Hand work}", function(err, r){
-                        if (err){
-                            // console.log(err);
-                        }
-                        {
-                            achievementEmbedBuilder(message, "Hand work", achievementEarner);
-                        }
+                        achievementEmbedBuilder(message, "Hand work", achievementEarner);
                     })
                 }
 
                 if(data.rarity && 
                 (data.rarity == "ancient" || data.rarity == "artifact") && 
                 (data.achievements === null || data.achievements.indexOf("Luck is on your side") == -1)){
-
                     profileDB.updateAchievements(discordUserId, "{Luck is on your side}", function(err, r){
-                        if (err){
-                            // console.log(err);
-                        }
-                        {
-                            achievementEmbedBuilder(message, "Luck is on your side", achievementEarner);
-                        }
+                        achievementEmbedBuilder(message, "Luck is on your side", achievementEarner);
                     })
                 }
                 if(data.attendees && 
                     (data.attendees >= 50) && 
                     (data.achievements === null || data.achievements.indexOf("Miss Popularity") == -1)){
-    
                         profileDB.updateAchievements(discordUserId, "{Miss Popularity}", function(err, r){
-                            if (err){
-                                // console.log(err);
-                            }
-                            {
-                                achievementEmbedBuilder(message, "Miss Popularity", achievementEarner);
-                            }
+                            achievementEmbedBuilder(message, "Miss Popularity", achievementEarner);
                         })
                     }
 
                 if(data.maxextratacos && 
                 data.maxextratacos >= 300 && 
                 (data.achievements === null || data.achievements.indexOf("Harvester") == -1)){
-
                     profileDB.updateAchievements(discordUserId, "{Harvester}", function(err, r){
-                        if (err){
-                            // console.log(err);
-                        }
-                        {
-                            achievementEmbedBuilder(message, "Harvester", achievementEarner);
-                        }
+                        achievementEmbedBuilder(message, "Harvester", achievementEarner);
                     })
                 }
 
                 if(data.reputation && 
-                data.reputation.toLowerCase() == "glorified" && 
-                (data.achievements === null || data.achievements.indexOf("Harvester") == -1)){
+                data.reputation.toLowerCase() == "sanctified" && 
+                (data.achievements === null || data.achievements.indexOf("The Exalted") == -1)){
+                    profileDB.updateAchievements(discordUserId, "{The Exalted}", function(err, r){
+                        achievementEmbedBuilder(message, "The Exalted", achievementEarner);
+                    })
+                }
 
-                    profileDB.updateAchievements(discordUserId, "{Harvester}", function(err, r){
-                        if (err){
-                            // console.log(err);
-                        }
-                        {
-                            achievementEmbedBuilder(message, "Harvester", achievementEarner);
-                        }
+                if(data.reputation && 
+                data.reputation.toLowerCase() == "worshipped" && 
+                (data.achievements === null || data.achievements.indexOf("Loyalty Before Royalty") == -1)){
+                    profileDB.updateAchievements(discordUserId, "{Loyalty Before Royalty}", function(err, r){
+                        achievementEmbedBuilder(message, "Loyalty Before Royalty", achievementEarner);
                     })
                 }
 
@@ -554,38 +417,73 @@ module.exports.checkForAchievements = function(discordUserId, data, message, cal
                 data.levelObtained >= 30 && 
                 (data.achievements === null || data.achievements.indexOf("Devoted") == -1)){
                     profileDB.updateAchievements(discordUserId, "{Devoted}", function(err, r){
-                        if (err){
-                            // console.log(err);
-                        }
-                        {
-                            achievementEmbedBuilder(message, "Devoted", achievementEarner);
-                        }
+                        achievementEmbedBuilder(message, "Devoted", achievementEarner);
                     })
                 }
 
-                if(data.levelObtained && 
-                    data.levelObtained >= 40 && 
-                    (data.achievements === null || data.achievements.indexOf("The Machine") == -1)){
-                        profileDB.updateAchievements(discordUserId, "{The Machine}", function(err, r){
-                            if (err){
-                                // console.log(err);
-                            }
-                            {
-                                achievementEmbedBuilder(message, "The Machine", achievementEarner);
-                            }
+                if(data.keystoneNumDefeated && 
+                data.keystoneNumDefeated >= 10 && 
+                (data.achievements === null || data.achievements.indexOf("Keystone 10") == -1)){
+                    profileDB.updateAchievements(discordUserId, "{Keystone 10}", function(err, r){
+                        achievementEmbedBuilder(message, "Keystone 10", achievementEarner);
+                    })
+                }
+
+                if(data.craftItemLevel && 
+                data.craftItemLevel >= 40 && 
+                (data.achievements === null || data.achievements.indexOf("The Blacksmith") == -1)){
+                    profileDB.updateAchievements(discordUserId, "{The Blacksmith}", function(err, r){
+                        achievementEmbedBuilder(message, "The Blacksmith", achievementEarner);
+                    })
+                }
+
+                if(data.baked && 
+                data.baked == "Wedding Cake	" && 
+                (data.achievements === null || data.achievements.indexOf("Wedding Season") == -1)){
+                    profileDB.updateAchievements(discordUserId, "{Wedding Season}", function(err, r){
+                        achievementEmbedBuilder(message, "Wedding Season", achievementEarner);
+                    })
+                }
+
+                if (data.buildingLevel >= 10){
+                    if(data.building && 
+                    data.building == "stable" && 
+                    (data.achievements === null || data.achievements.indexOf("Carpenter") == -1)){
+                        profileDB.updateAchievements(discordUserId, "{Carpenter}", function(err, r){
+                            achievementEmbedBuilder(message, "Carpenter", achievementEarner);
                         })
                     }
+    
+                    if(data.building && 
+                    data.building == "greenhouse" && 
+                    (data.achievements === null || data.achievements.indexOf("Blue Collar") == -1)){
+                        profileDB.updateAchievements(discordUserId, "{Blue Collar}", function(err, r){
+                            achievementEmbedBuilder(message, "Blue Collar", achievementEarner);
+                        })
+                    }
+    
+                    if(data.building && 
+                    data.building == "temple" && 
+                    (data.achievements === null || data.achievements.indexOf("Worshiper") == -1)){
+                        profileDB.updateAchievements(discordUserId, "{Worshiper}", function(err, r){
+                            achievementEmbedBuilder(message, "Worshiper", achievementEarner);
+                        })
+                    }
+                }
+
+                if(data.levelObtained && 
+                data.levelObtained >= 40 && 
+                (data.achievements === null || data.achievements.indexOf("The Machine") == -1)){
+                    profileDB.updateAchievements(discordUserId, "{The Machine}", function(err, r){
+                        achievementEmbedBuilder(message, "The Machine", achievementEarner);
+                    })
+                }
 
                 if(data.itemraritycombined && 
                 data.itemraritycombined == "artifact" && 
                 (data.achievements === null || data.achievements.indexOf("Archeologist") == -1)){
                     profileDB.updateAchievements(discordUserId, "{Archeologist}", function(err, r){
-                        if (err){
-                            // console.log(err);
-                        }
-                        {
-                            achievementEmbedBuilder(message, "Archeologist", achievementEarner);
-                        }
+                        achievementEmbedBuilder(message, "Archeologist", achievementEarner);
                     })
                 }
 
@@ -593,12 +491,7 @@ module.exports.checkForAchievements = function(discordUserId, data, message, cal
                 data.rpgDefeated == "evilExes" && 
                 (data.achievements === null || data.achievements.indexOf("Sloppy Eigths") == -1)){
                     profileDB.updateAchievements(discordUserId, "{Sloppy Eigths}", function(err, r){
-                        if (err){
-                            // console.log(err); :gift_heart: 
-                        }
-                        {
-                            achievementEmbedBuilder(message, "Sloppy Eigths", achievementEarner);
-                        }
+                        achievementEmbedBuilder(message, "Sloppy Eigths", achievementEarner);
                     })
                 }
 
@@ -606,115 +499,85 @@ module.exports.checkForAchievements = function(discordUserId, data, message, cal
                     data.rpgDefeated == "andromalius" && 
                     (data.achievements === null || data.achievements.indexOf("Exorcist") == -1)){
                         profileDB.updateAchievements(discordUserId, "{Exorcist}", function(err, r){
-                            if (err){
-                                // console.log(err); :gift_heart: 
-                            }
-                            {
-                                achievementEmbedBuilder(message, "Exorcist", achievementEarner);
-                            }
+                            achievementEmbedBuilder(message, "Exorcist", achievementEarner);
                         })
                     }
                 if(data.rpgDefeated && 
                     data.rpgDefeated == "vampireCouncil" && 
                     (data.achievements === null || data.achievements.indexOf("Vampire Slayer") == -1)){
                         profileDB.updateAchievements(discordUserId, "{Vampire Slayer}", function(err, r){
-                            if (err){
-                                // console.log(err); :gift_heart: 
-                            }
-                            {
-                                achievementEmbedBuilder(message, "Vampire Slayer", achievementEarner);
-                            }
+                            achievementEmbedBuilder(message, "Vampire Slayer", achievementEarner);
                         })
                     }
                 if(data.rpgDefeated && 
-                    data.rpgDefeated == "corruptedOvermind" && 
-                    (data.achievements === null || data.achievements.indexOf("Closing Your Loop") == -1)){
-                        profileDB.updateAchievements(discordUserId, "{Closing Your Loop}", function(err, r){
-                            if (err){
-                                // console.log(err); :gift_heart: 
-                            }
-                            {
-                                achievementEmbedBuilder(message, "Closing Your Loop", achievementEarner);
-                            }
-                        })
-                    }
+                data.rpgDefeated == "corruptedOvermind" && 
+                (data.achievements === null || data.achievements.indexOf("Closing Your Loop") == -1)){
+                    profileDB.updateAchievements(discordUserId, "{Closing Your Loop}", function(err, r){
+                        achievementEmbedBuilder(message, "Closing Your Loop", achievementEarner);
+                    })
+                }
+
                 if(data.slotsTacosBet && 
                 data.slotsTacosBet >= 50000 && 
                 (data.achievements === null || data.achievements.indexOf("Gambler") == -1)){
                     profileDB.updateAchievements(discordUserId, "{Gambler}", function(err, r){
-                        if (err){
-                            // console.log(err);
-                        }
-                        {
-                            achievementEmbedBuilder(message, "Gambler", achievementEarner);
-                        }
+                        achievementEmbedBuilder(message, "Gambler", achievementEarner);
                     })
                 }
                 /// rewards for legacy
                 if(data.legacytop1rpgpoints == true &&
-                    (data.achievements === null || data.achievements.indexOf("Legacy Top 1% RPG") == -1)){
-                        profileDB.updateAchievements(discordUserId, "{Legacy Top 1% RPG}", function(err, r){
-                            if (err){
-                                // console.log(err); :gift_heart: 
-                            }
-                            {
-                                achievementEmbedBuilder(message, "Legacy Top 1% RPG", achievementEarner);
-                            }
-                        })
-                    }
+                (data.achievements === null || data.achievements.indexOf("Legacy Top 1% RPG") == -1)){
+                    profileDB.updateAchievements(discordUserId, "{Legacy Top 1% RPG}", function(err, r){
+                        achievementEmbedBuilder(message, "Legacy Top 1% RPG", achievementEarner);
+                    })
+                }
                 if(data.legacytop1experience == true &&
                 (data.achievements === null || data.achievements.indexOf("Legacy Top 1% XP") == -1)){
                     profileDB.updateAchievements(discordUserId, "{Legacy Top 1% XP}", function(err, r){
-                        if (err){
-                            // console.log(err); :gift_heart: 
-                        }
-                        {
-                            achievementEmbedBuilder(message, "Legacy Top 1% XP", achievementEarner);
-                        }
+                        achievementEmbedBuilder(message, "Legacy Top 1% XP", achievementEarner);
                     })
                 }
                 if(data.legacytop1challenge == true &&
                 (data.achievements === null || data.achievements.indexOf("Legacy Top 1% Challenge") == -1)){
                     profileDB.updateAchievements(discordUserId, "{Legacy Top 1% Challenge}", function(err, r){
-                        if (err){
-                            // console.log(err); :gift_heart: 
-                        }
-                        {
-                            achievementEmbedBuilder(message, "Legacy Top 1% Challenge", achievementEarner);
-                        }
+                        achievementEmbedBuilder(message, "Legacy Top 1% Challenge", achievementEarner);
                     })
                 }
                 if(data.legacytop1tacostands == true &&
                 (data.achievements === null || data.achievements.indexOf("Legacy Top Taco Stands") == -1)){
                     profileDB.updateAchievements(discordUserId, "{Legacy Top Taco Stands}", function(err, r){
-                        if (err){
-                            // console.log(err); :gift_heart: 
-                        }
-                        {
-                            achievementEmbedBuilder(message, "Legacy Top Taco Stands", achievementEarner);
-                        }
+                        achievementEmbedBuilder(message, "Legacy Top Taco Stands", achievementEarner);
                     })
                 }
                 if(data.legacytop10rpgpoints == true &&
                 (data.achievements === null || data.achievements.indexOf("Legacy Top 10% RPG") == -1)){
                     profileDB.updateAchievements(discordUserId, "{Legacy Top 10% RPG}", function(err, r){
-                        if (err){
-                            // console.log(err); :gift_heart: 
-                        }
-                        {
-                            achievementEmbedBuilder(message, "Legacy Top 10% RPG", achievementEarner);
-                        }
+                        achievementEmbedBuilder(message, "Legacy Top 10% RPG", achievementEarner);
                     })
                 }
                 if(data.legacytop10experience == true &&
                 (data.achievements === null || data.achievements.indexOf("Legacy Top 10% XP") == -1)){
                     profileDB.updateAchievements(discordUserId, "{Legacy Top 10% XP}", function(err, r){
-                        if (err){
-                            // console.log(err); :gift_heart: 
-                        }
-                        {
-                            achievementEmbedBuilder(message, "Legacy Top 10% XP", achievementEarner);
-                        }
+                        achievementEmbedBuilder(message, "Legacy Top 10% XP", achievementEarner);
+                    })
+                }
+                
+                if(data.s1topvotes == true &&
+                (data.achievements === null || data.achievements.indexOf("S1 Top Votes") == -1)){
+                    profileDB.updateAchievements(discordUserId, "{S1 Top Votes}", function(err, r){
+                        achievementEmbedBuilder(message, "S1 Top Votes", achievementEarner);
+                    })
+                }
+                if(data.s1top1rpg == true &&
+                (data.achievements === null || data.achievements.indexOf("S1 Top 1% RPG") == -1)){
+                    profileDB.updateAchievements(discordUserId, "{S1 Top 1% RPG}", function(err, r){
+                        achievementEmbedBuilder(message, "S1 Top 1% RPG", achievementEarner);
+                    })
+                }
+                if(data.s1top1xp == true &&
+                (data.achievements === null || data.achievements.indexOf("S1 Top 1% XP") == -1)){
+                    profileDB.updateAchievements(discordUserId, "{S1 Top 1% XP}", function(err, r){
+                        achievementEmbedBuilder(message, "S1 Top 1% XP", achievementEarner);
                     })
                 }
             }

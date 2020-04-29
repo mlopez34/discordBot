@@ -56,6 +56,10 @@ var PREPARE_COOLDOWN_HOURS = 48;
 var HARVEST_COOLDOWN_HOURS = 4;
 var DAILY_COOLDOWN_HOURS = 12;
 var SCAVENGE_COOLDOWN_HOURS = 1;
+var EXPLORE_COOLDOWN_HOURS = 0;
+var RITUAL_COOLDOWN_HOURS = 12;
+var TIME_TRAVEL_COOLDOWN_HOURS = 3;
+var MARRY_COOLDOWN_HOURS = 72;
 var RAFFLE_ENTRY_COST = 50;
 var RAFFLE_USER_SIZE = 7
 // make recipe be available at lvl 2 reputation
@@ -65,7 +69,8 @@ var ELEMENTIUM_COST = 2775000;
 var FLASK_COST = 500;
 var ARTIFACT_RECIPE_ID = 69;
 var ETHEREUM_ID = 200;
-var ELEMENTIUM_ID = 200;
+var ETHEREAL_CRYSTAL_ID = 302;
+var ELEMENTIUM_ID = 3986;
 var TRANSFORMIUM_ID = 155;
 var TACO_PARTY_TIME_TO_LIVE = 300000
 var SHOP_ITEM_COST = 125
@@ -103,6 +108,10 @@ var commandLock = {
     fetch: {},
     scavenge: {},
     plant: {},
+    ritual: {},
+    timetravel: {},
+    explore: {},
+    marry: {},
     harvest: {}
 }
 
@@ -356,6 +365,33 @@ var PETS_AVAILABLE = {
         rewardType: "top1challenge"
     },
 
+    kangaroo: {
+        speak: ":boxing_glove: :boxing_glove: ",
+        emoji: ":kangaroo:",
+        fetch: 30,
+        cooldown: 9,
+        uniquereward: true,
+        rewardType: "s1top1rpg"
+    },
+
+    sloth: {
+        speak: " MAHHHH ",
+        emoji: ":sloth:",
+        fetch: 50,
+        cooldown: 24,
+        uniquereward: true,
+        rewardType: "s1top1xp"
+    },
+
+    skunk: {
+        speak: " pssssssssss ",
+        emoji: ":skunk: ",
+        fetch: 10,
+        cooldown: 3,
+        uniquereward: true,
+        rewardType: "s1topvotes"
+    },
+
     /// burrito pets
     
     squirtle: {
@@ -381,6 +417,19 @@ var PETS_AVAILABLE = {
         cooldown: 3,
         dailyreward: true,
         rewardType: "dailyclaim"
+    },
+    ///
+    demon: {
+        speak: "GrrrrrAHHHH",
+        emoji: ":japanese_ogre:",
+        repLevel: 999
+    },
+    demon: {
+        speak: "GrrrrrAHHHH",
+        emoji: ":japanese_ogre:",
+        fetch: 10,
+        cooldown: 3,
+        dailyreward: true,
     }
 }
 
@@ -541,119 +590,128 @@ module.exports.collectRewardsCommand = function(message){
     var discordUserId = message.author.id
     profileDB.getUserProfileData(discordUserId, function(error, userData){
         if (error){
-            // console.log(error)
-            //message.channel.send(error)
+            message.channel.send(error)
         }else{
-            // check that the user has the following:
-            // legacytop1rpgpoints
-            // legacytop1experience
-            // legacytop10rpgpoints
-            // legacytop10experience
-            // legacytop1challenge
-            // legacytop1tacostands
-            // give ACHIEVEMENT FOR ALL OF THESE
-            // 
+            
             if (!userData.data.collectedrewards){
                 var achievements = userData.data.achievements
                 var rareItems = [];
                 var itemsObtainedArray = [];
-                for (var item in allItems){
-                    if(allItems[item].itemraritycategory == "rare"
-                    && allItems[item].fromscavenge == true ){
-                        rareItems.push(allItems[item]);
+                var allRewardsItems = exports.getAllItems()
+                var allRewardsItemsById = exports.getItemsMapById()
+                for (var item in allRewardsItems){
+                    if( ( allRewardsItems[item].itemraritycategory == "rare"
+                    || allRewardsItems[item].itemraritycategory == "rare+"
+                    || allRewardsItems[item].itemraritycategory == "rare++"
+                    || allRewardsItems[item].itemraritycategory == "ancient"
+                    || allRewardsItems[item].itemraritycategory == "ancient+") ){
+                        rareItems.push(allRewardsItems[item]);
                     }
                 }
                 
                 var data = {}
                 data.achievements = achievements;
-                if (data.achievements.indexOf("Legacy Top 1% RPG") > -1){
-                    var index = data.achievements.indexOf("Legacy Top 1% RPG")
-                    data.achievements.splice(index, 1);
-                }
-                if (data.achievements.indexOf("Legacy Top 1% XP") > -1){
-                    var index = data.achievements.indexOf("Legacy Top 1% XP")
-                    data.achievements.splice(index, 1);
-                }
-                if (data.achievements.indexOf("Legacy Top 1% Challenge") > -1){
-                    var index = data.achievements.indexOf("Legacy Top 1% Challenge")
-                    data.achievements.splice(index, 1);
-                }
-                if (data.achievements.indexOf("Legacy Top Taco Stands") > -1){
-                    var index = data.achievements.indexOf("Legacy Top Taco Stands")
-                    data.achievements.splice(index, 1);
-                }
-                if (data.achievements.indexOf("Legacy Top 10% RPG") > -1){
-                    var index = data.achievements.indexOf("Legacy Top 10% RPG")
-                    data.achievements.splice(index, 1);
-                }
-                if (data.achievements.indexOf("Legacy Top 10% XP") > -1){
-                    var index = data.achievements.indexOf("Legacy Top 10% XP")
-                    data.achievements.splice(index, 1);
-                }
                 var rewardsString = ""
-                if (userData.data.legacytop1rpgpoints){
+                // s1top10rpg
+                if (userData.data.s1top1rpg){
                     // unique pet - :owl:  DONE
-                    data.legacytop1rpgpoints = true
-                    rewardsString = rewardsString + "Pet available on reputation shop - :owl:\n"
-                }
-                if (userData.data.legacytop1experience){
-                    // unique pet - :lion_face: DONE
-                    data.legacytop1experience = true
-                    rewardsString = rewardsString + "Pet available on reputation shop - :lion_face:\n"
-                }
-                if (userData.data.legacytop10rpgpoints){
+                    data.s1top1rpg = true
+                    rewardsString = rewardsString + "TOP RPG: Pet available on reputation shop - :kangaroo:\n"
                     // give amulet - 
-                    itemsObtainedArray.push(itemsMapById[296]);
+                    itemsObtainedArray.push(allRewardsItemsById[360]);
                     // ancient item - 
-                    itemsObtainedArray.push(itemsMapById[297]);
+                    itemsObtainedArray.push(allRewardsItemsById[3999]);
                     // 15 random rares - DONE
-                    data.legacytop10rpgpoints = true
                     for (var i = 0; i < 15; i++){
                         var itemRoll = Math.floor(Math.random() * rareItems.length);
                         itemsObtainedArray.push(rareItems[itemRoll]);
                     }
                 }
-                if (userData.data.legacytop10experience){
-                    // give amulet - 
-                    itemsObtainedArray.push(itemsMapById[295]);
-                    // ancient item - 
-                    itemsObtainedArray.push(itemsMapById[297]);
+                // s1top10xp
+                if (userData.data.s1top1xp){
+                    data.s1top1xp = true
+                    rewardsString = rewardsString + "TOP XP: Pet available on reputation shop - :sloth:\n"
+                    itemsObtainedArray.push(allRewardsItemsById[197]);
                     // 15 random rares - DONE
-                    data.legacytop10experience = true
                     for (var i = 0; i < 15; i++){
                         var itemRoll = Math.floor(Math.random() * rareItems.length);
                         itemsObtainedArray.push(rareItems[itemRoll]);
                     }
                 }
-                if (userData.data.legacytop1challenge){
-                    // unique pet DIFF KIND - :snowman2: DONE
-                    data.legacytop1challenge = true
-                    rewardsString = rewardsString + "Pet available on reputation shop - :snowman2:\n"
+                // TOP VOTES s1topvotes
+                if (userData.data.s1topvotes){
+                    data.s1topvotes = true
+                    rewardsString = rewardsString + "TOP VOTES: Pet available on reputation shop - :skunk:\n"
+                    itemsObtainedArray.push(allRewardsItemsById[22]);
+                    itemsObtainedArray.push(allRewardsItemsById[22]);
+                    itemsObtainedArray.push(allRewardsItemsById[22]);
+                    itemsObtainedArray.push(allRewardsItemsById[22]);
+                    itemsObtainedArray.push(allRewardsItemsById[22]);
                 }
-                if (userData.data.legacytop1tacostands){
-                    // ancient item - 5 master chef hats DONE
-                    data.legacytop1tacostands = true
-                    itemsObtainedArray.push(itemsMapById[95]);
-                    itemsObtainedArray.push(itemsMapById[95]);
-                    itemsObtainedArray.push(itemsMapById[95]);
-                    itemsObtainedArray.push(itemsMapById[95]);
-                    itemsObtainedArray.push(itemsMapById[95]);
-
-                }
+                // REP achievement
+                let repstatus = userData.data.repstatus
                 achiev.checkForAchievements(discordUserId, data, message);
+                // BUILDING achievements
+                profileDB.getGreenHouseData(discordUserId, function(error, ghData){
+                    let data = {}
+                    data.achievements = ghData.data.achievements
+                    data.building = "greenhouse"
+                    data.buildingLevel = ghData.data.greenhouselevel
+                    achiev.checkForAchievements(discordUserId, data, message);
+                })
+
+                profileDB.getStableData(discordUserId, function(error, stData){
+                    let data = {}
+                    data.achievements = stData.data.achievements
+                    data.building = "stable"
+                    data.buildingLevel = stData.data.stablelevel
+                    achiev.checkForAchievements(discordUserId, data, message);
+                })
+
+                profileDB.getTempleData(discordUserId, function(error, tmData){
+                    let data = {}
+                    data.achievements = tmData.data.achievements
+                    data.building = "temple"
+                    data.buildingLevel = tmData.data.templelevel
+                    achiev.checkForAchievements(discordUserId, data, message);
+                })
+
+                profileDB.getUserRpgProfleData(discordUserId, function(error, rpgData){
+                    let highestKeystone = 0;
+                    let keystoneKeys = ["escapedrobot", "desperado", "romansoldier", "dictator", "cheftrio", "a182type2", "gatekeeper", "archvampire", "corruptedovermind", "anomaly", "aramis", "emperor", "dragon", "machina", "catoblepas"   ]
+                    for (var k in keystoneKeys){
+                        if (rpgData.data[keystoneKeys[k]] && rpgData.data[keystoneKeys[k]] > highestKeystone ){
+                            highestKeystone = rpgData.data[keystoneKeys[k]]
+                        }
+                    }
+                    let data = {}
+                    data.achievements = achievements
+                    data.keystoneNumDefeated = highestKeystone
+                    achiev.checkForAchievements(discordUserId, data, message);
+                })
+                let itemsStrings = []
                 var itemsString = ""
                 if (itemsObtainedArray.length > 0){
                     for (var item in itemsObtainedArray){
-                        itemsString = itemsString + itemsObtainedArray[item].itemname + " \n";
+                        if (itemsString.length <= 950){
+                            itemsString = itemsString + itemsObtainedArray[item].itemname + " \n";
+                        }else{
+                            itemsStrings.push(itemsString)
+                            itemsString = ""
+                            itemsString = itemsString + itemsObtainedArray[item].itemname + " \n";
+                        }
                     }
+                }
+                if (itemsString.length > 0){
+                    itemsStrings.push(itemsString)
                 }
                 if (rewardsString.length > 0 || itemsString.length > 0){
                     profileDB.collectedRewards(discordUserId, function(err, res){
                         if (err){
-                            // console.log(err)
+                            console.log(err)
                         }else{
                             addToUserInventory(discordUserId, itemsObtainedArray);
-                            rewardsEmbedBuilder(message, rewardsString, itemsString)
+                            rewardsEmbedBuilder(message, rewardsString, itemsStrings)
                         }
                     })
                 }
@@ -667,11 +725,14 @@ function rewardsEmbedBuilder(message, rewardsString, itemsString){
     .setTitle(message.author.username )
     .setColor(0x00AE86)
     if (rewardsString.length > 0){
-        embed.addField("Rewards" , rewardsString, true)
+        embed.addField("Rewards" , rewardsString, false)
     }
-    if (itemsString.length > 0){
-        embed.addField("Items" , itemsString, true)
+    for (var i in itemsString){
+        if (itemsString[i].length > 0){
+            embed.addField("Items" , itemsString[i], false)
+        }
     }
+    
     embed.setThumbnail(message.author.avatarURL)
     message.channel.send({embed});
 }
@@ -752,6 +813,10 @@ module.exports.thankCommand = function(message){
                                         if (updateerr){
                                             exports.setCommandLock("thank", discordUserId, false)
                                         }else{
+                                            let marriedToId = thankResponse.data.marriedtoid
+                                            if (marriedToId){
+                                                marryExtraTacos(message, marriedToId, extraTacosFromItems)
+                                            }
                                             // // // console.log(updateResponse);
                                             exports.setCommandLock("thank", discordUserId, false)
                                             ///// for temple recipes
@@ -872,6 +937,12 @@ module.exports.sorryCommand = function(message){
                                             exports.setCommandLock("sorry", discordUserId, false)
                                             message.channel.send("error: " + updateerr)
                                         }else{
+                                            let marriedToId = sorryResponse.data.marriedtoid
+                                            if (marriedToId){
+                                                // calculate the number of tacos gained and multiply by 5%
+                                                marryExtraTacos(message, marriedToId, extraTacosFromItems)
+                                                let tacosForMarry = Math.floor(extraTacosFromItems * .05)
+                                            }
                                             //// // console.log(updateResponse);
                                             exports.setCommandLock("sorry", discordUserId, false)
                                             ///// for temple recipes
@@ -981,6 +1052,7 @@ module.exports.prepareCommand = function (message){
                 }
                 wearStats.getUserWearingStats(message, discordUserId, userWearingData, allItems, function(wearErr, wearRes){
                     if (wearErr){
+                        console.log(wearErr)
                         exports.setCommandLock("prepare", discordUserId, false)
                     }else{
                         var achievements = prepareResponse.data.achievements;
@@ -1012,12 +1084,18 @@ module.exports.prepareCommand = function (message){
                                     }
                                 }
                                 var seedChanceRoll = Math.floor(Math.random() * 1000) + 1;
+                                let cursedTimeCheck = new Date()
+                                cursedTimeCheck = new Date(cursedTimeCheck.setHours(cursedTimeCheck.getHours() - 12 ))
+                                let cursed = (prepareResponse.data.ritualstring == "evilChef") && ( cursedTimeCheck <= prepareResponse.data.lastritualdate ) ? true : false    
+                                
                                 if ( seedChanceRoll > ( 990 - soiledCrops) ){
                                     createCustomParty(message, discordUserId, {
                                         source: "prepare", 
                                         emoji : "🌱",
+                                        cursed: cursed,
+                                        avatar: "https://i.imgur.com/9io0tuI.jpg",
                                         titleString : "Prepare party created by " + message.author.username + "!! " + 'Look for seeds!', 
-                                        descriptionString: ":EZ: \n You will receive it at the end of the party (5 minutes)"
+                                        descriptionString: "You can also react to this party!\nYou will receive it at the end of the party (5 minutes)"
                                     })
                                 }
                                 ///////// CALCULATE THE EXTRA TACOS HERE 
@@ -1030,36 +1108,31 @@ module.exports.prepareCommand = function (message){
                                         // // console.log(err);
                                         // something happened
                                     }else{
-                                        // update protection also
-                                        var protection = prepareResponse.data.protect;
-                                        profileDB.updateUserProtect(discordUserId, 1, protection, function(updateerr, updateResponse) {
-                                            if (updateerr){
-                                                exports.setCommandLock("prepare", discordUserId, false)
-                                                // // console.log(updateerr);
+                                        let marriedToId = prepareResponse.data.marriedtoid
+                                        if (marriedToId){
+                                            marryExtraTacos(message, marriedToId, tacosToPrepare + extraTacosFromItems)
+                                        }
+                                        //// // console.log(updateResponse);
+                                        exports.setCommandLock("prepare", discordUserId, false)
+                                        if (extraTacosFromItems > 0){
+                                            message.channel.send(message.author.username + " You have prepared `" + tacosToPrepare + "` tacos :taco:! `" + soiledToTaco +"` were from soiled crops." + " received `" + extraTacosFromItems + "` extra tacos");
+                                        }else{
+                                            message.channel.send(message.author.username + " You have prepared `" + tacosToPrepare + "` tacos :taco:! `" + soiledToTaco +"` were from soiled crops");
+                                        }
+                                        // check if prepare is toggled
+                                        createTimeOutForCommandAfterUse("prepare", now, secondsToRemove, PREPARE_COOLDOWN_HOURS, discordUserId, prepareResponse.data, message)
+                                        var experienceFromItems = wearStats.calculateExtraExperienceGained(wearRes, "prepare", null)
+                                        experience.gainExperience(message, message.author, (EXPERIENCE_GAINS.prepare + (EXPERIENCE_GAINS.preparePerStand * userTacoStands) + experienceFromItems) , prepareResponse);
+                                        stats.statisticsManage(discordUserId, "maxextratacos", soiledToTaco, function(staterr, statSuccess){
+                                            if (staterr){
+                                                // // console.log(staterr);
                                             }else{
-                                                //// // console.log(updateResponse);
-                                                exports.setCommandLock("prepare", discordUserId, false)
-                                                if (extraTacosFromItems > 0){
-                                                    message.channel.send(message.author.username + " You have prepared `" + tacosToPrepare + "` tacos :taco:! `" + soiledToTaco +"` were from soiled crops. The tacos also come with `1` warranty protection" + " received `" + extraTacosFromItems + "` extra tacos");
-                                                }else{
-                                                    message.channel.send(message.author.username + " You have prepared `" + tacosToPrepare + "` tacos :taco:! `" + soiledToTaco +"` were from soiled crops. The tacos also come with `1` warranty protection");
-                                                }
-                                                // check if prepare is toggled
-                                                createTimeOutForCommandAfterUse("prepare", now, secondsToRemove, PREPARE_COOLDOWN_HOURS, discordUserId, prepareResponse.data, message)
-                                                var experienceFromItems = wearStats.calculateExtraExperienceGained(wearRes, "prepare", null)
-                                                experience.gainExperience(message, message.author, (EXPERIENCE_GAINS.prepare + (EXPERIENCE_GAINS.preparePerStand * userTacoStands) + experienceFromItems) , prepareResponse);
-                                                stats.statisticsManage(discordUserId, "maxextratacos", soiledToTaco, function(staterr, statSuccess){
-                                                    if (staterr){
-                                                        // // console.log(staterr);
-                                                    }else{
-                                                        // // console.log(statSuccess);
-                                                        // check achievements??
-                                                        var data = {}
-                                                        data.achievements = achievements;
-                                                        data.maxextratacos = soiledToTaco;
-                                                        achiev.checkForAchievements(discordUserId, data, message);
-                                                    }
-                                                })
+                                                // // console.log(statSuccess);
+                                                // check achievements??
+                                                var data = {}
+                                                data.achievements = achievements;
+                                                data.maxextratacos = soiledToTaco;
+                                                achiev.checkForAchievements(discordUserId, data, message);
                                             }
                                         })
                                     }
@@ -1509,7 +1582,7 @@ function calculateStreakReset(profileData){
     if (profileData.votestreak){
         // check if the vote has been longer than 2 days since previous vote
         var twoDaysAgo = new Date();
-        twoDaysAgo = new Date(twoDaysAgo.setHours(twoDaysAgo.getHours() - 36));
+        twoDaysAgo = new Date(twoDaysAgo.setHours(twoDaysAgo.getHours() - 60));
         if (twoDaysAgo > profileData.lastdailytime){
             return true
         }else{
@@ -1595,21 +1668,31 @@ module.exports.cookCommand = function(message){
                             }
 
                             var tableChanceRoll = Math.floor(Math.random() * 1000) + 1;
+                            let cursedTimeCheck = new Date()
+                            cursedTimeCheck = new Date(cursedTimeCheck.setHours(cursedTimeCheck.getHours() - 12 ))
+                            let cursed = (cookResponse.data.ritualstring == "evilChef") && ( cursedTimeCheck <= cookResponse.data.lastritualdate ) ? true : false
+
                             if ( tableChanceRoll > ( 990 - woodTossed) ){
                                 createCustomParty(message, discordUserId, {
                                     source: "cook", 
                                     emoji : "🌯",
+                                    cursed: cursed,
+                                    avatar: "https://i.imgur.com/9io0tuI.jpg",
                                     titleString : "Cooking party created by " + message.author.username + "!! " + 'Eat some burritos',
-                                    descriptionString: ":EZ: \n You will receive it at the end of the party (5 minutes)"
+                                    descriptionString: "You can also react to this party!\n You will receive it at the end of the party (5 minutes)"
                                 })
                             }
                             ///////// CALCULATE THE EXTRA TACOS HERE 
                             var extraTacosFromItems = wearStats.calculateExtraTacos(wearRes, "cook"); // 0 or extra
-                            profileDB.updateUserTacosCook(discordUserId, cookRoll + tossedToTaco + extraTacosFromItems + extraTacosFromCasserole , function(err, updateResponse) {
+                            let tacosToUpdate = cookRoll + tossedToTaco + extraTacosFromItems + extraTacosFromCasserole;
+                            profileDB.updateUserTacosCook(discordUserId, tacosToUpdate , function(err, updateResponse) {
                                 if (err){
                                     exports.setCommandLock("cook", discordUserId, false)
                                 }else{
-                                    // TODO: check the user has marriedToId, if they do, add tacos to marriedtoid at 1% per week married - cap 5%
+                                    let marriedToId = cookResponse.data.marriedtoid
+                                    if (marriedToId){
+                                        marryExtraTacos(message, marriedToId, tacosToUpdate)
+                                    }
                                     exports.setCommandLock("cook", discordUserId, false)
                                     if (extraTacosFromItems > 0 && HAS_CASSEROLE){
                                         message.channel.send(message.author.username + " Cooked `" + cookRoll + "` tacos! you now have `" + ( adjustedTacosForUser(discordUserId, cookResponse.data.tacos) + cookRoll) + "` tacos :taco:" + "! received `" + extraTacosFromCasserole + "` extra tacos :taco: from your casserole " + " and received `" + extraTacosFromItems + "` extra tacos from items" );
@@ -1929,8 +2012,11 @@ module.exports.profileCommand = function(message){
                 }
                 if (profileResponse.data.petname){
                     if (profileResponse.data.pet && PETS_AVAILABLE[profileResponse.data.pet]){
+                        let cursedTimeCheck = new Date()
+                        cursedTimeCheck = new Date(cursedTimeCheck.setHours(cursedTimeCheck.getHours() - 12 ))
+                        let cursed = (profileResponse.data.ritualstring == "demonicPuppet") && ( cursedTimeCheck <= profileResponse.data.lastritualdate ) ? true : false
                         profileData.petname = profileResponse.data.petname
-                        profileData.petemoji = PETS_AVAILABLE[profileResponse.data.pet].emoji
+                        profileData.petemoji = cursed ? PETS_AVAILABLE["demon"].emoji : PETS_AVAILABLE[profileResponse.data.pet].emoji
                     }
                 }
                 profileBuilder(message, profileData);
@@ -2666,6 +2752,41 @@ module.exports.buyFlaskCommand = function(message){
     })
 }
 
+module.exports.buyElementiumCommand = function(message){
+    var discordUserId = message.author.id;
+
+    profileDB.getUserProfileData( discordUserId, function(err, buyRecipeResponse) {
+        if(err){
+            message.channel.send("You must `-agree` to create a profile first!")
+        }else{
+            var userReputation = buyRecipeResponse.data.repstatus;
+            var userRepLevel = REPUTATIONS[userReputation.toLowerCase()] ? REPUTATIONS[userReputation.toLowerCase()].level : 1;
+            if (userRepLevel >= REWARDS["Elementium"].repLevel){
+                if (adjustedTacosForUser(discordUserId, buyRecipeResponse.data.tacos) >= ELEMENTIUM_COST){
+                    var elementiumItem = [];
+                    for (var item in allItems){
+                        if (allItems[item].id == ELEMENTIUM_ID){
+                            elementiumItem.push(allItems[item])
+                        }
+                    }
+                    if (elementiumItem && elementiumItem.length > 0){
+                        addToUserInventory(discordUserId, elementiumItem);
+                        profileDB.updateUserTacos(discordUserId, ELEMENTIUM_COST * -1, function(updateLSErr, updateLSres){
+                            if(updateLSErr){
+                                // console.log(updateLSErr);
+                            }else{
+                                message.channel.send(message.author.username + " successfully purchased Elementium :globe_with_meridians:!")
+                            }
+                        })
+                    }
+                }else{
+                    message.channel.send("You cannot afford this item.")
+                }
+            }
+        }
+    })
+}
+
 module.exports.buyEthereumCommand = function(message){
     var discordUserId = message.author.id;
 
@@ -2696,9 +2817,6 @@ module.exports.buyEthereumCommand = function(message){
                 }else{
                     message.channel.send("You cannot afford this item.")
                 }
-            }else{
-                // unavailable
-                message.channel.send("You cannot afford this item.")
             }
         }
     })
@@ -2773,6 +2891,16 @@ function repShopBuilder(message, shopData){
                     if (shopData.top1challenge && PETS_AVAILABLE[key].rewardType == "top1challenge"){
                         petsToPurchase = petsToPurchase + key +  ", "
                     }
+                    /// new pets
+                    if (shopData.s1top1rpg && PETS_AVAILABLE[key].rewardType == "s1top1rpg"){
+                        petsToPurchase = petsToPurchase + key +  ", "
+                    }
+                    if (shopData.s1top1xp && PETS_AVAILABLE[key].rewardType == "s1top1xp"){
+                        petsToPurchase = petsToPurchase + key +  ", "
+                    }
+                    if (shopData.s1topvotes && PETS_AVAILABLE[key].rewardType == "s1topvotes"){
+                        petsToPurchase = petsToPurchase + key +  ", "
+                    }
                 }else if (PETS_AVAILABLE[key].dailyreward){
                     if (shopData.dailyclaimpet && PETS_AVAILABLE[key].rewardType == "dailyclaim"){
                         petsToPurchase = petsToPurchase + key +  ", "
@@ -2787,19 +2915,18 @@ function repShopBuilder(message, shopData){
         .addField('Pet (Liked Reputation or Better Only)', ":dog2:", true)
         .addField('Description', petDescription, true)
         .addField('Cost', petCost, true)
-        .addField('Command', settings.getGuildPrefix(message.channel.guild.id) + "buypet [kind of pet] [pet name]", true)
+        .addField('Command', settings.getGuildPrefix(message.channel.guild.id) + "buypet [kind of pet] [pet name]", false)
     }
     if (shopData.repstatus && (REPUTATIONS[shopData.repstatus.toLowerCase()]) ){
         var userRepLevel = REPUTATIONS[shopData.repstatus.toLowerCase()].level;
         if (userRepLevel >= REWARDS["ArtifactRecipe"].repLevel){
             var recipeDescription = "Recipe required to combine a complete set of artifact items obtained via scavenge, not tradeable."
 
-            embed.addBlankField(true)
-            .addBlankField(false)
+            embed
             .addField('Artifact Recipe (Respected Reputation or Better Only)', ":rosette:", true)
             .addField('Description', recipeDescription, true)
             .addField('Cost', ARTIFACT_RECIPE_COST + " :taco:", true)
-            .addField('Command', settings.getGuildPrefix(message.channel.guild.id) + "buyrecipe", true)
+            .addField('Command', settings.getGuildPrefix(message.channel.guild.id) + "buyrecipe", false)
         }
     }
     if (shopData.repstatus && (REPUTATIONS[shopData.repstatus.toLowerCase()]) ){
@@ -2807,12 +2934,11 @@ function repShopBuilder(message, shopData){
         if (userRepLevel >= REWARDS["Flask"].repLevel){
             var flaskDescription = "Purchase a Flask! used to create potions for random effects, not tradeable."
             var flaskCostForUser = FLASK_COST + (30 * (shopData.userLevel - 20 ))
-            embed.addBlankField(true)
-            .addBlankField(false)
+            embed
             .addField('Flask (Admired Reputation or Better Only)', ":alembic:", true)
             .addField('Description', flaskDescription, true)
             .addField('Cost', flaskCostForUser + " :taco:", true)
-            .addField('Command', settings.getGuildPrefix(message.channel.guild.id) + "buyflask", true)
+            .addField('Command', settings.getGuildPrefix(message.channel.guild.id) + "buyflask", false)
         }
     }
     if (shopData.repstatus && (REPUTATIONS[shopData.repstatus.toLowerCase()]) ){
@@ -2820,12 +2946,11 @@ function repShopBuilder(message, shopData){
         if (userRepLevel >= REWARDS["Ethereum"].repLevel){
             var recipeDescription = "Required to combine refined ancient items into master ancient items"
 
-            embed.addBlankField(true)
-            .addBlankField(false)
+            embed
             .addField('Ethereum (Sanctified Reputation or Better Only)', ":globe_with_meridians:", true)
             .addField('Description', recipeDescription, true)
             .addField('Cost', ETHEREUM_COST + " :taco:", true)
-            .addField('Command', settings.getGuildPrefix(message.channel.guild.id) + "buyethereum", true)
+            .addField('Command', settings.getGuildPrefix(message.channel.guild.id) + "buyethereum", false)
         }
     }
     if (shopData.repstatus && (REPUTATIONS[shopData.repstatus.toLowerCase()]) ){
@@ -2833,16 +2958,14 @@ function repShopBuilder(message, shopData){
         if (userRepLevel >= REWARDS["Elementium"].repLevel){
             var recipeDescription = "Required to combine refined myth items into master myth items"
 
-            embed.addBlankField(true)
-            .addBlankField(false)
+            embed
             .addField('Elementium (Worshipped Reputation or Better Only)', ":crystal_ball:", true)
             .addField('Description', recipeDescription, true)
             .addField('Cost', ELEMENTIUM_COST + " :taco:", true)
-            .addField('Command', settings.getGuildPrefix(message.channel.guild.id) + "buyelementium", true)
+            .addField('Command', settings.getGuildPrefix(message.channel.guild.id) + "buyelementium", false)
         }
     }
-    embed.addBlankField(false)
-    .addField('Your current tacos', shopData.userTacos + " :taco:", false)
+    embed.addField('Your current tacos', shopData.userTacos + " :taco:", false)
     .setTimestamp()
     message.channel.send({embed})
     .then(function(res){
@@ -2858,7 +2981,7 @@ module.exports.repShopCommand = function(message){
     var discordUserId = message.author.id;
     profileDB.getUserProfileData( discordUserId, function(err, shopResponse) {
         if(err){
-            // console.log(err)
+            console.log(err)
             // user doesnt exist tell the user they should get some tacos
             message.channel.send("You must `-agree` to create a profile first!")
         }else{
@@ -2878,6 +3001,11 @@ module.exports.repShopCommand = function(message){
             shopData.top1rpg = shopResponse.data.legacytop1rpgpoints
             shopData.top1xp = shopResponse.data.legacytop1experience
             shopData.top1challenge = shopResponse.data.legacytop1challenge
+            /// new pets
+            shopData.s1top1rpg = shopResponse.data.s1top1rpg
+            shopData.s1top1xp = shopResponse.data.s1top1xp
+            shopData.s1topvotes = shopResponse.data.s1topvotes
+
             shopData.dailyclaimpet = shopResponse.data.burritos >= DAILY_CLAIM_PET_COST
             repShopBuilder(message, shopData);
         }
@@ -3020,14 +3148,19 @@ module.exports.patchnotesCommand = function(message){
           "icon_url": "https://cdn.discordapp.com/avatars/320703328730349578/af68d11f9ecf74bd3f9bf99cebcfe107.jpg"
         },
         "fields": [
-          {
-            "name": "December 9, 2019",
-            "value": "```-Performance improvements for commands (-plant, -harvest, -fetch, -use, -temple)\n-Stable, Greenhouse, and Temple level 12 will now display correctly on user's profile\n-chances to obtain an ancient item, as well as rare items have increased in RPG!, when defeating a keystone challenge you will get 1 piece of loot per keystone number\n-Tacos from RPG items will no longer have a multiplier based on challenge difficulty\n-Amulets view can now be paged! try using -amulets page [pagenum]\n-Crit damage has been introduced! luck from items is translated into crit damage in RPG. base crit damage is +50% and each additional % will increase per 10 points of luck\n-Many internal changes have arrived during this patch for the introduction of new features that are imminent. If you find a bug please report it :)```"
-          },
-          {
-            "name": "December 10, 2019",
-            "value": "```-RPG map gates have been removed, you should be able to access some zones not previously accessible.\n-Challenge gates have been removed\n-New abilities have been introduced! list of new abilities: concentrate, adapt, surge, pulverize, tidalwave, finalfortune (Limit), cleanse (Limit), invigorate (Limit), restore, backup, canistershot.\nThese abilities have been added to a few items which previously had poor list of abilities, more items will be updated throughout the next week to have a higher pool of items with these abilities.\n-Odds for rolls in RPG have been adjusted slightly```"
-          }
+            {
+                "name": "April 29, 2020",
+                "value": "```-Season 1 of Bender has come to an end, rewards have been awarded based on top statistics, all end of seasons may be obtained via -collectrewards\n-Greater amulets ability buffs are now applied in RPG, some greater amulets have been changed.\n-Fences and warranty protection has been removed from Bender! using a piece of wood will allow you to throw the piece of wood into the furnace for making additional tacos when cooking. Each wood used will increase the chance that you create a *cooking party* when you cook. Soil does the same for *prepare*\n-Bender's reputation shop has a new item in store for those who reach past sanctified reputation.\n-Rare and Ancient items obtained via crafting and RPG which previously did not grant tacos, will now have a chance to grant tacos when completing an RPG!\n-The prices of crafting amulets has been adjusted.\n-Multiple achievements have been added! if you have missed some of them before you will receive them when collecting rewards. ```"
+            },
+
+            {
+                "name": "April 29, 2020",
+                "value": "```-You have helped Bender solve P vs NP.\nCrystals that were previously unobtainable are now able to be obtained, they are the main currency for creating armaments for higher tier Myth items.\nThe abilities granted by Myth quality items have been unlocked.\n-propose command allows the user to marry another user. Polygamy is frowned upon by Bender, you may -divorce at any time, but you must wait some time to be able to remarry.\n-explore command lets you traverse the hidden catacombs. Secrets lie within the catacombs, do not let the pathways deceive you. Your eyes only tell you what is visible.\n-ritual command lets you perform a demonic ritual. Fear is the least of your worries.\n-timetravel command allows you to travel to different eras in time with other companions (RPG), the date is your choice. Time Wardens await, and you now have the chance to change pieces of history.\n-RPG leveling has been redesigned, the gap between RPG levels has been squeezed, RPG progression should be smoother.```"
+            },
+            {
+                "name": "April 29, 2020",
+                "value": "```-RPG items obtained via RPG zones have had their stat value adjusted.\n-some RPG abilities have their values changed (surge, surge2, nourish, sanctuary, elixir)\n-RPG ability changes: Invigorate is no longer a limit defensive, lasts 1 turn less, and applies tired for 5 turns. Adapt and concentrate properly affect the casters critical chance. Aoe heal over time spells will now be applied properly. Entomb will no longer bug the challenge when both enemies die in challenge 10```"
+            },
         ]
       };
       
@@ -3247,7 +3380,10 @@ function raresEmbedBuilder(message, itemsMap, allItems, long, rarity, pageParam)
             || (allItems[key].itemraritycategory == "ancient+++" && rarity == "ancient")
             || (allItems[key].itemraritycategory == "artifact" && rarity == "artifact")
             || (allItems[key].itemraritycategory == "artifact+" && rarity == "artifact")
-            || (allItems[key].itemraritycategory == "myth" && rarity == "artifact")) ){
+            || (allItems[key].itemraritycategory == "myth" && rarity == "artifact")
+            || (allItems[key].itemraritycategory == "myth+" && rarity == "artifact")
+            || (allItems[key].itemraritycategory == "myth++" && rarity == "artifact"
+            || (allItems[key].itemraritycategory == "myth+++" && rarity == "artifact"))) ){
                 // // console.log(key + " " + allItems[key].itemname)
                 
                 var emoji = "";
@@ -3309,7 +3445,10 @@ function raresEmbedBuilder(message, itemsMap, allItems, long, rarity, pageParam)
                     || allItems[key].itemraritycategory == "rare+++" 
                     || allItems[key].itemraritycategory == "ancient++" 
                     || allItems[key].itemraritycategory == "ancient+++" 
-                    || allItems[key].itemraritycategory == "myth" ){
+                    || allItems[key].itemraritycategory == "myth"
+                    || allItems[key].itemraritycategory == "myth+"
+                    || allItems[key].itemraritycategory == "myth++"
+                    || allItems[key].itemraritycategory == "myth+++" ){
 
                         if (inventoryStringRefined.length > 900){
                             inventoryStringsRefined.push(inventoryStringRefined);
@@ -3732,10 +3871,16 @@ module.exports.scavangeCommand = function (message){
                 // get all the possible items from items DB - Bad implementation but idgaf
                 var userLevel = getUserResponse.data.level;
                 let allItemsForWearing = exports.getAllItems()
-                wearStats.getUserWearingStats(message, discordUserId, {userLevel: userLevel}, allItemsForWearing, function(wearErr, wearRes){
+                /// TODO: set cursed, and ALSO make scavenging cost 25 tacos * userlevel
+                let cursedTimeCheck = new Date()
+                cursedTimeCheck = new Date(cursedTimeCheck.setHours(cursedTimeCheck.getHours() - 12 ))
+                let cursed = (getUserResponse.data.ritualstring == "scavengeGreed") && ( cursedTimeCheck <= getUserResponse.data.lastritualdate ) ? true : false
+
+                wearStats.getUserWearingStats(message, discordUserId, {userLevel: userLevel, cursed: cursed}, allItemsForWearing, function(wearErr, wearRes){
                     if (wearErr){
                         exports.setCommandLock("scavenge", discordUserId, false)
                     }else{
+                        // add cursed to wearRes
                         var secondsToRemove = wearStats.calculateSecondsReduced(wearRes, "scavenge");
                         //check for more than 1 hours
                         var now = new Date();
@@ -3962,6 +4107,12 @@ module.exports.scavangeCommand = function (message){
                                 else{
                                     // // console.log(updateLSres);
                                     // add to statistics
+                                    if (tacosFound + extraTacosFromItems > 0){
+                                        let marriedToId = getUserResponse.data.marriedtoid
+                                        if (marriedToId){
+                                            marryExtraTacos(message, marriedToId, tacosFound + extraTacosFromItems )
+                                        }
+                                    }
                                     exports.setCommandLock("scavenge", discordUserId, false)
                                     var achievements = getUserResponse.data.achievements;
                                     stats.statisticsManage(discordUserId, "scavengecount", 1, function(err, statSuccess){
@@ -4445,6 +4596,13 @@ function takeFruits(message, playerTakingTurn, currentGame, amount){
         miniGameEmbedBuilder(message, data);
         var winner = currentGame.checkWinner();
         message.channel.send("game is over! **" + winner.username + "** wins!");
+        stats.statisticsManage(winner.id, "fruitswon", 1, function(err, statSuccess){
+            if (err){
+                console.log(err);
+            }else{
+                achiev.checkForAchievements(discordUserId, data, message);
+            }
+        })
         // do cleanup and handout rewards
         var usersToCleanUp = currentGame.cleanup();
         for(var user in usersToCleanUp){
@@ -4910,6 +5068,9 @@ module.exports.buypetCommand = function(message, args){
                                 || ( PETS_AVAILABLE[pet] && PETS_AVAILABLE[pet].uniquereward && PETS_AVAILABLE[pet].rewardType == "top1rpg" && buyPetResponse.data.legacytop1rpgpoints )
                                 || ( PETS_AVAILABLE[pet] && PETS_AVAILABLE[pet].uniquereward && PETS_AVAILABLE[pet].rewardType == "top1xp" && buyPetResponse.data.legacytop1experience )
                                 || ( PETS_AVAILABLE[pet] && PETS_AVAILABLE[pet].uniquereward && PETS_AVAILABLE[pet].rewardType == "top1challenge" && buyPetResponse.data.legacytop1challenge )
+                                || ( PETS_AVAILABLE[pet] && PETS_AVAILABLE[pet].uniquereward && PETS_AVAILABLE[pet].rewardType == "s1top1rpg" && buyPetResponse.data.s1top1rpg )
+                                || ( PETS_AVAILABLE[pet] && PETS_AVAILABLE[pet].uniquereward && PETS_AVAILABLE[pet].rewardType == "s1top1xp" && buyPetResponse.data.s1top1xp )
+                                || ( PETS_AVAILABLE[pet] && PETS_AVAILABLE[pet].uniquereward && PETS_AVAILABLE[pet].rewardType == "s1topvotes" && buyPetResponse.data.s1topvotes )
                                 || ( PETS_AVAILABLE[pet] && PETS_AVAILABLE[pet].dailyreward && PETS_AVAILABLE[pet].rewardType == "dailyclaim" && userBurritos >= DAILY_CLAIM_PET_COST ) ){
                                     // can afford the pet update user pet, take away tacos.
                                     var threedaysAgo = new Date();
@@ -5084,6 +5245,10 @@ module.exports.fetchCommand = function(message, args){
                                                 console.log(err)
                                                 exports.setCommandLock("fetch", discordUserId, false)
                                             }else{
+                                                let marriedToId = fetchResponse.data.marriedtoid
+                                                if (marriedToId){
+                                                    marryExtraTacos(message, marriedToId, fetchTacos + extraTacosFromItems )
+                                                }
                                                 exports.setCommandLock("fetch", discordUserId, false)
                                                 var experienceFromItems = wearStats.calculateExtraExperienceGained(wearRes, "fetch", null);                                                                             
                                                 experience.gainExperience(message, message.author, (( (EXPERIENCE_GAINS.perFetchCd * PETS_AVAILABLE[userPet].fetch) / 10) + experienceFromItems) , fetchResponse);
@@ -5147,7 +5312,10 @@ module.exports.fetchCommand = function(message, args){
                                     cooldownDate = new Date(cooldownDate.setHours(cooldownDate.getHours() - PETS_AVAILABLE[userPet].cooldown));
                                     ///////// CALCULATE THE MINUTES REDUCED HERE 
                                     cooldownDate = new Date(cooldownDate.setSeconds(cooldownDate.getSeconds() + secondsToRemove));
-
+                                    
+                                    let cursedTimeCheck = new Date()
+                                    cursedTimeCheck = new Date(cursedTimeCheck.setHours(cursedTimeCheck.getHours() - 12 ))
+                                    let cursed = (fetchResponse.data.ritualstring == "demonicPuppet") && ( cursedTimeCheck <= fetchResponse.data.lastritualdate ) ? true : false
                                     if (!fetchResponse.data.lastfetchtime || ( cooldownDate > fetchResponse.data.lastfetchtime )){
                                         // fetch whatever and then set lastfetchtime to now
                                         var fetchTacos = PETS_AVAILABLE[userPet].fetch;
@@ -5159,10 +5327,15 @@ module.exports.fetchCommand = function(message, args){
                                                 console.log(err)
                                                 exports.setCommandLock("fetch", discordUserId, false)
                                             }else{
+                                                let marriedToId = fetchResponse.data.marriedtoid
+                                                if (marriedToId){
+                                                    marryExtraTacos(message, marriedToId, fetchTacos + extraTacosFromItems )
+                                                }
                                                 exports.setCommandLock("fetch", discordUserId, false)
                                                 var experienceFromItems = wearStats.calculateExtraExperienceGained(wearRes, "fetch", null);                                                                             
                                                 experience.gainExperience(message, message.author, (( (EXPERIENCE_GAINS.perFetchCd * PETS_AVAILABLE[userPet].fetch) / 10) + experienceFromItems) , fetchResponse);
                                                 let eventParams = { command: "fetch", userData: fetchResponse, fetchCD: userData.fetchCD, discordUserId: discordUserId, userPetName: userPetName, emoji: PETS_AVAILABLE[userPet].emoji, stableRes: fetchResponse  }
+                                                eventParams.cursed = cursed
                                                 additionalEventsForCommand(message, eventParams)
                                                 createTimeOutForCommandAfterUse("fetch", now, secondsToRemove, PETS_AVAILABLE[userPet].cooldown, discordUserId, fetchResponse.data, message)
                                                 // user's pet fetched some tacos
@@ -5174,7 +5347,7 @@ module.exports.fetchCommand = function(message, args){
 
                                                     }else{
                                                         */
-                                                    message.channel.send("**" + userPetName + "** fetched:` " + fetchTacos + "` tacos :taco: \n" + PETS_AVAILABLE[userPet].emoji + " " + PETS_AVAILABLE[userPet].speak + " you received `" + extraTacosFromItems + "` extra tacos");                                                
+                                                    message.channel.send("**" + userPetName + "** fetched:` " + fetchTacos + "` tacos :taco: \n" + ( cursed ? PETS_AVAILABLE["demon"].emoji : PETS_AVAILABLE[userPet].emoji ) + " " +  ( cursed ? PETS_AVAILABLE["demon"].speak : PETS_AVAILABLE[userPet].speak ) + " you received `" + extraTacosFromItems + "` extra tacos");                                                
                                                     //}
                                                 }else{
                                                     /* SEASONAL
@@ -5184,7 +5357,7 @@ module.exports.fetchCommand = function(message, args){
                                                         message.channel.send("**" + userPetName + "** fetched:` " + fetchTacos + "` tacos :taco: \n 🎃 HEEEHEEEHEHEHEE " + PETS_AVAILABLE[userPet].speak);                                                
                                                     }else{
                                                         */
-                                                    message.channel.send("**" + userPetName + "** fetched:` " + fetchTacos + "` tacos :taco: \n" + PETS_AVAILABLE[userPet].emoji + " " + PETS_AVAILABLE[userPet].speak);                                                
+                                                    message.channel.send("**" + userPetName + "** fetched:` " + fetchTacos + "` tacos :taco: \n" + ( cursed ? PETS_AVAILABLE["demon"].emoji : PETS_AVAILABLE[userPet].emoji ) + " " + ( cursed ? PETS_AVAILABLE["demon"].speak : PETS_AVAILABLE[userPet].speak ) );                                                
                                                     //}
                                                 }
                                             }
@@ -5475,7 +5648,7 @@ module.exports.useCommand = function(message, args){
                                     getProfileForAchievement(discordUserId, message)
                                 }
                             })
-                            message.channel.send(message.author.username + " has tossed wood into the furnace for their next meal `" + useRes + "` \n");
+                            message.channel.send(message.author.username + " has tossed wood into the furnace for their next meal `" + useRes + "` are now in the furnace :hotsprings:");
                         }
                     });
                 }else{
@@ -6848,7 +7021,8 @@ var itemHarvested = {
     "hibiscus" : "hibiscuses",
     "banana" : "bananas",
     "tangerine" : "tangerines",
-    "eggplant" : "eggplants"
+    "eggplant" : "eggplants",
+    "tar" : "tars"
 }
 
 module.exports.harvestCommand = function(message, args){
@@ -6899,9 +7073,14 @@ module.exports.harvestCommand = function(message, args){
                             }
                             threeDaysAgo = new Date(threeDaysAgo.setHours(threeDaysAgo.getHours() - userCooldown ));
                             threeDaysAgo = new Date(threeDaysAgo.setSeconds(threeDaysAgo.getSeconds() + secondsToRemove));
-
+                            
+                            /// cursed
+                            let cursedTimeCheck = new Date()
+                            cursedTimeCheck = new Date(cursedTimeCheck.setHours(cursedTimeCheck.getHours() - 12 ))
+                            let cursed = (profileData.data.ritualstring == "oozingMist") && ( cursedTimeCheck <= profileData.data.lastritualdate ) ? true : false
+                            
                             if ( threeDaysAgo > greenHouseData.lastharvest ){
-                                var fruitsHarvested = harvestPlotsOfLand(greenHouseData, itemsMapById)
+                                var fruitsHarvested = harvestPlotsOfLand(greenHouseData, itemsMapById, cursed)
                                 var fruitsHarvestedCount = 0
                                 // harvest your plots of land
                                 var fruitsColumnsWithCount = {}
@@ -6931,17 +7110,20 @@ module.exports.harvestCommand = function(message, args){
                                 if (fruitsHarvestedCount > 0){
                                     profileDB.bulkupdateUserFruits(discordUserId, fruitsColumnsWithCount, true, function(err, bulkRes){
                                         if (err){
-                                            // console.log(err)
                                             exports.setCommandLock("harvest", discordUserId, false)
                                         }else{
-                                            // console.log(bulkRes)
                                             var now = new Date();
                                             profileDB.updatePlotInfo(discordUserId, { lastharvest: now, timesharvested: newHarvestCounts }, function(plotErr, plotRes){
                                                 if (plotErr){
-                                                    // console.log(plotErr)
                                                     exports.setCommandLock("harvest", discordUserId, false)
                                                 }else{
-                                                    // console.log(plotRes)
+                                                    stats.statisticsManage(discordUserId, "harvestcount", 1, function(err, statSuccess){
+                                                        if (err){
+                                                            console.log(err);
+                                                        }else{
+                                                            achiev.checkForAchievements(discordUserId, data, message);
+                                                        }
+                                                    })
                                                     harvestEmbedBuilder(message, fruitsColumnsWithCount)
                                                     createTimeOutForCommandAfterUse("harvest", now, secondsToRemove, userCooldown, discordUserId, profileData.data, message)
                                                     exports.setCommandLock("harvest", discordUserId, false)
@@ -6994,7 +7176,7 @@ function harvestEmbedBuilder(message, fruitsColumnsWithCount){
     message.channel.send({embed});
 }
 
-function harvestPlotsOfLand(greenHouseData, itemsMapById){
+function harvestPlotsOfLand(greenHouseData, itemsMapById, cursed){
     // return an object with all the plants harvested, and the count harvested
     //// when reaching 10, 20 timesharvested update it to -1
     const mapOfHarvestMultiplier = {
@@ -7015,14 +7197,22 @@ function harvestPlotsOfLand(greenHouseData, itemsMapById){
     for (var i in greenHouseData.plots){
         if (greenHouseData.harvestCounts[i] >= 0){
             // plots[i] has an emoji in items table
-            var plotId = greenHouseData.plots[i]
-            // get the shortname of that item
-            if (plotId){
-                var plotShortName = itemsMapById[plotId].itemshortname
-                if (!fruitsObject[plotShortName]){
-                    fruitsObject[plotShortName] = 1 * myHarvestMultiplier
+            if (cursed){
+                if (!fruitsObject["tar"]){
+                    fruitsObject["tar"] = 1 * myHarvestMultiplier
                 }else{
-                    fruitsObject[plotShortName] = fruitsObject[plotShortName] + ( 1 * myHarvestMultiplier )
+                    fruitsObject["tar"] = fruitsObject["tar"] + ( 1 * myHarvestMultiplier )
+                }
+            }else{
+                var plotId = greenHouseData.plots[i]
+                // get the shortname of that item
+                if (plotId){
+                    var plotShortName = itemsMapById[plotId].itemshortname
+                    if (!fruitsObject[plotShortName]){
+                        fruitsObject[plotShortName] = 1 * myHarvestMultiplier
+                    }else{
+                        fruitsObject[plotShortName] = fruitsObject[plotShortName] + ( 1 * myHarvestMultiplier )
+                    }
                 }
             }
         }
@@ -7163,6 +7353,7 @@ function craftItem(message, discordUserId, recipeRequirements, recipeData, myIte
                     inventoryCountMap: itemsInInventoryCountMap,
                     itemsToUse: itemsToUse,  // items to use for craft
                     recipeRequirements: recipeRequirements,
+                    achievements: recipeData.achievements,
                     itemToCreate: [ itemToCreate ]
                 }
     
@@ -7353,7 +7544,13 @@ function upgradeBuilding(message, discordUserId, buildingName, upgradeRequiremen
                         requirementsMet = temple.checkRequirements(params)
                     }
                     if (requirementsMet){
-                        // use items - use plants - use tacos
+                        // use items - use plants - use tacos - get achievments
+                        var data = {}
+                        data.achievements = buildingData.achievements;
+                        data.buildingLevel = params.nextLevel
+                        data.building = buildingName.toLowerCase();
+                        achiev.checkForAchievements(discordUserId, data, message);                    
+
                         if (buildingName.toLowerCase() == "stable"){
                             stable.upgradeStable(message, params)
                         }else if (buildingName.toLowerCase() == "greenhouse"){
@@ -7413,7 +7610,10 @@ module.exports.combineCommand = function(message, args){
         || rarityOfItemBeingCombined == "rare+"
         || rarityOfItemBeingCombined == "rare++"
         || rarityOfItemBeingCombined == "ancient+"
-        || rarityOfItemBeingCombined == "ancient++")){
+        || rarityOfItemBeingCombined == "ancient++"
+        || rarityOfItemBeingCombined == "myth"
+        || rarityOfItemBeingCombined == "myth+"
+        || rarityOfItemBeingCombined == "myth++")){
             
             // if it is a rare or ancient, grab all same named items
             profileDB.getUserItemsByShortnameForCombine(discordUserId, myItemShortName, 10,  function(err, inventoryResponse){
@@ -7467,6 +7667,12 @@ module.exports.combineCommand = function(message, args){
                                 }
                                 else if (rarityOfItem == "artifact"){
                                     itemCount = 1
+                                }else if (rarityOfItem == "myth"){
+                                    itemCount = 3
+                                }else if (rarityOfItem == "myth+"){
+                                    itemCount = 3
+                                }else if (rarityOfItem == "myth++"){
+                                    itemCount = 3
                                 }
                             }
                             // // console.log(ItemInQuestion);
@@ -7540,6 +7746,89 @@ module.exports.combineCommand = function(message, args){
                             && itemsInInventoryCountMap[idOfMyItem] >= itemCount){
                                 // use ethereum
                                 var ethereumId = ETHEREUM_ID
+                                var transAdded = false;
+                                if (itemsInInventoryCountMap[ethereumId] >= 1){
+                                    for (var item in inventoryResponse.data){
+                                        var ItemInQuestion = inventoryResponse.data[item]
+                                        if ( itemsMapById[ItemInQuestion.itemid] && itemsMapById[ItemInQuestion.itemid].id === ethereumId && !transAdded){
+                                            itemsBeingedCombined.push(ItemInQuestion);
+                                            transAdded = true;
+                                        }
+                                    }
+                                    var itemToCreate = itemsMapById[combineToId];  // maybe create the item and keep it inactive?
+                                    var itemToCreateById = itemsMapById[combineToId].id;
+                                    var itemToCreateByName = itemsMapById[combineToId].itemname
+                                    // use the ethereum
+                                    if (transAdded){
+                                        profileDB.addNewItemToUser(discordUserId, [itemToCreate], function(createErr, createRes){
+                                            if (createErr){
+                                                useItem.setItemsLock(discordUserId, false)
+                                            }else{
+                                                profileDB.bulkUpdateItemStatus(itemsBeingedCombined, "used", function(combineErr, combineRes){
+                                                    if (combineErr){
+                                                        useItem.setItemsLock(discordUserId, false)
+                                                    }else{
+                                                        useItem.setItemsLock(discordUserId, false)
+                                                        combineEmbedBuilder(message, itemToCreateByName, itemToCreate, rarityOfItem);
+                                                    }
+                                                })
+                                            }
+                                        })        
+                                    }else{
+                                        useItem.setItemsLock(discordUserId, false)
+                                    }
+                                }else{
+                                    useItem.setItemsLock(discordUserId, false)
+                                }
+                            }
+                            else if (( rarityOfMyItem && rarityOfMyItem == "myth"
+                            || rarityOfMyItem && rarityOfMyItem == "myth+")
+                            && itemsInInventoryCountMap[idOfMyItem] 
+                            && itemsInInventoryCountMap[idOfMyItem] >= itemCount){
+                                // 1 ethereal crystal
+                                // TODO: refactor since the only difference here and above is ethereal crystal
+                                var ethereumId = ETHEREAL_CRYSTAL_ID
+                                var transAdded = false;
+                                if (itemsInInventoryCountMap[ethereumId] >= 1){
+                                    for (var item in inventoryResponse.data){
+                                        var ItemInQuestion = inventoryResponse.data[item]
+                                        if ( itemsMapById[ItemInQuestion.itemid] && itemsMapById[ItemInQuestion.itemid].id === ethereumId && !transAdded){
+                                            itemsBeingedCombined.push(ItemInQuestion);
+                                            transAdded = true;
+                                        }
+                                    }
+                                    var itemToCreate = itemsMapById[combineToId];  // maybe create the item and keep it inactive?
+                                    var itemToCreateById = itemsMapById[combineToId].id;
+                                    var itemToCreateByName = itemsMapById[combineToId].itemname
+                                    // use the ethereum
+                                    if (transAdded){
+                                        profileDB.addNewItemToUser(discordUserId, [itemToCreate], function(createErr, createRes){
+                                            if (createErr){
+                                                useItem.setItemsLock(discordUserId, false)
+                                            }else{
+                                                profileDB.bulkUpdateItemStatus(itemsBeingedCombined, "used", function(combineErr, combineRes){
+                                                    if (combineErr){
+                                                        useItem.setItemsLock(discordUserId, false)
+                                                    }else{
+                                                        useItem.setItemsLock(discordUserId, false)
+                                                        combineEmbedBuilder(message, itemToCreateByName, itemToCreate, rarityOfItem);
+                                                    }
+                                                })
+                                            }
+                                        })        
+                                    }else{
+                                        useItem.setItemsLock(discordUserId, false)
+                                    }
+                                }else{
+                                    useItem.setItemsLock(discordUserId, false)
+                                }
+                            }
+                            else if (rarityOfMyItem && rarityOfMyItem == "myth++"
+                            && itemsInInventoryCountMap[idOfMyItem] 
+                            && itemsInInventoryCountMap[idOfMyItem] >= itemCount){
+                                // elementium
+                                // TODO: refactor since the only difference here and above is elementium
+                                var ethereumId = ELEMENTIUM_ID
                                 var transAdded = false;
                                 if (itemsInInventoryCountMap[ethereumId] >= 1){
                                     for (var item in inventoryResponse.data){
@@ -7836,7 +8125,7 @@ module.exports.divorceCommand = function(message){
             if (!isMarriedToSomeone){
                 message.channel.send("You are not currently married!")
             }else{
-                profileDB.updateMarriedToId(discordUserId, null, function(err, res){
+                profileDB.updateMarriedToId(discordUserId, null, false, function(err, res){
                     if (err){
                         console.log(err)
                     }else{
@@ -7844,7 +8133,7 @@ module.exports.divorceCommand = function(message){
                     }
                 })
 
-                profileDB.updateMarriedToId(isMarriedToSomeone, null, function(err, res){
+                profileDB.updateMarriedToId(isMarriedToSomeone, null, false, function(err, res){
                     if (err){
                         console.log(err)
                     }else{
@@ -7854,6 +8143,19 @@ module.exports.divorceCommand = function(message){
             }
         }
     })
+}
+
+function marryExtraTacos(message, discordUserId, tacosToUpdate){
+    let tacosForMarry = Math.floor(tacosToUpdate * .05)
+    if (tacosForMarry > 0){
+        profileDB.updateUserTacos(discordUserId, tacosForMarry, function(updateerr, updateResponse) {
+            if (updateerr){
+                message.channel.send(updateerr)
+            }else{
+                message.channel.send(tacosForMarry + " were also awarded to your spouse")
+            }
+        })
+    }
 }
 
 module.exports.proposeCommand = function(message, channel){
@@ -7866,45 +8168,97 @@ module.exports.proposeCommand = function(message, channel){
         mentionedUser = user
     })
     if (mentionedUser && !mentionedUser.bot && mentionedUser != discordUserId){
-        profileDB.getUserProfileData(discordUserId, function(profileErr, profileData){
-            if (profileErr){
-                // console.log (profileErr);
-            }else{
-                var stage = profileData.data.ringqueststage;
-
-                if (stage == 1){
-                    // first stage of ring, user proposes
-                    var questData = {
-                        proposedTo: mentionedUser
+        if (!commandLock["marry"][discordUserId]){
+            exports.setCommandLock("marry", discordUserId, true)
+            profileDB.getUserProfileData(discordUserId, function(profileErr, profileData){
+                if (profileErr){
+                    exports.setCommandLock("marry", discordUserId, false)
+                    console.log (profileErr);
+                }else{
+                    var stage = profileData.data.ringqueststage;
+                    if (stage == 1){
+                        var questData = { proposedTo: mentionedUser }
+                        var team = []
+                        quest.questHandler(message, discordUserId, "ring", stage, team, questData, channel, allItems)
+                        exports.setCommandLock("marry", discordUserId, false)
                     }
-                    var team = []
-                    quest.questHandler(message, discordUserId, "ring", stage, team, questData, channel, allItems)
-                }
-                if (stage >= 2 && stage <= 5){
-                    // create a mission in quest for the user with proposedTo and the data depending on what stage they are on
-                    quest.proposedTo(message, discordUserId, stage, mentionedUser)
-                }
-                else if (stage == 6){
-                    let isMarriedToSomeone = profileData.data.marriedtoid
-                    if (isMarriedToSomeone){
-                        message.channel.send("You are currently married, you cannot marry someone else unless you divorce!")
-                    }else{
-                        /// no need for accept or decline - the other person can divorce at anytime
-                        /// CD 1 day
-                        profileDB.updateMarriedToId(discordUserId, mentionedId, function(err, res){
-                            if (err){
-                                console.log(err)
+                    if (stage >= 2 && stage <= 5){
+                        quest.proposedTo(message, discordUserId, stage, mentionedUser)
+                        exports.setCommandLock("marry", discordUserId, false)
+                    }else if (stage == 6){
+                        let isMarriedToSomeone = profileData.data.marriedtoid
+                        // find out if other person is married
+                        if (isMarriedToSomeone){
+                            message.channel.send("You are currently married, you cannot marry someone else unless you divorce!")
+                            exports.setCommandLock("marry", discordUserId, false)
+                        }else{
+                            /// no need for accept or decline - the other person can divorce at anytime
+                            /// CD 1 day
+                            var now = new Date();
+                            var marryDateCheck = new Date();
+                            marryDateCheck = new Date(marryDateCheck.setHours(marryDateCheck.getHours() - MARRY_COOLDOWN_HOURS));
+                            if (marryDateCheck > profileData.data.lastmarrydate
+                            || !profileData.data.lastmarrydate ){
+                                profileDB.getUserProfileData(mentionedId, function(profileErr, profileData){
+                                    if (profileErr){
+                                        exports.setCommandLock("marry", discordUserId, false)
+                                        menssage.channel.send(profileErr)
+                                    }else{
+                                        let mentionedUserMarriedToId = profileData.data.marriedtoid
+                                        if (!mentionedUserMarriedToId){
+                                            profileDB.updateMarriedToId(discordUserId, mentionedId, true, function(err, res){
+                                                if (err){
+                                                    exports.setCommandLock("marry", discordUserId, false)
+                                                    console.log(err)
+                                                }else{
+                                                    profileDB.updateMarriedToId(mentionedId, discordUserId, false, function(err, res){
+                                                        if (err){
+                                                            exports.setCommandLock("marry", discordUserId, false)
+                                                            console.log(err)
+                                                        }else{
+                                                            exports.setCommandLock("marry", discordUserId, false)
+                                                            marryEmbedBuilder(message, mentionedUser)
+                                                        }
+                                                    })
+                                                }
+                                            })
+                                        }else{
+                                            if (mentionedUserMarriedToId == discordUserId){
+                                                exports.setCommandLock("marry", discordUserId, false)
+                                                message.channel.send("You two are already married")
+                                            }else{
+                                                exports.setCommandLock("marry", discordUserId, false)
+                                                message.channel.send("User is currently married to someone else!")
+                                            }
+                                        }
+                                    }
+                                })
                             }else{
-                                message.channel.send(message.author + " has proposed to " + mentionedUser)
+                                exports.setCommandLock("marry", discordUserId, false)
+                                var numberOfHours = getDateDifference(profileData.data.lastmarrydate, now, MARRY_COOLDOWN_HOURS );
+                                message.channel.send(message.author.username + " You cannot propose currently! Please wait `" + numberOfHours + "` ");
                             }
-                        })
+                        }
                     }
                 }
-            }
-        })
+            })
+        }
     }else{
         message.channel.send("You must propose to another user that is not a bot")
     }
+}
+
+function marryEmbedBuilder(message, marrying){
+    
+    var marryString = ":heart_exclamation: :heart_exclamation: :heart_exclamation: "
+    const embed = new Discord.RichEmbed()
+    .setColor(0x87CEFA)
+    .setTitle("Wedding time!")
+    .setDescription(marryString)
+    .setThumbnail(message.author.avatarURL)
+    .setImage(marrying.avatarURL)
+    .setColor(0x87CEFA)
+    message.channel.send({embed});
 }
 
 module.exports.weddingCommand = function(message, channel){
@@ -7919,40 +8273,22 @@ module.exports.weddingCommand = function(message, channel){
 
     profileDB.getUserProfileData(discordUserId, function(profileErr, profileData){
         if (profileErr){
-            // console.log (profileErr);
+            console.log (profileErr);
         }else{
             var stage = profileData.data.ringqueststage;
+            var questData = { proposedTo: mentionedUser }
+            var team = [] 
             var allItemsForWedding = exports.getAllItems()
-            if (stage == 4){
-                // first stage of ring, user proposes
-                var questData = {
-                    proposedTo: mentionedUser
-                }
-                var team = [] 
-                /// TEAM MUST BE > 5
+            if (stage == 4 || stage == 5){
                 quest.questHandler(message, discordUserId, "ring", stage, team, questData, channel, allItemsForWedding)
             }
-            if (stage == 5){
-                // user marries - creates embed for wedding
-                var questData = {
-                    marriedTo: mentionedUser
-                }
-                var team = []
-                quest.questHandler(message, discordUserId, "ring", stage, team, questData, channel, allItemsForWedding)
-            }
-            // TODO: give, thanks, and sorry should check whether the user is in stages 2, 3 and complete the stages
-            // on stage 4, everyone can react to the embed and receive rewards
-            // stage 5 should be started via -wedding @users
         }
     })
 }
 
 module.exports.exploreTombCommand = function(message, args, channel){
-    // travel to the specified date in args
     var discordUserId = message.author.id;
-
     var users  = message.mentions.users
-    
     var team = [];
     team.push(message.author);
 
@@ -7973,53 +8309,51 @@ module.exports.exploreTombCommand = function(message, args, channel){
             validTeam = false;
         }
     }
-    // TODO: explore (RPG / scavenge) if the user has a pike equiped and is in end stage
     var allItemsForExplore = exports.getAllItems()
-    if (team.length > 1 && team.length <= 5){
-        profileDB.getUserProfileData(discordUserId, function(profileErr, profileData){
-            if (profileErr){
-                // console.log (profileErr);
-            }else{
-                var stage = profileData.data.tombqueststage;
-                var questData = {}
-                if (stage == 1){
-                    // first stage of tomb, enter tomb
-                    quest.questHandler(message, discordUserId, "tomb", stage, team, questData, channel, allItemsForExplore)
+    if (validTeam){
+        if (!commandLock["explore"][discordUserId]){
+            exports.setCommandLock("explore", discordUserId, true)
+            profileDB.getUserProfileData(discordUserId, function(profileErr, profileData){
+                if (profileErr){
+                    exports.setCommandLock("explore", discordUserId, false)
+                    console.log (profileErr);
+                }else{
+                    var stage = profileData.data.tombqueststage;
+                    var questData = {}
+                    if (stage >= 1 && stage <= 6){
+                        quest.questHandler(message, discordUserId, "tomb", stage, team, questData, channel, allItemsForExplore)
+                        exports.setCommandLock("explore", discordUserId, false)
+                    }else if (stage == 7){
+                        var now = new Date();
+                        var exploreDateCheck = new Date();
+                        exploreDateCheck = new Date(exploreDateCheck.setHours(exploreDateCheck.getHours() - EXPLORE_COOLDOWN_HOURS));
+                        if (exploreDateCheck > profileData.data.lastexploredate
+                        || !profileData.data.lastexploredate){
+                            exports.setCommandLock("explore", discordUserId, false)
+                            quest.questHandler(message, discordUserId, "tomb", stage, team, questData, channel, allItemsForExplore)
+                            profileDB.updateLastCommandTime(discordUserId, "lastexploredate", function(err, res){
+                                if (err){
+                                    console.log(err)
+                                }
+                            })
+                        }else{
+                            exports.setCommandLock("explore", discordUserId, false)
+                            var numberOfHours = getDateDifference(profileData.data.lastexploredate, now, EXPLORE_COOLDOWN_HOURS );
+                            message.channel.send(message.author.username + " You cannot explore currently! Please wait `" + numberOfHours + "` ");
+                        }
+                    }else {
+                        exports.setCommandLock("explore", discordUserId, false)
+                    }
                 }
-                else if (stage == 2){
-                    // second stage of tomb
-                    quest.questHandler(message, discordUserId, "tomb", stage, team, questData, channel, allItemsForExplore)
-                }
-                else if (stage == 3){
-                    // third stage of tomb
-                    quest.questHandler(message, discordUserId, "tomb", stage, team, questData, channel, allItemsForExplore)
-                }
-                else if (stage == 4){
-                    // 4th stage, tomb
-                    quest.questHandler(message, discordUserId, "tomb", stage, team, questData, channel, allItemsForExplore)
-                }
-                else if (stage == 5){
-                    // 5th stage, tomb
-                    quest.questHandler(message, discordUserId, "tomb", stage, team, questData, channel, allItemsForExplore)
-                }
-                else if (stage == 6){
-                    // 6th stage, defeat archvampires
-                    quest.questHandler(message, discordUserId, "tomb", stage, team, questData, channel, allItemsForExplore)
-                }
-                else if (stage == 7){
-                    message.channel.send("exploring tomb ")
-                }
-            }
-        })
+            })
+        }
     }
 }
 
 module.exports.ritualCommand = function(message, args, channel){
     
     var discordUserId = message.author.id;
-
     var users  = message.mentions.users
-    
     var team = [];
     team.push(message.author);
 
@@ -8041,51 +8375,89 @@ module.exports.ritualCommand = function(message, args, channel){
         }
     }
     var allItemsForRitual = exports.getAllItems()
-    // TODO: Perform a ritual of summoning ( RPG / scavenge) if the user has a bow equiped and is in end stage
-    if (team.length >= 1 && team.length <= 5){
-        profileDB.getUserProfileData(discordUserId, function(profileErr, profileData){
-            if (profileErr){
-                // console.log (profileErr);
-            }else{
-                var stage = profileData.data.demonicqueststage;
-
-                if (stage == 1){
-                    // first stage of demonic
-                    var questData = {
-
+    // TODO: Perform a ritual of summoning if the user has a bow equiped and is in end stage
+    if (validTeam){
+        if (!commandLock["ritual"][discordUserId]){
+            exports.setCommandLock("ritual", discordUserId, true)
+            profileDB.getUserProfileData(discordUserId, function(profileErr, profileData){
+                if (profileErr){
+                    exports.setCommandLock("ritual", discordUserId, false)
+                    console.log (profileErr);
+                }else{
+                    var userLevel = profileData.data.level
+                    var stage = profileData.data.demonicqueststage;
+                    var questData = { }
+                    if (stage >= 1 && stage <= 5){
+                        quest.questHandler(message, discordUserId, "demonic", stage, team, questData, channel, allItemsForRitual)
+                        exports.setCommandLock("ritual", discordUserId, false)
+                    }else if (stage == 6){
+                        var now = new Date();
+                        var ritualDateCheck = new Date();
+                        ritualDateCheck = new Date(ritualDateCheck.setHours(ritualDateCheck.getHours() - RITUAL_COOLDOWN_HOURS));
+                        if (ritualDateCheck > profileData.data.lastritualdate
+                        || !profileData.data.lastritualdate){
+                            let rituals = [ "poverty", "scavengeGreed", "evilChef", "demonicPuppet", "auraOfDespair", "oozingMist" ]
+                            let ritualRoll = Math.floor(Math.random() * rituals.length);
+                            let ritualChosen = rituals[ritualRoll]
+                            profileDB.updateUserRitual(ritualChosen, discordUserId, function(err, res){
+                                if (err){
+                                    exports.setCommandLock("ritual", discordUserId, false)
+                                    console.log(err)
+                                }else{
+                                    // if the ritual is poverty start a settimeout
+                                    let ritualChosenString = ""
+                                    if (ritualChosen == "poverty"){
+                                        ritualChosenString = " is filled with anguish."
+                                        let povertyInterval = setInterval(function(message){ 
+                                                let arrayOfWhispers = [
+                                                    " hears a whisper `Your friends will abandon you`",
+                                                    " hears a whisper `Death is certain`",
+                                                    " hears a whisper `Your life will cease to exist`",
+                                                    " hears a whisper `You will betray them all`",
+                                                    " hears a whisper `Your body will be crushed`",
+                                                    " hears a whisper `You've lost your soul`",
+                                                    " hears a whisper `Death awaits`",
+                                                    " hears a whisper `You will serve the master`"
+                                                ]
+                                                let whispersRoll = Math.floor(Math.random() * arrayOfWhispers.length);
+                                                let whisperChosen = arrayOfWhispers[whispersRoll]
+                                                message.channel.send(message.author.username + whisperChosen)
+                                                profileDB.updateUserTacos(message.author.id, ( userLevel * -25 ), function(err, res){
+                                                    if (err){
+                                                        console.log(err)
+                                                    }else{
+                                                        console.log(res)
+                                                    }
+                                                })
+                                        }, 3590000, message) // hour
+                                        let povertyFinish = setTimeout(function(povertyInterval){
+                                            clearTimeout(povertyInterval)
+                                            console.log("cleared timeout")
+                                        }, 86400000, povertyInterval) // day
+                                    }else if (ritualChosen == "scavengeGreed"){
+                                        ritualChosenString = " is filled with greed, their thirst for treasure hungers"
+                                    }else if (ritualChosen == "evilChef"){
+                                        ritualChosenString = " becomes consumed with pestilence"
+                                    }else if (ritualChosen == "demonicPuppet"){
+                                        ritualChosenString = "'s pet turns into a demon. their scent grows stronger"
+                                    }else if (ritualChosen == "auraOfDespair"){
+                                        ritualChosenString = " is consumed with hatred.. an aura of despair begins to emite from their body"
+                                    }else if (ritualChosen == "oozingMist"){
+                                        ritualChosenString = " turns into a wretched creature."
+                                    }
+                                    exports.setCommandLock("ritual", discordUserId, false)
+                                    message.channel.send(message.author + ritualChosenString)
+                                }
+                            })
+                        }else{
+                            exports.setCommandLock("ritual", discordUserId, false)
+                            var numberOfHours = getDateDifference(profileData.data.lastritualdate, now, RITUAL_COOLDOWN_HOURS );
+                            message.channel.send(message.author.username + " You cannot begin a ritual currently! Please wait `" + numberOfHours + "` ");
+                        }
                     }
-                    quest.questHandler(message, discordUserId, "demonic", stage, team, questData, channel, allItemsForRitual)
-
                 }
-                else if (stage == 2){
-                    // second stage of demonic
-                    var questData = {
-                    }
-                    quest.questHandler(message, discordUserId, "demonic", stage, team, questData, channel, allItemsForRitual)
-                }
-                else if (stage == 3){
-                    // third stage of demonic
-                    var questData = {
-                    }
-                    quest.questHandler(message, discordUserId, "demonic", stage, team, questData, channel, allItemsForRitual)
-                }
-                else if (stage == 4){
-                    // 4th stage, defeat the swarm of demons
-                    var questData = {
-                    }
-                    quest.questHandler(message, discordUserId, "demonic", stage, team, questData, channel, allItemsForRitual)
-                }
-                else if (stage == 5){
-                    // 5th stage, defeat andromalius
-                    var questData = {
-                    }
-                    quest.questHandler(message, discordUserId, "demonic", stage, team, questData, channel, allItemsForRitual)
-                }
-                else{
-                    message.channel.send("performed ritual ")
-                }
-            }
-        })
+            })
+        }
     }
 }
 
@@ -8116,105 +8488,72 @@ module.exports.timeTravelCommand = function(message, args, channel){
         }
     }
     var allItemsForTimetravel = exports.getAllItems()
-    if (args.length > 1 && args[1] >= 1210 && args[1] <= 1215 && team.length <= 5){
-        // check that author is on stage 1 of timetravel 
+    if (!commandLock["timetravel"][discordUserId]){
+        exports.setCommandLock("timetravel", discordUserId, true)
         profileDB.getUserProfileData(discordUserId, function(profileErr, profileData){
             if (profileErr){
+                exports.setCommandLock("timetravel", discordUserId, false)
                 // console.log (profileErr);
             }else{
                 var stage = profileData.data.timetravelqueststage;
-                if (stage == 1){
-                    // create an rpg event with the tagged members to time travel
-                    var questData = {
-                        year: args[1]
-                    }
-                    quest.questHandler(message, discordUserId, "timetravel", stage, team, questData, channel, allItemsForTimetravel)
-
-                }else if (stage == 2){
-                    var questData = {
-                        year: args[1]
-                    }
-                    quest.questHandler(message, discordUserId, "timetravel", stage, team, questData, channel, allItemsForTimetravel)
-                }else{
-                    // TODO: make this just be a travel in time
-                    message.channel.send("traveled to the year " + args[1])
-                }
-            }
-        })
-        
-        // post an embed message that shows the team members back in time, they can react
-        // to the embed and obtain items from these reactions - advance to stage 2
-        
-        // when all 5 members react to this embed they will fight against genghis khan and his 4 knights
-        // (special monsters)
-        // when members succeed and defeat them they will all obtain rewards (group leader advances to stage2) 
-
-        // skipping will close the event
-    }else if (args.length > 1 && args[1] >= -66000000 && args[1] <= -64000000 && team.length <= 5){
-        profileDB.getUserProfileData(discordUserId, function(profileErr, profileData){
-            if (profileErr){
-                // // console.log (profileErr);
-            }else{
-                var stage = profileData.data.timetravelqueststage;
-                if (stage == 3){
-                    var questData = {
-                        year: args[1]
-                    }
-                    quest.questHandler(message, discordUserId, "timetravel", stage, team, questData, channel, allItemsForTimetravel)
-                }else if (stage == 4){
-                    var questData = {
-                        year: args[1]
-                    }
-                    quest.questHandler(message, discordUserId, "timetravel", stage, team, questData, channel, allItemsForTimetravel)
-                }else{
-                    message.channel.send("traveled to the year " + args[1])
-                }
-            }
-        })
-    }else if (args.length > 1 && args[1] >= 3120 && args[1] <= 3130 && team.length <= 5){
-        profileDB.getUserProfileData(discordUserId, function(profileErr, profileData){
-            if (profileErr){
-                // // console.log (profileErr);
-            }else{
-                var stage = profileData.data.timetravelqueststage;
-
-                if (stage == 5){
-                    var questData = {
-                        year: args[1]
-                    }
-                    quest.questHandler(message, discordUserId, "timetravel", stage, team, questData, channel, allItemsForTimetravel)
-                }else if (stage == 6){
-                    var questData = {
-                        year: args[1]
-                    }
-                    quest.questHandler(message, discordUserId, "timetravel", stage, team, questData, channel, allItemsForTimetravel)
-                }else{
-                    message.channel.send("traveled to the year " + args[1])
-                }
-            }
-        })
-    }else if (args.length > 1 && args[1] >= 220000000 && args[1] <= 240000000 && team.length <= 5){
-        profileDB.getUserProfileData(discordUserId, function(profileErr, profileData){
-            if (profileErr){
-                // // console.log (profileErr);
-            }else{
-                var stage = profileData.data.timetravelqueststage;
-
-                if (stage == 6){
-                    var questData = {
-                        year: args[1]
-                    }
-                    quest.questHandler(message, discordUserId, "timetravel", stage, team, questData, channel, allItemsForTimetravel)
-                }else if (stage == 7){
-                    if (config.TIME_TRAVEL_DATES_ACCEPTED[args[1]]){
-                        // TODO: event
+                var questData = { year: args[1] }
+                if (stage == 1 || stage == 2){
+                    if (args.length > 1 && args[1] >= 1210 && args[1] <= 1215){
+                        quest.questHandler(message, discordUserId, "timetravel", stage, team, questData, channel, allItemsForTimetravel)
+                        exports.setCommandLock("timetravel", discordUserId, false)
                     }else{
+                        exports.setCommandLock("timetravel", discordUserId, false)
                         message.channel.send("traveled to the year " + args[1])
+                    }
+                }else if (stage == 3 || stage == 4){
+                    if (args.length > 1 && args[1] >= -66000000 && args[1] <= -64000000){
+                        quest.questHandler(message, discordUserId, "timetravel", stage, team, questData, channel, allItemsForTimetravel)
+                        exports.setCommandLock("timetravel", discordUserId, false)
+                    }else{
+                        exports.setCommandLock("timetravel", discordUserId, false)
+                        message.channel.send("traveled to the year " + args[1])
+                    }
+                }else if (stage == 5 || stage == 6){
+                    if (args.length > 1 && args[1] >= 3120 && args[1] <= 3130){
+                        quest.questHandler(message, discordUserId, "timetravel", stage, team, questData, channel, allItemsForTimetravel)
+                        exports.setCommandLock("timetravel", discordUserId, false)
+                    }else{
+                        exports.setCommandLock("timetravel", discordUserId, false)
+                        message.channel.send("traveled to the year " + args[1])
+                    }
+    
+                }else if (stage == 6){
+                    if (args.length > 1 && args[1] >= 220000000 && args[1] <= 240000000){
+                        quest.questHandler(message, discordUserId, "timetravel", stage, team, questData, channel, allItemsForTimetravel)
+                        exports.setCommandLock("timetravel", discordUserId, false)
+                    }else{
+                        exports.setCommandLock("timetravel", discordUserId, false)
+                        message.channel.send("traveled to the year " + args[1])
+                    }
+                }else if (stage == 7){
+                    var now = new Date();
+                    var timetravelDateCheck = new Date();
+                    timetravelDateCheck = new Date(timetravelDateCheck.setHours(timetravelDateCheck.getHours() - TIME_TRAVEL_COOLDOWN_HOURS));
+                    if (timetravelDateCheck > profileData.data.lasttimetraveldate
+                    || !profileData.data.lasttimetraveldate){
+                        quest.questHandler(message, discordUserId, "timetravel", stage, team, questData, channel, allItemsForTimetravel)
+                        // TODO: update lasttimetraveldate
+                        exports.setCommandLock("timetravel", discordUserId, false)
+                        profileDB.updateLastCommandTime(discordUserId, "lasttimetraveldate", function(err, res){
+                            if (err){
+                                console.log(err)
+                            }
+                        })
+                    }else{
+                        exports.setCommandLock("timetravel", discordUserId, false)
+                        var numberOfHours = getDateDifference(profileData.data.lasttimetraveldate, now, TIME_TRAVEL_COOLDOWN_HOURS );
+                        message.channel.send(message.author.username + " You cannot traven through time currently! Please wait `" + numberOfHours + "` ");
                     }
                 }
             }
         })
     }
+    
 }
 
 function combineEmbedBuilder(message, itemToCreateByName, ItemDetails, itemRarity){
@@ -8612,7 +8951,11 @@ module.exports.putonCommand = function(message, args, retry){
                                 else if (slot == 3 && !currentSlot3Slot){
                                     validateSlotToWear = validateSlot(itemslot, arrayOfSlots)
                                 }
-                                else if (slot == 4 && !currentSlot4Slot && itemsMapbyShortName[itemToWear].itemraritycategory == "myth" ){
+                                else if (slot == 4 && !currentSlot4Slot && 
+                                (itemsMapbyShortName[itemToWear].itemraritycategory == "myth" 
+                                || itemsMapbyShortName[itemToWear].itemraritycategory == "myth+"
+                                || itemsMapbyShortName[itemToWear].itemraritycategory == "myth++"
+                                || itemsMapbyShortName[itemToWear].itemraritycategory == "myth+++") ){
                                     validateSlotToWear = true
                                 }
                                 /// temple level 6
@@ -9025,7 +9368,10 @@ module.exports.initializeMarketPlace = function(){
 
 function getEmojiBasedOnRarityCategory(itemDetails){
     var emoji = ""
-    if (itemDetails.itemraritycategory === "myth" ){
+    if (itemDetails.itemraritycategory === "myth"
+    || itemDetails.itemraritycategory === "myth+"
+    || itemDetails.itemraritycategory === "myth++"
+    || itemDetails.itemraritycategory === "myth+++" ){
         emoji = ":cyclone: "
     }
     else if (itemDetails.itemraritycategory === "artifact" 
@@ -9621,6 +9967,9 @@ module.exports.marketAuctionCommand = function(message, args){
                     }
                     if (itemsMapbyShortName[myItemShortName] 
                     && itemsMapbyShortName[myItemShortName].itemraritycategory != "myth"
+                    && itemsMapbyShortName[myItemShortName].itemraritycategory != "myth+"
+                    && itemsMapbyShortName[myItemShortName].itemraritycategory != "myth++"
+                    && itemsMapbyShortName[myItemShortName].itemraritycategory != "myth+++"
                     && itemsMapbyShortName[myItemShortName].itemraritycategory != "artifact+"
                     && itemsMapbyShortName[myItemShortName].itemraritycategory != "amulet"){
                         var idOfMyItem = itemsMapbyShortName[myItemShortName].id;
@@ -9766,6 +10115,9 @@ module.exports.auctionCommand = function(message, args){
                     }
                     if (itemsMapbyShortName[myItemShortName] 
                     && itemsMapbyShortName[myItemShortName].itemraritycategory != "myth"
+                    && itemsMapbyShortName[myItemShortName].itemraritycategory != "myth+"
+                    && itemsMapbyShortName[myItemShortName].itemraritycategory != "myth++"
+                    && itemsMapbyShortName[myItemShortName].itemraritycategory != "myth+++"
                     && itemsMapbyShortName[myItemShortName].itemraritycategory != "artifact+"
                     && itemsMapbyShortName[myItemShortName].itemraritycategory != "amulet"){
                         var idOfMyItem = itemsMapbyShortName[myItemShortName].id;
@@ -10162,6 +10514,9 @@ module.exports.tradeCommand = function(message, args){
                             // check if myItem exists in items, check if otherItem exists in items, if not then turn the string
                             if (itemsMapbyShortName[myItemShortName] 
                             && itemsMapbyShortName[myItemShortName].itemraritycategory != "myth"
+                            && itemsMapbyShortName[myItemShortName].itemraritycategory != "myth+"
+                            && itemsMapbyShortName[myItemShortName].itemraritycategory != "myth++"
+                            && itemsMapbyShortName[myItemShortName].itemraritycategory != "myth+++"
                             && itemsMapbyShortName[myItemShortName].itemraritycategory != "artifact+"
                             && itemsMapbyShortName[myItemShortName].itemraritycategory != "amulet" ){
                                 var idOfMyItem = itemsMapbyShortName[myItemShortName].id;
@@ -10605,7 +10960,7 @@ function createCustomParty(message, discordUserId, params){
     let titleString = params.titleString
     let descriptionString = params.descriptionString
     const embed = new Discord.RichEmbed()
-    .setThumbnail("https://i.imgur.com/dI1PWNo.png")
+    .setThumbnail(params.avatar)
     .setColor(0xF2E93E)
     .addField(titleString, descriptionString)
     message.channel.send({embed})
@@ -10653,7 +11008,7 @@ function createCustomParty(message, discordUserId, params){
                     reactionEmoji.users.forEach(function(user){
                         if (!user.bot && !mapOfUsersReacted[user.id]){
                             mapOfUsersReacted[user.id] = true
-                            tacoPartyReactRewards(message, user, "🌮", "burrito", params.source)
+                            tacoPartyReactRewards(message, user, "🌮", "burrito", params.source, params.cursed)
                             reactionCount++;
                         }
                     })
@@ -10662,7 +11017,7 @@ function createCustomParty(message, discordUserId, params){
                     reactionEmoji.users.forEach(function(user){
                         if (!user.bot && !mapOfUsersReacted[user.id]){
                             mapOfUsersReacted[user.id] = true
-                            tacoPartyReactRewards(message, user, "🌮", "seed", params.source)
+                            tacoPartyReactRewards(message, user, "🌮", "seed", params.source, params.cursed)
                             reactionCount++;
                         }
                     })
@@ -10685,7 +11040,7 @@ function createCustomParty(message, discordUserId, params){
                         .catch(function(err){
                             // console.log(err)
                         })
-                        var achievements = getDataRes.data.achievements;
+                        var achievements = userData.achievements;
                         var data = {}
                         data.achievements = achievements;
                         data.attendees = attendees;
@@ -10846,7 +11201,7 @@ function createParty(message, discordUserId, uncommonsToUse){
     })
 }
 
-function tacoPartyReactRewards(message, user, emoji, reward, source){
+function tacoPartyReactRewards(message, user, emoji, reward, source, cursed){
     // each of these ids will receive 1 taco, 1 xp, or 1 rock
     var giveRewardTo = user.id;
     var giveRewardToUsername = user.username
@@ -10862,26 +11217,49 @@ function tacoPartyReactRewards(message, user, emoji, reward, source){
         })
     }
     if (reward === "burrito" && source == "cook"){
-        profileDB.updateUserBurritos(giveRewardTo, 5, function(err, res){
-            if (err){
-                message.channel.send(err);
-            }else{
-                // console.log(res);
-            }
-        })
+        if (cursed){
+            profileDB.updateUserTacos(giveRewardTo, -100, function(err, res){
+                if (err){
+                    message.channel.send(err);
+                }else{
+                    // console.log(res);
+                    message.channel.send(user + " is poisoned :face_vomiting: ")
+                }
+            })
+            
+        }else{
+            profileDB.updateUserBurritos(giveRewardTo, 5, function(err, res){
+                if (err){
+                    message.channel.send(err);
+                }else{
+                    // console.log(res);
+                }
+            })
+        }
     }
     if (reward === "seed" && source == "prepare"){
-        let allReactionItems = exports.getAllItems()
-        let seedItemsArray = []
-        for (let i in allReactionItems ){
-            if (allReactionItems[i].isseed == true){
-                seedItemsArray.push(allReactionItems[i])
+        if (cursed){
+            profileDB.updateUserTacos(giveRewardTo, -100, function(err, res){
+                if (err){
+                    message.channel.send(err);
+                }else{
+                    // console.log(res);
+                    message.channel.send(user + " is poisoned :face_vomiting: ")
+                }
+            })
+        }else{
+            let allReactionItems = exports.getAllItems()
+            let seedItemsArray = []
+            for (let i in allReactionItems ){
+                if (allReactionItems[i].isseed == true){
+                    seedItemsArray.push(allReactionItems[i])
+                }
             }
+            var randomSeedRoll = Math.floor(Math.random() * seedItemsArray.length);
+            var itemsObtainedArray = [];
+            itemsObtainedArray.push( seedItemsArray[randomSeedRoll] );
+            addToUserInventory(giveRewardTo, itemsObtainedArray);    
         }
-        var randomSeedRoll = Math.floor(Math.random() * seedItemsArray.length);
-        var itemsObtainedArray = [];
-        itemsObtainedArray.push( seedItemsArray[randomSeedRoll] );
-        addToUserInventory(giveRewardTo, itemsObtainedArray);
     }else if (source == "party" && (reward === "terrycloth" || reward === "rock")){
         var itemsObtainedArray = [];
         if (reward === "terrycloth"){

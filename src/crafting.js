@@ -237,6 +237,11 @@ module.exports.craftRecipe = function(message, params, callback){
                     console.log(error)
                     callback(error)
                 }else{
+                    var data = {}
+                    data.achievements = params.achievements;
+                    data.craftItemLevel = params.itemToCreate.itemlevelrequirement;
+                    achiev.checkForAchievements(discordUserId, data, message);
+
                     addToUserInventory(discordUserId, params.itemToCreate)
                     message.channel.send(message.author + " crafted **" + params.itemToCreate[0].itemname +"**")
                     callback(null, "done")

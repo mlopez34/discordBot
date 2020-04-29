@@ -68,6 +68,10 @@ module.exports.bakeItem = function(discordUserId, itemToBake, itemsMapById, user
                         // add the item to user's inventory
                         var itemsToAdd = [itemToCreate]
                         addToUserInventory(discordUserId, itemsToAdd)
+                        var data = {}
+                        data.achievements = userData.achievements;
+                        data.baked = itemToCreate.itemname;
+                        achiev.checkForAchievements(discordUserId, data, message);                    
                         cb(null, itemsToAdd)
                     }
                 })
@@ -155,7 +159,8 @@ module.exports.obtainFruitsCountObject = function(userFruitsData){
         bananas: userFruitsData.bananas || 0,
         pears: userFruitsData.pears || 0,
         tangerines: userFruitsData.tangerines || 0,
-        eggplants: userFruitsData.eggplants || 0
+        eggplants: userFruitsData.eggplants || 0,
+        tars: userFruitsData.tars || 0
     }
 
     return fruitsCountObject

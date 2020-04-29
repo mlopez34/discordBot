@@ -65,7 +65,7 @@ module.exports = {
             // after landing a successful damaging critical strike you can use this ability
             name: "Surge",
             abilityId: "surge",
-            description: "Heal the group for 20 + 35% of your current magical power. After landing a successful critical strike with any ability - surge becomes surge 2 for the next turn. Surge 2: Heal the group for 75 + 92% of your current magical damage",
+            description: "Heal the group for 20 + 35% of your current magical power. After landing a successful critical strike with any ability - surge becomes surge 2 for the next turn. Surge 2: Heal the group for 75 + 82% of your current magical damage",
             heal: 20,
             mdPercentage: 0.35,
             castAbilityAfterCriticalStrike: "surge2",
@@ -75,9 +75,9 @@ module.exports = {
         surge2: {
             name: "Surge 2",
             abilityId: "surge2",
-            description: "Heal the group for 75 + 92% of your current magical damage",
+            description: "Heal the group for 75 + 82% of your current magical damage",
             heal: 75,
-            mdPercentage: 0.92,
+            mdPercentage: 0.82,
             areawide: true,
             targets: "friendly"
         },
@@ -279,8 +279,8 @@ module.exports = {
             name: "Nourish",
             abilityId: "nourish",
             heal: 50,
-            mdPercentage: 0.8,
-            description: "Heal your target for 50 + 80% of your magical damage and 3 additional friendly players for 50%, 30%, and 10%",
+            mdPercentage: 0.75,
+            description: "Heal your target for 50 + 75% of your magical damage and 3 additional friendly players for 50%, 30%, and 10%",
             special: {
                 name: "Nourish",
                 abilityId: "nourish",
@@ -643,13 +643,13 @@ module.exports = {
             areawide: true,
             cooldown: 0,
             maxcooldown: 5,
-            description: "Heal the group over time for 100 + 55% of your magical damage over 4 turns 5 turn cooldown",
+            description: "Heal the group over time for 100 + 45% of your magical damage over 4 turns 5 turn cooldown",
             hot: {
                 name: "Sanctuary",
                 heal: 100,
                 emoji: ":ocean:",
                 areawide: true,
-                mdPercentage: .55,
+                mdPercentage: .45,
                 healingOnHotApply: false,
                 turnsToExpire: 4,
                 healingOnDotExpire: false,
@@ -675,11 +675,11 @@ module.exports = {
         elixir: {
             name: "Elixir",
             abilityId: "elixir",
-            description: "Heal the group for 35 + 60% of your current magical damage, 1 turn cooldown",
+            description: "Heal the group for 35 + 50% of your current magical damage, 1 turn cooldown",
             heal: 35,
             cooldown: 0,
             maxcooldown: 1,
-            mdPercentage: 0.6,
+            mdPercentage: 0.5,
             areawide: true,
             targets: "friendly"
         },
@@ -1482,6 +1482,36 @@ module.exports = {
                 abilityId: "pumped",
                 affectsGlobal: ["healingDonePercentage"],
                 multiplier: .01,
+                emoji: ""
+            }
+        },
+        auraOfDespairDone: {
+            passive: true,
+            abilityId: "auraOfDespairDone",
+            name: "Aura of Despair",
+            description: "Aura - increase the group's damage done by 30%",
+            buff: {
+                buff: true,
+                aura: true,
+                abilityId: "auraOfDespairDone",
+                affectsGlobal: ["damageDealtPercentage"],
+                multiplier: 100.3,
+                name: "Aura of Despair Done",
+                emoji: ":ideograph_advantage:"
+            }
+        },
+        auraOfDespairTaken: {
+            passive: true,
+            abilityId: "auraOfDespairTaken",
+            name: "Aura of Despair",
+            description: "Aura - increase the group's damage taken by 100%",
+            buff: {
+                buff: true,
+                aura: true,
+                abilityId: "auraOfDespairTaken",
+                affectsGlobal: ["damageTakenPercentage"],
+                multiplier: 2,
+                name: "Aura of Despair Taken",
                 emoji: ""
             }
         },

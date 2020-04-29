@@ -82,7 +82,8 @@ module.exports.createUserProfile = function(data, cb) {
                                 bananas: 0,
                                 pears: 0,
                                 tangerines: 0,
-                                eggplants: 0
+                                eggplants: 0,
+                                tars: 0
                             }
                             exports.createFruitsProfile(f, function(e, r){
                                 if (e){
@@ -351,10 +352,31 @@ module.exports.updateUserTacosTrickOrTreat = function(userId, tacos, cb) {
     });
 }
 
-module.exports.updateMarriedToId = function(userId, marriedToId, cb) {
-    var query = 'update ' + config.profileTable + ' set marriedtoid=$1, lastmarriage=$3 where discordid=$2'
-    var lastmarriage = new Date();
-    db.none(query, [marriedToId, userId, lastmarriage])
+module.exports.updateLastCommandTime = function(userId, command, cb) {
+    var query = 'update ' + config.profileTable + ' set '+ command + '=$1 where discordid=$2'
+    var now = new Date();
+    //// console.log("new last thank: " + lastThank);
+    db.none(query, [now, userId])
+    .then(function () {
+    cb(null, {
+        status: 'success',
+        message: 'added tacos'
+        });
+    })
+    .catch(function (err) {
+        cb(err);
+    });
+}
+
+module.exports.updateMarriedToId = function(userId, marriedToId, updateLastMarryDate, cb) {
+    var query = ""
+    if (updateLastMarryDate){
+        query = 'update ' + config.profileTable + ' set marriedtoid=$1, lastmarrydate=$3 where discordid=$2'
+    }else{
+        query = 'update ' + config.profileTable + ' set marriedtoid=$1 where discordid=$2'
+    }
+    var lastmarrydate = new Date();
+    db.none(query, [marriedToId, userId, lastmarrydate])
     .then(function () {
     cb(null, {
         status: 'success',
@@ -1264,14 +1286,16 @@ module.exports.createUserStatistics = function(userId, columnName, statisticCoun
         tacospickedup: 0,
         slotscount: 0,
         soilcount: 0,
-        polishcount: 0
+        polishcount: 0,
+        fruitswon: 0,
+        harvestcount: 0,
     }
     if (columnName){
         userStatistics[columnName] = statisticCount;
     }
     
-    var query = 'insert into '+ config.statisticsTable + '(discordId, thankCount, sorryCount, welcomeCount, scavengeCount, thrownAtCount, thrownToCount, giveCount, rocksthrown, maxextratacos, tailorcount, poisonedtacoscount, tacospickedup, slotscount, soilcount )' +
-        'values(${discordId}, ${thankCount}, ${sorryCount}, ${welcomeCount},  ${scavengeCount}, ${thrownAtCount}, ${thrownToCount}, ${giveCount}, ${rocksthrown}, ${maxextratacos}, ${tailorcount}, ${poisonedtacoscount}, ${tacospickedup}, ${slotscount}, ${soilcount})'
+    var query = 'insert into '+ config.statisticsTable + '(discordId, thankCount, sorryCount, welcomeCount, scavengeCount, thrownAtCount, thrownToCount, giveCount, rocksthrown, maxextratacos, tailorcount, poisonedtacoscount, tacospickedup, slotscount, soilcount, polishcount, fruitswon, harvestcount )' +
+        'values(${discordId}, ${thankCount}, ${sorryCount}, ${welcomeCount},  ${scavengeCount}, ${thrownAtCount}, ${thrownToCount}, ${giveCount}, ${rocksthrown}, ${maxextratacos}, ${tailorcount}, ${poisonedtacoscount}, ${tacospickedup}, ${slotscount}, ${soilcount}, ${polishcount}, ${fruitswon}, ${harvestcount})'
     db.none(query, userStatistics)
         .then(function () {
         cb(null, {
@@ -1351,6 +1375,22 @@ module.exports.updateQuestlineStage = function(discordUserId, questline, stage, 
         });
     })
     .catch(function (err) {
+        cb(err);
+    });
+}
+
+module.exports.updateUserRitual = function(ritualName, userId, cb) {
+    var query = 'update ' + config.profileTable + ' set ritualstring=$1, lastritualdate=$3 where discordid=$2'
+    var lastRitual = new Date();
+    db.none(query, [ritualName, userId, lastRitual])
+    .then(function () {
+    cb(null, {
+        status: 'success',
+        message: 'updated pet'
+        });
+    })
+    .catch(function (err) {
+        // console.log(err);
         cb(err);
     });
 }
@@ -1937,7 +1977,7 @@ module.exports.getUserItemsByShortname = function(discordId, shortname, limit, c
     'FROM ' + config.inventoryTable + ' AS userinventorytable ' +
     'INNER JOIN ' + config.itemsTable + ' AS itemstable ' +
     'ON userinventorytable.itemid = itemstable.id ' +
-    'WHERE userinventorytable.discordId = $1 AND userinventorytable.status is null AND (itemstable.itemshortname = $2 OR itemstable.itemraritycategory = \'artifact+\')'
+    'WHERE userinventorytable.discordId = $1 AND userinventorytable.status is null AND (itemstable.itemshortname = $2 OR itemstable.essencelevel is not null  OR itemstable.itemraritycategory = \'artifact+\')'
     'ORDER BY userinventorytable.id DESC' +
     'LIMIT $3' 
     
@@ -2202,8 +2242,8 @@ module.exports.createRpgProfile = function(data, cb){
 
 // create fruits profile
 module.exports.createFruitsProfile = function(data, cb){
-    var query = 'insert into '+ config.userFruitTable + '(discordId, tulips, roses, evergreens, cacti, palms, blossoms, apples, sunflowers, hibiscuses, bananas, pears, tangerines, eggplants)' +
-    'values(${discordId}, ${tulips}, ${roses}, ${evergreens}, ${cacti}, ${palms}, ${blossoms}, ${apples}, ${sunflowers}, ${hibiscuses}, ${bananas}, ${pears}, ${tangerines}, ${eggplants})'
+    var query = 'insert into '+ config.userFruitTable + '(discordId, tulips, roses, evergreens, cacti, palms, blossoms, apples, sunflowers, hibiscuses, bananas, pears, tangerines, eggplants, tars)' +
+    'values(${discordId}, ${tulips}, ${roses}, ${evergreens}, ${cacti}, ${palms}, ${blossoms}, ${apples}, ${sunflowers}, ${hibiscuses}, ${bananas}, ${pears}, ${tangerines}, ${eggplants}, ${tars})'
     // console.log(query);
     db.none(query, data)
     .then(function () {

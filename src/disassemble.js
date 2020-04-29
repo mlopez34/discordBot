@@ -375,6 +375,34 @@ var armamentEssenceLevels = {
         crystalRarity: "artifact",
         essenceEmoji: "💠",
         crystalEmoji: ":rosette:"
+    },
+    "myth+": {
+        level: 3,
+        essenceRarity: "artifact",
+        crystalRarity: "artifact",
+        essenceEmoji: "💠",
+        crystalEmoji: ":rosette:"
+    },
+    "myth++": {
+        level: 3,
+        essenceRarity: "artifact",
+        crystalRarity: "artifact",
+        essenceEmoji: "💠",
+        crystalEmoji: ":rosette:"
+    },
+    "myth+++": {
+        level: 4,
+        essenceRarity: "artifact",
+        crystalRarity: "artifact",
+        essenceEmoji: "💠",
+        crystalEmoji: ":rosette:"
+    },
+    "myth++++": {
+        level: 5,
+        essenceRarity: "artifact",
+        crystalRarity: "artifact",
+        essenceEmoji: "💠",
+        crystalEmoji: ":rosette:"
     }
 }
 
@@ -716,6 +744,69 @@ module.exports.rollForArmamentStats = function(itemToCreateArmament){
 
         statMap.luckplus.floor = -40
         statMap.luckplus.ceiling = 55
+    }else if (itemRarity == "myth+"){
+        statMap.hpplus.floor = -135
+        statMap.hpplus.ceiling = 260
+
+        statMap.adplus.floor = -140
+        statMap.adplus.ceiling = 275
+
+        statMap.mdplus.floor = -140
+        statMap.mdplus.ceiling = 275
+
+        statMap.armorplus.floor = -155
+        statMap.armorplus.ceiling = 300
+
+        statMap.spiritplus.floor = -55
+        statMap.spiritplus.ceiling = 300
+
+        statMap.critplus.floor = -140
+        statMap.critplus.ceiling = 165
+
+        statMap.luckplus.floor = -40
+        statMap.luckplus.ceiling = 55
+    }else if (itemRarity == "myth++"){
+        statMap.hpplus.floor = -135
+        statMap.hpplus.ceiling = 260
+
+        statMap.adplus.floor = -140
+        statMap.adplus.ceiling = 275
+
+        statMap.mdplus.floor = -140
+        statMap.mdplus.ceiling = 275
+
+        statMap.armorplus.floor = -155
+        statMap.armorplus.ceiling = 300
+
+        statMap.spiritplus.floor = -55
+        statMap.spiritplus.ceiling = 300
+
+        statMap.critplus.floor = -140
+        statMap.critplus.ceiling = 165
+
+        statMap.luckplus.floor = -140
+        statMap.luckplus.ceiling = 155
+    }else if (itemRarity == "myth+++"){
+        statMap.hpplus.floor = -135
+        statMap.hpplus.ceiling = 260
+
+        statMap.adplus.floor = -140
+        statMap.adplus.ceiling = 275
+
+        statMap.mdplus.floor = -140
+        statMap.mdplus.ceiling = 275
+
+        statMap.armorplus.floor = -155
+        statMap.armorplus.ceiling = 300
+
+        statMap.spiritplus.floor = -55
+        statMap.spiritplus.ceiling = 300
+
+        statMap.critplus.floor = -140
+        statMap.critplus.ceiling = 165
+
+        statMap.luckplus.floor = -140
+        statMap.luckplus.ceiling = 155
     }
 
     if (itemSlot == "weapon"
@@ -1198,14 +1289,12 @@ module.exports.performDisassemble =  function(message, discordUserId, itemsToDis
                 if (error){
                     console.log(error)
                     cb(error);
-                }
-                else{
+                }else{
                     // added item, use the disassembled item
                     profileDB.bulkUpdateItemStatus( [ itemsToDisassemble ], "disassembled", function(updateBulkErr, updateBulkRes){
                         if (updateBulkErr){
                             cb(updateBulkErr);
-                        }
-                        else{
+                        }else{
                             cb(null, itemsObtained);
                         }
                     })

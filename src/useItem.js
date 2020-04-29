@@ -215,8 +215,7 @@ module.exports.usePieceOfWood = function(message, discordUserId, piecesOfWoodToU
                             if (updateBulkErr){
                                 exports.setItemsLock(message.author.id, false)
                                 cb(updateBulkErr);
-                            }
-                            else{
+                            }else{
                                 exports.setItemsLock(message.author.id, false)
                                 var woodTosed = currentWoodTossed ? currentWoodTossed + WOOD_TO_TOSS_PER_USE : WOOD_TO_TOSS_PER_USE;
                                 cb(null, woodTosed)
