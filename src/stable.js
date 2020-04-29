@@ -337,6 +337,9 @@ function petFetchItemBasedOnArea(message, eventParams){
                 if (eventParams.stableRes && eventParams.stableRes.data.stablelevel >= PETS_FETCH_ANCIENT_MATS_LEVEL){
                     let itemsObtainedArray = []
                     let getMatRoll = Math.floor(Math.random() * 150) + 1;
+                    if (eventParams.cursed){
+                        getMatRoll = Math.floor(Math.random() * 50) + 1;
+                    }
                     if (getMatRoll <= eventParams.fetchCD){
                         // higher CD higher chance user gets a random ancient mat
                         let matItems = filterForAreaMatsAncient(eventParams.allItems, rpgRes.data.currentarea, getRpgZone(rpgRes.data.currentarea))
@@ -352,6 +355,9 @@ function petFetchItemBasedOnArea(message, eventParams){
                 if (eventParams.stableRes && eventParams.stableRes.data.stablelevel >= PETS_FETCH_RARE_MATS_LEVEL){
                     let itemsObtainedArray = []
                     let getMatRoll = Math.floor(Math.random() * 75) + 1;
+                    if (eventParams.cursed){
+                        getMatRoll = Math.floor(Math.random() * 25) + 1;
+                    }
                     if (getMatRoll <= eventParams.fetchCD){
                         // higher CD higher chance user gets a random ancient mat
                         let matItems = filterForAreaMatsRare(eventParams.allItems, rpgRes.data.currentarea, getRpgZone(rpgRes.data.currentarea))

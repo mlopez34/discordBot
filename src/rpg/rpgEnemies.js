@@ -411,6 +411,7 @@ module.exports = {
                 buffs: [
                     {
                         name: "frenzy",
+                        unableToGainBuff: "entombAll20",
                         emoji: "<:overmind:479298213904646147>",
                         onTurnEnd: {
                             attackDmgPlus : 200,
@@ -2532,6 +2533,28 @@ module.exports = {
                 spirit: 400,
                 difficulty: "easy",
                 element: "normal"
+            },
+            miscreant: {
+                enemyIdName : "miscreant",
+                name: "Miscreant",
+                abilities: ["attack", "attack", "tackle", "tackle", "weaken"],
+                buffs: [],
+                keystoneStats: {
+                    hp: [1200, 3500, 6200, 10000, 15000 ],
+                    attackDmg: [300, 500, 900, 1500, 2300],
+                    magicDmg: [300, 500, 900, 1500, 2300],
+                    abilities: []
+                },
+                hpPerPartyMember: 270,
+                adPerPartyMember: 9,
+                mdPerPartyMember: 9,
+                hp: 330,
+                attackDmg: 160,
+                magicDmg: 179,
+                armor: 290,
+                spirit: 400,
+                difficulty: "easy",
+                element: "normal"
             }
         },
         medium: {
@@ -3110,6 +3133,31 @@ module.exports = {
                 hp: 640,
                 attackDmg: 190,
                 magicDmg: 190,
+                armor: 350,
+                spirit: 550,
+                difficulty: "medium",
+                element: "normal"
+            },
+            aberration: {
+                enemyIdName : "aberration",
+                name: "Aberration",
+                abilities: ["sting", "sting", "inject", "inject", "poison"],
+                buffs: [],
+                keystoneStats: {
+                    hp: [1200, 3500, 6200, 10000, 15000 ],
+                    attackDmg: [300, 500, 900, 1500, 2300],
+                    magicDmg: [300, 500, 900, 1500, 2300],
+                    abilities: []
+                },
+                effectsOnDeath:[
+
+                ],
+                hpPerPartyMember: 490,
+                adPerPartyMember: 18,
+                mdPerPartyMember: 18,
+                hp: 640,
+                attackDmg: 90,
+                magicDmg: 90,
                 armor: 350,
                 spirit: 550,
                 difficulty: "medium",
@@ -5342,7 +5390,7 @@ module.exports = {
             },
             gargantua: {
                 enemyIdName : "gargantua",
-                name: "Big Foot",
+                name: "Gargantua",
                 abilities: [
                     "attack", "attack", "iceshards", "iceshards", "slash", "slash", "cripple"
                 ],
@@ -5351,8 +5399,8 @@ module.exports = {
                         name: "frenzy",
                         emoji: "<:frenzy:479298214453968896>",
                         onTurnEnd: {
-                            attackDmgPlus : 85,
-                            magicDmgPlus : 85,
+                            attackDmgPlus : 385,
+                            magicDmgPlus : 385,
                             everyNTurns: 2,
                             startTurn: 2
                         }
@@ -5369,11 +5417,50 @@ module.exports = {
                     "focus"
                 ],
                 hpPerPartyMember: 1222,
-                hp: 950,
+                hp: 1950,
                 adPerPartyMember: 29,
                 mdPerPartyMember: 29,
-                attackDmg: 240,
-                magicDmg: 190,
+                attackDmg: 1240,
+                magicDmg: 1190,
+                armor: 1600,
+                spirit: 1600,
+                difficulty: "boss",
+                element: "normal"
+            },
+            cerberus: {
+                enemyIdName : "cerberus",
+                name: "Cerberus",
+                abilities: [
+                    "attack", "attack", "iceshards", "iceshards", "slash", "slash", "cripple"
+                ],
+                buffs: [
+                    {
+                        name: "frenzy",
+                        emoji: "<:frenzy:479298214453968896>",
+                        onTurnEnd: {
+                            attackDmgPlus : 385,
+                            magicDmgPlus : 385,
+                            everyNTurns: 2,
+                            startTurn: 2
+                        }
+                    }
+                ],
+                keystoneStats: {
+                    hp: [1200, 3500, 6200, 10000, 15000 ],
+                    attackDmg: [300, 500, 900, 1500, 2300],
+                    magicDmg: [300, 500, 900, 1500, 2300],
+                    abilities: []
+                },
+                endOfTurnEvents : [
+                    "echo",
+                    "focus"
+                ],
+                hpPerPartyMember: 1222,
+                hp: 1950,
+                adPerPartyMember: 29,
+                mdPerPartyMember: 29,
+                attackDmg: 1240,
+                magicDmg: 1190,
                 armor: 1600,
                 spirit: 1600,
                 difficulty: "boss",
@@ -6584,6 +6671,1196 @@ module.exports = {
                     element: "normal"
                 }
             ],
+            "explorationDemon": [
+                {
+                    name: "Andromalius",
+                    xp: 580,
+                    abilities: [
+                        "attack",
+                        "flameblast",
+                        "poison",
+                        "poke"
+                    ],
+                    buffs: [
+                        {
+                            name: "frenzy",
+                            emoji: "<:frenzy:479298214453968896>",
+                            onTurnEnd: {
+                                attackDmgPlus : 95,
+                                magicDmgPlus : 95,
+                                everyNTurns: 3,
+                                startTurn: 4
+                            }
+                        }
+                    ],
+                    abilityOrder: [
+                        0, 1, 2, 3, 0, 0, 2, 1, 0, 0, 0
+                    ],
+                    endOfTurnEvents : [
+                        "focus",
+                        "soulBurn",
+                        "totemOfDoom80",
+                        "totemOfDoom60",
+                        "totemOfDoom60",
+                        "totemOfDoom40",
+                        "totemOfDoom40",
+                        "totemOfDoom40",
+                        "totemOfDoom20",
+                        "totemOfDoom20",
+                        "totemOfDoom20",
+                        "totemOfDoom20",
+                    ],
+                    hp: 52600,
+                    attackDmg: 700,
+                    magicDmg: 670,
+                    armor: 2350,
+                    spirit: 2100,
+                    difficulty: "special",
+                    element: "earth"
+                },
+                {
+                    name: "Three Headed Beast",
+                    abilities: ["ferociousBite", "ferociousBite", "claw", "claw", "poison", "protect"],
+                    buffs: [],
+                    hpPerPartyMember: 130,
+                    adPerPartyMember: 8,
+                    mdPerPartyMember: 8,
+                    hp: 8350,
+                    attackDmg: 360,
+                    magicDmg: 275,
+                    armor: 1450,
+                    spirit: 1370,
+                    difficulty: "easy",
+                    element: "normal"
+                },
+                {
+                    name: "Demonic Presence",
+                    abilities: ["attack", "attack", "poke", "poke", "poke", "protect"],
+                    buffs: [],
+                    hpPerPartyMember: 130,
+                    adPerPartyMember: 8,
+                    mdPerPartyMember: 8,
+                    hp: 4350,
+                    attackDmg: 360,
+                    magicDmg: 275,
+                    armor: 1450,
+                    spirit: 1370,
+                    difficulty: "easy",
+                    element: "normal"
+                },
+                {
+                    name: "Diabloic Ghoul",
+                    abilities: ["attack", "ferociousBite", "rockthrow", "drain", "slash", "barrier"],
+                    buffs: [],
+                    hpPerPartyMember: 130,
+                    adPerPartyMember: 8,
+                    mdPerPartyMember: 8,
+                    hp: 5350,
+                    attackDmg: 360,
+                    magicDmg: 275,
+                    armor: 1450,
+                    spirit: 1370,
+                    difficulty: "easy",
+                    element: "normal"
+                },
+                {
+                    name: "Zombie",
+                    abilities: ["claw", "claw", "rockthrow", "rockthrow", "slash", "protect"],
+                    buffs: [],
+                    hpPerPartyMember: 130,
+                    adPerPartyMember: 8,
+                    mdPerPartyMember: 8,
+                    hp: 3350,
+                    attackDmg: 360,
+                    magicDmg: 275,
+                    armor: 1450,
+                    spirit: 1370,
+                    difficulty: "easy",
+                    element: "normal"
+                }
+            ],
+            /// Add all the time travel special events
+            "timewarden": [
+                {
+                    name: "Time Warden",
+                    xp: 580,
+                    abilities: [
+                        "attack",
+                        "flameblast",
+                        "poison",
+                        "poke"
+                    ],
+                    buffs: [
+                        {
+                            name: "frenzy",
+                            emoji: "<:frenzy:479298214453968896>",
+                            onTurnEnd: {
+                                attackDmgPlus : 795,
+                                magicDmgPlus : 795,
+                                everyNTurns: 3,
+                                startTurn: 4
+                            }
+                        }
+                    ],
+                    abilityOrder: [
+                        0, 1, 2, 3, 0, 0, 2, 1, 0, 0, 0
+                    ],
+                    endOfTurnEvents : [
+                        "focus",
+                        "soulBurn",
+                        "totemOfDoom80",
+                        "totemOfDoom60",
+                        "totemOfDoom60",
+                        "totemOfDoom40",
+                        "totemOfDoom40",
+                        "totemOfDoom40",
+                        "totemOfDoom20",
+                        "totemOfDoom20",
+                        "totemOfDoom20",
+                        "totemOfDoom20",
+                    ],
+                    hp: 189600,
+                    attackDmg: 4700,
+                    magicDmg: 4670,
+                    armor: 2350,
+                    spirit: 2100,
+                    difficulty: "special",
+                    element: "earth"
+                },
+                {
+                    name: "Time Disturbance",
+                    abilities: ["ferociousBite", "ferociousBite", "claw", "claw", "poison", "protect"],
+                    buffs: [],
+                    hpPerPartyMember: 1130,
+                    adPerPartyMember: 98,
+                    mdPerPartyMember: 98,
+                    hp: 38350,
+                    attackDmg: 2360,
+                    magicDmg: 2275,
+                    armor: 1450,
+                    spirit: 1370,
+                    difficulty: "easy",
+                    element: "normal"
+                },
+                {
+                    name: "Time Disturbance",
+                    abilities: ["ferociousBite", "ferociousBite", "claw", "claw", "poison", "protect"],
+                    buffs: [],
+                    hpPerPartyMember: 1130,
+                    adPerPartyMember: 98,
+                    mdPerPartyMember: 98,
+                    hp: 38350,
+                    attackDmg: 2360,
+                    magicDmg: 2275,
+                    armor: 1450,
+                    spirit: 1370,
+                    difficulty: "easy",
+                    element: "normal"
+                },
+                {
+                    name: "Time Disturbance",
+                    abilities: ["ferociousBite", "ferociousBite", "claw", "claw", "poison", "protect"],
+                    buffs: [],
+                    hpPerPartyMember: 1130,
+                    adPerPartyMember: 98,
+                    mdPerPartyMember: 98,
+                    hp: 38350,
+                    attackDmg: 2360,
+                    magicDmg: 2275,
+                    armor: 1450,
+                    spirit: 1370,
+                    difficulty: "easy",
+                    element: "normal"
+                },
+                {
+                    name: "Time Disturbance",
+                    abilities: ["ferociousBite", "ferociousBite", "claw", "claw", "poison", "protect"],
+                    buffs: [],
+                    hpPerPartyMember: 1130,
+                    adPerPartyMember: 98,
+                    mdPerPartyMember: 98,
+                    hp: 38350,
+                    attackDmg: 2360,
+                    magicDmg: 2275,
+                    armor: 1450,
+                    spirit: 1370,
+                    difficulty: "easy",
+                    element: "normal"
+                },
+            ],
+            "normandy": [
+                {
+                    name: "Andromalius",
+                    xp: 580,
+                    abilities: [
+                        "attack",
+                        "flameblast",
+                        "poison",
+                        "poke"
+                    ],
+                    buffs: [
+                        {
+                            name: "frenzy",
+                            emoji: "<:frenzy:479298214453968896>",
+                            onTurnEnd: {
+                                attackDmgPlus : 95,
+                                magicDmgPlus : 95,
+                                everyNTurns: 3,
+                                startTurn: 4
+                            }
+                        }
+                    ],
+                    abilityOrder: [
+                        0, 1, 2, 3, 0, 0, 2, 1, 0, 0, 0
+                    ],
+                    endOfTurnEvents : [
+                        "focus",
+                        "soulBurn",
+                        "totemOfDoom80",
+                        "totemOfDoom60",
+                        "totemOfDoom60",
+                        "totemOfDoom40",
+                        "totemOfDoom40",
+                        "totemOfDoom40",
+                        "totemOfDoom20",
+                        "totemOfDoom20",
+                        "totemOfDoom20",
+                        "totemOfDoom20",
+                    ],
+                    hp: 52600,
+                    attackDmg: 700,
+                    magicDmg: 670,
+                    armor: 2350,
+                    spirit: 2100,
+                    difficulty: "special",
+                    element: "earth"
+                },
+                {
+                    name: "Three Headed Beast",
+                    abilities: ["ferociousBite", "ferociousBite", "claw", "claw", "poison", "protect"],
+                    buffs: [],
+                    hpPerPartyMember: 130,
+                    adPerPartyMember: 8,
+                    mdPerPartyMember: 8,
+                    hp: 8350,
+                    attackDmg: 360,
+                    magicDmg: 275,
+                    armor: 1450,
+                    spirit: 1370,
+                    difficulty: "easy",
+                    element: "normal"
+                },
+                {
+                    name: "Demonic Presence",
+                    abilities: ["attack", "attack", "poke", "poke", "poke", "protect"],
+                    buffs: [],
+                    hpPerPartyMember: 130,
+                    adPerPartyMember: 8,
+                    mdPerPartyMember: 8,
+                    hp: 4350,
+                    attackDmg: 360,
+                    magicDmg: 275,
+                    armor: 1450,
+                    spirit: 1370,
+                    difficulty: "easy",
+                    element: "normal"
+                },
+                {
+                    name: "Diabloic Ghoul",
+                    abilities: ["attack", "ferociousBite", "rockthrow", "drain", "slash", "barrier"],
+                    buffs: [],
+                    hpPerPartyMember: 130,
+                    adPerPartyMember: 8,
+                    mdPerPartyMember: 8,
+                    hp: 5350,
+                    attackDmg: 360,
+                    magicDmg: 275,
+                    armor: 1450,
+                    spirit: 1370,
+                    difficulty: "easy",
+                    element: "normal"
+                },
+                {
+                    name: "Zombie",
+                    abilities: ["claw", "claw", "rockthrow", "rockthrow", "slash", "protect"],
+                    buffs: [],
+                    hpPerPartyMember: 130,
+                    adPerPartyMember: 8,
+                    mdPerPartyMember: 8,
+                    hp: 3350,
+                    attackDmg: 360,
+                    magicDmg: 275,
+                    armor: 1450,
+                    spirit: 1370,
+                    difficulty: "easy",
+                    element: "normal"
+                }
+            ],
+            "blackplague": [
+                {
+                    name: "Andromalius",
+                    xp: 580,
+                    abilities: [
+                        "attack",
+                        "flameblast",
+                        "poison",
+                        "poke"
+                    ],
+                    buffs: [
+                        {
+                            name: "frenzy",
+                            emoji: "<:frenzy:479298214453968896>",
+                            onTurnEnd: {
+                                attackDmgPlus : 95,
+                                magicDmgPlus : 95,
+                                everyNTurns: 3,
+                                startTurn: 4
+                            }
+                        }
+                    ],
+                    abilityOrder: [
+                        0, 1, 2, 3, 0, 0, 2, 1, 0, 0, 0
+                    ],
+                    endOfTurnEvents : [
+                        "focus",
+                        "soulBurn",
+                        "totemOfDoom80",
+                        "totemOfDoom60",
+                        "totemOfDoom60",
+                        "totemOfDoom40",
+                        "totemOfDoom40",
+                        "totemOfDoom40",
+                        "totemOfDoom20",
+                        "totemOfDoom20",
+                        "totemOfDoom20",
+                        "totemOfDoom20",
+                    ],
+                    hp: 52600,
+                    attackDmg: 700,
+                    magicDmg: 670,
+                    armor: 2350,
+                    spirit: 2100,
+                    difficulty: "special",
+                    element: "earth"
+                },
+                {
+                    name: "Three Headed Beast",
+                    abilities: ["ferociousBite", "ferociousBite", "claw", "claw", "poison", "protect"],
+                    buffs: [],
+                    hpPerPartyMember: 130,
+                    adPerPartyMember: 8,
+                    mdPerPartyMember: 8,
+                    hp: 8350,
+                    attackDmg: 360,
+                    magicDmg: 275,
+                    armor: 1450,
+                    spirit: 1370,
+                    difficulty: "easy",
+                    element: "normal"
+                },
+                {
+                    name: "Demonic Presence",
+                    abilities: ["attack", "attack", "poke", "poke", "poke", "protect"],
+                    buffs: [],
+                    hpPerPartyMember: 130,
+                    adPerPartyMember: 8,
+                    mdPerPartyMember: 8,
+                    hp: 4350,
+                    attackDmg: 360,
+                    magicDmg: 275,
+                    armor: 1450,
+                    spirit: 1370,
+                    difficulty: "easy",
+                    element: "normal"
+                },
+                {
+                    name: "Diabloic Ghoul",
+                    abilities: ["attack", "ferociousBite", "rockthrow", "drain", "slash", "barrier"],
+                    buffs: [],
+                    hpPerPartyMember: 130,
+                    adPerPartyMember: 8,
+                    mdPerPartyMember: 8,
+                    hp: 5350,
+                    attackDmg: 360,
+                    magicDmg: 275,
+                    armor: 1450,
+                    spirit: 1370,
+                    difficulty: "easy",
+                    element: "normal"
+                },
+                {
+                    name: "Zombie",
+                    abilities: ["claw", "claw", "rockthrow", "rockthrow", "slash", "protect"],
+                    buffs: [],
+                    hpPerPartyMember: 130,
+                    adPerPartyMember: 8,
+                    mdPerPartyMember: 8,
+                    hp: 3350,
+                    attackDmg: 360,
+                    magicDmg: 275,
+                    armor: 1450,
+                    spirit: 1370,
+                    difficulty: "easy",
+                    element: "normal"
+                }
+            ],
+            "pyramids": [
+                {
+                    name: "Andromalius",
+                    xp: 580,
+                    abilities: [
+                        "attack",
+                        "flameblast",
+                        "poison",
+                        "poke"
+                    ],
+                    buffs: [
+                        {
+                            name: "frenzy",
+                            emoji: "<:frenzy:479298214453968896>",
+                            onTurnEnd: {
+                                attackDmgPlus : 95,
+                                magicDmgPlus : 95,
+                                everyNTurns: 3,
+                                startTurn: 4
+                            }
+                        }
+                    ],
+                    abilityOrder: [
+                        0, 1, 2, 3, 0, 0, 2, 1, 0, 0, 0
+                    ],
+                    endOfTurnEvents : [
+                        "focus",
+                        "soulBurn",
+                        "totemOfDoom80",
+                        "totemOfDoom60",
+                        "totemOfDoom60",
+                        "totemOfDoom40",
+                        "totemOfDoom40",
+                        "totemOfDoom40",
+                        "totemOfDoom20",
+                        "totemOfDoom20",
+                        "totemOfDoom20",
+                        "totemOfDoom20",
+                    ],
+                    hp: 52600,
+                    attackDmg: 700,
+                    magicDmg: 670,
+                    armor: 2350,
+                    spirit: 2100,
+                    difficulty: "special",
+                    element: "earth"
+                },
+                {
+                    name: "Three Headed Beast",
+                    abilities: ["ferociousBite", "ferociousBite", "claw", "claw", "poison", "protect"],
+                    buffs: [],
+                    hpPerPartyMember: 130,
+                    adPerPartyMember: 8,
+                    mdPerPartyMember: 8,
+                    hp: 8350,
+                    attackDmg: 360,
+                    magicDmg: 275,
+                    armor: 1450,
+                    spirit: 1370,
+                    difficulty: "easy",
+                    element: "normal"
+                },
+                {
+                    name: "Demonic Presence",
+                    abilities: ["attack", "attack", "poke", "poke", "poke", "protect"],
+                    buffs: [],
+                    hpPerPartyMember: 130,
+                    adPerPartyMember: 8,
+                    mdPerPartyMember: 8,
+                    hp: 4350,
+                    attackDmg: 360,
+                    magicDmg: 275,
+                    armor: 1450,
+                    spirit: 1370,
+                    difficulty: "easy",
+                    element: "normal"
+                },
+                {
+                    name: "Diabloic Ghoul",
+                    abilities: ["attack", "ferociousBite", "rockthrow", "drain", "slash", "barrier"],
+                    buffs: [],
+                    hpPerPartyMember: 130,
+                    adPerPartyMember: 8,
+                    mdPerPartyMember: 8,
+                    hp: 5350,
+                    attackDmg: 360,
+                    magicDmg: 275,
+                    armor: 1450,
+                    spirit: 1370,
+                    difficulty: "easy",
+                    element: "normal"
+                },
+                {
+                    name: "Zombie",
+                    abilities: ["claw", "claw", "rockthrow", "rockthrow", "slash", "protect"],
+                    buffs: [],
+                    hpPerPartyMember: 130,
+                    adPerPartyMember: 8,
+                    mdPerPartyMember: 8,
+                    hp: 3350,
+                    attackDmg: 360,
+                    magicDmg: 275,
+                    armor: 1450,
+                    spirit: 1370,
+                    difficulty: "easy",
+                    element: "normal"
+                }
+            ],
+            "constantinople": [
+                {
+                    name: "Andromalius",
+                    xp: 580,
+                    abilities: [
+                        "attack",
+                        "flameblast",
+                        "poison",
+                        "poke"
+                    ],
+                    buffs: [
+                        {
+                            name: "frenzy",
+                            emoji: "<:frenzy:479298214453968896>",
+                            onTurnEnd: {
+                                attackDmgPlus : 95,
+                                magicDmgPlus : 95,
+                                everyNTurns: 3,
+                                startTurn: 4
+                            }
+                        }
+                    ],
+                    abilityOrder: [
+                        0, 1, 2, 3, 0, 0, 2, 1, 0, 0, 0
+                    ],
+                    endOfTurnEvents : [
+                        "focus",
+                        "soulBurn",
+                        "totemOfDoom80",
+                        "totemOfDoom60",
+                        "totemOfDoom60",
+                        "totemOfDoom40",
+                        "totemOfDoom40",
+                        "totemOfDoom40",
+                        "totemOfDoom20",
+                        "totemOfDoom20",
+                        "totemOfDoom20",
+                        "totemOfDoom20",
+                    ],
+                    hp: 52600,
+                    attackDmg: 700,
+                    magicDmg: 670,
+                    armor: 2350,
+                    spirit: 2100,
+                    difficulty: "special",
+                    element: "earth"
+                },
+                {
+                    name: "Three Headed Beast",
+                    abilities: ["ferociousBite", "ferociousBite", "claw", "claw", "poison", "protect"],
+                    buffs: [],
+                    hpPerPartyMember: 130,
+                    adPerPartyMember: 8,
+                    mdPerPartyMember: 8,
+                    hp: 8350,
+                    attackDmg: 360,
+                    magicDmg: 275,
+                    armor: 1450,
+                    spirit: 1370,
+                    difficulty: "easy",
+                    element: "normal"
+                },
+                {
+                    name: "Demonic Presence",
+                    abilities: ["attack", "attack", "poke", "poke", "poke", "protect"],
+                    buffs: [],
+                    hpPerPartyMember: 130,
+                    adPerPartyMember: 8,
+                    mdPerPartyMember: 8,
+                    hp: 4350,
+                    attackDmg: 360,
+                    magicDmg: 275,
+                    armor: 1450,
+                    spirit: 1370,
+                    difficulty: "easy",
+                    element: "normal"
+                },
+                {
+                    name: "Diabloic Ghoul",
+                    abilities: ["attack", "ferociousBite", "rockthrow", "drain", "slash", "barrier"],
+                    buffs: [],
+                    hpPerPartyMember: 130,
+                    adPerPartyMember: 8,
+                    mdPerPartyMember: 8,
+                    hp: 5350,
+                    attackDmg: 360,
+                    magicDmg: 275,
+                    armor: 1450,
+                    spirit: 1370,
+                    difficulty: "easy",
+                    element: "normal"
+                },
+                {
+                    name: "Zombie",
+                    abilities: ["claw", "claw", "rockthrow", "rockthrow", "slash", "protect"],
+                    buffs: [],
+                    hpPerPartyMember: 130,
+                    adPerPartyMember: 8,
+                    mdPerPartyMember: 8,
+                    hp: 3350,
+                    attackDmg: 360,
+                    magicDmg: 275,
+                    armor: 1450,
+                    spirit: 1370,
+                    difficulty: "easy",
+                    element: "normal"
+                }
+            ],
+            "troy": [
+                {
+                    name: "Andromalius",
+                    xp: 580,
+                    abilities: [
+                        "attack",
+                        "flameblast",
+                        "poison",
+                        "poke"
+                    ],
+                    buffs: [
+                        {
+                            name: "frenzy",
+                            emoji: "<:frenzy:479298214453968896>",
+                            onTurnEnd: {
+                                attackDmgPlus : 95,
+                                magicDmgPlus : 95,
+                                everyNTurns: 3,
+                                startTurn: 4
+                            }
+                        }
+                    ],
+                    abilityOrder: [
+                        0, 1, 2, 3, 0, 0, 2, 1, 0, 0, 0
+                    ],
+                    endOfTurnEvents : [
+                        "focus",
+                        "soulBurn",
+                        "totemOfDoom80",
+                        "totemOfDoom60",
+                        "totemOfDoom60",
+                        "totemOfDoom40",
+                        "totemOfDoom40",
+                        "totemOfDoom40",
+                        "totemOfDoom20",
+                        "totemOfDoom20",
+                        "totemOfDoom20",
+                        "totemOfDoom20",
+                    ],
+                    hp: 52600,
+                    attackDmg: 700,
+                    magicDmg: 670,
+                    armor: 2350,
+                    spirit: 2100,
+                    difficulty: "special",
+                    element: "earth"
+                },
+                {
+                    name: "Three Headed Beast",
+                    abilities: ["ferociousBite", "ferociousBite", "claw", "claw", "poison", "protect"],
+                    buffs: [],
+                    hpPerPartyMember: 130,
+                    adPerPartyMember: 8,
+                    mdPerPartyMember: 8,
+                    hp: 8350,
+                    attackDmg: 360,
+                    magicDmg: 275,
+                    armor: 1450,
+                    spirit: 1370,
+                    difficulty: "easy",
+                    element: "normal"
+                },
+                {
+                    name: "Demonic Presence",
+                    abilities: ["attack", "attack", "poke", "poke", "poke", "protect"],
+                    buffs: [],
+                    hpPerPartyMember: 130,
+                    adPerPartyMember: 8,
+                    mdPerPartyMember: 8,
+                    hp: 4350,
+                    attackDmg: 360,
+                    magicDmg: 275,
+                    armor: 1450,
+                    spirit: 1370,
+                    difficulty: "easy",
+                    element: "normal"
+                },
+                {
+                    name: "Diabloic Ghoul",
+                    abilities: ["attack", "ferociousBite", "rockthrow", "drain", "slash", "barrier"],
+                    buffs: [],
+                    hpPerPartyMember: 130,
+                    adPerPartyMember: 8,
+                    mdPerPartyMember: 8,
+                    hp: 5350,
+                    attackDmg: 360,
+                    magicDmg: 275,
+                    armor: 1450,
+                    spirit: 1370,
+                    difficulty: "easy",
+                    element: "normal"
+                },
+                {
+                    name: "Zombie",
+                    abilities: ["claw", "claw", "rockthrow", "rockthrow", "slash", "protect"],
+                    buffs: [],
+                    hpPerPartyMember: 130,
+                    adPerPartyMember: 8,
+                    mdPerPartyMember: 8,
+                    hp: 3350,
+                    attackDmg: 360,
+                    magicDmg: 275,
+                    armor: 1450,
+                    spirit: 1370,
+                    difficulty: "easy",
+                    element: "normal"
+                }
+            ],
+            "neoseoul": [
+                {
+                    name: "Andromalius",
+                    xp: 580,
+                    abilities: [
+                        "attack",
+                        "flameblast",
+                        "poison",
+                        "poke"
+                    ],
+                    buffs: [
+                        {
+                            name: "frenzy",
+                            emoji: "<:frenzy:479298214453968896>",
+                            onTurnEnd: {
+                                attackDmgPlus : 95,
+                                magicDmgPlus : 95,
+                                everyNTurns: 3,
+                                startTurn: 4
+                            }
+                        }
+                    ],
+                    abilityOrder: [
+                        0, 1, 2, 3, 0, 0, 2, 1, 0, 0, 0
+                    ],
+                    endOfTurnEvents : [
+                        "focus",
+                        "soulBurn",
+                        "totemOfDoom80",
+                        "totemOfDoom60",
+                        "totemOfDoom60",
+                        "totemOfDoom40",
+                        "totemOfDoom40",
+                        "totemOfDoom40",
+                        "totemOfDoom20",
+                        "totemOfDoom20",
+                        "totemOfDoom20",
+                        "totemOfDoom20",
+                    ],
+                    hp: 52600,
+                    attackDmg: 700,
+                    magicDmg: 670,
+                    armor: 2350,
+                    spirit: 2100,
+                    difficulty: "special",
+                    element: "earth"
+                },
+                {
+                    name: "Three Headed Beast",
+                    abilities: ["ferociousBite", "ferociousBite", "claw", "claw", "poison", "protect"],
+                    buffs: [],
+                    hpPerPartyMember: 130,
+                    adPerPartyMember: 8,
+                    mdPerPartyMember: 8,
+                    hp: 8350,
+                    attackDmg: 360,
+                    magicDmg: 275,
+                    armor: 1450,
+                    spirit: 1370,
+                    difficulty: "easy",
+                    element: "normal"
+                },
+                {
+                    name: "Demonic Presence",
+                    abilities: ["attack", "attack", "poke", "poke", "poke", "protect"],
+                    buffs: [],
+                    hpPerPartyMember: 130,
+                    adPerPartyMember: 8,
+                    mdPerPartyMember: 8,
+                    hp: 4350,
+                    attackDmg: 360,
+                    magicDmg: 275,
+                    armor: 1450,
+                    spirit: 1370,
+                    difficulty: "easy",
+                    element: "normal"
+                },
+                {
+                    name: "Diabloic Ghoul",
+                    abilities: ["attack", "ferociousBite", "rockthrow", "drain", "slash", "barrier"],
+                    buffs: [],
+                    hpPerPartyMember: 130,
+                    adPerPartyMember: 8,
+                    mdPerPartyMember: 8,
+                    hp: 5350,
+                    attackDmg: 360,
+                    magicDmg: 275,
+                    armor: 1450,
+                    spirit: 1370,
+                    difficulty: "easy",
+                    element: "normal"
+                },
+                {
+                    name: "Zombie",
+                    abilities: ["claw", "claw", "rockthrow", "rockthrow", "slash", "protect"],
+                    buffs: [],
+                    hpPerPartyMember: 130,
+                    adPerPartyMember: 8,
+                    mdPerPartyMember: 8,
+                    hp: 3350,
+                    attackDmg: 360,
+                    magicDmg: 275,
+                    armor: 1450,
+                    spirit: 1370,
+                    difficulty: "easy",
+                    element: "normal"
+                }
+            ],
+            "moonlanding": [
+                {
+                    name: "Andromalius",
+                    xp: 580,
+                    abilities: [
+                        "attack",
+                        "flameblast",
+                        "poison",
+                        "poke"
+                    ],
+                    buffs: [
+                        {
+                            name: "frenzy",
+                            emoji: "<:frenzy:479298214453968896>",
+                            onTurnEnd: {
+                                attackDmgPlus : 95,
+                                magicDmgPlus : 95,
+                                everyNTurns: 3,
+                                startTurn: 4
+                            }
+                        }
+                    ],
+                    abilityOrder: [
+                        0, 1, 2, 3, 0, 0, 2, 1, 0, 0, 0
+                    ],
+                    endOfTurnEvents : [
+                        "focus",
+                        "soulBurn",
+                        "totemOfDoom80",
+                        "totemOfDoom60",
+                        "totemOfDoom60",
+                        "totemOfDoom40",
+                        "totemOfDoom40",
+                        "totemOfDoom40",
+                        "totemOfDoom20",
+                        "totemOfDoom20",
+                        "totemOfDoom20",
+                        "totemOfDoom20",
+                    ],
+                    hp: 52600,
+                    attackDmg: 700,
+                    magicDmg: 670,
+                    armor: 2350,
+                    spirit: 2100,
+                    difficulty: "special",
+                    element: "earth"
+                },
+                {
+                    name: "Three Headed Beast",
+                    abilities: ["ferociousBite", "ferociousBite", "claw", "claw", "poison", "protect"],
+                    buffs: [],
+                    hpPerPartyMember: 130,
+                    adPerPartyMember: 8,
+                    mdPerPartyMember: 8,
+                    hp: 8350,
+                    attackDmg: 360,
+                    magicDmg: 275,
+                    armor: 1450,
+                    spirit: 1370,
+                    difficulty: "easy",
+                    element: "normal"
+                },
+                {
+                    name: "Demonic Presence",
+                    abilities: ["attack", "attack", "poke", "poke", "poke", "protect"],
+                    buffs: [],
+                    hpPerPartyMember: 130,
+                    adPerPartyMember: 8,
+                    mdPerPartyMember: 8,
+                    hp: 4350,
+                    attackDmg: 360,
+                    magicDmg: 275,
+                    armor: 1450,
+                    spirit: 1370,
+                    difficulty: "easy",
+                    element: "normal"
+                },
+                {
+                    name: "Diabloic Ghoul",
+                    abilities: ["attack", "ferociousBite", "rockthrow", "drain", "slash", "barrier"],
+                    buffs: [],
+                    hpPerPartyMember: 130,
+                    adPerPartyMember: 8,
+                    mdPerPartyMember: 8,
+                    hp: 5350,
+                    attackDmg: 360,
+                    magicDmg: 275,
+                    armor: 1450,
+                    spirit: 1370,
+                    difficulty: "easy",
+                    element: "normal"
+                },
+                {
+                    name: "Zombie",
+                    abilities: ["claw", "claw", "rockthrow", "rockthrow", "slash", "protect"],
+                    buffs: [],
+                    hpPerPartyMember: 130,
+                    adPerPartyMember: 8,
+                    mdPerPartyMember: 8,
+                    hp: 3350,
+                    attackDmg: 360,
+                    magicDmg: 275,
+                    armor: 1450,
+                    spirit: 1370,
+                    difficulty: "easy",
+                    element: "normal"
+                }
+            ],
+            "proxima": [
+                {
+                    name: "Andromalius",
+                    xp: 580,
+                    abilities: [
+                        "attack",
+                        "flameblast",
+                        "poison",
+                        "poke"
+                    ],
+                    buffs: [
+                        {
+                            name: "frenzy",
+                            emoji: "<:frenzy:479298214453968896>",
+                            onTurnEnd: {
+                                attackDmgPlus : 95,
+                                magicDmgPlus : 95,
+                                everyNTurns: 3,
+                                startTurn: 4
+                            }
+                        }
+                    ],
+                    abilityOrder: [
+                        0, 1, 2, 3, 0, 0, 2, 1, 0, 0, 0
+                    ],
+                    endOfTurnEvents : [
+                        "focus",
+                        "soulBurn",
+                        "totemOfDoom80",
+                        "totemOfDoom60",
+                        "totemOfDoom60",
+                        "totemOfDoom40",
+                        "totemOfDoom40",
+                        "totemOfDoom40",
+                        "totemOfDoom20",
+                        "totemOfDoom20",
+                        "totemOfDoom20",
+                        "totemOfDoom20",
+                    ],
+                    hp: 52600,
+                    attackDmg: 700,
+                    magicDmg: 670,
+                    armor: 2350,
+                    spirit: 2100,
+                    difficulty: "special",
+                    element: "earth"
+                },
+                {
+                    name: "Three Headed Beast",
+                    abilities: ["ferociousBite", "ferociousBite", "claw", "claw", "poison", "protect"],
+                    buffs: [],
+                    hpPerPartyMember: 130,
+                    adPerPartyMember: 8,
+                    mdPerPartyMember: 8,
+                    hp: 8350,
+                    attackDmg: 360,
+                    magicDmg: 275,
+                    armor: 1450,
+                    spirit: 1370,
+                    difficulty: "easy",
+                    element: "normal"
+                },
+                {
+                    name: "Demonic Presence",
+                    abilities: ["attack", "attack", "poke", "poke", "poke", "protect"],
+                    buffs: [],
+                    hpPerPartyMember: 130,
+                    adPerPartyMember: 8,
+                    mdPerPartyMember: 8,
+                    hp: 4350,
+                    attackDmg: 360,
+                    magicDmg: 275,
+                    armor: 1450,
+                    spirit: 1370,
+                    difficulty: "easy",
+                    element: "normal"
+                },
+                {
+                    name: "Diabloic Ghoul",
+                    abilities: ["attack", "ferociousBite", "rockthrow", "drain", "slash", "barrier"],
+                    buffs: [],
+                    hpPerPartyMember: 130,
+                    adPerPartyMember: 8,
+                    mdPerPartyMember: 8,
+                    hp: 5350,
+                    attackDmg: 360,
+                    magicDmg: 275,
+                    armor: 1450,
+                    spirit: 1370,
+                    difficulty: "easy",
+                    element: "normal"
+                },
+                {
+                    name: "Zombie",
+                    abilities: ["claw", "claw", "rockthrow", "rockthrow", "slash", "protect"],
+                    buffs: [],
+                    hpPerPartyMember: 130,
+                    adPerPartyMember: 8,
+                    mdPerPartyMember: 8,
+                    hp: 3350,
+                    attackDmg: 360,
+                    magicDmg: 275,
+                    armor: 1450,
+                    spirit: 1370,
+                    difficulty: "easy",
+                    element: "normal"
+                }
+            ],
+            "japaneseexpedition": [
+                {
+                    name: "Andromalius",
+                    xp: 580,
+                    abilities: [
+                        "attack",
+                        "flameblast",
+                        "poison",
+                        "poke"
+                    ],
+                    buffs: [
+                        {
+                            name: "frenzy",
+                            emoji: "<:frenzy:479298214453968896>",
+                            onTurnEnd: {
+                                attackDmgPlus : 95,
+                                magicDmgPlus : 95,
+                                everyNTurns: 3,
+                                startTurn: 4
+                            }
+                        }
+                    ],
+                    abilityOrder: [
+                        0, 1, 2, 3, 0, 0, 2, 1, 0, 0, 0
+                    ],
+                    endOfTurnEvents : [
+                        "focus",
+                        "soulBurn",
+                        "totemOfDoom80",
+                        "totemOfDoom60",
+                        "totemOfDoom60",
+                        "totemOfDoom40",
+                        "totemOfDoom40",
+                        "totemOfDoom40",
+                        "totemOfDoom20",
+                        "totemOfDoom20",
+                        "totemOfDoom20",
+                        "totemOfDoom20",
+                    ],
+                    hp: 52600,
+                    attackDmg: 700,
+                    magicDmg: 670,
+                    armor: 2350,
+                    spirit: 2100,
+                    difficulty: "special",
+                    element: "earth"
+                },
+                {
+                    name: "Three Headed Beast",
+                    abilities: ["ferociousBite", "ferociousBite", "claw", "claw", "poison", "protect"],
+                    buffs: [],
+                    hpPerPartyMember: 130,
+                    adPerPartyMember: 8,
+                    mdPerPartyMember: 8,
+                    hp: 8350,
+                    attackDmg: 360,
+                    magicDmg: 275,
+                    armor: 1450,
+                    spirit: 1370,
+                    difficulty: "easy",
+                    element: "normal"
+                },
+                {
+                    name: "Demonic Presence",
+                    abilities: ["attack", "attack", "poke", "poke", "poke", "protect"],
+                    buffs: [],
+                    hpPerPartyMember: 130,
+                    adPerPartyMember: 8,
+                    mdPerPartyMember: 8,
+                    hp: 4350,
+                    attackDmg: 360,
+                    magicDmg: 275,
+                    armor: 1450,
+                    spirit: 1370,
+                    difficulty: "easy",
+                    element: "normal"
+                },
+                {
+                    name: "Diabloic Ghoul",
+                    abilities: ["attack", "ferociousBite", "rockthrow", "drain", "slash", "barrier"],
+                    buffs: [],
+                    hpPerPartyMember: 130,
+                    adPerPartyMember: 8,
+                    mdPerPartyMember: 8,
+                    hp: 5350,
+                    attackDmg: 360,
+                    magicDmg: 275,
+                    armor: 1450,
+                    spirit: 1370,
+                    difficulty: "easy",
+                    element: "normal"
+                },
+                {
+                    name: "Zombie",
+                    abilities: ["claw", "claw", "rockthrow", "rockthrow", "slash", "protect"],
+                    buffs: [],
+                    hpPerPartyMember: 130,
+                    adPerPartyMember: 8,
+                    mdPerPartyMember: 8,
+                    hp: 3350,
+                    attackDmg: 360,
+                    magicDmg: 275,
+                    armor: 1450,
+                    spirit: 1370,
+                    difficulty: "easy",
+                    element: "normal"
+                }
+            ],
+
             "evilExes": [
                 {
                     name: "Seventh Evil Ex",
@@ -8695,29 +9972,6 @@ module.exports = {
                     }
                 ]
             },
-            // 1 main boss with low HP (50k hp) but extremely high healing, heals for 500 * ( number of stacks * 10 ) every turn
-            // doesnt hit too hard, ~2-2.5k per hit on tank
-            // aoe every 5 turns for 2k
-            // 6 sets of groups, 3 different kind of groups
-            // each set lasts 6 turns
-            // first 2 turns are free so 38 turns total
-            // each set killed adds a debuff on the boss that reducing healing 
-            // first set :
-            // 3 enemies, 1 of them does HUGE aoe every 3 turns (5k aoe) 13k HP
-            // second enemy does fury, lower hp more it hits 17K HP
-            // third enemy does chain lightning on random players, like nourish 10k HP
-            // second set:
-            // 1 big enemy (HUGE HP) 60k HP
-            // end of turn will put a -75% damage dealt, and healing done debuff
-            // small non hitting enemies will appear, must kill one to gain buff to stop debuff
-            // buff lasts 4 turns
-            // enemy puts a dot on players every 2 turns that deals damage to the group equal to their missing health (last 3 turns)
-            // third set:
-            // group of exploding lashers, deal low amount of damage, but will detonate for 800
-            // 2 full sets of each randimized, but in same order
-            // boss summons a tree that heals all enemies at end of turn for 10k HP = 9000
-            // boss summons 3 roots that will deal small amounts of damage to players HP = 1500, immune to aoe
-            // 
             
             13: {
                 challengeId: "dragon",
@@ -8798,16 +10052,6 @@ module.exports = {
                     }
                 ]
             },
-            // 4 turrets dealing minor damage throughout encounter (die when deus ex appears)
-            // 3 conduits immune to damage unless you have a buff
-            // 3 types of spawns
-            // how to summon sentinels? kill a 1 hp pod that has summon upon death
-            // 3 sentinels - when killed give the buff to be able to attack a conduit (kill in 6 turns)
-            // continuous sets of 2 heatseekers every 3 turns they will explode (kill in 3 turns)
-            // continuous sets of little adds (2 per) hit with melee damage (kill in 2 turns)
-            // when all 3 conduits have been killed deus ex summons + 2 enforcers (enforcers easy to kill - 2 turns each max)
-            // after 6 turns 4 pulse turrets appear - frenzy every 3 turns for + 1000 - focus
-            // 1-8-15-21-25-45
             14: {
                 challengeId: "machina",
                 keystoneUnlockName: "Mechanical Keystone",
@@ -9094,6 +10338,7 @@ module.exports = {
                     },
                 ],
             },
+            // alignment at 16 AND 15-5 AND x-10
             15: {  
                 challengeId: "catoblepas",
                 keystoneUnlockName: "Mythological Keystone",

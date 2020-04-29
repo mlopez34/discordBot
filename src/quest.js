@@ -2,6 +2,8 @@ var rpg = require("./rpg/rpg.js")
 var profileDB = require("./profileDB.js");
 const Discord = require("discord.js");
 const ytdl = require("ytdl-core");
+var config = require("./config.js");
+var _ = require("lodash")
 var dispatcher = null
 var voiceChannel = null
 
@@ -67,6 +69,16 @@ module.exports.questStartEmbedBuilder = function(message, questName, questString
         message.channel.send({embed});
     }
     else if(questName == "escape"){
+        const embed = new Discord.RichEmbed()
+        .setAuthor(message.author.username + " has begun an artifact quest.")
+        .addField("Use your map to travel to different points of interests and decypher the assets", questString, true)
+        .setDescription(":detective:  :imp:  :detective: \n" +message.author.username + " gathers the assets but is unable to put them together.. opening the Tombstone file only reveals coordinates pointing to Panama City as a point of interest" )
+        .addField("New command granted", "-decypher [@user] [@user] [@user] [@user]")
+        .setThumbnail(message.author.avatarURL)
+        .setColor(0xFF7A1C)
+        message.channel.send({embed});
+    }
+    else if(questName == "reclaim"){
         const embed = new Discord.RichEmbed()
         .setAuthor(message.author.username + " has begun an artifact quest.")
         .addField("Use your map to travel to different points of interests and decypher the assets", questString, true)
@@ -350,8 +362,6 @@ module.exports.questStringBuilder = function(questname, questData){
         if ( questData.stage == "start"){
             return "Travel to Panama City with 4 other companions";
         }
-        // TODO: CHANGE THESE
-        // proposed
         else if (questData.stage == 1){
             if (questData && questData.storyStep == 1){
                 return questData.message.author.username + ", you must show your love the hard way..."
@@ -361,7 +371,6 @@ module.exports.questStringBuilder = function(questname, questData){
                 return questData.message.author.username + ", you must show your love the hard way, give your soulmate 10,000 tacos ❤️❤️❤️ "
             }
         }
-        // gave 20,000 tacos
         else if (questData.stage == 2){
             if (questData && questData.storyStep == 1){
                 return questData.message.author.username + ", thank your soulmate for being themselves"
@@ -371,7 +380,6 @@ module.exports.questStringBuilder = function(questname, questData){
                 return questData.message.author.username + ", thank your soulmate for being themselves  ❤️❤️❤️❤️❤️"
             }
         }
-        // thanked soulmate
         else if (questData.stage == 3){
             if (questData && questData.storyStep == 1){
                 return questData.message.author.username + ", it is wedding day, time to celebrate! -wedding @user 🥂 "
@@ -381,7 +389,6 @@ module.exports.questStringBuilder = function(questname, questData){
                 return questData.message.author.username + ", it is wedding day, time to celebrate! -wedding @user 🥂"
             }
         }
-        // wedding
         else if (questData.stage == 4){
             if (questData && questData.storyStep == 1){
                 return questData.message.author.username + ", everyone gets to collect presents at the wedding 🥂 "
@@ -391,7 +398,62 @@ module.exports.questStringBuilder = function(questname, questData){
                 return questData.message.author.username + ", everyone gets to collect presents at the wedding 🥂"
             }
         }
-        // defeat evil exes
+        else if (questData.stage == 5){
+            if (questData && questData.storyStep == 1){
+                return questData.message.author.username + ", there is a loud crashing sound outside."
+            }
+            else if (questData && questData.storyStep == 2){
+                return questData.message.author.username + ", there is a loud crashing sound outside... It is your soulmate's exes "                
+            }
+            else if (questData && questData.storyStep == 3){
+                return questData.message.author.username + ", there is a loud crashing sound outside... It is your soulmate's exes. You must defeat your soulmate's seven evil exes"                
+            }
+        }else{
+            return "Profess your love to your soulmate";
+        }
+    }
+    if (questname == "reclaim"){
+        // combined
+        if ( questData.stage == "start"){
+            return "Travel to Panama City with 4 other companions";
+        }
+        // TODO: CHANGE THESE
+        else if (questData.stage == 1){
+            if (questData && questData.storyStep == 1){
+                return questData.message.author.username + ", you must show your love the hard way..."
+            }else if (questData && questData.storyStep == 2){
+                return questData.message.author.username + ", you must show your love the hard way, give your soulmate 10,000 tacos"
+            }else if (questData && questData.storyStep == 3){
+                return questData.message.author.username + ", you must show your love the hard way, give your soulmate 10,000 tacos ❤️❤️❤️ "
+            }
+        }
+        else if (questData.stage == 2){
+            if (questData && questData.storyStep == 1){
+                return questData.message.author.username + ", thank your soulmate for being themselves"
+            }else if (questData && questData.storyStep == 2){
+                return questData.message.author.username + ", thank your soulmate for being themselves  ❤️❤️❤️"
+            }else if (questData && questData.storyStep == 3){
+                return questData.message.author.username + ", thank your soulmate for being themselves  ❤️❤️❤️❤️❤️"
+            }
+        }
+        else if (questData.stage == 3){
+            if (questData && questData.storyStep == 1){
+                return questData.message.author.username + ", it is wedding day, time to celebrate! -wedding @user 🥂 "
+            }else if (questData && questData.storyStep == 2){
+                return questData.message.author.username + ", it is wedding day, time to celebrate! -wedding @user 🥂"
+            }else if (questData && questData.storyStep == 3){
+                return questData.message.author.username + ", it is wedding day, time to celebrate! -wedding @user 🥂"
+            }
+        }
+        else if (questData.stage == 4){
+            if (questData && questData.storyStep == 1){
+                return questData.message.author.username + ", everyone gets to collect presents at the wedding 🥂 "
+            }else if (questData && questData.storyStep == 2){
+                return questData.message.author.username + ", everyone gets to collect presents at the wedding 🥂"
+            }else if (questData && questData.storyStep == 3){
+                return questData.message.author.username + ", everyone gets to collect presents at the wedding 🥂"
+            }
+        }
         else if (questData.stage == 5){
             if (questData && questData.storyStep == 1){
                 return questData.message.author.username + ", there is a loud crashing sound outside."
@@ -435,6 +497,14 @@ module.exports.questHandler = function(message, discordUserId, questline, stageI
         // handle evilexes
         handleRingArtifact(message, discordUserId, stageInQuest, team, dataUsedInQuest, channel, allItems)
     }
+    else if (questline == "escape"){
+
+        handleRingArtifact(message, discordUserId, stageInQuest, team, dataUsedInQuest, channel, allItems)
+    }
+    else if (questline == "reclaim"){
+
+        handleRingArtifact(message, discordUserId, stageInQuest, team, dataUsedInQuest, channel, allItems)
+    }
 }
 
 function handleTimeMachineArtifact(message, discordUserId, stage, team, year, channel, allItems){
@@ -473,6 +543,10 @@ function handleTimeMachineArtifact(message, discordUserId, stage, team, year, ch
     else if (stage == 6){
         // travel to the year 3,250,000 and defeat the corrupted overmind
         handleTimeMachineArtifactStageSix(message, discordUserId, stage, team, year, channel)
+    }
+    else if (stage == 7){
+        // figure out if the year is 
+        handleTimeMachineArtifactByYear(message, discordUserId, stage, team, year, channel)
     }
 }
 
@@ -513,6 +587,9 @@ function handleTombArtifact(message, discordUserId, stage, team, channel, allIte
     else if (stage == 6){
         // defeat the archvampires
         handleTombArtifactStageSix(message, discordUserId, stage, team, channel)
+    }
+    else if (stage == 7){
+        handleTombArtifactEvent(message, discordUserId, stage, team, channel, allItems)
     }
 }
 
@@ -562,6 +639,97 @@ function handleRingArtifact(message, discordUserId, stage, team, questData, chan
     -stage 3 = * (mission)thank and sorry them
     -stage 4 = (embed)react to the embed with hearts
     -stage 5 = * (rpg)defeat the 7 evil exes
+    */
+    if (stage == 1){
+        // propose to a member
+        var proposedTo = questData.proposedTo;
+        handleRingArtifactStageOne(message, discordUserId, stage, team, proposedTo, channel)
+    }
+    else if (stage == 2){
+        // give member 20000 tacos
+        var giveAmount = questData.giveAmount
+        var giveTo = questData.commandTo
+        handleRingArtifactStageTwo(message, discordUserId, stage, team, giveAmount, giveTo, channel)
+    }
+    else if (stage == 3){
+        // sorry and thank the user
+        var command = questData.command
+        var commandTo = questData.commandTo
+        handleRingArtifactStageThree(message, discordUserId, stage, team, command, commandTo, channel)
+    }
+    else if (stage == 4){
+        // react to embed with hearts
+        if (activeMissions["quest-" + discordUserId] && activeMissions["quest-" + discordUserId].proposedTo && activeMissions["quest-" + discordUserId].wedding){
+            var marriedTo = questData.marriedTo
+            activeMissions["quest-" + discordUserId].wedding = false // to prevent multiple weddings spam
+            handleRingArtifactStageFour(message, discordUserId, stage, team, marriedTo, channel, allItems)
+        }
+    }
+    else if (stage == 5){
+        // rpg - defeat the 7 evil exes
+        var marriedTo = questData.marriedTo
+        handleRingArtifactStageFive(message, discordUserId, stage, team, channel)
+    }
+}
+
+function handleDecypherArtifact(message, discordUserId, stage, team, questData, channel, allItems){
+    /*
+    decypher:
+    -stage 1 = * in panama city do decypher - birds of the northern hemisphere
+    -stage 2 = * ambushed by an operative (defeat operative)
+    -stage 3 = * travel to sona and rescue whistler
+    -stage 4 = * defeat lechero while keeping whistler alive
+    -stage 5 = * blueprints have revealed the location of scylla - doors open doors close puzzle ()
+    -stage 6 = * defeat the general - last phase is 1,2,3,4,5,6 floors
+    */
+    if (stage == 1){
+        // check that the user is in panama city and they can use -decypher 
+        var proposedTo = questData.proposedTo;
+        handleRingArtifactStageOne(message, discordUserId, stage, team, proposedTo, channel)
+    }
+    else if (stage == 2){
+        // RPG ambushed by operative medium boss
+        var giveAmount = questData.giveAmount
+        var giveTo = questData.commandTo
+        handleRingArtifactStageTwo(message, discordUserId, stage, team, giveAmount, giveTo, channel)
+    }
+    else if (stage == 3){
+        // travel to sona (final area) and rescue whistler (grab supplies)
+        var command = questData.command
+        var commandTo = questData.commandTo
+        handleRingArtifactStageThree(message, discordUserId, stage, team, command, commandTo, channel)
+    }
+    else if (stage == 4){
+        // RPG defeat lechero - whistler is paralyzed as an enemy (or ally) and is drained every 2 turns
+        // if whistler dies RPG is failed
+        if (activeMissions["quest-" + discordUserId] && activeMissions["quest-" + discordUserId].proposedTo && activeMissions["quest-" + discordUserId].wedding){
+            var marriedTo = questData.marriedTo
+            activeMissions["quest-" + discordUserId].wedding = false // to prevent multiple weddings spam
+            handleRingArtifactStageFour(message, discordUserId, stage, team, marriedTo, channel, allItems)
+        }
+    }
+    else if (stage == 5){
+        // open / close doors puzzle
+        var marriedTo = questData.marriedTo
+        handleRingArtifactStageFive(message, discordUserId, stage, team, channel)
+    }else if (stage == 6){
+        // defeat the general - RPG includes a levels system for emoji? (maybe only in challenge)
+        // each level is attacked and remains twice - recreate in challenge with real challenge
+        // obtain myth item when win - myth is 3% crit - add achievement - add artifact use?
+        var marriedTo = questData.marriedTo
+        handleRingArtifactStageFive(message, discordUserId, stage, team, channel)
+    }
+}
+
+function handleReclaimArtifact(message, discordUserId, stage, team, questData, channel, allItems){
+    /*
+    reclaim (total of 5 buildings)
+    -stage 1 = * you've landed on the planet you're reclaiming as your world - click emoji to place your first building
+    -stage 2 = * rpg event against a swarm
+    -stage 3 = * click a new emoji to build new building
+    -stage 4 = * rpg event against 3 bosses
+    -stage 5 = * click a new emoji to build a new building
+    -stage 6 = * rpg event against 1 bosss
     */
     if (stage == 1){
         // propose to a member
@@ -1014,6 +1182,60 @@ function handleTimeMachineArtifactStageFive(message, discordUserId, stage, team,
     })
 }
 
+function handleTimeMachineArtifactByYear(message, discordUserId, stage, team, year, channel){
+    // TODO: figure out based on year
+    let mapOfEvents = config.TIME_TRAVEL_DATES_ACCEPTED
+    let eventName = config.TIME_TRAVEL_DEFAULT_EVENT
+    let eventDescription = config.TIME_TRAVEL_DEFAULT_EVENT_DESC
+    let itemIdReward = config.TIME_TRAVEL_DEFAULT_EVENT_ITEMID
+    let avatar = "https://i.imgur.com/WQsh1FV.jpg"
+    let fieldTitle = "Time Warden Defeated"
+    let noteText = "You've defeated a Time Warden and returned back to your homeland"
+
+    for(var e in mapOfEvents){
+        if (mapOfEvents[e].from <= year && mapOfEvents[e].until >= year){
+            if (!mapOfEvents[e].zone){
+                eventName = e
+                eventDescription = mapOfEvents[e].descriptionString
+            }
+            if (mapOfEvents[e].zone && mapOfEvents[e].zone == userZone){
+                eventName = e
+                eventDescription = mapOfEvents[e].descriptionString
+            }
+        }
+    }
+    var questData = {
+        questname: "timetravel",
+        message: message,
+        year: year,
+    }
+
+    var special = {
+        questName: eventName, // based on config
+        questData: questData,
+        avatar: avatar, /// 
+        reward: {
+            type: "note" , // could be item
+            item: itemIdReward,
+            fieldTitle: fieldTitle,
+            note: noteText,
+        }
+    }
+
+    const embed = new Discord.RichEmbed()
+    .setDescription(eventDescription)
+    .setThumbnail("https://i.imgur.com/WQsh1FV.jpg")
+    .setColor(0xFF7A1C)
+    message.channel.send({embed})
+    .then(function(sentMessage){
+        
+        var storytell = setTimeout (function(){ 
+            rpg.rpgInitialize(message, special);
+            playMusicForQuest(channel, "corruptedOvermind")
+        }, 5000);
+    })
+}
+
 function handleTimeMachineArtifactStageSix(message, discordUserId, stage, team, year, channel){
     // defeat the corrupted overmind in the year 325, 000, 000
     var questData = {
@@ -1256,6 +1478,25 @@ function handleDemonicArtifactStageOne(message, discordUserId, stage, team, chan
         })
     })
 }
+
+function generateExploreMap(){
+    let level1 = ["💀", "🔳", "🔳", "🔳", "🔳", "🔳", "◻️"]
+    let level2 = ["💀", "💀", "◻️", "◻️", "◻️", "◻️", "🏺"]
+    let level3 = ["🏺", "🏺", "💀", "💀", "💀", "◻️", "◻️",]
+    let level4 = ["💀", "💀", "💀", "💀", "◻️", "🏺", "💰"]
+    let level5 = ["💀", "💀", "💀", "💀", "💀", "🏺", "💰"]
+    let level6 = ["💀", "💀", "💀", "💀", "💀", "🏺", "💰"] 
+    let level7 = ["💀", "💀", "💀", "💀", "💀", "💀", "💰"]
+    level1 = _.shuffle(level1)
+    level2 = _.shuffle(level2)
+    level3 = _.shuffle(level3)
+    level4 = _.shuffle(level4)
+    level5 = _.shuffle(level5)
+    level6 = _.shuffle(level6)
+    level7 = _.shuffle(level7)
+    return [ level1, level2, level3, level4, level5, level6, level7 ]
+}
+
 // embed
 function handleDemonicArtifactStageTwo(message, discordUserId, stage, team, channel){
     var questData = {
@@ -2337,7 +2578,6 @@ function handleTombArtifactStageFive(message, discordUserId, stage, team, channe
             var idOfQuest;
             collected.forEach(function(reactionEmoji){
                 idOfQuest = "quest-" + reactionEmoji.message.id;
-
             })
             // Lever has been pulled at the same time, continue on to the next stage
             profileDB.updateQuestlineStage(discordUserId, questData.questname, stage + 1, function(error, updateRes){
@@ -2407,6 +2647,159 @@ function handleTombArtifactStageSix(message, discordUserId, stage, team, channel
     })
 }
 
+function handleTombArtifactEvent(message, discordUserId, stage, team, channel, allItems){
+
+   var questData = {
+        message: message,
+    }
+    let currentLevelString = "Current Level : "
+    var descriptionString = "Exploration progress: "
+    // click the lever at the same time
+    const embed = new Discord.RichEmbed()
+    .setDescription(currentLevelString + 1 + "\n" + descriptionString)
+    .addField("Exploration begins", "You enter the tomb and explore your surroundings...")
+    .setThumbnail("https://i.imgur.com/7FcNimg.jpg")
+    .setColor(0xFF7A1C)
+    message.channel.send({embed})
+    .then(function (sentMessage) {
+        activeQuests["quest-"+sentMessage.id] = { id: discordUserId, username: message.author.username };
+        activeMissions["quest-" + discordUserId] = "exploring tomb"
+        sentMessage.react("1⃣")
+        .then(function(res){
+            sentMessage.react("2⃣")
+            .then(function(res){
+                sentMessage.react("3⃣") 
+                .then(function(res){
+                    sentMessage.react("4⃣")
+                    .then(function(res){
+                        sentMessage.react("5⃣")
+                        .then(function(res){
+                            sentMessage.react("6⃣")
+                            .then(function(res){
+                                sentMessage.react("7⃣")
+                                .then(function(res){
+
+                                })
+                            })
+                        })
+                    })
+                })
+            })
+        })
+        let exploreMap = generateExploreMap()
+        let itemsObtainedArray = []
+        let currentLevel = 0
+        var mapexplorecollector = new Discord.ReactionCollector(sentMessage, function(){ return true; } , { time: 360000, max: 1000, maxEmojis: 1000, maxUsers: 1000 } );
+        mapexplorecollector.on('collect', function(element, collector){
+            let ownerOfMap = discordUserId
+            element.users.forEach(function(user){
+                if (!user.bot){
+                    var userId = user.id;
+                    if (userId == ownerOfMap){
+                        let doorNumberEmoji = element.emoji
+                        let validEmoji = false
+                        let doorNumber = 0
+                        if (doorNumberEmoji == "1⃣"){
+                            doorNumber = 0
+                            validEmoji = true;
+                        }else if (doorNumberEmoji == "2⃣"){
+                            doorNumber = 1
+                            validEmoji = true
+                        }else if (doorNumberEmoji == "3⃣"){
+                            doorNumber = 2
+                            validEmoji = true
+                        }else if (doorNumberEmoji == "4⃣"){
+                            doorNumber = 3
+                            validEmoji = true
+                        }else if (doorNumberEmoji == "5⃣"){
+                            doorNumber = 4
+                            validEmoji = true
+                        }else if (doorNumberEmoji == "6⃣"){
+                            doorNumber = 5
+                            validEmoji = true
+                        }else if (doorNumberEmoji == "7⃣"){
+                            doorNumber = 6
+                            validEmoji = true
+                        }else if (doorNumberEmoji == "8️⃣"){
+                            if (currentLevel >= 3){
+                                doorNumber = 7
+                                validEmoji = true    
+                            }
+                        }
+                        // update the description of the embed
+                        if (doorNumber <= 6 && validEmoji){
+                            let reward = exploreMap[currentLevel][doorNumber]
+                            if (reward == "💀"){
+                                mapexplorecollector.stop("Explore Death")
+                            }else {
+                                console.log(reward)
+                                itemsObtainedArray.push(getRewardsForExploration(reward, allItems) )
+                                currentLevel++
+                            }
+                            descriptionString = descriptionString + " " + reward + " "
+                            embed.setDescription(currentLevelString + " " + (currentLevel + 1) + "\n" + descriptionString)
+                            sentMessage.edit({embed})
+
+                            if (currentLevel > 6){
+                                mapexplorecollector.stop("Explore Complete")
+                            }
+                        }else if (doorNumber == 7 && validEmoji){
+                            mapexplorecollector.stop("RPG Found")
+                        }
+                    }
+                    element.remove(userId)
+                    .then(function(res){
+                        console.log(res)
+                    })
+                    .catch(function(err){
+                        console.log(err)
+                    })
+                }
+            })
+        })
+        mapexplorecollector.on('end', function(collected, reason){
+            if (activeMissions["quest-" + discordUserId]){
+                delete activeMissions["quest-" + discordUserId]
+            }
+            var idOfQuest;
+            collected.forEach(function(reactionEmoji){
+                idOfQuest = "quest-" + reactionEmoji.message.id;
+            })
+            if (activeQuests[idOfQuest]){
+                delete activeQuests[idOfQuest];
+            }
+            if (reason == "Explore Death"){
+                descriptionString = descriptionString + " " + "\nYou've made a wrong turn and fainted."
+            }else if (reason == "Explore Complete"){
+                descriptionString = descriptionString + " " + "✅\nYou completed the exploration!"
+                // TODO: give achievment
+            }else if (reason == "RPG Found"){
+                descriptionString = "................................... You've entered the sanctuary...\nYou should have brought friends with you........\nDeath awaits.."
+                var storytell = setTimeout (function(){
+                    // RPG
+                    var special = {
+                        questName: "explorationDemon",
+                        questData: questData,
+                        allowSinglePlayer: true,
+                        avatar: "https://i.imgur.com/xTEhvG6.jpg", ///
+                        reward: {
+                            type: "note" , // could be item
+                            fieldTitle: "Exploration demon defeated",
+                            note: "What in the world did we just get past?",
+                        }
+                    }
+                    rpg.rpgInitialize(message, special);
+                }, 5000);
+            }
+            embed.setDescription(currentLevelString + " " + (currentLevel + 1) + "\n" + descriptionString)
+            sentMessage.edit({embed})
+            if (itemsObtainedArray.length > 0){
+                addToUserInventory(discordUserId, itemsObtainedArray);
+                itemObtainEmbedBuilder(message, itemsObtainedArray, message.author);    
+            }
+        })
+    })
+}
 
 module.exports.proposedTo = function(message, discordUserId, stage, proposedTo){
     if (stage == 2){
@@ -2428,8 +2821,51 @@ module.exports.proposedTo = function(message, discordUserId, stage, proposedTo){
     }
 }
 
-function artifactStartString(questline, discordUser, mentionedUsers){
-    // return the starting quest text
+function getRewardsForExploration(reward, allItems){
+    let i;
+    var UNCOMMON_ITEMS_TO_OBTAIN = 2;
+    var COMMON_ITEMS_TO_OBTAIN = 5;
+    var commonItems = [];
+    var uncommonItems = [];
+    var rareItems = [];
+    var ancientItems = [];
+    for (var item in allItems){
+        if (allItems[item].itemraritycategory == "common"){
+            commonItems.push(allItems[item]);
+        }
+        else if(allItems[item].itemraritycategory == "uncommon"){
+            uncommonItems.push(allItems[item]);
+        }
+        else if(allItems[item].itemraritycategory == "rare"
+        && ( allItems[item].fromscavenge == true ) ){
+            rareItems.push(allItems[item]);
+        }
+        else if(allItems[item].itemraritycategory == "ancient"
+        && (allItems[item].fromscavenge == true ) ){
+            ancientItems.push(allItems[item]);
+        }
+        else if( allItems[item].itemraritycategory == "amulet"
+        && ( allItems[item].amuletsource == "scavenge" ) ) {
+            ancientItems.push(allItems[item]);
+        }
+    }
+    if (reward == "🔳"){
+        var itemRoll = Math.floor(Math.random() * commonItems.length);
+        commonItems[itemRoll].itemAmount = COMMON_ITEMS_TO_OBTAIN
+        i =  commonItems[itemRoll] 
+    }else if (reward == "◻️"){
+        var itemRoll = Math.floor(Math.random() * uncommonItems.length);
+        uncommonItems[itemRoll].itemAmount = UNCOMMON_ITEMS_TO_OBTAIN
+        i = uncommonItems[itemRoll] 
+    }else if (reward == "🏺"){
+        var itemRoll = Math.floor(Math.random() * rareItems.length);
+        i = rareItems[itemRoll]
+    }else if (reward == "💰"){
+        var itemRoll = Math.floor(Math.random() * ancientItems.length);
+        i = ancientItems[itemRoll]
+    }
+
+    return i
 }
 
 function questFindRewards(message, user, emoji, allItems, questname){
@@ -2447,7 +2883,6 @@ function questFindRewards(message, user, emoji, allItems, questname){
     var UNCOMMON_ITEMS_TO_OBTAIN = 2;
     var COMMON_ITEMS_TO_OBTAIN = 5;
     var TRANSFORMIUM_ID = 155 
-    var SILVER_CROSS_ID = 155
 
     var commonItems = [];
     var uncommonItems = [];
@@ -2480,7 +2915,6 @@ function questFindRewards(message, user, emoji, allItems, questname){
             
     var itemsObtainedArray = [];
     var rollsCount = 4
-
     for (var i = 0; i < rollsCount; i++){
         var rarityRoll = Math.floor(Math.random() * 10000) + 1;
         var rarityString = "";
@@ -2504,7 +2938,6 @@ function questFindRewards(message, user, emoji, allItems, questname){
             itemsObtainedArray.push( commonItems[itemRoll] );
         }
     }
-
     // timetravel
     if (emoji == "📮" || emoji == "🏯" || emoji == "🏮" ){
         // push a special item?
@@ -2556,7 +2989,6 @@ function questFindRewards(message, user, emoji, allItems, questname){
             }
         }
     }
-
     // TODO: print embed of all the items - change these outside of the for loop
     addToUserInventory(giveRewardTo, itemsObtainedArray);
     itemObtainEmbedBuilder(message, itemsObtainedArray, user);
@@ -2623,12 +3055,6 @@ var youtubeLinks = {
     evilExes: "https://www.youtube.com/watch?v=d2hRTLdvdnk"
 }
 
-function checkMissionStatus(missionName, discordUserId, cb){
-    if (missionName == "ritual"){
-        // handle ritual
-    }
-}
-
 function handleRitualStandingMission(mission){
     // users should be standing on 5 different places on a clock
     // 1 - 12, if they are standing on ie 12, 2, 5, 7, 10 then activate second step
@@ -2690,35 +3116,6 @@ function handleRitualStandingMission(mission){
             missionComplete = matchedFormGroup
         }
         return missionComplete;
-    }
-}
-
-function handleRitualTacoThrowMission(groupArray, groupIds){
-    // keep a list of throws
-
-    // users should be throwing their tacos in a specific order
-    // 12 throws to 5, 5 throws to 10, 10 throws to 2, 2 throws to 7, 7 throws to 10
-    // 12 throws to 7, 7 throws to 2, 2 throws to 10, 10 throws to 5, 5 throws to 10
-
-    var ritualSuccess = false;
-    // valid throws based on groupArray ??
-
-    if (!ritualSuccess){
-        // reset the throw order to the person that just threw
-    }
-
-    return ritualSuccess
-
-    //TODO: create structure that keeps track of possible throws and starting throw
-}
-
-function checkValidRitualThrow(thrower, receiver){
-    // the thrower and receivers are indexes (1 - 12)
-
-    // this function checks against a list of valid throws
-    var validThrow = true;
-    if (receiver != expectedRecei){
-        
     }
 }
 

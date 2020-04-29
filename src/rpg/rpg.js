@@ -58,7 +58,11 @@ module.exports.rpgInitialize = function(message, special){
     // lock members from initialize
     
 
-    if (team.length >= 2 && team.length <= TEAM_MAX_LENGTH && validTeam && !exports.isTeamLocked(team)){
+    if ( (team.length >= 2 
+    && team.length <= TEAM_MAX_LENGTH 
+    && validTeam 
+    && !exports.isTeamLocked(team) )
+    || special.allowSinglePlayer){
         team.forEach(function(member){
             exports.setInitializeLock(member.id, true)
         })
@@ -908,7 +912,7 @@ module.exports.rpgReady = function(message, itemsAvailable, amuletItemsById, buf
                         profileDB.getUserItemsForRpg(discordUserId, function(err, inventoryResponse){
                             if (err){
                                 exports.setreadyLock(rpgEventId, discordUserId, false)
-                                // console.log(err);
+                                console.log(err);
                             }else{
                                 // console.log("DONE " + done)
                                 // console.log("millis " + ( done - start))
@@ -956,15 +960,19 @@ module.exports.rpgReady = function(message, itemsAvailable, amuletItemsById, buf
 
                                 profileDB.getUserWearInfo(discordUserId, function(wearErr, wearData){
                                     if (wearErr){
-                                        // console.log(wearErr);
+                                        console.log(wearErr);
                                         exports.setreadyLock(rpgEventId, discordUserId, false)
                                         message.channel.send(wearErr + " something went wrong [wearing] - someone doesn't have a wearing profile");
                                     }else{
                                         var userLevel = userStats.level;
+                                        let cursedTimeCheck = new Date()
+                                        cursedTimeCheck = new Date(cursedTimeCheck.setHours(cursedTimeCheck.getHours() - 12 ))
+                                        let cursed = (userStats.ritualstring == "auraOfDespair") && ( cursedTimeCheck <= userStats.lastritualdate ) ? true : false    
+                                        
                                         wearStats.getUserWearingStats(message, discordUserId, { userLevel: userLevel, inventoryResponse: inventoryResponse }, allItems, function(wearErr, wearRes){
                                             if (wearErr){
                                                 exports.setreadyLock(rpgEventId, discordUserId, false)
-                                                // console.log(wearErr)
+                                                console.log(wearErr)
                                             }else{
                                                 // get the wearing data
                                                 var wearingStats = wearData.data[0];
@@ -981,9 +989,13 @@ module.exports.rpgReady = function(message, itemsAvailable, amuletItemsById, buf
                                                     luckPlus: 0,
                                                     critPlus: 0,
                                                     statuses: [],
+                                                    abilityBuffs: [],
                                                     buffs: []
                                                 }
-                                                
+                                                if (cursed){
+                                                    abilities.push("auraOfDespairDone")
+                                                    abilities.push("auraOfDespairTaken")
+                                                }
                                                 if (wearingStats.slot1itemid){
                                                     // check that the itemid is not already being used
                                                     if (!activeRPGItemIds[wearingStats.slot1useritemid]){
@@ -1172,7 +1184,38 @@ module.exports.rpgReady = function(message, itemsAvailable, amuletItemsById, buf
                                                     statisticsFromItemsAndLevel.armorPlus = statisticsFromItemsAndLevel.armorPlus + armorPlus;
                                                     statisticsFromItemsAndLevel.spiritPlus = statisticsFromItemsAndLevel.spiritPlus + spiritPlus;
                                                     statisticsFromItemsAndLevel.luckPlus = statisticsFromItemsAndLevel.luckPlus + luckPlus;
+                                                    /*
+                                                    GA - 
+                                                    ability - stat - stat value - stat value by - special - stat value - stat value by
+                                                    Assist - adPercentage - .2 - additive - special - adPercentage - .2
+                                                    
 
+
+
+                                                    */
+                                                   if (itemsAvailable[userAmuletData[i].id].abilityToBuff){
+                                                        let abilityBuff = {
+                                                            // TESTING:
+                                                            // ability: "curse",
+                                                            // stat: undefined, // adpercentage, mdpercentage, maxcooldown, maxcharges
+                                                            // statValue: undefined, // .2, -.2
+                                                            // statValueBy: undefined, // additive - multiplicative
+                                                            // subAbility: "dot", // special, dot, hot, buff, status
+                                                            // subAbilityStat: "mdPercentage", // adpercentage, mdpercentage, maxcooldown, maxcharges
+                                                            // subAbilityValue: .314, // .2, -.2
+                                                            // subAbilityValueBy: "additive", // additive - multiplicative
+
+                                                            ability: itemsAvailable[userAmuletData[i].id].abilitybuff, // curse, guac, assist
+                                                            stat: itemsAvailable[userAmuletData[i].id].abilitybuffstat, // adpercentage, mdpercentage, maxcooldown, maxcharges
+                                                            statValue: itemsAvailable[userAmuletData[i].id].abilitbuffstatvalue, // .2, -.2
+                                                            statValueBy: itemsAvailable[userAmuletData[i].id].abilitybuffstatvalueby, // additive - multiplicative
+                                                            subAbility: itemsAvailable[userAmuletData[i].id].abilitybuffsub, // special, dot, hot, buff, status
+                                                            subAbilityStat: itemsAvailable[userAmuletData[i].id].abilitybuffsubstat, // adpercentage, mdpercentage, maxcooldown, maxcharges
+                                                            subAbilityValue: itemsAvailable[userAmuletData[i].id].abilitybuffsubvalue, // .2, -.2
+                                                            subAbilityValueBy: itemsAvailable[userAmuletData[i].id].abilitybuffsubvalueby, // additive - multiplicative
+                                                        }
+                                                        statisticsFromItemsAndLevel.abilityBuffs.push(abilityBuff)
+                                                   }
                                                 }
 
                                                 // added stats from level
@@ -1383,7 +1426,7 @@ module.exports.rpgReady = function(message, itemsAvailable, amuletItemsById, buf
                                                                     membersInParty["rpg-" + partyMember.id].armor = membersInParty["rpg-" + partyMember.id].armor + Math.floor( membersInParty["rpg-" + partyMember.id].armor * partyMemberStats.plusStats.armorPlusPercentage || 0)
                                                                     membersInParty["rpg-" + partyMember.id].criticalChance = membersInParty["rpg-" + partyMember.id].criticalChance + Math.floor( membersInParty["rpg-" + partyMember.id].criticalChance * partyMemberStats.plusStats.critPlusPercentage || 0)
                                                                     membersInParty["rpg-" + partyMember.id].luck = membersInParty["rpg-" + partyMember.id].luck + Math.floor( membersInParty["rpg-" + partyMember.id].luck * partyMemberStats.plusStats.luckPlusPercentage || 0)
-
+                                                                    membersInParty["rpg-" + partyMember.id].abilityBuffs =  partyMemberStats.plusStats.abilityBuffs
                                                                     membersInParty["rpg-" + partyMember.id].criticalChance = calculateCritChance( membersInParty["rpg-" + partyMember.id].criticalChance )
                                                                     membersInParty["rpg-" + partyMember.id].luck = calculateLuckPlus( membersInParty["rpg-" + partyMember.id].luck )
                                                                     membersInParty["rpg-" + partyMember.id].maxhp = membersInParty["rpg-" + partyMember.id].hp;
@@ -3054,7 +3097,15 @@ function eventEndedEmbedBuilder(message, event, partySuccess){
             if ( (keystonenumber) == event.challenge.keystone && userLevel >= KEYSTONE_UNLOCK_LEVEL){
                 var challengeId = getKeystoneIdFromChallenge(event.challenge.challenge)
                 profileDB.updateCurrentChallengeKeystone( memberInParty.id, keystonenumber + 1, challengeId, function(err, res){
-                    
+                    // check for keystone achievs
+                    profileDB.getUserProfileData(memberInParty.id, function(profileErr, profileRes){
+                        if (profileErr){
+                            console.log("FAILURE SOMETHING WENT WRONG")
+                        }else{
+                            var achievData = { achievements: profileRes.data.achievements, keystoneNumDefeated: keystonenumber }
+                            achiev.checkForAchievements(event.leader.id, achievData, message)
+                        }
+                    })
                 })
                 if ( keystonenumber > 0 && (challengenumber + 1) >= event.challenge.challenge ){
                     usersFirstComplete.push(memberInParty.id)
@@ -3085,7 +3136,6 @@ function eventEndedEmbedBuilder(message, event, partySuccess){
                         achiev.checkForAchievements(event.leader.id, achievData, message)
                     }
                 })
-                
             }
             
             profileDB.updateQuestlineStage(event.leader.id, event.special.questData.questname, event.special.questData.stage + 1, function(error, updateRes){
@@ -3095,6 +3145,22 @@ function eventEndedEmbedBuilder(message, event, partySuccess){
                     // console.log("advanced special rpg ");
                 }
             })
+        }else if (event.special.reward.item){
+            var extraItem = event.special.reward.item
+            // add the artifact item
+            var rewardsArtifact = addArtifactItem(allItems, extraItem)
+            // event.leader.id
+            updateUserRewards(message, event.leader, rewardsArtifact);
+            regularRewardEmbedBuilder(message, rewardsArtifact.items, event.leader)
+
+            // profileDB.getUserProfileData(event.leader.id, function(profileErr, profileRes){
+            //     if (profileErr){
+            //         // console.log("FAILURE SOMETHING WENT WRONG")
+            //     }else{
+            //         var achievData = { achievements: profileRes.data.achievements, rpgDefeated: event.special.questName }
+            //         achiev.checkForAchievements(event.leader.id, achievData, message)
+            //     }
+            // })
         }
     }
 
@@ -3472,6 +3538,29 @@ function addArtifactItem( allItems, extraItem){
     }
     rewardsForPlayer.items = itemsObtainedArray
     return rewardsForPlayer
+}
+
+function regularRewardEmbedBuilder(message, items, user){
+    // create a quoted message of all the items
+    var itemsMessage = ""
+    for (var item in items){
+        var itemAmount = items[item].itemAmount ? items[item].itemAmount : 1;
+        itemsMessage = itemsMessage + "**" +itemAmount + "**x " + "[**" + items[item].itemraritycategory +"**] " + "**"  + items[item].itemname + "** - " +
+        items[item].itemslot + ", " + items[item].itemstatistics + " \n";
+    }
+
+    const embed = new Discord.RichEmbed()
+    .addField("[" + user.username +"] found: ", itemsMessage, true)
+    .setThumbnail(user.avatarURL)
+    .setColor(0xbfa5ff)
+    message.channel.send({embed})
+    .then(function(res){
+        console.log(res)
+    })
+    .catch(function(err){
+        // console.log(err)
+        message.channel.send("Unable to display artifact reward, Enable embeds in this channel for future artifact reward announcements!")
+    })
 }
 
 function artifactEmbedBuilder(message, artifactItems, user){
@@ -4361,14 +4450,14 @@ function effectsOnTurnEnd(event){
                                                             // console.log("ignoring focus for ability")
                                                             // IGNORE FOCUS EFFECT - check if the person being targetted by the ability is being focused by the caster
                                                             if ( (targetMember == event.members[member].id) 
-                                                                &&  event.membersInParty[idOfMemberBeingChecked].statuses[statusToCheck].name == "Focus"
-                                                                && event.membersInParty[idOfMemberBeingChecked].statuses[statusToCheck].focusedBy == enemy){
-                                                                    targetFocusedMember = true;
-                                                                }
+                                                            &&  event.membersInParty[idOfMemberBeingChecked].statuses[statusToCheck].name == "Focus"
+                                                            && event.membersInParty[idOfMemberBeingChecked].statuses[statusToCheck].focusedBy == enemy){
+                                                                targetFocusedMember = true;
+                                                            }
                                                         }else{
                                                             // check if someone has focus on them if they do then the target should be the focused person 
                                                             if ( event.membersInParty[idOfMemberBeingChecked].statuses[statusToCheck].name == "Focus"
-                                                                && event.membersInParty[idOfMemberBeingChecked].statuses[statusToCheck].focusedBy == enemy){
+                                                            && event.membersInParty[idOfMemberBeingChecked].statuses[statusToCheck].focusedBy == enemy){
                                                                 //target roll should be 
                                                                 targetMember = event.members[member].id;
                                                                 break;
@@ -7907,6 +7996,33 @@ function checkCasterCritLastTurn(event, abilityCaster, currentTurn){
     }
 }
 
+function processAbilityBuff(abilityBuff, rpgAbility){
+    // **********avoid max cooldown abilities
+    if (abilityBuff.stat){
+        if (abilityBuff.statValueBy == "additive"){
+            rpgAbility[abilityBuff.stat] = rpgAbility[abilityBuff.stat] + abilityBuff.statValue
+
+        }else if (abilityBuff.statValueBy == "multiplicative"){
+            rpgAbility[abilityBuff.stat] = rpgAbility[abilityBuff.stat] * abilityBuff.statValue
+        }
+    }
+
+    if (abilityBuff.subAbility){
+        if (abilityBuff.subAbilityValueBy == "additive"){
+            if ( rpgAbility[abilityBuff.subAbility] ){
+                rpgAbility[abilityBuff.subAbility][abilityBuff.subAbilityStat] = rpgAbility[abilityBuff.subAbility][abilityBuff.subAbilityStat] + abilityBuff.subAbilityValue
+            }
+        }else if (abilityBuff.subAbilityValueBy == "multiplicative"){
+            if ( rpgAbility[abilityBuff.subAbility] ){
+                rpgAbility[abilityBuff.subAbility][abilityBuff.subAbilityStat] = rpgAbility[abilityBuff.subAbility][abilityBuff.subAbilityStat] * abilityBuff.subAbilityValue
+            }
+        }
+    }
+
+
+    return rpgAbility
+}
+
 function processAbility(abilityObject, event){
     // process the ability individually
     // get the type of ability first
@@ -7917,10 +8033,25 @@ function processAbility(abilityObject, event){
     // will return this
     var abilityToString = "";
     var rpgAbility = rpgAbilities[ability] ? JSON.parse(JSON.stringify(rpgAbilities[ability])) : undefined;
-    
+
     var currentTurn = event.turn;
     // check that the user of the ability is still alive
     var abilityCaster = abilityObject.user;
+
+    // add the ability buff after parse / stringify | it won't persist otherwise
+    if (abilityCaster > 1000){
+        // caster is player
+        let memberInQuestion = event.membersInParty["rpg-"+abilityCaster]
+        if (memberInQuestion.abilitiesMap[rpgAbility.abilityId]){
+            // caster has ability
+            memberInQuestion.abilityBuffs.forEach(function(ab){
+                if (rpgAbility.abilityId == ab.ability){
+                    processAbilityBuff( ab, rpgAbility)
+                }
+            })
+        }
+    }
+
     if (rpgAbility.castAbilityAfterCriticalStrike
     && checkCasterCritLastTurn(event, abilityCaster, currentTurn)){
         rpgAbility = rpgAbilities[rpgAbility.castAbilityAfterCriticalStrike]
@@ -7933,13 +8064,13 @@ function processAbility(abilityObject, event){
     if (rpgAbility.maxcooldown){
         if (abilityCaster > 1000){
             // caster is a member
-            var memberInQuestion = event.membersInParty["rpg-"+abilityCaster]
+            let memberInQuestion = event.membersInParty["rpg-"+abilityCaster]
             if (memberInQuestion.abilitiesMap[rpgAbility.abilityId]){
                 memberInQuestion.abilitiesMap[rpgAbility.abilityId].cooldown = memberInQuestion.abilitiesMap[rpgAbility.abilityId].maxcooldown;                
             }
         }else{
             // caster is an enemy
-            var enemyInQuestion = event.enemies[abilityCaster]
+            let enemyInQuestion = event.enemies[abilityCaster]
             if (enemyInQuestion.abilitiesMap[rpgAbility.abilityId].cooldown){
                 enemyInQuestion.abilitiesMap[rpgAbility.abilityId].cooldown = enemyInQuestion.abilitiesMap[rpgAbility.abilityId].maxcooldown;                
             }
@@ -8262,6 +8393,9 @@ function processAbility(abilityObject, event){
                             && !event.enemies[targetToAddStatus].buffs[status].ignoreUnique ){
                                 alreadyHaveStatus = true;
                             }
+                            if (event.enemies[targetToAddStatus].buffs[status].unableToGainBuff == statusToAdd.abilityId){
+                                alreadyHaveStatus = true
+                            }
                             if ( statusToAdd.abilityId == "frenzy" 
                             && event.enemies[targetToAddStatus].buffs[status].abilityId == "frenzy"){
                                 alreadyHaveStatus = true
@@ -8391,7 +8525,7 @@ function processAbility(abilityObject, event){
             if (abilityCaster > 1000){
                 // if caster is party of membersInParty then target = all the enemies
                 if (statusToAdd.selfDebuff){
-                    var caster = event.membersInParty["rpg-"+abilityCaster] ? event.membersInParty["rpg-"+abilityCaster].name : undefined;
+                    let caster = event.membersInParty["rpg-"+abilityCaster] ? event.membersInParty["rpg-"+abilityCaster].name : undefined;
                     for (var targetToAddStatus in event.membersInParty){
                         if (!checkIfDeadByObject(event.membersInParty[targetToAddStatus])){
                             var alreadyHaveStatus = false;
@@ -8493,6 +8627,11 @@ function processAbility(abilityObject, event){
                 }
             }
         }else{
+            if (statusToAdd.selfDebuff){
+                /// single target self cast debuff
+                var caster = abilityCaster > 1000 ? ("rpg-"+abilityCaster) : abilityCaster;
+                targetToAddStatus = caster
+            }
             if (event.membersInParty[targetToAddStatus]){
                 var targetToAddStatusName = event.membersInParty[targetToAddStatus].name;
                 if (!checkIfDeadByObject(event.membersInParty[targetToAddStatus])){
@@ -8552,6 +8691,7 @@ function processAbility(abilityObject, event){
                     }
                 }
             }
+            
         }
     }
 
@@ -8671,6 +8811,7 @@ function processAbility(abilityObject, event){
                         for (var buff in event.membersInParty[targetToAddHot].buffs){
                             if (event.membersInParty[targetToAddHot].buffs[buff].hot
                             && event.membersInParty[targetToAddHot].buffs[buff].hot.caster == abilityObject.user
+                            && event.membersInParty[targetToAddHot].buffs[buff].hot.name == hotToAdd.hot.name
                             && !event.membersInParty[targetToAddHot].buffs[buff].hot.ignoreUnique ){
                                 alreadyHaveStatus = true;
                             }
@@ -9717,6 +9858,20 @@ function processAuras(event){
                         userToBuff.statBuffs[statToAffect] = userToBuff.statBuffs[statToAffect] + (Math.floor((buffToProcess.multiplier * statToBuff) - statToBuff));
                     }else if (buffToProcess.additive){
                         userToBuff.statBuffs[statToAffect] = userToBuff.statBuffs[statToAffect] + (Math.floor(buffToProcess.additive));
+                    }
+                }
+            }
+            var globalStatToAffectArray = aurasInGroup[aura].affectsGlobal;
+            for (var stat in globalStatToAffectArray){
+                var statToAffect = globalStatToAffectArray[stat]
+                var statToBuff = userToBuff.globalStatuses[statToAffect];
+                // if user is not dead, buff the user with the stat
+                if (!checkIfDeadByObject(userToBuff)){
+                    var buffToProcess = aurasInGroup[aura]
+                    if (buffToProcess.multiplier){
+                        userToBuff.globalStatuses[statToAffect] = userToBuff.globalStatuses[statToAffect] + (Math.floor((buffToProcess.multiplier * statToBuff) - statToBuff));
+                    }else if (buffToProcess.additive){
+                        userToBuff.globalStatuses[statToAffect] = userToBuff.globalStatuses[statToAffect] + (Math.floor(buffToProcess.additive));
                     }
                 }
             }

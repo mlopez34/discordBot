@@ -211,7 +211,12 @@ module.exports.getLevelInfo = function(level){
 module.exports.getFruitString = function(userFruitsCount){
     var fruitString = ""
     for(var fruit in userFruitsCount){
-        fruitString = fruitString + fruit + " - " + userFruitsCount[fruit] + "\n"
+        if (fruit == "tars" && userFruitsCount[fruit] == 0){
+            // do nothing if tars is 0 - otherwise add it
+            fruitString = fruitString
+        }else{
+            fruitString = fruitString + fruit + " - " + userFruitsCount[fruit] + "\n"
+        }
     }
     return fruitString
 }
