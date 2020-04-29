@@ -2533,6 +2533,28 @@ module.exports = {
                 spirit: 400,
                 difficulty: "easy",
                 element: "normal"
+            },
+            miscreant: {
+                enemyIdName : "miscreant",
+                name: "Miscreant",
+                abilities: ["attack", "attack", "tackle", "tackle", "weaken"],
+                buffs: [],
+                keystoneStats: {
+                    hp: [1200, 3500, 6200, 10000, 15000 ],
+                    attackDmg: [300, 500, 900, 1500, 2300],
+                    magicDmg: [300, 500, 900, 1500, 2300],
+                    abilities: []
+                },
+                hpPerPartyMember: 270,
+                adPerPartyMember: 9,
+                mdPerPartyMember: 9,
+                hp: 330,
+                attackDmg: 160,
+                magicDmg: 179,
+                armor: 290,
+                spirit: 400,
+                difficulty: "easy",
+                element: "normal"
             }
         },
         medium: {
@@ -3111,6 +3133,31 @@ module.exports = {
                 hp: 640,
                 attackDmg: 190,
                 magicDmg: 190,
+                armor: 350,
+                spirit: 550,
+                difficulty: "medium",
+                element: "normal"
+            },
+            aberration: {
+                enemyIdName : "aberration",
+                name: "Aberration",
+                abilities: ["sting", "sting", "inject", "inject", "poison"],
+                buffs: [],
+                keystoneStats: {
+                    hp: [1200, 3500, 6200, 10000, 15000 ],
+                    attackDmg: [300, 500, 900, 1500, 2300],
+                    magicDmg: [300, 500, 900, 1500, 2300],
+                    abilities: []
+                },
+                effectsOnDeath:[
+
+                ],
+                hpPerPartyMember: 490,
+                adPerPartyMember: 18,
+                mdPerPartyMember: 18,
+                hp: 640,
+                attackDmg: 90,
+                magicDmg: 90,
                 armor: 350,
                 spirit: 550,
                 difficulty: "medium",
@@ -5343,7 +5390,7 @@ module.exports = {
             },
             gargantua: {
                 enemyIdName : "gargantua",
-                name: "Big Foot",
+                name: "Gargantua",
                 abilities: [
                     "attack", "attack", "iceshards", "iceshards", "slash", "slash", "cripple"
                 ],
@@ -5352,8 +5399,8 @@ module.exports = {
                         name: "frenzy",
                         emoji: "<:frenzy:479298214453968896>",
                         onTurnEnd: {
-                            attackDmgPlus : 85,
-                            magicDmgPlus : 85,
+                            attackDmgPlus : 385,
+                            magicDmgPlus : 385,
                             everyNTurns: 2,
                             startTurn: 2
                         }
@@ -5370,11 +5417,50 @@ module.exports = {
                     "focus"
                 ],
                 hpPerPartyMember: 1222,
-                hp: 950,
+                hp: 1950,
                 adPerPartyMember: 29,
                 mdPerPartyMember: 29,
-                attackDmg: 240,
-                magicDmg: 190,
+                attackDmg: 1240,
+                magicDmg: 1190,
+                armor: 1600,
+                spirit: 1600,
+                difficulty: "boss",
+                element: "normal"
+            },
+            cerberus: {
+                enemyIdName : "cerberus",
+                name: "Cerberus",
+                abilities: [
+                    "attack", "attack", "iceshards", "iceshards", "slash", "slash", "cripple"
+                ],
+                buffs: [
+                    {
+                        name: "frenzy",
+                        emoji: "<:frenzy:479298214453968896>",
+                        onTurnEnd: {
+                            attackDmgPlus : 385,
+                            magicDmgPlus : 385,
+                            everyNTurns: 2,
+                            startTurn: 2
+                        }
+                    }
+                ],
+                keystoneStats: {
+                    hp: [1200, 3500, 6200, 10000, 15000 ],
+                    attackDmg: [300, 500, 900, 1500, 2300],
+                    magicDmg: [300, 500, 900, 1500, 2300],
+                    abilities: []
+                },
+                endOfTurnEvents : [
+                    "echo",
+                    "focus"
+                ],
+                hpPerPartyMember: 1222,
+                hp: 1950,
+                adPerPartyMember: 29,
+                mdPerPartyMember: 29,
+                attackDmg: 1240,
+                magicDmg: 1190,
                 armor: 1600,
                 spirit: 1600,
                 difficulty: "boss",
@@ -6709,8 +6795,8 @@ module.exports = {
                             name: "frenzy",
                             emoji: "<:frenzy:479298214453968896>",
                             onTurnEnd: {
-                                attackDmgPlus : 95,
-                                magicDmgPlus : 95,
+                                attackDmgPlus : 795,
+                                magicDmgPlus : 795,
                                 everyNTurns: 3,
                                 startTurn: 4
                             }
@@ -6733,74 +6819,74 @@ module.exports = {
                         "totemOfDoom20",
                         "totemOfDoom20",
                     ],
-                    hp: 52600,
-                    attackDmg: 700,
-                    magicDmg: 670,
+                    hp: 189600,
+                    attackDmg: 4700,
+                    magicDmg: 4670,
                     armor: 2350,
                     spirit: 2100,
                     difficulty: "special",
                     element: "earth"
                 },
                 {
-                    name: "Three Headed Beast",
+                    name: "Time Disturbance",
                     abilities: ["ferociousBite", "ferociousBite", "claw", "claw", "poison", "protect"],
                     buffs: [],
-                    hpPerPartyMember: 130,
-                    adPerPartyMember: 8,
-                    mdPerPartyMember: 8,
-                    hp: 8350,
-                    attackDmg: 360,
-                    magicDmg: 275,
+                    hpPerPartyMember: 1130,
+                    adPerPartyMember: 98,
+                    mdPerPartyMember: 98,
+                    hp: 38350,
+                    attackDmg: 2360,
+                    magicDmg: 2275,
                     armor: 1450,
                     spirit: 1370,
                     difficulty: "easy",
                     element: "normal"
                 },
                 {
-                    name: "Demonic Presence",
-                    abilities: ["attack", "attack", "poke", "poke", "poke", "protect"],
+                    name: "Time Disturbance",
+                    abilities: ["ferociousBite", "ferociousBite", "claw", "claw", "poison", "protect"],
                     buffs: [],
-                    hpPerPartyMember: 130,
-                    adPerPartyMember: 8,
-                    mdPerPartyMember: 8,
-                    hp: 4350,
-                    attackDmg: 360,
-                    magicDmg: 275,
+                    hpPerPartyMember: 1130,
+                    adPerPartyMember: 98,
+                    mdPerPartyMember: 98,
+                    hp: 38350,
+                    attackDmg: 2360,
+                    magicDmg: 2275,
                     armor: 1450,
                     spirit: 1370,
                     difficulty: "easy",
                     element: "normal"
                 },
                 {
-                    name: "Diabloic Ghoul",
-                    abilities: ["attack", "ferociousBite", "rockthrow", "drain", "slash", "barrier"],
+                    name: "Time Disturbance",
+                    abilities: ["ferociousBite", "ferociousBite", "claw", "claw", "poison", "protect"],
                     buffs: [],
-                    hpPerPartyMember: 130,
-                    adPerPartyMember: 8,
-                    mdPerPartyMember: 8,
-                    hp: 5350,
-                    attackDmg: 360,
-                    magicDmg: 275,
+                    hpPerPartyMember: 1130,
+                    adPerPartyMember: 98,
+                    mdPerPartyMember: 98,
+                    hp: 38350,
+                    attackDmg: 2360,
+                    magicDmg: 2275,
                     armor: 1450,
                     spirit: 1370,
                     difficulty: "easy",
                     element: "normal"
                 },
                 {
-                    name: "Zombie",
-                    abilities: ["claw", "claw", "rockthrow", "rockthrow", "slash", "protect"],
+                    name: "Time Disturbance",
+                    abilities: ["ferociousBite", "ferociousBite", "claw", "claw", "poison", "protect"],
                     buffs: [],
-                    hpPerPartyMember: 130,
-                    adPerPartyMember: 8,
-                    mdPerPartyMember: 8,
-                    hp: 3350,
-                    attackDmg: 360,
-                    magicDmg: 275,
+                    hpPerPartyMember: 1130,
+                    adPerPartyMember: 98,
+                    mdPerPartyMember: 98,
+                    hp: 38350,
+                    attackDmg: 2360,
+                    magicDmg: 2275,
                     armor: 1450,
                     spirit: 1370,
                     difficulty: "easy",
                     element: "normal"
-                }
+                },
             ],
             "normandy": [
                 {

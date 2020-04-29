@@ -5928,6 +5928,7 @@ module.exports = {
             ]
         },
         // after NYC
+        // add custom enemies on 3 places
         panama: {
             zoneAvatar: "https://i.imgur.com/7q1T0dP.jpg",
             zoneString : " ",
@@ -5968,11 +5969,297 @@ module.exports = {
             areas: {
                 cafedelmar: {
                     areaString : " ",
-                    name: "Cafe del mar",
-                    enemiesToDefeat: 878,
-                    enemies: [ 
+                    name: "Cafe del Mar",
+                    enemiesToDefeat: 117,
+                    onCompleteAreasUnlocked: [
+                        "bermudatriangle"
+                    ],
+                    shopItemsAvailable: [
 
                     ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                },
+                bermudatriangle: {
+                    areaString : " ",
+                    name: "Bermuda Triangle",
+                    enemiesToDefeat: 152,
+                    onCompleteAreasUnlocked: [
+                        "lakehillier"
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                },
+                lakehillier: {
+                    areaString : " ",
+                    name: "Lake Hillier",
+                    enemiesToDefeat: 189,
+                    onCompleteAreasUnlocked: [
+                        "machupichu"
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                },
+                machupichu: {
+                    areaString : " ",
+                    name: "Machu Pichu",
+                    enemiesToDefeat: 39,
+                    onCompleteAreasUnlocked: [
+                        "marinabaysands"
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                },
+                marinabaysands: {
+                    areaString : " ",
+                    name: "Marina Bay Sands",
+                    enemiesToDefeat: 101,
+                    onCompleteAreasUnlocked: [
+                        "mountbromo"
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                },
+                mountbromo: {
+                    areaString : " ",
+                    name: "Mount Bromo",
+                    enemiesToDefeat: 130,
+                    onCompleteAreasUnlocked: [
+                        "panamacanal"
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                },
+                panamacanal: {
+                    areaString : " ",
+                    name: "Panama Canal",
+                    enemiesToDefeat: 72,
+                    onCompleteAreasUnlocked: [
+                        "petra"
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                },
+                petra: {
+                    areaString : " ",
+                    name: "Petra",
+                    enemiesToDefeat: 84,
+                    onCompleteAreasUnlocked: [
+                        "pilgrimbay"
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                },
+                pilgrimbay: {
+                    areaString : " ",
+                    name: "Pilgrim Bay",
+                    enemiesToDefeat: 67,
+                    onCompleteAreasUnlocked: [
+                        "rannoch"
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                },
+                rannoch: {
+                    areaString : " ",
+                    name: "Rannoch",
+                    enemiesToDefeat: 129,
+                    onCompleteAreasUnlocked: [
+                        "monicapier"
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                },
+                monicapier: {
+                    areaString : " ",
+                    name: "Monica pier",
+                    enemiesToDefeat: 187,
+                    onCompleteAreasUnlocked: [
+                        "spaceneedle"
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                },
+                spaceneedle: {
+                    areaString : " ",
+                    name: "Space Needle",
+                    enemiesToDefeat: 139,
+                    onCompleteAreasUnlocked: [
+                        "telamontbuilding"
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                },
+                telamontbuilding: {
+                    areaString : " ",
+                    name: "Telamont Building",
+                    enemiesToDefeat: 166,
+                    onCompleteAreasUnlocked: [
+                        "templeofanubis"
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                },
+                templeofanubis: {
+                    areaString : " ",
+                    name: "Temple of Anubis",
+                    enemiesToDefeat: 25,
+                    onCompleteAreasUnlocked: [
+                        "trinitypark"
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                },
+                trinitypark: {
+                    areaString : " ",
+                    name: "Trinity Park",
+                    enemiesToDefeat: 107,
+                    onCompleteAreasUnlocked: [
+                        "venice"
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                },
+                venice: {
+                    areaString : " ",
+                    name: "Venice",
+                    enemiesToDefeat: 101,
+                    onCompleteAreasUnlocked: [
+                        "panamacity"
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                },
+                panamacity: {
+                    areaString : " ",
+                    name: "Panama City",
+                    enemiesToDefeat: 119,
+                    onCompleteAreasUnlocked: [
+                        "sona"
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                },
+                sona: {
+                    areaString : " ",
+                    name: "Prision Federal De Sona",
+                    enemiesToDefeat: 390,
                     onCompleteAreasUnlocked: [
                         
                     ],
@@ -5986,6 +6273,7 @@ module.exports = {
 
                     ]
                 },
+
                 cafedelmar2: {
                     areaString : " ",
                     name: "Cafe del mar 2",
@@ -6394,7 +6682,7 @@ module.exports = {
         },
         // after emeraldeve
         gabrielshorn: {
-            zoneAvatar: "https://i.imgur.com/7q1T0dP.jpg",
+            zoneAvatar: "https://i.imgur.com/Db8aVKF.jpg",
             zoneString : " ",
             startingArea: "necropolis",
             name: "Gabriel's Horn",
@@ -6411,14 +6699,14 @@ module.exports = {
             },
             enemies: {
                 easy: [
-                    "addict", "addict", "addict", "addict", 
-                    "burritohustler", "burritohustler", "burritohustler", "burritohustler",
-                    "thug"
+                    "vermin", "vermin", "vermin", "vermin", 
+                    "miscreant", "miscreant", "miscreant", "miscreant",
+                    "squid"
                 ],
                 medium: [
-                    "haywire", "haywire", "haywire",
-                    "guard", "guard", "guard",
-                    "operative"
+                    "aberration", "aberration", "aberration",
+                    "egg", "egg", "egg",
+                    "maggot"
                 ],
                 hard: [
                     "chimaera", "chimaera", "chimaera",
@@ -6433,10 +6721,211 @@ module.exports = {
                 necropolis: {
                     areaString : " ",
                     name: "Necropolis",
-                    enemiesToDefeat: 878,
-                    enemies: [ 
+                    enemiesToDefeat: 131,
+                    onCompleteAreasUnlocked: [
+                        "binghamcanyonmine"
+                    ],
+                    shopItemsAvailable: [
 
                     ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                },
+                binghamcanyonmine: {
+                    areaString : " ",
+                    name: "Bingham Canyon mine",
+                    enemiesToDefeat: 153,
+                    onCompleteAreasUnlocked: [
+                        "chernobyl"
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                },
+                chernobyl: {
+                    areaString : " ",
+                    name: "Chernobyl",
+                    enemiesToDefeat: 88,
+                    onCompleteAreasUnlocked: [
+                        "milfordsound"
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                },
+                milfordsound: {
+                    areaString : " ",
+                    name: "Milford Sound",
+                    enemiesToDefeat: 95,
+                    onCompleteAreasUnlocked: [
+                        "orpheus"
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                },
+                orpheus: {
+                    areaString : " ",
+                    name: "Orpheus",
+                    enemiesToDefeat: 104,
+                    onCompleteAreasUnlocked: [
+                        "parkdome"
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                },
+                parkdome: {
+                    areaString : " ",
+                    name: "Park Dome",
+                    enemiesToDefeat: 48,
+                    onCompleteAreasUnlocked: [
+                        "plateaudevalensole"
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                },
+                plateaudevalensole: {
+                    areaString : " ",
+                    name: "Plateau de Valensole",
+                    enemiesToDefeat: 191,
+                    onCompleteAreasUnlocked: [
+                        "plitvicelakes"
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                },
+                plitvicelakes: {
+                    areaString : " ",
+                    name: "Plitvice Lakes",
+                    enemiesToDefeat: 74,
+                    onCompleteAreasUnlocked: [
+                        "preikestolen"
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                },
+                preikestolen: {
+                    areaString : " ",
+                    name: "Preikestolen",
+                    enemiesToDefeat: 70,
+                    onCompleteAreasUnlocked: [
+                        "serengetipark"
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                },
+                serengetipark: {
+                    areaString : " ",
+                    name: "Serengeti Park",
+                    enemiesToDefeat: 94,
+                    onCompleteAreasUnlocked: [
+                        "socotraisland"
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                },
+                socotraisland: {
+                    areaString : " ",
+                    name: "Socotra Island",
+                    enemiesToDefeat: 124,
+                    onCompleteAreasUnlocked: [
+                        "tombofathena"
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                },
+                tombofathena: {
+                    areaString : " ",
+                    name: "Tomb of Athena",
+                    enemiesToDefeat: 5,
+                    onCompleteAreasUnlocked: [
+                        "whitehavenbeach"
+                    ],
+                    shopItemsAvailable: [
+
+                    ],
+                    scavengeItemsAvailable: [
+
+                    ],
+                    rpgDropsAvailable: [
+
+                    ]
+                },
+                whitehavenbeach: {
+                    areaString : " ",
+                    name: "Whitehaven Beach",
+                    enemiesToDefeat: 5,
                     onCompleteAreasUnlocked: [
                         
                     ],
@@ -6450,6 +6939,7 @@ module.exports = {
 
                     ]
                 },
+
                 necropolis2: {
                     areaString : " ",
                     name: "Necropolis2",
@@ -7086,6 +7576,36 @@ Hoover Dam
         uppermanhattan: "newyork",
 
         cafedelmar: "panama",
-        necropolis: "gabrielshorn"
+        bermudatriangle: "panama",
+        lakehillier: "panama",
+        machupichu: "panama",
+        marinabaysands: "panama",
+        mountbromo: "panama",
+        panamacanal: "panama",
+        petra: "panama",
+        pilgrimbay: "panama",
+        rannoch: "panama",
+        monicapier: "panama",
+        spaceneedle: "panama",
+        telamontbuilding: "panama",
+        templeofanubis: "panama",
+        trinitypark: "panama",
+        venice: "panama",
+        panamacity: "panama",
+        sona: "panama",
+
+        necropolis: "gabrielshorn",
+        binghamcanyonmine: "gabrielshorn",
+        chernobyl: "gabrielshorn",
+        milfordsound: "gabrielshorn",
+        orpheus: "gabrielshorn",
+        parkdome: "gabrielshorn",
+        plateaudevalensole: "gabrielshorn",
+        plitvicelakes: "gabrielshorn",
+        preikestolen: "gabrielshorn",
+        serengetipark: "gabrielshorn",
+        socotraisland: "gabrielshorn",
+        tombofathena: "gabrielshorn",
+        whitehavenbeach: "gabrielshorn",
     },
 }

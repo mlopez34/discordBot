@@ -650,6 +650,7 @@ module.exports.collectRewardsCommand = function(message){
                 }
                 // REP achievement
                 let repstatus = userData.data.repstatus
+                data.reputation = repstatus
                 achiev.checkForAchievements(discordUserId, data, message);
                 // BUILDING achievements
                 profileDB.getGreenHouseData(discordUserId, function(error, ghData){

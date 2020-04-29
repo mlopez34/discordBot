@@ -563,6 +563,7 @@ module.exports.checkForAchievements = function(discordUserId, data, message, cal
                 }
                 
                 if(data.s1topvotes == true &&
+                (discordUserId == 438851981440712704 || discordUserId == 213851284485308416) &&
                 (data.achievements === null || data.achievements.indexOf("S1 Top Votes") == -1)){
                     profileDB.updateAchievements(discordUserId, "{S1 Top Votes}", function(err, r){
                         achievementEmbedBuilder(message, "S1 Top Votes", achievementEarner);

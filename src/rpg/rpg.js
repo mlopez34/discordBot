@@ -4450,14 +4450,14 @@ function effectsOnTurnEnd(event){
                                                             // console.log("ignoring focus for ability")
                                                             // IGNORE FOCUS EFFECT - check if the person being targetted by the ability is being focused by the caster
                                                             if ( (targetMember == event.members[member].id) 
-                                                                &&  event.membersInParty[idOfMemberBeingChecked].statuses[statusToCheck].name == "Focus"
-                                                                && event.membersInParty[idOfMemberBeingChecked].statuses[statusToCheck].focusedBy == enemy){
-                                                                    targetFocusedMember = true;
-                                                                }
+                                                            &&  event.membersInParty[idOfMemberBeingChecked].statuses[statusToCheck].name == "Focus"
+                                                            && event.membersInParty[idOfMemberBeingChecked].statuses[statusToCheck].focusedBy == enemy){
+                                                                targetFocusedMember = true;
+                                                            }
                                                         }else{
                                                             // check if someone has focus on them if they do then the target should be the focused person 
                                                             if ( event.membersInParty[idOfMemberBeingChecked].statuses[statusToCheck].name == "Focus"
-                                                                && event.membersInParty[idOfMemberBeingChecked].statuses[statusToCheck].focusedBy == enemy){
+                                                            && event.membersInParty[idOfMemberBeingChecked].statuses[statusToCheck].focusedBy == enemy){
                                                                 //target roll should be 
                                                                 targetMember = event.members[member].id;
                                                                 break;
