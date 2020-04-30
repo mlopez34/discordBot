@@ -1186,7 +1186,7 @@ module.exports.prepareCommand = function (message){
                                 cursedTimeCheck = new Date(cursedTimeCheck.setHours(cursedTimeCheck.getHours() - 12 ))
                                 let cursed = (prepareResponse.data.ritualstring == "evilChef") && ( cursedTimeCheck <= prepareResponse.data.lastritualdate ) ? true : false    
                                 
-                                if ( seedChanceRoll > ( 990 - soiledCrops) ){
+                                if (  cursed || ( seedChanceRoll > ( 990 - soiledCrops) ) ){
                                     createCustomParty(message, discordUserId, {
                                         source: "prepare", 
                                         emoji : "🌱",
@@ -1770,7 +1770,7 @@ module.exports.cookCommand = function(message){
                             cursedTimeCheck = new Date(cursedTimeCheck.setHours(cursedTimeCheck.getHours() - 12 ))
                             let cursed = (cookResponse.data.ritualstring == "evilChef") && ( cursedTimeCheck <= cookResponse.data.lastritualdate ) ? true : false
 
-                            if ( tableChanceRoll > ( 990 - woodTossed) ){
+                            if ( cursed || ( tableChanceRoll > ( 990 - woodTossed) ) ){
                                 createCustomParty(message, discordUserId, {
                                     source: "cook", 
                                     emoji : "🌯",
@@ -4089,12 +4089,6 @@ module.exports.scavangeCommand = function (message){
                             var gotUncommon = false;
                             var itemsObtainedArray = [];
                             var highestRarityFound = 1
-            
-                            if (discordUserId == "248946965633564673"){
-                                if (rollsCount < 4){
-                                    rollsCount++
-                                }
-                            }
 
                             for (var i = 0; i < rollsCount; i++){
                                 var rarityRoll = Math.floor(Math.random() * 10000) + 1;
@@ -4201,8 +4195,7 @@ module.exports.scavangeCommand = function (message){
                                 if(updateLSErr){
                                     // // console.log(updateLSErr);
                                     exports.setCommandLock("scavenge", discordUserId, false)
-                                }
-                                else{
+                                }else{
                                     // // console.log(updateLSres);
                                     // add to statistics
                                     if (tacosFound + extraTacosFromItems > 0){
@@ -4213,11 +4206,20 @@ module.exports.scavangeCommand = function (message){
                                     }
                                     exports.setCommandLock("scavenge", discordUserId, false)
                                     var achievements = getUserResponse.data.achievements;
+                                    if (cursed){
+                                        profileDB.updateUserTacos(discordUserId, userLevel * -50, function(updateLSErr, updateLSres){
+                                            if(updateLSErr){
+                                                // // console.log(updateLSErr);
+                                                exports.setCommandLock("scavenge", discordUserId, false)
+                                            }else{
+                                                message.channel.send( message.author.username + " your thirst for treasure continues :gem:")
+                                            }
+                                        })
+                                    }
                                     stats.statisticsManage(discordUserId, "scavengecount", 1, function(err, statSuccess){
                                         if (err){
                                             // // console.log(err);
-                                        }
-                                        else{
+                                        }else{
                                             // check achievements
                                             var data = {}
                                             data.achievements = achievements;
@@ -6888,7 +6890,7 @@ module.exports.bakeCommand = function(message, args){
                         message.channel.send("You must `-agree` to create a profile first!")
                     }else{
                         let userData = ghRes.data
-                        baking.bakeItem(discordUserId, itemToBake, itemsMapById, userFruitsCount, userData, function(error, res){
+                        baking.bakeItem(discordUserId, itemToBake, itemsMapById, userFruitsCount, userData, message, function(error, res){
                             if (error){
                                 if (error == "doesn't exist"){
                                     message.channel.send("Item doesnt exist")
@@ -8250,7 +8252,7 @@ function marryExtraTacos(message, discordUserId, tacosToUpdate){
             if (updateerr){
                 message.channel.send(updateerr)
             }else{
-                message.channel.send(tacosForMarry + " were also awarded to your spouse")
+                message.channel.send(tacosForMarry + " :taco: were also awarded to your spouse")
             }
         })
     }
@@ -8505,7 +8507,7 @@ module.exports.ritualCommand = function(message, args, channel){
                                     // if the ritual is poverty start a settimeout
                                     let ritualChosenString = ""
                                     if (ritualChosen == "poverty"){
-                                        ritualChosenString = " is filled with anguish."
+                                        ritualChosenString = " is filled with anguish :fearful:"
                                         let povertyInterval = setInterval(function(message){ 
                                                 let arrayOfWhispers = [
                                                     " hears a whisper `Your friends will abandon you`",
@@ -8515,12 +8517,18 @@ module.exports.ritualCommand = function(message, args, channel){
                                                     " hears a whisper `Your body will be crushed`",
                                                     " hears a whisper `You've lost your soul`",
                                                     " hears a whisper `Death awaits`",
+                                                    " hears a whisper `Hope wanes`",
+                                                    " hears a whisper `They are coming for you`",
+                                                    " hears a whisper `Don't look back`",
+                                                    " hears a whisper `Your friends will cast you out`",
+                                                    " hears a whisper `Your soul will feed him`",
+                                                    " hears a whisper `Your have already perished`",
                                                     " hears a whisper `You will serve the master`"
                                                 ]
                                                 let whispersRoll = Math.floor(Math.random() * arrayOfWhispers.length);
                                                 let whisperChosen = arrayOfWhispers[whispersRoll]
                                                 message.channel.send(message.author.username + whisperChosen)
-                                                profileDB.updateUserTacos(message.author.id, ( userLevel * -25 ), function(err, res){
+                                                profileDB.updateUserTacos(message.author.id, ( userLevel * -20 ), function(err, res){
                                                     if (err){
                                                         console.log(err)
                                                     }else{
@@ -8533,13 +8541,13 @@ module.exports.ritualCommand = function(message, args, channel){
                                             console.log("cleared timeout")
                                         }, 86400000, povertyInterval) // day
                                     }else if (ritualChosen == "scavengeGreed"){
-                                        ritualChosenString = " is filled with greed, their thirst for treasure hungers"
+                                        ritualChosenString = " is filled with greed, their thirst for treasure hungers :gem:"
                                     }else if (ritualChosen == "evilChef"){
-                                        ritualChosenString = " becomes consumed with pestilence"
+                                        ritualChosenString = " becomes consumed with pestilence :face_vomiting:"
                                     }else if (ritualChosen == "demonicPuppet"){
-                                        ritualChosenString = "'s pet turns into a demon. their scent grows stronger"
+                                        ritualChosenString = "'s companion turns into a demon. their scent grows stronger :japanese_ogre:"
                                     }else if (ritualChosen == "auraOfDespair"){
-                                        ritualChosenString = " is consumed with hatred.. an aura of despair begins to emite from their body"
+                                        ritualChosenString = " is consumed with hatred.. an aura of despair begins to emite from their body :ideograph_advantage:"
                                     }else if (ritualChosen == "oozingMist"){
                                         ritualChosenString = " turns into a wretched creature."
                                     }
@@ -11439,9 +11447,9 @@ module.exports.initializeRPGQueue = function(){
     rpg.initializeRPGQueue()
 }
 
-module.exports.initializePetRaces = function(){
+// module.exports.initializePetRaces = function(){
     
-}
+// }
 
 module.exports.rpgReadyCommand = function(message){
     if (usersMinigames[message.author.id]){

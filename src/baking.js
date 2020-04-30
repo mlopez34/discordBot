@@ -1,6 +1,7 @@
 'use strict'
 var profileDB = require("./profileDB.js");
 var reputation = require("./reputation.js")
+var achiev = require("./achievements.js");
 
 const greenHouseBakingLevels = {
     regular: 4,
@@ -34,7 +35,7 @@ const greenHouseBakingLevels = {
 // // 1,2,3 % of magic etc
 
 // recipes are listed here | recipes change every day of the month 
-module.exports.bakeItem = function(discordUserId, itemToBake, itemsMapById, userFruitsCount, userData, cb){
+module.exports.bakeItem = function(discordUserId, itemToBake, itemsMapById, userFruitsCount, userData, message, cb){
     if (bakingRecipes[itemToBake]){
         // attempt to bake the item | check fruit requirements | check its the right day
         var today = new Date()

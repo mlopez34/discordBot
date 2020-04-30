@@ -44,10 +44,16 @@ client.on('ready', function(err) {
     // initialize market
     if (!botEnabled){
         commands.initializeItemsMaps(client, function(err, res){
+            if (err){
+                console.log(err)
+            }
             commands.initializeMarketPlace()
             commands.initializeReminders()
             commands.initializeRPGQueue()
             settings.initializeServerSettings(function(err, res){
+                if (err){
+                    console.log(err)
+                }
                 botEnabled = true
             })
             console.log(res)

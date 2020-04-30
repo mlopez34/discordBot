@@ -1481,12 +1481,18 @@ function handleDemonicArtifactStageOne(message, discordUserId, stage, team, chan
 
 function generateExploreMap(){
     let level1 = ["💀", "🔳", "🔳", "🔳", "🔳", "🔳", "◻️"]
-    let level2 = ["💀", "💀", "◻️", "◻️", "◻️", "◻️", "🏺"]
-    let level3 = ["🏺", "🏺", "💀", "💀", "💀", "◻️", "◻️",]
-    let level4 = ["💀", "💀", "💀", "💀", "◻️", "🏺", "💰"]
-    let level5 = ["💀", "💀", "💀", "💀", "💀", "🏺", "💰"]
-    let level6 = ["💀", "💀", "💀", "💀", "💀", "🏺", "💰"] 
-    let level7 = ["💀", "💀", "💀", "💀", "💀", "💀", "💰"]
+    let level2 = ["💀", "🔳", "🔳", "🔳", "🔳", "🔳", "◻️"]
+    let level3 = ["💀", "💀", "◻️", "◻️", "◻️", "◻️", "🏺"]
+    let level4 = ["💀", "💀", "◻️", "◻️", "◻️", "◻️", "🏺"]
+    let level5 = ["🏺", "🏺", "💀", "💀", "💀", "◻️", "◻️",]
+    let level6 = ["🏺", "🏺", "💀", "💀", "💀", "◻️", "◻️",]
+    let level7 = ["💀", "💀", "💀", "💀", "◻️", "🏺", "💰"]
+    let level8 = ["💀", "💀", "💀", "💀", "◻️", "🏺", "💰"]
+    let level9 = ["💀", "💀", "💀", "💀", "💀", "🏺", "💰"]
+    let level10 = ["💀", "💀", "💀", "💀", "💀", "🏺", "💰"]
+    let level11 = ["💀", "💀", "💀", "💀", "💀", "🏺", "💰"] 
+    let level12 = ["💀", "💀", "💀", "💀", "💀", "🏺", "💰"] 
+    let level13 = ["💀", "💀", "💀", "💀", "💀", "💀", "💰"]
     level1 = _.shuffle(level1)
     level2 = _.shuffle(level2)
     level3 = _.shuffle(level3)
@@ -1494,7 +1500,13 @@ function generateExploreMap(){
     level5 = _.shuffle(level5)
     level6 = _.shuffle(level6)
     level7 = _.shuffle(level7)
-    return [ level1, level2, level3, level4, level5, level6, level7 ]
+    level8 = _.shuffle(level8)
+    level9 = _.shuffle(level9)
+    level10 = _.shuffle(level10)
+    level11 = _.shuffle(level11)
+    level12 = _.shuffle(level12)
+    level13 = _.shuffle(level13)
+    return [ level1, level2, level3, level4, level5, level6, level7, level8, level9, level10, level11, level12, level13 ]
 }
 
 // embed
@@ -2721,7 +2733,7 @@ function handleTombArtifactEvent(message, discordUserId, stage, team, channel, a
                             doorNumber = 6
                             validEmoji = true
                         }else if (doorNumberEmoji == "8️⃣"){
-                            if (currentLevel >= 3){
+                            if (currentLevel >= 6){
                                 doorNumber = 7
                                 validEmoji = true    
                             }
