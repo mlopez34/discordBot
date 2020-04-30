@@ -2752,7 +2752,7 @@ function handleTombArtifactEvent(message, discordUserId, stage, team, channel, a
                             embed.setDescription(currentLevelString + " " + (currentLevel + 1) + "\n" + descriptionString)
                             sentMessage.edit({embed})
 
-                            if (currentLevel > 6){
+                            if (currentLevel > 12){
                                 mapexplorecollector.stop("Explore Complete")
                             }
                         }else if (doorNumber == 7 && validEmoji){
