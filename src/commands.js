@@ -606,7 +606,9 @@ module.exports.collectRewardsCommand = function(message){
                     || allRewardsItems[item].itemraritycategory == "rare++"
                     || allRewardsItems[item].itemraritycategory == "ancient"
                     || allRewardsItems[item].itemraritycategory == "ancient+")
-                    && !allRewardsItems[item].findinkeystone ){
+                    && !allRewardsItems[item].findinkeystone 
+                    && (!allRewardsItems[item].itemstatistics != "keystone item, requires level 40"
+                    && allRewardsItems[item].itemraritycategory != "ancient+") ){
                         rareItems.push(allRewardsItems[item]);
                     }
                 }
@@ -751,7 +753,9 @@ module.exports.collectRewardsCommand = function(message){
                         || allRewardsItems[item].itemraritycategory == "rare++"
                         || allRewardsItems[item].itemraritycategory == "ancient"
                         || allRewardsItems[item].itemraritycategory == "ancient+")
-                        && !allRewardsItems[item].findinkeystone){
+                        && !allRewardsItems[item].findinkeystone 
+                        && (!allRewardsItems[item].itemstatistics != "keystone item, requires level 40"
+                        && allRewardsItems[item].itemraritycategory != "ancient+") ){
                             rareItems.push(allRewardsItems[item]);
                         }
                     }
@@ -11433,6 +11437,10 @@ module.exports.rpgQueueJoinCommand = function(message, args){
 
 module.exports.initializeRPGQueue = function(){
     rpg.initializeRPGQueue()
+}
+
+module.exports.initializePetRaces = function(){
+    
 }
 
 module.exports.rpgReadyCommand = function(message){
