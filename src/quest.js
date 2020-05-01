@@ -3011,8 +3011,8 @@ function itemObtainEmbedBuilder(message, itemsFound, user){
     var itemsMessage = ""
     for (var item in itemsFound){
         var itemAmount = itemsFound[item].itemAmount ? itemsFound[item].itemAmount : 1;
-        itemsMessage = itemsMessage + "**" +itemAmount + "**x " + "[**" + itemsFound[item].itemraritycategory +"**] " + "**"  + itemsFound[item].itemname + "** - " + itemsFound[item].itemdescription + ", " +
-        itemsFound[item].itemslot + ", " + itemsFound[item].itemstatistics + " \n";
+        itemsMessage = itemsMessage + "**" +itemAmount + "**x " + "[**" + itemsFound[item].itemraritycategory +"**] " + "**"  + itemsFound[item].itemname + "** " + ", " +
+        itemsFound[item].itemslot + ", " + " \n";
     }
 
     const embed = new Discord.RichEmbed()
