@@ -11073,7 +11073,7 @@ function createCustomParty(message, discordUserId, params){
     .then(function (sentMessage) {
         activeTables["table-"+sentMessage.id] = { id: discordUserId, username: message.author.username };
         sentMessage.react(params.emoji)
-        var tacoParty = new Discord.ReactionCollector(sentMessage, function(){ return true; } , { time: 15000, max: 1000, maxEmojis: 100, maxUsers: 100 } );
+        var tacoParty = new Discord.ReactionCollector(sentMessage, function(){ return true; } , { time: 300000, max: 1000, maxEmojis: 100, maxUsers: 100 } );
         tacoParty.on('collect', function(element, collector){
             element.users.forEach(function(user){
                 if (!user.bot){
