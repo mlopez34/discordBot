@@ -65,8 +65,8 @@ module.exports = {
             // after landing a successful damaging critical strike you can use this ability
             name: "Surge",
             abilityId: "surge",
-            description: "Heal the group for 20 + 35% of your current magical power. After landing a successful critical strike with any ability - surge becomes surge 2 for the next turn. Surge 2: Heal the group for 75 + 82% of your current magical damage",
-            heal: 20,
+            description: "Heal the group for 40 + 35% of your current magical power. After landing a successful critical strike with any ability - surge becomes surge 2 for the next turn. Surge 2: Heal the group for 75 + 82% of your current magical damage",
+            heal: 40,
             mdPercentage: 0.35,
             castAbilityAfterCriticalStrike: "surge2",
             areawide: true,
@@ -75,9 +75,9 @@ module.exports = {
         surge2: {
             name: "Surge 2",
             abilityId: "surge2",
-            description: "Heal the group for 75 + 82% of your current magical damage",
+            description: "Heal the group for 75 + 87% of your current magical damage",
             heal: 75,
-            mdPercentage: 0.82,
+            mdPercentage: 0.87,
             areawide: true,
             targets: "friendly"
         },
@@ -643,13 +643,13 @@ module.exports = {
             areawide: true,
             cooldown: 0,
             maxcooldown: 5,
-            description: "Heal the group over time for 100 + 45% of your magical damage over 4 turns 5 turn cooldown",
+            description: "Heal the group over time for 160 + 52% of your magical damage over 4 turns 5 turn cooldown",
             hot: {
                 name: "Sanctuary",
-                heal: 100,
+                heal: 160,
                 emoji: ":ocean:",
                 areawide: true,
-                mdPercentage: .45,
+                mdPercentage: .52,
                 healingOnHotApply: false,
                 turnsToExpire: 4,
                 healingOnDotExpire: false,
@@ -675,11 +675,11 @@ module.exports = {
         elixir: {
             name: "Elixir",
             abilityId: "elixir",
-            description: "Heal the group for 35 + 50% of your current magical damage, 1 turn cooldown",
+            description: "Heal the group for 35 + 57% of your current magical damage, 1 turn cooldown",
             heal: 35,
             cooldown: 0,
             maxcooldown: 1,
-            mdPercentage: 0.5,
+            mdPercentage: 0.57,
             areawide: true,
             targets: "friendly"
         },

@@ -966,7 +966,7 @@ module.exports.rpgReady = function(message, itemsAvailable, amuletItemsById, buf
                                     }else{
                                         var userLevel = userStats.level;
                                         let cursedTimeCheck = new Date()
-                                        cursedTimeCheck = new Date(cursedTimeCheck.setHours(cursedTimeCheck.getHours() - 12 ))
+                                        cursedTimeCheck = new Date(cursedTimeCheck.setHours(cursedTimeCheck.getHours() - 1 ))
                                         let cursed = (userStats.ritualstring == "auraOfDespair") && ( cursedTimeCheck <= userStats.lastritualdate ) ? true : false    
                                         
                                         wearStats.getUserWearingStats(message, discordUserId, { userLevel: userLevel, inventoryResponse: inventoryResponse }, allItems, function(wearErr, wearRes){
