@@ -4207,7 +4207,7 @@ module.exports.scavangeCommand = function (message){
                                     exports.setCommandLock("scavenge", discordUserId, false)
                                     var achievements = getUserResponse.data.achievements;
                                     if (cursed){
-                                        profileDB.updateUserTacos(discordUserId, userLevel * -50, function(updateLSErr, updateLSres){
+                                        profileDB.updateUserTacos(discordUserId, userLevel * -100, function(updateLSErr, updateLSres){
                                             if(updateLSErr){
                                                 // // console.log(updateLSErr);
                                                 exports.setCommandLock("scavenge", discordUserId, false)
@@ -4218,7 +4218,7 @@ module.exports.scavangeCommand = function (message){
                                     }
                                     stats.statisticsManage(discordUserId, "scavengecount", 1, function(err, statSuccess){
                                         if (err){
-                                            // // console.log(err);
+                                            // console.log(err);
                                         }else{
                                             // check achievements
                                             var data = {}
@@ -8488,8 +8488,8 @@ module.exports.ritualCommand = function(message, args, channel){
                     var stage = profileData.data.demonicqueststage;
                     var questData = { }
                     if (stage >= 1 && stage <= 5){
-                        quest.questHandler(message, discordUserId, "demonic", stage, team, questData, channel, allItemsForRitual)
                         exports.setCommandLock("ritual", discordUserId, false)
+                        quest.questHandler(message, discordUserId, "demonic", stage, team, questData, channel, allItemsForRitual)
                     }else if (stage == 6){
                         var now = new Date();
                         var ritualDateCheck = new Date();
