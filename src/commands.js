@@ -5440,25 +5440,24 @@ module.exports.fetchCommand = function(message, args){
                                                 createTimeOutForCommandAfterUse("fetch", now, secondsToRemove, PETS_AVAILABLE[userPet].cooldown, discordUserId, fetchResponse.data, message)
                                                 // user's pet fetched some tacos
                                                 if (extraTacosFromItems > 0){
-                                                    /* SEASONAL
+                                                    // SEASONAL
                                                     if (trickOrTreatMap["tot-" + discordUserId] && trickOrTreatMap["tot-" + discordUserId].tot == "trick"){
                                                         message.channel.send("**" + userPetName + "** fetched:` " + fetchTacos + "` tacos :taco: \n 👻 BOOOOOOOO " + PETS_AVAILABLE[userPet].speak + " you received `" + extraTacosFromItems + "` extra tacos");                                                
                                                     }else if (trickOrTreatMap["tot-" + discordUserId] && trickOrTreatMap["tot-" + discordUserId].tot == "treat"){
 
                                                     }else{
-                                                        */
-                                                    message.channel.send("**" + userPetName + "** fetched:` " + fetchTacos + "` tacos :taco: \n" + ( cursed ? PETS_AVAILABLE["demon"].emoji : PETS_AVAILABLE[userPet].emoji ) + " " +  ( cursed ? PETS_AVAILABLE["demon"].speak : PETS_AVAILABLE[userPet].speak ) + " you received `" + extraTacosFromItems + "` extra tacos");                                                
-                                                    //}
+                                                        message.channel.send("**" + userPetName + "** fetched:` " + fetchTacos + "` tacos :taco: \n" + ( cursed ? PETS_AVAILABLE["demon"].emoji : PETS_AVAILABLE[userPet].emoji ) + " " +  ( cursed ? PETS_AVAILABLE["demon"].speak : PETS_AVAILABLE[userPet].speak ) + " you received `" + extraTacosFromItems + "` extra tacos");                                                
+                                                    }
                                                 }else{
-                                                    /* SEASONAL
+                                                    // SEASONAL
                                                     if (trickOrTreatMap["tot-" + discordUserId] && trickOrTreatMap["tot-" + discordUserId].tot == "trick"){
                                                         message.channel.send("**" + userPetName + "** fetched:` " + fetchTacos + "` tacos :taco: \n 👻 BOOOOOOOO " + PETS_AVAILABLE[userPet].speak);                                                
                                                     }else if (trickOrTreatMap["tot-" + discordUserId] && trickOrTreatMap["tot-" + discordUserId].tot == "treat"){
                                                         message.channel.send("**" + userPetName + "** fetched:` " + fetchTacos + "` tacos :taco: \n 🎃 HEEEHEEEHEHEHEE " + PETS_AVAILABLE[userPet].speak);                                                
                                                     }else{
-                                                        */
-                                                    message.channel.send("**" + userPetName + "** fetched:` " + fetchTacos + "` tacos :taco: \n" + ( cursed ? PETS_AVAILABLE["demon"].emoji : PETS_AVAILABLE[userPet].emoji ) + " " + ( cursed ? PETS_AVAILABLE["demon"].speak : PETS_AVAILABLE[userPet].speak ) );                                                
-                                                    //}
+                                                        
+                                                        message.channel.send("**" + userPetName + "** fetched:` " + fetchTacos + "` tacos :taco: \n" + ( cursed ? PETS_AVAILABLE["demon"].emoji : PETS_AVAILABLE[userPet].emoji ) + " " + ( cursed ? PETS_AVAILABLE["demon"].speak : PETS_AVAILABLE[userPet].speak ) );                                                
+                                                    }
                                                 }
                                             }
                                         })
