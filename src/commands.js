@@ -49,7 +49,7 @@ var SODA_CAN_ITEM_ID = 1;
 var SOIL_ITEM_ID = 2;
 var PET_COST = 750;
 var QueueOfTacosDropped = [];
-var THANK_COOLDOWN_HOURS = 2;
+var THANK_COOLDOWN_HOURS = 1; // SEASONAL
 var SORRY_COOLDOWN_HOURS = 6;
 var COOK_COOLDOWN_HOURS = 24;
 var PREPARE_COOLDOWN_HOURS = 48;
@@ -945,9 +945,9 @@ module.exports.thankCommand = function(message){
                                     })
                                     // send message that the user has 1 more taco
                                     if (extraTacosFromItems > 0){
-                                        message.channel.send(message.author.username + " thanked " + mentionedUser.username + ", they received `" + tacosThanked + "` tacos! :taco: " + " you received `" + extraTacosFromItems + "` extra tacos");
+                                        message.channel.send(message.author.username + " thanked " + mentionedUser.username + ", they received `" + tacosThanked + "` tacos! 🦃 :taco: " + " you received `" + extraTacosFromItems + "` extra tacos");
                                     }else{
-                                        message.channel.send(message.author.username + " thanked " + mentionedUser.username + ", they received `" + tacosThanked + "` tacos! :taco: ");
+                                        message.channel.send(message.author.username + " thanked " + mentionedUser.username + ", they received `" + tacosThanked + "` tacos! 🦃 :taco: ");
                                     }
                                 }
                             })
