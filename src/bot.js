@@ -231,9 +231,9 @@ client.on('message', function(message){
                 //     commands.trickOrTreatCommand(message);
                 // }
                 //SEASONAL
-                // else if (commandIs("present", message) && settings.canBotRespondToCommandInChannel("regular", guildId, channelId)){
-                //     commands.openPresentCommand(message)
-                // }
+                else if (commandIs("present", message) && settings.canBotRespondToCommandInChannel("regular", guildId, channelId)){
+                    commands.openPresentCommand(message)
+                }
                 
                 else if( commandIs("sorry", message ) && settings.canBotRespondToCommandInChannel("regular", guildId, channelId)){
                     commands.sorryCommand(message)
@@ -757,11 +757,11 @@ client.on('message', function(message){
                 //     profileDB.createUserActivity(data)
                 // }
                 // SEASONAL
-                // else if (commandIs("present", message) && settings.canBotRespondToCommandInChannel("regular", guildId, channelId)){
-                //     commands.openPresentCommand(message)
-                //     data.command = "present"
-                //     profileDB.createUserActivity(data)
-                // }
+                else if (commandIs("present", message) && settings.canBotRespondToCommandInChannel("regular", guildId, channelId)){
+                    commands.openPresentCommand(message)
+                    data.command = "present"
+                    profileDB.createUserActivity(data)
+                }
                 
                 else if( commandIs("sorry", message ) && settings.canBotRespondToCommandInChannel("regular", guildId, channelId)){
                     commands.sorryCommand(message)

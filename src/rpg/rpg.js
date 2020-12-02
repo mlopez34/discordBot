@@ -3088,13 +3088,22 @@ function eventEndedEmbedBuilder(message, event, partySuccess){
             var challengenumber = usersInRPGEvents["rpg-" + memberInParty.id].memberStats.currentchallenge;
             var keystonenumber = usersInRPGEvents["rpg-" + memberInParty.id].memberStats.currentkeystone;
             var userLevel = usersInRPGEvents["rpg-" + memberInParty.id].memberStats.level
-            if ( (challengenumber + 1) == event.challenge.challenge && keystonenumber == 0 ){
+            // update the player's challenge only if the event challenge is the one to complete
+            // AND only if the keystone is at 0
+            // STOPS from moving up the challenge if not doing base, can't do 3-1, while ur at base 3, to move up 4
+            if ( (challengenumber + 1) == event.challenge.challenge 
+            && (keystonenumber == 0) ){
                 profileDB.updateCurrentChallenge( memberInParty.id, challengenumber + 1, function(err, res){
 
                 })
                 usersFirstComplete.push(memberInParty.id)
             }
-            if ( (keystonenumber) == event.challenge.keystone && userLevel >= KEYSTONE_UNLOCK_LEVEL){
+            // if the keystone you are in is ALSO the keystone of the challenge
+            // if you are above the keystone unlock level
+            // also check that the current challenge is less than or equal to the player's current challenge
+            if ( (keystonenumber) == event.challenge.keystone 
+            && challengenumber <= event.challenge.challenge
+            && userLevel >= KEYSTONE_UNLOCK_LEVEL){
                 var challengeId = getKeystoneIdFromChallenge(event.challenge.challenge)
                 profileDB.updateCurrentChallengeKeystone( memberInParty.id, keystonenumber + 1, challengeId, function(err, res){
                     // check for keystone achievs
@@ -3107,7 +3116,8 @@ function eventEndedEmbedBuilder(message, event, partySuccess){
                         }
                     })
                 })
-                if ( keystonenumber > 0 && (challengenumber + 1) >= event.challenge.challenge ){
+                if ( keystonenumber > 0 
+                && (challengenumber + 1) >= event.challenge.challenge ){
                     usersFirstComplete.push(memberInParty.id)
                 }
             }
