@@ -3101,9 +3101,35 @@ function eventEndedEmbedBuilder(message, event, partySuccess){
             // if the keystone you are in is ALSO the keystone of the challenge
             // if you are above the keystone unlock level
             // also check that the current challenge is less than or equal to the player's current challenge
+
+            // THIS IS FOR WHEN THE PLAYER IS ON A CHALLENGE BEFORE THE CHALLENGE OF THE EVENT
             if ( (keystonenumber) == event.challenge.keystone 
             && challengenumber <= event.challenge.challenge
             && userLevel >= KEYSTONE_UNLOCK_LEVEL){
+                var challengeId = getKeystoneIdFromChallenge(event.challenge.challenge)
+                profileDB.updateCurrentChallengeKeystone( memberInParty.id, keystonenumber + 1, challengeId, function(err, res){
+                    // check for keystone achievs
+                    profileDB.getUserProfileData(memberInParty.id, function(profileErr, profileRes){
+                        if (profileErr){
+                            console.log("FAILURE SOMETHING WENT WRONG")
+                        }else{
+                            var achievData = { achievements: profileRes.data.achievements, keystoneNumDefeated: keystonenumber }
+                            achiev.checkForAchievements(memberInParty.id, achievData, message)
+                        }
+                    })
+                })
+                if ( keystonenumber > 0 
+                && (challengenumber + 1) >= event.challenge.challenge ){
+                    usersFirstComplete.push(memberInParty.id)
+                }
+            }
+            // check the challenge the player is, is above the event challenge, and the keystone is not 0 so that the keystone does not get upgraded when the user is not even on that challenge 
+            // without the keystonenumber != 0, the user will have their keystone upgraded, if they skip a base challenge, and they will never be able to upgrade their keystone
+            else if (  challengenumber > event.challenge.challenge 
+            && keystonenumber != 0
+            && (keystonenumber) == event.challenge.keystone
+            && userLevel >= KEYSTONE_UNLOCK_LEVEL ){
+                /// TODO: this is the same as above, so consilidate the code
                 var challengeId = getKeystoneIdFromChallenge(event.challenge.challenge)
                 profileDB.updateCurrentChallengeKeystone( memberInParty.id, keystonenumber + 1, challengeId, function(err, res){
                     // check for keystone achievs
