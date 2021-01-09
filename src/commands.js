@@ -10003,6 +10003,11 @@ function marketAuctionPostCommand(args){
         if (auctionPostObj.startBid <= 0 ){
             auctionPostObj.valid = false
         }
+        // bigint
+        if (auctionPostObj.buyout >= 922337203685477
+        || auctionPostObj.startBid >= 922337203685477){
+            auctionPostObj.valid = false
+        }
     }
     // bid is always less than or equal to buyout price
     if (auctionPostObj.startBid && auctionPostObj.startBid > auctionPostObj.buyout){
@@ -10125,6 +10130,8 @@ module.exports.marketAuctionCommand = function(message, args){
                                 profileDB.postItemToMarket(individualItem, function(postErr, postRes){
                                     if (postErr){
                                         console.log(postErr)
+                                        // clear the item from the market
+                                        handleMarketItemAuctionEnded(individualItem)
                                         useItem.setItemsLock(discordUserId, false)
                                     }else{
                                         if ( marketItemsUserCount[discordUserId] == undefined){
