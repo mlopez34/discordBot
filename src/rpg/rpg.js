@@ -3104,7 +3104,7 @@ function eventEndedEmbedBuilder(message, event, partySuccess){
 
             // THIS IS FOR WHEN THE PLAYER IS ON A CHALLENGE BEFORE THE CHALLENGE OF THE EVENT
             if ( (keystonenumber) == event.challenge.keystone 
-            && challengenumber <= event.challenge.challenge
+            && challengenumber < event.challenge.challenge
             && userLevel >= KEYSTONE_UNLOCK_LEVEL){
                 var challengeId = getKeystoneIdFromChallenge(event.challenge.challenge)
                 profileDB.updateCurrentChallengeKeystone( memberInParty.id, keystonenumber + 1, challengeId, function(err, res){
