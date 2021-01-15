@@ -112,7 +112,8 @@ var commandLock = {
     timetravel: {},
     explore: {},
     marry: {},
-    harvest: {}
+    harvest: {},
+    puton: {}
 }
 
 
@@ -8912,237 +8913,252 @@ module.exports.putonCommand = function(message, args, retry){
     // wearing on an empty slot activates immediately
     // if replacing an item, it requires 1 command use for it to take effect
     var discordUserId = message.author.id;
-    if (args && args.length >= 3 && !retry){
-        var slot = args[1]; // must be a number between 1 and 7
-        var itemToWear = args[2].toLowerCase(); // must be a valid itemname
-        // get the user's wear information, then get their item information, 
-        // check user doesnt have the same slot category in 1 and 3, if so then valid command, update slot 2 with all the info for sundress
-        profileDB.getUserWearInfo(discordUserId, function(getWearErr, getWearRes){
-            if (getWearErr){
-                // console.log(getWearErr);
-                // user isn't wearing any items
-                // var data = {
-                //     discordId : discordUserId,
-                //     slot1replacing: false,
-                //     slot2replacing: false,
-                //     slot3replacing: false,
-                //     slot4replacing: false
-                // }
-                // profileDB.createUserWearInfo(discordUserId, function(error, res){
-                //     if (error){
-                //         // console.log(error);
-                //     }else{
-                //         // console.log(res);
-                //     }
-                // })
-                message.channel.send("You must `-agree` to create a profile first!")
-            }else{
-                // get the user's items
-                var userLevel = getWearRes.data[0].level
-                var userRPGLevel = getWearRes.data[0].rpglevel    
-                var greenHouseLevel = getWearRes.data[0].greenhouselevel;
-                var stableLevel = getWearRes.data[0].stablelevel;
-                var templeLevel = getWearRes.data[0].templelevel;
-                var currentSlot1Slot = getWearRes.data[0].slot1slot;
-                var currentSlot2Slot = getWearRes.data[0].slot2slot;
-                var currentSlot3Slot = getWearRes.data[0].slot3slot;
-                var currentSlot4Slot = getWearRes.data[0].slot4slot;
-                var currentSlot5Slot = getWearRes.data[0].slot5slot;
-                var currentSlot6Slot = getWearRes.data[0].slot6slot;
-                var currentSlot7Slot = getWearRes.data[0].slot7slot;
-                // is the user replacing the current slot?
-                var replacingCurrentSlot; 
-                if (slot == 1){
-                    replacingCurrentSlot = getWearRes.data[0].slot1replacing;
-                }
-                else if (slot == 2){
-                    replacingCurrentSlot = getWearRes.data[0].slot2replacing;
-                }
-                else if (slot == 3){
-                    replacingCurrentSlot = getWearRes.data[0].slot3replacing;
-                }
-                else if (slot == 4){
-                    replacingCurrentSlot = getWearRes.data[0].slot4replacing;
-                }
-                else if (slot == 5){
-                    replacingCurrentSlot = getWearRes.data[0].slot5replacing;
-                }
-                else if (slot == 6){
-                    replacingCurrentSlot = getWearRes.data[0].slot6replacing;
-                }
-                else if (slot == 7){
-                    replacingCurrentSlot = getWearRes.data[0].slot7replacing;
-                }
-
-                profileDB.getUserItems(discordUserId, function(err, inventoryResponse){
-                    if (err){
-                        // console.log(err);
-                    }else{
-                        // get all the data for each item
-                        var itemsInInventoryCountMap = {};
-                        var userItemsById = {}
-                        for (var item in inventoryResponse.data){
-                            var validItem = useItem.itemValidate(inventoryResponse.data[item]);
-                            // item not being auctioned
-                            var itemBeingAuctioned = false;
-                            if (itemsInAuction[inventoryResponse.data[item].id]){
-                                itemBeingAuctioned = true;
-                            }
-                            var itemBeingTraded = false;
-                            if (activeTradeItems[inventoryResponse.data[item].id]){
-                                itemBeingTraded = true;
-                            }
-                            if (!itemsInInventoryCountMap[inventoryResponse.data[item].itemid] 
-                            && validItem
-                            && !itemBeingAuctioned 
-                            && !itemBeingTraded
-                            && itemsMapbyShortName[itemToWear] && itemsMapbyShortName[itemToWear].itemraritycategory != "amulet"){
-                                // item hasnt been added to be counted, add it as 1
-                                itemsInInventoryCountMap[inventoryResponse.data[item].itemid] = 1;
-                                userItemsById[inventoryResponse.data[item].itemid] = [];
-                                userItemsById[inventoryResponse.data[item].itemid].push(inventoryResponse.data[item]);
-                            }
-                            else if (validItem && !itemBeingAuctioned && !itemBeingTraded
-                            && ( itemsMapbyShortName[itemToWear] && itemsMapbyShortName[itemToWear].itemraritycategory != "amulet" )){
-                                itemsInInventoryCountMap[inventoryResponse.data[item].itemid] = itemsInInventoryCountMap[inventoryResponse.data[item].itemid] + 1;
-                                userItemsById[inventoryResponse.data[item].itemid].push(inventoryResponse.data[item]);
-                            }
-                        }
-                        // have the item available to wear
-                        if (itemsMapbyShortName[itemToWear]){
-                            // get all the data needed for equiping  for the item
-                            var itemslot = itemsMapbyShortName[itemToWear].itemslot;
-                            var itemLevelRequirement = itemsMapbyShortName[itemToWear].itemlevelrequirement || 0;
-                            var itemLevelRequirementRPG = itemsMapbyShortName[itemToWear].rpglevelrequirement || 0;
-                            // id of the item in the item db
-                            var itemid = itemsMapbyShortName[itemToWear].id;
-                            var itemstats = {
-                                itemBaseCdr : itemsMapbyShortName[itemToWear].itembasecdr,
-                                itemBaseTacoChance : itemsMapbyShortName[itemToWear].itembasetacochance,
-                                itemBaseExtraTacos : itemsMapbyShortName[itemToWear].itembaseextratacos,
-                                itemCdrPerLevel : itemsMapbyShortName[itemToWear].itemcdrperlevel,
-                                itemTacoChancePerLevel : itemsMapbyShortName[itemToWear].itemtacochanceperlevel,
-                                itemExtraTacosPerLevel : itemsMapbyShortName[itemToWear].itemextratacosperlevel,
-                                itemCommand: itemsMapbyShortName[itemToWear].command
-                            }
-                            // id if the specific item the user will wear (pick the first item)
-                            var itemuserid;
-                            var itemObtainDate;
-                            for (var item in userItemsById[itemid]){
-                                if (userItemsById[itemid][item].status != "wearing"){
-                                    itemuserid = userItemsById[itemid][item].id;
-                                    itemObtainDate = userItemsById[itemid][item].itemobtaindate;
-                                    break;
+    if (!commandLock["puton"][discordUserId]){
+        exports.setCommandLock("puton", discordUserId, true)
+        if (args && args.length >= 3 && !retry){
+            var slot = args[1]; // must be a number between 1 and 7
+            var itemToWear = args[2].toLowerCase(); // must be a valid itemname
+            // get the user's wear information, then get their item information, 
+            // check user doesnt have the same slot category in 1 and 3, if so then valid command, update slot 2 with all the info for sundress
+            profileDB.getUserWearInfo(discordUserId, function(getWearErr, getWearRes){
+                if (getWearErr){
+                    // console.log(getWearErr);
+                    // user isn't wearing any items
+                    // var data = {
+                    //     discordId : discordUserId,
+                    //     slot1replacing: false,
+                    //     slot2replacing: false,
+                    //     slot3replacing: false,
+                    //     slot4replacing: false
+                    // }
+                    // profileDB.createUserWearInfo(discordUserId, function(error, res){
+                    //     if (error){
+                    //         // console.log(error);
+                    //     }else{
+                    //         // console.log(res);
+                    //     }
+                    // })
+                    message.channel.send("You must `-agree` to create a profile first!")
+                    exports.setCommandLock("puton", discordUserId, false)
+                }else{
+                    // get the user's items
+                    var userLevel = getWearRes.data[0].level
+                    var userRPGLevel = getWearRes.data[0].rpglevel    
+                    var greenHouseLevel = getWearRes.data[0].greenhouselevel;
+                    var stableLevel = getWearRes.data[0].stablelevel;
+                    var templeLevel = getWearRes.data[0].templelevel;
+                    var currentSlot1Slot = getWearRes.data[0].slot1slot;
+                    var currentSlot2Slot = getWearRes.data[0].slot2slot;
+                    var currentSlot3Slot = getWearRes.data[0].slot3slot;
+                    var currentSlot4Slot = getWearRes.data[0].slot4slot;
+                    var currentSlot5Slot = getWearRes.data[0].slot5slot;
+                    var currentSlot6Slot = getWearRes.data[0].slot6slot;
+                    var currentSlot7Slot = getWearRes.data[0].slot7slot;
+                    // is the user replacing the current slot?
+                    var replacingCurrentSlot; 
+                    if (slot == 1){
+                        replacingCurrentSlot = getWearRes.data[0].slot1replacing;
+                    }
+                    else if (slot == 2){
+                        replacingCurrentSlot = getWearRes.data[0].slot2replacing;
+                    }
+                    else if (slot == 3){
+                        replacingCurrentSlot = getWearRes.data[0].slot3replacing;
+                    }
+                    else if (slot == 4){
+                        replacingCurrentSlot = getWearRes.data[0].slot4replacing;
+                    }
+                    else if (slot == 5){
+                        replacingCurrentSlot = getWearRes.data[0].slot5replacing;
+                    }
+                    else if (slot == 6){
+                        replacingCurrentSlot = getWearRes.data[0].slot6replacing;
+                    }
+                    else if (slot == 7){
+                        replacingCurrentSlot = getWearRes.data[0].slot7replacing;
+                    }
+    
+                    profileDB.getUserItems(discordUserId, function(err, inventoryResponse){
+                        if (err){
+                            // console.log(err);
+                            exports.setCommandLock("puton", discordUserId, false)
+                        }else{
+                            // get all the data for each item
+                            var itemsInInventoryCountMap = {};
+                            var userItemsById = {}
+                            for (var item in inventoryResponse.data){
+                                var validItem = useItem.itemValidate(inventoryResponse.data[item]);
+                                // item not being auctioned
+                                var itemBeingAuctioned = false;
+                                if (itemsInAuction[inventoryResponse.data[item].id]){
+                                    itemBeingAuctioned = true;
+                                }
+                                var itemBeingTraded = false;
+                                if (activeTradeItems[inventoryResponse.data[item].id]){
+                                    itemBeingTraded = true;
+                                }
+                                if (!itemsInInventoryCountMap[inventoryResponse.data[item].itemid] 
+                                && validItem
+                                && !itemBeingAuctioned 
+                                && !itemBeingTraded
+                                && itemsMapbyShortName[itemToWear] && itemsMapbyShortName[itemToWear].itemraritycategory != "amulet"){
+                                    // item hasnt been added to be counted, add it as 1
+                                    itemsInInventoryCountMap[inventoryResponse.data[item].itemid] = 1;
+                                    userItemsById[inventoryResponse.data[item].itemid] = [];
+                                    userItemsById[inventoryResponse.data[item].itemid].push(inventoryResponse.data[item]);
+                                }
+                                else if (validItem && !itemBeingAuctioned && !itemBeingTraded
+                                && ( itemsMapbyShortName[itemToWear] && itemsMapbyShortName[itemToWear].itemraritycategory != "amulet" )){
+                                    itemsInInventoryCountMap[inventoryResponse.data[item].itemid] = itemsInInventoryCountMap[inventoryResponse.data[item].itemid] + 1;
+                                    userItemsById[inventoryResponse.data[item].itemid].push(inventoryResponse.data[item]);
                                 }
                             }
-                            // validate the user owns that item and make sure item is above user level
-                            if (itemuserid && (userLevel >= itemLevelRequirement) && (userRPGLevel >= itemLevelRequirementRPG) ){
-                                
-                                var validateSlotToWear;
-                                var arrayOfSlots = []
-                                arrayOfSlots.push(currentSlot1Slot)
-                                arrayOfSlots.push(currentSlot2Slot)
-                                arrayOfSlots.push(currentSlot3Slot)
-                                arrayOfSlots.push(currentSlot5Slot)
-                                arrayOfSlots.push(currentSlot6Slot)
-                                arrayOfSlots.push(currentSlot7Slot)
-
-                                if (slot == 1 && !currentSlot1Slot){
-                                    validateSlotToWear = validateSlot(itemslot, arrayOfSlots)
+                            // have the item available to wear
+                            if (itemsMapbyShortName[itemToWear]){
+                                // get all the data needed for equiping  for the item
+                                var itemslot = itemsMapbyShortName[itemToWear].itemslot;
+                                var itemLevelRequirement = itemsMapbyShortName[itemToWear].itemlevelrequirement || 0;
+                                var itemLevelRequirementRPG = itemsMapbyShortName[itemToWear].rpglevelrequirement || 0;
+                                // id of the item in the item db
+                                var itemid = itemsMapbyShortName[itemToWear].id;
+                                var itemstats = {
+                                    itemBaseCdr : itemsMapbyShortName[itemToWear].itembasecdr,
+                                    itemBaseTacoChance : itemsMapbyShortName[itemToWear].itembasetacochance,
+                                    itemBaseExtraTacos : itemsMapbyShortName[itemToWear].itembaseextratacos,
+                                    itemCdrPerLevel : itemsMapbyShortName[itemToWear].itemcdrperlevel,
+                                    itemTacoChancePerLevel : itemsMapbyShortName[itemToWear].itemtacochanceperlevel,
+                                    itemExtraTacosPerLevel : itemsMapbyShortName[itemToWear].itemextratacosperlevel,
+                                    itemCommand: itemsMapbyShortName[itemToWear].command
                                 }
-                                else if (slot == 2 && !currentSlot2Slot){
-                                    validateSlotToWear = validateSlot(itemslot, arrayOfSlots)
-                                }
-                                else if (slot == 3 && !currentSlot3Slot){
-                                    validateSlotToWear = validateSlot(itemslot, arrayOfSlots)
-                                }
-                                else if (slot == 4 && !currentSlot4Slot && 
-                                (itemsMapbyShortName[itemToWear].itemraritycategory == "myth" 
-                                || itemsMapbyShortName[itemToWear].itemraritycategory == "myth+"
-                                || itemsMapbyShortName[itemToWear].itemraritycategory == "myth++"
-                                || itemsMapbyShortName[itemToWear].itemraritycategory == "myth+++") ){
-                                    validateSlotToWear = true
-                                }
-                                /// temple level 6
-                                else if (slot == 5 && !currentSlot5Slot && templeLevel >= 6){
-                                    validateSlotToWear = validateSlot(itemslot, arrayOfSlots)
-                                }
-                                /// stable level 11
-                                else if (slot == 6 && !currentSlot6Slot && stableLevel >= 11){
-                                    validateSlotToWear = validateSlot(itemslot, arrayOfSlots)
-                                }
-                                // greenhouse level 12
-                                else if (slot == 7 && !currentSlot7Slot && greenHouseLevel >= 12){
-                                    validateSlotToWear = validateSlot(itemslot, arrayOfSlots)
-                                }
-                                if (validateSlotToWear){
-                                    // check that the item slot is not already equiped elsewhere
-                                    // // console.log("updating: slot: " + slot + " itemslot: " + itemslot + " itemid: " + itemid + " itemuserid: " + itemuserid + " itemstats: " + JSON.stringify(itemstats, null, 2));
-                                    // equip the item
-                                    // create a date for when the item is active
-                                    var activateDate;
-                                    if (!replacingCurrentSlot){
-                                        activateDate = new Date(); // now
-                                        replacingCurrentSlot = true;
+                                // id if the specific item the user will wear (pick the first item)
+                                var itemuserid;
+                                var itemObtainDate;
+                                for (var item in userItemsById[itemid]){
+                                    if (userItemsById[itemid][item].status != "wearing"){
+                                        itemuserid = userItemsById[itemid][item].id;
+                                        itemObtainDate = userItemsById[itemid][item].itemobtaindate;
+                                        break;
                                     }
-                                    else{
-                                        var hoursToAdd = commandHoursToActivate[itemstats.itemCommand] ? commandHoursToActivate[itemstats.itemCommand] : 0 // depending on the item's command
-                                        // // console.log("hours to add " + hoursToAdd);
-                                        activateDate = new Date() // + hours for the command
-                                        // if obtain date is greater than 1 hour ago, activate date gets no + hours
-                                        var oneHourAgo = new Date();
-                                        oneHourAgo = new Date(oneHourAgo.setHours(oneHourAgo.getHours() - 1));
-                                        if (itemObtainDate < oneHourAgo){
-                                            // just got the item, activate immediately
-                                            activateDate = new Date(activateDate.setHours(activateDate.getHours() + hoursToAdd));
+                                }
+                                // validate the user owns that item and make sure item is above user level
+                                if (itemuserid && (userLevel >= itemLevelRequirement) && (userRPGLevel >= itemLevelRequirementRPG) ){
+                                    
+                                    var validateSlotToWear;
+                                    var arrayOfSlots = []
+                                    arrayOfSlots.push(currentSlot1Slot)
+                                    arrayOfSlots.push(currentSlot2Slot)
+                                    arrayOfSlots.push(currentSlot3Slot)
+                                    arrayOfSlots.push(currentSlot5Slot)
+                                    arrayOfSlots.push(currentSlot6Slot)
+                                    arrayOfSlots.push(currentSlot7Slot)
+    
+                                    if (slot == 1 && !currentSlot1Slot){
+                                        validateSlotToWear = validateSlot(itemslot, arrayOfSlots)
+                                    }
+                                    else if (slot == 2 && !currentSlot2Slot){
+                                        validateSlotToWear = validateSlot(itemslot, arrayOfSlots)
+                                    }
+                                    else if (slot == 3 && !currentSlot3Slot){
+                                        validateSlotToWear = validateSlot(itemslot, arrayOfSlots)
+                                    }
+                                    else if (slot == 4 && !currentSlot4Slot && 
+                                    (itemsMapbyShortName[itemToWear].itemraritycategory == "myth" 
+                                    || itemsMapbyShortName[itemToWear].itemraritycategory == "myth+"
+                                    || itemsMapbyShortName[itemToWear].itemraritycategory == "myth++"
+                                    || itemsMapbyShortName[itemToWear].itemraritycategory == "myth+++") ){
+                                        validateSlotToWear = true
+                                    }
+                                    /// temple level 6
+                                    else if (slot == 5 && !currentSlot5Slot && templeLevel >= 6){
+                                        validateSlotToWear = validateSlot(itemslot, arrayOfSlots)
+                                    }
+                                    /// stable level 11
+                                    else if (slot == 6 && !currentSlot6Slot && stableLevel >= 11){
+                                        validateSlotToWear = validateSlot(itemslot, arrayOfSlots)
+                                    }
+                                    // greenhouse level 12
+                                    else if (slot == 7 && !currentSlot7Slot && greenHouseLevel >= 12){
+                                        validateSlotToWear = validateSlot(itemslot, arrayOfSlots)
+                                    }
+                                    if (validateSlotToWear){
+                                        // check that the item slot is not already equiped elsewhere
+                                        // // console.log("updating: slot: " + slot + " itemslot: " + itemslot + " itemid: " + itemid + " itemuserid: " + itemuserid + " itemstats: " + JSON.stringify(itemstats, null, 2));
+                                        // equip the item
+                                        // create a date for when the item is active
+                                        var activateDate;
+                                        if (!replacingCurrentSlot){
+                                            activateDate = new Date(); // now
+                                            replacingCurrentSlot = true;
                                         }
-                                        replacingCurrentSlot = true;
-                                    }
-                                    // // console.log("activate date " + activateDate)
-                                    // each command has a different date activate
-                                    profileDB.updateUserWearInfo(discordUserId, slot + "", itemslot, itemid, itemuserid, activateDate, replacingCurrentSlot, function(err, res){
-                                        // set the item to equipped in userinventory
-                                        if (err){
-                                            // console.log(err);
-                                        }else{
-                                            // change the item status to wearing in user inventory
-                                            profileDB.updateItemStatus(itemuserid, "wearing", function(updateRockStatusErr, updateRockStatusRes){
-                                                if (updateRockStatusErr){
-                                                    // console.log(updateRockStatusErr);
-                                                }else{
-                                                    message.channel.send(message.author.username + " you are now wearing **" + itemsMapbyShortName[itemToWear].itemname + "**")
-                                                }
-                                            })
+                                        else{
+                                            var hoursToAdd = commandHoursToActivate[itemstats.itemCommand] ? commandHoursToActivate[itemstats.itemCommand] : 0 // depending on the item's command
+                                            // // console.log("hours to add " + hoursToAdd);
+                                            activateDate = new Date() // + hours for the command
+                                            // if obtain date is greater than 1 hour ago, activate date gets no + hours
+                                            var oneHourAgo = new Date();
+                                            oneHourAgo = new Date(oneHourAgo.setHours(oneHourAgo.getHours() - 1));
+                                            if (itemObtainDate < oneHourAgo){
+                                                // just got the item, activate immediately
+                                                activateDate = new Date(activateDate.setHours(activateDate.getHours() + hoursToAdd));
+                                            }
+                                            replacingCurrentSlot = true;
                                         }
-                                    })
-                                }else{
-                                    if (templeLevel < 6 && slot == 5){
-                                        message.channel.send(message.author.username + " invalid slot!")
-                                    }
-                                    else if (stableLevel < 11 && slot == 6){
-                                        message.channel.send(message.author.username + " invalid slot!")
-                                    }
-                                    else if (greenHouseLevel < 12 && slot == 7){
-                                        message.channel.send(message.author.username + " invalid slot!") 
+                                        // // console.log("activate date " + activateDate)
+                                        // each command has a different date activate
+                                        profileDB.updateUserWearInfo(discordUserId, slot + "", itemslot, itemid, itemuserid, activateDate, replacingCurrentSlot, function(err, res){
+                                            // set the item to equipped in userinventory
+                                            if (err){
+                                                // console.log(err);
+                                                exports.setCommandLock("puton", discordUserId, false)
+                                            }else{
+                                                // change the item status to wearing in user inventory
+                                                profileDB.updateItemStatus(itemuserid, "wearing", function(updateRockStatusErr, updateRockStatusRes){
+                                                    if (updateRockStatusErr){
+                                                        // console.log(updateRockStatusErr);
+                                                        exports.setCommandLock("puton", discordUserId, false)
+                                                    }else{
+                                                        exports.setCommandLock("puton", discordUserId, false)
+                                                        message.channel.send(message.author.username + " you are now wearing **" + itemsMapbyShortName[itemToWear].itemname + "**")
+                                                    }
+                                                })
+                                            }
+                                        })
                                     }else{
-                                        message.channel.send(message.author.username + " invalid slot!")
+                                        if (templeLevel < 6 && slot == 5){
+                                            message.channel.send(message.author.username + " invalid slot!")
+                                        }
+                                        else if (stableLevel < 11 && slot == 6){
+                                            message.channel.send(message.author.username + " invalid slot!")
+                                        }
+                                        else if (greenHouseLevel < 12 && slot == 7){
+                                            message.channel.send(message.author.username + " invalid slot!") 
+                                        }else{
+                                            message.channel.send(message.author.username + " invalid slot!")
+                                        }
+                                        exports.setCommandLock("puton", discordUserId, false)
+                                    }
+                                }else{
+                                    if (itemuserid && (userLevel < itemLevelRequirement || userRPGLevel < itemLevelRequirementRPG)){
+                                        exports.setCommandLock("puton", discordUserId, false)
+                                        message.channel.send(message.author.username + " requires level `" + itemLevelRequirement + "` and rpg level `" + itemLevelRequirementRPG + "`")
+                                    }else{
+                                        exports.setCommandLock("puton", discordUserId, false)
+                                        message.channel.send(message.author.username + " invalid item!")
                                     }
                                 }
                             }else{
-                                if (itemuserid && (userLevel < itemLevelRequirement || userRPGLevel < itemLevelRequirementRPG)){
-                                    message.channel.send(message.author.username + " requires level `" + itemLevelRequirement + "` and rpg level `" + itemLevelRequirementRPG + "`")
-                                }else{
-                                    message.channel.send(message.author.username + " invalid item!")
-                                }
+                                exports.setCommandLock("puton", discordUserId, false)
                             }
                         }
-                    }
-                })
-            }
-        })
-    }else{
-        message.channel.send(message.author.username + " do -puton [1-4] [itemname] \n example: -puton 2 loincloth OR -puton 2 loinclothimproved \n Slot 4 is only for artifact+ items or higher");
+                    })
+                }
+            })
+        }else{
+            exports.setCommandLock("puton", discordUserId, false)
+            message.channel.send(message.author.username + " do -puton [1-4] [itemname] \n example: -puton 2 loincloth OR -puton 2 loinclothimproved \n Slot 4 is only for artifact+ items or higher");
+        }
     }
+    
 }
 
 function validateSlot(slotToEquip, arrayOfSlots){

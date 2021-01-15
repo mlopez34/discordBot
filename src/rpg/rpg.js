@@ -11,7 +11,7 @@ var commands = require("../commands.js")
 var moment = require("moment");
 var _ = require("lodash");
 
-var RPG_COOLDOWN_HOURS = 1
+var RPG_COOLDOWN_HOURS = 0
 var activeRPGEvents = {};
 var activeRPGItemIds = {};
 var usersInRPGEvents = {};
@@ -35,7 +35,7 @@ module.exports.rpgInitialize = function(message, special){
     team.push(message.author);
 
     users.forEach(function(user){
-        if (team.length < TEAM_MAX_LENGTH && discordUserId != user.id){
+        if (team.length < TEAM_MAX_LENGTH ){//&& discordUserId != user.id){
             team.push(user);
         }
     })
@@ -1384,9 +1384,9 @@ module.exports.rpgReady = function(message, itemsAvailable, amuletItemsById, buf
                                                                         name: partyMember.username,
                                                                         alias: "p" + aliasCount++,
                                                                         username: partyMember.username,
-                                                                        hp: 250 + (7 *  partyMemberStats.level ) + (20 *  partyMemberStats.rpglevel ) + partyMemberHpPlus,
-                                                                        attackDmg: 10 + (2 * partyMemberStats.level) + (7 * partyMemberStats.rpglevel ) + partyMemberAttackDmgPlus,
-                                                                        magicDmg:  10 + (2 * partyMemberStats.level) + (7 * partyMemberStats.rpglevel ) + partyMemberMagicDmgPlus,
+                                                                        hp: 2500000 + (7 *  partyMemberStats.level ) + (20 *  partyMemberStats.rpglevel ) + partyMemberHpPlus,
+                                                                        attackDmg: 100000 + (2 * partyMemberStats.level) + (7 * partyMemberStats.rpglevel ) + partyMemberAttackDmgPlus,
+                                                                        magicDmg:  100000 + (2 * partyMemberStats.level) + (7 * partyMemberStats.rpglevel ) + partyMemberMagicDmgPlus,
                                                                         armor: 5 + Math.floor((partyMemberStats.level * partyMemberStats.level) / 2) + Math.floor((partyMemberStats.rpglevel * partyMemberStats.rpglevel) / 2 ) + partyMemberArmorPlus,
                                                                         spirit: 5 + Math.floor((partyMemberStats.level * partyMemberStats.level) / 2)+ Math.floor((partyMemberStats.rpglevel * partyMemberStats.rpglevel) / 2 ) + partyMemberSpiritPlus,                                                                    
                                                                         criticalChance: partyMemberCritPlus,
@@ -3091,6 +3091,23 @@ function eventEndedEmbedBuilder(message, event, partySuccess){
             // update the player's challenge only if the event challenge is the one to complete
             // AND only if the keystone is at 0
             // STOPS from moving up the challenge if not doing base, can't do 3-1, while ur at base 3, to move up 4
+            let increaseChallenge = false;
+            let increaseKeystone = false;
+            if ((challengenumber + 1) == event.challenge.challenge 
+            && (keystonenumber == 0) ){
+                increaseChallenge = true;
+                usersFirstComplete.push(memberInParty.id)
+            }
+
+            if ( (challengenumber + 1) == event.challenge.challenge ){
+                if ( (keystonenumber) == event.challenge.keystone 
+                &&  (keystonenumber == 0) ){
+                    increaseKeystone = true
+                }
+            }else if ((challengenumber + 1) <= event.challenge.challenge){
+                increaseKeystone = false
+            }
+
             if ( (challengenumber + 1) == event.challenge.challenge 
             && (keystonenumber == 0) ){
                 profileDB.updateCurrentChallenge( memberInParty.id, challengenumber + 1, function(err, res){
