@@ -113,7 +113,8 @@ var commandLock = {
     explore: {},
     marry: {},
     harvest: {},
-    puton: {}
+    puton: {},
+    slots: {}
 }
 
 
@@ -4333,81 +4334,92 @@ module.exports.slotsCommand = function(message, tacosBet){
     var discordUserId = message.author.id;
     // check that tacosBet is less than users tacos
     var bet = Math.floor(parseInt(tacosBet));
-    if (bet > 19 ){
-        profileDB.getUserProfileData(discordUserId, function(getProfileError, getProfileResponse){
-            if (getProfileError){
-                message.channel.send("You must `-agree` to create a profile first!")
-            }else{
-                if (adjustedTacosForUser(discordUserId, getProfileResponse.data.tacos) >= bet){
-                    var userLevel = getProfileResponse.data.level;
-                    wearStats.getUserWearingStats(message, discordUserId, {userLevel: userLevel}, allItems, function(wearErr, wearRes){
-                        if (wearErr){
-                            // console.log(wearErr)
-                        }else{
-                            // spin the slots
-                            var firstRoll = Math.floor(Math.random() * 8);
-                            var secondRoll = Math.floor(Math.random() * 8);
-                            var thirdRoll = Math.floor(Math.random() * 8);
-                            // 7 emojis
-                            var emojis = [
-                                ":taco:",
-                                ":burrito:",
-                                ":hot_pepper:",
-                                ":grapes:",
-                                ":avocado:",
-                                ":tropical_drink:",
-                                ":stuffed_flatbread:",
-                                ":eggplant:"
-                            ]
-                            var emojisRolled = [emojis[firstRoll], emojis[secondRoll], emojis[thirdRoll]];
-                            var tacosWon = calculateSlotsWin(firstRoll, secondRoll, thirdRoll, bet);
-                            var extraTacosFromItems = 0
-                            var experienceFromItems = 0;
-                            // IF SLOTS WIN IS HIGHER THAN 0 ADD TO THE TACOS WON
-                            if (tacosWon > 0){
-                                extraTacosFromItems = wearStats.calculateExtraTacos( wearRes, "slots", {userBid: bet } ); // 0 or extra
-                                experienceFromItems = wearStats.calculateExtraExperienceGained(wearRes, "slots", null);
-                            }
-
-                            profileDB.updateUserTacos(discordUserId, tacosWon + extraTacosFromItems, function(updateErr, updateRes){
-                                if (updateErr){
-                                    // console.log(updateErr);
-                                }else{
-                                    // // console.log(updateRes);
-                                    // check for achievement
-                                    if (tacosWon >= 1 && bet >= 5000){
-                                        var data = {
-                                            slotsTacosBet: bet
-                                        };
-                                        data.achievements = getProfileResponse.data.achievements;
-                                        achiev.checkForAchievements(discordUserId, data, message);
-
-                                        // get experience from winning
-                                        if ( tacosWon + extraTacosFromItems >= 10000 ){
-                                            experience.gainExperience(message, message.author, experienceFromItems, getProfileResponse);
-                                        }
-                                    }
-                                    stats.statisticsManage(discordUserId, "slotscount", 1, function(staterr, statSuccess){
-                                        if (staterr){
-                                            // console.log(staterr);
-                                        }else{
-                                            getProfileForAchievement(discordUserId, message, getProfileResponse)
-                                        }
-                                    })
-                                }
-                            })
-                            slotsEmbedBuilder(emojisRolled, tacosWon, message, extraTacosFromItems);
-                        }
-                    })
-                    
+    if (!commandLock["puton"][discordUserId]){
+        exports.setCommandLock("puton", discordUserId, true)
+        if (bet > 19 ){
+            profileDB.getUserProfileData(discordUserId, function(getProfileError, getProfileResponse){
+                if (getProfileError){
+                    message.channel.send("You must `-agree` to create a profile first!")
+                    exports.setCommandLock("puton", discordUserId, false)
                 }else{
-                    message.channel.send(message.author.username + " You don't have enough tacos!");
+                    if (adjustedTacosForUser(discordUserId, getProfileResponse.data.tacos) >= bet){
+                        var userLevel = getProfileResponse.data.level;
+                        wearStats.getUserWearingStats(message, discordUserId, {userLevel: userLevel}, allItems, function(wearErr, wearRes){
+                            if (wearErr){
+                                // console.log(wearErr)
+                                exports.setCommandLock("puton", discordUserId, false)
+                            }else{
+                                // spin the slots
+                                var firstRoll = Math.floor(Math.random() * 8);
+                                var secondRoll = Math.floor(Math.random() * 8);
+                                var thirdRoll = Math.floor(Math.random() * 8);
+                                // 7 emojis
+                                var emojis = [
+                                    ":taco:",
+                                    ":burrito:",
+                                    ":hot_pepper:",
+                                    ":grapes:",
+                                    ":avocado:",
+                                    ":tropical_drink:",
+                                    ":stuffed_flatbread:",
+                                    ":eggplant:"
+                                ]
+                                var emojisRolled = [emojis[firstRoll], emojis[secondRoll], emojis[thirdRoll]];
+                                var tacosWon = calculateSlotsWin(firstRoll, secondRoll, thirdRoll, bet);
+                                var extraTacosFromItems = 0
+                                var experienceFromItems = 0;
+                                // IF SLOTS WIN IS HIGHER THAN 0 ADD TO THE TACOS WON
+                                if (tacosWon > 0){
+                                    extraTacosFromItems = wearStats.calculateExtraTacos( wearRes, "slots", {userBid: bet } ); // 0 or extra
+                                    experienceFromItems = wearStats.calculateExtraExperienceGained(wearRes, "slots", null);
+                                }
+    
+                                profileDB.updateUserTacos(discordUserId, tacosWon + extraTacosFromItems, function(updateErr, updateRes){
+                                    if (updateErr){
+                                        // console.log(updateErr);
+                                        exports.setCommandLock("puton", discordUserId, false)
+                                    }else{
+                                        // // console.log(updateRes);
+                                        // check for achievement
+                                        if (tacosWon >= 1 && bet >= 5000){
+                                            var data = {
+                                                slotsTacosBet: bet
+                                            };
+                                            data.achievements = getProfileResponse.data.achievements;
+                                            achiev.checkForAchievements(discordUserId, data, message);
+    
+                                            // get experience from winning
+                                            if ( tacosWon + extraTacosFromItems >= 10000 ){
+                                                experience.gainExperience(message, message.author, experienceFromItems, getProfileResponse);
+                                            }
+                                        }
+                                        stats.statisticsManage(discordUserId, "slotscount", 1, function(staterr, statSuccess){
+                                            if (staterr){
+                                                // console.log(staterr);
+                                            }else{
+                                                getProfileForAchievement(discordUserId, message, getProfileResponse)
+                                            }
+                                        })
+                                        exports.setCommandLock("puton", discordUserId, false)
+                                    }
+                                })
+                                slotsEmbedBuilder(emojisRolled, tacosWon, message, extraTacosFromItems);
+                            }
+                        })
+                        
+                    }else{
+                        message.channel.send(message.author.username + " You don't have enough tacos!");
+                        exports.setCommandLock("puton", discordUserId, false)
+                    }
                 }
-            }
-        })
-    }else{
-        message.channel.send(message.author.username + " You must bet more than 19 tacos when using slots!");
+            })
+        }else{
+            message.channel.send(message.author.username + " You must bet more than 19 tacos when using slots!");
+            exports.setCommandLock("puton", discordUserId, false)
+        }
+
     }
+    
 }
 
 

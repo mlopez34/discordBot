@@ -231,9 +231,9 @@ client.on('message', function(message){
                 //     commands.trickOrTreatCommand(message);
                 // }
                 //SEASONAL
-                else if (commandIs("present", message) && settings.canBotRespondToCommandInChannel("regular", guildId, channelId)){
-                    commands.openPresentCommand(message)
-                }
+                // else if (commandIs("present", message) && settings.canBotRespondToCommandInChannel("regular", guildId, channelId)){
+                //     commands.openPresentCommand(message)
+                // }
                 
                 else if( commandIs("sorry", message ) && settings.canBotRespondToCommandInChannel("regular", guildId, channelId)){
                     commands.sorryCommand(message)
@@ -406,9 +406,9 @@ client.on('message', function(message){
                 else if (commandIs("takeoff", message) && settings.canBotRespondToCommandInChannel("regular", guildId, channelId)){
                     commands.takeoffCommand(message, args);
                 }
-                else if (commandIs("auction", message) && settings.canBotRespondToCommandInChannel("regular", guildId, channelId)){
-                    commands.auctionCommand(message, args);
-                }
+                // else if (commandIs("auction", message) && settings.canBotRespondToCommandInChannel("regular", guildId, channelId)){
+                //     commands.auctionCommand(message, args);
+                // }
                 else if (commandIs("bid", message) && settings.canBotRespondToCommandInChannel("regular", guildId, channelId)){
                     commands.bidCommand(message, args);
                 }
@@ -757,11 +757,11 @@ client.on('message', function(message){
                 //     profileDB.createUserActivity(data)
                 // }
                 // SEASONAL
-                else if (commandIs("present", message) && settings.canBotRespondToCommandInChannel("regular", guildId, channelId)){
-                    commands.openPresentCommand(message)
-                    data.command = "present"
-                    profileDB.createUserActivity(data)
-                }
+                // else if (commandIs("present", message) && settings.canBotRespondToCommandInChannel("regular", guildId, channelId)){
+                //     commands.openPresentCommand(message)
+                //     data.command = "present"
+                //     profileDB.createUserActivity(data)
+                // }
                 
                 else if( commandIs("sorry", message ) && settings.canBotRespondToCommandInChannel("regular", guildId, channelId)){
                     commands.sorryCommand(message)
@@ -1022,11 +1022,11 @@ client.on('message', function(message){
                     data.command = "takeoff"
                     profileDB.createUserActivity(data)
                 }
-                else if (commandIs("auction", message) && settings.canBotRespondToCommandInChannel("regular", guildId, channelId)){
-                    commands.auctionCommand(message, args);
-                    data.command = "auction"
-                    profileDB.createUserActivity(data)
-                }
+                // else if (commandIs("auction", message) && settings.canBotRespondToCommandInChannel("regular", guildId, channelId)){
+                //     commands.auctionCommand(message, args);
+                //     data.command = "auction"
+                //     profileDB.createUserActivity(data)
+                // }
                 else if (commandIs("bid", message) && settings.canBotRespondToCommandInChannel("regular", guildId, channelId)){
                     commands.bidCommand(message, args);
                     data.command = "bid"

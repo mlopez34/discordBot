@@ -11,7 +11,7 @@ var commands = require("../commands.js")
 var moment = require("moment");
 var _ = require("lodash");
 
-var RPG_COOLDOWN_HOURS = 0
+var RPG_COOLDOWN_HOURS = 1
 var activeRPGEvents = {};
 var activeRPGItemIds = {};
 var usersInRPGEvents = {};
@@ -35,7 +35,7 @@ module.exports.rpgInitialize = function(message, special){
     team.push(message.author);
 
     users.forEach(function(user){
-        if (team.length < TEAM_MAX_LENGTH ){//&& discordUserId != user.id){
+        if (team.length < TEAM_MAX_LENGTH && discordUserId != user.id){
             team.push(user);
         }
     })
@@ -1283,7 +1283,9 @@ module.exports.rpgReady = function(message, itemsAvailable, amuletItemsById, buf
                                                     }
         
                                                     usersInRPGEvents["rpg-" + discordUserId].ready = true;
-                                                    if ( userStats.level >= 20 || challengePicked ){ // under level 20 or doing normal rpg
+                                                    if ( (currentPlayerChallenge + 1) > activeRPGEvents[ "rpg-" +  rpgEventId ].challenge.challenge
+                                                    || currentPlayerKeystone > 0
+                                                    || activeRPGEvents[ "rpg-" +  rpgEventId ].challenge.keystone > 0 ){ // under level 20 or doing normal rpg
                                                         usersInRPGEvents["rpg-" + discordUserId].setRPGcooldown = true
                                                     }
                                                     // check the activeRPGEvents
@@ -1384,9 +1386,9 @@ module.exports.rpgReady = function(message, itemsAvailable, amuletItemsById, buf
                                                                         name: partyMember.username,
                                                                         alias: "p" + aliasCount++,
                                                                         username: partyMember.username,
-                                                                        hp: 2500000 + (7 *  partyMemberStats.level ) + (20 *  partyMemberStats.rpglevel ) + partyMemberHpPlus,
-                                                                        attackDmg: 100000 + (2 * partyMemberStats.level) + (7 * partyMemberStats.rpglevel ) + partyMemberAttackDmgPlus,
-                                                                        magicDmg:  100000 + (2 * partyMemberStats.level) + (7 * partyMemberStats.rpglevel ) + partyMemberMagicDmgPlus,
+                                                                        hp: 250 + (7 *  partyMemberStats.level ) + (20 *  partyMemberStats.rpglevel ) + partyMemberHpPlus,
+                                                                        attackDmg: 10 + (2 * partyMemberStats.level) + (7 * partyMemberStats.rpglevel ) + partyMemberAttackDmgPlus,
+                                                                        magicDmg:  10 + (2 * partyMemberStats.level) + (7 * partyMemberStats.rpglevel ) + partyMemberMagicDmgPlus,
                                                                         armor: 5 + Math.floor((partyMemberStats.level * partyMemberStats.level) / 2) + Math.floor((partyMemberStats.rpglevel * partyMemberStats.rpglevel) / 2 ) + partyMemberArmorPlus,
                                                                         spirit: 5 + Math.floor((partyMemberStats.level * partyMemberStats.level) / 2)+ Math.floor((partyMemberStats.rpglevel * partyMemberStats.rpglevel) / 2 ) + partyMemberSpiritPlus,                                                                    
                                                                         criticalChance: partyMemberCritPlus,
@@ -3103,11 +3105,39 @@ function eventEndedEmbedBuilder(message, event, partySuccess){
                 if ( (keystonenumber) == event.challenge.keystone 
                 &&  (keystonenumber == 0) ){
                     increaseKeystone = true
+                    usersFirstComplete.push(memberInParty.id)
                 }
-            }else if ((challengenumber + 1) <= event.challenge.challenge){
+            }else if ((challengenumber + 1) < event.challenge.challenge){
                 increaseKeystone = false
+            }else if ((challengenumber + 1) > event.challenge.challenge){
+                if ((keystonenumber) == event.challenge.keystone ){
+                    increaseKeystone = true;
+                    usersFirstComplete.push(memberInParty.id)
+                }
             }
 
+            if (increaseChallenge){
+                profileDB.updateCurrentChallenge( memberInParty.id, challengenumber + 1, function(err, res){
+
+                })
+            }
+
+            if (increaseKeystone){
+                var challengeId = getKeystoneIdFromChallenge(event.challenge.challenge)
+                profileDB.updateCurrentChallengeKeystone( memberInParty.id, keystonenumber + 1, challengeId, function(err, res){
+                    // check for keystone achievs
+                    profileDB.getUserProfileData(memberInParty.id, function(profileErr, profileRes){
+                        if (profileErr){
+                            console.log("FAILURE SOMETHING WENT WRONG")
+                        }else{
+                            var achievData = { achievements: profileRes.data.achievements, keystoneNumDefeated: keystonenumber }
+                            achiev.checkForAchievements(memberInParty.id, achievData, message)
+                        }
+                    })
+                })
+            }
+            /*
+            TODO: REMOVE THIS
             if ( (challengenumber + 1) == event.challenge.challenge 
             && (keystonenumber == 0) ){
                 profileDB.updateCurrentChallenge( memberInParty.id, challengenumber + 1, function(err, res){
@@ -3164,6 +3194,7 @@ function eventEndedEmbedBuilder(message, event, partySuccess){
                     usersFirstComplete.push(memberInParty.id)
                 }
             }
+            */
             
         }
     }
@@ -3262,7 +3293,7 @@ function eventEndedEmbedBuilder(message, event, partySuccess){
             }
             // unlocked the next keystone
             var userLevel = usersInRPGEvents["rpg-" + memberInParty.id].memberStats.level
-            if (firstKill && userLevel >= KEYSTONE_UNLOCK_LEVEL){
+            if (firstKill){
                 var challengeId = getKeystoneUnlockNameFromChallenge(event.challenge.challenge)
                 var keystoneNumString = event.challenge.keystone > 0 ? (event.challenge.keystone + 1) : ""
                 rewardString = rewardString + challengeId + " " + keystoneNumString + "\n"
