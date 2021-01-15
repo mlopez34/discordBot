@@ -1283,11 +1283,21 @@ module.exports.rpgReady = function(message, itemsAvailable, amuletItemsById, buf
                                                     }
         
                                                     usersInRPGEvents["rpg-" + discordUserId].ready = true;
-                                                    if ( (currentPlayerChallenge + 1) > activeRPGEvents[ "rpg-" +  rpgEventId ].challenge.challenge
-                                                    || currentPlayerKeystone > 0
-                                                    || activeRPGEvents[ "rpg-" +  rpgEventId ].challenge.keystone > 0 ){ // under level 20 or doing normal rpg
+                                                    let ChallengeAndLevelOver25 = (challengePicked && usersInRPGEvents["rpg-" + discordUserId].level > 25)
+                                                    let isAChallenge = activeRPGEvents[ "rpg-" +  rpgEventId ].challenge
+                                                    let playerChallengeAboveEventChallenge = isAChallenge && (currentPlayerChallenge + 1) > activeRPGEvents[ "rpg-" +  rpgEventId ].challenge.challenge
+                                                    let challengeKeystoneGreaterThanZero = isAChallenge && activeRPGEvents[ "rpg-" +  rpgEventId ].challenge.keystone > 0
+                                                    
+                                                    if (ChallengeAndLevelOver25){
                                                         usersInRPGEvents["rpg-" + discordUserId].setRPGcooldown = true
                                                     }
+                                                    if (isAChallenge && playerChallengeAboveEventChallenge ){
+                                                        usersInRPGEvents["rpg-" + discordUserId].setRPGcooldown = true
+                                                    }
+                                                    if (challengeKeystoneGreaterThanZero && activeRPGEvents[ "rpg-" +  rpgEventId ].challenge.keystone > 0){
+                                                        usersInRPGEvents["rpg-" + discordUserId].setRPGcooldown = true
+                                                    }
+
                                                     // check the activeRPGEvents
                                                     var rpgEvent = "rpg-" + usersInRPGEvents["rpg-" + discordUserId].id;
                                                     if (activeRPGEvents[rpgEvent]){
