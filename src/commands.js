@@ -1590,6 +1590,7 @@ module.exports.claimCommand = function(message, args){
                 && args[1] == "pet" 
                 && userBurritos >= DAILY_CLAIM_PET_COST){
                     // add a random ancient
+                    exports.setCommandLock("claim", discordUserId, false)
                     message.channel.send("Check the reputation shop to view the available pets!")
                 }
                 else if(args && args.length > 0
