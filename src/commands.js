@@ -8280,7 +8280,7 @@ module.exports.proposeCommand = function(message, channel){
         mentionedId = user.id;
         mentionedUser = user
     })
-    if (mentionedUser && !mentionedUser.bot && mentionedUser != discordUserId){
+    if (mentionedUser && !mentionedUser.bot && mentionedUser.id != discordUserId){
         if (!commandLock["marry"][discordUserId]){
             exports.setCommandLock("marry", discordUserId, true)
             profileDB.getUserProfileData(discordUserId, function(profileErr, profileData){
@@ -8357,7 +8357,7 @@ module.exports.proposeCommand = function(message, channel){
             })
         }
     }else{
-        message.channel.send("You must propose to another user that is not a bot")
+        message.channel.send("You must propose to another user that is not a bot or yourself!")
     }
 }
 
